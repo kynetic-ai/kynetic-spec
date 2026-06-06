@@ -2,7 +2,104 @@ _ulid: 01KTE2QBZFXKHY0ANMQ4E5NRRK
 slugs: []
 title: Review canonical dispatch task identity
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 978 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-06T09:16:57.079Z
+    completed_at: 2026-06-06T09:16:57.079Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxlint reported 0 errors; repo warning baseline present."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-06T09:16:59.482Z
+    completed_at: 2026-06-06T09:16:59.482Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with 0 errors. 13 warnings were verified pre-existing on base:
+      src/parser/dispatch-workspaces.ts sort warning and tests/agent-invocation-lifecycle.test.ts
+      vi.fn type-parameter warnings at the same base lines."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-06T09:17:01.875Z
+    completed_at: 2026-06-06T09:17:01.875Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-06T09:17:04.255Z
+    completed_at: 2026-06-06T09:17:04.255Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2692 suites passed; 10273 tests passed; 5 skipped; 0 failed. Full log
+      /tmp/kspec-test-cache/01KTE2NY7A4TXARJWCGF5G7VAK/37f68afee667fa5b.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-06T09:17:06.709Z
+    completed_at: 2026-06-06T09:17:06.709Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --schema --warnings-ok passed; schema OK, references OK;
+      warnings accepted by gate.
+    name: kspec validate schema
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T09:17:09.129Z
+    completed_at: 2026-06-06T09:17:09.129Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --refs --warnings-ok passed; schema OK, references OK;
+      warning baseline accepted by gate.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T09:17:11.552Z
+    completed_at: 2026-06-06T09:17:11.552Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --alignment --warnings-ok passed; warning baseline
+      accepted by gate.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T09:17:13.851Z
+    completed_at: 2026-06-06T09:17:13.851Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --completeness --warnings-ok passed; warning baseline
+      accepted by gate.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T09:17:16.201Z
+    completed_at: 2026-06-06T09:17:16.201Z
 events:
   - _ulid: 01KTE2QBZE13XTKDR4YG48MTMM
     actor: Jacob Chapel
@@ -17,17 +114,159 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-06T09:03:09.347Z
+  - _ulid: 01KTE3H82FW1N9G5NPBDP3Z7G5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-06T09:16:57.295Z
+  - _ulid: 01KTE3HADCGXB2NR8X9XH5CQ36
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-06T09:16:59.692Z
+  - _ulid: 01KTE3HCQNNHVSCJ8ZWS7RY300
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-06T09:17:02.069Z
+  - _ulid: 01KTE3HF3N2P25PNMYA6V87THE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-06T09:17:04.501Z
+  - _ulid: 01KTE3HHEH69SVGBZ6D8ZAWXCD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-06T09:17:06.897Z
+  - _ulid: 01KTE3HKTJ91DZEQ81XTDARAZQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate schema
+    timestamp: 2026-06-06T09:17:09.330Z
+  - _ulid: 01KTE3HP651R6SR060E764EE6C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-06T09:17:11.749Z
+  - _ulid: 01KTE3HRDXAM3Q8GS9QX41D8HD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-06T09:17:14.045Z
+  - _ulid: 01KTE3HTQ6431DMJ166ME273YJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-06T09:17:16.390Z
+  - _ulid: 01KTE3HWYTW1S21BKXCVJKCRQ2
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTE3HWRHD36RB5SZHYKX6DDZ
+    timestamp: 2026-06-06T09:17:18.682Z
+  - _ulid: 01KTE3HZ8FJ8PD7QE3WR0SNEH8
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTE3HZ29M2K8T3MTDWG4S1D0
+    timestamp: 2026-06-06T09:17:21.040Z
+  - _ulid: 01KTE3J1H23A078QM734GR8EEN
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-06T09:17:23.362Z
+  - _ulid: 01KTE3J1H21843N6N2R40JD3Z0
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-06T09:17:23.362Z
 examined_commit: 0e1896826ae024c59148daf1820f1f7a122145b1
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KTDPVY9VEE3E3WGJFMYMGRHH"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTE3HWRHD36RB5SZHYKX6DDZ
+    entries:
+      - _ulid: 01KTE3HWRHE58SK5PSXZAQ058T
+        author: pr-reviewer
+        body: "Review evidence log: Files read: kspec-agents.md, task/spec details, prior reviews @01KTDWNZ
+          and @01KTDZ79, src/agent-runtime/task-identity.ts, dispatch.ts, workspace.ts,
+          invocation.ts, agents runner/adapter files, schema/event payload files, parser dispatch
+          workspace registry, and changed tests. Commands run: git diff/stat/name-status/log, kspec
+          task get, kspec item get, kspec review for-task/get, rg AC annotation search,
+          format/lint/focused oxlint/typecheck/full npm test/kspec validations. Claims verified:
+          previous fix-cycle claims for invalid task_ref rejection, terminal invocation payload,
+          session terminal payload, registry canonical reconciliation, and duplicate alias record
+          rejection. Categories searched: correctness, AC coverage, edge cases for aliases/invalid
+          refs, error handling/diagnostics, cleanup protection, scheduler dedupe, session/event
+          integration, test quality, and focused lint regressions."
+        created_at: 2026-06-06T09:17:18.481Z
+    kind: nit
+  - _ulid: 01KTE3HZ29M2K8T3MTDWG4S1D0
+    anchor:
+      type: code
+      commit: 0e1896826ae024c59148daf1820f1f7a122145b1
+      line_end: 786
+      line_start: 780
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KTE3HZ29WYJ1C5CJWBT2YC33
+        author: pr-reviewer
+        body: "MUST-FIX: Session metadata persistence still records the display task ref as task_id.
+          Dispatch normalizes TaskStateChange to canonical taskId plus display taskRef, but
+          _spawnInvocation passes only taskRef into runInvocation, and InvocationOptions has no
+          canonical task id field. createSession() then persists task_id: taskRef here, and the
+          session event history paths in this file do the same. For a valid slug display ref such as
+          @task-session-payload, the persisted session metadata/event history gets
+          task_id=@task-session-payload instead of the canonical full ULID, violating
+          @dispatch-canonical-task-identity
+          ac-session-and-event-payloads-separate-id-from-display-ref. The new integration test does
+          not catch this because it mocks runInvocation and asserts only DispatchEngine
+          event-bus/onInvocationEvent payloads, not the real persisted SessionMetadata returned by
+          runInvocation."
+        created_at: 2026-06-06T09:17:20.841Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-06T09:17:23.362Z
 created_at: 2026-06-06T09:02:49.327Z
-updated_at: 2026-06-06T09:03:09.124Z
+updated_at: 2026-06-06T09:17:23.362Z
 notes: []
