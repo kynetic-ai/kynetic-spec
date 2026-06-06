@@ -156,7 +156,7 @@ description: >
 spec_ref: "@dispatch-canonical-task-identity"
 plan_ref: "@plan-dispatch-canonical-task-identity-plan"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -172,8 +172,8 @@ review_ref: "@01KTE2QBZFXKHY0ANMQ4E5NRRK"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-canonicalize-dispatch-task-identity/01ktdpvy
-  captured_at: 2026-06-06T08:58:58.002Z
-  commit: 0e1896826ae024c59148daf1820f1f7a122145b1
+  captured_at: 2026-06-06T10:04:56.892Z
+  commit: 026ad7653a9c194b8072f0ce2ae7fd6a58b8e7bc
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-canonicalize-dispatch-task-identity/01ktdpvy
@@ -363,8 +363,35 @@ history:
         previous: 2026-06-06T08:58:54.623Z
     command: task-start
     timestamp: 2026-06-06T09:40:22.622Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-canonicalize-dispatch-task-identity/01ktdpvy
+          captured_at: 2026-06-06T10:04:56.892Z
+          commit: 026ad7653a9c194b8072f0ce2ae7fd6a58b8e7bc
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-canonicalize-dispatch-task-identity/01ktdpvy
+        previous:
+          review_url: null
+          branch: dispatch/task/task-canonicalize-dispatch-task-identity/01ktdpvy
+          captured_at: 2026-06-06T08:58:58.002Z
+          commit: 0e1896826ae024c59148daf1820f1f7a122145b1
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-canonicalize-dispatch-task-identity/01ktdpvy
+      submitted_at:
+        new: 2026-06-06T10:04:56.899Z
+        previous: 2026-06-06T08:58:58.006Z
+    command: task-submit
+    timestamp: 2026-06-06T10:04:56.899Z
 created_at: 2026-06-06T05:35:36.251Z
 started_at: 2026-06-06T09:40:22.621Z
-submitted_at: 2026-06-06T08:58:58.006Z
+submitted_at: 2026-06-06T10:04:56.899Z
 todos: []
 automation: eligible
