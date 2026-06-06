@@ -168,7 +168,7 @@ tags:
   - workspaces
   - regression
 vcs_refs: []
-review_ref: "@01KTDZ792QM6THBKWXM0WWCKCT"
+review_ref: "@01KTE2QBZFXKHY0ANMQ4E5NRRK"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-canonicalize-dispatch-task-identity/01ktdpvy
@@ -333,6 +333,13 @@ history:
         previous: 2026-06-06T07:58:11.330Z
     command: task-submit
     timestamp: 2026-06-06T08:58:58.007Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTE2QBZFXKHY0ANMQ4E5NRRK"
+        previous: "@01KTDZ792QM6THBKWXM0WWCKCT"
+    command: review-link
+    timestamp: 2026-06-06T09:02:51.479Z
 created_at: 2026-06-06T05:35:36.251Z
 started_at: 2026-06-06T08:58:54.623Z
 submitted_at: 2026-06-06T08:58:58.006Z
