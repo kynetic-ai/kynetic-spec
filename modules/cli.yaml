@@ -10434,6 +10434,7 @@ features:
         implements: []
         relates_to:
           - "@dispatch-workspace-registry"
+          - "@canonical-task-workspace-contract"
         tests: []
         traits: []
         acceptance_criteria:
