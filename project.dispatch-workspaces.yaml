@@ -16688,7 +16688,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-06T05:10:13.794Z
+      updated_at: 2026-06-06T05:10:15.621Z
     integration:
       status: pending
       detail: null
@@ -16697,25 +16697,20 @@ workspaces:
       target_branch: dev
       target_commit: 45d6db87895211f041bd4e1c12be7cd620549178
       updated_at: 2026-06-06T05:10:13.794Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@task-generic-acp-process-adapter"
     task_slug: task-generic-acp-process-adapter
     timestamps:
       closed_at: null
       last_active_at: 2026-06-06T04:45:52.858Z
-      last_reconciled_at: 2026-06-06T05:10:13.794Z
+      last_reconciled_at: 2026-06-06T05:10:15.621Z
       created_at: 2026-06-06T04:45:22.198Z
-      updated_at: 2026-06-06T05:10:13.794Z
+      updated_at: 2026-06-06T05:10:15.621Z
     workspace_id: dispatch-workspace-task-generic-acp-process-adapter
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 044eccda44dc11c7360897665d1ea5d8e6462e84
-        last_seen_at: 2026-06-06T04:45:22.198Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-generic-acp-process-adapter-task-gen-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-generic-acp-process-adapter/01kt7y7r
