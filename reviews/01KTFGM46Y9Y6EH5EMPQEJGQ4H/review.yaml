@@ -24,6 +24,19 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-06T22:39:17.351Z
     completed_at: 2026-06-06T22:39:17.351Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Changed-file oxlint returned 0 errors. Reported warnings in
+      agent-action-input/cli-agent-commands are pre-existing lines verified against base;
+      daemon-automation-spawner-wiring.test.ts now reports 0 warnings and 0 errors, confirming the
+      prior blocker is fixed.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-06T22:39:22.256Z
+    completed_at: 2026-06-06T22:39:22.256Z
 events:
   - _ulid: 01KTFGM46XP3YZ2A6XQJEAGGDX
     actor: Jacob Chapel
@@ -52,6 +65,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-06T22:39:17.567Z
+  - _ulid: 01KTFHEGVGD3XV19CTPWTH69ZR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-06T22:39:22.480Z
 examined_commit: 8d1c789e0d848c904449c56d165e648f656e4b1b
 external_links: []
 lifecycle_state: open
@@ -64,5 +84,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-06T22:24:57.566Z
-updated_at: 2026-06-06T22:39:17.351Z
+updated_at: 2026-06-06T22:39:22.256Z
 notes: []
