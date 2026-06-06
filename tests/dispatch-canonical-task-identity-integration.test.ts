@@ -216,6 +216,82 @@ describe(
       expect(again.metadata.workspaceId).toBe(provisioned.metadata.workspaceId);
       expect(again.metadata.taskId).toBe(taskUlid);
     });
+
+    // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+    // AC: @dispatch-canonical-task-identity ac-historical-workspace-records-normalize-or-stale
+    it("reconciles task status and active role by canonical id for a slug-display record", async () => {
+      await seedRepo(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+      const taskUlid = testUlid("WSRC", 1);
+      // Task is completed so reconciliation should resolve integration to merged.
+      await setupProjectWithTask(tempDir, taskUlid, "task-reconcile-slug", "completed");
+
+      // Provision under the SLUG alias: task_ref is the slug, task_id the ULID.
+      await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef: "@task-reconcile-slug",
+        task: { title: "Recon", slugs: ["task-reconcile-slug"] },
+      });
+
+      // The caller supplies canonical-keyed maps, exactly as DispatchEngine does:
+      // task status keyed by `@<ULID>`, active role keyed by the bare ULID. A
+      // record whose display ref is a slug only hits these via canonical
+      // resolution — the bug looked them up by the raw slug task_ref and missed.
+      const taskStatusByRef = new Map<string, "completed">([[`@${taskUlid}`, "completed"]]);
+      const activeRoleByTaskId = new Map<string, "worker" | "reviewer">([[taskUlid, "reviewer"]]);
+      await workspaceModule.reconcileDispatchWorkspaceRegistry(
+        tempDir,
+        taskStatusByRef,
+        activeRoleByTaskId,
+      );
+
+      const rec = (await readRegistry(tempDir)).find((r) => r.task_id === taskUlid);
+      expect(rec).toBeDefined();
+      // Active role came from the canonical (bare-ULID) keyed map.
+      expect(rec?.active_role).toBe("reviewer");
+      // Completed task status (canonical `@<ULID>` keyed) drove integration to merged.
+      expect(rec?.integration.status).toBe("merged");
+    });
+
+    // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+    it("rejects more than one non-closed alias record for the same canonical task", async () => {
+      await seedRepo(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+      const taskUlid = testUlid("WSDUP", 1);
+      await setupProjectWithTask(tempDir, taskUlid, "task-dup-alias");
+
+      const first = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef: "@task-dup-alias",
+        task: { title: "Dup", slugs: ["task-dup-alias"] },
+      });
+
+      // Forge a SECOND non-closed record under a different display alias (full
+      // ULID), simulating a historical record that predates canonical task_id
+      // tracking. Strip task_id from both so they differ only by display alias —
+      // the parser's task_id-keyed validator cannot collide them, so the
+      // canonical-aware reuse path must reject the ambiguity.
+      const registryPath = path.join(tempDir, "project.dispatch-workspaces.yaml");
+      const raw = YAML.parse(await readTestOutput(registryPath)) as {
+        workspaces: Array<Record<string, unknown>>;
+      };
+      const clone = JSON.parse(JSON.stringify(raw.workspaces[0])) as Record<string, unknown>;
+      delete raw.workspaces[0].task_id;
+      clone.workspace_id = "dispatch-workspace-dup-alias-2";
+      delete clone.task_id;
+      clone.task_ref = `@${taskUlid}`;
+      raw.workspaces.push(clone);
+      await fs.writeFile(registryPath, YAML.stringify(raw), "utf-8");
+
+      // Provisioning under either alias must reject the ambiguous duplicate
+      // rather than silently collapsing to the newest record.
+      await expect(
+        provisionDispatchWorkspace({ projectDir: tempDir, taskRef: `@${taskUlid}` }),
+      ).rejects.toThrow(/Multiple non-closed dispatch workspace records resolve to canonical task/);
+
+      // The original workspace id is unchanged — no fork happened.
+      expect(first.metadata.taskId).toBe(taskUlid);
+    });
   },
 );
 
@@ -467,7 +543,7 @@ describe("dispatch canonical task identity: scheduler", { timeout: 60_000 }, () 
   });
 
   // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
-  it("emits invocation events with canonical task id separate from the display ref", async () => {
+  it("emits started, terminal, and session events with canonical task id separate from the display ref", async () => {
     const taskUlid = testUlid("SESS", 1);
     await seedRepo(testDir);
     const metadata = fakeMetadata();
@@ -497,6 +573,15 @@ describe("dispatch canonical task identity: scheduler", { timeout: 60_000 }, () 
       coalesceWindowMs: 0,
       reconcileIntervalMs: 0,
       onInvocationEvent: (event) => events.push(event),
+    });
+    // Capture the event-bus payloads for the terminal invocation and session
+    // lifecycle events — the paths the reviewer flagged as uncovered.
+    const busPayloads: Array<{ event_type: string; payload: Record<string, unknown> }> = [];
+    engine.eventBus.subscribe("invocation.*", (event) => {
+      busPayloads.push({ event_type: event.event_type, payload: event.payload });
+    });
+    engine.eventBus.subscribe("session.*", (event) => {
+      busPayloads.push({ event_type: event.event_type, payload: event.payload });
     });
     (engine as unknown as { running: boolean }).running = true;
 
@@ -533,11 +618,36 @@ describe("dispatch canonical task identity: scheduler", { timeout: 60_000 }, () 
     expect(spawned).toBe(true);
     await vi.waitFor(() => expect(runSpy).toHaveBeenCalled());
     await vi.waitFor(() => expect(events.some((e) => e.type === "started")).toBe(true));
+    await vi.waitFor(() => expect(events.some((e) => e.type === "completed")).toBe(true));
 
     const started = events.find((e) => e.type === "started");
     // Canonical full ULID is the identity field; the slug is display-only.
     expect(started?.task_id).toBe(taskUlid);
     expect(started?.task_ref).toBe("@task-session-payload");
+
+    // Terminal onInvocationEvent keeps identity and display ref separate too.
+    const completed = events.find((e) => e.type === "completed");
+    expect(completed?.task_id).toBe(taskUlid);
+    expect(completed?.task_ref).toBe("@task-session-payload");
+
+    // Terminal event-bus payload must carry canonical task_id AND preserve the
+    // display task_ref — the bug overwrote task_ref with the canonical ULID.
+    await vi.waitFor(() =>
+      expect(busPayloads.some((p) => p.event_type === "invocation.completed")).toBe(true),
+    );
+    const invCompleted = busPayloads.find((p) => p.event_type === "invocation.completed");
+    expect(invCompleted?.payload.task_id).toBe(taskUlid);
+    expect(invCompleted?.payload.task_ref).toBe("@task-session-payload");
+
+    // Session terminal event-bus payload must carry canonical task_id separately
+    // from the display task_ref — previously it set task_ref to the ULID and
+    // omitted task_id entirely.
+    await vi.waitFor(() =>
+      expect(busPayloads.some((p) => p.event_type === "session.ended")).toBe(true),
+    );
+    const sessionEnded = busPayloads.find((p) => p.event_type === "session.ended");
+    expect(sessionEnded?.payload.task_id).toBe(taskUlid);
+    expect(sessionEnded?.payload.task_ref).toBe("@task-session-payload");
 
     await engine.stop();
   });

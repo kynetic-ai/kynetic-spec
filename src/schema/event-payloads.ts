@@ -65,7 +65,13 @@ export const InvocationStartedPayloadSchema = z.object({
   agent_id: z.string(),
   /** The dispatch event that triggered this invocation */
   trigger: z.string(),
-  /** Task reference when the invocation is task-scoped */
+  /**
+   * Canonical full task ULID — the authoritative task identity. Downstream
+   * dispatch consumers key identity off this, never the display ref.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  task_id: z.string().nullable().optional(),
+  /** Display task ref for human-readable surfaces only; never an identity key. */
   task_ref: z.string().nullable().optional(),
   /**
    * Adapter id requested by the agent (or the override that was applied).
@@ -99,7 +105,13 @@ export const InvocationTerminalPayloadSchema = z.object({
   agent_id: z.string(),
   /** The dispatch event that triggered this invocation */
   trigger: z.string(),
-  /** Task reference when the invocation is task-scoped */
+  /**
+   * Canonical full task ULID — the authoritative task identity. Downstream
+   * dispatch consumers key identity off this, never the display ref.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  task_id: z.string().nullable().optional(),
+  /** Display task ref for human-readable surfaces only; never an identity key. */
   task_ref: z.string().nullable().optional(),
   /** Duration of the invocation in milliseconds */
   duration_ms: z.number().nonnegative(),
@@ -173,7 +185,14 @@ export const SessionEventPayloadSchema = z.object({
   session_id: z.string(),
   /** The agent definition that ran the session */
   agent_id: z.string(),
-  /** Task reference if the session was task-scoped */
+  /**
+   * Canonical full task ULID — the authoritative task identity when the
+   * session is task-scoped. Consumers key identity off this, never the
+   * display ref.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  task_id: z.string().nullable().optional(),
+  /** Display task ref for human-readable surfaces only; never an identity key. */
   task_ref: z.string().nullable().optional(),
   /** Duration of the session in milliseconds */
   duration_ms: z.number().nonnegative(),

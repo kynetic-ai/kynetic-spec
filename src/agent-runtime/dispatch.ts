@@ -3314,10 +3314,14 @@ export class DispatchEngine {
             // AC: @multi-turn-session-lifecycle ac-14 — include turn_count in terminal payload
             // AC: @dispatch-event-payload ac-2 — adapter_id, resolved_adapter, runner
             // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+            // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+            // The spread carries the canonical task_id (identity); keep the
+            // display task_ref separate rather than overwriting it with the ULID.
             const terminalPayload: Record<string, unknown> = {
               ...terminalEvent,
               trigger: STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready",
-              task_ref: terminalEvent.task_id ?? undefined,
+              task_id: terminalEvent.task_id ?? undefined,
+              task_ref: terminalEvent.task_ref ?? undefined,
               duration_ms: invocationResult?.durationMs ?? Date.now() - trackingRecord.startedAtMs,
               turn_count: invocationResult?.turnCount ?? 1,
               adapter_id: agent.adapter ?? adapterId,
@@ -3488,10 +3492,15 @@ export class DispatchEngine {
     }
 
     // AC: @dispatch-event-payload ac-3 — session payload fields
+    // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+    // Carry the canonical full task ULID (task_id) separately from the
+    // human-readable display ref (task_ref) so downstream consumers key
+    // identity off task_id rather than the display alias.
     const payload: Record<string, unknown> = {
       session_id: terminalEvent.session_id,
       agent_id: terminalEvent.agent_id,
-      task_ref: terminalEvent.task_id ?? undefined,
+      task_id: terminalEvent.task_id ?? undefined,
+      task_ref: terminalEvent.task_ref ?? undefined,
       duration_ms: durationMs,
       terminal_reason: terminalReason,
       work_summary: workSummary,

@@ -256,6 +256,9 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "agent_id",
     "trigger",
     "duration_ms",
+    // Canonical full task ULID identity, separate from the display task_ref.
+    // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+    "task_id",
     "task_ref",
     "outcome",
     // Runner-resolved invocation contract fields exposed to template variables.
@@ -268,6 +271,9 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
   session: new Set([
     "session_id",
     "agent_id",
+    // Canonical full task ULID identity, separate from the display task_ref.
+    // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+    "task_id",
     "task_ref",
     "duration_ms",
     "terminal_reason",

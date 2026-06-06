@@ -1729,13 +1729,33 @@ async function loadWorkspaceRecordForWorktreeRoot(
   // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
   // Match records by canonical task ULID so a record persisted under one alias
   // is reused when provisioning refers to the task by a different alias.
-  return records
-    .filter(
-      (record) =>
-        recordMatchesTask(record, taskRef, queryCanonicalId, resolver) &&
-        workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot),
-    )
-    .toSorted((a, b) => (a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1))[0];
+  const matches = records.filter(
+    (record) =>
+      recordMatchesTask(record, taskRef, queryCanonicalId, resolver) &&
+      workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot),
+  );
+
+  // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+  // Reject — never silently collapse — more than one non-closed record for the
+  // same canonical task. Two open alias records (e.g. @slug and @<ULID>) for one
+  // task are an ambiguous reuse target; returning the newest would fork identity
+  // and risk duplicate provisioning. Surface it for operator recovery instead.
+  const openMatches = matches.filter((record) => record.lifecycle_state !== "closed");
+  if (openMatches.length > 1) {
+    const canonicalLabel =
+      queryCanonicalId ?? recordCanonicalId(openMatches[0], resolver) ?? taskRef;
+    const detail = openMatches
+      .map((record) => `${record.workspace_id} (task_ref ${record.task_ref})`)
+      .join(", ");
+    throw new DispatchWorkspaceError(
+      `Multiple non-closed dispatch workspace records resolve to canonical task ${canonicalLabel}: ${detail}.`,
+      "Close or remove the duplicate alias records so a single non-closed workspace remains for this task before retrying.",
+    );
+  }
+
+  return matches.toSorted((a, b) =>
+    a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1,
+  )[0];
 }
 
 async function loadForeignOpenWorkspaceRecord(
@@ -2956,8 +2976,13 @@ export function isWorkspaceRecordDirty(
     health: DispatchWorkspaceHealthState;
     cleanup: RegistryCleanupState;
     integration: RegistryIntegrationRecord;
+    task_id?: string | undefined;
   },
 ): boolean {
+  // AC: @dispatch-canonical-task-identity ac-historical-workspace-records-normalize-or-stale
+  // Backfilling a canonical task_id onto a historical record is a meaningful change.
+  if (computed.task_id !== undefined && (existing.task_id ?? undefined) !== computed.task_id)
+    return true;
   if (existing.canonical_branch_head !== computed.canonical_branch_head) return true;
   if (existing.lifecycle_state !== computed.lifecycle_state) return true;
   if ((existing.active_role ?? null) !== (computed.active_role ?? null)) return true;
@@ -3015,12 +3040,16 @@ async function workspacePhysicalArtifactsAbsent(
 
 export async function reconcileDispatchWorkspaceRegistry(
   projectDir: string,
+  // Keyed by canonical task ref `@<task-ulid>` (the DispatchEngine builds it
+  // from `@${task._ulid}`), NOT by arbitrary display refs.
   taskStatusByRef?: Map<string, ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"]>,
+  // Keyed by bare canonical task ULID `<task-ulid>` (from _activeRoleByTaskId()).
   activeRoleByTaskRef?: Map<string, RegistryRole>,
 ): Promise<void> {
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   const ctx = await initContext(projectDir);
   const records = await loadDispatchWorkspaceRegistry(ctx);
+  const resolver = await buildProjectTaskResolver(ctx);
   const nonClosedRecords = records.filter(
     (r) =>
       r.lifecycle_state !== "closed" &&
@@ -3028,13 +3057,49 @@ export async function reconcileDispatchWorkspaceRegistry(
   );
   if (nonClosedRecords.length === 0) return;
 
+  // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+  // AC: @dispatch-canonical-task-identity ac-alias-canonicalization-diagnostics
+  // Report (do not silently collapse) more than one non-closed record that
+  // resolves to the same canonical task identity. Such records — typically
+  // historical aliases (@slug vs @<ULID>) of the same task — are excluded from
+  // task_id backfill so the conflict surfaces for operator recovery rather than
+  // being masked by a partial normalization.
+  const canonicalToWorkspaceIds = new Map<string, string[]>();
+  for (const record of nonClosedRecords) {
+    const canonicalId = recordCanonicalId(record, resolver);
+    if (!canonicalId) continue;
+    const existing = canonicalToWorkspaceIds.get(canonicalId) ?? [];
+    existing.push(record.workspace_id);
+    canonicalToWorkspaceIds.set(canonicalId, existing);
+  }
+  const conflictingCanonicalIds = new Set<string>();
+  for (const [canonicalId, workspaceIds] of canonicalToWorkspaceIds) {
+    if (workspaceIds.length > 1) {
+      conflictingCanonicalIds.add(canonicalId);
+      console.warn(
+        `[dispatch] Multiple non-closed dispatch workspace records resolve to canonical task ${canonicalId}: ${workspaceIds.join(", ")}. ` +
+          `Close or remove the duplicate alias records (kspec agent dispatch status) before reuse; the registry will not normalize their identity while the conflict persists.`,
+      );
+    }
+  }
+
   // AC: @scoped-dispatch-shadow-serialization ac-9 — yield the lock between
   // individual record evaluations so concurrent CLI mutations can interleave.
   // Evaluate all records without the lock (read-only), then acquire the lock
   // only for each dirty record's save + commit cycle.
   for (const record of nonClosedRecords) {
     const now = new Date().toISOString();
-    const currentTaskStatus = taskStatusByRef?.get(record.task_ref) ?? null;
+    // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+    // Look up task status/active role by canonical task identity. The supplied
+    // maps are keyed by canonical ULID, so a record persisted under a slug
+    // display ref must be resolved to its canonical id to hit them. Fall back to
+    // the raw task_ref only when the record cannot be canonicalized (degraded
+    // mode without a task index).
+    const recordCanonical = recordCanonicalId(record, resolver);
+    const currentTaskStatus =
+      (recordCanonical ? taskStatusByRef?.get(`@${recordCanonical}`) : undefined) ??
+      taskStatusByRef?.get(record.task_ref) ??
+      null;
     const health = await reconcileWorkspaceHealth(projectDir, record, now, currentTaskStatus);
     const canonicalBranchHead = (await refExists(
       projectDir,
@@ -3071,7 +3136,15 @@ export async function reconcileDispatchWorkspaceRegistry(
       }
     }
 
-    const activeRole = activeRoleByTaskRef?.get(record.task_ref) ?? null;
+    // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+    // Active role is keyed by the bare canonical task ULID (see
+    // DispatchEngine._activeRoleByTaskId). Resolve the record's canonical id to
+    // hit it even when the record's display ref is a slug. Fall back to the raw
+    // task_ref only when the record cannot be canonicalized (degraded mode).
+    const activeRole =
+      (recordCanonical ? activeRoleByTaskRef?.get(recordCanonical) : undefined) ??
+      activeRoleByTaskRef?.get(record.task_ref) ??
+      null;
     const lifecycleState = resolveLifecycleState(
       currentTaskStatus,
       health,
@@ -3079,6 +3152,16 @@ export async function reconcileDispatchWorkspaceRegistry(
       cleanup,
       activeRole,
     );
+
+    // AC: @dispatch-canonical-task-identity ac-historical-workspace-records-normalize-or-stale
+    // Backfill a stable canonical task_id onto resolvable historical records so
+    // their identity is recorded separately from the display task_ref. Records
+    // whose canonical id is in conflict (multiple non-closed aliases) are left
+    // untouched so the conflict is reported rather than masked.
+    const backfilledTaskId =
+      !record.task_id && recordCanonical && !conflictingCanonicalIds.has(recordCanonical)
+        ? recordCanonical
+        : undefined;
 
     // AC: @dispatch-workspace-registry ac-10 — skip save when no meaningful
     // field has changed. Timestamps must not change unless a real field differs.
@@ -3089,6 +3172,7 @@ export async function reconcileDispatchWorkspaceRegistry(
       health,
       cleanup,
       integration,
+      task_id: backfilledTaskId,
     });
 
     if (dirty) {
@@ -3102,6 +3186,7 @@ export async function reconcileDispatchWorkspaceRegistry(
       await withDispatchShadowMutationLock(projectDir, record.task_ref, async () => {
         await saveWorkspaceRecordToRegistry(projectDir, {
           ...record,
+          ...(backfilledTaskId ? { task_id: backfilledTaskId } : {}),
           canonical_branch_head: canonicalBranchHead,
           lifecycle_state: lifecycleState,
           active_role: activeRole,

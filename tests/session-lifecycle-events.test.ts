@@ -60,7 +60,10 @@ function emitSessionLifecycleEvent(
     type: "completed" | "failed";
     session_id: string;
     agent_id: string;
+    // Canonical full task ULID (identity) — kept separate from the display ref.
     task_id: string | undefined;
+    // Display task ref (slug or @ULID) for human-readable surfaces only.
+    task_ref?: string;
     task_title: string | null;
     status: string;
     timestamp: number;
@@ -118,10 +121,14 @@ function emitSessionLifecycleEvent(
     }
   }
 
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  // Mirror production: canonical task_id is the identity field; task_ref is the
+  // display alias. They are NOT collapsed into one another.
   const payload: Record<string, unknown> = {
     session_id: terminalEvent.session_id,
     agent_id: terminalEvent.agent_id,
-    task_ref: terminalEvent.task_id ?? undefined,
+    task_id: terminalEvent.task_id ?? undefined,
+    task_ref: terminalEvent.task_ref ?? undefined,
     duration_ms: durationMs,
     terminal_reason: terminalReason,
     work_summary: workSummary,
@@ -360,7 +367,8 @@ describe("ac-3: session event payload contract", () => {
   });
 
   // AC: @dispatch-event-payload ac-3
-  it("should include session_id, agent_id, task_ref, duration_ms, terminal_reason in payload", async () => {
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  it("should include session_id, agent_id, canonical task_id, display task_ref, duration_ms, terminal_reason in payload", async () => {
     const result = buildInvocationResult({
       outcome: "success",
       durationMs: 45000,
@@ -372,7 +380,9 @@ describe("ac-3: session event payload contract", () => {
         type: "completed",
         session_id: "PAYLOAD_SESSION_001",
         agent_id: "task-worker",
-        task_id: "@task-payload",
+        // Canonical identity (full ULID) is distinct from the display slug ref.
+        task_id: "01HZPAYLOAD0000000000000AA",
+        task_ref: "@task-payload",
         task_title: "Payload test",
         status: "completed",
         timestamp: Date.now(),
@@ -386,6 +396,8 @@ describe("ac-3: session event payload contract", () => {
     const payload = received[0].payload;
     expect(payload.session_id).toBe("PAYLOAD_SESSION_001");
     expect(payload.agent_id).toBe("task-worker");
+    // Identity and display ref are carried as separate fields.
+    expect(payload.task_id).toBe("01HZPAYLOAD0000000000000AA");
     expect(payload.task_ref).toBe("@task-payload");
     expect(payload.duration_ms).toBe(45000);
     expect(payload.terminal_reason).toBe("completed");
@@ -434,7 +446,8 @@ describe("ac-3: session event payload contract", () => {
   });
 
   // AC: @dispatch-event-payload ac-3
-  it("should omit task_ref when invocation is not task-scoped", async () => {
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  it("should omit both task_id and task_ref when invocation is not task-scoped", async () => {
     const result = buildInvocationResult({ outcome: "success", durationMs: 10000 });
 
     emitSessionLifecycleEvent(
@@ -444,6 +457,7 @@ describe("ac-3: session event payload contract", () => {
         session_id: "UNBOUND_SESSION",
         agent_id: "task-worker",
         task_id: undefined,
+        task_ref: undefined,
         task_title: null,
         status: "completed",
         timestamp: Date.now(),
@@ -455,6 +469,7 @@ describe("ac-3: session event payload contract", () => {
     await new Promise((r) => setTimeout(r, 10));
 
     const payload = received[0].payload;
+    expect(payload.task_id).toBeUndefined();
     expect(payload.task_ref).toBeUndefined();
   });
 
@@ -520,6 +535,8 @@ describe("session event payload field registries", () => {
     expect(fields).toBeDefined();
     expect(fields).toContain("session_id");
     expect(fields).toContain("agent_id");
+    // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+    expect(fields).toContain("task_id");
     expect(fields).toContain("task_ref");
     expect(fields).toContain("duration_ms");
     expect(fields).toContain("terminal_reason");
@@ -532,6 +549,7 @@ describe("session event payload field registries", () => {
     expect(fields).toBeDefined();
     expect(fields).toContain("session_id");
     expect(fields).toContain("agent_id");
+    expect(fields).toContain("task_id");
     expect(fields).toContain("task_ref");
     expect(fields).toContain("duration_ms");
     expect(fields).toContain("terminal_reason");
@@ -544,6 +562,7 @@ describe("session event payload field registries", () => {
     expect(fields).toBeDefined();
     expect(fields).toContain("session_id");
     expect(fields).toContain("agent_id");
+    expect(fields).toContain("task_id");
     expect(fields).toContain("task_ref");
     expect(fields).toContain("duration_ms");
     expect(fields).toContain("terminal_reason");
@@ -557,6 +576,8 @@ describe("session event payload field registries", () => {
     // Terminal session event fields
     expect(sessionFields.has("session_id")).toBe(true);
     expect(sessionFields.has("agent_id")).toBe(true);
+    // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+    expect(sessionFields.has("task_id")).toBe(true);
     expect(sessionFields.has("task_ref")).toBe(true);
     expect(sessionFields.has("duration_ms")).toBe(true);
     expect(sessionFields.has("terminal_reason")).toBe(true);
