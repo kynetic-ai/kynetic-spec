@@ -73,3 +73,44 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-06T05:04:57.185Z
+  - _ulid: 01KTDPTA03TYA0BX8PPKXW35BT
+    content: >-
+      Fix cycle 1: addressed the review blocker (command-less non-generic adapter could resolve
+      runner-backed without a typed failure).
+
+
+      What changed (commit 0c9772d7e5):
+
+      - AgentAdapter is now a discriminated union: CommandAdapter (required command,
+      requiresProcessExecutable?: false) | ProcessExecutableAdapter (no command,
+      requiresProcessExecutable: true). Re-encodes the task invariant that non-generic adapters keep
+      a required command at the type level — a command-less non-generic registerAdapter call is now
+      a compile error.
+
+      - Runtime enforcement for dynamically-constructed adapters (the reviewer cast-based probe):
+      buildRunnerContract throws invalid_adapter with details { runner, adapter, missing_field:
+      'command' } when the effective adapter has no command and no runner process.executable;
+      buildImplicitContract throws the same (no runner field) on the direct agent.adapter and
+      --adapter override paths. The generic-acp missing_process_executable check is unchanged and
+      still takes precedence for that adapter.
+
+      - Added withResolvedCommand helper so the runner-executable override produces a sound
+      CommandAdapter without unsafe union spreads.
+
+      - Exported CommandAdapter / ProcessExecutableAdapter from src/agents.
+
+      - Added 4 resolver regression tests (runner-backed reject, implicit reject, override reject,
+      runner-executable-supplies-command success).
+
+
+      Re-verified all spec ACs; generic-acp registry shape, runner executable resolution, empty
+      extraArgs, missing_process_executable diagnostics, direct/override rejection, and neutral
+      skill formatting still covered and passing.
+
+
+      Gates: typecheck OK; format:check OK; repo lint 0 errors; focused oxlint 0 warnings; targeted
+      suites pass; full npm test green (10249 passed, 5 skipped); kspec validate
+      refs/alignment/completeness/schema pass (pre-existing warnings only).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T05:34:42.691Z
