@@ -20866,6 +20866,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-06T09:01:08.526Z
+  - _ulid: 01KTE3Q9XX7S6D8H53K75Y90JM
+    type: friction
+    content: During review of @01KTDPVY9VEE3E3WGJFMYMGRHH, AC-tagged dispatch integration tests mocked
+      runInvocation and proved event-bus payloads but not real persisted SessionMetadata/event
+      history. This made a canonical-task-id regression visible only by manually tracing into
+      src/agent-runtime/invocation.ts. Future reviews of dispatch identity changes should verify
+      real persistence boundaries when tests mock the invocation runner.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KTE3MN"
+    created_at: 2026-06-06T09:20:15.805Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
