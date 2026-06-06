@@ -17697,11 +17697,11 @@ workspaces:
     canonical_branch: dispatch/task/task-canonicalize-project-invocation-task-identity/01ktfb19
     canonical_branch_head: 8d1c789e0d848c904449c56d165e648f656e4b1b
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-06T22:41:47.281Z
+      updated_at: 2026-06-06T22:44:48.731Z
     health:
       status: healthy
       issues: []
@@ -17715,16 +17715,16 @@ workspaces:
       target_branch: dev
       target_commit: 14bc103395dc68abdafa5ce00e41cdc8b449a997
       updated_at: 2026-06-06T22:41:47.281Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_ref: "@01KTFB19ZQDA8YK3GJYWF08TS1"
     task_slug: task-canonicalize-project-invocation-task-identity
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-06T22:44:48.731Z
       last_active_at: 2026-06-06T22:24:19.133Z
       last_reconciled_at: 2026-06-06T22:43:56.010Z
       created_at: 2026-06-06T20:47:53.351Z
-      updated_at: 2026-06-06T22:43:56.010Z
+      updated_at: 2026-06-06T22:44:48.731Z
     workspace_id: dispatch-workspace-01KTFB19ZQDA8YK3GJYWF08TS1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
