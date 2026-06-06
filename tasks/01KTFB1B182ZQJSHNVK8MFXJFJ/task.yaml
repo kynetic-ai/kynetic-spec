@@ -1,0 +1,127 @@
+_ulid: 01KTFB1B182ZQJSHNVK8MFXJFJ
+slugs:
+  - task-canonicalize-workspace-identity-lookups
+title: Canonicalize workspace target and registry lookup boundaries
+type: task
+description: >-
+  Eliminate remaining alias-sensitive workspace lookup boundaries so lifecycle, cleanup, and
+  reusable registry lookup paths compare canonical task ULIDs instead of raw task_ref strings.
+
+
+  Covers:
+
+  - @dispatch-canonical-task-identity ac-workspace-target-lookup-canonicalizes-historical-aliases
+
+  - @dispatch-canonical-task-identity ac-workspace-lookup-apis-use-canonical-identity
+
+  - @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+
+  - @dispatch-canonical-task-identity ac-historical-workspace-records-normalize-or-stale
+
+  - @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases
+
+  - @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+
+  - @dispatch-workspace-registry ac-2
+
+  - @dispatch-workspace-registry ac-4
+
+  - @dispatch-workspace-registry ac-5
+
+  - @dispatch-workspace-registry ac-13
+
+
+  Scope:
+
+  - Update the dispatch workspace target lookup used during cleanup/lifecycle reconciliation so it
+  resolves stored registry records by canonical task ULID, including historical records whose
+  `task_ref` is a slug/full-ULID/prefix alias and whose `task_id` is absent.
+
+  - Reuse or extract the existing canonical workspace resolver helpers instead of adding another raw
+  string comparison path.
+
+  - Add a canonical-safe workspace lookup API for task-scoped callers, or change
+  `findDispatchWorkspaceByTaskRef()` so production callers cannot accidentally perform exact raw-ref
+  identity lookup. If a raw helper remains, rename/deprecate it and restrict usage to tests or
+  explicit degraded fallback cases.
+
+  - Migrate tests/helpers/imports that use exact raw task_ref lookup where they are modeling
+  production behavior; test-only record selection may remain raw only when the test is intentionally
+  inspecting the display field.
+
+  - Preserve degraded-mode fallback behavior for records/queries that cannot be resolved on either
+  side; do not delete historical workspace records as part of this task unless an existing cleanup
+  path already classifies them cleanup-eligible.
+
+
+  Required tests:
+
+  - Add dispatch lifecycle/cleanup coverage where a non-closed registry record has `task_ref:
+  @old-slug`, no `task_id`, and resolves to the canonical task;
+  `_loadWorkspaceTargetForTask`-equivalent behavior must return the existing integration target
+  branch when queried by canonical ULID.
+
+  - Add coverage proving full ULID ref, slug ref, and unique prefix ref queries all find the same
+  non-closed workspace record and do not fork workspace id, branch lineage, worktree path, or target
+  branch.
+
+  - Add coverage proving multiple non-closed records resolving to the same canonical task are
+  rejected/reported rather than silently selecting by display ref.
+
+  - Add coverage proving raw exact-match fallback only applies when both query and record are
+  unresolvable.
+
+  - Add a source-level or behavioral guard ensuring production code does not import/use an exact
+  raw-ref workspace lookup for task identity decisions.
+
+
+  Verification gates:
+
+  - npm run format:check
+
+  - npm run lint -- --quiet
+
+  - npm run typecheck
+
+  - npm test -- tests/dispatch-workspace-cleanup.test.ts
+  tests/dispatch-workspace-cleanup-completion.test.ts
+  tests/dispatch-workspace-branch-provenance.test.ts
+  tests/dispatch-workspace-adopted-branch-cleanup.test.ts
+  tests/dispatch-canonical-task-identity-integration.test.ts
+
+  - npm test -- tests/dispatch-target-sync.test.ts tests/agent-dispatch-engine.test.ts if touched or
+  if target reconciliation behavior changes
+
+  - KSPEC_NO_DAEMON=1 kspec validate --warnings-ok
+
+
+  Out of scope:
+
+  - Do not restart or stop the live daemon.
+
+  - Do not perform unrelated workspace cleanup.
+
+  - Do not remove slug/display refs from registry records when they are used only for human-readable
+  display.
+
+  - Do not change branch naming or workspace id generation except where required to keep canonical
+  ULID identity stable across aliases.
+spec_ref: "@dispatch-canonical-task-identity"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - identity
+  - workspaces
+  - cleanup
+  - registry
+  - regression
+vcs_refs: []
+created_at: 2026-06-06T20:47:19.080Z
+todos: []
+automation: eligible

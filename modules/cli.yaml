@@ -10442,6 +10442,9 @@ features:
           - "@dispatch-event-payload"
           - "@reference-system"
           - "@slug-resolution"
+          - "@dispatch-agent-action-input"
+          - "@automation-action-type-completeness"
+          - "@multi-turn-session-lifecycle"
         tests: []
         traits: []
         acceptance_criteria:
@@ -10570,6 +10573,52 @@ features:
               rejection, or preservation reason.
             when: |
               Diagnostics or status output identify the decision
+          - given: An automation agent action from a schedule, hook, or composition join is task-bound by
+              explicit action task_ref or by a triggering event task_ref/task_id, and that task
+              identifier is a slug ref, full task ULID ref, unique task ULID prefix ref, or task_id
+              plus display task_ref pair
+            id: ac-automation-agent-actions-canonicalize-task-binding
+            then: The spawner resolves the task binding before session creation, passes the canonical full task
+              ULID as the invocation task_id, retains the chosen human-readable task ref only as
+              task_ref/display metadata, and rejects unresolved, ambiguous, or mismatched task
+              bindings with an action-run failure before creating a session or invocation payload
+              for the raw ref. An explicit action task_ref is the authoritative task binding when
+              present; event task_id/task_ref fields are used for task identity only when
+              task_binding derives the task from the event.
+            when: The daemon automation spawner creates the downstream agent invocation
+          - given: A project-context caller starts a task-scoped invocation through the invocation runtime,
+              including dispatch scheduler spawns, one-shot CLI agent runs, daemon automation agent
+              actions, retry/fix-cycle spawns, or tests that model those production paths
+            id: ac-project-invocation-callers-supply-canonical-task-id
+            then: The persisted and emitted task_id is the resolved full task ULID, the task_ref field is the
+              display ref when one is available, and callers that cannot resolve a provided task ref
+              do not create a task-scoped session whose task_id is the unresolved slug or raw ref.
+              Legacy sessions that already stored a raw ref may still be read through compatibility
+              filters, but new project-context task-bound sessions must not be written with raw refs
+              as task_id.
+            when: The invocation runtime persists session metadata or emits invocation/session lifecycle events
+              for that task-scoped invocation
+          - given: Lifecycle reconciliation or cleanup needs the integration target branch for a task, and a
+              non-closed workspace registry record for that task exists with either task_id set to
+              the full ULID or only a historical task_ref that resolves to the same task through a
+              slug, full ULID ref, or unique ULID-prefix ref
+            id: ac-workspace-target-lookup-canonicalizes-historical-aliases
+            then: The dispatcher selects the record by canonical task identity and returns the existing target
+              branch independently of which valid alias is supplied; it must not miss the record,
+              fall back to a different target, or create conflicting lifecycle state solely because
+              the persisted display ref differs from the current canonical ref.
+            when: The dispatcher loads the workspace target branch for that task during cleanup, integration,
+              reconciliation, or terminal-state processing
+          - given: Dispatch runtime, cleanup, reconciliation, review/fix-cycle recovery, or CLI/operator
+              workspace status code looks up workspace records for a task identifier
+            id: ac-workspace-lookup-apis-use-canonical-identity
+            then: The lookup compares the resolved full task ULID rather than exact raw task_ref strings, treats
+              exact raw-ref equality only as a degraded fallback when neither side can be resolved,
+              and exposes any raw task-ref-only helper as test-only/deprecated or replaces it with a
+              canonical-safe API so production callers cannot reintroduce alias-sensitive workspace
+              lookup.
+            when: The query identifier or stored record contains task_id, task_ref, slug ref, full ULID ref, or
+              unique ULID-prefix ref data that can be resolved to a task
         tags:
           - dispatch
           - identity

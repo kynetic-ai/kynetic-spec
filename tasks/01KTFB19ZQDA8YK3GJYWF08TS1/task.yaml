@@ -1,0 +1,145 @@
+_ulid: 01KTFB19ZQDA8YK3GJYWF08TS1
+slugs:
+  - task-canonicalize-project-invocation-task-identity
+title: Canonicalize project-context invocation task identity boundaries
+type: task
+description: >-
+  Implement canonical task identity for every new project-context task-scoped invocation, including
+  automation agent actions, CLI one-shot agent runs, and dispatch retry/fix-cycle modeled callers.
+
+
+  Covers:
+
+  - @dispatch-canonical-task-identity ac-automation-agent-actions-canonicalize-task-binding
+
+  - @dispatch-canonical-task-identity ac-project-invocation-callers-supply-canonical-task-id
+
+  - @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+
+  - @dispatch-agent-action-input ac-3
+
+  - @automation-action-type-completeness ac-1
+
+  - @automation-action-type-completeness ac-2
+
+  - @automation-action-type-completeness ac-3
+
+
+  Scope:
+
+  - Update `ActionEventContext` / `AgentSpawner` plumbing as needed so task-bound agent actions can
+  carry both canonical task_id and display task_ref when the triggering event provides them.
+
+  - Define and implement automation task-binding precedence exactly: explicit `action.task_ref` is
+  the authoritative task binding and display ref when present; event task_id/task_ref fields are
+  ignored for identity in that case. If `action.task_ref` is absent and `task_binding: true`, derive
+  identity from the event task_id/task_ref pair and reject the event-derived binding if those two
+  event fields are unresolved, ambiguous, or resolve to different tasks.
+
+  - Update `executeAgent()` so explicit action.task_ref still controls the task binding, but
+  event-derived task_binding preserves enough identity data for canonical resolution.
+
+  - Update `createAutomationAgentSpawner()` in `packages/daemon/src/routes/agent-dispatch.ts` so a
+  task-bound automation invocation resolves the task binding through the same canonical task
+  identity rules used by dispatch before calling `runInvocation()`.
+
+  - Update CLI one-shot `kspec agent run --task` behavior so a provided task ref must resolve to a
+  canonical full task ULID before `runInvocation()` creates a task-scoped session; do not silently
+  persist unresolved CLI task refs as `task_id`.
+
+  - Audit dispatch scheduler, retry, reviewer, and fix-cycle call sites that invoke
+  `runInvocation()` and verify they pass canonical `taskId`; add focused regression tests or
+  assertions where a missing taskId could regress.
+
+  - Add a guard in `runInvocation()` or its project-context callers so new task-bound
+  project-context sessions are not persisted with a raw ref/slug as `task_id`. Preserve read/filter
+  compatibility for historical sessions that already contain raw refs.
+
+  - Ensure `runInvocation()` receives `taskId: <full task ULID>` plus `taskRef: <display ref>` for
+  resolved task-bound automation and CLI invocations.
+
+  - Reject unresolved, ambiguous, or mismatched task bindings before session creation; include
+  provided task_id/task_ref and the resolution reason in the error.
+
+  - Keep non-task-scoped automation agent actions and non-task CLI agent runs working unchanged.
+
+  - Preserve existing prompt interpolation behavior: templates may still display `{{task_ref}}`, and
+  display refs are not removed from prompts/logs/status.
+
+
+  Required tests:
+
+  - Add or update `tests/agent-action-input.test.ts` coverage proving task_binding derives/preserves
+  task_id plus task_ref from an event, while explicit action.task_ref is authoritative even when the
+  triggering event references a different task.
+
+  - Add rejection coverage for event-derived task_binding where event task_id and event task_ref
+  resolve to different tasks.
+
+  - Add daemon/automation spawner coverage proving an automation agent action triggered with a slug
+  ref creates a session with `task_id` equal to the full task ULID and `task_ref` equal to the
+  display slug.
+
+  - Add coverage for task_id-only event binding using default display `@<task_id>`.
+
+  - Add rejection coverage for unresolved refs and task_id/task_ref mismatch proving no session
+  directory or invocation lifecycle payload is created for the raw ref.
+
+  - Add CLI one-shot coverage proving `kspec agent run --task @slug` writes canonical full ULID
+  task_id plus display task_ref, and unresolved `--task` fails before creating a task-scoped
+  session.
+
+  - Add a regression test or source guard proving production project-context `runInvocation()`
+  callers pass canonical `taskId` for task-bound invocations; legacy session read/filter tests must
+  continue to pass.
+
+  - Keep existing schedule, hook, join, dispatch scheduler, and invocation lifecycle tests passing.
+
+
+  Verification gates:
+
+  - npm run format:check
+
+  - npm run lint -- --quiet
+
+  - npm run typecheck
+
+  - npm test -- tests/agent-action-input.test.ts tests/agent-invocation-lifecycle.test.ts
+  tests/cli-agent-commands.test.ts
+
+  - npm test -- packages/daemon/src/routes/agent-dispatch*.test.ts tests/hook-executor.test.ts
+  tests/schedule-engine.test.ts tests/join-accumulator.test.ts tests/agent-dispatch-engine.test.ts
+  if those files/suites exist
+
+  - KSPEC_NO_DAEMON=1 kspec validate --warnings-ok
+
+
+  Out of scope:
+
+  - Do not restart or stop the live daemon.
+
+  - Do not change task slug resolution semantics outside task identity normalization.
+
+  - Do not remove display refs from prompts, operator logs, status text, or CLI-facing text.
+
+  - Do not change runner/adapter behavior except for passing canonical task identity metadata into
+  invocation/session payloads.
+spec_ref: "@dispatch-canonical-task-identity"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - identity
+  - automation
+  - sessions
+  - cli
+  - regression
+vcs_refs: []
+created_at: 2026-06-06T20:47:18.007Z
+todos: []
+automation: eligible
