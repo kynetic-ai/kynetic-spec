@@ -45,6 +45,17 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-06T22:31:35.038Z
     completed_at: 2026-06-06T22:31:35.038Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0. Existing alignment warning
+      baseline preserved."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T22:31:50.779Z
+    completed_at: 2026-06-06T22:31:50.779Z
 events:
   - _ulid: 01KTFG86XAX2DQNDHH0WGKD63F
     actor: Jacob Chapel
@@ -87,6 +98,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-06T22:31:35.284Z
+  - _ulid: 01KTFH0R02WGFJH45FG9VQX8AR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-06T22:31:51.042Z
 examined_commit: cc7fb4e3cc613e478e2ddebbba176c6d0510416e
 external_links: []
 lifecycle_state: open
@@ -99,5 +117,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-06T22:18:27.114Z
-updated_at: 2026-06-06T22:31:35.038Z
+updated_at: 2026-06-06T22:31:50.779Z
 notes: []
