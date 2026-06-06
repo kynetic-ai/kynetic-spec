@@ -187,6 +187,20 @@ events:
       kind: blocker
       thread_ulid: 01KTE07YJ2FYJ808WH16F3E56E
     timestamp: 2026-06-06T08:19:27.126Z
+  - _ulid: 01KTE08ABJDW7H4171NR3ZSRAH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTE08A4JVE220KTP926AWKP9
+    timestamp: 2026-06-06T08:19:38.994Z
+  - _ulid: 01KTE08MQNF9JAQNYMCS7EYDZ4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTE08MH82RGJDPH9PJE9J0YT
+    timestamp: 2026-06-06T08:19:49.621Z
 examined_commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
 external_links: []
 lifecycle_state: open
@@ -217,7 +231,49 @@ threads:
           the started onInvocationEvent payload, and the terminal event-bus path is not covered."
         created_at: 2026-06-06T08:19:26.914Z
     kind: blocker
+  - _ulid: 01KTE08A4JVE220KTP926AWKP9
+    anchor:
+      type: code
+      commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
+      line_end: 3494
+      line_start: 3490
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KTE08A4KSQEV2CY931EN8QY7
+        author: Jacob Chapel
+        body: "MUST-FIX: Session terminal lifecycle events still do not carry canonical task_id separately
+          from display task_ref. For task-scoped
+          session.ended/session.cancelled/session.idle_timeout events, this payload sets task_ref to
+          terminalEvent.task_id and omits task_id entirely. Event consumers cannot distinguish
+          identity from display ref, which violates @dispatch-canonical-task-identity
+          ac-session-and-event-payloads-separate-id-from-display-ref. Evidence:
+          src/schema/event-payloads.ts still models session payloads with task_ref only, and
+          tests/session-lifecycle-events.test.ts still asserts the old shape."
+        created_at: 2026-06-06T08:19:38.771Z
+    kind: blocker
+  - _ulid: 01KTE08MH82RGJDPH9PJE9J0YT
+    anchor:
+      type: code
+      commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
+      line_end: 3074
+      line_start: 3037
+      path: src/agent-runtime/workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KTE08MH93Q26H9Q7K3GF3GKH
+        author: Jacob Chapel
+        body: "MUST-FIX: Registry reconciliation still looks up task status and active role by
+          record.task_ref even though the caller now supplies canonical maps. DispatchEngine builds
+          taskStatusByRef from @<task._ulid>, and _activeRoleByTaskId returns bare canonical task
+          ULIDs. Historical/open workspace records persisted under a slug display ref therefore miss
+          both lookups, so completed or cancelled tasks may not be marked integrated/abandoned or
+          scheduled for cleanup during reconciliation, and active_role can be stale. This violates
+          @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity and the
+          cleanup/lifecycle guarantees that must use canonical identity."
+        created_at: 2026-06-06T08:19:49.417Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-06T08:01:36.343Z
-updated_at: 2026-06-06T08:19:26.914Z
+updated_at: 2026-06-06T08:19:49.417Z
 notes: []
