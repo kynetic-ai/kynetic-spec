@@ -10437,6 +10437,7 @@ features:
           - "@canonical-task-workspace-contract"
           - "@dispatch-scheduling-priority-model"
           - "@dispatch-event-payload"
+          - "@reference-system"
         tests: []
         traits: []
         acceptance_criteria:
