@@ -55,6 +55,17 @@ checks:
     runner: npm test
     created_at: 2026-06-06T10:23:56.338Z
     completed_at: 2026-06-06T10:23:56.338Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --schema --warnings-ok passed; schema OK, references OK;
+      warnings accepted by gate.
+    name: kspec validate schema
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T10:24:01.036Z
+    completed_at: 2026-06-06T10:24:01.036Z
 events:
   - _ulid: 01KTE6KW3NRC9JQHKCB8D67THG
     actor: Jacob Chapel
@@ -118,6 +129,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-06T10:23:56.574Z
+  - _ulid: 01KTE7C1Q70DHGTW6J08HY39HJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate schema
+    timestamp: 2026-06-06T10:24:01.255Z
 examined_commit: 026ad7653a9c194b8072f0ce2ae7fd6a58b8e7bc
 external_links: []
 lifecycle_state: open
@@ -179,5 +197,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-06T10:10:49.077Z
-updated_at: 2026-06-06T10:23:56.338Z
+updated_at: 2026-06-06T10:24:01.036Z
 notes: []
