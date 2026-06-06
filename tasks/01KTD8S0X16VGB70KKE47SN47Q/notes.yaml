@@ -4,3 +4,35 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-06T04:54:46.431Z
+  - _ulid: 01KTDN3NB2PYAB2C7Z9XEAHGEB
+    content: >-
+      Approach: TDD contract-test task using the repo's it.fails / FLIPPED-ON-FIX protocol (see
+      tests/lint-no-leaky-test-daemon.test.ts).
+
+
+      Seam choices (mirror the working review comparator reviewResourceBytesUrl, which reads
+      getSelectedProjectPath and appends ?kspec_dir=):
+
+      - Task markdown: new pure-ish util packages/web-ui/src/lib/utils/task-resource-links.ts
+      exporting rewriteTaskResourceLinks(markdown, resolvedResources, resourcesBaseUrl). Shipped as
+      a no-op STUB now; sibling task @generalize-live-ui-resource-markdown-rewriting implements it
+      and flips the it.fails tests to it. Rewrites ./resources/<path> -> task-scoped
+      <base>/<id>/bytes for present plan-owned AND materialized task-owned resolved resources;
+      leaves unmatched/drift/missing raw.
+
+      - Plan project-context: tested through existing buildPlanContentBlocks rendering seam; asserts
+      rewritten URL carries kspec_dir for a selected non-default project (it.fails until impl).
+
+      - Review project-context: passing comparator via existing reviewResourceBytesUrl (normal it).
+
+
+      Test files: tests/web-ui/task-resource-links.test.ts (task ACs) and
+      tests/web-ui/resource-url-project-context.test.ts (plan it.fails + review comparator it). Mock
+      project/mode/constants stores per tests/web-ui/review-resources-api.test.ts pattern.
+
+
+      Coverage: 9 ACs from task description. ac-unmatched-task-resource-reference-stays-raw is a
+      normal it (no-op already satisfies; guards regression post-impl).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T05:04:52.067Z
