@@ -184,7 +184,7 @@ tags:
   - runners
   - acp
 vcs_refs: []
-review_ref: "@01KTDM290J7CPPM5RK2A2SZW1W"
+review_ref: "@01KTDQ38SYZTP5PNMYTRWENS5F"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-generic-acp-process-adapter/01kt7y7r
@@ -348,6 +348,13 @@ history:
         previous: 2026-06-04T00:29:01.617Z
     command: task-submit
     timestamp: 2026-06-06T05:34:58.555Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTDQ38SYZTP5PNMYTRWENS5F"
+        previous: "@01KTDM290J7CPPM5RK2A2SZW1W"
+    command: review-link
+    timestamp: 2026-06-06T05:39:38.670Z
 prior_status: null
 created_at: 2026-06-03T23:48:57.289Z
 started_at: 2026-06-06T05:34:55.188Z
