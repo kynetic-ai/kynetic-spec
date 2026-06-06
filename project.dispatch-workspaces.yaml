@@ -16725,7 +16725,7 @@ workspaces:
         head: 044eccda44dc11c7360897665d1ea5d8e6462e84
         last_seen_at: 2026-06-06T04:45:22.198Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-generic-acp-process-adapter-01kt7y7r
-  - active_role: worker
+  - active_role: null
     base_branch_point: 45d6db87895211f041bd4e1c12be7cd620549178
     bootstrap:
       status: succeeded
@@ -17047,12 +17047,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-06T05:38:54.115Z
+      updated_at: 2026-06-06T06:39:22.881Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-06T05:39:18.171Z
+      updated_at: 2026-06-06T06:39:22.881Z
     integration:
       status: pending
       detail: null
@@ -17060,17 +17060,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 45d6db87895211f041bd4e1c12be7cd620549178
-      updated_at: 2026-06-06T05:38:54.115Z
-    lifecycle_state: active
+      updated_at: 2026-06-06T06:39:22.881Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KTDPVY9VEE3E3WGJFMYMGRHH"
     task_slug: task-canonicalize-dispatch-task-identity
     timestamps:
       closed_at: null
       last_active_at: 2026-06-06T05:39:18.171Z
-      last_reconciled_at: 2026-06-06T05:39:18.171Z
+      last_reconciled_at: 2026-06-06T06:39:22.881Z
       created_at: 2026-06-06T05:38:54.115Z
-      updated_at: 2026-06-06T05:39:18.171Z
+      updated_at: 2026-06-06T06:39:22.881Z
     workspace_id: dispatch-workspace-01KTDPVY9VEE3E3WGJFMYMGRHH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
