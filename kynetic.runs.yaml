@@ -60760,9 +60760,24 @@ runs:
     completed_at: 2026-06-06T10:28:02.466Z
   - _ulid: 01KTE9SSH9B7PNNT5WRKK887M5
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-06T11:06:28.777Z
+        completed_at: 2026-06-06T11:06:53.066Z
+        notes: "Reflection step 1 (What Worked Well): (a) Reading ALL review threads up front via review
+          --json and extracting full bodies before touching code — both blockers were understood
+          before any edit. (b) Establishing the existing canonical-id matching pattern
+          (_loadWorkspaceTargetForTask at dispatch.ts:4147 used 'entry.task_id === taskId ||
+          entry.task_ref === @<ulid>') and mirroring it for consistency. (c) Stashing my changes to
+          confirm a full-suite failure was caused by my edit vs pre-existing — this isolated the
+          degraded-state regression to the early-return reordering immediately."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-06T11:06:53.066Z
+        completed_at: 2026-06-06T11:06:53.066Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-06T11:06:28.777Z
