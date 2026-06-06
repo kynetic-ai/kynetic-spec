@@ -1767,7 +1767,8 @@ plans:
     slugs:
       - plan-resource-ui-hardening-plan
     title: Resource UI Hardening Plan
-    status: draft
+    status: approved
+    approved_at: 2026-06-06T01:28:56.478Z
     derived_specs: []
     derived_tasks: []
     module_ref: "@core"
