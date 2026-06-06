@@ -5,11 +5,11 @@ import * as path from "node:path";
 import * as YAML from "yaml";
 import { initContext } from "../src/parser/index.js";
 import {
-  findDispatchWorkspaceByTaskRef,
   getDispatchWorkspaceRegistryPath,
   loadDispatchWorkspaceRegistry,
   saveDispatchWorkspaceRecord,
 } from "../src/parser/dispatch-workspaces.js";
+import { findDispatchWorkspaceByCanonicalTask } from "../src/agent-runtime/workspace-identity.js";
 import {
   provisionDispatchWorkspace,
   reapDispatchWorkspace,
@@ -185,7 +185,7 @@ describe("dispatch workspace branch provenance", () => {
     // Manually set provenance to adopted to simulate an adopted branch
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     expect(existingRecord).toBeTruthy();
 
     const adoptedBranch = existingRecord!.canonical_branch;
@@ -406,7 +406,7 @@ describe("dispatch workspace branch provenance", () => {
     // Update record with adopted provenance including remote locator
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     const now = new Date().toISOString();
 
     await saveDispatchWorkspaceRecord(ctx, {
@@ -449,7 +449,7 @@ describe("dispatch workspace branch provenance", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     const now = new Date().toISOString();
 
     await saveDispatchWorkspaceRecord(ctx, {
@@ -533,7 +533,7 @@ describe("dispatch workspace branch provenance", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     const now = new Date().toISOString();
 
     await saveDispatchWorkspaceRecord(ctx, {
@@ -652,7 +652,7 @@ describe("dispatch workspace branch provenance", () => {
 
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef);
+    const existingRecord = await findDispatchWorkspaceByCanonicalTask(ctx, taskRef);
     const canonicalBranch = existingRecord!.canonical_branch;
     const now = new Date().toISOString();
 

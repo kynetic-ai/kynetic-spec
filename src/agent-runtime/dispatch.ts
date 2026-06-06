@@ -26,6 +26,10 @@ import {
   type LoadedAgent,
 } from "../parser/index.js";
 import { loadDispatchWorkspaceRegistry } from "../parser/dispatch-workspaces.js";
+import {
+  AmbiguousWorkspaceTaskError,
+  findDispatchWorkspaceByCanonicalTask,
+} from "./workspace-identity.js";
 import { findPlanByRef } from "../parser/plans.js";
 import { DEFAULT_IDLE_GRACE_MS, DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
 import { SessionRegistry } from "./session-registry.js";
@@ -1162,7 +1166,10 @@ export class DispatchEngine {
 
     const cleanupState = resolveCleanupStateForTaskChange(change);
     if (cleanupState) {
-      const cleanupTargetBranch = await this._loadWorkspaceTargetForTask(change.taskId);
+      const cleanupTargetBranch = await this._loadWorkspaceTargetForTask(
+        change.taskId,
+        change.taskRef,
+      );
       try {
         await this.shadowMutex.runExclusive(async () => {
           await reconcileDispatchWorkspaceLifecycle({
@@ -4178,18 +4185,46 @@ export class DispatchEngine {
     }
   }
 
-  private async _loadWorkspaceTargetForTask(taskId: string): Promise<string | null> {
-    const ctx = await initContext(this.projectDir);
-    const records = await loadDispatchWorkspaceRegistry(ctx);
-    // Match by canonical task identity so a record persisted under any display
-    // alias of this task is found. AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
-    const record = records
-      .filter(
-        (entry) =>
-          (entry.task_id === taskId || entry.task_ref === `@${taskId}`) &&
-          entry.lifecycle_state !== "closed",
-      )
-      .toSorted((a, b) => (a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1))[0];
-    return record?.integration.target_branch ?? null;
+  /**
+   * Load the integration target branch for a task's non-closed workspace record,
+   * matching by canonical task identity so a record persisted under any historical
+   * or display alias (slug, full ULID, or unique ULID prefix) is found — including
+   * legacy records that carry only a `task_ref` and no canonical `task_id`.
+   *
+   * Best-effort: returns null (and reports) rather than throwing so a lookup
+   * failure during cleanup/terminal-state processing never aborts the dispatch
+   * loop. An ambiguous duplicate is reported and treated as "no single target"
+   * rather than silently picking a record by its display ref.
+   *
+   * AC: @dispatch-canonical-task-identity ac-workspace-target-lookup-canonicalizes-historical-aliases
+   * AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+   * AC: @dispatch-canonical-task-identity ac-workspace-lookup-apis-use-canonical-identity
+   */
+  private async _loadWorkspaceTargetForTask(
+    taskId: string | undefined,
+    taskRef?: string | undefined,
+  ): Promise<string | null> {
+    // Prefer the canonical task id (already resolved during ingress); fall back
+    // to the display ref so a lenient pass that could not resolve the id still
+    // has an identifier the registry lookup can canonicalize.
+    const query = taskId ? `@${taskId}` : taskRef;
+    if (!query) return null;
+    try {
+      const ctx = await initContext(this.projectDir);
+      const record = await findDispatchWorkspaceByCanonicalTask(ctx, query);
+      return record?.integration.target_branch ?? null;
+    } catch (err) {
+      if (err instanceof AmbiguousWorkspaceTaskError) {
+        console.warn(
+          `[dispatch] Ambiguous workspace target lookup for task ${taskId ?? taskRef}: ${err.message}`,
+        );
+        return null;
+      }
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn(
+        `[dispatch] Failed to load workspace target for task ${taskId ?? taskRef}: ${message}`,
+      );
+      return null;
+    }
   }
 }

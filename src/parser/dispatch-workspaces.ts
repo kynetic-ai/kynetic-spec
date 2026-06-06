@@ -230,7 +230,24 @@ export async function loadDispatchWorkspaceRegistry(
   }));
 }
 
-export async function findDispatchWorkspaceByTaskRef(
+/**
+ * Find a workspace record by EXACT raw `task_ref` string equality.
+ *
+ * @deprecated Exact raw-ref matching is alias-sensitive: it misses records
+ * persisted under a different valid alias of the same task (slug vs full ULID vs
+ * unique prefix) and historical records whose `task_ref` differs from the
+ * current display ref. Production task-identity lookups MUST use
+ * {@link findDispatchWorkspaceByCanonicalTask} from `agent-runtime/workspace-identity`,
+ * which compares records by canonical task ULID and only falls back to raw
+ * equality when neither side can be resolved.
+ *
+ * This helper is retained for tests that intentionally inspect/select records by
+ * their display `task_ref` field, and for explicit degraded fallbacks. Do not
+ * use it for task identity decisions in production code.
+ *
+ * AC: @dispatch-canonical-task-identity ac-workspace-lookup-apis-use-canonical-identity
+ */
+export async function findDispatchWorkspaceByExactTaskRef(
   ctx: KspecContext,
   taskRef: string,
   options: { includeClosed?: boolean } = {},
@@ -240,7 +257,7 @@ export async function findDispatchWorkspaceByTaskRef(
   const filtered = options.includeClosed
     ? matches
     : matches.filter((workspace) => workspace.lifecycle_state !== "closed");
-  return [...filtered].sort((a, b) =>
+  return filtered.toSorted((a, b) =>
     a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1,
   )[0];
 }
