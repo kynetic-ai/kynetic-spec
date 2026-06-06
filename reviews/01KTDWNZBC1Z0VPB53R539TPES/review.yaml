@@ -143,6 +143,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-06T07:31:47.587Z
+  - _ulid: 01KTDXH4DD3P52MYKNMKPMJFVC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTDXH46Y856T3WRHYC5V13WN
+    timestamp: 2026-06-06T07:32:02.093Z
 examined_commit: 1fd1cc2aa970f950ad2c2fe4f0ed20dc6f4d1347
 external_links: []
 lifecycle_state: open
@@ -152,8 +159,30 @@ subject:
   content_hash: ""
   ref: "@01KTDPVY9VEE3E3WGJFMYMGRHH"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTDXH46Y856T3WRHYC5V13WN
+    anchor:
+      type: code
+      commit: 1fd1cc2aa970f950ad2c2fe4f0ed20dc6f4d1347
+      line_end: 219
+      line_start: 214
+      path: src/agent-runtime/task-identity.ts
+      side: head
+    entries:
+      - _ulid: 01KTDXH46YA0QDG12D3AC95Y6A
+        author: Jacob Chapel
+        body: "MUST-FIX:  accepts  paired with an unresolved , even
+          though  ac-invalid-or-mismatched-task-ref-rejected requires inputs with unresolved task
+          refs to be rejected before scheduling, workspace provisioning, cleanup protection, session
+          creation, or event emission. Because this branch falls through whenever  is
+          present,  returns ok and derives  as the display ref. The new test at  encodes that
+          behavior under the missing-display-ref AC, but the invalid-ref AC explicitly covers
+          task_id plus invalid task_ref inputs. This allows a malformed dispatch event to be
+          accepted instead of producing the required operator-actionable diagnostic for the bad
+          ref."
+        created_at: 2026-06-06T07:32:01.886Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-06T07:17:12.172Z
-updated_at: 2026-06-06T07:31:47.377Z
+updated_at: 2026-06-06T07:32:01.886Z
 notes: []
