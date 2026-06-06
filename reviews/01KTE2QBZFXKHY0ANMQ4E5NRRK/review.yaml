@@ -207,6 +207,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-06T09:17:23.362Z
+  - _ulid: 01KTE67S6QRQ7D6VB5TWWCN5NX
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTE3HZ29M2K8T3MTDWG4S1D0
+    timestamp: 2026-06-06T10:04:12.887Z
 examined_commit: 0e1896826ae024c59148daf1820f1f7a122145b1
 external_links: []
 lifecycle_state: closed
@@ -258,6 +264,23 @@ threads:
           event-bus/onInvocationEvent payloads, not the real persisted SessionMetadata returned by
           runInvocation."
         created_at: 2026-06-06T09:17:20.841Z
+      - _ulid: 01KTE67RZYDBV94QBVMBTKABXM
+        author: "@claude"
+        body: Fixed. Added a canonical taskId field to InvocationOptions and threaded entry.change.taskId
+          from _spawnInvocation (and best-effort resolution from the one-shot `kspec agent run`
+          path). runInvocation now persists task_id=canonical full ULID and a new task_ref=display
+          field separately — in createSession (SessionMetadata) and in every appendSessionEvent
+          payload
+          (agent.dispatched/started/turn_completed/completed/timeout/idle_timeout/stalled/failed).
+          For a slug display ref like @task-session-payload, session.yaml + events.jsonl now record
+          task_id=<canonical ULID> and task_ref=@task-session-payload. Also keyed
+          getConsecutiveFailureCount on canonical identity (display-ref fallback for
+          pre-canonicalization sessions), added task_ref to SessionLogSummary + the session log
+          --task filter, and added canonical task_id to the session.idle context/payload for AC
+          consistency. New behavioral test exercises the REAL runInvocation (not a mock) and asserts
+          the returned SessionMetadata, persisted session.yaml, and events.jsonl all separate
+          canonical task_id from the display task_ref; plus a legacy id-absent fallback test.
+        created_at: 2026-06-06T10:04:12.670Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -268,5 +291,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T09:17:23.362Z
 created_at: 2026-06-06T09:02:49.327Z
-updated_at: 2026-06-06T09:17:23.362Z
+updated_at: 2026-06-06T10:04:12.670Z
 notes: []
