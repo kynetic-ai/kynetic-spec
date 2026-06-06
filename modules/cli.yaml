@@ -10415,6 +10415,155 @@ features:
           - mvp
         created: 2026-03-14T02:33:15.382Z
         notes: []
+      - _ulid: 01KTDPVY609GQZT1KT8NEK7NMJ
+        slugs:
+          - dispatch-canonical-task-identity
+        title: Dispatch Canonical Task Identity
+        type: requirement
+        description: >
+          Dispatch treats the resolved full task ULID as the authoritative identity for every
+          task-scoped runtime decision. Human-readable task refs, slug refs, and unique ULID-prefix
+          refs may be accepted as command/display aliases, but they do not define scheduler, active
+          invocation, in-flight, workspace, cleanup, registry, or session identity.
+
+
+          This requirement intentionally owns the new alias/canonicalization behavior instead of
+          adding ACs directly to already-implemented broad specs. It relates to the existing
+          dispatch, workspace, event-payload, and reference-resolution contracts that it tightens.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: >
+              A task-scoped dispatch event, watcher change, bootstrap candidate, reconciliation
+              candidate, retry candidate, or post-invocation candidate identifies a task by full
+              task ULID, unique task ULID prefix, slug ref, loaded task object, or a task_id plus a
+              task_ref that resolves to the same task
+            id: ac-event-ingress-canonicalizes-task-identity
+            then: >
+              The accepted candidate is associated with the resolved full task ULID as its canonical
+              task identity, and any raw/display task ref is kept separate from that identity for
+              prompts, logs, status text, or CLI command text only.
+            when: |
+              The dispatch runtime accepts that input for scheduling or lifecycle processing
+          - given: >
+              A task-scoped dispatch input identifies a task only by an unresolved or ambiguous task
+              ref, or includes a task_id plus a task_ref that resolves to a different task than the
+              task_id
+            id: ac-invalid-or-mismatched-task-ref-rejected
+            then: >
+              The input is rejected or skipped with an operator-actionable diagnostic identifying
+              the provided task_id when present, the provided task_ref when present, the source
+              path, and the resolution outcome; no queue entry, active invocation, in-flight marker,
+              workspace record, cleanup protection entry, session metadata, or invocation/session
+              payload is created using the invalid or mismatched raw ref as task identity.
+            when: >
+              The dispatch runtime normalizes the input before scheduling, workspace provisioning,
+              cleanup protection, session creation, or event emission
+          - given: |
+              A dispatch event includes a valid full task_id and omits task_ref
+            id: ac-missing-display-ref-normalizes-from-task-id
+            then: >
+              The runtime uses the provided task_id as the canonical task identity, derives
+              `@<task_id>` as the default display ref when no better display ref is available, and
+              does not reject the event solely because task_ref is absent.
+            when: |
+              The dispatch runtime accepts the event
+          - given: >
+              Refs such as `@task-slug`, `@<full-task-ulid>`, and a unique `@<task-ulid-prefix>` all
+              resolve to the same task
+            id: ac-scheduler-alias-dedupe
+            then: >
+              Scheduler dedupe treats those refs as one task and does not enqueue or spawn duplicate
+              work for the same agent and canonical task identity.
+            when: >
+              Bootstrap, file-watcher, API-event, periodic reconciliation, post-invocation
+              reconciliation, retry wake-up, or queue-drain paths evaluate active, queued, deferred,
+              or in-flight dispatch work for that task
+          - given: >
+              One agent has an active or in-flight invocation for a task under one valid task ref
+              alias
+
+              And another agent has a queued or newly eligible candidate for the same task under
+              another valid task ref alias
+            id: ac-cross-agent-exclusivity-uses-canonical-task
+            then: >
+              The second candidate remains queued or is deferred until the active or in-flight
+              invocation for the canonical task identity completes, and before any later spawn it is
+              subject to the same stale-candidate checks as any other queued entry.
+            when: |
+              The scheduler selects the next invocation
+          - given: >
+              A non-closed dispatch workspace record exists for a task using any historical or
+              display task ref that resolves to that task
+            id: ac-workspace-registry-canonical-task-identity
+            then: >
+              The registry compares records by canonical task ULID, reuses the existing non-closed
+              workspace record when appropriate, and rejects or reports more than one non-closed
+              workspace record for the same canonical task identity.
+            when: >
+              Provisioning, reconciliation, validation, cleanup, or lookup evaluates workspace state
+              for the same task using a different valid alias
+          - given: >
+              Existing dispatch workspace registry records were persisted before canonical task
+              identity was recorded separately from task_ref
+            id: ac-historical-workspace-records-normalize-or-stale
+            then: >
+              Records whose historical task_ref still resolves to a task are backfilled or
+              interpreted with that task's canonical ULID identity; records whose historical
+              task_ref cannot resolve are marked stale or invalid with recovery guidance and must
+              not cause duplicate workspace provisioning for any resolvable task alias.
+            when: >
+              Workspace registry loading, validation, provisioning, or reconciliation encounters
+              those records
+          - given: |
+              A task has a canonical dispatch branch or workspace lineage
+            id: ac-workspace-lineage-stable-across-aliases
+            then: >
+              The existing branch/workspace lineage is selected by canonical task ULID; the
+              dispatcher does not create a new workspace id, branch lineage, worktree path, or
+              workspace record solely because the display ref changed.
+            when: >
+              A worker, reviewer, fix-cycle worker, cleanup pass, or artifact reconciliation refers
+              to that task by slug, full ULID, unique ULID prefix, or after the task's primary slug
+              changes
+          - given: >
+              A task has active, in-flight, provisioning, stale, or non-closed workspace state under
+              one valid task ref alias
+            id: ac-cleanup-protection-uses-canonical-task
+            then: >
+              Cleanup protection resolves both aliases to the same canonical task identity and
+              preserves artifacts that are protected by active, in-flight, provisioning,
+              stale/recoverable, or non-closed registry state.
+            when: >
+              Workspace artifact cleanup evaluates branches, worktrees, reviewer snapshots, root
+              directories, or metadata-backed artifacts that refer to the same task by another valid
+              alias
+          - given: |
+              A task-scoped invocation or session lifecycle event is emitted or persisted
+            id: ac-session-and-event-payloads-separate-id-from-display-ref
+            then: >
+              It includes the canonical full task ULID identity separately from any display task
+              ref, and downstream dispatch consumers use the canonical task id for identity
+              decisions rather than the display ref.
+            when: |
+              The payload or session metadata includes task identity fields
+          - given: >
+              The scheduler, workspace registry, event ingress, or cleanup protection discards,
+              defers, reuses, rejects, or preserves state because another alias already represents
+              the same canonical task
+            id: ac-alias-canonicalization-diagnostics
+            then: >
+              They include the canonical task ULID when known, the original raw task ref when
+              available, the agent id or workspace id when applicable, and the exclusion, reuse,
+              rejection, or preservation reason.
+            when: |
+              Diagnostics or status output identify the decision
+        tags: []
+        created: 2026-06-06T05:35:36.128Z
+        notes: []
     created: 2026-03-02T01:22:19.943Z
     notes: []
   - _ulid: 01KJP27671YGPY1FGQ5GHSCT6Y

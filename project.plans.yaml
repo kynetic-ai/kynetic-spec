@@ -1792,9 +1792,11 @@ plans:
     slugs:
       - plan-dispatch-canonical-task-identity-plan
     title: Dispatch Canonical Task Identity Plan
-    status: approved
-    derived_specs: []
-    derived_tasks: []
+    status: active
+    derived_specs:
+      - "@dispatch-canonical-task-identity"
+    derived_tasks:
+      - "@task-canonicalize-dispatch-task-identity"
     module_ref: "@main"
     notes_count: 0
     source_path: /tmp/dispatch-canonical-task-identity-proposal.md
