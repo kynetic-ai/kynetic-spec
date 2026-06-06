@@ -67,6 +67,17 @@ checks:
     runner: kspec
     created_at: 2026-06-06T05:53:23.472Z
     completed_at: 2026-06-06T05:53:23.472Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --alignment --warnings-ok passed. Alignment warnings baseline: 47
+      warnings, including known orphan/status mismatch entries."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T05:53:33.693Z
+    completed_at: 2026-06-06T05:53:33.693Z
 events:
   - _ulid: 01KTDQ38SYWFVB2KTVDKSSA3FG
     actor: Jacob Chapel
@@ -123,6 +134,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-06T05:53:23.679Z
+  - _ulid: 01KTDQWTP6X2ZF3SP7SWR7SC02
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-06T05:53:33.894Z
 examined_commit: 0c9772d7e5806cbe8fadfc5e82a775c5801e9c90
 external_links: []
 lifecycle_state: open
@@ -135,5 +153,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-06T05:39:36.382Z
-updated_at: 2026-06-06T05:53:23.472Z
+updated_at: 2026-06-06T05:53:33.693Z
 notes: []
