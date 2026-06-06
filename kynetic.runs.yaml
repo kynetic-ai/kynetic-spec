@@ -60760,7 +60760,7 @@ runs:
     completed_at: 2026-06-06T10:28:02.466Z
   - _ulid: 01KTE9SSH9B7PNNT5WRKK887M5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -60777,7 +60777,23 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-06T11:06:53.066Z
-        completed_at: 2026-06-06T11:06:53.066Z
+        completed_at: 2026-06-06T11:07:51.730Z
+        notes: "Step 2-3 (Friction + Coverage check): Primary friction was a self-inflicted regression —
+          moving initContext+loadAllTasks ahead of the cheap no-reviewer early-return in
+          dispatch._activeReviewerTargets exposed its caller _syncAllActiveTargets to context-load
+          failures, silently disabling target sync so 3 dispatch-degraded-state occupied-checkout
+          tests stopped setting degraded state. Caught only by the full suite, not the task's
+          focused gate set (which omitted dispatch-degraded-state). Coverage check: kspec search
+          found no existing item for this. Process angle is ALREADY covered by the work-gates skill
+          ('run the full suite ... for changes with broad or closure-risk impact, not just new
+          tests') — this was an application gap (a shared dispatch-loop helper refactor IS
+          closure-risk), not missing guidance. The specific fix and the
+          early-return-before-side-effects invariant are durably recorded in commit 3f966b914c and
+          the fix-cycle-5 task note."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-06T11:07:51.730Z
+        completed_at: 2026-06-06T11:07:51.730Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-06T11:06:28.777Z
