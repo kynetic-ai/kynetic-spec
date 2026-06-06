@@ -20,8 +20,6 @@ The existing resource model stores plan/review resources as folder-backed sideca
   slug: live-plan-resource-url-project-context
   type: requirement
   parent: "@web-ui"
-  traits:
-    - trait-entity-scoped-local-resources-1
   description: |
     Browser-rendered plan resource URLs carry selected-project context in live multi-project mode because image and link elements cannot send `X-Kspec-Dir` headers.
   acceptance_criteria:
@@ -51,8 +49,6 @@ The existing resource model stores plan/review resources as folder-backed sideca
   slug: task-resource-resolution-api-contract
   type: requirement
   parent: "@api-contract"
-  traits:
-    - trait-entity-scoped-local-resources-1
   description: |
     Task detail APIs expose a bounded resolved-resource projection and task-scoped bytes routes for the task's versioned `resource_refs` without embedding resource bytes in task indexes.
   acceptance_criteria:
@@ -103,9 +99,6 @@ The existing resource model stores plan/review resources as folder-backed sideca
   slug: live-task-resource-markdown-rendering
   type: requirement
   parent: "@ui-task-board"
-  traits:
-    - trait-markdown-rendering
-    - trait-entity-scoped-local-resources-1
   description: |
     The task detail UI rewrites `./resources/<relative-path>` references in task descriptions through the task API's resolved resource projection for both default plan-owned refs and explicit materialized task-owned copies.
   acceptance_criteria:
@@ -156,8 +149,6 @@ The existing resource model stores plan/review resources as folder-backed sideca
   slug: live-review-resource-url-project-context
   type: requirement
   parent: "@review-records-web-ui"
-  traits:
-    - trait-entity-scoped-local-resources-1
   description: |
     Review resource cards continue to provide the working browser URL comparator for local resources in live multi-project mode.
   acceptance_criteria:
@@ -180,8 +171,6 @@ The existing resource model stores plan/review resources as folder-backed sideca
   slug: static-export-resource-assets-complete
   type: requirement
   parent: "@gh-pages-export"
-  traits:
-    - trait-entity-scoped-local-resources-1
   description: |
     Static export copies every resource asset that snapshot metadata and rewritten markdown advertise for plans, tasks, and reviews.
   acceptance_criteria:
