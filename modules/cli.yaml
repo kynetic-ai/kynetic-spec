@@ -10432,7 +10432,8 @@ features:
           dispatch, workspace, event-payload, and reference-resolution contracts that it tightens.
         depends_on: []
         implements: []
-        relates_to: []
+        relates_to:
+          - "@dispatch-workspace-registry"
         tests: []
         traits: []
         acceptance_criteria:
