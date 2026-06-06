@@ -177,6 +177,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-06T11:24:26.206Z
+  - _ulid: 01KTEAV5J2QJWYKRPG94N95T8H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTEAV5ANV3XC2D7JWBFB1NXP
+    timestamp: 2026-06-06T11:24:42.435Z
 examined_commit: 3f966b914cac0325024a70527dbd82e287cf603a
 external_links: []
 lifecycle_state: open
@@ -186,8 +193,32 @@ subject:
   content_hash: ""
   ref: "@01KTDPVY9VEE3E3WGJFMYMGRHH"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTEAV5ANV3XC2D7JWBFB1NXP
+    anchor:
+      type: code
+      commit: 3f966b914cac0325024a70527dbd82e287cf603a
+      line_end: 179
+      line_start: 178
+      path: src/cli/commands/session/log.ts
+      side: head
+    entries:
+      - _ulid: 01KTEAV5AN7ZWG8HY3V6GQEQP4
+        author: Jacob Chapel
+        body: "MUST-FIX: session log --task still misses the standard canonical ref spelling when task_id is
+          stored as a bare ULID and task_ref is a slug/display ref. The task scope says to preserve
+          CLI command targeting where useful, and this branch added this filter specifically so
+          session logs can be found by either canonical identity or display ref. However the
+          implementation compares the raw option only to s.task_id and s.task_ref, so --task @<ULID>
+          does not match s.task_id=<ULID> unless task_ref also happens to be @<ULID>. Evidence:
+          running filterSessions on a session with task_id=01HZPAYLOAD0000000000000AA and
+          task_ref=@task-payload returned {bare:1, at:0, slug:1}. Impact: operators who use the
+          normal @ULID task ref cannot find canonicalized dispatch sessions once the display ref
+          differs from the canonical id; normalize the filter forms or resolve through the same
+          identity rules before comparing."
+        created_at: 2026-06-06T11:24:42.198Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-06T11:10:00.214Z
-updated_at: 2026-06-06T11:24:26.004Z
+updated_at: 2026-06-06T11:24:42.198Z
 notes: []
