@@ -4095,3 +4095,16 @@ inbox:
       - follow-up
     added_by: Jacob Chapel
     created_at: 2026-06-03T18:59:13.697Z
+  - _ulid: 01KTDMX2KZAC70C8JT9CJGNRZV
+    text: "Investigate and harden shadow auto-push concurrency: bursty kspec writes can launch
+      overlapping background pushes to kspec-meta, producing intermittent 'failed to push some refs'
+      / Shadow auto-push failed (consecutive: 1) warnings even when later pushes catch up. Desired
+      outcome: serialize/debounce per-shadow-worktree pushes or otherwise make auto-push warnings
+      distinguish benign superseded pushes from real stale remote state."
+    tags:
+      - shadow
+      - sync
+      - concurrency
+      - reliability
+    added_by: Jacob Chapel
+    created_at: 2026-06-06T05:01:16.287Z
