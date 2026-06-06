@@ -60396,7 +60396,7 @@ runs:
     completed_at: 2026-06-06T05:08:45.697Z
   - _ulid: 01KTDPWAXYM4VPG7ACN6FVPM58
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -60410,7 +60410,28 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-06T05:36:55.992Z
-        completed_at: 2026-06-06T05:36:55.992Z
+        completed_at: 2026-06-06T05:37:29.742Z
+        notes: >-
+          Candidates identified:
+
+          A) HIGH-CONFIDENCE friction: fix-cycle resubmit blocked — 'kspec task submit' rejects a
+          needs_work task ('must be in_progress'), but the task-work fix-cycle steps go straight
+          from commit/note to 'task submit' with no intervening 'task start'. Concrete, repeatable
+          on every dispatched fix cycle, clear cause/effect. No existing coverage found.
+
+          B) LOW (one-off, mine): misremembered 'kspec task note --message'; note takes a positional
+          message arg. Not systemic — skip.
+
+          C) LOW (task-specific): discriminated-union + runtime-guard pattern for the adapter
+          command invariant; good engineering but not a kspec process pattern — skip.
+
+          D) LOW-volume (single data point): reviewer included a concrete reproduction probe in the
+          blocker which made the fix fast; adjacent to existing success 01KT5ZGF — skip to stay
+          low-volume.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-06T05:37:29.742Z
+        completed_at: 2026-06-06T05:37:29.742Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-06T05:35:49.182Z
