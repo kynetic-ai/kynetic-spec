@@ -92,6 +92,17 @@ checks:
     runner: kspec
     created_at: 2026-06-06T08:19:04.510Z
     completed_at: 2026-06-06T08:19:04.510Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --schema --warnings-ok exited 0; schema validation passed
+      with the existing orphaned skill-directory reference warning allowed.
+    name: kspec validate schema
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T08:19:13.868Z
+    completed_at: 2026-06-06T08:19:13.868Z
 events:
   - _ulid: 01KTDZ792Q39WMR8F7FFQ9RB10
     actor: Jacob Chapel
@@ -162,6 +173,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-06T08:19:04.711Z
+  - _ulid: 01KTE07J1BE30ESVJR1WHVE554
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate schema
+    timestamp: 2026-06-06T08:19:14.091Z
 examined_commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
 external_links: []
 lifecycle_state: open
@@ -174,5 +192,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-06T08:01:36.343Z
-updated_at: 2026-06-06T08:19:04.510Z
+updated_at: 2026-06-06T08:19:13.868Z
 notes: []
