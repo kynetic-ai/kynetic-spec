@@ -99,6 +99,21 @@ function sessionStatusColor(status: string): typeof chalk.green {
   }
 }
 
+/**
+ * Normalize a task ref/id into a comparable form for `--task` filtering.
+ *
+ * Drops a leading `@` and lowercases so every spelling of the same identity
+ * compares equal: the canonical `@<ULID>` display ref, the bare `<ULID>` stored
+ * in `task_id`, and slug display refs (`@slug` vs `slug`). Without this, a
+ * `--task @<ULID>` filter misses canonicalized dispatch sessions whose
+ * `task_id` is the bare ULID and whose `task_ref` is a different display ref.
+ *
+ * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+ */
+function normalizeTaskFilterForm(value: string): string {
+  return (value.startsWith("@") ? value.slice(1) : value).toLowerCase();
+}
+
 // ─── Shared Session Filters ─────────────────────────────────────────────────
 
 /**
@@ -171,12 +186,18 @@ export function filterSessions(
   }
 
   // AC: @session-cli-unified-filtering ac-task-filter
-  // Match the canonical task_id or the human-readable display task_ref so a
-  // slug/@ULID filter still finds dispatch sessions whose task_id is the bare
-  // canonical ULID. AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  // Match the canonical task_id or the human-readable display task_ref. Compare
+  // through normalized forms (leading `@` dropped, case-insensitive) so the
+  // canonical `@<ULID>` spelling still finds dispatch sessions whose task_id is
+  // the bare canonical ULID and whose task_ref is a different display ref.
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
   if (options.task) {
-    const taskFilter = options.task;
-    result = result.filter((s) => s.task_id === taskFilter || s.task_ref === taskFilter);
+    const want = normalizeTaskFilterForm(options.task);
+    result = result.filter(
+      (s) =>
+        (s.task_id !== undefined && normalizeTaskFilterForm(s.task_id) === want) ||
+        (s.task_ref !== undefined && normalizeTaskFilterForm(s.task_ref) === want),
+    );
   }
 
   if (options.since) {

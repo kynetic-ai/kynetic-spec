@@ -885,3 +885,110 @@ describe("kspec session log list (CLI)", () => {
 
   // AC: @trait-filterable-list ac-2 — N/A: session log list does not implement a --tag filter; supported filters are status, agent_type, agent_id, trigger, task_id, and since.
 });
+
+// ─── Canonical Task Identity Filtering ───────────────────────────────────────
+
+// Dispatch canonicalization stores the bare task ULID in `task_id` and a
+// separate human-readable display ref in `task_ref`. The `--task` filter must
+// find a session by either identity spelling — including the standard canonical
+// `@<ULID>` ref — even when the display ref differs from the canonical id.
+describe("kspec session log list (CLI) — canonical task identity filter", () => {
+  let tempDir: string;
+  let canonicalUlid: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+
+    const sessionsDir = path.join(tempDir, ".kspec-sessions");
+    await fs.mkdir(sessionsDir, { recursive: true });
+
+    canonicalUlid = testUlid("TASK", 1);
+
+    // Canonicalized dispatch session: bare-ULID task_id, slug display ref.
+    const s1 = testUlid("SESS", 1);
+    const s1Dir = path.join(sessionsDir, s1);
+    await fs.mkdir(s1Dir);
+    await fs.writeFile(
+      path.join(s1Dir, "session.yaml"),
+      YAML.stringify({
+        id: s1,
+        agent_type: "claude-agent-acp",
+        agent_id: "pr-reviewer",
+        trigger: "task.pending_review",
+        task_id: canonicalUlid,
+        task_ref: "@task-payload",
+        status: "completed",
+        started_at: "2026-03-01T10:00:00.000Z",
+        ended_at: "2026-03-01T11:00:00.000Z",
+      }),
+    );
+    await fs.writeFile(
+      path.join(s1Dir, "events.jsonl"),
+      `${JSON.stringify({ ts: 1000, seq: 0, type: "session.start", session_id: s1, data: null })}\n`,
+    );
+
+    // Unrelated session under a different canonical task — must never match.
+    const s2 = testUlid("SESS", 2);
+    const s2Dir = path.join(sessionsDir, s2);
+    await fs.mkdir(s2Dir);
+    await fs.writeFile(
+      path.join(s2Dir, "session.yaml"),
+      YAML.stringify({
+        id: s2,
+        agent_type: "claude-agent-acp",
+        agent_id: "worker",
+        trigger: "task.ready",
+        task_id: testUlid("XTRA", 1),
+        task_ref: "@task-other",
+        status: "completed",
+        started_at: "2026-03-02T10:00:00.000Z",
+        ended_at: "2026-03-02T11:00:00.000Z",
+      }),
+    );
+    await fs.writeFile(
+      path.join(s2Dir, "events.jsonl"),
+      `${JSON.stringify({ ts: 1000, seq: 0, type: "session.start", session_id: s2, data: null })}\n`,
+    );
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  it("matches the canonical @<ULID> ref against a bare-ULID task_id", () => {
+    const result = kspecJson<SessionListResult>(
+      `session log list --task @${canonicalUlid}`,
+      tempDir,
+    );
+    expect(result.items).toHaveLength(1);
+    expect(result.items[0].task_id).toBe(canonicalUlid);
+    expect(result.items[0].task_ref).toBe("@task-payload");
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  it("matches the bare ULID ref against a bare-ULID task_id", () => {
+    const result = kspecJson<SessionListResult>(
+      `session log list --task ${canonicalUlid}`,
+      tempDir,
+    );
+    expect(result.items).toHaveLength(1);
+    expect(result.items[0].task_id).toBe(canonicalUlid);
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  it("still matches the display slug ref against task_ref", () => {
+    const result = kspecJson<SessionListResult>("session log list --task @task-payload", tempDir);
+    expect(result.items).toHaveLength(1);
+    expect(result.items[0].task_id).toBe(canonicalUlid);
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  it("does not match an unrelated task's canonical ref", () => {
+    const result = kspecJson<SessionListResult>(
+      `session log list --task @${canonicalUlid}`,
+      tempDir,
+    );
+    expect(result.items.every((s) => s.task_id === canonicalUlid)).toBe(true);
+  });
+});
