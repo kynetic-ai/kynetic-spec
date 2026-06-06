@@ -1,0 +1,58 @@
+_ulid: 01KTD8S1T8W8TDX09S3RFYYWX3
+slugs:
+  - add-task-resource-bytes-routes
+title: Add task resource bytes routes with drift-safe behavior
+type: task
+description: >
+  Covers:
+
+  - @task-resource-resolution-api-contract ac-task-resource-bytes-serve-present-plan-owned-ref
+
+  - @task-resource-resolution-api-contract ac-task-resource-bytes-serve-present-task-owned-copy
+
+  - @task-resource-resolution-api-contract ac-task-resource-bytes-refuse-drifted-or-missing-ref
+
+  - @live-task-resource-markdown-rendering ac-drifted-task-resource-is-visible-not-silent
+
+
+  Add daemon routes rooted at `/api/tasks/:ref/resources` so browsers and static/live UI code
+  resolve task resources through the task's versioned refs:
+
+  - `GET /api/tasks/:ref/resources` returns the task detail `resolved_resources` projection.
+
+  - `GET /api/tasks/:ref/resources/:resourceId` returns one resolved resource projection or a
+  structured 404 when the task has no matching resource id.
+
+  - `GET /api/tasks/:ref/resources/:resourceId/bytes` serves bytes only when the resolved resource
+  status is `present`; it sets `Content-Type`, `Content-Length`, and `X-Kspec-Resource-Sha256` from
+  the current matching resource.
+
+  - For `drift`, `missing`, or `unresolved`, return a structured non-2xx response that names the
+  status and does not stream bytes.
+
+  - Resolve plan-owned refs through the source plan manifest and task-owned refs through the current
+  task's resource manifest. Use the existing resource resolver and manifest helpers; do not raw-join
+  user-authored paths.
+
+  - Binary browser URLs in live multi-project mode must include selected-project context just like
+  review resource URLs.
+
+
+  Verification: add daemon API tests for present plan-owned bytes, present materialized task-owned
+  bytes, drift refusal, missing-resource refusal, and selected-project routing.
+spec_ref: "@task-resource-resolution-api-contract"
+plan_ref: "@plan-resource-ui-hardening-plan"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@expose-task-resolved-resources-api"
+context: []
+priority: 1
+tags:
+  - resources
+  - api
+  - daemon
+vcs_refs: []
+created_at: 2026-06-06T01:29:21.480Z
+todos: []

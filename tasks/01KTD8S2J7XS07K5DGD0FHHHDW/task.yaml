@@ -1,0 +1,64 @@
+_ulid: 01KTD8S2J7XS07K5DGD0FHHHDW
+slugs:
+  - make-static-export-copy-rewrite-all-resource-assets
+title: Make static export copy and rewrite all advertised resource assets
+type: task
+description: >
+  Covers:
+
+  - @static-export-resource-assets-complete ac-static-plan-image-asset-exists
+
+  - @static-export-resource-assets-complete ac-static-plan-doc-asset-exists
+
+  - @static-export-resource-assets-complete ac-static-task-plan-owned-asset-uses-recorded-hash
+
+  - @static-export-resource-assets-complete ac-static-task-materialized-asset-exists
+
+  - @static-export-resource-assets-complete ac-static-task-drift-is-visible-not-rewritten
+
+  - @static-export-resource-assets-complete ac-static-review-image-asset-exists
+
+  - @static-export-resource-assets-complete ac-static-review-doc-asset-exists
+
+
+  Harden static export so every resource path advertised by snapshot metadata or rewritten markdown
+  exists on disk:
+
+  - Verify and, if needed, fix plan resource asset copying for `generateJsonSnapshot({
+  assetsOutputDir })` and the CLI/static export path. Disk files must exist under
+  `assets/resources/plan/<plan-ulid>/<relative-path>` for exported plan resources.
+
+  - Add task resource export support for task descriptions that reference `./resources/<path>`. For
+  non-drifted plan-owned task refs, reuse or copy bytes whose hash matches the task's recorded hash.
+  For materialized task-owned refs, copy from the task resource tree to a deterministic task asset
+  path and rewrite task markdown to that path.
+
+  - For drifted, missing, or unresolved task refs, expose status in the task snapshot, leave the
+  authoring reference visible or otherwise show the status, and do not advertise an asset path for
+  bytes that do not match the task's recorded resource hash.
+
+  - Keep review resource copying and URL encoding behavior intact, including paths containing
+  characters such as `#`, `?`, and spaces.
+
+  - Add tests that assert actual files exist on disk for plan, task, and review resources, not only
+  that snapshot JSON contains `exported_path` strings.
+
+
+  Verification: run `tests/export/plan-resources.test.ts`,
+  `tests/review-resource-static-export.test.ts`, the new task static export tests, and an export CLI
+  smoke test in a temp project.
+spec_ref: "@static-export-resource-assets-complete"
+plan_ref: "@plan-resource-ui-hardening-plan"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@generalize-live-ui-resource-markdown-rewriting"
+context: []
+priority: 2
+tags:
+  - resources
+  - export
+vcs_refs: []
+created_at: 2026-06-06T01:29:22.247Z
+todos: []

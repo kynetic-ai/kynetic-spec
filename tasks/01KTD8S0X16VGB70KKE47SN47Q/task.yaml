@@ -1,0 +1,65 @@
+_ulid: 01KTD8S0X16VGB70KKE47SN47Q
+slugs:
+  - add-resource-url-task-markdown-contract-tests
+title: Add resource URL and task markdown contract tests
+type: task
+description: >
+  Covers:
+
+  - @live-plan-resource-url-project-context ac-plan-image-routes-to-selected-project
+
+  - @live-plan-resource-url-project-context ac-plan-doc-link-routes-to-selected-project
+
+  - @live-review-resource-url-project-context ac-review-image-routes-to-selected-project
+
+  - @live-review-resource-url-project-context ac-review-doc-link-routes-to-selected-project
+
+  - @live-task-resource-markdown-rendering ac-plan-owned-task-image-renders
+
+  - @live-task-resource-markdown-rendering ac-plan-owned-task-doc-link-opens
+
+  - @live-task-resource-markdown-rendering ac-materialized-task-image-renders
+
+  - @live-task-resource-markdown-rendering ac-materialized-task-doc-link-opens
+
+  - @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+
+
+  Add failing tests before implementation. Cover the exact holes from the temp-project validation:
+
+  - Plan resource markdown rewriting in live multi-project mode must produce URLs that a browser can
+  fetch without `X-Kspec-Dir` and that preserve selected-project routing context.
+
+  - Task description markdown `./resources/<path>` must rewrite through task resolved resources for
+  default plan-owned resources.
+
+  - Task description markdown `./resources/<path>` must rewrite through task resolved resources for
+  `--materialize-resources` task-owned copies.
+
+  - Unmatched task description resource references must remain visible and must not be rewritten to
+  `/resources/...`.
+
+  - Review resource URL tests remain as the passing comparator for selected-project browser URL
+  routing.
+
+
+  Files to inspect and extend include `tests/web-ui/plan-resource-links.test.ts`,
+  `packages/web-ui/src/lib/utils/plan-resource-links.ts`, `packages/web-ui/src/lib/api.ts`, and
+  existing task modal tests if present. If there is no task markdown utility test file, create one
+  under `tests/web-ui/` and import the web UI utility directly. Assert rendered URLs, owner/status
+  metadata, and HTTP outcomes; do not assert implementation-only class names.
+spec_ref: "@live-task-resource-markdown-rendering"
+plan_ref: "@plan-resource-ui-hardening-plan"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - resources
+  - tests
+  - web-ui
+vcs_refs: []
+created_at: 2026-06-06T01:29:20.545Z
+todos: []

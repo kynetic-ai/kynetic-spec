@@ -3160,6 +3160,58 @@ modules:
             when: |
               A user reads upgrade or troubleshooting documentation
         tags: []
+        requirements:
+          - _ulid: 01KTD8S0W2EQ0HXK02Q5RHP6WP
+            slugs:
+              - resource-docs-ui-task-markdown-behavior
+            title: Resource Documentation Covers UI and Task Markdown Behavior
+            type: requirement
+            description: >
+              User-facing documentation describes live UI routing, task markdown resolution, drift,
+              and static export behavior for local resources.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            acceptance_criteria:
+              - given: |
+                  a user reads the local resources concept page, guide, or release notes
+                id: ac-docs-name-task-resource-markdown
+                then: >
+                  it states how task descriptions may reference resources with
+                  `./resources/<relative-path>` and how plan-owned and task-owned copies are
+                  resolved
+                when: |
+                  the documentation describes task resource references
+              - given: |
+                  a user reads the local resources concept page, guide, or troubleshooting material
+                id: ac-docs-name-task-resource-drift
+                then: >
+                  it states that drifted, missing, or unresolved task resources are surfaced as
+                  status messages instead of silently serving replacement bytes
+                when: |
+                  the documentation describes task resource references
+              - given: |
+                  a user reads the local resources guide or troubleshooting material
+                id: ac-docs-name-browser-project-context
+                then: >
+                  it states that browser image and link resource URLs need URL-level
+                  selected-project context because element fetches cannot send `X-Kspec-Dir`
+                when: |
+                  the documentation describes live web UI resource rendering in multi-project mode
+              - given: |
+                  a developer needs to verify resource behavior end to end
+                id: ac-docs-name-temp-project-e2e-steps
+                then: >
+                  they can follow exact temp-project steps that validate CLI storage, daemon bytes
+                  routes, live UI image/link rendering, selected-project browser URL routing, and
+                  static export asset existence without restarting or stopping the daemon
+                when: |
+                  they read the resource guide or troubleshooting material
+            tags: []
+            created: 2026-06-06T01:29:20.514Z
+            notes: []
         created: 2026-05-22T22:36:42.221Z
         notes: []
     created: 2026-04-20T23:55:27.748Z

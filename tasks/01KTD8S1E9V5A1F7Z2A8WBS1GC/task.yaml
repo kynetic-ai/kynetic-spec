@@ -1,0 +1,51 @@
+_ulid: 01KTD8S1E9V5A1F7Z2A8WBS1GC
+slugs:
+  - expose-task-resolved-resources-api
+title: Expose task resolved resources through shared API and daemon task detail
+type: task
+description: >
+  Covers:
+
+  - @task-resource-resolution-api-contract ac-task-detail-exposes-resolved-resources
+
+  - @task-resource-resolution-api-contract ac-task-detail-exposes-resource-base-url
+
+  - @task-resource-resolution-api-contract ac-task-resource-index-stays-bounded
+
+
+  Extend the task resource API contract so task detail consumers have enough data to resolve task
+  markdown safely:
+
+  - Add shared TypeScript types for the projected resolved task resource shape named
+  `ResolvedTaskResourceSummary` or an equally explicit name. The task detail field name must be
+  `resolved_resources`.
+
+  - Extend `TaskDetail` to include `resolved_resources?: ResolvedTaskResourceSummary[]` and
+  `resources_base_url?: string` for detail responses. Do not add resource bytes to task list or
+  dashboard response shapes.
+
+  - Update `packages/daemon/src/routes/tasks.ts` to call the existing task resource resolver for
+  task detail responses and populate the new fields on cache hits and disk fallback paths.
+
+  - Preserve existing `kspec task get --json` and agent-context drift semantics by reusing
+  `resolveTaskResources` and `projectResolvedTaskResources` rather than duplicating drift logic.
+
+
+  Verification: run focused shared type tests and daemon task route tests, then run `kspec validate
+  --warnings-ok` to ensure new AC annotations resolve.
+spec_ref: "@task-resource-resolution-api-contract"
+plan_ref: "@plan-resource-ui-hardening-plan"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@add-resource-url-task-markdown-contract-tests"
+context: []
+priority: 1
+tags:
+  - resources
+  - api
+  - daemon
+vcs_refs: []
+created_at: 2026-06-06T01:29:21.097Z
+todos: []

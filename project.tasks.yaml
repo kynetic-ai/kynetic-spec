@@ -30823,3 +30823,132 @@
   started_at: 2026-06-04T00:05:33.829Z
   submitted_at: 2026-06-04T00:29:01.617Z
   automation: eligible
+- _ulid: 01KTD8S0X16VGB70KKE47SN47Q
+  slugs:
+    - add-resource-url-task-markdown-contract-tests
+  title: Add resource URL and task markdown contract tests
+  type: task
+  spec_ref: "@live-task-resource-markdown-rendering"
+  plan_ref: "@plan-resource-ui-hardening-plan"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - resources
+    - tests
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-06T01:29:20.545Z
+- _ulid: 01KTD8S1E9V5A1F7Z2A8WBS1GC
+  slugs:
+    - expose-task-resolved-resources-api
+  title: Expose task resolved resources through shared API and daemon task detail
+  type: task
+  spec_ref: "@task-resource-resolution-api-contract"
+  plan_ref: "@plan-resource-ui-hardening-plan"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@add-resource-url-task-markdown-contract-tests"
+  priority: 1
+  tags:
+    - resources
+    - api
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-06T01:29:21.097Z
+- _ulid: 01KTD8S1T8W8TDX09S3RFYYWX3
+  slugs:
+    - add-task-resource-bytes-routes
+  title: Add task resource bytes routes with drift-safe behavior
+  type: task
+  spec_ref: "@task-resource-resolution-api-contract"
+  plan_ref: "@plan-resource-ui-hardening-plan"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@expose-task-resolved-resources-api"
+  priority: 1
+  tags:
+    - resources
+    - api
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-06T01:29:21.480Z
+- _ulid: 01KTD8S26A1PY21C7SYXTNTJ05
+  slugs:
+    - generalize-live-ui-resource-markdown-rewriting
+  title: Generalize live UI resource markdown rewriting for plans and tasks
+  type: task
+  spec_ref: "@live-task-resource-markdown-rendering"
+  plan_ref: "@plan-resource-ui-hardening-plan"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@add-task-resource-bytes-routes"
+  priority: 1
+  tags:
+    - resources
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-06T01:29:21.866Z
+- _ulid: 01KTD8S2J7XS07K5DGD0FHHHDW
+  slugs:
+    - make-static-export-copy-rewrite-all-resource-assets
+  title: Make static export copy and rewrite all advertised resource assets
+  type: task
+  spec_ref: "@static-export-resource-assets-complete"
+  plan_ref: "@plan-resource-ui-hardening-plan"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@generalize-live-ui-resource-markdown-rewriting"
+  priority: 2
+  tags:
+    - resources
+    - export
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-06T01:29:22.247Z
+- _ulid: 01KTD8S2Y2DNM0S39E8T7EY64E
+  slugs:
+    - update-resource-documentation-ui-task-markdown
+  title: Update resource documentation and release notes
+  type: task
+  spec_ref: "@resource-docs-ui-task-markdown-behavior"
+  plan_ref: "@plan-resource-ui-hardening-plan"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@make-static-export-copy-rewrite-all-resource-assets"
+  priority: 2
+  tags:
+    - resources
+    - docs
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-06T01:29:22.626Z
+- _ulid: 01KTD8S38XX475Y4K1XPX6B7PS
+  slugs:
+    - validate-resource-lifecycle-e2e-temp-projects
+  title: Validate resource lifecycle end to end in temp projects
+  type: task
+  spec_ref: "@live-plan-resource-url-project-context"
+  plan_ref: "@plan-resource-ui-hardening-plan"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@update-resource-documentation-ui-task-markdown"
+  priority: 2
+  tags:
+    - resources
+    - e2e
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-06T01:29:22.973Z

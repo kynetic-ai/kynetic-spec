@@ -1,0 +1,61 @@
+_ulid: 01KTD8S26A1PY21C7SYXTNTJ05
+slugs:
+  - generalize-live-ui-resource-markdown-rewriting
+title: Generalize live UI resource markdown rewriting for plans and tasks
+type: task
+description: >
+  Covers:
+
+  - @live-plan-resource-url-project-context ac-plan-image-routes-to-selected-project
+
+  - @live-plan-resource-url-project-context ac-plan-doc-link-routes-to-selected-project
+
+  - @live-plan-resource-url-project-context ac-plan-resource-url-still-uses-plan-manifest
+
+  - @live-task-resource-markdown-rendering ac-plan-owned-task-image-renders
+
+  - @live-task-resource-markdown-rendering ac-plan-owned-task-doc-link-opens
+
+  - @live-task-resource-markdown-rendering ac-materialized-task-image-renders
+
+  - @live-task-resource-markdown-rendering ac-materialized-task-doc-link-opens
+
+  - @live-task-resource-markdown-rendering ac-drifted-task-resource-is-visible-not-silent
+
+  - @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+
+
+  Update the web UI resource-link utilities and task detail rendering:
+
+  - Replace the plan-only URL construction assumption with a reusable resource markdown rewrite
+  helper that accepts entity resource metadata and an entity-scoped `resources_base_url`.
+
+  - Ensure live plan resource URLs append selected-project context for browser-fetchable URLs. Do
+  not rely on `X-Kspec-Dir` for `<img>` or `<a>` resource loads.
+
+  - In the task detail modal, rewrite `task.description` before passing it to the markdown renderer
+  using `task.resolved_resources` and `task.resources_base_url`.
+
+  - Render a compact task resources/status section when task resources exist so
+  drift/missing/unresolved states are visible even if an image cannot load.
+
+  - Keep review resource rendering behavior intact and covered by existing tests.
+
+
+  Verification: run web UI unit tests for plan resource links, task resource links, review resource
+  cards, and the task modal. Build or typecheck the web UI with the project's standard command.
+spec_ref: "@live-task-resource-markdown-rendering"
+plan_ref: "@plan-resource-ui-hardening-plan"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@add-task-resource-bytes-routes"
+context: []
+priority: 1
+tags:
+  - resources
+  - web-ui
+vcs_refs: []
+created_at: 2026-06-06T01:29:21.866Z
+todos: []

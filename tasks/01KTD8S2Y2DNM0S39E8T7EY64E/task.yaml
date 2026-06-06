@@ -1,0 +1,53 @@
+_ulid: 01KTD8S2Y2DNM0S39E8T7EY64E
+slugs:
+  - update-resource-documentation-ui-task-markdown
+title: Update resource documentation and release notes
+type: task
+description: >
+  Covers:
+
+  - @resource-docs-ui-task-markdown-behavior ac-docs-name-task-resource-markdown
+
+  - @resource-docs-ui-task-markdown-behavior ac-docs-name-task-resource-drift
+
+  - @resource-docs-ui-task-markdown-behavior ac-docs-name-browser-project-context
+
+  - @resource-docs-ui-task-markdown-behavior ac-docs-name-temp-project-e2e-steps
+
+
+  Update the docs so future users and reviewers know the exact intended behavior:
+
+  - `docs/concepts/local-resources.md` must describe task-description markdown resolution through
+  task resolved resources, both plan-owned and materialized task-owned cases, drift behavior, and
+  static export behavior.
+
+  - `docs/guides/working-with-local-resources.md` must include exact commands for a temp project
+  that imports plan resources, derives default refs, derives materialized copies in a separate clean
+  project, opens the UI without restarting/stopping the daemon, verifies browser image/doc links,
+  and verifies static export file existence.
+
+  - Troubleshooting or guide text must explicitly call out that browser image/link resource URLs
+  need URL-level selected-project context in live multi-project mode because headers are unavailable
+  for element fetches.
+
+  - Release notes must call out the fixed UI/static behavior without claiming unsupported task-owned
+  resource upload commands unless those are implemented in this plan.
+
+
+  Verification: run docs/resource tests if present, grep AC annotations for the new documentation
+  spec, and run `kspec validate --warnings-ok`.
+spec_ref: "@resource-docs-ui-task-markdown-behavior"
+plan_ref: "@plan-resource-ui-hardening-plan"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@make-static-export-copy-rewrite-all-resource-assets"
+context: []
+priority: 2
+tags:
+  - resources
+  - docs
+vcs_refs: []
+created_at: 2026-06-06T01:29:22.626Z
+todos: []

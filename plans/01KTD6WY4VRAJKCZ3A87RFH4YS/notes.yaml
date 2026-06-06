@@ -7,3 +7,32 @@ notes:
     content: Remove over-broad inherited traits after re-review
     author: Jacob Chapel
     created_at: 2026-06-06T01:08:22.225Z
+  - _ulid: 01KTD8S3NRFR03XWB59RGKX3JY
+    content: >-
+      - Do not restart or stop the daemon during validation. Use `KSPEC_NO_DAEMON=1` only for CLI
+      operations that should bypass incidental daemon communication, and use the existing project
+      registration API for temp-project UI checks.
+
+      - Keep task resources read-only in this plan. The plan adds task resource read/detail/bytes
+      behavior for derived refs and materialized copies; it does not add general `kspec task
+      resource add/remove` authoring commands.
+
+      - Keep `ResourceMetadata` byte-free and URL-free. Browser-safe fetch URLs belong in
+      entity-scoped base URL fields or client URL helpers, not inside each resource metadata object.
+
+      - The task detail projection field is `resolved_resources`; do not use `resource_refs` for the
+      resolved API/UI projection because raw task schema already uses that name for stored refs.
+
+      - When a task resource is drifted, do not render changed bytes as if they were the recorded
+      resource. Show drift and require an explicit re-derive or resource update workflow outside
+      this plan.
+
+      - Prefer reusable resource link helpers over a second plan-only regex. The existing
+      `./resources/...` authoring syntax and path validation rules must stay consistent between
+      parser-side extraction and UI-side rewriting.
+
+      - Add tests before fixes where possible. The first task should fail on the currently observed
+      behavior: browser URL missing selected-project routing context and task markdown emitting
+      literal `/resources/...` links.
+    author: Jacob Chapel
+    created_at: 2026-06-06T01:29:23.384Z

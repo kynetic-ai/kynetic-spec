@@ -1935,6 +1935,76 @@ features:
         tags: []
         created: 2026-03-10T05:32:13.484Z
         notes: []
+      - _ulid: 01KTD8S0NHAPTT9EW0V6RR3W2X
+        slugs:
+          - task-resource-resolution-api-contract
+        title: Task Resource Resolution API Contract
+        type: requirement
+        description: >
+          Task detail APIs expose a bounded resolved-resource projection and task-scoped bytes
+          routes for the task's versioned `resource_refs` without embedding resource bytes in task
+          indexes.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a task has one or more derived resource references
+            id: ac-task-detail-exposes-resolved-resources
+            then: >
+              the response includes `resolved_resources`, where each entry reports owner type, owner
+              ref, resource id, relative path, content type, byte size, recorded content hash,
+              current content hash when available, drift status, and a human-readable status message
+            when: |
+              the task is read through the daemon task detail API
+          - given: |
+              a task detail response includes one or more `resolved_resources`
+            id: ac-task-detail-exposes-resource-base-url
+            then: >
+              the response includes a task-scoped `resources_base_url` so clients construct
+              `resources_base_url/<resource-id>/bytes` without guessing whether the bytes are
+              plan-owned or task-owned
+            when: |
+              a client needs browser-fetchable bytes for a resolved task resource
+          - given: |
+              tasks with resource references exist in the project
+            id: ac-task-resource-index-stays-bounded
+            then: |
+              those surfaces do not embed resource bytes or unbounded resource manifests
+            when: |
+              task list, dashboard, cache warm-up, or other index-tier surfaces are read
+          - given: >
+              a task resource reference is plan-owned and its current plan resource hash matches the
+              hash recorded at task derivation
+            id: ac-task-resource-bytes-serve-present-plan-owned-ref
+            then: >
+              the route returns the referenced plan resource bytes with content type, content
+              length, and `X-Kspec-Resource-Sha256` matching the current declared resource
+            when: |
+              `GET /api/tasks/:ref/resources/:resourceId/bytes` is requested for that resource
+          - given: >
+              a task resource reference is task-owned because the task was derived with explicit
+              resource materialization
+            id: ac-task-resource-bytes-serve-present-task-owned-copy
+            then: >
+              the route returns the copied task-owned resource bytes with content type, content
+              length, and `X-Kspec-Resource-Sha256` matching the task-owned manifest entry
+            when: |
+              `GET /api/tasks/:ref/resources/:resourceId/bytes` is requested for that resource
+          - given: |
+              a task resource reference is drifted, missing, or unresolved
+            id: ac-task-resource-bytes-refuse-drifted-or-missing-ref
+            then: >
+              the response reports the exact status and does not stream replacement bytes that
+              differ from the hash recorded at task derivation
+            when: >
+              a task resource detail route or task resource bytes route is requested for that
+              resource
+        tags: []
+        created: 2026-06-06T01:29:20.305Z
+        notes: []
     created: 2026-01-22T07:00:00.000Z
     notes: []
   - _ulid: 01KFHMFJD571JQEE33AKKMEQSJ
@@ -2388,6 +2458,86 @@ features:
       - static
       - export
       - github
+    requirements:
+      - _ulid: 01KTD8S0THHJ2ZWNC62S71RN38
+        slugs:
+          - static-export-resource-assets-complete
+        title: Static Export Resource Assets Are Complete
+        type: requirement
+        description: >
+          Static export copies every resource asset that snapshot metadata and rewritten markdown
+          advertise for plans, tasks, and reviews.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: >
+              a static export includes a plan with a declared image resource referenced from plan
+              markdown
+            id: ac-static-plan-image-asset-exists
+            then: >
+              the rewritten plan image URL points to an asset that exists on disk under
+              `assets/resources/plan/<plan-ulid>/<relative-path>`
+            when: |
+              the export is written to an output directory
+          - given: >
+              a static export includes a plan with a declared document resource referenced from plan
+              markdown
+            id: ac-static-plan-doc-asset-exists
+            then: >
+              the rewritten plan document link points to an asset that exists on disk under
+              `assets/resources/plan/<plan-ulid>/<relative-path>`
+            when: |
+              the export is written to an output directory
+          - given: >
+              a static export includes a task description that references a non-drifted plan-owned
+              resource through `./resources/<relative-path>`
+            id: ac-static-task-plan-owned-asset-uses-recorded-hash
+            then: >
+              the rewritten task resource URL points to an asset whose bytes match the task's
+              recorded resource hash
+            when: |
+              the export is written to an output directory
+          - given: >
+              a static export includes a task description that references a materialized task-owned
+              resource through `./resources/<relative-path>`
+            id: ac-static-task-materialized-asset-exists
+            then: >
+              the rewritten task resource URL points to a copied task asset that exists on disk and
+              matches the task-owned manifest hash
+            when: |
+              the export is written to an output directory
+          - given: >
+              a static export includes a task description that references a drifted, missing, or
+              unresolved task resource
+            id: ac-static-task-drift-is-visible-not-rewritten
+            then: >
+              the task snapshot exposes the drift status, the markdown target is not rewritten to
+              current replacement bytes, and no asset path is advertised for bytes that do not match
+              the task's recorded resource hash
+            when: |
+              the export is written
+          - given: |
+              a static export includes a review with a declared image resource
+            id: ac-static-review-image-asset-exists
+            then: >
+              the review image URL points to an asset that exists on disk under
+              `assets/resources/review/<review-ulid>/<relative-path>`
+            when: |
+              the export is written to an output directory
+          - given: |
+              a static export includes a review with a declared document resource
+            id: ac-static-review-doc-asset-exists
+            then: >
+              the review document link points to an asset that exists on disk under
+              `assets/resources/review/<review-ulid>/<relative-path>`
+            when: |
+              the export is written to an output directory
+        tags: []
+        created: 2026-06-06T01:29:20.465Z
+        notes: []
     created: 2026-01-22T01:18:13.672Z
     notes: []
   - _ulid: 01KFMM8F5WG89H244FXVSRZ35E
@@ -2839,6 +2989,81 @@ features:
           arbitrary limit. Only the Done column limits to recent tasks.
         when: The task board renders
     tags: []
+    requirements:
+      - _ulid: 01KTD8S0Q9QXXQCMH90S196RRZ
+        slugs:
+          - live-task-resource-markdown-rendering
+        title: Live Task Resource Markdown Rendering
+        type: requirement
+        description: >
+          The task detail UI rewrites `./resources/<relative-path>` references in task descriptions
+          through the task API's resolved resource projection for both default plan-owned refs and
+          explicit materialized task-owned copies.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: >
+              a derived task description contains a markdown image target using
+              `./resources/<relative-path>` and the matching task resource is a non-drifted
+              plan-owned reference
+            id: ac-plan-owned-task-image-renders
+            then: >
+              the image target is rewritten to the task-scoped resource bytes URL and the browser
+              displays the recorded plan resource image
+            when: |
+              the task detail modal renders in the live web UI
+          - given: >
+              a derived task description contains a markdown document link using
+              `./resources/<relative-path>` and the matching task resource is a non-drifted
+              plan-owned reference
+            id: ac-plan-owned-task-doc-link-opens
+            then: >
+              the browser receives the recorded plan resource document bytes from the selected
+              project
+            when: |
+              the user opens the link from the live task detail modal
+          - given: >
+              a task was derived with `--materialize-resources` and its description contains a
+              markdown image target using `./resources/<relative-path>` for a copied resource
+            id: ac-materialized-task-image-renders
+            then: >
+              the image target is rewritten to the task-scoped resource bytes URL and the browser
+              displays the copied task-owned image
+            when: |
+              the task detail modal renders in the live web UI
+          - given: >
+              a task was derived with `--materialize-resources` and its description contains a
+              markdown document link using `./resources/<relative-path>` for a copied resource
+            id: ac-materialized-task-doc-link-opens
+            then: |
+              the browser receives the copied task-owned document bytes from the selected project
+            when: |
+              the user opens the link from the live task detail modal
+          - given: >
+              a task description references a resource whose resolved task resource status is drift,
+              missing, or unresolved
+            id: ac-drifted-task-resource-is-visible-not-silent
+            then: >
+              the UI shows the resource status message and does not rewrite the markdown target to a
+              URL that silently serves different bytes
+            when: |
+              the task detail modal renders
+          - given: >
+              a task description references `./resources/<relative-path>` and the task has no
+              matching resolved resource path
+            id: ac-unmatched-task-resource-reference-stays-raw
+            then: >
+              the unresolved authoring reference remains visible and the UI shows actionable
+              guidance rather than rewriting it to `/resources/<relative-path>` or an unrelated
+              entity URL
+            when: |
+              the task detail modal renders
+        tags: []
+        created: 2026-06-06T01:29:20.361Z
+        notes: []
     created: 2026-03-05T01:30:02.752Z
     notes: []
   - _ulid: 01KJXSVF4FP4GY593BCW3XZHQM
@@ -5286,6 +5511,41 @@ requirements:
         tags: []
         created: 2026-03-16T08:28:59.038Z
         notes: []
+      - _ulid: 01KTD8S0S0M28SX4YP7ASKV7PN
+        slugs:
+          - live-review-resource-url-project-context
+        title: Live Review Resource URLs Preserve Project Context
+        type: requirement
+        description: >
+          Review resource cards continue to provide the working browser URL comparator for local
+          resources in live multi-project mode.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: >
+              the daemon has multiple projects registered, the web UI has a non-default project
+              selected, and a review has a declared image resource
+            id: ac-review-image-routes-to-selected-project
+            then: >
+              the request returns that selected project's review image bytes instead of the daemon
+              default project's bytes or a project-not-found response
+            when: |
+              the browser fetches the rendered review image preview URL
+          - given: >
+              the daemon has multiple projects registered, the web UI has a non-default project
+              selected, and a review has a declared document resource
+            id: ac-review-doc-link-routes-to-selected-project
+            then: >
+              the request returns that selected project's review document bytes instead of the
+              daemon default project's bytes or a project-not-found response
+            when: |
+              the browser opens the rendered review document link
+        tags: []
+        created: 2026-06-06T01:29:20.416Z
+        notes: []
     created: 2026-03-16T08:28:58.966Z
     notes: []
   - _ulid: 01KNDDJ26TZ8Q55P3GWS1R9G7A
@@ -5390,5 +5650,50 @@ requirements:
           The command falls back to disk-based data loading
     tags: []
     created: 2026-04-07T16:16:30.896Z
+    notes: []
+  - _ulid: 01KTD8S0KTQ3B0QKAHYHDT4JPD
+    slugs:
+      - live-plan-resource-url-project-context
+    title: Live Plan Resource URLs Preserve Project Context
+    type: requirement
+    description: >
+      Browser-rendered plan resource URLs carry selected-project context in live multi-project mode
+      because image and link elements cannot send `X-Kspec-Dir` headers.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: >
+          the daemon has multiple projects registered, the web UI has a non-default project
+          selected, and a plan markdown image references a declared resource with
+          `./resources/<relative-path>`
+        id: ac-plan-image-routes-to-selected-project
+        then: >
+          the request returns that selected project's declared plan resource bytes instead of the
+          daemon default project's bytes or a project-not-found response
+        when: |
+          the browser fetches the rendered image URL from the plan detail view
+      - given: >
+          the daemon has multiple projects registered, the web UI has a non-default project
+          selected, and a plan markdown document link references a declared resource with
+          `./resources/<relative-path>`
+        id: ac-plan-doc-link-routes-to-selected-project
+        then: >
+          the request returns that selected project's declared plan resource bytes instead of the
+          daemon default project's bytes or a project-not-found response
+        when: |
+          the browser opens the rendered document link from the plan detail view
+      - given: |
+          a rendered live plan resource URL includes selected-project routing context
+        id: ac-plan-resource-url-still-uses-plan-manifest
+        then: >
+          the request still resolves only through the owning plan's resource manifest and rejects
+          undeclared paths, absolute paths, parent traversal paths, and symlink escapes
+        when: |
+          the daemon resolves the resource request
+    tags: []
+    created: 2026-06-06T01:29:20.250Z
     notes: []
 notes: []
