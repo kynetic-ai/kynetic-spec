@@ -72,3 +72,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-06T21:59:49.627Z
+  - _ulid: 01KTFGDQ98DFEE9JHKA15CZJFK
+    content: "Fix cycle 1: addressed the sole review blocker — a newly introduced focused changed-file
+      lint warning eslint-plugin-vitest(require-mock-type-parameters) on the added
+      resolveTaskDataManager mock in tests/daemon-automation-spawner-wiring.test.ts. Typed all
+      hoisted mockState vi.fn() entries with explicit signatures (resolveTaskDataManager ->
+      data-manager factory shape returning loadAllTasks; initContext/loadMetaContext ->
+      Promise<unknown>; runInvocation kept any[] args so captured InvocationOptions incl. optional
+      env stay inspectable). No production/behavior change. Re-ran gates: npx oxlint on the file = 0
+      warnings/0 errors, format:check clean, repo lint --quiet 0 errors, typecheck pass, 12 spawner
+      tests pass, kspec validate refs/alignment/completeness exit 0. The other review thread was the
+      reviewer's evidence log (informational, no action). Canonicalization behavior (event
+      task_id+task_ref forwarding, explicit action.task_ref authority, spawner
+      canonicalization+rejection, CLI --task resolution) is unchanged and was verified-approved by
+      the reviewer."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T22:21:27.720Z
