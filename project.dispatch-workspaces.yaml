@@ -16004,7 +16004,7 @@ workspaces:
         head: 044eccda44dc11c7360897665d1ea5d8e6462e84
         last_seen_at: 2026-06-06T04:45:58.767Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-generic-acp-process-adapter-01kt7y7r
-  - active_role: null
+  - active_role: worker
     base_branch_point: 45d6db87895211f041bd4e1c12be7cd620549178
     bootstrap:
       status: succeeded
@@ -16334,7 +16334,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-06T05:05:28.031Z
+      updated_at: 2026-06-06T05:05:31.014Z
     integration:
       status: pending
       detail: null
@@ -16343,16 +16343,16 @@ workspaces:
       target_branch: dev
       target_commit: 45d6db87895211f041bd4e1c12be7cd620549178
       updated_at: 2026-06-06T05:05:28.031Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KTD8S0X16VGB70KKE47SN47Q"
     task_slug: add-resource-url-task-markdown-contract-tests
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-06T04:55:15.264Z
-      last_reconciled_at: 2026-06-06T05:05:28.031Z
+      last_active_at: 2026-06-06T05:05:31.014Z
+      last_reconciled_at: 2026-06-06T05:05:31.014Z
       created_at: 2026-06-06T04:44:14.796Z
-      updated_at: 2026-06-06T05:05:28.595Z
+      updated_at: 2026-06-06T05:05:31.014Z
     workspace_id: dispatch-workspace-01KTD8S0X16VGB70KKE47SN47Q
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
