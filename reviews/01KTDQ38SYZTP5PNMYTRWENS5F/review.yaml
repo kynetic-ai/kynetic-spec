@@ -177,6 +177,13 @@ events:
       status: pass
       name: kspec validate schema
     timestamp: 2026-06-06T05:53:53.842Z
+  - _ulid: 01KTDQXX14V6YNNABH3TX1KEBJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTDQXWT6PNK0KZTTGDRVCCAE
+    timestamp: 2026-06-06T05:54:09.060Z
 examined_commit: 0c9772d7e5806cbe8fadfc5e82a775c5801e9c90
 external_links: []
 lifecycle_state: open
@@ -186,8 +193,29 @@ subject:
   content_hash: ""
   ref: "@01KT7Y7RTBX6D8RJC5E71SEMB7"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTDQXWT6PNK0KZTTGDRVCCAE
+    entries:
+      - _ulid: 01KTDQXWT6AZVAYVQA5SMEE9F4
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; prior review @01KTDM290J7CPPM5RK2A2SZW1W;
+          task/spec context for @runner-process-invocation-inputs, @runner-operator-surfaces,
+          @runner-invocation-semantics, @runner-resolution-and-preflight; changed files under
+          src/agents, src/cli/commands/agent.ts, and affected tests. Commands run: git
+          diff/stat/name-only; AC annotation rg; source-scanning rg; npm run format:check; npm run
+          lint -- --quiet; focused npx oxlint on changed files; npm run typecheck; npm test; kspec
+          validate refs/alignment/completeness/schema with --warnings-ok. Claims verified: previous
+          command-less non-generic adapter blocker now has type-level
+          CommandAdapter/ProcessExecutableAdapter split and runtime invalid_adapter checks;
+          generic-acp without process.executable fails with missing_process_executable; generic-acp
+          with process.executable spawns runner executable and contributes no built-in
+          args/auto-approve args; package-backed executable override preserves base args and
+          autoApproveArgs; generic-acp prompt formatting remains portable. Categories searched:
+          correctness, edge cases, error handling, operator diagnostics, test quality, AC coverage,
+          integration, regression against previous blocker. Findings: none."
+        created_at: 2026-06-06T05:54:08.838Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-06T05:39:36.382Z
-updated_at: 2026-06-06T05:53:53.632Z
+updated_at: 2026-06-06T05:54:08.838Z
 notes: []
