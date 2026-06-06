@@ -46,6 +46,19 @@ checks:
     runner: npm test
     created_at: 2026-06-06T08:18:26.449Z
     completed_at: 2026-06-06T08:18:26.449Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- tests/dispatch-task-identity.test.ts
+      tests/dispatch-canonical-task-identity-integration.test.ts tests/agent-dispatch-engine.test.ts
+      tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-cleanup-completion.test.ts
+      tests/agent-invocation-lifecycle.test.ts exited 0; 69 suites passed and 260 tests passed.
+    name: focused dispatch/workspace tests
+    required: false
+    runner: npm test -- focused dispatch/workspace files
+    created_at: 2026-06-06T08:18:36.704Z
+    completed_at: 2026-06-06T08:18:36.704Z
 events:
   - _ulid: 01KTDZ792Q39WMR8F7FFQ9RB10
     actor: Jacob Chapel
@@ -88,6 +101,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-06T08:18:26.655Z
+  - _ulid: 01KTE06DQQ48MY7F8BAHE6QAQ9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch/workspace tests
+    timestamp: 2026-06-06T08:18:36.919Z
 examined_commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
 external_links: []
 lifecycle_state: open
@@ -100,5 +120,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-06T08:01:36.343Z
-updated_at: 2026-06-06T08:18:26.449Z
+updated_at: 2026-06-06T08:18:36.704Z
 notes: []
