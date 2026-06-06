@@ -109,3 +109,22 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-06T09:17:25.098Z
+  - _ulid: 01KTE68TN3Y6HS51Z4NCQMN8VJ
+    content: "Fix cycle 4: addressed the single blocker in @01KTE2QB (invocation.ts:780). Session
+      metadata + event history persisted the display task ref as task_id because _spawnInvocation
+      passed only taskRef and InvocationOptions had no canonical id field. Fixes: (1) added
+      InvocationOptions.taskId (canonical full ULID); runInvocation now persists task_id=canonical
+      and a new SessionMetadata.task_ref=display field separately, across createSession and all 8
+      appendSessionEvent payloads. (2) Threaded entry.change.taskId from _spawnInvocation and
+      best-effort resolution from one-shot `kspec agent run`. (3) getConsecutiveFailureCount keyed
+      on canonical id with display-ref fallback for legacy sessions. (4) Added task_ref to
+      SessionLogSummary + session log --task filter (matches id or display ref). (5) Added canonical
+      task_id to session.idle context/payload for AC consistency. Behavioral test now drives the
+      REAL runInvocation (not a mock) and asserts returned SessionMetadata + persisted session.yaml
+      + events.jsonl all separate canonical task_id from display task_ref; plus legacy fallback
+      test. Re-verified ac-session-and-event-payloads-separate-id-from-display-ref and adjacent ACs.
+      Gates: format, lint 0 errors, focused oxlint 0 new warnings, typecheck, full npm test (10275
+      passed / 5 skipped / 0 failed), all kspec validate gates exit 0."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T10:04:47.139Z
