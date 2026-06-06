@@ -61018,9 +61018,21 @@ runs:
     completed_at: 2026-06-06T22:02:36.069Z
   - _ulid: 01KTFH5EFJ4JC9EAGBVFA2BP6X
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-06T22:34:25.138Z
+        completed_at: 2026-06-06T22:35:46.611Z
+        notes: "What worked well: the kspec review record captured deterministic gate evidence before
+          approval, and the detached merge helper refused to move refs while dev was checked out in
+          an unsafe/auxiliary surface. That refusal gave precise recovery guidance and the retry
+          then merged cleanly."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-06T22:35:46.611Z
+        completed_at: 2026-06-06T22:35:46.611Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T22:34:25.138Z
