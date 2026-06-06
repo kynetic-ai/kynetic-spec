@@ -25,6 +25,12 @@ import {
   testUlid,
 } from "./helpers/cli.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+import { initContext } from "../src/parser/index.js";
+import { findDispatchWorkspaceByExactTaskRef } from "../src/parser/dispatch-workspaces.js";
+import {
+  AmbiguousWorkspaceTaskError,
+  findDispatchWorkspaceByCanonicalTask,
+} from "../src/agent-runtime/workspace-identity.js";
 
 ensureSplitBackendRegistered();
 
@@ -701,5 +707,182 @@ describe("dispatch canonical task identity: scheduler", { timeout: 60_000 }, () 
     expect(sessionEnded?.payload.task_ref).toBe("@task-session-payload");
 
     await engine.stop();
+  });
+});
+
+// ─── Canonical-safe workspace lookup + target-branch resolution ───────────────
+
+describe("dispatch canonical task identity: workspace lookup APIs", { timeout: 60_000 }, () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-canonical-ws-lookup-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(tempDir);
+  });
+
+  /** Strip task_id from every persisted record to simulate a pre-canonical
+   * historical record whose only task identity is its display task_ref. */
+  async function stripTaskIdFromRegistry(dir: string): Promise<void> {
+    const registryPath = path.join(dir, "project.dispatch-workspaces.yaml");
+    const raw = YAML.parse(await readTestOutput(registryPath)) as {
+      workspaces: Array<Record<string, unknown>>;
+    };
+    for (const ws of raw.workspaces) delete ws.task_id;
+    await fs.writeFile(registryPath, YAML.stringify(raw), "utf-8");
+  }
+
+  // AC: @dispatch-canonical-task-identity ac-workspace-target-lookup-canonicalizes-historical-aliases
+  // AC: @dispatch-workspace-registry ac-4
+  it("loads the integration target branch by canonical ULID for a historical slug-only record", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+    const taskUlid = testUlid("WTGT", 1);
+    await setupProjectWithTask(tempDir, taskUlid, "task-old-slug");
+
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef: "@task-old-slug",
+      task: { title: "Old Slug", slugs: ["task-old-slug"] },
+    });
+
+    // The provisioned record carries the slug as its display ref. Capture its
+    // target branch, then strip task_id so only the historical slug remains.
+    const beforeRecords = await readRegistry(tempDir);
+    const expectedTarget = beforeRecords[0].integration.target_branch;
+    expect(expectedTarget).toBeTruthy();
+    await stripTaskIdFromRegistry(tempDir);
+
+    const ctx = await initContext(tempDir);
+
+    // Exact raw-ref lookup by the canonical ULID alias MISSES the slug record —
+    // this is exactly the alias-sensitive bug the canonical API must avoid.
+    const exactMiss = await findDispatchWorkspaceByExactTaskRef(ctx, `@${taskUlid}`);
+    expect(exactMiss).toBeUndefined();
+
+    // Canonical lookup resolves the slug record by canonical identity and
+    // returns its existing integration target branch.
+    const canonical = await findDispatchWorkspaceByCanonicalTask(ctx, `@${taskUlid}`);
+    expect(canonical).toBeDefined();
+    expect(canonical?.integration.target_branch).toBe(expectedTarget);
+
+    // The DispatchEngine's own target loader (the production cleanup/terminal
+    // path) resolves the same target by canonical ULID — proving production
+    // code uses canonical identity, not exact raw-ref matching.
+    const engine = new DispatchEngine({
+      projectDir: tempDir,
+      specDir: tempDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+      reconcileIntervalMs: 0,
+    });
+    const loadTarget = (
+      engine as unknown as {
+        _loadWorkspaceTargetForTask: (
+          taskId: string | undefined,
+          taskRef?: string | undefined,
+        ) => Promise<string | null>;
+      }
+    )._loadWorkspaceTargetForTask.bind(engine);
+    expect(await loadTarget(taskUlid, `@${taskUlid}`)).toBe(expectedTarget);
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases
+  // AC: @dispatch-canonical-task-identity ac-workspace-lookup-apis-use-canonical-identity
+  it("resolves the same non-closed record via full-ULID, slug, and unique-prefix aliases", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+    const taskUlid = testUlid("WALI", 1);
+    await setupProjectWithTask(tempDir, taskUlid, "task-alias-lookup");
+
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef: "@task-alias-lookup",
+      task: { title: "Alias Lookup", slugs: ["task-alias-lookup"] },
+    });
+
+    const ctx = await initContext(tempDir);
+    const bySlug = await findDispatchWorkspaceByCanonicalTask(ctx, "@task-alias-lookup");
+    const byUlid = await findDispatchWorkspaceByCanonicalTask(ctx, `@${taskUlid}`);
+    const byPrefix = await findDispatchWorkspaceByCanonicalTask(ctx, `@${taskUlid.slice(0, 12)}`);
+
+    expect(bySlug).toBeDefined();
+    // All three aliases resolve to one workspace record — no forked identity.
+    expect(byUlid?.workspace_id).toBe(bySlug?.workspace_id);
+    expect(byPrefix?.workspace_id).toBe(bySlug?.workspace_id);
+    expect(byUlid?.canonical_branch).toBe(bySlug?.canonical_branch);
+    expect(byPrefix?.canonical_branch).toBe(bySlug?.canonical_branch);
+    expect(byUlid?.worktrees.worker.path).toBe(bySlug?.worktrees.worker.path);
+    expect(byUlid?.integration.target_branch).toBe(bySlug?.integration.target_branch);
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+  // AC: @dispatch-workspace-registry ac-2
+  it("rejects more than one non-closed record resolving to the same canonical task", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+    const taskUlid = testUlid("WAMB", 1);
+    await setupProjectWithTask(tempDir, taskUlid, "task-ambiguous-lookup");
+
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef: "@task-ambiguous-lookup",
+      task: { title: "Ambiguous", slugs: ["task-ambiguous-lookup"] },
+    });
+
+    // Forge a SECOND non-closed record under a different display alias (full
+    // ULID) with task_id stripped from both, so they collide only by canonical
+    // resolution — the parser's task_id-keyed validator cannot catch them.
+    const registryPath = path.join(tempDir, "project.dispatch-workspaces.yaml");
+    const raw = YAML.parse(await readTestOutput(registryPath)) as {
+      workspaces: Array<Record<string, unknown>>;
+    };
+    const clone = JSON.parse(JSON.stringify(raw.workspaces[0])) as Record<string, unknown>;
+    delete raw.workspaces[0].task_id;
+    delete clone.task_id;
+    clone.workspace_id = "dispatch-workspace-ambiguous-2";
+    clone.task_ref = `@${taskUlid}`;
+    raw.workspaces.push(clone);
+    await fs.writeFile(registryPath, YAML.stringify(raw), "utf-8");
+
+    const ctx = await initContext(tempDir);
+    await expect(findDispatchWorkspaceByCanonicalTask(ctx, `@${taskUlid}`)).rejects.toThrow(
+      AmbiguousWorkspaceTaskError,
+    );
+    await expect(
+      findDispatchWorkspaceByCanonicalTask(ctx, "@task-ambiguous-lookup"),
+    ).rejects.toThrow(/Multiple non-closed dispatch workspace records resolve to canonical task/);
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-workspace-lookup-apis-use-canonical-identity
+  it("falls back to raw task_ref equality only when neither query nor record resolves", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+    // The only resolvable task is unrelated to the provisioned workspace.
+    const otherUlid = testUlid("WRAW", 1);
+    await setupProjectWithTask(tempDir, otherUlid, "task-unrelated");
+
+    // Provision a workspace for a ref that resolves to NO current task, so the
+    // record is unresolvable on the record side (no task_id, stale task_ref).
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef: "@task-ghost",
+      task: { title: "Ghost", slugs: ["task-ghost"] },
+    });
+
+    const ctx = await initContext(tempDir);
+
+    // Both query and record are unresolvable ⇒ exact raw-ref equality matches.
+    const rawMatch = await findDispatchWorkspaceByCanonicalTask(ctx, "@task-ghost");
+    expect(rawMatch).toBeDefined();
+    expect(rawMatch?.task_ref).toBe("@task-ghost");
+
+    // A resolvable query for a DIFFERENT task must NOT match the stale record
+    // via raw fallback — canonical resolution rejects the mismatch.
+    const noFalseMatch = await findDispatchWorkspaceByCanonicalTask(ctx, "@task-unrelated");
+    expect(noFalseMatch).toBeUndefined();
   });
 });

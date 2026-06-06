@@ -18,8 +18,12 @@ import {
 } from "../parser/dispatch-workspaces.js";
 import { loadProjectConfig } from "../parser/config.js";
 import { commitIfShadow } from "../parser/shadow.js";
-import { buildTaskRefResolver, type TaskRefResolver } from "./task-identity.js";
-import type { KspecContext } from "../parser/yaml.js";
+import {
+  buildProjectTaskResolver,
+  recordCanonicalId,
+  recordMatchesTask,
+  resolveCanonicalId,
+} from "./workspace-identity.js";
 import type {
   DispatchWorkspaceBootstrapState,
   DispatchWorkspaceBootstrapRoleState,
@@ -838,64 +842,6 @@ function workspaceIdFor(taskRefOrId: string): string {
  */
 function normalizeProtectionKey(value: string): string {
   return value.replace(/^@/, "").toUpperCase();
-}
-
-/**
- * Build a task-ref resolver for the project so workspace lookups can compare
- * records by canonical task ULID rather than raw display refs.
- */
-async function buildProjectTaskResolver(ctx: KspecContext): Promise<TaskRefResolver | null> {
-  try {
-    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-    return buildTaskRefResolver(tasks);
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Resolve a task ref (slug, full ULID, or unique ULID prefix) to its canonical
- * full task ULID, or null when it cannot be uniquely resolved.
- */
-function resolveCanonicalId(resolver: TaskRefResolver | null, taskRef: string): string | null {
-  if (!resolver) return null;
-  const result = resolver.resolve(taskRef);
-  return result.ok ? result.ulid : null;
-}
-
-/**
- * Canonical task ULID for a workspace record: the recorded `task_id` when
- * present (already canonical), otherwise the resolution of its historical
- * `task_ref`. Returns null for unresolvable historical records so callers can
- * classify them stale rather than fork identity.
- *
- * AC: @dispatch-canonical-task-identity ac-historical-workspace-records-normalize-or-stale
- */
-function recordCanonicalId(
-  record: DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord,
-  resolver: TaskRefResolver | null,
-): string | null {
-  if (record.task_id) return record.task_id;
-  return resolveCanonicalId(resolver, record.task_ref);
-}
-
-/**
- * True when a workspace record represents the same canonical task as the query.
- * Prefers canonical ULID comparison; falls back to raw task_ref equality only
- * when neither side can be canonicalized (so behavior degrades safely when the
- * task index is unavailable).
- */
-function recordMatchesTask(
-  record: DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord,
-  queryTaskRef: string,
-  queryCanonicalId: string | null,
-  resolver: TaskRefResolver | null,
-): boolean {
-  if (queryCanonicalId) {
-    const recordId = recordCanonicalId(record, resolver);
-    if (recordId) return recordId === queryCanonicalId;
-  }
-  return record.task_ref === queryTaskRef;
 }
 
 /**
