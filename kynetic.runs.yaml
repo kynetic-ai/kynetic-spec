@@ -60859,7 +60859,7 @@ runs:
     started_at: 2026-06-06T11:25:54.895Z
     completed_at: 2026-06-06T11:28:24.864Z
   - _ulid: 01KTED8QRAAGY2AAJWS9M2KE5C
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -60914,7 +60914,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-06T12:09:25.253Z
-        completed_at: 2026-06-06T12:09:25.253Z
+        completed_at: 2026-06-06T12:09:51.042Z
+        notes: "Captured one friction observation: @01KTEDDE. Did not capture test-duration friction because
+          existing test-runner progress and shard-stability tracking already cover adjacent work.
+          Did not capture review evidence-log noise because existing observations already cover the
+          lack of a first-class evidence-log place."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T12:07:04.202Z
+    completed_at: 2026-06-06T12:09:51.042Z
