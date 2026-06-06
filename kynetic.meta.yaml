@@ -20924,6 +20924,31 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-06T12:09:38.469Z
+  - _ulid: 01KTFE143Q2QFNY548TJ4163WY
+    type: friction
+    content: "Full `npm test` run concurrently across multiple dispatch worktrees produces flaky
+      failures (e.g. `git: /usr/bin/git: Text file busy` on `git init` in temp-repo tests) plus a
+      ~74min wall-clock run. Two dispatch-workspace-config tests failed this way during a
+      worktree-isolated full-suite run and passed cleanly on isolated re-run. The session-scoped
+      result cache isolates results, but the git binary itself is contended across parallel agents.
+      Friction: agents cannot distinguish env-contention flakes from real regressions without manual
+      isolated re-runs."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-06T21:39:37.719Z
+  - _ulid: 01KTFE14H7N8RK8FA7D8WTATE0
+    type: friction
+    content: In-process CLI tests (createTestProgram + parseAsync) that load split-format tasks throw
+      TaskDataManagerError 'No storage backend registered for format split' unless the test first
+      calls ensureSplitBackendRegistered(). The subprocess kspec CLI does this during bootstrap, but
+      in-process command handlers do not. Cost discovery time when adding an in-process `agent run
+      --task` canonical-identity test. Not captured in the testing convention rules or test-helper
+      docs.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-06T21:39:38.151Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
