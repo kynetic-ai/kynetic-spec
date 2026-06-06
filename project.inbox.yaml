@@ -4108,3 +4108,20 @@ inbox:
       - reliability
     added_by: Jacob Chapel
     created_at: 2026-06-06T05:01:16.287Z
+  - _ulid: 01KTDZ3WM0EK9P5ZX9907Z5ATQ
+    text: "Review thread entries strip backtick-wrapped inline code from finding bodies. On task
+      @01KTDPVY (review @01KTDWNZ), a MUST-FIX blocker created via 'kspec review' rendered/stored as
+      'MUST-FIX:  accepts  paired with an unresolved ...' with all `code` spans (e.g.
+      `normalizeTaskIdentity`, `task_id`, `task_ref`, file:line refs) removed — both in 'kspec
+      review get' output AND in the --json body, suggesting the loss is at storage time, not just
+      display. The reviewer worked around it by posting a second 'Clean finding text:' entry with
+      the same content; consumers had to read --json to recover the finding. Triage: determine
+      whether backtick content is dropped on thread create/reply (storage) vs. on terminal render,
+      then fix so inline code survives round-trip. Repro: create a review thread whose body contains
+      backtick-delimited identifiers and inspect 'kspec review get --json'."
+    tags:
+      - bug
+      - review
+      - cli
+    added_by: "@claude"
+    created_at: 2026-06-06T07:59:45.280Z
