@@ -156,7 +156,7 @@ description: >
 spec_ref: "@dispatch-canonical-task-identity"
 plan_ref: "@plan-dispatch-canonical-task-identity-plan"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -177,7 +177,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-canonicalize-dispatch-task-identity/01ktdpvy
-session_id: 01KTDXVZB6N284PPQ1R5SBBVZJ
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -283,6 +283,16 @@ history:
         previous: "@01KTDWNZBC1Z0VPB53R539TPES"
     command: review-link
     timestamp: 2026-06-06T08:01:38.468Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KTDXVZB6N284PPQ1R5SBBVZJ
+    command: review-verdict-needs-work
+    timestamp: 2026-06-06T08:20:42.248Z
 created_at: 2026-06-06T05:35:36.251Z
 started_at: 2026-06-06T07:40:48.652Z
 submitted_at: 2026-06-06T07:58:11.330Z
