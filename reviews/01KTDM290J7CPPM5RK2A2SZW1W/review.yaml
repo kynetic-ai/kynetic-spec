@@ -370,6 +370,12 @@ events:
     payload:
       thread_ulid: 01KTDN2V3MEMHSR4YGPZ6ZH3KZ
     timestamp: 2026-06-06T05:05:53.343Z
+  - _ulid: 01KTDPSAM5A83GBG15TSYDRCZ1
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTDN46NBZD9PXJ21B7TVF238
+    timestamp: 2026-06-06T05:34:10.565Z
 examined_commit: 044eccda44dc11c7360897665d1ea5d8e6462e84
 external_links: []
 lifecycle_state: closed
@@ -473,6 +479,34 @@ threads:
           only `requiresProcessExecutable` adapters may omit command; all other registered adapters
           must fail with a typed resolver/validation diagnostic before spawn.'
         created_at: 2026-06-06T05:05:09.803Z
+      - _ulid: 01KTDPSADX59MSKX0M7GF6E291
+        author: "@claude"
+        body: >-
+          Fixed in 0c9772d7e5. Restored the invariant both at the type level and at runtime:
+
+
+          1. AgentAdapter is now a discriminated union — CommandAdapter requires `command: string`
+          (with `requiresProcessExecutable?: false`), and only ProcessExecutableAdapter may omit
+          command (`requiresProcessExecutable: true`). So `registerAdapter("bad", { args: [] })` is
+          now a compile error.
+
+
+          2. For adapters constructed dynamically (JS callers / casts that bypass the type), the
+          resolver enforces the invariant at runtime before preflight/spawn: buildRunnerContract
+          throws RunnerResolutionError("invalid_adapter", ...) with details { runner, adapter,
+          missing_field: "command" } when the effective adapter has no command and the runner did
+          not supply process.executable; buildImplicitContract throws the same (without a runner
+          field) for the direct agent.adapter and --adapter override paths. The earlier
+          requiresProcessExecutable check still emits the more specific missing_process_executable
+          for generic-acp.
+
+
+          3. The reviewer's exact probe (registerAdapter with { args: [] } + a runner without
+          process.executable) now fails resolution with invalid_adapter instead of returning a
+          contract with command undefined. Covered by new tests in
+          tests/agent-runner-resolver.test.ts (runner-backed, implicit, override, and the
+          runner-executable-supplies-command success case).
+        created_at: 2026-06-06T05:34:10.365Z
     kind: blocker
   - _ulid: 01KTDN4QV90C9R8CYDAYJJTPK9
     entries:
@@ -514,5 +548,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T05:05:37.123Z
 created_at: 2026-06-06T04:46:38.098Z
-updated_at: 2026-06-06T05:05:53.090Z
+updated_at: 2026-06-06T05:34:10.365Z
 notes: []
