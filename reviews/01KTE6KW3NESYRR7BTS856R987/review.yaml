@@ -190,6 +190,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-06T10:24:15.840Z
+  - _ulid: 01KTE7D3H29KYW0D30VYFQW7KJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTE7D3ANC8X4Z50M14764TV1
+    timestamp: 2026-06-06T10:24:35.874Z
 examined_commit: 026ad7653a9c194b8072f0ce2ae7fd6a58b8e7bc
 external_links: []
 lifecycle_state: open
@@ -249,7 +256,33 @@ threads:
           ULID."
         created_at: 2026-06-06T10:15:40.362Z
     kind: blocker
+  - _ulid: 01KTE7D3ANC8X4Z50M14764TV1
+    entries:
+      - _ulid: 01KTE7D3ANRT0V92S3VTHBMN32
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md, task/spec details, prior review @01KTE2QB,
+          task-specific diff from current dev 8e1e446fd4 to 026ad7653a9c,
+          src/agent-runtime/task-identity.ts, dispatch.ts, workspace.ts, invocation.ts,
+          action-executor.ts, event/session schemas, session store/log code, parser
+          dispatch-workspace validation, and changed tests including
+          dispatch-canonical-task-identity-integration, dispatch-task-identity,
+          agent-invocation-lifecycle, session-lifecycle-events, and dispatch-workspace-discovery.
+          Commands run: git status/log/diff/name-only, kspec task get, kspec item get, kspec review
+          add/open/get/for-task/comment/check, rg AC annotation search, npm run format:check, npm
+          run lint -- --quiet, focused npx oxlint for changed files, npm run typecheck, npm test,
+          KSPEC_NO_DAEMON=1 kspec validate --refs/--alignment/--completeness/--schema --warnings-ok,
+          plus two node --import tsx behavioral repros for stale-display-ref metadata recovery and
+          active reviewer target-sync deferral. Claims verified: previous blocker fix for
+          runInvocation now persists canonical task_id and display task_ref separately in session
+          metadata/events; existing canonicalization rejects unresolvable refs paired with task_id;
+          new finding repros show metadata-only discovery and active reviewer target collection
+          still compare display refs. Categories searched: correctness, AC alignment,
+          changed-primary-slug/alias edge cases, error handling/diagnostics, cleanup protection,
+          scheduler dedupe, workspace registry/discovery integration, session/event payload
+          persistence, and test quality."
+        created_at: 2026-06-06T10:24:35.669Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-06T10:10:49.077Z
-updated_at: 2026-06-06T10:24:15.622Z
+updated_at: 2026-06-06T10:24:35.669Z
 notes: []
