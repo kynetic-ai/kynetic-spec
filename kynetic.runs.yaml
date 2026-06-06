@@ -61018,7 +61018,7 @@ runs:
     completed_at: 2026-06-06T22:02:36.069Z
   - _ulid: 01KTFH5EFJ4JC9EAGBVFA2BP6X
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61032,7 +61032,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-06T22:35:46.611Z
-        completed_at: 2026-06-06T22:35:46.611Z
+        completed_at: 2026-06-06T22:35:56.052Z
+        notes: "Friction: after approval, the merge helper classified the clean project-root dev checkout as
+          an auxiliary target checkout and refused before moving refs. Recovery was safe, but
+          required detaching /home/chapel/Projects/kynetic-spec-dispatch manually from this assigned
+          workspace; after merge, that root checkout remained detached. This is repeatable operator
+          friction for dispatched reviews where the root checkout happens to hold the integration
+          branch."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-06T22:35:56.052Z
+        completed_at: 2026-06-06T22:35:56.052Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T22:34:25.138Z
