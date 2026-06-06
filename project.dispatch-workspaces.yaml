@@ -17194,12 +17194,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-06T10:09:27.468Z
+      updated_at: 2026-06-06T10:09:33.811Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-06T10:09:27.468Z
+      updated_at: 2026-06-06T10:09:33.811Z
     integration:
       status: pending
       detail: null
@@ -17207,24 +17207,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 45d6db87895211f041bd4e1c12be7cd620549178
-      updated_at: 2026-06-06T10:09:27.468Z
-    lifecycle_state: ready
+      updated_at: 2026-06-06T10:09:33.811Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KTDPVY9VEE3E3WGJFMYMGRHH"
     task_slug: task-canonicalize-dispatch-task-identity
     timestamps:
       closed_at: null
       last_active_at: 2026-06-06T09:39:35.624Z
-      last_reconciled_at: 2026-06-06T10:09:27.468Z
+      last_reconciled_at: 2026-06-06T10:09:33.811Z
       created_at: 2026-06-06T05:38:54.115Z
-      updated_at: 2026-06-06T10:09:27.468Z
+      updated_at: 2026-06-06T10:09:33.811Z
     workspace_id: dispatch-workspace-01KTDPVY9VEE3E3WGJFMYMGRHH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 026ad7653a9c194b8072f0ce2ae7fd6a58b8e7bc
+        last_seen_at: 2026-06-06T10:09:33.811Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-canonicalize-dispatch-task-identity-01ktdpvy-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-canonicalize-dispatch-task-identity/01ktdpvy
-        head: 0e1896826ae024c59148daf1820f1f7a122145b1
-        last_seen_at: 2026-06-06T09:39:34.666Z
+        head: 026ad7653a9c194b8072f0ce2ae7fd6a58b8e7bc
+        last_seen_at: 2026-06-06T10:09:33.811Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-canonicalize-dispatch-task-identity-01ktdpvy
