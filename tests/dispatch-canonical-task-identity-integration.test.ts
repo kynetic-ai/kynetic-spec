@@ -9,6 +9,8 @@ import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import {
   provisionDispatchWorkspace,
+  discoverWorkspaceForReviewOrFixCycle,
+  getDispatchWorkspaceHealth,
   buildDispatchArtifactProtectionState,
   type DispatchWorkspaceMetadata,
 } from "../src/agent-runtime/workspace.js";
@@ -291,6 +293,55 @@ describe(
 
       // The original workspace id is unchanged — no fork happened.
       expect(first.metadata.taskId).toBe(taskUlid);
+    });
+
+    // AC: @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases
+    it("recovers a metadata-backed worktree under a different alias when its display ref is stale", async () => {
+      await seedRepo(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+      const taskUlid = testUlid("WSMD", 1);
+      await setupProjectWithTask(tempDir, taskUlid, "task-metadata-alias");
+
+      // Provision under the SLUG alias: metadata persists taskId=<ULID> with the
+      // display ref taskRef=@task-metadata-alias captured at provision time.
+      const provisioned = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef: "@task-metadata-alias",
+        task: { title: "Meta", slugs: ["task-metadata-alias"] },
+      });
+
+      // Drop the registry record but keep the worktree + metadata file so
+      // discovery must fall through to the metadata-backed phase rather than
+      // short-circuiting on registry state.
+      const registryPath = path.join(tempDir, "project.dispatch-workspaces.yaml");
+      await fs.writeFile(
+        registryPath,
+        YAML.stringify({ kynetic_dispatch_workspaces: "1.0", workspaces: [] }),
+        "utf-8",
+      );
+      const healthBefore = await getDispatchWorkspaceHealth({
+        projectDir: tempDir,
+        taskRef: "@task-metadata-alias",
+      });
+      expect(healthBefore.exists).toBe(false);
+
+      // Discover under a DIFFERENT alias (full ULID). The metadata file's display
+      // ref (@task-metadata-alias) no longer equals the query ref (@<ULID>), so
+      // pure display-ref matching would miss it; canonical-id matching recovers it.
+      const result = await discoverWorkspaceForReviewOrFixCycle({
+        projectDir: tempDir,
+        taskRef: `@${taskUlid}`,
+        role: "worker",
+      });
+      expect(result.recovered).toBe(true);
+      expect(result.recoverySource).toBe("metadata-backed-worktree");
+
+      // The reconstructed record carries canonical identity and the same
+      // workspace lineage — the stale display ref did not fork the workspace.
+      const open = (await readRegistry(tempDir)).filter((r) => r.lifecycle_state !== "closed");
+      expect(open).toHaveLength(1);
+      expect(open[0].task_id).toBe(taskUlid);
+      expect(open[0].workspace_id).toBe(provisioned.metadata.workspaceId);
     });
   },
 );

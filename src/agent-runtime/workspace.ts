@@ -5309,9 +5309,26 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
     const entriesUnderRoot = worktreeEntries.filter((entry) =>
       isPathInside(resolvedConfig.worktreeRoot, entry.path),
     );
+    // Identity key for the discovery target: the canonical task ULID when the
+    // display ref resolves, otherwise the raw display ref. A metadata file is a
+    // match when its own identity key (persisted taskId, else resolved from its
+    // display ref, else the raw display ref) equals this key. This lets a
+    // metadata file persisted under a stale display ref (e.g. @old-slug, or after
+    // a primary-slug change) be recovered when discovery runs under a different
+    // alias of the same task, while preserving display-ref matching for refs that
+    // cannot be canonicalized.
+    // AC: @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases
+    const discoveryIdentityKey = canonicalTaskId ?? taskRef;
     for (const entry of entriesUnderRoot) {
       const metadata = await readWorkspaceMetadata(entry.path);
-      if (metadata && metadata.taskRef === taskRef) {
+      if (!metadata) {
+        continue;
+      }
+      const metadataIdentityKey =
+        metadata.taskId ??
+        (await resolveProjectCanonicalId(projectDir, metadata.taskRef)) ??
+        metadata.taskRef;
+      if (metadataIdentityKey === discoveryIdentityKey) {
         metadataCandidate = {
           branch: metadata.canonicalBranch,
           worktreeDir: entry.path,

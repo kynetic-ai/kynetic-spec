@@ -3940,22 +3940,64 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred
    */
   private async _activeReviewerTargets(): Promise<Set<string>> {
-    const reviewerTaskRefs = new Set<string>();
-    for (const record of this.activeInvocationDetails.values()) {
-      if (record.role === "reviewer" && record.taskRef) {
-        reviewerTaskRefs.add(record.taskRef);
-      }
-    }
-    if (reviewerTaskRefs.size === 0) {
+    // Cheaply short-circuit when no reviewer is active. This must precede any
+    // project context / task loading so the periodic-sync caller is not exposed
+    // to context-load failures (and the unnecessary cost) when there is nothing
+    // to defer.
+    const activeReviewers = [...this.activeInvocationDetails.values()].filter(
+      (record) => record.role === "reviewer",
+    );
+    if (activeReviewers.length === 0) {
       return new Set();
     }
 
     const ctx = await initContext(this.projectDir);
+    // Resolve workspace records and active reviewer identities by canonical task
+    // ULID, never by display ref. An active reviewer started under @new-slug must
+    // still defer the integration target for its registry record even when that
+    // record retains a stale display ref @old-slug, because both resolve to the
+    // same canonical task_id.
+    // AC: @dispatch-canonical-task-identity ac-cross-agent-exclusivity-uses-canonical-task
+    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+    const resolver = buildTaskRefResolver(tasks);
+    // Identity key for a task-scoped record: the canonical full task ULID when
+    // it is known (persisted id, else resolvable display ref), otherwise the raw
+    // display ref. Using the canonical id as the key lets an active reviewer
+    // started under @new-slug match its registry record persisted under a stale
+    // @old-slug. The display-ref fallback preserves legacy behavior for refs that
+    // cannot be canonicalized (e.g. tasks no longer present in the index).
+    const identityKeyFor = (
+      taskId: string | undefined,
+      taskRef: string | undefined,
+    ): string | null => {
+      if (taskId) {
+        return taskId;
+      }
+      if (taskRef) {
+        const result = resolver.resolve(taskRef);
+        return result.ok ? result.ulid : taskRef;
+      }
+      return null;
+    };
+
+    const reviewerTaskKeys = new Set<string>();
+    for (const record of activeReviewers) {
+      const key = identityKeyFor(record.taskId, record.taskRef);
+      if (key !== null) {
+        reviewerTaskKeys.add(key);
+      }
+    }
+    if (reviewerTaskKeys.size === 0) {
+      return new Set();
+    }
+
     const records = await loadDispatchWorkspaceRegistry(ctx);
     const targets = new Set<string>();
     for (const record of records) {
+      const recordKey = identityKeyFor(record.task_id, record.task_ref);
       if (
-        reviewerTaskRefs.has(record.task_ref) &&
+        recordKey !== null &&
+        reviewerTaskKeys.has(recordKey) &&
         record.lifecycle_state !== "closed" &&
         record.integration.target_branch.trim().length > 0
       ) {
