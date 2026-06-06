@@ -18,6 +18,8 @@ import {
 } from "../parser/dispatch-workspaces.js";
 import { loadProjectConfig } from "../parser/config.js";
 import { commitIfShadow } from "../parser/shadow.js";
+import { buildTaskRefResolver, type TaskRefResolver } from "./task-identity.js";
+import type { KspecContext } from "../parser/yaml.js";
 import type {
   DispatchWorkspaceBootstrapState,
   DispatchWorkspaceBootstrapRoleState,
@@ -95,6 +97,14 @@ export interface ResolvedDispatchWorkspaceConfig {
 
 export interface DispatchWorkspaceMetadata {
   workspaceId: string;
+  /**
+   * Canonical full task ULID — authoritative workspace identity. May be null
+   * for legacy metadata persisted before canonical identity tracking; resolved
+   * from taskRef on registry write.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  taskId: string | null;
+  /** Display task ref (slug or @ULID); never an identity key. */
   taskRef: string;
   taskSlug: string;
   baseBranch: string;
@@ -795,12 +805,126 @@ function normalizeTaskSlug(taskRef: string, task?: { title?: string; slugs?: str
   return normalized || "task";
 }
 
-function shortTaskId(taskRef: string): string {
-  return taskRef.replace(/^@/, "").slice(0, 8).toLowerCase();
+/**
+ * Deterministic short identity segment for a task. When a canonical full task
+ * ULID is known, the short id is the first 8 ULID characters so workspace
+ * lineage (branch names, worktree basenames) stays stable across every display
+ * alias of the same task. Falls back to the raw ref for inputs that cannot be
+ * canonicalized.
+ *
+ * AC: @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases
+ */
+function shortTaskId(taskRefOrId: string): string {
+  return taskRefOrId.replace(/^@/, "").slice(0, 8).toLowerCase();
 }
 
-function workspaceIdFor(taskRef: string): string {
-  return `dispatch-workspace-${taskRef.replace(/^@/, "")}`;
+/**
+ * Workspace id keyed on canonical task identity so aliases of the same task
+ * resolve to the same workspace record.
+ *
+ * AC: @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases
+ */
+function workspaceIdFor(taskRefOrId: string): string {
+  return `dispatch-workspace-${taskRefOrId.replace(/^@/, "")}`;
+}
+
+/**
+ * Canonical protection key for a task identifier: the ULID with any leading `@`
+ * stripped and case-normalized, so an active/in-flight entry supplied as a bare
+ * canonical ULID protects a record persisted under a display alias, and vice
+ * versa.
+ *
+ * AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+ */
+function normalizeProtectionKey(value: string): string {
+  return value.replace(/^@/, "").toUpperCase();
+}
+
+/**
+ * Build a task-ref resolver for the project so workspace lookups can compare
+ * records by canonical task ULID rather than raw display refs.
+ */
+async function buildProjectTaskResolver(ctx: KspecContext): Promise<TaskRefResolver | null> {
+  try {
+    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+    return buildTaskRefResolver(tasks);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Resolve a task ref (slug, full ULID, or unique ULID prefix) to its canonical
+ * full task ULID, or null when it cannot be uniquely resolved.
+ */
+function resolveCanonicalId(resolver: TaskRefResolver | null, taskRef: string): string | null {
+  if (!resolver) return null;
+  const result = resolver.resolve(taskRef);
+  return result.ok ? result.ulid : null;
+}
+
+/**
+ * Canonical task ULID for a workspace record: the recorded `task_id` when
+ * present (already canonical), otherwise the resolution of its historical
+ * `task_ref`. Returns null for unresolvable historical records so callers can
+ * classify them stale rather than fork identity.
+ *
+ * AC: @dispatch-canonical-task-identity ac-historical-workspace-records-normalize-or-stale
+ */
+function recordCanonicalId(
+  record: DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord,
+  resolver: TaskRefResolver | null,
+): string | null {
+  if (record.task_id) return record.task_id;
+  return resolveCanonicalId(resolver, record.task_ref);
+}
+
+/**
+ * True when a workspace record represents the same canonical task as the query.
+ * Prefers canonical ULID comparison; falls back to raw task_ref equality only
+ * when neither side can be canonicalized (so behavior degrades safely when the
+ * task index is unavailable).
+ */
+function recordMatchesTask(
+  record: DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord,
+  queryTaskRef: string,
+  queryCanonicalId: string | null,
+  resolver: TaskRefResolver | null,
+): boolean {
+  if (queryCanonicalId) {
+    const recordId = recordCanonicalId(record, resolver);
+    if (recordId) return recordId === queryCanonicalId;
+  }
+  return record.task_ref === queryTaskRef;
+}
+
+/**
+ * Resolve the canonical full task ULID for a task ref, loading the project task
+ * index. Returns null when the ref cannot be uniquely resolved.
+ */
+async function resolveProjectCanonicalId(
+  projectDir: string,
+  taskRef: string,
+): Promise<string | null> {
+  try {
+    const ctx = await initContext(projectDir);
+    const resolver = await buildProjectTaskResolver(ctx);
+    return resolveCanonicalId(resolver, taskRef);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Canonical short-id segment for a task ref: the first 8 characters of the
+ * resolved task ULID so workspace lineage is stable across display aliases.
+ * Falls back to the raw-ref short id when the ref cannot be canonicalized.
+ *
+ * AC: @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases
+ */
+async function canonicalShortTaskId(projectDir: string, taskRef: string): Promise<string> {
+  const canonicalId = await resolveProjectCanonicalId(projectDir, taskRef);
+  return canonicalId ? shortTaskId(canonicalId) : shortTaskId(taskRef);
 }
 
 async function resolveCommit(cwd: string, ref: string): Promise<string> {
@@ -1550,6 +1674,7 @@ function toMetadata(record: DispatchWorkspaceRecord): DispatchWorkspaceMetadata 
     null;
   return {
     workspaceId: record.workspace_id,
+    taskId: record.task_id ?? null,
     taskRef: record.task_ref,
     taskSlug: record.task_slug,
     baseBranch: record.resolved_base_branch,
@@ -1599,12 +1724,38 @@ async function loadWorkspaceRecordForWorktreeRoot(
 ): Promise<LoadedDispatchWorkspaceRecord | undefined> {
   const ctx = await initContext(projectDir);
   const records = await loadDispatchWorkspaceRegistry(ctx);
-  return records
-    .filter(
-      (record) =>
-        record.task_ref === taskRef && workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot),
-    )
-    .toSorted((a, b) => (a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1))[0];
+  const resolver = await buildProjectTaskResolver(ctx);
+  const queryCanonicalId = resolveCanonicalId(resolver, taskRef);
+  // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+  // Match records by canonical task ULID so a record persisted under one alias
+  // is reused when provisioning refers to the task by a different alias.
+  const matches = records.filter(
+    (record) =>
+      recordMatchesTask(record, taskRef, queryCanonicalId, resolver) &&
+      workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot),
+  );
+
+  // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+  // Reject — never silently collapse — more than one non-closed record for the
+  // same canonical task. Two open alias records (e.g. @slug and @<ULID>) for one
+  // task are an ambiguous reuse target; returning the newest would fork identity
+  // and risk duplicate provisioning. Surface it for operator recovery instead.
+  const openMatches = matches.filter((record) => record.lifecycle_state !== "closed");
+  if (openMatches.length > 1) {
+    const canonicalLabel =
+      queryCanonicalId ?? recordCanonicalId(openMatches[0], resolver) ?? taskRef;
+    const detail = openMatches
+      .map((record) => `${record.workspace_id} (task_ref ${record.task_ref})`)
+      .join(", ");
+    throw new DispatchWorkspaceError(
+      `Multiple non-closed dispatch workspace records resolve to canonical task ${canonicalLabel}: ${detail}.`,
+      "Close or remove the duplicate alias records so a single non-closed workspace remains for this task before retrying.",
+    );
+  }
+
+  return matches.toSorted((a, b) =>
+    a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1,
+  )[0];
 }
 
 async function loadForeignOpenWorkspaceRecord(
@@ -1614,10 +1765,12 @@ async function loadForeignOpenWorkspaceRecord(
 ): Promise<LoadedDispatchWorkspaceRecord | undefined> {
   const ctx = await initContext(projectDir);
   const records = await loadDispatchWorkspaceRegistry(ctx);
+  const resolver = await buildProjectTaskResolver(ctx);
+  const queryCanonicalId = resolveCanonicalId(resolver, taskRef);
   return records
     .filter(
       (record) =>
-        record.task_ref === taskRef &&
+        recordMatchesTask(record, taskRef, queryCanonicalId, resolver) &&
         record.lifecycle_state !== "closed" &&
         !workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot),
     )
@@ -1858,8 +2011,11 @@ async function findWorkspaceRegistrationByTaskRef(
 } | null> {
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   // Try the deterministic dispatch/task/* branch first (most common path).
+  // The short id is derived from the canonical task ULID so any display alias
+  // of the task locates the same branch lineage.
+  // AC: @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases
   const slug = normalizeTaskSlug(taskRef, task);
-  const shortId = shortTaskId(taskRef);
+  const shortId = await canonicalShortTaskId(projectDir, taskRef);
   const syntheticBranch = `dispatch/task/${slug}/${shortId}`;
   const workerWorktreeDir = await findExistingWorktreeForBranchUnderRoot(
     projectDir,
@@ -1938,6 +2094,14 @@ async function recoverWorkspaceRecordFromMetadata(
     title: metadata.taskSlug,
     slugs: [metadata.taskSlug],
   });
+  // Resolve canonical identity for recovered legacy worktrees so the backfilled
+  // record carries a stable task_id and derives a canonical short id.
+  // AC: @dispatch-canonical-task-identity ac-historical-workspace-records-normalize-or-stale
+  const recoveredCanonicalId =
+    metadata.taskId ?? (await resolveProjectCanonicalId(projectDir, metadata.taskRef));
+  const recoveredShortId = recoveredCanonicalId
+    ? shortTaskId(recoveredCanonicalId)
+    : shortTaskId(metadata.taskRef);
   const hasAdoptedProvenance = metadata.branchProvenance?.ownership === "adopted";
   // When branch_provenance is missing (legacy workspace) AND the canonical branch
   // is not a dispatch branch, infer adopted status to preserve the branch identity
@@ -1948,7 +2112,7 @@ async function recoverWorkspaceRecordFromMetadata(
       ? metadata.canonicalBranch
       : isDispatchBranch(metadata.canonicalBranch)
         ? metadata.canonicalBranch
-        : `dispatch/task/${taskSlug}/${shortTaskId(metadata.taskRef)}`;
+        : `dispatch/task/${taskSlug}/${recoveredShortId}`;
   const currentWorkerBranch = normalizeBranchRef(workerRegistration?.branch);
 
   if (
@@ -2027,7 +2191,8 @@ async function recoverWorkspaceRecordFromMetadata(
       ? defaultBranchProvenance()
       : adoptedBranchProvenance(metadata.canonicalBranch, null, now, false));
   const provisionalRecord: DispatchWorkspaceRecord = {
-    workspace_id: metadata.workspaceId || workspaceIdFor(metadata.taskRef),
+    workspace_id: metadata.workspaceId || workspaceIdFor(recoveredCanonicalId ?? metadata.taskRef),
+    task_id: recoveredCanonicalId ?? undefined,
     task_ref: metadata.taskRef,
     task_slug: taskSlug,
     worktree_root: resolvedConfig.worktreeRoot,
@@ -2811,8 +2976,13 @@ export function isWorkspaceRecordDirty(
     health: DispatchWorkspaceHealthState;
     cleanup: RegistryCleanupState;
     integration: RegistryIntegrationRecord;
+    task_id?: string | undefined;
   },
 ): boolean {
+  // AC: @dispatch-canonical-task-identity ac-historical-workspace-records-normalize-or-stale
+  // Backfilling a canonical task_id onto a historical record is a meaningful change.
+  if (computed.task_id !== undefined && (existing.task_id ?? undefined) !== computed.task_id)
+    return true;
   if (existing.canonical_branch_head !== computed.canonical_branch_head) return true;
   if (existing.lifecycle_state !== computed.lifecycle_state) return true;
   if ((existing.active_role ?? null) !== (computed.active_role ?? null)) return true;
@@ -2870,12 +3040,16 @@ async function workspacePhysicalArtifactsAbsent(
 
 export async function reconcileDispatchWorkspaceRegistry(
   projectDir: string,
+  // Keyed by canonical task ref `@<task-ulid>` (the DispatchEngine builds it
+  // from `@${task._ulid}`), NOT by arbitrary display refs.
   taskStatusByRef?: Map<string, ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"]>,
+  // Keyed by bare canonical task ULID `<task-ulid>` (from _activeRoleByTaskId()).
   activeRoleByTaskRef?: Map<string, RegistryRole>,
 ): Promise<void> {
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   const ctx = await initContext(projectDir);
   const records = await loadDispatchWorkspaceRegistry(ctx);
+  const resolver = await buildProjectTaskResolver(ctx);
   const nonClosedRecords = records.filter(
     (r) =>
       r.lifecycle_state !== "closed" &&
@@ -2883,13 +3057,49 @@ export async function reconcileDispatchWorkspaceRegistry(
   );
   if (nonClosedRecords.length === 0) return;
 
+  // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+  // AC: @dispatch-canonical-task-identity ac-alias-canonicalization-diagnostics
+  // Report (do not silently collapse) more than one non-closed record that
+  // resolves to the same canonical task identity. Such records — typically
+  // historical aliases (@slug vs @<ULID>) of the same task — are excluded from
+  // task_id backfill so the conflict surfaces for operator recovery rather than
+  // being masked by a partial normalization.
+  const canonicalToWorkspaceIds = new Map<string, string[]>();
+  for (const record of nonClosedRecords) {
+    const canonicalId = recordCanonicalId(record, resolver);
+    if (!canonicalId) continue;
+    const existing = canonicalToWorkspaceIds.get(canonicalId) ?? [];
+    existing.push(record.workspace_id);
+    canonicalToWorkspaceIds.set(canonicalId, existing);
+  }
+  const conflictingCanonicalIds = new Set<string>();
+  for (const [canonicalId, workspaceIds] of canonicalToWorkspaceIds) {
+    if (workspaceIds.length > 1) {
+      conflictingCanonicalIds.add(canonicalId);
+      console.warn(
+        `[dispatch] Multiple non-closed dispatch workspace records resolve to canonical task ${canonicalId}: ${workspaceIds.join(", ")}. ` +
+          `Close or remove the duplicate alias records (kspec agent dispatch status) before reuse; the registry will not normalize their identity while the conflict persists.`,
+      );
+    }
+  }
+
   // AC: @scoped-dispatch-shadow-serialization ac-9 — yield the lock between
   // individual record evaluations so concurrent CLI mutations can interleave.
   // Evaluate all records without the lock (read-only), then acquire the lock
   // only for each dirty record's save + commit cycle.
   for (const record of nonClosedRecords) {
     const now = new Date().toISOString();
-    const currentTaskStatus = taskStatusByRef?.get(record.task_ref) ?? null;
+    // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+    // Look up task status/active role by canonical task identity. The supplied
+    // maps are keyed by canonical ULID, so a record persisted under a slug
+    // display ref must be resolved to its canonical id to hit them. Fall back to
+    // the raw task_ref only when the record cannot be canonicalized (degraded
+    // mode without a task index).
+    const recordCanonical = recordCanonicalId(record, resolver);
+    const currentTaskStatus =
+      (recordCanonical ? taskStatusByRef?.get(`@${recordCanonical}`) : undefined) ??
+      taskStatusByRef?.get(record.task_ref) ??
+      null;
     const health = await reconcileWorkspaceHealth(projectDir, record, now, currentTaskStatus);
     const canonicalBranchHead = (await refExists(
       projectDir,
@@ -2926,7 +3136,15 @@ export async function reconcileDispatchWorkspaceRegistry(
       }
     }
 
-    const activeRole = activeRoleByTaskRef?.get(record.task_ref) ?? null;
+    // AC: @dispatch-canonical-task-identity ac-workspace-registry-canonical-task-identity
+    // Active role is keyed by the bare canonical task ULID (see
+    // DispatchEngine._activeRoleByTaskId). Resolve the record's canonical id to
+    // hit it even when the record's display ref is a slug. Fall back to the raw
+    // task_ref only when the record cannot be canonicalized (degraded mode).
+    const activeRole =
+      (recordCanonical ? activeRoleByTaskRef?.get(recordCanonical) : undefined) ??
+      activeRoleByTaskRef?.get(record.task_ref) ??
+      null;
     const lifecycleState = resolveLifecycleState(
       currentTaskStatus,
       health,
@@ -2934,6 +3152,16 @@ export async function reconcileDispatchWorkspaceRegistry(
       cleanup,
       activeRole,
     );
+
+    // AC: @dispatch-canonical-task-identity ac-historical-workspace-records-normalize-or-stale
+    // Backfill a stable canonical task_id onto resolvable historical records so
+    // their identity is recorded separately from the display task_ref. Records
+    // whose canonical id is in conflict (multiple non-closed aliases) are left
+    // untouched so the conflict is reported rather than masked.
+    const backfilledTaskId =
+      !record.task_id && recordCanonical && !conflictingCanonicalIds.has(recordCanonical)
+        ? recordCanonical
+        : undefined;
 
     // AC: @dispatch-workspace-registry ac-10 — skip save when no meaningful
     // field has changed. Timestamps must not change unless a real field differs.
@@ -2944,6 +3172,7 @@ export async function reconcileDispatchWorkspaceRegistry(
       health,
       cleanup,
       integration,
+      task_id: backfilledTaskId,
     });
 
     if (dirty) {
@@ -2957,6 +3186,7 @@ export async function reconcileDispatchWorkspaceRegistry(
       await withDispatchShadowMutationLock(projectDir, record.task_ref, async () => {
         await saveWorkspaceRecordToRegistry(projectDir, {
           ...record,
+          ...(backfilledTaskId ? { task_id: backfilledTaskId } : {}),
           canonical_branch_head: canonicalBranchHead,
           lifecycle_state: lifecycleState,
           active_role: activeRole,
@@ -3432,7 +3662,7 @@ export async function reapDispatchWorkspace(
   projectDir: string,
   taskRef: string,
   options?: {
-    activeTaskRefs?: Iterable<string>;
+    activeTaskIds?: Iterable<string>;
     task?: { title?: string; slugs?: string[] };
   },
 ): Promise<DispatchWorkspaceReapResult> {
@@ -3454,8 +3684,20 @@ export async function reapDispatchWorkspace(
     return { taskRef, action: "reaped", blockedReason: null };
   }
 
-  const activeTaskRefs = new Set(options?.activeTaskRefs ?? []);
-  if (activeTaskRefs.has(taskRef)) {
+  // Compare active/in-flight protection by canonical task identity so a record
+  // discovered under one alias is protected by an invocation tracked under a
+  // different alias of the same task. Protection keys are normalized (any `@`
+  // stripped, case-folded) so a bare canonical ULID and a display ref of the
+  // same task collapse to one key.
+  // AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+  const activeKeys = new Set<string>();
+  for (const id of options?.activeTaskIds ?? []) {
+    activeKeys.add(normalizeProtectionKey(id));
+  }
+  const canonicalId =
+    existingRegistryRecord?.task_id ?? (await resolveProjectCanonicalId(projectDir, taskRef));
+  const isProtected = activeKeys.has(normalizeProtectionKey(canonicalId ?? taskRef));
+  if (isProtected) {
     const blockedReason =
       "Cleanup blocked: canonical branch still has an active dispatch invocation.";
     // AC: @dispatch-workspace-registry ac-8
@@ -3806,9 +4048,22 @@ export function buildDispatchArtifactProtectionState(
   for (const ref of activeOrInFlightTaskRefs) {
     activeOrInFlightShortIds.add(shortTaskId(ref));
   }
+  // Compare task identity by canonical key (the ULID with any `@` prefix
+  // stripped, case-normalized) so an active/in-flight entry supplied as a bare
+  // canonical ULID protects a record persisted under a display alias, and vice
+  // versa. AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+  const activeKeys = new Set<string>();
+  for (const ref of activeOrInFlightTaskRefs) {
+    activeKeys.add(normalizeProtectionKey(ref));
+  }
   const protectedTaskRefs = new Set<string>(activeOrInFlightTaskRefs);
+  const protectedKeys = new Set<string>(activeKeys);
   const protectedBranches = new Set<string>();
   const protectedPaths = new Set<string>();
+  // Map every known display alias (task_ref) to its canonical protection key so
+  // a cleanup surface that evaluates by display ref still resolves to canonical
+  // identity. AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+  const aliasToCanonicalKey = new Map<string, string>();
 
   let registryTrusted = true;
   let registryFailureDiagnostic: string | null = null;
@@ -3824,7 +4079,12 @@ export function buildDispatchArtifactProtectionState(
       if (!workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot)) continue;
       if (record.lifecycle_state === "closed") continue;
 
-      const taskRefActive = activeOrInFlightTaskRefs.has(record.task_ref);
+      const recordKey = normalizeProtectionKey(record.task_id ?? record.task_ref);
+      aliasToCanonicalKey.set(normalizeProtectionKey(record.task_ref), recordKey);
+      if (record.task_id) {
+        aliasToCanonicalKey.set(normalizeProtectionKey(record.task_id), recordKey);
+      }
+      const taskRefActive = activeKeys.has(recordKey);
       const integrationUnresolved = isUnresolvedDispatchIntegration(record.integration.status);
 
       let recordProtected = false;
@@ -3845,18 +4105,23 @@ export function buildDispatchArtifactProtectionState(
       }
       if (recordProtected) {
         protectedTaskRefs.add(record.task_ref);
+        protectedKeys.add(recordKey);
       }
     }
   }
 
   const evaluateTaskRef = (taskRef: string): DispatchArtifactProtectionDecision => {
-    if (activeOrInFlightTaskRefs.has(taskRef)) {
+    const rawKey = normalizeProtectionKey(taskRef);
+    // Resolve display aliases to their canonical key so evaluating by slug or
+    // ULID both find the same record's protection.
+    const key = aliasToCanonicalKey.get(rawKey) ?? rawKey;
+    if (activeKeys.has(key)) {
       return {
         preserve: true,
         reason: `Task ${taskRef} has an active or in-flight dispatch invocation; cleanup must preserve its artifacts.`,
       };
     }
-    if (protectedTaskRefs.has(taskRef)) {
+    if (protectedKeys.has(key)) {
       return {
         preserve: true,
         reason: `Task ${taskRef} has a non-closed dispatch workspace record that is not yet cleanup-eligible.`,
@@ -3933,7 +4198,7 @@ export function buildDispatchArtifactProtectionState(
     if (record.lifecycle_state !== "closing") {
       return { preserve: false, reason: null };
     }
-    if (activeOrInFlightTaskRefs.has(record.task_ref)) {
+    if (activeKeys.has(normalizeProtectionKey(record.task_id ?? record.task_ref))) {
       return {
         preserve: true,
         reason: `Closing workspace for ${record.task_ref} still has active/in-flight ownership; reap must wait.`,
@@ -3983,7 +4248,19 @@ export async function loadDispatchArtifactProtectionState(
   try {
     const ctx = await initContext(projectDir);
     const records = await loadDispatchWorkspaceRegistry(ctx);
-    registryInput = { status: "loaded", records };
+    // Backfill canonical task_id for historical records (resolvable refs) so the
+    // pure protection builder can compare every record by canonical identity.
+    // Unresolvable historical records keep a null task_id and fall back to their
+    // raw task_ref key — they cannot be protected by a canonical alias but also
+    // cannot be matched by one.
+    // AC: @dispatch-canonical-task-identity ac-historical-workspace-records-normalize-or-stale
+    const resolver = await buildProjectTaskResolver(ctx);
+    const normalizedRecords = records.map((record) =>
+      record.task_id
+        ? record
+        : { ...record, task_id: recordCanonicalId(record, resolver) ?? undefined },
+    );
+    registryInput = { status: "loaded", records: normalizedRecords };
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
     registryInput = { status: "load-failed", reason };
@@ -4028,11 +4305,14 @@ function logArtifactPreservation(
 
 export async function reconcileDispatchWorkspaceArtifacts(
   projectDir: string,
-  options?: { activeTaskRefs?: Iterable<string> },
+  options?: { activeTaskIds?: Iterable<string> },
 ): Promise<void> {
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   await ensureUsableWorktreeRoot(projectDir, resolvedConfig.worktreeRoot);
-  const activeTaskRefs = new Set(options?.activeTaskRefs ?? []);
+  // Canonical full task ULIDs of active/in-flight invocations; cleanup
+  // protection compares by canonical identity, not display ref.
+  // AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+  const activeTaskIds = new Set(options?.activeTaskIds ?? []);
   const worktreeEntries = await parseWorktreeList(projectDir);
   const entriesUnderRoot = worktreeEntries.filter((entry) =>
     isPathInside(resolvedConfig.worktreeRoot, entry.path),
@@ -4043,7 +4323,7 @@ export async function reconcileDispatchWorkspaceArtifacts(
   // this function. Built once from the registry snapshot plus active/in-flight
   // task refs so all surfaces converge on the same preserve/delete decision.
   let protection = await loadDispatchArtifactProtectionState(projectDir, resolvedConfig, {
-    activeOrInFlightTaskRefs: activeTaskRefs,
+    activeOrInFlightTaskRefs: activeTaskIds,
   });
 
   const referencedReviewerDirs = new Set<string>();
@@ -4113,16 +4393,16 @@ export async function reconcileDispatchWorkspaceArtifacts(
 
     if (metadata.cleanupEligible) {
       // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
-      // reapDispatchWorkspace internally re-checks activeTaskRefs and
-      // integration state, but routing the task-ref decision through the
-      // protection helper keeps the destructive surface aligned with every
-      // other surface in this function.
-      const reapDecision = protection.evaluateTaskRef(metadata.taskRef);
+      // AC: @dispatch-canonical-task-identity ac-cleanup-protection-uses-canonical-task
+      // reapDispatchWorkspace internally re-checks the canonical protection set
+      // and integration state, but routing the decision through the protection
+      // helper by canonical identity keeps every destructive surface aligned.
+      const reapDecision = protection.evaluateTaskRef(metadata.taskId ?? metadata.taskRef);
       if (reapDecision.preserve) {
         logArtifactPreservation("reap-candidate", metadata.taskRef, reapDecision.reason);
       } else {
         await reapDispatchWorkspace(projectDir, metadata.taskRef, {
-          activeTaskRefs,
+          activeTaskIds,
           task: {
             title: metadata.taskSlug,
             slugs: [metadata.taskSlug],
@@ -4135,7 +4415,7 @@ export async function reconcileDispatchWorkspaceArtifacts(
   // Recovery and reap may have mutated the registry. Rebuild the protection
   // state so subsequent surfaces see the latest classification.
   protection = await loadDispatchArtifactProtectionState(projectDir, resolvedConfig, {
-    activeOrInFlightTaskRefs: activeTaskRefs,
+    activeOrInFlightTaskRefs: activeTaskIds,
   });
 
   for (const entry of entriesUnderRoot) {
@@ -4255,7 +4535,12 @@ export async function provisionDispatchWorkspace(
     ? undefined
     : await loadForeignOpenWorkspaceRecord(projectDir, taskRef, resolvedConfig.worktreeRoot);
   const taskSlug = existingRecord?.task_slug ?? normalizeTaskSlug(taskRef, task);
-  const shortId = shortTaskId(taskRef);
+  // Canonical task identity keys all derived lineage (workspace id, branch,
+  // worktree basenames) so aliases of the same task converge on one workspace.
+  // AC: @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases
+  const canonicalTaskId =
+    existingRecord?.task_id ?? (await resolveProjectCanonicalId(projectDir, taskRef));
+  const shortId = canonicalTaskId ? shortTaskId(canonicalTaskId) : shortTaskId(taskRef);
 
   if (foreignOpenRecord) {
     throw new DispatchWorkspaceError(
@@ -4345,7 +4630,7 @@ export async function provisionDispatchWorkspace(
           adoptionRehydrated,
         )
       : defaultBranchProvenance());
-  const workspaceId = existingRecord?.workspace_id ?? workspaceIdFor(taskRef);
+  const workspaceId = existingRecord?.workspace_id ?? workspaceIdFor(canonicalTaskId ?? taskRef);
   const workerWorktreeDir =
     existingRecord?.worktrees.worker.path ??
     (await findExistingWorktreeForBranchUnderRoot(
@@ -4393,6 +4678,7 @@ export async function provisionDispatchWorkspace(
   const now = new Date().toISOString();
   const provisioningRecord: DispatchWorkspaceRecord = {
     workspace_id: workspaceId,
+    task_id: existingRecord?.task_id ?? canonicalTaskId ?? undefined,
     task_ref: taskRef,
     task_slug: taskSlug,
     worktree_root: resolvedConfig.worktreeRoot,
@@ -4972,6 +5258,12 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
   const diagnostics: WorkspaceDiscoveryDiagnostic[] = [];
   const branchSignals: BranchSignal[] = [];
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  // Canonical task identity for any adopted/recreated record so submission
+  // linkage adoption keeps stable lineage across display aliases.
+  // AC: @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases
+  const canonicalTaskId = await resolveProjectCanonicalId(projectDir, taskRef);
+  const discoveryShortId = canonicalTaskId ? shortTaskId(canonicalTaskId) : shortTaskId(taskRef);
+  const discoveryWorkspaceId = workspaceIdFor(canonicalTaskId ?? taskRef);
 
   // Phase 1: Registry state — the highest precedence source.
   // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-4
@@ -5017,9 +5309,26 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
     const entriesUnderRoot = worktreeEntries.filter((entry) =>
       isPathInside(resolvedConfig.worktreeRoot, entry.path),
     );
+    // Identity key for the discovery target: the canonical task ULID when the
+    // display ref resolves, otherwise the raw display ref. A metadata file is a
+    // match when its own identity key (persisted taskId, else resolved from its
+    // display ref, else the raw display ref) equals this key. This lets a
+    // metadata file persisted under a stale display ref (e.g. @old-slug, or after
+    // a primary-slug change) be recovered when discovery runs under a different
+    // alias of the same task, while preserving display-ref matching for refs that
+    // cannot be canonicalized.
+    // AC: @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases
+    const discoveryIdentityKey = canonicalTaskId ?? taskRef;
     for (const entry of entriesUnderRoot) {
       const metadata = await readWorkspaceMetadata(entry.path);
-      if (metadata && metadata.taskRef === taskRef) {
+      if (!metadata) {
+        continue;
+      }
+      const metadataIdentityKey =
+        metadata.taskId ??
+        (await resolveProjectCanonicalId(projectDir, metadata.taskRef)) ??
+        metadata.taskRef;
+      if (metadataIdentityKey === discoveryIdentityKey) {
         metadataCandidate = {
           branch: metadata.canonicalBranch,
           worktreeDir: entry.path,
@@ -5099,8 +5408,8 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
       try {
         const now = new Date().toISOString();
         const taskSlug = normalizeTaskSlug(taskRef, task);
-        const shortId = shortTaskId(taskRef);
-        const workspaceId = workspaceIdFor(taskRef);
+        const shortId = discoveryShortId;
+        const workspaceId = discoveryWorkspaceId;
         const workerWorktreeDir =
           (await findExistingWorktreeForBranchUnderRoot(
             projectDir,
@@ -5116,6 +5425,7 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
 
         const adoptedRecord: DispatchWorkspaceRecord = {
           workspace_id: workspaceId,
+          task_id: canonicalTaskId ?? undefined,
           task_ref: taskRef,
           task_slug: taskSlug,
           worktree_root: resolvedConfig.worktreeRoot,
@@ -5195,7 +5505,7 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
   // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-4
   if (!existingRecord) {
     const taskSlug = normalizeTaskSlug(taskRef, task);
-    const shortId = shortTaskId(taskRef);
+    const shortId = discoveryShortId;
     const syntheticBranch = `dispatch/task/${taskSlug}/${shortId}`;
     const restoredFromRemote = await tryRestoreBranchFromRemote(projectDir, syntheticBranch);
     if (restoredFromRemote) {
@@ -5205,7 +5515,7 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
       });
       try {
         const now = new Date().toISOString();
-        const workspaceId = workspaceIdFor(taskRef);
+        const workspaceId = discoveryWorkspaceId;
         const workerWorktreeDir =
           (await findExistingWorktreeForBranchUnderRoot(
             projectDir,
@@ -5221,6 +5531,7 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
 
         const remoteRecord: DispatchWorkspaceRecord = {
           workspace_id: workspaceId,
+          task_id: canonicalTaskId ?? undefined,
           task_ref: taskRef,
           task_slug: taskSlug,
           worktree_root: resolvedConfig.worktreeRoot,

@@ -191,6 +191,96 @@ describe("Session creation on invocation start", { timeout: 120_000 }, () => {
   });
 });
 
+// ─── Canonical task identity in persisted session metadata + event history ───
+
+// AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+describe("Canonical task identity in persisted session state", { timeout: 120_000 }, () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-invoc-canonical-id-");
+    registerMockAdapter();
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("persists the canonical task ULID as task_id and the display ref separately when both are supplied", async () => {
+    // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+    // Exercise the REAL runInvocation (not a mock) so the assertion covers the
+    // persisted SessionMetadata returned by runInvocation — a display slug ref
+    // must NOT end up recorded as the canonical task_id.
+    const agent = makeTestAgent({ id: "worker-agent" });
+    const canonicalTaskId = testUlid("TASK");
+    const displayRef = "@task-session-payload"; // a slug-style display alias
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskId: canonicalTaskId,
+      taskRef: displayRef,
+      prompt: "Canonical identity persistence test",
+      trigger: "task.ready",
+    });
+
+    // Returned SessionMetadata carries identity (task_id) separate from display.
+    expect(result.session.task_id).toBe(canonicalTaskId);
+    expect(result.session.task_ref).toBe(displayRef);
+
+    // Persisted session.yaml reflects the same separation.
+    const sessionYaml = path.join(testDir, "sessions", result.session.id, "session.yaml");
+    const parsed = YAML.parse(await readTestOutput(sessionYaml));
+    expect(parsed.task_id).toBe(canonicalTaskId);
+    expect(parsed.task_ref).toBe(displayRef);
+
+    // Session event history records canonical task_id + display task_ref separately.
+    const eventsPath = path.join(testDir, "sessions", result.session.id, "events.jsonl");
+    const events = (await readTestOutput(eventsPath))
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((l) => JSON.parse(l) as { type: string; data: Record<string, unknown> });
+
+    const completed = events.find((e) => e.type === "agent.completed");
+    expect(completed).toBeDefined();
+    expect(completed!.data.task_id).toBe(canonicalTaskId);
+    expect(completed!.data.task_ref).toBe(displayRef);
+
+    const dispatched = events.find((e) => e.type === "agent.dispatched");
+    expect(dispatched).toBeDefined();
+    expect(dispatched!.data.task_id).toBe(canonicalTaskId);
+    expect(dispatched!.data.task_ref).toBe(displayRef);
+
+    // No event or metadata field smuggles the display ref in as identity.
+    expect(parsed.task_id).not.toBe(displayRef);
+    expect(completed!.data.task_id).not.toBe(displayRef);
+  });
+
+  it("falls back to the display ref as identity when no canonical task id is supplied (legacy callers)", async () => {
+    // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+    // Legacy/manual callers that never canonicalized still get a usable identity:
+    // the display ref doubles as task_id, preserving pre-canonicalization behavior.
+    const agent = makeTestAgent({ id: "worker-agent" });
+    const displayRef = `@${testUlid("TASK")}`;
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: displayRef,
+      prompt: "Legacy identity fallback test",
+      trigger: "task.ready",
+    });
+
+    expect(result.session.task_id).toBe(displayRef);
+    expect(result.session.task_ref).toBe(displayRef);
+  });
+});
+
 // ─── AC-2: KSPEC_SESSION_ID injection ────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-2

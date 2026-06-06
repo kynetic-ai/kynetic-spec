@@ -841,6 +841,19 @@ export function registerAgentCommands(program: Command): void {
 
         // Build the prompt — respect agent prompt_template when --task is used
         const taskRef = opts.task as string | undefined;
+        // Best-effort resolve the canonical task ULID so the persisted session
+        // records identity separately from the display ref, matching the dispatch
+        // path. Non-fatal: an unresolved ref falls back to the display ref as the
+        // identity in runInvocation. AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+        let taskCanonicalId: string | undefined;
+        if (taskRef) {
+          try {
+            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+            taskCanonicalId = findTaskByRef(tasks, taskRef)?._ulid;
+          } catch {
+            // Non-fatal — fall back to the display ref as identity.
+          }
+        }
         let basePrompt: string;
         if (prompt) {
           // Explicit user prompt always wins
@@ -1071,6 +1084,7 @@ export function registerAgentCommands(program: Command): void {
           agent: effectiveAgent,
           specDir: ctx.specDir,
           cwd: ctx.rootDir,
+          taskId: taskCanonicalId,
           taskRef: taskRef ?? undefined,
           prompt: basePrompt,
           trigger: "manual",

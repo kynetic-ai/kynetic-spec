@@ -114,18 +114,21 @@ function createWorkspaceRecord(
     targetBranch,
     lifecycleState = "ready",
     workspaceId = testUlid("WS"),
+    taskId,
   }: {
     taskRef: string;
     taskSlug: string;
     targetBranch: string;
     lifecycleState?: LoadedDispatchWorkspaceRecord["lifecycle_state"];
     workspaceId?: string;
+    taskId?: string;
   },
 ): LoadedDispatchWorkspaceRecord {
   const timestamp = new Date().toISOString();
   const branchHead = git(projectDir, "rev-parse HEAD");
   return {
     workspace_id: workspaceId,
+    task_id: taskId,
     task_ref: taskRef,
     task_slug: taskSlug,
     worktree_root: projectDir,
@@ -223,6 +226,7 @@ async function saveWorkspaceRecord(
     targetBranch: string;
     lifecycleState?: LoadedDispatchWorkspaceRecord["lifecycle_state"];
     workspaceId?: string;
+    taskId?: string;
   },
 ): Promise<void> {
   const ctx = await initContext(projectDir);
@@ -2264,6 +2268,72 @@ describe("dispatch target branch sync", () => {
     const alphaAfterSecondReconcile = git(projectDir, "rev-parse plan/alpha");
     expect(alphaAfterSecondReconcile).toBe(deferredPlanTip);
 
+    await engine.stop();
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-cross-agent-exclusivity-uses-canonical-task
+  it("matches the active reviewer target by canonical task id when the registry record keeps a stale display ref", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    await createTrackedBranch(
+      projectDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\n",
+      "create plan alpha",
+    );
+
+    // The persisted workspace record carries the canonical task_id but a STALE
+    // display ref (@old-slug) — e.g. the task's primary slug changed after the
+    // record was written.
+    const canonicalTaskUlid = testUlid("RVTASK", 1);
+    await saveWorkspaceRecord(projectDir, {
+      taskId: canonicalTaskUlid,
+      taskRef: "@old-slug",
+      taskSlug: "old-slug",
+      targetBranch: "plan/alpha",
+    });
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    // The reviewer was started under a DIFFERENT display alias (@new-slug) but
+    // carries the same canonical taskId. Identity must match by canonical id, not
+    // the display ref, so the reviewer's integration target is still collected.
+    const invocationDetails = (engine as any).activeInvocationDetails as Map<string, any>;
+    invocationDetails.set("reviewer-canonical-session", {
+      invocationId: "rev-inv",
+      sessionId: "rev-session",
+      agentId: "pr-reviewer",
+      agentName: "PR Reviewer",
+      taskId: canonicalTaskUlid,
+      taskRef: "@new-slug",
+      role: "reviewer",
+      startedAtMs: Date.now(),
+    });
+
+    expect(await (engine as any)._activeReviewerTargets()).toEqual(new Set(["plan/alpha"]));
+
+    // And the periodic sync defers that reviewer target: a remote advance on
+    // plan/alpha is not pulled while the canonical-matched reviewer is active.
+    const alphaBefore = git(projectDir, "rev-parse plan/alpha");
+    await pushRemoteCommit(
+      remoteDir,
+      "plan/alpha",
+      "plan-alpha.txt",
+      "alpha\nadvanced\n",
+      "advance alpha",
+    );
+    (engine as any)._targetSyncTimestamps.set("plan/alpha", Date.now() - 120_000);
+    await (engine as any)._reconcile();
+    expect(git(projectDir, "rev-parse plan/alpha")).toBe(alphaBefore);
+
+    invocationDetails.delete("reviewer-canonical-session");
     await engine.stop();
   });
 

@@ -177,6 +177,9 @@ export async function createSession(
   const metadata: SessionMetadata = {
     id: input.id,
     task_id: input.task_id,
+    // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+    // — display ref persisted separately from canonical task_id.
+    task_ref: input.task_ref,
     agent_type: input.agent_type,
     agent_id: input.agent_id,
     trigger: input.trigger,
@@ -1719,8 +1722,14 @@ export interface SessionLogSummary {
   session_type: "loop" | "invocation";
   /** Dispatch trigger (manual, task.ready, etc.) for distinguishing session origin. */
   trigger?: string;
-  /** Task ID being worked on (if any). AC: @ui-session-history ac-1 */
+  /** Canonical task ULID being worked on (if any). AC: @ui-session-history ac-1 */
   task_id?: string;
+  /**
+   * Display task ref (slug or `@ULID`) for human-readable filtering/display.
+   * Never an identity key.
+   * AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+   */
+  task_ref?: string;
   /** When session started (ISO 8601) */
   started_at: string;
   /** When session ended (ISO 8601), if completed */
@@ -1844,6 +1853,7 @@ export async function getSessionLogSummary(
     session_type: resolveSessionType(metadata),
     trigger: metadata.trigger,
     task_id: metadata.task_id,
+    task_ref: metadata.task_ref,
     started_at: metadata.started_at,
     ended_at: metadata.ended_at,
     duration_ms: durationMs,
@@ -1880,6 +1890,7 @@ export async function getSessionMetadataOnly(
     session_type: resolveSessionType(metadata),
     trigger: metadata.trigger,
     task_id: metadata.task_id,
+    task_ref: metadata.task_ref,
     started_at: metadata.started_at,
     ended_at: metadata.ended_at,
     duration_ms: durationMs,
