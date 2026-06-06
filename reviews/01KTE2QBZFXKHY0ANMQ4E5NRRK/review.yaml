@@ -225,6 +225,12 @@ events:
     payload:
       thread_ulid: 01KTE3HWRHD36RB5SZHYKX6DDZ
     timestamp: 2026-06-06T10:04:27.471Z
+  - _ulid: 01KTE68C70NESF9JGM0N5Y9EVB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTE3HWRHD36RB5SZHYKX6DDZ
+    timestamp: 2026-06-06T10:04:32.352Z
 examined_commit: 0e1896826ae024c59148daf1820f1f7a122145b1
 external_links: []
 lifecycle_state: closed
@@ -256,6 +262,8 @@ threads:
         body: Acknowledged — review evidence log, no action required.
         created_at: 2026-06-06T10:04:27.278Z
     kind: nit
+    resolved_at: 2026-06-06T10:04:32.131Z
+    resolved_by: "@claude"
   - _ulid: 01KTE3HZ29M2K8T3MTDWG4S1D0
     anchor:
       type: code
@@ -309,5 +317,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T09:17:23.362Z
 created_at: 2026-06-06T09:02:49.327Z
-updated_at: 2026-06-06T10:04:27.278Z
+updated_at: 2026-06-06T10:04:32.131Z
 notes: []
