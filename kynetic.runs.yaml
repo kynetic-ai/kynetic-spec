@@ -61078,7 +61078,7 @@ runs:
     completed_at: 2026-06-06T22:36:55.913Z
   - _ulid: 01KTFHJFF9CXEZ8GV7C70PR0SK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61093,7 +61093,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-06T22:42:43.854Z
-        completed_at: 2026-06-06T22:42:43.854Z
+        completed_at: 2026-06-06T22:42:54.153Z
+        notes: "Friction points: focused changed-file lint remains noisy when run over whole changed files
+          because it reports pre-existing warnings from untouched lines in large test files; this
+          required extra diff/base comparison to separate new warnings from baseline. Full npm test
+          provided strong evidence but took 2456.1s for this review, which is heavy for reviewer
+          turnaround. No merge friction occurred; the helper path was clean."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-06T22:42:54.153Z
+        completed_at: 2026-06-06T22:42:54.153Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T22:41:32.137Z
