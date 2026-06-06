@@ -89,6 +89,17 @@ checks:
     runner: kspec
     created_at: 2026-06-06T05:53:43.966Z
     completed_at: 2026-06-06T05:53:43.966Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --schema --warnings-ok passed. One reference warning for orphaned local
+      skill directory baseline.
+    name: kspec validate schema
+    required: false
+    runner: kspec
+    created_at: 2026-06-06T05:53:53.632Z
+    completed_at: 2026-06-06T05:53:53.632Z
 events:
   - _ulid: 01KTDQ38SYWFVB2KTVDKSSA3FG
     actor: Jacob Chapel
@@ -159,6 +170,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-06T05:53:44.179Z
+  - _ulid: 01KTDQXE5J8ABF572P0SJ90498
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate schema
+    timestamp: 2026-06-06T05:53:53.842Z
 examined_commit: 0c9772d7e5806cbe8fadfc5e82a775c5801e9c90
 external_links: []
 lifecycle_state: open
@@ -171,5 +189,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-06T05:39:36.382Z
-updated_at: 2026-06-06T05:53:43.966Z
+updated_at: 2026-06-06T05:53:53.632Z
 notes: []
