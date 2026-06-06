@@ -251,6 +251,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-06T05:04:16.912Z
+  - _ulid: 01KTDN2VBC6DNDF0ZWCKP780FP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTDN2V3MEMHSR4YGPZ6ZH3KZ
+    timestamp: 2026-06-06T05:04:25.452Z
 examined_commit: 044eccda44dc11c7360897665d1ea5d8e6462e84
 external_links: []
 lifecycle_state: open
@@ -260,8 +267,34 @@ subject:
   content_hash: ""
   ref: "@task-generic-acp-process-adapter"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTDN2V3MEMHSR4YGPZ6ZH3KZ
+    anchor:
+      type: code
+      commit: 044eccda44dc11c7360897665d1ea5d8e6462e84
+      line_end: 24
+      line_start: 24
+      path: src/agents/adapters.ts
+      side: head
+    entries:
+      - _ulid: 01KTDN2V3M791DA617Z09F24TQ
+        author: Jacob Chapel
+        body: "MUST-FIX: `AgentAdapter.command` is now optional for every adapter, so `registerAdapter()`
+          accepts command-less non-generic adapters even though the task explicitly says non-generic
+          adapters keep required `command: string`. The runner resolver only rejects missing
+          commands when `adapter.requiresProcessExecutable` is true; a custom adapter registered as
+          `{ args: [] }` and selected by a runner without `process.executable` reaches
+          `buildRunnerContract`, then `probeRunnerInvocationExecutable` returns `null` for the
+          undefined command, so runner validation can report the runner as valid and the failure is
+          deferred to `spawnAgent`. Impact: this regresses the runner preflight contract for
+          package/custom adapters and creates a later spawn failure instead of an
+          operator-actionable resolver/validation error. Please preserve the type/runtime invariant
+          for non-generic adapters, for example with a discriminated adapter type and/or a resolver
+          validation branch that rejects any resolved adapter lacking a command unless a runner
+          executable supplied it."
+        created_at: 2026-06-06T05:04:25.204Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-06T04:46:38.098Z
-updated_at: 2026-06-06T05:04:16.684Z
+updated_at: 2026-06-06T05:04:25.204Z
 notes: []
