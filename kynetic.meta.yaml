@@ -20831,6 +20831,41 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-06T07:15:37.564Z
+  - _ulid: 01KTE2M98HPRJ10WA10MVF8P1X
+    type: friction
+    content: "reconcileDispatchWorkspaceRegistry takes two canonical-identity maps with INCONSISTENT key
+      formats: taskStatusByRef is keyed by @<task-ulid> (DispatchEngine builds it from
+      `@${task._ulid}`) while activeRoleByTaskRef is keyed by the BARE <task-ulid> (from
+      _activeRoleByTaskId, which does roles.set(record.taskId, role)). The activeRoleByTaskRef
+      parameter name also misleadingly says ref but holds a bare ULID. This asymmetry is a footgun:
+      a canonical-identity fix that looks up both maps with the same key form silently breaks one of
+      them, and it was the root of the fix-cycle-2 reviewer blocker (lookups were done by raw
+      record.task_ref and missed slug-display records). Fix options: normalize both maps to one key
+      convention (prefer bare canonical ULID for both, or a small typed CanonicalTaskId wrapper),
+      and rename the param to activeRoleByTaskId. Observed while fixing
+      @task-canonicalize-dispatch-task-identity."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-06T09:01:08.241Z
+  - _ulid: 01KTE2M9HEE9EKZE3K02AYC63B
+    type: friction
+    content: "tests/session-lifecycle-events.test.ts asserts against a LOCAL re-implementation of
+      DispatchEngine._emitSessionLifecycleEvent (a helper that mirrors the private method) instead
+      of driving the real engine. Because the simulation was hand-copied from production, it encoded
+      the SAME bug the production code had (task_ref = terminalEvent.task_id, no separate task_id)
+      and kept passing — giving false confidence that let the canonical-identity payload bug survive
+      two review cycles. This is distinct from the existing no-source-scanning rule: it is a
+      parallel-implementation drift, not a source read. Pattern to flag in review: a test that
+      copies production branching logic into the test file and asserts on the copy proves nothing
+      about production. Antidote that worked here: an engine-driven test that subscribes to
+      engine.eventBus and asserts the real invocation.completed/session.ended payloads. Consider a
+      review-gates note discouraging parallel-reimplementation test helpers for dispatch
+      event/payload logic."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-06T09:01:08.526Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
