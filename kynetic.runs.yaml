@@ -60860,7 +60860,7 @@ runs:
     completed_at: 2026-06-06T11:28:24.864Z
   - _ulid: 01KTED8QRAAGY2AAJWS9M2KE5C
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -60888,7 +60888,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-06T12:07:50.726Z
-        completed_at: 2026-06-06T12:07:50.726Z
+        completed_at: 2026-06-06T12:08:56.613Z
+        notes: "Coverage search: full test duration/progress is partially covered by completed
+          @task-test-runner-progress-output and related shard-stability tracking
+          (@task-stabilize-fresh-shard-test-runs), so no duplicate capture. Review evidence-log
+          noise is already tracked by observations found via search (including @01KR2JD1 and
+          @01KT5ZGF), so no duplicate capture. Focused oxlint warnings for changed files had no
+          direct match for diff-aware changed-line classification; this appears untracked."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-06T12:08:56.613Z
+        completed_at: 2026-06-06T12:08:56.613Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T12:07:04.202Z
