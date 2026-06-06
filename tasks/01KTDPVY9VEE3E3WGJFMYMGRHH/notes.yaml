@@ -68,3 +68,39 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-06T08:20:42.248Z
+  - _ulid: 01KTE2FY4XCAWS5CH8XZ47DWNH
+    content: >-
+      Fix cycle 2: addressed all 4 review blockers in @01KTDZ79.
+
+
+      (1) Terminal invocation event-bus payload (dispatch.ts ~3317) was overwriting the display
+      task_ref with the canonical task_id; now carries task_id + task_ref separately like the
+      started payload.
+
+      (2) Session terminal lifecycle payloads (_emitSessionLifecycleEvent) put the ULID in task_ref
+      and omitted task_id; now emit task_id (canonical) and task_ref (display) separately. Added
+      task_id to InvocationStarted/Terminal + SessionEvent schemas and to KNOWN_EVENT_FIELDS
+      invocation+session sets.
+
+      (3) reconcileDispatchWorkspaceRegistry looked up status/active_role by raw record.task_ref
+      while callers supply canonical-keyed maps; now resolves recordCanonicalId and looks up status
+      by @<ULID> and active role by bare <ULID> (raw task_ref only as degraded fallback). Also
+      backfills canonical task_id onto resolvable historical records.
+
+      (4) loadWorkspaceRecordForWorktreeRoot silently collapsed multiple non-closed alias records to
+      the newest; now rejects with an operator-actionable DispatchWorkspaceError, and reconcile
+      reports + skips backfill for conflicting canonical ids.
+
+
+      Added behavioral coverage (not source-scanning): integration test now asserts terminal
+      onInvocationEvent + invocation.completed bus payload + session.ended bus payload keep
+      task_id/task_ref separate; new tests cover canonical-keyed reconcile of a slug-display record
+      and rejection of duplicate non-closed alias records. session-lifecycle-events.test.ts updated
+      off the old shape. Re-verified all spec ACs.
+
+
+      Gates: format(after fix), repo-lint 0 errors, focused oxlint 0 warnings, typecheck, full npm
+      test (10273 passed / 5 skipped / 0 failed), all kspec validate gates exit 0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T08:58:45.790Z
