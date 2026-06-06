@@ -68,7 +68,24 @@ export type NotifyBroadcast = (topic: string, event: string, data: Record<string
 export type AgentSpawner = (options: {
   agent_id: string;
   prompt?: string;
+  /**
+   * Display/binding task ref (slug, full ULID, or unique ULID prefix). For an
+   * explicit action task binding this is the authoritative binding and display
+   * ref; for an event-derived binding it is the triggering event's display ref.
+   * The spawner resolves this (together with {@link task_id}) to canonical task
+   * identity before creating a session.
+   * AC: @dispatch-canonical-task-identity ac-automation-agent-actions-canonicalize-task-binding
+   */
   task_ref?: string;
+  /**
+   * Canonical task id carried from a triggering event when an event-derived
+   * task binding supplies one. Only populated for event-derived bindings (an
+   * explicit action.task_ref drops event identity); the spawner uses it to
+   * canonicalize and to reject event task_id/task_ref pairs that resolve to
+   * different tasks.
+   * AC: @dispatch-canonical-task-identity ac-automation-agent-actions-canonicalize-task-binding
+   */
+  task_id?: string;
   timeout_minutes?: number;
   correlation_id?: string;
   /** Composition group identifier propagated from triggering event. AC: @dispatch-agent-action-input ac-4 */
@@ -849,14 +866,28 @@ export class ActionExecutor {
       resolvedPrompt = buildDefaultAgentPrompt(eventContext);
     }
 
-    // AC: @dispatch-agent-action-input ac-3 — task_binding: derive task_ref from event
-    // when task_binding is true and the triggering event has a task_ref.
-    // Explicit action.task_ref takes precedence over event-derived task_ref.
-    let effectiveTaskRef = action.task_ref;
-    if (action.task_binding && !effectiveTaskRef) {
+    // AC: @dispatch-agent-action-input ac-3 — task_binding
+    // AC: @dispatch-canonical-task-identity ac-automation-agent-actions-canonicalize-task-binding
+    // Task-binding precedence:
+    // - An explicit action.task_ref is the authoritative task binding AND
+    //   display ref. Event task_id/task_ref are ignored for identity in this
+    //   case, so only the action ref is forwarded (no event task_id leaks in).
+    // - Otherwise, when task_binding is true, derive identity from the
+    //   triggering event's task_id/task_ref pair and forward BOTH so the
+    //   spawner can canonicalize and reject mismatched pairs.
+    // Without an explicit ref or task_binding, the invocation is non-task-scoped.
+    let effectiveTaskRef: string | undefined;
+    let effectiveTaskId: string | undefined;
+    if (action.task_ref) {
+      effectiveTaskRef = action.task_ref;
+    } else if (action.task_binding) {
       const eventTaskRef = eventContext.task_ref;
-      if (eventTaskRef && typeof eventTaskRef === "string") {
+      if (typeof eventTaskRef === "string" && eventTaskRef.length > 0) {
         effectiveTaskRef = eventTaskRef;
+      }
+      const eventTaskId = eventContext.task_id;
+      if (typeof eventTaskId === "string" && eventTaskId.length > 0) {
+        effectiveTaskId = eventTaskId;
       }
     }
 
@@ -865,6 +896,7 @@ export class ActionExecutor {
       agent_id: action.agent_id,
       prompt: resolvedPrompt,
       task_ref: effectiveTaskRef,
+      task_id: effectiveTaskId,
       timeout_minutes: action.timeout_minutes,
       correlation_id: eventContext.correlation_id,
       group_id: eventContext.group_id,

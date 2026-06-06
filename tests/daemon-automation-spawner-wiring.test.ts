@@ -10,12 +10,16 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { testUlid } from "./helpers/cli.js";
 
 // Mock state must be hoisted above vi.mock calls
 const mockState = vi.hoisted(() => ({
   runInvocation: vi.fn(),
   initContext: vi.fn(),
   loadMetaContext: vi.fn(),
+  resolveTaskDataManager: vi.fn(),
+  // Tasks returned by the mocked data manager; tests override per-case.
+  tasks: [] as Array<{ _ulid: string; slugs: string[] }>,
 }));
 
 // Mock the invocation module to capture runInvocation calls
@@ -27,13 +31,17 @@ vi.mock("../dist/agent-runtime/invocation.js", async (importOriginal) => {
   };
 });
 
-// Mock the parser module to avoid needing a real project directory
+// Mock the parser module to avoid needing a real project directory. Task
+// identity resolution (normalizeTaskIdentity/buildTaskRefResolver) is NOT
+// mocked — it runs against the tasks returned here so the spawner's
+// canonicalization behavior is exercised for real.
 vi.mock("../dist/parser/index.js", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../src/parser/index.js")>();
   return {
     ...actual,
     initContext: mockState.initContext,
     loadMetaContext: mockState.loadMetaContext,
+    resolveTaskDataManager: mockState.resolveTaskDataManager,
   };
 });
 
@@ -41,6 +49,7 @@ import { createAutomationAgentSpawner } from "../dist/daemon/routes/agent-dispat
 
 describe("createAutomationAgentSpawner daemon wiring", () => {
   const fakeProjectDir = "/tmp/test-project";
+  const TASK_ABC_ULID = testUlid("ABC");
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -58,6 +67,11 @@ describe("createAutomationAgentSpawner daemon wiring", () => {
       hooks: [],
       manifest: { compositions: [] },
     });
+    // Default task set: a single task resolvable by slug "task-abc".
+    mockState.tasks = [{ _ulid: TASK_ABC_ULID, slugs: ["task-abc"] }];
+    mockState.resolveTaskDataManager.mockImplementation(() => ({
+      loadAllTasks: async () => mockState.tasks,
+    }));
     mockState.runInvocation.mockResolvedValue({
       session: { id: "test-session-001" },
       outcome: "success",
@@ -147,10 +161,85 @@ describe("createAutomationAgentSpawner daemon wiring", () => {
     expect(invocationArgs.agent.id).toBe("task-worker");
     expect(invocationArgs.specDir).toBe("/tmp/test-project/.kspec");
     expect(invocationArgs.cwd).toBe(fakeProjectDir);
+    // Display ref is preserved; identity is the resolved canonical ULID.
     expect(invocationArgs.taskRef).toBe("@task-abc");
+    expect(invocationArgs.taskId).toBe(TASK_ABC_ULID);
     expect(invocationArgs.prompt).toBe("Work on task");
     expect(invocationArgs.trigger).toBe("manual");
     expect(invocationArgs.timeoutMinutes).toBe(30);
+  });
+
+  // ─── Canonical task identity resolution ──────────────────────────────────
+
+  // AC: @dispatch-canonical-task-identity ac-automation-agent-actions-canonicalize-task-binding
+  // AC: @dispatch-canonical-task-identity ac-project-invocation-callers-supply-canonical-task-id
+  it("resolves a slug task_ref to the canonical full ULID task_id with display slug", async () => {
+    const spawner = createAutomationAgentSpawner(fakeProjectDir);
+
+    await spawner({ agent_id: "task-worker", task_ref: "@task-abc", prompt: "Go" });
+
+    expect(mockState.runInvocation).toHaveBeenCalledOnce();
+    const invocationArgs = mockState.runInvocation.mock.calls[0][0];
+    expect(invocationArgs.taskId).toBe(TASK_ABC_ULID);
+    expect(invocationArgs.taskRef).toBe("@task-abc");
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-automation-agent-actions-canonicalize-task-binding
+  // AC: @dispatch-canonical-task-identity ac-missing-display-ref-normalizes-from-task-id
+  it("derives @<task_id> display ref for a task_id-only event binding", async () => {
+    const eventTaskId = testUlid("EVT");
+    mockState.tasks = []; // task not in snapshot — a valid full ULID is still trusted
+    const spawner = createAutomationAgentSpawner(fakeProjectDir);
+
+    await spawner({ agent_id: "task-worker", task_id: eventTaskId, prompt: "Go" });
+
+    expect(mockState.runInvocation).toHaveBeenCalledOnce();
+    const invocationArgs = mockState.runInvocation.mock.calls[0][0];
+    expect(invocationArgs.taskId).toBe(eventTaskId);
+    expect(invocationArgs.taskRef).toBe(`@${eventTaskId}`);
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-invalid-or-mismatched-task-ref-rejected
+  it("rejects an event task_id/task_ref pair that resolves to different tasks without creating an invocation", async () => {
+    const ulidA = testUlid("AAA");
+    const ulidB = testUlid("BBB");
+    mockState.tasks = [
+      { _ulid: ulidA, slugs: ["task-a"] },
+      { _ulid: ulidB, slugs: ["task-b"] },
+    ];
+    const spawner = createAutomationAgentSpawner(fakeProjectDir);
+
+    await expect(
+      spawner({ agent_id: "task-worker", task_id: ulidA, task_ref: "@task-b", prompt: "Go" }),
+    ).rejects.toThrow(/task-bound agent action.*resolves to a different task|rejecting/i);
+
+    expect(mockState.runInvocation).not.toHaveBeenCalled();
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-invalid-or-mismatched-task-ref-rejected
+  it("rejects an unresolved task_ref without creating an invocation", async () => {
+    mockState.tasks = [{ _ulid: TASK_ABC_ULID, slugs: ["task-abc"] }];
+    const spawner = createAutomationAgentSpawner(fakeProjectDir);
+
+    await expect(
+      spawner({ agent_id: "task-worker", task_ref: "@task-ghost", prompt: "Go" }),
+    ).rejects.toThrow(/task-bound agent action.*could not be resolved|rejecting/i);
+
+    expect(mockState.runInvocation).not.toHaveBeenCalled();
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-automation-agent-actions-canonicalize-task-binding
+  // Non-task-scoped actions skip resolution entirely and run unchanged.
+  it("does not resolve task identity for non-task-scoped actions", async () => {
+    const spawner = createAutomationAgentSpawner(fakeProjectDir);
+
+    await spawner({ agent_id: "task-worker", prompt: "No task binding" });
+
+    expect(mockState.resolveTaskDataManager).not.toHaveBeenCalled();
+    expect(mockState.runInvocation).toHaveBeenCalledOnce();
+    const invocationArgs = mockState.runInvocation.mock.calls[0][0];
+    expect(invocationArgs.taskId).toBeUndefined();
+    expect(invocationArgs.taskRef).toBeUndefined();
   });
 
   // AC: @automation-action-type-completeness ac-4 — unknown agent error
