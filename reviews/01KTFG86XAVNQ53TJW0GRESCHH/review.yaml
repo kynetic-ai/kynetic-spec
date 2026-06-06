@@ -148,9 +148,25 @@ events:
       kind: nit
       thread_ulid: 01KTFH1EM9WEBTQHWVWJYGCQCQ
     timestamp: 2026-06-06T22:32:14.429Z
+  - _ulid: 01KTFH1R7X99BF8R3CM8EDSW88
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-06T22:32:24.061Z
+  - _ulid: 01KTFH1R7XMPX33K68G80TDT2M
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-06T22:32:24.061Z
 examined_commit: cc7fb4e3cc613e478e2ddebbba176c6d0510416e
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -194,7 +210,14 @@ threads:
           dispatch cleanup/reconciliation. No blocker or should-fix findings found.
         created_at: 2026-06-06T22:32:14.217Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-06T22:32:24.061Z
 created_at: 2026-06-06T22:18:27.114Z
-updated_at: 2026-06-06T22:32:14.217Z
+updated_at: 2026-06-06T22:32:24.061Z
 notes: []
