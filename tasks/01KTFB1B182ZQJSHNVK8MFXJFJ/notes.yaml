@@ -1,1 +1,47 @@
-notes: []
+notes:
+  - _ulid: 01KTFFWXNTV093Z109DJB6Z9V6
+    content: >-
+      Canonicalized workspace target + registry lookup boundaries.
+
+
+      Approach:
+
+      - Extracted shared canonical workspace-matching helpers (recordCanonicalId, recordMatchesTask,
+      resolveCanonicalId, buildProjectTaskResolver) out of workspace.ts into new
+      src/agent-runtime/workspace-identity.ts, and added a canonical-safe lookup API
+      findDispatchWorkspaceByCanonicalTask() plus AmbiguousWorkspaceTaskError. The API resolves both
+      query and record to canonical task ULID, uses exact raw task_ref equality only as a degraded
+      fallback when neither side resolves, and rejects (throws) when >1 non-closed record resolves
+      to the same canonical task instead of silently selecting by display ref.
+
+      - Rewrote DispatchEngine._loadWorkspaceTargetForTask to use the canonical lookup so
+      cleanup/terminal-state target-branch resolution finds historical slug-only (no task_id)
+      records by canonical id; it now reports and returns null on ambiguity/error rather than
+      aborting the dispatch loop.
+
+      - Deprecated and renamed the alias-sensitive parser helper findDispatchWorkspaceByTaskRef ->
+      findDispatchWorkspaceByExactTaskRef (test-only/degraded fallback, JSDoc @deprecated). No
+      production callers remained; migrated test usages that model production lookup to the
+      canonical API.
+
+
+      Tests (tests/dispatch-canonical-task-identity-integration.test.ts new 'workspace lookup APIs'
+      block):
+
+      - historical slug-only record resolves target branch by canonical ULID (exact lookup misses
+      it; canonical + engine._loadWorkspaceTargetForTask find it) — behavioral guard that production
+      uses canonical identity, not raw lookup.
+
+      - full-ULID / slug / unique-prefix aliases resolve the same record (no forked workspace
+      id/branch/worktree/target).
+
+      - >1 non-closed canonical-equal records rejected via AmbiguousWorkspaceTaskError.
+
+      - raw fallback only when neither query nor record resolves.
+
+
+      Gates: format:check, lint --quiet (0 errors), typecheck, full npm test (10285 passed),
+      KSPEC_NO_DAEMON=1 kspec validate --warnings-ok all green.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T22:12:17.210Z
