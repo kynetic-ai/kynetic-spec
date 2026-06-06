@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KTE6WNGEW4YA9BKBQJ87EMY7
     timestamp: 2026-06-06T10:15:37.491Z
+  - _ulid: 01KTE6WRT0QHR09DXY5CJKJW4Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTE6WRJAVMKT0XKJRPSNAK02
+    timestamp: 2026-06-06T10:15:40.608Z
 examined_commit: 026ad7653a9c194b8072f0ce2ae7fd6a58b8e7bc
 external_links: []
 lifecycle_state: open
@@ -59,7 +66,31 @@ threads:
           changed-primary-slug part of the task scope."
         created_at: 2026-06-06T10:15:37.230Z
     kind: blocker
+  - _ulid: 01KTE6WRJAVMKT0XKJRPSNAK02
+    anchor:
+      type: code
+      commit: 026ad7653a9c194b8072f0ce2ae7fd6a58b8e7bc
+      line_end: 3960
+      line_start: 3957
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KTE6WRJAMCS1D59CKR74DNX8
+        author: Jacob Chapel
+        body: "MUST-FIX: Active reviewer target-sync deferral still matches reviewer workspaces by display
+          task_ref. activeInvocationDetails now stores the canonical taskId, and workspace records
+          now store task_id, but _activeReviewerTargets builds reviewerTaskRefs from record.taskRef
+          and then checks reviewerTaskRefs.has(record.task_ref). If the active reviewer was started
+          under @new-slug while the registry record still has a stale display ref @old-slug but
+          task_id=<same ULID>, this returns no active target, so periodic target sync does not defer
+          the reviewer's integration target. I verified this with a one-off repro by seeding an
+          active reviewer record with taskId=01TACT.../taskRef=@new-slug and a registry record with
+          task_id=01TACT.../task_ref=@old-slug; _activeReviewerTargets() returned an empty set. This
+          is another identity decision still keyed on a display alias instead of canonical task
+          ULID."
+        created_at: 2026-06-06T10:15:40.362Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-06T10:10:49.077Z
-updated_at: 2026-06-06T10:15:37.230Z
+updated_at: 2026-06-06T10:15:40.362Z
 notes: []
