@@ -185,6 +185,12 @@ events:
     payload:
       thread_ulid: 01KTDXH46Y856T3WRHYC5V13WN
     timestamp: 2026-06-06T07:57:24.649Z
+  - _ulid: 01KTDYZWJHST6KXQ9DGTRGXED7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTDXH46Y856T3WRHYC5V13WN
+    timestamp: 2026-06-06T07:57:34.161Z
 examined_commit: 1fd1cc2aa970f950ad2c2fe4f0ed20dc6f4d1347
 external_links: []
 lifecycle_state: closed
@@ -247,6 +253,8 @@ threads:
           now rejected before any queue/active/workspace/session state is created."
         created_at: 2026-06-06T07:57:24.441Z
     kind: blocker
+    resolved_at: 2026-06-06T07:57:33.956Z
+    resolved_by: "@claude"
   - _ulid: 01KTDXK0KN9H388G3NK021G8HK
     entries:
       - _ulid: 01KTDXK0KNE5BCWS4PST7R1H9K
@@ -276,5 +284,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T07:33:17.448Z
 created_at: 2026-06-06T07:17:12.172Z
-updated_at: 2026-06-06T07:57:24.441Z
+updated_at: 2026-06-06T07:57:33.956Z
 notes: []
