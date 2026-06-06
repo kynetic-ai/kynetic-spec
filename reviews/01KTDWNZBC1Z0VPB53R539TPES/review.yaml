@@ -156,6 +156,13 @@ events:
     payload:
       thread_ulid: 01KTDXH46Y856T3WRHYC5V13WN
     timestamp: 2026-06-06T07:32:43.938Z
+  - _ulid: 01KTDXK0TAG43PSMNXNAP477GD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTDXK0KN9H388G3NK021G8HK
+    timestamp: 2026-06-06T07:33:03.946Z
 examined_commit: 1fd1cc2aa970f950ad2c2fe4f0ed20dc6f4d1347
 external_links: []
 lifecycle_state: open
@@ -202,7 +209,27 @@ threads:
           required diagnostic for the bad ref.'
         created_at: 2026-06-06T07:32:43.717Z
     kind: blocker
+  - _ulid: 01KTDXK0KN9H388G3NK021G8HK
+    entries:
+      - _ulid: 01KTDXK0KNE5BCWS4PST7R1H9K
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md, task/spec details,
+          src/agent-runtime/task-identity.ts, src/agent-runtime/dispatch.ts,
+          src/agent-runtime/workspace.ts, src/parser/dispatch-workspaces.ts,
+          src/schema/dispatch-workspace.ts, src/agents/adapters.ts, src/agents/runners.ts,
+          src/agents/spawner.ts, src/cli/commands/agent.ts, and changed dispatch/runner/workspace
+          tests. Commands run: kspec task get, kspec item get, git diff/stat/name-only, AC
+          annotation search, npm run format:check, npm run lint -- --quiet, focused npx oxlint on
+          changed files, npm run typecheck, npm test, KSPEC_NO_DAEMON=1 kspec validate
+          --refs/--alignment/--completeness --warnings-ok. Claims verified: canonical scheduler
+          dedupe now uses taskId for active/in-flight/queue/coalescing paths; workspace lookup
+          resolves canonical task ids; task_id/display task_ref payload separation appears in
+          invocation events; invalid-ref claim disproved by code and tests. Categories searched:
+          correctness, edge cases, diagnostics, test quality, workspace integration, scheduler
+          integration, runner side effects. Shared/package guidance surfaces touched: none."
+        created_at: 2026-06-06T07:33:03.733Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-06T07:17:12.172Z
-updated_at: 2026-06-06T07:32:43.717Z
+updated_at: 2026-06-06T07:33:03.733Z
 notes: []
