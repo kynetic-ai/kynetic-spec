@@ -20891,6 +20891,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-06T11:28:14.754Z
+  - _ulid: 01KTEC861MMB4CA0PPASF7QRCJ
+    type: friction
+    content: "A wide identity-canonicalization change (@task-canonicalize-dispatch-task-identity) leaked
+      one un-canonicalized consumer site per review cycle across SIX fix cycles: scheduler
+      dedupe/exclusivity, workspace registry/cleanup, reconcile key formats (see 01KTE2M9),
+      terminal/session payloads, session metadata persistence, metadata-backed discovery, reviewer
+      targeting, and finally the session log --task CLI filter (cycle 6). Each site compared task
+      identity by raw task_ref or strict equality instead of the canonical task ULID, and each was
+      found reactively by a reviewer rather than proactively. Root friction: there was no
+      exhaustive, grep-able inventory of 'every place that keys on or compares task identity' to
+      drive the change, so completeness was discovered piecemeal through review churn. Antidote for
+      next time: before implementing a cross-cutting identity/normalization task, build and record
+      (in the task or plan) an explicit checklist of all identity-comparison call sites (scheduler,
+      workspace, registry/reconcile, payloads, persistence, discovery, CLI filters/targeting) and
+      gate submission on each being converted + behaviorally tested, rather than relying on review
+      cycles to enumerate them. Related: 01KTE2M9 (key-format asymmetry), 01KTE3Q9
+      (persistence-boundary test gap)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-06T11:49:17.492Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
