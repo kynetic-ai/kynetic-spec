@@ -174,9 +174,8 @@ description: >-
 spec_ref: "@runner-process-invocation-inputs"
 meta_ref: null
 plan_ref: null
-status: blocked
-blocked_by:
-  - "Agent task-worker failed 4 consecutive times: Claude exited before Stop hook (exit=1, signal=0)"
+status: pending_review
+blocked_by: []
 depends_on: []
 context: []
 priority: 2
@@ -193,7 +192,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-generic-acp-process-adapter/01kt7y7r
-session_id: 01KT7Z4Y55F3AC3XZNND4T571T
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -276,7 +275,25 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-06-04T00:29:21.050Z
-prior_status: pending_review
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Agent task-worker failed 4 consecutive times: Claude exited before Stop hook (exit=1,
+            signal=0)"
+      session_id:
+        new: null
+        previous: 01KT7Z4Y55F3AC3XZNND4T571T
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-06-06T04:44:50.102Z
+prior_status: null
 created_at: 2026-06-03T23:48:57.289Z
 started_at: 2026-06-04T00:05:33.829Z
 submitted_at: 2026-06-04T00:29:01.617Z
