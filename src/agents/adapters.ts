@@ -8,20 +8,10 @@
 import { execSync } from "node:child_process";
 
 /**
- * Adapter definition for spawning ACP agents.
+ * Fields shared by every adapter variant, independent of whether the adapter
+ * carries a built-in command.
  */
-export interface AgentAdapter {
-  /**
-   * Command to execute (e.g., 'npx', 'node').
-   *
-   * Required for package-backed and model-specific adapters. Absent only for
-   * adapters with `requiresProcessExecutable: true`, which carry no
-   * adapter-level command and may be resolved only through a runner that
-   * supplies `process.executable`. The resolver never returns a contract whose
-   * effective adapter lacks a command — a generic adapter without a runner
-   * executable fails with `missing_process_executable` before spawn.
-   */
-  command?: string;
+interface AgentAdapterBase {
   /** Arguments to pass to the command */
   args: string[];
   /** Environment variables to set */
@@ -32,15 +22,58 @@ export interface AgentAdapter {
   description?: string;
   /** Arguments to append for auto-approve / yolo mode */
   autoApproveArgs?: string[];
-  /**
-   * When true, the adapter carries no built-in command and must be resolved
-   * through a runner that supplies `process.executable`. Used by the generic
-   * ACP process profile so custom ACP executables can be spawned exactly as
-   * configured by the runner — without inheriting package-runner or
-   * model-specific argv, and without pretending to be the mock test adapter.
-   */
-  requiresProcessExecutable?: boolean;
 }
+
+/**
+ * Package-backed or model-specific adapter. Carries a required built-in
+ * `command` (e.g. `npx`, `node`, `droid`). This is the only adapter shape that
+ * may be spawned directly or selected by a runner that does not override
+ * `process.executable`.
+ */
+export interface CommandAdapter extends AgentAdapterBase {
+  /**
+   * Command to execute (e.g., 'npx', 'node'). Always present for
+   * package-backed and model-specific adapters.
+   */
+  command: string;
+  /**
+   * Discriminant. Command-backed adapters never require a runner-supplied
+   * executable; the field is optional and, when present, must be `false`.
+   */
+  requiresProcessExecutable?: false;
+}
+
+/**
+ * Generic ACP process adapter profile. Carries no built-in command and must be
+ * resolved through a runner that supplies `process.executable`. Used so custom
+ * ACP executables can be spawned exactly as configured by the runner — without
+ * inheriting package-runner or model-specific argv, and without pretending to
+ * be the mock test adapter. The resolver never returns a contract whose
+ * effective adapter lacks a command: a generic adapter without a runner
+ * executable fails with `missing_process_executable` before spawn.
+ */
+export interface ProcessExecutableAdapter extends AgentAdapterBase {
+  /**
+   * Generic adapters carry no adapter-level command. Modeled as an optional
+   * `undefined` so the discriminated union stays sound while documenting that
+   * the command is supplied later by `runner.process.executable`.
+   */
+  command?: undefined;
+  /** Discriminant. Always `true` for the generic process profile. */
+  requiresProcessExecutable: true;
+}
+
+/**
+ * Adapter definition for spawning ACP agents.
+ *
+ * A discriminated union on `requiresProcessExecutable`: every non-generic
+ * adapter (`CommandAdapter`) keeps a required `command`, while only the generic
+ * process profile (`ProcessExecutableAdapter`) may omit it. This encodes the
+ * invariant at the type level so a command-less non-generic adapter cannot be
+ * registered without a compile error, and the runner resolver enforces the
+ * same invariant at runtime for adapters constructed dynamically.
+ */
+export type AgentAdapter = CommandAdapter | ProcessExecutableAdapter;
 
 /**
  * Resolve the package runner command for the current runtime.
