@@ -294,6 +294,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-06T05:04:41.308Z
+  - _ulid: 01KTDN3E4KP24N0DQGFP12XQAG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTDN3DWZAV4PF4P2CFFKDXKY
+    timestamp: 2026-06-06T05:04:44.691Z
 examined_commit: 044eccda44dc11c7360897665d1ea5d8e6462e84
 external_links: []
 lifecycle_state: open
@@ -330,7 +337,46 @@ threads:
           executable supplied it."
         created_at: 2026-06-06T05:04:25.204Z
     kind: blocker
+  - _ulid: 01KTDN3DWZAV4PF4P2CFFKDXKY
+    entries:
+      - _ulid: 01KTDN3DWZC11S9FHA1NT4KQQY
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; src/agents/adapters.ts; src/agents/runners.ts;
+          src/agents/spawner.ts; src/cli/commands/agent.ts; src/agents/runner-validation.ts;
+          src/agent-runtime/invocation.ts; changed tests in
+          tests/agent-invocation-lifecycle.test.ts, tests/agent-runner-cli.test.ts,
+          tests/agent-runner-process.test.ts, tests/agent-runner-resolver.test.ts,
+          tests/agent-runtime/adapter-auto-approve.test.ts, tests/cli-agent.test.ts.
+
+
+          Commands run: git diff/stat/name-only against dev base
+          45d6db87895211f041bd4e1c12be7cd620549178; kspec item get for
+          @runner-process-invocation-inputs, @runner-operator-surfaces,
+          @runner-invocation-semantics, @runner-resolution-and-preflight; kspec validate --refs
+          --warnings-ok; kspec validate --alignment --warnings-ok; kspec validate --completeness
+          --warnings-ok; npm run format:check; npm run lint -- --quiet; focused npx oxlint on
+          changed files; npm run typecheck; npm test -- adapter-auto-approve agent-runner-resolver
+          agent-runner-process agent-runner-cli agent-invocation-lifecycle cli-agent; npm test.
+
+
+          Claims verified: generic-acp registry shape, runner executable resolution, no generic
+          built-in args/auto-approve args, missing process.executable diagnostics, direct/override
+          rejection, and neutral skill formatting were verified by reading implementation and
+          passing behavioral tests. Package-backed process.executable override preservation was
+          verified by resolver code and regression test.
+
+
+          Categories searched: correctness, edge cases around direct/runner-backed invocation,
+          preflight/error handling, operator diagnostics, test quality, source-scanning test
+          shortcuts, and integration with CLI/invocation/spawn paths. Shared-guidance neutrality did
+          not apply because no shared/package guidance surfaces were changed.
+        created_at: 2026-06-06T05:04:44.447Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-06T04:46:38.098Z
-updated_at: 2026-06-06T05:04:41.076Z
+updated_at: 2026-06-06T05:04:44.447Z
 notes: []
