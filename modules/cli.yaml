@@ -10438,6 +10438,7 @@ features:
           - "@dispatch-scheduling-priority-model"
           - "@dispatch-event-payload"
           - "@reference-system"
+          - "@slug-resolution"
         tests: []
         traits: []
         acceptance_criteria:
