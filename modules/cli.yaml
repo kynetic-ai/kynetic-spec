@@ -10435,6 +10435,7 @@ features:
         relates_to:
           - "@dispatch-workspace-registry"
           - "@canonical-task-workspace-contract"
+          - "@dispatch-scheduling-priority-model"
         tests: []
         traits: []
         acceptance_criteria:
