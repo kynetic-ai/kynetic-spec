@@ -149,19 +149,40 @@ describe("normalizeTaskIdentity", () => {
     expect(result.code).toBe("missing-task-identity");
   });
 
-  // AC: @dispatch-canonical-task-identity ac-missing-display-ref-normalizes-from-task-id
-  // An authoritative task_id wins over an unresolvable display ref: the id is
-  // canonical and the display ref is derived from it rather than dropping work.
-  it("trusts a valid task_id and derives the display ref when the ref is unresolvable", () => {
+  // AC: @dispatch-canonical-task-identity ac-invalid-or-mismatched-task-ref-rejected
+  // A valid task_id paired with a present-but-unresolvable task_ref is a
+  // malformed/stale event. It must be rejected (not silently accepted with a
+  // derived display ref) so the bad ref surfaces an operator diagnostic and no
+  // state is keyed on it. The diagnostic names both the bad ref and the known id.
+  it("rejects a valid task_id paired with an unresolvable task_ref", () => {
     const result = normalizeTaskIdentity(
       { taskId: ulidA, taskRef: "@stale-slug", source: "api/events" },
+      resolver,
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.code).toBe("unresolved-task-ref");
+    expect(result.diagnostic).toContain("@stale-slug");
+    expect(result.diagnostic).toContain(ulidA);
+    expect(result.diagnostic).toContain("api/events");
+    // The id is known despite rejection — carried for operator diagnostics.
+    expect(result.canonicalTaskId).toBe(ulidA);
+    expect(result.providedTaskId).toBe(ulidA);
+    expect(result.providedTaskRef).toBe("@stale-slug");
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-missing-display-ref-normalizes-from-task-id
+  // The `@<id>` display form alongside the id is the legitimate id-only flow and
+  // must NOT be rejected (regression guard for the unresolvable-ref rejection).
+  it("accepts a valid task_id whose only ref is the @<id> display form", () => {
+    const result = normalizeTaskIdentity(
+      { taskId: ulidA, taskRef: `@${ulidA}`, source: "api/events" },
       resolver,
     );
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.identity.taskId).toBe(ulidA);
     expect(result.identity.displayRef).toBe(`@${ulidA}`);
-    expect(result.displayRefDerivedFromTaskId).toBe(true);
   });
 
   // AC: @dispatch-canonical-task-identity ac-missing-display-ref-normalizes-from-task-id

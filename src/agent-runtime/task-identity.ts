@@ -145,12 +145,14 @@ function resolveFullUlid(resolver: TaskRefResolver, rawId: string): string | nul
  *   unique ULID prefix). A `task_id` is validated as a full ULID.
  * - When both resolve, they must resolve to the same task or the input is
  *   rejected as a mismatch.
- * - When only the id is valid, the canonical identity is the id and the display
- *   ref is derived as `@<task_id>` (unless a ref equal to the id form was
- *   supplied).
+ * - When only a valid `task_id` is supplied (no `task_ref`, or a `task_ref`
+ *   equal to the `@<task_id>` display form), the canonical identity is the id and
+ *   the display ref is derived as `@<task_id>`.
  * - A provided `task_ref` that cannot be resolved (not found, ambiguous, or a
  *   duplicate slug) rejects the input — a present ref must resolve to the
- *   canonical task.
+ *   canonical task, even when an authoritative `task_id` is also supplied. A
+ *   present-but-unresolvable ref signals a malformed/stale event; accepting it
+ *   would silently swallow the bad ref instead of surfacing the diagnostic.
  *
  * AC: @dispatch-canonical-task-identity ac-event-ingress-canonicalizes-task-identity
  * AC: @dispatch-canonical-task-identity ac-invalid-or-mismatched-task-ref-rejected
@@ -211,19 +213,25 @@ export function normalizeTaskIdentity(
     };
   }
 
-  // A ref was provided but could not be resolved. When an authoritative id is
-  // also present the id wins and the unresolvable ref is replaced by the derived
-  // `@<id>` display ref (the id is authoritative; the bad ref is display-only).
-  // Without a usable id, an unresolvable/ambiguous ref is rejected so no state
-  // is keyed on it.
-  if (rawRef && !refUlid && !idUlid) {
+  // A ref was provided but could not be resolved. A present `task_ref` must
+  // resolve to the canonical task — even when an authoritative `task_id` is also
+  // supplied. The legitimate id-only flow uses the `@<id>` display form (handled
+  // by the short-circuit above), so anything reaching here is a malformed/stale
+  // ref. Rejecting surfaces the operator-actionable diagnostic instead of
+  // silently swallowing the bad ref and forking task identity.
+  if (rawRef && !refUlid) {
     const result = refResult as Exclude<ResolveResult, { ok: true }> | null;
+    // When an id is also present, name it in the diagnostic and carry it as the
+    // known canonical id so operators can see which task the bad ref shadowed.
+    const idContext = idUlid
+      ? ` (task_id "${rawId}" resolves to ${idUlid}, but a present task_ref must also resolve to that task)`
+      : "";
     if (result?.error === "ambiguous") {
       return {
         ok: false,
         code: "ambiguous-task-ref",
-        canonicalTaskId: null,
-        diagnostic: `[${source}] task_ref "${rawRef}" is ambiguous (matches ${result.candidates.join(", ")}); rejecting before scheduling.`,
+        canonicalTaskId: idUlid,
+        diagnostic: `[${source}] task_ref "${rawRef}" is ambiguous (matches ${result.candidates.join(", ")}); rejecting before scheduling.${idContext}`,
         candidates: result.candidates,
         ...base,
       };
@@ -232,8 +240,8 @@ export function normalizeTaskIdentity(
       return {
         ok: false,
         code: "duplicate-task-slug",
-        canonicalTaskId: null,
-        diagnostic: `[${source}] task_ref "${rawRef}" maps to multiple items (${result.candidates.join(", ")}); rejecting before scheduling.`,
+        canonicalTaskId: idUlid,
+        diagnostic: `[${source}] task_ref "${rawRef}" maps to multiple items (${result.candidates.join(", ")}); rejecting before scheduling.${idContext}`,
         candidates: result.candidates,
         ...base,
       };
@@ -241,8 +249,8 @@ export function normalizeTaskIdentity(
     return {
       ok: false,
       code: "unresolved-task-ref",
-      canonicalTaskId: null,
-      diagnostic: `[${source}] task_ref "${rawRef}" could not be resolved to a task; rejecting before scheduling.`,
+      canonicalTaskId: idUlid,
+      diagnostic: `[${source}] task_ref "${rawRef}" could not be resolved to a task; rejecting before scheduling.${idContext}`,
       ...base,
     };
   }
@@ -258,7 +266,8 @@ export function normalizeTaskIdentity(
     };
   }
 
-  // A valid id (ref absent or unresolvable): derive the display ref from the id.
+  // A valid id with no task_ref (a present-but-unresolvable ref was rejected
+  // above): derive the display ref from the id.
   if (idUlid) {
     return {
       ok: true,
