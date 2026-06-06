@@ -17732,7 +17732,7 @@ workspaces:
         head: 7246f0004d549408f7bf81c974a3ce1ea5d85d80
         last_seen_at: 2026-06-06T21:41:07.648Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-canonicalize-project-invocation-task-identity-01ktfb19
-  - active_role: worker
+  - active_role: null
     base_branch_point: 14bc103395dc68abdafa5ce00e41cdc8b449a997
     bootstrap:
       status: succeeded
@@ -18057,12 +18057,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-06T22:12:46.741Z
+      updated_at: 2026-06-06T22:15:33.835Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-06T22:12:46.741Z
+      updated_at: 2026-06-06T22:15:33.835Z
     integration:
       status: pending
       detail: null
@@ -18070,17 +18070,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 14bc103395dc68abdafa5ce00e41cdc8b449a997
-      updated_at: 2026-06-06T22:12:46.741Z
-    lifecycle_state: active
+      updated_at: 2026-06-06T22:15:33.835Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KTFB1B182ZQJSHNVK8MFXJFJ"
     task_slug: task-canonicalize-workspace-identity-lookups
     timestamps:
       closed_at: null
       last_active_at: 2026-06-06T21:42:42.466Z
-      last_reconciled_at: 2026-06-06T22:12:46.741Z
+      last_reconciled_at: 2026-06-06T22:15:33.835Z
       created_at: 2026-06-06T21:42:05.044Z
-      updated_at: 2026-06-06T22:12:46.741Z
+      updated_at: 2026-06-06T22:15:33.835Z
     workspace_id: dispatch-workspace-01KTFB1B182ZQJSHNVK8MFXJFJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
