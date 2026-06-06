@@ -30,3 +30,40 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-06T20:54:46.014Z
+  - _ulid: 01KTFDTE74TCAQGVE0MG2V86CD
+    content: >-
+      Implemented and verified. Changes:
+
+      - action-executor.ts: AgentSpawner gains task_id; executeAgent forwards canonical-binding
+      precedence (explicit action.task_ref authoritative, drops event identity; else task_binding
+      forwards event task_id+task_ref pair).
+
+      - agent-dispatch.ts createAutomationAgentSpawner: task-bound invocations
+      normalizeTaskIdentity() against loaded tasks; reject unresolved/ambiguous/mismatched as
+      action-run failure before runInvocation; pass canonical taskId + display taskRef. Non-task
+      actions unchanged.
+
+      - cli/commands/agent.ts run --task: resolves ref to canonical full ULID via
+      normalizeTaskIdentity; fails (VALIDATION_FAILED) before session creation on unresolved;
+      dry-run stays lenient (no session created).
+
+
+      Audit: all 3 production runInvocation callers (dispatch, CLI, automation spawner) now supply
+      canonical taskId for task-bound invocations; dispatch already normalized at ingress.
+      runInvocation keeps documented legacy taskId??taskRef fallback for historical/manual read
+      compat.
+
+
+      Tests: agent-action-input (forward both fields; task_id-only; explicit ref authoritative over
+      differing event); daemon-automation-spawner-wiring (slug->full ULID+display;
+      task_id-only->@<id>; mismatch & unresolved rejection w/ no runInvocation; non-task skips
+      resolution); cli-agent-commands (canonical task_id+display persisted via spy; unresolved
+      --task fails pre-session).
+
+
+      Gates: format:check, lint --quiet (0 errors), typecheck, full npm test (10289 passed; 2 env
+      git-contention flakes confirmed passing on isolated rerun), kspec validate
+      refs/alignment/completeness all exit 0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T21:35:58.693Z
