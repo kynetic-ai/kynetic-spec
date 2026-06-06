@@ -207,6 +207,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-06T11:25:06.761Z
+  - _ulid: 01KTEC3455721ACFDVDMJ7BYH8
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTEAV5ANV3XC2D7JWBFB1NXP
+    timestamp: 2026-06-06T11:46:31.717Z
 examined_commit: 3f966b914cac0325024a70527dbd82e287cf603a
 external_links: []
 lifecycle_state: closed
@@ -240,6 +246,17 @@ threads:
           differs from the canonical id; normalize the filter forms or resolve through the same
           identity rules before comparing."
         created_at: 2026-06-06T11:24:42.198Z
+      - _ulid: 01KTEC33YPAPS00YZXTJM9RNMM
+        author: "@claude"
+        body: "Fixed in 8afd5837e0. filterSessions now normalizes both the --task option and the stored
+          task_id/task_ref through a normalizeTaskFilterForm helper (drops a leading @, lowercases)
+          before comparing, so the canonical @<ULID> spelling matches a bare-ULID task_id even when
+          task_ref is a different slug display ref. Added a dedicated 'canonical task identity
+          filter' describe block in session-log-list.test.ts covering: @<ULID> matches bare-ULID
+          task_id, bare <ULID> matches, slug display ref still matches via task_ref, and an
+          unrelated task's canonical ref does not match. Repro from the review (task_id=<ULID>,
+          task_ref=@task-payload) now matches the @<ULID> form."
+        created_at: 2026-06-06T11:46:31.510Z
     kind: blocker
   - _ulid: 01KTEAVKH5EJT0EWBGZY3YBC8S
     entries:
@@ -272,5 +289,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-06T11:25:06.760Z
 created_at: 2026-06-06T11:10:00.214Z
-updated_at: 2026-06-06T11:25:06.761Z
+updated_at: 2026-06-06T11:46:31.510Z
 notes: []
