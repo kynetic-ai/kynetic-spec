@@ -184,6 +184,13 @@ events:
       kind: blocker
       thread_ulid: 01KTEAV5ANV3XC2D7JWBFB1NXP
     timestamp: 2026-06-06T11:24:42.435Z
+  - _ulid: 01KTEAVKQEZX0TGYKMH98J4DMF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTEAVKH5EJT0EWBGZY3YBC8S
+    timestamp: 2026-06-06T11:24:56.942Z
 examined_commit: 3f966b914cac0325024a70527dbd82e287cf603a
 external_links: []
 lifecycle_state: open
@@ -218,7 +225,29 @@ threads:
           identity rules before comparing."
         created_at: 2026-06-06T11:24:42.198Z
     kind: blocker
+  - _ulid: 01KTEAVKH5EJT0EWBGZY3YBC8S
+    entries:
+      - _ulid: 01KTEAVKH5YTAYV9CMW8GRJ2CX
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md, task/spec details for
+          @01KTDPVY9VEE3E3WGJFMYMGRHH / @dispatch-canonical-task-identity, previous review
+          @01KTE6KW, git diff/log, src/agent-runtime/task-identity.ts, dispatch.ts, workspace.ts,
+          invocation.ts, action-executor.ts, src/agents/* touched files, src/cli/commands/agent.ts,
+          src/cli/commands/session/log.ts, src/parser/dispatch-workspaces.ts, session
+          schemas/store/types, and changed dispatch/session tests. Commands run: git
+          diff/log/stat/name-status/diff --check, AC annotation search, npm run format:check, npm
+          run lint -- --quiet, npx oxlint on changed TS/test files, npm run typecheck, npm test,
+          KSPEC_NO_DAEMON=1 kspec validate --schema/--refs/--alignment/--completeness --warnings-ok,
+          plus a node --import tsx filterSessions repro for --task canonical ref matching. Claims
+          verified: prior metadata-discovery and active-reviewer-target blockers are fixed by
+          canonical-id matching with behavioral tests; session metadata/events now persist task_id
+          separately from task_ref; found one remaining CLI targeting regression. Categories
+          searched: correctness, alias edge cases, invalid/mismatched refs, workspace
+          lineage/recovery/cleanup protection, session/event payloads, diagnostics, test quality, AC
+          annotations, integration gates."
+        created_at: 2026-06-06T11:24:56.741Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-06T11:10:00.214Z
-updated_at: 2026-06-06T11:24:42.198Z
+updated_at: 2026-06-06T11:24:56.741Z
 notes: []
