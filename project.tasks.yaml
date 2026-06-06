@@ -30919,6 +30919,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-06T01:29:22.247Z
+  automation: eligible
 - _ulid: 01KTD8S2Y2DNM0S39E8T7EY64E
   slugs:
     - update-resource-documentation-ui-task-markdown
