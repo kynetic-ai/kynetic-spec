@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KTDQJQGDFN99AH7283T4NHE1
+    content: "Approach: Introduce a shared dispatch task-identity normalization module
+      (src/agent-runtime/task-identity.ts) that resolves any task-scoped input (task_id + task_ref)
+      to a canonical full ULID identity plus a separate display ref, rejecting
+      unresolved/ambiguous/mismatched refs with operator-actionable diagnostics. Then key all
+      scheduler identity decisions (in-flight markers, active-record matching, same-agent dedupe,
+      cross-agent exclusivity, affinity, cleanup-protection set) on the canonical task ULID instead
+      of the raw task ref; normalize at handleStateChange ingress. Then add task_id (full ULID) to
+      the dispatch workspace record schema, key provisioning/lookup/uniqueness/cleanup-protection by
+      canonical task_id, derive workspace_id + short id + canonical branch from the ULID (stable
+      lineage across aliases), and backfill/interpret historical task_ref records (resolvable ->
+      canonical; unresolvable -> stale/invalid with recovery guidance). Tests: dedicated
+      task-identity unit tests + dispatch-engine alias dedupe/exclusivity + workspace canonical
+      registry/lineage/cleanup coverage. Existing taskId/taskRef separation in TaskStateChange and
+      the short-id-based protection model make this surgical rather than a rewrite."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T05:48:02.957Z
