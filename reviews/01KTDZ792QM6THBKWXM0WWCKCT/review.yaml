@@ -180,6 +180,13 @@ events:
       status: pass
       name: kspec validate schema
     timestamp: 2026-06-06T08:19:14.091Z
+  - _ulid: 01KTE07YRPGTDB8GE3D38EPTDP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTE07YJ2FYJ808WH16F3E56E
+    timestamp: 2026-06-06T08:19:27.126Z
 examined_commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
 external_links: []
 lifecycle_state: open
@@ -189,8 +196,28 @@ subject:
   content_hash: ""
   ref: "@01KTDPVY9VEE3E3WGJFMYMGRHH"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTE07YJ2FYJ808WH16F3E56E
+    anchor:
+      type: code
+      commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
+      line_end: 3321
+      line_start: 3317
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KTE07YJ2M3VW4JNRV63RJ9FE
+        author: Jacob Chapel
+        body: "MUST-FIX: The terminal invocation event payload overwrites the display task_ref with the
+          canonical task_id. terminalEvent already carries task_id and task_ref separately, but this
+          payload spreads terminalEvent and then assigns task_ref: terminalEvent.task_id. As a
+          result invocation.completed/invocation.failed event-bus consumers receive the canonical
+          ULID in task_ref and lose the display ref, violating @dispatch-canonical-task-identity
+          ac-session-and-event-payloads-separate-id-from-display-ref. Evidence: tests only assert
+          the started onInvocationEvent payload, and the terminal event-bus path is not covered."
+        created_at: 2026-06-06T08:19:26.914Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-06T08:01:36.343Z
-updated_at: 2026-06-06T08:19:13.868Z
+updated_at: 2026-06-06T08:19:26.914Z
 notes: []
