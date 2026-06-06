@@ -60448,7 +60448,7 @@ runs:
     started_at: 2026-06-06T05:35:49.182Z
     completed_at: 2026-06-06T05:37:56.042Z
   - _ulid: 01KTDR2HHWT8R8ZXJCRFRMSRDT
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -60506,10 +60506,14 @@ runs:
         notes: "Skipped discussion: after search, all concrete friction points were already covered by
           existing inbox items, observations, specs, or completed tasks. No new untracked
           improvement was proposed."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-06T05:59:25.424Z
-        completed_at: 2026-06-06T05:59:25.424Z
+        completed_at: 2026-06-06T05:59:36.470Z
+        notes: "No capture performed: no new approved items. Existing tracked coverage is sufficient for the
+          friction points found in this session; duplicating inbox or observation records would add
+          noise."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T05:56:41.148Z
+    completed_at: 2026-06-06T05:59:36.470Z
