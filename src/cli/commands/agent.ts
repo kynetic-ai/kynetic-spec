@@ -17,6 +17,7 @@ import chalk from "chalk";
 import { initContext, loadMetaContext, findTaskByRef } from "../../parser/index.js";
 import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { runInvocation } from "../../agent-runtime/invocation.js";
+import { normalizeTaskIdentity, buildTaskRefResolver } from "../../agent-runtime/task-identity.js";
 import type { SessionUpdate } from "../../acp/index.js";
 import { buildPromptWithSkills, interpolateTemplate } from "../../agent-runtime/prompts.js";
 import { resolveAdapter } from "../../agents/adapters.js";
@@ -841,18 +842,35 @@ export function registerAgentCommands(program: Command): void {
 
         // Build the prompt — respect agent prompt_template when --task is used
         const taskRef = opts.task as string | undefined;
-        // Best-effort resolve the canonical task ULID so the persisted session
-        // records identity separately from the display ref, matching the dispatch
-        // path. Non-fatal: an unresolved ref falls back to the display ref as the
-        // identity in runInvocation. AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+        // A provided --task ref MUST resolve to a canonical full task ULID
+        // before a task-scoped session is created. Persisting an unresolved
+        // slug/raw ref as the session task_id would fork task identity from the
+        // canonical dispatch identity, so we reject before runInvocation rather
+        // than silently falling back to the display ref as identity. Dry-run is
+        // a preview that never creates a session, so it stays lenient and skips
+        // this enforcement.
+        // AC: @dispatch-canonical-task-identity ac-project-invocation-callers-supply-canonical-task-id
+        // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
         let taskCanonicalId: string | undefined;
-        if (taskRef) {
+        if (taskRef && !opts.dryRun) {
+          let tasks;
           try {
-            const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-            taskCanonicalId = findTaskByRef(tasks, taskRef)?._ulid;
-          } catch {
-            // Non-fatal — fall back to the display ref as identity.
+            tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+          } catch (loadErr) {
+            error(`Failed to load tasks to resolve --task "${taskRef}"`, loadErr);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
+          const resolution = normalizeTaskIdentity(
+            { taskRef, source: "cli/agent-run" },
+            buildTaskRefResolver(tasks),
+          );
+          if (!resolution.ok) {
+            error(`Cannot target task "${taskRef}": ${resolution.diagnostic}`, {
+              suggestion: `Provide a task ref that resolves to a single task (slug, full ULID, or unique ULID prefix). List tasks with: kspec tasks ready`,
+            });
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          taskCanonicalId = resolution.identity.taskId;
         }
         let basePrompt: string;
         if (prompt) {

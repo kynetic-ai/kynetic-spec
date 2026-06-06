@@ -34,6 +34,7 @@ import { JoinAccumulator } from "../../agent-runtime/join-accumulator.js";
 import { ActionExecutor, type AgentSpawner } from "../../agent-runtime/action-executor.js";
 import { SessionRegistry } from "../../agent-runtime/session-registry.js";
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "../../agent-runtime/invocation.js";
+import { normalizeTaskIdentity, buildTaskRefResolver } from "../../agent-runtime/task-identity.js";
 import { ulid } from "ulid";
 import {
   initContext,
@@ -190,12 +191,46 @@ export function createAutomationAgentSpawner(projectDir: string): AgentSpawner {
       env.KSPEC_COMPOSITION_GROUP_ID = options.group_id;
     }
 
+    // AC: @dispatch-canonical-task-identity ac-automation-agent-actions-canonicalize-task-binding
+    // AC: @dispatch-canonical-task-identity ac-project-invocation-callers-supply-canonical-task-id
+    // Task-bound automation invocations resolve the binding to canonical task
+    // identity through the same normalization rules dispatch uses, BEFORE the
+    // session/invocation is created. The canonical full task ULID becomes the
+    // invocation task_id; the chosen human-readable ref is retained only as the
+    // display task_ref. Unresolved, ambiguous, or mismatched bindings fail the
+    // action run here so no session or invocation payload is created for a raw
+    // ref. Non-task-scoped actions (no task_ref and no task_id) are unchanged.
+    let canonicalTaskId: string | undefined;
+    let displayTaskRef: string | undefined;
+    const hasTaskBinding =
+      (typeof options.task_ref === "string" && options.task_ref.length > 0) ||
+      (typeof options.task_id === "string" && options.task_id.length > 0);
+    if (hasTaskBinding) {
+      const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+      const resolution = normalizeTaskIdentity(
+        {
+          taskId: options.task_id,
+          taskRef: options.task_ref,
+          source: `automation/agent-action(${options.agent_id})`,
+        },
+        buildTaskRefResolver(tasks),
+      );
+      if (!resolution.ok) {
+        throw new Error(
+          `Cannot run task-bound agent action for "${options.agent_id}": ${resolution.diagnostic}`,
+        );
+      }
+      canonicalTaskId = resolution.identity.taskId;
+      displayTaskRef = resolution.identity.displayRef;
+    }
+
     const sessionId = ulid();
     const result = await runInvocation({
       agent: agentDef,
       specDir: ctx.specDir,
       cwd: projectDir,
-      taskRef: options.task_ref,
+      taskId: canonicalTaskId,
+      taskRef: displayTaskRef,
       prompt: options.prompt ?? `Run as agent "${options.agent_id}".`,
       trigger: "manual",
       timeoutMinutes: options.timeout_minutes,

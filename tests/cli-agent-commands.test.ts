@@ -20,8 +20,10 @@ import {
   waitForStartup,
   testUlid,
   initGitRepo,
+  seedSplitTask,
 } from "./helpers/cli.js";
 import { runInvocation } from "../src/agent-runtime/invocation.js";
+import * as invocationModule from "../src/agent-runtime/invocation.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import { setJsonMode, isJsonMode } from "../src/cli/output.js";
 import type { SessionUpdate } from "../src/acp/index.js";
@@ -1113,6 +1115,107 @@ describe("agent run --task respects prompt_template", () => {
     const data = JSON.parse(result.stdout);
     // review_url should resolve to empty string, not remain as {{review_url}}
     expect(data.prompt).toContain("Review @TASK000 at  end");
+  });
+});
+
+// ─── Canonical task identity for one-shot --task ─────────────────────────────
+
+// AC: @dispatch-canonical-task-identity ac-project-invocation-callers-supply-canonical-task-id
+describe("agent run --task canonical task identity", () => {
+  let testDir: string;
+  const TASK_ULID = testUlid("CANON");
+
+  function setupProjectWithTask(): void {
+    initGitRepo(testDir);
+    fsSync.writeFileSync(
+      path.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1.1", title: "Test", task_storage: { format: "split" } }),
+    );
+    fsSync.writeFileSync(
+      path.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({
+        kynetic_meta: "1.0",
+        agents: [
+          {
+            _ulid: testUlid("AGNT"),
+            id: "canon-worker",
+            name: "Canon Worker",
+            dispatch: [],
+            concurrency: { max_concurrent: 1 },
+            adapter: "claude-agent-acp",
+            auto_approve: false,
+          },
+        ],
+      }),
+    );
+    seedSplitTask(testDir, {
+      _ulid: TASK_ULID,
+      slugs: ["task-canon"],
+      type: "task",
+      title: "Canonical Task",
+      status: "pending",
+      priority: 3,
+    });
+  }
+
+  beforeEach(async () => {
+    // In-process task loading needs the split storage backend registered (the
+    // subprocess CLI does this during bootstrap).
+    const { ensureSplitBackendRegistered } = await import("../src/parser/split-backend.js");
+    ensureSplitBackendRegistered();
+    testDir = await createTempDir("kspec-agent-run-canon-");
+    setupProjectWithTask();
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-project-invocation-callers-supply-canonical-task-id
+  // AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+  it("passes the canonical full ULID as task_id and the display slug as task_ref", async () => {
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      outcome: "success",
+      session: { id: "session-canon-001" },
+      durationMs: 5,
+      stopReason: "end_turn",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
+
+    const program = createTestProgram();
+    const origCwd = process.cwd();
+    process.chdir(testDir);
+    let caught: unknown;
+    try {
+      await program.parseAsync(["agent", "run", "canon-worker", "--task", "@task-canon"], {
+        from: "user",
+      });
+    } catch (err) {
+      caught = err;
+    } finally {
+      process.chdir(origCwd);
+    }
+    if (!runSpy.mock.calls.length && caught) throw caught;
+
+    expect(runSpy).toHaveBeenCalledOnce();
+    const opts = runSpy.mock.calls[0][0];
+    expect(opts.taskId).toBe(TASK_ULID);
+    expect(opts.taskRef).toBe("@task-canon");
+  });
+
+  // AC: @dispatch-canonical-task-identity ac-project-invocation-callers-supply-canonical-task-id
+  // AC: @dispatch-canonical-task-identity ac-invalid-or-mismatched-task-ref-rejected
+  it("fails before creating a session when --task cannot be resolved", () => {
+    const result = kspec("agent run canon-worker --task @task-ghost", testDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).not.toBe(0);
+    const combined = `${result.stdout}\n${result.stderr}`;
+    expect(combined).toMatch(/Cannot target task/i);
+    // The invocation never started, so no task-scoped session directory exists.
+    expect(fsSync.existsSync(path.join(testDir, ".kspec-sessions"))).toBe(false);
   });
 });
 
