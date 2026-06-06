@@ -24110,8 +24110,8 @@ reviews:
       content_hash: ""
       ref: "@01KTDPVY9VEE3E3WGJFMYMGRHH"
       shadow_commit: ""
-    thread_count: 4
+    thread_count: 5
     unresolved_blocker_count: 4
     verdict_count: 0
     created_at: 2026-06-06T08:01:36.343Z
-    updated_at: 2026-06-06T08:20:16.211Z
+    updated_at: 2026-06-06T08:20:31.839Z

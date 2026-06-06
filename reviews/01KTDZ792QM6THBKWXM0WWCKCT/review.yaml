@@ -208,6 +208,13 @@ events:
       kind: blocker
       thread_ulid: 01KTE09EPK7ZM59861DHM1TTWC
     timestamp: 2026-06-06T08:20:16.423Z
+  - _ulid: 01KTE09Y5SM01DM1A7M007PCAK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTE09XYZH4MWFAPFE6NM5JX3
+    timestamp: 2026-06-06T08:20:32.057Z
 examined_commit: 2d8e34d8c81c0004491f8011e8caecb34e918153
 external_links: []
 lifecycle_state: open
@@ -302,7 +309,31 @@ threads:
           canonical task identity."
         created_at: 2026-06-06T08:20:16.211Z
     kind: blocker
+  - _ulid: 01KTE09XYZH4MWFAPFE6NM5JX3
+    entries:
+      - _ulid: 01KTE09XYZE618SHAYFEJ6NRYN
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md, src/agent-runtime/task-identity.ts,
+          src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          src/parser/dispatch-workspaces.ts, src/schema/dispatch-workspace.ts,
+          src/schema/event-payloads.ts, src/agents/adapters.ts, src/agents/runners.ts,
+          src/agents/spawner.ts, src/cli/commands/agent.ts, tests/dispatch-task-identity.test.ts,
+          tests/dispatch-canonical-task-identity-integration.test.ts,
+          tests/agent-invocation-lifecycle.test.ts, tests/session-lifecycle-events.test.ts, dispatch
+          workspace cleanup tests. Commands run: kspec task get, kspec item get, kspec review
+          for-task/get/add/open, git diff/name-status/log, rg, nl, npm run format:check, npm run
+          lint -- --quiet, npx oxlint on changed TS files, npm run typecheck, focused npm test, full
+          npm test, kspec validate refs/alignment/completeness/schema with warnings-ok. Claims
+          verified: prior blocker was fixed by rejecting valid task_id plus unresolved task_ref; AC
+          annotations exist in new tests, but terminal event-bus/session payload and multi-open
+          historical alias registry cases are not behaviorally covered. Categories searched:
+          correctness, edge cases, error handling/diagnostics, security-adjacent identity confusion,
+          test quality, integration across scheduler, workspaces, cleanup, runner/adapters, and
+          event payloads. Shared/package guidance surfaces touched: none, so
+          shared-guidance-neutrality was not applicable."
+        created_at: 2026-06-06T08:20:31.839Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-06T08:01:36.343Z
-updated_at: 2026-06-06T08:20:16.211Z
+updated_at: 2026-06-06T08:20:31.839Z
 notes: []
