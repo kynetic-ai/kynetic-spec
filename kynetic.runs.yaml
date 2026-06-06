@@ -61077,7 +61077,7 @@ runs:
     started_at: 2026-06-06T22:34:25.138Z
     completed_at: 2026-06-06T22:36:55.913Z
   - _ulid: 01KTFHJFF9CXEZ8GV7C70PR0SK
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -61124,10 +61124,14 @@ runs:
         completed_at: 2026-06-06T22:43:25.408Z
         notes: "Skipped discussion: no untracked improvement proposals after search; duplicate capture would
           add noise."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-06T22:43:25.408Z
-        completed_at: 2026-06-06T22:43:25.408Z
+        completed_at: 2026-06-06T22:43:34.170Z
+        notes: "Skipped capture: focused changed-file lint noise, full-suite duration, detached merge helper
+          success, and review evidence log value are already tracked. No new inbox items or
+          observations created."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T22:41:32.137Z
+    completed_at: 2026-06-06T22:43:34.170Z
