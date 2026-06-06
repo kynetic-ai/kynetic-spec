@@ -1,1 +1,32 @@
-notes: []
+notes:
+  - _ulid: 01KTFBEZFX5PCM041ESRSAFZYT
+    content: >-
+      Approach: Three production project-context callers resolve canonical task identity before
+      runInvocation.
+
+
+      1. action-executor.ts executeAgent + AgentSpawner type: add task_id plumbing. Precedence:
+      explicit action.task_ref is authoritative binding+display (event task_id/task_ref dropped for
+      identity); else if task_binding, forward event task_id+task_ref pair for the spawner to
+      resolve.
+
+      2. createAutomationAgentSpawner (agent-dispatch.ts): for task-bound invocations, load tasks
+      and normalizeTaskIdentity(); reject unresolved/ambiguous/mismatched with action-run failure
+      before runInvocation; pass canonical taskId + display taskRef.
+
+      3. CLI agent run --task: normalizeTaskIdentity() resolves ref to canonical ULID; fail
+      (VALIDATION_FAILED) before session creation if unresolved; pass taskId + display taskRef.
+
+
+      runInvocation keeps documented legacy fallback (taskId ?? taskRef) for historical/manual read
+      compat; production callers now always supply canonical taskId. Reusing existing
+      task-identity.ts normalizeTaskIdentity (no new resolution logic).
+
+
+      Tests: agent-action-input (forward both fields; explicit ref authoritative over differing
+      event), spawner wiring (slug->full ULID, task_id-only->@<id> display, mismatch+unresolved
+      rejection w/ no runInvocation), cli-agent-commands (canonical task_id persisted; unresolved
+      --task fails pre-session).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T20:54:46.014Z
