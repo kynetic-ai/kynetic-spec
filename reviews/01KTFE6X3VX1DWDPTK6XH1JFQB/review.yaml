@@ -168,6 +168,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-06T21:59:18.783Z
+  - _ulid: 01KTFF5RC5VY69RAATCJVMCS66
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTFF5R44XY471EKVJMSCQKZR
+    timestamp: 2026-06-06T21:59:38.117Z
 examined_commit: 7246f0004d549408f7bf81c974a3ce1ea5d85d80
 external_links: []
 lifecycle_state: open
@@ -197,7 +204,37 @@ threads:
           shape, so focused lint has no new warning for this diff.
         created_at: 2026-06-06T21:44:27.547Z
     kind: blocker
+  - _ulid: 01KTFF5R44XY471EKVJMSCQKZR
+    entries:
+      - _ulid: 01KTFF5R44M6VAJTAW0F097FC1
+        author: Jacob Chapel
+        body: "Review evidence log\\n\\nFiles read: kspec-agents.md; task/spec context for
+          @01KTFB19ZQDA8YK3GJYWF08TS1 and @dispatch-canonical-task-identity;
+          packages/daemon/src/routes/agent-dispatch.ts; src/agent-runtime/action-executor.ts;
+          src/cli/commands/agent.ts; src/agent-runtime/task-identity.ts;
+          src/agent-runtime/invocation.ts; src/agent-runtime/dispatch.ts;
+          tests/agent-action-input.test.ts; tests/cli-agent-commands.test.ts;
+          tests/daemon-automation-spawner-wiring.test.ts.\\n\\nCommands run: git status --short
+          --branch; git diff --stat/name-only/unified/check; git log --oneline; rg
+          runInvocation/task identity call sites and AC annotations; kspec task get; kspec item get;
+          kspec review add/open/comment/check; npm run format:check; npm run lint -- --quiet; npx
+          oxlint changed files; npm run typecheck; npm test; kspec validate
+          --refs/--alignment/--completeness --warnings-ok.\\n\\nClaims verified: automation agent
+          actions now forward event task_id+task_ref when task_binding derives from events, explicit
+          action.task_ref drops event identity, createAutomationAgentSpawner canonicalizes before
+          runInvocation and throws before invocation creation on bad bindings, and CLI agent run
+          --task resolves canonical taskId before session creation. Verified with diff inspection,
+          call-site audit, AC annotation search, and full test suite.\\n\\nCategories searched:
+          correctness (task binding precedence and canonical taskId separation), edge cases
+          (task_id-only, unresolved, mismatched pairs), error handling (spawner throw ->
+          action.failed, CLI validation failure before session), test quality (behavioral tests, no
+          source scanning in changed tests), integration (production runInvocation callers and
+          dispatch existing normalized taskId path), security/input validation (no shell
+          interpolation or new unsafe input handling observed). Finding: one newly introduced
+          focused-lint warning in changed test mock."
+        created_at: 2026-06-06T21:59:37.860Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-06T21:42:47.163Z
-updated_at: 2026-06-06T21:59:18.548Z
+updated_at: 2026-06-06T21:59:37.860Z
 notes: []
