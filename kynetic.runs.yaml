@@ -60860,7 +60860,7 @@ runs:
     completed_at: 2026-06-06T11:28:24.864Z
   - _ulid: 01KTED8QRAAGY2AAJWS9M2KE5C
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -60877,7 +60877,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-06T12:07:37.622Z
-        completed_at: 2026-06-06T12:07:37.622Z
+        completed_at: 2026-06-06T12:07:50.726Z
+        notes: "Friction points: (1) full npm test took 2395.6s and required many polling updates after the
+          relevant canonical identity suites had already passed; this is expected for a broad
+          release-risk review but creates reviewer latency. (2) focused oxlint over changed files
+          reported warnings from unchanged lines in those files, so review required manual diff
+          inspection to determine they were pre-existing baseline rather than new warnings. (3)
+          recording a review evidence log as a nit thread leaves one unresolved non-blocking thread
+          on an approved review, which is acceptable to the disposition gate but visually noisy."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-06T12:07:50.726Z
+        completed_at: 2026-06-06T12:07:50.726Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T12:07:04.202Z
