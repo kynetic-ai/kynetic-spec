@@ -133,3 +133,41 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-06T10:24:48.069Z
+  - _ulid: 01KTE94DHJAJSXSW49B5Q3WFJM
+    content: >-
+      Fix cycle 5: addressed both review blockers in @01KTE6KW.
+
+
+      (1) workspace.ts metadata-backed discovery (discoverWorkspaceForReviewOrFixCycle ~5306)
+      matched worktree metadata by display ref (metadata.taskRef === taskRef), so a metadata file
+      with canonical taskId=<ULID> and a stale taskRef=@old-slug was ignored when discovery ran for
+      @new-slug — orphaning/forking the workspace. Now matches by canonical identity:
+      discoveryIdentityKey (canonicalTaskId from the query ref, else raw ref) vs metadataIdentityKey
+      (metadata.taskId, else resolved from metadata.taskRef, else raw ref). Display-ref equality
+      retained only as the both-unresolvable fallback. Fixes
+      ac-workspace-lineage-stable-across-aliases incl. changed-primary-slug.
+
+
+      (2) dispatch._activeReviewerTargets built reviewer refs from record.taskRef and matched
+      record.task_ref — both display refs — so an active reviewer under @new-slug missed its
+      registry record persisted with stale task_ref=@old-slug/task_id=<same ULID>, and periodic
+      target sync did not defer it. Now keys the active-reviewer set by record.taskId (canonical)
+      and each registry record by record.task_id (else resolved task_ref), with a display-ref
+      fallback for unresolvable refs.
+
+
+      Regression caught and fixed before resubmit: moving context/task loading to the top of
+      _activeReviewerTargets exposed _syncAllActiveTargets to context-load failures when no reviewer
+      is active, breaking 3 dispatch-degraded-state occupied-checkout tests (degraded state never
+      set). Restored the no-reviewer early-return ahead of all context/task loading.
+
+
+      Behavioral coverage: integration test recovers a metadata-backed worktree under the full-ULID
+      alias when its metadata display ref is the slug; target-sync test asserts
+      _activeReviewerTargets() + periodic deferral match by canonical id across a stale @old-slug
+      registry record. Re-verified adjacent ACs. Gates: format, repo-lint 0 errors, focused oxlint 0
+      warnings, typecheck, focused dispatch/workspace + degraded-state suites green, all kspec
+      validate gates exit 0; full npm test running to confirm.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-06T10:54:48.370Z
