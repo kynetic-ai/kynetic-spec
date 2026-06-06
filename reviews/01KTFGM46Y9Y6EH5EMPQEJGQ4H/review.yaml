@@ -161,6 +161,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-06T22:39:46.479Z
+  - _ulid: 01KTFHFRYK4MAPWDAA88C7626W
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTFHFRR56RSWB499WZGAT8TD
+    timestamp: 2026-06-06T22:40:03.539Z
 examined_commit: 8d1c789e0d848c904449c56d165e648f656e4b1b
 external_links: []
 lifecycle_state: open
@@ -170,8 +177,47 @@ subject:
   content_hash: ""
   ref: "@01KTFB19ZQDA8YK3GJYWF08TS1"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTFHFRR56RSWB499WZGAT8TD
+    entries:
+      - _ulid: 01KTFHFRR5RQX5V4VDZXC4N75J
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; task/spec context for @01KTFB19ZQDA8YK3GJYWF08TS1;
+          @dispatch-canonical-task-identity; @dispatch-agent-action-input;
+          @automation-action-type-completeness; src/agent-runtime/action-executor.ts;
+          packages/daemon/src/routes/agent-dispatch.ts; src/cli/commands/agent.ts;
+          src/agent-runtime/invocation.ts; src/agent-runtime/task-identity.ts;
+          src/agent-runtime/dispatch.ts; tests/agent-action-input.test.ts;
+          tests/cli-agent-commands.test.ts; tests/daemon-automation-spawner-wiring.test.ts; prior
+          review @01KTFE6X3VX1DWDPTK6XH1JFQB.
+
+
+          Commands run: git diff/stat/log/show; rg searches for runInvocation and AC annotations;
+          kspec item get for linked specs; kspec validate --refs/--alignment/--completeness
+          --warnings-ok; npm run format:check; npm run lint -- --quiet; npx oxlint on changed files
+          and daemon spawner test; npm run typecheck; npm test.
+
+
+          Claims verified: fix-cycle claim verified by comparing 7246f0004d..8d1c789e0d and
+          rerunning focused oxlint; daemon spawner test now has 0 warnings/0 errors.
+          Canonicalization claim verified by code inspection and tests: explicit action.task_ref
+          drops event identity, event-derived task_binding forwards task_id/task_ref, spawner
+          normalizes before runInvocation and rejects mismatches/unresolved refs, CLI --task
+          resolves to full ULID before session creation, dispatch already passes canonical
+          entry.change.taskId.
+
+
+          Categories searched: correctness, edge cases (task_id-only and mismatch), error handling
+          (spawner/CLI rejection before session creation), test quality (behavioral tests, no
+          source-scanning AC coverage), integration (runInvocation production callers and dispatch
+          path), regression from prior review (focused lint blocker resolved). No blocking findings.
+        created_at: 2026-06-06T22:40:03.333Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-06T22:24:57.566Z
-updated_at: 2026-06-06T22:39:46.254Z
+updated_at: 2026-06-06T22:40:03.333Z
 notes: []
