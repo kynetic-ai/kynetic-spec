@@ -10430,6 +10430,9 @@ features:
           This requirement intentionally owns the new alias/canonicalization behavior instead of
           adding ACs directly to already-implemented broad specs. It relates to the existing
           dispatch, workspace, event-payload, and reference-resolution contracts that it tightens.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to:
