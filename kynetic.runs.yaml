@@ -61018,7 +61018,7 @@ runs:
     completed_at: 2026-06-06T22:02:36.069Z
   - _ulid: 01KTFH5EFJ4JC9EAGBVFA2BP6X
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61053,7 +61053,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-06T22:36:07.230Z
-        completed_at: 2026-06-06T22:36:07.230Z
+        completed_at: 2026-06-06T22:36:18.041Z
+        notes: "Proposed improvement (small/medium): improve detached-reviewer merge recovery for clean
+          project-root target checkouts that are classified as auxiliary. Options could include
+          clearer distinction between a normal root checkout and dispatch auxiliary checkout, or a
+          helper/recovery command that safely restores the detached root checkout to the integration
+          branch after the merge completes. This would preserve the current no-ref-move safety
+          invariant while reducing post-merge cleanup surprises."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-06T22:36:18.041Z
+        completed_at: 2026-06-06T22:36:18.041Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-06T22:34:25.138Z
