@@ -127,7 +127,7 @@ description: >-
 spec_ref: "@dispatch-canonical-task-identity"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -140,6 +140,14 @@ tags:
   - cli
   - regression
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-canonicalize-project-invocation-task-identity/01ktfb19
+  captured_at: 2026-06-06T21:36:22.753Z
+  commit: 7246f0004d549408f7bf81c974a3ce1ea5d85d80
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KTFB3590WPTBAP78EQ054K31
 history:
   - author: "@claude"
@@ -155,7 +163,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-06T20:48:41.245Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-canonicalize-project-invocation-task-identity/01ktfb19
+          captured_at: 2026-06-06T21:36:22.753Z
+          commit: 7246f0004d549408f7bf81c974a3ce1ea5d85d80
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-06T21:36:22.755Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-06T21:36:22.755Z
 created_at: 2026-06-06T20:47:18.007Z
 started_at: 2026-06-06T20:48:41.245Z
+submitted_at: 2026-06-06T21:36:22.755Z
 todos: []
 automation: eligible
