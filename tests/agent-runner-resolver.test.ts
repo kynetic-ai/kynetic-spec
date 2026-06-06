@@ -34,7 +34,7 @@ import {
   type ProjectRunnerConfig,
   type SystemRunnerConfig,
 } from "../src/agents/runner-config.js";
-import { getAdapter, registerAdapter } from "../src/agents/adapters.js";
+import { getAdapter, registerAdapter, type AgentAdapter } from "../src/agents/adapters.js";
 import type { Agent } from "../src/schema/meta.js";
 import { testUlid } from "./helpers/cli.js";
 
@@ -592,6 +592,261 @@ describe("resolveRunnerInvocation: process.executable", () => {
     expect(result.adapter.command).toBeDefined();
     // The runner-backed override should never apply on the implicit path.
     expect(result.adapter.command).not.toBe("/bin/echo");
+  });
+});
+
+// ─── generic-acp process adapter ─────────────────────────────────────────────
+
+describe("resolveRunnerInvocation: generic-acp process adapter", () => {
+  // AC: @runner-process-invocation-inputs ac-generic-acp-process-uses-runner-executable
+  // AC: @runner-invocation-semantics ac-generic-acp-auto-approve-contributes-no-args
+  it("uses the runner executable and contributes only runner args, even with autoApprove", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        custom: {
+          kind: "acp_process",
+          adapter: "generic-acp",
+          process: { executable: "/usr/local/bin/my-acp", args: ["--model", "x"] },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "custom" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry, autoApprove: true }));
+
+    expect(result.adapterId).toBe("generic-acp");
+    // The spawned command is the runner-declared executable.
+    expect(result.adapter.command).toBe("/usr/local/bin/my-acp");
+    // The generic adapter contributes no base args and no auto-approve args —
+    // extraArgs is exactly the runner's process.args.
+    expect(result.adapter.args).toEqual([]);
+    expect(result.extraArgs).toEqual(["--model", "x"]);
+  });
+
+  // AC: @runner-invocation-semantics ac-generic-acp-auto-approve-contributes-no-args
+  it("produces empty extraArgs for a generic-acp runner with no process.args under autoApprove", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        custom: {
+          kind: "acp_process",
+          adapter: "generic-acp",
+          process: { executable: "/usr/local/bin/my-acp" },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "custom" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry, autoApprove: true }));
+
+    expect(result.extraArgs).toEqual([]);
+  });
+
+  // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  // Package-backed regression: the executable override replaces only the
+  // command; the adapter's base args stay on the adapter and its auto-approve
+  // args precede the runner args in extraArgs.
+  it("preserves package-backed adapter base args and auto-approve ordering when overriding the command", () => {
+    const customAdapterId = "test-generic-regression-pkg-adapter";
+    registerAdapter(customAdapterId, {
+      command: "node",
+      args: ["base-a", "base-b"],
+      autoApproveArgs: ["--yolo"],
+    });
+    const registry = buildRegistry(null, {
+      runners: {
+        pkg: {
+          kind: "acp_process",
+          adapter: customAdapterId,
+          process: { executable: "/bin/echo", args: ["--runner-arg"] },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "pkg" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry, autoApprove: true }));
+
+    // Command is overridden by the runner executable...
+    expect(result.adapter.command).toBe("/bin/echo");
+    // ...but the adapter's base args remain on the adapter.
+    expect(result.adapter.args).toEqual(["base-a", "base-b"]);
+    // extraArgs is adapter auto-approve args followed by runner args.
+    expect(result.extraArgs).toEqual(["--yolo", "--runner-arg"]);
+    // The registered adapter is not mutated by the command override.
+    expect(getAdapter(customAdapterId)!.command).toBe("node");
+  });
+
+  // AC: @runner-process-invocation-inputs ac-generic-acp-process-requires-executable
+  it("fails during contract resolution when a generic-acp runner omits process.executable", () => {
+    const registry = buildRegistry(null, {
+      runners: {
+        custom: { kind: "acp_process", adapter: "generic-acp" },
+      },
+    });
+    const agent = makeAgent({ runner: "custom" });
+
+    expect(() => resolveRunnerInvocation(makeInput({ agent, registry }))).toThrow(
+      RunnerResolutionError,
+    );
+
+    try {
+      resolveRunnerInvocation(makeInput({ agent, registry }));
+    } catch (err) {
+      const e = err as RunnerResolutionError;
+      expect(e.reason).toBe("missing_process_executable");
+      expect(e.details).toEqual({
+        runner: "custom",
+        adapter: "generic-acp",
+        missing_field: "process.executable",
+      });
+    }
+  });
+
+  // AC: @runner-resolution-and-preflight ac-generic-acp-direct-invocation-requires-runner
+  it("rejects implicit agent.adapter: generic-acp before spawn (no runner)", () => {
+    const agent = makeAgent({ adapter: "generic-acp" });
+
+    expect(() => resolveRunnerInvocation(makeInput({ agent }))).toThrow(RunnerResolutionError);
+
+    try {
+      resolveRunnerInvocation(makeInput({ agent }));
+    } catch (err) {
+      const e = err as RunnerResolutionError;
+      expect(e.reason).toBe("missing_process_executable");
+      expect(e.details).toEqual({
+        adapter: "generic-acp",
+        missing_field: "process.executable",
+      });
+      // No runner context on the direct/legacy path.
+      expect(e.details.runner).toBeUndefined();
+    }
+  });
+
+  // AC: @runner-resolution-and-preflight ac-generic-acp-direct-invocation-requires-runner
+  it("rejects adapterOverride: generic-acp before spawn (no runner)", () => {
+    const agent = makeAgent();
+
+    expect(() =>
+      resolveRunnerInvocation(makeInput({ agent, adapterOverride: "generic-acp" })),
+    ).toThrow(RunnerResolutionError);
+
+    try {
+      resolveRunnerInvocation(makeInput({ agent, adapterOverride: "generic-acp" }));
+    } catch (err) {
+      const e = err as RunnerResolutionError;
+      expect(e.reason).toBe("missing_process_executable");
+      expect(e.details).toEqual({
+        adapter: "generic-acp",
+        missing_field: "process.executable",
+      });
+    }
+  });
+});
+
+// ─── command-less non-generic adapter invariant ──────────────────────────────
+
+describe("resolveRunnerInvocation: command-less non-generic adapter invariant", () => {
+  // The discriminated AgentAdapter type prevents registering a command-less
+  // non-generic adapter at compile time, but adapters can be constructed
+  // dynamically (JS callers, future programmatic APIs, casts). Simulate that
+  // malformed registration with a cast and assert the resolver rejects it with
+  // a typed diagnostic before preflight/spawn rather than deferring to a
+  // spawn-time crash.
+  const malformedAdapter = { args: [] } as unknown as AgentAdapter;
+
+  // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
+  it("rejects a runner-backed non-generic adapter that lacks a command (no runner executable)", () => {
+    const customAdapterId = "test-commandless-nongeneric-adapter";
+    registerAdapter(customAdapterId, malformedAdapter);
+    const registry = buildRegistry(null, {
+      runners: {
+        bad: { kind: "acp_process", adapter: customAdapterId },
+      },
+    });
+    const agent = makeAgent({ runner: "bad" });
+
+    expect(() => resolveRunnerInvocation(makeInput({ agent, registry }))).toThrow(
+      RunnerResolutionError,
+    );
+
+    try {
+      resolveRunnerInvocation(makeInput({ agent, registry }));
+      throw new Error("expected RunnerResolutionError");
+    } catch (err) {
+      expect(err).toBeInstanceOf(RunnerResolutionError);
+      const e = err as RunnerResolutionError;
+      // Not deferred to spawn and not reported as a generic-acp missing
+      // executable — it is a malformed (command-less) non-generic adapter.
+      expect(e.reason).toBe("invalid_adapter");
+      expect(e.details).toEqual({
+        runner: "bad",
+        adapter: customAdapterId,
+        missing_field: "command",
+      });
+    }
+  });
+
+  // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
+  it("resolves a command-less non-generic adapter when the runner supplies process.executable", () => {
+    const customAdapterId = "test-commandless-nongeneric-with-executable";
+    registerAdapter(customAdapterId, malformedAdapter);
+    const registry = buildRegistry(null, {
+      runners: {
+        ok: {
+          kind: "acp_process",
+          adapter: customAdapterId,
+          process: { executable: "/usr/local/bin/custom-acp" },
+        },
+      },
+    });
+    const agent = makeAgent({ runner: "ok" });
+    const result = resolveRunnerInvocation(makeInput({ agent, registry }));
+
+    // The runner executable supplies the missing command, so resolution
+    // succeeds with the runner-declared command.
+    expect(result.adapter.command).toBe("/usr/local/bin/custom-acp");
+  });
+
+  // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
+  it("rejects a command-less non-generic adapter selected directly via agent.adapter", () => {
+    const customAdapterId = "test-commandless-implicit-adapter";
+    registerAdapter(customAdapterId, malformedAdapter);
+    const agent = makeAgent({ adapter: customAdapterId });
+
+    expect(() => resolveRunnerInvocation(makeInput({ agent }))).toThrow(RunnerResolutionError);
+
+    try {
+      resolveRunnerInvocation(makeInput({ agent }));
+      throw new Error("expected RunnerResolutionError");
+    } catch (err) {
+      const e = err as RunnerResolutionError;
+      expect(e.reason).toBe("invalid_adapter");
+      expect(e.details).toEqual({
+        adapter: customAdapterId,
+        missing_field: "command",
+      });
+      // No runner context on the direct/legacy path.
+      expect(e.details.runner).toBeUndefined();
+    }
+  });
+
+  // AC: @runner-resolution-and-preflight ac-invalid-runner-blocks-before-prompt
+  it("rejects a command-less non-generic adapter selected via --adapter override", () => {
+    const customAdapterId = "test-commandless-override-adapter";
+    registerAdapter(customAdapterId, malformedAdapter);
+    const agent = makeAgent();
+
+    expect(() =>
+      resolveRunnerInvocation(makeInput({ agent, adapterOverride: customAdapterId })),
+    ).toThrow(RunnerResolutionError);
+
+    try {
+      resolveRunnerInvocation(makeInput({ agent, adapterOverride: customAdapterId }));
+      throw new Error("expected RunnerResolutionError");
+    } catch (err) {
+      const e = err as RunnerResolutionError;
+      expect(e.reason).toBe("invalid_adapter");
+      expect(e.details).toEqual({
+        adapter: customAdapterId,
+        missing_field: "command",
+      });
+    }
   });
 });
 

@@ -7,6 +7,8 @@
 // Adapters
 export {
   type AgentAdapter,
+  type CommandAdapter,
+  type ProcessExecutableAdapter,
   getAdapter,
   listAdapters,
   registerAdapter,

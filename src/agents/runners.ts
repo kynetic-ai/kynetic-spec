@@ -40,7 +40,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { Agent } from "../schema/meta.js";
-import { getAdapter, resolveAdapter, type AgentAdapter } from "./adapters.js";
+import { getAdapter, resolveAdapter, type AgentAdapter, type CommandAdapter } from "./adapters.js";
 import { SANITIZED_ENV_VARS } from "./spawner.js";
 import { createRedactor } from "./redaction.js";
 import { describeRegistryLoadFailures, type RegistryLoadFailure } from "./registry-load-failure.js";
@@ -106,7 +106,14 @@ export type RunnerResolutionReason =
   | "invalid_cwd"
   | "invalid_args"
   | "missing_secret"
+  | "missing_process_executable"
   | "preflight_failure";
+
+/**
+ * Built-in adapter id for the generic ACP process profile. Carries no command
+ * and must be resolved through a runner that supplies `process.executable`.
+ */
+export const GENERIC_ACP_ADAPTER_ID = "generic-acp";
 
 export interface RunnerResolutionDetails {
   /** Configured runner name when the failure is runner-scoped. */
@@ -476,6 +483,29 @@ export function resolveRunnerInvocation(input: ResolveRunnerInvocationInput): Ru
   });
 }
 
+/**
+ * Produce a command-backed clone of an adapter with `command` replaced by the
+ * runner-supplied executable. Returns a fresh `CommandAdapter` so the
+ * registered adapter shared across invocations is never mutated, and so the
+ * result is sound under the discriminated `AgentAdapter` union regardless of
+ * whether the source adapter was a generic process profile or a package-backed
+ * command adapter.
+ *
+ * AC: @runner-process-invocation-inputs ac-generic-acp-process-uses-runner-executable
+ * AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+ */
+function withResolvedCommand(adapter: AgentAdapter, executable: string): CommandAdapter {
+  return {
+    args: adapter.args,
+    ...(adapter.env !== undefined ? { env: adapter.env } : {}),
+    ...(adapter.shell !== undefined ? { shell: adapter.shell } : {}),
+    ...(adapter.description !== undefined ? { description: adapter.description } : {}),
+    ...(adapter.autoApproveArgs !== undefined ? { autoApproveArgs: adapter.autoApproveArgs } : {}),
+    command: executable,
+    requiresProcessExecutable: false,
+  };
+}
+
 // ─── Builders ────────────────────────────────────────────────────────────────
 
 interface ImplicitContractInputs {
@@ -497,6 +527,40 @@ function buildImplicitContract(inputs: ImplicitContractInputs): RunnerInvocation
   // registered — preserved from the legacy code path so adapter ids passed
   // as npm packages still work.
   const adapter = resolveAdapter(adapterId);
+
+  // Reject generic ACP process adapters reached through the implicit/legacy
+  // adapter path or an `--adapter` override: they carry no command and can
+  // only be resolved through a runner that supplies `process.executable`.
+  // Failing here (before any contract is returned) prevents the spawner from
+  // ever seeing a placeholder generic command.
+  //
+  // AC: @runner-resolution-and-preflight ac-generic-acp-direct-invocation-requires-runner
+  if (adapter.requiresProcessExecutable) {
+    throw new RunnerResolutionError(
+      "missing_process_executable",
+      `Adapter "${adapterId}" is a generic ACP process profile and carries no ` +
+        `built-in command. It can only be invoked through a runner that supplies ` +
+        `process.executable. Configure a runner-backed agent (runner with ` +
+        `process.executable set) instead of selecting "${adapterId}" directly.`,
+      { adapter: adapterId, missing_field: "process.executable" },
+    );
+  }
+
+  // Enforce the command invariant on the implicit/legacy path too. A
+  // non-generic adapter reached directly (agent.adapter or --adapter override)
+  // must carry a built-in command — there is no runner here to supply
+  // `process.executable`. A command-less non-generic adapter is a malformed
+  // registration; fail with a typed diagnostic before any contract is returned
+  // rather than letting the spawner hit an undefined command.
+  if (adapter.command === undefined) {
+    throw new RunnerResolutionError(
+      "invalid_adapter",
+      `Adapter "${adapterId}" has no command to spawn and no runner is ` +
+        `configured to supply process.executable. Register the adapter with a ` +
+        `command, or invoke it through a runner that sets process.executable.`,
+      { adapter: adapterId, missing_field: "command" },
+    );
+  }
   const extraArgs: readonly string[] = autoApprove ? (adapter.autoApproveArgs ?? []) : [];
 
   const diagnostics: RunnerInvocationDiagnostics = {
@@ -556,13 +620,56 @@ interface RunnerContractInputs {
 function buildRunnerContract(inputs: RunnerContractInputs): RunnerInvocation {
   const { runner, adapter, cwd, env, hostEnv, sessionId, mutationLockFile, autoApprove } = inputs;
 
+  // Generic ACP process adapters carry no built-in command, so the runner must
+  // supply `process.executable`. A generic runner that omits it fails during
+  // contract resolution — before preflight or spawn — with a stable
+  // `missing_process_executable` reason identifying the runner, adapter, and
+  // missing field so operator surfaces can render actionable guidance.
+  //
+  // AC: @runner-process-invocation-inputs ac-generic-acp-process-requires-executable
+  if (adapter.requiresProcessExecutable && !runner.process.executable) {
+    throw new RunnerResolutionError(
+      "missing_process_executable",
+      `Runner "${runner.name}" selects the generic ACP process adapter ` +
+        `"${runner.adapter}" but does not declare process.executable. The generic ` +
+        `adapter has no built-in command — set process.executable in the runner ` +
+        `config so kspec knows which ACP executable to spawn.`,
+      { runner: runner.name, adapter: runner.adapter, missing_field: "process.executable" },
+    );
+  }
+
   // Replace the adapter command when runner.process.executable is set. The
   // returned adapter is a shallow clone so the registered adapter shared by
-  // other invocations remains untouched.
+  // other invocations remains untouched. For the generic adapter this is the
+  // only source of a command; for package-backed adapters it overrides the
+  // command while preserving the adapter's base args and auto-approve args.
   // AC: @runner-process-invocation-inputs ac-existing-executable-reference-resolves
+  // AC: @runner-process-invocation-inputs ac-generic-acp-process-uses-runner-executable
   const effectiveAdapter: AgentAdapter = runner.process.executable
-    ? { ...adapter, command: runner.process.executable }
+    ? withResolvedCommand(adapter, runner.process.executable)
     : adapter;
+
+  // Runtime enforcement of the adapter command invariant. The discriminated
+  // `AgentAdapter` type already prevents a command-less non-generic adapter
+  // from being registered at compile time, but adapters can also be
+  // constructed dynamically (registerAdapter from JS, a future programmatic
+  // API, or a cast that bypasses the type). Only the generic process profile
+  // may omit a command, and even then only until a runner supplies
+  // `process.executable` (rejected above). Any other resolved adapter without
+  // a command is a malformed registration — fail with a typed resolver
+  // diagnostic here, before preflight or spawn, instead of deferring to a
+  // spawn-time crash that operator surfaces cannot attribute.
+  if (effectiveAdapter.command === undefined) {
+    throw new RunnerResolutionError(
+      "invalid_adapter",
+      `Runner "${runner.name}" resolved adapter "${runner.adapter}" has no ` +
+        `command to spawn. Only the generic ACP process profile may omit a ` +
+        `built-in command, and only when the runner supplies process.executable. ` +
+        `Register the adapter with a command or set process.executable in the ` +
+        `runner config.`,
+      { runner: runner.name, adapter: runner.adapter, missing_field: "command" },
+    );
+  }
 
   // Apply runner.process.cwd when set so the spawned process runs in the
   // operator-configured directory.
@@ -1095,7 +1202,13 @@ export async function probeRunnerInvocationExecutable(
   options: PreflightExecutableOptions = {},
 ): Promise<PreflightExecutableResult | null> {
   if (invocation.runnerId === null) return null;
-  return preflightExecutable(invocation.adapter.command, {
+  // Named runner-backed contracts always carry a resolved command: the
+  // resolver rejects generic adapters without `process.executable` before a
+  // contract is produced, and every other adapter has a built-in command.
+  // Guard for type-safety only — an undefined command here is a resolver bug.
+  const command = invocation.adapter.command;
+  if (command === undefined) return null;
+  return preflightExecutable(command, {
     cwd: invocation.cwd,
     searchPath: resolveInvocationSearchPath(invocation),
     ...options,
@@ -1309,7 +1422,10 @@ export function summarizeRunnerInvocation(
     source_layer: contract.diagnostics.sourceLayer,
     overrides: [...contract.diagnostics.overrides],
     process: {
-      command: contract.adapter.command,
+      // Every resolved contract carries a command (generic adapters without a
+      // runner executable fail before a contract is produced). The fallback
+      // keeps the summary type-safe without ever surfacing an empty command.
+      command: contract.adapter.command ?? "",
       command_source: originToProcessSource(fieldOrigins?.processExecutable ?? null, "adapter"),
       cwd: contract.cwd,
       cwd_source: originToProcessSource(fieldOrigins?.processCwd ?? null, "invocation"),
