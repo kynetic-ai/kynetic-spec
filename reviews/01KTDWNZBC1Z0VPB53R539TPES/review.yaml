@@ -68,6 +68,18 @@ checks:
     runner: kspec
     created_at: 2026-06-06T07:31:36.110Z
     completed_at: 2026-06-06T07:31:36.110Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: KSPEC_NO_DAEMON=1 kspec validate --completeness --warnings-ok. Completeness
+      warning baseline allowed; verified @dispatch-canonical-task-identity annotations in the
+      changed tests."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-06T07:31:47.377Z
+    completed_at: 2026-06-06T07:31:47.377Z
 events:
   - _ulid: 01KTDWNZBCG8H2RTWX1G5JGD1S
     actor: Jacob Chapel
@@ -124,6 +136,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-06T07:31:36.337Z
+  - _ulid: 01KTDXGP83F4K1WCT42MJZSBWR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-06T07:31:47.587Z
 examined_commit: 1fd1cc2aa970f950ad2c2fe4f0ed20dc6f4d1347
 external_links: []
 lifecycle_state: open
@@ -136,5 +155,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-06T07:17:12.172Z
-updated_at: 2026-06-06T07:31:36.110Z
+updated_at: 2026-06-06T07:31:47.377Z
 notes: []
