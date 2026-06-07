@@ -1792,7 +1792,7 @@ plans:
     slugs:
       - plan-dispatch-canonical-task-identity-plan
     title: Dispatch Canonical Task Identity Plan
-    status: active
+    status: completed
     derived_specs:
       - "@dispatch-canonical-task-identity"
     derived_tasks:

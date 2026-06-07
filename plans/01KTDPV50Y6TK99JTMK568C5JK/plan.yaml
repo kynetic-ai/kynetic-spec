@@ -2,7 +2,7 @@ _ulid: 01KTDPV50Y6TK99JTMK568C5JK
 slugs:
   - plan-dispatch-canonical-task-identity-plan
 title: Dispatch Canonical Task Identity Plan
-status: active
+status: completed
 approved_at: null
 branch: null
 derived_specs:
