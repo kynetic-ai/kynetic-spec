@@ -197,6 +197,12 @@ events:
     payload:
       thread_ulid: 01KTMJKEZK3XMJNKS73Y9YZY48
     timestamp: 2026-06-08T22:06:20.881Z
+  - _ulid: 01KTMMBMS0T7TFJB0MKTQ332RH
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTMJKWY4BCQ3WEAEC1CH1MVA
+    timestamp: 2026-06-08T22:06:26.080Z
 examined_commit: c495d036a001126656a02a5f08599011cd519b0e
 external_links: []
 lifecycle_state: closed
@@ -310,6 +316,8 @@ threads:
           when the sibling rewrite lands.
         created_at: 2026-06-08T22:06:09.627Z
     kind: blocker
+    resolved_at: 2026-06-08T22:06:25.849Z
+    resolved_by: "@claude"
   - _ulid: 01KTMJME5P7VEJJRS9Q86MEA0M
     entries:
       - _ulid: 01KTMJME5Q8Y11K7EQERT0B9SP
@@ -354,5 +362,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-08T21:36:27.719Z
 created_at: 2026-06-08T21:19:26.439Z
-updated_at: 2026-06-08T22:06:20.639Z
+updated_at: 2026-06-08T22:06:25.849Z
 notes: []
