@@ -54,6 +54,7 @@ tags:
   - api
   - daemon
 vcs_refs: []
+review_ref: "@01KTMSTHWMWCEZPY2QX8A7GC7H"
 submission_linkage:
   review_url: null
   branch: dispatch/task/add-task-resource-bytes-routes/01ktd8s1
@@ -104,6 +105,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-08T23:38:51.978Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTMSTHWMWCEZPY2QX8A7GC7H"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-08T23:41:59.761Z
 created_at: 2026-06-06T01:29:21.480Z
 started_at: 2026-06-08T23:12:02.955Z
 submitted_at: 2026-06-08T23:38:51.978Z
