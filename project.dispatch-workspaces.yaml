@@ -10183,12 +10183,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-08T23:40:37.972Z
+      updated_at: 2026-06-08T23:40:47.202Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-08T23:40:37.972Z
+      updated_at: 2026-06-08T23:40:47.202Z
     integration:
       status: pending
       detail: null
@@ -10196,8 +10196,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8d37d211933f076875ecb590ded02f3f7772da6d
-      updated_at: 2026-06-08T23:40:37.972Z
-    lifecycle_state: ready
+      updated_at: 2026-06-08T23:40:47.202Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTD8S1T8W8TDX09S3RFYYWX3
     task_ref: "@01KTD8S1T8W8TDX09S3RFYYWX3"
@@ -10205,16 +10205,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-08T23:11:39.210Z
-      last_reconciled_at: 2026-06-08T23:40:37.972Z
+      last_reconciled_at: 2026-06-08T23:40:47.202Z
       created_at: 2026-06-08T23:11:11.341Z
-      updated_at: 2026-06-08T23:40:37.972Z
+      updated_at: 2026-06-08T23:40:47.202Z
     workspace_id: dispatch-workspace-01KTD8S1T8W8TDX09S3RFYYWX3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: d81a89d9caae8ad4196b0da252ff2e2d9c105306
+        last_seen_at: 2026-06-08T23:40:47.202Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-task-resource-bytes-routes-01ktd8s1-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/add-task-resource-bytes-routes/01ktd8s1
-        head: 8d37d211933f076875ecb590ded02f3f7772da6d
-        last_seen_at: 2026-06-08T23:11:11.341Z
+        head: d81a89d9caae8ad4196b0da252ff2e2d9c105306
+        last_seen_at: 2026-06-08T23:40:47.202Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-task-resource-bytes-routes-01ktd8s1
