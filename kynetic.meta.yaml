@@ -20962,6 +20962,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-06T22:36:46.889Z
+  - _ulid: 01KTMHHGG6BET25CPA226DEQJX
+    type: friction
+    content: "Full 'npm test' suite (~43 min / 2569.8s cold in a fresh dispatch worktree) exceeds the
+      dispatch headed-turn budget (600000ms / 10 min). On
+      @add-resource-url-task-markdown-contract-tests the prior worker recorded three consecutive
+      '[AGENT-FAIL] headed turn timed out after 600000ms' notes even though the artifacts were sound
+      — the timeouts were the full-suite regression run, not the work. Mitigation for test-heavy/TDD
+      tasks under dispatch: run only the touched test files (npm test -- <paths>) for fast
+      iteration, reserve the full suite for a single final regression pass, prefer npm run
+      test:shard1/2/3, and start the full run as a background command so the turn is not held open
+      waiting on it. Consider whether dispatch should raise the turn timeout for test-heavy tasks or
+      whether work-gates should explicitly steer dispatched workers to scoped/background test runs."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-08T21:17:12.582Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
