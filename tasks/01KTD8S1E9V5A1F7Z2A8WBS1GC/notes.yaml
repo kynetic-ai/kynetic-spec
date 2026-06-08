@@ -1,1 +1,27 @@
-notes: []
+notes:
+  - _ulid: 01KTMP08KV09VGV0J6CJZ72X3N
+    content: >-
+      Approach: 
+
+      - Add shared type ResolvedTaskResourceSummary to packages/shared/src/api.ts and extend
+      TaskDetail with resolved_resources?: ResolvedTaskResourceSummary[] and resources_base_url?:
+      string. No changes to TaskSummary/list/dashboard shapes (keeps index tier bounded).
+
+      - Extend projectResolvedTaskResources in src/parser/task-resource-resolver.ts to add
+      content_type and byte_size (sourced from current manifest entry, null when missing/unresolved)
+      so the AC's full per-entry field set is reported. Additive only; preserves existing CLI --json
+      and agent-context fields/drift semantics.
+
+      - Wire daemon GET /api/tasks/:ref (packages/daemon/src/routes/tasks.ts) to reuse
+      resolveTaskResources + projectResolvedTaskResources on both cache-hit and disk-fallback paths
+      (lazy getCtx), populating resolved_resources and resources_base_url
+      (/api/tasks/<ulid>/resources) only when the task has resource_refs.
+
+      Edge cases: present/drift/missing/unresolved statuses; tasks with no refs omit both fields;
+      index tier (list/dashboard) must not embed bytes.
+
+      Test plan: daemon-api test for task detail resolved_resources (present + drift + base_url
+      shape), bounded-index assertion on task list, and shared-type/projection field coverage.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-08T22:35:10.332Z
