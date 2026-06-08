@@ -149,6 +149,13 @@ events:
       kind: blocker
       thread_ulid: 01KTMJKEZK3XMJNKS73Y9YZY48
     timestamp: 2026-06-08T21:35:45.365Z
+  - _ulid: 01KTMJKX5X32635RMZWCK2585A
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTMJKWY4BCQ3WEAEC1CH1MVA
+    timestamp: 2026-06-08T21:35:59.677Z
 examined_commit: c495d036a001126656a02a5f08599011cd519b0e
 external_links: []
 lifecycle_state: open
@@ -183,7 +190,31 @@ threads:
           route-level HTTP tests with these AC refs or add equivalent AC-tagged checks."
         created_at: 2026-06-08T21:35:45.139Z
     kind: blocker
+  - _ulid: 01KTMJKWY4BCQ3WEAEC1CH1MVA
+    anchor:
+      type: code
+      commit: c495d036a001126656a02a5f08599011cd519b0e
+      line_end: 140
+      line_start: 86
+      path: tests/web-ui/task-resource-links.test.ts
+      side: head
+    entries:
+      - _ulid: 01KTMJKWY5595AHBM3G8095TBM
+        author: Jacob Chapel
+        body: "MUST-FIX: the task markdown AC tests assert only that markdown is rewritten to a task-scoped
+          URL string. The task description also required owner/status metadata and HTTP outcomes,
+          and these ACs' Then clauses require the browser to display/receive the recorded plan-owned
+          bytes or copied task-owned bytes from the selected project. Because task resource
+          APIs/routes land in later tasks, this can be staged as it.fails contract coverage, but it
+          still needs to exist: construct or simulate the resolved task detail/resource route
+          contract, assert plan-owned vs task-owned owner/status projection is used, and verify
+          fetching the produced URL without X-Kspec-Dir returns the expected bytes rather than just
+          checking the string contains ?kspec_dir=. Without that, the tests can pass after a
+          string-only rewrite even if the daemon cannot serve the bytes or serves the wrong owner's
+          content."
+        created_at: 2026-06-08T21:35:59.429Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-08T21:19:26.439Z
-updated_at: 2026-06-08T21:35:45.139Z
+updated_at: 2026-06-08T21:35:59.429Z
 notes: []
