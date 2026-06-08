@@ -7431,18 +7431,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/add-resource-url-task-markdown-contract-tests/01ktd8s0
-    canonical_branch_head: c495d036a001126656a02a5f08599011cd519b0e
+    canonical_branch_head: 41f98b2ec5f2beb7185301c6f5dc6ea5ae6cb612
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-08T21:39:26.244Z
+      updated_at: 2026-06-08T21:47:49.262Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-08T21:39:59.985Z
+      updated_at: 2026-06-08T21:47:49.262Z
     integration:
       status: pending
       detail: null
@@ -7450,7 +7450,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 45d6db87895211f041bd4e1c12be7cd620549178
-      updated_at: 2026-06-08T21:39:26.244Z
+      updated_at: 2026-06-08T21:47:49.262Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTD8S0X16VGB70KKE47SN47Q
@@ -7459,9 +7459,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-08T21:39:59.985Z
-      last_reconciled_at: 2026-06-08T21:39:59.985Z
+      last_reconciled_at: 2026-06-08T21:47:49.262Z
       created_at: 2026-06-06T04:44:14.796Z
-      updated_at: 2026-06-08T21:39:59.985Z
+      updated_at: 2026-06-08T21:47:49.262Z
     workspace_id: dispatch-workspace-01KTD8S0X16VGB70KKE47SN47Q
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
