@@ -116,3 +116,42 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-08T21:36:29.778Z
+  - _ulid: 01KTMMCFJBV8VS915MZCNEXJTR
+    content: >-
+      Fix cycle 1: addressed both review blockers (tests stopped at URL-string construction; ACs
+      require HTTP outcomes + owner/status projection).
+
+
+      Added tests/daemon-api/resource-url-browser-fetch-contract.test.ts (13 tests). It
+      renders/builds each browser URL via the real web-ui helpers (reviewResourceBytesUrl,
+      buildPlanContentBlocks->rewritePlanResourceLinks, rewriteTaskResourceLinks) and FETCHES it
+      against a real multi-project daemon WITHOUT X-Kspec-Dir, asserting the selected project's
+      bytes return and not the default project's bytes or a 404. Project A = default, project B =
+      selected non-default; same ids hold different bytes per project so a default-fallback is
+      detectable.
+
+
+      - Plan ACs: end-to-end it.fails through the real plan bytes route (rewrite is project-unaware
+      today). Positive control pins the default fallback so the it.fails fail on byte mismatch, not
+      transport error.
+
+      - Review ACs: passing comparator through the real review bytes route, plus no-project-selected
+      default case.
+
+      - Task ACs: it.fails through a faithful stand-in task bytes route mounted on the REAL
+      projectContextMiddleware (route lands in a later task; only byte serving is simulated).
+      Materialized cases assert the task-owned COPY bytes are served, explicitly not the plan-owned
+      bytes — covering owner projection. Positive control pins a kspec_dir-scoped task URL returns
+      project B's bytes.
+
+
+      Kept the web-ui URL-shape unit pins and pointed them at the HTTP contract file. Re-verified
+      all 9 task-listed ACs against the implementation.
+
+
+      Gates: format:check clean; focused oxlint 0/0; repo lint 0 errors (738 pre-existing warnings,
+      none in changed files); typecheck clean; full suite 10323 passed / 5 skipped / 0 failures;
+      kspec validate refs/alignment/completeness warnings-only (all pre-existing, unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-08T22:06:53.516Z
