@@ -31,6 +31,7 @@ import {
 } from "./endpoint.js";
 import { projectContextMiddleware } from "./middleware/project-context.js";
 import { createTasksRoutes } from "./routes/tasks.js";
+import { createTaskResourcesRoutes } from "./routes/task-resources.js";
 import { createItemsRoutes } from "./routes/items.js";
 import { createInboxRoutes } from "./routes/inbox.js";
 import { createMetaRoutes } from "./routes/meta.js";
@@ -723,6 +724,13 @@ export async function createServer(options: ServerOptions) {
         getEntityCache: entityCacheModule.getEntityCache,
       }),
     )
+
+    // AC: @task-resource-resolution-api-contract ac-task-resource-bytes-serve-present-plan-owned-ref
+    // AC: @task-resource-resolution-api-contract ac-task-resource-bytes-serve-present-task-owned-copy
+    // AC: @task-resource-resolution-api-contract ac-task-resource-bytes-refuse-drifted-or-missing-ref
+    // AC: @live-task-resource-markdown-rendering ac-drifted-task-resource-is-visible-not-silent
+    //     — task-scoped resource list/metadata/bytes routes with drift-safe byte serving
+    .use(createTaskResourcesRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @api-contract ac-8 through ac-11 - Spec Item API endpoints
     // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor

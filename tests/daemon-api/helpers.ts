@@ -61,6 +61,7 @@ import {
 } from "../helpers/cli.js";
 import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.js";
 import { createTasksRoutes } from "../../dist/daemon/routes/tasks.js";
+import { createTaskResourcesRoutes } from "../../dist/daemon/routes/task-resources.js";
 import { createItemsRoutes } from "../../dist/daemon/routes/items.js";
 import { createReviewsRoutes } from "../../dist/daemon/routes/reviews.js";
 import { createReviewResourcesRoutes } from "../../dist/daemon/routes/review-resources.js";
@@ -526,6 +527,7 @@ export interface CreateTestAppOptions {
  * Registered route groups (each via the same constructor used by
  * `createServer()` in packages/daemon/src/server.ts):
  *   - createTasksRoutes        → /api/tasks/*
+ *   - createTaskResourcesRoutes → /api/tasks/:ref/resources/*
  *   - createItemsRoutes        → /api/items/*
  *   - createReviewsRoutes      → /api/reviews/*
  *   - createTriageRoutes       → /api/triage/*
@@ -598,6 +600,7 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
     }))
     .use(middleware)
     .use(createTasksRoutes({ pubsub, getEntityCache }))
+    .use(createTaskResourcesRoutes({ getEntityCache }))
     .use(createItemsRoutes())
     .use(createReviewsRoutes({ pubsub, getEntityCache }))
     .use(createReviewResourcesRoutes({ pubsub, getEntityCache }))
