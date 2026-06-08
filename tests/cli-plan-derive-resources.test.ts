@@ -113,6 +113,8 @@ interface ResolvedResourceJson {
   owner_ref: string;
   id: string;
   path: string;
+  content_type: string | null;
+  byte_size: number | null;
   status: "present" | "drift" | "missing" | "unresolved";
   recorded_sha256: string;
   current_sha256: string | null;
@@ -246,6 +248,10 @@ describe.runIf(canRunInit)("Integration: plan derive resource_refs", () => {
     expect(task.resolved_resources![0].current_sha256).toBe(
       task.resolved_resources![0].recorded_sha256,
     );
+    // The projection reports owner-manifest content type and byte size from
+    // the current entry so the shared shape carries enough to render bytes.
+    expect(task.resolved_resources![0].byte_size).toBeGreaterThan(0);
+    expect(typeof task.resolved_resources![0].content_type).toBe("string");
   });
 
   // Regression — review @01KSF2EN9KP6B0BNZQMBQMDX1Q blocker on

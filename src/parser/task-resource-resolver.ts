@@ -176,6 +176,8 @@ export function projectResolvedTaskResources(resolved: ResolvedTaskResource[]): 
   owner_ref: string;
   id: string;
   path: string;
+  content_type: string | null;
+  byte_size: number | null;
   status: TaskResourceStatus;
   recorded_sha256: string;
   current_sha256: string | null;
@@ -188,6 +190,11 @@ export function projectResolvedTaskResources(resolved: ResolvedTaskResource[]): 
     owner_ref: entry.reference.owner_ref,
     id: entry.reference.id,
     path: entry.reference.path,
+    // content_type/byte_size are owner-manifest metadata not recorded on the
+    // task reference itself; they are available only when the owner still
+    // declares the path (present/drift) and null otherwise (missing/unresolved).
+    content_type: entry.current?.content_type ?? null,
+    byte_size: entry.current?.bytes ?? null,
     status: entry.status,
     recorded_sha256: entry.reference.sha256,
     current_sha256: entry.current?.sha256 ?? null,
