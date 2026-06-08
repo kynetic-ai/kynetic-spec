@@ -61285,7 +61285,7 @@ runs:
     completed_at: 2026-06-08T23:12:45.176Z
   - _ulid: 01KTMTNRTC8R0RWDM4TEXZ0G3D
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61301,7 +61301,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-08T23:57:32.588Z
-        completed_at: 2026-06-08T23:57:32.588Z
+        completed_at: 2026-06-08T23:57:45.999Z
+        notes: "Friction points: recording review evidence required a long manual batch of check entries
+          plus a non-finding nit comment because there is no obvious review-note/evidence-log
+          command. The full fresh test run was necessary and passed, but its long quiet intervals
+          made progress visibility poor; repeated polling was needed to know whether it was still
+          alive. These are process/tooling frictions, not blockers for this task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-08T23:57:45.999Z
+        completed_at: 2026-06-08T23:57:45.999Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-08T23:56:49.357Z
