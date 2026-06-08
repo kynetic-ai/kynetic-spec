@@ -163,9 +163,25 @@ events:
       kind: nit
       thread_ulid: 01KTMQYDHB0N9M3RE269X9NJCX
     timestamp: 2026-06-08T23:09:07.210Z
+  - _ulid: 01KTMQYXJ7WJ2WADZ26T7Y7G00
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-08T23:09:23.399Z
+  - _ulid: 01KTMQYXJ7K1SJ0YSX696AM67B
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-08T23:09:23.399Z
 examined_commit: ac29726023604a9fbb392e26d379936ccd6a0c7a
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -195,7 +211,14 @@ threads:
           pre-existing unchanged no-shadow warnings outside this diff."
         created_at: 2026-06-08T23:09:06.988Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-08T23:09:23.399Z
 created_at: 2026-06-08T22:57:41.523Z
-updated_at: 2026-06-08T23:09:06.988Z
+updated_at: 2026-06-08T23:09:23.399Z
 notes: []
