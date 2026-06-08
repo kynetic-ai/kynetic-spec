@@ -21034,6 +21034,23 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-08T22:31:12.488Z
+  - _ulid: 01KTMSQFFTJSK323WQXEHTBPTX
+    type: friction
+    content: "Folder-backed plan + entity-scoped resource seeding is reimplemented locally in 6+
+      daemon-api test files (plan-resources, plans, task-resolved-resources, task-resources,
+      resource-url-browser-fetch-contract, entity-storage-incompatibility-routes): each hand-writes
+      the project.plans.yaml 'kynetic_plans/plans' wrapper, the plans/<ulid>/ folder layout
+      (plan.yaml + plan.md), and a resources.yaml manifest with hand-computed sha256. Cost this
+      session: a test-failure cycle from writing project.plans.yaml as a bare array instead of the
+      {kynetic_plans, plans:[...]} wrapper, plus a second cycle from recorded resource_refs sha256
+      not tracking the seeded bytes (tripping drift). A shared test helper (e.g.
+      seedFolderPlanWithResources(dir, {ulid, slug, resources}) in tests/helpers, returning computed
+      shas) would remove the boilerplate and make the wrapper format + sha-from-bytes invariant
+      impossible to get wrong."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-08T23:40:16.762Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
