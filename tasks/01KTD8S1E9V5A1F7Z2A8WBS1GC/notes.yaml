@@ -25,3 +25,30 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-08T22:35:10.332Z
+  - _ulid: 01KTMQ445N3CRJEFVX0NYJYAX2
+    content: >-
+      Implemented and verified. Changes:
+
+      - packages/shared/src/api.ts: added ResolvedTaskResourceSummary type; extended TaskDetail with
+      optional resolved_resources + resources_base_url (index/list shapes untouched).
+
+      - src/parser/task-resource-resolver.ts: projectResolvedTaskResources now also projects
+      content_type + byte_size from the current owner manifest entry (null when missing/unresolved).
+      Additive; reused by CLI --json, agent context, and daemon.
+
+      - packages/daemon/src/routes/tasks.ts: GET /api/tasks/:ref reuses resolveTaskResources +
+      projectResolvedTaskResources (lazy ctx) on both cache-hit and disk-fallback paths; emits
+      resolved_resources + /api/tasks/<ulid>/resources base URL only when resource_refs exist.
+
+      Tests: new tests/daemon-api/task-resolved-resources.test.ts (present/drift/missing field set,
+      base URL, omitted-when-no-refs, cache-hit path, bounded index); extended
+      tests/cli-plan-derive-resources.test.ts for new projection fields.
+
+      Gates: format:check, lint (0 errors), typecheck (root + shared), full npm test (10330 passed/5
+      skip), kspec validate --refs/--alignment/--completeness all green. Target ACs
+      ac-task-detail-exposes-resolved-resources, ac-task-detail-exposes-resource-base-url,
+      ac-task-resource-index-stays-bounded now covered; remaining uncovered ACs on the spec are the
+      bytes-route ACs owned by sibling task @add-task-resource-bytes-routes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-08T22:54:45.429Z
