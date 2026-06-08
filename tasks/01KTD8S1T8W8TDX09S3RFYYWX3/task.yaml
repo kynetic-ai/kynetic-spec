@@ -43,8 +43,12 @@ description: >
 spec_ref: "@task-resource-resolution-api-contract"
 plan_ref: "@plan-resource-ui-hardening-plan"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper at
+  27fe4f1938d81f27125c9da22b20827e496852f8. Added task-scoped resource list/detail/bytes daemon
+  routes with drift-safe refusal for drift/missing/unresolved refs, plan-owned and task-owned
+  present-byte serving, and selected-project browser routing coverage.
 depends_on:
   - "@expose-task-resolved-resources-api"
 context: []
@@ -112,8 +116,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-08T23:41:59.761Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper at 27fe4f1938d81f27125c9da22b20827e496852f8.
+          Added task-scoped resource list/detail/bytes daemon routes with drift-safe refusal for
+          drift/missing/unresolved refs, plan-owned and task-owned present-byte serving, and
+          selected-project browser routing coverage.
+        previous: null
+      completed_at:
+        new: 2026-06-08T23:56:04.096Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-08T23:56:04.103Z
 created_at: 2026-06-06T01:29:21.480Z
 started_at: 2026-06-08T23:12:02.955Z
 submitted_at: 2026-06-08T23:38:51.978Z
+completed_at: 2026-06-08T23:56:04.096Z
 todos: []
 automation: eligible
