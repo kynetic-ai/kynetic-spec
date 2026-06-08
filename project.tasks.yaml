@@ -30877,7 +30877,7 @@
   type: task
   spec_ref: "@task-resource-resolution-api-contract"
   plan_ref: "@plan-resource-ui-hardening-plan"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@expose-task-resolved-resources-api"
@@ -30889,6 +30889,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-06T01:29:21.480Z
+  started_at: 2026-06-08T23:12:02.955Z
   automation: eligible
 - _ulid: 01KTD8S26A1PY21C7SYXTNTJ05
   slugs:
