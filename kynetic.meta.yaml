@@ -20978,6 +20978,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-08T21:17:12.582Z
+  - _ulid: 01KTMHJ2QPEE9VFTPPDY45SXVK
+    type: success
+    content: When resuming an in-flight task whose prior invocations failed (e.g. three '[AGENT-FAIL]
+      turn timed out' notes on @add-resource-url-task-markdown-contract-tests), verify the
+      already-authored artifacts before assuming they are broken. Here the three untracked files
+      were complete and correct; the failures were full-suite-run timeouts, not bad work.
+      Cross-checking the contract shapes (reviewResourceBytesUrl output, rewritePlanResourceLinks
+      being project-unaware today) confirmed the it.fails FLIPPED-ON-FIX tests were red-as-designed,
+      so the right move was commit+submit, not rewrite. Prior AGENT-FAIL notes describe invocation
+      outcomes, not artifact quality — read the work before discarding it.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-08T21:17:31.255Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
