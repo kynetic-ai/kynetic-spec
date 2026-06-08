@@ -61182,9 +61182,10 @@ runs:
     started_at: 2026-06-08T21:37:16.607Z
     completed_at: 2026-06-08T21:38:48.426Z
   - _ulid: 01KTMNMBKT4Q1YPABQVZA58QRG
-    status: active
+    status: paused
     current_step: 0
     initiated_by: Jacob Chapel
+    paused_at: 2026-06-08T22:29:19.530Z
     step_results: []
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
