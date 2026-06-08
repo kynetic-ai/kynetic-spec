@@ -23,6 +23,13 @@
  *     appends `kspec_dir`, and these tests are the working browser-URL
  *     comparator the plan/task rewrites are being brought up to parity with.
  *
+ * SCOPE — these are URL-SHAPE unit pins (does the rewritten / built URL carry
+ * the selected project's kspec_dir?). The ACs' HTTP "Then" clauses — fetching
+ * the produced URL WITHOUT `X-Kspec-Dir` in a multi-project daemon returns the
+ * selected project's resource bytes instead of the default project's bytes or a
+ * 404 — are asserted end-to-end against the real daemon resource routes in
+ * tests/daemon-api/resource-url-browser-fetch-contract.test.ts.
+ *
  * Spec: @live-plan-resource-url-project-context
  * Spec: @live-review-resource-url-project-context
  */

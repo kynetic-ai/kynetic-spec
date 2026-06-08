@@ -31,6 +31,13 @@
  * negative-path tests (unmatched / drift stay raw) are normal `it` because the
  * no-op stub already satisfies them and they must keep passing after the fix.
  *
+ * SCOPE — these are URL-SHAPE unit pins for the rewriter. The ACs' HTTP "Then"
+ * clauses (fetching the produced URL WITHOUT `X-Kspec-Dir` in a multi-project
+ * daemon returns the selected project's resolved bytes, and the plan-owned vs
+ * task-owned owner projection is what gets served) are asserted end-to-end in
+ * tests/daemon-api/resource-url-browser-fetch-contract.test.ts, which fetches
+ * each rewritten URL through the real project-context middleware.
+ *
  * Spec: @live-task-resource-markdown-rendering
  */
 
