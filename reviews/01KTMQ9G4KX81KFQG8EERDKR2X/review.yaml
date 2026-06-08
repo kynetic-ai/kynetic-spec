@@ -156,6 +156,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-08T23:09:02.407Z
+  - _ulid: 01KTMQYDRA842SSTCCB442JH4M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTMQYDHB0N9M3RE269X9NJCX
+    timestamp: 2026-06-08T23:09:07.210Z
 examined_commit: ac29726023604a9fbb392e26d379936ccd6a0c7a
 external_links: []
 lifecycle_state: open
@@ -165,8 +172,30 @@ subject:
   content_hash: ""
   ref: "@01KTD8S1E9V5A1F7Z2A8WBS1GC"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTMQYDHB0N9M3RE269X9NJCX
+    entries:
+      - _ulid: 01KTMQYDHC947GYCHA8BMWGC09
+        author: Jacob Chapel
+        body: "Review evidence log:\\nFiles read: kspec-agents.md; packages/shared/src/api.ts;
+          packages/shared/src/index.ts; packages/daemon/src/routes/tasks.ts;
+          src/parser/task-resource-resolver.ts; tests/cli-plan-derive-resources.test.ts;
+          tests/daemon-api/task-resolved-resources.test.ts; tests/daemon-api/helpers.ts;
+          scripts/test.cjs.\\nCommands run: kspec task get @01KTD8S1E9V5A1F7Z2A8WBS1GC; kspec item
+          get @task-resource-resolution-api-contract; git diff/stat/name-only/diff --check; rg AC
+          annotations and API/resource symbols; npm run format:check; npm run lint -- --quiet; npx
+          oxlint changed files; npm run typecheck; npm test; kspec validate
+          --refs/--alignment/--completeness --warnings-ok.\\nClaims verified: TaskDetail has
+          optional resolved_resources and resources_base_url only on detail shape; daemon task
+          detail reuses resolveTaskResources/projectResolvedTaskResources on cache-hit and disk
+          fallback; list/index response remains bounded; behavioral tests cover full field set, base
+          URL, omission without refs, cache path, and bounded list.\\nCategories searched:
+          correctness, edge cases, error handling, security/data exposure, test quality,
+          integration. No blocker or should-fix findings found. Focused lint warnings were
+          pre-existing unchanged no-shadow warnings outside this diff."
+        created_at: 2026-06-08T23:09:06.988Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-08T22:57:41.523Z
-updated_at: 2026-06-08T23:09:02.196Z
+updated_at: 2026-06-08T23:09:06.988Z
 notes: []
