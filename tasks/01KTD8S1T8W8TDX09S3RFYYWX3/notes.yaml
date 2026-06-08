@@ -1,1 +1,33 @@
-notes: []
+notes:
+  - _ulid: 01KTMRB6PYCJ8KV8FPHSBWT9A9
+    content: >-
+      Approach: Add a new packages/daemon/src/routes/task-resources.ts plugin (prefix /api/tasks,
+      mirroring plan-resources.ts + review-resources.ts which co-mount with their entity route file)
+      exposing:
+
+      - GET /:ref/resources -> { resolved_resources, resources_base_url } from
+      projectResolvedTaskResources (reuses resolveTaskResources, same path as task detail).
+
+      - GET /:ref/resources/:resourceId -> { resolved_resource } projection entry (carries
+      drift/missing/unresolved status), structured 404 when no matching resource_ref id.
+
+      - GET /:ref/resources/:resourceId/bytes -> serves bytes only when status==present; sets
+      Content-Type/Content-Length/X-Kspec-Resource-Sha256 from current manifest entry. drift->409,
+      missing/unresolved->404, each body names the exact status. Resolves plan-owned via
+      findPlanByRef+getPlanDir, task-owned via getTaskDir, then getResourcesDir +
+      loadResourceManifest + resolveResourcePath (symlink-safe; never raw-joins author paths).
+
+      Mounted under projectContextMiddleware so kspec_dir query routing works without X-Kspec-Dir
+      (selected-project context), same as review/plan resource bytes routes.
+
+      Register in server.ts and tests/daemon-api/helpers.ts createTestApp.
+
+      Tests (tests/daemon-api/task-resources.test.ts): present plan-owned bytes, present task-owned
+      copy bytes, drift refusal, missing refusal, unresolved refusal, detail-route status reporting,
+      list projection, and selected-project routing via real middleware + kspec_dir query.
+
+      Note: markdown rewriter (rewriteTaskResourceLinks) + its FLIPPED-ON-FIX contract tests are
+      owned by sibling @generalize-live-ui-resource-markdown-rewriting, NOT this task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-08T23:16:05.983Z
