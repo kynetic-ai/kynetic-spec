@@ -51,8 +51,12 @@ description: >
 spec_ref: "@live-task-resource-markdown-rendering"
 plan_ref: "@plan-resource-ui-hardening-plan"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev at ff937ba42291. Added resource URL and task markdown contract
+  coverage: web-ui URL-shape pins plus daemon browser-fetch HTTP outcome tests for selected-project
+  resource routing, with review resources as the passing comparator and staged it.fails contracts
+  for the sibling implementation task."
 depends_on: []
 context: []
 priority: 1
@@ -206,9 +210,26 @@ history:
         previous: "@01KTMHNK77RNKKR5NBACMZ9ME8"
     command: review-link
     timestamp: 2026-06-08T22:12:00.070Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev at ff937ba42291. Added resource URL and task markdown contract coverage: web-ui
+          URL-shape pins plus daemon browser-fetch HTTP outcome tests for selected-project resource
+          routing, with review resources as the passing comparator and staged it.fails contracts for
+          the sibling implementation task."
+        previous: null
+      completed_at:
+        new: 2026-06-08T22:27:45.746Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-08T22:27:45.755Z
 prior_status: null
 created_at: 2026-06-06T01:29:20.545Z
 started_at: 2026-06-08T21:47:18.694Z
 submitted_at: 2026-06-08T22:07:21.171Z
+completed_at: 2026-06-08T22:27:45.746Z
 todos: []
 automation: eligible
