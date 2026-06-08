@@ -21020,6 +21020,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-08T22:09:39.294Z
+  - _ulid: 01KTMNS0B72VECA0EB62BG4PK7
+    type: friction
+    content: Detached reviewer merge helper can refuse a clean integration-target checkout when the
+      checkout retains a stale ignored .kspec-dispatch-workspace.json marker from an old integrated
+      dispatch workspace. In this review, the root checkout was clean on dev, but the helper
+      classified it as auxiliary until the stale marker was removed. Search found related
+      merge-helper recovery items but no exact stale-marker cleanup coverage. Consider teaching the
+      helper or dispatch cleanup to ignore, reconcile, or remove stale integrated markers before
+      occupancy classification.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-08T22:31:12.488Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
