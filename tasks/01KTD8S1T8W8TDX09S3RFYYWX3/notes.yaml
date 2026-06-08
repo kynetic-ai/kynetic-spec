@@ -31,3 +31,46 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-08T23:16:05.983Z
+  - _ulid: 01KTMSMSE7TV6Q71CS0NN1AW5M
+    content: >-
+      Implemented in packages/daemon/src/routes/task-resources.ts (new plugin, /api/tasks prefix,
+      co-mounted with createTasksRoutes), wired into server.ts and tests/daemon-api/helpers.ts
+      createTestApp.
+
+
+      Routes:
+
+      - GET /:ref/resources -> { resolved_resources, resources_base_url }
+
+      - GET /:ref/resources/:resourceId -> { resolved_resource } (carries drift/missing/unresolved
+      status; 404 only when no matching resource_ref id)
+
+      - GET /:ref/resources/:resourceId/bytes -> drift-safe: present streams bytes with
+      Content-Type/Content-Length/X-Kspec-Resource-Sha256 from current owner-manifest entry;
+      drift->409, missing/unresolved->404, each body names the exact status and never streams
+      replacement bytes.
+
+
+      Reuses resolveTaskResources + projectResolvedTaskResources (identical drift semantics to task
+      detail / kspec task get --json / agent context). Plan-owned -> findPlanByRef+getPlanDir;
+      task-owned -> getTaskDir; both via getResourcesDir + loadResourceManifest + symlink-safe
+      resolveResourcePath (no raw path joins). Selected-project routing inherited from
+      project-context middleware (kspec_dir query) — verified by multi-project test.
+
+
+      Tests: tests/daemon-api/task-resources.test.ts (13 tests) — present plan-owned bytes, present
+      materialized task-owned copy bytes, drift refusal, missing refusal, unresolved refusal,
+      unknown id/task 404s, detail-route status reporting, list projection, selected-project +
+      default routing.
+
+
+      Scope note: markdown rewriter (rewriteTaskResourceLinks) and its FLIPPED-ON-FIX it.fails
+      contract tests remain owned by sibling @generalize-live-ui-resource-markdown-rewriting —
+      untouched.
+
+
+      Gates: format:check clean, lint 0 errors, typecheck clean, daemon-api suite 501 passed, full
+      npm test exit 0, kspec validate refs/alignment/completeness pass (pre-existing warnings only).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-08T23:38:48.647Z
