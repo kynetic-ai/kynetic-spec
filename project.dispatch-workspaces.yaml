@@ -1152,11 +1152,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-guardrail-cleanup-effect-classification/01krcrjp
     canonical_branch_head: f471dc1dcfbca0288216dffefa3abbac6e163ad8
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-05-13T04:30:23.839Z
+      status: completed
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-06-08T21:00:27.951Z
     health:
       status: invalid
       issues:
@@ -1172,25 +1172,26 @@ workspaces:
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
-      updated_at: 2026-05-13T04:30:23.839Z
+      updated_at: 2026-06-08T21:00:27.951Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c5394be4eaafbc71a42b97d28bc581e6d1edc2e2
-      updated_at: 2026-05-13T04:30:23.839Z
-    lifecycle_state: stale
+      updated_at: 2026-06-08T21:00:27.951Z
+    lifecycle_state: closed
     resolved_base_branch: dev
+    task_id: 01KRCRJPMHMHC410TKRC5Y9HF1
     task_ref: "@task-fix-guardrail-cleanup-effect-classification"
     task_slug: task-fix-guardrail-cleanup-effect-classification
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-08T21:00:27.951Z
       last_active_at: 2026-05-12T13:31:48.960Z
-      last_reconciled_at: 2026-05-13T04:30:23.839Z
+      last_reconciled_at: 2026-06-08T21:00:27.951Z
       created_at: 2026-05-12T13:31:21.926Z
-      updated_at: 2026-05-13T04:30:23.839Z
+      updated_at: 2026-06-08T21:00:27.951Z
     workspace_id: dispatch-workspace-task-fix-guardrail-cleanup-effect-classification
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
