@@ -20992,6 +20992,34 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-08T21:17:31.255Z
+  - _ulid: 01KTMMHH59K1MX1YFCT29DP4XT
+    type: friction
+    content: "Tests-first contract tests for browser-URL ACs were authored at the URL-string layer
+      (assert the rewritten <img>/<a> URL contains ?kspec_dir=), but the ACs Then clauses specify
+      HTTP/byte outcomes (the browser fetch returns the SELECTED projects bytes, not the default
+      projects or a 404). The shallow layer passed all gates yet a reviewer kicked it back as
+      builder-only AC coverage. Concrete instance of work-gates AC coverage at the wrong abstraction
+      layer rule, specific to UI URL-building features: when an ACs Then clause describes what the
+      daemon/browser returns, a URL-shape assertion is not AC coverage — a behavioral fetch is
+      required."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-08T22:09:38.986Z
+  - _ulid: 01KTMMHHEYCR204668XADT3PZA
+    type: success
+    content: "Pattern for HTTP-outcome AC coverage when the production route lands in a sibling task
+      (tests-first / FLIPPED-ON-FIX): mount a stand-in route on the REAL projectContextMiddleware so
+      only byte-serving is simulated while the project routing under contract (X-Kspec-Dir header >
+      kspec_dir query > default) stays production; register two projects with the same ids but
+      different bytes; fetch the builder/rewriter output WITHOUT X-Kspec-Dir and assert the selected
+      projects bytes. Add a positive-control normal it that fetches a correctly-kspec_dir-scoped URL
+      so the it.fails tests are proven to fail on the byte mismatch, not a setup/transport error.
+      See tests/daemon-api/resource-url-browser-fetch-contract.test.ts."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-08T22:09:39.294Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
