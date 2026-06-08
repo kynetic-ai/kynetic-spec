@@ -10331,7 +10331,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-08T23:56:52.023Z
+      updated_at: 2026-06-08T23:59:29.869Z
     integration:
       status: merged
       detail: integration:merged
@@ -10348,18 +10348,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-08T23:41:17.221Z
-      last_reconciled_at: 2026-06-08T23:59:24.157Z
+      last_reconciled_at: 2026-06-08T23:59:29.869Z
       created_at: 2026-06-08T23:11:11.341Z
-      updated_at: 2026-06-08T23:59:24.157Z
+      updated_at: 2026-06-08T23:59:29.869Z
     workspace_id: dispatch-workspace-01KTD8S1T8W8TDX09S3RFYYWX3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: d81a89d9caae8ad4196b0da252ff2e2d9c105306
-        last_seen_at: 2026-06-08T23:40:47.202Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-task-resource-bytes-routes-01ktd8s1-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/add-task-resource-bytes-routes/01ktd8s1
