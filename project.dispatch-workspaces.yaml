@@ -1900,11 +1900,11 @@ workspaces:
     canonical_branch: dispatch/task/task-update-plan-review-storage-specs-1/task-upd
     canonical_branch_head: a5ce476850bb299e809c7880cb9c6c8f731c802e
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-06-03T16:48:07.955Z
+      status: completed
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-06-08T21:00:28.386Z
     health:
       status: invalid
       issues:
@@ -1918,25 +1918,26 @@ workspaces:
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
-      updated_at: 2026-06-03T16:48:07.955Z
+      updated_at: 2026-06-08T21:00:28.386Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
       target_commit: a5ce476850bb299e809c7880cb9c6c8f731c802e
-      updated_at: 2026-06-03T16:48:07.955Z
-    lifecycle_state: stale
+      updated_at: 2026-06-08T21:00:28.386Z
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-folder-backed-plans-reviews-and-local-resources/01ks8mmw
+    task_id: 01KS8XAVCKZE09Y0F4WMENFY47
     task_ref: "@task-update-plan-review-storage-specs-1"
     task_slug: task-update-plan-review-storage-specs-1
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-08T21:00:28.386Z
       last_active_at: 2026-05-23T02:27:53.398Z
-      last_reconciled_at: 2026-06-03T16:48:07.955Z
+      last_reconciled_at: 2026-06-08T21:00:28.386Z
       created_at: 2026-05-23T02:27:26.533Z
-      updated_at: 2026-06-03T16:48:07.955Z
+      updated_at: 2026-06-08T21:00:28.386Z
     workspace_id: dispatch-workspace-task-update-plan-review-storage-specs-1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
