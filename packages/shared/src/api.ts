@@ -167,6 +167,38 @@ export interface TaskSummary {
 }
 
 /**
+ * Resolved task resource projection for task detail responses.
+ *
+ * One entry per derived `resource_refs` entry, re-resolved against the owning
+ * entity's current manifest so drift is visible on every consumer surface
+ * (CLI `--json`, agent context, daemon task detail). Mirrors the structured
+ * output of `projectResolvedTaskResources` in
+ * `src/parser/task-resource-resolver.ts` — never embeds resource bytes.
+ * `content_type`/`byte_size`/`current_sha256`/`current_git_commit` come from
+ * the owner's current manifest entry and are null when the reference is
+ * `missing` (path no longer declared) or `unresolved` (owner not found).
+ * Browser-fetchable bytes are addressed via `TaskDetail.resources_base_url`
+ * (`${base}/${encodeURIComponent(id)}/bytes`), not a per-entry URL.
+ *
+ * AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resolved-resources
+ * AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+ */
+export interface ResolvedTaskResourceSummary {
+  owner_type: "plan" | "task";
+  owner_ref: string;
+  id: string;
+  path: string;
+  content_type: string | null;
+  byte_size: number | null;
+  status: "present" | "drift" | "missing" | "unresolved";
+  recorded_sha256: string;
+  current_sha256: string | null;
+  recorded_git_commit: string | null;
+  current_git_commit: string | null;
+  message: string;
+}
+
+/**
  * Full task with notes and todos
  * AC: @api-contract ac-5
  * AC: @ui-task-board ac-3 — description, plan_ref, session_ref for detail modal
@@ -193,6 +225,24 @@ export interface TaskDetail extends TaskSummary {
   todos?: Todo[];
   notes_count: number;
   todos_count?: number;
+  /**
+   * Resolved task resource references with drift status. Present only on
+   * detail responses when the task has one or more derived `resource_refs`;
+   * omitted entirely otherwise. Index-tier surfaces (task list, dashboard)
+   * never carry this field so resource bytes/manifests stay off the index.
+   *
+   * AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resolved-resources
+   */
+  resolved_resources?: ResolvedTaskResourceSummary[];
+  /**
+   * Task-scoped base URL clients use to fetch resolved-resource bytes via
+   * `${resources_base_url}/${encodeURIComponent(id)}/bytes` without guessing
+   * whether the resource is plan-owned or task-owned. Present alongside
+   * `resolved_resources` (i.e. only when the task has derived resources).
+   *
+   * AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resource-base-url
+   */
+  resources_base_url?: string;
 }
 
 /**

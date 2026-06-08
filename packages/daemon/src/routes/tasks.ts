@@ -33,6 +33,8 @@ import {
   syncSpecImplementationStatus,
   resolveTaskDataManager,
   TaskDataManagerError,
+  resolveTaskResources,
+  projectResolvedTaskResources,
   type LoadedTask,
   type TaskSummary,
 } from "../../parser/index.js";
@@ -56,6 +58,19 @@ interface TasksRouteOptions {
 
 function getTaskWriteThroughHint(task: LoadedTask): WriteThroughHint {
   return { ulid: task._ulid };
+}
+
+/**
+ * Build the task-scoped base URL clients use to fetch resolved-resource bytes
+ * via `${base}/${encodeURIComponent(id)}/bytes`. Surfaced on
+ * `TaskDetail.resources_base_url` so callers construct task resource byte URLs
+ * without guessing plan-owned vs task-owned ownership. The bytes route itself
+ * is owned by a sibling task; this only fixes the URL contract.
+ *
+ * AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resource-base-url
+ */
+function buildTaskResourcesBaseUrl(taskUlid: string): string {
+  return `/api/tasks/${taskUlid}/resources`;
 }
 
 function getSpecWriteThroughHint(
@@ -397,6 +412,25 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             plans,
           );
 
+          // AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resolved-resources
+          // AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resource-base-url
+          // Resolve the task's derived resource_refs against their owning
+          // entities so task detail reports drift status and a task-scoped
+          // bytes base URL. Reuses resolveTaskResources/projectResolvedTaskResources
+          // (the same path kspec task get --json and the agent context use) so
+          // drift semantics stay identical across surfaces. Only runs when the
+          // task actually has refs — resource-free tasks omit both fields and
+          // skip the disk read entirely, even on cache hits. This is the one
+          // detail path that needs the owning manifests, so it loads ctx lazily.
+          let resolvedResources: ReturnType<typeof projectResolvedTaskResources> | undefined;
+          let resourcesBaseUrl: string | undefined;
+          if (task.resource_refs && task.resource_refs.length > 0) {
+            const ctx = await getCtx();
+            const resolved = await resolveTaskResources(ctx, task);
+            resolvedResources = projectResolvedTaskResources(resolved);
+            resourcesBaseUrl = buildTaskResourcesBaseUrl(task._ulid);
+          }
+
           // AC: @api-contract ac-5 - Return full task with notes, todos, dependencies
           // AC: @ui-task-board ac-3 - Include type, description, blocked_by, vcs_refs, plan_ref, session_ref
           // AC: @ui-api-ref-resolution ac-1, ac-2 - Include resolved titles for refs
@@ -438,6 +472,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
               closed_reason: task.closed_reason,
               automation: task.automation,
               created_at: task.created_at,
+              // AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resolved-resources
+              // AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resource-base-url
+              ...(resolvedResources && resolvedResources.length > 0
+                ? {
+                    resolved_resources: resolvedResources,
+                    resources_base_url: resourcesBaseUrl,
+                  }
+                : {}),
             },
             { cacheDomainState: tasksDomainState },
           );
