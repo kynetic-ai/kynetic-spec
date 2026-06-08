@@ -142,6 +142,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-08T21:35:22.628Z
+  - _ulid: 01KTMJKF6NPAYPKB4H6NMC03T6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTMJKEZK3XMJNKS73Y9YZY48
+    timestamp: 2026-06-08T21:35:45.365Z
 examined_commit: c495d036a001126656a02a5f08599011cd519b0e
 external_links: []
 lifecycle_state: open
@@ -151,8 +158,32 @@ subject:
   content_hash: ""
   ref: "@01KTD8S0X16VGB70KKE47SN47Q"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTMJKEZK3XMJNKS73Y9YZY48
+    anchor:
+      type: code
+      commit: c495d036a001126656a02a5f08599011cd519b0e
+      line_end: 190
+      line_start: 131
+      path: tests/web-ui/resource-url-project-context.test.ts
+      side: head
+    entries:
+      - _ulid: 01KTMJKEZKNCXDMG25BB2WHAF6
+        author: Jacob Chapel
+        body: "MUST-FIX: these AC-tagged project-context tests stop at URL-string construction, but the task
+          explicitly asks to assert HTTP outcomes and the plan/review ACs say the browser request
+          returns the selected project's bytes instead of default-project bytes or 404. Existing
+          daemon tests prove review bytes routes honor kspec_dir under @multi-directory-daemon, but
+          this new AC coverage does not exercise the rendered plan URL through the daemon without
+          X-Kspec-Dir, and the review AC annotations here are also builder-only. Add contract
+          coverage that renders/extracts the browser URL, fetches it with no X-Kspec-Dir in a
+          multi-project setup, and asserts the selected project's bytes are returned (and not the
+          default project's bytes). For behavior still pending, keep it as it.fails under the
+          existing tests-first protocol; for review comparator coverage, either annotate existing
+          route-level HTTP tests with these AC refs or add equivalent AC-tagged checks."
+        created_at: 2026-06-08T21:35:45.139Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-08T21:19:26.439Z
-updated_at: 2026-06-08T21:35:22.387Z
+updated_at: 2026-06-08T21:35:45.139Z
 notes: []
