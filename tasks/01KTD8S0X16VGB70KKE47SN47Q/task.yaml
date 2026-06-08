@@ -51,9 +51,8 @@ description: >
 spec_ref: "@live-task-resource-markdown-rendering"
 plan_ref: "@plan-resource-ui-hardening-plan"
 origin: derived
-status: blocked
-blocked_by:
-  - "Agent task-worker failed 3 consecutive times: Claude headed turn timed out after 600000ms"
+status: in_progress
+blocked_by: []
 depends_on: []
 context: []
 priority: 1
@@ -62,7 +61,7 @@ tags:
   - tests
   - web-ui
 vcs_refs: []
-session_id: 01KTDMJ1X84GDYYFZ3J85HP3SP
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -99,7 +98,25 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-06-06T05:15:37.586Z
-prior_status: in_progress
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Agent task-worker failed 3 consecutive times: Claude headed turn timed out after
+            600000ms"
+      session_id:
+        new: null
+        previous: 01KTDMJ1X84GDYYFZ3J85HP3SP
+      prior_status:
+        new: null
+        previous: in_progress
+    command: task-unblock
+    timestamp: 2026-06-08T21:00:01.799Z
+prior_status: null
 created_at: 2026-06-06T01:29:20.545Z
 started_at: 2026-06-06T05:04:36.306Z
 todos: []
