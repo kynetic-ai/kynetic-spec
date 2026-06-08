@@ -9355,7 +9355,7 @@ workspaces:
         head: cc7fb4e3cc613e478e2ddebbba176c6d0510416e
         last_seen_at: 2026-06-06T22:16:11.760Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-canonicalize-workspace-identity-lookups-01ktfb1b
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: ff937ba42291db61cc1f8bda0112b8081148fc46
     bootstrap:
       status: succeeded
@@ -9828,7 +9828,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-08T22:56:24.844Z
+      updated_at: 2026-06-08T22:56:58.443Z
     integration:
       status: pending
       detail: null
@@ -9844,10 +9844,10 @@ workspaces:
     task_slug: expose-task-resolved-resources-api
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-08T22:28:45.377Z
-      last_reconciled_at: 2026-06-08T22:56:24.844Z
+      last_active_at: 2026-06-08T22:56:58.443Z
+      last_reconciled_at: 2026-06-08T22:56:58.443Z
       created_at: 2026-06-08T22:28:16.863Z
-      updated_at: 2026-06-08T22:56:48.016Z
+      updated_at: 2026-06-08T22:56:58.443Z
     workspace_id: dispatch-workspace-01KTD8S1E9V5A1F7Z2A8WBS1GC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
