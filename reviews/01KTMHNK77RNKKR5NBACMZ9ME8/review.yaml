@@ -156,6 +156,13 @@ events:
       kind: blocker
       thread_ulid: 01KTMJKWY4BCQ3WEAEC1CH1MVA
     timestamp: 2026-06-08T21:35:59.677Z
+  - _ulid: 01KTMJMED1PPF2X15WSMHKQAKE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTMJME5P7VEJJRS9Q86MEA0M
+    timestamp: 2026-06-08T21:36:17.313Z
 examined_commit: c495d036a001126656a02a5f08599011cd519b0e
 external_links: []
 lifecycle_state: open
@@ -214,7 +221,42 @@ threads:
           content."
         created_at: 2026-06-08T21:35:59.429Z
     kind: blocker
+  - _ulid: 01KTMJME5P7VEJJRS9Q86MEA0M
+    entries:
+      - _ulid: 01KTMJME5Q8Y11K7EQERT0B9SP
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; tests/web-ui/task-resource-links.test.ts;
+          tests/web-ui/resource-url-project-context.test.ts;
+          packages/web-ui/src/lib/utils/task-resource-links.ts;
+          packages/web-ui/src/lib/utils/plan-resource-links.ts;
+          packages/web-ui/src/lib/utils/plan-embedded-content.ts; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/lib/components/board/TaskDetailContent.svelte;
+          src/parser/task-resource-resolver.ts; src/schema/resources.ts;
+          tests/daemon-api/plan-resources.test.ts; tests/daemon-api/review-resources.test.ts; plan
+          @plan-resource-ui-hardening-plan.
+
+          Commands run: kspec task get; kspec review for-task/add/open; kspec item get for
+          @live-task-resource-markdown-rendering, @live-plan-resource-url-project-context,
+          @live-review-resource-url-project-context; git diff/stat/name-only; rg AC and route
+          searches; npm test focused changed tests --fresh; npm run format:check; npx oxlint changed
+          files; npm run lint -- --quiet; npm run typecheck; kspec validate
+          refs/alignment/completeness --warnings-ok; npm test -- --fresh.
+
+          Claims verified: worker claimed tests are behavioral and no source scanning; verified by
+          reading new tests and rg. Worker claimed full suite/gates pass; independently reran
+          required gates. Worker claimed 9 task-listed AC annotations; verified via rg, while
+          semantic HTTP outcome coverage remains missing.
+
+          Categories searched: correctness/spec alignment, test quality, edge cases for
+          unmatched/drift/external links, integration with plan/review URL helpers and daemon
+          resource routes, route-level HTTP coverage, source-scanning risk. Findings: two blockers
+          for missing HTTP/metadata contract assertions.
+        created_at: 2026-06-08T21:36:17.079Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-08T21:19:26.439Z
-updated_at: 2026-06-08T21:35:59.429Z
+updated_at: 2026-06-08T21:36:17.079Z
 notes: []
