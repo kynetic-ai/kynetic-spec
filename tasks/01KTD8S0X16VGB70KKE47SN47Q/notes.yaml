@@ -73,3 +73,41 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-06T05:15:33.930Z
+  - _ulid: 01KTMHE7NNB4VM67GE4PM9KZ3M
+    content: >-
+      Completed: committed the three contract artifacts (c495d036a0).
+
+
+      Verified state of the resumed in-flight work rather than rewriting it:
+
+      - tests/web-ui/task-resource-links.test.ts — 9 tests. 5 it.fails contract tests (plan-owned
+      image/doc, materialized task-owned image/doc, no-project base-URL) fail-as-expected against
+      the no-op stub; 4 normal it negative-path/regression guards (unmatched stays raw,
+      empty/undefined/no-base, drift/missing/unresolved not rewritten, external https not rewritten)
+      pass.
+
+      - tests/web-ui/resource-url-project-context.test.ts — 6 tests. 2 plan it.fails (image/doc
+      kspec_dir via buildPlanContentBlocks) fail-as-expected (rewritePlanResourceLinks is
+      project-unaware today); 1 plan normal it (no project -> no kspec_dir) passes; 3 review
+      comparator it (reviewResourceBytesUrl image/doc/no-project) pass.
+
+      - packages/web-ui/src/lib/utils/task-resource-links.ts — no-op contract stub; sibling
+      @generalize-live-ui-resource-markdown-rewriting implements + flips it.fails to it.
+
+
+      AC coverage (all 9 task-listed ACs annotated): live-task-resource-markdown-rendering
+      ac-plan-owned-task-image-renders / ac-plan-owned-task-doc-link-opens /
+      ac-materialized-task-image-renders / ac-materialized-task-doc-link-opens /
+      ac-unmatched-task-resource-reference-stays-raw; live-plan-resource-url-project-context
+      ac-plan-image-routes-to-selected-project / ac-plan-doc-link-routes-to-selected-project;
+      live-review-resource-url-project-context ac-review-image-routes-to-selected-project /
+      ac-review-doc-link-routes-to-selected-project. Tests are behavioral (call the utils, assert
+      rewritten URL strings) — no source-scanning.
+
+
+      Gates: format:check clean; focused oxlint 0/0; repo lint 0 errors (742 pre-existing warnings,
+      none in changed files); typecheck clean; full suite 10246 passed / 5 skipped / 0 failures;
+      kspec validate refs/alignment/completeness warnings-only (all pre-existing, unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-08T21:15:25.237Z
