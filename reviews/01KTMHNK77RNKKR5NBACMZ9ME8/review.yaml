@@ -67,6 +67,18 @@ checks:
     runner: kspec
     created_at: 2026-06-08T21:35:12.674Z
     completed_at: 2026-06-08T21:35:12.674Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0 with repo baseline
+      completeness warnings. Direct annotation search found the task-requested AC refs in the new
+      test files; remaining uncovered ACs are assigned elsewhere in the hardening plan."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-08T21:35:22.387Z
+    completed_at: 2026-06-08T21:35:22.387Z
 events:
   - _ulid: 01KTMHNK769Q6N288E2M6H2HN9
     actor: Jacob Chapel
@@ -123,6 +135,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-08T21:35:12.907Z
+  - _ulid: 01KTMJJS04G2EYAD4H0A7X0QH3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-08T21:35:22.628Z
 examined_commit: c495d036a001126656a02a5f08599011cd519b0e
 external_links: []
 lifecycle_state: open
@@ -135,5 +154,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-08T21:19:26.439Z
-updated_at: 2026-06-08T21:35:12.674Z
+updated_at: 2026-06-08T21:35:22.387Z
 notes: []
