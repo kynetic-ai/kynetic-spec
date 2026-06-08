@@ -61285,7 +61285,7 @@ runs:
     completed_at: 2026-06-08T23:12:45.176Z
   - _ulid: 01KTMTNRTC8R0RWDM4TEXZ0G3D
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61310,7 +61310,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-08T23:57:45.999Z
-        completed_at: 2026-06-08T23:57:45.999Z
+        completed_at: 2026-06-08T23:58:30.594Z
+        notes: "Coverage search: review evidence/check friction is already tracked by observations including
+          01KR2JD1 (first-class place for review evidence logs), 01KR2YBHW (review evidence/check
+          recording is still manual), 01KMP87Q3 (review CLI bodies are cumbersome), and 01KSS63E
+          (batch-recording review checks helped). Test-runner quiet/progress friction is already
+          tracked by 01KN8VK1 and 01KP6PS1Q, and related work exists/completed as
+          @task-test-runner-progress-output. No untracked friction found that warrants a duplicate
+          inbox item."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-08T23:58:30.594Z
+        completed_at: 2026-06-08T23:58:30.594Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-08T23:56:49.357Z
