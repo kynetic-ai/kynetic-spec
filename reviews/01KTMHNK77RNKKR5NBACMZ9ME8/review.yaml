@@ -191,6 +191,12 @@ events:
     payload:
       thread_ulid: 01KTMJKWY4BCQ3WEAEC1CH1MVA
     timestamp: 2026-06-08T22:06:09.861Z
+  - _ulid: 01KTMMBFPHEPHBF2KVNBZ89G49
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTMJKEZK3XMJNKS73Y9YZY48
+    timestamp: 2026-06-08T22:06:20.881Z
 examined_commit: c495d036a001126656a02a5f08599011cd519b0e
 external_links: []
 lifecycle_state: closed
@@ -247,6 +253,8 @@ threads:
           - Also added a manifest-gate 404 check for an undeclared plan id.
         created_at: 2026-06-08T22:05:52.879Z
     kind: blocker
+    resolved_at: 2026-06-08T22:06:20.639Z
+    resolved_by: "@claude"
   - _ulid: 01KTMJKWY4BCQ3WEAEC1CH1MVA
     anchor:
       type: code
@@ -346,5 +354,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-08T21:36:27.719Z
 created_at: 2026-06-08T21:19:26.439Z
-updated_at: 2026-06-08T22:06:09.627Z
+updated_at: 2026-06-08T22:06:20.639Z
 notes: []
