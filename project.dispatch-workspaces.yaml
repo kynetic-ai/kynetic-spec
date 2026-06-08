@@ -9828,7 +9828,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-08T23:10:50.686Z
+      updated_at: 2026-06-08T23:13:06.798Z
     integration:
       status: merged
       detail: integration:merged
@@ -9845,18 +9845,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-08T22:56:58.443Z
-      last_reconciled_at: 2026-06-08T23:13:01.119Z
+      last_reconciled_at: 2026-06-08T23:13:06.798Z
       created_at: 2026-06-08T22:28:16.863Z
-      updated_at: 2026-06-08T23:13:01.119Z
+      updated_at: 2026-06-08T23:13:06.798Z
     workspace_id: dispatch-workspace-01KTD8S1E9V5A1F7Z2A8WBS1GC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: ac29726023604a9fbb392e26d379936ccd6a0c7a
-        last_seen_at: 2026-06-08T22:56:24.844Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/expose-task-resolved-resources-api-01ktd8s1-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/expose-task-resolved-resources-api/01ktd8s1
