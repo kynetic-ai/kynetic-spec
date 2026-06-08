@@ -1,0 +1,26 @@
+_ulid: 01KTMHNK77RNKKR5NBACMZ9ME8
+slugs: []
+title: Review add resource URL and task markdown contract tests
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTMHNK769Q6N288E2M6H2HN9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-08T21:19:26.438Z
+examined_commit: c495d036a001126656a02a5f08599011cd519b0e
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTD8S0X16VGB70KKE47SN47Q"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-08T21:19:26.439Z
+updated_at: null
+notes: []
