@@ -61284,7 +61284,7 @@ runs:
     started_at: 2026-06-08T23:11:03.439Z
     completed_at: 2026-06-08T23:12:45.176Z
   - _ulid: 01KTMTNRTC8R0RWDM4TEXZ0G3D
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -61331,10 +61331,14 @@ runs:
         completed_at: 2026-06-08T23:58:52.858Z
         notes: "Skipped discussion: no untracked improvement proposals emerged after the coverage search, so
           there is nothing new to ask the user to approve."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-08T23:58:52.858Z
-        completed_at: 2026-06-08T23:58:52.858Z
+        completed_at: 2026-06-08T23:59:01.462Z
+        notes: "Skipped capture: no new approved items. Existing tracking already covers the two friction
+          points observed in this session, and success patterns around detached review/merge are
+          also already represented in prior observations."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-08T23:56:49.357Z
+    completed_at: 2026-06-08T23:59:01.462Z
