@@ -1944,6 +1944,9 @@ features:
           Task detail APIs expose a bounded resolved-resource projection and task-scoped bytes
           routes for the task's versioned `resource_refs` without embedding resource bytes in task
           indexes.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
