@@ -2,7 +2,102 @@ _ulid: 01KTMSTHWMWCEZPY2QX8A7GC7H
 slugs: []
 title: Review add task resource bytes routes
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files formatted correctly; 986 files checked.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-08T23:54:45.166Z
+    completed_at: 2026-06-08T23:54:45.166Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint completed with 0 errors and the existing warning baseline (738 warnings).
+      Focused changed-file lint also passed with 0 warnings and 0 errors on
+      packages/daemon/src/routes/task-resources.ts, packages/daemon/src/server.ts,
+      tests/daemon-api/helpers.ts, tests/daemon-api/task-resources.test.ts.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-08T23:54:47.785Z
+    completed_at: 2026-06-08T23:54:47.785Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings and 0 errors on the 4 changed TypeScript/test files.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed-ts-or-test-files>
+    created_at: 2026-06-08T23:54:50.365Z
+    completed_at: 2026-06-08T23:54:50.365Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-08T23:54:53.774Z
+    completed_at: 2026-06-08T23:54:53.774Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh passed: 2713/2713 suites, 10343/10348 tests passed, 5 skipped. Full
+      log: /tmp/kspec-test-cache/01KTMSS62X56NDE242P1Q73P50/07872e7f31a2ea41.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-08T23:54:56.420Z
+    completed_at: 2026-06-08T23:54:56.420Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused route tests passed: 13/13 tests. Full log:
+      /tmp/kspec-test-cache/01KTMSS62X56NDE242P1Q73P50/5c47910e03da4433.log"
+    name: focused daemon task resources tests
+    required: true
+    runner: npm test -- --fresh tests/daemon-api/task-resources.test.ts
+    created_at: 2026-06-08T23:54:58.967Z
+    completed_at: 2026-06-08T23:54:58.967Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with existing reference warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-08T23:55:01.317Z
+    completed_at: 2026-06-08T23:55:01.317Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with existing alignment warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-08T23:55:03.723Z
+    completed_at: 2026-06-08T23:55:03.723Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with existing completeness warnings.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-08T23:55:06.185Z
+    completed_at: 2026-06-08T23:55:06.185Z
 events:
   - _ulid: 01KTMSTHWK15KMQK38G8FP32Z2
     actor: Jacob Chapel
@@ -17,6 +112,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-08T23:42:23.523Z
+  - _ulid: 01KTMTHZR3GFH075QRZRPKAVAR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-08T23:54:45.380Z
+  - _ulid: 01KTMTJ29S95BBW6ZB9RTE2SPN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-08T23:54:47.993Z
+  - _ulid: 01KTMTJ4T3CAMDNHWCN8MQ8HA5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-08T23:54:50.563Z
+  - _ulid: 01KTMTJ864HXQ1BRGA310RYZ1E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-08T23:54:54.020Z
+  - _ulid: 01KTMTJAQHWBBBS62G69ZKZRC7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-08T23:54:56.625Z
+  - _ulid: 01KTMTJD7MK342NP9PSJTATCTF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon task resources tests
+    timestamp: 2026-06-08T23:54:59.189Z
+  - _ulid: 01KTMTJFGVS9WRXNCYQFFPXPE0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-08T23:55:01.531Z
+  - _ulid: 01KTMTJHW64XVERBNW8WGY99HE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-08T23:55:03.942Z
+  - _ulid: 01KTMTJM8KA7ADRFT4X9N3M8FF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-08T23:55:06.387Z
+  - _ulid: 01KTMTJPKTXP9A0KMRNPHC4V4F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTMTJPDC47QK44YB3NGGFDDG
+    timestamp: 2026-06-08T23:55:08.794Z
 examined_commit: d81a89d9caae8ad4196b0da252ff2e2d9c105306
 external_links: []
 lifecycle_state: open
@@ -26,8 +191,33 @@ subject:
   content_hash: ""
   ref: "@01KTD8S1T8W8TDX09S3RFYYWX3"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTMTJPDC47QK44YB3NGGFDDG
+    entries:
+      - _ulid: 01KTMTJPDCQGT7KJ438X9269CE
+        author: Jacob Chapel
+        body: "Review evidence log (non-finding): Files read: kspec-agents.md;
+          packages/daemon/src/routes/task-resources.ts; packages/daemon/src/server.ts;
+          tests/daemon-api/helpers.ts; tests/daemon-api/task-resources.test.ts;
+          packages/daemon/src/routes/plan-resources.ts;
+          packages/daemon/src/routes/review-resources.ts; packages/daemon/src/routes/tasks.ts;
+          src/parser/task-resource-resolver.ts; src/schema/resources.ts;
+          packages/web-ui/src/lib/utils/task-resource-links.ts;
+          tests/web-ui/task-resource-links.test.ts; tests/daemon-api/review-resources.test.ts.
+          Commands run: kspec task get; kspec item get for @task-resource-resolution-api-contract
+          and @live-task-resource-markdown-rendering; git diff/stat/name-only/diff
+          --check/status/log; rg AC/source-scan checks; npm run format:check; npm run lint --
+          --quiet; npx oxlint changed files; npm run typecheck; npm test -- --fresh
+          tests/daemon-api/task-resources.test.ts; npm test -- --fresh; kspec validate
+          refs/alignment/completeness. Claims verified: present plan-owned bytes and task-owned copy
+          bytes are served only after resolver status present, with content headers from current
+          manifest; drift/missing/unresolved paths return structured non-2xx responses and no
+          resource hash header; selected-project browser routing works through kspec_dir. Categories
+          searched: correctness, edge cases, error handling, security/path traversal, test quality,
+          integration. No blocking findings."
+        created_at: 2026-06-08T23:55:08.588Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-08T23:41:57.524Z
-updated_at: 2026-06-08T23:42:23.307Z
+updated_at: 2026-06-08T23:55:08.588Z
 notes: []
