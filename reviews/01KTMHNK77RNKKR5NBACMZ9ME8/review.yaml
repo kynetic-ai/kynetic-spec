@@ -185,6 +185,12 @@ events:
     payload:
       thread_ulid: 01KTMJKEZK3XMJNKS73Y9YZY48
     timestamp: 2026-06-08T22:05:53.113Z
+  - _ulid: 01KTMMB4Y5WNEBAPNEBS2PSCWK
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTMJKWY4BCQ3WEAEC1CH1MVA
+    timestamp: 2026-06-08T22:06:09.861Z
 examined_commit: c495d036a001126656a02a5f08599011cd519b0e
 external_links: []
 lifecycle_state: closed
@@ -264,6 +270,37 @@ threads:
           string-only rewrite even if the daemon cannot serve the bytes or serves the wrong owner's
           content."
         created_at: 2026-06-08T21:35:59.429Z
+      - _ulid: 01KTMMB4PV19Q68MFS4E2EP73C
+        author: "@claude"
+        body: >-
+          Fixed. The task markdown ACs now assert HTTP outcomes and the owner projection, not just a
+          URL string. In tests/daemon-api/resource-url-browser-fetch-contract.test.ts the
+          rewriteTaskResourceLinks output is fetched against the future task bytes route. Because
+          that route lands in a later task, it is a faithful stand-in mounted on the REAL
+          projectContextMiddleware — only the byte-serving handler is simulated (reads the
+          per-project resolved-resource file); the project routing under contract (header wins, else
+          kspec_dir query, else default) is production middleware.
+
+
+          - ac-plan-owned-task-image-renders / ac-plan-owned-task-doc-link-opens: it.fails —
+          fetching the rewritten URL without X-Kspec-Dir returns project B's plan-owned bytes (not
+          A's).
+
+          - ac-materialized-task-image-renders / ac-materialized-task-doc-link-opens: it.fails —
+          owner projection asserted: the URL serves project B's task-owned COPY bytes, explicitly
+          NOT the plan-owned bytes and NOT project A's copy.
+
+          - ac-unmatched-task-resource-reference-stays-raw: normal it — the raw ./resources ref is
+          not a fetchable daemon URL (status 0), so no bytes are served.
+
+          - Positive control: a kspec_dir-scoped task bytes URL returns project B's bytes, proving
+          the it.fails fail only because the stub does not yet PRODUCE that URL.
+
+
+          Today the stub returns markdown unchanged, so the produced target is the un-fetchable
+          ./resources ref and the selected-project byte assertion fails as expected; flips green
+          when the sibling rewrite lands.
+        created_at: 2026-06-08T22:06:09.627Z
     kind: blocker
   - _ulid: 01KTMJME5P7VEJJRS9Q86MEA0M
     entries:
@@ -309,5 +346,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-08T21:36:27.719Z
 created_at: 2026-06-08T21:19:26.439Z
-updated_at: 2026-06-08T22:05:52.879Z
+updated_at: 2026-06-08T22:06:09.627Z
 notes: []
