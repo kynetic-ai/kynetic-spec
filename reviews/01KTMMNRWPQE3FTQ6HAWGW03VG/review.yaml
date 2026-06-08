@@ -2,7 +2,84 @@ _ulid: 01KTMMNRWPQE3FTQ6HAWGW03VG
 slugs: []
 title: Review add resource URL and task markdown contract tests (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; oxfmt checked 983 files.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-08T22:25:49.505Z
+    completed_at: 2026-06-08T22:25:49.505Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo lint: 0 errors, 738 existing warnings. Focused changed-file lint with npx oxlint on
+      the 4 changed TS/test files: 0 warnings, 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-08T22:25:51.946Z
+    completed_at: 2026-06-08T22:25:51.946Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit exited 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-08T22:25:54.526Z
+    completed_at: 2026-06-08T22:25:54.526Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Test Suites: 2705 passed of 2705. Tests: 10323 passed, 5 skipped of 10328. Full log:
+      /tmp/kspec-test-cache/01KTMMKCYBF73VEQ7ED2WQZN0B/dcae0b41b50e7b45.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-08T22:25:57.035Z
+    completed_at: 2026-06-08T22:25:57.035Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed. Reference warnings are the existing
+      deprecated-ref baseline, unrelated to this diff.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-08T22:26:00.410Z
+    completed_at: 2026-06-08T22:26:00.410Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed. Alignment warnings are existing
+      orphan/status baseline, unrelated to this diff.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-08T22:26:02.791Z
+    completed_at: 2026-06-08T22:26:02.791Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed. Existing warnings include
+      @live-task-resource-markdown-rendering ac-drifted-task-resource-is-visible-not-silent, which
+      is explicitly covered by sibling task @generalize-live-ui-resource-markdown-rewriting, not
+      this contract-test task's Covers list.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-08T22:26:05.172Z
+    completed_at: 2026-06-08T22:26:05.172Z
 events:
   - _ulid: 01KTMMNRWPHQM179BQE44BXANE
     actor: Jacob Chapel
@@ -17,17 +94,134 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-08T22:12:15.001Z
+  - _ulid: 01KTMNF54DKFA7TG9KN9RKVKC5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-08T22:25:49.709Z
+  - _ulid: 01KTMNF7J72T35Q67E228FVYH2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-08T22:25:52.199Z
+  - _ulid: 01KTMNFA20SJ1GPWBYVE9VTKHM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-08T22:25:54.752Z
+  - _ulid: 01KTMNFCFMVSNM6FGKBQYR7YFP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-08T22:25:57.236Z
+  - _ulid: 01KTMNFFS5D5MJ97MQS8EFVYZQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-08T22:26:00.613Z
+  - _ulid: 01KTMNFJ3XV83GRFQ4CBG2YTRW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-08T22:26:03.005Z
+  - _ulid: 01KTMNFME5ABF5DK509FP61Q33
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-08T22:26:05.381Z
+  - _ulid: 01KTMNFPTMM9VRB5KCJV9XCKPH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTMNFPKN3JT13XP0AEXT0QBP
+    timestamp: 2026-06-08T22:26:07.828Z
+  - _ulid: 01KTMNFS59T44PSKGDJJ0RFGRG
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-08T22:26:10.217Z
+  - _ulid: 01KTMNFS59VSW7QJKWCWJ410XJ
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-08T22:26:10.217Z
 examined_commit: e939e6ac02882cfdaa189466ba105d5a48b310ab
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KTD8S0X16VGB70KKE47SN47Q"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTMNFPKN3JT13XP0AEXT0QBP
+    entries:
+      - _ulid: 01KTMNFPKNQB5BQQDV8PXHTT2N
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; packages/web-ui/src/lib/utils/task-resource-links.ts;
+          tests/web-ui/task-resource-links.test.ts;
+          tests/web-ui/resource-url-project-context.test.ts;
+          tests/daemon-api/resource-url-browser-fetch-contract.test.ts;
+          packages/web-ui/src/lib/utils/plan-resource-links.ts;
+          packages/web-ui/src/lib/utils/plan-embedded-content.ts; packages/web-ui/src/lib/api.ts
+          reviewResourceBytesUrl; packages/web-ui/src/lib/components/board/TaskDetailContent.svelte;
+          tests/daemon-api/helpers.ts; packages/daemon/src/middleware/project-context.ts;
+          packages/daemon/src/routes/plan-resources.ts;
+          packages/daemon/src/routes/review-resources.ts.
+
+          Commands run: git diff/stat/name-status/log; kspec task get; kspec item get for
+          @live-task-resource-markdown-rendering, @live-plan-resource-url-project-context,
+          @live-review-resource-url-project-context; kspec review get prior review; rg AC
+          annotations and source-scanning patterns; kspec validate refs/alignment/completeness; npm
+          run format:check; npx oxlint changed files; npm test focused contract files; npm run lint
+          -- --quiet; npm run typecheck; npm test.
+
+          Claims verified: prior blockers required HTTP outcome coverage, and
+          tests/daemon-api/resource-url-browser-fetch-contract.test.ts now fetches URLs generated by
+          the real web-ui builders/rewriters against multi-project daemon routing without
+          X-Kspec-Dir, with distinct default-vs-selected bytes. ReviewResourceBytesUrl remains the
+          passing comparator; plan/task rewrite contracts intentionally remain it.fails until the
+          sibling implementation task.
+
+          Categories searched: correctness, AC alignment, edge cases for selected vs default project
+          and unmatched/drift resources, error handling for undeclared plan resource id,
+          security/path escape in simulated task route, test quality/source-scanning, and
+          integration with existing plan/review resource routes. No blockers found.
+        created_at: 2026-06-08T22:26:07.605Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-08T22:26:10.217Z
 created_at: 2026-06-08T22:11:57.974Z
-updated_at: 2026-06-08T22:12:14.716Z
+updated_at: 2026-06-08T22:26:10.217Z
 notes: []
