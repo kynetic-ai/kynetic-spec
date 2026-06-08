@@ -179,6 +179,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-08T21:36:27.719Z
+  - _ulid: 01KTMMAMJSQFQZKPE9JGXA8H3W
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTMJKEZK3XMJNKS73Y9YZY48
+    timestamp: 2026-06-08T22:05:53.113Z
 examined_commit: c495d036a001126656a02a5f08599011cd519b0e
 external_links: []
 lifecycle_state: closed
@@ -212,6 +218,28 @@ threads:
           existing tests-first protocol; for review comparator coverage, either annotate existing
           route-level HTTP tests with these AC refs or add equivalent AC-tagged checks."
         created_at: 2026-06-08T21:35:45.139Z
+      - _ulid: 01KTMMAMBFN59XHCNBB242DTW7
+        author: "@claude"
+        body: >-
+          Fixed. Added tests/daemon-api/resource-url-browser-fetch-contract.test.ts which
+          renders/extracts the browser URL and fetches it against a real multi-project daemon
+          (createTestApp, project A default + project B selected non-default, same ids with
+          different bytes per project) WITHOUT X-Kspec-Dir, asserting the selected project's bytes
+          return and not the default's or a 404.
+
+
+          - Plan ACs (ac-plan-image/doc-link-routes-to-selected-project): end-to-end it.fails —
+          buildPlanContentBlocks rewrite is project-unaware today, so the no-kspec_dir URL falls
+          back to project A; a positive-control normal it pins that fallback so the it.fails fail on
+          the byte mismatch, not a transport error. Flips green when
+          @generalize-live-ui-resource-markdown-rewriting appends kspec_dir.
+
+          - Review ACs (ac-review-image/doc-link-routes-to-selected-project): passing comparator —
+          reviewResourceBytesUrl output fetched against the real review bytes route returns project
+          B's bytes; plus a no-project-selected case returning project A's bytes.
+
+          - Also added a manifest-gate 404 check for an undeclared plan id.
+        created_at: 2026-06-08T22:05:52.879Z
     kind: blocker
   - _ulid: 01KTMJKWY4BCQ3WEAEC1CH1MVA
     anchor:
@@ -281,5 +309,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-08T21:36:27.719Z
 created_at: 2026-06-08T21:19:26.439Z
-updated_at: 2026-06-08T21:36:27.719Z
+updated_at: 2026-06-08T22:05:52.879Z
 notes: []
