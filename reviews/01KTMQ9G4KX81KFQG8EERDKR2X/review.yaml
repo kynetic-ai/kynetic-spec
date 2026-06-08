@@ -23,6 +23,17 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-08T23:01:15.488Z
     completed_at: 2026-06-08T23:01:15.488Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors. 3 no-shadow warnings in packages/daemon/src/routes/tasks.ts are pre-existing
+      unchanged lines outside the diff.
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-08T23:01:20.901Z
+    completed_at: 2026-06-08T23:01:20.901Z
 events:
   - _ulid: 01KTMQ9G4KNANRDF5K4ARNFZJP
     actor: Jacob Chapel
@@ -51,6 +62,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-08T23:01:15.744Z
+  - _ulid: 01KTMQG6KN91HQ6X98E7Z9WF24
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-08T23:01:21.141Z
 examined_commit: ac29726023604a9fbb392e26d379936ccd6a0c7a
 external_links: []
 lifecycle_state: open
@@ -63,5 +81,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-08T22:57:41.523Z
-updated_at: 2026-06-08T23:01:15.488Z
+updated_at: 2026-06-08T23:01:20.901Z
 notes: []
