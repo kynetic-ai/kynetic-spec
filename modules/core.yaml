@@ -3171,7 +3171,7 @@ modules:
               and static export behavior for local resources.
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
             depends_on: []
             implements: []
             relates_to: []
