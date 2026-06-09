@@ -61575,7 +61575,7 @@ runs:
     started_at: 2026-06-09T01:34:03.052Z
     completed_at: 2026-06-09T01:36:42.395Z
   - _ulid: 01KTN24C30TS7MP6XG6N8J4PFM
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -61622,10 +61622,13 @@ runs:
         completed_at: 2026-06-09T02:08:41.954Z
         notes: "No discussion needed: no new improvements were proposed after search showed existing
           tracking coverage."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-09T02:08:41.954Z
-        completed_at: 2026-06-09T02:08:41.954Z
+        completed_at: 2026-06-09T02:08:50.600Z
+        notes: "No new captures. Existing open tracking covers the observed friction: @01KR2YBHW, @01KR2JD1,
+          @01KQ1272, and @01KPQMXZ9."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-09T02:07:07.872Z
+    completed_at: 2026-06-09T02:08:50.600Z
