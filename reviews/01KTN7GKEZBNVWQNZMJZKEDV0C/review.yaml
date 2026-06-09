@@ -2,7 +2,84 @@ _ulid: 01KTN7GKEZBNVWQNZMJZKEDV0C
 slugs: []
 title: Review update-resource-documentation-ui-task-markdown cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 989 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-09T03:53:37.343Z
+    completed_at: 2026-06-09T03:53:37.343Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint reported 0 errors with existing warning baseline (738 warnings);
+      focused changed-file lint on tests/resource-ui-task-markdown-docs.test.ts reported 0 warnings
+      and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-09T03:53:39.808Z
+    completed_at: 2026-06-09T03:53:39.808Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit completed with exit 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-09T03:53:42.254Z
+    completed_at: 2026-06-09T03:53:42.254Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2721 suites passed; 10363 tests passed, 5 skipped. Full log:
+      /tmp/kspec-test-cache/01KTN7EMYQV43MXQXRVMSH50VD/421cdb25018c4515.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-09T03:53:44.669Z
+    completed_at: 2026-06-09T03:53:44.669Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok exited 0; schema and references OK; existing
+      deprecated-reference warning baseline remains."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-09T03:53:47.117Z
+    completed_at: 2026-06-09T03:53:47.117Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0; existing alignment warning
+      baseline remains."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-09T03:53:49.743Z
+    completed_at: 2026-06-09T03:53:49.743Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0; AC annotations for
+      @resource-docs-ui-task-markdown-behavior are present in docs and tests; existing completeness
+      warning baseline remains."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-09T03:53:52.223Z
+    completed_at: 2026-06-09T03:53:52.223Z
 events:
   - _ulid: 01KTN7GKEZZZJCE69ZD4FJTHEF
     actor: Jacob Chapel
@@ -17,17 +94,121 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-09T03:41:48.401Z
+  - _ulid: 01KTN87C0K8AYE4D7EGSXC33SF
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-09T03:53:37.555Z
+  - _ulid: 01KTN87EDCHE8AHHZBRE0K11K8
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-09T03:53:40.012Z
+  - _ulid: 01KTN87GVRV86FHS1V8NWTNFXC
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-09T03:53:42.520Z
+  - _ulid: 01KTN87K5E39J4CB5JP8TE2CRN
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-09T03:53:44.878Z
+  - _ulid: 01KTN87NK88W8BERQ67ZGJAQMK
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-09T03:53:47.368Z
+  - _ulid: 01KTN87R41AKB5BAWWZD941BMV
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-09T03:53:49.953Z
+  - _ulid: 01KTN87TJN1SGZAYCKE7NJEG9R
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-09T03:53:52.469Z
+  - _ulid: 01KTN87X20VRKK4FMWKQ1PTERE
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTN87WTK3Y74Y35DX9JFNAFD
+    timestamp: 2026-06-09T03:53:55.008Z
+  - _ulid: 01KTN87ZP8GW4R74NEG8EBQWJS
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-09T03:53:57.704Z
+  - _ulid: 01KTN87ZP8A10EFDBZDR88MJCQ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-09T03:53:57.704Z
 examined_commit: da41c1d7c9f8e4b80f55112020412a53a85d0bfc
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KTD8S2Y2DNM0S39E8T7EY64E"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTN87WTK3Y74Y35DX9JFNAFD
+    entries:
+      - _ulid: 01KTN87WTKSH0TFGYG85AFY5SK
+        author: codex
+        body: "Evidence log: Files read: kspec-agents.md, task/spec details, prior review JSON,
+          RELEASE_NOTES.md, docs/concepts/local-resources.md,
+          docs/guides/working-with-local-resources.md, tests/resource-ui-task-markdown-docs.test.ts,
+          src/cli/commands/export.ts, packages/daemon/src/middleware/project-context.ts,
+          packages/daemon/src/routes/task-resources.ts, and rg/nl excerpts for related task
+          resource/export surfaces. Commands run: git status/diff/log/show, kspec task get, kspec
+          item get, kspec review for-task/add/open/get, kspec export --help, rg AC
+          annotation/resource route searches, npm run format:check, npm run lint -- --quiet, npx
+          oxlint tests/resource-ui-task-markdown-docs.test.ts, npm run typecheck, npm test, kspec
+          validate --refs/--alignment/--completeness --warnings-ok, git diff --check. Claims
+          verified: fix-cycle markdown fence now nests correctly; export walkthrough uses supported
+          --output file form and aligns with assetsOutputDir=dirname(output); task markdown docs
+          cover plan-owned and task-owned copies, drift status semantics, browser kspec_dir context,
+          temp-project E2E steps, and release notes avoid unsupported task upload commands.
+          Categories searched: correctness, edge cases in documented drift/missing/unresolved
+          behavior, error handling/status surfacing, test quality/AC annotations, export/API
+          integration, and shared-guidance neutrality. Shared-guidance neutrality: not applicable
+          because changed surfaces are project docs, release notes, and tests, not package-shipped
+          guidance surfaces."
+        created_at: 2026-06-09T03:53:54.771Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-09T03:53:57.704Z
 created_at: 2026-06-09T03:41:11.519Z
-updated_at: 2026-06-09T03:41:48.139Z
+updated_at: 2026-06-09T03:53:57.704Z
 notes: []
