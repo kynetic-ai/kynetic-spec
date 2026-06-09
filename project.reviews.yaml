@@ -24367,7 +24367,7 @@ reviews:
     title: Review stabilize flaky dispatch runner preflight session id test
     disposition: pending
     author: Jacob Chapel
-    check_count: 5
+    check_count: 6
     examined_commit: 934fa83182e267be81514ce9b5c528739257f5f0
     lifecycle_state: open
     related_refs: []
@@ -24380,4 +24380,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-09T01:52:20.771Z
-    updated_at: 2026-06-09T02:04:44.912Z
+    updated_at: 2026-06-09T02:04:56.947Z
