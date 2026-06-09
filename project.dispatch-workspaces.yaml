@@ -11873,7 +11873,7 @@ workspaces:
         head: 5caeb34053ad3e4b574546cc096505f0f07f5829
         last_seen_at: 2026-06-09T02:21:28.091Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/make-static-export-copy-rewrite-all-resource-assets-01ktd8s2
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 6c5ddaf32e3f8f8376e779d47135aabaab1a1af0
     bootstrap:
       status: succeeded
@@ -12346,7 +12346,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-09T03:01:54.049Z
+      updated_at: 2026-06-09T03:02:21.922Z
     integration:
       status: pending
       detail: null
@@ -12362,10 +12362,10 @@ workspaces:
     task_slug: update-resource-documentation-ui-task-markdown
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-09T02:37:45.225Z
-      last_reconciled_at: 2026-06-09T03:01:51.590Z
+      last_active_at: 2026-06-09T03:02:21.922Z
+      last_reconciled_at: 2026-06-09T03:02:21.922Z
       created_at: 2026-06-09T02:37:17.335Z
-      updated_at: 2026-06-09T03:02:15.697Z
+      updated_at: 2026-06-09T03:02:21.922Z
     workspace_id: dispatch-workspace-01KTD8S2Y2DNM0S39E8T7EY64E
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
