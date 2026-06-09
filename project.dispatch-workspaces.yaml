@@ -12379,7 +12379,7 @@ workspaces:
         head: da41c1d7c9f8e4b80f55112020412a53a85d0bfc
         last_seen_at: 2026-06-09T03:39:41.829Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/update-resource-documentation-ui-task-markdown-01ktd8s2
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 14953f00e6593138b6bb0c5d2427fca2ed96a6d0
     bootstrap:
       status: succeeded
@@ -12849,7 +12849,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-09T18:51:30.214Z
+      updated_at: 2026-06-09T18:52:00.327Z
     integration:
       status: pending
       detail: null
@@ -12865,10 +12865,10 @@ workspaces:
     task_slug: validate-resource-lifecycle-e2e-temp-projects
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-09T18:15:45.619Z
-      last_reconciled_at: 2026-06-09T18:51:30.214Z
+      last_active_at: 2026-06-09T18:52:00.327Z
+      last_reconciled_at: 2026-06-09T18:52:00.327Z
       created_at: 2026-06-09T03:55:13.702Z
-      updated_at: 2026-06-09T18:51:54.248Z
+      updated_at: 2026-06-09T18:52:00.327Z
     workspace_id: dispatch-workspace-01KTD8S38XX475Y4K1XPX6B7PS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
