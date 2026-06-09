@@ -162,6 +162,13 @@ events:
     payload:
       thread_ulid: 01KTN64WFVRFVBT1APBD4EN4JH
     timestamp: 2026-06-09T03:18:27.556Z
+  - _ulid: 01KTN67EKVHATFCQ7G0RG858PZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTN67EDAXBM2MHHHS2996YA7
+    timestamp: 2026-06-09T03:18:43.067Z
 examined_commit: 09ede8f5093d2af6f17ba33af2635cfca3f3f794
 external_links: []
 lifecycle_state: open
@@ -234,7 +241,28 @@ threads:
           kspec export --out string."
         created_at: 2026-06-09T03:18:27.336Z
     kind: blocker
+  - _ulid: 01KTN67EDAXBM2MHHHS2996YA7
+    entries:
+      - _ulid: 01KTN67EDACTFRZGA7WM1GVVNW
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md, task/spec details, RELEASE_NOTES.md,
+          docs/concepts/local-resources.md, docs/guides/working-with-local-resources.md,
+          tests/resource-ui-task-markdown-docs.test.ts, src/cli/commands/export.ts, related
+          export/resource tests and route references. Commands run: git diff/status/log, kspec task
+          get, kspec item get, kspec review for-task/add/open/get, kspec export --help, kspec export
+          --out /tmp/kspec-review-export-check, npm run format:check, npm run lint -- --quiet, npx
+          oxlint tests/resource-ui-task-markdown-docs.test.ts, npm run typecheck, npm test, kspec
+          validate --refs/--alignment/--completeness --warnings-ok, git diff --check, rg/nl/sed
+          searches. Claims verified: worker claim that release notes avoid task upload commands;
+          docs cover plan-owned and materialized task-owned resource resolution; browser kspec_dir
+          context documented; tests added with AC annotations; full suite passes. Categories
+          searched: correctness of docs commands, Markdown rendering, AC coverage/test quality,
+          route/API alignment, export integration, shared-guidance neutrality applicability. Shared
+          guidance neutrality: not applicable; changed files are docs/release notes/tests, not
+          package-shipped guidance surfaces."
+        created_at: 2026-06-09T03:18:42.858Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-09T03:03:10.257Z
-updated_at: 2026-06-09T03:18:27.336Z
+updated_at: 2026-06-09T03:18:42.858Z
 notes: []
