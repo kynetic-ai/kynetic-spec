@@ -21092,6 +21092,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-09T00:34:59.344Z
+  - _ulid: 01KTMZ7F5MXVVC33H8VYSM3DME
+    type: friction
+    content: "A transformer's negative-path 'leaves it raw' unit test does NOT satisfy an AC whose Then
+      clause requires the consuming UI to surface that raw value VISIBLY with actionable guidance.
+      Concrete review kickback this session: @live-task-resource-markdown-rendering
+      ac-unmatched-task-resource-reference-stays-raw passed every rewriteTaskResourceLinks unit test
+      (unmatched ./resources/<path> stays raw in the markdown), yet the reviewer rejected it because
+      the live task modal (TaskDetailContent.svelte) derived its 'Resources needing attention'
+      guidance only from resolved_resources filtered to non-present statuses. An UNMATCHED reference
+      has NO resolved_resources entry at all, so it produced zero guidance and rendered only as a
+      broken <img src=./resources/...> whose path the reader never sees — 'raw in markdown' is not
+      the same as 'visible to the user'. Related to 01KTMMHH (AC coverage at wrong abstraction
+      layer) but a distinct failure mode: rewriter-passthrough vs UI-rendered visibility.
+      Mitigation: when an AC's Then clause says a reference 'remains visible' or 'shows guidance',
+      cover the UI's guidance computation directly, not just the transformer's raw-passthrough; and
+      remember unmatched (no resolved entry) is a separate bucket from drift/missing/unresolved
+      (which DO have entries)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-09T01:16:23.604Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
