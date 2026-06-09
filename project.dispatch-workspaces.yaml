@@ -11192,12 +11192,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-09T01:50:53.505Z
+      updated_at: 2026-06-09T01:51:09.274Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-09T01:50:53.505Z
+      updated_at: 2026-06-09T01:51:09.274Z
     integration:
       status: pending
       detail: null
@@ -11205,8 +11205,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 27fe4f1938d81f27125c9da22b20827e496852f8
-      updated_at: 2026-06-09T01:50:53.505Z
-    lifecycle_state: ready
+      updated_at: 2026-06-09T01:51:09.274Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTN02TDJH33FM85CD6E1215H
     task_ref: "@01KTN02TDJH33FM85CD6E1215H"
@@ -11214,16 +11214,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-09T01:32:54.726Z
-      last_reconciled_at: 2026-06-09T01:50:53.505Z
+      last_reconciled_at: 2026-06-09T01:51:09.274Z
       created_at: 2026-06-09T01:32:25.941Z
-      updated_at: 2026-06-09T01:50:53.505Z
+      updated_at: 2026-06-09T01:51:09.274Z
     workspace_id: dispatch-workspace-01KTN02TDJH33FM85CD6E1215H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 934fa83182e267be81514ce9b5c528739257f5f0
+        last_seen_at: 2026-06-09T01:51:09.274Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-dispatch-runner-preflight-session-id-test-01ktn02t-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-dispatch-runner-preflight-session-id-test/01ktn02t
-        head: 27fe4f1938d81f27125c9da22b20827e496852f8
-        last_seen_at: 2026-06-09T01:32:25.941Z
+        head: 934fa83182e267be81514ce9b5c528739257f5f0
+        last_seen_at: 2026-06-09T01:51:09.274Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-dispatch-runner-preflight-session-id-test-01ktn02t
