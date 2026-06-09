@@ -61576,7 +61576,7 @@ runs:
     completed_at: 2026-06-09T01:36:42.395Z
   - _ulid: 01KTN24C30TS7MP6XG6N8J4PFM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61592,7 +61592,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-09T02:07:33.274Z
-        completed_at: 2026-06-09T02:07:33.274Z
+        completed_at: 2026-06-09T02:07:44.126Z
+        notes: "Friction points: after all gates passed, recording seven required review checks plus an
+          evidence-log thread required many serialized kspec write commands. Serialization is
+          correct for shadow safety, but the workflow would be less error-prone with a
+          batch-friendly or first-class review evidence command for standard gate sets. The full npm
+          test gate also took 2278.8s, which is expected for release-quality review but makes late
+          evidence recording more cumbersome."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-09T02:07:44.126Z
+        completed_at: 2026-06-09T02:07:44.126Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-09T02:07:07.872Z
