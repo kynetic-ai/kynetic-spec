@@ -1,1 +1,33 @@
-notes: []
+notes:
+  - _ulid: 01KTN434T5PTMXPZPGCMQ62GX5
+    content: >-
+      Approach: Documentation task covering @resource-docs-ui-task-markdown-behavior (4 ACs).
+      Verified implemented behavior against source:
+
+      - Task bytes route: GET /api/tasks/:ref/resources/:resourceId(/bytes); resources_base_url =
+      /api/tasks/<ulid>/resources; bytes URL = <base>/<id>/bytes.
+
+      - Task detail exposes resolved_resources (owner_type, owner_ref, id, path, content_type,
+      byte_size, status, recorded/current sha256, recorded/current git_commit, message) with status
+      enum present|drift|missing|unresolved.
+
+      - Browser project context: element fetches cannot send X-Kspec-Dir header, so rendered
+      <img>/<a> URLs carry ?kspec_dir=<path> query param (daemon project-context middleware reads
+      header OR query).
+
+      - Static export: present task resources copied to
+      assets/resources/task/<task-ulid>/<relative-path> alongside existing plan/review layouts.
+
+      - No task-owned resource upload CLI exists; task-owned copies only come from `kspec plan
+      derive --materialize-resources`. Release notes must not claim upload commands.
+
+
+      Plan: edit docs/concepts/local-resources.md (task markdown resolution, drift, task export
+      path), docs/guides/working-with-local-resources.md (task API routes, browser kspec_dir context
+      note, task export path, exact temp-project e2e steps that keep one daemon running),
+      RELEASE_NOTES.md Unreleased (UI/static fixes). Add behavioral docs test
+      tests/resource-ui-task-markdown-docs.test.ts asserting published-doc surfaces per AC,
+      mirroring tests/folder-backed-resource-docs.test.ts. Annotate ACs in test + markdown.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-09T02:41:24.805Z
