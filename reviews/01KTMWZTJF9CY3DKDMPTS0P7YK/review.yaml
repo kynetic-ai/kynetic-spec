@@ -1,0 +1,26 @@
+_ulid: 01KTMWZTJF9CY3DKDMPTS0P7YK
+slugs: []
+title: Review generalize live UI resource markdown rewriting
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTMWZTJEY8M45SYTAHGP2QE8
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-09T00:37:15.983Z
+examined_commit: 9d81dd03cced10e76daed6ab19337559278782f1
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTD8S26A1PY21C7SYXTNTJ05"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-09T00:37:15.983Z
+updated_at: null
+notes: []
