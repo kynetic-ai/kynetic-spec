@@ -21051,6 +21051,47 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-08T23:40:16.762Z
+  - _ulid: 01KTMWVMV6VYZP4HD9CR6DMNCM
+    type: friction
+    content: "Web-UI unit tests run in the ROOT vitest project (node env), whose vitest.config.ts
+      defines NO $app/$lib aliases. So the moment a shared web-ui util starts importing
+      stores/project.svelte (which transitively imports $app/environment), EVERY test that imports
+      that util chain without mocking the store breaks with ERR_MODULE_NOT_FOUND: $app/environment.
+      This session: generalizing resource-link rewriting added a getSelectedProjectPath() import
+      into the shared core used by both rewritePlanResourceLinks and rewriteTaskResourceLinks; three
+      previously-passing tests imported buildPlanContentBlocks/rewritePlanResourceLinks WITHOUT a
+      store mock. Two were fixed proactively, but the third (tests/plan-embedded-views.test.ts) only
+      surfaced in the full regression run, costing an extra cycle. Mitigation: when a web-ui util
+      newly reaches the project store (or any $lib/$app-dependent module), grep ALL test importers
+      of that util chain and add the project-store vi.mock (mock BOTH the $lib/stores/project.svelte
+      specifier AND the resolved ../packages/web-ui/src/lib/stores/project.svelte specifier, as
+      existing web-ui tests do). Targeted runs of only the touched files miss transitive importers,
+      so a final full/shard pass is required to catch them. A durable fix would be adding an
+      $app/environment and $app/paths stub alias to the root vitest config so this whole failure
+      class disappears."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-09T00:34:59.046Z
+  - _ulid: 01KTMWVN4GCYK3JCNYEQXEAAWN
+    type: friction
+    content: "Completing a FLIPPED-ON-FIX (tests-first) task requires more than converting it.fails to
+      it. The contract suites also contain positive/negative CONTROL tests (normal it) whose
+      assertions encode the PRE-FIX reality. Example: resource-url-browser-fetch-contract.test.ts
+      had a guard named 'today the un-scoped rendered plan image URL falls back to the default
+      project bytes' asserting the URL has NO kspec_dir and returns project A bytes. Once the fix
+      lands, those controls fail because the URL now carries kspec_dir and returns project B bytes.
+      They surfaced only in the full run as ordinary failures (not 'Expect test to fail'), so they
+      are easy to miss if you grep only for it.fails. Mitigation when closing a FLIPPED-ON-FIX task:
+      in each contract file, after flipping it.fails to it, also scan for control/guard tests named
+      'today...' or 'un-scoped' or 'falls back' or asserting the old URL shape, and update their
+      expectations to the post-fix reality. The flip comments often literally say 'this guard
+      project-A expectation is updated alongside flipping the it.fails tests' - treat that as a
+      checklist item."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-09T00:34:59.344Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
