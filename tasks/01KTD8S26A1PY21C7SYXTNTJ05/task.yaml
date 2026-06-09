@@ -57,7 +57,7 @@ tags:
   - resources
   - web-ui
 vcs_refs: []
-review_ref: "@01KTMWZTJF9CY3DKDMPTS0P7YK"
+review_ref: "@01KTMZBFJKJP3FD8BHFAMZ0G5Q"
 submission_linkage:
   review_url: null
   branch: dispatch/task/generalize-live-ui-resource-markdown-rewriting/01ktd8s2
@@ -165,6 +165,13 @@ history:
         previous: 2026-06-09T00:31:57.522Z
     command: task-submit
     timestamp: 2026-06-09T01:13:47.998Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTMZBFJKJP3FD8BHFAMZ0G5Q"
+        previous: "@01KTMWZTJF9CY3DKDMPTS0P7YK"
+    command: review-link
+    timestamp: 2026-06-09T01:18:37.203Z
 created_at: 2026-06-06T01:29:21.866Z
 started_at: 2026-06-09T01:13:44.885Z
 submitted_at: 2026-06-09T01:13:47.998Z

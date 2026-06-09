@@ -24343,3 +24343,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-09T00:37:15.983Z
     updated_at: 2026-06-09T01:13:16.087Z
+  - _ulid: 01KTMZBFJKJP3FD8BHFAMZ0G5Q
+    slugs: []
+    title: Review generalize live UI resource markdown rewriting (cycle 2)
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 06319536c213604187066e4306f631dd6e751bca
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KTD8S26A1PY21C7SYXTNTJ05"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-09T01:18:35.091Z
