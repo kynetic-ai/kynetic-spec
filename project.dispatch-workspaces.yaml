@@ -11340,7 +11340,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-09T02:06:52.944Z
+      updated_at: 2026-06-09T02:09:25.722Z
     integration:
       status: merged
       detail: integration:merged
@@ -11357,18 +11357,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-09T01:51:40.004Z
-      last_reconciled_at: 2026-06-09T02:09:18.023Z
+      last_reconciled_at: 2026-06-09T02:09:25.722Z
       created_at: 2026-06-09T01:32:25.941Z
-      updated_at: 2026-06-09T02:09:18.023Z
+      updated_at: 2026-06-09T02:09:25.722Z
     workspace_id: dispatch-workspace-01KTN02TDJH33FM85CD6E1215H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 934fa83182e267be81514ce9b5c528739257f5f0
-        last_seen_at: 2026-06-09T01:51:09.274Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-dispatch-runner-preflight-session-id-test-01ktn02t-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-dispatch-runner-preflight-session-id-test/01ktn02t
