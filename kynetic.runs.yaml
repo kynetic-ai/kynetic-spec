@@ -61451,7 +61451,7 @@ runs:
     completed_at: 2026-06-09T00:53:33.669Z
   - _ulid: 01KTMZ3TA7VMARW9CJNF4W86A1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -61467,7 +61467,24 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-09T01:15:49.898Z
-        completed_at: 2026-06-09T01:15:49.898Z
+        completed_at: 2026-06-09T01:16:02.292Z
+        notes: "Two high-confidence, systemic items from this fix cycle, both distinct from existing
+          observations: (A) FRICTION — A transformer's negative-path 'leaves it raw' unit test does
+          NOT cover an AC whose Then clause requires the consuming UI to surface that raw value
+          VISIBLY with guidance. Concrete: ac-unmatched-task-resource-reference-stays-raw passed
+          every rewriteTaskResourceLinks unit test, yet review kicked it back because the live modal
+          derived guidance only from resolved_resources filtered to non-present, so an unmatched ref
+          (NO resolved entry at all) produced no guidance and rendered only as an invisible <img
+          src=./resources/...> attribute. Related to 01KTMMHH (wrong-abstraction-layer) but a
+          different failure mode: rewriter-passthrough vs UI-rendered-visibility. (B) SUCCESS — With
+          no Svelte DOM render harness in the unit suite (root node env, no testing-library/svelte),
+          the way to give a UI-guidance AC behavioral coverage is to extract the component's
+          decision logic into a pure exported helper the component consumes via $derived, then
+          unit-test the helper. Mirrors how the rewriter and drift detection are already covered."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-09T01:16:02.292Z
+        completed_at: 2026-06-09T01:16:02.292Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-09T01:14:23.943Z
