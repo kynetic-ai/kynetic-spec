@@ -5534,6 +5534,13 @@ requirements:
               content, adjacent to the referenced section
             when: |
               The content is rendered
+          - given: a plan review subject's plan content contains markdown image and document links using
+              `./resources/<relative-path>` for declared plan resources
+            id: ac-5
+            then: the markdown image and document targets are rewritten through the plan-scoped resource bytes
+              URLs from the review content resource context, the browser fetches the selected
+              project's declared bytes, and undeclared or unsafe paths are not rewritten
+            when: the review detail page renders the plan content section in live multi-project mode
         tags: []
         created: 2026-03-16T08:28:59.038Z
         notes: []
