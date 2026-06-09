@@ -2,7 +2,79 @@ _ulid: 01KTN31H4S561BAEND8HVWMKXD
 slugs: []
 title: Review static export resource assets
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; 988 files checked.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-09T02:35:17.059Z
+    completed_at: 2026-06-09T02:35:17.059Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint reported 0 errors with existing warning baseline; focused oxlint on changed
+      TS/test files reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-09T02:35:19.607Z
+    completed_at: 2026-06-09T02:35:19.607Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit exited 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-09T02:35:22.034Z
+    completed_at: 2026-06-09T02:35:22.034Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2716 test suites passed; 10356 tests passed; 5 skipped; duration 2286.2s. Full log:
+      /tmp/kspec-test-cache/01KTN2ZE3PJ6WH9R85QNR0311A/322ebb1a99dd352e.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-09T02:35:24.391Z
+    completed_at: 2026-06-09T02:35:24.391Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 0. References OK; 6 pre-existing reference warnings allowed by --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-09T02:35:26.879Z
+    completed_at: 2026-06-09T02:35:26.879Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0. Alignment warnings baseline: 46 warnings allowed by --warnings-ok."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-09T02:35:29.216Z
+    completed_at: 2026-06-09T02:35:29.216Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0. Completeness warning baseline: 265 warnings allowed by --warnings-ok."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-09T02:35:31.599Z
+    completed_at: 2026-06-09T02:35:31.599Z
 events:
   - _ulid: 01KTN31H4RJ08W44YV9FJAD8SH
     actor: Jacob Chapel
@@ -17,6 +89,55 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-09T02:23:24.670Z
+  - _ulid: 01KTN3QXWY5QHJQQJJQMW13MM4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-09T02:35:17.278Z
+  - _ulid: 01KTN3R0CB705ZDE2HCXC3D8V6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-09T02:35:19.819Z
+  - _ulid: 01KTN3R2RH8SX4Q7V4KQC94CPN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-09T02:35:22.257Z
+  - _ulid: 01KTN3R523G82PB2YFJN6S1QVS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-09T02:35:24.611Z
+  - _ulid: 01KTN3R7F8EH74NZBHSJY7MY15
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-09T02:35:27.080Z
+  - _ulid: 01KTN3R9QZ5A08FTCB16XR9RZX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-09T02:35:29.407Z
+  - _ulid: 01KTN3RC3T30AZ3BZ5PP6V1W6J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-09T02:35:31.834Z
 examined_commit: 5caeb34053ad3e4b574546cc096505f0f07f5829
 external_links: []
 lifecycle_state: open
@@ -29,5 +150,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-09T02:23:03.321Z
-updated_at: 2026-06-09T02:23:24.428Z
+updated_at: 2026-06-09T02:35:31.599Z
 notes: []

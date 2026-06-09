@@ -24386,7 +24386,7 @@ reviews:
     title: Review static export resource assets
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 7
     examined_commit: 5caeb34053ad3e4b574546cc096505f0f07f5829
     lifecycle_state: open
     related_refs: []
@@ -24399,4 +24399,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-09T02:23:03.321Z
-    updated_at: 2026-06-09T02:23:24.428Z
+    updated_at: 2026-06-09T02:35:31.599Z
