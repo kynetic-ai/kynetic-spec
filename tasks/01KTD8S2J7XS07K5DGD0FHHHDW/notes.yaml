@@ -37,3 +37,42 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-09T01:55:53.632Z
+  - _ulid: 01KTN2W9CY0ER2MY8DFJE7KVSQ
+    content: >-
+      Implemented task resource static export. Plan and review resource copying already worked;
+      verified via existing tests.
+
+
+      Changes:
+
+      - src/export/json.ts: added rewriteTaskContentForStaticExport, exportTaskResources,
+      attachTaskResources, TaskResourceExportError; refactored plan/task markdown rewrite into
+      shared rewriteResourceLinksForStaticExport. Wired async task-resource pass into
+      generateJsonSnapshot.
+
+      - src/export/types.ts: ExportedTaskResource = ProjectedTaskResource & { exported_path? };
+      ExportedTask gains resolved_resources.
+
+      - src/parser/task-resource-resolver.ts: extracted named ProjectedTaskResource type so static
+      export reuses the canonical daemon projection shape (keeps live + static UI consistent; web-ui
+      consumes resolved_resources as ResolvedTaskResourceSummary, a structural subset).
+
+
+      Behavior: present plan-owned/task-owned refs copy bytes to
+      assets/resources/task/<task-ulid>/<path> and rewrite description markdown.
+      Drift/missing/unresolved expose status, keep authoring ref raw, advertise no asset path.
+      present status guarantees current==recorded hash so copied bytes match recorded hash. Symlink
+      escapes -> TaskResourceExportError (export aborts non-zero, no asset written).
+
+
+      Tests: new tests/export/task-resources.test.ts (5 CLI-driven on-disk tests). Extended
+      plan-resources + review-resource-static-export with image/doc on-disk AC tests. All 7
+      @static-export-resource-assets-complete ACs annotated.
+
+
+      Gates: format:check clean, lint 0 errors, typecheck clean, full suite 10354 passed/5 skipped,
+      kspec validate refs/alignment/completeness exit 0 (pre-existing warnings only). No
+      shared/package guidance surfaces or generated artifacts touched.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-09T02:20:11.550Z
