@@ -21146,6 +21146,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-09T01:50:33.175Z
+  - _ulid: 01KTN40BR0D2V7DW7YBZ9M2VRF
+    type: success
+    content: "Static-export resource reviews are much more concrete when AC tests assert the full
+      artifact contract: the snapshot metadata/rewritten markdown points at an exported_path, the
+      file exists under assets/resources/<entity-type>/<ulid>/<relative-path>, and the bytes/hash
+      match the recorded resource. In @01KTD8S2J7XS07K5DGD0FHHHDW this pattern made plan, task,
+      review, drift, missing, and symlink-safety checks reviewable without source-scanning."
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-09T02:39:53.600Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
