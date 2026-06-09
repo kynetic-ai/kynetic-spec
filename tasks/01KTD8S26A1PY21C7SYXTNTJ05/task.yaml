@@ -47,7 +47,7 @@ description: >
 spec_ref: "@live-task-resource-markdown-rendering"
 plan_ref: "@plan-resource-ui-hardening-plan"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@add-task-resource-bytes-routes"
@@ -66,7 +66,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KTMXZMMADSGTY1A3Z6E1N84A
 history:
   - author: Jacob Chapel
     changes:
@@ -125,8 +125,21 @@ history:
         previous: 01KTMTQ6ENRANFFFXPEX2438EP
     command: review-verdict-needs-work
     timestamp: 2026-06-09T00:50:39.179Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KTMXZMMADSGTY1A3Z6E1N84A
+        previous: null
+      started_at:
+        new: 2026-06-09T01:13:44.885Z
+        previous: 2026-06-09T00:01:17.122Z
+    command: task-start
+    timestamp: 2026-06-09T01:13:44.886Z
 created_at: 2026-06-06T01:29:21.866Z
-started_at: 2026-06-09T00:01:17.122Z
+started_at: 2026-06-09T01:13:44.885Z
 submitted_at: 2026-06-09T00:31:57.522Z
 todos: []
 automation: eligible
