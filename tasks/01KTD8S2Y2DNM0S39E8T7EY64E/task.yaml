@@ -39,8 +39,11 @@ description: >
 spec_ref: "@resource-docs-ui-task-markdown-behavior"
 plan_ref: "@plan-resource-ui-hardening-plan"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 14953f00e6593138b6bb0c5d2427fca2ed96a6d0. Updated local resource
+  docs and release notes for task markdown resource resolution, drift status semantics, browser
+  kspec_dir routing, and temp-project verification steps; review gates passed.
 depends_on:
   - "@make-static-export-copy-rewrite-all-resource-assets"
 context: []
@@ -164,8 +167,24 @@ history:
         previous: "@01KTN5AZNH1MRA03FFSX8EVCY2"
     command: review-link
     timestamp: 2026-06-09T03:41:13.807Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 14953f00e6593138b6bb0c5d2427fca2ed96a6d0. Updated local resource docs and
+          release notes for task markdown resource resolution, drift status semantics, browser
+          kspec_dir routing, and temp-project verification steps; review gates passed.
+        previous: null
+      completed_at:
+        new: 2026-06-09T03:54:27.408Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-09T03:54:27.417Z
 created_at: 2026-06-06T01:29:22.626Z
 started_at: 2026-06-09T03:37:29.992Z
 submitted_at: 2026-06-09T03:37:33.561Z
+completed_at: 2026-06-09T03:54:27.408Z
 todos: []
 automation: eligible
