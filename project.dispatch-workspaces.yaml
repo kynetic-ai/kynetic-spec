@@ -12840,11 +12840,11 @@ workspaces:
     canonical_branch: dispatch/task/validate-resource-lifecycle-e2e-temp-projects/01ktd8s3
     canonical_branch_head: 3ac086626e24905755fed2bd254eea91ace29805
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-09T19:07:45.657Z
+      updated_at: 2026-06-09T19:10:53.987Z
     health:
       status: healthy
       issues: []
@@ -12858,17 +12858,17 @@ workspaces:
       target_branch: dev
       target_commit: 14953f00e6593138b6bb0c5d2427fca2ed96a6d0
       updated_at: 2026-06-09T19:07:45.657Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTD8S38XX475Y4K1XPX6B7PS
     task_ref: "@01KTD8S38XX475Y4K1XPX6B7PS"
     task_slug: validate-resource-lifecycle-e2e-temp-projects
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-09T19:10:53.987Z
       last_active_at: 2026-06-09T18:52:00.327Z
       last_reconciled_at: 2026-06-09T19:10:31.637Z
       created_at: 2026-06-09T03:55:13.702Z
-      updated_at: 2026-06-09T19:10:31.637Z
+      updated_at: 2026-06-09T19:10:53.987Z
     workspace_id: dispatch-workspace-01KTD8S38XX475Y4K1XPX6B7PS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
