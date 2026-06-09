@@ -189,11 +189,12 @@ describe("rewriteTaskResourceLinks", () => {
     expect(rewriteTaskResourceLinks(markdown, [resource()], "")).toBe(markdown);
   });
 
-  // Regression guard for the present-only gate (the drift/missing/unresolved
-  // visibility AC itself is owned by @generalize-live-ui-resource-markdown-rewriting).
-  // A non-`present` resolved resource must NOT be rewritten to a bytes URL that
-  // would silently serve different bytes — the raw reference stays visible. The
-  // no-op stub satisfies this today and must keep doing so after the rewrite.
+  // AC: @live-task-resource-markdown-rendering ac-drifted-task-resource-is-visible-not-silent
+  // The "does not rewrite to a URL that silently serves different bytes" half of
+  // the AC: a non-`present` resolved resource must NOT be rewritten to a bytes
+  // URL — the raw reference stays visible. (The companion "UI shows the resource
+  // status message" half is rendered by the resources-needing-attention section
+  // in TaskDetailContent.svelte.)
   it("does not rewrite a drifted/missing/unresolved task resource reference", () => {
     const markdown = "![flow](./resources/diagrams/flow.png)";
     for (const status of ["drift", "missing", "unresolved"] as const) {
