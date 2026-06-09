@@ -35,6 +35,18 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-09T02:04:22.101Z
     completed_at: 2026-06-09T02:04:22.101Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full suite passed: 2713/2713 test suites, 10343 passed and 5 skipped of 10348 tests,
+      duration 2278.8s. The affected dispatch file also passed under npm test -- --fresh
+      tests/agent-dispatch-engine.test.ts: 147/147 tests."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-09T02:04:33.925Z
+    completed_at: 2026-06-09T02:04:33.925Z
 events:
   - _ulid: 01KTN199S3YZ5KKVN4HYPQVVZK
     actor: Jacob Chapel
@@ -70,6 +82,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-09T02:04:22.307Z
+  - _ulid: 01KTN1ZNZAT6B6GYVE2Y6EGTR3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-09T02:04:34.155Z
 examined_commit: 934fa83182e267be81514ce9b5c528739257f5f0
 external_links: []
 lifecycle_state: open
@@ -82,5 +101,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-09T01:52:20.771Z
-updated_at: 2026-06-09T02:04:22.101Z
+updated_at: 2026-06-09T02:04:33.925Z
 notes: []
