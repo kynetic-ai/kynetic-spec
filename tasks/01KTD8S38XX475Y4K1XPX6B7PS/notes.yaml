@@ -31,3 +31,52 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-09T18:28:49.032Z
+  - _ulid: 01KTPVDXV19R9RM34EM11QYN0J
+    content: >-
+      Validation complete. Added tests/e2e/resource-lifecycle.spec.ts — a holistic,
+      browser-rendered, real-CLI, real-multi-project-daemon proof. All 6 tests pass (12.4s).
+
+
+      RESULT SUMMARY:
+
+      - Two temp projects built via production CLI per run: projectDefault (plan import w/ sibling
+      resources.yaml -> derive: plan-owned task refs) + a review with image (rimg) and doc (rdoc)
+      resources; projectMaterialized (import -> derive --materialize-resources: task-owned copies
+      under plan/<plan-ulid>/<file>). Both registered with the ISOLATED E2E daemon via POST
+      /api/projects (host/dispatch daemon never touched).
+
+
+      - Daemon bytes routes (browser-style: no X-Kspec-Dir, ?kspec_dir=<project> query) — all HTTP
+      200 with correct bytes/content-type/x-kspec-resource-sha256:
+        GET /api/plans/<planUlid>/resources/diagram/bytes -> 200 image/png, sha matches
+        GET /api/plans/<planUlid>/resources/design/bytes  -> 200, doc bytes match
+        GET /api/tasks/<defTaskUlid>/resources/diagram/bytes (plan-owned) -> 200 image/png
+        GET /api/tasks/<matTaskUlid>/resources/plan-diagram/bytes (materialized copy) -> 200 image/png
+        GET /api/reviews/<reviewUlid>/resources/rimg/bytes -> 200 image/png
+        GET /api/reviews/<reviewUlid>/resources/rdoc/bytes -> 200, doc bytes match
+
+      - Live UI rendering (real Chromium, non-default project selected via localStorage
+      kspec-selected-project):
+        Plan markdown: <img> src=/api/plans/<ulid>/resources/.../bytes?kspec_dir=<project>, naturalWidth>0; doc <a> href -> plan bytes route w/ kspec_dir.
+        Task modal (plan-owned): task-description <img> -> /api/tasks/<ulid>/resources/diagram/bytes?kspec_dir=..., naturalWidth>0; doc link -> task bytes route.
+        Task modal (materialized): <img> -> /api/tasks/<ulid>/resources/plan-diagram/bytes?kspec_dir=..., naturalWidth>0; doc link present.
+        Review page: resource-image-preview card naturalWidth>0, href -> /api/reviews/<id>/resources/rimg/bytes?kspec_dir=...; doc resource-item href -> .../rdoc/bytes w/ resource-binary-placeholder.
+
+      - Static export (kspec export --format json): all advertised assets exist on disk —
+        assets/resources/plan/<planUlid>/{diagram.png,design.md}
+        assets/resources/task/<defTaskUlid>/diagram.png (sha256 == recorded hash)
+        assets/resources/review/<reviewUlid>/{review-img.png,review-doc.md}
+        assets/resources/task/<matTaskUlid>/plan/<planUlid>/diagram.png (materialized; sha256 == recorded hash)
+
+      - Screenshots written to test-results/resource-lifecycle/: plan-resources.png,
+      task-plan-owned.png, task-materialized.png, review-resources.png.
+
+
+      GATES (all green): playwright e2e 6/6; full vitest suite 10363 passed / 5 skipped / 0 failed
+      (2721 suites); typecheck clean; oxlint changed file 0 warnings/0 errors; repo lint --quiet 0
+      errors (738 pre-existing baseline warnings unrelated); format:check clean; kspec validate
+      --refs/--alignment/--completeness exit 0 (only pre-existing unrelated warnings). Branch
+      rebased on origin/dev (no movement); clean lineage.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-09T18:48:29.793Z
