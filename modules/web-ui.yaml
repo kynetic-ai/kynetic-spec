@@ -5670,7 +5670,7 @@ requirements:
       because image and link elements cannot send `X-Kspec-Dir` headers.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
