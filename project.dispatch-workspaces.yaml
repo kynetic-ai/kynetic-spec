@@ -10361,7 +10361,7 @@ workspaces:
         head: d81a89d9caae8ad4196b0da252ff2e2d9c105306
         last_seen_at: 2026-06-08T23:40:47.202Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-task-resource-bytes-routes-01ktd8s1
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 27fe4f1938d81f27125c9da22b20827e496852f8
     bootstrap:
       status: succeeded
@@ -10834,7 +10834,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-09T00:35:41.964Z
+      updated_at: 2026-06-09T00:36:11.962Z
     integration:
       status: pending
       detail: null
@@ -10850,10 +10850,10 @@ workspaces:
     task_slug: generalize-live-ui-resource-markdown-rewriting
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-08T23:57:38.038Z
-      last_reconciled_at: 2026-06-09T00:35:41.964Z
+      last_active_at: 2026-06-09T00:36:11.962Z
+      last_reconciled_at: 2026-06-09T00:36:11.962Z
       created_at: 2026-06-08T23:57:09.882Z
-      updated_at: 2026-06-09T00:36:05.753Z
+      updated_at: 2026-06-09T00:36:11.962Z
     workspace_id: dispatch-workspace-01KTD8S26A1PY21C7SYXTNTJ05
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
