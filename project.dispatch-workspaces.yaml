@@ -10867,7 +10867,7 @@ workspaces:
         head: 06319536c213604187066e4306f631dd6e751bca
         last_seen_at: 2026-06-09T01:17:14.586Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/generalize-live-ui-resource-markdown-rewriting-01ktd8s2
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 27fe4f1938d81f27125c9da22b20827e496852f8
     bootstrap:
       status: succeeded
@@ -11340,7 +11340,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-09T01:51:09.274Z
+      updated_at: 2026-06-09T01:51:40.004Z
     integration:
       status: pending
       detail: null
@@ -11356,10 +11356,10 @@ workspaces:
     task_slug: stabilize-dispatch-runner-preflight-session-id-test
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-09T01:32:54.726Z
-      last_reconciled_at: 2026-06-09T01:51:09.274Z
+      last_active_at: 2026-06-09T01:51:40.004Z
+      last_reconciled_at: 2026-06-09T01:51:40.004Z
       created_at: 2026-06-09T01:32:25.941Z
-      updated_at: 2026-06-09T01:51:33.008Z
+      updated_at: 2026-06-09T01:51:40.004Z
     workspace_id: dispatch-workspace-01KTN02TDJH33FM85CD6E1215H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
