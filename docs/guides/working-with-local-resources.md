@@ -175,9 +175,47 @@ When the daemon is running (`kspec serve start`), every plan and review exposes 
 |          |                                                 | `200 { "resource": ResourceMetadata, "replaced": true }` (replace)  |
 | `DELETE` | `/api/reviews/:ref/resources/:resourceId`       | `200 { "removed": { "id": string, "path": string } }`               |
 
+### Task Resources
+
+<!-- AC: @resource-docs-ui-task-markdown-behavior ac-docs-name-task-resource-markdown -->
+
+A derived task does not own a resource upload endpoint — task resources come from the plan it was derived from, either as plan-owned references (the default) or as task-owned copies (`kspec plan derive --materialize-resources`). The daemon exposes a read-only, task-scoped projection so a client can render `./resources/<relative-path>` references from the task description without knowing which owner holds the bytes:
+
+| Method | Path                                          | Returns                                                                        |
+| ------ | --------------------------------------------- | ------------------------------------------------------------------------------ |
+| `GET`  | `/api/tasks/:ref/resources`                   | `{ "resources": ResolvedTaskResourceSummary[] }`                               |
+| `GET`  | `/api/tasks/:ref/resources/:resourceId`       | `{ "resource": ResolvedTaskResourceSummary }`                                  |
+| `GET`  | `/api/tasks/:ref/resources/:resourceId/bytes` | Raw bytes with `Content-Type`, `Content-Length`, and `X-Kspec-Resource-Sha256` |
+
+The task detail API response (`GET /api/tasks/:ref`) includes the same projection inline when the task has resource references:
+
+- `resolved_resources` — an array of `ResolvedTaskResourceSummary` entries, each reporting `owner_type` (`"plan"` or `"task"`), `owner_ref`, `id`, `path`, `content_type`, `byte_size`, `status`, `recorded_sha256`, `current_sha256`, `recorded_git_commit`, `current_git_commit`, and a human-readable `message`.
+- `resources_base_url` — a task-scoped base (`/api/tasks/<task-ulid>/resources`) so a client builds browser-fetchable URLs as `resources_base_url/<resource-id>/bytes` without guessing whether the bytes are plan-owned or task-owned.
+
+Task list, dashboard, and other index-tier surfaces stay bounded — they do **not** embed resource bytes or full resource manifests. Resolve bytes through the task detail projection and the `/bytes` route only.
+
+<!-- AC: @resource-docs-ui-task-markdown-behavior ac-docs-name-task-resource-drift -->
+
+Each `ResolvedTaskResourceSummary.status` is one of `present`, `drift`, `missing`, or `unresolved`. When a task resource is drifted, missing, or unresolved, the detail and bytes routes report the status through the `message` field and the `/bytes` route refuses to stream replacement bytes that differ from the hash recorded at task derivation. The live task detail UI renders the `status` and `message` instead of rewriting the markdown target, and an authoring reference that matches no resolved resource stays visible as raw `./resources/<relative-path>` text with guidance to verify the path or re-derive the task — never a silent substitution.
+
+### Browser Resource URLs Need URL-Level Project Context
+
+<!-- AC: @resource-docs-ui-task-markdown-behavior ac-docs-name-browser-project-context -->
+
+In live multi-project mode the daemon resolves which project a request targets from the `X-Kspec-Dir` request header. A `fetch()` from application code can set that header, but a browser `<img src>` or `<a href>` element fetch **cannot send `X-Kspec-Dir`** — the browser controls those request headers, not the page. Without project context, the daemon would resolve the resource against its default project and serve the wrong bytes or a project-not-found response.
+
+To make rendered image and link resource URLs route to the selected project, the web UI appends the selected project's path as a URL-level `kspec_dir` query parameter when rewriting markdown resource references:
+
+```
+/api/tasks/<task-ulid>/resources/<resource-id>/bytes?kspec_dir=<url-encoded-project-path>
+/api/plans/<plan-ulid>/resources/<resource-id>/bytes?kspec_dir=<url-encoded-project-path>
+```
+
+The daemon project-context middleware reads the project path from the `X-Kspec-Dir` header when present and otherwise from the `kspec_dir` query parameter, so element fetches that cannot set headers still resolve to the correct project. The resource still resolves only through the owning entity's manifest, so undeclared paths, absolute paths, parent traversal, and symlink escapes remain rejected regardless of the `kspec_dir` value.
+
 ### POST Upload Shape
 
-Both POST routes accept `multipart/form-data` with the following fields:
+Both plan and review POST routes accept `multipart/form-data` with the following fields (task resources have no upload route — they are derived from plans):
 
 | Field          | Required | Notes                                                                                                                    |
 | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -218,10 +256,11 @@ When the web UI is exported as a static snapshot (`kspec export`), local resourc
 
 ```
 <export-root>/assets/resources/plan/<plan-ulid>/<relative-path>
+<export-root>/assets/resources/task/<task-ulid>/<relative-path>
 <export-root>/assets/resources/review/<review-ulid>/<relative-path>
 ```
 
-The exported metadata includes an `exported_path` field pointing at the asset location. Markdown content in plan exports is rewritten so `./resources/<relative-path>` image and link references point at the exported asset path. The static UI works offline without re-resolving references through the daemon.
+The exported metadata includes an `exported_path` field pointing at the asset location. Markdown content in plan and task exports is rewritten so `./resources/<relative-path>` image and link references point at the exported asset path. The static UI works offline without re-resolving references through the daemon. Only `present` task resources are copied and carry an `exported_path`; drifted, missing, or unresolved task references are not exported as bytes.
 
 JSON-to-stdout and `--dry-run` exports skip the file copy but still emit `exported_path` so consumers can construct the expected path.
 
@@ -247,6 +286,146 @@ kspec plan resource remove @plan-my-feature readme-snapshot --force
 ```
 
 The list output should show the attached resource after `add`, the get output should report a populated `sha256` and accurate `bytes`, and the remove output should report the removed id and path.
+
+## End-to-End Verification in a Temp Project
+
+<!-- AC: @resource-docs-ui-task-markdown-behavior ac-docs-name-temp-project-e2e-steps -->
+
+These steps validate the full resource lifecycle end to end — CLI storage, daemon bytes routes, live UI image and link rendering, selected-project browser URL routing, and static export asset existence — **without restarting or stopping the daemon**. Start the daemon once at step 3 and leave it running for every later step; the live UI and the static export both read from the same running daemon. Adjust paths and refs to your fixtures.
+
+### 1. Create two temp projects and author plan resources
+
+Use two separate projects so you can exercise both ownership cases: one project keeps plan-owned task references (the default), the other derives a materialized task-owned copy.
+
+````bash
+# Default-refs project
+mkdir -p /tmp/kspec-res-default && cd /tmp/kspec-res-default
+git init -q && kspec init
+
+# Author a plan with a sibling resources.yaml + resources/ holding an image and a document
+mkdir -p plans/resources/ux plans/resources/docs
+cp /path/to/sign-in-v3.png plans/resources/ux/sign-in-v3.png
+cp /path/to/spec.pdf         plans/resources/docs/spec.pdf
+cat > plans/resources.yaml <<'YAML'
+resources:
+  - id: ux-mockup
+    path: ux/sign-in-v3.png
+  - id: spec-doc
+    path: docs/spec.pdf
+YAML
+cat > plans/feature.md <<'MD'
+# Sign-in feature
+
+Mockup: ![v3 mockup](./resources/ux/sign-in-v3.png)
+Doc: [spec](./resources/docs/spec.pdf)
+
+## Tasks
+
+```yaml
+- title: Build sign-in
+  slug: task-build-sign-in
+  description: |
+    Reference image: ![mockup](./resources/ux/sign-in-v3.png)
+    Reference doc: [spec](./resources/docs/spec.pdf)
+  resource_refs:
+    - "./resources/ux/sign-in-v3.png"
+    - "./resources/docs/spec.pdf"
+```
+
+MD
+
+````
+
+### 2. Import, derive default refs, and derive a materialized copy in a clean project
+
+```bash
+# Default-refs project: import + approve + derive (plan-owned refs, no bytes copied)
+kspec plan import plans/feature.md
+kspec plan approve @plan-sign-in-feature   # use the slug printed by import
+kspec plan derive @plan-sign-in-feature
+
+# CLI storage check — task carries resolved resource refs with present status
+kspec task get @task-build-sign-in --json | jq '.resolved_resources[] | {id, owner_type, status}'
+
+# Separate clean project: same plan, derived with materialized task-owned copies
+mkdir -p /tmp/kspec-res-materialized && cd /tmp/kspec-res-materialized
+git init -q && kspec init
+cp -r /tmp/kspec-res-default/plans ./plans
+kspec plan import plans/feature.md
+kspec plan approve @plan-sign-in-feature
+kspec plan derive @plan-sign-in-feature --materialize-resources
+
+# Materialized copies live under the task tree with the plan-<id> prefix
+kspec task get @task-build-sign-in --json | jq '.resolved_resources[] | {id, owner_type, status}'
+ls .kspec/tasks/*/resources/plan/*/ux/sign-in-v3.png
+```
+
+For the default-refs project, `owner_type` is `plan`; for the materialized project it is `task` and the ids are prefixed `plan-`. Both report `status: present`.
+
+### 3. Start the daemon once — do not stop or restart it
+
+```bash
+cd /tmp/kspec-res-default
+kspec serve start
+curl -s http://127.0.0.1:3456/api/health    # confirm it is up
+```
+
+Leave this daemon running for every step below. The default project is its default project; the materialized project is targeted by URL-level project context (`kspec_dir`), so you never need to restart the daemon to switch projects.
+
+### 4. Verify daemon bytes routes for plan-owned and task-owned resources
+
+Read the task-scoped projection, then fetch bytes from the task resource route. Use the `kspec_dir` query parameter to target the materialized project through the same running daemon.
+
+```bash
+DEFAULT_DIR=/tmp/kspec-res-default
+MAT_DIR=/tmp/kspec-res-materialized
+
+# Plan-owned (default project) — resolve base URL + ids from task detail
+curl -s "http://127.0.0.1:3456/api/tasks/@task-build-sign-in/resources" \
+  -H "X-Kspec-Dir: $DEFAULT_DIR" | jq '.resources[] | {id, owner_type, status}'
+
+# Fetch plan-owned bytes; -D - prints the X-Kspec-Resource-Sha256 header
+curl -s -D - -o /tmp/img.png \
+  "http://127.0.0.1:3456/api/tasks/@task-build-sign-in/resources/ux-mockup/bytes" \
+  -H "X-Kspec-Dir: $DEFAULT_DIR" | grep -i x-kspec-resource-sha256
+
+# Task-owned copy (materialized project) targeted via kspec_dir query param — no daemon restart
+curl -s -o /tmp/img-mat.png \
+  "http://127.0.0.1:3456/api/tasks/@task-build-sign-in/resources/plan-ux-mockup/bytes?kspec_dir=$MAT_DIR"
+```
+
+Both fetches return the recorded bytes with `Content-Type`, `Content-Length`, and `X-Kspec-Resource-Sha256` matching the resource recorded at derivation. A drifted, missing, or unresolved reference reports its status instead of streaming replacement bytes.
+
+### 5. Verify live UI image/link rendering and selected-project browser routing
+
+With the daemon still running, open the web UI (dev server on port 5173, or the daemon-served UI) and:
+
+- Open the **default project's** task `task-build-sign-in` in the task detail modal. The `./resources/...` image renders and the document link opens — the UI rewrote them to `/api/tasks/<task-ulid>/resources/<id>/bytes` URLs.
+- Select the **materialized project** in the project switcher and open its task. The same references render from the task-owned copies. Because `<img>` and `<a>` element fetches cannot send `X-Kspec-Dir`, the rendered URLs carry `?kspec_dir=<project-path>` so they route to the selected project through the same daemon — confirm by inspecting an image URL in the browser devtools network panel.
+
+### 6. Verify static export asset existence — same daemon, no restart
+
+```bash
+# Export each project to a static snapshot. Resource assets are copied beside
+# the JSON output file, so write the snapshot inside a per-project export dir.
+mkdir -p /tmp/export-default /tmp/export-materialized
+cd /tmp/kspec-res-default && kspec export --format json --output /tmp/export-default/snapshot.json
+cd /tmp/kspec-res-materialized && kspec export --format json --output /tmp/export-materialized/snapshot.json
+
+# Plan-owned task asset is copied under the task asset path
+ls /tmp/export-default/assets/resources/task/*/ux/sign-in-v3.png
+ls /tmp/export-default/assets/resources/task/*/docs/spec.pdf
+
+# Materialized task asset also exists under the task asset path
+ls /tmp/export-materialized/assets/resources/task/*/ux/sign-in-v3.png
+
+# Plan resources are copied under the plan asset path
+ls /tmp/export-default/assets/resources/plan/*/ux/sign-in-v3.png
+```
+
+Each `ls` should list the advertised asset file. The exported plan and task markdown is rewritten to point at these `assets/resources/...` paths, so the offline snapshot renders the same images and links without the daemon.
+
+When you finish, you may stop the daemon — but every verification above was performed against a single continuously-running daemon.
 
 ## Next Steps
 

@@ -174,6 +174,39 @@ The only way to copy plan resource bytes into a derived task's own directory is 
 
 Use this when a task needs an immutable snapshot of plan resources at derivation time — for example, before handing the task off for long-running work where the plan may continue to evolve.
 
+## Resolving Task Resources From Task Markdown
+
+<!-- AC: @resource-docs-ui-task-markdown-behavior ac-docs-name-task-resource-markdown -->
+
+A task description can reference its resources with the same `./resources/<relative-path>` authoring form a plan uses:
+
+```markdown
+The validation surface to build is shown in
+![the v3 mockup](./resources/ux/sign-in-v3.png).
+```
+
+The `./resources/<relative-path>` reference is resolved through the task's own `resolved_resources` projection rather than against a global path. That projection — exposed on the daemon task detail API alongside a task-scoped `resources_base_url` — resolves both ownership cases the same way for the reader:
+
+- **Plan-owned references (the default).** When a task was derived without materialization, its `TaskResourceRef` still points at the plan's owned bytes (`owner_type: "plan"`). The reference resolves to the plan resource through the task's projection, and the task-scoped bytes URL streams the plan-owned bytes.
+- **Task-owned copies (materialized).** When a task was derived with `--materialize-resources`, the copy lives under the task's own `resources/` tree (`owner_type: "task"`) with the id `plan-<original-resource-id>`. The same `./resources/<relative-path>` reference resolves to the task-owned copy through the task's projection.
+
+Either way, the reader does not have to know whether the bytes are plan-owned or task-owned. A client constructs the browser-fetchable URL from the task detail response as `resources_base_url/<resource-id>/bytes` — concretely `GET /api/tasks/:ref/resources/:resourceId/bytes` — and the daemon serves the correct owner's bytes. The web UI uses exactly this projection to rewrite `./resources/<relative-path>` image and link targets in task descriptions to task-scoped resource URLs.
+
+### Drift, Missing, and Unresolved Task Resources Are Status, Not Silent Bytes
+
+<!-- AC: @resource-docs-ui-task-markdown-behavior ac-docs-name-task-resource-drift -->
+
+Each entry in a task's `resolved_resources` projection reports a `status` of `present`, `drift`, `missing`, or `unresolved`, together with a human-readable `message`:
+
+| `status`     | Meaning                                                                                                     |
+| ------------ | ----------------------------------------------------------------------------------------------------------- |
+| `present`    | The owner still declares the resource and its current content hash matches the hash recorded at derivation. |
+| `drift`      | The owner still declares the resource but its current content hash differs from the recorded `sha256`.      |
+| `missing`    | The owner is resolvable but no longer declares the referenced path.                                         |
+| `unresolved` | The owning plan or task could not be located, so the reference cannot be re-resolved.                       |
+
+When a task resource is drifted, missing, or unresolved, kspec surfaces the `status` and `message` instead of silently serving replacement bytes. The task resource bytes route refuses to stream bytes that differ from the hash recorded at task derivation, and the live task detail UI shows the status message rather than rewriting the markdown target to a URL that would serve different bytes. A `./resources/<relative-path>` reference that matches no resolved resource at all stays visible as raw authoring text with actionable guidance — it is never rewritten to an unrelated entity URL. This keeps a changed-underneath resource visible as a status signal instead of a quiet substitution.
+
 ## Static Export and Daemon URLs
 
 Resources surface through three layers, each with a stable shape.
@@ -182,7 +215,7 @@ Resources surface through three layers, each with a stable shape.
 
 **Daemon API.** Authenticated, project-scoped routes return the resource bytes and metadata using the [`ResourceMetadata`](#resourcemetadata-fields) shape (see [Working With Local Resources](../guides/working-with-local-resources.md#daemon-api-routes) for the full route list).
 
-**Static export.** When the web UI is exported as a static snapshot, resource files are copied to `assets/resources/<entity-type>/<entity-ulid>/<relative-path>`. For plans the layout is `assets/resources/plan/<plan-ulid>/<relative-path>`; for reviews it is `assets/resources/review/<review-ulid>/<relative-path>`:
+**Static export.** When the web UI is exported as a static snapshot, resource files are copied to `assets/resources/<entity-type>/<entity-ulid>/<relative-path>`. For plans the layout is `assets/resources/plan/<plan-ulid>/<relative-path>`, for reviews it is `assets/resources/review/<review-ulid>/<relative-path>`, and for task-resolved resources it is `assets/resources/task/<task-ulid>/<relative-path>`:
 
 ```
 assets/
@@ -190,12 +223,15 @@ assets/
     ├── plan/
     │   └── <plan-ulid>/
     │       └── <relative-path>
+    ├── task/
+    │   └── <task-ulid>/
+    │       └── <relative-path>
     └── review/
         └── <review-ulid>/
             └── <relative-path>
 ```
 
-The export rewrites `./resources/<relative-path>` markdown links in plan content to point at the exported asset path. The exported metadata reports the exported path so consumers do not need to re-derive it.
+The export rewrites `./resources/<relative-path>` markdown links in plan and task content to point at the exported asset path. The exported metadata reports the exported path so consumers do not need to re-derive it. Only `present` task resources carry an exported asset path; drifted, missing, or unresolved task references are not exported as bytes, so the static snapshot never advertises a substitute for a resource that changed underneath the task.
 
 ## How Resources Surface in Use
 

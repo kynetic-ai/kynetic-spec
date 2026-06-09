@@ -67,11 +67,40 @@ release workflow before tagging.
   optional `replace` field accepting `"true"`/`"1"` or `"false"`/`"0"`. The
   `/bytes` route sets `Content-Type`, `Content-Length`, and the resource's
   `sha256` via an `X-Kspec-Resource-Sha256` response header.
-- **Static export resource layout** — exported plans and reviews copy resource
-  files to `assets/resources/plan/<plan-ulid>/<relative-path>` and
-  `assets/resources/review/<review-ulid>/<relative-path>`. Plan markdown links
-  are rewritten to point at the exported asset path so the offline UI works
-  without the daemon.
+- **Static export resource layout** — exported plans, tasks, and reviews copy
+  resource files to `assets/resources/plan/<plan-ulid>/<relative-path>`,
+  `assets/resources/task/<task-ulid>/<relative-path>`, and
+  `assets/resources/review/<review-ulid>/<relative-path>`. Plan and task
+  markdown links are rewritten to point at the exported asset path so the
+  offline UI works without the daemon. Only `present` task resources are copied;
+  drifted, missing, or unresolved task references are not exported as bytes.
+- **Live UI and task-markdown resource resolution.** Task descriptions can
+  reference resources with `./resources/<relative-path>`, resolved through a
+  task-scoped projection on the daemon task detail API. The response exposes
+  `resolved_resources` (with `owner_type`, `owner_ref`, `id`, `path`,
+  `content_type`, `byte_size`, `status`, recorded/current `sha256` and
+  `git_commit`, and a human-readable `message`) plus a `resources_base_url`, and
+  task-scoped bytes routes (`GET /api/tasks/:ref/resources[/:id[/bytes]]`) serve
+  both plan-owned references and `--materialize-resources` task-owned copies. The
+  task detail UI rewrites those references to task-scoped resource URLs for both
+  cases. Task resources are derived from plans — there is no task resource upload
+  command. (Plan-only `kspec plan resource add` and review-only
+  `kspec review resource add` remain the only resource upload surfaces.)
+- **Resource drift is surfaced, never silently substituted.** Drifted, missing,
+  or unresolved task resource references resolve to a `status`
+  (`drift`/`missing`/`unresolved`) and `message` instead of replacement bytes.
+  The bytes routes refuse to stream bytes that differ from the hash recorded at
+  task derivation, the live UI shows the status message rather than rewriting the
+  target, and an authoring reference that matches no resolved resource stays
+  visible as raw text with actionable guidance.
+- **Browser resource URLs preserve selected-project context.** In live
+  multi-project mode, rendered `<img>` and `<a>` resource URLs carry the selected
+  project as a URL-level `kspec_dir` query parameter because element fetches
+  cannot send the `X-Kspec-Dir` header. The daemon project-context middleware
+  reads the header when present and otherwise the query parameter, so plan,
+  task, and review resource elements resolve to the selected project's bytes
+  while still rejecting undeclared, absolute, traversal, and symlink-escape
+  paths.
 - **Plan and review index rebuild** — `kspec plan rebuild-index` and
   `kspec review rebuild-index` validate or repair the project-wide index
   against the on-disk entity folders. `--dry-run` previews drift; `--repair`
@@ -100,6 +129,12 @@ release workflow before tagging.
   with the 1.2 manifest fields, folder layout, and rollback procedure.
 - Updated [Importing and Approving a Plan](docs/guides/importing-and-approving-a-plan.md)
   with `--materialize-resources` derivation guidance.
+- Updated [Local Resources for Plans and Reviews](docs/concepts/local-resources.md)
+  and [Working With Local Resources](docs/guides/working-with-local-resources.md)
+  with task-markdown resource resolution, drift status semantics, browser
+  `kspec_dir` project-context routing, the task static-export asset layout, and an
+  end-to-end temp-project verification walkthrough that runs against a single
+  continuously-running daemon.
 - **Project-neutral package guidance.** Package-shipped agent sections
   (`templates/agents-sections/`) and core skills (`templates/skills/`) now
   describe universal kspec mechanics only. Hard-coded branch names (`dev`,
