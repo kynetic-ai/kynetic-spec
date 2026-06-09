@@ -61344,9 +61344,21 @@ runs:
     completed_at: 2026-06-08T23:59:01.462Z
   - _ulid: 01KTMWPZY3DCHX7R3S64XCF682
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-09T00:32:26.563Z
+        completed_at: 2026-06-09T00:34:07.590Z
+        notes: "Step 1 search done: read observations list (01KTMHHG full-suite budget, 01KTMMHH AC-layer +
+          FLIPPED-ON-FIX HTTP-outcome pattern, 01KTMSQF resource seeding helper). Searched 'app
+          environment vitest alias', 'project store mock web-ui test', 'FLIPPED-ON-FIX control test
+          pre-fix' — no matches. Two candidate frictions are untracked."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-09T00:34:07.590Z
+        completed_at: 2026-06-09T00:34:07.590Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-09T00:32:26.563Z
