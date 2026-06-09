@@ -61389,7 +61389,7 @@ runs:
     completed_at: 2026-06-09T00:35:10.082Z
   - _ulid: 01KTMXSJFJ75PBC6W2XX989AK6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61405,7 +61405,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-09T00:52:12.251Z
-        completed_at: 2026-06-09T00:52:12.251Z
+        completed_at: 2026-06-09T00:52:21.985Z
+        notes: "Friction points: The only meaningful friction was workflow-level: full required review
+          gates, especially npm test, took about 37.5 minutes after a blocker was already confirmed.
+          That is intentional under current review policy, which requires complete checks before
+          verdict, so I am not treating it as an untracked improvement request. A smaller CLI
+          friction was that workflow next needs the run id when many old active runs exist; this was
+          easy to recover from and not worth separate tracking from this session alone."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-09T00:52:21.985Z
+        completed_at: 2026-06-09T00:52:21.985Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-09T00:51:19.666Z
