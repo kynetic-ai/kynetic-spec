@@ -5668,6 +5668,9 @@ requirements:
     description: >
       Browser-rendered plan resource URLs carry selected-project context in live multi-project mode
       because image and link elements cannot send `X-Kspec-Dir` headers.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
