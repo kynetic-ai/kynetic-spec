@@ -2,7 +2,17 @@ _ulid: 01KTN5AZNH1MRA03FFSX8EVCY2
 slugs: []
 title: Review update-resource-documentation-ui-task-markdown
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 989 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-09T03:14:47.125Z
+    completed_at: 2026-06-09T03:14:47.125Z
 events:
   - _ulid: 01KTN5AZNHSBPJJD0K0JHBXHM9
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-09T03:03:32.781Z
+  - _ulid: 01KTN608F7D8VSA7D5DRG4JMKD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-09T03:14:47.399Z
 examined_commit: 09ede8f5093d2af6f17ba33af2635cfca3f3f794
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-09T03:03:10.257Z
-updated_at: 2026-06-09T03:03:32.561Z
+updated_at: 2026-06-09T03:14:47.125Z
 notes: []
