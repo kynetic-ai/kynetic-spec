@@ -14,7 +14,9 @@ import {
   buildIndexes,
   computeACCoverage,
   copyResourceForStaticExport,
+  findPlanByRef,
   getResourcesDir,
+  getTaskDir,
   initContext,
   loadAllItems,
   loadInboxItems,
@@ -23,10 +25,13 @@ import {
   loadResourceManifest,
   loadReviewRecords,
   loadTriageRecords,
+  projectResolvedTaskResources,
+  resolveTaskResources,
   scanTestCoverage,
   STATIC_EXPORT_RESOURCES_PREFIX,
   type LoadedSpecItem,
   type LoadedTask,
+  type ResolvedTaskResource,
   ReferenceIndex,
   validate,
 } from "../parser/index.js";
@@ -48,6 +53,7 @@ import type {
   ExportedReview,
   ExportedReviewResource,
   ExportedTask,
+  ExportedTaskResource,
   ExportedValidation,
   ExportStats,
   InheritedAC,
@@ -56,6 +62,51 @@ import type {
 
 /** Entity-type tag used in the static export resource layout for plans. */
 const PLAN_EXPORT_ENTITY_TYPE = "plan";
+
+/** Entity-type tag used in the static export resource layout for tasks. */
+const TASK_EXPORT_ENTITY_TYPE = "task";
+
+/**
+ * Rewrite `./resources/<path>` markdown link/image targets so they point at
+ * the exported static-asset location. Shared by plan and task rewriting: the
+ * caller supplies a map from each owner-relative `<path>` to its
+ * snapshot-relative `exported_path`. Only paths present in the map are
+ * rewritten — undeclared (plan) or non-`present` (task) references are left
+ * untouched so the rendered static UI surfaces the raw author guidance
+ * instead of silently substituting a broken or drifted URL.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
+ * AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+ */
+function rewriteResourceLinksForStaticExport(
+  markdown: string,
+  exportedPathByPath: Map<string, string>,
+): string {
+  if (!markdown || exportedPathByPath.size === 0) return markdown;
+  const pattern =
+    /(!?\[[^\]]*\]\()(\.\/resources\/[^\s)"']+)(\))|(^\s*\[[^\]]+\]:\s+)(\.\/resources\/[^\s"']+)/gm;
+  return markdown.replace(
+    pattern,
+    (
+      match,
+      inlinePrefix?: string,
+      inlineTarget?: string,
+      inlineSuffix?: string,
+      refDefPrefix?: string,
+      refDefTarget?: string,
+    ) => {
+      const target = inlineTarget ?? refDefTarget;
+      if (!target) return match;
+      const relative = target.slice("./resources/".length);
+      const exportedPath = exportedPathByPath.get(relative);
+      if (exportedPath === undefined) return match;
+      if (refDefPrefix !== undefined && refDefTarget !== undefined) {
+        return `${refDefPrefix}${exportedPath}`;
+      }
+      return `${inlinePrefix ?? ""}${exportedPath}${inlineSuffix ?? ""}`;
+    },
+  );
+}
 
 /**
  * Rewrite plan markdown so `./resources/<path>` link/image targets point at
@@ -74,31 +125,36 @@ export function rewritePlanContentForStaticExport(
   resources: ExportedPlanResource[],
 ): string {
   if (!markdown || resources.length === 0) return markdown;
-  const byPath = new Map<string, ExportedPlanResource>();
-  for (const r of resources) byPath.set(r.path, r);
-  const pattern =
-    /(!?\[[^\]]*\]\()(\.\/resources\/[^\s)"']+)(\))|(^\s*\[[^\]]+\]:\s+)(\.\/resources\/[^\s"']+)/gm;
-  return markdown.replace(
-    pattern,
-    (
-      match,
-      inlinePrefix?: string,
-      inlineTarget?: string,
-      inlineSuffix?: string,
-      refDefPrefix?: string,
-      refDefTarget?: string,
-    ) => {
-      const target = inlineTarget ?? refDefTarget;
-      if (!target) return match;
-      const relative = target.slice("./resources/".length);
-      const resource = byPath.get(relative);
-      if (!resource) return match;
-      if (refDefPrefix !== undefined && refDefTarget !== undefined) {
-        return `${refDefPrefix}${resource.exported_path}`;
-      }
-      return `${inlinePrefix ?? ""}${resource.exported_path}${inlineSuffix ?? ""}`;
-    },
-  );
+  const byPath = new Map<string, string>();
+  for (const r of resources) byPath.set(r.path, r.exported_path);
+  return rewriteResourceLinksForStaticExport(markdown, byPath);
+}
+
+/**
+ * Rewrite task description markdown so `./resources/<path>` link/image targets
+ * point at the exported task asset location
+ * (`assets/resources/task/<task-ulid>/<path>`). Only `present` task resources
+ * (whether plan-owned or materialized task-owned) carry an `exported_path`, so
+ * only those references are rewritten. Drifted, missing, and unresolved
+ * references are left raw so the static UI surfaces their status and the
+ * author's original reference instead of silently serving replacement bytes.
+ *
+ * AC: @static-export-resource-assets-complete ac-static-task-plan-owned-asset-uses-recorded-hash
+ * AC: @static-export-resource-assets-complete ac-static-task-materialized-asset-exists
+ * AC: @static-export-resource-assets-complete ac-static-task-drift-is-visible-not-rewritten
+ */
+export function rewriteTaskContentForStaticExport(
+  markdown: string,
+  resources: ExportedTaskResource[],
+): string {
+  if (!markdown || resources.length === 0) return markdown;
+  const byPath = new Map<string, string>();
+  for (const r of resources) {
+    if (r.status === "present" && r.exported_path !== undefined) {
+      byPath.set(r.path, r.exported_path);
+    }
+  }
+  return rewriteResourceLinksForStaticExport(markdown, byPath);
 }
 
 /**
@@ -200,6 +256,144 @@ async function exportPlanResources(
 }
 
 /**
+ * Error thrown by {@link exportTaskResources} when a `present` task resource
+ * fails the symlink-safe copy step. Mirrors {@link PlanResourceExportError}:
+ * the export aborts with actionable guidance rather than silently shipping a
+ * snapshot whose rewritten task markdown points at an asset that was never
+ * written. Carries the task ULID, the failing relative path, and the
+ * resolver's actionable error message.
+ *
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+export class TaskResourceExportError extends Error {
+  readonly taskUlid: string;
+  readonly resourcePath: string;
+  readonly reason: string;
+
+  constructor(taskUlid: string, resourcePath: string, reason: string) {
+    super(
+      `Failed to export task resource "${resourcePath}" for task ${taskUlid}: ${reason}. ` +
+        `Fix the manifest entry or owning resources/ layout (no symlinks, no path traversal) and re-run the export.`,
+    );
+    this.name = "TaskResourceExportError";
+    this.taskUlid = taskUlid;
+    this.resourcePath = resourcePath;
+    this.reason = reason;
+  }
+}
+
+/**
+ * Resolve the owning entity's `resources/` directory for a task resource
+ * reference so its bytes can be copied into the static asset tree. Plan-owned
+ * references resolve through the owning plan's resource tree; task-owned
+ * (materialized) references resolve through the task's own resource tree.
+ * Returns `null` when the owning entity cannot be located — callers treat
+ * that the same as an unresolved reference and do not advertise an asset.
+ */
+async function resolveTaskResourceOwnerDir(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  resolved: ResolvedTaskResource,
+  task: LoadedTask,
+): Promise<string | null> {
+  if (resolved.reference.owner_type === "plan") {
+    const plan = await findPlanByRef(ctx, resolved.reference.owner_ref);
+    if (!plan) return null;
+    return getResourcesDir(getPlanDir(ctx, plan._ulid));
+  }
+  return getResourcesDir(getTaskDir(ctx, task._ulid));
+}
+
+/**
+ * Resolve a task's `resource_refs` against the owning entities' current state
+ * and project them for the static export. For every reference that resolves to
+ * a `present` resource — i.e. the owning manifest still declares the path and
+ * its current hash matches the hash recorded on the task at derivation time —
+ * the bytes are copied (when `assetsOutputDir` is supplied) into the static
+ * asset tree at `assets/resources/task/<task-ulid>/<relative-path>` and the
+ * entry gains an `exported_path` pointer.
+ *
+ * Drifted, missing, and unresolved references keep their status and message
+ * but never receive an `exported_path`: the export must not advertise an asset
+ * path for bytes that do not match the task's recorded resource hash. The
+ * `present` status is the gate that guarantees the copied bytes match the
+ * recorded hash, so plan-owned and task-owned copies share the same contract.
+ *
+ * Copy failures (symlinked resources/ root, intermediate symlink escapes)
+ * surface as {@link TaskResourceExportError} so the export aborts with
+ * actionable guidance instead of producing a snapshot whose rewritten task
+ * markdown points at a never-written asset.
+ *
+ * AC: @static-export-resource-assets-complete ac-static-task-plan-owned-asset-uses-recorded-hash
+ * AC: @static-export-resource-assets-complete ac-static-task-materialized-asset-exists
+ * AC: @static-export-resource-assets-complete ac-static-task-drift-is-visible-not-rewritten
+ * AC: @trait-entity-scoped-local-resources-1 ac-path-escape-rejected
+ */
+async function exportTaskResources(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  task: LoadedTask,
+  assetsOutputDir: string | null,
+): Promise<ExportedTaskResource[]> {
+  const resolved = await resolveTaskResources(ctx, task);
+  if (resolved.length === 0) return [];
+
+  // Project to the canonical daemon shape first so static and live consumers
+  // render the same fields; the loop only decides asset copy + exported_path.
+  const projected = projectResolvedTaskResources(resolved);
+
+  const out: ExportedTaskResource[] = [];
+  for (let i = 0; i < resolved.length; i++) {
+    const entry = resolved[i];
+    const base = projected[i];
+
+    // Only present references serve the bytes the task was derived against.
+    // Drift/missing/unresolved entries are surfaced with status only — no
+    // asset path is advertised for bytes that differ from the recorded hash.
+    if (entry.status !== "present" || entry.current === null) {
+      out.push(base);
+      continue;
+    }
+
+    const exported_path = [
+      STATIC_EXPORT_RESOURCES_PREFIX,
+      TASK_EXPORT_ENTITY_TYPE,
+      task._ulid,
+      entry.reference.path,
+    ].join("/");
+
+    if (assetsOutputDir) {
+      const ownerResourcesDir = await resolveTaskResourceOwnerDir(ctx, entry, task);
+      if (ownerResourcesDir === null) {
+        // The owner vanished between resolution and copy; surface as
+        // unresolved rather than advertising an asset we cannot produce.
+        out.push({
+          ...base,
+          status: "unresolved",
+          message: `Owning ${entry.reference.owner_type} ${entry.reference.owner_ref} could not be located while copying resource "${entry.reference.path}".`,
+        });
+        continue;
+      }
+      const result = await copyResourceForStaticExport({
+        ownerResourcesDir,
+        relativePath: entry.reference.path,
+        exportRoot: assetsOutputDir,
+        entityType: TASK_EXPORT_ENTITY_TYPE,
+        entityUlid: task._ulid,
+        // The resolver gates on a single-entry manifest carrying the current
+        // declared path; copyResourceForStaticExport only needs the path to
+        // appear in the manifest to clear its declared-path check.
+        manifest: { resources: [entry.current] },
+      });
+      if (!result.ok) {
+        throw new TaskResourceExportError(task._ulid, entry.reference.path, result.error);
+      }
+    }
+
+    out.push({ ...base, exported_path });
+  }
+  return out;
+}
+
+/**
  * Get the kspec version from package.json
  */
 async function getKspecVersion(): Promise<string> {
@@ -252,6 +446,42 @@ function expandTasks(
 
     return exportedTask;
   });
+}
+
+/**
+ * Attach resolved task resources to each exported task and rewrite the task
+ * description markdown so `./resources/<path>` references for `present`
+ * resources point at the exported asset tree. When `assetsOutputDir` is
+ * supplied the resource bytes are copied to disk as a side effect.
+ *
+ * Tasks without resource references are returned unchanged. Drift/missing/
+ * unresolved references are exposed via `resolved_resources` status but never
+ * rewritten or advertised, so the static UI surfaces the author's reference
+ * and the drift status instead of replacement bytes.
+ *
+ * AC: @static-export-resource-assets-complete ac-static-task-plan-owned-asset-uses-recorded-hash
+ * AC: @static-export-resource-assets-complete ac-static-task-materialized-asset-exists
+ * AC: @static-export-resource-assets-complete ac-static-task-drift-is-visible-not-rewritten
+ */
+async function attachTaskResources(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  tasks: ExportedTask[],
+  assetsOutputDir: string | null,
+): Promise<ExportedTask[]> {
+  const out: ExportedTask[] = [];
+  for (const task of tasks) {
+    if (!task.resource_refs || task.resource_refs.length === 0) {
+      out.push(task);
+      continue;
+    }
+    const resolved_resources = await exportTaskResources(ctx, task, assetsOutputDir);
+    const description =
+      task.description !== undefined
+        ? rewriteTaskContentForStaticExport(task.description, resolved_resources)
+        : task.description;
+    out.push({ ...task, resolved_resources, description });
+  }
+  return out;
 }
 
 /**
@@ -521,8 +751,14 @@ export async function generateJsonSnapshot(
     ctx.config.coverage.exclude_patterns,
   );
 
-  // Expand tasks with resolved spec references
-  const exportedTasks = expandTasks(tasks, items, refIndex);
+  // Expand tasks with resolved spec references, then attach resolved task
+  // resources (copying present-resource bytes when assetsOutputDir is set and
+  // rewriting `./resources/<path>` references in task descriptions).
+  const exportedTasks = await attachTaskResources(
+    ctx,
+    expandTasks(tasks, items, refIndex),
+    assetsOutputDir,
+  );
 
   // Expand items with inherited ACs and test coverage
   const exportedItems = expandItems(items, traitIndex, coveredACs);

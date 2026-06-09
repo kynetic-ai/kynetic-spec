@@ -108,6 +108,7 @@ describe("kspec export --format json --output <file>", () => {
     });
   });
 
+  // AC: @static-export-resource-assets-complete ac-static-review-image-asset-exists
   it("copies resource bytes to assets/resources/review/<ulid>/<path>", async () => {
     const reviewUlid = await seedScreenshotReview();
     const exportDir = path.join(projectDir, "build");
@@ -128,6 +129,44 @@ describe("kspec export --format json --output <file>", () => {
     );
     const bytes = await fs.readFile(assetPath);
     expect(bytes.toString("utf-8")).toBe("fake-png-bytes-for-export");
+  });
+
+  // AC: @static-export-resource-assets-complete ac-static-review-doc-asset-exists
+  it("copies a review document resource to assets/resources/review/<ulid>/<path>", async () => {
+    const uploadsDir = path.join(projectDir, "uploads");
+    await fs.mkdir(uploadsDir, { recursive: true });
+    const docSource = path.join(uploadsDir, "notes.md");
+    await fs.writeFile(docSource, "# Review notes\n\nDocument evidence.\n");
+
+    const slug = "doc-export-test";
+    kspecOk(
+      `review add --title 'Doc Export Review' --base abc123 --head def456 --slug ${slug}`,
+      projectDir,
+    );
+    kspecOk(
+      `review resource add @${slug} ${docSource} --id notes-doc --path docs/notes.md --label Notes`,
+      projectDir,
+    );
+    const reviewUlid = (
+      JSON.parse(kspecRun(`review get @${slug} --json`, projectDir).stdout) as { _ulid: string }
+    )._ulid;
+
+    const exportDir = path.join(projectDir, "build");
+    await fs.mkdir(exportDir, { recursive: true });
+    const outputFile = path.join(exportDir, "snapshot.json");
+    const result = kspecRun(`export --format json --output ${outputFile}`, projectDir);
+    expect(result.exitCode).toBe(0);
+
+    const snapshot = JSON.parse(await fs.readFile(outputFile, "utf-8")) as {
+      reviews?: Array<{ _ulid: string; resources: Array<{ id: string; exported_path: string }> }>;
+    };
+    const exported = snapshot.reviews!.find((r) => r._ulid === reviewUlid)!;
+    const docResource = exported.resources.find((r) => r.id === "notes-doc")!;
+    expect(docResource.exported_path).toBe(`assets/resources/review/${reviewUlid}/docs/notes.md`);
+
+    const assetPath = path.join(exportDir, docResource.exported_path);
+    const bytes = await fs.readFile(assetPath);
+    expect(bytes.toString("utf-8")).toBe("# Review notes\n\nDocument evidence.\n");
   });
 
   // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui

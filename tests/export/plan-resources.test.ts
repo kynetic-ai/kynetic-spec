@@ -189,25 +189,93 @@ describe("static export — plan resources", () => {
   });
 
   // AC: @trait-entity-scoped-local-resources-1 ac-static-export-copies-resource-assets
+  // AC: @static-export-resource-assets-complete ac-static-plan-image-asset-exists
   it("copies resource files to the export root when assetsOutputDir is provided", async () => {
     const { planUlid, bytes } = await setupFolderBackedProject();
     process.chdir(tempDir);
 
     const exportDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-export-out-"));
     try {
-      await generateJsonSnapshot(false, { assetsOutputDir: exportDir });
+      const snapshot = await generateJsonSnapshot(false, { assetsOutputDir: exportDir });
 
-      const exportedFile = path.join(
-        exportDir,
-        "assets",
-        "resources",
-        "plan",
-        planUlid,
-        "screenshots",
-        "login.png",
-      );
+      const plan = snapshot.plans?.find((p) => p._ulid === planUlid);
+      // The rewritten plan image URL must point at an asset that exists on disk.
+      const imageResource = plan!.resources.find((r) => r.path === "screenshots/login.png")!;
+      const exportedFile = path.join(exportDir, imageResource.exported_path);
+      expect(plan!.content).toContain(`![login](${imageResource.exported_path})`);
       const copied = await fs.readFile(exportedFile);
       expect(copied.equals(bytes)).toBe(true);
+    } finally {
+      await fs.rm(exportDir, { recursive: true, force: true });
+    }
+  });
+
+  // AC: @static-export-resource-assets-complete ac-static-plan-doc-asset-exists
+  it("copies a plan document resource referenced from plan markdown to disk", async () => {
+    const { planUlid } = await setupFolderBackedProject();
+    process.chdir(tempDir);
+
+    // Declare a markdown document resource alongside the image and reference it
+    // from the plan markdown via a document link.
+    const planDir = path.join(tempDir, "plans", planUlid);
+    const resourcesDir = path.join(planDir, "resources");
+    const docRelativePath = "docs/spec.md";
+    const docBytes = Buffer.from("# Linked spec document\n\nReference content.\n", "utf-8");
+    await fs.mkdir(path.join(resourcesDir, "docs"), { recursive: true });
+    await fs.writeFile(path.join(resourcesDir, docRelativePath), docBytes);
+
+    const docSha = createHash("sha256").update(docBytes).digest("hex");
+    await fs.writeFile(
+      path.join(planDir, "resources.yaml"),
+      yamlStringify({
+        resources: [
+          {
+            id: "login-shot",
+            label: null,
+            path: "screenshots/login.png",
+            content_type: "image/png",
+            bytes: 8,
+            // Hash of the PNG magic bytes the fixture wrote.
+            sha256: createHash("sha256")
+              .update(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
+              .digest("hex"),
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+          {
+            id: "spec-doc",
+            label: null,
+            path: docRelativePath,
+            content_type: "text/markdown",
+            bytes: docBytes.length,
+            sha256: docSha,
+            git_commit: null,
+            git_path: null,
+            description: null,
+          },
+        ],
+      }),
+    );
+    await fs.writeFile(
+      path.join(planDir, "plan.md"),
+      "# Export Plan\n\nSee the [spec](./resources/docs/spec.md) and screenshot:\n\n" +
+        "![login](./resources/screenshots/login.png)\n",
+    );
+
+    const exportDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-export-doc-"));
+    try {
+      const snapshot = await generateJsonSnapshot(false, { assetsOutputDir: exportDir });
+      const plan = snapshot.plans?.find((p) => p._ulid === planUlid);
+      const docResource = plan!.resources.find((r) => r.path === docRelativePath)!;
+      expect(docResource.exported_path).toBe(
+        `assets/resources/plan/${planUlid}/${docRelativePath}`,
+      );
+      // The rewritten plan document link points at the exported asset...
+      expect(plan!.content).toContain(`[spec](${docResource.exported_path})`);
+      // ...and that asset exists on disk with the declared bytes.
+      const onDisk = await fs.readFile(path.join(exportDir, docResource.exported_path));
+      expect(onDisk.equals(docBytes)).toBe(true);
     } finally {
       await fs.rm(exportDir, { recursive: true, force: true });
     }
