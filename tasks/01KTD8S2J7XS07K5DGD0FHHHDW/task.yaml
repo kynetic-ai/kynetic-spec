@@ -50,8 +50,11 @@ description: >
 spec_ref: "@static-export-resource-assets-complete"
 plan_ref: "@plan-resource-ui-hardening-plan"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 6c5ddaf32e3f8f8376e779d47135aabaab1a1af0. Static export now copies
+  and rewrites advertised plan/task/review resource assets, including task present/drift handling,
+  with on-disk export tests covering the spec ACs.
 depends_on:
   - "@generalize-live-ui-resource-markdown-rewriting"
 context: []
@@ -118,8 +121,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-09T02:23:05.449Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 6c5ddaf32e3f8f8376e779d47135aabaab1a1af0. Static export now copies and
+          rewrites advertised plan/task/review resource assets, including task present/drift
+          handling, with on-disk export tests covering the spec ACs.
+        previous: null
+      completed_at:
+        new: 2026-06-09T02:36:43.855Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-09T02:36:43.863Z
 created_at: 2026-06-06T01:29:22.247Z
 started_at: 2026-06-09T01:52:39.109Z
 submitted_at: 2026-06-09T02:20:14.869Z
+completed_at: 2026-06-09T02:36:43.855Z
 todos: []
 automation: eligible
