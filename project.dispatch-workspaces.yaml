@@ -10322,11 +10322,11 @@ workspaces:
     canonical_branch: dispatch/task/add-task-resource-bytes-routes/01ktd8s1
     canonical_branch_head: d81a89d9caae8ad4196b0da252ff2e2d9c105306
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-08T23:56:52.023Z
+      updated_at: 2026-06-09T00:00:00.538Z
     health:
       status: healthy
       issues: []
@@ -10340,17 +10340,17 @@ workspaces:
       target_branch: dev
       target_commit: 8d37d211933f076875ecb590ded02f3f7772da6d
       updated_at: 2026-06-08T23:56:52.023Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTD8S1T8W8TDX09S3RFYYWX3
     task_ref: "@01KTD8S1T8W8TDX09S3RFYYWX3"
     task_slug: add-task-resource-bytes-routes
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-09T00:00:00.538Z
       last_active_at: 2026-06-08T23:41:17.221Z
       last_reconciled_at: 2026-06-08T23:59:29.869Z
       created_at: 2026-06-08T23:11:11.341Z
-      updated_at: 2026-06-08T23:59:29.869Z
+      updated_at: 2026-06-09T00:00:00.538Z
     workspace_id: dispatch-workspace-01KTD8S1T8W8TDX09S3RFYYWX3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
