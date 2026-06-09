@@ -66,6 +66,17 @@ checks:
     runner: kspec
     created_at: 2026-06-09T19:06:13.592Z
     completed_at: 2026-06-09T19:06:13.592Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:e2e completed, then Playwright ran tests/e2e/resource-lifecycle.spec.ts;
+      6/6 chromium tests passed in 14.0s."
+    name: focused e2e
+    required: false
+    runner: npm run test:e2e -- tests/e2e/resource-lifecycle.spec.ts
+    created_at: 2026-06-09T19:06:16.255Z
+    completed_at: 2026-06-09T19:06:16.255Z
 events:
   - _ulid: 01KTPVNZZ3QX6RBA8PGPM8VA8R
     actor: Jacob Chapel
@@ -122,6 +133,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-09T19:06:13.803Z
+  - _ulid: 01KTPWEFGJ34HW4F2XXP4HTYW4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e
+    timestamp: 2026-06-09T19:06:16.466Z
 examined_commit: 3ac086626e24905755fed2bd254eea91ace29805
 external_links: []
 lifecycle_state: open
@@ -134,5 +152,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-09T18:52:54.116Z
-updated_at: 2026-06-09T19:06:13.592Z
+updated_at: 2026-06-09T19:06:16.255Z
 notes: []
