@@ -156,6 +156,12 @@ events:
       kind: blocker
       thread_ulid: 01KTN64WFVRFVBT1APBD4EN4JH
     timestamp: 2026-06-09T03:17:19.180Z
+  - _ulid: 01KTN66ZF496C77MBBR4SM86S2
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTN64WFVRFVBT1APBD4EN4JH
+    timestamp: 2026-06-09T03:18:27.556Z
 examined_commit: 09ede8f5093d2af6f17ba33af2635cfca3f3f794
 external_links: []
 lifecycle_state: open
@@ -215,8 +221,20 @@ threads:
                                   (default: false)
             -h, --help            display help for command exposes  and no ; running  fails with . Existing export tests use , and assets are copied beside that output file. Impact: readers following the AC-mandated exact temp-project steps cannot reach the advertised  checks. Update the guide and docs test to use the supported export invocation, e.g. a JSON output file under each export directory, so the subsequent asset paths are real.
         created_at: 2026-06-09T03:17:18.971Z
+      - _ulid: 01KTN66Z881P8Q8M65TXM9K04V
+        author: Jacob Chapel
+        body: "Clarification for the export-command blocker: the supported CLI form is --format json
+          --output <file> (or -o), not --out. Evidence: kspec export --help lists -o, --output
+          <path>, and running kspec export --out /tmp/kspec-review-export-check exits with unknown
+          option --out. Because resource assets are copied beside the output file, the guide should
+          write a JSON file inside each export directory (for example
+          /tmp/export-default/snapshot.json) before checking
+          /tmp/export-default/assets/resources/.... Update
+          tests/resource-ui-task-markdown-docs.test.ts as well; it currently asserts the invalid
+          kspec export --out string."
+        created_at: 2026-06-09T03:18:27.336Z
     kind: blocker
 verdicts: []
 created_at: 2026-06-09T03:03:10.257Z
-updated_at: 2026-06-09T03:17:18.971Z
+updated_at: 2026-06-09T03:18:27.336Z
 notes: []
