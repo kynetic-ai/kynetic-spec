@@ -12192,18 +12192,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/update-resource-documentation-ui-task-markdown/01ktd8s2
-    canonical_branch_head: 6c5ddaf32e3f8f8376e779d47135aabaab1a1af0
+    canonical_branch_head: 09ede8f5093d2af6f17ba33af2635cfca3f3f794
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-09T02:37:17.335Z
+      updated_at: 2026-06-09T02:59:52.566Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-09T02:37:45.225Z
+      updated_at: 2026-06-09T02:59:52.566Z
     integration:
       status: pending
       detail: null
@@ -12211,7 +12211,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6c5ddaf32e3f8f8376e779d47135aabaab1a1af0
-      updated_at: 2026-06-09T02:37:17.335Z
+      updated_at: 2026-06-09T02:59:52.566Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTD8S2Y2DNM0S39E8T7EY64E
@@ -12220,9 +12220,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-09T02:37:45.225Z
-      last_reconciled_at: 2026-06-09T02:37:45.225Z
+      last_reconciled_at: 2026-06-09T02:59:52.566Z
       created_at: 2026-06-09T02:37:17.335Z
-      updated_at: 2026-06-09T02:37:45.225Z
+      updated_at: 2026-06-09T02:59:52.566Z
     workspace_id: dispatch-workspace-01KTD8S2Y2DNM0S39E8T7EY64E
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
