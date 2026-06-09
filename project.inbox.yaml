@@ -4138,3 +4138,16 @@ inbox:
       - review-runner
     added_by: Jacob Chapel
     created_at: 2026-06-09T01:36:35.786Z
+  - _ulid: 01KTN6D820ZYTVGPJ89CTBW4NT
+    text: "Docs tests for exact walkthroughs should validate kspec command examples against real CLI
+      surfaces, not only assert string presence. Reflection context: resource docs review caught
+      kspec export --out in a guide even though the docs test passed; kspec export supports --format
+      json --output <file>, and assets are copied beside that output file. Scope needs triage:
+      decide whether to add focused command-help checks, lightweight smoke commands, or a reusable
+      docs-command validation helper for AC-mandated copy-paste steps."
+    tags:
+      - reflection
+      - docs
+      - tests
+    added_by: Jacob Chapel
+    created_at: 2026-06-09T03:21:52.961Z
