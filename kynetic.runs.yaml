@@ -61675,7 +61675,7 @@ runs:
     completed_at: 2026-06-09T02:40:35.568Z
   - _ulid: 01KTN697QKX7RK5MBHQ5XTEGM0
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61707,7 +61707,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-09T03:21:09.065Z
-        completed_at: 2026-06-09T03:21:09.065Z
+        completed_at: 2026-06-09T03:21:30.613Z
+        notes: "Proposed improvement: add or extend docs-resource documentation tests so command snippets in
+          AC-mandated exact walkthroughs are checked against real CLI surfaces, not only string
+          presence. Example scope: small/medium; for kspec command examples, assert supported flags
+          from CLI help or use a lightweight temp-project smoke command when practical. Benefit:
+          prevents docs tests from preserving invalid copy-paste commands like kspec export --out."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-09T03:21:30.613Z
+        completed_at: 2026-06-09T03:21:30.613Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-09T03:19:41.555Z
