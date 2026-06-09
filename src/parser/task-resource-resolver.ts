@@ -166,12 +166,15 @@ function shortHash(sha256: string): string {
 }
 
 /**
- * Convert a `ResolvedTaskResource[]` into a structured payload suitable for
- * JSON serialization (e.g. by `kspec task get --json` and the daemon API).
+ * Structured, JSON-serializable projection of a single resolved task resource.
+ * This is the canonical shape exposed by `kspec task get --json`, the daemon
+ * task detail API (`resolved_resources`), and — extended with an
+ * `exported_path` — the static export snapshot, so every surface reports the
+ * same fields for the same reference.
  *
  * AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
  */
-export function projectResolvedTaskResources(resolved: ResolvedTaskResource[]): Array<{
+export interface ProjectedTaskResource {
   owner_type: TaskResourceRef["owner_type"];
   owner_ref: string;
   id: string;
@@ -184,7 +187,17 @@ export function projectResolvedTaskResources(resolved: ResolvedTaskResource[]): 
   recorded_git_commit: string | null;
   current_git_commit: string | null;
   message: string;
-}> {
+}
+
+/**
+ * Convert a `ResolvedTaskResource[]` into a structured payload suitable for
+ * JSON serialization (e.g. by `kspec task get --json` and the daemon API).
+ *
+ * AC: @plan-resource-derivation-semantics-1 ac-resource-drift-is-visible
+ */
+export function projectResolvedTaskResources(
+  resolved: ResolvedTaskResource[],
+): ProjectedTaskResource[] {
   return resolved.map((entry) => ({
     owner_type: entry.reference.owner_type,
     owner_ref: entry.reference.owner_ref,

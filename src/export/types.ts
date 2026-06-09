@@ -18,6 +18,7 @@ import type {
   Workflow,
 } from "../schema/index.js";
 import type { ResourceMetadata } from "../schema/resources.js";
+import type { ProjectedTaskResource } from "../parser/task-resource-resolver.js";
 import type { LoadedSpecItem, LoadedTask } from "../parser/yaml.js";
 import type { AlignmentWarning } from "../parser/alignment.js";
 import type {
@@ -39,12 +40,49 @@ export interface AlignmentResponse {
 }
 
 /**
+ * A single task resource reference projected into the static export. The base
+ * shape is exactly the daemon's `resolved_resources` projection
+ * (`projectResolvedTaskResources` in `src/parser/task-resource-resolver.ts`),
+ * so static-mode and live-mode consumers render task resources identically;
+ * the static export adds an `exported_path` pointer that is set only when the
+ * reference resolves to a `present` resource whose bytes were copied (or are
+ * advertised) under the static asset tree at
+ * `assets/resources/task/<task-ulid>/<relative-path>`.
+ *
+ * Drifted, missing, and unresolved references carry their status and message
+ * but never an `exported_path`: the export must not advertise an asset path
+ * for bytes that do not match the task's recorded resource hash.
+ *
+ * AC: @static-export-resource-assets-complete ac-static-task-plan-owned-asset-uses-recorded-hash
+ * AC: @static-export-resource-assets-complete ac-static-task-materialized-asset-exists
+ * AC: @static-export-resource-assets-complete ac-static-task-drift-is-visible-not-rewritten
+ */
+export type ExportedTaskResource = ProjectedTaskResource & {
+  /**
+   * Snapshot-relative POSIX path under the export root:
+   * `assets/resources/task/<task-ulid>/<relative-path>`. Present only for
+   * `present` references whose bytes match the task's recorded hash.
+   */
+  exported_path?: string;
+};
+
+/**
  * Exported task with resolved spec reference title.
  * AC: @gh-pages-export ac-3
  */
 export interface ExportedTask extends LoadedTask {
   /** Resolved title of the linked spec item (for display) */
   spec_ref_title?: string;
+  /**
+   * Task resource references resolved against the owning entity's current
+   * state, with exported asset pointers for present references. Absent when
+   * the task declares no resource references.
+   *
+   * AC: @static-export-resource-assets-complete ac-static-task-plan-owned-asset-uses-recorded-hash
+   * AC: @static-export-resource-assets-complete ac-static-task-materialized-asset-exists
+   * AC: @static-export-resource-assets-complete ac-static-task-drift-is-visible-not-rewritten
+   */
+  resolved_resources?: ExportedTaskResource[];
 }
 
 /**
