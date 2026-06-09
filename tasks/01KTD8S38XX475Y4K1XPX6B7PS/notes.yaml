@@ -1,1 +1,33 @@
-notes: []
+notes:
+  - _ulid: 01KTPT9WR8WP82109KBVXN9BHP
+    content: >-
+      Approach: holistic end-to-end validation. Audited existing coverage — per-feature ACs are
+      already covered by unit/integration tests (resource-url-browser-fetch-contract,
+      task-resolved-resources, task-resources, export/{plan,task}-resources,
+      review-resource-static-export). Those exercise rewriter functions and app.handle(), NOT a real
+      browser.
+
+
+      Unique value of this task: a real-browser, real-multi-project, real-CLI holistic E2E. Adding
+      tests/e2e/resource-lifecycle.spec.ts that (1) builds two temp projects via CLI: projectDefault
+      = plan import (sibling resources.yaml: 1x1 PNG + .md) -> derive (plan-owned) + review with
+      image/doc resources; projectMaterialized = import -> derive --materialize-resources
+      (task-owned copies); (2) registers both with the fixture daemon via POST /api/projects (never
+      touches the live dispatch daemon); (3) selects non-default project via localStorage key
+      kspec-selected-project; (4) asserts daemon bytes routes return correct project-scoped bytes
+      via kspec_dir routing for plan/task(plan-owned+materialized)/review; (5) asserts the live
+      browser renders plan markdown image (naturalWidth>0, real PNG) + doc link, task modal
+      image/doc for default AND materialized (materialized desc references
+      ./resources/plan/<plan-ulid>/<file> — rewriter matches by exact resolved path), review
+      resource image card + doc link; (6) runs kspec export, asserts
+      assets/resources/{plan,task,review}/<ulid>/<file> exist with task-plan-owned bytes matching
+      recorded hash; (7) captures screenshots to test-results/.
+
+
+      De-risked the full CLI chain in scratch temp projects first: import, derive default (resolved
+      status=present, path=diagram.png), derive --materialize-resources (owner_type=task,
+      id=plan-diagram, path=plan/<plan-ulid>/diagram.png), review resource add, and export (all six
+      asset files produced) all confirmed working.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-09T18:28:49.032Z
