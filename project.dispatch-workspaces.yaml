@@ -12849,7 +12849,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-09T19:07:45.657Z
+      updated_at: 2026-06-09T19:10:31.637Z
     integration:
       status: merged
       detail: integration:merged
@@ -12866,18 +12866,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-09T18:52:00.327Z
-      last_reconciled_at: 2026-06-09T19:10:26.055Z
+      last_reconciled_at: 2026-06-09T19:10:31.637Z
       created_at: 2026-06-09T03:55:13.702Z
-      updated_at: 2026-06-09T19:10:26.055Z
+      updated_at: 2026-06-09T19:10:31.637Z
     workspace_id: dispatch-workspace-01KTD8S38XX475Y4K1XPX6B7PS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 3ac086626e24905755fed2bd254eea91ace29805
-        last_seen_at: 2026-06-09T18:51:30.214Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/validate-resource-lifecycle-e2e-temp-projects-01ktd8s3-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/validate-resource-lifecycle-e2e-temp-projects/01ktd8s3
