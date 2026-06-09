@@ -30947,7 +30947,7 @@
   type: task
   spec_ref: "@resource-docs-ui-task-markdown-behavior"
   plan_ref: "@plan-resource-ui-hardening-plan"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@make-static-export-copy-rewrite-all-resource-assets"
@@ -30960,7 +30960,7 @@
   todos_count: 0
   created_at: 2026-06-06T01:29:22.626Z
   started_at: 2026-06-09T03:37:29.992Z
-  submitted_at: 2026-06-09T03:00:02.743Z
+  submitted_at: 2026-06-09T03:37:33.561Z
   automation: eligible
 - _ulid: 01KTD8S38XX475Y4K1XPX6B7PS
   slugs:
