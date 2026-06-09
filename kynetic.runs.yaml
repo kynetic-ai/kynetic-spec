@@ -61389,9 +61389,23 @@ runs:
     completed_at: 2026-06-09T00:35:10.082Z
   - _ulid: 01KTMXSJFJ75PBC6W2XX989AK6
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-09T00:51:19.666Z
+        completed_at: 2026-06-09T00:52:12.251Z
+        notes: "What worked well: The review workflow forced a clean separation between code reading,
+          AC/spec lookup, deterministic gates, and verdict recording. Running a small
+          markdown-rendering probe made the UI visibility claim concrete: an unmatched image
+          reference survives only as img src, not visible guidance text. The existing review
+          record/check commands made it straightforward to leave a durable, anchored blocker with
+          gate evidence."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-09T00:52:12.251Z
+        completed_at: 2026-06-09T00:52:12.251Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-09T00:51:19.666Z
