@@ -61576,9 +61576,23 @@ runs:
     completed_at: 2026-06-09T01:36:42.395Z
   - _ulid: 01KTN24C30TS7MP6XG6N8J4PFM
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-09T02:07:07.872Z
+        completed_at: 2026-06-09T02:07:33.274Z
+        notes: "What worked well: the detached-reviewer workflow gave a clean path from review gates to
+          merge without manually checking out dev; the review record made gate evidence explicit
+          before approval; focused fresh rerun of tests/agent-dispatch-engine.test.ts plus full npm
+          test gave direct confidence on the flaky area; reading dispatch cleanup ordering before
+          accepting the worker claim confirmed the deferred runInvocation synchronization matched
+          production lifecycle."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-09T02:07:33.274Z
+        completed_at: 2026-06-09T02:07:33.274Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-09T02:07:07.872Z
