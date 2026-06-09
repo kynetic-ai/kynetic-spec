@@ -820,6 +820,14 @@ features:
               section identifiers for anchor targeting
             when: |
               A client requests GET /api/reviews/:id/content
+          - given: a plan review subject has markdown content that references declared plan resources with
+              `./resources/<relative-path>`
+            id: ac-5
+            then: each affected markdown section includes byte-free plan resource context with the owning plan
+              ref, a browser-fetchable plan-scoped resource base URL that preserves selected-project
+              context, and bounded declared-resource metadata sufficient for clients to rewrite only
+              declared safe resource paths without embedding resource bytes
+            when: a client requests `GET /api/reviews/:id/content` for that review
         tags: []
         created: 2026-03-16T08:28:58.926Z
         notes: []
