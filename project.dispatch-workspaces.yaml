@@ -10834,7 +10834,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-09T00:53:55.193Z
+      updated_at: 2026-06-09T00:54:03.439Z
     integration:
       status: pending
       detail: null
@@ -10843,7 +10843,7 @@ workspaces:
       target_branch: dev
       target_commit: 27fe4f1938d81f27125c9da22b20827e496852f8
       updated_at: 2026-06-09T00:53:55.193Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KTD8S26A1PY21C7SYXTNTJ05
     task_ref: "@01KTD8S26A1PY21C7SYXTNTJ05"
@@ -10851,18 +10851,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-09T00:36:11.962Z
-      last_reconciled_at: 2026-06-09T00:53:55.193Z
+      last_reconciled_at: 2026-06-09T00:54:03.439Z
       created_at: 2026-06-08T23:57:09.882Z
-      updated_at: 2026-06-09T00:53:55.193Z
+      updated_at: 2026-06-09T00:54:03.439Z
     workspace_id: dispatch-workspace-01KTD8S26A1PY21C7SYXTNTJ05
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 9d81dd03cced10e76daed6ab19337559278782f1
-        last_seen_at: 2026-06-09T00:35:41.964Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/generalize-live-ui-resource-markdown-rewriting-01ktd8s2-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/generalize-live-ui-resource-markdown-rewriting/01ktd8s2
