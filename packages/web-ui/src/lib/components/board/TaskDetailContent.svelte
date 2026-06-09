@@ -30,6 +30,7 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { renderMarkdown } from '$lib/utils/markdown';
+	import { rewriteTaskResourceLinks } from '$lib/utils/task-resource-links';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { getStatusClasses, formatVcsRef } from './board-utils';
 	import GitBranch from 'lucide-svelte/icons/git-branch';
@@ -215,6 +216,40 @@
 	let slug = $derived(task?.slugs?.[0] ?? task?._ulid?.slice(0, 8) ?? '');
 	let readOnly = $derived(isStaticMode());
 
+	// Rewrite `./resources/<path>` markdown targets in the task description to the
+	// task-scoped resource bytes URL (carrying selected-project context) before
+	// rendering. Only `present` resolved resources are rewritten; drift/missing/
+	// unresolved and unmatched references stay raw and are surfaced in the
+	// resources status section below.
+	// AC: @live-task-resource-markdown-rendering ac-plan-owned-task-image-renders
+	// AC: @live-task-resource-markdown-rendering ac-plan-owned-task-doc-link-opens
+	// AC: @live-task-resource-markdown-rendering ac-materialized-task-image-renders
+	// AC: @live-task-resource-markdown-rendering ac-materialized-task-doc-link-opens
+	let renderedDescription = $derived(
+		task?.description
+			? rewriteTaskResourceLinks(task.description, task.resolved_resources, task.resources_base_url)
+			: ''
+	);
+
+	// AC: @live-task-resource-markdown-rendering ac-drifted-task-resource-is-visible-not-silent
+	// Resolved task resources whose status is not `present` cannot be rewritten to
+	// a bytes URL without risking serving different bytes — surface them so drift/
+	// missing/unresolved states stay visible even if an image fails to load.
+	let unhealthyResources = $derived(
+		(task?.resolved_resources ?? []).filter((r) => r.status !== 'present')
+	);
+
+	function resourceStatusClasses(status: string): string {
+		switch (status) {
+			case 'present':
+				return 'bg-status-completed text-status-completed-fg';
+			case 'drift':
+				return 'bg-status-blocked text-status-blocked-fg';
+			default:
+				return 'bg-status-pending text-status-pending-fg';
+		}
+	}
+
 	// AC: @review-records-web-ui ac-7 — Split reviews into current (open/draft) and closed
 	let currentReviews = $derived(
 		linkedReviews.filter((r) => r.lifecycle_state === 'open' || r.lifecycle_state === 'draft')
@@ -275,12 +310,41 @@
 {:else if task && statusInfo}
 	<div class="flex flex-col gap-4">
 		<!-- Description -->
+		<!-- AC: @live-task-resource-markdown-rendering ac-plan-owned-task-image-renders -->
+		<!-- AC: @live-task-resource-markdown-rendering ac-materialized-task-image-renders -->
 		{#if task.description}
 			<div
 				class="text-sm text-muted-foreground break-words leading-relaxed prose prose-sm dark:prose-invert max-w-none"
 				data-testid="task-description"
 			>
-				{@html renderMarkdown(task.description)}
+				{@html renderMarkdown(renderedDescription)}
+			</div>
+		{/if}
+
+		<!-- Resource status — surfaces drift/missing/unresolved resolved resources
+		     so they stay visible even when an image cannot load. -->
+		<!-- AC: @live-task-resource-markdown-rendering ac-drifted-task-resource-is-visible-not-silent -->
+		<!-- AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw -->
+		{#if unhealthyResources.length > 0}
+			<div data-testid="task-resource-status" class="flex flex-col gap-2">
+				<p class="text-xs font-medium text-muted-foreground">Resources needing attention</p>
+				<ul class="flex flex-col gap-1.5">
+					{#each unhealthyResources as resource (resource.id)}
+						<li
+							class="flex flex-wrap items-center gap-2 text-xs"
+							data-testid="task-resource-status-item"
+						>
+							<Badge
+								class={resourceStatusClasses(resource.status)}
+								data-testid="task-resource-status-badge"
+							>
+								{resource.status}
+							</Badge>
+							<code class="break-all font-mono">./resources/{resource.path}</code>
+							<span class="text-muted-foreground break-words">{resource.message}</span>
+						</li>
+					{/each}
+				</ul>
 			</div>
 		{/if}
 

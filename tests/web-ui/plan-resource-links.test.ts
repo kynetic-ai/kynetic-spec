@@ -12,8 +12,22 @@
  * Spec: @trait-entity-scoped-local-resources-1
  */
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { PlanDetail, PlanResourceMetadata } from "@kynetic-ai/shared";
+
+// The plan rewriter delegates to the shared resource-links core, which reads
+// the project store to append selected-project `kspec_dir` context. No project
+// is selected in these unit tests, so the rewritten URLs carry no `kspec_dir`
+// (selected-project routing is pinned separately in
+// resource-url-project-context.test.ts). Mock the store so the module chain
+// resolves without pulling in `$app`/`$lib` SvelteKit aliases.
+const projectMock = vi.hoisted(() => () => ({
+  getSelectedProjectPath: () => null,
+  clearInvalidSelection: () => {},
+  isInvalidProjectError: () => false,
+}));
+vi.mock("$lib/stores/project.svelte", projectMock);
+vi.mock("../../packages/web-ui/src/lib/stores/project.svelte", projectMock);
 
 import { rewritePlanResourceLinks } from "../../packages/web-ui/src/lib/utils/plan-resource-links";
 import { buildPlanContentBlocks } from "../../packages/web-ui/src/lib/utils/plan-embedded-content";

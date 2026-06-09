@@ -16,19 +16,13 @@
  * same way review resources do (`reviewResourceBytesUrl` in `$lib/api`): an
  * `<img src>` / `<a href>` request cannot send the `X-Kspec-Dir` header, so the
  * selected project's path travels as a `?kspec_dir=` query parameter built from
- * the project store.
- *
- * IMPLEMENTATION STATUS — STUB. This is a contract stub authored by the
- * tests-first task `@add-resource-url-task-markdown-contract-tests`. The real
- * rewriting behaviour is implemented by the sibling task
- * `@generalize-live-ui-resource-markdown-rewriting`, which also flips the
- * `it.fails` contract tests in `tests/web-ui/task-resource-links.test.ts` to
- * `it` (the repo's FLIPPED-ON-FIX protocol). Until then this returns the input
- * markdown unchanged so the contract tests run red-as-expected (`it.fails`)
- * without breaking import/typecheck.
+ * the project store. This and the `./resources/<path>` pattern matching are
+ * shared with plan rewriting through {@link rewriteEntityResourceLinks}.
  *
  * Spec: @live-task-resource-markdown-rendering
  */
+
+import { rewriteEntityResourceLinks } from "./resource-links";
 
 /**
  * Minimal shape the rewriter needs from a task's `resolved_resources`
@@ -62,14 +56,30 @@ export interface ResolvedTaskResourceLink {
  * @param resourcesBaseUrl - the task-scoped `resources_base_url` from the task
  *   detail API; clients construct `${resourcesBaseUrl}/${id}/bytes`.
  *
+ * AC: @live-task-resource-markdown-rendering ac-plan-owned-task-image-renders
+ * AC: @live-task-resource-markdown-rendering ac-plan-owned-task-doc-link-opens
+ * AC: @live-task-resource-markdown-rendering ac-materialized-task-image-renders
+ * AC: @live-task-resource-markdown-rendering ac-materialized-task-doc-link-opens
+ * AC: @live-task-resource-markdown-rendering ac-drifted-task-resource-is-visible-not-silent
+ * AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+ *
  * Spec: @live-task-resource-markdown-rendering
  */
 export function rewriteTaskResourceLinks(
   markdown: string,
-  _resources: ResolvedTaskResourceLink[] | undefined,
-  _resourcesBaseUrl: string | undefined,
+  resources: ResolvedTaskResourceLink[] | undefined,
+  resourcesBaseUrl: string | undefined,
 ): string {
-  // STUB — see file header. Behaviour lands with
-  // @generalize-live-ui-resource-markdown-rewriting.
-  return markdown;
+  return rewriteEntityResourceLinks(
+    markdown,
+    resources?.map((resource) => ({
+      id: resource.id,
+      path: resource.path,
+      // Only non-drifted, present resources serve the bytes the task was
+      // derived against; drift/missing/unresolved references stay raw so the
+      // UI surfaces their status instead of silently serving different bytes.
+      rewritable: resource.status === "present",
+    })),
+    resourcesBaseUrl,
+  );
 }

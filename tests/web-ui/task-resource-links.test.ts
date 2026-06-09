@@ -90,7 +90,7 @@ describe("rewriteTaskResourceLinks", () => {
   // is rewritten to the task-scoped bytes URL carrying the selected project's
   // routing context so the browser fetches that project's recorded plan
   // resource image.
-  it.fails("rewrites a plan-owned image target to the selected-project task-scoped bytes URL", () => {
+  it("rewrites a plan-owned image target to the selected-project task-scoped bytes URL", () => {
     const markdown = "Flow: ![flow](./resources/diagrams/flow.png)";
     const out = rewriteTaskResourceLinks(
       markdown,
@@ -105,7 +105,7 @@ describe("rewriteTaskResourceLinks", () => {
   // AC: @live-task-resource-markdown-rendering ac-plan-owned-task-doc-link-opens
   // A non-drifted plan-owned document link is rewritten so opening it fetches
   // the recorded plan resource document bytes from the selected project.
-  it.fails("rewrites a plan-owned document link to the selected-project task-scoped bytes URL", () => {
+  it("rewrites a plan-owned document link to the selected-project task-scoped bytes URL", () => {
     const markdown = "See [the spec](./resources/docs/spec.md) for details.";
     const out = rewriteTaskResourceLinks(
       markdown,
@@ -121,7 +121,7 @@ describe("rewriteTaskResourceLinks", () => {
   // A task-owned copy (derived with --materialize-resources): the image target
   // is rewritten through the same task-scoped bytes route so the browser
   // displays the copied task-owned image.
-  it.fails("rewrites a materialized task-owned image target to the selected-project task-scoped bytes URL", () => {
+  it("rewrites a materialized task-owned image target to the selected-project task-scoped bytes URL", () => {
     const markdown = "Home: ![home](./resources/screens/home.png)";
     const out = rewriteTaskResourceLinks(
       markdown,
@@ -136,7 +136,7 @@ describe("rewriteTaskResourceLinks", () => {
   // AC: @live-task-resource-markdown-rendering ac-materialized-task-doc-link-opens
   // A task-owned copy document link is rewritten so opening it fetches the
   // copied task-owned document bytes from the selected project.
-  it.fails("rewrites a materialized task-owned document link to the selected-project task-scoped bytes URL", () => {
+  it("rewrites a materialized task-owned document link to the selected-project task-scoped bytes URL", () => {
     const markdown = "Read [the notes](./resources/docs/notes.md).";
     const out = rewriteTaskResourceLinks(
       markdown,
@@ -152,7 +152,7 @@ describe("rewriteTaskResourceLinks", () => {
   //     — when no project is selected the task-scoped bytes URL is emitted
   //     without a kspec_dir query (default project routing). Guards the base
   //     URL contract independent of project context.
-  it.fails("rewrites to the task-scoped bytes URL without kspec_dir when no project is selected", () => {
+  it("rewrites to the task-scoped bytes URL without kspec_dir when no project is selected", () => {
     projectState.selectedPath = null;
     const markdown = "![flow](./resources/diagrams/flow.png)";
     const out = rewriteTaskResourceLinks(
