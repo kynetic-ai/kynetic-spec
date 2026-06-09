@@ -4125,3 +4125,16 @@ inbox:
       - cli
     added_by: "@claude"
     created_at: 2026-06-06T07:59:45.280Z
+  - _ulid: 01KTN0CEYAPB83V2NRE33BVXE7
+    text: "Improve the test runner review experience for long full-suite runs: when a suite fails,
+      surface the failure snippet earlier or provide a command/flag to extract current failure
+      summaries from the runner log before the whole run exits. During review of
+      @01KTD8S26A1PY21C7SYXTNTJ05, npm test ran for roughly 38 minutes and one unrelated flaky suite
+      failure was only actionable from the final summary; earlier failure details would let
+      reviewers prepare targeted reruns and follow-up triage sooner."
+    tags:
+      - reflection
+      - tests
+      - review-runner
+    added_by: Jacob Chapel
+    created_at: 2026-06-09T01:36:35.786Z
