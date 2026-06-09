@@ -23,6 +23,17 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-09T01:32:01.137Z
     completed_at: 2026-06-09T01:32:01.137Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors. Two no-array-sort warnings in tests/web-ui/plan-resource-links.test.ts lines
+      57/68 are pre-existing on dev and outside this diff.
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-09T01:32:05.884Z
+    completed_at: 2026-06-09T01:32:05.884Z
 events:
   - _ulid: 01KTMZBFJKY44ET5E4XB9S7HPS
     actor: Jacob Chapel
@@ -51,6 +62,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-09T01:32:01.354Z
+  - _ulid: 01KTN047JY4WVKP50J03Z3SDGJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-09T01:32:06.110Z
 examined_commit: 06319536c213604187066e4306f631dd6e751bca
 external_links: []
 lifecycle_state: open
@@ -63,5 +81,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-09T01:18:35.091Z
-updated_at: 2026-06-09T01:32:01.137Z
+updated_at: 2026-06-09T01:32:05.884Z
 notes: []
