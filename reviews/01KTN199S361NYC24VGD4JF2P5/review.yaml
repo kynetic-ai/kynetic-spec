@@ -69,6 +69,18 @@ checks:
     runner: kspec
     created_at: 2026-06-09T02:04:56.947Z
     completed_at: 2026-06-09T02:04:56.947Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed and exited 0. Warnings match repository
+      completeness baseline plus this bug task's no-spec_ref warning; the changed test retains the
+      relevant @runner-invocation-semantics AC annotation.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-09T02:05:10.569Z
+    completed_at: 2026-06-09T02:05:10.569Z
 events:
   - _ulid: 01KTN199S3YZ5KKVN4HYPQVVZK
     actor: Jacob Chapel
@@ -125,6 +137,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-09T02:04:57.177Z
+  - _ulid: 01KTN20SR4VZAHV1Y3VXJCH10W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-09T02:05:10.788Z
 examined_commit: 934fa83182e267be81514ce9b5c528739257f5f0
 external_links: []
 lifecycle_state: open
@@ -137,5 +156,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-09T01:52:20.771Z
-updated_at: 2026-06-09T02:04:56.947Z
+updated_at: 2026-06-09T02:05:10.569Z
 notes: []
