@@ -1,0 +1,30 @@
+_ulid: 01KTN02TDJH33FM85CD6E1215H
+slugs:
+  - stabilize-dispatch-runner-preflight-session-id-test
+title: Stabilize flaky dispatch runner preflight session id test
+type: bug
+description: "During review of @01KTD8S26A1PY21C7SYXTNTJ05, full npm test failed once in
+  tests/agent-dispatch-engine.test.ts: Dispatch runner resolution preflight uses the same canonical
+  session id for preflight and the tracked invocation. Assertion at
+  tests/agent-dispatch-engine.test.ts:2545 expected undefined to be defined. A fresh rerun of npm
+  test -- --fresh tests/agent-dispatch-engine.test.ts passed all 147 tests, so classify as
+  flaky/pre-existing instability rather than a deterministic regression from the resource markdown
+  rewrite task. Investigate why the preflight/tracked invocation lookup can intermittently be
+  missing, add deterministic coverage or synchronization as needed, and preserve the canonical
+  session-id contract."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - tests
+  - dispatch
+  - flaky
+vcs_refs: []
+created_at: 2026-06-09T01:31:19.858Z
+todos: []
+automation: eligible
