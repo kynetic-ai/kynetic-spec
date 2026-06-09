@@ -61451,9 +61451,23 @@ runs:
     completed_at: 2026-06-09T00:53:33.669Z
   - _ulid: 01KTMZ3TA7VMARW9CJNF4W86A1
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-09T01:14:23.943Z
+        completed_at: 2026-06-09T01:15:49.898Z
+        notes: "Step 1 baseline: reviewed meta observations list (13 items). Closest neighbors to this
+          fix-cycle session: 01KTMMHH (URL-shape vs HTTP-byte AC coverage), 01KTMWVM (web-ui util
+          importing project store breaks root-node tests via $app alias), 01KTMWVN (flipping control
+          tests on FLIPPED-ON-FIX). Read all three in full. Searches 'svelte component test' /
+          'testing-library DOM render' returned no matches — no existing tracking for
+          component-render harness or UI-visibility AC coverage."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-09T01:15:49.898Z
+        completed_at: 2026-06-09T01:15:49.898Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-09T01:14:23.943Z
