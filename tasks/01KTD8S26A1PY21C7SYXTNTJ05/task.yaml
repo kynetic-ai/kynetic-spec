@@ -47,7 +47,7 @@ description: >
 spec_ref: "@live-task-resource-markdown-rendering"
 plan_ref: "@plan-resource-ui-hardening-plan"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@add-task-resource-bytes-routes"
@@ -61,11 +61,11 @@ review_ref: "@01KTMWZTJF9CY3DKDMPTS0P7YK"
 submission_linkage:
   review_url: null
   branch: dispatch/task/generalize-live-ui-resource-markdown-rewriting/01ktd8s2
-  captured_at: 2026-06-09T00:31:57.519Z
-  commit: 9d81dd03cced10e76daed6ab19337559278782f1
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-06-09T01:13:47.994Z
+  commit: 06319536c213604187066e4306f631dd6e751bca
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/generalize-live-ui-resource-markdown-rewriting/01ktd8s2
 session_id: 01KTMXZMMADSGTY1A3Z6E1N84A
 history:
   - author: Jacob Chapel
@@ -138,8 +138,35 @@ history:
         previous: 2026-06-09T00:01:17.122Z
     command: task-start
     timestamp: 2026-06-09T01:13:44.886Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/generalize-live-ui-resource-markdown-rewriting/01ktd8s2
+          captured_at: 2026-06-09T01:13:47.994Z
+          commit: 06319536c213604187066e4306f631dd6e751bca
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/generalize-live-ui-resource-markdown-rewriting/01ktd8s2
+        previous:
+          review_url: null
+          branch: dispatch/task/generalize-live-ui-resource-markdown-rewriting/01ktd8s2
+          captured_at: 2026-06-09T00:31:57.519Z
+          commit: 9d81dd03cced10e76daed6ab19337559278782f1
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-06-09T01:13:47.998Z
+        previous: 2026-06-09T00:31:57.522Z
+    command: task-submit
+    timestamp: 2026-06-09T01:13:47.998Z
 created_at: 2026-06-06T01:29:21.866Z
 started_at: 2026-06-09T01:13:44.885Z
-submitted_at: 2026-06-09T00:31:57.522Z
+submitted_at: 2026-06-09T01:13:47.998Z
 todos: []
 automation: eligible
