@@ -21113,6 +21113,23 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-09T01:16:23.604Z
+  - _ulid: 01KTMZ7RVMY5HX2W14JTZHQ6AR
+    type: success
+    content: "With no Svelte DOM render harness in the unit suite (root vitest is node env, no
+      testing-library/svelte/jsdom), the way to give a UI-guidance AC genuine behavioral coverage is
+      to extract the component's decision logic into a pure exported helper that the component
+      consumes via $derived, then unit-test the helper directly. This session: factored
+      findUnmatchedTaskResourceReferences (task-resource-links.ts) + extractResourceReferencePaths
+      (resource-links.ts shared core); TaskDetailContent.svelte renders its unmatched-reference
+      guidance solely from that helper's output, so 6 pure behavioral tests (unmatched detection,
+      no-resolved-resources, resolved-but-non-present excluded, dedup, external-URL exclusion,
+      no-reference cases) pin the modal's actual decision logic without a DOM render. Mirrors how
+      the rewriter and drift detection were already covered. Keeps the component a thin wrapper over
+      a tested function and avoids source-scanning tests (forbidden by work-gates)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-09T01:16:33.524Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
