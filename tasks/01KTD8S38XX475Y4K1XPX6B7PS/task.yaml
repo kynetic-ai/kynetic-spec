@@ -66,8 +66,12 @@ description: >
 spec_ref: "@live-plan-resource-url-project-context"
 plan_ref: "@plan-resource-ui-hardening-plan"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev at ee78b193a4a5194dab3eaa3ef32023bafbb268e2 after approved review
+  @01KTPVNZ. Added holistic Playwright E2E coverage for temp-project resource lifecycle:
+  plan/task/review bytes routes with kspec_dir, live plan/task/review rendering, materialized task
+  resources, and static export resource assets."
 depends_on:
   - "@update-resource-documentation-ui-task-markdown"
 context: []
@@ -135,8 +139,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-09T18:52:56.426Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev at ee78b193a4a5194dab3eaa3ef32023bafbb268e2 after approved review @01KTPVNZ.
+          Added holistic Playwright E2E coverage for temp-project resource lifecycle:
+          plan/task/review bytes routes with kspec_dir, live plan/task/review rendering,
+          materialized task resources, and static export resource assets."
+        previous: null
+      completed_at:
+        new: 2026-06-09T19:07:26.472Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-09T19:07:26.480Z
 created_at: 2026-06-06T01:29:22.973Z
 started_at: 2026-06-09T03:58:44.146Z
 submitted_at: 2026-06-09T18:48:38.647Z
+completed_at: 2026-06-09T19:07:26.472Z
 todos: []
 automation: eligible
