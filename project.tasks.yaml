@@ -30901,7 +30901,7 @@
   type: task
   spec_ref: "@live-task-resource-markdown-rendering"
   plan_ref: "@plan-resource-ui-hardening-plan"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@add-task-resource-bytes-routes"
@@ -30915,6 +30915,7 @@
   created_at: 2026-06-06T01:29:21.866Z
   started_at: 2026-06-09T01:13:44.885Z
   submitted_at: 2026-06-09T01:13:47.998Z
+  completed_at: 2026-06-09T01:33:14.743Z
   automation: eligible
 - _ulid: 01KTD8S2J7XS07K5DGD0FHHHDW
   slugs:

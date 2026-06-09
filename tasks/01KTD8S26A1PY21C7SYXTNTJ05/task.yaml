@@ -47,8 +47,11 @@ description: >
 spec_ref: "@live-task-resource-markdown-rendering"
 plan_ref: "@plan-resource-ui-hardening-plan"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Reviewed and merged to dev at 84afbdad64743f6b2c7f86127cfe65fad383f681. Generalized
+  plan/task resource markdown rewriting, selected-project resource URL context, and task resource
+  status guidance.
 depends_on:
   - "@add-task-resource-bytes-routes"
 context: []
@@ -172,8 +175,24 @@ history:
         previous: "@01KTMWZTJF9CY3DKDMPTS0P7YK"
     command: review-link
     timestamp: 2026-06-09T01:18:37.203Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Reviewed and merged to dev at 84afbdad64743f6b2c7f86127cfe65fad383f681. Generalized plan/task
+          resource markdown rewriting, selected-project resource URL context, and task resource
+          status guidance.
+        previous: null
+      completed_at:
+        new: 2026-06-09T01:33:14.743Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-09T01:33:14.752Z
 created_at: 2026-06-06T01:29:21.866Z
 started_at: 2026-06-09T01:13:44.885Z
 submitted_at: 2026-06-09T01:13:47.998Z
+completed_at: 2026-06-09T01:33:14.743Z
 todos: []
 automation: eligible
