@@ -135,7 +135,7 @@ describe("plan resource URLs preserve selected-project context", () => {
   // that carries the selected non-default project's kspec_dir so the browser
   // fetches that project's plan resource bytes rather than the default
   // project's bytes or a not-found response.
-  it.fails("rewrites a plan image target to a URL carrying the selected project's kspec_dir", () => {
+  it("rewrites a plan image target to a URL carrying the selected project's kspec_dir", () => {
     const plan = planWith("# Plan\n\n![login](./resources/screenshots/login.png)\n", [
       planResource(),
     ]);
@@ -149,7 +149,7 @@ describe("plan resource URLs preserve selected-project context", () => {
   // A plan markdown document link referencing a declared resource must rewrite
   // to a URL carrying the selected project's kspec_dir so opening it returns
   // that project's plan resource document bytes.
-  it.fails("rewrites a plan document link to a URL carrying the selected project's kspec_dir", () => {
+  it("rewrites a plan document link to a URL carrying the selected project's kspec_dir", () => {
     const plan = planWith("# Plan\n\nSee [the spec](./resources/docs/spec.md).\n", [
       planResource({ id: "specdoc", path: "docs/spec.md", content_type: "text/markdown" }),
     ]);

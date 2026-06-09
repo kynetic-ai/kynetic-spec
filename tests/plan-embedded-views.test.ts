@@ -1,5 +1,19 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { BatchItemSummary, PlanDetail } from "@kynetic-ai/shared";
+
+// buildPlanContentBlocks rewrites `./resources/<path>` markdown via the shared
+// resource-links core, which reads the project store for selected-project
+// `kspec_dir` context. Mock the store (no project selected) so the module
+// chain resolves without `$app`/`$lib` SvelteKit aliases; selected-project
+// routing is pinned in tests/web-ui/resource-url-project-context.test.ts.
+const projectMock = vi.hoisted(() => () => ({
+  getSelectedProjectPath: () => null,
+  clearInvalidSelection: () => {},
+  isInvalidProjectError: () => false,
+}));
+vi.mock("$lib/stores/project.svelte", projectMock);
+vi.mock("../packages/web-ui/src/lib/stores/project.svelte", projectMock);
+
 import { buildPlanContentBlocks } from "../packages/web-ui/src/lib/utils/plan-embedded-content";
 
 function createPlan(overrides: Partial<PlanDetail> = {}): PlanDetail {

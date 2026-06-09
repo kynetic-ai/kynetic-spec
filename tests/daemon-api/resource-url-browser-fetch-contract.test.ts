@@ -444,7 +444,7 @@ describe("plan resource browser URLs fetch the selected project's bytes", () => 
   // bytes — not the default project's bytes. it.fails until the plan rewrite
   // appends kspec_dir (today the URL omits it, so the request falls back to the
   // default project and returns project A's bytes).
-  it.fails("fetches the selected project's plan image bytes from the rendered image URL", async () => {
+  it("fetches the selected project's plan image bytes from the rendered image URL", async () => {
     const md = firstMarkdown(
       planWith("# Plan\n\n![login](./resources/screenshots/login.png)\n", [planResource()]),
     );
@@ -458,7 +458,7 @@ describe("plan resource browser URLs fetch the selected project's bytes", () => 
   // The rendered plan document link, opened by the browser WITHOUT X-Kspec-Dir,
   // must return the SELECTED project's plan document bytes. it.fails until the
   // plan rewrite is project-aware.
-  it.fails("fetches the selected project's plan document bytes from the rendered link URL", async () => {
+  it("fetches the selected project's plan document bytes from the rendered link URL", async () => {
     const md = firstMarkdown(
       planWith("# Plan\n\nSee [the spec](./resources/docs/spec.md).\n", [
         planResource({ id: "specdoc", path: "docs/spec.md", content_type: "text/markdown" }),
@@ -470,23 +470,24 @@ describe("plan resource browser URLs fetch the selected project's bytes", () => 
     expect(result.bytes.equals(PLAN_DOC_A)).toBe(false);
   });
 
-  // Positive control / regression guard: the SAME rendered plan URL is what the
-  // it.fails tests above fetch. Today it carries no kspec_dir, so a no-header
-  // fetch resolves to the DEFAULT project (A) and returns project A's bytes with
-  // 200 — proving the it.fails tests fail on the selected-project byte mismatch
-  // (project B expected, project A served), not on a setup/transport error. Once
-  // the rewrite appends kspec_dir this URL will instead carry project B's
-  // context, at which point this guard's project-A expectation is updated
-  // alongside flipping the it.fails tests.
-  it("today the un-scoped rendered plan image URL falls back to the default project's bytes", async () => {
+  // AC: @live-plan-resource-url-project-context ac-plan-image-routes-to-selected-project
+  // Shape + routing guard for the rewritten plan image URL: now that the rewrite
+  // is project-aware, the rendered URL carries the selected project's kspec_dir
+  // query, and a no-header fetch of that exact URL resolves to project B (the
+  // selected project) and returns B's bytes — not the default project A's. This
+  // pins the precise URL shape the flipped it() tests above rely on.
+  it("the rewritten plan image URL carries the selected project's kspec_dir and serves its bytes", async () => {
     const md = firstMarkdown(
       planWith("# Plan\n\n![login](./resources/screenshots/login.png)\n", [planResource()]),
     );
     const target = grabTarget(md, true, "login");
-    expect(target).toBe(`${PLAN_RESOURCES_BASE}/shot/bytes`);
+    expect(target).toBe(
+      `${PLAN_RESOURCES_BASE}/shot/bytes?kspec_dir=${encodeURIComponent(projectB)}`,
+    );
     const result = await browserFetch(app, target);
     expect(result.status).toBe(200);
-    expect(result.bytes.equals(PLAN_IMAGE_A)).toBe(true);
+    expect(result.bytes.equals(PLAN_IMAGE_B)).toBe(true);
+    expect(result.bytes.equals(PLAN_IMAGE_A)).toBe(false);
   });
 
   // AC: @live-plan-resource-url-project-context ac-plan-resource-url-still-uses-plan-manifest
@@ -549,7 +550,7 @@ describe("task resource markdown browser URLs fetch the selected project's resol
   // resource bytes through the task-scoped route. it.fails until
   // rewriteTaskResourceLinks produces the project-scoped bytes URL (the stub
   // returns the markdown unchanged, leaving an un-fetchable ./resources ref).
-  it.fails("fetches the selected project's plan-owned bytes from the rewritten image URL", async () => {
+  it("fetches the selected project's plan-owned bytes from the rewritten image URL", async () => {
     const md = rewriteTaskResourceLinks(
       "![flow](./resources/diagrams/flow.png)",
       [resolvedResource({ id: "diagram", path: "diagrams/flow.png", owner_type: "plan" })],
@@ -564,7 +565,7 @@ describe("task resource markdown browser URLs fetch the selected project's resol
   // AC: @live-task-resource-markdown-rendering ac-plan-owned-task-doc-link-opens
   // A non-drifted plan-owned document link: opening the rewritten URL WITHOUT
   // X-Kspec-Dir returns the SELECTED project's plan-owned document bytes.
-  it.fails("fetches the selected project's plan-owned doc bytes from the rewritten link URL", async () => {
+  it("fetches the selected project's plan-owned doc bytes from the rewritten link URL", async () => {
     const md = rewriteTaskResourceLinks(
       "See [the diagram](./resources/diagrams/flow.png).",
       [resolvedResource({ id: "diagram", path: "diagrams/flow.png", owner_type: "plan" })],
@@ -582,7 +583,7 @@ describe("task resource markdown browser URLs fetch the selected project's resol
   // task-owned copy bytes — proving the resolved-resource owner projection is
   // what gets served, not the plan-owned original. it.fails until the rewrite
   // lands.
-  it.fails("fetches the selected project's task-owned copy bytes from the rewritten image URL", async () => {
+  it("fetches the selected project's task-owned copy bytes from the rewritten image URL", async () => {
     const md = rewriteTaskResourceLinks(
       "![home](./resources/screens/home.png)",
       [resolvedResource({ id: "homecopy", path: "screens/home.png", owner_type: "task" })],
@@ -599,7 +600,7 @@ describe("task resource markdown browser URLs fetch the selected project's resol
   // AC: @live-task-resource-markdown-rendering ac-materialized-task-doc-link-opens
   // A task-owned copy document link: opening the rewritten URL WITHOUT
   // X-Kspec-Dir returns the SELECTED project's task-owned copy document bytes.
-  it.fails("fetches the selected project's task-owned copy doc bytes from the rewritten link URL", async () => {
+  it("fetches the selected project's task-owned copy doc bytes from the rewritten link URL", async () => {
     const md = rewriteTaskResourceLinks(
       "Read [the notes](./resources/screens/home.png).",
       [resolvedResource({ id: "homecopy", path: "screens/home.png", owner_type: "task" })],

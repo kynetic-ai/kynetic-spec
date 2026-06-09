@@ -57,6 +57,7 @@ vi.mock("$lib/stores/project.svelte", projectMock);
 vi.mock("../../packages/web-ui/src/lib/stores/project.svelte", projectMock);
 
 import {
+  findUnmatchedTaskResourceReferences,
   rewriteTaskResourceLinks,
   type ResolvedTaskResourceLink,
 } from "../../packages/web-ui/src/lib/utils/task-resource-links";
@@ -90,7 +91,7 @@ describe("rewriteTaskResourceLinks", () => {
   // is rewritten to the task-scoped bytes URL carrying the selected project's
   // routing context so the browser fetches that project's recorded plan
   // resource image.
-  it.fails("rewrites a plan-owned image target to the selected-project task-scoped bytes URL", () => {
+  it("rewrites a plan-owned image target to the selected-project task-scoped bytes URL", () => {
     const markdown = "Flow: ![flow](./resources/diagrams/flow.png)";
     const out = rewriteTaskResourceLinks(
       markdown,
@@ -105,7 +106,7 @@ describe("rewriteTaskResourceLinks", () => {
   // AC: @live-task-resource-markdown-rendering ac-plan-owned-task-doc-link-opens
   // A non-drifted plan-owned document link is rewritten so opening it fetches
   // the recorded plan resource document bytes from the selected project.
-  it.fails("rewrites a plan-owned document link to the selected-project task-scoped bytes URL", () => {
+  it("rewrites a plan-owned document link to the selected-project task-scoped bytes URL", () => {
     const markdown = "See [the spec](./resources/docs/spec.md) for details.";
     const out = rewriteTaskResourceLinks(
       markdown,
@@ -121,7 +122,7 @@ describe("rewriteTaskResourceLinks", () => {
   // A task-owned copy (derived with --materialize-resources): the image target
   // is rewritten through the same task-scoped bytes route so the browser
   // displays the copied task-owned image.
-  it.fails("rewrites a materialized task-owned image target to the selected-project task-scoped bytes URL", () => {
+  it("rewrites a materialized task-owned image target to the selected-project task-scoped bytes URL", () => {
     const markdown = "Home: ![home](./resources/screens/home.png)";
     const out = rewriteTaskResourceLinks(
       markdown,
@@ -136,7 +137,7 @@ describe("rewriteTaskResourceLinks", () => {
   // AC: @live-task-resource-markdown-rendering ac-materialized-task-doc-link-opens
   // A task-owned copy document link is rewritten so opening it fetches the
   // copied task-owned document bytes from the selected project.
-  it.fails("rewrites a materialized task-owned document link to the selected-project task-scoped bytes URL", () => {
+  it("rewrites a materialized task-owned document link to the selected-project task-scoped bytes URL", () => {
     const markdown = "Read [the notes](./resources/docs/notes.md).";
     const out = rewriteTaskResourceLinks(
       markdown,
@@ -152,7 +153,7 @@ describe("rewriteTaskResourceLinks", () => {
   //     — when no project is selected the task-scoped bytes URL is emitted
   //     without a kspec_dir query (default project routing). Guards the base
   //     URL contract independent of project context.
-  it.fails("rewrites to the task-scoped bytes URL without kspec_dir when no project is selected", () => {
+  it("rewrites to the task-scoped bytes URL without kspec_dir when no project is selected", () => {
     projectState.selectedPath = null;
     const markdown = "![flow](./resources/diagrams/flow.png)";
     const out = rewriteTaskResourceLinks(
@@ -189,11 +190,12 @@ describe("rewriteTaskResourceLinks", () => {
     expect(rewriteTaskResourceLinks(markdown, [resource()], "")).toBe(markdown);
   });
 
-  // Regression guard for the present-only gate (the drift/missing/unresolved
-  // visibility AC itself is owned by @generalize-live-ui-resource-markdown-rewriting).
-  // A non-`present` resolved resource must NOT be rewritten to a bytes URL that
-  // would silently serve different bytes — the raw reference stays visible. The
-  // no-op stub satisfies this today and must keep doing so after the rewrite.
+  // AC: @live-task-resource-markdown-rendering ac-drifted-task-resource-is-visible-not-silent
+  // The "does not rewrite to a URL that silently serves different bytes" half of
+  // the AC: a non-`present` resolved resource must NOT be rewritten to a bytes
+  // URL — the raw reference stays visible. (The companion "UI shows the resource
+  // status message" half is rendered by the resources-needing-attention section
+  // in TaskDetailContent.svelte.)
   it("does not rewrite a drifted/missing/unresolved task resource reference", () => {
     const markdown = "![flow](./resources/diagrams/flow.png)";
     for (const status of ["drift", "missing", "unresolved"] as const) {
@@ -217,5 +219,87 @@ describe("rewriteTaskResourceLinks", () => {
       TASK_RESOURCES_BASE,
     );
     expect(out).toBe(markdown);
+  });
+});
+
+/**
+ * `findUnmatchedTaskResourceReferences` is the guidance-computation the live
+ * task detail modal (`TaskDetailContent.svelte`) consumes to render its
+ * "Resources needing attention" section for `./resources/<path>` references
+ * that resolve to NO task resource at all.
+ *
+ * The rewriter leaves such references raw, which renders as a broken
+ * `<img src>`/`<a href>` whose path the reader never sees — so without this
+ * detection the unresolved authoring reference would be silent. These tests
+ * pin the modal's actual decision logic: which references get surfaced as
+ * visible guidance versus which already resolve (present or non-present) and
+ * are handled elsewhere.
+ *
+ * Spec: @live-task-resource-markdown-rendering
+ */
+describe("findUnmatchedTaskResourceReferences", () => {
+  // AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+  // A description reference with no matching resolved resource path is reported
+  // so the modal can surface the raw reference with actionable guidance instead
+  // of letting it vanish into a broken <img>/<a> target.
+  it("reports a ./resources/ reference that matches no resolved resource", () => {
+    const markdown = "Missing: ![gone](./resources/screens/missing.png)";
+    const unmatched = findUnmatchedTaskResourceReferences(markdown, [
+      resource({ id: "diagram", path: "diagrams/flow.png" }),
+    ]);
+    expect(unmatched).toEqual(["screens/missing.png"]);
+  });
+
+  // AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+  // With no resolved resources at all, every authored reference is unmatched and
+  // must be surfaced rather than silently rewritten.
+  it("reports references when the task has no resolved resources", () => {
+    const markdown = "See ![a](./resources/a.png) and [b](./resources/docs/b.md).";
+    expect(findUnmatchedTaskResourceReferences(markdown, [])).toEqual(["a.png", "docs/b.md"]);
+    expect(findUnmatchedTaskResourceReferences(markdown, undefined)).toEqual([
+      "a.png",
+      "docs/b.md",
+    ]);
+  });
+
+  // AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+  // A reference that DOES resolve — whether `present` or a non-`present`
+  // drift/missing/unresolved entry — is NOT unmatched: present refs are
+  // rewritten, and non-present refs are surfaced through the resolved-resource
+  // status projection instead. Only truly absent references are reported here.
+  it("does not report references that resolve to a task resource (any status)", () => {
+    const markdown =
+      "![present](./resources/diagrams/flow.png) ![drifted](./resources/docs/spec.md)";
+    const unmatched = findUnmatchedTaskResourceReferences(markdown, [
+      resource({ id: "diagram", path: "diagrams/flow.png", status: "present" }),
+      resource({ id: "specdoc", path: "docs/spec.md", status: "drift" }),
+    ]);
+    expect(unmatched).toEqual([]);
+  });
+
+  // AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+  // Only matched references are filtered out; unmatched ones in the same
+  // description are still reported. De-duplicates repeated references.
+  it("reports only the unmatched references and de-duplicates them", () => {
+    const markdown =
+      "![ok](./resources/diagrams/flow.png) ![x](./resources/screens/missing.png) again ![x2](./resources/screens/missing.png)";
+    const unmatched = findUnmatchedTaskResourceReferences(markdown, [
+      resource({ id: "diagram", path: "diagrams/flow.png" }),
+    ]);
+    expect(unmatched).toEqual(["screens/missing.png"]);
+  });
+
+  // External https:// links that merely share a `/resources/` segment are not
+  // author-style references and must not be reported as unmatched guidance.
+  it("ignores external https:// links that share a similar path", () => {
+    const markdown = "[example](https://example.com/resources/screens/missing.png)";
+    expect(findUnmatchedTaskResourceReferences(markdown, [])).toEqual([]);
+  });
+
+  // No description (or no authored references) means no guidance to surface.
+  it("returns an empty list when the description has no resource references", () => {
+    expect(findUnmatchedTaskResourceReferences(undefined, [])).toEqual([]);
+    expect(findUnmatchedTaskResourceReferences("", [])).toEqual([]);
+    expect(findUnmatchedTaskResourceReferences("Plain text, no resources.", [])).toEqual([]);
   });
 });

@@ -1,4 +1,17 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+// buildPlanContentBlocks rewrites `./resources/<path>` markdown via the shared
+// resource-links core, which reads the project store for selected-project
+// `kspec_dir` context. Mock the store (no project selected) so the module
+// chain resolves without `$app`/`$lib` aliases; selected-project routing is
+// pinned separately in resource-url-project-context.test.ts.
+const projectMock = vi.hoisted(() => () => ({
+  getSelectedProjectPath: () => null,
+  clearInvalidSelection: () => {},
+  isInvalidProjectError: () => false,
+}));
+vi.mock("$lib/stores/project.svelte", projectMock);
+vi.mock("../../packages/web-ui/src/lib/stores/project.svelte", projectMock);
 
 import { buildPlanContentBlocks } from "../../packages/web-ui/src/lib/utils/plan-embedded-content";
 
