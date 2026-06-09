@@ -10680,18 +10680,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/generalize-live-ui-resource-markdown-rewriting/01ktd8s2
-    canonical_branch_head: 27fe4f1938d81f27125c9da22b20827e496852f8
+    canonical_branch_head: cd6bf4e487193fd8c3fb2bca2f35765b4929249c
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-08T23:57:09.882Z
+      updated_at: 2026-06-09T00:20:50.271Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-08T23:57:38.038Z
+      updated_at: 2026-06-09T00:20:50.271Z
     integration:
       status: pending
       detail: null
@@ -10699,7 +10699,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 27fe4f1938d81f27125c9da22b20827e496852f8
-      updated_at: 2026-06-08T23:57:09.882Z
+      updated_at: 2026-06-09T00:20:50.271Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTD8S26A1PY21C7SYXTNTJ05
@@ -10708,9 +10708,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-08T23:57:38.038Z
-      last_reconciled_at: 2026-06-08T23:57:38.038Z
+      last_reconciled_at: 2026-06-09T00:20:50.271Z
       created_at: 2026-06-08T23:57:09.882Z
-      updated_at: 2026-06-08T23:57:38.038Z
+      updated_at: 2026-06-09T00:20:50.271Z
     workspace_id: dispatch-workspace-01KTD8S26A1PY21C7SYXTNTJ05
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
