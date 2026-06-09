@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KTQCAGQARVV7Z876AEA5MW1Q
+    content: "Approach: (1) Add ReviewContentResourceContext types (plan + task variants) to
+      packages/shared/src/api.ts, reusing existing PlanResourceMetadata and
+      ResolvedTaskResourceSummary shapes — byte-free, mirrors plan/task detail precedents. (2)
+      Extend GET /api/reviews/:id/content in packages/daemon/src/routes/diff.ts: plan subject
+      attaches resource_context (owner ref, /api/plans/<ulid>/resources base URL, declared manifest
+      metadata via loadResourceManifest + toPlanResourceMetadata) on the content markdown section
+      when the plan declares resources; task subject attaches resource_context (owner ref,
+      /api/tasks/<ulid>/resources base URL, resolveTaskResources + projectResolvedTaskResources
+      projection) on the description section when the task has resource_refs — same path tasks.ts
+      detail uses, so drift semantics stay identical. (3) New web-ui util
+      review-content-resources.ts dispatching to existing
+      rewritePlanResourceLinks/rewriteTaskResourceLinks (no duplicated regex) + guidance extraction
+      for non-present/unmatched task resources. (4) StructuredContentViewer.svelte rewrites markdown
+      via the util before renderMarkdown and renders a 'Resources needing attention' block mirroring
+      TaskDetailContent. Tests first: extend tests/daemon-diff-api.test.ts (plan + task resource
+      context, AC @review-content-diff-api ac-5/ac-6) and new
+      tests/web-ui/review-content-resources.test.ts (rewrite to selected-project entity-scoped URLs,
+      drift/unmatched stay raw, AC @review-structured-content-viewer ac-5/ac-6). Edge cases: plans
+      without declared resources / tasks without refs omit context entirely; legacy non-folder plans
+      tolerated (empty manifest); only status=present task resources rewritten."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-09T23:43:43.851Z
