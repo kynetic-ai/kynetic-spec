@@ -57,6 +57,7 @@ vi.mock("$lib/stores/project.svelte", projectMock);
 vi.mock("../../packages/web-ui/src/lib/stores/project.svelte", projectMock);
 
 import {
+  findUnmatchedTaskResourceReferences,
   rewriteTaskResourceLinks,
   type ResolvedTaskResourceLink,
 } from "../../packages/web-ui/src/lib/utils/task-resource-links";
@@ -218,5 +219,87 @@ describe("rewriteTaskResourceLinks", () => {
       TASK_RESOURCES_BASE,
     );
     expect(out).toBe(markdown);
+  });
+});
+
+/**
+ * `findUnmatchedTaskResourceReferences` is the guidance-computation the live
+ * task detail modal (`TaskDetailContent.svelte`) consumes to render its
+ * "Resources needing attention" section for `./resources/<path>` references
+ * that resolve to NO task resource at all.
+ *
+ * The rewriter leaves such references raw, which renders as a broken
+ * `<img src>`/`<a href>` whose path the reader never sees — so without this
+ * detection the unresolved authoring reference would be silent. These tests
+ * pin the modal's actual decision logic: which references get surfaced as
+ * visible guidance versus which already resolve (present or non-present) and
+ * are handled elsewhere.
+ *
+ * Spec: @live-task-resource-markdown-rendering
+ */
+describe("findUnmatchedTaskResourceReferences", () => {
+  // AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+  // A description reference with no matching resolved resource path is reported
+  // so the modal can surface the raw reference with actionable guidance instead
+  // of letting it vanish into a broken <img>/<a> target.
+  it("reports a ./resources/ reference that matches no resolved resource", () => {
+    const markdown = "Missing: ![gone](./resources/screens/missing.png)";
+    const unmatched = findUnmatchedTaskResourceReferences(markdown, [
+      resource({ id: "diagram", path: "diagrams/flow.png" }),
+    ]);
+    expect(unmatched).toEqual(["screens/missing.png"]);
+  });
+
+  // AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+  // With no resolved resources at all, every authored reference is unmatched and
+  // must be surfaced rather than silently rewritten.
+  it("reports references when the task has no resolved resources", () => {
+    const markdown = "See ![a](./resources/a.png) and [b](./resources/docs/b.md).";
+    expect(findUnmatchedTaskResourceReferences(markdown, [])).toEqual(["a.png", "docs/b.md"]);
+    expect(findUnmatchedTaskResourceReferences(markdown, undefined)).toEqual([
+      "a.png",
+      "docs/b.md",
+    ]);
+  });
+
+  // AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+  // A reference that DOES resolve — whether `present` or a non-`present`
+  // drift/missing/unresolved entry — is NOT unmatched: present refs are
+  // rewritten, and non-present refs are surfaced through the resolved-resource
+  // status projection instead. Only truly absent references are reported here.
+  it("does not report references that resolve to a task resource (any status)", () => {
+    const markdown =
+      "![present](./resources/diagrams/flow.png) ![drifted](./resources/docs/spec.md)";
+    const unmatched = findUnmatchedTaskResourceReferences(markdown, [
+      resource({ id: "diagram", path: "diagrams/flow.png", status: "present" }),
+      resource({ id: "specdoc", path: "docs/spec.md", status: "drift" }),
+    ]);
+    expect(unmatched).toEqual([]);
+  });
+
+  // AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+  // Only matched references are filtered out; unmatched ones in the same
+  // description are still reported. De-duplicates repeated references.
+  it("reports only the unmatched references and de-duplicates them", () => {
+    const markdown =
+      "![ok](./resources/diagrams/flow.png) ![x](./resources/screens/missing.png) again ![x2](./resources/screens/missing.png)";
+    const unmatched = findUnmatchedTaskResourceReferences(markdown, [
+      resource({ id: "diagram", path: "diagrams/flow.png" }),
+    ]);
+    expect(unmatched).toEqual(["screens/missing.png"]);
+  });
+
+  // External https:// links that merely share a `/resources/` segment are not
+  // author-style references and must not be reported as unmatched guidance.
+  it("ignores external https:// links that share a similar path", () => {
+    const markdown = "[example](https://example.com/resources/screens/missing.png)";
+    expect(findUnmatchedTaskResourceReferences(markdown, [])).toEqual([]);
+  });
+
+  // No description (or no authored references) means no guidance to surface.
+  it("returns an empty list when the description has no resource references", () => {
+    expect(findUnmatchedTaskResourceReferences(undefined, [])).toEqual([]);
+    expect(findUnmatchedTaskResourceReferences("", [])).toEqual([]);
+    expect(findUnmatchedTaskResourceReferences("Plain text, no resources.", [])).toEqual([]);
   });
 });

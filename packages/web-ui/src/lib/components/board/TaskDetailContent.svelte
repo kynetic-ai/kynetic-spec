@@ -30,7 +30,10 @@
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { renderMarkdown } from '$lib/utils/markdown';
-	import { rewriteTaskResourceLinks } from '$lib/utils/task-resource-links';
+	import {
+		rewriteTaskResourceLinks,
+		findUnmatchedTaskResourceReferences
+	} from '$lib/utils/task-resource-links';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { getStatusClasses, formatVcsRef } from './board-utils';
 	import GitBranch from 'lucide-svelte/icons/git-branch';
@@ -239,6 +242,19 @@
 		(task?.resolved_resources ?? []).filter((r) => r.status !== 'present')
 	);
 
+	// AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+	// `./resources/<path>` references in the description that resolve to NO task
+	// resource at all. The rewriter leaves these raw, so a broken `<img>`/`<a>`
+	// would otherwise hide the authoring reference entirely. Surface each one as a
+	// visible reference with actionable guidance so it is never silently dropped.
+	let unmatchedReferences = $derived(
+		findUnmatchedTaskResourceReferences(task?.description, task?.resolved_resources)
+	);
+
+	let hasResourceGuidance = $derived(
+		unhealthyResources.length > 0 || unmatchedReferences.length > 0
+	);
+
 	function resourceStatusClasses(status: string): string {
 		switch (status) {
 			case 'present':
@@ -322,10 +338,11 @@
 		{/if}
 
 		<!-- Resource status — surfaces drift/missing/unresolved resolved resources
-		     so they stay visible even when an image cannot load. -->
+		     AND unmatched authoring references so they stay visible even when an
+		     image cannot load or the reference resolves to nothing. -->
 		<!-- AC: @live-task-resource-markdown-rendering ac-drifted-task-resource-is-visible-not-silent -->
 		<!-- AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw -->
-		{#if unhealthyResources.length > 0}
+		{#if hasResourceGuidance}
 			<div data-testid="task-resource-status" class="flex flex-col gap-2">
 				<p class="text-xs font-medium text-muted-foreground">Resources needing attention</p>
 				<ul class="flex flex-col gap-1.5">
@@ -342,6 +359,24 @@
 							</Badge>
 							<code class="break-all font-mono">./resources/{resource.path}</code>
 							<span class="text-muted-foreground break-words">{resource.message}</span>
+						</li>
+					{/each}
+					{#each unmatchedReferences as path (path)}
+						<li
+							class="flex flex-wrap items-center gap-2 text-xs"
+							data-testid="task-resource-unmatched-item"
+						>
+							<Badge
+								class={resourceStatusClasses('unmatched')}
+								data-testid="task-resource-status-badge"
+							>
+								unmatched
+							</Badge>
+							<code class="break-all font-mono">./resources/{path}</code>
+							<span class="text-muted-foreground break-words">
+								No matching task resource — verify the reference path or re-derive the task with
+								this resource present.
+							</span>
 						</li>
 					{/each}
 				</ul>

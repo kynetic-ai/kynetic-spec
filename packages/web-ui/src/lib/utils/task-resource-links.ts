@@ -22,7 +22,7 @@
  * Spec: @live-task-resource-markdown-rendering
  */
 
-import { rewriteEntityResourceLinks } from "./resource-links";
+import { extractResourceReferencePaths, rewriteEntityResourceLinks } from "./resource-links";
 
 /**
  * Minimal shape the rewriter needs from a task's `resolved_resources`
@@ -82,4 +82,34 @@ export function rewriteTaskResourceLinks(
     })),
     resourcesBaseUrl,
   );
+}
+
+/**
+ * Find the author-style `./resources/<path>` references in a task description
+ * that have NO matching entry in the task's resolved resources at all.
+ *
+ * These are distinct from drifted/missing/unresolved resources: those resolve
+ * to a `resolved_resources` entry (just not a `present` one) and are surfaced
+ * through that projection's status. An *unmatched* reference resolves to
+ * nothing — the rewriter leaves it raw, so without explicit detection its only
+ * on-screen trace is a broken `<img src>`/`<a href>` whose path the reader
+ * never sees. The task detail modal renders these as a visible reference plus
+ * actionable guidance so the unresolved authoring reference is never silent.
+ *
+ * @param markdown - the task description markdown.
+ * @param resources - the task's resolved resource projection.
+ * @returns the unmatched relative paths in first-seen order, de-duplicated.
+ *
+ * AC: @live-task-resource-markdown-rendering ac-unmatched-task-resource-reference-stays-raw
+ *
+ * Spec: @live-task-resource-markdown-rendering
+ */
+export function findUnmatchedTaskResourceReferences(
+  markdown: string | undefined,
+  resources: ResolvedTaskResourceLink[] | undefined,
+): string[] {
+  const referenced = extractResourceReferencePaths(markdown);
+  if (referenced.length === 0) return [];
+  const resolvedPaths = new Set((resources ?? []).map((resource) => resource.path));
+  return referenced.filter((path) => !resolvedPaths.has(path));
 }

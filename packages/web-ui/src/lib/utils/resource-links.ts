@@ -137,3 +137,40 @@ export function rewriteEntityResourceLinks(
     },
   );
 }
+
+/**
+ * Extract the distinct author-style `./resources/<path>` relative paths that an
+ * entity description references as markdown image/link targets. Recognises the
+ * same inline-image, inline-link, and reference-style definition forms as
+ * {@link rewriteEntityResourceLinks}, and ignores external URLs that merely
+ * share a `/resources/` path segment.
+ *
+ * Entity UIs use this to detect references that have NO matching resolved
+ * resource (so the rewriter left them raw): such references must be surfaced
+ * with actionable guidance rather than silently rendered as a broken target
+ * whose only on-screen trace is an `<img src>`/`<a href>` attribute the reader
+ * never sees.
+ *
+ * @param markdown - the entity description markdown.
+ * @returns the relative paths (e.g. `screens/missing.png`) in first-seen order,
+ *   de-duplicated.
+ */
+export function extractResourceReferencePaths(markdown: string | undefined): string[] {
+  if (!markdown) return [];
+  // Use a fresh stateful regex so we never disturb the shared pattern's
+  // `lastIndex` (it is also driven by `String.replace` above).
+  const pattern = new RegExp(RESOURCE_LINK_PATTERN.source, RESOURCE_LINK_PATTERN.flags);
+  const paths: string[] = [];
+  const seen = new Set<string>();
+  let match: RegExpExecArray | null;
+  while ((match = pattern.exec(markdown)) !== null) {
+    const target = match[2] ?? match[5];
+    if (!target) continue;
+    const relative = target.slice(RESOURCE_AUTHORING_PREFIX.length);
+    if (relative && !seen.has(relative)) {
+      seen.add(relative);
+      paths.push(relative);
+    }
+  }
+  return paths;
+}
