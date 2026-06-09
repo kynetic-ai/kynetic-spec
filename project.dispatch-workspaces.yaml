@@ -10867,7 +10867,7 @@ workspaces:
         head: 06319536c213604187066e4306f631dd6e751bca
         last_seen_at: 2026-06-09T01:17:14.586Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/generalize-live-ui-resource-markdown-rewriting-01ktd8s2
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 27fe4f1938d81f27125c9da22b20827e496852f8
     bootstrap:
       status: succeeded
@@ -11357,9 +11357,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-09T01:51:40.004Z
-      last_reconciled_at: 2026-06-09T02:06:52.944Z
+      last_reconciled_at: 2026-06-09T02:09:18.023Z
       created_at: 2026-06-09T01:32:25.941Z
-      updated_at: 2026-06-09T02:06:52.944Z
+      updated_at: 2026-06-09T02:09:18.023Z
     workspace_id: dispatch-workspace-01KTN02TDJH33FM85CD6E1215H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
