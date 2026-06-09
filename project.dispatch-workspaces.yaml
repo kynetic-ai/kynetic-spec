@@ -12879,3 +12879,80 @@ workspaces:
         head: 3ac086626e24905755fed2bd254eea91ace29805
         last_seen_at: 2026-06-09T18:51:30.214Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/validate-resource-lifecycle-e2e-temp-projects-01ktd8s3
+  - active_role: null
+    base_branch_point: ee78b193a4a5194dab3eaa3ef32023bafbb268e2
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/render-review-structured-content-resource-markdown/01ktqbvc
+    canonical_branch_head: ee78b193a4a5194dab3eaa3ef32023bafbb268e2
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-09T23:36:42.353Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-09T23:36:42.353Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: ee78b193a4a5194dab3eaa3ef32023bafbb268e2
+      updated_at: 2026-06-09T23:36:42.353Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_id: 01KTQBVCQDFPWFF60ZJEH4B6TY
+    task_ref: "@01KTQBVCQDFPWFF60ZJEH4B6TY"
+    task_slug: render-review-structured-content-resource-markdown
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-09T23:36:42.353Z
+      created_at: 2026-06-09T23:36:42.353Z
+      updated_at: 2026-06-09T23:36:42.353Z
+    workspace_id: dispatch-workspace-01KTQBVCQDFPWFF60ZJEH4B6TY
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/render-review-structured-content-resource-markdown/01ktqbvc
+        head: ee78b193a4a5194dab3eaa3ef32023bafbb268e2
+        last_seen_at: 2026-06-09T23:36:42.353Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/render-review-structured-content-resource-markdown-01ktqbvc
