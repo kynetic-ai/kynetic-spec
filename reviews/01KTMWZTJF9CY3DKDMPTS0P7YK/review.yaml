@@ -207,6 +207,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-09T00:50:37.404Z
+  - _ulid: 01KTMZ1KNH984QCG6C2HQ7VCHT
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTMXR6PZ1X4P02RHKSRWQ46M
+    timestamp: 2026-06-09T01:13:11.601Z
 examined_commit: 9d81dd03cced10e76daed6ab19337559278782f1
 external_links: []
 lifecycle_state: closed
@@ -241,6 +247,24 @@ threads:
           unmatched-reference detection/guidance in the modal and behavioral coverage for that UI
           path."
         created_at: 2026-06-09T00:50:34.847Z
+      - _ulid: 01KTMZ1KFMSGD5NBY6KKNGB5J9
+        author: "@claude"
+        body: Fixed. The modal now detects `./resources/<path>` references that resolve to NO task resource
+          at all (distinct from drift/missing/unresolved, which already have resolved_resources
+          entries). Added extractResourceReferencePaths (shared core in resource-links.ts) and
+          findUnmatchedTaskResourceReferences (task-resource-links.ts), wired into
+          TaskDetailContent.svelte as a `unmatchedReferences` derived value. The 'Resources needing
+          attention' section now renders an 'unmatched' badge, the raw `./resources/<path>` as
+          visible code text, and actionable guidance ('No matching task resource — verify the
+          reference path or re-derive the task with this resource present') for each unmatched
+          reference. So a ![gone](./resources/screens/missing.png) reference is no longer silent —
+          its path appears as text with guidance even though the rewriter correctly leaves the
+          markdown raw. Added 6 behavioral tests pinning the guidance computation the modal consumes
+          (unmatched detection, no-resolved-resources, resolved-but-non-present excluded, dedup,
+          external-URL exclusion, no-reference cases). Full suite 10349 passed / 0 failed;
+          format/lint/typecheck clean; svelte-check baseline 61 unchanged with 0 new in touched
+          files.
+        created_at: 2026-06-09T01:13:11.411Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -251,5 +275,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-09T00:50:37.404Z
 created_at: 2026-06-09T00:37:15.983Z
-updated_at: 2026-06-09T00:50:37.404Z
+updated_at: 2026-06-09T01:13:11.411Z
 notes: []
