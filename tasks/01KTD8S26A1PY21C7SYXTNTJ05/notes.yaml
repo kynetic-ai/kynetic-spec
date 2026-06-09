@@ -39,3 +39,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-09T00:50:39.179Z
+  - _ulid: 01KTMZ2AG3YR5GYB193Y811YC5
+    content: "Fix cycle 1: addressed the sole review blocker
+      (ac-unmatched-task-resource-reference-stays-raw). Root cause: the modal's guidance was derived
+      only from resolved_resources filtered to non-present statuses, so a ./resources reference with
+      NO resolved entry produced no guidance and rendered only as a broken <img src> the reader
+      never sees. Fix: added extractResourceReferencePaths (resource-links.ts shared core) +
+      findUnmatchedTaskResourceReferences (task-resource-links.ts), wired into
+      TaskDetailContent.svelte as unmatchedReferences; the 'Resources needing attention' section now
+      lists each unmatched ref with an 'unmatched' badge, the raw ./resources/<path> as visible
+      text, and actionable guidance. Added 6 behavioral tests on the guidance-computation function
+      the modal consumes (no DOM render harness exists — node env, no testing-library/svelte — so
+      the modal's decision logic is the testable unit, matching how the rewriter and drift detection
+      are covered). Re-verified all 9 covered ACs against the implementation. Gates: full suite
+      10349 passed / 0 failed / 5 skipped; format/lint/typecheck clean; svelte-check 61-baseline
+      unchanged, 0 new in touched files; kspec refs/alignment/completeness OK."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-09T01:13:34.979Z
