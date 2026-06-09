@@ -330,7 +330,7 @@ Doc: [spec](./resources/docs/spec.pdf)
   resource_refs:
     - "./resources/ux/sign-in-v3.png"
     - "./resources/docs/spec.pdf"
-````
+```
 
 MD
 
@@ -358,7 +358,7 @@ kspec plan derive @plan-sign-in-feature --materialize-resources
 # Materialized copies live under the task tree with the plan-<id> prefix
 kspec task get @task-build-sign-in --json | jq '.resolved_resources[] | {id, owner_type, status}'
 ls .kspec/tasks/*/resources/plan/*/ux/sign-in-v3.png
-````
+```
 
 For the default-refs project, `owner_type` is `plan`; for the materialized project it is `task` and the ids are prefixed `plan-`. Both report `status: present`.
 
@@ -406,9 +406,11 @@ With the daemon still running, open the web UI (dev server on port 5173, or the 
 ### 6. Verify static export asset existence — same daemon, no restart
 
 ```bash
-# Export each project to a static snapshot
-cd /tmp/kspec-res-default && kspec export --out /tmp/export-default
-cd /tmp/kspec-res-materialized && kspec export --out /tmp/export-materialized
+# Export each project to a static snapshot. Resource assets are copied beside
+# the JSON output file, so write the snapshot inside a per-project export dir.
+mkdir -p /tmp/export-default /tmp/export-materialized
+cd /tmp/kspec-res-default && kspec export --format json --output /tmp/export-default/snapshot.json
+cd /tmp/kspec-res-materialized && kspec export --format json --output /tmp/export-materialized/snapshot.json
 
 # Plan-owned task asset is copied under the task asset path
 ls /tmp/export-default/assets/resources/task/*/ux/sign-in-v3.png

@@ -120,7 +120,9 @@ describe("@resource-docs-ui-task-markdown-behavior ac-docs-name-temp-project-e2e
     expect(guide).toContain("task detail modal");
     expect(guide).toContain("project switcher");
     // Static export asset existence for plan and task resources.
-    expect(guide).toContain("kspec export --out /tmp/export-default");
+    expect(guide).toContain(
+      "kspec export --format json --output /tmp/export-default/snapshot.json",
+    );
     expect(guide).toContain("/tmp/export-default/assets/resources/task/");
     expect(guide).toContain("/tmp/export-default/assets/resources/plan/");
     expect(guide).toContain("/tmp/export-materialized/assets/resources/task/");
