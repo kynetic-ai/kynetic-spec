@@ -2472,7 +2472,7 @@ features:
           advertise for plans, tasks, and reviews.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
