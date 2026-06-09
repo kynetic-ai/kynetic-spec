@@ -61782,7 +61782,7 @@ runs:
     completed_at: 2026-06-09T03:57:21.899Z
   - _ulid: 01KTPWJ2M69PC82Z34GW9E5SAJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61796,7 +61796,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-09T19:09:13.052Z
-        completed_at: 2026-06-09T19:09:13.052Z
+        completed_at: 2026-06-09T19:09:43.222Z
+        notes: "High-confidence candidates checked against existing state: (1) first-class review evidence
+          log storage is already tracked by observation @01KR2JD1 and related items; (2) long
+          full-suite/review-runner friction is already tracked by @01KT2F6H and @01KTN0CE; (3) noisy
+          unbounded reflection baseline lists are already tracked by inbox @01KSDZFN; (4) detached
+          merge-helper success pattern is already represented by prior success observations such as
+          @01KT5ZGF. No new unique friction or success item met the capture bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-09T19:09:43.222Z
+        completed_at: 2026-06-09T19:09:43.222Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-09T19:08:14.342Z
