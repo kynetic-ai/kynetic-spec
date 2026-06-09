@@ -31,3 +31,45 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-09T02:41:24.805Z
+  - _ulid: 01KTN55271ZQQNS41VA8F6HZTH
+    content: >-
+      Completed. Documented live UI / task-markdown resource behavior across four ACs:
+
+
+      - ac-docs-name-task-resource-markdown: concept page + guide describe task-description
+      ./resources/<relative-path> resolution through the task resolved_resources projection,
+      covering both plan-owned references and materialized task-owned copies, with the task-scoped
+      resources_base_url and GET /api/tasks/:ref/resources/:resourceId/bytes contract. Release notes
+      mirror this without claiming a task resource upload command (none exists; upload is
+      plan/review only).
+
+      - ac-docs-name-task-resource-drift: documented present/drift/missing/unresolved status enum +
+      message; drifted/missing/unresolved surface status instead of silently serving replacement
+      bytes; bytes route refuses mismatched bytes; unmatched refs stay raw.
+
+      - ac-docs-name-browser-project-context: guide explains <img>/<a> element fetches cannot send
+      X-Kspec-Dir, so rewritten resource URLs carry ?kspec_dir=<project-path>; daemon middleware
+      reads header-or-query.
+
+      - ac-docs-name-temp-project-e2e-steps: added an end-to-end temp-project walkthrough (two
+      projects: default refs + a separate clean materialized project) exercising CLI storage, daemon
+      bytes routes (incl. kspec_dir selected-project routing), live UI image/link rendering, and
+      static-export asset existence (assets/resources/task|plan/...), all against one
+      continuously-running daemon (start once, never stop/restart).
+
+
+      Also updated the static-export sections to include the task asset layout
+      (assets/resources/task/<task-ulid>/<relative-path>).
+
+
+      Tests: added tests/resource-ui-task-markdown-docs.test.ts (7 behavioral docs tests, one
+      describe per AC, // AC: annotations) reading the published markdown + RELEASE_NOTES.md. All 4
+      ACs annotated.
+
+
+      Gates green: format:check, oxlint (0/0 on changed file), typecheck, full suite (10363 passed /
+      5 skipped), kspec validate --refs/--alignment/--completeness (exit 0; only pre-existing
+      unrelated warnings).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-09T02:59:56.257Z
