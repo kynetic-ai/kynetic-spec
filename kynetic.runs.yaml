@@ -61388,7 +61388,7 @@ runs:
     started_at: 2026-06-09T00:32:26.563Z
     completed_at: 2026-06-09T00:35:10.082Z
   - _ulid: 01KTMXSJFJ75PBC6W2XX989AK6
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -61438,10 +61438,14 @@ runs:
         completed_at: 2026-06-09T00:53:23.790Z
         notes: "Skipped discussion: no new improvements proposed after search and triage. The actionable
           defect remains in review @01KTMWZT for the fix-cycle worker."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-09T00:53:23.790Z
-        completed_at: 2026-06-09T00:53:23.790Z
+        completed_at: 2026-06-09T00:53:33.669Z
+        notes: "No capture: no approved new items and no high-confidence untracked systemic friction.
+          Existing durable artifacts are the review blocker on @01KTMWZT and the task transition to
+          needs_work."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-09T00:51:19.666Z
+    completed_at: 2026-06-09T00:53:33.669Z
