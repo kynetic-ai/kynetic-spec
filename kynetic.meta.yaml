@@ -21130,6 +21130,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-09T01:16:33.524Z
+  - _ulid: 01KTN160PQS9GP6P1Z5D536WYQ
+    type: friction
+    content: "Dispatch engine tests that assert on transient in-flight state (e.g.
+      activeInvocationDetails) after only 'await waitForMockCall(runSpy)' can flake when
+      runInvocation is mocked with mockResolvedValue. The mock resolves instantly, so dispatch's
+      cleanup path (markDispatchWorkspaceIdle shadow op + activeInvocationDetails.delete) can run
+      before the 10ms poll detects the call, deleting the record under the assertion. Fix pattern:
+      gate the runInvocation mock on a test-controlled deferred so the invocation stays in-flight
+      while asserting, then release and await it to drain cleanup. This mirrors the
+      bootstrap-barrier pattern already used elsewhere in agent-dispatch-engine.test.ts. ~20
+      waitForMockCall(runSpy) sites in that file are potential latent instances; most already use
+      barriers, but new tests reading post-spawn state should follow the gate idiom."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-09T01:50:33.175Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
