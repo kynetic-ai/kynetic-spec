@@ -11375,7 +11375,7 @@ workspaces:
         head: 934fa83182e267be81514ce9b5c528739257f5f0
         last_seen_at: 2026-06-09T01:51:09.274Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-dispatch-runner-preflight-session-id-test-01ktn02t
-  - active_role: null
+  - active_role: worker
     base_branch_point: 84afbdad64743f6b2c7f86127cfe65fad383f681
     bootstrap:
       status: succeeded
@@ -11705,7 +11705,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-09T01:51:46.114Z
+      updated_at: 2026-06-09T01:52:14.816Z
     integration:
       status: pending
       detail: null
@@ -11714,17 +11714,17 @@ workspaces:
       target_branch: dev
       target_commit: 84afbdad64743f6b2c7f86127cfe65fad383f681
       updated_at: 2026-06-09T01:51:46.114Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTD8S2J7XS07K5DGD0FHHHDW
     task_ref: "@01KTD8S2J7XS07K5DGD0FHHHDW"
     task_slug: make-static-export-copy-rewrite-all-resource-assets
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-09T01:51:46.114Z
+      last_active_at: 2026-06-09T01:52:14.816Z
+      last_reconciled_at: 2026-06-09T01:52:14.816Z
       created_at: 2026-06-09T01:51:46.114Z
-      updated_at: 2026-06-09T01:52:10.937Z
+      updated_at: 2026-06-09T01:52:14.816Z
     workspace_id: dispatch-workspace-01KTD8S2J7XS07K5DGD0FHHHDW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
