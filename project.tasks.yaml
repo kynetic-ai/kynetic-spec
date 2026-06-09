@@ -31055,7 +31055,7 @@
     - stabilize-dispatch-runner-preflight-session-id-test
   title: Stabilize flaky dispatch runner preflight session id test
   type: bug
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -31067,4 +31067,5 @@
   todos_count: 0
   created_at: 2026-06-09T01:31:19.858Z
   started_at: 2026-06-09T01:33:18.824Z
+  submitted_at: 2026-06-09T01:48:42.945Z
   automation: eligible

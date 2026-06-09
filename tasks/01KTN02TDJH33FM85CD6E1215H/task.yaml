@@ -15,7 +15,7 @@ description: "During review of @01KTD8S26A1PY21C7SYXTNTJ05, full npm test failed
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -25,6 +25,14 @@ tags:
   - dispatch
   - flaky
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/stabilize-dispatch-runner-preflight-session-id-test/01ktn02t
+  captured_at: 2026-06-09T01:48:42.942Z
+  commit: 934fa83182e267be81514ce9b5c528739257f5f0
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KTN05MV41AS22RAD798QSE0Z
 history:
   - author: "@claude"
@@ -40,7 +48,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-09T01:33:18.825Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/stabilize-dispatch-runner-preflight-session-id-test/01ktn02t
+          captured_at: 2026-06-09T01:48:42.942Z
+          commit: 934fa83182e267be81514ce9b5c528739257f5f0
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-09T01:48:42.945Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-09T01:48:42.945Z
 created_at: 2026-06-09T01:31:19.858Z
 started_at: 2026-06-09T01:33:18.824Z
+submitted_at: 2026-06-09T01:48:42.945Z
 todos: []
 automation: eligible
