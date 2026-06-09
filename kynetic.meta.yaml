@@ -21158,6 +21158,21 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-09T02:39:53.600Z
+  - _ulid: 01KTN7D1SZV9V5PFVCKT3FSD3G
+    type: friction
+    content: "Fix-cycle resume hits a hidden state step: a task in needs_work cannot be submitted
+      directly — 'kspec task submit' fails with 'Cannot submit task with status: needs_work. Task
+      must be in_progress', requiring an intermediate 'kspec task start' (needs_work -> in_progress)
+      first. The task-work skill Fix Cycle section (step 'Re-submit') documents 'kspec task submit
+      @ref' but omits the required 'kspec task start' transition when resuming a needs_work task, so
+      a worker following the steps literally errors before resubmitting. Hit during fix cycle on
+      @update-resource-documentation-ui-task-markdown. Suggest the Fix Cycle steps explicitly
+      include 'kspec task start @ref' before resubmit (or submit auto-transitions
+      needs_work->in_progress)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-09T03:39:15.135Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
