@@ -61344,7 +61344,7 @@ runs:
     completed_at: 2026-06-08T23:59:01.462Z
   - _ulid: 01KTMWPZY3DCHX7R3S64XCF682
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -61358,7 +61358,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-09T00:34:07.590Z
-        completed_at: 2026-06-09T00:34:07.590Z
+        completed_at: 2026-06-09T00:34:16.450Z
+        notes: "High-confidence items identified: (1) FRICTION — making a web-ui util reach the project
+          store (transitively imports $app/environment) breaks every root-vitest test that imports
+          that util chain without mocking stores/project.svelte, because root vitest.config.ts has
+          no $app/$lib aliases; surfaced as ERR_MODULE_NOT_FOUND only in the full run for the 3rd
+          un-mocked importer (plan-embedded-views.test.ts). (2) FRICTION — flipping a FLIPPED-ON-FIX
+          suite requires more than converting it.fails->it: positive/negative-control tests that
+          assert the PRE-FIX shape (e.g. 'today the un-scoped URL falls back to default') also fail
+          and must be updated. Both concrete, systemic, repeatable."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-09T00:34:16.450Z
+        completed_at: 2026-06-09T00:34:16.450Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-09T00:32:26.563Z
