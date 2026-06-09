@@ -3169,6 +3169,9 @@ modules:
             description: >
               User-facing documentation describes live UI routing, task markdown resolution, drift,
               and static export behavior for local resources.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
