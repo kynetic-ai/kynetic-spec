@@ -142,6 +142,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-09T03:16:20.139Z
+  - _ulid: 01KTN644RVKB2BGT9AXYYMZ1AZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTN644J94XPM5HP3XTWQPKKZ
+    timestamp: 2026-06-09T03:16:54.683Z
 examined_commit: 09ede8f5093d2af6f17ba33af2635cfca3f3f794
 external_links: []
 lifecycle_state: open
@@ -151,8 +158,29 @@ subject:
   content_hash: ""
   ref: "@01KTD8S2Y2DNM0S39E8T7EY64E"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTN644J94XPM5HP3XTWQPKKZ
+    anchor:
+      type: code
+      commit: 09ede8f5093d2af6f17ba33af2635cfca3f3f794
+      line_end: 333
+      line_start: 333
+      path: docs/guides/working-with-local-resources.md
+      side: head
+    entries:
+      - _ulid: 01KTN644J9EAKQKJXWNHBF6SA2
+        author: Jacob Chapel
+        body: "The walkthrough opens the shell block with four backticks at line 300, but this line also
+          uses four backticks to close the embedded YAML fence. Markdown treats that as the end of
+          the outer shell block, so the remaining here-doc delimiter and the start of step 2 render
+          outside the intended command block. Impact: the AC requires exact temp-project steps, but
+          the published guide is malformed before the first setup command finishes. Evidence: nl -ba
+          docs/guides/working-with-local-resources.md shows line 324 starts an inner triple-backtick
+          YAML fence and line 333 closes with four backticks; the inner fence should not close the
+          four-backtick outer fence."
+        created_at: 2026-06-09T03:16:54.473Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-09T03:03:10.257Z
-updated_at: 2026-06-09T03:16:19.934Z
+updated_at: 2026-06-09T03:16:54.473Z
 notes: []
