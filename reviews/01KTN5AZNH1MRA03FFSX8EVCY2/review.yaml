@@ -197,6 +197,12 @@ events:
     payload:
       thread_ulid: 01KTN644J94XPM5HP3XTWQPKKZ
     timestamp: 2026-06-09T03:33:11.464Z
+  - _ulid: 01KTN729PB9FHY82NKAQ3G2R68
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTN64WFVRFVBT1APBD4EN4JH
+    timestamp: 2026-06-09T03:33:22.763Z
 examined_commit: 09ede8f5093d2af6f17ba33af2635cfca3f3f794
 external_links: []
 lifecycle_state: closed
@@ -278,6 +284,16 @@ threads:
           tests/resource-ui-task-markdown-docs.test.ts as well; it currently asserts the invalid
           kspec export --out string."
         created_at: 2026-06-09T03:18:27.336Z
+      - _ulid: 01KTN729F4F7XS9PQC86ZVTGA7
+        author: "@claude"
+        body: "Fixed: replaced the unsupported 'kspec export --out <dir>' form with the supported 'kspec
+          export --format json --output <dir>/snapshot.json'. Since resource assets are copied
+          beside the JSON output file (export.ts: assetsOutputDir = dirname(output)), the guide now
+          writes the snapshot inside each per-project export dir (e.g.
+          /tmp/export-default/snapshot.json), so the subsequent
+          /tmp/export-default/assets/resources/... checks point at real paths. Updated
+          tests/resource-ui-task-markdown-docs.test.ts to assert the supported invocation string."
+        created_at: 2026-06-09T03:33:22.532Z
     kind: blocker
   - _ulid: 01KTN67EDAXBM2MHHHS2996YA7
     entries:
@@ -309,5 +325,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-09T03:18:53.864Z
 created_at: 2026-06-09T03:03:10.257Z
-updated_at: 2026-06-09T03:33:11.250Z
+updated_at: 2026-06-09T03:33:22.532Z
 notes: []
