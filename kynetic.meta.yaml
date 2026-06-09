@@ -21173,6 +21173,40 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-09T03:39:15.135Z
+  - _ulid: 01KTPVJEGZJ2B6PB2VGRRMYV7S
+    type: friction
+    content: "Materialized task resources change the authoring path: kspec plan derive
+      --materialize-resources rewrites a task resolved-resource path from <file> (plan-owned) to
+      plan/<plan-ulid>/<file> (task-owned copy). Because the UI rewriter rewriteTaskResourceLinks
+      matches ./resources/<path> by EXACT resolved path, a task description authored as
+      ![x](./resources/diagram.png) renders for a plan-owned derive but silently stops rendering
+      after materialization (no resolved resource has path diagram.png; it is
+      plan/<plan-ulid>/diagram.png). Authors must reference ./resources/plan/<plan-ulid>/<file> for
+      materialized copies. Surfaced while validating @validate-resource-lifecycle-e2e-temp-projects.
+      Two follow-up angles worth triage: (1) docs AC ac-docs-name-task-resource-markdown on
+      @resource-docs-ui-task-markdown-behavior should explicitly call out the plan/<plan-ulid>/
+      prefix for materialized references; (2) consider whether materialization should preserve the
+      original ./resources/<file> authoring path so a description survives materialization
+      unchanged. Note the existing rewriter unit test (resource-url-browser-fetch-contract) uses a
+      synthetic materialized path (screens/home.png) that does not match real CLI output shape."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-09T18:50:57.951Z
+  - _ulid: 01KTPVJET5XYEAD3PJH1QKTD7T
+    type: success
+    content: "De-risking a long multi-tool E2E chain by exercising it in a throwaway scratch run FIRST
+      paid off: before writing tests/e2e/resource-lifecycle.spec.ts I ran the full CLI lifecycle
+      (plan import -> derive default -> derive --materialize-resources -> review resource add ->
+      export) in scratch temp dirs via bash and inspected the JSON at each step. This caught the
+      non-obvious materialized path shape (plan/<plan-ulid>/<file>) that would otherwise have made
+      the materialized browser-render assertions silently fail, and the 6-test spec passed on the
+      first real run. Pattern: for cross-surface validation tasks, prove the data-producing chain in
+      isolation before encoding it in a slow browser test."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-09T18:50:58.245Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
