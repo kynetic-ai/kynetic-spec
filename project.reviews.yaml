@@ -24419,3 +24419,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-09T03:03:10.257Z
     updated_at: 2026-06-09T03:33:27.225Z
+  - _ulid: 01KTN7GKEZBNVWQNZMJZKEDV0C
+    slugs: []
+    title: Review update-resource-documentation-ui-task-markdown cycle 2
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: da41c1d7c9f8e4b80f55112020412a53a85d0bfc
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KTD8S2Y2DNM0S39E8T7EY64E"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-09T03:41:11.519Z

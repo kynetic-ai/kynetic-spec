@@ -1,0 +1,26 @@
+_ulid: 01KTN7GKEZBNVWQNZMJZKEDV0C
+slugs: []
+title: Review update-resource-documentation-ui-task-markdown cycle 2
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTN7GKEZZZJCE69ZD4FJTHEF
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-09T03:41:11.519Z
+examined_commit: da41c1d7c9f8e4b80f55112020412a53a85d0bfc
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTD8S2Y2DNM0S39E8T7EY64E"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-09T03:41:11.519Z
+updated_at: null
+notes: []
