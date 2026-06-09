@@ -138,6 +138,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-09T02:35:31.834Z
+  - _ulid: 01KTN3RWW6CQAHGMD0Z5HJ7Y7G
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTN3RWJXSDD7XDNVBA4RVA45
+    timestamp: 2026-06-09T02:35:48.999Z
 examined_commit: 5caeb34053ad3e4b574546cc096505f0f07f5829
 external_links: []
 lifecycle_state: open
@@ -147,8 +154,29 @@ subject:
   content_hash: ""
   ref: "@01KTD8S2J7XS07K5DGD0FHHHDW"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTN3RWJXSDD7XDNVBA4RVA45
+    entries:
+      - _ulid: 01KTN3RWJX1A4FQ0VNJ9FEV6FD
+        author: codex
+        body: "Evidence log: Files read: kspec-agents.md, task/spec context, src/export/json.ts,
+          src/export/types.ts, src/parser/task-resource-resolver.ts,
+          src/parser/entity-local-resources.ts, src/cli/commands/export.ts,
+          src/cli/commands/plan.ts, src/cli/commands/task.ts, packages/web-ui static/task resource
+          consumers, tests/export/plan-resources.test.ts, tests/export/task-resources.test.ts,
+          tests/review-resource-static-export.test.ts. Commands run: git diff/stat/log, kspec task
+          get, kspec item get for @static-export-resource-assets-complete and
+          @trait-entity-scoped-local-resources-1, AC annotation search, format, lint, focused
+          oxlint, typecheck, npm test, kspec validate refs/alignment/completeness. Claims verified:
+          present plan-owned and materialized task resources are copied to task asset paths and
+          descriptions rewritten; drift/missing resources expose status without exported_path or
+          rewrite; plan/review image and document assets exist on disk; symlink escape export fails.
+          Categories searched: correctness, edge cases, error handling, security/path safety, test
+          quality, integration/static consumers. Shared/package guidance surfaces touched: none.
+          Findings: none."
+        created_at: 2026-06-09T02:35:48.701Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-09T02:23:03.321Z
-updated_at: 2026-06-09T02:35:31.599Z
+updated_at: 2026-06-09T02:35:48.701Z
 notes: []
