@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KTMTYBQNDDWRH70P19PQV10Q
+    content: "Approach: Extract a reusable pure-core resource markdown rewriter (resource-links.ts) that
+      maps ./resources/<path> -> entity-scoped bytes URL and appends selected-project kspec_dir
+      context via the project store (same as reviewResourceBytesUrl). rewritePlanResourceLinks and
+      rewriteTaskResourceLinks both delegate to it; plan rewrites all declared resources, task
+      rewrites only 'present' resolved resources (drift/missing/unresolved stay raw). Wire
+      rewriteTaskResourceLinks into TaskDetailContent.svelte before renderMarkdown and add a compact
+      resources/status section. Flip it.fails contract tests in task-resource-links.test.ts and
+      resource-url-project-context.test.ts (plan group) to it. Add store mocks to
+      plan-resource-links/plan-embedded-content tests since the shared helper now imports the
+      project store (returns null when unselected -> existing no-kspec_dir expectations hold)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-09T00:01:30.870Z
