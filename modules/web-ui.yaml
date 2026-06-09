@@ -5541,6 +5541,15 @@ requirements:
               URLs from the review content resource context, the browser fetches the selected
               project's declared bytes, and undeclared or unsafe paths are not rewritten
             when: the review detail page renders the plan content section in live multi-project mode
+          - given: a task review subject's task description contains markdown image and document links using
+              `./resources/<relative-path>` for present task resolved resources, including both
+              plan-owned refs and materialized task-owned copies
+            id: ac-6
+            then: the markdown image and document targets are rewritten through task-scoped resource bytes URLs
+              from the review content resource context, the browser fetches the recorded
+              selected-project bytes, and the UI shows resource status messages instead of silently
+              serving replacement bytes for drifted, missing, unresolved, or unmatched references
+            when: the review detail page renders the task description section in live multi-project mode
         tags: []
         created: 2026-03-16T08:28:59.038Z
         notes: []
