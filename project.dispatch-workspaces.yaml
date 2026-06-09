@@ -11331,11 +11331,11 @@ workspaces:
     canonical_branch: dispatch/task/stabilize-dispatch-runner-preflight-session-id-test/01ktn02t
     canonical_branch_head: 934fa83182e267be81514ce9b5c528739257f5f0
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-09T02:06:52.944Z
+      updated_at: 2026-06-09T02:10:03.319Z
     health:
       status: healthy
       issues: []
@@ -11349,17 +11349,17 @@ workspaces:
       target_branch: dev
       target_commit: 27fe4f1938d81f27125c9da22b20827e496852f8
       updated_at: 2026-06-09T02:06:52.944Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTN02TDJH33FM85CD6E1215H
     task_ref: "@01KTN02TDJH33FM85CD6E1215H"
     task_slug: stabilize-dispatch-runner-preflight-session-id-test
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-09T02:10:03.319Z
       last_active_at: 2026-06-09T01:51:40.004Z
       last_reconciled_at: 2026-06-09T02:09:25.722Z
       created_at: 2026-06-09T01:32:25.941Z
-      updated_at: 2026-06-09T02:09:25.722Z
+      updated_at: 2026-06-09T02:10:03.319Z
     workspace_id: dispatch-workspace-01KTN02TDJH33FM85CD6E1215H
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
