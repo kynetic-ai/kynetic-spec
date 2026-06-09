@@ -61675,7 +61675,7 @@ runs:
     completed_at: 2026-06-09T02:40:35.568Z
   - _ulid: 01KTN697QKX7RK5MBHQ5XTEGM0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -61688,7 +61688,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-09T03:20:47.677Z
-        completed_at: 2026-06-09T03:20:47.677Z
+        completed_at: 2026-06-09T03:20:58.260Z
+        notes: "Friction points: Review CLI freeform bodies are easy to damage through shell interpolation
+          when they contain backticks or command examples; this is already tracked by existing
+          observations. New untracked friction: documentation-surface tests that only assert text
+          presence can lock in invalid command examples even when an AC says the guide provides
+          exact runnable steps."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-09T03:20:58.260Z
+        completed_at: 2026-06-09T03:20:58.260Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-09T03:19:41.555Z
