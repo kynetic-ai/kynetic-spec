@@ -828,6 +828,15 @@ features:
               context, and bounded declared-resource metadata sufficient for clients to rewrite only
               declared safe resource paths without embedding resource bytes
             when: a client requests `GET /api/reviews/:id/content` for that review
+          - given: a task review subject has a description that references task resources with
+              `./resources/<relative-path>`
+            id: ac-6
+            then: the task description markdown section includes byte-free task resource context with the owning
+              task ref, a browser-fetchable task-scoped resource base URL that preserves
+              selected-project context, and bounded resolved-resource status sufficient for clients
+              to rewrite only present resources while distinguishing drifted, missing, unresolved,
+              and unmatched references without embedding resource bytes
+            when: a client requests `GET /api/reviews/:id/content` for that review
         tags: []
         created: 2026-03-16T08:28:58.926Z
         notes: []
