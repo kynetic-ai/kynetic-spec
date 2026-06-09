@@ -2,7 +2,111 @@ _ulid: 01KTMWZTJF9CY3DKDMPTS0P7YK
 slugs: []
 title: Review generalize live UI resource markdown rewriting
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 987 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-09T00:50:12.918Z
+    completed_at: 2026-06-09T00:50:12.918Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repo warning baseline: 738 warnings, 0 errors. Focused changed-file oxlint
+      had 0 errors; two no-array-sort warnings in tests/web-ui/plan-resource-links.test.ts were
+      verified pre-existing because changed hunks only added the project-store mock."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-09T00:50:15.447Z
+    completed_at: 2026-06-09T00:50:15.447Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Changed-file oxlint: 0 errors. Two warnings in tests/web-ui/plan-resource-links.test.ts
+      lines 57 and 68 are on unchanged Object.keys(...).sort() assertions from base, not introduced
+      by this branch."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-09T00:50:17.824Z
+    completed_at: 2026-06-09T00:50:17.824Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit completed with exit 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-09T00:50:20.311Z
+    completed_at: 2026-06-09T00:50:20.311Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2713 suites passed; 10343 tests passed; 5 skipped; duration 2253.6s. Full log:
+      /tmp/kspec-test-cache/01KTMWXQMGR71AWD68D0713PGB/be438c9d7d8da2f6.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-09T00:50:22.692Z
+    completed_at: 2026-06-09T00:50:22.692Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; schema and references OK with existing warning
+      baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-09T00:50:25.200Z
+    completed_at: 2026-06-09T00:50:25.200Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with existing alignment warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-09T00:50:27.572Z
+    completed_at: 2026-06-09T00:50:27.572Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with existing completeness warning baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-09T00:50:30.006Z
+    completed_at: 2026-06-09T00:50:30.006Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, TaskDetailContent.svelte, resource-links.ts,
+      plan-resource-links.ts, task-resource-links.ts, markdown.ts, project.svelte.ts, api.ts
+      reviewResourceBytesUrl, task-resource-resolver.ts, changed tests. Commands run: git
+      diff/stat/name-status/log/diff-check, kspec task/item/review lookups, rg AC annotations, node
+      marked unmatched image probe, format/lint/focused-lint/typecheck/npm test/kspec validations.
+      Claims verified: selected-project URLs append kspec_dir via tests and code; task present
+      resources rewrite through task bytes route; drifted resources stay raw. Categories searched:
+      correctness, edge cases, error handling, security/resource scoping, test quality,
+      integration."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-06-09T00:50:32.429Z
+    completed_at: 2026-06-09T00:50:32.429Z
 events:
   - _ulid: 01KTMWZTJEY8M45SYTAHGP2QE8
     actor: Jacob Chapel
@@ -17,17 +121,135 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-09T00:37:33.156Z
+  - _ulid: 01KTMXQHGDVDF0ERSZPEJP132E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-09T00:50:13.133Z
+  - _ulid: 01KTMXQKZ4EGP3KN8QY5PW9C0S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-09T00:50:15.652Z
+  - _ulid: 01KTMXQP9Q596YV5H1MA8C473Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-09T00:50:18.039Z
+  - _ulid: 01KTMXQRPQ7ZWE6K7AFNYX2K8T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-09T00:50:20.503Z
+  - _ulid: 01KTMXQV2083TMGA2YNQ07ZZMA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-09T00:50:22.912Z
+  - _ulid: 01KTMXQXFRKB6P97EQZ0GMZ2MT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-09T00:50:25.401Z
+  - _ulid: 01KTMXQZTGHQ3PKBAE6A66EXS3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-09T00:50:27.792Z
+  - _ulid: 01KTMXR26P9ACHZW7YATGG2H6A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-09T00:50:30.230Z
+  - _ulid: 01KTMXR4HN1Y0Q6N7DJ8F9RTN5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-09T00:50:32.629Z
+  - _ulid: 01KTMXR6WY6XFP6Z86T8Q4MZQ2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTMXR6PZ1X4P02RHKSRWQ46M
+    timestamp: 2026-06-09T00:50:35.038Z
+  - _ulid: 01KTMXR96W334F64Z0HPSTNT0J
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-09T00:50:37.404Z
+  - _ulid: 01KTMXR96WBQSJVHMRR2WQYHCX
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-09T00:50:37.404Z
 examined_commit: 9d81dd03cced10e76daed6ab19337559278782f1
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KTD8S26A1PY21C7SYXTNTJ05"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTMXR6PZ1X4P02RHKSRWQ46M
+    anchor:
+      type: code
+      commit: 9d81dd03cced10e76daed6ab19337559278782f1
+      line_end: 240
+      line_start: 238
+      path: packages/web-ui/src/lib/components/board/TaskDetailContent.svelte
+      side: head
+    entries:
+      - _ulid: 01KTMXR6PZD2KVYTTDDTTGVV0E
+        author: Jacob Chapel
+        body: "MUST-FIX: @live-task-resource-markdown-rendering
+          ac-unmatched-task-resource-reference-stays-raw requires the live task modal to leave an
+          unmatched ./resources reference visible and show actionable guidance. The only guidance
+          data computed here is unhealthyResources from task.resolved_resources filtered to
+          non-present statuses, so a description reference with no matching resolved resource path
+          has no entry and the Resources needing attention section never renders. I also executed a
+          markdown rendering probe for ![gone](./resources/screens/missing.png); marked renders it
+          as an img tag with the path only in src, so the raw ./resources/... authoring reference is
+          not visible as text. The current tests prove rewriteTaskResourceLinks leaves unmatched
+          markdown raw, but they do not prove the live modal guidance required by the AC. Add
+          unmatched-reference detection/guidance in the modal and behavioral coverage for that UI
+          path."
+        created_at: 2026-06-09T00:50:34.847Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-09T00:50:37.404Z
 created_at: 2026-06-09T00:37:15.983Z
-updated_at: 2026-06-09T00:37:32.951Z
+updated_at: 2026-06-09T00:50:37.404Z
 notes: []
