@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KTN0AW735F5C0TZHX5T0DJAJ
+    content: >-
+      Root cause: the canonical-session-id preflight test (tests/agent-dispatch-engine.test.ts
+      ~2437) read activeInvocationDetails after only awaiting waitForMockCall(runSpy) (10ms poll).
+      runInvocation was mocked with mockResolvedValue (resolves instantly), so dispatch's cleanup
+      path (markDispatchWorkspaceIdle real shadow op + activeInvocationDetails.delete) could
+      complete before the poll detected the call, intermittently deleting the active record ->
+      expected undefined to be defined at :2545.
+
+
+      Fix: gate the runInvocation mock on a test-controlled deferred so the invocation stays
+      in-flight while the active-record assertions run, then release and await the invocation to
+      drain cleanup deterministically. Canonical session-id contract assertions unchanged.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-09T01:35:43.843Z
