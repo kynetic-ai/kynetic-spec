@@ -2,7 +2,17 @@ _ulid: 01KTPVNZZ4E24Y3R7HCFRSDMJT
 slugs: []
 title: Review validate resource lifecycle e2e temp projects
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 990 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-09T19:05:41.965Z
+    completed_at: 2026-06-09T19:05:41.965Z
 events:
   - _ulid: 01KTPVNZZ3QX6RBA8PGPM8VA8R
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-09T18:53:13.801Z
+  - _ulid: 01KTPWDE1EADM6SN7XG8M4X6FX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-09T19:05:42.190Z
 examined_commit: 3ac086626e24905755fed2bd254eea91ace29805
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-09T18:52:54.116Z
-updated_at: 2026-06-09T18:53:13.585Z
+updated_at: 2026-06-09T19:05:41.965Z
 notes: []
