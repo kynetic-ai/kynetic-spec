@@ -2470,6 +2470,9 @@ features:
         description: >
           Static export copies every resource asset that snapshot metadata and rewritten markdown
           advertise for plans, tasks, and reviews.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
