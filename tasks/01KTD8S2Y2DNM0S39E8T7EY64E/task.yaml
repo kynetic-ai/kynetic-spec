@@ -39,7 +39,7 @@ description: >
 spec_ref: "@resource-docs-ui-task-markdown-behavior"
 plan_ref: "@plan-resource-ui-hardening-plan"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@make-static-export-copy-rewrite-all-resource-assets"
@@ -58,7 +58,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KTN6GK68Z2TXW3FKA7ZVXV51
 history:
   - author: Jacob Chapel
     changes:
@@ -117,8 +117,21 @@ history:
         previous: 01KTN3WBQMKCD7TP7EKYTTT3YG
     command: review-verdict-needs-work
     timestamp: 2026-06-09T03:18:55.730Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KTN6GK68Z2TXW3FKA7ZVXV51
+        previous: null
+      started_at:
+        new: 2026-06-09T03:37:29.992Z
+        previous: 2026-06-09T02:41:02.286Z
+    command: task-start
+    timestamp: 2026-06-09T03:37:29.993Z
 created_at: 2026-06-06T01:29:22.626Z
-started_at: 2026-06-09T02:41:02.286Z
+started_at: 2026-06-09T03:37:29.992Z
 submitted_at: 2026-06-09T03:00:02.743Z
 todos: []
 automation: eligible
