@@ -1,0 +1,85 @@
+_ulid: 01KTQBVCQDFPWFF60ZJEH4B6TY
+slugs:
+  - render-review-structured-content-resource-markdown
+title: Render plan and task resource markdown in review structured content
+type: bug
+description: >-
+  Continue @plan-resource-ui-hardening-plan by fixing the review detail structured content gap found
+  during temp-project resource UI validation.
+
+
+  Current evidence:
+
+  - `StructuredContentViewer.svelte` renders markdown sections with raw
+  `renderMarkdown(section.content)`.
+
+  - `GET /api/reviews/:id/content` returns plan content and task descriptions as markdown sections,
+  but does not include resource context for those sections.
+
+  - Therefore task descriptions embedded on review pages keep raw `./resources/...` targets, and
+  plan content embedded on review pages has the same gap.
+
+
+  Covers:
+
+  - @review-content-diff-api ac-5
+
+  - @review-content-diff-api ac-6
+
+  - @review-structured-content-viewer ac-5
+
+  - @review-structured-content-viewer ac-6
+
+
+  Implement the review-page resource markdown path end to end:
+
+  - Extend `GET /api/reviews/:id/content` and shared web UI types so markdown sections for plan
+  subjects can carry byte-free plan resource context. The context must name the owning plan ref,
+  expose a plan-scoped `resources_base_url` suitable for browser `<img>` and `<a>` loads in live
+  multi-project mode, and include bounded declared resource metadata. Do not embed resource bytes or
+  unbounded manifests in review content responses.
+
+  - Extend `GET /api/reviews/:id/content` and shared web UI types so the task description section
+  can carry byte-free task resource context. The context must name the owning task ref, expose a
+  task-scoped `resources_base_url` suitable for browser `<img>` and `<a>` loads in live
+  multi-project mode, and include bounded resolved resource status.
+
+  - For plan review subjects, use declared plan resources and plan-scoped bytes URLs. Preserve
+  manifest/path-safety rules: only declared safe resources may be rewritten; undeclared or unsafe
+  paths must remain visible rather than being rewritten.
+
+  - For task review subjects, use the task resolved-resource projection and task-scoped bytes URLs.
+  Support both plan-owned resource refs and materialized task-owned copies. Preserve drift-safe
+  behavior: only `present` resources should be rewritten to bytes URLs; drifted, missing,
+  unresolved, or unmatched references must remain visible with actionable status rather than serving
+  replacement bytes.
+
+  - Update `StructuredContentViewer.svelte` to rewrite markdown resource targets before
+  `renderMarkdown` using the same reusable helper semantics as plan/task detail rendering. Avoid
+  duplicating a plan-only regex.
+
+  - Add focused tests before implementation where practical: API test(s) for plan review content
+  resource context and task review content resource context; web UI utility/component test(s)
+  proving plan and task review markdown image/doc links rewrite to selected-project entity-scoped
+  URLs; and drift/unmatched cases remain visible/not silently rewritten.
+
+  - Add/adjust AC annotations in touched code/tests for the four ACs above, then run focused tests
+  plus `kspec validate --warnings-ok`.
+spec_ref: "@review-structured-content-viewer"
+meta_ref: null
+plan_ref: "@plan-resource-ui-hardening-plan"
+status: pending
+blocked_by: []
+depends_on:
+  - "@generalize-live-ui-resource-markdown-rewriting"
+context: []
+priority: 1
+tags:
+  - resources
+  - reviews
+  - web-ui
+  - api
+vcs_refs: []
+created_at: 2026-06-09T23:35:28.237Z
+todos: []
+automation: eligible

@@ -31083,3 +31083,24 @@
   submitted_at: 2026-06-09T01:48:42.945Z
   completed_at: 2026-06-09T02:06:18.956Z
   automation: eligible
+- _ulid: 01KTQBVCQDFPWFF60ZJEH4B6TY
+  slugs:
+    - render-review-structured-content-resource-markdown
+  title: Render plan and task resource markdown in review structured content
+  type: bug
+  spec_ref: "@review-structured-content-viewer"
+  plan_ref: "@plan-resource-ui-hardening-plan"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@generalize-live-ui-resource-markdown-rewriting"
+  priority: 1
+  tags:
+    - resources
+    - reviews
+    - web-ui
+    - api
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-09T23:35:28.237Z
+  automation: eligible
