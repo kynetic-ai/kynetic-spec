@@ -2489,10 +2489,20 @@ describe("Dispatch runner resolution preflight", () => {
         metadata: null,
       });
 
-      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
-        session: {} as any,
-        outcome: "success",
-        durationMs: 1,
+      // Gate runInvocation on a deferred the test controls. Dispatch deletes the
+      // active-invocation record only AFTER runInvocation resolves (it awaits the
+      // invocation, then runs cleanup including activeInvocationDetails.delete).
+      // Holding runInvocation pending therefore freezes the in-flight state so the
+      // active-record assertions below are deterministic rather than racing the
+      // cleanup path's real markDispatchWorkspaceIdle shadow op against the poll
+      // interval (the source of the prior flakiness).
+      let releaseRunInvocation!: () => void;
+      const runInvocationGate = new Promise<void>((resolve) => {
+        releaseRunInvocation = resolve;
+      });
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+        await runInvocationGate;
+        return { session: {} as any, outcome: "success", durationMs: 1 };
       });
 
       const engine = new DispatchEngine({
@@ -2513,10 +2523,15 @@ describe("Dispatch runner resolution preflight", () => {
       type EngineInternal = {
         _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
         activeInvocationDetails: Map<string, { sessionId: string; taskRef: string | undefined }>;
+        running: boolean;
+        runningInvocations: Set<Promise<unknown>>;
       };
       const internal = engine as unknown as EngineInternal;
       const spawned = await internal._spawnInvocation(agent, entry);
+      // runInvocation is now called and parked on the gate; the active record is
+      // registered and cleanup is blocked until we release the gate below.
       await waitForMockCall(runSpy);
+      const inFlightInvocation = Array.from(internal.runningInvocations)[0];
 
       expect(spawned).toBe(true);
       expect(runSpy).toHaveBeenCalledTimes(1);
@@ -2539,11 +2554,19 @@ describe("Dispatch runner resolution preflight", () => {
       expect(invocationOpts.sessionId).toBe(preflightSessionId);
 
       // The active invocation record exposes the same session id to status
-      // surfaces (dispatch status, daemon API, Web UI).
+      // surfaces (dispatch status, daemon API, Web UI). runInvocation is still
+      // parked on the gate, so the record is guaranteed present here.
       const activeRecords = Array.from(internal.activeInvocationDetails.values());
       const activeForTask = activeRecords.find((r) => r.taskRef === taskRef);
       expect(activeForTask).toBeDefined();
       expect(activeForTask!.sessionId).toBe(preflightSessionId);
+
+      // Release the gate and let the invocation drain so its cleanup (record
+      // delete, workspace idle) settles before mocks are restored. Stop the
+      // engine first so the post-invocation re-evaluation/drain short-circuits.
+      internal.running = false;
+      releaseRunInvocation();
+      if (inFlightInvocation) await inFlightInvocation;
     } finally {
       vi.restoreAllMocks();
     }
