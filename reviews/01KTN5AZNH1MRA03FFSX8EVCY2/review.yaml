@@ -169,9 +169,25 @@ events:
       kind: nit
       thread_ulid: 01KTN67EDAXBM2MHHHS2996YA7
     timestamp: 2026-06-09T03:18:43.067Z
+  - _ulid: 01KTN67S58340WG4BHTCZ4WSVV
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-09T03:18:53.865Z
+  - _ulid: 01KTN67S59W613KSJ0DHEHY8K2
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-09T03:18:53.865Z
 examined_commit: 09ede8f5093d2af6f17ba33af2635cfca3f3f794
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -262,7 +278,14 @@ threads:
           package-shipped guidance surfaces."
         created_at: 2026-06-09T03:18:42.858Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-09T03:18:53.864Z
 created_at: 2026-06-09T03:03:10.257Z
-updated_at: 2026-06-09T03:18:42.858Z
+updated_at: 2026-06-09T03:18:53.865Z
 notes: []
