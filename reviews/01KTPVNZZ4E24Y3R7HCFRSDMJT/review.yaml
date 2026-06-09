@@ -77,6 +77,17 @@ checks:
     runner: npm run test:e2e -- tests/e2e/resource-lifecycle.spec.ts
     created_at: 2026-06-09T19:06:16.255Z
     completed_at: 2026-06-09T19:06:16.255Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0; existing orphan/status
+      mismatch warning baseline only."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-09T19:06:19.109Z
+    completed_at: 2026-06-09T19:06:19.109Z
 events:
   - _ulid: 01KTPVNZZ3QX6RBA8PGPM8VA8R
     actor: Jacob Chapel
@@ -140,6 +151,13 @@ events:
       status: pass
       name: focused e2e
     timestamp: 2026-06-09T19:06:16.466Z
+  - _ulid: 01KTPWEJA05C1FPQ5608JSZJY0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-09T19:06:19.328Z
 examined_commit: 3ac086626e24905755fed2bd254eea91ace29805
 external_links: []
 lifecycle_state: open
@@ -152,5 +170,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-09T18:52:54.116Z
-updated_at: 2026-06-09T19:06:16.255Z
+updated_at: 2026-06-09T19:06:19.109Z
 notes: []
