@@ -13,3 +13,24 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-09T00:01:30.870Z
+  - _ulid: 01KTMWNWKFW2JV604D2514MZWX
+    content: "Implemented. Added packages/web-ui/src/lib/utils/resource-links.ts as the shared
+      project-aware rewrite core (./resources/<path> -> <base>/<encoded-id>/bytes, appends
+      ?kspec_dir from the project store like reviewResourceBytesUrl). rewritePlanResourceLinks and
+      rewriteTaskResourceLinks now delegate to it; plan rewrites all declared resources, task
+      rewrites only status==='present' resolved resources so drift/missing/unresolved/unmatched refs
+      stay raw. TaskDetailContent.svelte rewrites task.description via
+      rewriteTaskResourceLinks(resolved_resources, resources_base_url) before renderMarkdown and
+      renders a compact 'Resources needing attention' section (data-testid=task-resource-status) for
+      non-present resolved resources. Flipped FLIPPED-ON-FIX it.fails -> it in
+      task-resource-links.test.ts (4), resource-url-project-context.test.ts plan group (2), and
+      resource-url-browser-fetch-contract.test.ts (6); updated the stale no-kspec_dir plan guard to
+      assert the project-scoped URL + project-B bytes. Added project-store mocks to the previously
+      un-mocked plan rewriter tests (plan-resource-links, plan-embedded-content,
+      plan-embedded-views) since the shared core imports the store. Gates: full suite 10343 passed /
+      0 failed / 5 skipped; typecheck clean; svelte-check adds 0 new problems over the 61-error
+      pre-existing baseline; format clean; lint 0 errors; kspec validate refs/alignment/completeness
+      OK. All 9 covered ACs annotated."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-09T00:31:50.383Z
