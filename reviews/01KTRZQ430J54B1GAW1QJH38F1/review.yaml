@@ -2,7 +2,96 @@ _ulid: 01KTRZQ430J54B1GAW1QJH38F1
 slugs: []
 title: "Plan review: Daemon Operational Reliability"
 author: "@claude"
-checks: []
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified against working tree at dev (ee78b193a4). Accurate: serve.ts:444 stdio ignore +
+      TODO; no uncaughtException/unhandledRejection handlers anywhere in packages/daemon/src or src;
+      DispatchMutex command.ts:196 with run sites 632/751; WILDCARD_HOSTS server.ts:351; Host
+      allowlist extension server.ts:646; shutdown server.ts:1163; isExternallyReachable
+      endpoint.ts:250; bind-warning blocks serve.ts ~432 and ~629; statusServer serve.ts:595;
+      registerServeCommands serve.ts:214; TaskList.svelte console.log 25/28; manager.ts console.log
+      160/168/199/321/408 + console.debug 353 + warn/error inventory exact; +page.svelte TODO line
+      66 with full-list count aggregation; aggregation.ts /tasks/summary exists with
+      counts/ready/blocked_by_dependencies/total and zero web-ui callers. FAIL items:
+      console-interception lifecycle misdescribed in two task How sections (permanent module-load
+      ALS routing, not per-execution wrap/restore — see blocker threads); getGlobalKspecConfigDir()
+      and src/config/ do not exist (see nit thread)."
+    name: Codebase claim verification
+    required: true
+    runner: manual-investigation
+    created_at: 2026-06-10T14:44:19.452Z
+    completed_at: 2026-06-10T14:44:19.452Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All referenced existing refs resolve and match the plan's characterization:
+      @daemon-server and @web-ui (parents) exist; @cli-serve-commands ac-8/ac-9 specify serve logs
+      against a nonexistent log file; @daemon-network-endpoint-contract has
+      ac-external-binding-warning and no connect-host warning AC (gap confirmed);
+      @daemon-command-api owns command execution semantics with no existing timeout AC;
+      @ui-api-aggregation ac-1 covers the summary endpoint; @trait-localhost-security has
+      ac-external-host-explicit; @ui-dashboard-overview has no counts-source AC. Prior-art claims
+      verified: task 01KFMMMN (Implement daemon logging) is cancelled; plan 01KRYJ0Z (OOM hardening)
+      is completed and disjoint; @investigate-daemon-dispatch-oom (01KRMEKN) is in_progress P1. Task
+      depends_on refs all point to tasks defined in this plan."
+    name: Cross-reference validation
+    required: true
+    runner: kspec-cli
+    created_at: 2026-06-10T14:44:21.851Z
+    completed_at: 2026-06-10T14:44:21.851Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 11 new ACs and 4 delta ACs are claimed by exactly one task each:
+      daemon-failure-observability x4 by task-daemon-fatal-failure-observability; daemon-log-capture
+      x4 by task-daemon-log-capture with ac-log-location-discoverable by task-serve-logs-command
+      (division annotated); ui-production-log-hygiene x2 by task-web-ui-debug-log-cleanup; delta ACs
+      ac-command-timeout/ac-timeout-isolation by task-command-dispatch-timeout,
+      ac-external-connect-host-warning by task-connect-host-exposure-warning, ac-counts-from-summary
+      by task-dashboard-summary-adoption. Pre-existing @cli-serve-commands ac-8/ac-9 covered by
+      task-serve-logs-command. No orphan ACs."
+    name: AC coverage mapping
+    required: true
+    runner: manual-investigation
+    created_at: 2026-06-10T14:44:24.313Z
+    completed_at: 2026-06-10T14:44:24.313Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No cycles. Chains: spec-update task (P1) gates the three delta-AC implementation tasks
+      (P2/P3); log-capture (P1) gates fatal-observability (P1) and serve-logs (P2). No
+      higher-priority task depends on a lower-priority one. Web-UI tasks and connect-host warning
+      correctly parallel to the daemon logging chain. No over-constraining dependencies found."
+    name: Dependency ordering and priority alignment
+    required: true
+    runner: manual-investigation
+    created_at: 2026-06-10T14:44:26.756Z
+    completed_at: 2026-06-10T14:44:26.756Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Specs are behavioral and standalone: no file names, function names, or library terms in
+      descriptions/ACs (concrete names correctly confined to task descriptions per the plan's
+      spec-purity note). AC ids are descriptive; given/when/then are individually testable;
+      deterministic defaults (5 MiB, one retained generation, 120 s) stated as observable contract
+      values. Placement: daemon-failure-observability and daemon-log-capture under @daemon-server,
+      ui-production-log-hygiene under @web-ui — no existing spec covers daemon log capture,
+      termination observability, or UI console hygiene (searched 'daemon log', 'failure
+      observability crash', 'console'); no overlap or contradiction with @trait-localhost-security
+      or @daemon-network-endpoint-contract. One AC-vs-guidance boundary mismatch filed as question
+      (ac-bounded-rotation)."
+    name: Spec language quality and placement
+    required: true
+    runner: manual-investigation
+    created_at: 2026-06-10T14:44:29.164Z
+    completed_at: 2026-06-10T14:44:29.164Z
 events:
   - _ulid: 01KTRZQ43059XK4YR46E898RXN
     actor: "@claude"
@@ -17,6 +106,90 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-10T14:42:15.768Z
+  - _ulid: 01KTRZV1KS6ZTM0T0W71JGGP4F
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTRZV1D5083S8FMX7X38ZNJ9
+    timestamp: 2026-06-10T14:44:02.809Z
+  - _ulid: 01KTRZV41Z60SG46953QHZB4D4
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTRZV3VPN07XZTXGH3QA9NCF
+    timestamp: 2026-06-10T14:44:05.311Z
+  - _ulid: 01KTRZV6C1T2K24JQ1851XRRDQ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRZV660447RRZ8S90A65C20
+    timestamp: 2026-06-10T14:44:07.681Z
+  - _ulid: 01KTRZV8NWPQCGK5RV3WST98DQ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRZV8FG1N19JE9P4XCSCS6H
+    timestamp: 2026-06-10T14:44:10.044Z
+  - _ulid: 01KTRZVB2W4VQJCKEE1AZYD7Y3
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTRZVAWP9KX5G5P1A3ZVDBDS
+    timestamp: 2026-06-10T14:44:12.508Z
+  - _ulid: 01KTRZVDER66C32177MJ88QF3F
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTRZVD7ZP4W572PPZKNB5P59
+    timestamp: 2026-06-10T14:44:14.936Z
+  - _ulid: 01KTRZVFPF8JMEDFK8097S4194
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTRZVFGHY8H8Y6SZDCDEYTV0
+    timestamp: 2026-06-10T14:44:17.231Z
+  - _ulid: 01KTRZVJ25BTNM5BYZF398DKHM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Codebase claim verification
+    timestamp: 2026-06-10T14:44:19.653Z
+  - _ulid: 01KTRZVMCRHQ6YSSG19B7QFT9R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation
+    timestamp: 2026-06-10T14:44:22.040Z
+  - _ulid: 01KTRZVPT8RNGDW5VS5KK9MDTT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-10T14:44:24.520Z
+  - _ulid: 01KTRZVS6ZPY27C10VBSKB8JGB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering and priority alignment
+    timestamp: 2026-06-10T14:44:26.975Z
+  - _ulid: 01KTRZVVJ3EPVKTP1VGBYRB81T
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec language quality and placement
+    timestamp: 2026-06-10T14:44:29.379Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +199,188 @@ subject:
   content_hash: ""
   ref: "@01KTRYBC"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTRZV1D5083S8FMX7X38ZNJ9
+    anchor:
+      type: structured
+      ref: "@task-daemon-log-capture"
+      section: description
+    entries:
+      - _ulid: 01KTRZV1D5CHZAJ13WC8SE8N2W
+        author: "@claude"
+        body: >-
+          The How section's model of the command-route console interception is factually wrong, and
+          following it literally produces the exact double-logging failure the task warns against.
+
+
+          Claim in the task: the interception in packages/daemon/src/routes/command.ts 'wraps
+          process.stdout/stderr.write and console methods during command execution', and the tee
+          should be installed 'early in packages/daemon/src/index.ts before createServer()' so it
+          sits 'beneath that interception'.
+
+
+          Actual code: command.ts installs the interceptors ONCE at module load (lines 89-165:
+          originalConsoleLog/originalStdoutWrite captured at import time, console.log/warn/error and
+          process.stdout/stderr.write permanently replaced) and routes per-call via
+          commandExecutionStorage (AsyncLocalStorage). There is no wrap/unwrap per command
+          execution.
+
+
+          Consequence: index.ts statically imports server.js (index.ts:10), which statically imports
+          command.js (server.ts:46), so the interceptors are already installed before ANY index.ts
+          body code runs. A tee that wraps console.* 'before createServer()' is therefore installed
+          ABOVE the interception — every console call hits the tee first, including calls made
+          during command execution, so captured command output IS double-logged into the daemon log.
+
+
+          Fix the How: to get the tee beneath the interception, the logger module must be loaded
+          BEFORE command.ts captures the originals — e.g. a side-effect import of the logger as the
+          first import in index.ts (above the server.js import), or wrap only
+          originalStdoutWrite-equivalent targets, or make the tee skip when a command-execution
+          capture store is active (requires exporting an is-capturing check from command.ts). The
+          current instruction cannot achieve the stated goal.
+        created_at: 2026-06-10T14:44:02.597Z
+    kind: blocker
+  - _ulid: 01KTRZV3VPN07XZTXGH3QA9NCF
+    anchor:
+      type: structured
+      ref: "@task-command-dispatch-timeout"
+      section: description
+    entries:
+      - _ulid: 01KTRZV3VP98ZT5PQGPGNJJ662
+        author: "@claude"
+        body: >-
+          The How section instructs: 'On timeout: restore the intercepted globals exactly as the
+          normal finally path does.' No such restore path exists — this directs the implementer to
+          replicate a mechanism that is not in the code.
+
+
+          Actual code: the console/stdout/stderr/process.exit interceptors in
+          packages/daemon/src/routes/command.ts are permanent module-load installs routed per-call
+          via AsyncLocalStorage (commandExecutionStorage); executeCommand (lines 231-316) has no
+          finally that restores globals. The working directory is also ALS-scoped
+          (runWithWorkingDirectory in src/parser/yaml.ts:91 uses workingDirectoryStorage.run — no
+          process.chdir, nothing to restore). The DispatchMutex doc comment claiming executeCommand
+          'mutates process-global state (process.cwd(), ...)' is itself stale relative to the ALS
+          implementation.
+
+
+          The good news is the design is simpler than the task fears: on timeout there is nothing to
+          restore — releasing the mutex slot is sufficient for global state, and the ALS capture
+          store already keeps late writes scoped (as the task correctly says to verify with a test).
+          Rewrite the How to describe the actual model so an implementing agent is not sent hunting
+          for a nonexistent restore sequence.
+        created_at: 2026-06-10T14:44:05.110Z
+    kind: blocker
+  - _ulid: 01KTRZV660447RRZ8S90A65C20
+    anchor:
+      type: structured
+      field: ac-command-timeout
+      ref: "@task-update-daemon-reliability-specs"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTRZV660ZCAQR0RD98RGXG12
+        author: "@claude"
+        body: >-
+          The proposed ac-command-timeout promises 'commands submitted afterward still execute
+          normally', but the design in @task-command-dispatch-timeout does not deliver that for
+          mutating commands after a hung MUTATING command.
+
+
+          Mutating commands run inside withFileLock within the mutex slot (command.ts:638-643).
+          Promise.race releases the mutex slot on timeout, but the abandoned execution still holds
+          the cross-process file lock until it actually completes — which for a genuinely hung
+          command is never. Subsequent mutating commands will then block on lock acquisition and
+          fail with a lock timeout (src/parser/file-lock.ts DEFAULT_TIMEOUT_MS), which is not
+          'execute normally'.
+
+
+          Either scope the AC (e.g. 'subsequently submitted commands are accepted and read commands
+          execute normally', or limit the guarantee to non-mutating commands), or have the design
+          address lock abandonment explicitly. As written, an honest test of this AC with a hung
+          mutating command would fail.
+        created_at: 2026-06-10T14:44:07.488Z
+    kind: question
+  - _ulid: 01KTRZV8FG1N19JE9P4XCSCS6H
+    anchor:
+      type: structured
+      field: ac-bounded-rotation
+      ref: "@daemon-log-capture"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTRZV8FGVSXV4AHF7Y6XTEMF
+        author: "@claude"
+        body: >-
+          ac-bounded-rotation asserts the combined size of retained log files 'never exceeds twice
+          the configured maximum size', but @task-daemon-log-capture's How prescribes 'check size
+          before each append and rotate synchronously when the limit is reached'. With
+          check-before-append, the active file can exceed the limit by up to one write (the write
+          that lands when size is just under the limit), so active + one retained generation can
+          exceed 2x by up to one write's length — a strict test of the AC as worded can fail.
+
+
+          Either soften the AC bound (e.g. 'never exceeds twice the configured maximum plus one
+          write') or change the guidance to rotate before a write that would cross the limit. Pick
+          one so the AC and the prescribed mechanism agree.
+        created_at: 2026-06-10T14:44:09.840Z
+    kind: question
+  - _ulid: 01KTRZVAWP9KX5G5P1A3ZVDBDS
+    anchor:
+      type: structured
+      ref: "@task-daemon-log-capture"
+      section: description
+    entries:
+      - _ulid: 01KTRZVAWPVX21BJ0RWVT5FXME
+        author: "@claude"
+        body: >-
+          Two naming/path errors in the How (behavior claims are correct, names are not):
+
+
+          1. 'Reuse getGlobalKspecConfigDir() from src/daemon-shared/endpoint.ts (returns
+          ~/.config/kspec)' — no such function. The actual helper is getDefaultDaemonConfigDir()
+          (src/daemon-shared/endpoint.ts:121), which does return ~/.config/kspec as described.
+
+
+          2. 'daemon.log_max_size_bytes in kspec.config.yaml loaded in src/config/' — src/config/
+          does not exist. The daemon config schema (DaemonConfigSchema with
+          daemon.port/host/connect_host/auto_start) lives in src/parser/config.ts; new daemon config
+          keys belong there. Same correction applies to @task-command-dispatch-timeout's
+          daemon.command_timeout_ms mention.
+        created_at: 2026-06-10T14:44:12.310Z
+    kind: nit
+  - _ulid: 01KTRZVD7ZP4W572PPZKNB5P59
+    anchor:
+      type: structured
+      ref: "@task-update-daemon-reliability-specs"
+      section: description
+    entries:
+      - _ulid: 01KTRZVD7ZXKY777ME7K7XGEQK
+        author: "@claude"
+        body: The description says 'The new specs in this plan ... are created by plan import'. Specs are
+          materialized by kspec plan derive (after approval), not by import — import only stores the
+          plan document. Minor, but worth correcting so the executing agent has the right model of
+          when the local spec slugs become resolvable refs.
+        created_at: 2026-06-10T14:44:14.719Z
+    kind: nit
+  - _ulid: 01KTRZVFGHY8H8Y6SZDCDEYTV0
+    anchor:
+      type: structured
+      ref: "@task-dashboard-summary-adoption"
+      section: description
+    entries:
+      - _ulid: 01KTRZVFGH7MNAH2ETP1CX1NB8
+        author: "@claude"
+        body: "The What says to compute TaskCounts 'from summary.counts plus summary.ready /
+          summary.blocked_by_dependencies for the dependency-aware ready vs blocked split'. Note the
+          current UI semantics (+page.svelte ~lines 100-152): blocked counts ONLY status ===
+          'blocked'; pending tasks with unmet dependencies are counted neither as ready nor as
+          blocked. If the implementer folds blocked_by_dependencies into the blocked card, displayed
+          numbers silently change. State explicitly whether the intent is to preserve current
+          display semantics (blocked = counts.blocked, ready = summary.ready) or deliberately adopt
+          the dependency-aware blocked count."
+        created_at: 2026-06-10T14:44:17.041Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-10T14:41:54.272Z
-updated_at: 2026-06-10T14:42:15.555Z
+updated_at: 2026-06-10T14:44:29.164Z
 notes: []

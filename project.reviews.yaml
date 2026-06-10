@@ -24589,9 +24589,9 @@ reviews:
   - _ulid: 01KTRZQ430J54B1GAW1QJH38F1
     slugs: []
     title: "Plan review: Daemon Operational Reliability"
-    disposition: pending
+    disposition: changes_requested
     author: "@claude"
-    check_count: 0
+    check_count: 5
     lifecycle_state: open
     related_refs: []
     subject:
@@ -24599,8 +24599,8 @@ reviews:
       content_hash: ""
       ref: "@01KTRYBC"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 7
+    unresolved_blocker_count: 2
     verdict_count: 0
     created_at: 2026-06-10T14:41:54.272Z
-    updated_at: 2026-06-10T14:42:15.555Z
+    updated_at: 2026-06-10T14:44:29.164Z
