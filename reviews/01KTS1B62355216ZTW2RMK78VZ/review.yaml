@@ -2,7 +2,141 @@ _ulid: 01KTS1B62355216ZTW2RMK78VZ
 slugs: []
 title: "Plan review: Daemon Operational Reliability (cycle 2)"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "KSPEC_NO_DAEMON=1 kspec plan import plans/daemon-operational-reliability.md --dry-run
+      parsed as draft and reported Derived specs: 0 / Derived tasks: 0; no state changes from
+      dry-run."
+    name: plan dry-run parse
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-10T15:11:26.260Z
+    completed_at: 2026-06-10T15:11:26.260Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Read both prior reviews and the updated plan note. Verified the previous findings were
+      addressed: no mutex-slot release promise remains; timeout ACs now describe bounded
+      caller-visible errors and held serialization; errorResponse shape is named;
+      getDefaultDaemonConfigDir and src/parser/config.ts are used; console interception is described
+      as module-load + ALS-routed; no nonexistent restore path remains; rotation is
+      rotate-before-append with 2x+one-line bound; plan import/derive wording and dashboard
+      ready/blocked semantics were corrected."
+    name: prior findings resolution
+    required: true
+    runner: manual review of @01KTRZ25 and @01KTRZQ4
+    created_at: 2026-06-10T15:11:28.982Z
+    completed_at: 2026-06-10T15:11:28.982Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read packages/daemon/src/routes/command.ts, src/parser/file-lock.ts,
+      packages/daemon/src/server.ts, packages/daemon/src/index.ts, src/parser/yaml.ts,
+      src/parser/config.ts, and src/daemon-shared/endpoint.ts. Confirmed command interceptors
+      install at module load and route through AsyncLocalStorage; server.ts statically imports
+      command.ts; runWithWorkingDirectory is ALS-based; DispatchMutex serializes current
+      single/batch command paths; same-process file-lock holders are never reclaimed from
+      process.pid; health endpoint is available to extend; config schema and daemon config dir
+      helper names match the updated plan.
+    name: codebase claim verification
+    required: true
+    runner: manual source read
+    created_at: 2026-06-10T15:11:31.633Z
+    completed_at: 2026-06-10T15:11:31.633Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read @daemon-command-api, @daemon-network-endpoint-contract, @ui-dashboard-overview,
+      @cli-serve-commands, and @ui-api-aggregation; searched daemon log, command timeout, and
+      console hygiene. The new specs/delta ACs are placed in the expected neighborhoods with no
+      duplicate existing ACs. All new plan ACs and referenced existing ACs are claimed by tasks; the
+      remaining failures are task dependency/executability issues, not orphan ACs.
+    name: spec neighborhood and AC mapping
+    required: true
+    runner: kspec item get/search + manual mapping
+    created_at: 2026-06-10T15:11:34.298Z
+    completed_at: 2026-06-10T15:11:34.298Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The command-timeout task requires the daemon log-capture logger for late abandoned-command
+      rejection handling but does not depend on @task-daemon-log-capture. See blocker thread on
+      @task-command-dispatch-timeout.
+    name: dependency ordering
+    required: true
+    runner: manual dependency graph review
+    created_at: 2026-06-10T15:11:36.980Z
+    completed_at: 2026-06-10T15:11:36.980Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The timeout task does not tell implementers how to preserve existing mutating-command
+      cache write-through/WebSocket broadcast when a timed-out command later succeeds. Current code
+      performs those side effects after awaiting dispatchMutex.run, so a naive timeout race would
+      skip them. See blocker thread.
+    name: task executability and existing-contract preservation
+    required: true
+    runner: manual plan/code review
+    created_at: 2026-06-10T15:11:39.676Z
+    completed_at: 2026-06-10T15:11:39.676Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --refs --warnings-ok passed with the existing reference
+      warning baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-10T15:11:42.460Z
+    completed_at: 2026-06-10T15:11:42.460Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --alignment --warnings-ok passed with the existing
+      alignment warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-10T15:11:45.226Z
+    completed_at: 2026-06-10T15:11:45.226Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --completeness --warnings-ok passed with the existing
+      completeness warning baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-10T15:11:47.954Z
+    completed_at: 2026-06-10T15:11:47.954Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, plan @01KTRYBC, reviews @01KTRZ25/@01KTRZQ4,
+      packages/daemon/src/routes/command.ts, src/parser/file-lock.ts, packages/daemon/src/server.ts,
+      packages/daemon/src/index.ts, src/parser/yaml.ts, src/parser/config.ts,
+      src/daemon-shared/endpoint.ts. Commands run: kspec plan get, kspec review get --json, kspec
+      item get, kspec search, kspec plan import --dry-run, kspec validate
+      refs/alignment/completeness. Categories searched: prior-finding resolution, command timeout
+      correctness, file-lock behavior, cache/broadcast side effects, dependency graph, spec
+      placement, AC coverage mapping, validation."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-06-10T15:11:50.735Z
+    completed_at: 2026-06-10T15:11:50.735Z
 events:
   - _ulid: 01KTS1B622H7BYN6DJ2X0F6VYS
     actor: codex
@@ -10,17 +144,164 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T15:10:20.226Z
+  - _ulid: 01KTS1D1DQT13VVA9PK7Y7Z1WM
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTS1D16FWR3GPBCE576G2TZ3
+    timestamp: 2026-06-10T15:11:21.016Z
+  - _ulid: 01KTS1D43HWJNVY4HD7GPD01S3
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTS1D3W7V9B9BSZH5SN2Y128
+    timestamp: 2026-06-10T15:11:23.761Z
+  - _ulid: 01KTS1D6SBZD8P63JN71G65EBA
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan dry-run parse
+    timestamp: 2026-06-10T15:11:26.507Z
+  - _ulid: 01KTS1D9DVWAWYZXF1V2XP2QDY
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior findings resolution
+    timestamp: 2026-06-10T15:11:29.211Z
+  - _ulid: 01KTS1DC0D3CRQWSJYMQWK98ZK
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: codebase claim verification
+    timestamp: 2026-06-10T15:11:31.853Z
+  - _ulid: 01KTS1DEKZ02RR32C36XM1AN3S
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec neighborhood and AC mapping
+    timestamp: 2026-06-10T15:11:34.527Z
+  - _ulid: 01KTS1DH7CZ26V3T7A9HWWP1Z3
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: dependency ordering
+    timestamp: 2026-06-10T15:11:37.196Z
+  - _ulid: 01KTS1DKVZES8TY7KJ09KBP3DG
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: task executability and existing-contract preservation
+    timestamp: 2026-06-10T15:11:39.903Z
+  - _ulid: 01KTS1DPJYFRFC3TK7M0G2XHP2
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T15:11:42.687Z
+  - _ulid: 01KTS1DS9FFNHZ4QZ3KBMNYJ55
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-10T15:11:45.455Z
+  - _ulid: 01KTS1DVYZQ3HKEWQTKZ2T57BY
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-10T15:11:48.191Z
+  - _ulid: 01KTS1DYPK1BZT5BW312494HXJ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-10T15:11:50.995Z
+  - _ulid: 01KTS1E2J7SFSKB5RCHWSRGWWR
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-10T15:11:54.951Z
+  - _ulid: 01KTS1E2J7W5FR24DMEEY8YY0G
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-06-10T15:11:54.951Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@01KTRYBC"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTS1D16FWR3GPBCE576G2TZ3
+    anchor:
+      type: structured
+      ref: "@task-command-dispatch-timeout"
+      section: dependencies
+    entries:
+      - _ulid: 01KTS1D16F59TS707VB1FY0F0N
+        author: codex
+        body: "The command-timeout task now requires logging late abandoned-command rejections through the
+          daemon log-capture logger, but it still only depends on
+          @task-update-daemon-reliability-specs. That lets @task-command-dispatch-timeout run before
+          @task-daemon-log-capture has created the required logger, making the task non-standalone
+          or forcing it to expand into another task's scope. Add a dependency on
+          @task-daemon-log-capture, or change the task to use an already-existing logging surface
+          instead. Evidence: current task text says the .catch must log through the
+          task-daemon-log-capture logger; @task-daemon-log-capture is the task that creates that
+          logger."
+        created_at: 2026-06-10T15:11:20.783Z
+    kind: blocker
+  - _ulid: 01KTS1D3W7V9B9BSZH5SN2Y128
+    anchor:
+      type: structured
+      ref: "@task-command-dispatch-timeout"
+      section: description
+    entries:
+      - _ulid: 01KTS1D3W8KJ40D8J9PDA2869E
+        author: codex
+        body: The timeout How races dispatchMutex.run(...) at the existing route-handler call sites and only
+          calls out a .catch for late abandoned-command rejections. In the current code,
+          mutating-command cache write-through and WebSocket broadcast happen after await
+          dispatchMutex.run(...) (packages/daemon/src/routes/command.ts:646-670; batch path
+          811-837). If a mutating command times out for the caller but later completes successfully,
+          that post-completion path will not run unless the task explicitly moves those side effects
+          into the abandoned execution path. That would leave the daemon cache stale and skip the
+          command_executed/batch_executed broadcast despite the underlying mutation succeeding,
+          contradicting the existing @daemon-command-api ac-mutation-cache-update contract. Update
+          the task to preserve cache write-through/broadcast for timed-out executions that later
+          succeed, or explicitly define a different spec contract.
+        created_at: 2026-06-10T15:11:23.528Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-10T15:11:54.951Z
 created_at: 2026-06-10T15:10:20.227Z
-updated_at: null
+updated_at: 2026-06-10T15:11:54.951Z
 notes: []
