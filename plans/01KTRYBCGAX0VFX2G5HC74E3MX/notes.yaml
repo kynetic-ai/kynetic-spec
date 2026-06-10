@@ -4,3 +4,25 @@ notes:
       command-timeout semantics"
     author: "@claude"
     created_at: 2026-06-10T15:03:44.330Z
+  - _ulid: 01KTS125TH8Q1FTKK5S874AW4J
+    content: "Fix cycle 1 changes per codex @01KTRZ25 + claude @01KTRZQ4: (1) command-timeout redesigned
+      as client-observed timeout WITHOUT mutex release — abandoned execution keeps the dispatch slot
+      (no concurrent execution), queued callers get bounded 504 command_timeout errors,
+      queued-never-started commands are discarded, paired with degraded-dispatch reporting on GET
+      /api/health (new ACs ac-timeout-queue-bounded, ac-stuck-command-reported; ac-command-timeout
+      no longer promises subsequent commands execute normally). Rationale in Implementation Notes:
+      ALS scopes output/cwd but an abandoned mutating command holds the file lock which same-PID
+      callers can never reclaim. (2) errorResponse {error,message,suggestion} pattern named instead
+      of response-envelope.ts. (3)+(8) getDefaultDaemonConfigDir() (endpoint.ts:121) and
+      src/parser/config.ts DaemonConfigSchema replace nonexistent getGlobalKspecConfigDir/src-config
+      references. (4) log-tee How rewritten to the real model: interceptors install once at
+      command.ts module load, ALS-routed; tee must load via first side-effect import in index.ts
+      above server.js (or be capture-aware) plus a no-double-log guard test. (5) removed nonexistent
+      'restore intercepted globals' instruction — nothing to restore, slot is held anyway. (6)
+      ac-command-timeout scoped honestly; lock-abandonment handled by holding the slot +
+      cross-process 30s duration-ceiling reclaim. (7) rotate-before-append; ac-bounded-rotation
+      bound now 2x limit plus one captured line. (8) 'created by plan import' corrected to plan
+      derive; dashboard task states explicit semantics: blocked card stays counts.blocked, ready
+      card deliberately adopts summary.ready with the delta documented."
+    author: "@claude"
+    created_at: 2026-06-10T15:05:25.074Z
