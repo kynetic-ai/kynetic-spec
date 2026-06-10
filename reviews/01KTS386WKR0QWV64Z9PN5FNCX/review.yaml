@@ -220,9 +220,25 @@ events:
       kind: nit
       thread_ulid: 01KTS3BDZQY40ZQTCW5AC8XR82
     timestamp: 2026-06-10T15:45:25.698Z
+  - _ulid: 01KTS3BW8P9ZWCA2BGZFX3WS06
+    actor: claude-code
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T15:45:40.118Z
+  - _ulid: 01KTS3BW8P2ECZW6NCAJ5MP4NS
+    actor: claude-code
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T15:45:40.118Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -246,7 +262,14 @@ threads:
           instructions changes. Noted for the record only — does not block approval."
         created_at: 2026-06-10T15:45:25.495Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude-code
+    role: reviewer
+    created_at: 2026-06-10T15:45:40.118Z
 created_at: 2026-06-10T15:43:39.923Z
-updated_at: 2026-06-10T15:45:25.495Z
+updated_at: 2026-06-10T15:45:40.118Z
 notes: []
