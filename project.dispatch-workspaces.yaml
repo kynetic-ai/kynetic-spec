@@ -13204,12 +13204,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-10T00:08:43.942Z
+      updated_at: 2026-06-10T00:08:52.788Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-10T00:08:43.942Z
+      updated_at: 2026-06-10T00:08:52.788Z
     integration:
       status: pending
       detail: null
@@ -13217,8 +13217,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ee78b193a4a5194dab3eaa3ef32023bafbb268e2
-      updated_at: 2026-06-10T00:08:43.942Z
-    lifecycle_state: ready
+      updated_at: 2026-06-10T00:08:52.788Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTQBVCQDFPWFF60ZJEH4B6TY
     task_ref: "@01KTQBVCQDFPWFF60ZJEH4B6TY"
@@ -13226,16 +13226,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-09T23:37:16.615Z
-      last_reconciled_at: 2026-06-10T00:08:43.942Z
+      last_reconciled_at: 2026-06-10T00:08:52.788Z
       created_at: 2026-06-09T23:36:42.353Z
-      updated_at: 2026-06-10T00:08:43.942Z
+      updated_at: 2026-06-10T00:08:52.788Z
     workspace_id: dispatch-workspace-01KTQBVCQDFPWFF60ZJEH4B6TY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: e01b007632d9736e10a4cb6041dff82803b1e2d4
+        last_seen_at: 2026-06-10T00:08:52.788Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/render-review-structured-content-resource-markdown-01ktqbvc-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/render-review-structured-content-resource-markdown/01ktqbvc
-        head: ee78b193a4a5194dab3eaa3ef32023bafbb268e2
-        last_seen_at: 2026-06-09T23:36:42.353Z
+        head: e01b007632d9736e10a4cb6041dff82803b1e2d4
+        last_seen_at: 2026-06-10T00:08:52.788Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/render-review-structured-content-resource-markdown-01ktqbvc
