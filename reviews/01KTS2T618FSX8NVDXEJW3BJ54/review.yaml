@@ -2,7 +2,125 @@ _ulid: 01KTS2T618FSX8NVDXEJW3BJ54
 slugs: []
 title: "Plan review: Daemon Operational Reliability (cycle 3)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exported stored plan to /tmp/plan-c3.md; kspec plan import --dry-run succeeds; both YAML
+      blocks parse (3 specs, 8 tasks), AC ids unique per spec, plan status remains draft.
+    name: plan dry-run parse
+    required: true
+    runner: kspec
+    created_at: 2026-06-10T15:36:54.921Z
+    completed_at: 2026-06-10T15:36:54.921Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 12 prior findings verified resolved in stored content. Codex @01KTRZ25: mutex-release
+      blocker -> redesigned as client-observed 504 with slot held ('Do NOT modify DispatchMutex to
+      drop the slot on timeout'); response-envelope.ts misdirection -> explicit do-not-look warning
+      plus correct errorResponse {error,message,suggestion}/{error,details} forms (verified in
+      command.ts batch route); getGlobalKspecConfigDir -> getDefaultDaemonConfigDir (verified
+      endpoint.ts:121). Claude @01KTRZQ4: interception-model blocker -> How now matches actual
+      module-load install at command.ts:90-171 with ALS routing, tee via first side-effect import in
+      index.ts (verified index.ts imports server.js which imports command.js at server.ts:46) plus
+      capture-aware fallback and no-double-log guard test; globals-restore blocker -> removed,
+      correctly flags the stale DispatchMutex doc comment and ALS-scoped cwd; 'execute normally' AC
+      -> reworded into ac-command-timeout + ac-timeout-queue-bounded with honest semantics; rotation
+      bound -> rotate-before-append, bound 2x limit plus one captured line; both naming nits fixed
+      (getDefaultDaemonConfigDir, src/parser/config.ts DaemonConfigSchema verified line 86); 'plan
+      import' -> 'plan derive' fixed; dashboard blocked/ready semantics now explicit and match
+      verified client code (+page.svelte 100-152: pending-only ready, blocked = status only). Codex
+      @01KTS1B6: logger dependency blocker -> decoupled, .catch logs via plain console registered
+      outside any capture store (verified: interceptors route by commandExecutionStorage.getStore()
+      at call time, so a callback registered at route-handler level reaches the originals), no
+      depends_on needed; late-completion side-effects blocker -> execution promise =
+      dispatchMutex.run().then(write-through + broadcast) raced against the timer, verified against
+      the exact current side-effect blocks (single 647-669, batch 813-837), new delta AC
+      ac-timeout-late-completion-effects, update-before-response ordering preserved on the normal
+      path."
+    name: prior findings resolution (cycles 1-2)
+    required: true
+    runner: manual
+    created_at: 2026-06-10T15:36:57.391Z
+    completed_at: 2026-06-10T15:36:57.391Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Read packages/daemon/src/routes/command.ts in full: interceptors at module load (90-171),
+      DispatchMutex class (196), stale doc comment (184-189) as plan states, cache-serve bypass
+      (625), single call site (632), withFileLock (637-641, batch 790-792), write-through (647-657,
+      813-823), broadcasts (660-669, 826-837), batch stdout/stderr merge (804-809) - all match plan
+      references. src/parser/file-lock.ts: own-PID never stale (checkStaleLock line 268, checked
+      BEFORE the duration ceiling) and 30s DEFAULT_MAX_HOLD_MS cross-process reclaim - confirms the
+      hold-the-slot justification. index.ts: server.js is the first import, no fault handlers,
+      startup catch present. server.ts: command.js import (46), /api/health (710), shutdown (1163),
+      WILDCARD_HOSTS (351), localhostOnly (459), additionalAllowedHosts with bindHost/connectHost
+      (646). serve.ts: registerServeCommands (214), --connect-host forwarding (~421), bind warning
+      blocks in start (~428) and status (~633), stdio 'ignore' + TODO (~444), statusServer (595).
+      config.ts: DaemonConfigSchema in src/parser/config.ts (86). endpoint.ts:
+      getDefaultDaemonConfigDir (121), isExternallyReachable (250), PidFileManager (721). Web UI:
+      TaskList.svelte console.log at 25/28; manager.ts console.log 160/168/199/321/408 +
+      console.debug 353 and warn/error 153/184/192/342/366/378/385/395/469 - inventory matches
+      line-for-line; +page.svelte TODO (66), fetchTasks (69), derived counts (100-152).
+      aggregation.ts: /tasks/summary returns counts/ready/blocked_by_dependencies/total, ready =
+      pending OR needs_work with no blockers and deps met (100-112). api.ts
+      isStaticMode/fetchTasksStatic and packages/web-ui/src/lib/query/ exist."
+    name: codebase claim verification
+    required: true
+    runner: manual
+    created_at: 2026-06-10T15:36:59.889Z
+    completed_at: 2026-06-10T15:36:59.889Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Delta-AC targets verified gap-free: @daemon-command-api has no timeout/queue/health ACs
+      and ac-mutation-cache-update exists as the contract the redesign preserves;
+      @daemon-network-endpoint-contract has ac-external-binding-warning (bind host) but no
+      connect-host warning AC; @ui-dashboard-overview has no counts-source AC; @cli-serve-commands
+      ac-8/ac-9 exist exactly as plan claims. Parents @daemon-server and @web-ui resolve. kspec
+      search 'timeout' / 'daemon log' shows no conflicting or overlapping specs. AC coverage
+      complete: all 11 new-spec ACs plus 7 delta ACs plus @cli-serve-commands ac-8/ac-9 are each
+      claimed by exactly one task via Covers lines; ac-log-location-discoverable correctly split to
+      task-serve-logs-command."
+    name: spec neighborhood and AC mapping
+    required: true
+    runner: kspec
+    created_at: 2026-06-10T15:37:02.434Z
+    completed_at: 2026-06-10T15:37:02.434Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "8 tasks: spec-update (P1, no deps), log-capture (P1, no deps), fatal-observability (P1 ->
+      log-capture P1), serve-logs (P2 -> log-capture P1), command-timeout (P2 -> spec-update P1),
+      connect-host-warning (P3 -> spec-update P1), web-ui-cleanup (P3, no deps), dashboard-summary
+      (P3 -> spec-update P1). No cycles, no priority inversions, no over-serialization. The cycle-2
+      blocker dependency (command-timeout -> log-capture) is correctly ABSENT because the decoupling
+      makes it unnecessary - verified the plain-console claim against the interceptor routing."
+    name: dependency ordering and priority alignment
+    required: true
+    runner: manual
+    created_at: 2026-06-10T15:37:05.152Z
+    completed_at: 2026-06-10T15:37:05.152Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All existing refs resolve: @daemon-command-api, @daemon-network-endpoint-contract,
+      @ui-dashboard-overview, @cli-serve-commands, @daemon-server, @web-ui,
+      @trait-localhost-security, @ui-api-aggregation, @trait-json-output,
+      @investigate-daemon-dispatch-oom (01KRMEKN, in_progress), inbox item 01KTRYDX exists. Local
+      slugs internally consistent between Specs, Tasks depends_on/spec_ref, and Covers lines."
+    name: cross-reference validation
+    required: true
+    runner: kspec
+    created_at: 2026-06-10T15:37:08.568Z
+    completed_at: 2026-06-10T15:37:08.568Z
 events:
   - _ulid: 01KTS2T618GBS72VQDR5BYQTQ0
     actor: "@claude"
@@ -10,9 +128,74 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T15:36:00.296Z
+  - _ulid: 01KTS2VRYA4AZ1KF1CD7E4XNT8
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-10T15:36:52.426Z
+  - _ulid: 01KTS2VVJQMT5GZAN5M0FYY2Z9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan dry-run parse
+    timestamp: 2026-06-10T15:36:55.127Z
+  - _ulid: 01KTS2VY0YMCRN0W5ZENS1VDR8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior findings resolution (cycles 1-2)
+    timestamp: 2026-06-10T15:36:57.630Z
+  - _ulid: 01KTS2W0E3R7WNAAY5MFD931H5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: codebase claim verification
+    timestamp: 2026-06-10T15:37:00.099Z
+  - _ulid: 01KTS2W2Y30Y503GYG0H4YFD8E
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec neighborhood and AC mapping
+    timestamp: 2026-06-10T15:37:02.659Z
+  - _ulid: 01KTS2W5JVNPKVH5ZD71CVX9DP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering and priority alignment
+    timestamp: 2026-06-10T15:37:05.371Z
+  - _ulid: 01KTS2W8X8K9J59A72YQ6TQSXR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cross-reference validation
+    timestamp: 2026-06-10T15:37:08.776Z
+  - _ulid: 01KTS2WBBCNT3XRJ85W5F4T312
+    actor: claude-fable-5
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T15:37:11.277Z
+  - _ulid: 01KTS2WBBDXR6M9MAY6HGA7C7W
+    actor: claude-fable-5
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T15:37:11.277Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +203,14 @@ subject:
   ref: "@01KTRYBC"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude-fable-5
+    role: reviewer
+    created_at: 2026-06-10T15:37:11.276Z
 created_at: 2026-06-10T15:36:00.296Z
-updated_at: null
+updated_at: 2026-06-10T15:37:11.277Z
 notes: []
