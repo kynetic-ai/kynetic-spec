@@ -77,6 +77,17 @@ checks:
     runner: kspec validate --refs --warnings-ok
     created_at: 2026-06-10T15:18:20.547Z
     completed_at: 2026-06-10T15:18:20.547Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. Checked 1583 files, 637 items, 1575 tasks. Schema OK and References OK. Existing
+      alignment warnings were allowed by --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-10T15:18:29.841Z
+    completed_at: 2026-06-10T15:18:29.841Z
 events:
   - _ulid: 01KTS1Q93E1PD76991239P95SM
     actor: "@claude"
@@ -126,6 +137,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-10T15:18:20.780Z
+  - _ulid: 01KTS1T4DNME3XV98FTRZQ0E9Q
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-10T15:18:30.069Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -138,5 +156,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T15:16:56.558Z
-updated_at: 2026-06-10T15:18:20.547Z
+updated_at: 2026-06-10T15:18:29.841Z
 notes: []
