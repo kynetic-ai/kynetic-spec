@@ -50,3 +50,11 @@ notes:
       blocker"
     author: "@claude"
     created_at: 2026-06-10T15:43:29.249Z
+  - _ulid: 01KTS37Z2JG72V27W6N78WPW8W
+    content: "Fix cycle 3: resolved codex cycle-3 blocker (@01KTS2X8KJG1K0VVY79CVVCPAJ) —
+      ac-newer-version-refused keeps the no-modification-including-sync guarantee for the
+      locally-declared-newer case; new ac-post-sync-newer-version-refused owns the remote-newer
+      sync-pull dual (import permitted, same-invocation refusal before any entity read/mutation);
+      Checking bullet describes both enforcement points; task annotations and Covers updated."
+    author: "@claude"
+    created_at: 2026-06-10T15:43:31.922Z
