@@ -24481,7 +24481,7 @@ reviews:
     title: Review show unmatched task resource references
     disposition: pending
     author: Jacob Chapel
-    check_count: 2
+    check_count: 3
     examined_commit: 489f516a77ea21743ebcfb9a48184ca679139752
     lifecycle_state: open
     related_refs: []
@@ -24494,4 +24494,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-10T05:24:10.419Z
-    updated_at: 2026-06-10T05:40:57.211Z
+    updated_at: 2026-06-10T05:41:09.539Z
