@@ -24784,3 +24784,20 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-10T15:36:00.296Z
     updated_at: 2026-06-10T15:37:11.277Z
+  - _ulid: 01KTS2X8KJG1K0VVY79CVVCPAJ
+    slugs: []
+    title: "Plan re-review (codex, cycle 3): Data Integrity and Upgrade Safety"
+    disposition: pending
+    author: "@claude"
+    check_count: 0
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@01KTRYBM"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-10T15:37:41.234Z
