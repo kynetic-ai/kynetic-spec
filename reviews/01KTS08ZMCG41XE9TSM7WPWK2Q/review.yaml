@@ -175,9 +175,25 @@ events:
       status: fail
       name: Spec neighborhood and overlap analysis
     timestamp: 2026-06-10T14:53:53.450Z
+  - _ulid: 01KTS0DBYGE8XK5B8CKSX11PCR
+    actor: ecaj@hyphoria.org
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-10T14:54:03.216Z
+  - _ulid: 01KTS0DBYGSX317E21W9E9FWWY
+    actor: ecaj@hyphoria.org
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T14:54:03.217Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -296,7 +312,14 @@ threads:
           rationale."
         created_at: 2026-06-10T14:53:40.462Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: ecaj@hyphoria.org
+    role: reviewer
+    created_at: 2026-06-10T14:54:03.216Z
 created_at: 2026-06-10T14:51:39.532Z
-updated_at: 2026-06-10T14:53:53.232Z
+updated_at: 2026-06-10T14:54:03.216Z
 notes: []
