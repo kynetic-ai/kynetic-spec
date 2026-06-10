@@ -2,7 +2,7 @@ _ulid: 01KTD6WY4VRAJKCZ3A87RFH4YS
 slugs:
   - plan-resource-ui-hardening-plan
 title: Resource UI Hardening Plan
-status: active
+status: completed
 approved_at: 2026-06-06T01:28:56.478Z
 branch: null
 derived_specs:
