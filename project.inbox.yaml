@@ -4268,3 +4268,17 @@ inbox:
       - bug
     added_by: "@claude"
     created_at: 2026-06-10T19:39:00.042Z
+  - _ulid: 01KTSKX2T6NW9SX85KAXFDAF9Q
+    text: "kspec review verdict CLI ergonomics: the flag is --decision on a subcommand named verdict
+      (kspec review verdict --decision approve), which is easy to guess wrong as --verdict; and
+      verdict accepts no --comment, so verdict rationale silently has no home on the verdict itself
+      - it must be added as a separate comment thread or it gets dropped (observed 2026-06-10: a
+      detailed approval rationale was lost on the first attempt). Same CLI-asymmetry family as the
+      existing inbox item about task note (positional) vs review reply (--body). Suggested: accept
+      --comment (or --reason) on review verdict and attach it to the verdict event."
+    tags:
+      - cli
+      - ergonomics
+      - review
+    added_by: "@claude"
+    created_at: 2026-06-10T20:34:41.094Z
