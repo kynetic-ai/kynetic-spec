@@ -1,0 +1,26 @@
+_ulid: 01KTS386WKR0QWV64Z9PN5FNCX
+slugs: []
+title: "Plan re-review: Validation and Test Coverage Integrity (fix cycle 2, claude)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTS386WJBWQSXE2CPXNM4TSV
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-10T15:43:39.923Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@01KTRYBV"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-10T15:43:39.923Z
+updated_at: null
+notes: []
