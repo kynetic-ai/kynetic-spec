@@ -370,6 +370,29 @@ agents:
       - kspec
       - git
       - npm
+  - _ulid: 01KTQWNJD3RF26QNABXYAY0PVJ
+    description: Claude-backed plan reviewer for draft spec/task proposal review
+    auto_approve: true
+    budget:
+      timeout_minutes: 60
+    capabilities:
+      - review
+      - specs
+    concurrency:
+      max_concurrent: 1
+    conventions: []
+    dispatch: []
+    id: plan-reviewer-claude
+    name: Plan Reviewer Claude
+    runner: claude
+    skills:
+      - review-plan
+      - review
+      - writing-specs
+      - plan
+      - shared-guidance-neutrality
+    tools:
+      - kspec
 conventions:
   - _ulid: 01KF782ZSJCXRCGV0QJ8Y9AKN2
     domain: commits
