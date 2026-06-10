@@ -12377,7 +12377,7 @@ workspaces:
         head: 3ac086626e24905755fed2bd254eea91ace29805
         last_seen_at: 2026-06-09T18:51:30.214Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/validate-resource-lifecycle-e2e-temp-projects-01ktd8s3
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: ee78b193a4a5194dab3eaa3ef32023bafbb268e2
     bootstrap:
       status: succeeded
@@ -12867,9 +12867,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-10T00:09:27.627Z
-      last_reconciled_at: 2026-06-10T00:25:27.381Z
+      last_reconciled_at: 2026-06-10T00:28:09.751Z
       created_at: 2026-06-09T23:36:42.353Z
-      updated_at: 2026-06-10T00:25:27.381Z
+      updated_at: 2026-06-10T00:28:09.751Z
     workspace_id: dispatch-workspace-01KTQBVCQDFPWFF60ZJEH4B6TY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
