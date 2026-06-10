@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KTQY8XDT17JJW4W9RZ3PHJB8
+    content: "Approach: (1) daemon diff.ts — drop both gates (resource_refs.length > 0 and
+      projected.length > 0) so every task review subject's description section gets byte-free task
+      resource context with a bounded resources array that may be empty; resolveTaskResources
+      already returns [] safely for no refs. (2) web UI — findUnmatchedTaskResourceReferences
+      already classifies all authored paths as unmatched against an empty resource list, so the UI
+      fix is the daemon attaching context; refresh ac-6 annotations that own unmatched behavior to
+      ac-7 in review-content-resources.ts, StructuredContentViewer.svelte, and diff.ts. (3) tests —
+      new daemon fixture task (description with ./resources/ paths, no resource_refs) + review
+      asserting byte-free context with empty resources (ac-7); repurpose 'omits resource context for
+      task subjects without resource refs' to assert attached-empty-context behavior under ac-7; web
+      UI tests for empty-list unmatched guidance + unreplaced markdown (ac-7); keep plan-subject
+      omission and present/drift regressions green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-10T04:57:25.690Z
