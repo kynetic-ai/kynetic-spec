@@ -2,7 +2,130 @@ _ulid: 01KTS3CNHCX4PRH2V23ZA6MVPT
 slugs: []
 title: "Plan re-review (codex, cycle 4): Data Integrity and Upgrade Safety"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified @01KTRYBM remains draft. Dry-run import of plans/data-integrity-upgrade-safety.md
+      parsed as a draft plan with full content stored and 0 derived specs/tasks. No plan status,
+      derive, spec, or task mutation commands were run.
+    name: Plan status and dry-run
+    required: true
+    runner: kspec plan get/import --dry-run
+    created_at: 2026-06-10T15:47:14.973Z
+    completed_at: 2026-06-10T15:47:14.973Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Prior blocker @01KTS2X8KJG1K0VVY79CVVCPAJ required resolving the conflict between
+      ac-newer-version-refused no-modification-including-sync and the permitted remote-newer sync
+      pull. Current plan splits the contract into two enforcement points: ac-newer-version-refused
+      remains scoped to the locally-declared-newer case and keeps the no-modification-including-sync
+      guarantee; new ac-post-sync-newer-version-refused owns the remote-newer dual and requires
+      same-invocation refusal before any project data is read or mutated. Checking bullet, latest
+      plan note, task Testing annotations, and Covers lines all include the split. No contradiction
+      remains."
+    name: Cycle-4 amendment coherence
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T15:47:17.634Z
+    completed_at: 2026-06-10T15:47:17.634Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Data Format Forward Compatibility now has 7 explicit AC ids and
+      task-format-version-ceiling Testing/Covers includes all 7, including
+      ac-post-sync-newer-version-refused. Subprocess Argument Literalness has 3 ACs covered by
+      task-git-utils-execfile. Broken-shadow delta is handled by a P1 spec-update task before the
+      implementation task, and the implementation task covers ac-preserve-on-failure plus the new AC
+      added by that dependency.
+    name: AC coverage and task mapping
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T15:47:20.241Z
+    completed_at: 2026-06-10T15:47:20.241Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read @versioning, @format-version, and @broken-shadow-safety; searched format version,
+      subprocess argument, and shadow restore failure neighborhoods. The new forward-compat decision
+      is a coherent delta under @versioning depending on @format-version. Source reads confirmed
+      yaml.ts pre-read sync currently precedes manifest parse, upgrade.ts calls initContext before
+      detectSourceVersion, shadow.ts has the two silent restore catches, and src/utils/git.ts has
+      the enumerated execSync interpolation sites. Dependencies are ordered without new
+      over-serialization.
+    name: Reference, dependency, and neighborhood review
+    required: true
+    runner: kspec item/search plus source reads
+    created_at: 2026-06-10T15:47:22.914Z
+    completed_at: 2026-06-10T15:47:22.914Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command exited 0. Existing deprecated-ref warnings remain, but schema and references
+      passed and no new plan-delta reference failure was observed.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-10T15:47:25.556Z
+    completed_at: 2026-06-10T15:47:25.556Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command exited 0 with existing orphan/status alignment warnings unrelated to this
+      draft-plan delta.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-10T15:47:28.211Z
+    completed_at: 2026-06-10T15:47:28.211Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command exited 0 with existing missing-coverage and invalid-annotation warnings unrelated
+      to this draft-plan delta.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-10T15:47:30.841Z
+    completed_at: 2026-06-10T15:47:30.841Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only re-review of a stored draft plan; no repository code changes were under review.
+      Did not run npm format/lint/typecheck/test.
+    name: code quality gates
+    required: true
+    runner: npm gates
+    created_at: 2026-06-10T15:47:33.454Z
+    completed_at: 2026-06-10T15:47:33.454Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/content read: kspec-agents.md, kspec-review-plan skill, review-gates skill, stored
+      plan @01KTRYBM, prior review @01KTS2X8KJG1K0VVY79CVVCPAJ, latest plan notes,
+      plans/data-integrity-upgrade-safety.md snippets, @versioning, @format-version,
+      @broken-shadow-safety, src/parser/yaml.ts:760-855, src/cli/commands/upgrade.ts:200-360,
+      src/parser/shadow.ts:2910-3065, src/utils/git.ts:1-320. Commands run with KSPEC_NO_DAEMON=1:
+      plan get, review get --json, review list, validate refs/alignment/completeness, plan import
+      --dry-run, item get, item list --under, search. Claims verified: cycle-3 blocker resolved by
+      two-AC split; task annotations and Covers include new AC; source/order claims remain accurate.
+      Categories searched: spec coherence, AC atomicity, task coverage, dependency ordering,
+      reference validity, neighboring spec overlap, implementation-source claim accuracy."
+    name: Review evidence log
+    required: true
+    runner: codex
+    created_at: 2026-06-10T15:47:36.083Z
+    completed_at: 2026-06-10T15:47:36.083Z
 events:
   - _ulid: 01KTS3CNHBXAGA6WM4VBN0B339
     actor: "@claude"
@@ -10,9 +133,95 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T15:46:05.996Z
+  - _ulid: 01KTS3ENF0K3AGY7GFBJTWSVED
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-10T15:47:11.456Z
+  - _ulid: 01KTS3ES3WH044A1KV082S7E62
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan status and dry-run
+    timestamp: 2026-06-10T15:47:15.196Z
+  - _ulid: 01KTS3EVQ7Z6VYMGK0HP4C67AK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cycle-4 amendment coherence
+    timestamp: 2026-06-10T15:47:17.863Z
+  - _ulid: 01KTS3EY8Y77RFDBPVXSJVDYTB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage and task mapping
+    timestamp: 2026-06-10T15:47:20.478Z
+  - _ulid: 01KTS3F0WAMZZ26DEVNR56P554
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference, dependency, and neighborhood review
+    timestamp: 2026-06-10T15:47:23.146Z
+  - _ulid: 01KTS3F3EG6ZHVGAJXNSR4KR5A
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T15:47:25.776Z
+  - _ulid: 01KTS3F61KV9S9H45WBJBAWJ3C
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-10T15:47:28.436Z
+  - _ulid: 01KTS3F8KVCZVS8HWV8H576DN2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-10T15:47:31.067Z
+  - _ulid: 01KTS3FB57GE4Q54YZT8PSQ2X4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: code quality gates
+    timestamp: 2026-06-10T15:47:33.671Z
+  - _ulid: 01KTS3FDQAA0SR4VM6G2C0P4TZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-06-10T15:47:36.298Z
+  - _ulid: 01KTS3FG8S7HR6YPVH4MPAJAK1
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T15:47:38.905Z
+  - _ulid: 01KTS3FG8SDMSC885N7KGHP9VE
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T15:47:38.905Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +229,14 @@ subject:
   ref: "@01KTRYBM"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-10T15:47:38.905Z
 created_at: 2026-06-10T15:46:05.996Z
-updated_at: null
+updated_at: 2026-06-10T15:47:38.905Z
 notes: []
