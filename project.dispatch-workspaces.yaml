@@ -10325,11 +10325,11 @@ workspaces:
     canonical_branch: dispatch/task/show-unmatched-review-task-resource-references-without-task-resource-refs/01ktqy1c
     canonical_branch_head: 489f516a77ea21743ebcfb9a48184ca679139752
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-10T05:44:45.208Z
+      updated_at: 2026-06-10T05:47:20.075Z
     health:
       status: healthy
       issues: []
@@ -10343,17 +10343,17 @@ workspaces:
       target_branch: dev
       target_commit: 5ba8a8f02843cceff35bb181d414555a3ac1c50b
       updated_at: 2026-06-10T05:44:45.208Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTQY1CJ9JX66NMVFZQEV7WFD
     task_ref: "@01KTQY1CJ9JX66NMVFZQEV7WFD"
     task_slug: show-unmatched-review-task-resource-references-without-task-resource-refs
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-10T05:47:20.075Z
       last_active_at: 2026-06-10T05:22:46.101Z
       last_reconciled_at: 2026-06-10T05:46:28.154Z
       created_at: 2026-06-10T04:53:50.693Z
-      updated_at: 2026-06-10T05:46:28.154Z
+      updated_at: 2026-06-10T05:47:20.075Z
     workspace_id: dispatch-workspace-01KTQY1CJ9JX66NMVFZQEV7WFD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
