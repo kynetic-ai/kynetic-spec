@@ -9864,7 +9864,7 @@ workspaces:
         head: e01b007632d9736e10a4cb6041dff82803b1e2d4
         last_seen_at: 2026-06-10T00:08:52.788Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/render-review-structured-content-resource-markdown-01ktqbvc
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 5ba8a8f02843cceff35bb181d414555a3ac1c50b
     bootstrap:
       status: succeeded
@@ -10351,9 +10351,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-10T05:22:46.101Z
-      last_reconciled_at: 2026-06-10T05:44:45.208Z
+      last_reconciled_at: 2026-06-10T05:46:11.890Z
       created_at: 2026-06-10T04:53:50.693Z
-      updated_at: 2026-06-10T05:44:45.208Z
+      updated_at: 2026-06-10T05:46:11.890Z
     workspace_id: dispatch-workspace-01KTQY1CJ9JX66NMVFZQEV7WFD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
