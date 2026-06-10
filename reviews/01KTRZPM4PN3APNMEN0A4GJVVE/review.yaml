@@ -31,6 +31,13 @@ events:
       kind: blocker
       thread_ulid: 01KTRZQYD4P8KR8XQVPE06BV1W
     timestamp: 2026-06-10T14:42:21.455Z
+  - _ulid: 01KTRZR97DVK2T60PW7H4PQDXJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRZR90CPH566YVE0873VH60
+    timestamp: 2026-06-10T14:42:32.301Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -80,7 +87,23 @@ threads:
           from Covers if the task does not actually prove it.
         created_at: 2026-06-10T14:42:21.220Z
     kind: blocker
+  - _ulid: 01KTRZR90CPH566YVE0873VH60
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-daemon-triage-api-tests"
+      section: tasks
+    entries:
+      - _ulid: 01KTRZR90CT3HD5E5XNT4Z9QBB
+        author: "@claude"
+        body: The endpoint checklist says the export format parameter is "markdown vs JSON", but the current
+          route accepts format=json and format=context, with context returning markdown content. The
+          old skipped suite also tests /api/triage/export?format=context. To keep the task
+          executable without guesswork, should this bullet say "context vs JSON" or "format=context
+          markdown vs format=json" instead of "markdown vs JSON"?
+        created_at: 2026-06-10T14:42:32.077Z
+    kind: question
 verdicts: []
 created_at: 2026-06-10T14:41:37.942Z
-updated_at: 2026-06-10T14:42:21.220Z
+updated_at: 2026-06-10T14:42:32.077Z
 notes: []
