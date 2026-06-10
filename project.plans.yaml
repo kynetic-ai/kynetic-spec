@@ -1823,3 +1823,14 @@ plans:
     notes_count: 0
     source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-operational-reliability.md
     created_at: 2026-06-10T14:18:01.098Z
+  - _ulid: 01KTRYBMAGM8EDVBTYE09Y01G9
+    slugs:
+      - plan-data-integrity-and-upgrade-safety
+    title: Data Integrity and Upgrade Safety
+    status: draft
+    derived_specs: []
+    derived_tasks: []
+    module_ref: "@core"
+    notes_count: 0
+    source_path: /home/chapel/Projects/kynetic-spec/plans/data-integrity-upgrade-safety.md
+    created_at: 2026-06-10T14:18:09.104Z
