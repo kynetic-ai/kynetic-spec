@@ -1,0 +1,26 @@
+_ulid: 01KTQZSWHK2DPTHYJW8XCJ3ZVJ
+slugs: []
+title: Review show unmatched task resource references
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTQZSWHK73EG841Y8WZB65B9
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-10T05:24:10.419Z
+examined_commit: 489f516a77ea21743ebcfb9a48184ca679139752
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTQY1CJ9JX66NMVFZQEV7WFD"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-10T05:24:10.419Z
+updated_at: null
+notes: []

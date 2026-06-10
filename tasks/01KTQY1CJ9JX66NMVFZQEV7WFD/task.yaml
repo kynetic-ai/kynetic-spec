@@ -81,6 +81,7 @@ tags:
   - web-ui
   - api
 vcs_refs: []
+review_ref: "@01KTQZSWHK2DPTHYJW8XCJ3ZVJ"
 submission_linkage:
   review_url: null
   branch: dispatch/task/show-unmatched-review-task-resource-references-without-task-resource-refs/01ktqy1c
@@ -124,6 +125,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-10T05:18:37.374Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTQZSWHK2DPTHYJW8XCJ3ZVJ"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-10T05:24:13.658Z
 created_at: 2026-06-10T04:53:19.049Z
 started_at: 2026-06-10T04:54:58.343Z
 submitted_at: 2026-06-10T05:18:37.374Z
