@@ -1812,3 +1812,14 @@ plans:
     notes_count: 0
     source_path: /home/chapel/Projects/kynetic-spec/plans/release-readiness.md
     created_at: 2026-06-10T14:17:10.913Z
+  - _ulid: 01KTRYBCGAX0VFX2G5HC74E3MX
+    slugs:
+      - plan-daemon-operational-reliability
+    title: Daemon Operational Reliability
+    status: draft
+    derived_specs: []
+    derived_tasks: []
+    module_ref: "@web-ui"
+    notes_count: 0
+    source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-operational-reliability.md
+    created_at: 2026-06-10T14:18:01.098Z
