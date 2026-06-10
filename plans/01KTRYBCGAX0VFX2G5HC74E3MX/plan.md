@@ -240,6 +240,17 @@ derive_from_specs: false
            to any other command's response, and its completion frees
            waiting commands to proceed
 
+       ac-timeout-late-completion-effects:
+         given: A mutating command, or a batch containing mutating
+           commands, timed out for its caller while its underlying
+           execution continued
+         when: The underlying execution later completes successfully
+         then: The same completion effects that follow an in-time
+           successful mutation still occur — the entity cache is
+           updated and the corresponding WebSocket event is broadcast
+           to connected clients — so the timed-out caller can observe
+           the eventual result through subsequent reads
+
     2. Add to @daemon-network-endpoint-contract:
 
        ac-external-connect-host-warning:
@@ -513,24 +524,61 @@ derive_from_specs: false
     report degraded command dispatch with the stuck command name and
     held duration whenever the current dispatch has exceeded its limit,
     clearing once it completes. (5) Batch path (~line 751): same bound
-    applied whole-batch (a batch is one atomic dispatch).
+    applied whole-batch (a batch is one atomic dispatch). (6) Completion
+    side effects are bound to command completion, NOT to the HTTP
+    response: a mutating command (or batch containing mutations) that
+    times out for its caller but later completes successfully still
+    gets the full post-mutation effects — entity-cache write-through
+    and the command_executed/batch_executed WebSocket broadcast — so
+    the daemon cache never goes stale, the existing
+    ac-mutation-cache-update contract holds for late completions, and
+    the timed-out caller can observe the eventual result via
+    subsequent reads.
 
-    How: Race the awaited dispatchMutex.run(...) at the route-handler
-    call sites (~lines 632 and 751) against a timer; clear the timer on
-    normal completion to avoid open-handle leaks in tests. Do NOT modify
+    How: Restructure the two route-handler call sites (~lines 632 and
+    751) so completion side effects ride on the execution promise
+    instead of the route handler's await path: build
+    execution = dispatchMutex.run(...).then(result => run completion
+    side effects, then return result) and race THAT augmented promise
+    against the timer. The completion side effects are exactly the
+    work that currently runs after the await returns: single path —
+    when the command is mutating and exited 0, the
+    MUTATION_AFFECTED_DOMAINS cache write-through loop (~lines
+    647-657) and the command_executed pubsub broadcast (~lines
+    659-669); batch path — when hasMutating and batchResult.success,
+    the same write-through loop (~lines 814-823) and the
+    batch_executed broadcast (~lines 825-837). Bound to the execution
+    promise they run when the command actually completes: before the
+    response on the normal path (preserving ac-mutation-cache-update's
+    update-before-response ordering) and after the 504 has already
+    gone out on the timeout path (ac-timeout-late-completion-effects).
+    Response-only shaping stays in the route handler: status selection
+    (200/422/504) and the batch path's merge of daemon-captured
+    stdout/stderr into the response body (~lines 804-809) apply only
+    when a response is still pending; a timed-out caller got the 504
+    body, and late capture content is discarded with its per-request
+    store (covered by ac-timeout-isolation). Clear the timer on normal
+    completion to avoid open-handle leaks in tests. Do NOT modify
     DispatchMutex to drop the slot on timeout. Set a per-request
     timed-out flag when the race fires; the fn passed to
     dispatchMutex.run checks the flag first and returns immediately
-    without executing (queued-command discard). Attach a .catch to the
-    abandoned promise that logs a warning through the
-    task-daemon-log-capture logger — REQUIRED, because
+    without executing (queued-command discard — discarded executions
+    skip the completion side effects too, since nothing ran). Attach a
+    .catch to the abandoned augmented promise that logs a warning via
+    plain console.warn/console.error at daemon level — the .catch is
+    registered in the route handler outside any command capture store,
+    so it reaches the daemon console directly today, and once
+    task-daemon-log-capture lands the same console call flows into the
+    daemon log file automatically; no dependency on or ordering with
+    that task. The .catch itself is REQUIRED, because
     task-daemon-fatal-failure-observability installs an
     unhandledRejection handler that exits the process; an abandoned
-    command's late rejection must never crash the daemon. Leave the
-    cache-served read path (~line 625) untouched — it bypasses the mutex
-    and keeps working during a wedge. Cross-process callers contending
-    on the file lock self-heal via the 30-second duration-ceiling
-    reclaim in file-lock.ts; no work needed there.
+    command's late rejection (or a failing late completion side
+    effect) must never crash the daemon. Leave the cache-served read
+    path (~line 625) untouched — it bypasses the mutex and keeps
+    working during a wedge. Cross-process callers contending on the
+    file lock self-heal via the 30-second duration-ceiling reclaim in
+    file-lock.ts; no work needed there.
 
     Testing: Vitest tests in the existing daemon route test suites with
     short configured timeouts (e.g. 50ms), never the 120s default: a
@@ -544,12 +592,18 @@ derive_from_specs: false
     @daemon-command-api ac-stuck-command-reported); a slow command that
     resolves after its timeout does not corrupt the response of the next
     command, and a late rejection from an abandoned command does not
-    kill the process (AC: @daemon-command-api ac-timeout-isolation).
-    Resolve wedge stubs at test end so no handles leak.
+    kill the process (AC: @daemon-command-api ac-timeout-isolation); a
+    stubbed MUTATING command that resolves successfully after its
+    caller's 504 still triggers the cache write-through and the
+    command_executed broadcast (assert on a pubsub spy and cache stub),
+    and the batch path likewise still emits batch_executed and writes
+    through after a late successful completion (AC: @daemon-command-api
+    ac-timeout-late-completion-effects). Resolve wedge stubs at test
+    end so no handles leak.
 
     Covers: @daemon-command-api ac-command-timeout,
     ac-timeout-queue-bounded, ac-stuck-command-reported,
-    ac-timeout-isolation.
+    ac-timeout-isolation, ac-timeout-late-completion-effects.
 
 - title: Warn on non-loopback connect host
   slug: task-connect-host-exposure-warning
@@ -761,6 +815,26 @@ derive_from_specs: false
   contenders self-heal via the existing 30s duration-ceiling reclaim.
   AbortSignal-based cancellation is deferred: command implementations do
   not accept signals today; it can layer onto this contract later.
+- **Command-timeout completion effects + logging decoupling (fix cycle 2):**
+  the command route's post-completion side effects (single path: the
+  MUTATION_AFFECTED_DOMAINS cache write-through and the command_executed
+  broadcast; batch path: the same write-through and the batch_executed
+  broadcast) previously ran on the route handler's await path, which the
+  client-observed timeout would have skipped for mutations completing
+  after a 504 — leaving the daemon cache stale and clients unnotified
+  despite a persisted mutation, violating @daemon-command-api
+  ac-mutation-cache-update. The redesign binds those effects to the
+  execution promise itself so they run at actual command completion
+  whether or not the HTTP response already went out; the new delta AC
+  ac-timeout-late-completion-effects makes the contract explicit.
+  Response-only shaping (status selection, the batch response's
+  stdout/stderr merge) stays on the response path. Separately, the
+  abandoned-promise .catch logs via plain console at daemon level
+  rather than through the task-daemon-log-capture logger — registered
+  outside any command capture store it reaches the daemon console
+  today and flows into the daemon log automatically once log capture
+  lands, so task-command-dispatch-timeout has no dependency on
+  task-daemon-log-capture.
 - **Rotation bound (fix cycle 1):** rotate-before-append chosen so the
   retained-size bound is deterministic (2x the limit plus at most one
   captured line) and the AC matches the prescribed mechanism exactly.

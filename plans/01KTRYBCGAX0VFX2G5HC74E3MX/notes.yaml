@@ -26,3 +26,7 @@ notes:
       card deliberately adopts summary.ready with the delta documented."
     author: "@claude"
     created_at: 2026-06-10T15:05:25.074Z
+  - _ulid: 01KTS2041HHZR7VHHH6HM0E9TH
+    content: "Fix cycle 2: addressed codex @01KTS1B6 blockers"
+    author: "@claude"
+    created_at: 2026-06-10T15:21:46.289Z
