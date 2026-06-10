@@ -15,3 +15,23 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-10T04:57:25.690Z
+  - _ulid: 01KTQZFP42KY4HP99AVGRZMSH5
+    content: "Implemented end to end in commit 489f516a77. Daemon: GET /api/reviews/:id/content now
+      always attaches byte-free task resource context (owner_type task, owning task ref, task-scoped
+      resources_base_url, bounded resources array that may be empty) to the task description section
+      — both gates removed (no resource_refs, and empty projection). Web UI: rewrite/guidance
+      utilities already handled empty resource lists correctly (findUnmatchedTaskResourceReferences
+      classifies all authored paths as unmatched against an empty list), so the UI fix was purely
+      the daemon attaching context; unmatched-specific annotations moved from ac-6 to ac-7 in
+      review-content-resources.ts, StructuredContentViewer.svelte, and diff.ts while
+      present/drift/missing/unresolved stays on ac-6. Tests: new daemon fixture task (authored
+      ./resources/ paths, no resource_refs) + ac-7 test asserting byte-free context with empty
+      bounded list; repurposed the old omission test to assert attached-empty-context under ac-7;
+      plan-subject omission test untouched and green; web UI ac-7 tests for unreplaced targets and
+      per-path unmatched guidance with empty resource list; existing present/drift regression tests
+      unchanged. Gates: format:check, lint --quiet (0 errors), oxlint on changed files (0 warnings),
+      typecheck, full npm test (10381 passed / 2726 suites), kspec validate
+      refs/alignment/completeness --warnings-ok all green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-10T05:18:36.166Z
