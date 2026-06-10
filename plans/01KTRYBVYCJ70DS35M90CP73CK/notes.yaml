@@ -43,3 +43,9 @@ notes:
       @01KTS386 nit)"
     author: "@claude"
     created_at: 2026-06-10T15:49:44.076Z
+  - _ulid: 01KTS3KCXZHBKREG2R6GFZX2FG
+    content: "Fix cycle 2: corrected the fixture-ULID parentheticals — 01TESTWORKFLOW also contains
+      excluded Crockford letters O and L (claude @01KTS386 nit); count reference updated to 'three
+      also containing excluded letters'."
+    author: "@claude"
+    created_at: 2026-06-10T15:49:46.559Z
