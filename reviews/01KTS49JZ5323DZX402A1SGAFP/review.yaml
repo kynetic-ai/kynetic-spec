@@ -78,6 +78,17 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-06-10T16:03:22.820Z
     completed_at: 2026-06-10T16:03:22.820Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Skipped because this is a plan-only confirmation pass on stored draft plan content. No
+      repository code changes were under review; npm format/lint/typecheck/test were not run.
+    name: code quality gates
+    required: true
+    runner: npm gates
+    created_at: 2026-06-10T16:03:33.697Z
+    completed_at: 2026-06-10T16:03:33.697Z
 events:
   - _ulid: 01KTS49JZ5WQJRKPF47YHSWQF5
     actor: "@claude"
@@ -134,6 +145,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-10T16:03:23.096Z
+  - _ulid: 01KTS4CMWVGPH43ZCSRV69EPB7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: code quality gates
+    timestamp: 2026-06-10T16:03:33.915Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -146,5 +164,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T16:01:53.637Z
-updated_at: 2026-06-10T16:03:22.820Z
+updated_at: 2026-06-10T16:03:33.697Z
 notes: []
