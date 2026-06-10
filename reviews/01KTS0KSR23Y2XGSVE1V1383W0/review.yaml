@@ -1,0 +1,26 @@
+_ulid: 01KTS0KSR23Y2XGSVE1V1383W0
+slugs: []
+title: "Plan re-review: Release Packaging and Onboarding Readiness (fix cycle 2)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTS0KSR2K8CMTJ46NN28BZQ3
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-10T14:57:33.954Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@01KTRY9V"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-10T14:57:33.954Z
+updated_at: null
+notes: []
