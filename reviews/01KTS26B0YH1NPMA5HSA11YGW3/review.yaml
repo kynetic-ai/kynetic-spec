@@ -2,7 +2,116 @@ _ulid: 01KTS26B0YH1NPMA5HSA11YGW3
 slugs: []
 title: "Plan re-review (claude, fix cycle 2): Data Integrity and Upgrade Safety"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified all 10 findings from codex review @01KTRZCY12QF94RZHNSSAX36DK (2 blockers, 2
+      questions) and claude review @01KTS08ZMCG41XE9TSM7WPWK2Q (3 should-fix, 3 nits) against the
+      updated stored plan. (1) Ceiling-before-sync blocker: task-format-version-ceiling step 2 now
+      mandates a RAW manifest version read before the pre-read shadow sync block; spec Checking
+      bullet and ac-newer-version-refused both state the no-modification guarantee includes
+      context-initialization synchronization. (2) Nonexistent-AC blocker: new
+      task-broken-shadow-safety-spec-delta carries verbatim ac-restore-failure-reports-state text,
+      ordered via depends_on before task-shadow-restore-loud-failure; Covers lines annotate AC
+      origin. (3) Subprocess AC rewritten to observable ac-dynamic-values-treated-literally;
+      args-array kept in task How. (4) Testing guidance lists explicit descriptive AC ids, no ac-N.
+      (5) Overlap analysis now covers @versioning/@format-version; decision spec reparented under
+      @versioning with depends_on @format-version. (6) Diagnostic carve-out moved into
+      ac-newer-version-refused when-clause. (7) Upgrade refusal ownership decided: initContext throw
+      owns the CLI refusal, detectSourceVersion probe fix is unit-test-pinned defense in depth. (8)
+      Raw-vs-Zod-default decision documented in task How. (9) Hygiene task depends_on trimmed to
+      task-shadow-restore-loud-failure only, with rationale. (10) ac-N nit same as 4."
+    name: Prior review findings resolved
+    required: true
+    runner: claude
+    created_at: 2026-06-10T15:26:45.015Z
+    completed_at: 2026-06-10T15:26:45.015Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Re-verified every code claim in the updated plan. src/parser/yaml.ts: initContext at 701;
+      shadow-mode hasRemoteTracking/shadowNeedsSync/shadowPull at 783-836 run before
+      findManifestInDir/parseManifestWithWarnings at 838-845 — the ordering constraint is real.
+      src/cli/commands/upgrade.ts: runUpgradePipeline calls initContext at 345-346 before
+      detectSourceVersion at 352; probe inference at 208-228 buckets unrecognized kynetic values
+      into 0.1.0-0.8.99. src/parser/shadow.ts: silent restore .catch(() => {}) at exactly 2923
+      (initShadow catch) and 3056 (repairShadow catch);
+      stashBrokenWorktreeDir/restoreStashedWorktreeDir at 73-94, restore does rm-then-rename as the
+      task describes. src/parser/doctor.ts:719 reads manifest.kynetic directly without initContext.
+      src/schema/spec.ts:115 defaults kynetic to '1.0'.
+      src/parser/entity-storage-compatibility.ts:52 exports
+      ENTITY_FOLDER_STORAGE_MIN_KYNETIC_VERSION. src/utils/git.ts: interpolating execSync sites
+      confirmed at 81-87 (getRecentCommits cmd with -n/--since), 203, 223, 274, 281, 291; static
+      sites at 35, 52, 139, 213, 230; one trivial off-by-one — getHeadCommit execSync is at 251,
+      plan says 250 (function name disambiguates; not material)."
+    name: Source claim verification
+    required: true
+    runner: claude
+    created_at: 2026-06-10T15:26:47.590Z
+    completed_at: 2026-06-10T15:26:47.590Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@versioning (feature) and @format-version (requirement, implements @versioning) exist —
+      parent/depends_on targets valid. @core is a module — valid parent for
+      subprocess-argument-literalness. @broken-shadow-safety currently has exactly
+      ac-preserve-on-failure, ac-bootstrap-reuses-repair, ac-context-fails-fast, ac-no-root-fallback
+      — ac-restore-failure-reports-state does not exist yet, so the dedicated spec-update task is
+      the correct precondition, and the quoted ac-preserve-on-failure text matches the live spec
+      verbatim. Plan importer supports spec-level depends_on (PlanSpecSchema in
+      src/parser/plan-document.ts:29; consumed at derive in src/cli/commands/plan.ts:478) — the
+      claimed structural relationship will materialize; relates_to is indeed unsupported, matching
+      the plan's stated rationale. AC coverage: all 6 ACs on data-format-forward-compatibility
+      claimed by task-format-version-ceiling; all 3 ACs on subprocess-argument-literalness claimed
+      by task-git-utils-execfile; ac-restore-failure-reports-state + ac-preserve-on-failure claimed
+      by task-shadow-restore-loud-failure with the spec-mutation/behavioral split annotated. No
+      orphan ACs, no duplicate claims."
+    name: Cross-reference and coverage validation
+    required: true
+    runner: claude
+    created_at: 2026-06-10T15:26:50.112Z
+    completed_at: 2026-06-10T15:26:50.112Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-broken-shadow-safety-spec-delta (P1) -> task-shadow-restore-loud-failure (P1) ->
+      task-catch-justification-comments (P3); task-format-version-ceiling (P1) and
+      task-git-utils-execfile (P2) independent and parallelizable. No cycles, no P1-depends-on-P2+
+      inversions, no over-serialization (cycle-1 nit about the hygiene task's extra edges is fixed —
+      it now depends only on the one behavioral task touching an audited file).
+    name: Dependency ordering
+    required: true
+    runner: claude
+    created_at: 2026-06-10T15:26:52.615Z
+    completed_at: 2026-06-10T15:26:52.615Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan @01KTRYBM remains draft with no derived specs/tasks. Exported stored content and ran
+      kspec plan import --dry-run on it: parses cleanly, full document stored, no state changed."
+    name: Plan status and dry-run
+    required: true
+    runner: claude
+    created_at: 2026-06-10T15:26:56.089Z
+    completed_at: 2026-06-10T15:26:56.089Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs/--alignment/--completeness all exit 0 with --warnings-ok; only
+      pre-existing warnings unrelated to this plan (deprecated-item refs, trait annotation token in
+      tests, unrelated spec status drift).
+    name: kspec validate (refs, alignment, completeness)
+    required: true
+    runner: kspec
+    created_at: 2026-06-10T15:26:58.711Z
+    completed_at: 2026-06-10T15:26:58.711Z
 events:
   - _ulid: 01KTS26B0XZ2B84XDBXHF5W35E
     actor: "@claude"
@@ -17,6 +126,48 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-10T15:25:51.117Z
+  - _ulid: 01KTS297ZV9VS4RYPESCK59KBA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior review findings resolved
+    timestamp: 2026-06-10T15:26:45.243Z
+  - _ulid: 01KTS29AG13VRJXW1JFJCWS9HD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Source claim verification
+    timestamp: 2026-06-10T15:26:47.809Z
+  - _ulid: 01KTS29CYAWT64JXHNJ3RNNDVP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference and coverage validation
+    timestamp: 2026-06-10T15:26:50.314Z
+  - _ulid: 01KTS29FCW2XHT12ZTXJDT3VAC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-10T15:26:52.828Z
+  - _ulid: 01KTS29JSDQZM5QFTKXKZK23HT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan status and dry-run
+    timestamp: 2026-06-10T15:26:56.301Z
+  - _ulid: 01KTS29NB7WVVYCCRRRF9E77W0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate (refs, alignment, completeness)
+    timestamp: 2026-06-10T15:26:58.919Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -29,5 +180,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T15:25:10.046Z
-updated_at: 2026-06-10T15:25:50.902Z
+updated_at: 2026-06-10T15:26:58.711Z
 notes: []
