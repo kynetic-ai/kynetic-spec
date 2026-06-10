@@ -72,6 +72,27 @@ checks:
     required: true
     created_at: 2026-06-10T14:43:34.317Z
     completed_at: 2026-06-10T14:43:34.317Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; .agents/skills/kspec-review-plan/SKILL.md;
+      tests/task-plan-ref.test.ts; src/parser/validate.ts; src/parser/refs.ts; src/parser/config.ts;
+      packages/daemon/src/routes/triage.ts; tests/e2e/api-triage.spec.ts;
+      tests/daemon-api/helpers.ts; tests/grep.test.ts; src/parser/meta.ts; src/schema/meta.ts;
+      src/cli/commands/search.ts; scripts/test.cjs. Commands run: kspec plan get @01KTRYBV; kspec
+      item get @validation-task-data-source @plan-validation @triage-daemon-api @fuzzy-item-search;
+      kspec plan list; kspec search for related specs/plans; kspec trait list; kspec validate
+      refs/alignment/completeness with --warnings-ok. Claims verified: skipped dangling plan_ref
+      test exists; validation uses TaskDataManager/ref fields include plan_ref/spec_ref/depends_on;
+      triage suite is skipped and routes use POST subroutes; grep meta fixtures use invalid
+      ULIDs/null resolved_at; test cache key excludes env. Categories searched: spec conflicts, AC
+      mapping, task executability, dependency ordering, references, test-quality risk,
+      implementation drift."
+    name: review evidence log
+    required: false
+    created_at: 2026-06-10T14:43:50.498Z
+    completed_at: 2026-06-10T14:43:50.498Z
 events:
   - _ulid: 01KTRZPM4PBE4S2CB8Z39WA5Q4
     actor: "@claude"
@@ -149,6 +170,13 @@ events:
       status: pass
       name: Dependency ordering
     timestamp: 2026-06-10T14:43:34.538Z
+  - _ulid: 01KTRZTNTFQ6Y86B9F3SW02B76
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-10T14:43:50.735Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -216,5 +244,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-10T14:41:37.942Z
-updated_at: 2026-06-10T14:43:34.317Z
+updated_at: 2026-06-10T14:43:50.498Z
 notes: []
