@@ -2,7 +2,94 @@ _ulid: 01KTS237ESPBMVFN3SH9Z53PJN
 slugs: []
 title: "Plan re-review: Validation and Test Coverage Integrity (fix cycle 2)"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Command passed with warnings accepted: 1583 files, 637 items, 1575 tasks checked; schema
+      OK and references OK; 6 accepted deprecated-reference warnings match repo baseline."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-10T15:24:38.186Z
+    completed_at: 2026-06-10T15:24:38.186Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Command passed with warnings accepted: 46 baseline alignment warnings (35 orphaned specs,
+      11 status mismatches), no validation errors."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-10T15:24:40.982Z
+    completed_at: 2026-06-10T15:24:40.982Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Command passed with warnings accepted: 265 baseline completeness warnings (233 missing
+      own AC coverage, 32 invalid AC annotations), no validation errors. Plan-specific coverage
+      mapping checked separately."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-10T15:24:43.748Z
+    completed_at: 2026-06-10T15:24:43.748Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified all prior @01KTRZPM and @01KTS0TQ findings are resolved in the stored draft:
+      triage drift now covers ac-4/ac-5/ac-8/ac-9 plus triage.ts header comment; split-storage task
+      annotation instructions include @plan-validation ac-10 and both @validation-task-data-source
+      ACs with justification; export wording is format=json vs format=context; @plan-validation
+      ac-10 has verbatim spec-update text; search-test provenance and fixture ULID counts are
+      corrected."
+    name: prior review resolution
+    required: true
+    runner: plan re-review
+    created_at: 2026-06-10T15:24:46.420Z
+    completed_at: 2026-06-10T15:24:46.420Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git show confirms 703f4b6764 (2026-01-17) changed MetaUlidSchema from z.string().min(1) to
+      UlidSchema; 8f1f9534ec (2026-01-22) added the search tests five days later; 8624214d9f
+      (2026-02-14) added Skill meta type and did not alter the MetaUlidSchema definition.
+    name: git provenance verification
+    required: true
+    runner: git show
+    created_at: 2026-06-10T15:24:50.340Z
+    completed_at: 2026-06-10T15:24:50.340Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No new material issues found. Existing refs resolve for @triage-daemon-api,
+      @plan-validation, and @validation-task-data-source; current stale AC wording in those specs
+      matches the task correction scope; all four tasks are independent with no depends_on and are
+      standalone-executable with concrete files, AC mapping, verification steps, and escalation
+      paths.
+    name: plan quality and dependency review
+    required: true
+    runner: plan review
+    created_at: 2026-06-10T15:24:53.086Z
+    completed_at: 2026-06-10T15:24:53.086Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Not applicable for this plan-only re-review: no repository files, specs, tasks, or plan
+      status were edited by this reviewer; no code diff exists to run project npm gates against.
+      Review evidence is kspec validation plus stored plan/content and git/source verification."
+    name: npm gates
+    required: true
+    runner: format/lint/typecheck/npm test
+    created_at: 2026-06-10T15:24:55.773Z
+    completed_at: 2026-06-10T15:24:55.773Z
 events:
   - _ulid: 01KTS237ERKAT3TW8J7YJ8PF1W
     actor: codex
@@ -17,9 +104,74 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-10T15:23:43.668Z
+  - _ulid: 01KTS25C4T20RG29BQCAA6E7XF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T15:24:38.426Z
+  - _ulid: 01KTS25EWX3XKMTFXH19NCJWYT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-10T15:24:41.245Z
+  - _ulid: 01KTS25HJNT99V2H54GY5RY8SM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-10T15:24:43.989Z
+  - _ulid: 01KTS25M5CS744RJV1HDQ1JR9M
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review resolution
+    timestamp: 2026-06-10T15:24:46.636Z
+  - _ulid: 01KTS25R108ANE9F29DCS2G9WN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: git provenance verification
+    timestamp: 2026-06-10T15:24:50.592Z
+  - _ulid: 01KTS25TP2QV9VNKJHFEHB7GHA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan quality and dependency review
+    timestamp: 2026-06-10T15:24:53.315Z
+  - _ulid: 01KTS25XA4427DZDA8GAB2RPNZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm gates
+    timestamp: 2026-06-10T15:24:56.004Z
+  - _ulid: 01KTS25ZZ81PKQ350H0QKV9AFV
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T15:24:58.728Z
+  - _ulid: 01KTS25ZZ8GR8NCCVZZGAT7JRA
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T15:24:58.728Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -27,7 +179,14 @@ subject:
   ref: "@01KTRYBV"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-10T15:24:58.728Z
 created_at: 2026-06-10T15:23:28.089Z
-updated_at: 2026-06-10T15:23:43.433Z
+updated_at: 2026-06-10T15:24:58.728Z
 notes: []
