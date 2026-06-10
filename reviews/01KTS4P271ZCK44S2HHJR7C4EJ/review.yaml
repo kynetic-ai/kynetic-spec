@@ -2,7 +2,58 @@ _ulid: 01KTS4P271ZCK44S2HHJR7C4EJ
 slugs: []
 title: "Plan final confirmation (claude): Data Integrity and Upgrade Safety"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Shadow commit 86a754b59c (Import Plan, 2026-06-10) is the only plan content change since
+      approval @01KTS3VT: plan.md diff inserts 'locally' into ac-newer-version-refused's given (with
+      line rewrap of the same sentence), plus a fix note in notes.yaml and notes_count 6->7 in
+      project.plans.yaml. git log 86a754b59c..HEAD on plans/01KTRYBMAGM8EDVBTYE09Y01G9/ is empty —
+      no later modifications. Matches the @01KTS3XA3V nit verbatim and the codex confirmation
+      (@01KTS49J, zero threads, approved)."
+    name: Delta verification (cycle-3 nit application)
+    required: true
+    created_at: 2026-06-10T16:09:06.739Z
+    completed_at: 2026-06-10T16:09:06.739Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: ac-newer-version-refused given now reads 'A project manifest locally declares a format
+      version greater than the running tool's maximum supported format version';
+      ac-post-sync-newer-version-refused given reads 'A project manifest locally declares a
+      supported format version, and synchronization ... imports project data whose manifest declares
+      a format version greater...'. The pair partitions the locally-newer vs imported-newer cases
+      explicitly without relying on contrast — the cycle-3 nit's intent is fully realized.
+    name: AC partition coherence after nit
+    required: true
+    created_at: 2026-06-10T16:09:09.264Z
+    completed_at: 2026-06-10T16:09:09.264Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan remains draft (constraint honored; no status change made; notes_count 7). Exported
+      stored content and re-imported with --dry-run: parses cleanly, full document stored, no state
+      changed."
+    name: Plan status and dry-run
+    required: true
+    created_at: 2026-06-10T16:09:11.897Z
+    completed_at: 2026-06-10T16:09:11.897Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All three suites pass with --warnings-ok under KSPEC_NO_DAEMON=1; remaining warnings are
+      the pre-existing project-wide baseline (deprecated-item spec_refs, unrelated malformed AC
+      token in cli-agent-commands.test.ts), unchanged from the cycle-3 review and unrelated to this
+      plan.
+    name: kspec validate (refs, alignment, completeness)
+    required: true
+    created_at: 2026-06-10T16:09:14.388Z
+    completed_at: 2026-06-10T16:09:14.388Z
 events:
   - _ulid: 01KTS4P271G0PNYCXX6F07Q6Y4
     actor: "@claude"
@@ -10,9 +61,60 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T16:08:42.465Z
+  - _ulid: 01KTS4PQJQBE7VDG924W27EQWD
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-10T16:09:04.343Z
+  - _ulid: 01KTS4PT40397DW9VYJX89W0C9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Delta verification (cycle-3 nit application)
+    timestamp: 2026-06-10T16:09:06.944Z
+  - _ulid: 01KTS4PWN9RZHEW983V3ZQYGWV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC partition coherence after nit
+    timestamp: 2026-06-10T16:09:09.545Z
+  - _ulid: 01KTS4PZ4T2Y2ABHZF2XR2JKJ1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan status and dry-run
+    timestamp: 2026-06-10T16:09:12.090Z
+  - _ulid: 01KTS4Q1K6T70PYE6J9CF3EGS8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate (refs, alignment, completeness)
+    timestamp: 2026-06-10T16:09:14.598Z
+  - _ulid: 01KTS4Q472J9G6R7NT63M0H7QM
+    actor: ecaj@hyphoria.org
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T16:09:17.282Z
+  - _ulid: 01KTS4Q47256QSF1N7SRH0DC31
+    actor: ecaj@hyphoria.org
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T16:09:17.282Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +122,14 @@ subject:
   ref: "@01KTRYBM"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: ecaj@hyphoria.org
+    role: reviewer
+    created_at: 2026-06-10T16:09:17.282Z
 created_at: 2026-06-10T16:08:42.465Z
-updated_at: null
+updated_at: 2026-06-10T16:09:17.282Z
 notes: []
