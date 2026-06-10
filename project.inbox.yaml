@@ -4224,3 +4224,27 @@ inbox:
       - derive
     added_by: "@claude"
     created_at: 2026-06-10T17:56:21.405Z
+  - _ulid: 01KTSAWJNJSHWPX98HZ5DQHNA1
+    text: "kspec event emit / event log resolve to the daemon default project instead of the cwd
+      project. Observed in hawse 2026-06-10: with the hawse dispatch engine running (kspec agent
+      dispatch status from hawse cwd showed running:true with hawse agents), kspec event emit
+      task.ready failed with 'Dispatch engine is not running. Start it first with POST
+      /api/agent/dispatch' and kspec event log showed 'No recent events'. The daemon (launched with
+      --kspec-dir .../kynetic-spec-dispatch/.kspec) treats kynetic-spec-dispatch as the default
+      project; project context for API requests comes from the X-Kspec-Dir header
+      (packages/daemon/src/middleware/project-context.ts), and the emit route checks
+      getDispatchEngine(projectContext.path) (routes/automation.ts ~294). Other commands (dispatch
+      status/start) correctly scope to the cwd project, so the event CLI commands appear not to send
+      X-Kspec-Dir (or send a different path form), landing on the default project whose engine was
+      stopped. Effect: event emit/log are unusable and misleading in multi-project daemons - they
+      report on the wrong project with no indication of which project they hit. Suggested fix: send
+      X-Kspec-Dir from the event CLI like other project-scoped commands, and include the resolved
+      project path in event log/emit output so mis-scoping is visible."
+    tags:
+      - daemon
+      - cli
+      - bug
+      - events
+      - multi-project
+    added_by: "@claude"
+    created_at: 2026-06-10T17:57:07.378Z
