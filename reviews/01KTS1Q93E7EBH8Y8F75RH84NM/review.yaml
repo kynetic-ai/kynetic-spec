@@ -2,7 +2,19 @@ _ulid: 01KTS1Q93E7EBH8Y8F75RH84NM
 slugs: []
 title: "Plan re-review: Data Integrity and Upgrade Safety (fix cycle 2)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan @01KTRYBM is still draft; derived_specs and derived_tasks are empty. Dry-run of
+      plans/data-integrity-upgrade-safety.md succeeded with no changes and reported Derived specs:
+      0, Derived tasks: 0."
+    name: plan status and dry-run
+    required: true
+    runner: kspec plan get / kspec plan import --dry-run
+    created_at: 2026-06-10T15:17:30.320Z
+    completed_at: 2026-06-10T15:17:30.320Z
 events:
   - _ulid: 01KTS1Q93E1PD76991239P95SM
     actor: "@claude"
@@ -17,6 +29,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-10T15:17:08.929Z
+  - _ulid: 01KTS1RA9YBNPJHTX4WZVZFGRR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan status and dry-run
+    timestamp: 2026-06-10T15:17:30.558Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -29,5 +48,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T15:16:56.558Z
-updated_at: 2026-06-10T15:17:08.692Z
+updated_at: 2026-06-10T15:17:30.320Z
 notes: []
