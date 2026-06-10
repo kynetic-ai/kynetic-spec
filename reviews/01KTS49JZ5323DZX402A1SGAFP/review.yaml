@@ -45,6 +45,17 @@ checks:
     runner: manual plan review
     created_at: 2026-06-10T16:02:47.324Z
     completed_at: 2026-06-10T16:02:47.324Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command exited 0. Schema and references passed. Existing deprecated-ref warnings remain as
+      baseline and are unrelated to this draft-plan delta.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-10T16:03:00.300Z
+    completed_at: 2026-06-10T16:03:00.300Z
 events:
   - _ulid: 01KTS49JZ5WQJRKPF47YHSWQF5
     actor: "@claude"
@@ -80,6 +91,13 @@ events:
       status: pass
       name: AC partition coherence
     timestamp: 2026-06-10T16:02:47.625Z
+  - _ulid: 01KTS4BM95CNC9RHRZSJH78DNB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T16:03:00.517Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -92,5 +110,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T16:01:53.637Z
-updated_at: 2026-06-10T16:02:47.324Z
+updated_at: 2026-06-10T16:03:00.300Z
 notes: []
