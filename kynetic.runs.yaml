@@ -61915,9 +61915,19 @@ runs:
     completed_at: 2026-06-10T00:27:43.760Z
   - _ulid: 01KTQZGGJ8YVGX7CYQCQY975YK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-10T05:19:03.240Z
+        completed_at: 2026-06-10T05:21:03.692Z
+        notes: "Baseline searched: observations list, inbox list (352 items), targeted kspec search per
+          candidate."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-10T05:21:03.692Z
+        completed_at: 2026-06-10T05:21:03.692Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-10T05:19:03.240Z
