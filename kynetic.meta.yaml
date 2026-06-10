@@ -21207,6 +21207,29 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-09T18:50:58.245Z
+  - _ulid: 01KTQDQB9AJFA93AVSSZJS0KCK
+    type: friction
+    content: "Daemon code discoverability: src/daemon/ exists but the daemon server and all HTTP routes
+      live in packages/daemon/src/; AGENTS.md structure tree does not mention packages/daemon or
+      packages/shared, so agents repeatedly search src/ first. Review content endpoint additionally
+      lives in routes/diff.ts rather than reviews.ts. Concrete cost: ~8 grep/find round-trips to
+      locate GET /api/reviews/:id/content this session."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-10T00:08:12.842Z
+  - _ulid: 01KTQDQBJJXNW3BHNMAZ917KT4
+    type: success
+    content: "Generalize-first rewriter design paid off immediately: the shared
+      rewriteEntityResourceLinks core built in @generalize-live-ui-resource-markdown-rewriting let
+      the review structured-content viewer gain plan AND task resource markdown rendering via a
+      ~100-line dispatch util (review-content-resources.ts) with zero new regex and full reuse of
+      drift/unmatched semantics. Investing in the entity-generic helper one task earlier made the
+      follow-up task mostly API plumbing plus tests."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-10T00:08:13.138Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

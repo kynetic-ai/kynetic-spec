@@ -4151,3 +4151,17 @@ inbox:
       - tests
     added_by: Jacob Chapel
     created_at: 2026-06-09T03:21:52.961Z
+  - _ulid: 01KTQDQB5R30F07WRY914Z81C1
+    text: "AGENTS.md project structure omits packages/daemon/ and packages/shared/ — agents searching
+      for daemon HTTP route code first hit the misleading src/daemon/ (only entity-cache.ts +
+      shadow-sync-manager.ts) before finding the real server and routes in
+      packages/daemon/src/routes/. Also non-obvious: GET /api/reviews/:id/content lives in
+      routes/diff.ts, not reviews.ts. Fix: add packages/daemon and packages/shared to the AGENTS.md
+      structure tree (and consider a routes-location hint), or rename/merge src/daemon. Cost ~8
+      search round-trips in the render-review-structured-content-resource-markdown session."
+    tags:
+      - dx
+      - docs
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-10T00:08:12.728Z
