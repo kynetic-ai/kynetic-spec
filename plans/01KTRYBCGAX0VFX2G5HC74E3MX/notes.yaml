@@ -30,3 +30,21 @@ notes:
     content: "Fix cycle 2: addressed codex @01KTS1B6 blockers"
     author: "@claude"
     created_at: 2026-06-10T15:21:46.289Z
+  - _ulid: 01KTS232WKZCSN09HEZ7ATDDKH
+    content: "Fix cycle 2 (codex re-review @01KTS1B6, 2 blockers): (1) Decoupled the command-timeout
+      task from daemon log capture — instead of adding depends_on @task-daemon-log-capture, the
+      abandoned-promise .catch now logs via plain console at daemon level (registered outside any
+      command capture store); it reaches the daemon console today and flows into the daemon log
+      automatically once log capture lands, so no ordering between the tasks is needed. (2) Fixed
+      the late-completion side-effect race: cache write-through (MUTATION_AFFECTED_DOMAINS) and the
+      command_executed/batch_executed broadcasts currently run after the route handler's await of
+      dispatchMutex.run — the timeout design would have skipped them for mutations completing after
+      a 504, leaving the cache stale and violating ac-mutation-cache-update. Redesigned: completion
+      side effects are bound to the execution promise itself so they run at actual command
+      completion regardless of whether the HTTP response went out; response-only shaping (status
+      codes, batch stdout/stderr merge) stays on the response path. Added delta AC
+      ac-timeout-late-completion-effects to the @daemon-command-api delta list, updated the timeout
+      task's What/How/Testing/Covers, and recorded both decisions in Implementation Notes. Plan
+      remains draft."
+    author: "@claude"
+    created_at: 2026-06-10T15:23:23.411Z
