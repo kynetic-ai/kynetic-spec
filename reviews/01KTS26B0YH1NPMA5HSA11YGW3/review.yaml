@@ -168,6 +168,13 @@ events:
       status: pass
       name: kspec validate (refs, alignment, completeness)
     timestamp: 2026-06-10T15:26:58.919Z
+  - _ulid: 01KTS2AF7NF08QBQV7W789NEC5
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTS2AF04N5GYQ12RJR4Z0QC0
+    timestamp: 2026-06-10T15:27:25.429Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -177,8 +184,32 @@ subject:
   content_hash: ""
   ref: "@01KTRYBM"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTS2AF04N5GYQ12RJR4Z0QC0
+    anchor:
+      type: structured
+      ref: "@task-format-version-ceiling"
+      section: description
+    entries:
+      - _ulid: 01KTS2AF04AE97KH8KW8K2J1NB
+        author: "@claude"
+        body: "SHOULD-FIX (non-blocking): step 2's pre-sync placement closes the cycle-1 blocker (sync
+          mutating an already-newer LOCAL project) but leaves the dual race open. The check reads
+          the local manifest raw before the pre-read shadow sync; if the local manifest declares a
+          supported version while the remote shadow branch has since been upgraded to a newer
+          format, the check passes, shadowPull (src/parser/yaml.ts:809-817) then fast-forwards local
+          state to the newer format — including the manifest itself, which lives in the shadow
+          worktree — and the SAME invocation proceeds to read/mutate newer-format data with no
+          refusal. Only the next invocation refuses. The planned tests cannot catch this window:
+          every fixture declares the newer version locally before the command runs. Cheap closure:
+          re-apply the ceiling comparison after the post-sync manifest parse
+          (src/parser/yaml.ts:838-845) — the Zod default-to-1.0 ambiguity is irrelevant there
+          because only values above the ceiling matter; alternatively, explicitly accept the
+          one-invocation exposure window as a documented decision in the task How and spec
+          rationale. Recommend amending step 2 (one sentence) before the plan is approved/derived."
+        created_at: 2026-06-10T15:27:25.188Z
+    kind: question
 verdicts: []
 created_at: 2026-06-10T15:25:10.046Z
-updated_at: 2026-06-10T15:26:58.711Z
+updated_at: 2026-06-10T15:27:25.188Z
 notes: []
