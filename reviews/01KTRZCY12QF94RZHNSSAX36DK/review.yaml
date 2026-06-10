@@ -1,0 +1,27 @@
+_ulid: 01KTRZCY12QF94RZHNSSAX36DK
+slugs:
+  - review-plan-data-integrity-upgrade-safety-01ktrybm
+title: "Plan review: Data Integrity and Upgrade Safety"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTRZCY12W9HSTSGCRKFXZ5ZS
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-10T14:36:20.386Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@01KTRYBM"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-10T14:36:20.386Z
+updated_at: null
+notes: []
