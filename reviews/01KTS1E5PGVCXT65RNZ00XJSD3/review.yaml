@@ -2,7 +2,148 @@ _ulid: 01KTS1E5PGVCXT65RNZ00XJSD3
 slugs: []
 title: "Plan re-review (claude, fix cycle 2): Release Packaging and Onboarding Readiness"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan @01KTRY9V remains in draft status; review performed read-only — no
+      approve/derive/status change.
+    name: plan status constraint
+    required: true
+    created_at: 2026-06-10T15:12:53.536Z
+    completed_at: 2026-06-10T15:12:53.536Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 6 findings resolved in stored content: (1) node-docs ac-2 blocker — Testing now
+      derives doc set dynamically (README.md, INSTALL.md, recursive docs/ glob) and the What sweep
+      names starting-a-new-project.md and upgrading-kspec.md; (2) prepack ac-4 blocker — new
+      scripts/verify-clean-pack.cjs stages a clean no-build-output source copy and runs a real npm
+      pack (not --dry-run), wired into publish.yml and run locally with results in a task note; (3)
+      CI verification-path blocker — task adds workflow_dispatch trigger and verifies via gh
+      workflow run on the task branch, no PR needed; (4) audit-fix scope question — acceptance bar
+      pinned to npm audit --omit=dev clean, semver-compatible dev side-effect bumps accepted with
+      full lockfile diff review, unfixed dev advisories to inbox; (5) dedupe ordering question —
+      task-dedupe-web-ui-devdeps now depends_on task-audit-fix-production-deps; (6) npx vitest
+      question — task step (3) replaces direct npx vitest with npm test -- --shard through
+      scripts/test.cjs."
+    name: prior codex findings resolved (@01KTRYS2)
+    required: true
+    created_at: 2026-06-10T15:12:56.103Z
+    completed_at: 2026-06-10T15:12:56.103Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 6 findings resolved: (1) lint-gate blocker — all four flagged Testing sections
+      reworked to lint-clean mechanisms (npm pack --dry-run --json parsing, JSON module imports,
+      createTempDir subprocess exit codes) with the rule's documented eslint-disable-with-reason
+      escape hatch only where doc/LICENSE text is the contract; verified
+      tools/eslint-rules/no-source-scanning.js line 17 explicitly sanctions inline disable comments
+      with a reason, so the prescribed route matches the rule as implemented; prepack task now
+      explicitly forbids script-string assertions; (2) @main placeholder question — new Release and
+      Distribution module created in the Specs block with the three requirements parented under it,
+      derive-time nesting tradeoff recorded; (3) file-collision question —
+      tests/release-packaging.test.ts has a single owner (license task creates it; node-docs and
+      workspace-private declare depends_on), and the two publish.yml writers are serialized
+      (ci-matrix depends_on prepack); (4) self-referential ac-1 question —
+      @prepublish-runtime-verification ac-1 and description now require the oldest supported major
+      plus at least one newer major, falsifiable; (5) ac-2 quantifier nit — dynamic doc-set test
+      closes the future-doc gap; post-derive relates_to @docs-getting-started-section recorded in
+      Implementation Notes; (6) CONTRIBUTING/SECURITY nit — kept spec-less as repo hygiene with
+      explicit promote-later rationale in Implementation Notes."
+    name: prior claude findings resolved (@01KTRZ06)
+    required: true
+    created_at: 2026-06-10T15:12:58.649Z
+    completed_at: 2026-06-10T15:12:58.649Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Independently re-verified against the working tree: engines node >=20.0.0; license MIT,
+      author Kynetic AI; prepack currently npm run build:plugin; LICENSE, CONTRIBUTING.md,
+      SECURITY.md absent; test.yml pins node 24 at lines 37/71/112, invokes npx vitest directly at
+      line 84, Verify CLI step gated on matrix.shard == 1, no workflow_dispatch trigger; publish.yml
+      node 24 at line 30, full npm run build at line 43; INSTALL.md:7 says v18, lines 102/141/166
+      link nonexistent docs/getting-started.md, README has no how-it-works heading; tutorial.md:17
+      says 18+; other three named docs already say 20+; repo-wide sweep finds exactly the two stale
+      Node 18 references the plan names; packages/web-ui|shared|daemon lack private:true at 0.1.0
+      and web-ui lacks main/exports; pagefind dynamically imported at
+      scripts/build-docs-search.cjs:118; npm audit --omit=dev reports 8 vulnerabilities (2 high, 6
+      moderate) fixable via npm audit fix; package.json files array (dist, templates, plugin) plus
+      npm LICENSE auto-inclusion supports every artifact verify-package.cjs expects; bin resolves to
+      ./dist/cli/index.js."
+    name: factual claims verification
+    required: true
+    created_at: 2026-06-10T15:13:01.215Z
+    completed_at: 2026-06-10T15:13:01.215Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec plan export @01KTRY9V + kspec plan import --dry-run of the exported document
+      succeeds. The new type: module spec entry is valid — ItemTypeSchema (src/schema/common.ts:73)
+      includes module and the plan spec schema uses ItemTypeSchema."
+    name: plan document parse and schema
+    required: true
+    created_at: 2026-06-10T15:13:03.810Z
+    completed_at: 2026-06-10T15:13:03.810Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 8 ACs claimed exactly once: @supported-runtime-range ac-1/ac-2 by
+      task-standardize-node-version-docs; @published-artifact-completeness ac-1 by
+      task-add-license-file, ac-2/ac-3/ac-4 by task-prepack-full-build-and-verification;
+      @prepublish-runtime-verification ac-1/ac-2 by task-ci-node-version-matrix. Module spec has no
+      ACs (appropriate for type module). No orphan ACs, no double-claims without annotation."
+    name: AC coverage mapping
+    required: true
+    created_at: 2026-06-10T15:13:06.471Z
+    completed_at: 2026-06-10T15:13:06.471Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No cycles. No priority inversions: node-docs (P2)->license (P1), ci-matrix (P2)->prepack
+      (P1), workspace-private (P3)->license (P1), dedupe (P3)->audit-fix (P1). Shared-file writers
+      serialized: release-packaging.test.ts via license-task ownership edges; publish.yml via
+      ci-matrix->prepack; package-lock.json via dedupe->audit-fix. Remaining parallelism (license vs
+      audit-fix vs install-doc-links vs contributing-docs) is genuinely independent."
+    name: dependency ordering
+    required: true
+    created_at: 2026-06-10T15:13:09.116Z
+    completed_at: 2026-06-10T15:13:09.116Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "External refs resolve: @main (module), @docs-getting-started-section (requirement),
+      @user-documentation (module). Internal spec_ref/depends_on values all point to slugs defined
+      in this plan. kspec validate --refs reports only pre-existing warnings unrelated to this plan
+      (deprecated @task-activity-git-query spec_ref)."
+    name: reference resolution
+    required: true
+    created_at: 2026-06-10T15:13:11.731Z
+    completed_at: 2026-06-10T15:13:11.731Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reviewed all fix-cycle additions for regressions: verify-clean-pack approach is sound
+      (real npm pack triggers prepack; node_modules linking noted; runs only in publish workflow to
+      bound cost); workflow_dispatch addition is low-risk and enables branch verification; dynamic
+      docs glob is currently clean (only the two named stale refs exist repo-wide, so the new test
+      will not trip on unrelated docs); JSON-module-import and subprocess-based test mechanisms are
+      lint-clean under no-source-scanning; escape-hatch usage is confined to genuinely
+      content-contract reads (LICENSE text, markdown version statements) with required written
+      reasons."
+    name: no new issues from fix-cycle edits
+    required: true
+    created_at: 2026-06-10T15:13:14.280Z
+    completed_at: 2026-06-10T15:13:14.280Z
 events:
   - _ulid: 01KTS1E5PG21TN9MZQ8DJXFT1F
     actor: "@claude"
@@ -10,9 +151,95 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T15:11:58.160Z
+  - _ulid: 01KTS1FSECTVCYR97MH01F0PP1
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-10T15:12:51.148Z
+  - _ulid: 01KTS1FVZKG7MXVY5MSSBA6SEX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan status constraint
+    timestamp: 2026-06-10T15:12:53.747Z
+  - _ulid: 01KTS1FYG2X85V8QGC4Q9S13CD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior codex findings resolved (@01KTRYS2)
+    timestamp: 2026-06-10T15:12:56.323Z
+  - _ulid: 01KTS1G0Z9GTRYRK0S9SF7P254
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior claude findings resolved (@01KTRZ06)
+    timestamp: 2026-06-10T15:12:58.857Z
+  - _ulid: 01KTS1G3F5CRWNR30VS26F50AE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: factual claims verification
+    timestamp: 2026-06-10T15:13:01.413Z
+  - _ulid: 01KTS1G60DBGSC90YRCPA9R43J
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan document parse and schema
+    timestamp: 2026-06-10T15:13:04.013Z
+  - _ulid: 01KTS1G8MFM2Q7BQ0KGW7BV7G7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-10T15:13:06.703Z
+  - _ulid: 01KTS1GB6AST9EAP1A38S6A02F
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-10T15:13:09.322Z
+  - _ulid: 01KTS1GDRCNZB6SNT3YJ7XY6AB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: reference resolution
+    timestamp: 2026-06-10T15:13:11.948Z
+  - _ulid: 01KTS1GG7Z8VK2T7VGZYGTXS2T
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: no new issues from fix-cycle edits
+    timestamp: 2026-06-10T15:13:14.495Z
+  - _ulid: 01KTS1GJRVAXJKW6F9EBF4KNMZ
+    actor: ecaj@hyphoria.org
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T15:13:17.083Z
+  - _ulid: 01KTS1GJRVYC3QED5VSKMWJS9Y
+    actor: ecaj@hyphoria.org
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T15:13:17.083Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +247,14 @@ subject:
   ref: "@01KTRY9V"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: ecaj@hyphoria.org
+    role: reviewer
+    created_at: 2026-06-10T15:13:17.083Z
 created_at: 2026-06-10T15:11:58.160Z
-updated_at: null
+updated_at: 2026-06-10T15:13:17.083Z
 notes: []
