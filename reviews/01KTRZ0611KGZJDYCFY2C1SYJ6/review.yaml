@@ -201,9 +201,25 @@ events:
       status: fail
       name: Testing approach vs lint convention
     timestamp: 2026-06-10T14:32:44.305Z
+  - _ulid: 01KTRZ6Q77RG74HE12963WQJK9
+    actor: ecaj@hyphoria.org
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-10T14:32:56.807Z
+  - _ulid: 01KTRZ6Q778KSQFSH4X9FTTGHA
+    actor: ecaj@hyphoria.org
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T14:32:56.807Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -355,7 +371,14 @@ threads:
           @user-documentation would match the established pattern.
         created_at: 2026-06-10T14:32:28.833Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: ecaj@hyphoria.org
+    role: reviewer
+    created_at: 2026-06-10T14:32:56.806Z
 created_at: 2026-06-10T14:29:22.593Z
-updated_at: 2026-06-10T14:32:44.094Z
+updated_at: 2026-06-10T14:32:56.807Z
 notes: []
