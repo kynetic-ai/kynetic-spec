@@ -2,7 +2,159 @@ _ulid: 01KTS2FTG8555G0X2DG2F8K2Y0
 slugs: []
 title: "Plan review: Daemon Operational Reliability (cycle 3)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "KSPEC_NO_DAEMON=1 kspec plan import plans/daemon-operational-reliability.md --dry-run
+      reported Status: draft, Content stored: full document, Derived specs: 0, Derived tasks: 0; no
+      state changes from dry-run."
+    name: plan dry-run parse
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-10T15:31:39.830Z
+    completed_at: 2026-06-10T15:31:39.830Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Prior blocker @01KTS1B6 said @task-command-dispatch-timeout depended on a future
+      log-capture logger. The updated plan instead requires the abandoned augmented promise catch to
+      log through plain console.warn/error at daemon level, with the catch registered outside
+      commandExecutionStorage. Current command.ts confirms console.warn/error only capture when
+      commandExecutionStorage has a store (lines 106-122); otherwise output reaches the daemon
+      console. Therefore no dependency on @task-daemon-log-capture is required.
+    name: cycle-2 logging blocker resolution
+    required: true
+    runner: manual plan/code review
+    created_at: 2026-06-10T15:31:42.582Z
+    completed_at: 2026-06-10T15:31:42.582Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Prior blocker @01KTS1B6 said timeout racing at the route-handler await path would skip
+      mutation side effects. Current command.ts confirms single-route side effects currently run
+      after await dispatchMutex.run at lines 646-670 and batch side effects at lines 811-837. The
+      updated plan explicitly instructs building dispatchMutex.run(...).then(side effects) and
+      racing that augmented promise, preserving cache write-through across all
+      MUTATION_AFFECTED_DOMAINS and command_executed/batch_executed broadcasts on both normal and
+      late-completion paths.
+    name: cycle-2 late-completion side-effect resolution
+    required: true
+    runner: manual plan/code review
+    created_at: 2026-06-10T15:31:45.288Z
+    completed_at: 2026-06-10T15:31:45.288Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read packages/daemon/src/routes/command.ts lines 90-171, 196-216, 625-670, and 751-845;
+      packages/daemon/src/server.ts lines 709-716 and 822-828; packages/daemon/src/index.ts lines
+      10-81; src/parser/file-lock.ts lines 215-224 and 245-295. Verified single and batch paths,
+      cache-served read bypass, module-load console interception, health endpoint extension point,
+      and same-process file-lock behavior match the plan's assumptions.
+    name: command route source verification
+    required: true
+    runner: manual source read
+    created_at: 2026-06-10T15:31:48.091Z
+    completed_at: 2026-06-10T15:31:48.091Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The command-timeout task depends only on @task-update-daemon-reliability-specs. That is
+      sufficient after the fix-cycle decoupling because it no longer consumes artifacts from
+      @task-daemon-log-capture; it uses existing daemon console behavior. Log capture still
+      correctly precedes fatal-failure and serve-logs tasks. No new missing or over-constraining
+      dependency found.
+    name: dependency ordering
+    required: true
+    runner: manual dependency graph review
+    created_at: 2026-06-10T15:31:50.745Z
+    completed_at: 2026-06-10T15:31:50.745Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The updated timeout task now states What/How/Testing/Covers for all five
+      @daemon-command-api delta ACs, including ac-timeout-late-completion-effects. It names the
+      current single and batch side-effect blocks to move, distinguishes response-only shaping from
+      completion effects, requires queued timed-out commands to skip execution/effects, and adds
+      tests for late successful single and batch mutations. The plan's ACs are all claimed by tasks.
+    name: task executability and coverage mapping
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T15:31:53.534Z
+    completed_at: 2026-06-10T15:31:53.534Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read @daemon-command-api, @daemon-network-endpoint-contract, @ui-dashboard-overview, and
+      @cli-serve-commands. Searched daemon log capture, command timeout, and console hygiene. The
+      new ACs are placed on existing owning specs where appropriate and no duplicate existing
+      command-timeout/log-capture/console-hygiene spec was found.
+    name: spec neighborhood
+    required: true
+    runner: kspec item get/search + manual review
+    created_at: 2026-06-10T15:31:56.231Z
+    completed_at: 2026-06-10T15:31:56.231Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "KSPEC_NO_DAEMON=1 kspec validate --refs --warnings-ok passed. Existing reference warning
+      baseline remains: deprecated refs such as @session-summary-cache and
+      @task-activity-git-query."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-10T15:31:58.885Z
+    completed_at: 2026-06-10T15:31:58.885Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "KSPEC_NO_DAEMON=1 kspec validate --alignment --warnings-ok passed with existing alignment
+      warning baseline: orphaned specs and status mismatches unrelated to this draft plan."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-10T15:32:01.517Z
+    completed_at: 2026-06-10T15:32:01.517Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "KSPEC_NO_DAEMON=1 kspec validate --completeness --warnings-ok passed with existing
+      completeness warning baseline: missing AC coverage and invalid annotations unrelated to this
+      draft plan."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-10T15:32:04.170Z
+    completed_at: 2026-06-10T15:32:04.170Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, .agents/skills/kspec-review-plan/SKILL.md,
+      .agents/skills/review-gates/SKILL.md, plan @01KTRYBC, prior review @01KTS1B6,
+      packages/daemon/src/routes/command.ts, packages/daemon/src/server.ts,
+      packages/daemon/src/index.ts, src/parser/file-lock.ts. Commands run: kspec plan get, kspec
+      plan get --json, kspec review get, kspec review get --json, kspec item get, kspec search,
+      kspec validate refs/alignment/completeness, kspec plan import --dry-run, git status --short.
+      Categories searched: prior blocker resolution, dependency ordering, command timeout
+      correctness, late mutation side effects, abandoned promise logging, error handling, test/AC
+      mapping, spec placement. Constraints honored: no repository file edits and no daemon
+      start/stop/restart commands."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-06-10T15:32:06.884Z
+    completed_at: 2026-06-10T15:32:06.884Z
 events:
   - _ulid: 01KTS2FTG8SE99P8HJ9PX0B7H5
     actor: "@claude"
@@ -10,9 +162,102 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T15:30:20.808Z
+  - _ulid: 01KTS2J7X5CXN5XV1JQKR9F9P0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan dry-run parse
+    timestamp: 2026-06-10T15:31:40.069Z
+  - _ulid: 01KTS2JAK072BA8ARBJP49FD9Z
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cycle-2 logging blocker resolution
+    timestamp: 2026-06-10T15:31:42.816Z
+  - _ulid: 01KTS2JD77VHV043G8H99ARWVB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cycle-2 late-completion side-effect resolution
+    timestamp: 2026-06-10T15:31:45.511Z
+  - _ulid: 01KTS2JFZ7V5VKRMDNQ7TWFSZA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: command route source verification
+    timestamp: 2026-06-10T15:31:48.327Z
+  - _ulid: 01KTS2JJHW1PCWQC4R5K409C2N
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-10T15:31:50.973Z
+  - _ulid: 01KTS2JN965WEAC2698KX9DQCR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: task executability and coverage mapping
+    timestamp: 2026-06-10T15:31:53.766Z
+  - _ulid: 01KTS2JQWVEMYRB043Z3XQJEGJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec neighborhood
+    timestamp: 2026-06-10T15:31:56.443Z
+  - _ulid: 01KTS2JTFZBVSKYNZH69BYJTZX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T15:31:59.103Z
+  - _ulid: 01KTS2JX2H9864MJV62C3JYWBC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-10T15:32:01.745Z
+  - _ulid: 01KTS2JZN4P3P0SXF7W3FZCD18
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-10T15:32:04.388Z
+  - _ulid: 01KTS2K2AHCPKPC7WV23NJ9909
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-10T15:32:07.121Z
+  - _ulid: 01KTS2K4Y6V4KCWGED401H63YY
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T15:32:09.798Z
+  - _ulid: 01KTS2K4Y6YY74ZCPV3H3RC6ZF
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-06-10T15:32:09.798Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +265,14 @@ subject:
   ref: "@01KTRYBC"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-10T15:32:09.798Z
 created_at: 2026-06-10T15:30:20.808Z
-updated_at: null
+updated_at: 2026-06-10T15:32:09.798Z
 notes: []
