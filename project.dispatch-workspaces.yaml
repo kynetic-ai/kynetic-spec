@@ -10688,12 +10688,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-10T05:21:48.520Z
+      updated_at: 2026-06-10T05:22:01.008Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-10T05:21:48.520Z
+      updated_at: 2026-06-10T05:22:01.008Z
     integration:
       status: pending
       detail: null
@@ -10701,8 +10701,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5ba8a8f02843cceff35bb181d414555a3ac1c50b
-      updated_at: 2026-06-10T05:21:48.520Z
-    lifecycle_state: ready
+      updated_at: 2026-06-10T05:22:01.008Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTQY1CJ9JX66NMVFZQEV7WFD
     task_ref: "@01KTQY1CJ9JX66NMVFZQEV7WFD"
@@ -10710,16 +10710,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-10T04:54:33.196Z
-      last_reconciled_at: 2026-06-10T05:21:48.520Z
+      last_reconciled_at: 2026-06-10T05:22:01.008Z
       created_at: 2026-06-10T04:53:50.693Z
-      updated_at: 2026-06-10T05:21:48.520Z
+      updated_at: 2026-06-10T05:22:01.008Z
     workspace_id: dispatch-workspace-01KTQY1CJ9JX66NMVFZQEV7WFD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 489f516a77ea21743ebcfb9a48184ca679139752
+        last_seen_at: 2026-06-10T05:22:01.008Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/show-unmatched-review-task-resource-references-without-task-resource-refs-01ktqy1c-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/show-unmatched-review-task-resource-references-without-task-resource-refs/01ktqy1c
-        head: 5ba8a8f02843cceff35bb181d414555a3ac1c50b
-        last_seen_at: 2026-06-10T04:53:50.693Z
+        head: 489f516a77ea21743ebcfb9a48184ca679139752
+        last_seen_at: 2026-06-10T05:22:01.008Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/show-unmatched-review-task-resource-references-without-task-resource-refs-01ktqy1c
