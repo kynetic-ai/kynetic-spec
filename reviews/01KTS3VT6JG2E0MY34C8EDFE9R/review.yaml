@@ -2,7 +2,83 @@ _ulid: 01KTS3VT6JG2E0MY34C8EDFE9R
 slugs: []
 title: "Plan re-review (claude, fix cycle 3 delta): Data Integrity and Upgrade Safety"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-format-version-ceiling step 2 now re-applies the same ceiling comparison (same
+      deterministic codes) to the manifest parsed after the pre-read sync block, refusing in the
+      same invocation before any entity read or mutation; Testing adds the sync-pull dual fixture
+      (local supported manifest, remote kspec-meta holds kynetic 9.9, same invocation refuses
+      post-pull). This is exactly the cheap closure recommended in the cycle-2 question on review
+      01KTS26B0YH1NPMA5HSA11YGW3.
+    name: Prior open question resolved (cycle-2 remote-newer sync-pull dual)
+    required: true
+    created_at: 2026-06-10T15:54:57.010Z
+    completed_at: 2026-06-10T15:54:57.010Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "ac-newer-version-refused retains the full no-modification-including-sync guarantee, with
+      its precondition anchored at context-initialization time (locally-declared-newer case); new
+      ac-post-sync-newer-version-refused explicitly carves out the dual (given: locally supported
+      declaration + sync imports newer-format manifest; then: same-invocation refusal with the same
+      deterministic code before any project data read/mutation, not deferred). Description Checking
+      bullet describes both enforcement points and explicitly permits the synchronized import while
+      defending the never-read-or-mutate guarantee at both. The codex-flagged contradiction
+      (pull-as-acceptable-mutation vs no-modification-including-sync) no longer exists; the two ACs
+      partition cleanly. Codex approved the split in 01KTS3CNHCX4PRH2V23ZA6MVPT."
+    name: AC split coherence (codex cycle-3 blocker resolution)
+    required: true
+    created_at: 2026-06-10T15:54:59.498Z
+    completed_at: 2026-06-10T15:54:59.498Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "task-format-version-ceiling Testing lists all 7 descriptive AC ids including AC:
+      @data-format-forward-compatibility ac-post-sync-newer-version-refused; Covers line enumerates
+      all 7 ACs including ac-post-sync-newer-version-refused. AC id used consistently across spec,
+      Testing, Covers, and the fix-cycle-2/3 decision notes."
+    name: Annotations and Covers include new AC
+    required: true
+    created_at: 2026-06-10T15:55:01.879Z
+    completed_at: 2026-06-10T15:55:01.879Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Independently re-read src/parser/yaml.ts:783-845: shadowPull runs inside the pre-read
+      sync block (~:823) before findManifestInDir/parseManifestWithWarnings (~:838-845), confirming
+      both the dual gap premise and that the post-sync re-check insertion point exists. No new
+      line-number claims introduced by the delta."
+    name: Source claim verification (sync-before-parse ordering)
+    required: true
+    created_at: 2026-06-10T15:55:04.209Z
+    completed_at: 2026-06-10T15:55:04.209Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All three suites pass with --warnings-ok; remaining warnings are the pre-existing
+      project-wide baseline (deprecated-item refs, unrelated malformed AC token in
+      cli-agent-commands.test.ts), unchanged from the cycle-2 review and unrelated to this plan.
+    name: kspec validate (refs, alignment, completeness)
+    required: true
+    created_at: 2026-06-10T15:55:06.568Z
+    completed_at: 2026-06-10T15:55:06.568Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan remains draft (constraint honored; no status change made). Exported stored content
+      and re-imported with --dry-run: parses cleanly, full document stored, no state changed."
+    name: Plan status and dry-run
+    required: true
+    created_at: 2026-06-10T15:55:08.929Z
+    completed_at: 2026-06-10T15:55:08.929Z
 events:
   - _ulid: 01KTS3VT6J92NYW1NZVF37JZMD
     actor: "@claude"
@@ -17,6 +93,55 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-10T15:54:52.185Z
+  - _ulid: 01KTS3WWA67WDKN6YX3HD1X989
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior open question resolved (cycle-2 remote-newer sync-pull dual)
+    timestamp: 2026-06-10T15:54:57.222Z
+  - _ulid: 01KTS3WYQMFQT0R48MVFGH7V9R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC split coherence (codex cycle-3 blocker resolution)
+    timestamp: 2026-06-10T15:54:59.700Z
+  - _ulid: 01KTS3X12J994Y3QK3J8QRC7WF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Annotations and Covers include new AC
+    timestamp: 2026-06-10T15:55:02.098Z
+  - _ulid: 01KTS3X3AYXTRRTZQ6TT7YKQH5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Source claim verification (sync-before-parse ordering)
+    timestamp: 2026-06-10T15:55:04.414Z
+  - _ulid: 01KTS3X5ME904SJZDS58Q6ZMS6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate (refs, alignment, completeness)
+    timestamp: 2026-06-10T15:55:06.766Z
+  - _ulid: 01KTS3X7YSTMK79FMCAVAX310M
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan status and dry-run
+    timestamp: 2026-06-10T15:55:09.145Z
+  - _ulid: 01KTS3XAAQSRQD3WGT88TA3PX8
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTS3XA3VSDP6946BFQE7YASJ
+    timestamp: 2026-06-10T15:55:11.575Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +151,26 @@ subject:
   content_hash: ""
   ref: "@01KTRYBM"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTS3XA3VSDP6946BFQE7YASJ
+    anchor:
+      type: structured
+      field: ac-newer-version-refused
+      ref: "@data-format-forward-compatibility"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTS3XA3VP0Y3YE5QFWGYH2QY
+        author: "@claude"
+        body: "SUGGESTION (non-blocking): ac-newer-version-refused's given says \"A project manifest
+          declares a format version greater...\" without the word \"locally\". The partition with
+          ac-post-sync-newer-version-refused is unambiguous in context — the dual AC's given
+          explicitly says \"locally declares\" and the description's Checking bullet names the two
+          enforcement points — but adding \"locally declares\" to this given would make the pair
+          airtight for spec-only readers without relying on the contrast. One-word tightening; fine
+          to fold into any future edit rather than a dedicated cycle."
+        created_at: 2026-06-10T15:55:11.355Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-10T15:54:22.290Z
-updated_at: 2026-06-10T15:54:51.972Z
+updated_at: 2026-06-10T15:55:11.355Z
 notes: []
