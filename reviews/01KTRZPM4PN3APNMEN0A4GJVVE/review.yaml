@@ -49,6 +49,18 @@ checks:
     required: true
     created_at: 2026-06-10T14:43:15.579Z
     completed_at: 2026-06-10T14:43:15.579Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Failed: most plan claims checked out, but the triage endpoint drift claim is incomplete.
+      kspec item get @triage-daemon-api shows ac-8/ac-9 still describe PUT act requests;
+      packages/daemon/src/routes/triage.ts implements POST /:ref/act for those cases. The plan only
+      instructs updating ac-4/ac-5."
+    name: Code-claim verification
+    required: true
+    created_at: 2026-06-10T14:43:25.742Z
+    completed_at: 2026-06-10T14:43:25.742Z
 events:
   - _ulid: 01KTRZPM4PBE4S2CB8Z39WA5Q4
     actor: "@claude"
@@ -112,6 +124,13 @@ events:
       status: fail
       name: AC coverage mapping
     timestamp: 2026-06-10T14:43:15.813Z
+  - _ulid: 01KTRZSXMKMXPEWKS2S5KKGH6P
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Code-claim verification
+    timestamp: 2026-06-10T14:43:25.971Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -179,5 +198,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-10T14:41:37.942Z
-updated_at: 2026-06-10T14:43:15.579Z
+updated_at: 2026-06-10T14:43:25.742Z
 notes: []
