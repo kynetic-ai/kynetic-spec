@@ -314,7 +314,7 @@ agents:
         on: task.needs_work
     id: task-worker
     name: Task Worker
-    runner: headed-claude
+    runner: claude
     session:
       idle_grace_period_ms: 5000
       mode: auto_close
