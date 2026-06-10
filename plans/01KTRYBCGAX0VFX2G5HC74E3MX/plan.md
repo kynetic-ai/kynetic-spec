@@ -118,15 +118,17 @@ Prior art this plan builds on instead of duplicating:
         Each captured line carries a timestamp
     - id: ac-bounded-rotation
       given: |
-        The active daemon log file has reached the configured maximum size
-        (default 5 MiB when not configured)
+        Appending the next captured line would push the active daemon log
+        file past the configured maximum size (default 5 MiB when not
+        configured)
       when: |
-        The daemon writes further output
+        The daemon writes that output
       then: |
-        The active log is rotated so the active file starts empty, exactly
-        one prior rotated generation is retained, older rotated content is
-        deleted, and the combined size of retained log files never exceeds
-        twice the configured maximum size
+        The active log is rotated before the write so the new line begins
+        a fresh active file, exactly one prior rotated generation is
+        retained, older rotated content is deleted, and the combined size
+        of retained log files never exceeds twice the configured maximum
+        size plus the size of a single captured line
     - id: ac-log-location-discoverable
       given: |
         The daemon is running or has previously run
@@ -182,8 +184,10 @@ derive_from_specs: false
   description: |
     Add the delta acceptance criteria this plan needs on existing specs.
     The new specs in this plan (@daemon-failure-observability,
-    @daemon-log-capture, @ui-production-log-hygiene) are created by plan
-    import; this task covers only the deltas to specs that already exist.
+    @daemon-log-capture, @ui-production-log-hygiene) are materialized by
+    kspec plan derive after the plan is approved — plan import only stores
+    the plan document. This task covers only the deltas to specs that
+    already exist.
 
     Why: Command timeout behavior belongs on @daemon-command-api (which
     already owns command execution semantics), the connect-host warning
@@ -203,8 +207,29 @@ derive_from_specs: false
            elapses (default 120 seconds when not configured)
          when: The limit elapses
          then: The caller receives a structured error response identifying
-           the command and the elapsed limit, and commands submitted
-           afterward still execute normally
+           the command and the elapsed limit, while the command's
+           underlying execution is not forcibly terminated and command
+           execution remains serialized
+
+       ac-timeout-queue-bounded:
+         given: A previously timed-out command is still executing, so
+           commands that require serialized execution are waiting behind
+           it
+         when: A new command is submitted through the command execution
+           endpoint
+         then: The caller receives a response within its own configured
+           execution time limit — the normal result if execution begins
+           and completes in time, otherwise the same structured timeout
+           error — and a command whose limit elapses before its execution
+           begins is discarded without ever executing
+
+       ac-stuck-command-reported:
+         given: A dispatched command has exceeded the configured execution
+           time limit and has not completed
+         when: The daemon health reporting surface is queried
+         then: The response reports that command dispatch is degraded,
+           identifying the stuck command and how long it has been
+           executing, and stops reporting it once the command completes
 
        ac-timeout-isolation:
          given: A command timed out and its underlying execution later
@@ -212,7 +237,8 @@ derive_from_specs: false
          when: Subsequent commands execute through the command execution
            endpoint
          then: The late output from the timed-out command is not attributed
-           to any other command's response
+           to any other command's response, and its completion frees
+           waiting commands to proceed
 
     2. Add to @daemon-network-endpoint-contract:
 
@@ -260,38 +286,60 @@ derive_from_specs: false
     What: A daemon-internal file logger that captures everything the daemon
     writes via console.log/warn/error (the daemon's only logging mechanism
     today) into ~/.config/kspec/daemon.log, with timestamps per line.
-    Rotation: when daemon.log reaches the size limit (default 5 MiB,
-    overridable via daemon config, e.g. daemon.log_max_size_bytes in
-    kspec.config.yaml loaded in src/config/), rename it to daemon.log.1
-    (replacing any existing daemon.log.1) and start a fresh daemon.log —
-    bounded at 2x the limit total. Foreground mode keeps terminal output
-    and also writes the file.
+    Rotation: when an append would push daemon.log past the size limit
+    (default 5 MiB, overridable via daemon config —
+    daemon.log_max_size_bytes; extend DaemonConfigSchema in
+    src/parser/config.ts, there is no src/config/ directory), rotate FIRST
+    (rename daemon.log to daemon.log.1, replacing any existing
+    daemon.log.1), then append to a fresh daemon.log — retained total
+    bounded at 2x the limit plus at most one line. Foreground mode keeps
+    terminal output and also writes the file.
 
     How: Implement the logger in packages/daemon/src (e.g. a new
-    packages/daemon/src/logger.ts) and install it early in
-    packages/daemon/src/index.ts before createServer(), by wrapping
-    console.log/warn/error to tee into an append-only file stream. Do the
-    teeing inside the daemon process — do NOT change the stdio: "ignore"
-    spawn in serve.ts; in-process capture works identically for foreground
-    and detached modes and avoids parent-process file handle lifetime
-    issues. Reuse getGlobalKspecConfigDir() from
-    src/daemon-shared/endpoint.ts (returns ~/.config/kspec) for the log
-    path, and export a shared constant for the log filename from
+    packages/daemon/src/logger.ts) that wraps console.log/warn/error to
+    tee into an append-only file stream. Do the teeing inside the daemon
+    process — do NOT change the stdio: "ignore" spawn in serve.ts;
+    in-process capture works identically for foreground and detached
+    modes and avoids parent-process file handle lifetime issues. Reuse
+    getDefaultDaemonConfigDir() from src/daemon-shared/endpoint.ts
+    (line 121, returns ~/.config/kspec) for the log path, and export a
+    shared constant for the log filename from
     src/daemon-shared/endpoint.ts so the CLI (serve status / serve logs)
-    resolves the same path. Be careful to interact correctly with the
-    command-route console interception in
-    packages/daemon/src/routes/command.ts (it wraps process.stdout/stderr
-    .write and console methods during command execution): install the file
-    tee beneath that interception so captured command output is NOT
-    double-logged — only output that actually reaches the daemon's own
-    console should land in the log. Check size before each append and
-    rotate synchronously when the limit is reached.
+    resolves the same path.
+
+    Interaction with the command-route console interception — get the
+    model right: packages/daemon/src/routes/command.ts installs its
+    console/stdout/stderr/exit interceptors ONCE at module load (~lines
+    90-171: the current console.log etc. are captured as "originals" at
+    import time and permanently replaced), then routes per call via
+    AsyncLocalStorage (commandExecutionStorage) — output emitted during a
+    command execution is pushed into that request's capture store and
+    never reaches the captured originals. There is no per-command
+    wrap/unwrap. packages/daemon/src/index.ts statically imports
+    server.js, which statically imports command.js, so those interceptors
+    are already installed before any index.ts body code runs — a tee
+    installed "before createServer()" in the index.ts body would sit
+    ABOVE the interception and double-log command output. To put the tee
+    BENEATH the interception: install it at module load of the logger and
+    make the logger the FIRST import in index.ts (a side-effect import
+    line above the server.js import — ES module evaluation order runs it
+    first). command.ts then captures the tee'd functions as its
+    originals: daemon-side output (no active capture) flows interceptor →
+    tee → file + terminal, while command output is swallowed by the
+    capture store and never double-logged. Alternative if import ordering
+    proves fragile: export an is-capturing check from command.ts and make
+    the tee skip writes while a command capture store is active. The
+    logger installs with built-in defaults at module load and applies the
+    configured size limit once startup configuration is parsed. Rotate
+    before any append that would cross the limit.
 
     Testing: Unit tests in tests/ (vitest, npm test) for the logger:
-    timestamped lines appended, rotation triggers at the limit, exactly
-    one .1 generation retained, total bounded at 2x limit. Use
-    createTempDir() and point the logger at a temp path. Annotate tests
-    with AC comments.
+    timestamped lines appended, rotation triggers before the write that
+    would cross the limit, exactly one .1 generation retained, total
+    bounded at 2x limit plus one line. A guard test that output emitted
+    while a command capture store is active does NOT land in the daemon
+    log (no double-logging). Use createTempDir() and point the logger at
+    a temp path. Annotate tests with AC comments.
 
     Covers: @daemon-log-capture ac-detached-output-captured,
     ac-foreground-tee, ac-log-line-timestamps, ac-bounded-rotation.
@@ -405,48 +453,103 @@ derive_from_specs: false
   depends_on:
     - "@task-update-daemon-reliability-specs"
   description: |
-    Bound command execution time in the daemon command route so one hung
-    command cannot wedge the command queue forever.
+    Bound the time a caller of the daemon command route can be left
+    waiting, and surface a wedged command queue to operators, so one hung
+    command cannot silently make the daemon unusable.
 
-    Why: packages/daemon/src/routes/command.ts serializes ALL command
-    dispatches through DispatchMutex (~line 196) — required because
-    executeCommand mutates process-global state (cwd, console methods,
-    stdout/stderr writers). The mutex has no timeout: if a command hangs
-    (deadlocked file lock, stuck network call), every subsequent command
-    request queues behind it indefinitely and the daemon is effectively
-    dead for CLI proxy mode, the web UI, and dispatch.
+    Why: packages/daemon/src/routes/command.ts serializes command
+    dispatches through DispatchMutex (~line 196; cache-servable reads at
+    ~line 625 bypass it). The mutex has no timeout: if a command hangs
+    (deadlocked file lock, stuck network call), every subsequent
+    serialized command request queues behind it indefinitely and the
+    daemon is effectively dead for CLI proxy mode, the web UI, and
+    dispatch — with no operator-visible signal. Live evidence: inbox item
+    01KTRYDX records POST /api/command hanging indefinitely even for
+    util ulid on a fresh daemon, with nothing to tell the operator why.
 
-    What: A timeout around the dispatched command execution: default
-    120000 ms, overridable via daemon config (e.g.
-    daemon.command_timeout_ms in kspec.config.yaml). On timeout, the HTTP
-    caller receives a structured error (use the existing response envelope
-    error shape from packages/daemon/src/routes/response-envelope.ts; 500
-    status) naming the command path and the elapsed limit, and the mutex
-    is released so queued commands proceed. Apply the same bound to the
-    batch path (~line 751) per batch entry or whole-batch — choose
-    whole-batch (a batch is one atomic dispatch) with the same default.
+    Design decision — the timeout is client-observed, NOT an unwedge: on
+    timeout the HTTP caller gets a structured error, but the mutex slot
+    is NOT released and the abandoned execution is NOT killed. The
+    abandoned execution runs to completion (or hangs forever) holding
+    its slot; subsequent serialized commands queue behind it, and each
+    gets its own bounded timeout response instead of an unbounded hang.
+    Rationale: releasing the slot would let new commands run
+    concurrently with the abandoned one, and for mutations the abandoned
+    execution still holds the cross-process file lock (withFileLock,
+    ~lines 638/751) — which same-process callers can NEVER reclaim
+    (src/parser/file-lock.ts checkStaleLock treats the daemon's own live
+    PID as not-stale), so follow-up mutations would only fail on lock
+    timeouts. Holding the slot preserves the ac-concurrent-mutations
+    serialization contract and keeps the semantics honest: the timeout
+    buys diagnosability, and the paired degraded health report tells
+    operators the remedy is a restart. Note the DispatchMutex doc
+    comment claiming executeCommand mutates process-global cwd/console
+    is stale: interception is installed once at module load and routed
+    per call via AsyncLocalStorage, and the working directory is
+    ALS-scoped (runWithWorkingDirectory in src/parser/yaml.ts — no
+    process.chdir). There are no globals to restore on timeout; update
+    that comment if you touch it, but keep the mutex.
 
-    How: Wrap the fn passed to dispatchMutex.run() (call sites ~lines 632
-    and 751) in a Promise.race against a timer. On timeout: restore the
-    intercepted globals exactly as the normal finally path does (the
-    AsyncLocalStorage capture store, commandExecutionStorage, keeps any
-    late writes from the abandoned command scoped to its own capture — it
-    will not leak into later command responses; verify this with a test),
-    log a warning through the daemon logger that an abandoned command may
-    still be running, and resolve the mutex slot. Do NOT attempt to kill
-    the abandoned execution (it is in-process); the warning plus
-    @daemon-failure-observability give operators the trail. Clear the
-    timer on normal completion to avoid open-handle leaks in tests.
+    What: (1) A per-caller wait bound: default 120000 ms, overridable
+    via daemon config (daemon.command_timeout_ms — extend
+    DaemonConfigSchema in src/parser/config.ts; there is no src/config/
+    directory). Forward the value to the daemon process through the
+    spawn argv in src/cli/commands/serve.ts the same way --connect-host
+    is forwarded (~line 422), parsed in packages/daemon/src/index.ts and
+    threaded into the command route options. (2) On timeout the caller
+    receives a structured error via the route's existing errorResponse
+    pattern — HTTP 504 with body { error: "command_timeout", message:
+    <command path + elapsed limit>, suggestion: <check kspec serve
+    status / restart guidance> }. Do NOT look for an error helper in
+    response-envelope.ts: wrapResponse there only shapes success
+    envelopes; errors in these routes are errorResponse bodies of the
+    { error, message, suggestion } / { error, details } form. (3) A
+    command whose limit elapses while still queued (execution never
+    started) is discarded when its slot finally frees — it must not
+    execute after its caller was already told it timed out. (4) A wedge
+    registry: track { command, startedAt } for the currently executing
+    dispatch in command.ts module scope, export a getter, and extend the
+    GET /api/health handler (packages/daemon/src/server.ts ~line 710) to
+    report degraded command dispatch with the stuck command name and
+    held duration whenever the current dispatch has exceeded its limit,
+    clearing once it completes. (5) Batch path (~line 751): same bound
+    applied whole-batch (a batch is one atomic dispatch).
 
-    Testing: Vitest tests in the existing daemon route test suites: a
-    stubbed command that never resolves times out with the structured
-    error and a subsequent fast command still executes (AC:
-    @daemon-command-api ac-command-timeout); a slow command that resolves
-    after its timeout does not corrupt the response of the next command
-    (AC: @daemon-command-api ac-timeout-isolation). Use short configured
-    timeouts (e.g. 50ms) in tests, never the 120s default.
+    How: Race the awaited dispatchMutex.run(...) at the route-handler
+    call sites (~lines 632 and 751) against a timer; clear the timer on
+    normal completion to avoid open-handle leaks in tests. Do NOT modify
+    DispatchMutex to drop the slot on timeout. Set a per-request
+    timed-out flag when the race fires; the fn passed to
+    dispatchMutex.run checks the flag first and returns immediately
+    without executing (queued-command discard). Attach a .catch to the
+    abandoned promise that logs a warning through the
+    task-daemon-log-capture logger — REQUIRED, because
+    task-daemon-fatal-failure-observability installs an
+    unhandledRejection handler that exits the process; an abandoned
+    command's late rejection must never crash the daemon. Leave the
+    cache-served read path (~line 625) untouched — it bypasses the mutex
+    and keeps working during a wedge. Cross-process callers contending
+    on the file lock self-heal via the 30-second duration-ceiling
+    reclaim in file-lock.ts; no work needed there.
 
-    Covers: @daemon-command-api ac-command-timeout, ac-timeout-isolation.
+    Testing: Vitest tests in the existing daemon route test suites with
+    short configured timeouts (e.g. 50ms), never the 120s default: a
+    stubbed never-resolving command times out with the 504
+    command_timeout body (AC: @daemon-command-api ac-command-timeout); a
+    second command submitted during the wedge receives its own bounded
+    timeout response and is verifiably never executed after the wedge
+    clears (AC: @daemon-command-api ac-timeout-queue-bounded); while
+    wedged, GET /api/health reports the stuck command name and held
+    duration, and stops reporting after completion (AC:
+    @daemon-command-api ac-stuck-command-reported); a slow command that
+    resolves after its timeout does not corrupt the response of the next
+    command, and a late rejection from an abandoned command does not
+    kill the process (AC: @daemon-command-api ac-timeout-isolation).
+    Resolve wedge stubs at test end so no handles leak.
+
+    Covers: @daemon-command-api ac-command-timeout,
+    ac-timeout-queue-bounded, ac-stuck-command-reported,
+    ac-timeout-isolation.
 
 - title: Warn on non-loopback connect host
   slug: task-connect-host-exposure-warning
@@ -574,9 +677,22 @@ derive_from_specs: false
     the summary (add a queryKeys entry under
     packages/web-ui/src/lib/query/), and compute the TaskCounts object
     (ready, in_progress, needs_work, pending_review, blocked, completed,
-    cancelled) from summary.counts plus summary.ready /
-    summary.blocked_by_dependencies for the dependency-aware ready vs
-    blocked split. (3) Remove the now-dead full-list aggregation code and
+    cancelled) with these EXPLICIT semantics: every card except ready
+    maps 1:1 from summary.counts — in particular blocked stays
+    summary.counts.blocked (status 'blocked' only), preserving the
+    current display semantics; do NOT fold
+    summary.blocked_by_dependencies into the blocked card. The ready
+    card deliberately adopts summary.ready — the server's canonical
+    dependency-aware definition (pending OR needs_work tasks with no
+    blockers and all dependencies met,
+    packages/daemon/src/routes/aggregation.ts ~lines 100-112). This is a
+    deliberate, documented change from the current client computation
+    (+page.svelte ~lines 99-152 counts only pending tasks with met
+    dependencies), so the displayed ready number may rise where
+    needs_work tasks are dispatch-ready; record the semantic change in
+    the task notes and commit message. The static-mode derivation must
+    implement these same semantics so both modes agree. (3) Remove the
+    now-dead full-list aggregation code and
     the TODO comment. If other parts of +page.svelte genuinely need task
     items (check before deleting — e.g. active-work cards), keep those
     usages on their existing queries and only move the counts; do not
@@ -628,6 +744,36 @@ derive_from_specs: false
   daemon.last-exit.json), env/config key names, and line numbers live only in
   task descriptions; specs state the behavior with deterministic defaults
   (5 MiB rotation cap, one retained generation, 120-second command timeout).
+- **Command-timeout design (fix cycle 1):** the chosen semantics are a
+  client-observed timeout without unwedging — the dispatch slot stays held
+  by the abandoned execution, subsequent serialized callers receive bounded
+  structured timeout errors (and queued-but-never-started commands are
+  discarded), paired with a degraded-dispatch report on the daemon health
+  surface so operators know to restart. Releasing the dispatch slot on
+  timeout was rejected: console/stdout/exit interception and the working
+  directory are AsyncLocalStorage-scoped (there are no globals to restore),
+  but an abandoned MUTATING command still holds the cross-process file
+  lock, and same-process lock acquisition never reclaims a lock from the
+  daemon's own live PID — a released-slot design would run new commands
+  concurrently with the abandoned one and fail follow-up mutations on lock
+  timeouts, violating both the serialization contract and any
+  "subsequent commands execute normally" promise. Cross-process lock
+  contenders self-heal via the existing 30s duration-ceiling reclaim.
+  AbortSignal-based cancellation is deferred: command implementations do
+  not accept signals today; it can layer onto this contract later.
+- **Rotation bound (fix cycle 1):** rotate-before-append chosen so the
+  retained-size bound is deterministic (2x the limit plus at most one
+  captured line) and the AC matches the prescribed mechanism exactly.
+- **Log tee ordering (fix cycle 1):** the command-route interceptors are
+  installed once at module load and routed per call via AsyncLocalStorage;
+  the tee must be installed before that module is evaluated (first
+  side-effect import in the daemon entry) or be capture-aware, otherwise
+  command output double-logs into the daemon log.
+- **Dashboard ready/blocked semantics (fix cycle 1):** the blocked card
+  keeps status-only counts (no silent change); the ready card deliberately
+  adopts the server's dependency-aware ready definition (which also counts
+  needs_work tasks with met dependencies) — a documented display change,
+  not an accident.
 - **Ordering:** task-update-daemon-reliability-specs first (delta ACs gate the
   three tasks that cover them). task-daemon-log-capture before the
   fatal-failure and serve-logs tasks. The two web-ui tasks and the

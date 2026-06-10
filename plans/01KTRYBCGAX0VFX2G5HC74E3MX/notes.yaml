@@ -1,0 +1,6 @@
+notes:
+  - _ulid: 01KTS0Z3EA2PSWMHG9P4XQADNP
+    content: "Fix cycle 1: addressed codex @01KTRZ25 and claude @01KTRZQ4 findings; redesigned
+      command-timeout semantics"
+    author: "@claude"
+    created_at: 2026-06-10T15:03:44.330Z
