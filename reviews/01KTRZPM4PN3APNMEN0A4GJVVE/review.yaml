@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KTRZQHH91PNH0FGVD1XMP512
     timestamp: 2026-06-10T14:42:08.269Z
+  - _ulid: 01KTRZQYMFZEMMAN0J3PA4E290
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTRZQYD4P8KR8XQVPE06BV1W
+    timestamp: 2026-06-10T14:42:21.455Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -53,7 +60,27 @@ threads:
           why those ACs are out of scope.'
         created_at: 2026-06-10T14:42:08.042Z
     kind: blocker
+  - _ulid: 01KTRZQYD4P8KR8XQVPE06BV1W
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-reenable-split-storage-ref-validation-test"
+      section: tasks
+    entries:
+      - _ulid: 01KTRZQYD4TG3QF90Y7M4G19EW
+        author: "@claude"
+        body: The task claims coverage for @validation-task-data-source ac-all-persisted-tasks-included in
+          its Covers line, but its explicit annotation instructions list only @plan-validation ac-10
+          and @validation-task-data-source ac-task-references-checked. In this repo, AC coverage
+          requires standalone AC annotations, and kspec validate --completeness already reports
+          missing AC coverage as the relevant integrity signal. A worker following the task
+          literally can re-enable the dangling-ref tests while leaving
+          ac-all-persisted-tasks-included unannotated, despite the plan claiming that AC is covered.
+          Add ac-all-persisted-tasks-included to the required annotation/test mapping, or remove it
+          from Covers if the task does not actually prove it.
+        created_at: 2026-06-10T14:42:21.220Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-10T14:41:37.942Z
-updated_at: 2026-06-10T14:42:08.042Z
+updated_at: 2026-06-10T14:42:21.220Z
 notes: []
