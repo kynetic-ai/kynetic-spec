@@ -2,7 +2,84 @@ _ulid: 01KTRZ251XQEACCGN25Z3VYBDX
 slugs: []
 title: "Plan review: Daemon Operational Reliability"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec plan import plans/daemon-operational-reliability.md --dry-run
+      parsed the plan as draft with 0 derived specs/tasks and made no changes.
+    name: plan dry-run parse
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-10T14:31:53.784Z
+    completed_at: 2026-06-10T14:31:53.784Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read @daemon-command-api, @daemon-network-endpoint-contract, @ui-dashboard-overview,
+      @cli-serve-commands, @ui-api-aggregation, and @daemon-server. Related behavior is placed in
+      the expected neighborhoods; no duplicate existing ACs found for the proposed delta ACs.
+    name: existing spec neighborhood
+    required: true
+    runner: kspec item get/search
+    created_at: 2026-06-10T14:31:56.469Z
+    completed_at: 2026-06-10T14:31:56.469Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-command-dispatch-timeout contains unsafe/stale implementation guidance for timeout
+      isolation, and two task descriptions reference non-existent or wrong helpers. See
+      blocker/question threads.
+    name: task executability
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T14:31:59.179Z
+    completed_at: 2026-06-10T14:31:59.179Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Spec-update task gates delta-AC implementation tasks; log capture gates
+      fatal-observability and serve-logs tasks; web UI cleanup, dashboard summary, and connect-host
+      warning are not unnecessarily serialized beyond their delta-AC dependency.
+    name: dependency ordering
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T14:32:01.922Z
+    completed_at: 2026-06-10T14:32:01.922Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command passed with the existing reference warning baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-10T14:32:04.597Z
+    completed_at: 2026-06-10T14:32:04.597Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command passed with the existing alignment warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-10T14:32:07.280Z
+    completed_at: 2026-06-10T14:32:07.280Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command passed with the existing completeness warning baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-10T14:32:09.950Z
+    completed_at: 2026-06-10T14:32:09.950Z
 events:
   - _ulid: 01KTRZ251W2RNEH8ZJA2ZZBYJE
     actor: "@claude"
@@ -10,17 +87,161 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T14:30:27.133Z
+  - _ulid: 01KTRZ4HSX84K9Q2Z5F8BD0Q2M
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTRZ4HJAK0TEZ82MRDC1VG72
+    timestamp: 2026-06-10T14:31:45.725Z
+  - _ulid: 01KTRZ4MGYQACCH5MJ1CSE7RFD
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRZ4M9JHJPQ9YHK5CJV0AK4
+    timestamp: 2026-06-10T14:31:48.510Z
+  - _ulid: 01KTRZ4Q7X73AV72PS5BRQFNTY
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRZ4Q04S6FD7ZYWNPNSR3MV
+    timestamp: 2026-06-10T14:31:51.293Z
+  - _ulid: 01KTRZ4SWS191R94AHF71EA6J0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan dry-run parse
+    timestamp: 2026-06-10T14:31:54.009Z
+  - _ulid: 01KTRZ4WGTC0JKJZS5KG4N7EMP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: existing spec neighborhood
+    timestamp: 2026-06-10T14:31:56.698Z
+  - _ulid: 01KTRZ4Z5WPPZDPM7Y66MFZBZ4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: task executability
+    timestamp: 2026-06-10T14:31:59.420Z
+  - _ulid: 01KTRZ51TZK93XHG920AAADFAH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-10T14:32:02.143Z
+  - _ulid: 01KTRZ54ERH04C638ZKGZ51P6G
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T14:32:04.824Z
+  - _ulid: 01KTRZ572K5P948A9JYX21XTR6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-10T14:32:07.510Z
+  - _ulid: 01KTRZ59P5X4EDZFGVA6G6JQG8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-10T14:32:10.181Z
+  - _ulid: 01KTRZ5CAAMZ2GBZM1YY3C3CF9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-10T14:32:12.874Z
+  - _ulid: 01KTRZ5CAABR76061MRG1Q7EJH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-06-10T14:32:12.874Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@01KTRYBC"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTRZ4HJAK0TEZ82MRDC1VG72
+    anchor:
+      type: structured
+      ref: "@task-command-dispatch-timeout"
+      section: description
+    entries:
+      - _ulid: 01KTRZ4HJA0S4XDMGWM877E07N
+        author: "@claude"
+        body: "The task's proposed timeout design releases DispatchMutex while the timed-out in-process
+          command may continue running. Current command.ts serializes all command dispatches through
+          DispatchMutex because command execution still shares process-level hooks and mutation side
+          effects. The plan says to Promise.race the dispatch and not kill the abandoned execution,
+          which lets later commands run concurrently with work that may still hold the file lock,
+          mutate shadow state, or write process output. That does not reliably satisfy the new
+          timeout-isolation AC or the existing command serialization guarantees. Please revise the
+          plan to define a safe cancellation/isolation design, or narrow the AC/task semantics to
+          behavior the current in-process architecture can actually guarantee. Evidence read:
+          packages/daemon/src/routes/command.ts DispatchMutex and the single/batch call sites around
+          dispatchMutex.run."
+        created_at: 2026-06-10T14:31:45.482Z
+    kind: blocker
+  - _ulid: 01KTRZ4M9JHJPQ9YHK5CJV0AK4
+    anchor:
+      type: structured
+      ref: "@task-command-dispatch-timeout"
+      section: description
+    entries:
+      - _ulid: 01KTRZ4M9JYGKPNWR83T9EC3QY
+        author: "@claude"
+        body: "The task points workers to packages/daemon/src/routes/response-envelope.ts for the existing
+          structured error shape, but that file only defines wrapResponse for successful envelopes.
+          Existing route errors are built with Elysia errorResponse bodies such as { error, message,
+          suggestion } or { error, details }. Please update the task to name the actual pattern and
+          desired timeout error body so a worker is not sent to the wrong helper. Evidence read:
+          response-envelope.ts and existing route errorResponse call sites."
+        created_at: 2026-06-10T14:31:48.274Z
+    kind: question
+  - _ulid: 01KTRZ4Q04S6FD7ZYWNPNSR3MV
+    anchor:
+      type: structured
+      ref: "@task-daemon-log-capture"
+      section: description
+    entries:
+      - _ulid: 01KTRZ4Q044GQB39ZYA2N0N50N
+        author: "@claude"
+        body: "The task says to reuse getGlobalKspecConfigDir() from src/daemon-shared/endpoint.ts, but the
+          current shared helper is named getDefaultDaemonConfigDir(); getGlobalKspecConfigDir does
+          not exist. Please correct the task guidance before derivation so the implementation task
+          is executable from a fresh session. Evidence read: src/daemon-shared/endpoint.ts exports."
+        created_at: 2026-06-10T14:31:51.044Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-10T14:32:12.874Z
 created_at: 2026-06-10T14:30:27.133Z
-updated_at: null
+updated_at: 2026-06-10T14:32:12.874Z
 notes: []
