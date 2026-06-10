@@ -4165,3 +4165,16 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-10T00:08:12.728Z
+  - _ulid: 01KTRYDXDGWA1GEMFWGGMEQM7N
+    text: "P0: daemon command endpoint hangs indefinitely on current dev build — POST /api/command never
+      responds even for trivial 'util ulid' on a freshly restarted daemon (PID 3782630, dist built
+      Jun 9 16:23, HEAD ee78b193a4). Client timeouts surface as 'Daemon command timed out'; queued
+      commands chain forever behind the global DispatchMutex (no timeout, command.ts:577). All 4
+      registered projects lose CLI mutation path; reads via cache routes unaffected. Repro: curl -X
+      POST 127.0.0.1:3456/api/command with any command = 60s+ no response. Direct mode
+      (KSPEC_NO_DAEMON=1) works. Discovered during release audit 2026-06-10."
+    tags:
+      - bug
+      - daemon
+    added_by: "@claude"
+    created_at: 2026-06-10T14:19:23.952Z
