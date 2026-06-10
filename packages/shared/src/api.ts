@@ -481,6 +481,65 @@ export interface PlanDetail extends PlanSummary {
 }
 
 /**
+ * Byte-free plan resource context attached to markdown sections of
+ * `GET /api/reviews/:id/content` for plan review subjects.
+ *
+ * Carries exactly what a client needs to rewrite author-style
+ * `./resources/<relative-path>` markdown targets in the embedded plan content:
+ * the owning plan ref, the plan-scoped bytes base URL (clients construct
+ * `${resources_base_url}/${encodeURIComponent(id)}/bytes`, appending
+ * selected-project routing context browser-side), and the declared resource
+ * metadata (same strict byte-free shape as `PlanDetail.resources`). Only
+ * declared resources appear, so undeclared/unsafe paths cannot be rewritten.
+ *
+ * AC: @review-content-diff-api ac-5
+ */
+export interface ReviewContentPlanResourceContext {
+  owner_type: "plan";
+  /** The owning plan ref (the review subject ref). */
+  owner_ref: string;
+  /** Plan-scoped bytes base URL, e.g. `/api/plans/<ulid>/resources`. */
+  resources_base_url: string;
+  /** Bounded declared-resource metadata from the plan manifest — never bytes. */
+  resources: PlanResourceMetadata[];
+}
+
+/**
+ * Byte-free task resource context attached to the task-description markdown
+ * section of `GET /api/reviews/:id/content` for task review subjects.
+ *
+ * Mirrors the task detail contract (`TaskDetail.resolved_resources` +
+ * `TaskDetail.resources_base_url`): the resolved projection reports drift
+ * status per reference (plan-owned refs and materialized task-owned copies
+ * alike), so clients rewrite only `present` resources and surface actionable
+ * status for drifted/missing/unresolved/unmatched references instead of
+ * silently serving replacement bytes.
+ *
+ * AC: @review-content-diff-api ac-6
+ */
+export interface ReviewContentTaskResourceContext {
+  owner_type: "task";
+  /** The owning task ref (the review subject ref). */
+  owner_ref: string;
+  /** Task-scoped bytes base URL, e.g. `/api/tasks/<ulid>/resources`. */
+  resources_base_url: string;
+  /** Bounded resolved-resource status projection — never bytes. */
+  resources: ResolvedTaskResourceSummary[];
+}
+
+/**
+ * Resource context a review-content markdown section may carry so embedded
+ * plan content / task descriptions can resolve `./resources/<relative-path>`
+ * markdown targets exactly like the plan/task detail views.
+ *
+ * AC: @review-content-diff-api ac-5
+ * AC: @review-content-diff-api ac-6
+ */
+export type ReviewContentResourceContext =
+  | ReviewContentPlanResourceContext
+  | ReviewContentTaskResourceContext;
+
+/**
  * Review summary for list endpoints and task detail integration
  * AC: @review-records-daemon-api ac-1
  * AC: @review-records-web-ui ac-1

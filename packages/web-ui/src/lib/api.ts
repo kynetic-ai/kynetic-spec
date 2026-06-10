@@ -31,6 +31,7 @@ import type {
   ReviewDetail,
   ReviewResource,
   ReviewThread,
+  ReviewContentResourceContext,
   ErrorResponse,
   SearchResponse,
   AgentDefinition,
@@ -2071,6 +2072,18 @@ export interface ContentSectionMarkdown {
   type: "markdown";
   title: string;
   content: string;
+  /**
+   * Byte-free resource context for `./resources/<relative-path>` markdown
+   * targets in this section. Present when the review subject (plan or task)
+   * owns resources: plan subjects carry declared plan manifest metadata with
+   * a plan-scoped bytes base URL, task subjects carry the resolved-resource
+   * status projection with a task-scoped bytes base URL. Clients rewrite only
+   * declared/`present` resources and keep everything else visible.
+   *
+   * AC: @review-content-diff-api ac-5
+   * AC: @review-content-diff-api ac-6
+   */
+  resource_context?: ReviewContentResourceContext;
 }
 
 export interface ContentSectionRefList {
