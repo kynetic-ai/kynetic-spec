@@ -59,8 +59,8 @@
   acceptance_criteria:
     - id: ac-newer-version-refused
       given: |
-        A project manifest declares a format version greater than the
-        running tool's maximum supported format version
+        A project manifest locally declares a format version greater
+        than the running tool's maximum supported format version
       when: |
         Any command that reads or mutates project data, other than the
         project health diagnostic, initializes project context
