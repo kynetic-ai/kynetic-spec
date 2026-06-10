@@ -2,7 +2,150 @@ _ulid: 01KTS0KSR23Y2XGSVE1V1383W0
 slugs: []
 title: "Plan re-review: Release Packaging and Onboarding Readiness (fix cycle 2)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec plan get @01KTRY9V reports Status: draft. kspec plan import
+      plans/release-readiness.md --dry-run reported dry run/no changes, title Release Packaging and
+      Onboarding Readiness, Status draft. No plan status, specs, tasks, repo files, or daemon
+      lifecycle were changed."
+    name: plan status and parse
+    required: true
+    runner: kspec plan get / plan import --dry-run
+    created_at: 2026-06-10T14:58:50.831Z
+    completed_at: 2026-06-10T14:58:50.831Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified every prior thread against current stored content. @01KTRYS2 blockers: Node docs
+      test now dynamically scans README.md, INSTALL.md, and docs/**/*.md; prepack task now adds
+      verify-clean-pack with real npm pack from a clean no-build-output source copy; CI task now
+      adds workflow_dispatch and gh workflow run verification. @01KTRYS2 questions: audit fix scope
+      is production advisories with semver-compatible dev side effects accepted; devdep task depends
+      on audit fix; CI task replaces npx vitest shards with npm test -- --shard. @01KTRZ06
+      blocker/questions/nits: lint-conflicting file reads now use subprocess output, JSON imports,
+      or explicit eslint-disable-with-reason only where file text is the artifact contract; specs
+      are under a plan-created Release and Distribution module; shared file writers are serialized;
+      newest verified major wording is replaced with oldest supported plus at least one newer major;
+      ac-2 dynamic doc set closes future-doc gap; CONTRIBUTING/SECURITY remain spec-less with
+      repo-hygiene rationale."
+    name: prior review findings resolved
+    required: true
+    runner: manual re-review of @01KTRYS2 and @01KTRZ06
+    created_at: 2026-06-10T14:58:53.543Z
+    completed_at: 2026-06-10T14:58:53.543Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Searched release/package artifact terms and checked @main, @docs-getting-started-section,
+      and trait catalog. No existing spec covers release artifact completeness, supported runtime
+      range consistency, or prepublish runtime verification. New requirements are behavioral and
+      testable; module parent under @main is an accepted draft derive tradeoff documented in
+      Implementation Notes. No applicable trait was found for these packaging/CI requirements.
+    name: spec quality and neighborhood
+    required: true
+    runner: kspec search / item get / trait list / manual review
+    created_at: 2026-06-10T14:58:56.210Z
+    completed_at: 2026-06-10T14:58:56.210Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 8 ACs are claimed by executable tasks: @supported-runtime-range ac-1/ac-2 by
+      task-standardize-node-version-docs; @published-artifact-completeness ac-1 by
+      task-add-license-file and ac-2/ac-3/ac-4 by task-prepack-full-build-and-verification;
+      @prepublish-runtime-verification ac-1/ac-2 by task-ci-node-version-matrix. Task descriptions
+      provide why/what/how/testing details, file ownership, verification commands, and explicit
+      handling of lint-rule constraints."
+    name: AC coverage and task executability
+    required: true
+    runner: manual coverage mapping
+    created_at: 2026-06-10T14:58:58.859Z
+    completed_at: 2026-06-10T14:58:58.859Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No cycles or P1-on-P2 inversions. Shared-file ordering is encoded:
+      tests/release-packaging.test.ts is created by task-add-license-file and extended by dependent
+      tasks; publish.yml edits are serialized by task-ci-node-version-matrix depending on
+      task-prepack-full-build-and-verification; package.json/package-lock writers are serialized by
+      task-dedupe-web-ui-devdeps depending on task-audit-fix-production-deps."
+    name: dependency ordering
+    required: true
+    runner: manual dependency graph review
+    created_at: 2026-06-10T14:59:01.553Z
+    completed_at: 2026-06-10T14:59:01.553Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Confirmed current package.json has license MIT, author Kynetic AI, engines node >=20.0.0,
+      files include dist/templates/plugin, and prepack is npm run build:plugin. test.yml currently
+      has no workflow_dispatch, pins Node 24, and invokes npx vitest shards; publish.yml pins Node
+      24 and runs build/tests before publish. No root LICENSE/CONTRIBUTING/SECURITY files exist.
+      Node 18 references remain in INSTALL.md and tutorial, while related docs state 20+. npm audit
+      --omit=dev currently reports 8 production vulnerabilities, 2 high and 6 moderate, all
+      fixAvailable true.
+    name: factual claims spot-check
+    required: true
+    runner: package/workflow/doc inspection + npm audit --omit=dev
+    created_at: 2026-06-10T14:59:04.243Z
+    completed_at: 2026-06-10T14:59:04.243Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The plan does not propose edits to templates/skills, templates/agents-sections,
+      templates/skills/manifest.yaml, rendered core skill outputs, plugin skill guidance, or
+      generated kspec-agents sections. verify-package only checks that
+      templates/skills/manifest.yaml is included in the artifact. CONTRIBUTING.md and SECURITY.md
+      are repo documentation, not shared/package guidance surfaces under the neutrality checklist;
+      no Kynetic-only instruction is being removed from shared guidance.
+    name: shared guidance neutrality
+    required: true
+    runner: shared-guidance-neutrality checklist
+    created_at: 2026-06-10T14:59:06.952Z
+    completed_at: 2026-06-10T14:59:06.952Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Daemonless command passed. Existing reference warnings remain for deprecated refs; no
+      validation errors.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-10T14:59:09.565Z
+    completed_at: 2026-06-10T14:59:09.565Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Both daemonless validation commands passed with existing warning baselines. This review
+      did not derive the draft plan, so plan-local specs/tasks are not expected in repo
+      alignment/completeness yet.
+    name: kspec validate alignment/completeness
+    required: true
+    runner: kspec validate --alignment --warnings-ok; kspec validate --completeness --warnings-ok
+    created_at: 2026-06-10T14:59:12.217Z
+    completed_at: 2026-06-10T14:59:12.217Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Not run for this plan-only re-review: no repository files, specs, tasks, or
+      implementation changed in this review. The plan itself assigns task-specific gates for
+      implementation work."
+    name: repo quality gates
+    required: false
+    runner: npm gates
+    created_at: 2026-06-10T14:59:14.874Z
+    completed_at: 2026-06-10T14:59:14.874Z
 events:
   - _ulid: 01KTS0KSR2K8CMTJ46NN28BZQ3
     actor: "@claude"
@@ -17,9 +160,95 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-10T14:57:44.502Z
+  - _ulid: 01KTS0P51PP6PK2PKMVQ6HH6HD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan status and parse
+    timestamp: 2026-06-10T14:58:51.062Z
+  - _ulid: 01KTS0P7PAAEHDXCY2EC3N6GET
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review findings resolved
+    timestamp: 2026-06-10T14:58:53.770Z
+  - _ulid: 01KTS0PA93H44QHMKN8K4MGPC4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec quality and neighborhood
+    timestamp: 2026-06-10T14:58:56.419Z
+  - _ulid: 01KTS0PCX2X0CD3MA2HGAJ6NFW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage and task executability
+    timestamp: 2026-06-10T14:58:59.106Z
+  - _ulid: 01KTS0PFGH82YZV79XHF1QQ6YB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-10T14:59:01.777Z
+  - _ulid: 01KTS0PJ4BM42DAV2020NV9860
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: factual claims spot-check
+    timestamp: 2026-06-10T14:59:04.459Z
+  - _ulid: 01KTS0PMS64288NVBM7RC6QNCM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: shared guidance neutrality
+    timestamp: 2026-06-10T14:59:07.174Z
+  - _ulid: 01KTS0PQAK2VR4T173V6FXQ0Y7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T14:59:09.779Z
+  - _ulid: 01KTS0PSXGE1X9H3H87BYT680P
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment/completeness
+    timestamp: 2026-06-10T14:59:12.432Z
+  - _ulid: 01KTS0PWGQFK565153MPNN2K5C
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: repo quality gates
+    timestamp: 2026-06-10T14:59:15.095Z
+  - _ulid: 01KTS0PZ51KHW2YAYPN6ZBDT96
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T14:59:17.793Z
+  - _ulid: 01KTS0PZ5178B6SAC4SKYDYAFA
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T14:59:17.793Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -27,7 +256,14 @@ subject:
   ref: "@01KTRY9V"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-10T14:59:17.793Z
 created_at: 2026-06-10T14:57:33.954Z
-updated_at: 2026-06-10T14:57:44.276Z
+updated_at: 2026-06-10T14:59:17.793Z
 notes: []
