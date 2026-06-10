@@ -23,3 +23,30 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-09T23:43:43.851Z
+  - _ulid: 01KTQDJKXZT5PSNJXGE64RQB7G
+    content: "Implemented end to end in e01b007632. API: GET /api/reviews/:id/content now attaches
+      byte-free resource_context to markdown sections — plan subjects get {owner_type, owner_ref,
+      resources_base_url: /api/plans/<ulid>/resources, declared manifest metadata via
+      toPlanResourceMetadata}; task subjects get {owner_type, owner_ref, resources_base_url:
+      /api/tasks/<ulid>/resources, resolveTaskResources+projectResolvedTaskResources projection} so
+      drift semantics match task detail exactly. Context omitted when plan declares no resources /
+      task has no resource_refs; corrupt plan manifests degrade to content-without-context instead
+      of 500. Types: ReviewContentPlanResourceContext / ReviewContentTaskResourceContext / union
+      added to @kynetic-ai/shared; ContentSectionMarkdown.resource_context optional field in web-ui
+      api.ts. UI: new review-content-resources.ts util dispatches to the existing shared rewriters
+      (rewritePlanResourceLinks / rewriteTaskResourceLinks — no duplicated regex);
+      StructuredContentViewer rewrites before renderMarkdown and renders a 'Resources needing
+      attention' block (drift/missing/unresolved from projection + unmatched via
+      findUnmatchedTaskResourceReferences) mirroring TaskDetailContent. Exported
+      buildTaskResourcesBaseUrl from task-resources.ts for reuse instead of a third inline copy.
+      Tests: 6 new daemon API tests in tests/daemon-diff-api.test.ts (plan context shape, no-bytes
+      assertion, omission, task context with plan-owned present + materialized task-owned present +
+      drift, no-bytes, omission; AC @review-content-diff-api ac-5/ac-6) and 9 web-ui tests in
+      tests/web-ui/review-content-resources.test.ts (selected-project kspec_dir URL shapes,
+      undeclared/drift/missing/unresolved stay raw, guidance items; AC
+      @review-structured-content-viewer ac-5/ac-6). Gates: format:check, lint --quiet (0 errors, 0
+      new warnings in changed files), typecheck, full npm test (2726 suites / 10378 passed), kspec
+      validate refs/alignment/completeness all green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-10T00:05:37.856Z
