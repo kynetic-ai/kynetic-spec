@@ -2,7 +2,67 @@ _ulid: 01KTRYS2B7W4WW4WQNWSVBWQA1
 slugs: []
 title: "Plan review: Release Packaging and Onboarding Readiness"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec plan get @01KTRY9V reported Status: draft before review; only review-record
+      mutations were performed."
+    name: plan status constraint
+    required: true
+    runner: kspec plan get
+    created_at: 2026-06-10T14:27:05.533Z
+    completed_at: 2026-06-10T14:27:05.533Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Checked @main, @versioning, @release-notes-accessible, @docs-release-notes-availability,
+      and @daemon-runtime-adapter. Related specs are adjacent release/docs/runtime behavior; no
+      existing spec found for package artifact completeness or supported Node runtime documentation
+      consistency.
+    name: spec neighborhood
+    required: true
+    runner: kspec search / item get
+    created_at: 2026-06-10T14:27:08.142Z
+    completed_at: 2026-06-10T14:27:08.142Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 8 proposed ACs are nominally claimed by tasks, but @supported-runtime-range ac-2 and
+      @published-artifact-completeness ac-4 are not behaviorally proven by the proposed task test
+      plans.
+    name: AC coverage quality
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T14:27:10.713Z
+    completed_at: 2026-06-10T14:27:10.713Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-ci-node-version-matrix requires PR/branch workflow verification, but current test.yml
+      triggers only pull_request to main and push to main, while project policy forbids GitHub PRs
+      for dispatched task work.
+    name: task executability
+    required: true
+    runner: manual plan review + workflow inspection
+    created_at: 2026-06-10T14:27:13.331Z
+    completed_at: 2026-06-10T14:27:13.331Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-dedupe-web-ui-devdeps and task-audit-fix-production-deps both modify root
+      package.json/package-lock.json with no depends_on edge; implementation notes express ordering
+      but derivation would not enforce it.
+    name: dependency ordering
+    required: true
+    runner: manual dependency graph review
+    created_at: 2026-06-10T14:27:15.928Z
+    completed_at: 2026-06-10T14:27:15.928Z
 events:
   - _ulid: 01KTRYS2B7VQXDG0HRPZYSW1JM
     actor: "@claude"
@@ -10,17 +70,221 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T14:25:29.447Z
+  - _ulid: 01KTRYVECM0PAJQH8G7YHR7CGD
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-10T14:26:47.316Z
+  - _ulid: 01KTRYVH0RNH3KZKNKRC07SRBM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTRYVGSQG550NNSJWZH8Y6SN
+    timestamp: 2026-06-10T14:26:50.008Z
+  - _ulid: 01KTRYVKKAY5ZSH2Z4XGGKFZXJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTRYVKCQQ2MNB4TQPQCA07N3
+    timestamp: 2026-06-10T14:26:52.650Z
+  - _ulid: 01KTRYVP61ZDEKXQBV2ZSZHJZX
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTRYVNZ51NDXYVF8Y01JMHB5
+    timestamp: 2026-06-10T14:26:55.297Z
+  - _ulid: 01KTRYVRQJAE8XS6463R15RMKE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRYVRGDWVTVAG4YV20XCNZY
+    timestamp: 2026-06-10T14:26:57.906Z
+  - _ulid: 01KTRYVV8X4DQ654926JGA5D00
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRYVV23JHWFVTTKF5Z9Q5P4
+    timestamp: 2026-06-10T14:27:00.509Z
+  - _ulid: 01KTRYVXSFBYEMB3JM2TYWNYMQ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRYVXJYSS2CZANR0JYCGB5R
+    timestamp: 2026-06-10T14:27:03.087Z
+  - _ulid: 01KTRYW0CZRC874JHCV0P4867Z
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan status constraint
+    timestamp: 2026-06-10T14:27:05.759Z
+  - _ulid: 01KTRYW2Y8KMCGEKM0DQHT3FV3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec neighborhood
+    timestamp: 2026-06-10T14:27:08.361Z
+  - _ulid: 01KTRYW5F59ADKAZNBT1HQ31JS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC coverage quality
+    timestamp: 2026-06-10T14:27:10.949Z
+  - _ulid: 01KTRYW80AG82RGSXZCD6R5NS6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: task executability
+    timestamp: 2026-06-10T14:27:13.546Z
+  - _ulid: 01KTRYWAHMRTTN5DYJPPEXEC3R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: dependency ordering
+    timestamp: 2026-06-10T14:27:16.148Z
+  - _ulid: 01KTRYWD3C55PCFK51MYT76GJZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-10T14:27:18.764Z
+  - _ulid: 01KTRYWD3CAMVRJ3TRDJWAGM8C
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T14:27:18.764Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@01KTRY9V"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTRYVGSQG550NNSJWZH8Y6SN
+    anchor:
+      type: structured
+      ref: "@task-standardize-node-version-docs"
+      section: tasks
+    entries:
+      - _ulid: 01KTRYVGSQS4J6TC8MNG5ASDHS
+        author: "@claude"
+        body: The task claims to cover @supported-runtime-range ac-2, but its required consistency test only
+          names INSTALL.md, docs/getting-started/installation.md, and
+          docs/getting-started/tutorial.md. The plan itself identifies
+          docs/guides/starting-a-new-project.md and docs/guides/upgrading-kspec.md as user-facing
+          docs that state Node requirements, and AC2 requires every user-facing
+          installation/onboarding document that states a Node requirement to match engines.node. A
+          worker could satisfy the listed test while leaving a stale minimum in another user-facing
+          doc. Expand the scope/test to enumerate all user-facing docs with Node requirements, or
+          explicitly include every known doc before claiming ac-2.
+        created_at: 2026-06-10T14:26:49.783Z
+    kind: blocker
+  - _ulid: 01KTRYVKCQQ2MNB4TQPQCA07N3
+    anchor:
+      type: structured
+      ref: "@task-prepack-full-build-and-verification"
+      section: tasks
+    entries:
+      - _ulid: 01KTRYVKCQWV2RC0B5XMTNC650
+        author: "@claude"
+        body: The task claims @published-artifact-completeness ac-4, but its test plan only checks that
+          package.json prepack equals "npm run build" and that verify-package passes after an
+          explicit build. AC4 requires a source checkout with no build output where the package
+          packing step itself produces the artifacts. The proposed test would still pass if npm
+          pack/prepack integration were broken, as long as the script string and post-build verifier
+          work. Add behavioral verification that packs/prepares from a clean temp copy with build
+          output absent and inspects the resulting package contents.
+        created_at: 2026-06-10T14:26:52.439Z
+    kind: blocker
+  - _ulid: 01KTRYVNZ51NDXYVF8Y01JMHB5
+    anchor:
+      type: structured
+      ref: "@task-ci-node-version-matrix"
+      section: tasks
+    entries:
+      - _ulid: 01KTRYVNZ543KSSJYAGV6K5Z9Q
+        author: "@claude"
+        body: The task's verification path is not executable in the normal kspec task flow. It says workflow
+          changes are verified by PR/branch runs, but the current test workflow only triggers on
+          pull_request to main and push to main, and this repo's local policy says dispatched task
+          work should not open GitHub PRs. A task worker therefore cannot prove
+          @prepublish-runtime-verification ac-1 before review/merge using the plan as written. Add a
+          concrete project-compatible verification path, or change the workflow/task scope so branch
+          verification is actually available.
+        created_at: 2026-06-10T14:26:55.077Z
+    kind: blocker
+  - _ulid: 01KTRYVRGDWVTVAG4YV20XCNZY
+    anchor:
+      type: structured
+      ref: "@task-audit-fix-production-deps"
+      section: tasks
+    entries:
+      - _ulid: 01KTRYVRGEXCVCQG3QCQAN2MYZ
+        author: "@claude"
+        body: This task is scoped to production vulnerabilities from npm audit --omit=dev, but instructs the
+          worker to run plain npm audit fix. Current plain npm audit also reports dev/workspace
+          advisories for @sveltejs/kit and cookie, so npm audit fix may update dev/web UI tooling
+          outside the stated production-deps scope. Should the task specify the intended
+          command/scope more precisely, or expand to all audit findings?
+        created_at: 2026-06-10T14:26:57.678Z
+    kind: question
+  - _ulid: 01KTRYVV23JHWFVTTKF5Z9Q5P4
+    anchor:
+      type: structured
+      ref: "@task-dedupe-web-ui-devdeps"
+      section: dependencies
+    entries:
+      - _ulid: 01KTRYVV23Q8XG5RYBEXWEXC47
+        author: "@claude"
+        body: Should this depend on @task-audit-fix-production-deps? Both tasks mutate root
+          package.json/package-lock.json and the dependency tree. The implementation notes say
+          hygiene tasks should run last, but depends_on does not encode that ordering, so derived
+          work could create avoidable lockfile conflicts or stale dependency assumptions.
+        created_at: 2026-06-10T14:27:00.291Z
+    kind: question
+  - _ulid: 01KTRYVXJYSS2CZANR0JYCGB5R
+    anchor:
+      type: structured
+      ref: "@task-ci-node-version-matrix"
+      section: tasks
+    entries:
+      - _ulid: 01KTRYVXJYT1K2SKAXQFP77C6S
+        author: "@claude"
+        body: While this task edits .github/workflows/test.yml, should it also replace the existing direct
+          npx vitest run shard command with the project test runner script (for example npm test --
+          --shard=...)? kspec-agents.md says tests should go through scripts/test.cjs rather than
+          invoking vitest directly, because the runner performs environment readiness and caching
+          behavior.
+        created_at: 2026-06-10T14:27:02.878Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-10T14:27:18.764Z
 created_at: 2026-06-10T14:25:29.447Z
-updated_at: null
+updated_at: 2026-06-10T14:27:18.764Z
 notes: []
