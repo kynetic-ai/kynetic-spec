@@ -32,6 +32,24 @@ checks:
     runner: manual re-review
     created_at: 2026-06-10T15:17:42.404Z
     completed_at: 2026-06-10T15:17:42.404Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Read src/parser/yaml.ts:701-845: initContext shadow mode can run
+      hasRemoteTracking/shadowNeedsSync/shadowPull at 783-836 before
+      findManifestInDir/readYamlFile/parseManifestWithWarnings at 838-845, validating the plan
+      requirement to check earlier. Read src/cli/commands/upgrade.ts:208-228 and 345-352:
+      unrecognized kynetic currently buckets old/unknown, and runUpgradePipeline calls initContext
+      before detectSourceVersion. Read
+      src/utils/git.ts:35,52,81-87,139,203,213,223,250-251,274,281,291: current git utilities use
+      execSync shell strings including interpolated dynamic values. Read src/schema/spec.ts:115:
+      ManifestSchema defaults kynetic to 1.0."
+    name: source claim verification
+    required: true
+    runner: nl/rg/source read
+    created_at: 2026-06-10T15:17:54.888Z
+    completed_at: 2026-06-10T15:17:54.888Z
 events:
   - _ulid: 01KTS1Q93E1PD76991239P95SM
     actor: "@claude"
@@ -60,6 +78,13 @@ events:
       status: pass
       name: prior review findings resolved
     timestamp: 2026-06-10T15:17:42.645Z
+  - _ulid: 01KTS1S29H1RA6062XJGZY30G2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: source claim verification
+    timestamp: 2026-06-10T15:17:55.121Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -72,5 +97,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T15:16:56.558Z
-updated_at: 2026-06-10T15:17:42.404Z
+updated_at: 2026-06-10T15:17:54.888Z
 notes: []
