@@ -66,6 +66,17 @@ checks:
     runner: manual plan review / kspec item get
     created_at: 2026-06-10T15:18:09.825Z
     completed_at: 2026-06-10T15:18:09.825Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. Checked 1583 files, 637 items, 1575 tasks. Schema OK and References OK. Existing
+      deprecated-ref warnings were allowed by --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-10T15:18:20.547Z
+    completed_at: 2026-06-10T15:18:20.547Z
 events:
   - _ulid: 01KTS1Q93E1PD76991239P95SM
     actor: "@claude"
@@ -108,6 +119,13 @@ events:
       status: pass
       name: plan structure and coverage
     timestamp: 2026-06-10T15:18:10.069Z
+  - _ulid: 01KTS1SVBCAVZAK07VHSWCN99N
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T15:18:20.780Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -120,5 +138,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T15:16:56.558Z
-updated_at: 2026-06-10T15:18:09.825Z
+updated_at: 2026-06-10T15:18:20.547Z
 notes: []
