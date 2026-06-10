@@ -56,6 +56,17 @@ checks:
     runner: kspec validate --refs --warnings-ok
     created_at: 2026-06-10T16:03:00.300Z
     completed_at: 2026-06-10T16:03:00.300Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command exited 0. Existing orphan/status alignment warnings remain as baseline and are
+      unrelated to this draft-plan delta.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-10T16:03:10.905Z
+    completed_at: 2026-06-10T16:03:10.905Z
 events:
   - _ulid: 01KTS49JZ5WQJRKPF47YHSWQF5
     actor: "@claude"
@@ -98,6 +109,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-10T16:03:00.517Z
+  - _ulid: 01KTS4BYN5SVNFKAF59716VBJH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-10T16:03:11.141Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -110,5 +128,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T16:01:53.637Z
-updated_at: 2026-06-10T16:03:00.300Z
+updated_at: 2026-06-10T16:03:10.905Z
 notes: []
