@@ -2,7 +2,97 @@ _ulid: 01KTS2X8KJG1K0VVY79CVVCPAJ
 slugs: []
 title: "Plan re-review (codex, cycle 3): Data Integrity and Upgrade Safety"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified @01KTRYBM remains draft. Exported the stored plan to /tmp and ran
+      `KSPEC_NO_DAEMON=1 kspec plan import <tmp> --dry-run`; it parsed cleanly with status draft,
+      full content stored, and 0 derived specs/tasks. No plan status change was made.
+    name: Plan status and dry-run
+    required: true
+    runner: kspec plan get/export/import --dry-run
+    created_at: 2026-06-10T15:38:52.776Z
+    completed_at: 2026-06-10T15:38:52.776Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The amended task-format-version-ceiling step 2 re-applies the ceiling check after sync and
+      adds a sync-pull dual fixture, but the same plan's spec text still guarantees refusal before
+      synchronization and no project-data modification including synchronization. The fix-cycle-2
+      decision note narrows the defended guarantee to no operation on newer-than-supported data,
+      which is a different contract from ac-newer-version-refused as written.
+    name: Cycle-3 amendment coherence
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T15:38:55.401Z
+    completed_at: 2026-06-10T15:38:55.401Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified src/parser/yaml.ts:783-836 can perform pre-read shadow sync before
+      findManifestInDir/parseManifestWithWarnings at 838-845. Verified
+      src/cli/commands/upgrade.ts:345-352 calls initContext before detectSourceVersion. The source
+      facts behind the amended task are accurate; the issue is the remaining spec/task contract
+      mismatch.
+    name: Source/order claim verification
+    required: true
+    runner: nl/read source
+    created_at: 2026-06-10T15:38:58.048Z
+    completed_at: 2026-06-10T15:38:58.048Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command exited 0 with pre-existing reference warnings for deprecated refs; schema and
+      references passed.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-10T15:39:00.652Z
+    completed_at: 2026-06-10T15:39:00.652Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command exited 0 with pre-existing orphan/status alignment warnings unrelated to this
+      draft-plan delta.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-10T15:39:03.279Z
+    completed_at: 2026-06-10T15:39:03.279Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command exited 0 with pre-existing missing-coverage and invalid-annotation warnings
+      unrelated to this draft-plan delta.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-10T15:39:05.943Z
+    completed_at: 2026-06-10T15:39:05.943Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/content read: kspec-agents.md, kspec-review-plan skill, review-gates skill, stored
+      plan @01KTRYBM, cycle-2 review @01KTS26B0YH1NPMA5HSA11YGW3, prior reviews
+      @01KTRZCY12QF94RZHNSSAX36DK and @01KTS08ZMCG41XE9TSM7WPWK2Q, src/parser/yaml.ts:760-855,
+      src/cli/commands/upgrade.ts:200-360, @format-version. Commands run: plan get/export/import
+      --dry-run, review get --json, item get, search, validate refs/alignment/completeness. Claims
+      verified: post-sync re-check amendment exists; sync-pull fixture/testing text exists; source
+      ordering claims remain accurate. Categories searched: spec/task coherence, AC contract,
+      dependency/coverage regression, source-claim accuracy, validation."
+    name: Review evidence log
+    required: true
+    runner: codex
+    created_at: 2026-06-10T15:39:08.573Z
+    completed_at: 2026-06-10T15:39:08.573Z
 events:
   - _ulid: 01KTS2X8KH3NNNSQR10BMC8KG5
     actor: "@claude"
@@ -10,17 +100,126 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T15:37:41.234Z
+  - _ulid: 01KTS2Z8FEVMVSS8RNEGTA8CX3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-10T15:38:46.638Z
+  - _ulid: 01KTS2ZC31351560QX3BKR8MP3
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTS2ZBW286TN05Y0M9B09D7D
+    timestamp: 2026-06-10T15:38:50.337Z
+  - _ulid: 01KTS2ZEPPM4RGNHXY6H10A528
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan status and dry-run
+    timestamp: 2026-06-10T15:38:53.014Z
+  - _ulid: 01KTS2ZH85FJRRDBACTSB9Y9SC
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Cycle-3 amendment coherence
+    timestamp: 2026-06-10T15:38:55.621Z
+  - _ulid: 01KTS2ZKTR2C0D06XM8S5NM3VH
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Source/order claim verification
+    timestamp: 2026-06-10T15:38:58.264Z
+  - _ulid: 01KTS2ZPCEQG67F184NWVK34N5
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T15:39:00.878Z
+  - _ulid: 01KTS2ZRYSGBKHR8ENQMJG3R5P
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-10T15:39:03.513Z
+  - _ulid: 01KTS2ZVJFDJ915PPV51VXVRPQ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-10T15:39:06.191Z
+  - _ulid: 01KTS2ZY49934QNYKR5C9BN5XD
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-06-10T15:39:08.810Z
+  - _ulid: 01KTS300Q7XHWW2C9WY6NS2S1C
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-10T15:39:11.463Z
+  - _ulid: 01KTS300Q7FR7CC2VMWJGNEBQ1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T15:39:11.463Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@01KTRYBM"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTS2ZBW286TN05Y0M9B09D7D
+    anchor:
+      type: structured
+      field: ac-newer-version-refused
+      ref: "@data-format-forward-compatibility"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTS2ZBW2DBSR0BXE6DJ36KSP
+        author: codex
+        body: "MUST-FIX: the cycle-3 amendment closes the same-invocation read/mutate window, but it now
+          conflicts with the spec contract. The spec description says the declared format version is
+          checked before project data is read, mutated, or synchronized, and
+          ac-newer-version-refused says no project data is modified, including by synchronization
+          during context initialization. The amended task now requires a sync-pull dual fixture
+          where the local manifest is supported, shadowPull imports a remote manifest with a newer
+          format, and the invocation refuses only after that pull; the fix-cycle-2 decision note
+          explicitly says the pull is an acceptable mutation. Those cannot both be true. Either keep
+          the current AC and require checking the remote manifest before shadowPull can modify local
+          project data, or amend the spec/AC/testing language to explicitly allow syncing
+          remotely-authored newer data while still forbidding any entity read/write/upgrade
+          operation after the mismatch is observed."
+        created_at: 2026-06-10T15:38:50.114Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-10T15:39:11.463Z
 created_at: 2026-06-10T15:37:41.234Z
-updated_at: null
+updated_at: 2026-06-10T15:39:11.463Z
 notes: []
