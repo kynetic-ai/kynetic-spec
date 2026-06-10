@@ -3,3 +3,38 @@ notes:
     content: "Fix cycle 1: addressed codex @01KTRZPM and claude @01KTS0TQ findings"
     author: "@claude"
     created_at: 2026-06-10T15:16:52.227Z
+  - _ulid: 01KTS1T30D5J5GVAMZZNHF9NP7
+    content: >-
+      Fix cycle 1 changes (reviews @01KTRZPM codex, @01KTS0TQ claude):
+
+      (1+5) [blockers, both reviews] Triage spec-drift correction extended from ac-4/ac-5 to all
+      four stale PUT ACs (@triage-daemon-api ac-4, ac-5, ac-8, ac-9 -> POST /override and /act
+      subroutes), plus cleanup of the stale PUT wording in the triage.ts file-header AC comment
+      block.
+
+      (2) [codex blocker] @validation-task-data-source ac-all-persisted-tasks-included kept in
+      Covers and added to the required AC annotation mapping, with justification (ref injected into
+      the persisted per-task file only surfaces if that record is in the validation task set).
+
+      (3) [codex question] Export bullet corrected: format=json (default, structured JSON) vs
+      format=context (markdown context output) — no longer "markdown vs JSON".
+
+      (4) [claude blocker] Provenance narrative rewritten from git evidence: MetaUlidSchema
+      tightened min(1) -> UlidSchema in 703f4b6764 (2026-01-17), five days BEFORE tests were written
+      in 8f1f9534ec (2026-01-22); fixtures invalid from birth. 8624214d9f (2026-02-14) is the Skill
+      meta-type commit and never changed MetaUlidSchema. Task instructions unaffected;
+      Implementation Notes item 3 also corrected.
+
+      (6) [claude question] @plan-validation ac-10 drift resolved by updating the spec (not scoping
+      the test): task now sets verbatim ac-10 Then text "Validation reports the dangling plan
+      reference as a finding — an error with non-zero exit when strict references mode is active
+      (the default), a warning otherwise" and fixes the spec description wording.
+
+      (7) [claude nit] Fixture-ULID facts corrected: all four quoted meta ULIDs are 23 chars (incl.
+      01TESTWORKFLOW...); beforeEach item/task ULIDs listed; skip mechanism clarified (itE2E.skip is
+      vitest it aliased — suite runs in every vitest pass, strengthening the deterministic framing).
+
+      Also refreshed the stale "only active plan is Resource UI Hardening" overlap statement. Plan
+      remains draft; re-imported via --into.
+    author: "@claude"
+    created_at: 2026-06-10T15:18:28.621Z
