@@ -219,7 +219,8 @@ derive_from_specs: false
        change. The hand-written fixture ULIDs are all 23 characters
        (vs the required 26): "01TESTOBS00000000000000" (also contains the
        excluded letter O), "01TESTAGENT000000000000",
-       "01TESTWORKFLOW000000000", and "01TESTCONV0000000000000" (also
+       "01TESTWORKFLOW000000000" (also contains excluded letters O and
+       L), and "01TESTCONV0000000000000" (also
        contains an O); the beforeEach block adds invalid item/task ULIDs
        "01TESTITEM0000000000000" and "01TESTTASK0000000000000". All such
        entities are silently dropped at load time.
@@ -350,7 +351,7 @@ Four findings were audited against the codebase before drafting; two were correc
 3. **"Flaky grep test masking a bug" — CORRECTED (not flaky, and the bug is in the
    tests).** The combined search test fails deterministically (the skip is vitest's
    `it` aliased as `itE2E`, so the suite runs in every vitest pass): fixture meta
-   entities use invalid 23-character ULIDs (two with the excluded Crockford letter O)
+   entities use invalid 23-character ULIDs (three also containing excluded Crockford letters: two with O, one with O and L)
    and a null `resolved_at`, all silently dropped by `loadMetaFile`'s
    safeParse-and-skip; the "passing" sibling tests are vacuous because the
    `No matches found for "<pattern>"` echo satisfies their `toContain` assertions.

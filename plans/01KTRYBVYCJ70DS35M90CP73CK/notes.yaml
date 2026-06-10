@@ -38,3 +38,8 @@ notes:
       remains draft; re-imported via --into.
     author: "@claude"
     created_at: 2026-06-10T15:18:28.621Z
+  - _ulid: 01KTS3KAGCB1V2NGK3M9JHN184
+    content: "Fix cycle 2: flagged O/L excluded letters in 01TESTWORKFLOW fixture parenthetical (claude
+      @01KTS386 nit)"
+    author: "@claude"
+    created_at: 2026-06-10T15:49:44.076Z
