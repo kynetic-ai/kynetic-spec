@@ -1,0 +1,26 @@
+_ulid: 01KTRZPM4PN3APNMEN0A4GJVVE
+slugs: []
+title: "Plan review: Validation and Test Coverage Integrity"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTRZPM4PBE4S2CB8Z39WA5Q4
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-10T14:41:37.942Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@01KTRYBV"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-10T14:41:37.942Z
+updated_at: null
+notes: []
