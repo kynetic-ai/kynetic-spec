@@ -142,6 +142,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-10T00:23:33.706Z
+  - _ulid: 01KTQEKKC6065MJJXP745HFYTN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTQEKK5HCFK50X5HYMZNGGH5
+    timestamp: 2026-06-10T00:23:38.630Z
 examined_commit: e01b007632d9736e10a4cb6041dff82803b1e2d4
 external_links: []
 lifecycle_state: open
@@ -151,8 +158,36 @@ subject:
   content_hash: ""
   ref: "@01KTQBVCQDFPWFF60ZJEH4B6TY"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTQEKK5HCFK50X5HYMZNGGH5
+    entries:
+      - _ulid: 01KTQEKK5HSR4WG0FZ5TWKM7MV
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; packages/daemon/src/routes/diff.ts;
+          packages/daemon/src/routes/task-resources.ts;
+          packages/daemon/src/routes/plan-resources.ts; packages/shared/src/api.ts;
+          packages/web-ui/src/lib/api.ts; packages/web-ui/src/lib/utils/resource-links.ts;
+          packages/web-ui/src/lib/utils/plan-resource-links.ts;
+          packages/web-ui/src/lib/utils/task-resource-links.ts;
+          packages/web-ui/src/lib/utils/review-content-resources.ts;
+          packages/web-ui/src/lib/components/content/StructuredContentViewer.svelte;
+          packages/web-ui/src/lib/components/board/TaskDetailContent.svelte;
+          tests/daemon-diff-api.test.ts; tests/web-ui/review-content-resources.test.ts;
+          src/parser/entity-local-resources.ts. Commands run: kspec task get
+          @01KTQBVCQDFPWFF60ZJEH4B6TY; kspec item get @review-structured-content-viewer; kspec item
+          get @review-content-diff-api; kspec review for-task @01KTQBVCQDFPWFF60ZJEH4B6TY; git
+          diff/stat/show; rg AC annotations; git diff --check; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; npm run format:check; npx oxlint changed
+          TS/test files; npm run lint -- --quiet; npm run typecheck; npm test. Claims verified: API
+          review content resource_context is byte-free and includes owner_ref/resources_base_url
+          plus bounded metadata/status; UI delegates to existing plan/task resource rewriters; task
+          drift/missing/unresolved/unmatched cases remain raw and produce guidance; selected-project
+          resource URL shape is covered by the new web utility tests and existing resource-url
+          browser fetch tests. Categories searched: correctness, edge cases, error handling,
+          security/path-safety, test quality, integration. No findings."
+        created_at: 2026-06-10T00:23:38.417Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-10T00:10:18.559Z
-updated_at: 2026-06-10T00:23:33.455Z
+updated_at: 2026-06-10T00:23:38.417Z
 notes: []
