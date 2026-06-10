@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-10T14:41:49.260Z
+  - _ulid: 01KTRZQHRDK0MF17RTK1ND8KTB
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTRZQHH91PNH0FGVD1XMP512
+    timestamp: 2026-06-10T14:42:08.269Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,27 @@ subject:
   content_hash: ""
   ref: "@01KTRYBV"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTRZQHH91PNH0FGVD1XMP512
+    anchor:
+      type: structured
+      field: description
+      ref: "@task-daemon-triage-api-tests"
+      section: tasks
+    entries:
+      - _ulid: 01KTRZQHH9VTR2XTY0B2H2M6ZW
+        author: "@claude"
+        body: 'The task identifies triage endpoint drift only for @triage-daemon-api ac-4/ac-5, but the
+          stored spec also has stale PUT wording in ac-8 and ac-9. Evidence: kspec item get
+          @triage-daemon-api shows ac-8 and ac-9 as "a PUT request with act flag", while
+          packages/daemon/src/routes/triage.ts implements POST /api/triage/:ref/act for both the 409
+          already-acted and 422 pending cases. If the task updates only ac-4/ac-5, the plan leaves
+          part of the same endpoint contract contradicted by the implementation and by the tests it
+          asks workers to port. Update the task to correct ac-8/ac-9 as well, or explicitly explain
+          why those ACs are out of scope.'
+        created_at: 2026-06-10T14:42:08.042Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-10T14:41:37.942Z
-updated_at: 2026-06-10T14:41:49.030Z
+updated_at: 2026-06-10T14:42:08.042Z
 notes: []
