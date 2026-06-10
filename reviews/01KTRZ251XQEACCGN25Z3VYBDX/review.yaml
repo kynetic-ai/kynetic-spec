@@ -1,0 +1,26 @@
+_ulid: 01KTRZ251XQEACCGN25Z3VYBDX
+slugs: []
+title: "Plan review: Daemon Operational Reliability"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTRZ251W2RNEH8ZJA2ZZBYJE
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-10T14:30:27.133Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@01KTRYBC"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-10T14:30:27.133Z
+updated_at: null
+notes: []
