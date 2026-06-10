@@ -35,3 +35,12 @@ notes:
       @01KTS26B question)"
     author: "@claude"
     created_at: 2026-06-10T15:33:21.697Z
+  - _ulid: 01KTS2NDM2YFBPBKPQQSSKPEXG
+    content: "Fix cycle 2: step 2 now re-applies the version-ceiling comparison to the post-sync parsed
+      manifest so an invocation whose sync pull imports a remotely-upgraded newer-format manifest
+      refuses immediately (same deterministic codes) instead of on the next invocation. Added
+      sync-pull dual fixture to Testing and a fix-cycle-2 decision note. Addresses the single open
+      question on claude review @01KTS26B0YH1NPMA5HSA11YGW3; codex cycle-2 review had approved with
+      no threads."
+    author: "@claude"
+    created_at: 2026-06-10T15:33:24.226Z
