@@ -14,6 +14,67 @@ checks:
     runner: kspec plan get
     created_at: 2026-06-10T14:37:05.385Z
     completed_at: 2026-06-10T14:37:05.385Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read @format-version, @versioning, @entity-folder-migration-and-compatibility-1,
+      @single-command-version-upgrade, @broken-shadow-safety, @portable-task-submission-linkage, and
+      trait catalog. Forward format ceiling and subprocess literalness are not already fully
+      covered; @broken-shadow-safety owns the shadow preservation delta.
+    name: existing spec neighborhood
+    required: true
+    runner: kspec search/item get
+    created_at: 2026-06-10T14:38:14.448Z
+    completed_at: 2026-06-10T14:38:14.448Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified silent shadow restore catches at src/parser/shadow.ts:2923 and :3056; parseFloat
+      floor-style version checks in src/parser/entity-storage-compatibility.ts:147-157 and upgrade
+      unknown-version bucketing in src/cli/commands/upgrade.ts:208-228; execSync shell-string git
+      utility calls in src/utils/git.ts:35,52,81-87,139,203,213,223,250,274,281,291.
+    name: current behavior investigation
+    required: true
+    runner: rg/nl/kspec item get
+    created_at: 2026-06-10T14:38:17.068Z
+    completed_at: 2026-06-10T14:38:17.068Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-shadow-restore-loud-failure covers @broken-shadow-safety
+      ac-restore-failure-reports-state before that AC exists in the plan's structured Specs section
+      or on the current spec."
+    name: AC coverage mapping
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T14:38:19.706Z
+    completed_at: 2026-06-10T14:38:19.706Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: P1 shadow and format tasks are independent; P2 git subprocess task is independent; P3
+      comments-only catch-justification task correctly depends on all behavior-changing tasks. No
+      circular dependencies found.
+    name: dependency ordering
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T14:38:22.323Z
+    completed_at: 2026-06-10T14:38:22.323Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@subprocess-argument-literalness ac-dynamic-values-discrete-args specifies internal
+      subprocess argument mechanics rather than observable behavior."
+    name: spec language quality
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T14:38:24.917Z
+    completed_at: 2026-06-10T14:38:24.917Z
 events:
   - _ulid: 01KTRZCY12W9HSTSGCRKFXZ5ZS
     actor: "@claude"
@@ -35,17 +96,175 @@ events:
       status: pass
       name: plan status
     timestamp: 2026-06-10T14:37:05.617Z
+  - _ulid: 01KTRZG234X6CHSKYMHJ20TVVT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTRZG1VEZGKY5DF90HXHV1VZ
+    timestamp: 2026-06-10T14:38:02.852Z
+  - _ulid: 01KTRZG4QKZ056FPWERETHQQK6
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTRZG4GZRRECWREP39GVBJY3
+    timestamp: 2026-06-10T14:38:05.555Z
+  - _ulid: 01KTRZG7B88RYXV182B6H6VVVV
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRZG73Q7GHC0C1611HZWXHC
+    timestamp: 2026-06-10T14:38:08.232Z
+  - _ulid: 01KTRZGB1YVNDTHWCDBJHQA5TK
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRZGATY5CBTYEBC5JFVM0AJ
+    timestamp: 2026-06-10T14:38:12.030Z
+  - _ulid: 01KTRZGDM6A7DVXWHCVYA2TSB9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: existing spec neighborhood
+    timestamp: 2026-06-10T14:38:14.662Z
+  - _ulid: 01KTRZGG6JATFKNQRHQ4AQE1VB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: current behavior investigation
+    timestamp: 2026-06-10T14:38:17.298Z
+  - _ulid: 01KTRZGJRY6FP27AKA4TC4QDH2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC coverage mapping
+    timestamp: 2026-06-10T14:38:19.934Z
+  - _ulid: 01KTRZGNAG4JFWWG5W4E3F1VBK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-10T14:38:22.544Z
+  - _ulid: 01KTRZGQV2BHCFF01HECW2V5YK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: spec language quality
+    timestamp: 2026-06-10T14:38:25.122Z
+  - _ulid: 01KTRZGTCR3PV485NJDD8SGNZN
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-10T14:38:27.736Z
+  - _ulid: 01KTRZGTCR2H0GYEP6QWQDB4K6
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T14:38:27.736Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@01KTRYBM"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTRZG1VEZGKY5DF90HXHV1VZ
+    anchor:
+      type: structured
+      ref: "@task-format-version-ceiling"
+      section: tasks
+    entries:
+      - _ulid: 01KTRZG1VE9A0ZGRM0V7NKYEDK
+        author: "@claude"
+        body: "The task says to add the format ceiling check in initContext after the manifest is parsed,
+          but in the current shadow-mode path initContext can run pre-read shadow sync before it
+          finds/parses the manifest. Evidence: src/parser/yaml.ts:783-836 may call
+          hasRemoteTracking/shadowNeedsSync/shadowPull, while manifest lookup/parsing happens later
+          at src/parser/yaml.ts:838-845. That conflicts with @data-format-forward-compatibility
+          ac-newer-version-refused/ac-daemon-structured-error, which require refusal before
+          reads/mutations and no project data modification. The plan needs to explicitly require an
+          early manifest read/check before shadow sync or otherwise prove sync cannot modify project
+          data for newer-than-supported manifests."
+        created_at: 2026-06-10T14:38:02.606Z
+    kind: blocker
+  - _ulid: 01KTRZG4GZRRECWREP39GVBJY3
+    anchor:
+      type: structured
+      field: Covers
+      ref: "@task-shadow-restore-loud-failure"
+      section: tasks
+    entries:
+      - _ulid: 01KTRZG4GZWPNC9XQZFZVK8VGH
+        author: "@claude"
+        body: The task claims coverage for @broken-shadow-safety ac-restore-failure-reports-state, but that
+          AC is not present on the existing spec today (`kspec item get @broken-shadow-safety` shows
+          only ac-preserve-on-failure, ac-bootstrap-reuses-repair, ac-context-fails-fast, and
+          ac-no-root-fallback), and the plan Specs section does not carry the @broken-shadow-safety
+          delta as spec content. This fails cross-reference validation for the Covers line and
+          leaves the new behavioral contract reviewable only as task prose. Move the AC delta into
+          the plan's spec changes for @broken-shadow-safety, or otherwise make the plan's
+          spec-update mechanism explicit enough that the referenced AC exists before
+          implementation/testing annotations rely on it.
+        created_at: 2026-06-10T14:38:05.343Z
+    kind: blocker
+  - _ulid: 01KTRZG73Q7GHC0C1611HZWXHC
+    anchor:
+      type: structured
+      field: ac-dynamic-values-discrete-args
+      ref: "@subprocess-argument-literalness"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTRZG73Q7ZVF3GSH0FS60HH3
+        author: "@claude"
+        body: "This AC asserts the internal launch mechanism: dynamic values are passed as discrete argument
+          elements rather than shell-parsed strings. That is an implementation detail, not an
+          observable behavior, and it risks driving source-scanning or spawn-argument tests instead
+          of behavioral tests. Keep the args-array requirement in the task How section, but rewrite
+          the spec AC around observable safety outcomes, such as metacharacters in
+          branch/remote/revision/timestamp values being treated literally with no command execution
+          or command-shape change."
+        created_at: 2026-06-10T14:38:07.991Z
+    kind: question
+  - _ulid: 01KTRZGATY5CBTYEBC5JFVM0AJ
+    anchor:
+      type: structured
+      field: Testing
+      ref: "@task-format-version-ceiling"
+      section: tasks
+    entries:
+      - _ulid: 01KTRZGATYBS3TB604BYMJYQH0
+        author: "@claude"
+        body: "The testing guidance says to annotate with `AC: @data-format-forward-compatibility ac-N for
+          each`, but this plan defines explicit AC IDs like ac-newer-version-refused and
+          ac-daemon-structured-error, not ac-1/ac-2 numbering. Replace the placeholder with the
+          exact IDs so a fresh worker does not create invalid or non-resolving AC annotations."
+        created_at: 2026-06-10T14:38:11.806Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-10T14:38:27.735Z
 created_at: 2026-06-10T14:36:20.386Z
-updated_at: 2026-06-10T14:37:05.385Z
+updated_at: 2026-06-10T14:38:27.736Z
 notes: []
