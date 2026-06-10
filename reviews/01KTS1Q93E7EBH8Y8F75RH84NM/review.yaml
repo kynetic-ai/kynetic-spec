@@ -15,6 +15,23 @@ checks:
     runner: kspec plan get / kspec plan import --dry-run
     created_at: 2026-06-10T15:17:30.320Z
     completed_at: 2026-06-10T15:17:30.320Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified every thread from @01KTRZCY and @01KTS08ZMCG41XE9TSM7WPWK2Q against the updated
+      stored plan: early raw version check before shadow sync is required; @broken-shadow-safety
+      delta is a dedicated spec-update task with verbatim AC text and dependency; subprocess AC is
+      observable literalness; explicit AC ids are listed; @data-format-forward-compatibility is
+      parented under @versioning and depends_on @format-version with overlap analysis; diagnostic
+      carve-out is in ac-newer-version-refused; upgrade refusal ownership is initContext with
+      detectSourceVersion as defense in depth; raw manifest/default behavior and P3 dependency trim
+      are documented."
+    name: prior review findings resolved
+    required: true
+    runner: manual re-review
+    created_at: 2026-06-10T15:17:42.404Z
+    completed_at: 2026-06-10T15:17:42.404Z
 events:
   - _ulid: 01KTS1Q93E1PD76991239P95SM
     actor: "@claude"
@@ -36,6 +53,13 @@ events:
       status: pass
       name: plan status and dry-run
     timestamp: 2026-06-10T15:17:30.558Z
+  - _ulid: 01KTS1RP3MATR73TYQCXBWRDC4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review findings resolved
+    timestamp: 2026-06-10T15:17:42.645Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -48,5 +72,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T15:16:56.558Z
-updated_at: 2026-06-10T15:17:30.320Z
+updated_at: 2026-06-10T15:17:42.404Z
 notes: []
