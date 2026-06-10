@@ -61953,9 +61953,24 @@ runs:
     completed_at: 2026-06-10T05:21:25.445Z
   - _ulid: 01KTR0XK4MKZFZ34DYDV1PKE7G
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-10T05:43:40.436Z
+        completed_at: 2026-06-10T05:44:12.194Z
+        notes: "What worked well: the detached-reviewer flow was coherent end to end. The review record
+          model made it straightforward to attach gate evidence before approval, and the supported
+          detached merge helper merged the approved branch into dev without manual checkout or
+          conflict handling. The implementation was also easy to verify because the task scoped the
+          daemon payload, UI utility behavior, and AC annotation refresh clearly; the behavioral
+          tests covered both the daemon no-resource_refs edge case and the web UI
+          empty-resource-list unmatched guidance."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-10T05:44:12.194Z
+        completed_at: 2026-06-10T05:44:12.194Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-10T05:43:40.436Z
