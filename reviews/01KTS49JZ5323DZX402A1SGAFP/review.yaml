@@ -32,6 +32,19 @@ checks:
     runner: kspec plan get/export/import --dry-run
     created_at: 2026-06-10T16:02:36.490Z
     completed_at: 2026-06-10T16:02:36.490Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The changed given now scopes ac-newer-version-refused to the locally-declared-newer case.
+      ac-post-sync-newer-version-refused remains scoped to the supported-local + imported-newer
+      dual. The pair is explicit for spec-only readers, matches the Checking decision bullet, and
+      preserves the cycle-4 approved split without reopening the prior contradiction.
+    name: AC partition coherence
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T16:02:47.324Z
+    completed_at: 2026-06-10T16:02:47.324Z
 events:
   - _ulid: 01KTS49JZ5WQJRKPF47YHSWQF5
     actor: "@claude"
@@ -60,6 +73,13 @@ events:
       status: pass
       name: Plan status and dry-run
     timestamp: 2026-06-10T16:02:36.718Z
+  - _ulid: 01KTS4B7P9CB0J3K15FKN6DKNR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC partition coherence
+    timestamp: 2026-06-10T16:02:47.625Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -72,5 +92,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T16:01:53.637Z
-updated_at: 2026-06-10T16:02:36.490Z
+updated_at: 2026-06-10T16:02:47.324Z
 notes: []
