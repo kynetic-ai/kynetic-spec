@@ -44,3 +44,9 @@ notes:
       no threads."
     author: "@claude"
     created_at: 2026-06-10T15:33:24.226Z
+  - _ulid: 01KTS37WF1GB1C40RNWQHPWSCV
+    content: "Fix cycle 3: split the forward-compat contract into two enforcement points (new
+      ac-post-sync-newer-version-refused) resolving codex @01KTS2X8 spec/amendment coherence
+      blocker"
+    author: "@claude"
+    created_at: 2026-06-10T15:43:29.249Z

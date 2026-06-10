@@ -24,11 +24,19 @@
       initialization and advanced only by the upgrade flow — never
       implicitly by ordinary commands.
     - Checking: the declared format version is compared against the
-      maximum supported version when project context is initialized,
+      maximum supported version at two points during context
+      initialization. First, the locally declared version is checked
       before any project data is read, mutated, or synchronized —
       including any background synchronization performed as a side
-      effect of context initialization. The check applies uniformly to
-      CLI commands and daemon-served requests.
+      effect of context initialization. Second, when that
+      synchronization imports project data, the declared version of the
+      imported data is checked again before any project data is read or
+      mutated, so data upgraded elsewhere to a newer format is refused
+      by the same invocation that imported it. The imported
+      synchronization itself is permitted — it transfers data already
+      authored elsewhere; the guarantee defended at both points is that
+      data declaring a newer format is never read or mutated. The check
+      applies uniformly to CLI commands and daemon-served requests.
     - Newer than supported: the operation refuses with a deterministic
       error code reserved for this condition. The refusal names both the
       project's declared format version and the running tool's maximum
@@ -63,6 +71,20 @@
         version, includes guidance to upgrade the tool installation, and
         no project data is modified — including by any synchronization
         performed as part of context initialization
+    - id: ac-post-sync-newer-version-refused
+      given: |
+        A project manifest locally declares a supported format version,
+        and synchronization performed during context initialization
+        imports project data whose manifest declares a format version
+        greater than the running tool's maximum supported format
+        version
+      when: |
+        Context initialization continues after that synchronization
+      then: |
+        The same invocation refuses with the deterministic
+        newer-than-supported error code, naming both versions with
+        upgrade guidance, before any project data is read or mutated;
+        refusal is not deferred to a subsequent invocation
     - id: ac-daemon-structured-error
       given: |
         A project manifest declares a format version greater than the
@@ -397,6 +419,7 @@ derive_from_specs: false
     unaffected. Annotate tests with the spec's explicit AC ids — there
     is no ac-N numbering on this spec:
     AC: @data-format-forward-compatibility ac-newer-version-refused,
+    AC: @data-format-forward-compatibility ac-post-sync-newer-version-refused,
     AC: @data-format-forward-compatibility ac-daemon-structured-error,
     AC: @data-format-forward-compatibility ac-unrecognized-version-refused,
     AC: @data-format-forward-compatibility ac-diagnostics-report-read-only,
@@ -404,9 +427,9 @@ derive_from_specs: false
     AC: @data-format-forward-compatibility ac-supported-versions-unaffected.
 
     Covers: @data-format-forward-compatibility ac-newer-version-refused,
-    ac-daemon-structured-error, ac-unrecognized-version-refused,
-    ac-diagnostics-report-read-only, ac-upgrade-refuses-newer,
-    ac-supported-versions-unaffected.
+    ac-post-sync-newer-version-refused, ac-daemon-structured-error,
+    ac-unrecognized-version-refused, ac-diagnostics-report-read-only,
+    ac-upgrade-refuses-newer, ac-supported-versions-unaffected.
 
 - title: Migrate version-control utility subprocesses to args-array invocation
   slug: task-git-utils-execfile
@@ -607,6 +630,18 @@ derive_from_specs: false
   remotely); the guarantee defended is "no operation on data newer than
   supported", enforced at both check points. A sync-pull dual fixture
   was added to Testing.
+- **Spec/amendment coherence (codex cycle-3 blocker)** — the task
+  amendment initially left ac-newer-version-refused's "no modification
+  including synchronization" guarantee in tension with the permitted
+  pull in the remote-newer dual. Resolution: the spec now expresses the
+  two enforcement points explicitly — ac-newer-version-refused keeps
+  the full no-modification-including-sync guarantee for the
+  locally-declared-newer case, and a new
+  ac-post-sync-newer-version-refused owns the remote-newer dual (the
+  synchronized import is permitted; the same invocation refuses before
+  any project data is read or mutated). The Checking decision bullet
+  describes both points; task annotations and Covers include the new
+  AC.
 
 ### Review fix cycle 1 decisions
 
