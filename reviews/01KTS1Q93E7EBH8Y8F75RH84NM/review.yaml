@@ -99,6 +99,25 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-06-10T15:18:39.271Z
     completed_at: 2026-06-10T15:18:39.271Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/refs read: kspec-agents.md, @01KTRYBM stored plan JSON/content, reviews @01KTRZCY
+      and @01KTS08ZMCG41XE9TSM7WPWK2Q, @versioning, @format-version, @broken-shadow-safety,
+      src/parser/yaml.ts, src/cli/commands/upgrade.ts, src/utils/git.ts, src/schema/spec.ts,
+      src/parser/plan-document.ts, src/cli/commands/plan.ts. Commands run: kspec plan get --json,
+      kspec review get --json, kspec review list --subject-type plan, kspec item get, kspec plan
+      import --dry-run, kspec validate --refs/--alignment/--completeness --warnings-ok, rg/nl/sed
+      source reads. Claims verified: prior blockers/questions/nits resolved; code call order and
+      subprocess claims are accurate. Categories searched: spec hierarchy/overlap, AC language, task
+      executability, dependency ordering, cross-reference/import support,
+      error-handling/security/integration risks. No new findings."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-06-10T15:18:55.598Z
+    completed_at: 2026-06-10T15:18:55.598Z
 events:
   - _ulid: 01KTS1Q93E1PD76991239P95SM
     actor: "@claude"
@@ -162,6 +181,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-10T15:18:39.502Z
+  - _ulid: 01KTS1TXJPF89462K2PNEBR799
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-10T15:18:55.831Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -174,5 +200,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T15:16:56.558Z
-updated_at: 2026-06-10T15:18:39.271Z
+updated_at: 2026-06-10T15:18:55.598Z
 notes: []
