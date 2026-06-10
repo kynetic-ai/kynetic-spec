@@ -2,7 +2,127 @@ _ulid: 01KTS0TQ85GDHG1RKVZBJ27KPQ
 slugs: []
 title: "Plan review: Validation and Test Coverage Integrity"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All referenced refs resolve: @validation-task-data-source (ac-task-references-checked,
+      ac-all-persisted-tasks-included exist), @plan-validation ac-10 exists, @triage-daemon-api
+      ac-1..ac-9 exist, @fuzzy-item-search ac-7 exists and its text matches the plan's claim, traits
+      @trait-api-endpoint ac-1..ac-5 and @trait-websocket-protocol ac-3 exist as inherited ACs. No
+      new specs, so no parent/slug collisions. Module @core stored."
+    name: Cross-reference validation
+    required: true
+    runner: kspec-cli
+    created_at: 2026-06-10T15:03:24.373Z
+    completed_at: 2026-06-10T15:03:24.373Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All claims verified: it.skip at tests/task-plan-ref.test.ts:148 with the quoted TODO
+      comment (only skip in file); commit 147d25b6b4 (2026-03-25) introduced it; validate.ts loads
+      tasks via resolveTaskDataManager().loadAllTasks at lines 2423-2424 with validatePerTaskFiles
+      feeding partial tasks (line 2456); REF_FIELDS at refs.ts:407-415 includes
+      depends_on/spec_ref/plan_ref; ReferenceIndex built with loadPlans output
+      (validate.ts:2555,2563); strict_refs defaults true (config.ts:518) making dangling refs
+      errors; commits 87c41864b7/2525fa93d5/b8aed7ebb9 all exist dated 2026-04-24 and match the
+      described work; tests/helpers/cli.ts kspec() supports expectFail (line 132) while the skipped
+      test uses the success-asserting kspecOutput wrapper, confirming the un-skip-as-is analysis;
+      test manipulates tasks/<ulid>/task.yaml found via project.tasks.yaml index as described."
+    name: "Audit-claim verification: split-storage validation task"
+    required: true
+    runner: code-reading
+    created_at: 2026-06-10T15:03:26.926Z
+    completed_at: 2026-06-10T15:03:26.926Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified: tests/e2e/api-triage.spec.ts:163 wraps the suite in test.describe.skip with the
+      migration note; exactly 37 test() cases; only other vitest triage coverage is
+      daemon-triage-write-through.test.ts and daemon-api/errors.test.ts:157-183, as claimed;
+      helpers.ts:607 registers createTriageRoutes; all six endpoints exist with the claimed
+      methods/behaviors including 409 (triage.ts:523-529) and 422 (533-540); three mutation routes
+      broadcast on triage:updates; captureBroadcasts exists (helpers.ts:684); fixture
+      project.triage.yaml exists; suite carries @triage-daemon-api ac-1..9 annotations plus trait
+      annotations and N/A header block. The PUT-vs-POST drift on ac-4/ac-5 is real — but ac-8/ac-9
+      share the same drift and were missed (see blocker thread)."
+    name: "Audit-claim verification: triage API coverage task"
+    required: true
+    runner: code-reading
+    created_at: 2026-06-10T15:03:29.479Z
+    completed_at: 2026-06-10T15:03:29.479Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Core technical claims verified: fixture ULIDs invalid (23 chars, O in two of them);
+      resolved_at: null rejected by ObservationSchema (DateTimeSchema.optional() is not nullable,
+      meta.ts:286); loadMetaFile safeParse-and-skip silently drops invalid entities
+      (parser/meta.ts:212-338); no-matches echo at search.ts:350; vacuous sibling assertions
+      confirmed (entity-type word is a substring of the echoed pattern); commit 8f1f9534ec
+      (2026-01-22) wrote the tests; AC annotation @fuzzy-item-search ac-7 present at
+      grep.test.ts:472. FAIL because the provenance claim is wrong: MetaUlidSchema was tightened in
+      703f4b6764 (2026-01-17, BEFORE the tests), not 8624214d9f (2026-02-14, which added
+      SkillSchema) — the 'tests were broken later by schema tightening' narrative is false; fixtures
+      were invalid at creation. See blocker thread."
+    name: "Audit-claim verification: search meta-entity tests task"
+    required: true
+    runner: code-reading
+    created_at: 2026-06-10T15:03:32.021Z
+    completed_at: 2026-06-10T15:03:32.021Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified: computeCacheKey (scripts/test.cjs:108-166) hashes git blob SHAs, unstaged diff,
+      untracked contents, Node version, vitest args — no environment variables; getCacheDir (lines
+      172-174) scopes by KSPEC_SESSION_ID; CI env var changes the executed test set (describe.skip
+      when process.env.CI in tests/session-watcher.test.ts,
+      tests/daemon-watcher-multi-project.test.ts, others) so the CI staleness vector is concrete;
+      test.cjs reads CI only to force verbose output (line 549), confirming no existing env
+      differentiation in the key; KSPEC_TEST_PROGRESS affects only the progress reporter (line 614),
+      supporting its exclusion from the proposed allowlist. scripts/test.cjs is itself in
+      TEST_INPUT_PATHS so the implementing change self-invalidates the cache. Spec-less
+      convention+task approach matches project policy for test infrastructure."
+    name: "Audit-claim verification: test cache env key task"
+    required: true
+    runner: code-reading
+    created_at: 2026-06-10T15:03:34.583Z
+    completed_at: 2026-06-10T15:03:34.583Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All four tasks are genuinely independent — no depends_on, no shared files, no hidden
+      ordering (verified no task consumes another's output). Priorities consistent (three P2, one P3
+      infra). Each task is standalone-executable: concrete files, line anchors, fixture strategy,
+      verification commands, and escalation paths (fix root cause rather than re-skip) are spelled
+      out; no references to unrecorded chat context. Testing instructions use npm test per the
+      testing convention."
+    name: Dependency ordering and task executability
+    required: true
+    runner: review
+    created_at: 2026-06-10T15:03:37.120Z
+    completed_at: 2026-06-10T15:03:37.120Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No-new-specs decision is sound: all four work items map to existing implemented specs or
+      to test infrastructure (convention territory per project policy). Checked the three sibling
+      draft plans created in the same audit batch (01KTRYBM Data Integrity, 01KTRYBC Daemon
+      Operational Reliability, 01KTRY9V Release Packaging) — no task or spec overlap with this
+      plan's scope. Note: the plan's overlap section says 'the only active plan is Resource UI
+      Hardening' — that plan is now completed; statement was true at drafting time and the staleness
+      is immaterial."
+    name: Overlap with existing specs and plans
+    required: true
+    runner: review
+    created_at: 2026-06-10T15:03:39.684Z
+    completed_at: 2026-06-10T15:03:39.684Z
 events:
   - _ulid: 01KTS0TQ849DF5DRMN4CSK41TH
     actor: "@claude"
@@ -10,17 +130,217 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T15:01:20.772Z
+  - _ulid: 01KTS0Y3FPFDDMKH3JKTD20938
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-10T15:03:11.606Z
+  - _ulid: 01KTS0Y61WRFKWG3MMC4216VHX
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTS0Y5V1YCXRDJEDCGCX089Y
+    timestamp: 2026-06-10T15:03:14.236Z
+  - _ulid: 01KTS0Y8MRE360P2J9QJFDZMGK
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTS0Y8CPBJK9VZHPW71T0E1Q
+    timestamp: 2026-06-10T15:03:16.888Z
+  - _ulid: 01KTS0YB5WXQ18HHJ4AYZSGDAN
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTS0YAZB7YY0Z2EEAMR0M16Z
+    timestamp: 2026-06-10T15:03:19.484Z
+  - _ulid: 01KTS0YDP05WW56SEMEP0TRCQE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTS0YDFRNJJKKHGQXK0E7M1Q
+    timestamp: 2026-06-10T15:03:22.048Z
+  - _ulid: 01KTS0YG5V733JJP59K7NXST7S
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation
+    timestamp: 2026-06-10T15:03:24.604Z
+  - _ulid: 01KTS0YJMWBCQ43EXYPWQA9YHY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Audit-claim verification: split-storage validation task"
+    timestamp: 2026-06-10T15:03:27.132Z
+  - _ulid: 01KTS0YN4XBQNCMYSV79M6WTE7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Audit-claim verification: triage API coverage task"
+    timestamp: 2026-06-10T15:03:29.693Z
+  - _ulid: 01KTS0YQM42YQTW1WTQQMC88QW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: "Audit-claim verification: search meta-entity tests task"
+    timestamp: 2026-06-10T15:03:32.228Z
+  - _ulid: 01KTS0YT4DAEV8SEA5TM63CYN1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Audit-claim verification: test cache env key task"
+    timestamp: 2026-06-10T15:03:34.798Z
+  - _ulid: 01KTS0YWMMNEYZ9Y99NWZ3AM2M
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering and task executability
+    timestamp: 2026-06-10T15:03:37.364Z
+  - _ulid: 01KTS0YZ3PY6Z3K38A2APZMZBV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Overlap with existing specs and plans
+    timestamp: 2026-06-10T15:03:39.894Z
+  - _ulid: 01KTS0Z1KQ43A5PFREA2XGKX5J
+    actor: claude-code
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-10T15:03:42.455Z
+  - _ulid: 01KTS0Z1KQZJTZGGT0P9W5XWZS
+    actor: claude-code
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T15:03:42.455Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@01KTRYBV"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTS0Y5V1YCXRDJEDCGCX089Y
+    anchor:
+      type: structured
+      field: task-fix-search-meta-entity-tests
+      ref: "@01KTRYBV"
+      section: tasks
+    entries:
+      - _ulid: 01KTS0Y5V2CWHCGFZAS27JKCAG
+        author: "@claude"
+        body: "Factual error in the root-cause narrative (presented as 'verified'): the task and
+          Implementation Notes claim MetaUlidSchema was tightened from z.string().min(1) to the
+          strict UlidSchema in commit 8624214d9f (2026-02-14), AFTER the tests were written in
+          8f1f9534ec (2026-01-22). Both the commit and the chronology are wrong. Commit 8624214d9f
+          is 'feat: add Skill as 5th meta item type' and does not touch MetaUlidSchema. The actual
+          tightening commit is 703f4b6764 'feat: implement agent reference validation (AC-3)', dated
+          2026-01-17 — five days BEFORE the tests were written. So the fixtures were invalid from
+          the day the tests were created; they were not broken later by a schema change. The
+          operational conclusion (fixture ULIDs are invalid under the current strict schema and must
+          be replaced) is correct and independently verified, and the What/How of the task are
+          unaffected. But the stored task description asserts a false verified claim that a dispatch
+          worker is told to trust, and the 'Audit-finding verification summary' repeats it. Fix:
+          correct the commit reference and the timeline narrative (tests were born broken), or drop
+          the provenance paragraph entirely — it is not needed to justify the fix."
+        created_at: 2026-06-10T15:03:14.018Z
+    kind: blocker
+  - _ulid: 01KTS0Y8CPBJK9VZHPW71T0E1Q
+    anchor:
+      type: structured
+      field: ac-8
+      ref: "@triage-daemon-api"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTS0Y8CPE1MF8S9X9S6SR5T8
+        author: "@claude"
+        body: "The spec-reality drift correction in task-daemon-triage-api-tests is incomplete. The task
+          directs updating only ac-4 and ac-5 of @triage-daemon-api from PUT wording to the
+          implemented POST subroutes — but ac-8 and ac-9 ALSO describe 'a PUT request with act flag'
+          ('Given: a PUT request with act flag targets a record with status acted_on' / '...with
+          status pending'). The implementation is POST /api/triage/:ref/act
+          (packages/daemon/src/routes/triage.ts:504; 409 at lines 523-529, 422 at lines 533-540 —
+          behaviors verified). If the task runs as written, the spec ends up internally
+          inconsistent: ac-4/ac-5 corrected to POST while ac-8/ac-9 still describe PUT, and the new
+          tests would be annotated against ACs whose text describes a different method. Fix: extend
+          the task's drift-correction instruction to cover ac-8 and ac-9 as well. Optional related
+          cleanup for the same task: the triage.ts file-header AC comment block (lines 1-22) also
+          says 'PUT override' / 'PUT act' and could be corrected in passing."
+        created_at: 2026-06-10T15:03:16.630Z
+    kind: blocker
+  - _ulid: 01KTS0YAZB7YY0Z2EEAMR0M16Z
+    anchor:
+      type: structured
+      field: ac-10
+      ref: "@plan-validation"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTS0YAZB248M6G7V3Z5SNVKS
+        author: "@claude"
+        body: "Same drift class the plan fixes for @triage-daemon-api, but left uncorrected here:
+          @plan-validation ac-10 says 'Then: Validation warns about dangling plan reference' (and
+          the spec description says 'warn about dangling references'), yet the task correctly
+          establishes that validation.strict_refs defaults to true (src/parser/config.ts:518,
+          verified), so the behavior the re-enabled test will assert is an ERROR with non-zero exit
+          (kspecRun with expectFail: true). The test will be annotated 'AC: @plan-validation ac-10'
+          while asserting behavior that contradicts the AC's literal wording. Suggest the task also
+          update ac-10 (e.g. 'validation reports the dangling plan reference as a finding; with
+          strict references enabled the command exits non-zero'), or explicitly justify in the task
+          why the 'warn' wording is acceptable as-is. Note @validation-task-data-source's ACs are
+          already behavior-neutral ('contributes to validation findings') and need no change."
+        created_at: 2026-06-10T15:03:19.275Z
+    kind: question
+  - _ulid: 01KTS0YDFRNJJKKHGQXK0E7M1Q
+    anchor:
+      type: structured
+      field: task-fix-search-meta-entity-tests
+      ref: "@01KTRYBV"
+      section: tasks
+    entries:
+      - _ulid: 01KTS0YDFRDYECS8ZEPQ3SYTA3
+        author: "@claude"
+        body: "Minor factual inaccuracies in the fixture-ULID details (conclusion unaffected — all are
+          invalid under the 26-char Crockford schema): '01TESTAGENT000000000000' is 23 characters,
+          not 24 as stated; all three quoted ULIDs are 23 chars. The 'contains excluded letter O'
+          claims are correct for 01TESTOBS... and 01TESTCONV... Also two small precision points: the
+          skip mechanism at tests/grep.test.ts:629 is itE2E.skip where itE2E is vitest's `it`
+          aliased at line 462 (so the suite runs in every vitest pass — this actually strengthens
+          the plan's 'deterministic, not flaky' framing), and the describe block contains a fourth
+          invalid meta ULID '01TESTWORKFLOW000000000' plus invalid item/task ULIDs in beforeEach,
+          all covered by the task's 'replace all hand-written fixture ULIDs' instruction. The
+          vacuous-sibling-tests claim was independently verified and is correct: e.g. 'No matches
+          found for \"agent-keyword\"' contains both 'agent' and 'agent-keyword' as substrings,
+          satisfying both toContain assertions."
+        created_at: 2026-06-10T15:03:21.848Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude-code
+    role: reviewer
+    created_at: 2026-06-10T15:03:42.455Z
 created_at: 2026-06-10T15:01:20.773Z
-updated_at: null
+updated_at: 2026-06-10T15:03:42.455Z
 notes: []

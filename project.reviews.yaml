@@ -24643,17 +24643,18 @@ reviews:
   - _ulid: 01KTS0TQ85GDHG1RKVZBJ27KPQ
     slugs: []
     title: "Plan review: Validation and Test Coverage Integrity"
-    disposition: pending
+    disposition: changes_requested
     author: "@claude"
-    check_count: 0
-    lifecycle_state: draft
+    check_count: 7
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@01KTRYBV"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
-    verdict_count: 0
+    thread_count: 4
+    unresolved_blocker_count: 2
+    verdict_count: 1
     created_at: 2026-06-10T15:01:20.773Z
+    updated_at: 2026-06-10T15:03:42.455Z
