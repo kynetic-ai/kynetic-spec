@@ -62,15 +62,37 @@ derive_from_specs: false
       assert the combined stdout/stderr contains the dangling ref (e.g.
       "@nonexistent-plan") and a not-found message.
 
+    Spec-reality drift found during verification: @plan-validation ac-10's
+    Then clause says "Validation warns about dangling plan reference" (and
+    the spec description says "warn about dangling references"), but
+    validation.strict_refs defaults to true, so the implemented behavior —
+    and what the re-enabled test asserts — is an ERROR with non-zero exit
+    by default. Update the spec to match reality as part of this task
+    (same policy as the triage AC correction in this plan):
+    - Set ac-10's Then text, verbatim: "Validation reports the dangling
+      plan reference as a finding — an error with non-zero exit when
+      strict references mode is active (the default), a warning otherwise"
+    - Update the spec description: replace "warn about dangling references
+      to non-existent plans" with "report dangling references to
+      non-existent plans as validation findings"
+    Use kspec item ac set / kspec item set for these edits.
+    @validation-task-data-source's ACs are already behavior-neutral
+    ("contributes to validation findings") and need no change.
+
     How: Keep the test's approach of manually editing the per-task file
     (tasks/<ulid>/task.yaml under the temp specDir) to inject the dangling
     ref — this is the correct way to bypass CLI-time ref validation. Find
     the task ULID from project.tasks.yaml (index) as the test already does.
     Add sibling cases for a dangling spec_ref and a dangling depends_on
     entry injected the same way, asserting each is reported. Remove the
-    TODO comment. Annotate the tests with:
-    AC: @plan-validation ac-10 and
-    AC: @validation-task-data-source ac-task-references-checked.
+    TODO comment. Annotate the tests with all three covered ACs:
+    AC: @plan-validation ac-10,
+    AC: @validation-task-data-source ac-task-references-checked, and
+    AC: @validation-task-data-source ac-all-persisted-tasks-included.
+    The third annotation is justified because the dangling ref is injected
+    directly into the persisted per-task detail file, so the finding can
+    only surface if validation included that persisted record in its task
+    set — the test is direct evidence the split-storage record participates.
 
     If a re-enabled case genuinely fails, that is a real regression in the
     canonical validation load path — fix it in src/parser/validate.ts /
@@ -108,7 +130,11 @@ derive_from_specs: false
     implemented in packages/daemon/src/routes/triage.ts:
     - GET  /api/triage            (list: sorted created_at desc, status
                                    filter, pagination limit/offset, total)
-    - GET  /api/triage/export     (format parameter: markdown vs JSON)
+    - GET  /api/triage/export     (format parameter: format=json —
+                                   structured JSON, the default — vs
+                                   format=context — markdown context
+                                   output for agent handoff; the skipped
+                                   suite tests ?format=context)
     - POST /api/triage            (record decision: item_snapshot created,
                                    404 for nonexistent inbox_ref,
                                    validation errors for invalid action /
@@ -129,13 +155,25 @@ derive_from_specs: false
     triage:updates broadcasts on the three mutation routes. After the new
     suite passes, delete tests/e2e/api-triage.spec.ts entirely.
 
-    Spec-reality drift found during verification: @triage-daemon-api ac-4
-    and ac-5 describe "a PUT request ... to /api/triage/:ref" but the
-    implementation uses POST /api/triage/:ref/override and POST
-    /api/triage/:ref/act (and the route file documents them as such).
-    Update ac-4/ac-5 wording via kspec item ac commands to match the
+    Spec-reality drift found during verification: @triage-daemon-api ac-4,
+    ac-5, ac-8, and ac-9 all describe PUT requests, but the implementation
+    uses POST /api/triage/:ref/override and POST /api/triage/:ref/act:
+    - ac-4: "a PUT request is sent to /api/triage/:ref with override
+      fields" → POST /api/triage/:ref/override
+    - ac-5: "a PUT request is sent to /api/triage/:ref with act flag" →
+      POST /api/triage/:ref/act
+    - ac-8: "a PUT request with act flag targets a record with status
+      acted_on" → "a POST request to /api/triage/:ref/act targets a record
+      with status acted_on" (409 case, triage.ts ~523-529)
+    - ac-9: "a PUT request with act flag targets a record with status
+      pending" → "a POST request to /api/triage/:ref/act targets a record
+      with status pending" (422 case, triage.ts ~533-540)
+    Update ALL FOUR ACs via kspec item ac commands to match the
     implemented endpoints (spec updated to match reality), and annotate
-    tests against the corrected ACs.
+    tests against the corrected ACs. Also correct the stale file-header
+    AC-coverage comment block in packages/daemon/src/routes/triage.ts
+    (~lines 1-22), which still says "PUT override" / "PUT act" for ac-4,
+    ac-5, ac-8, ac-9.
 
     How: Follow tests/daemon-api/inbox.test.ts as the structural model.
     Fixtures: setupInlineFixtures / setupFixtures from helpers.ts; the
@@ -163,19 +201,28 @@ derive_from_specs: false
     aren't being loaded" and claims "individual entity type tests all pass,
     so the core functionality works". Code reading shows the failure is
     DETERMINISTIC today and the passing sibling tests are vacuous — they
-    pass even when nothing loads.
+    pass even when nothing loads. (The skip is itE2E.skip, where itE2E is
+    vitest's own `it` aliased at the late-import block around line 462 —
+    the suite runs in every plain vitest pass, not under a separate E2E
+    runner, so the failure reproduced in every test run.)
 
-    Root cause (verified by reading source, not by running tests):
+    Root cause (verified by reading source and git history, not by
+    running tests):
     1. loadMetaFile (src/parser/meta.ts ~250-332) silently skips any meta
        entity whose Zod safeParse fails — no error surfaces.
     2. MetaUlidSchema was tightened from z.string().min(1) to the strict
        26-char Crockford UlidSchema (/^[0-9A-HJKMNP-TV-Z]{26}$/i) in commit
-       8624214d9f (2026-02-14) — AFTER these tests were written in
-       8f1f9534ec (2026-01-22). The fixture ULIDs are now invalid:
-       "01TESTOBS00000000000000" is 23 chars and contains the excluded
-       letter O; "01TESTAGENT000000000000" is 24 chars;
-       "01TESTCONV0000000000000" is 23 chars with an O. All such entities
-       are silently dropped at load time.
+       703f4b6764 ("feat: implement agent reference validation (AC-3)",
+       2026-01-17) — five days BEFORE these tests were written in
+       8f1f9534ec (2026-01-22). The fixtures were therefore invalid from
+       the day they were created; they were never broken later by a schema
+       change. The hand-written fixture ULIDs are all 23 characters
+       (vs the required 26): "01TESTOBS00000000000000" (also contains the
+       excluded letter O), "01TESTAGENT000000000000",
+       "01TESTWORKFLOW000000000", and "01TESTCONV0000000000000" (also
+       contains an O); the beforeEach block adds invalid item/task ULIDs
+       "01TESTITEM0000000000000" and "01TESTTASK0000000000000". All such
+       entities are silently dropped at load time.
     3. The skipped test's observation also sets resolved_at: null, but
        ObservationSchema uses DateTimeSchema.optional(), which rejects null
        (optional is not nullable in zod) — a second independent parse
@@ -285,31 +332,76 @@ Four findings were audited against the codebase before drafting; two were correc
    `plan_ref`, `spec_ref`, and `depends_on`, and plans are loaded into the
    ReferenceIndex. The behavioral contract already exists as
    `@validation-task-data-source` (implemented) and `@plan-validation` ac-10, so no new
-   spec or spec delta is needed — only the never-re-enabled regression test. The
-   remaining wrinkle is that `strict_refs` defaults to true, so the dangling ref is an
-   error (non-zero exit), not a warning as the stale test expects.
+   spec is needed — only the never-re-enabled regression test plus one small spec-text
+   correction: `strict_refs` defaults to true, so the dangling ref is an error
+   (non-zero exit), not the "warn" the stale test (and `@plan-validation` ac-10's
+   literal wording) describes. The task updates ac-10 and the spec description to
+   match implemented reality, the same spec-updated-to-match-reality policy applied
+   to the triage ACs.
 
 2. **Triage API suite skipped with no replacement — CONFIRMED.** Only a write-through
    test and one error-shape case exist in vitest; `tests/daemon-api/helpers.ts` already
    registers the triage routes, so the promised migration is mechanical. A spec-reality
-   drift was found in the process: `@triage-daemon-api` ac-4/ac-5 describe PUT requests
-   while the implementation uses POST subroutes — the task corrects the AC wording.
+   drift was found in the process: `@triage-daemon-api` ac-4, ac-5, ac-8, and ac-9 all
+   describe PUT requests while the implementation uses POST subroutes
+   (`/override`, `/act`) — the task corrects the wording of all four ACs and the
+   stale PUT wording in the triage.ts file-header AC comment block.
 
 3. **"Flaky grep test masking a bug" — CORRECTED (not flaky, and the bug is in the
-   tests).** The combined search test fails deterministically today: fixture meta
-   entities use invalid ULIDs (wrong length, excluded Crockford letters) and a
-   null `resolved_at`, all silently dropped by `loadMetaFile`'s safeParse-and-skip;
-   the "passing" sibling tests are vacuous because the
+   tests).** The combined search test fails deterministically (the skip is vitest's
+   `it` aliased as `itE2E`, so the suite runs in every vitest pass): fixture meta
+   entities use invalid 23-character ULIDs (two with the excluded Crockford letter O)
+   and a null `resolved_at`, all silently dropped by `loadMetaFile`'s
+   safeParse-and-skip; the "passing" sibling tests are vacuous because the
    `No matches found for "<pattern>"` echo satisfies their `toContain` assertions.
-   The strictness change that broke the fixtures (MetaUlidSchema → UlidSchema,
-   8624214d9f) postdates the tests. No production search bug was found by code
-   reading; the task includes the escalation path if one surfaces after fixtures are
-   fixed.
+   Provenance (git-verified): MetaUlidSchema was tightened from `z.string().min(1)`
+   to the strict `UlidSchema` in commit 703f4b6764 (2026-01-17) — five days BEFORE
+   the tests were written in 8f1f9534ec (2026-01-22). The fixtures were invalid from
+   birth; the schema never changed underneath them. (An earlier draft of this plan
+   misattributed the tightening to 8624214d9f, the Skill meta-type commit, which
+   only references MetaUlidSchema and never altered its definition.) No production
+   search bug was found by code reading; the task includes the escalation path if
+   one surfaces after fixtures are fixed.
 
 4. **Test cache key ignores environment — CONFIRMED.** `computeCacheKey` hashes
    content, Node version, and vitest args only. The CI variable is a verified concrete
    staleness vector (it changes the executed test set via CI-skipped watcher tests).
    Per project policy this stays spec-less: convention update + task.
+
+### Fix cycle 1 decisions (reviews @01KTRZPM, @01KTS0TQ)
+
+Judgment calls made while addressing the two change-requesting reviews:
+
+- **`ac-all-persisted-tasks-included` kept in Covers, annotation mapping added**
+  (codex blocker): rather than dropping the AC from Covers, the annotation
+  instructions now require it on the dangling-ref tests. The test injects refs into
+  the persisted per-task detail file, so a reported finding is direct evidence the
+  persisted record was included in the validation task set — the coverage claim is
+  real, it was only the annotation mapping that was missing.
+- **`@plan-validation` ac-10 drift resolved by updating the spec, not scoping the
+  test** (claude question): `strict_refs` defaults to true and the implemented
+  default behavior is an error with non-zero exit. Scoping the test to a
+  non-default `strict_refs: false` configuration would test a non-default path to
+  preserve stale wording. Updating the AC to "error when strict references mode is
+  active (the default), warning otherwise" matches reality and is consistent with
+  the plan's handling of the triage PUT→POST drift. Verbatim replacement text is in
+  the task.
+- **Triage AC correction extended to ac-8/ac-9 plus the triage.ts header comment**
+  (both reviews): same drift, same endpoint contract; leaving half the ACs stale
+  would make the spec internally inconsistent. The header-comment cleanup is
+  included because the new tests annotate against the corrected ACs and the header
+  is the file-level AC map.
+- **Provenance narrative rewritten from git evidence** (claude blocker): verified
+  via `git show 703f4b6764` (MetaUlidSchema `min(1)` → `UlidSchema`, 2026-01-17)
+  and `git show 8624214d9f` (Skill meta type, no MetaUlidSchema definition change,
+  2026-02-14). Timeline inverted versus the original draft: fixtures were invalid
+  five days before the tests existed. Fix instructions were unaffected.
+- **Export format wording corrected** (codex question): the route accepts
+  `format=json` (default) and `format=context` (markdown context output); the
+  task bullet no longer says "markdown vs JSON".
+- **Fixture-ULID counts corrected** (claude nit): all four quoted meta fixture
+  ULIDs are 23 characters; the beforeEach item/task ULIDs are listed explicitly so
+  "replace all hand-written fixture ULIDs" is unambiguous.
 
 ### Overlap with existing kspec state
 
@@ -319,9 +411,9 @@ Four findings were audited against the codebase before drafting; two were correc
 - `@plan-delete-static-analysis-tests-and-replace-with-beha` (completed) — behavioral-
   coverage direction is consistent with porting the triage suite to daemon integration
   tests and with the no-source-scanning preference.
-- No active or draft plan covers any of these findings (checked `kspec plan list`:
-  the only active plan is Resource UI Hardening; drafts are spec-cruft seeds and
-  dispatch workspace work).
+- No active or draft plan covers any of these findings (checked `kspec plan list`
+  at drafting time: the only active plan was Resource UI Hardening, since
+  completed; drafts are spec-cruft seeds and dispatch workspace work).
 
 ### Task independence
 
