@@ -142,9 +142,25 @@ events:
       kind: nit
       thread_ulid: 01KTS3XA3VSDP6946BFQE7YASJ
     timestamp: 2026-06-10T15:55:11.575Z
+  - _ulid: 01KTS3XN51YA5E2ZK15ZJV0KZX
+    actor: ecaj@hyphoria.org
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T15:55:22.657Z
+  - _ulid: 01KTS3XN51CHVMNY0Y8R803A45
+    actor: ecaj@hyphoria.org
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T15:55:22.657Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -170,7 +186,14 @@ threads:
           to fold into any future edit rather than a dedicated cycle."
         created_at: 2026-06-10T15:55:11.355Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: ecaj@hyphoria.org
+    role: reviewer
+    created_at: 2026-06-10T15:55:22.657Z
 created_at: 2026-06-10T15:54:22.290Z
-updated_at: 2026-06-10T15:55:11.355Z
+updated_at: 2026-06-10T15:55:22.657Z
 notes: []
