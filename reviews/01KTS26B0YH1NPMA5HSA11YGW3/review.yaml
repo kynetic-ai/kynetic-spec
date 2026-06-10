@@ -175,9 +175,25 @@ events:
       kind: question
       thread_ulid: 01KTS2AF04N5GYQ12RJR4Z0QC0
     timestamp: 2026-06-10T15:27:25.429Z
+  - _ulid: 01KTS2B5XETFZRV8WW6XVPEZ5M
+    actor: ecaj@hyphoria.org
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T15:27:48.654Z
+  - _ulid: 01KTS2B5XEG92HGK0HTFJWW2C4
+    actor: ecaj@hyphoria.org
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T15:27:48.654Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -209,7 +225,14 @@ threads:
           rationale. Recommend amending step 2 (one sentence) before the plan is approved/derived."
         created_at: 2026-06-10T15:27:25.188Z
     kind: question
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: ecaj@hyphoria.org
+    role: reviewer
+    created_at: 2026-06-10T15:27:48.653Z
 created_at: 2026-06-10T15:25:10.046Z
-updated_at: 2026-06-10T15:27:25.188Z
+updated_at: 2026-06-10T15:27:48.654Z
 notes: []
