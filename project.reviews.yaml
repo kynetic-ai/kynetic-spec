@@ -24479,11 +24479,11 @@ reviews:
   - _ulid: 01KTQZSWHK2DPTHYJW8XCJ3ZVJ
     slugs: []
     title: Review show unmatched task resource references
-    disposition: pending
+    disposition: approved
     author: Jacob Chapel
     check_count: 7
     examined_commit: 489f516a77ea21743ebcfb9a48184ca679139752
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -24492,6 +24492,6 @@ reviews:
       shadow_commit: ""
     thread_count: 1
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-06-10T05:24:10.419Z
-    updated_at: 2026-06-10T05:42:22.007Z
+    updated_at: 2026-06-10T05:42:34.365Z
