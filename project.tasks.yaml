@@ -31108,3 +31108,24 @@
   submitted_at: 2026-06-10T00:05:47.700Z
   completed_at: 2026-06-10T00:24:43.507Z
   automation: eligible
+- _ulid: 01KTQY1CJ9JX66NMVFZQEV7WFD
+  slugs:
+    - show-unmatched-review-task-resource-references-without-task-resource-refs
+  title: Show unmatched review task resource references without task resource refs
+  type: bug
+  spec_ref: "@review-structured-content-viewer"
+  plan_ref: "@plan-resource-ui-hardening-plan"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@render-review-structured-content-resource-markdown"
+  priority: 1
+  tags:
+    - resources
+    - reviews
+    - web-ui
+    - api
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-10T04:53:19.049Z
+  automation: eligible

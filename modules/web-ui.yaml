@@ -834,8 +834,18 @@ features:
             then: the task description markdown section includes byte-free task resource context with the owning
               task ref, a browser-fetchable task-scoped resource base URL that preserves
               selected-project context, and bounded resolved-resource status sufficient for clients
-              to rewrite only present resources while distinguishing drifted, missing, unresolved,
-              and unmatched references without embedding resource bytes
+              to rewrite only present resources while distinguishing drifted, missing, and
+              unresolved resolved resources without embedding resource bytes
+            when: a client requests `GET /api/reviews/:id/content` for that review
+          - given: a task review subject's description contains markdown image or document links using
+              `./resources/<relative-path>` that do not match any of the task's resolved resources,
+              including when the task has no derived resource references
+            id: ac-7
+            then: the task description markdown section includes byte-free task resource context with the owning
+              task ref, a browser-fetchable task-scoped resource base URL that preserves
+              selected-project context, and a bounded resolved-resource list that may be empty,
+              sufficient for clients to classify the authored paths as `unmatched` without embedding
+              resource bytes
             when: a client requests `GET /api/reviews/:id/content` for that review
         tags: []
         created: 2026-03-16T08:28:58.926Z
@@ -5548,7 +5558,16 @@ requirements:
             then: the markdown image and document targets are rewritten through task-scoped resource bytes URLs
               from the review content resource context, the browser fetches the recorded
               selected-project bytes, and the UI shows resource status messages instead of silently
-              serving replacement bytes for drifted, missing, unresolved, or unmatched references
+              serving replacement bytes for drifted, missing, or unresolved resolved resources
+            when: the review detail page renders the task description section in live multi-project mode
+          - given: a task review subject's task description contains markdown image or document links using
+              `./resources/<relative-path>` that do not match any present, drifted, missing, or
+              unresolved task resource, including when the task has no derived resource references
+            id: ac-7
+            then: those markdown targets remain unreplaced, the browser is not pointed at replacement bytes for
+              them, and the UI shows an `unmatched` resource status message for each authored path
+              with guidance to verify the reference path or re-derive the task with the resource
+              present
             when: the review detail page renders the task description section in live multi-project mode
         tags: []
         created: 2026-03-16T08:28:59.038Z

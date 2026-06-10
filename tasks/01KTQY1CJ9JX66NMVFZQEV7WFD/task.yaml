@@ -1,0 +1,86 @@
+_ulid: 01KTQY1CJ9JX66NMVFZQEV7WFD
+slugs:
+  - show-unmatched-review-task-resource-references-without-task-resource-refs
+title: Show unmatched review task resource references without task resource refs
+type: bug
+description: >-
+  Fix the review structured-content task-resource edge case found during validation of
+  @render-review-structured-content-resource-markdown.
+
+
+  Current gap:
+
+  - `GET /api/reviews/:id/content` only attaches task `resource_context` when
+  `task.resource_refs.length > 0`.
+
+  - `StructuredContentViewer` can only compute `unmatched` resource guidance when a task
+  `resource_context` exists.
+
+  - Therefore a task review description that authors `./resources/<path>` links but has no task
+  `resource_refs` leaves raw/broken links visible without actionable `unmatched` status.
+
+
+  Covers:
+
+  - @review-content-diff-api ac-7
+
+  - @review-structured-content-viewer ac-7
+
+
+  Implement the edge case end to end:
+
+  - Attach byte-free task resource context to the task description section even when the task has no
+  `resource_refs`; attaching it for all task review subjects is sufficient, and daemon-side markdown
+  detection is not required. Ensure both the outer no-refs case and any empty projected-resource
+  list case still produce context with a bounded `resources` array that may be empty.
+
+  - Ensure `GET /api/reviews/:id/content` returns byte-free task resource context for those
+  sections: `owner_type: "task"`, owning task ref, task-scoped `resources_base_url`, and a bounded
+  `resources` array that may be empty.
+
+  - Do not embed resource bytes or unbounded manifests in review content responses.
+
+  - Preserve existing behavior for tasks with resolved resources: only `present` resources rewrite
+  to bytes URLs; drifted, missing, unresolved, and unmatched references remain visible with
+  actionable status.
+
+  - Update `StructuredContentViewer` / review resource utilities as needed so unmatched
+  `./resources/...` paths are detected and rendered as `unmatched` status messages even when the
+  resource list is empty.
+
+  - Refresh AC annotation comments that currently name unmatched behavior under ac-6 ownership:
+  `packages/web-ui/src/lib/utils/review-content-resources.ts` (unmatched/guidance helpers),
+  `packages/web-ui/src/lib/components/content/StructuredContentViewer.svelte` (markdown
+  rewrite/status-block annotations), and the ac-6 comment block above task resource-context
+  attachment in `packages/daemon/src/routes/diff.ts`. Re-annotate unmatched-specific behavior to the
+  matching ac-7 while keeping present/drift/missing/unresolved behavior on ac-6.
+
+  - Add focused tests before or with the implementation:
+    - daemon API test for a task review description containing `./resources/...` with no `resource_refs`, asserting task resource context is present, byte-free, and has an empty bounded resource list;
+    - update the existing daemon test `omits resource context for task subjects without resource refs` (`tests/daemon-diff-api.test.ts`, currently annotated `AC: @review-content-diff-api ac-6`) because it asserts the old omission behavior this task replaces. Repurpose it to assert the no-refs task subject now receives byte-free context with an empty bounded `resources` array, and re-annotate it to `@review-content-diff-api ac-7`. The plan-subject omission test (`omits resource context for plan subjects without declared resources`) asserts behavior this task does not change and must stay green;
+    - update the existing web UI test `lists drifted resources and unmatched references with actionable messages` (`tests/web-ui/review-content-resources.test.ts`, currently annotated `AC: @review-structured-content-viewer ac-6`): split its unmatched assertions into a test annotated `AC: @review-structured-content-viewer ac-7`, or add the ac-7 annotation alongside ac-6, because ac-6 no longer owns unmatched behavior after the spec edit;
+    - web UI utility/component test proving the same markdown leaves the target unreplaced and emits an `unmatched` guidance item;
+    - regression coverage confirming existing present-resource rewrites and drift/missing/unresolved statuses still behave as before.
+  - Add AC annotations for @review-content-diff-api ac-7 and @review-structured-content-viewer ac-7
+  in the new tests.
+
+  - Run focused tests plus the project-defined quality gates, including `npm run format:check`, `npm
+  run lint -- --quiet`, `npm run typecheck`, `npm test`, and `kspec validate --warnings-ok`.
+spec_ref: "@review-structured-content-viewer"
+meta_ref: null
+plan_ref: "@plan-resource-ui-hardening-plan"
+status: pending
+blocked_by: []
+depends_on:
+  - "@render-review-structured-content-resource-markdown"
+context: []
+priority: 1
+tags:
+  - resources
+  - reviews
+  - web-ui
+  - api
+vcs_refs: []
+created_at: 2026-06-10T04:53:19.049Z
+todos: []
+automation: eligible
