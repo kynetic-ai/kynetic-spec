@@ -1,0 +1,26 @@
+_ulid: 01KTS1Q93E7EBH8Y8F75RH84NM
+slugs: []
+title: "Plan re-review: Data Integrity and Upgrade Safety (fix cycle 2)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTS1Q93E1PD76991239P95SM
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-10T15:16:56.558Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@01KTRYBM"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-10T15:16:56.558Z
+updated_at: null
+notes: []
