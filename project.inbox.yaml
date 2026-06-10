@@ -4248,3 +4248,23 @@ inbox:
       - multi-project
     added_by: "@claude"
     created_at: 2026-06-10T17:57:07.378Z
+  - _ulid: 01KTSGQ42AF31G6VK8FEMPFT0J
+    text: "manual_only tasks trigger automated reviewer dispatch with broken submission linkage.
+      Observed in hawse (2026-06-10): a manual_only task worked directly in the main checkout was
+      submitted via kspec task submit from that checkout; submission linkage captured branch 'main'.
+      The pr-reviewer dispatch rule (on: task.pending_review, no automation filter) fired, workspace
+      provisioning tried to adopt branch 'main', failed ('currently checked out in the main
+      repository working tree'), and BLOCKED the task - turning a normal manual flow into an error
+      state requiring manual unblock + manual review record to complete. Suggested fixes: (1) let
+      dispatch rules filter on automation status so manual_only tasks skip automated review dispatch
+      (or make that the default for manual_only); (2) task submit from the integration branch could
+      warn or record linkage as 'manual/no branch' instead of capturing the integration branch
+      itself; (3) provisioning failure for a manual_only task could leave it pending_review with a
+      diagnostic instead of blocking."
+    tags:
+      - dispatch
+      - manual-tasks
+      - submission-linkage
+      - bug
+    added_by: "@claude"
+    created_at: 2026-06-10T19:39:00.042Z
