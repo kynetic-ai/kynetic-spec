@@ -68,8 +68,12 @@ description: >-
 spec_ref: "@review-structured-content-viewer"
 meta_ref: null
 plan_ref: "@plan-resource-ui-hardening-plan"
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev at 5ba8a8f02843cceff35bb181d414555a3ac1c50b. Review approved
+  resource-context rendering for plan/task review structured markdown: daemon review content now
+  includes byte-free plan/task resource context, web UI rewrites via shared resource-link helpers,
+  and tests cover declared/present rewrites plus drift/unmatched visibility."
 depends_on:
   - "@generalize-live-ui-resource-markdown-rewriting"
 context: []
@@ -131,8 +135,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-10T00:10:21.048Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev at 5ba8a8f02843cceff35bb181d414555a3ac1c50b. Review approved resource-context
+          rendering for plan/task review structured markdown: daemon review content now includes
+          byte-free plan/task resource context, web UI rewrites via shared resource-link helpers,
+          and tests cover declared/present rewrites plus drift/unmatched visibility."
+        previous: null
+      completed_at:
+        new: 2026-06-10T00:24:43.507Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-10T00:24:43.516Z
 created_at: 2026-06-09T23:35:28.237Z
 started_at: 2026-06-09T23:37:43.789Z
 submitted_at: 2026-06-10T00:05:47.700Z
+completed_at: 2026-06-10T00:24:43.507Z
 todos: []
 automation: eligible
