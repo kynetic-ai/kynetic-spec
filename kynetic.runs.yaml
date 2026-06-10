@@ -61867,9 +61867,25 @@ runs:
     completed_at: 2026-06-10T00:08:22.826Z
   - _ulid: 01KTQEQGV4NR2VM18SDBA3VMEG
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-10T00:25:47.108Z
+        completed_at: 2026-06-10T00:26:53.477Z
+        notes: "What worked well: detached review workflow was coherent end to end. The review record
+          carried checks/evidence, the detached merge helper safely selected the existing clean dev
+          checkout, and task completion synced the linked spec to implemented. Specific reusable
+          pattern: read diff and ACs first, verify byte-free API context and shared resource-link
+          helper reuse, then record exact gate evidence before approval. Friction: the required
+          review evidence log still has to be attached as a nit thread, leaving an unresolved
+          non-blocking thread on an approved review; full npm test was lengthy but completed cleanly
+          and is an expected required gate for this risk surface."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-10T00:26:53.477Z
+        completed_at: 2026-06-10T00:26:53.477Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-10T00:25:47.108Z
