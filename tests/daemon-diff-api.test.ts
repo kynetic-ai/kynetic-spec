@@ -903,6 +903,8 @@ describe("Diff API - Review Content Resource Context", () => {
   const PLAN_PLAIN_ULID = testUlid("PPXN", 16);
   const TASK_RES_ULID = testUlid("TRES", 17);
   const TASK_PLAIN_ULID = testUlid("TPXN", 18);
+  const REVIEW_TASK_UNMATCHED_ULID = testUlid("RCRX", 19);
+  const TASK_UNMATCHED_ULID = testUlid("TNMX", 20);
 
   const PLAN_IMG_BYTES = Buffer.from("plan-architecture-diagram-bytes");
   const PLAN_DOC_BYTES = Buffer.from("plan-design-doc-bytes");
@@ -1056,6 +1058,17 @@ plans:
       status: "pending",
       created_at: "2026-01-01T00:00:00Z",
     });
+    // Task with NO resource_refs whose description still authors
+    // `./resources/<path>` references — the ac-7 unmatched edge case.
+    seedSplitTask(tempDir, {
+      _ulid: TASK_UNMATCHED_ULID,
+      slugs: ["task-unmatched"],
+      title: "Task With Unmatched References",
+      description:
+        "![phantom](./resources/img/phantom.png) and [ghost doc](./resources/docs/ghost.md)",
+      status: "pending",
+      created_at: "2026-01-01T00:00:00Z",
+    });
 
     // Task-owned resource manifest: the copy matches its recorded hash, the
     // drifty doc's current bytes differ from the recorded hash.
@@ -1137,6 +1150,18 @@ reviews:
       ref: "@task-plain"
       shadow_commit: "abc123"
       content_hash: "hash4"
+    created_at: "2026-01-01T00:00:00Z"
+  - _ulid: "${REVIEW_TASK_UNMATCHED_ULID}"
+    slugs:
+      - review-task-unmatched
+    title: "Review task with unmatched references"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: task
+      ref: "@task-unmatched"
+      shadow_commit: "abc123"
+      content_hash: "hash5"
     created_at: "2026-01-01T00:00:00Z"
 `,
     );
@@ -1252,15 +1277,51 @@ reviews:
     expect(raw).not.toContain(TASK_COPY_BYTES.toString("base64"));
   });
 
-  // AC: @review-content-diff-api ac-6
-  it("omits resource context for task subjects without resource refs", async () => {
+  // AC: @review-content-diff-api ac-7
+  it("attaches byte-free task resource context with an empty resource list for task subjects without resource refs", async () => {
     const response = await makeRequest("review-task-plain");
 
     expect(response.status).toBe(200);
     const body = await response.json();
     const descSection = body.content.sections.find((s: { id: string }) => s.id === "description");
     expect(descSection).toBeDefined();
-    expect(descSection.resource_context).toBeUndefined();
+
+    // The context is attached even with no resource_refs so clients can
+    // classify any authored `./resources/<path>` reference as unmatched.
+    const context = descSection.resource_context;
+    expect(context).toBeDefined();
+    expect(context.owner_type).toBe("task");
+    expect(context.owner_ref).toBe("@task-plain");
+    expect(context.resources_base_url).toBe(`/api/tasks/${TASK_PLAIN_ULID}/resources`);
+    expect(context.resources).toEqual([]);
+  });
+
+  // AC: @review-content-diff-api ac-7
+  it("attaches byte-free task resource context for unmatched-reference descriptions on tasks with no resource refs", async () => {
+    const response = await makeRequest("review-task-unmatched");
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const descSection = body.content.sections.find((s: { id: string }) => s.id === "description");
+    expect(descSection).toBeDefined();
+
+    // The authored references stay in the markdown untouched — the daemon
+    // never rewrites or strips them.
+    expect(descSection.content).toContain("./resources/img/phantom.png");
+    expect(descSection.content).toContain("./resources/docs/ghost.md");
+
+    const context = descSection.resource_context;
+    expect(context).toBeDefined();
+    expect(context.owner_type).toBe("task");
+    expect(context.owner_ref).toBe("@task-unmatched");
+    expect(context.resources_base_url).toBe(`/api/tasks/${TASK_UNMATCHED_ULID}/resources`);
+
+    // Bounded resolved-resource list that may be empty: no refs means no
+    // entries, and no resource bytes or manifests are embedded anywhere.
+    expect(context.resources).toEqual([]);
+    const raw = JSON.stringify(body);
+    expect(raw).not.toContain("base64");
+    expect(raw).not.toContain(TASK_COPY_BYTES.toString());
   });
 });
 

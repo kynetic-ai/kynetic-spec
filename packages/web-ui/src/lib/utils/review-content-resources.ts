@@ -17,9 +17,13 @@
  *     and materialized task-owned copies alike); drifted/missing/unresolved
  *     references stay raw and are surfaced as actionable guidance instead of
  *     silently serving replacement bytes.
+ *   - authored `./resources/<path>` references matching no resolved resource —
+ *     including when the task's resource context carries an empty resource
+ *     list — stay unreplaced and surface as `unmatched` guidance.
  *
  * AC: @review-structured-content-viewer ac-5
  * AC: @review-structured-content-viewer ac-6
+ * AC: @review-structured-content-viewer ac-7
  */
 
 import type { ReviewContentResourceContext } from "@kynetic-ai/shared";
@@ -37,6 +41,10 @@ import {
  *
  * AC: @review-structured-content-viewer ac-5
  * AC: @review-structured-content-viewer ac-6
+ * AC: @review-structured-content-viewer ac-7 — task contexts with an empty
+ * resource list (no derived resource refs) rewrite nothing, so unmatched
+ * authored targets stay unreplaced and the browser is never pointed at
+ * replacement bytes for them.
  */
 export function rewriteReviewSectionResourceLinks(
   markdown: string,
@@ -67,13 +75,17 @@ export interface ReviewSectionResourceGuidanceItem {
  * unresolved — the rewriter leaves them raw so different bytes are never
  * silently served) plus authored `./resources/<path>` references that match
  * no resolved resource at all (unmatched — without explicit detection their
- * only on-screen trace is a broken `<img src>`/`<a href>`).
+ * only on-screen trace is a broken `<img src>`/`<a href>`). Unmatched
+ * detection works against a bounded resource list that may be empty: a task
+ * with no derived resource references still gets an `unmatched` guidance item
+ * for every authored path.
  *
  * Plan sections return no guidance: plan contexts carry only declared
  * resources, and AC-5's contract is that undeclared/unsafe paths simply stay
  * visible untouched in the rendered markdown.
  *
- * AC: @review-structured-content-viewer ac-6
+ * AC: @review-structured-content-viewer ac-6 — drift/missing/unresolved status messages
+ * AC: @review-structured-content-viewer ac-7 — unmatched reference guidance, including empty resource lists
  */
 export function reviewSectionResourceGuidance(
   markdown: string | undefined,
