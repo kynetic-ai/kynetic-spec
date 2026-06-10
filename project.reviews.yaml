@@ -24555,7 +24555,7 @@ reviews:
     title: "Plan review: Data Integrity and Upgrade Safety"
     disposition: pending
     author: "@claude"
-    check_count: 0
+    check_count: 1
     lifecycle_state: open
     related_refs: []
     subject:
@@ -24567,4 +24567,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-10T14:36:20.386Z
-    updated_at: 2026-06-10T14:36:31.527Z
+    updated_at: 2026-06-10T14:37:05.385Z
