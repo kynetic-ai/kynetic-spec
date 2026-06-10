@@ -180,9 +180,25 @@ events:
       status: pass
       name: Review evidence log
     timestamp: 2026-06-10T16:03:49.454Z
+  - _ulid: 01KTS4DHHFEV9GZZXH5WCCZB3X
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T16:04:03.247Z
+  - _ulid: 01KTS4DHHF0G7ERGW2R0PGCSJ1
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T16:04:03.247Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -190,7 +206,14 @@ subject:
   ref: "@01KTRYBM"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-10T16:04:03.247Z
 created_at: 2026-06-10T16:01:53.637Z
-updated_at: 2026-06-10T16:03:49.238Z
+updated_at: 2026-06-10T16:04:03.247Z
 notes: []
