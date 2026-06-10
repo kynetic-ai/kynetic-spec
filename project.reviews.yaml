@@ -24931,7 +24931,7 @@ reviews:
     title: "Plan final confirmation: Data Integrity and Upgrade Safety"
     disposition: pending
     author: "@claude"
-    check_count: 7
+    check_count: 8
     lifecycle_state: open
     related_refs: []
     subject:
@@ -24943,4 +24943,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-10T16:01:53.637Z
-    updated_at: 2026-06-10T16:03:33.697Z
+    updated_at: 2026-06-10T16:03:49.238Z

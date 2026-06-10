@@ -89,6 +89,27 @@ checks:
     runner: npm gates
     created_at: 2026-06-10T16:03:33.697Z
     completed_at: 2026-06-10T16:03:33.697Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/content read: kspec-agents.md, stored plan @01KTRYBM, exported plan content, prior
+      Codex review @01KTS3CNHCX4PRH2V23ZA6MVPT, Claude nit review @01KTS3VT6JG2E0MY34C8EDFE9R, this
+      plan's review history, and stored shadow plan content diff. Commands run with
+      KSPEC_NO_DAEMON=1 except read-only git inspections: kspec plan get --json, kspec plan export,
+      kspec plan import --dry-run, kspec review get --json, kspec review list --subject-type plan
+      --json, kspec validate --refs/--alignment/--completeness --warnings-ok. Read-only diff: git -C
+      .kspec diff --word-diff=porcelain 422f70a957..86a754b59c --
+      plans/01KTRYBMAGM8EDVBTYE09Y01G9/plan.md. Claims verified: the only stored content delta since
+      the cycle-4 approved content is insertion of 'locally' in ac-newer-version-refused; plan
+      remains draft; prior latest nit is addressed; no threads were needed on this new review.
+      Categories searched: delta isolation, AC partition/coherence, plan status, dry-run parse,
+      refs, alignment, completeness."
+    name: Review evidence log
+    required: true
+    runner: codex
+    created_at: 2026-06-10T16:03:49.238Z
+    completed_at: 2026-06-10T16:03:49.238Z
 events:
   - _ulid: 01KTS49JZ5WQJRKPF47YHSWQF5
     actor: "@claude"
@@ -152,6 +173,13 @@ events:
       status: skipped
       name: code quality gates
     timestamp: 2026-06-10T16:03:33.915Z
+  - _ulid: 01KTS4D42E5JHY0RJ4CZMT03KZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-06-10T16:03:49.454Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -164,5 +192,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T16:01:53.637Z
-updated_at: 2026-06-10T16:03:33.697Z
+updated_at: 2026-06-10T16:03:49.238Z
 notes: []
