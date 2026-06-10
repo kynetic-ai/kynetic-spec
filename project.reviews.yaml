@@ -24912,10 +24912,10 @@ reviews:
   - _ulid: 01KTS48F48VVYJD1VMKT4RBK9P
     slugs: []
     title: "Plan review: Validation and Test Coverage Integrity (final confirmation, claude)"
-    disposition: pending
+    disposition: approved
     author: "@claude"
-    check_count: 0
-    lifecycle_state: draft
+    check_count: 6
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -24924,14 +24924,15 @@ reviews:
       shadow_commit: ""
     thread_count: 0
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-06-10T16:01:16.936Z
+    updated_at: 2026-06-10T16:02:35.050Z
   - _ulid: 01KTS49JZ5323DZX402A1SGAFP
     slugs: []
     title: "Plan final confirmation: Data Integrity and Upgrade Safety"
     disposition: pending
     author: "@claude"
-    check_count: 1
+    check_count: 0
     lifecycle_state: open
     related_refs: []
     subject:
@@ -24943,4 +24944,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-10T16:01:53.637Z
-    updated_at: 2026-06-10T16:02:24.857Z
+    updated_at: 2026-06-10T16:02:04.464Z

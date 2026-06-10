@@ -2,7 +2,82 @@ _ulid: 01KTS48F48VVYJD1VMKT4RBK9P
 slugs: []
 title: "Plan review: Validation and Test Coverage Integrity (final confirmation, claude)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --refs --warnings-ok exits 0; 6 reference warnings are
+      the pre-existing deprecated-item baseline (@session-summary-cache), unrelated to this plan
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-10T16:02:20.239Z
+    completed_at: 2026-06-10T16:02:20.239Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --alignment --warnings-ok exits 0; 46 warnings, 468/637
+      specs have tasks, 457 aligned — identical to the cycle-2 baseline
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-10T16:02:22.635Z
+    completed_at: 2026-06-10T16:02:22.635Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: KSPEC_NO_DAEMON=1 kspec validate --completeness --warnings-ok exits 0; 265 warnings are
+      the pre-existing completeness baseline
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-10T16:02:25.116Z
+    completed_at: 2026-06-10T16:02:25.116Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Nit @01KTS3BDZQ (review @01KTS386) addressed: stored plan.md now reads
+      '01TESTWORKFLOW000000000 (also contains excluded letters O and L)' and Implementation Notes
+      item 3 says 'three also containing excluded Crockford letters: two with O, one with O and L'.
+      Facts grounded against tests/grep.test.ts: fixture strings at lines 545 (01TESTOBS, O), 568
+      (01TESTAGENT, none), 589 (01TESTWORKFLOW, O+L), 611 (01TESTCONV, O) — all 23 chars; Crockford
+      excludes I, L, O, U, so the corrected parenthetical and count are accurate"
+    name: Cycle-2 nit fix verified in stored content
+    required: true
+    runner: claude-code
+    created_at: 2026-06-10T16:02:27.602Z
+    completed_at: 2026-06-10T16:02:27.602Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Shadow-branch diff 947a9ff5ec (fix-cycle-1 import, the state cycle-2 review @01KTS386
+      examined) -> 925d373ae6 (fix-cycle-2 import) touches only plan.md (the two nit hunks: WORKFLOW
+      parenthetical + count line 'two with the excluded Crockford letter O' -> 'three...two with O,
+      one with O and L') and notes.yaml (append-only audit notes). Diff 925d373ae6 -> HEAD adds only
+      one more appended note. plan.yaml untouched: status remains draft, no
+      scope/task/dependency/Covers changes. Independently corroborates codex cycle-3 materiality
+      check in @01KTS3T3Q6W48MXYWVHB16ENWG"
+    name: No changes beyond the nit fix since cycle-2 approval
+    required: true
+    runner: claude-code
+    created_at: 2026-06-10T16:02:30.016Z
+    completed_at: 2026-06-10T16:02:30.016Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Not applicable: this is a stored-draft-plan text review; no repository files changed in
+      this cycle (verified via shadow diff). Code gates run when derived tasks are implemented"
+    name: npm gates
+    required: true
+    runner: npm format/lint/typecheck/test
+    created_at: 2026-06-10T16:02:32.423Z
+    completed_at: 2026-06-10T16:02:32.423Z
 events:
   - _ulid: 01KTS48F48K9V8ABZC8V9Q3V11
     actor: "@claude"
@@ -10,9 +85,74 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T16:01:16.936Z
+  - _ulid: 01KTS4AANZ625WRN673ZS72B76
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-10T16:02:17.919Z
+  - _ulid: 01KTS4AD4GP49G0AHDESTQWFNA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T16:02:20.432Z
+  - _ulid: 01KTS4AFG5DXJQ54CFVCE40H4K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-10T16:02:22.854Z
+  - _ulid: 01KTS4AJ0FG2C8TVRTH1AXR73N
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-10T16:02:25.423Z
+  - _ulid: 01KTS4AMAR10M58PX3GF25EFA6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cycle-2 nit fix verified in stored content
+    timestamp: 2026-06-10T16:02:27.800Z
+  - _ulid: 01KTS4APP2JHC0CDME09W5RPSP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: No changes beyond the nit fix since cycle-2 approval
+    timestamp: 2026-06-10T16:02:30.210Z
+  - _ulid: 01KTS4AS1EEA7JMTMYGGAKPD99
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm gates
+    timestamp: 2026-06-10T16:02:32.622Z
+  - _ulid: 01KTS4AVDA3EPA3ZTKPGBC97MV
+    actor: claude-code
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T16:02:35.050Z
+  - _ulid: 01KTS4AVDA10A443KAS5NJRJZF
+    actor: claude-code
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T16:02:35.050Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +160,14 @@ subject:
   ref: "@01KTRYBV"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude-code
+    role: reviewer
+    created_at: 2026-06-10T16:02:35.050Z
 created_at: 2026-06-10T16:01:16.936Z
-updated_at: null
+updated_at: 2026-06-10T16:02:35.050Z
 notes: []
