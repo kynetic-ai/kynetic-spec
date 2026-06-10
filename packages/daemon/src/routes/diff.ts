@@ -11,6 +11,7 @@
  * - @review-content-diff-api ac-4: GET /api/reviews/:id/content returns parsed entity content
  * - @review-content-diff-api ac-5: plan-subject markdown sections carry byte-free plan resource context
  * - @review-content-diff-api ac-6: task-subject description sections carry byte-free task resource context
+ * - @review-content-diff-api ac-7: task resource context is attached even without resource refs so clients can classify authored paths as unmatched
  */
 
 import { Elysia, t } from "elysia";
@@ -581,21 +582,22 @@ export function createDiffRoutes() {
             // the projection covers plan-owned refs and materialized
             // task-owned copies, and reports per-reference status so clients
             // rewrite only `present` resources while surfacing drifted/
-            // missing/unresolved/unmatched references instead of silently
-            // serving replacement bytes.
-            let taskResourceContext: ReviewContentTaskResourceContext | undefined;
-            if (task.resource_refs && task.resource_refs.length > 0) {
-              const resolvedResources = await resolveTaskResources(ctx, task);
-              const projected = projectResolvedTaskResources(resolvedResources);
-              if (projected.length > 0) {
-                taskResourceContext = {
-                  owner_type: "task",
-                  owner_ref: subject.ref,
-                  resources_base_url: buildTaskResourcesBaseUrl(task._ulid),
-                  resources: projected,
-                };
-              }
-            }
+            // missing/unresolved references instead of silently serving
+            // replacement bytes.
+            // AC: @review-content-diff-api ac-7 — the context is attached for
+            // every task subject, including tasks with no resource_refs (the
+            // resolver returns an empty projection for those), so the bounded
+            // `resources` array may be empty. Clients need the context to
+            // classify authored `./resources/<path>` references that match no
+            // resolved resource as `unmatched` instead of leaving raw broken
+            // links without guidance.
+            const resolvedResources = await resolveTaskResources(ctx, task);
+            const taskResourceContext: ReviewContentTaskResourceContext = {
+              owner_type: "task",
+              owner_ref: subject.ref,
+              resources_base_url: buildTaskResourcesBaseUrl(task._ulid),
+              resources: projectResolvedTaskResources(resolvedResources),
+            };
 
             return {
               review_id: review._ulid,
@@ -609,7 +611,7 @@ export function createDiffRoutes() {
                     type: "markdown",
                     title: "Description",
                     content: task.description || "",
-                    ...(taskResourceContext ? { resource_context: taskResourceContext } : {}),
+                    resource_context: taskResourceContext,
                   },
                   ...(task.notes && task.notes.length > 0
                     ? [

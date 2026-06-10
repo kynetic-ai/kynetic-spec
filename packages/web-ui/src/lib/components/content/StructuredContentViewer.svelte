@@ -4,7 +4,8 @@
   AC: @review-structured-content-viewer ac-3 — Comment button creates thread with structured anchor (section, field, anchor-ref)
   AC: @review-structured-content-viewer ac-4 — Existing threads shown inline at anchored section positions
   AC: @review-structured-content-viewer ac-5 — Plan content markdown rewrites declared `./resources/` targets to plan-scoped bytes URLs
-  AC: @review-structured-content-viewer ac-6 — Task description markdown rewrites present `./resources/` targets to task-scoped bytes URLs; drifted/missing/unresolved/unmatched references stay visible with status messages
+  AC: @review-structured-content-viewer ac-6 — Task description markdown rewrites present `./resources/` targets to task-scoped bytes URLs; drifted/missing/unresolved references stay visible with status messages
+  AC: @review-structured-content-viewer ac-7 — Unmatched `./resources/` references (including when the task has no derived resource refs) stay unreplaced and render an `unmatched` status message with guidance
 -->
 <script lang="ts">
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
@@ -183,6 +184,8 @@
 
 	// AC: @review-structured-content-viewer ac-6 — badge styling for resource
 	// status messages (mirrors the task detail resource status section).
+	// AC: @review-structured-content-viewer ac-7 — `unmatched` falls through to
+	// the default pending-style badge.
 	function resourceStatusClasses(status: string): string {
 		switch (status) {
 			case 'drift':
@@ -263,6 +266,7 @@
 					{#if section.type === 'markdown'}
 						<!-- AC: @review-structured-content-viewer ac-5 — plan content `./resources/` targets rewrite to plan-scoped bytes URLs (undeclared/unsafe paths stay raw) -->
 						<!-- AC: @review-structured-content-viewer ac-6 — task description `./resources/` targets rewrite to task-scoped bytes URLs for present resources only -->
+						<!-- AC: @review-structured-content-viewer ac-7 — unmatched `./resources/` targets stay unreplaced; the browser is never pointed at replacement bytes for them -->
 						{@const resourceGuidance = reviewSectionResourceGuidance(
 							section.content,
 							section.resource_context
@@ -276,7 +280,8 @@
 						<!-- Resource status — drifted/missing/unresolved resolved resources AND
 						     unmatched authoring references stay visible with actionable status
 						     instead of silently serving replacement bytes. -->
-						<!-- AC: @review-structured-content-viewer ac-6 -->
+						<!-- AC: @review-structured-content-viewer ac-6 — drift/missing/unresolved status messages -->
+						<!-- AC: @review-structured-content-viewer ac-7 — `unmatched` status messages with guidance for each authored path -->
 						{#if resourceGuidance.length > 0}
 							<div data-testid="review-resource-status" class="mt-3 flex flex-col gap-2">
 								<p class="text-xs font-medium text-muted-foreground">Resources needing attention</p>

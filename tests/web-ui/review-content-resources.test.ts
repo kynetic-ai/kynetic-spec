@@ -16,7 +16,10 @@
  *   - task sections rewrite only `present` resolved resources (plan-owned
  *     refs and materialized task-owned copies) to the task-scoped bytes URL,
  *     and keep drifted/missing/unresolved/unmatched references raw with
- *     actionable guidance instead of silently serving replacement bytes.
+ *     actionable guidance instead of silently serving replacement bytes;
+ *   - task sections whose context carries an EMPTY resource list (tasks with
+ *     no derived resource refs) leave every authored `./resources/<path>`
+ *     target unreplaced and classify each as `unmatched` guidance.
  *
  * SCOPE — these are URL-shape unit pins for the review-page rewrite path. The
  * HTTP side (the produced URLs returning the selected project's bytes through
@@ -220,13 +223,24 @@ describe("rewriteReviewSectionResourceLinks — task sections", () => {
     const markdown = "![arch](./resources/img/arch.png)";
     expect(rewriteReviewSectionResourceLinks(markdown, undefined)).toBe(markdown);
   });
+
+  // AC: @review-structured-content-viewer ac-7
+  // A task context with an empty resource list — a task with no derived
+  // resource refs — rewrites nothing: every authored target stays unreplaced
+  // so the browser is never pointed at replacement bytes for it.
+  it("leaves all authored targets unreplaced when the task resource list is empty", () => {
+    const markdown =
+      "![phantom](./resources/img/phantom.png) and [ghost doc](./resources/docs/ghost.md)";
+    expect(rewriteReviewSectionResourceLinks(markdown, taskContext([]))).toBe(markdown);
+  });
 });
 
 describe("reviewSectionResourceGuidance", () => {
-  // AC: @review-structured-content-viewer ac-6
-  // Non-present resolved resources and unmatched authoring references are
-  // surfaced as visible status messages — never silently dropped behind a
-  // broken <img>/<a> target.
+  // AC: @review-structured-content-viewer ac-6 — drifted resolved resources
+  // surface as visible status messages.
+  // AC: @review-structured-content-viewer ac-7 — unmatched authoring
+  // references surface as `unmatched` status messages — never silently
+  // dropped behind a broken <img>/<a> target.
   it("lists drifted resources and unmatched references with actionable messages", () => {
     const markdown =
       "![arch](./resources/img/arch.png) [drifty](./resources/docs/drifty.md) ![nowhere](./resources/img/nowhere.png)";
@@ -252,6 +266,25 @@ describe("reviewSectionResourceGuidance", () => {
     const unmatched = guidance.find((g) => g.status === "unmatched");
     expect(unmatched?.path).toBe("img/nowhere.png");
     expect(unmatched?.message).toContain("No matching task resource");
+  });
+
+  // AC: @review-structured-content-viewer ac-7
+  // A task with no derived resource references still gets an `unmatched`
+  // guidance item per authored path: the context's bounded resource list is
+  // empty, so nothing matches and every reference needs actionable guidance
+  // to verify the path or re-derive the task with the resource present.
+  it("emits unmatched guidance for every authored reference when the resource list is empty", () => {
+    const markdown =
+      "![phantom](./resources/img/phantom.png) and [ghost doc](./resources/docs/ghost.md)";
+    const guidance = reviewSectionResourceGuidance(markdown, taskContext([]));
+
+    expect(guidance).toHaveLength(2);
+    expect(guidance.map((g) => g.status)).toEqual(["unmatched", "unmatched"]);
+    expect(guidance.map((g) => g.path)).toEqual(["img/phantom.png", "docs/ghost.md"]);
+    for (const item of guidance) {
+      expect(item.message).toContain("No matching task resource");
+      expect(item.message).toContain("verify the reference path or re-derive the task");
+    }
   });
 
   // AC: @review-structured-content-viewer ac-6
