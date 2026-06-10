@@ -177,9 +177,25 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-06-10T14:43:50.735Z
+  - _ulid: 01KTRZV0AFJV09H4XBBCGGT3FT
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-10T14:44:01.487Z
+  - _ulid: 01KTRZV0AFPSXDQT8KMVAXNRE3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T14:44:01.487Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -242,7 +258,14 @@ threads:
           markdown vs format=json" instead of "markdown vs JSON"?
         created_at: 2026-06-10T14:42:32.077Z
     kind: question
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-10T14:44:01.487Z
 created_at: 2026-06-10T14:41:37.942Z
-updated_at: 2026-06-10T14:43:50.498Z
+updated_at: 2026-06-10T14:44:01.487Z
 notes: []
