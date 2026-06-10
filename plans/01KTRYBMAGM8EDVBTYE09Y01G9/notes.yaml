@@ -3,3 +3,30 @@ notes:
     content: "Fix cycle 1: addressed codex and claude review findings"
     author: "@claude"
     created_at: 2026-06-10T15:10:47.911Z
+  - _ulid: 01KTS1EVDB6FGEPWSS57YJTPSK
+    content: "Fix cycle 1 changes per reviews 01KTRZCY (codex) and 01KTS08Z (claude): (1) codex blocker,
+      check-vs-sync ordering — task-format-version-ceiling step 2 now requires the ceiling check to
+      read the declared version RAW from disk before the pre-read shadow sync block (yaml.ts:783-836
+      runs before manifest parse at :838-845); spec Checking bullet and ac-newer-version-refused now
+      state no-modification includes context-initialization sync. (2) codex blocker, nonexistent AC
+      in Covers — added dedicated spec-update task task-broken-shadow-safety-spec-delta carrying the
+      verbatim ac-restore-failure-reports-state text (OOM-hardening plan pattern; plan import cannot
+      update existing specs from the Specs block); shadow task depends_on it and its Covers line
+      annotates the AC origin. (3) codex question — ac-dynamic-values-discrete-args rewritten as
+      observable ac-dynamic-values-treated-literally (literal success/failure, no embedded command
+      execution, no shell interpretation); args-array mechanism kept in task How; Covers/annotations
+      updated. (4) codex question + claude nit — testing guidance now lists explicit descriptive AC
+      ids instead of ac-N. (5) claude, spec overlap — new decision spec reparented under @versioning
+      with depends_on @format-version (plan format lacks relates_to); overlap analysis extended with
+      a @versioning/@format-version bullet; description reframed as a forward-direction delta, not a
+      restatement. (6) claude — diagnostic carve-out moved into ac-newer-version-refused text (other
+      than the project health diagnostic). (7) claude — upgrade refusal ownership decided:
+      initContext throw owns user-visible kspec upgrade refusal (initContext at upgrade.ts:345-346
+      precedes detectSourceVersion:352); probe correction kept as helper-level defense in depth
+      pinned by unit tests only. (8) claude nits — raw-manifest read makes missing-vs-default-1.0
+      unambiguous at the check layer, parsed-path ambiguity accepted and documented;
+      task-catch-justification-comments depends_on trimmed to only task-shadow-restore-loud-failure
+      (sole file overlap). All decisions recorded in the plan's Review fix cycle 1 decisions
+      section. Dry-run passed; re-imported; plan remains draft."
+    author: "@claude"
+    created_at: 2026-06-10T15:12:20.395Z
