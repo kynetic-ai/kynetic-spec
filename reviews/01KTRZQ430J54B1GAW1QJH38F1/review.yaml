@@ -190,9 +190,25 @@ events:
       status: pass
       name: Spec language quality and placement
     timestamp: 2026-06-10T14:44:29.379Z
+  - _ulid: 01KTRZWDYQQ7N92F33HRXCS82P
+    actor: claude-fable-5
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-10T14:44:48.215Z
+  - _ulid: 01KTRZWDYRTQKCEZP1WXXJZCK3
+    actor: claude-fable-5
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T14:44:48.216Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -380,7 +396,14 @@ threads:
           the dependency-aware blocked count."
         created_at: 2026-06-10T14:44:17.041Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude-fable-5
+    role: reviewer
+    created_at: 2026-06-10T14:44:48.215Z
 created_at: 2026-06-10T14:41:54.272Z
-updated_at: 2026-06-10T14:44:29.164Z
+updated_at: 2026-06-10T14:44:48.216Z
 notes: []
