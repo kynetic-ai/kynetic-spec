@@ -24607,17 +24607,18 @@ reviews:
   - _ulid: 01KTS08ZMCG41XE9TSM7WPWK2Q
     slugs: []
     title: "Plan review: Data Integrity and Upgrade Safety"
-    disposition: pending
+    disposition: changes_requested
     author: "@claude"
-    check_count: 0
-    lifecycle_state: draft
+    check_count: 5
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@01KTRYBM"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 6
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-10T14:51:39.532Z
+    updated_at: 2026-06-10T14:53:53.232Z

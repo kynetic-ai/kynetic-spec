@@ -2,7 +2,88 @@ _ulid: 01KTS08ZMCG41XE9TSM7WPWK2Q
 slugs: []
 title: "Plan review: Data Integrity and Upgrade Safety"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All factual claims verified against source: silent restore swallows at
+      src/parser/shadow.ts:2923 and :3056 with stash/restore helpers at :73-94; execSync
+      template-literal interpolation in src/utils/git.ts at all cited lines (81-84, 203, 223, 274,
+      281, 291; static sites 35, 52, 139, 213, 230, 251); initContext at src/parser/yaml.ts:701;
+      upgrade probe inference at src/cli/commands/upgrade.ts:208-228 buckets unrecognized kynetic
+      into 0.1.0-0.8.99 and unknown confidence runs the full pipeline as safety net (lines 138,
+      270); doctor reads the manifest directly without initContext (src/parser/doctor.ts:705-719);
+      ENTITY_FOLDER_STORAGE_MIN_KYNETIC_VERSION='1.2', EntityStorageCompatibilityError, and
+      partial_entity_storage_layout all present in src/parser/entity-storage-compatibility.ts;
+      task-data-manager legacy gate at src/parser/task-data-manager.ts:1094 uses parseFloat floor
+      comparison; manifest kynetic field is unconstrained z.string().default('1.0')
+      (src/schema/spec.ts:115) so a '1.3' or garbage value passes schema, confirming the
+      missing-ceiling premise; runGitAsync in shadow.ts uses execFileAsync args-array (safe pattern
+      claim); git ref-name rules permit metacharacters, confirming the injection surface in
+      getBranchRemote; all five files named in the catch-justification task exist."
+    name: Codebase claim verification
+    required: true
+    runner: manual-investigation
+    created_at: 2026-06-10T14:53:43.035Z
+    completed_at: 2026-06-10T14:53:43.035Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 6 ACs of data-format-forward-compatibility claimed by task-format-version-ceiling; all
+      3 ACs of subprocess-argument-literalness claimed by task-git-utils-execfile; the new delta AC
+      ac-restore-failure-reports-state plus existing ac-preserve-on-failure claimed by
+      task-shadow-restore-loud-failure. No orphan ACs; no ambiguous multi-task coverage; Covers
+      lines match the AC ids defined in the plan document.
+    name: AC coverage mapping
+    required: true
+    runner: manual-investigation
+    created_at: 2026-06-10T14:53:45.536Z
+    completed_at: 2026-06-10T14:53:45.536Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All external refs resolve: @broken-shadow-safety (ac-preserve-on-failure text quoted
+      accurately), @schema and @core parent modules, @single-command-version-upgrade,
+      @entity-folder-migration-and-compatibility-1, @shadow-recovery, @shadow-errors. No slug
+      collisions: @data-format-forward-compatibility and @subprocess-argument-literalness are
+      unclaimed. depends_on in task-catch-justification-comments references the three plan-local
+      task slugs correctly."
+    name: Cross-reference validation
+    required: true
+    runner: manual-investigation
+    created_at: 2026-06-10T14:53:48.110Z
+    completed_at: 2026-06-10T14:53:48.110Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No cycles; no priority inversion (the P3 task depends on P1/P1/P2 tasks, never the
+      reverse); tasks 1-3 are mutually independent and parallelizable; the only file-overlap pair
+      (shadow.ts in tasks 1 and 4) has a declared dependency. One over-constraint noted as a nit
+      thread (extra edges from the comments-only task to tasks 2 and 3).
+    name: Dependency ordering
+    required: true
+    runner: manual-investigation
+    created_at: 2026-06-10T14:53:50.677Z
+    completed_at: 2026-06-10T14:53:50.677Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The plan's overlap section covers four prior plans/spec groups correctly and the finding-5
+      dismissal is sound (verified idempotent/staged migration behavior claims against
+      entity-storage-compatibility.ts), but it misses the implemented @versioning/@format-version
+      specs that already own the manifest format-version field semantics. The new decision spec
+      declares no relationship to them. Recorded as a question thread; needs a relates_to/depends_on
+      declaration and an overlap-analysis update before approval.
+    name: Spec neighborhood and overlap analysis
+    required: true
+    runner: manual-investigation
+    created_at: 2026-06-10T14:53:53.232Z
+    completed_at: 2026-06-10T14:53:53.232Z
 events:
   - _ulid: 01KTS08ZMCKY5M8NXYGRC93YC5
     actor: "@claude"
@@ -10,17 +91,212 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T14:51:39.532Z
+  - _ulid: 01KTS0C74JBTH1QGH7N4JTP4HX
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-10T14:53:25.523Z
+  - _ulid: 01KTS0C9M4ZZ0FRDD33MGFVSSH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTS0C9DARH4DPBK8RW71ECV6
+    timestamp: 2026-06-10T14:53:28.068Z
+  - _ulid: 01KTS0CC1TMJF1TJ9MXNVAPQ82
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTS0CBVDBPH74AF5D65575W3
+    timestamp: 2026-06-10T14:53:30.555Z
+  - _ulid: 01KTS0CEGKVZJZ7G9DCWYF51BA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTS0CE9QTJM7SKZ0H170DYHY
+    timestamp: 2026-06-10T14:53:33.075Z
+  - _ulid: 01KTS0CGYHSGYNN085WYHDPCB0
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTS0CGR31VPAVZWTZ8KR7MG7
+    timestamp: 2026-06-10T14:53:35.569Z
+  - _ulid: 01KTS0CKF8RFX9PFBXDZ9RN793
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTS0CK80A7PXAVQ9R58Z60NE
+    timestamp: 2026-06-10T14:53:38.152Z
+  - _ulid: 01KTS0CNXX0WG13GW24G6301CT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTS0CNQE28HA1NQS0BS8P1JP
+    timestamp: 2026-06-10T14:53:40.669Z
+  - _ulid: 01KTS0CRED1QSGB0AE3E6G1R1P
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Codebase claim verification
+    timestamp: 2026-06-10T14:53:43.245Z
+  - _ulid: 01KTS0CTW8HQDYV502J3WQVHHD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-10T14:53:45.736Z
+  - _ulid: 01KTS0CXD7WY8MBFTCXWREAMWM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation
+    timestamp: 2026-06-10T14:53:48.327Z
+  - _ulid: 01KTS0CZX32ZQGXYT64AD5H30K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-10T14:53:50.883Z
+  - _ulid: 01KTS0D2DAFK1GG09FTVWWSRA2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Spec neighborhood and overlap analysis
+    timestamp: 2026-06-10T14:53:53.450Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@01KTRYBM"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTS0C9DARH4DPBK8RW71ECV6
+    anchor:
+      type: structured
+      ref: "@data-format-forward-compatibility"
+      section: specs
+    entries:
+      - _ulid: 01KTS0C9DADTDM7W5ZQNYM9HSS
+        author: "@claude"
+        body: "SHOULD-FIX: The plan's 'Overlap with existing plans/specs' analysis omits the implemented
+          specs @format-version and @versioning, which already own the manifest format-version
+          field's semantics (@format-version ac-1: 'The declared format version determines which
+          schema compatibility rules are applied'). The new decision spec defines
+          stamping/checking/refusal semantics for the same declared version but declares no
+          relationship to @format-version and is parented at @schema rather than under @versioning
+          where the existing format-version requirement lives. Not a contradiction (refusal is
+          arguably a compatibility rule), but the boundary should be explicit: add
+          relates_to/depends_on @format-version (and consider parent @versioning), and extend the
+          overlap-analysis note to cover it."
+        created_at: 2026-06-10T14:53:27.850Z
+    kind: question
+  - _ulid: 01KTS0CBVDBPH74AF5D65575W3
+    anchor:
+      type: structured
+      field: ac-newer-version-refused
+      ref: "@data-format-forward-compatibility"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTS0CBVDMZHJGNTAZYPZ61DE
+        author: "@claude"
+        body: "SHOULD-FIX: ac-newer-version-refused says 'Any command that reads or mutates project data'
+          refuses at context initialization, while ac-diagnostics-report-read-only requires the
+          project health diagnostic to complete and report. The diagnostic command reads project
+          data, so to a spec-only reader these two ACs contradict each other. The pair is consistent
+          today only because of an implementation detail (verified: the doctor command calls
+          getDoctorReport directly and never runs initContext — src/cli/commands/doctor.ts:28, no
+          initContext anywhere in src/parser/doctor.ts). Bound the universal AC explicitly, e.g.
+          'Any command that reads or mutates project data, except the project health diagnostic,
+          ...' so the carve-out lives in the contract rather than in the implementation."
+        created_at: 2026-06-10T14:53:30.349Z
+    kind: question
+  - _ulid: 01KTS0CE9QTJM7SKZ0H170DYHY
+    anchor:
+      type: structured
+      ref: "@task-format-version-ceiling"
+      section: description
+    entries:
+      - _ulid: 01KTS0CE9QCRYP5MA8CMKP00D9
+        author: "@claude"
+        body: "SHOULD-FIX: Step 5 (upgrade refusal in runUpgradePipeline / detectSourceVersion) does not
+          account for step 2's ordering: runUpgradePipeline itself calls initContext
+          (src/cli/commands/upgrade.ts:345-346) BEFORE detectSourceVersion (line 352), so once the
+          throwing ceiling check lands in initContext, the upgrade command will refuse at line 346
+          and the step-5 refusal/probe-inference fix may be unreachable from the CLI path. The
+          probe-inference correction in detectSourceVersion (lines 208-228, verified: unrecognized
+          kynetic values bucket into 0.1.0-0.8.99) is still worth making as defense in depth since
+          detectSourceVersion is exported and separately exercised, but the task should state which
+          layer owns the user-visible refusal for 'kspec upgrade' and which AC test pins which path,
+          so the worker does not write a test expecting a refusal message that the initContext throw
+          preempts."
+        created_at: 2026-06-10T14:53:32.855Z
+    kind: question
+  - _ulid: 01KTS0CGR31VPAVZWTZ8KR7MG7
+    anchor:
+      type: structured
+      ref: "@task-format-version-ceiling"
+      section: description
+    entries:
+      - _ulid: 01KTS0CGR3QA4J98SNFZ2FFYT2
+        author: "@claude"
+        body: "NIT: The testing section says 'Annotate with AC: @data-format-forward-compatibility ac-N for
+          each', but the spec's AC ids are descriptive (ac-newer-version-refused,
+          ac-daemon-structured-error, ...), not numeric. Reword to avoid a fresh-session worker
+          annotating tests with nonexistent ac-1..ac-6 ids."
+        created_at: 2026-06-10T14:53:35.364Z
+    kind: nit
+  - _ulid: 01KTS0CK80A7PXAVQ9R58Z60NE
+    anchor:
+      type: structured
+      ref: "@task-format-version-ceiling"
+      section: description
+    entries:
+      - _ulid: 01KTS0CK805DR0JXVAT5G7AM8Q
+        author: "@claude"
+        body: "NIT: The manifest Zod schema defaults the format-version field to '1.0' when absent
+          (src/schema/spec.ts:115: kynetic: z.string().default('1.0')), so wherever the
+          schema-parsed manifest is consumed, a missing field is indistinguishable from an explicit
+          '1.0', while raw-YAML readers (upgrade probe, entity-storage-compatibility) see the field
+          as genuinely absent. Behaviorally both routes end in 'no refusal', so this is not a
+          correctness gap, but step 2's 'a missing kynetic field keeps its existing legacy handling'
+          should say which manifest representation the new check reads so the missing-field test
+          asserts the right layer."
+        created_at: 2026-06-10T14:53:37.920Z
+    kind: nit
+  - _ulid: 01KTS0CNQE28HA1NQS0BS8P1JP
+    anchor:
+      type: structured
+      ref: "@task-catch-justification-comments"
+      section: dependencies
+    entries:
+      - _ulid: 01KTS0CNQER5EDTA07K3BD5YWB
+        author: "@claude"
+        body: "NIT: task-catch-justification-comments depends on all three behavioral tasks, but its stated
+          rationale (document the post-behavioral-fix state of the five audited files) only holds
+          for @task-shadow-restore-loud-failure — the only task of the three that touches one of the
+          five files (src/parser/shadow.ts). @task-format-version-ceiling touches
+          yaml.ts/upgrade.ts/doctor.ts/entity-storage-compatibility.ts and @task-git-utils-execfile
+          touches src/utils/git.ts, none of which are in the audit set. The extra two edges
+          over-serialize a P3 hygiene task; harmless, but consider dropping them or expanding the
+          rationale."
+        created_at: 2026-06-10T14:53:40.462Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-10T14:51:39.532Z
-updated_at: null
+updated_at: 2026-06-10T14:53:53.232Z
 notes: []
