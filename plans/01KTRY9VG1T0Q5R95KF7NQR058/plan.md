@@ -3,10 +3,20 @@
 ## Specs
 
 ```yaml
+- title: Release and Distribution
+  slug: release-and-distribution
+  type: module
+  parent: "@main"
+  description: |
+    Packaging, publication, and release verification for the
+    kspec distribution: what the installable artifact contains,
+    which runtimes it supports, and how publication is gated on
+    verification evidence.
+
 - title: Single Supported Runtime Version Range
   slug: supported-runtime-range
   type: requirement
-  parent: "@main"
+  parent: "@release-and-distribution"
   description: |
     kspec declares exactly one supported Node.js runtime version
     range, and every user-facing installation or onboarding
@@ -38,7 +48,7 @@
 - title: Published Artifact Completeness
   slug: published-artifact-completeness
   type: requirement
-  parent: "@main"
+  parent: "@release-and-distribution"
   description: |
     The artifact a user installs contains everything needed to
     run kspec and the legal terms it is distributed under: a
@@ -86,15 +96,14 @@
 - title: Pre-Publish Verification Across Supported Runtimes
   slug: prepublish-runtime-verification
   type: requirement
-  parent: "@main"
+  parent: "@release-and-distribution"
   description: |
     Automated verification exercises kspec across the supported
     Node.js runtime range rather than on a single version, so
     the declared engine constraint is backed by evidence. At
-    minimum, the oldest supported major version and the newest
-    verified major version are both exercised, and publication
-    is gated on verification at the oldest supported major
-    version.
+    minimum, the oldest supported major version and at least one
+    newer major version are both exercised, and publication is
+    gated on verification at the oldest supported major version.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -103,7 +112,7 @@
         The pipeline's runtime coverage is examined
       then: |
         The test suite executes on the oldest supported Node.js
-        major version and on the newest verified major version,
+        major version and on at least one newer major version,
         as distinct runs that must each pass
     - id: ac-2
       given: |
@@ -137,16 +146,29 @@ derive_from_specs: false
     (matching the package.json "author" field) and an
     appropriate year range. No package.json "files" change is
     needed: npm always includes LICENSE* files in the packed
-    tarball regardless of the files array.
+    tarball regardless of the files array. This task also
+    CREATES tests/release-packaging.test.ts — it owns that file;
+    later tasks extend it and depend on this task.
 
     How: Use the canonical MIT text (https://opensource.org/license/mit).
     Verify inclusion with `npm pack --dry-run` and confirm
     LICENSE appears in the tarball file listing.
 
-    Testing: Add a packaging test (e.g. tests/release-packaging.test.ts)
-    that asserts LICENSE exists at the repo root, its first
-    lines identify the MIT license, and package.json "license"
-    is "MIT". Annotate with
+    Testing: Create tests/release-packaging.test.ts with
+    behavioral assertions that stay clean under the
+    no-source-scanning lint rule (error severity in tests):
+    (a) spawn `npm pack --dry-run --json` (pass the repo root as
+    an explicit cwd) and assert the parsed JSON file listing
+    contains LICENSE — subprocess output parsing, no file read;
+    (b) import package.json as a JSON module (import attributes)
+    and assert license === "MIT" — module import, no fs read;
+    (c) for the terms-match-identifier check, read the first
+    lines of LICENSE and assert they identify the MIT license —
+    this is a project-file read, so use the rule's sanctioned
+    escape hatch: an inline eslint-disable comment for
+    no-source-scanning/no-source-file-reads with a written
+    reason (the LICENSE text is the release artifact under
+    test). Do not claim the rule does not apply. Annotate with
     `// AC: @published-artifact-completeness ac-1`.
     Run gates: npm run format, npm run lint, npm run typecheck,
     npm test.
@@ -169,13 +191,22 @@ derive_from_specs: false
     overflow on deeply nested collections). `npm audit` claims
     all are fixable via `npm audit fix` (no --force needed).
 
-    What: Run `npm audit fix` (NEVER `npm audit fix --force`),
-    then verify `npm audit --omit=dev` reports 0
-    vulnerabilities. Review the package-lock.json diff and
-    confirm every bump is semver-compatible (patch/minor within
-    the declared ranges). Direct root deps affected: yaml, ws,
-    smol-toml (package.json dependencies). Transitive/web-ui
-    tree: devalue, dompurify, file-type, svelte, undici.
+    What: Run `npm audit fix` (NEVER `npm audit fix --force`).
+    Scope, precisely: the acceptance bar is production
+    advisories only — `npm audit --omit=dev` must report 0
+    vulnerabilities afterward. Note that `npm audit fix`
+    operates on the whole install tree, so it may also bump
+    dev-only/workspace tooling advisories (e.g. @sveltejs/kit,
+    cookie); those side-effect bumps are accepted as part of
+    this task PROVIDED they are semver-compatible lock-only
+    changes. Review the entire package-lock.json diff (dev bumps
+    included) and confirm every bump is semver-compatible
+    (patch/minor within declared ranges). Dev-only advisories
+    that `npm audit fix` does not resolve are explicitly out of
+    scope: leave them and capture a follow-up inbox item. Direct
+    root deps affected: yaml, ws, smol-toml (package.json
+    dependencies). Transitive/web-ui tree: devalue, dompurify,
+    file-type, svelte, undici.
 
     How: Pay special attention to yaml — it is kspec's core
     parsing library (used throughout src/parser/). Read the yaml
@@ -198,34 +229,52 @@ derive_from_specs: false
   priority: 2
   tags: [docs, release]
   spec_ref: "@supported-runtime-range"
+  depends_on:
+    - "@task-add-license-file"
   description: |
     Why: package.json "engines" requires node >=20.0.0, but
     INSTALL.md line 7 says "Node.js v18 or later" and
     docs/getting-started/tutorial.md line 17 says "Node.js 18+".
-    Other docs already say 20+ (docs/getting-started/installation.md
-    line 7, docs/guides/upgrading-kspec.md line 8,
-    docs/guides/starting-a-new-project.md line 8). Users on Node
-    18 following INSTALL.md will hit engine warnings or runtime
-    failures.
+    Other user-facing docs already say 20+
+    (docs/getting-started/installation.md line 7,
+    docs/guides/upgrading-kspec.md line 8,
+    docs/guides/starting-a-new-project.md line 8) and must not
+    regress. Users on Node 18 following INSTALL.md will hit
+    engine warnings or runtime failures.
 
     What: Update INSTALL.md:7 to "**Node.js** v20 or later" and
-    docs/getting-started/tutorial.md:17 to "Node.js 20+". Sweep
-    for any other stale mentions with:
+    docs/getting-started/tutorial.md:17 to "Node.js 20+". Then
+    sweep ALL user-facing docs — README.md, INSTALL.md, and
+    every markdown file under docs/ (including
+    docs/guides/starting-a-new-project.md and
+    docs/guides/upgrading-kspec.md) — with:
     `grep -rn "18" README.md INSTALL.md docs/ | grep -i node`
-    and fix any further hits.
+    and fix any further stale minimums.
 
     How: The engines value (>=20.0.0) is the source of truth —
     change docs to match it, do not change engines.
 
-    Testing: Add a consistency test (e.g. in
-    tests/release-packaging.test.ts) that reads the minimum
-    major from package.json engines.node and asserts that
-    INSTALL.md, docs/getting-started/installation.md, and
-    docs/getting-started/tutorial.md state that same minimum
-    wherever they state a Node.js version (reading docs files in
-    tests is legitimate artifact verification, not source
-    scanning). Annotate with
-    `// AC: @supported-runtime-range ac-1` and
+    Testing: Extend tests/release-packaging.test.ts (created by
+    @task-add-license-file) with a consistency test that:
+    (a) obtains the minimum major version by importing
+    package.json as a JSON module (import attributes) — no fs
+    read; (b) derives the checked document set DYNAMICALLY —
+    README.md, INSTALL.md, and a recursive glob of markdown
+    files under docs/ — instead of enumerating fixed filenames,
+    so every current user-facing doc (installation, tutorial,
+    starting-a-new-project, upgrading-kspec, and any future doc)
+    is covered and a new doc stating a stale minimum fails the
+    test; (c) scans each document for Node.js version
+    statements and asserts every stated minimum equals the
+    engines minimum. Reading the markdown files is a
+    project-file read that the no-source-scanning lint rule
+    (error severity in tests) flags: isolate the reads in a
+    small helper and use the rule's sanctioned escape hatch —
+    an inline eslint-disable comment for
+    no-source-scanning/no-source-file-reads with a written
+    reason (the docs are the artifacts whose published content
+    is the AC contract). Do not claim the rule does not apply.
+    Annotate with `// AC: @supported-runtime-range ac-1` and
     `// AC: @supported-runtime-range ac-2`.
     Run gates: npm run lint, npm test.
 
@@ -275,7 +324,9 @@ derive_from_specs: false
     covered — but a local `npm pack` or `npm publish` would ship
     whatever stale dist/ happens to be on disk (or fail on a
     clean checkout). Nothing anywhere verifies the packed
-    tarball actually contains the built CLI and web UI.
+    tarball actually contains the built CLI and web UI, and
+    nothing proves the packing step itself produces complete
+    artifacts from a clean source state.
 
     What: (1) Change "prepack" in package.json from
     "npm run build:plugin" to "npm run build" (the full build
@@ -286,26 +337,49 @@ derive_from_specs: false
     dist/index.js, dist/web-ui/index.html, templates/skills/manifest.yaml,
     and at least one plugin/ entry. (3) Add a
     "verify-package": "node scripts/verify-package.cjs" npm
-    script. (4) In .github/workflows/publish.yml, add a
-    `npm run verify-package` step between "Build" and "Run
-    tests" so a publish with missing dist/web-ui/ fails loudly.
+    script. (4) Add scripts/verify-clean-pack.cjs that proves
+    ac-4 BEHAVIORALLY: stage a clean source copy with no build
+    output into a temp directory (e.g. `git archive HEAD` or a
+    copy excluding dist/, plugin/, and node_modules/), link the
+    repository's installed node_modules into it, run a real
+    `npm pack --json` there (NOT --dry-run, so the prepack
+    lifecycle script itself must produce the build output), and
+    fail unless the resulting tarball listing contains all the
+    artifacts from (2). Expose it as a
+    "verify-clean-pack" npm script. (5) In
+    .github/workflows/publish.yml, add a `npm run verify-package`
+    step between "Build" and "Run tests", and a
+    `npm run verify-clean-pack` step before the publish step, so
+    a publish with missing or stale-build-dependent artifacts
+    fails loudly. verify-clean-pack performs a full build, so it
+    runs in the publish workflow (publishes are rare), not in
+    test.yml or the vitest suite.
 
     How: Do not assume `npm pack --dry-run` runs prepack — it
-    does not in all npm versions. verify-package.cjs should
-    check dist/ on disk AND parse the `npm pack --dry-run
-    --json` listing; in CI it runs after the explicit build
-    step. Keep verify-package.cjs dependency-free
+    does not in all npm versions; that is exactly why
+    verify-clean-pack must use a real `npm pack`.
+    verify-package.cjs should check dist/ on disk AND parse the
+    `npm pack --dry-run --json` listing; in CI it runs after the
+    explicit build step. Keep both scripts dependency-free
     (node builtins only) like the other scripts/*.cjs files.
 
-    Testing: Add tests asserting (a) package.json prepack equals
-    "npm run build" and (b) running scripts/verify-package.cjs
-    after a build exits 0, and exits non-zero when pointed at a
-    tree missing dist/web-ui (use a temp dir via createTempDir()).
-    Annotate with `// AC: @published-artifact-completeness ac-2`,
-    `// AC: @published-artifact-completeness ac-3`, and
-    `// AC: @published-artifact-completeness ac-4`.
-    Run gates: npm run lint, npm run typecheck, npm test, and a
-    real `npm run build && npm run verify-package` locally.
+    Testing: Extend tests/release-packaging.test.ts (created by
+    @task-add-license-file) with behavioral tests for
+    verify-package.cjs: running it after a build exits 0, and
+    running it against a tree missing dist/web-ui exits non-zero
+    (stage the broken tree with createTempDir() — temp-dir reads
+    and subprocess exit codes are lint-clean under the
+    no-source-scanning rule). Annotate with
+    `// AC: @published-artifact-completeness ac-2` and
+    `// AC: @published-artifact-completeness ac-3`. Do NOT
+    assert on package.json script strings — the behavioral proof
+    for ac-4 is scripts/verify-clean-pack.cjs itself: annotate
+    that script with
+    `// AC: @published-artifact-completeness ac-4`, run
+    `npm run build && npm run verify-package` and
+    `npm run verify-clean-pack` locally before submitting, and
+    record the results in a task note.
+    Run gates: npm run lint, npm run typecheck, npm test.
 
     Covers: @published-artifact-completeness ac-2, ac-3, ac-4.
 
@@ -314,25 +388,42 @@ derive_from_specs: false
   priority: 2
   tags: [ci, release, infra]
   spec_ref: "@prepublish-runtime-verification"
+  depends_on:
+    - "@task-prepack-full-build-and-verification"
   description: |
     Why: package.json engines allows node >=20.0.0, but every CI
     job pins node-version "24" (.github/workflows/test.yml lines
     37, 71, 112; publish.yml line 30). Nothing ever runs the
     suite on Node 20, so the declared support floor is untested
-    — a Node-24-only API could slip in unnoticed.
+    — a Node-24-only API could slip in unnoticed. The test
+    workflow also invokes `npx vitest run --shard=...` directly,
+    which bypasses the project's required test runner script
+    (scripts/test.cjs performs environment readiness checks; the
+    testing convention forbids invoking vitest directly).
+    Depends on @task-prepack-full-build-and-verification because
+    both tasks edit .github/workflows/publish.yml and must not
+    run in parallel.
 
-    What: (1) In .github/workflows/test.yml, extend the `test`
-    job's strategy matrix to cross shard [1, 2, 3] with
+    What: (1) In .github/workflows/test.yml, add a
+    `workflow_dispatch:` trigger so the workflow can be run
+    on-demand against any branch — this is what makes the change
+    verifiable without opening a GitHub PR (this repo's policy
+    reserves PRs for release-track merges). (2) Extend the
+    `test` job's strategy matrix to cross shard [1, 2, 3] with
     node-version ["20", "24"], and use
     `node-version: ${{ matrix.node-version }}` in the setup-node
     step; update the job `name` to include the node version.
     Leave the `lint` and `e2e` jobs on "24" (lint/format results
     are version-independent and e2e doubles CI cost for little
-    signal). (2) In .github/workflows/publish.yml, add a
-    `verify-min-node` job (checkout, setup-node with
-    node-version "20", setup-bun, npm ci, npm run build, npm
-    test) and make the `publish` job declare
-    `needs: verify-min-node`.
+    signal). (3) Replace the direct
+    `npx vitest run --shard=${{ matrix.shard }}/3` step with
+    `npm test -- --shard=${{ matrix.shard }}/3` so CI goes
+    through scripts/test.cjs like all other test invocations
+    (CI=true already selects full streaming output). (4) In
+    .github/workflows/publish.yml, add a `verify-min-node` job
+    (checkout, setup-node with node-version "20", setup-bun,
+    npm ci, npm run build, npm test) and make the `publish` job
+    declare `needs: verify-min-node`.
 
     How: Keep fail-fast: false so a Node-20-only failure reports
     alongside Node 24 results. The "Verify CLI functionality"
@@ -341,13 +432,25 @@ derive_from_specs: false
     matches one shard per node version — that is the desired
     behavior).
 
-    Testing: CI workflow changes are verified by the workflows
-    themselves — open the change as task-branch work and confirm
-    the matrix runs appear and pass on the PR/branch run. Before
-    pushing, validate YAML syntax locally (e.g.
-    `npx yaml-lint .github/workflows/test.yml` or a node
-    one-liner parsing it with the yaml package). Run `npm test`
-    locally to confirm no test assumes Node 24.
+    Testing: Concrete verification path that works in the normal
+    task flow without a PR: (a) before pushing, validate both
+    workflow files parse (e.g. a node one-liner loading each
+    with the yaml package); (b) run `npm test` locally to
+    confirm the runner-script invocation form works and no test
+    assumes Node 24; (c) after pushing the task branch, trigger
+    the updated workflow on that branch via
+    `gh workflow run test.yml --ref <task-branch>` (enabled by
+    the new workflow_dispatch trigger — the dispatched run uses
+    the branch's workflow file) and watch it with
+    `gh run watch`, confirming distinct Node 20 and Node 24
+    matrix runs appear and pass; record the run URL in a task
+    note as the ac-1 evidence. ac-2 (publish gating) is
+    structural: the `needs: verify-min-node` edge plus the
+    Node-20 job definition; verify publish.yml parses and the
+    job graph is correct with `gh workflow view` after push.
+    Workflow YAML is not unit-testable in vitest, so AC evidence
+    lives in the recorded workflow runs rather than annotated
+    tests.
 
     Covers: @prepublish-runtime-verification ac-1, ac-2.
 
@@ -395,6 +498,8 @@ derive_from_specs: false
   slug: task-workspace-packages-private
   priority: 3
   tags: [infra, release]
+  depends_on:
+    - "@task-add-license-file"
   description: |
     Why: packages/web-ui/package.json, packages/shared/package.json,
     and packages/daemon/package.json have no "private": true and
@@ -404,7 +509,9 @@ derive_from_specs: false
     accidental `npm publish --workspaces` or a future tooling
     change from pushing stale 0.1.0 packages under the
     @kynetic-ai scope. packages/web-ui also lacks main/exports,
-    making its publishability ambiguous.
+    making its publishability ambiguous. Depends on
+    @task-add-license-file because it extends the packaging test
+    file that task creates.
 
     What: Add "private": true to all three workspace package
     manifests: packages/web-ui/package.json,
@@ -418,15 +525,20 @@ derive_from_specs: false
     unchanged (workspace sources are not part of the tarball)
     and `npm publish --workspaces --dry-run` refuses all three.
 
-    Testing: Add an assertion to the packaging test (e.g.
-    tests/release-packaging.test.ts) that each
-    packages/*/package.json has private === true. Run gates:
-    npm run build (workspace resolution unchanged), npm test.
+    Testing: Extend tests/release-packaging.test.ts (created by
+    @task-add-license-file) with an assertion that each of the
+    three workspace manifests has private === true — import each
+    packages/*/package.json as a JSON module (import attributes)
+    rather than fs-reading it, which keeps the test clean under
+    the no-source-scanning lint rule. Run gates: npm run build
+    (workspace resolution unchanged), npm test.
 
 - title: Remove web-ui-only devDependencies duplicated at the root
   slug: task-dedupe-web-ui-devdeps
   priority: 3
   tags: [deps, infra]
+  depends_on:
+    - "@task-audit-fix-production-deps"
   description: |
     Why: Root package.json devDependencies declares packages
     used only by the web UI, all of which packages/web-ui/package.json
@@ -435,7 +547,10 @@ derive_from_specs: false
     tailwind-variants, tailwindcss. Verified unused in src/,
     tests/, and scripts/ (no imports, no root tailwind/postcss
     config files). The duplication bloats root installs and
-    invites version skew between the two declarations.
+    invites version skew between the two declarations. Depends
+    on @task-audit-fix-production-deps because both tasks
+    rewrite package.json/package-lock.json and must not race
+    under parallel dispatch.
 
     What: Remove those eight entries from root package.json
     devDependencies. Do NOT remove pagefind — it is used by the
@@ -471,6 +586,35 @@ derive_from_specs: false
     enforced by `private: true`.
 - The publish workflow already runs a full `npm run build` before publishing, so the
   prepack gap is primarily a local-publish hazard; the tarball verification step closes
-  the remaining CI gap (a build that silently produces no dist/web-ui/).
-- Suggested execution order: task-add-license-file → task-prepack-full-build-and-verification,
-  task-audit-fix-production-deps early (security), docs tasks any time, hygiene tasks last.
+  the remaining CI gap (a build that silently produces no dist/web-ui/), and the
+  clean-pack verification proves the prepack path itself from a no-build-output state.
+- Execution ordering is now encoded in depends_on rather than prose: license → {node-docs
+  test, prepack/verification → CI matrix, workspace-private}, audit-fix → devdep-dedupe.
+- Review fix-cycle 1 decisions (codex @01KTRYS2, claude @01KTRZ06):
+  - Specs are parented under a new "Release and Distribution" module created in this
+    plan instead of the @main placeholder. Derive requires every non-trait spec to have
+    a parent, so the module itself nests under @main at derive time; if a top-level
+    module is preferred it can be re-parented afterward via the CLI — accepted tradeoff.
+  - The plan format does not carry relates_to; after derive, add
+    @supported-runtime-range relates_to @docs-getting-started-section (its Installation
+    page contract is one of the documents ac-2 quantifies over).
+  - npm audit fix scope decision: the acceptance bar is production advisories only;
+    semver-compatible dev-tree side-effect bumps from the same command are accepted,
+    and unfixed dev-only advisories go to the inbox rather than expanding scope.
+  - tests/release-packaging.test.ts has a single owner (task-add-license-file creates
+    it); the two tasks extending it now depend on it. The two publish.yml edits are
+    serialized via depends_on. package-lock.json writers are serialized via depends_on.
+  - Testing sections route around the no-source-scanning lint rule explicitly:
+    behavioral subprocess output (npm pack --dry-run --json, script exit codes) and
+    JSON module imports where possible; where reading doc/license text is genuinely the
+    contract (LICENSE text, markdown version statements), tasks direct the worker to
+    the rule's sanctioned inline eslint-disable-with-reason escape hatch.
+  - "Newest verified major version" was self-referential; the spec/AC now require the
+    oldest supported major plus at least one newer major — deterministic and falsifiable
+    (the task pins the concrete matrix to 20 and 24 at workflow-edit time).
+  - CI workflow verification is now executable without a GitHub PR: the task adds a
+    workflow_dispatch trigger and verifies via gh workflow run on the task branch.
+  - CONTRIBUTING.md/SECURITY.md stay spec-less repo hygiene: they are contributor-facing
+    repository meta-documents rather than product documentation surfaces; if a durable
+    contract emerges (e.g. a committed response window), promote a requirement under
+    @user-documentation then.
