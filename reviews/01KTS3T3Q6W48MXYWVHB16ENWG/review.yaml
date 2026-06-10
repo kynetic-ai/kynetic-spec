@@ -2,7 +2,91 @@ _ulid: 01KTS3T3Q6W48MXYWVHB16ENWG
 slugs: []
 title: "Plan re-review: Validation and Test Coverage Integrity (cycle 3)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran with KSPEC_NO_DAEMON=1. Exited 0: schema OK, references OK. Only existing
+      deprecated-reference warnings were reported under --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-10T15:54:30.132Z
+    completed_at: 2026-06-10T15:54:30.132Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran with KSPEC_NO_DAEMON=1. Exited 0 with the existing alignment warning baseline under
+      --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-10T15:54:32.660Z
+    completed_at: 2026-06-10T15:54:32.660Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran with KSPEC_NO_DAEMON=1. Exited 0 with the existing completeness warning baseline under
+      --warnings-ok.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-10T15:54:35.200Z
+    completed_at: 2026-06-10T15:54:35.200Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified tests/grep.test.ts fixture strings. Meta fixtures: 01TESTOBS00000000000000
+      length=23 excluded=O; 01TESTAGENT000000000000 length=23 excluded=none; 01TESTWORKFLOW000000000
+      length=23 excluded=O,L; 01TESTCONV0000000000000 length=23 excluded=O. The current plan
+      correctly flags 01TESTWORKFLOW as containing O and L and says three meta fixture ULIDs contain
+      excluded letters: two with O, one with O and L."
+    name: fixture ULID delta verification
+    required: true
+    runner: manual + node fixture length check
+    created_at: 2026-06-10T15:54:37.700Z
+    completed_at: 2026-06-10T15:54:37.700Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Compared current plan content and notes against prior approvals @01KTS237 and @01KTS386.
+      The only post-approval delta is the Claude nit fix: 01TESTWORKFLOW parenthetical now includes
+      excluded letters O and L, and the count text is corrected. No material plan scope, task,
+      dependency, or coverage mapping changes found. Plan status remains draft."
+    name: cycle-2 materiality check
+    required: true
+    runner: manual review
+    created_at: 2026-06-10T15:54:40.214Z
+    completed_at: 2026-06-10T15:54:40.214Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Re-read the draft plan. It still adds no new specs, has four standalone tasks with no
+      dependency edges, preserves the Covers mappings, and does not introduce shared-guidance
+      changes requiring neutrality review. Prior cycle-2 approval reasoning remains applicable.
+    name: plan quality and dependency review
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-10T15:54:42.738Z
+    completed_at: 2026-06-10T15:54:42.738Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Not run for this cycle-3 plan re-review: no repository files or code changed in this
+      review, and the requested verification was limited to stored draft plan text plus
+      tests/grep.test.ts fixture facts."
+    name: npm gates
+    required: true
+    runner: npm format/lint/typecheck/test
+    created_at: 2026-06-10T15:54:45.260Z
+    completed_at: 2026-06-10T15:54:45.260Z
 events:
   - _ulid: 01KTS3T3Q6GJJ5AE53YEYTSFEQ
     actor: "@claude"
@@ -10,9 +94,81 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-10T15:53:26.502Z
+  - _ulid: 01KTS3VZK6G1K3PFBK1X5WZ4Z8
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-10T15:54:27.814Z
+  - _ulid: 01KTS3W22KDWZP9GVFMZVCRQWS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T15:54:30.355Z
+  - _ulid: 01KTS3W4HVC5CS0G51C1M08Y3D
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-10T15:54:32.891Z
+  - _ulid: 01KTS3W70M2MQ5PPB457R8CZZQ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-10T15:54:35.412Z
+  - _ulid: 01KTS3W9EXNGD406AR2BHJXH96
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: fixture ULID delta verification
+    timestamp: 2026-06-10T15:54:37.917Z
+  - _ulid: 01KTS3WBX8QYAM1XMJDWME2R19
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cycle-2 materiality check
+    timestamp: 2026-06-10T15:54:40.424Z
+  - _ulid: 01KTS3WEC95QQBDXZHGV6VNPMD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan quality and dependency review
+    timestamp: 2026-06-10T15:54:42.953Z
+  - _ulid: 01KTS3WGTQ9D7HS6G247W0FTKB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: npm gates
+    timestamp: 2026-06-10T15:54:45.463Z
+  - _ulid: 01KTS3WKACGEATR3B8DES9S42N
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-10T15:54:48.012Z
+  - _ulid: 01KTS3WKACTT7QBJ9CZ8EH6KYR
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-10T15:54:48.012Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +176,14 @@ subject:
   ref: "@01KTRYBV"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: plan-reviewer
+    created_at: 2026-06-10T15:54:48.012Z
 created_at: 2026-06-10T15:53:26.502Z
-updated_at: null
+updated_at: 2026-06-10T15:54:48.012Z
 notes: []
