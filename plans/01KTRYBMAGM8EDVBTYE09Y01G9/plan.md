@@ -330,7 +330,15 @@ derive_from_specs: false
        parseable as a numeric version, throw
        `unrecognized_format_version` naming the literal value. A
        missing kynetic field keeps its existing legacy handling (the
-       raw read makes "missing" unambiguous).
+       raw read makes "missing" unambiguous). Then RE-APPLY the same
+       ceiling comparison to the manifest parsed after the sync block:
+       the pre-sync read only sees the local manifest, so a sync pull
+       can import a manifest upgraded remotely to a newer format even
+       when the pre-sync check passed — the same invocation must refuse
+       (same deterministic codes) after the pull and before any entity
+       read or mutation, rather than deferring refusal to the next
+       invocation. The post-sync re-check reads the freshly parsed
+       manifest's raw declared version the same way.
     3. Daemon parity: ensure daemon routes surface this as a structured
        error with the same code (follow the existing
        EntityStorageCompatibilityError handling pattern for the 409-style
@@ -375,7 +383,12 @@ derive_from_specs: false
     garbage value: assert representative read and write commands refuse
     with the deterministic code and non-zero exit, and assert no
     project data changed (file content/mtimes, including the shadow
-    worktree — the refusal must fire before any pre-read sync). Assert
+    worktree — the refusal must fire before any pre-read sync). Add a
+    sync-pull dual fixture: local shadow manifest declares a supported
+    version while the remote kspec-meta branch holds a newer-format
+    manifest (kynetic "9.9"); assert the same invocation that performs
+    the sync pull refuses with the deterministic code after the pull
+    and before reading or mutating entity data. Assert
     `kspec upgrade` refuses before any step executes (CLI-level, pinned
     to the context-initialization error code), with a separate unit
     test pinning detectSourceVersion's newer-than-supported
@@ -579,6 +592,21 @@ derive_from_specs: false
   (implemented specs)** — own shadow repair behavior; finding 1 is
   expressed as an AC delta to @broken-shadow-safety instead of a new
   spec.
+
+### Review fix cycle 2 decisions
+
+- **Post-sync re-check (claude cycle-2 question)** — the pre-sync raw
+  read only inspects the local manifest, leaving a dual gap: a remote
+  shadow branch upgraded to a newer format passes the local check, the
+  sync pull imports the newer-format data, and the invocation operates
+  on it, deferring refusal to the next invocation. Decision: step 2
+  re-applies the same ceiling comparison (same deterministic codes) to
+  the manifest parsed after the sync block, so the pulling invocation
+  itself refuses before any entity read or mutation. The pull itself is
+  acceptable mutation (it is ordinary sync of data already authored
+  remotely); the guarantee defended is "no operation on data newer than
+  supported", enforced at both check points. A sync-pull dual fixture
+  was added to Testing.
 
 ### Review fix cycle 1 decisions
 

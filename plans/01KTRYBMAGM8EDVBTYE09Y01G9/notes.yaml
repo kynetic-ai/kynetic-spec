@@ -30,3 +30,8 @@ notes:
       section. Dry-run passed; re-imported; plan remains draft."
     author: "@claude"
     created_at: 2026-06-10T15:12:20.395Z
+  - _ulid: 01KTS2NB50ZDM1BA490PQT8S7N
+    content: "Fix cycle 2: post-sync ceiling re-check closes the remote-newer sync-pull dual (claude
+      @01KTS26B question)"
+    author: "@claude"
+    created_at: 2026-06-10T15:33:21.697Z
