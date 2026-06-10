@@ -61824,7 +61824,7 @@ runs:
     completed_at: 2026-06-09T19:10:08.326Z
   - _ulid: 01KTQDKPNSYEF52NH8CT3XRWES
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -61836,7 +61836,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-10T00:06:48.891Z
-        completed_at: 2026-06-10T00:06:48.891Z
+        completed_at: 2026-06-10T00:07:45.598Z
+        notes: "Identified 4 candidates: (1) daemon code layout discoverability friction — src/daemon/
+          exists but real daemon+routes live in packages/daemon/src/, and AGENTS.md structure tree
+          omits packages/daemon and packages/shared entirely; cost ~8 search round-trips locating
+          GET /api/reviews/:id/content (which lives in routes/diff.ts, not reviews.ts). Not tracked
+          anywhere — high confidence, systemic. (2) Success: shared rewriteEntityResourceLinks core
+          from @generalize-live-ui-resource-markdown-rewriting enabled review-page support with a
+          thin dispatch util and zero new regex — generalization paid off one task later. Unique,
+          concrete. (3) kspec workflow show requires run-ref — already tracked in inbox @01KGGPJ6,
+          skip. (4) Full-suite duration — known, sharding conventions exist, skip."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-10T00:07:45.598Z
+        completed_at: 2026-06-10T00:07:45.598Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-10T00:06:13.433Z
