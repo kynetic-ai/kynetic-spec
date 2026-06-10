@@ -1,0 +1,26 @@
+_ulid: 01KTRZ0611KGZJDYCFY2C1SYJ6
+slugs: []
+title: "Plan review: Release Packaging and Onboarding Readiness"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTRZ06119G6MHKFG5Y280ZC8
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-10T14:29:22.593Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@01KTRY9VG1T0Q5R95KF7NQR058"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-10T14:29:22.593Z
+updated_at: null
+notes: []
