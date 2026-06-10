@@ -3,6 +3,8 @@
   AC: @review-structured-content-viewer ac-2 — Spec content rendered with description, ACs, traits, metadata, each targetable
   AC: @review-structured-content-viewer ac-3 — Comment button creates thread with structured anchor (section, field, anchor-ref)
   AC: @review-structured-content-viewer ac-4 — Existing threads shown inline at anchored section positions
+  AC: @review-structured-content-viewer ac-5 — Plan content markdown rewrites declared `./resources/` targets to plan-scoped bytes URLs
+  AC: @review-structured-content-viewer ac-6 — Task description markdown rewrites present `./resources/` targets to task-scoped bytes URLs; drifted/missing/unresolved/unmatched references stay visible with status messages
 -->
 <script lang="ts">
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
@@ -22,6 +24,11 @@
 	import { queryKeys } from '$lib/query/keys.js';
 	import { renderMarkdown } from '$lib/utils/markdown';
 	import { shortRef, normalizeRef } from '$lib/utils/reference';
+	import {
+		rewriteReviewSectionResourceLinks,
+		reviewSectionResourceGuidance,
+	} from '$lib/utils/review-content-resources';
+	import { Badge } from '$lib/components/ui/badge';
 	import ContentCommentForm from './ContentCommentForm.svelte';
 	import ContentInlineThread from './ContentInlineThread.svelte';
 
@@ -174,6 +181,17 @@
 		});
 	}
 
+	// AC: @review-structured-content-viewer ac-6 — badge styling for resource
+	// status messages (mirrors the task detail resource status section).
+	function resourceStatusClasses(status: string): string {
+		switch (status) {
+			case 'drift':
+				return 'bg-status-blocked text-status-blocked-fg';
+			default:
+				return 'bg-status-pending text-status-pending-fg';
+		}
+	}
+
 	function formatRelativeTime(dateStr: string): string {
 		const date = new Date(dateStr);
 		const now = new Date();
@@ -243,9 +261,44 @@
 				<!-- Section content -->
 				<div class="px-4 py-3">
 					{#if section.type === 'markdown'}
+						<!-- AC: @review-structured-content-viewer ac-5 — plan content `./resources/` targets rewrite to plan-scoped bytes URLs (undeclared/unsafe paths stay raw) -->
+						<!-- AC: @review-structured-content-viewer ac-6 — task description `./resources/` targets rewrite to task-scoped bytes URLs for present resources only -->
+						{@const resourceGuidance = reviewSectionResourceGuidance(
+							section.content,
+							section.resource_context
+						)}
 						<div class="prose prose-sm dark:prose-invert max-w-none" data-testid="section-markdown-content">
-							{@html renderMarkdown(section.content)}
+							{@html renderMarkdown(
+								rewriteReviewSectionResourceLinks(section.content, section.resource_context)
+							)}
 						</div>
+
+						<!-- Resource status — drifted/missing/unresolved resolved resources AND
+						     unmatched authoring references stay visible with actionable status
+						     instead of silently serving replacement bytes. -->
+						<!-- AC: @review-structured-content-viewer ac-6 -->
+						{#if resourceGuidance.length > 0}
+							<div data-testid="review-resource-status" class="mt-3 flex flex-col gap-2">
+								<p class="text-xs font-medium text-muted-foreground">Resources needing attention</p>
+								<ul class="flex flex-col gap-1.5">
+									{#each resourceGuidance as item (`${item.status}:${item.path}`)}
+										<li
+											class="flex flex-wrap items-center gap-2 text-xs"
+											data-testid="review-resource-status-item"
+										>
+											<Badge
+												class={resourceStatusClasses(item.status)}
+												data-testid="review-resource-status-badge"
+											>
+												{item.status}
+											</Badge>
+											<code class="break-all font-mono">./resources/{item.path}</code>
+											<span class="text-muted-foreground break-words">{item.message}</span>
+										</li>
+									{/each}
+								</ul>
+							</div>
+						{/if}
 
 					{:else if section.type === 'acceptance_criteria'}
 						<!-- AC: @review-structured-content-viewer ac-2 — Each AC individually targetable -->

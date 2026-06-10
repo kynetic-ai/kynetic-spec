@@ -9,19 +9,31 @@
  * - @review-content-diff-api ac-2: GET /api/diff/context returns expanded context lines
  * - @review-content-diff-api ac-3: GET /api/diff/file returns single-file parsed diff
  * - @review-content-diff-api ac-4: GET /api/reviews/:id/content returns parsed entity content
+ * - @review-content-diff-api ac-5: plan-subject markdown sections carry byte-free plan resource context
+ * - @review-content-diff-api ac-6: task-subject description sections carry byte-free task resource context
  */
 
 import { Elysia, t } from "elysia";
 import { execFileSync } from "node:child_process";
+import type {
+  ReviewContentPlanResourceContext,
+  ReviewContentTaskResourceContext,
+} from "@kynetic-ai/shared";
 import {
   initContext,
   loadAllItems,
   findPlanByRef,
   ReferenceIndex,
   resolveTaskDataManager,
+  resolveTaskResources,
+  projectResolvedTaskResources,
 } from "../../parser/index.js";
+import { loadResourceManifest } from "../../parser/entity-local-resources.js";
+import { getPlanDir } from "../../parser/plan-storage-manager.js";
 import { loadReviewRecords, findReviewByRef } from "../../parser/reviews.js";
 import { parseUnifiedDiff } from "../../utils/git-diff-parser.js";
+import { buildResourcesBaseUrl, toPlanResourceMetadata } from "./plan-resources.js";
+import { buildTaskResourcesBaseUrl } from "./task-resources.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 
 // ─── Git Helpers ───
@@ -342,6 +354,31 @@ export function createDiffRoutes() {
               };
             }
 
+            // AC: @review-content-diff-api ac-5 — byte-free plan resource
+            // context for the embedded plan markdown. Mirrors the plan detail
+            // contract: the declared manifest metadata (never bytes) plus the
+            // plan-scoped bytes base URL clients extend with selected-project
+            // routing browser-side. Only declared resources appear, so clients
+            // can rewrite declared safe paths and must leave undeclared or
+            // unsafe paths visible. A missing manifest (legacy layout) yields
+            // no context; an unreadable one degrades to content-without-context
+            // rather than failing the whole review content response.
+            let planResourceContext: ReviewContentPlanResourceContext | undefined;
+            try {
+              const manifest = await loadResourceManifest(getPlanDir(ctx, plan._ulid));
+              if (manifest.resources.length > 0) {
+                planResourceContext = {
+                  owner_type: "plan",
+                  owner_ref: subject.ref,
+                  resources_base_url: buildResourcesBaseUrl(plan._ulid),
+                  resources: manifest.resources.map((r) => toPlanResourceMetadata(r)),
+                };
+              }
+            } catch {
+              // Corrupt/unreadable manifest — serve plan content without
+              // resource context; the plan resource routes surface the error.
+            }
+
             return {
               review_id: review._ulid,
               subject_type: "plan",
@@ -354,6 +391,7 @@ export function createDiffRoutes() {
                     type: "markdown",
                     title: "Plan Content",
                     content: plan.content,
+                    ...(planResourceContext ? { resource_context: planResourceContext } : {}),
                   },
                   {
                     id: "specs",
@@ -536,6 +574,29 @@ export function createDiffRoutes() {
               };
             }
 
+            // AC: @review-content-diff-api ac-6 — byte-free task resource
+            // context for the embedded task description. Reuses the same
+            // resolver path as the task detail API (resolveTaskResources +
+            // projectResolvedTaskResources) so drift semantics are identical:
+            // the projection covers plan-owned refs and materialized
+            // task-owned copies, and reports per-reference status so clients
+            // rewrite only `present` resources while surfacing drifted/
+            // missing/unresolved/unmatched references instead of silently
+            // serving replacement bytes.
+            let taskResourceContext: ReviewContentTaskResourceContext | undefined;
+            if (task.resource_refs && task.resource_refs.length > 0) {
+              const resolvedResources = await resolveTaskResources(ctx, task);
+              const projected = projectResolvedTaskResources(resolvedResources);
+              if (projected.length > 0) {
+                taskResourceContext = {
+                  owner_type: "task",
+                  owner_ref: subject.ref,
+                  resources_base_url: buildTaskResourcesBaseUrl(task._ulid),
+                  resources: projected,
+                };
+              }
+            }
+
             return {
               review_id: review._ulid,
               subject_type: "task",
@@ -548,6 +609,7 @@ export function createDiffRoutes() {
                     type: "markdown",
                     title: "Description",
                     content: task.description || "",
+                    ...(taskResourceContext ? { resource_context: taskResourceContext } : {}),
                   },
                   ...(task.notes && task.notes.length > 0
                     ? [

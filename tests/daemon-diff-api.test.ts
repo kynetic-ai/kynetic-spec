@@ -9,10 +9,12 @@
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { execSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { Elysia } from "elysia";
+import { stringify as yamlStringify } from "yaml";
 import { parseUnifiedDiff } from "../src/utils/git-diff-parser";
 import { createTempDir, cleanupTempDir, initGitRepo, testUlid, seedSplitTask } from "./helpers/cli";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
@@ -869,6 +871,396 @@ reviews:
     const body = await response.json();
     expect(body.error).toBe("not_found");
     expect(body.suggestion).toBeDefined();
+  });
+});
+
+function sha256(buf: Buffer): string {
+  return createHash("sha256").update(buf).digest("hex");
+}
+
+/** Build a strict 9-field resource manifest entry with overridable fields. */
+function resourceMetadata(overrides: Record<string, unknown>): Record<string, unknown> {
+  return {
+    id: "resource",
+    label: null,
+    path: "file.bin",
+    content_type: "application/octet-stream",
+    bytes: 0,
+    sha256: "",
+    git_commit: null,
+    git_path: null,
+    description: null,
+    ...overrides,
+  };
+}
+
+describe("Diff API - Review Content Resource Context", () => {
+  const REVIEW_PLAN_RES_ULID = testUlid("RCRP", 11);
+  const REVIEW_TASK_RES_ULID = testUlid("RCRT", 12);
+  const REVIEW_PLAN_PLAIN_ULID = testUlid("RCRV", 13);
+  const REVIEW_TASK_PLAIN_ULID = testUlid("RCRW", 14);
+  const PLAN_RES_ULID = testUlid("PRES", 15);
+  const PLAN_PLAIN_ULID = testUlid("PPXN", 16);
+  const TASK_RES_ULID = testUlid("TRES", 17);
+  const TASK_PLAIN_ULID = testUlid("TPXN", 18);
+
+  const PLAN_IMG_BYTES = Buffer.from("plan-architecture-diagram-bytes");
+  const PLAN_DOC_BYTES = Buffer.from("plan-design-doc-bytes");
+  const TASK_COPY_BYTES = Buffer.from("materialized-task-owned-copy-bytes");
+  const DRIFT_RECORDED_BYTES = Buffer.from("doc-as-recorded-at-derivation");
+  const DRIFT_CURRENT_BYTES = Buffer.from("doc-changed-after-derivation");
+
+  const PLAN_IMG_SHA = sha256(PLAN_IMG_BYTES);
+  const PLAN_DOC_SHA = sha256(PLAN_DOC_BYTES);
+  const TASK_COPY_SHA = sha256(TASK_COPY_BYTES);
+  const DRIFT_RECORDED_SHA = sha256(DRIFT_RECORDED_BYTES);
+  const DRIFT_CURRENT_SHA = sha256(DRIFT_CURRENT_BYTES);
+
+  let tempDir: string;
+  let app: Elysia;
+
+  function makeRequest(reviewId: string) {
+    return app.handle(
+      new Request(`http://localhost/api/reviews/${reviewId}/content`, {
+        headers: { Host: "localhost", "X-Kspec-Dir": tempDir },
+      }),
+    );
+  }
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-diff-review-resource-ctx-");
+    initGitRepo(tempDir);
+
+    mkdirSync(path.join(tempDir, ".kspec"), { recursive: true });
+    mkdirSync(path.join(tempDir, "modules"), { recursive: true });
+
+    writeFileSync(
+      path.join(tempDir, "kynetic.yaml"),
+      `kynetic: "1.1"
+task_storage:
+  format: split
+project:
+  name: Test Project
+  version: "0.1.0"
+  status: draft
+includes:
+  - modules/test.yaml
+`,
+    );
+    writeFileSync(path.join(tempDir, "modules", "test.yaml"), "features: []\n");
+
+    // Plan with declared resources. The markdown references one declared
+    // image, one declared doc, and one undeclared path.
+    writeFileSync(
+      path.join(tempDir, "project.plans.yaml"),
+      `kynetic_plans: "1.0"
+plans:
+  - _ulid: "${PLAN_RES_ULID}"
+    slugs:
+      - plan-resourced
+    title: "Plan With Resources"
+    content: "![arch](./resources/img/arch.png) and [doc](./resources/docs/design.md) plus ![ghost](./resources/img/undeclared.png)"
+    status: approved
+    derived_specs: []
+    derived_tasks: []
+    created_at: "2026-01-01T00:00:00Z"
+  - _ulid: "${PLAN_PLAIN_ULID}"
+    slugs:
+      - plan-plain
+    title: "Plan Without Resources"
+    content: "No resources referenced here."
+    status: approved
+    derived_specs: []
+    derived_tasks: []
+    created_at: "2026-01-01T00:00:00Z"
+`,
+    );
+
+    // Declared plan resource manifest + bytes (folder layout: plans/<ulid>/).
+    const planDir = path.join(tempDir, "plans", PLAN_RES_ULID);
+    mkdirSync(path.join(planDir, "resources", "img"), { recursive: true });
+    mkdirSync(path.join(planDir, "resources", "docs"), { recursive: true });
+    writeFileSync(path.join(planDir, "resources", "img", "arch.png"), PLAN_IMG_BYTES);
+    writeFileSync(path.join(planDir, "resources", "docs", "design.md"), PLAN_DOC_BYTES);
+    writeFileSync(
+      path.join(planDir, "resources.yaml"),
+      yamlStringify({
+        resources: [
+          resourceMetadata({
+            id: "arch-png",
+            path: "img/arch.png",
+            content_type: "image/png",
+            bytes: PLAN_IMG_BYTES.length,
+            sha256: PLAN_IMG_SHA,
+          }),
+          resourceMetadata({
+            id: "design-doc",
+            path: "docs/design.md",
+            content_type: "text/markdown",
+            bytes: PLAN_DOC_BYTES.length,
+            sha256: PLAN_DOC_SHA,
+          }),
+        ],
+      }),
+    );
+
+    // Task with resource_refs covering a plan-owned present reference, a
+    // materialized task-owned copy, and a drifted task-owned reference. The
+    // description also references one unmatched path.
+    seedSplitTask(tempDir, {
+      _ulid: TASK_RES_ULID,
+      slugs: ["task-resourced"],
+      title: "Task With Resources",
+      description:
+        "![arch](./resources/img/arch.png) ![copy](./resources/img/copy.png) [drifty](./resources/docs/drifty.md) ![nowhere](./resources/img/nowhere.png)",
+      status: "in_progress",
+      created_at: "2026-01-01T00:00:00Z",
+      resource_refs: [
+        {
+          owner_type: "plan",
+          owner_ref: "@plan-resourced",
+          id: "arch-png",
+          path: "img/arch.png",
+          sha256: PLAN_IMG_SHA,
+          git_commit: null,
+          git_path: null,
+          recorded_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          owner_type: "task",
+          owner_ref: TASK_RES_ULID,
+          id: "copy-png",
+          path: "img/copy.png",
+          sha256: TASK_COPY_SHA,
+          git_commit: null,
+          git_path: null,
+          recorded_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          owner_type: "task",
+          owner_ref: TASK_RES_ULID,
+          id: "drifty-doc",
+          path: "docs/drifty.md",
+          sha256: DRIFT_RECORDED_SHA,
+          git_commit: null,
+          git_path: null,
+          recorded_at: "2026-01-01T00:00:00.000Z",
+        },
+      ],
+    });
+    seedSplitTask(tempDir, {
+      _ulid: TASK_PLAIN_ULID,
+      slugs: ["task-plain"],
+      title: "Task Without Resources",
+      description: "Nothing resource-shaped here.",
+      status: "pending",
+      created_at: "2026-01-01T00:00:00Z",
+    });
+
+    // Task-owned resource manifest: the copy matches its recorded hash, the
+    // drifty doc's current bytes differ from the recorded hash.
+    const taskDir = path.join(tempDir, "tasks", TASK_RES_ULID);
+    mkdirSync(path.join(taskDir, "resources", "img"), { recursive: true });
+    mkdirSync(path.join(taskDir, "resources", "docs"), { recursive: true });
+    writeFileSync(path.join(taskDir, "resources", "img", "copy.png"), TASK_COPY_BYTES);
+    writeFileSync(path.join(taskDir, "resources", "docs", "drifty.md"), DRIFT_CURRENT_BYTES);
+    writeFileSync(
+      path.join(taskDir, "resources.yaml"),
+      yamlStringify({
+        resources: [
+          resourceMetadata({
+            id: "copy-png",
+            path: "img/copy.png",
+            content_type: "image/png",
+            bytes: TASK_COPY_BYTES.length,
+            sha256: TASK_COPY_SHA,
+          }),
+          resourceMetadata({
+            id: "drifty-doc",
+            path: "docs/drifty.md",
+            content_type: "text/markdown",
+            bytes: DRIFT_CURRENT_BYTES.length,
+            sha256: DRIFT_CURRENT_SHA,
+          }),
+        ],
+      }),
+    );
+
+    writeFileSync(
+      path.join(tempDir, "project.reviews.yaml"),
+      `kynetic_reviews: "1.0"
+reviews:
+  - _ulid: "${REVIEW_PLAN_RES_ULID}"
+    slugs:
+      - review-plan-resourced
+    title: "Review plan with resources"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: plan
+      ref: "@plan-resourced"
+      shadow_commit: "abc123"
+      content_hash: "hash1"
+    created_at: "2026-01-01T00:00:00Z"
+  - _ulid: "${REVIEW_PLAN_PLAIN_ULID}"
+    slugs:
+      - review-plan-plain
+    title: "Review plan without resources"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: plan
+      ref: "@plan-plain"
+      shadow_commit: "abc123"
+      content_hash: "hash2"
+    created_at: "2026-01-01T00:00:00Z"
+  - _ulid: "${REVIEW_TASK_RES_ULID}"
+    slugs:
+      - review-task-resourced
+    title: "Review task with resources"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: task
+      ref: "@task-resourced"
+      shadow_commit: "abc123"
+      content_hash: "hash3"
+    created_at: "2026-01-01T00:00:00Z"
+  - _ulid: "${REVIEW_TASK_PLAIN_ULID}"
+    slugs:
+      - review-task-plain
+    title: "Review task without resources"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: task
+      ref: "@task-plain"
+      shadow_commit: "abc123"
+      content_hash: "hash4"
+    created_at: "2026-01-01T00:00:00Z"
+`,
+    );
+
+    execSync('git add -A && git commit -m "kspec project setup"', { cwd: tempDir, stdio: "pipe" });
+
+    const { middleware } = projectContextMiddleware();
+    app = new Elysia().use(middleware).use(createDiffRoutes());
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @review-content-diff-api ac-5
+  it("attaches byte-free plan resource context to the plan content markdown section", async () => {
+    const response = await makeRequest("review-plan-resourced");
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const contentSection = body.content.sections.find((s: { id: string }) => s.id === "content");
+    expect(contentSection).toBeDefined();
+
+    const context = contentSection.resource_context;
+    expect(context).toBeDefined();
+    expect(context.owner_type).toBe("plan");
+    expect(context.owner_ref).toBe("@plan-resourced");
+    expect(context.resources_base_url).toBe(`/api/plans/${PLAN_RES_ULID}/resources`);
+
+    // Bounded declared metadata — only manifest-declared resources, with the
+    // strict byte-free metadata shape (no embedded bytes, no per-entry URL).
+    expect(context.resources).toHaveLength(2);
+    const arch = context.resources.find((r: { id: string }) => r.id === "arch-png");
+    expect(arch).toEqual({
+      id: "arch-png",
+      label: null,
+      path: "img/arch.png",
+      content_type: "image/png",
+      bytes: PLAN_IMG_BYTES.length,
+      sha256: PLAN_IMG_SHA,
+      git_commit: null,
+      git_path: null,
+      description: null,
+    });
+    // The undeclared reference in the plan markdown has no metadata entry, so
+    // clients cannot rewrite it.
+    expect(
+      context.resources.find((r: { path: string }) => r.path === "img/undeclared.png"),
+    ).toBeUndefined();
+  });
+
+  // AC: @review-content-diff-api ac-5
+  it("never embeds resource bytes in plan review content responses", async () => {
+    const response = await makeRequest("review-plan-resourced");
+    const raw = JSON.stringify(await response.json());
+    expect(raw).not.toContain(PLAN_IMG_BYTES.toString());
+    expect(raw).not.toContain(PLAN_DOC_BYTES.toString());
+    expect(raw).not.toContain(PLAN_IMG_BYTES.toString("base64"));
+  });
+
+  // AC: @review-content-diff-api ac-5
+  it("omits resource context for plan subjects without declared resources", async () => {
+    const response = await makeRequest("review-plan-plain");
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const contentSection = body.content.sections.find((s: { id: string }) => s.id === "content");
+    expect(contentSection).toBeDefined();
+    expect(contentSection.resource_context).toBeUndefined();
+  });
+
+  // AC: @review-content-diff-api ac-6
+  it("attaches byte-free task resource context with resolved status to the description section", async () => {
+    const response = await makeRequest("review-task-resourced");
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const descSection = body.content.sections.find((s: { id: string }) => s.id === "description");
+    expect(descSection).toBeDefined();
+
+    const context = descSection.resource_context;
+    expect(context).toBeDefined();
+    expect(context.owner_type).toBe("task");
+    expect(context.owner_ref).toBe("@task-resourced");
+    expect(context.resources_base_url).toBe(`/api/tasks/${TASK_RES_ULID}/resources`);
+
+    // Bounded resolved-resource status projection: plan-owned present,
+    // materialized task-owned present, and drifted reference all reported.
+    expect(context.resources).toHaveLength(3);
+
+    const planOwned = context.resources.find((r: { id: string }) => r.id === "arch-png");
+    expect(planOwned.owner_type).toBe("plan");
+    expect(planOwned.status).toBe("present");
+    expect(planOwned.path).toBe("img/arch.png");
+
+    const taskOwned = context.resources.find((r: { id: string }) => r.id === "copy-png");
+    expect(taskOwned.owner_type).toBe("task");
+    expect(taskOwned.status).toBe("present");
+
+    const drifted = context.resources.find((r: { id: string }) => r.id === "drifty-doc");
+    expect(drifted.status).toBe("drift");
+    expect(drifted.recorded_sha256).toBe(DRIFT_RECORDED_SHA);
+    expect(drifted.current_sha256).toBe(DRIFT_CURRENT_SHA);
+    expect(drifted.message).toBeTruthy();
+  });
+
+  // AC: @review-content-diff-api ac-6
+  it("never embeds resource bytes in task review content responses", async () => {
+    const response = await makeRequest("review-task-resourced");
+    const raw = JSON.stringify(await response.json());
+    expect(raw).not.toContain(TASK_COPY_BYTES.toString());
+    expect(raw).not.toContain(DRIFT_CURRENT_BYTES.toString());
+    expect(raw).not.toContain(TASK_COPY_BYTES.toString("base64"));
+  });
+
+  // AC: @review-content-diff-api ac-6
+  it("omits resource context for task subjects without resource refs", async () => {
+    const response = await makeRequest("review-task-plain");
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    const descSection = body.content.sections.find((s: { id: string }) => s.id === "description");
+    expect(descSection).toBeDefined();
+    expect(descSection.resource_context).toBeUndefined();
   });
 });
 

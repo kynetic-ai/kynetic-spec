@@ -116,9 +116,10 @@ function errorBody(
  * via `${base}/${encodeURIComponent(id)}/bytes`. Identical to the value the
  * task-detail route surfaces on `TaskDetail.resources_base_url`, so the list
  * route is a stable companion that does not require the caller to know
- * plan-owned vs task-owned ownership.
+ * plan-owned vs task-owned ownership. Exported for the review content route,
+ * which embeds the same base URL in task resource context.
  */
-function buildTaskResourcesBaseUrl(taskUlid: string): string {
+export function buildTaskResourcesBaseUrl(taskUlid: string): string {
   return `/api/tasks/${taskUlid}/resources`;
 }
 
