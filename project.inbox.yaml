@@ -4178,3 +4178,28 @@ inbox:
       - daemon
     added_by: "@claude"
     created_at: 2026-06-10T14:19:23.952Z
+  - _ulid: 01KTSASPKGX69PXQJBPJSKS5GH
+    text: "Dispatch engine reports healthy while reconcile permanently fails on ambiguous workspace
+      records. Observed in hawse (2026-06-10): two legacy non-closed workspace registry records
+      (slug-keyed dispatch-workspace-task-proposal-lifecycle and ULID-keyed
+      dispatch-workspace-01KNNMF8...) resolved to the same canonical completed task.
+      AmbiguousWorkspaceTaskError (workspace.ts ~1697, workspace-identity.ts ~108) is thrown by
+      loadWorkspaceRecordForWorktreeRoot and fires inside reconcileDispatchWorkspaceRegistry, which
+      runs at the top of BOTH engine start() and every 60s _reconcile() tick
+      (src/agent-runtime/dispatch.ts) BEFORE _evaluateAllTasks. Effect: engine showed running:true,
+      degraded:false, 0 queued for over an hour while every reconcile tick failed; newly derived
+      eligible tasks were never evaluated, and the engine could not self-heal because the cleanup
+      that would close the closing-state records sits behind the same throw. Manual recovery (delete
+      the duplicate alias record from project.dispatch-workspaces.yaml) immediately unblocked
+      bootstrap. Suggested fixes: (1) surface persistent reconcile failure in
+      degraded/degraded_targets instead of silent console logging; (2) scope the ambiguity failure
+      to the affected task so evaluation of unrelated tasks continues; (3) consider auto-coalescing
+      duplicate alias records when the task is verifiably completed and the branch head is merged
+      (legacy pre-canonical-identity data exists in the wild)."
+    tags:
+      - dispatch
+      - bug
+      - observability
+      - canonical-identity
+    added_by: "@claude"
+    created_at: 2026-06-10T17:55:33.105Z
