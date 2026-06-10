@@ -2,7 +2,18 @@ _ulid: 01KTRZPM4PN3APNMEN0A4GJVVE
 slugs: []
 title: "Plan review: Validation and Test Coverage Integrity"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Command passed. Baseline output: 1583 files, 637 items, 1575 tasks checked; schema OK and
+      references OK, with 6 accepted reference warnings for deprecated refs."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-10T14:42:46.257Z
+    completed_at: 2026-06-10T14:42:46.257Z
 events:
   - _ulid: 01KTRZPM4PBE4S2CB8Z39WA5Q4
     actor: "@claude"
@@ -38,6 +49,13 @@ events:
       kind: question
       thread_ulid: 01KTRZR90CPH566YVE0873VH60
     timestamp: 2026-06-10T14:42:32.301Z
+  - _ulid: 01KTRZRQ2GBG691MCA537YF7PR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T14:42:46.480Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -105,5 +123,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-10T14:41:37.942Z
-updated_at: 2026-06-10T14:42:32.077Z
+updated_at: 2026-06-10T14:42:46.257Z
 notes: []
