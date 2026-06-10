@@ -50,6 +50,22 @@ checks:
     runner: nl/rg/source read
     created_at: 2026-06-10T15:17:54.888Z
     completed_at: 2026-06-10T15:17:54.888Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Read @versioning and @format-version; the new decision is correctly placed under
+      @versioning and depends_on @format-version. Confirmed PlanSpecSchema and materializePlanSpecs
+      support spec-level depends_on. Read @broken-shadow-safety; current spec lacks the new AC, so
+      the dedicated spec-update task is the correct precondition for the implementation task. All
+      explicit ACs are claimed by task Covers lines; no orphan ACs found. Dependency graph is
+      acyclic: shadow implementation depends on the spec-delta task; comments-only task depends only
+      on the shadow task; independent P1/P2 tasks remain parallelizable."
+    name: plan structure and coverage
+    required: true
+    runner: manual plan review / kspec item get
+    created_at: 2026-06-10T15:18:09.825Z
+    completed_at: 2026-06-10T15:18:09.825Z
 events:
   - _ulid: 01KTS1Q93E1PD76991239P95SM
     actor: "@claude"
@@ -85,6 +101,13 @@ events:
       status: pass
       name: source claim verification
     timestamp: 2026-06-10T15:17:55.121Z
+  - _ulid: 01KTS1SGWN9JKZAYVEMDZMQAZH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan structure and coverage
+    timestamp: 2026-06-10T15:18:10.069Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -97,5 +120,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-10T15:16:56.558Z
-updated_at: 2026-06-10T15:17:54.888Z
+updated_at: 2026-06-10T15:18:09.825Z
 notes: []
