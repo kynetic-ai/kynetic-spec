@@ -4203,3 +4203,24 @@ inbox:
       - canonical-identity
     added_by: "@claude"
     created_at: 2026-06-10T17:55:33.105Z
+  - _ulid: 01KTSAV5RX6MCEBK82F93VD9PK
+    text: "DispatchEngine.handleFileChange never emits events for newly created tasks. In
+      src/agent-runtime/dispatch.ts ~1282, handleFileChange diffs each task's status against
+      prevTaskStates and only pushes a TaskStateChange when prevStatus !== undefined && prevStatus
+      !== currentStatus; brand-new tasks (prevStatus undefined, e.g. created by kspec plan derive or
+      task add while the engine is running) are snapshot-recorded but never produce task.ready.
+      Combined with the fact that direct-mode CLI mutations (KSPEC_NO_DAEMON=1) emit no daemon
+      events, the only discovery paths for derive-created tasks are engine restart bootstrap or the
+      60s reconcile - and reconcile can be silently dead (see related ambiguous-workspace-records
+      item). Observed in hawse 2026-06-10: five tasks derived from an approved plan with automation
+      eligible sat undiscovered. Suggested fix: treat prevStatus === undefined with a
+      dispatch-eligible current status as a synthetic transition (emit task.ready for pending
+      tasks), or have handleFileChange route new tasks through the same evaluation used by
+      bootstrap/_evaluateAllTasks."
+    tags:
+      - dispatch
+      - bug
+      - events
+      - derive
+    added_by: "@claude"
+    created_at: 2026-06-10T17:56:21.405Z
