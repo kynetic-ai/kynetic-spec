@@ -2,7 +2,107 @@ _ulid: 01KTRZ0611KGZJDYCFY2C1SYJ6
 slugs: []
 title: "Plan review: Release Packaging and Onboarding Readiness"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified against working tree: no LICENSE file at root; package.json has license MIT,
+      author 'Kynetic AI', engines node >=20.0.0, prepack='npm run build:plugin', bin
+      ./dist/cli/index.js, main dist/index.js, build script ends with build:plugin; INSTALL.md:7
+      says 'Node.js v18 or later'; tutorial.md:17 says 'Node.js 18+';
+      installation.md/upgrading-kspec.md/starting-a-new-project.md say 20+; INSTALL.md dead links to
+      docs/getting-started.md at lines 102, 141, 166 (file does not exist; index.md does);
+      README.md#how-it-works anchor dead (headings: kspec, Install, First steps, Documentation); npm
+      audit --omit=dev reports exactly 8 vulnerabilities (2 high: devalue, undici; 6 moderate:
+      dompurify, file-type, smol-toml, svelte, ws, yaml), all 'fix available via npm audit fix'; CI
+      pins node-version 24 at test.yml:37,71,112 and publish.yml:30; publish.yml runs full build
+      before publish with Build then Run tests steps; no CONTRIBUTING.md or SECURITY.md;
+      packages/{web-ui,shared,daemon}/package.json all 0.1.0 with no private flag, web-ui lacks
+      main/exports; all 8 claimed duplicate devDeps confirmed in root and in packages/web-ui
+      devDependencies, none imported in src/ tests/ scripts/; pagefind dynamically imported at
+      scripts/build-docs-search.cjs:118; scripts/build-daemon.cjs bundles with esbuild; bun only in
+      packages/daemon build:compile and CI setup-bun; dist/web-ui/index.html exists after build;
+      templates/skills/manifest.yaml exists. Every checked claim in the plan was accurate."
+    name: Factual claims verification
+    required: true
+    runner: manual-codebase-investigation
+    created_at: 2026-06-10T14:32:31.384Z
+    completed_at: 2026-06-10T14:32:31.384Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@main resolves (module, placeholder); @daemon-runtime-adapter and @web-ui (cited in
+      implementation notes) resolve. Task spec_refs point to plan-local spec slugs
+      (supported-runtime-range, published-artifact-completeness, prepublish-runtime-verification);
+      depends_on @task-add-license-file points to a plan-local task. AC ids sequential (ac-1..ac-2,
+      ac-1..ac-4, ac-1..ac-2) with no gaps or duplicates. No circular dependencies."
+    name: Reference resolution
+    required: true
+    runner: kspec-cli
+    created_at: 2026-06-10T14:32:33.921Z
+    completed_at: 2026-06-10T14:32:33.921Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 8 ACs across 3 specs claimed: supported-runtime-range ac-1/ac-2 by
+      task-standardize-node-version-docs; published-artifact-completeness ac-1 by
+      task-add-license-file, ac-2/ac-3/ac-4 by task-prepack-full-build-and-verification;
+      prepublish-runtime-verification ac-1/ac-2 by task-ci-node-version-matrix. No orphan ACs. Tasks
+      without spec_ref (audit fix, doc links, contributing/security, workspace private, devdep
+      dedupe) are infra/docs-hygiene work consistent with the spec-first decision table."
+    name: AC coverage mapping
+    required: true
+    runner: manual-codebase-investigation
+    created_at: 2026-06-10T14:32:36.465Z
+    completed_at: 2026-06-10T14:32:36.465Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec search across 'packaging', 'publish', 'license', 'node version', 'runtime',
+      'INSTALL.md' found no existing spec covering release packaging, artifact completeness, or
+      runtime-range verification — the three new specs do not duplicate or contradict existing
+      specs. Minor adjacency: @docs-getting-started-section's Installation page contract overlaps
+      the document set quantified by supported-runtime-range ac-2 (recorded as a nit thread). No
+      trait in the catalog applies to these non-CLI packaging/CI requirements."
+    name: Spec neighborhood overlap
+    required: true
+    runner: kspec-cli
+    created_at: 2026-06-10T14:32:39.019Z
+    completed_at: 2026-06-10T14:32:39.019Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Declared edge (prepack task depends_on license task) is correct and necessary —
+      verify-package.cjs asserts LICENSE presence. No circular deps; no P1-depends-on-P2 inversions
+      (license P1 -> prepack P1). Caveat raised as a question thread: undeclared shared-file
+      coordination on tests/release-packaging.test.ts (3 tasks) and .github/workflows/publish.yml (2
+      tasks) risks parallel-dispatch conflicts."
+    name: Dependency ordering
+    required: true
+    runner: manual-codebase-investigation
+    created_at: 2026-06-10T14:32:41.582Z
+    completed_at: 2026-06-10T14:32:41.582Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Four tasks prescribe tests that fs-read project files (LICENSE, package.json, INSTALL.md,
+      docs/*.md, packages/*/package.json) and assert on contents. The
+      no-source-scanning/no-source-file-reads oxlint rule (.oxlintrc.json:42, error severity for
+      tests, tools/eslint-rules/no-source-scanning.js) bans exactly this pattern with no
+      artifact-vs-source carve-out; the plan's claim that doc reads are 'legitimate artifact
+      verification, not source scanning' contradicts the rule as implemented. See blocker thread for
+      affected tasks and fix options.
+    name: Testing approach vs lint convention
+    required: true
+    runner: manual-codebase-investigation
+    created_at: 2026-06-10T14:32:44.094Z
+    completed_at: 2026-06-10T14:32:44.094Z
 events:
   - _ulid: 01KTRZ06119G6MHKFG5Y280ZC8
     actor: "@claude"
@@ -17,6 +117,90 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-10T14:29:44.082Z
+  - _ulid: 01KTRZ5FJC9ZVFB2ZCQRV4D38Z
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTRZ5FBCST2CWDQBX98FXF58
+    timestamp: 2026-06-10T14:32:16.204Z
+  - _ulid: 01KTRZ5J4PXJBCTAM2KRK7FWFE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRZ5HXMHH56KKHYXBQSMJ3R
+    timestamp: 2026-06-10T14:32:18.839Z
+  - _ulid: 01KTRZ5MP0FMD5JY9V5SD0GWXE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRZ5MEY8GBS5N18BGGQQKNM
+    timestamp: 2026-06-10T14:32:21.440Z
+  - _ulid: 01KTRZ5Q59S8GSVZ301PW3ES1Z
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTRZ5PZ4ZR61FFA4Q1KHW16N
+    timestamp: 2026-06-10T14:32:23.977Z
+  - _ulid: 01KTRZ5SPA2BBZ9KD3C1GYRBB3
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTRZ5SFNNY82HYK5SWEXRA4V
+    timestamp: 2026-06-10T14:32:26.570Z
+  - _ulid: 01KTRZ5W3H650T84BMF20SZFT7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTRZ5VX1SH2T30ES6F8M609M
+    timestamp: 2026-06-10T14:32:29.041Z
+  - _ulid: 01KTRZ5YK8N566YM4ZVSH7ZRYV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Factual claims verification
+    timestamp: 2026-06-10T14:32:31.592Z
+  - _ulid: 01KTRZ6139JWT65W9WF80JXEYT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference resolution
+    timestamp: 2026-06-10T14:32:34.153Z
+  - _ulid: 01KTRZ63J7AG2Y0X8BEVQH1CED
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-10T14:32:36.679Z
+  - _ulid: 01KTRZ6627EHM20KMTGH5KJTZ5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec neighborhood overlap
+    timestamp: 2026-06-10T14:32:39.239Z
+  - _ulid: 01KTRZ68JC1V4M2GQE82ZPFR48
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-10T14:32:41.804Z
+  - _ulid: 01KTRZ6B0GG7A4KP3JZCPWQ5QP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Testing approach vs lint convention
+    timestamp: 2026-06-10T14:32:44.305Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +210,152 @@ subject:
   content_hash: ""
   ref: "@01KTRY9VG1T0Q5R95KF7NQR058"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTRZ5FBCST2CWDQBX98FXF58
+    anchor:
+      type: structured
+      ref: "@task-standardize-node-version-docs"
+      section: tasks
+    entries:
+      - _ulid: 01KTRZ5FBCFGJB7ED3ZF844MWN
+        author: "@claude"
+        body: >-
+          The prescribed testing approach conflicts with the project's enforced lint gate. Four
+          tasks instruct workers to write vitest tests that read project files and assert on their
+          contents: task-add-license-file (read LICENSE first lines + package.json license field),
+          task-standardize-node-version-docs (read package.json engines + INSTALL.md + 2 docs files
+          and compare version strings), task-prepack-full-build-and-verification (assert
+          package.json prepack equals 'npm run build'), task-workspace-packages-private (assert
+          packages/*/package.json private === true).
+
+
+          The oxlint rule no-source-scanning/no-source-file-reads is set to 'error' for tests
+          (.oxlintrc.json line 42, implemented in tools/eslint-rules/no-source-scanning.js). It
+          flags ALL fs.readFile/readFileSync calls in tests whose paths are not temp/fixture dirs,
+          plus assertions on the results — its stated purpose is 'Bans reading project files and
+          asserting on their string contents in tests.' The task's inline claim that 'reading docs
+          files in tests is legitimate artifact verification, not source scanning' does not match
+          the rule as implemented; the rule makes no artifact-vs-source distinction. A worker
+          following these Testing sections verbatim will fail the lint gate, and the AC coverage
+          claims for @published-artifact-completeness ac-1 and @supported-runtime-range ac-1/ac-2
+          rest on those tests.
+
+
+          Fix: update the Testing sections to route around the rule explicitly. Options, in
+          preference order: (a) behavioral assertions via subprocess output — e.g. parse `npm pack
+          --dry-run --json` stdout for LICENSE/dist presence, run scripts/verify-package.cjs and
+          assert exit codes (both already behavioral and lint-clean); (b) import package.json as a
+          module (import attributes) instead of fs-reading it; (c) where a file-content read is
+          genuinely the only way (LICENSE text, markdown version strings), instruct the worker to
+          use the rule's sanctioned escape hatch — an eslint-disable comment with a written reason —
+          so reviewers of the derived tasks know it was deliberate. Each affected task should state
+          which mechanism to use.
+        created_at: 2026-06-10T14:32:15.980Z
+    kind: blocker
+  - _ulid: 01KTRZ5HXMHH56KKHYXBQSMJ3R
+    anchor:
+      type: structured
+      ref: "@main"
+      section: specs
+    entries:
+      - _ulid: 01KTRZ5HXNGACG0GQ5VFYTGWSY
+        author: "@claude"
+        body: >-
+          All three specs are parented under @main, which is an empty placeholder module
+          (description: 'Default module for Kynetic Spec. Add your spec items here.', implementation
+          not_started, zero children). Every real domain in this project has a dedicated module
+          (@core, @cli, @schema, @tasks, @web-ui, @user-documentation, @shadow-branch,
+          @agent-integration, @meta). Release/packaging/distribution currently has no module.
+          Parking these specs in the placeholder makes them hard to discover and leaves the
+          hierarchy inconsistent.
+
+
+          Suggest either creating a dedicated module (e.g. 'Release and Distribution') in the plan's
+          Specs section and parenting the three requirements under it, or choosing an appropriate
+          existing module. The plan record's stored module is also @main — the derive target should
+          match whatever is decided.
+        created_at: 2026-06-10T14:32:18.613Z
+    kind: question
+  - _ulid: 01KTRZ5MEY8GBS5N18BGGQQKNM
+    anchor:
+      type: structured
+      section: dependencies
+    entries:
+      - _ulid: 01KTRZ5MEY2A2VVAMMXAPVJWQS
+        author: "@claude"
+        body: >-
+          Several tasks write to the same files with no declared ordering, which matters under
+          parallel dispatch: (1) tests/release-packaging.test.ts is created/extended by three tasks
+          — task-add-license-file ('e.g. tests/release-packaging.test.ts'),
+          task-standardize-node-version-docs ('e.g. in tests/release-packaging.test.ts'), and
+          task-workspace-packages-private ('add an assertion to the packaging test'). Only the
+          prepack task declares depends_on task-add-license-file; the other two could be dispatched
+          before the file exists or in parallel, producing duplicate files or merge conflicts. (2)
+          .github/workflows/publish.yml is edited by both task-prepack-full-build-and-verification
+          (adds the verify-package step) and task-ci-node-version-matrix (adds the verify-min-node
+          job and needs: edge).
+
+
+          Suggest either adding depends_on edges (node-docs and workspace-private depend on
+          task-add-license-file; serialize the two publish.yml tasks), or making each task's
+          instructions self-sufficient ('create the test file if absent') and accepting the
+          conflict-resolution cost. The current 'e.g.' phrasing leaves the file choice to each
+          worker, which makes collisions more likely, not less.
+        created_at: 2026-06-10T14:32:21.214Z
+    kind: question
+  - _ulid: 01KTRZ5PZ4ZR61FFA4Q1KHW16N
+    anchor:
+      type: structured
+      field: ac-1
+      ref: "@prepublish-runtime-verification"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTRZ5PZ49MJDAWYC25F6N3KY
+        author: "@claude"
+        body: "The term 'newest verified major version' is self-referential: a version becomes 'verified' by
+          being in the pipeline, so any second version satisfies the AC and it can never fail on the
+          upper bound. Consider sharpening to something falsifiable — e.g. 'the oldest supported
+          major version and at least one newer major version' (minimal change), or define the upper
+          bound by policy. The spec description uses the same phrase."
+        created_at: 2026-06-10T14:32:23.780Z
+    kind: question
+  - _ulid: 01KTRZ5SFNNY82HYK5SWEXRA4V
+    anchor:
+      type: structured
+      field: ac-2
+      ref: "@supported-runtime-range"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTRZ5SFN3JRQZVZV996X0F79
+        author: "@claude"
+        body: ac-2 quantifies over every 'user-facing installation or onboarding document', but the covering
+          task's consistency test enumerates three named files (INSTALL.md,
+          docs/getting-started/installation.md, docs/getting-started/tutorial.md) — a future doc
+          stating 'Node 18' elsewhere passes the test while violating the AC. The one-time grep
+          sweep in the task narrows the gap but doesn't close it for future docs. Acceptable as a
+          contract-vs-approximation tradeoff, but worth acknowledging in the task's Testing section.
+          Also consider relates_to @docs-getting-started-section, whose Installation page contract
+          ('supported Node versions') is one of the documents this AC quantifies over.
+        created_at: 2026-06-10T14:32:26.357Z
+    kind: nit
+  - _ulid: 01KTRZ5VX1SH2T30ES6F8M609M
+    anchor:
+      type: structured
+      ref: "@task-add-contributing-security-docs"
+      section: tasks
+    entries:
+      - _ulid: 01KTRZ5VX1QCAX95XJ2076Y5D0
+        author: "@claude"
+        body: CONTRIBUTING.md and SECURITY.md are user/contributor-facing documentation surfaces, and this
+          project specs its documentation surfaces in the @user-documentation module (e.g.
+          @docs-getting-started-section, @readme-landing-page each define a durable contract for a
+          doc surface). This task creates two new doc surfaces with no spec coverage. Fine if
+          treated as repo hygiene, but if these files are meant to have a durable contract
+          (SECURITY.md especially — reporting path, response window), a small requirement spec under
+          @user-documentation would match the established pattern.
+        created_at: 2026-06-10T14:32:28.833Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-10T14:29:22.593Z
-updated_at: 2026-06-10T14:29:43.788Z
+updated_at: 2026-06-10T14:32:44.094Z
 notes: []
