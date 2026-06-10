@@ -2,7 +2,140 @@ _ulid: 01KTS386WKR0QWV64Z9PN5FNCX
 slugs: []
 title: "Plan re-review: Validation and Test Coverage Integrity (fix cycle 2, claude)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok exits 0; warnings are pre-existing baseline unrelated
+      to this plan
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-10T15:45:01.779Z
+    completed_at: 2026-06-10T15:45:01.779Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok exits 0 (468/637 specs have tasks, 457 aligned —
+      baseline)
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-10T15:45:04.524Z
+    completed_at: 2026-06-10T15:45:04.524Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok exits 0; warnings pre-existing baseline
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-10T15:45:07.386Z
+    completed_at: 2026-06-10T15:45:07.386Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 'All 3 findings resolved in stored content. (1) blocker triage drift now covers
+      ac-4/ac-5/ac-8/ac-9 with verbatim POST-subroute corrections plus triage.ts header-comment
+      cleanup — verified stored spec still has stale PUT in all four ACs and header lines 1-22 still
+      says PUT, so the correction instruction is accurate and needed. (2) blocker
+      ac-all-persisted-tasks-included now in the required annotation mapping with justification (ref
+      injected into persisted per-task file only surfaces if the record is in the validation task
+      set). (3) question export wording now format=json (default) vs format=context — verified
+      triage.ts ~201: const format = (query.format || "json")'
+    name: "Prior review resolution: codex @01KTRZPM"
+    required: true
+    runner: claude-code
+    created_at: 2026-06-10T15:45:09.963Z
+    completed_at: 2026-06-10T15:45:09.963Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 4 findings resolved. (1) blocker provenance: narrative now attributes MetaUlidSchema
+      tightening to 703f4b6764 (2026-01-17) with fixtures-invalid-from-birth framing and explicitly
+      corrects the 8624214d9f misattribution. (2) blocker ac-8/ac-9: drift correction extended to
+      all four PUT ACs plus the triage.ts file-header AC map. (3) question @plan-validation ac-10:
+      resolved via verbatim spec-update text in the task (error under default strict_refs, warning
+      otherwise) plus description fix — consistent with the plan's spec-updated-to-match-reality
+      policy. (4) nit fixture-ULID facts: all four quoted meta ULIDs now correctly stated as 23
+      chars, beforeEach item/task ULIDs listed explicitly, itE2E.skip mechanism clarified (vitest it
+      aliased — suite runs in every vitest pass)"
+    name: "Prior review resolution: claude @01KTS0TQ"
+    required: true
+    runner: claude-code
+    created_at: 2026-06-10T15:45:12.474Z
+    completed_at: 2026-06-10T15:45:12.474Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "git show 703f4b6764: dated 2026-01-17, changes MetaUlidSchema from z.string().min(1) to
+      UlidSchema in src/schema/meta.ts. git show 8f1f9534ec: dated 2026-01-22, adds the AC-7 search
+      tests to tests/grep.test.ts. 703f4b6764 predates 8f1f9534ec by 5 days as the plan states. git
+      show 8624214d9f -- src/schema/meta.ts: only adds _ulid: MetaUlidSchema usage in the Skill
+      schema, never alters the MetaUlidSchema definition"
+    name: Git provenance verification
+    required: true
+    runner: claude-code
+    created_at: 2026-06-10T15:45:14.997Z
+    completed_at: 2026-06-10T15:45:14.997Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified against current source: validate.ts loads tasks via
+      resolveTaskDataManager().loadAllTasks (lines 2410-2459) and feeds partial tasks via
+      validatePerTaskFiles; loadPlans into ref index at 2555; REF_FIELDS at refs.ts:407 includes
+      depends_on/spec_ref/plan_ref; strict_refs default true at config.ts:518; skipped test at
+      task-plan-ref.test.ts:148 uses success-asserting kspec() and expects warn semantics — kspecRun
+      expectFail exists in helpers; api-triage.spec.ts:163 is test.describe.skip with 37 tests;
+      daemon-api/helpers.ts registers createTriageRoutes (line 607); only vitest triage coverage is
+      daemon-triage-write-through.test.ts plus errors.test.ts:167; triage.ts POST /:ref/act returns
+      409 for acted_on and 422 for pending; grep.test.ts itE2E aliased from vitest it (~461), skip
+      at 629, all six hand-written fixture ULIDs are 23 chars, resolved_at: null at 549/639 rejected
+      by ObservationSchema DateTimeSchema.optional() (meta.ts:286), loadMetaFile safeParse-and-skip
+      with no error branch (meta.ts:250-332), No-matches echo at search.ts:350; computeCacheKey in
+      scripts/test.cjs hashes exactly the five stated components with no env, getCacheDir scopes by
+      KSPEC_SESSION_ID (~171)"
+    name: Source-claim verification
+    required: true
+    runner: claude-code
+    created_at: 2026-06-10T15:45:17.525Z
+    completed_at: 2026-06-10T15:45:17.525Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All Covers claims map to real ACs: @plan-validation ac-10, @validation-task-data-source
+      ac-task-references-checked and ac-all-persisted-tasks-included (both verified present on the
+      spec), @triage-daemon-api ac-1..ac-9, @trait-api-endpoint ac-1..ac-5,
+      @trait-websocket-protocol ac-3, @fuzzy-item-search ac-7 — all exist. Annotation instructions
+      now list every claimed AC including the previously missing ac-all-persisted-tasks-included.
+      Cache-key task is deliberately spec-less per project test-infra policy (convention + task, no
+      spec ACs) — consistent with the testing convention"
+    name: AC coverage mapping
+    required: true
+    runner: claude-code
+    created_at: 2026-06-10T15:45:20.044Z
+    completed_at: 2026-06-10T15:45:20.044Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Four independent tasks, no depends_on, priorities 2/2/2/3 — no misordering possible, full
+      parallelism. Each task carries Why/What/How, concrete file paths, verbatim spec-update text,
+      escalation paths for genuine regressions, and explicit testing criteria —
+      standalone-executable by a dispatch worker without chat history
+    name: Dependency ordering and task executability
+    required: true
+    runner: claude-code
+    created_at: 2026-06-10T15:45:22.776Z
+    completed_at: 2026-06-10T15:45:22.776Z
 events:
   - _ulid: 01KTS386WJBWQSXE2CPXNM4TSV
     actor: "@claude"
@@ -17,6 +150,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-10T15:44:17.278Z
+  - _ulid: 01KTS3AQ1B29D2RPMD6FV5C1E6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-10T15:45:01.995Z
+  - _ulid: 01KTS3ASR4F9QAT1VYW72DEVZB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-10T15:45:04.774Z
+  - _ulid: 01KTS3AWG9JZA3Z57FG3QGVQP7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-10T15:45:07.594Z
+  - _ulid: 01KTS3AZ0Q54HR2QRBYHKT3PCA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Prior review resolution: codex @01KTRZPM"
+    timestamp: 2026-06-10T15:45:10.167Z
+  - _ulid: 01KTS3B1F7DKE4BXB965HCBVSH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Prior review resolution: claude @01KTS0TQ"
+    timestamp: 2026-06-10T15:45:12.679Z
+  - _ulid: 01KTS3B3YWSV55KMRHW41SAZWX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Git provenance verification
+    timestamp: 2026-06-10T15:45:15.228Z
+  - _ulid: 01KTS3B6DD3FW065PN5E49VPG5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Source-claim verification
+    timestamp: 2026-06-10T15:45:17.741Z
+  - _ulid: 01KTS3B8WD0MAJTG9WDXA1ZRTT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-10T15:45:20.269Z
+  - _ulid: 01KTS3BBHQ7ZPWH800T4BHF0DG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering and task executability
+    timestamp: 2026-06-10T15:45:22.999Z
+  - _ulid: 01KTS3BE6243YGFG4MPVZFJCDT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTS3BDZQY40ZQTCW5AC8XR82
+    timestamp: 2026-06-10T15:45:25.698Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +229,24 @@ subject:
   content_hash: ""
   ref: "@01KTRYBV"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTS3BDZQY40ZQTCW5AC8XR82
+    anchor:
+      type: structured
+      field: task-fix-search-meta-entity-tests
+      ref: "@01KTRYBV"
+      section: tasks
+    entries:
+      - _ulid: 01KTS3BDZQR2VJH7ESQ1WBHTD8
+        author: "@claude"
+        body: "Trivial omission, zero operational impact: the excluded-Crockford-letter parentheticals flag
+          01TESTOBS... and 01TESTCONV... but not 01TESTWORKFLOW000000000, which also contains
+          excluded letters (O twice and L in WORKFLOW). The plan never claims WORKFLOW is
+          length-only-invalid, and all fixtures are replaced regardless, so nothing in the fix
+          instructions changes. Noted for the record only — does not block approval."
+        created_at: 2026-06-10T15:45:25.495Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-10T15:43:39.923Z
-updated_at: 2026-06-10T15:44:17.060Z
+updated_at: 2026-06-10T15:45:25.495Z
 notes: []

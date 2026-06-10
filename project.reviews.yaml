@@ -24825,7 +24825,7 @@ reviews:
     title: "Plan re-review: Validation and Test Coverage Integrity (fix cycle 2, claude)"
     disposition: pending
     author: "@claude"
-    check_count: 0
+    check_count: 9
     lifecycle_state: open
     related_refs: []
     subject:
@@ -24833,8 +24833,8 @@ reviews:
       content_hash: ""
       ref: "@01KTRYBV"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-10T15:43:39.923Z
-    updated_at: 2026-06-10T15:44:17.060Z
+    updated_at: 2026-06-10T15:45:25.495Z
