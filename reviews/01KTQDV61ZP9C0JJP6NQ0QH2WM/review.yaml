@@ -1,0 +1,26 @@
+_ulid: 01KTQDV61ZP9C0JJP6NQ0QH2WM
+slugs: []
+title: Review render review structured content resource markdown
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTQDV61ZA82VF7PW79GW5C93
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-10T00:10:18.559Z
+examined_commit: e01b007632d9736e10a4cb6041dff82803b1e2d4
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTQBVCQDFPWFF60ZJEH4B6TY"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-10T00:10:18.559Z
+updated_at: null
+notes: []
