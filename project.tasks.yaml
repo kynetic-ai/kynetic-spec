@@ -31115,7 +31115,7 @@
   type: bug
   spec_ref: "@review-structured-content-viewer"
   plan_ref: "@plan-resource-ui-hardening-plan"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@render-review-structured-content-resource-markdown"
@@ -31131,4 +31131,5 @@
   created_at: 2026-06-10T04:53:19.049Z
   started_at: 2026-06-10T04:54:58.343Z
   submitted_at: 2026-06-10T05:18:37.374Z
+  completed_at: 2026-06-10T05:42:51.089Z
   automation: eligible
