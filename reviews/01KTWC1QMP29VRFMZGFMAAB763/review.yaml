@@ -81,6 +81,19 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T22:16:50.883Z
     completed_at: 2026-06-11T22:16:50.883Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Task graph remains acyclic and executable: task 1 (P1) unlocks task 2 (P1), task 3 (P2),
+      and task 6 (P2, also depending on task 2); task 4 (P2) unlocks task 5 (P2). No P1 task depends
+      on a lower-priority task. P0a-derived refs remain a documented program ordering gate and are
+      not treated as an author defect in this review."
+    name: dependency ordering
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T22:17:02.191Z
+    completed_at: 2026-06-11T22:17:02.191Z
 events:
   - _ulid: 01KTWC1QMPXS7YZAMWEG4MCAC0
     actor: "@claude"
@@ -137,6 +150,13 @@ events:
       status: pass
       name: AC coverage mapping
     timestamp: 2026-06-11T22:16:51.161Z
+  - _ulid: 01KTWC578TWQBHFKZ7W76MXPKZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-11T22:17:02.490Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -149,5 +169,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:15:08.182Z
-updated_at: 2026-06-11T22:16:50.883Z
+updated_at: 2026-06-11T22:17:02.191Z
 notes: []
