@@ -31335,7 +31335,7 @@
   type: task
   spec_ref: "@daemon-log-capture"
   plan_ref: "@plan-daemon-operational-reliability"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -31347,6 +31347,7 @@
   todos_count: 0
   created_at: 2026-06-11T03:53:16.608Z
   started_at: 2026-06-11T05:53:50.197Z
+  submitted_at: 2026-06-11T06:28:22.007Z
   automation: eligible
 - _ulid: 01KTTD06BWZAEDXS79B66C260R
   slugs:
