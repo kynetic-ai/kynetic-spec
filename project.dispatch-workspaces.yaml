@@ -9827,11 +9827,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-license-file/01kttczb
     canonical_branch_head: 3a3f3bdd74e6e6a978be5cf2888e70c853fe255f
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T04:58:58.260Z
+      updated_at: 2026-06-11T05:03:24.997Z
     health:
       status: healthy
       issues: []
@@ -9845,17 +9845,17 @@ workspaces:
       target_branch: dev
       target_commit: 8335c393bd35c3216a876ea40949c41cf80e9b8b
       updated_at: 2026-06-11T04:58:58.260Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTTCZB9VP137NEH3QGSJK0DS
     task_ref: "@01KTTCZB9VP137NEH3QGSJK0DS"
     task_slug: task-add-license-file
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-11T05:03:24.997Z
       last_active_at: 2026-06-11T04:37:28.152Z
       last_reconciled_at: 2026-06-11T05:02:29.399Z
       created_at: 2026-06-11T03:58:19.787Z
-      updated_at: 2026-06-11T05:02:29.399Z
+      updated_at: 2026-06-11T05:03:24.997Z
     workspace_id: dispatch-workspace-01KTTCZB9VP137NEH3QGSJK0DS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
