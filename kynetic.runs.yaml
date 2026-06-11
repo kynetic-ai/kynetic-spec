@@ -62500,7 +62500,7 @@ runs:
     started_at: 2026-06-11T07:23:16.818Z
     completed_at: 2026-06-11T07:25:27.235Z
   - _ulid: 01KTTS8E5ASCKFDQ9D1E94937M
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -62532,10 +62532,14 @@ runs:
           @01KRH4XB; full-suite runtime/quiet-tail friction is covered by @01KTMHHG, @01KT6105, and
           @01KT2F6H; this task's spec-delta status-sync churn is already covered by @01KTTR5H. No
           unique high-confidence item remains after search, so capture set is empty."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-06-11T07:30:09.388Z
-        completed_at: 2026-06-11T07:30:09.388Z
+        completed_at: 2026-06-11T07:30:19.193Z
+        notes: No capture performed. All concrete candidates were already covered by existing
+          observations/inbox/task state, and no unique high-confidence reflection item remained
+          after search.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T07:27:30.474Z
+    completed_at: 2026-06-11T07:30:19.193Z
