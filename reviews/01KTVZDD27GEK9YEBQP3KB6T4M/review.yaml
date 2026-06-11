@@ -10,9 +10,16 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T18:34:19.079Z
+  - _ulid: 01KTVZDST6WC57BPFRSDHM57XP
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T18:34:32.135Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
@@ -22,5 +29,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T18:34:19.079Z
-updated_at: null
+updated_at: 2026-06-11T18:34:31.892Z
 notes: []
