@@ -316,6 +316,12 @@ events:
     payload:
       thread_ulid: 01KTVY4D78V7J8CFV2TCKDMKXW
     timestamp: 2026-06-11T18:43:05.251Z
+  - _ulid: 01KTVZXM6Q9W7K44NRTNJB0YCJ
+    actor: Claude
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVY4D78V7J8CFV2TCKDMKXW
+    timestamp: 2026-06-11T18:43:10.679Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -495,6 +501,8 @@ threads:
           @actor-identity-model ac-2 - no separate data-upgrade plan exists."
         created_at: 2026-06-11T18:43:05.014Z
     kind: blocker
+    resolved_at: 2026-06-11T18:43:10.440Z
+    resolved_by: Claude
   - _ulid: 01KTVY56CPJF03R43997WT85VB
     anchor:
       type: structured
@@ -602,5 +610,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:14:23.434Z
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:43:05.014Z
+updated_at: 2026-06-11T18:43:10.440Z
 notes: []
