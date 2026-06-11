@@ -26,6 +26,18 @@ checks:
     runner: kspec plan import --dry-run
     created_at: 2026-06-11T18:48:49.401Z
     completed_at: 2026-06-11T18:48:49.401Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 'Failed: @actor-identity-model does not resolve (kspec item get @actor-identity-model
+      exited 1; kspec search "actor identity" returned no matches), but @plan-revisions depends_on
+      and task text rely on it.'
+    name: cross-reference validation
+    required: true
+    runner: kspec item get / kspec search
+    created_at: 2026-06-11T18:48:59.260Z
+    completed_at: 2026-06-11T18:48:59.260Z
 events:
   - _ulid: 01KTW04RAXP60HJ6RBPF07YM74
     actor: "@claude"
@@ -82,6 +94,13 @@ events:
       status: pass
       name: plan storage dry run
     timestamp: 2026-06-11T18:48:49.664Z
+  - _ulid: 01KTW088V657BPX4VDH8YBQEX6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: cross-reference validation
+    timestamp: 2026-06-11T18:48:59.494Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -162,5 +181,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:48:49.401Z
+updated_at: 2026-06-11T18:48:59.260Z
 notes: []
