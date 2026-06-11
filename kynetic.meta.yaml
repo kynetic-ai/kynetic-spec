@@ -21414,6 +21414,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T11:52:18.154Z
+  - _ulid: 01KTVA6WXBJ9M82X1MZ5RDJKZQ
+    type: success
+    content: "Behavioral verification of emitted guidance: tests for shadow restore failures parse the
+      prescribed recovery commands out of the error message and execute them verbatim through
+      /bin/sh (plus re-running the prescribed kspec command), asserting recovery actually works
+      end-to-end. This pattern caught both review blockers in @task-shadow-restore-loud-failure
+      (state-unaware mv guidance, then shell-unsafe quoting) and generalizes: whenever code emits
+      copy-pasteable commands, test by executing them, not by string-matching alone. See
+      tests/shadow-restore-failure.test.ts executeRecoverySteps()."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T12:23:45.835Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

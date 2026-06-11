@@ -4381,3 +4381,31 @@ inbox:
       - skills
     added_by: "@claude"
     created_at: 2026-06-11T11:25:01.067Z
+  - _ulid: 01KTVA6WQMT4GGDPET7GT136RA
+    text: "Shell-safe path quoting for all user-facing command guidance: cycle-2 review of
+      @task-shadow-restore-loud-failure blocked on recovery commands that interpolated paths into
+      double-quoted shell strings ($, backticks, backslashes still expand). Fixed locally with a
+      private shellQuotePath() in src/parser/shadow.ts, but three other guidance strings still embed
+      unquoted paths in suggested commands: src/strings/validation.ts:133 (cd ${dir}),
+      src/parser/shadow.ts:623 (cd ${mainRoot} && ...), src/parser/yaml.ts:822 (Run from project
+      root: cd ${...}). Promote shellQuotePath to a shared util (e.g. src/utils/) and apply it
+      wherever guidance embeds filesystem paths in shell commands; keep kspec @refs unquoted. Small
+      scope."
+    tags:
+      - reflection
+      - cli
+      - dx
+    added_by: "@claude"
+    created_at: 2026-06-11T12:23:45.652Z
+  - _ulid: 01KTVA6WV05TMENV88TSY4MR9W
+    text: "Testing convention timing is stale: conventions say full suite ~150s (shards ~50s), but two
+      independent full fresh runs on 2026-06-11 took ~2420s (worker and reviewer environments, 10k+
+      tests). Misleads agents budgeting time around npm test. Update the convention numbers (or drop
+      absolute timings in favor of relative guidance like 'shards are ~3x faster; full suite can
+      take tens of minutes fresh, seconds on cache hit')."
+    tags:
+      - reflection
+      - testing
+      - docs
+    added_by: "@claude"
+    created_at: 2026-06-11T12:23:45.760Z
