@@ -81,6 +81,45 @@ describe("README landing page structure", () => {
   });
 });
 
+describe("INSTALL.md links", () => {
+  const install = readTestOutputSync(join(projectRoot, "INSTALL.md"));
+  const installLinks = [...install.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)]
+    .map((m) => ({ text: m[1], href: m[2] }))
+    .filter((l) => !l.href.startsWith("http"));
+
+  it("all relative links point to files that exist", () => {
+    expect(installLinks.length).toBeGreaterThan(0);
+
+    for (const link of installLinks) {
+      const targetPath = join(projectRoot, link.href.split("#")[0]);
+      expect(
+        existsSync(targetPath),
+        `Link "${link.text}" points to ${link.href} which does not exist`,
+      ).toBe(true);
+    }
+  });
+
+  it("all anchors resolve to headings in the target file", () => {
+    const anchoredLinks = installLinks.filter((l) => l.href.includes("#"));
+
+    for (const link of anchoredLinks) {
+      const [file, anchor] = link.href.split("#");
+      const target = readTestOutputSync(join(projectRoot, file));
+      const headingSlugs = [...target.matchAll(/^#+ (.+)$/gm)].map((m) =>
+        m[1]
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, "")
+          .trim()
+          .replace(/\s+/g, "-"),
+      );
+      expect(
+        headingSlugs,
+        `Anchor "${link.href}" in INSTALL.md does not match any heading in ${file}`,
+      ).toContain(anchor);
+    }
+  });
+});
+
 describe("README cross-links into docs", () => {
   // AC: @readme-landing-page ac-2
   it("links to Getting Started", () => {
