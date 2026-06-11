@@ -82,7 +82,7 @@ description: |
 spec_ref: "@triage-daemon-api"
 plan_ref: "@plan-validation-and-test-coverage-integrity"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -93,6 +93,7 @@ tags:
   - api
   - triage
 vcs_refs: []
+session_id: 01KTVBHXFNCCNJ1AFZ9MXED7Y7
 history:
   - author: Jacob Chapel
     changes:
@@ -101,6 +102,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-11T03:55:31.607Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KTVBHXFNCCNJ1AFZ9MXED7Y7
+        previous: null
+      started_at:
+        new: 2026-06-11T12:47:47.287Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-11T12:47:47.287Z
 created_at: 2026-06-11T03:53:57.351Z
+started_at: 2026-06-11T12:47:47.287Z
 todos: []
 automation: eligible
