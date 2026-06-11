@@ -54,3 +54,31 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-11T22:47:13.356Z
+  - _ulid: 01KTWGDASV02P3BRECK7VY0A7C
+    content: "Fix cycle 1 complete (commit d04e6a0645). Both blockers addressed. Blocker 1 (lock did not
+      eliminate the full-suite race): the reentrancy marker is inherited by every test subprocess,
+      so builds spawned from INSIDE the suite bypassed the lock — tests/cli-serve.test.ts 'npm pack'
+      (prepack = full tsc build, rewrites dist/cli/ — matches the reviewer's workflow-runs
+      registerUpgradeCommand crash exactly) and tests/daemon-build.test.ts 'npm run build:daemon'
+      (rm+re-emit of live dist/daemon/). Fixed by (a) label-aware reentrancy: same-kind nested runs
+      stay reentrant, cross-kind (build under running test or vice versa) fails fast with a
+      diagnostic (new KSPEC_BUILD_TEST_LOCK_HELD_LABEL, excluded from cache key); the runner's own
+      pre-vitest build is re-labelled 'build' for its child since vitest is not yet running, and a
+      reentrant nested test runner forces SKIP_BUILD; (b) cli-serve packs with --ignore-scripts
+      (runner's build hook guarantees dist/ freshness; release-packaging.test.ts precedent); (c)
+      daemon-build builds into an isolated output root via new KSPEC_DAEMON_BUILD_DIST_ROOT override
+      in build-daemon.cjs, which now also acquires the lock when targeting the real dist/ (covers
+      standalone npm run build:daemon too); its runtime smoke test no longer rebuilds live dist
+      mid-suite (build-emit coverage moved to the isolated test; runtime coverage exercises the
+      runner-built artifacts from the same pipeline). Blocker 2 (cache key omissions):
+      TEST_INPUT_PATHS now hashes scripts/ wholesale; covered by a membership test for all
+      runner/build script deps plus a behavioral test that an added file under scripts/ changes
+      computeCacheKey. Spec updated: ac-7 'then' now states cross-kind nested invocations fail fast;
+      added a testing convention rule that tests must never rebuild the real dist/ (kspec-agents.md
+      regenerated). Gates: format, lint --quiet (0 errors), focused oxlint 0 warnings (also fixed 2
+      pre-existing prefer-template warnings in test.cjs), typecheck, kspec validate
+      refs/alignment/completeness, and FULL fresh suite 'npm test -- --fresh': 2784 suites, 10552
+      passed / 0 failed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T23:31:22.555Z
