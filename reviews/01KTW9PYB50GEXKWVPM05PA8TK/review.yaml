@@ -34,6 +34,20 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-11T21:51:37.007Z
     completed_at: 2026-06-11T21:51:37.007Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "First full npm test run: tests/cli-serve.test.ts passed (47 tests) and 10533 tests passed
+      overall, but one unrelated tests/upgrade-folder-storage.test.ts case failed once from a dist
+      import subprocess. Per test-failure triage, created follow-up @01KTWAN5; fresh targeted rerun
+      'npm test -- --fresh tests/upgrade-folder-storage.test.ts' passed all 24 tests. Treated as
+      non-regression for this branch."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T21:51:48.289Z
+    completed_at: 2026-06-11T21:51:48.289Z
 events:
   - _ulid: 01KTW9PYB4RMP3RDPZ6F29HY51
     actor: Jacob Chapel
@@ -69,6 +83,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-11T21:51:37.312Z
+  - _ulid: 01KTWAQ0V47ER11EMZGDAYCD8G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T21:51:48.581Z
 examined_commit: b56d32163b5e1592b58554f46c4ddc391684b109
 external_links: []
 lifecycle_state: open
@@ -81,5 +102,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T21:34:17.445Z
-updated_at: 2026-06-11T21:51:37.007Z
+updated_at: 2026-06-11T21:51:48.289Z
 notes: []
