@@ -62,7 +62,7 @@ description: |
 spec_ref: "@broken-shadow-safety"
 plan_ref: "@plan-data-integrity-and-upgrade-safety"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-broken-shadow-safety-spec-delta"
@@ -82,7 +82,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-shadow-restore-loud-failure/01kttd0y
-session_id: null
+session_id: 01KTV8GASG9W650T6AEFVB61FW
 history:
   - author: Jacob Chapel
     changes:
@@ -198,8 +198,21 @@ history:
         previous: 01KTV518YQPH59CGGF3D72CM1Q
     command: review-verdict-needs-work
     timestamp: 2026-06-11T11:33:40.735Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KTV8GASG9W650T6AEFVB61FW
+        previous: null
+      started_at:
+        new: 2026-06-11T11:54:54.858Z
+        previous: 2026-06-11T11:13:27.530Z
+    command: task-start
+    timestamp: 2026-06-11T11:54:54.859Z
 created_at: 2026-06-11T03:53:41.874Z
-started_at: 2026-06-11T11:13:27.530Z
+started_at: 2026-06-11T11:54:54.858Z
 submitted_at: 2026-06-11T11:13:29.125Z
 todos: []
 automation: eligible
