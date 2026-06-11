@@ -62441,7 +62441,7 @@ runs:
     completed_at: 2026-06-11T07:08:36.190Z
   - _ulid: 01KTTS0PEJ40B1HCMY4RZD624E
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -62456,7 +62456,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T07:24:35.264Z
-        completed_at: 2026-06-11T07:24:35.264Z
+        completed_at: 2026-06-11T07:24:46.192Z
+        notes: "Friction points: full-review gate recording is still manual and verbose; full npm test takes
+          a long time in review snapshots; raw git diffs against current dev can be misleading when
+          the detached snapshot is behind by unrelated target commits, requiring explicit
+          merge-base/commit-set checks. These are systemic but already have related tracking around
+          evidence logs, review-gate process, and detached merge-helper usage."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T07:24:46.192Z
+        completed_at: 2026-06-11T07:24:46.192Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T07:23:16.818Z
