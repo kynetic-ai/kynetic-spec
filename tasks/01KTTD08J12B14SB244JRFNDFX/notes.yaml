@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KTW8550T48ZXWB03HPKN4CE4
+    content: "Approach: add connect-host warning in startServer (uses configured daemon.connect_host)
+      and statusServer (uses metadata connect_host) in src/cli/commands/serve.ts, gated on
+      isExternallyReachable() — mirrors existing bind-host warning blocks. Key constraint
+      discovered: resolveDaemonConnectHost() rejects a connect_host that differs from a non-wildcard
+      bind, so a non-loopback connect_host in practice requires a wildcard bind. Test strategy: use
+      connect_host: localhost with host: 0.0.0.0 — 'localhost' is deliberately NOT recognized as
+      loopback by isLoopbackHost (no OS resolver dependency), yet resolves locally, so the daemon
+      stays reachable for health checks and stop. Tests: start warning, status warning, and negative
+      (loopback connect_host produces no connect warning) beside existing
+      ac-external-binding-warning tests in tests/cli-serve.test.ts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T21:07:05.882Z
