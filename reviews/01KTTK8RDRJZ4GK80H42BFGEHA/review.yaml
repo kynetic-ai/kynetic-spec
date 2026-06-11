@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T05:43:16.608Z
+  - _ulid: 01KTTMDBV6MG5RQ96WRDWAXC9J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTMDBGQXRNVNCM782GX6XSB
+    timestamp: 2026-06-11T06:02:49.062Z
 examined_commit: b112b02a919a15d0c4a4466a4daafae05dcf7c7c
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,30 @@ subject:
   content_hash: ""
   ref: "@01KTTCZC40FDTA2WWB7E20V00R"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTTMDBGQXRNVNCM782GX6XSB
+    anchor:
+      type: code
+      commit: b112b02a919a15d0c4a4466a4daafae05dcf7c7c
+      line_end: 3372
+      line_start: 3371
+      path: package-lock.json
+      side: head
+    entries:
+      - _ulid: 01KTTMDBGQJBXWGG3SZ9F83G30
+        author: Jacob Chapel
+        body: "MUST-FIX: The lockfile now resolves production transitive dependency file-type to 22.0.1,
+          whose package metadata requires Node >=22. This project still declares and documents Node
+          20 support (package.json engines.node >=20.0.0; docs say Node.js 20+). Evidence: running
+          Node v20.20.2 against this submitted package-lock with npm ci --omit=dev --engine-strict
+          --ignore-scripts fails with EBADENGINE: file-type@22.0.1 requires { node: >=22 }, actual
+          node v20.20.2. Impact: consumers using the advertised Node 20 runtime cannot perform a
+          strict production install of the package after this lockfile update. Please keep the
+          production dependency graph compatible with Node 20 or explicitly change the package/docs
+          support contract in scope."
+        created_at: 2026-06-11T06:02:48.727Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T05:42:49.528Z
-updated_at: 2026-06-11T05:43:16.276Z
+updated_at: 2026-06-11T06:02:48.727Z
 notes: []
