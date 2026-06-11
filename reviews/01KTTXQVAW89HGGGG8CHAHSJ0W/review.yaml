@@ -135,6 +135,24 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T08:50:02.236Z
     completed_at: 2026-06-11T08:50:02.236Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Read: full stored plan (kspec plan get/export), prior review 01KTTVE9X42D5EKE5J23CDHKXC
+      with all threads/checks/events, live specs @test-annotation-sweep,
+      @ac-annotation-integrity-reporting, @ac-annotation-identifier-format. Commands: kspec plan
+      get/export/import --dry-run, kspec review list/get/add/open/comment/check, kspec item get,
+      kspec search, kspec validate --refs/--alignment/--completeness, kspec shadow status (healthy),
+      diff stored-vs-source. Categories: prior-finding follow-up, spec quality
+      (timeless/observable/deterministic), AC atomicity and rationale leakage, coverage mapping (all
+      19 new-spec ACs verified claimed), dependency graph and priority alignment, existing-spec
+      alignment, boundary cases."
+    name: Evidence log
+    required: false
+    runner: kspec-review-plan
+    created_at: 2026-06-11T08:50:07.458Z
+    completed_at: 2026-06-11T08:50:07.458Z
 events:
   - _ulid: 01KTTXQVAWJ8VTNY2FXYXNJPB1
     actor: "@claude"
@@ -303,6 +321,13 @@ events:
       status: pass
       name: Spec neighborhood overlap
     timestamp: 2026-06-11T08:50:02.452Z
+  - _ulid: 01KTTXZQ62XXRAVSEXJ002N3JZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Evidence log
+    timestamp: 2026-06-11T08:50:07.682Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -523,5 +548,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:50:02.236Z
+updated_at: 2026-06-11T08:50:07.458Z
 notes: []
