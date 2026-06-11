@@ -265,6 +265,12 @@ events:
     payload:
       thread_ulid: 01KTW0C5R5ZEN671JWJEX2SMFQ
     timestamp: 2026-06-11T19:30:49.342Z
+  - _ulid: 01KTW2N2SD0YNP15Y09D99AX5T
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTW0C8P8BSAHPA0DMBWJWQME
+    timestamp: 2026-06-11T19:30:56.429Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -382,6 +388,8 @@ threads:
           disjoint, so each AC is deterministic for a test author working from ACs alone."
         created_at: 2026-06-11T19:27:05.732Z
     kind: blocker
+    resolved_at: 2026-06-11T19:30:56.046Z
+    resolved_by: "@claude"
   - _ulid: 01KTW0CBGK9D5QQTX8RGY66WND
     anchor:
       type: structured
@@ -499,5 +507,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:51:46.718Z
 created_at: 2026-06-11T18:48:47.217Z
-updated_at: 2026-06-11T19:30:48.977Z
+updated_at: 2026-06-11T19:30:56.046Z
 notes: []
