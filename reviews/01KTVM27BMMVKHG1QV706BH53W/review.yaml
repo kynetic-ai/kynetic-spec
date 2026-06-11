@@ -30,6 +30,13 @@ events:
     payload:
       thread_ulid: 01KTVM7NR7ZKV6RGE8CZCS6DKN
     timestamp: 2026-06-11T15:19:39.513Z
+  - _ulid: 01KTVM93NVNC60Q3XBH0TVBM71
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVM93ASEBS8WJY0EJCTPJRJ
+    timestamp: 2026-06-11T15:19:44.059Z
 examined_commit: 76859368017ba57e539303d633dfa9e248f05f5d
 external_links: []
 lifecycle_state: open
@@ -74,7 +81,26 @@ threads:
           interpolation.
         created_at: 2026-06-11T15:19:39.155Z
     kind: blocker
+  - _ulid: 01KTVM93ASEBS8WJY0EJCTPJRJ
+    anchor:
+      type: code
+      commit: 76859368017ba57e539303d633dfa9e248f05f5d
+      line_end: 719
+      line_start: 675
+      path: src/cli/commands/serve.ts
+      side: head
+    entries:
+      - _ulid: 01KTVM93ATN25K5W6F60K52TGQ
+        author: Jacob Chapel
+        body: "MUST-FIX: The timeout response directs operators to run `kspec serve status`, but that CLI
+          path currently discards the new `command_dispatch` health payload. `statusServer` fetches
+          `/api/health` only to parse `uptime`, then builds a status object without the degraded
+          command name or running duration. A user following the 504 suggestion will not see the
+          wedged dispatch signal. Surface `command_dispatch` in `serve status` JSON and human
+          output, or change the timeout suggestion to an actually informative surface."
+        created_at: 2026-06-11T15:19:43.706Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T15:15:58.452Z
-updated_at: 2026-06-11T15:19:39.155Z
+updated_at: 2026-06-11T15:19:43.706Z
 notes: []
