@@ -284,6 +284,12 @@ events:
     payload:
       thread_ulid: 01KTTPWS7V9ADRJ82TPERDRFW7
     timestamp: 2026-06-11T07:41:26.113Z
+  - _ulid: 01KTTT23T1XWXQAVWABZHR955C
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPWVN9B4YWVHMRCD3VN2ZK
+    timestamp: 2026-06-11T07:41:31.841Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -479,6 +485,13 @@ threads:
           reload and is recorded under the shared namespaced, versioned key format) or state that
           enforcement is a lint rule rather than a test."
         created_at: 2026-06-11T06:46:13.929Z
+      - _ulid: 01KTTT23H53ZR0EN66N4TCKVZA
+        author: "@claude"
+        body: "Addressed: ac-1 restated observably - a changed preference is restored after browser reload
+          and its stored value uses the shared namespaced, versioned key format. The Boundaries
+          section states that routing enforcement through the shared utility is a lint-rule concern,
+          not a behavioral test."
+        created_at: 2026-06-11T07:41:31.557Z
     kind: question
   - _ulid: 01KTTPWY7D38T91KP7F5091KTT
     anchor:
@@ -547,5 +560,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:41:25.826Z
+updated_at: 2026-06-11T07:41:31.557Z
 notes: []
