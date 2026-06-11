@@ -25530,7 +25530,7 @@ reviews:
     title: Review task-serve-logs-command
     disposition: pending
     author: Jacob Chapel
-    check_count: 6
+    check_count: 7
     examined_commit: 9222d4a7de015305cf726b68c07f68b83438851d
     lifecycle_state: open
     related_refs: []
@@ -25543,4 +25543,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T17:03:50.569Z
-    updated_at: 2026-06-11T17:23:12.933Z
+    updated_at: 2026-06-11T17:23:18.708Z
