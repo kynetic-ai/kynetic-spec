@@ -58,7 +58,7 @@ description: |
 spec_ref: "@subprocess-argument-literalness"
 plan_ref: "@plan-data-integrity-and-upgrade-safety"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -68,6 +68,14 @@ tags:
   - reliability
   - security
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-git-utils-execfile/01kttd0z
+  captured_at: 2026-06-11T11:49:46.944Z
+  commit: 64821fec5490891ef86e378907888118f12ff4a2
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KTV705YDFWGAZ9KHCSFP7WSW
 history:
   - author: Jacob Chapel
@@ -90,7 +98,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-11T11:28:09.707Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-git-utils-execfile/01kttd0z
+          captured_at: 2026-06-11T11:49:46.944Z
+          commit: 64821fec5490891ef86e378907888118f12ff4a2
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-11T11:49:46.947Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-11T11:49:46.947Z
 created_at: 2026-06-11T03:53:43.386Z
 started_at: 2026-06-11T11:28:09.707Z
+submitted_at: 2026-06-11T11:49:46.947Z
 todos: []
 automation: eligible
