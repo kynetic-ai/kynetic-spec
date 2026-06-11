@@ -82,6 +82,7 @@ tags:
   - ci
   - infra
 vcs_refs: []
+review_ref: "@01KTTXHAVZJ03H17NAZ0C6PWMM"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-prepack-full-build-and-verification/01kttcze
@@ -132,6 +133,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-11T08:36:10.503Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTTXHAVZJ03H17NAZ0C6PWMM"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-11T08:42:18.589Z
 created_at: 2026-06-11T03:52:52.836Z
 started_at: 2026-06-11T08:15:12.711Z
 submitted_at: 2026-06-11T08:36:10.503Z

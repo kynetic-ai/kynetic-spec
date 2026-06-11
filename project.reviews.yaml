@@ -25185,3 +25185,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-11T08:15:17.606Z
     updated_at: 2026-06-11T08:29:04.911Z
+  - _ulid: 01KTTXHAVZJ03H17NAZ0C6PWMM
+    slugs: []
+    title: Review task-prepack-full-build-and-verification
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 570dc9e8b212f7072ee2a03f110c74aa0f7bc18a
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KTTCZEB4XRKP80A7YXN2M9PD"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-11T08:42:16.318Z
