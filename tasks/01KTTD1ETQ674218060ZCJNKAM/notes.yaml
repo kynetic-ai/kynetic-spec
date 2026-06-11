@@ -16,3 +16,21 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T19:20:59.241Z
+  - _ulid: 01KTW3DRMWJK5WCV2SPK64JEGG
+    content: "Implementation done: computeEnvCacheComponent(env) added to scripts/test.cjs and wired in
+      as section 6 of computeCacheKey; exported for tests. Convention update: kspec CLI has no
+      replace/remove-rule operation (only meta set --add-rule appends), so the testing convention
+      rule was replaced via an atomic kspec batch (meta delete + meta add convention with the full
+      21-rule list, cache-key rule text extended to mention the env component); verified with kspec
+      meta get testing, then kspec agents generate (the regenerated kspec-agents.md also picked up
+      unrelated drift from newer meta — branching/development rules added remotely since the last
+      generation). 7 new unit tests in tests/test-runner.test.ts cover allowlist filtering, KSPEC_*
+      inclusion/exclusions, unset-vs-empty, ordering determinism, separator-ambiguity, and
+      computeCacheKey env sensitivity. NOTE: one full-suite run hit an environmental failure
+      (upgrade-folder-storage CLI smoke: dist/ was rebuilt mid-run by a leftover child of a killed
+      earlier test invocation, causing a transient ESM export mismatch in dist). Not related to this
+      change; re-running with --fresh after confirming dist is consistent and no stray processes
+      remain."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T19:44:25.244Z
