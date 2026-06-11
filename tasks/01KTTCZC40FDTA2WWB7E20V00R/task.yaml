@@ -50,7 +50,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-release-packaging-and-onboarding-readiness"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -69,7 +69,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-audit-fix-production-deps/01kttczc
-session_id: null
+session_id: 01KTTP8J7J4XAWXSFMGNE8YGW4
 history:
   - author: Jacob Chapel
     changes:
@@ -128,8 +128,21 @@ history:
         previous: 01KTTFJQ08QTW9KWQVGAAD96XM
     command: review-verdict-needs-work
     timestamp: 2026-06-11T06:05:06.574Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KTTP8J7J4XAWXSFMGNE8YGW4
+        previous: null
+      started_at:
+        new: 2026-06-11T06:36:23.204Z
+        previous: 2026-06-11T04:39:10.026Z
+    command: task-start
+    timestamp: 2026-06-11T06:36:23.205Z
 created_at: 2026-06-11T03:52:50.560Z
-started_at: 2026-06-11T04:39:10.026Z
+started_at: 2026-06-11T06:36:23.204Z
 submitted_at: 2026-06-11T05:36:51.700Z
 todos: []
 automation: eligible

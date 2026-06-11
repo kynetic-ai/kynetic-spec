@@ -31162,7 +31162,7 @@
   title: Upgrade vulnerable production dependencies via npm audit fix
   type: task
   plan_ref: "@plan-release-packaging-and-onboarding-readiness"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -31174,7 +31174,7 @@
   notes_count: 5
   todos_count: 0
   created_at: 2026-06-11T03:52:50.560Z
-  started_at: 2026-06-11T04:39:10.026Z
+  started_at: 2026-06-11T06:36:23.204Z
   submitted_at: 2026-06-11T05:36:51.700Z
   automation: eligible
 - _ulid: 01KTTCZCTNXC6TSH9SENFSQDZG
