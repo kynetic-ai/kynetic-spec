@@ -2,7 +2,156 @@ _ulid: 01KTWB46E5EC7E0KWNYEP37ZRC
 slugs: []
 title: "Plan review: Web UI Foundations (latest fixes verification)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing deprecated-reference warning baseline only: 1618 files, 646 items,
+      1610 tasks; schema and references OK."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T22:01:02.169Z
+    completed_at: 2026-06-11T22:01:02.169Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline only: 36 orphaned specs and 10 status mismatch
+      warnings unrelated to this underived plan."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T22:01:05.386Z
+    completed_at: 2026-06-11T22:01:05.386Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline only: missing AC coverage, automation-without-spec,
+      and invalid annotation warnings unrelated to this underived plan."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T22:01:08.688Z
+    completed_at: 2026-06-11T22:01:08.688Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Dry-run import of the exported stored plan succeeded; stored content is byte-identical to
+      plans/ui-redesign-ui-foundations.md.
+    name: Plan document parse
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-11T22:01:11.934Z
+    completed_at: 2026-06-11T22:01:11.934Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read prior Web UI Foundations reviews and author replies. Current content addresses the
+      review-session breadcrumb data gap, next-actor determinism, upstream decision Covers claims,
+      canonical-write identity layer, trait-api-endpoint ownership, view-header scope, shortcut
+      context wording, and actor-identity-model ac-1 reconciliation. Historical addressed threads
+      were already resolved; the P0a gate threads were resolved as acknowledged program sequencing.
+    name: Prior-round findings addressed
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T22:01:15.542Z
+    completed_at: 2026-06-11T22:01:15.542Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "ACs are deterministic, observable, and scoped: breadcrumb tiers and overflow are bounded;
+      header adoption is explicit; shortcut contexts and fallback behavior are specified; identity
+      unknown and canonical outcomes are testable."
+    name: Spec quality
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T22:01:19.004Z
+    completed_at: 2026-06-11T22:01:19.004Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All local ACs are claimed by task Covers lines: ui-breadcrumb ac-1..9 plus ac-10,
+      ui-view-header ac-1..6, ui-shortcut-registry ac-1..6, ui-preference-store ac-1..6,
+      actor-identity-resolution ac-1..8, actor-display ac-1..4, and actor-history-normalization
+      ac-1..5. Upstream decision claims are present and tied to P0a derivation."
+    name: AC coverage mapping
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T22:01:22.377Z
+    completed_at: 2026-06-11T22:01:22.377Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Tasks include Why, What, How, scope boundaries, adoption targets, verification
+      expectations, and Covers lines. Earlier task gaps are explicitly covered in the current stored
+      text.
+    name: Task completeness and standalone-ness
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T22:01:25.855Z
+    completed_at: 2026-06-11T22:01:25.855Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No task cycles found. P1 work does not depend on lower-priority tasks. Declared
+      dependencies are justified: canonical write, actor display, and history normalization consume
+      the classifier; breadcrumb component consumes ancestry data."
+    name: Dependency ordering
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T22:01:29.346Z
+    completed_at: 2026-06-11T22:01:29.346Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed @web-ui neighborhood plus @ui-app-shell, @web-dashboard, @config-author,
+      @ui-api-aggregation, @trait-api-endpoint, and P0a content. No catalog spec already covers this
+      plan, and the plan extends existing contracts without contradiction once P0a derives.
+    name: Existing spec alignment
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T22:01:32.835Z
+    completed_at: 2026-06-11T22:01:32.835Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@web-shell-platform-target, @client-preference-persistence, @actor-identity-model, and
+      @coverage-state-presentation are still absent because P0a is draft and underived. Per the
+      explicit review instruction, this is acknowledged program ordering rather than an author
+      defect and does not block approval when all content checks pass."
+    name: P0a sequencing gate acknowledged
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T22:01:36.357Z
+    completed_at: 2026-06-11T22:01:36.357Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, kspec-review-plan skill, exported stored plan, P0a plan,
+      existing specs
+      @web-ui/@ui-app-shell/@web-dashboard/@config-author/@ui-api-aggregation/@trait-api-endpoint,
+      prior reviews @01KTVX89/@01KTVY20/@01KTW289/@01KTW3W2/@01KTW73W. Commands run: kspec plan
+      get/export/import --dry-run, kspec review list/get/reply/resolve/add, kspec item list/get,
+      kspec search, kspec validate refs/alignment/completeness, cmp. Categories checked: spec
+      quality, prior thread resolution, AC coverage, task standalone-ness, dependencies, cross-plan
+      gate, existing-spec alignment."
+    name: Review evidence log
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T22:01:39.814Z
+    completed_at: 2026-06-11T22:01:39.814Z
 events:
   - _ulid: 01KTWB46E54Q1E70M59HSNGX34
     actor: "@claude"
@@ -10,9 +159,116 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T21:59:00.293Z
+  - _ulid: 01KTWB79N4QS3ZMRET0PX7X0QK
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T22:00:41.892Z
+  - _ulid: 01KTWB7XPX8YM3R2E7316KRM7W
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T22:01:02.429Z
+  - _ulid: 01KTWB80WB5003QEJY9W3T48XX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T22:01:05.675Z
+  - _ulid: 01KTWB8437YX0TT20G3N9DZWZW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T22:01:08.967Z
+  - _ulid: 01KTWB87A0J1XHXK31RDGR52N0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan document parse
+    timestamp: 2026-06-11T22:01:12.256Z
+  - _ulid: 01KTWB8AT9PSW75D1DY2R7B5DN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior-round findings addressed
+    timestamp: 2026-06-11T22:01:15.849Z
+  - _ulid: 01KTWB8E5W8R30EWQ7YW6EDGYV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec quality
+    timestamp: 2026-06-11T22:01:19.292Z
+  - _ulid: 01KTWB8HERVKJ6Z8TDXAMT0MZD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-11T22:01:22.648Z
+  - _ulid: 01KTWB8MX1E3M1E6JJQ7EZ1ZZG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task completeness and standalone-ness
+    timestamp: 2026-06-11T22:01:26.177Z
+  - _ulid: 01KTWB8R9209H3PN3GP4GFTH1Z
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-11T22:01:29.634Z
+  - _ulid: 01KTWB8VP6N49J5C5THSESW78V
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec alignment
+    timestamp: 2026-06-11T22:01:33.126Z
+  - _ulid: 01KTWB8Z48SR5W7F0DVEC8VFTZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: P0a sequencing gate acknowledged
+    timestamp: 2026-06-11T22:01:36.648Z
+  - _ulid: 01KTWB92FFWKGB9KYH5G3XCYFX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-06-11T22:01:40.079Z
+  - _ulid: 01KTWB95YQB2B7NGJ0B8P6GX79
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T22:01:43.639Z
+  - _ulid: 01KTWB95YQTTVVRGG7N7ZCKM6H
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T22:01:43.639Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +276,14 @@ subject:
   ref: "@plan-web-ui-foundations"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T22:01:43.639Z
 created_at: 2026-06-11T21:59:00.293Z
-updated_at: null
+updated_at: 2026-06-11T22:01:43.639Z
 notes: []

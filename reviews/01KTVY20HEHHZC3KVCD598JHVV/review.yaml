@@ -376,6 +376,12 @@ events:
     payload:
       thread_ulid: 01KTVY2ZC7AEQSWW8ES8FK7WQP
     timestamp: 2026-06-11T21:59:19.062Z
+  - _ulid: 01KTWB7GGGS17K0JF5HM4DHTXM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVY2ZC7AEQSWW8ES8FK7WQP
+    timestamp: 2026-06-11T22:00:48.912Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -430,6 +436,8 @@ threads:
           findings are addressed, so this historical gate thread is resolved rather than re-raised."
         created_at: 2026-06-11T21:59:18.651Z
     kind: blocker
+    resolved_at: 2026-06-11T22:00:48.631Z
+    resolved_by: "@claude"
   - _ulid: 01KTVY3HQPVGWEYBDYJJ6BERES
     anchor:
       type: structured
@@ -720,5 +728,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:14:23.434Z
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T21:59:18.651Z
+updated_at: 2026-06-11T22:00:48.631Z
 notes: []

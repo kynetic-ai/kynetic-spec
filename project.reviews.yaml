@@ -25594,10 +25594,10 @@ reviews:
       ref: "@plan-web-ui-foundations"
       shadow_commit: ""
     thread_count: 7
-    unresolved_blocker_count: 1
+    unresolved_blocker_count: 0
     verdict_count: 1
     created_at: 2026-06-11T17:56:33.933Z
-    updated_at: 2026-06-11T21:59:18.740Z
+    updated_at: 2026-06-11T22:00:45.205Z
   - _ulid: 01KTVY20HEHHZC3KVCD598JHVV
     slugs: []
     title: "Plan review: Web UI Foundations (round 2 — re-review of unchanged content)"
@@ -25612,10 +25612,10 @@ reviews:
       ref: "@plan-web-ui-foundations"
       shadow_commit: ""
     thread_count: 8
-    unresolved_blocker_count: 1
+    unresolved_blocker_count: 0
     verdict_count: 1
     created_at: 2026-06-11T18:10:37.230Z
-    updated_at: 2026-06-11T21:59:18.651Z
+    updated_at: 2026-06-11T22:00:48.631Z
   - _ulid: 01KTVY7MQS5CRVTS8D5T5AREZM
     slugs: []
     title: "Plan review: Shared Mutation and Event Service (round 1)"
@@ -25794,10 +25794,10 @@ reviews:
       ref: "@plan-web-ui-foundations"
       shadow_commit: ""
     thread_count: 1
-    unresolved_blocker_count: 1
+    unresolved_blocker_count: 0
     verdict_count: 1
     created_at: 2026-06-11T19:23:57.676Z
-    updated_at: 2026-06-11T21:59:18.679Z
+    updated_at: 2026-06-11T22:00:52.011Z
   - _ulid: 01KTW2B8FSDCY518FGHR05J1Y5
     slugs: []
     title: "Plan review: UI Redesign Global Decisions (claude round 2)"
@@ -25866,10 +25866,10 @@ reviews:
       ref: "@plan-web-ui-foundations"
       shadow_commit: ""
     thread_count: 2
-    unresolved_blocker_count: 1
+    unresolved_blocker_count: 0
     verdict_count: 1
     created_at: 2026-06-11T19:52:14.114Z
-    updated_at: 2026-06-11T21:59:18.704Z
+    updated_at: 2026-06-11T22:00:55.554Z
   - _ulid: 01KTW52KA3YPE2VRMJFXZSY8C4
     slugs: []
     title: "Plan review: Shared Mutation and Event Service (round 2 follow-up — findings verification)"
@@ -25975,10 +25975,10 @@ reviews:
       ref: "@plan-web-ui-foundations"
       shadow_commit: ""
     thread_count: 1
-    unresolved_blocker_count: 1
+    unresolved_blocker_count: 0
     verdict_count: 1
     created_at: 2026-06-11T20:48:55.408Z
-    updated_at: 2026-06-11T21:59:30.690Z
+    updated_at: 2026-06-11T22:00:58.891Z
   - _ulid: 01KTW77C3FP394523TZM0FF8JN
     slugs: []
     title: Review task-workspace-packages-private
@@ -26074,6 +26074,24 @@ reviews:
   - _ulid: 01KTWB46E5EC7E0KWNYEP37ZRC
     slugs: []
     title: "Plan review: Web UI Foundations (latest fixes verification)"
+    disposition: approved
+    author: "@claude"
+    check_count: 12
+    lifecycle_state: closed
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-web-ui-foundations"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 1
+    created_at: 2026-06-11T21:59:00.293Z
+    updated_at: 2026-06-11T22:01:43.639Z
+  - _ulid: 01KTWB6Q24SK5RTQ63PM5Y436C
+    slugs: []
+    title: "Plan review: Web UI Foundations (round 4 — fix verification sweep)"
     disposition: pending
     author: "@claude"
     check_count: 0
@@ -26087,22 +26105,4 @@ reviews:
     thread_count: 0
     unresolved_blocker_count: 0
     verdict_count: 0
-    created_at: 2026-06-11T21:59:00.293Z
-  - _ulid: 01KTWB6Q24SK5RTQ63PM5Y436C
-    slugs: []
-    title: "Plan review: Web UI Foundations (round 4 — fix verification sweep)"
-    disposition: pending
-    author: "@claude"
-    check_count: 6
-    lifecycle_state: open
-    related_refs: []
-    subject:
-      type: plan
-      content_hash: ""
-      ref: "@plan-web-ui-foundations"
-      shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
-    verdict_count: 0
     created_at: 2026-06-11T22:00:22.852Z
-    updated_at: 2026-06-11T22:01:38.880Z
