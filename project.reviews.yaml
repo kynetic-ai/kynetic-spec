@@ -25051,8 +25051,8 @@ reviews:
       content_hash: ""
       ref: "@plan-ui-redesign-global-decisions"
       shadow_commit: ""
-    thread_count: 5
-    unresolved_blocker_count: 5
+    thread_count: 6
+    unresolved_blocker_count: 6
     verdict_count: 0
     created_at: 2026-06-11T06:39:16.812Z
-    updated_at: 2026-06-11T06:40:17.992Z
+    updated_at: 2026-06-11T06:40:18.023Z

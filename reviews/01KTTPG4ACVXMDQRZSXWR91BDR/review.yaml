@@ -52,6 +52,13 @@ events:
       kind: blocker
       thread_ulid: 01KTTPJ027GTK287VC4D6RP4HE
     timestamp: 2026-06-11T06:40:18.870Z
+  - _ulid: 01KTTPJ1DRRJ9YNEFZKHMG1K95
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTPJ037SN6QY353RR040JXN
+    timestamp: 2026-06-11T06:40:19.384Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -142,7 +149,22 @@ threads:
           imported.
         created_at: 2026-06-11T06:40:17.992Z
     kind: blocker
+  - _ulid: 01KTTPJ037SN6QY353RR040JXN
+    anchor:
+      type: structured
+      ref: "@task-fold-agent-dashboard-design-task"
+      section: tasks
+    entries:
+      - _ulid: 01KTTPJ037B5G1A58F548RD754
+        author: "@claude"
+        body: "This task is not standalone-deterministic: it tells the worker to cancel the task or re-point
+          it at an owning plan 'whichever the owner prefers at execution time', and the referenced
+          cross-project owning plan is not identified by ref. A fresh worker cannot know which path
+          to take. Choose one required outcome, or add an explicit dependency/reference to the
+          owning plan and specify the re-pointing command."
+        created_at: 2026-06-11T06:40:18.023Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T06:40:17.992Z
+updated_at: 2026-06-11T06:40:18.023Z
 notes: []
