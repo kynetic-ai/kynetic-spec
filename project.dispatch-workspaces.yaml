@@ -16289,12 +16289,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T13:09:54.244Z
+      updated_at: 2026-06-11T13:10:12.709Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T13:09:54.244Z
+      updated_at: 2026-06-11T13:10:12.709Z
     integration:
       status: pending
       detail: null
@@ -16302,7 +16302,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7603dc7c8a51f80a528f93cd9c8c4cef90afe728
-      updated_at: 2026-06-11T13:09:54.244Z
+      updated_at: 2026-06-11T13:10:12.709Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTTD1DB7F2FD15BCBABG1F80
@@ -16311,16 +16311,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T12:47:20.418Z
-      last_reconciled_at: 2026-06-11T13:09:54.244Z
+      last_reconciled_at: 2026-06-11T13:10:12.709Z
       created_at: 2026-06-11T12:46:49.445Z
-      updated_at: 2026-06-11T13:09:54.244Z
+      updated_at: 2026-06-11T13:10:12.709Z
     workspace_id: dispatch-workspace-01KTTD1DB7F2FD15BCBABG1F80
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: aed37c6f4e34f4ed3ecf795ec901555129753a1d
+        last_seen_at: 2026-06-11T13:10:12.709Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-triage-api-tests-01kttd1d-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-triage-api-tests/01kttd1d
-        head: 7603dc7c8a51f80a528f93cd9c8c4cef90afe728
-        last_seen_at: 2026-06-11T12:46:49.445Z
+        head: aed37c6f4e34f4ed3ecf795ec901555129753a1d
+        last_seen_at: 2026-06-11T13:10:12.709Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-triage-api-tests-01kttd1d
