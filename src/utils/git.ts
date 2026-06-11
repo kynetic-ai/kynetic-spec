@@ -2,7 +2,7 @@
  * Git integration utilities
  */
 
-import { execSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 
 export interface GitCommit {
   hash: string;
@@ -28,36 +28,37 @@ export interface GitWorkingTree {
 }
 
 /**
- * Check if current directory is in a git repository
+ * Run git with an args array (no shell) and return stdout, or null on any
+ * failure (non-zero exit, spawn error). Dynamic values like branch and remote
+ * names come from repository state and may contain shell metacharacters, so
+ * they must never pass through a shell. Mirrors runGitSync in src/parser/shadow.ts.
  */
-export function isGitRepo(cwd?: string): boolean {
+function runGit(args: string[], cwd?: string): string | null {
   try {
-    execSync("git rev-parse --git-dir", {
+    const result = spawnSync("git", args, {
       cwd,
       encoding: "utf-8",
       stdio: ["pipe", "pipe", "ignore"],
     });
-    return true;
+    if (result.error || result.status !== 0) return null;
+    return result.stdout ?? "";
   } catch {
-    return false;
+    return null;
   }
+}
+
+/**
+ * Check if current directory is in a git repository
+ */
+export function isGitRepo(cwd?: string): boolean {
+  return runGit(["rev-parse", "--git-dir"], cwd) !== null;
 }
 
 /**
  * Get the current git branch name
  */
 export function getCurrentBranch(cwd?: string): string | null {
-  try {
-    return (
-      execSync("git branch --show-current", {
-        cwd,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "ignore"],
-      }).trim() || null
-    );
-  } catch {
-    return null;
-  }
+  return runGit(["branch", "--show-current"], cwd)?.trim() || null;
 }
 
 /**
@@ -74,54 +75,46 @@ export function getRecentCommits(options: {
 }): GitCommit[] {
   const { limit = 10, since, cwd } = options;
 
-  try {
-    // Format: hash, ISO date, subject, author name, body — NUL-delimited records
-    // %x00 separates fields within a record, %x01 separates records
-    // Body (%b) may contain newlines and pipes, so we use NUL delimiters
-    let cmd = `git log --format="%H%x00%aI%x00%s%x00%an%x00%b%x01" -n ${limit}`;
+  // Format: hash, ISO date, subject, author name, body — NUL-delimited records
+  // %x00 separates fields within a record, %x01 separates records
+  // Body (%b) may contain newlines and pipes, so we use NUL delimiters
+  const args = ["log", "--format=%H%x00%aI%x00%s%x00%an%x00%b%x01", "-n", String(limit)];
 
-    if (since) {
-      cmd += ` --since="${since.toISOString()}"`;
-    }
-
-    const output = execSync(cmd, {
-      cwd,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "ignore"],
-    }).trim();
-
-    if (!output) return [];
-
-    // Split records by \x01, filter empty entries
-    return output
-      .split("\x01")
-      .map((record) => record.trim())
-      .filter(Boolean)
-      .map((record) => {
-        const [fullHash, dateStr, message, author, ...bodyParts] = record.split("\x00");
-        const body = bodyParts.join("\x00").trim();
-
-        // Parse Task: @slug trailers from body (anchored to line start per git trailer convention)
-        const taskRefs: string[] = [];
-        const trailerPattern = /^Task:\s*@([\w-]+)/gm;
-        let match;
-        while ((match = trailerPattern.exec(body)) !== null) {
-          taskRefs.push(match[1]);
-        }
-
-        return {
-          hash: fullHash.slice(0, 7),
-          fullHash,
-          date: new Date(dateStr),
-          message,
-          author,
-          body,
-          taskRefs,
-        };
-      });
-  } catch {
-    return [];
+  if (since) {
+    args.push(`--since=${since.toISOString()}`);
   }
+
+  const output = runGit(args, cwd)?.trim();
+
+  if (!output) return [];
+
+  // Split records by \x01, filter empty entries
+  return output
+    .split("\x01")
+    .map((record) => record.trim())
+    .filter(Boolean)
+    .map((record) => {
+      const [fullHash, dateStr, message, author, ...bodyParts] = record.split("\x00");
+      const body = bodyParts.join("\x00").trim();
+
+      // Parse Task: @slug trailers from body (anchored to line start per git trailer convention)
+      const taskRefs: string[] = [];
+      const trailerPattern = /^Task:\s*@([\w-]+)/gm;
+      let match;
+      while ((match = trailerPattern.exec(body)) !== null) {
+        taskRefs.push(match[1]);
+      }
+
+      return {
+        hash: fullHash.slice(0, 7),
+        fullHash,
+        date: new Date(dateStr),
+        message,
+        author,
+        body,
+        taskRefs,
+      };
+    });
 }
 
 /**
@@ -135,56 +128,48 @@ export function getWorkingTreeStatus(cwd?: string): GitWorkingTree {
     untracked: [],
   };
 
-  try {
-    const output = execSync("git status --porcelain", {
-      cwd,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "ignore"],
-    }).trim();
+  const output = runGit(["status", "--porcelain"], cwd)?.trim();
 
-    if (!output) {
-      return result;
-    }
-
-    result.clean = false;
-
-    for (const line of output.split("\n")) {
-      if (!line) continue;
-
-      const indexStatus = line[0];
-      const workTreeStatus = line[1];
-      // Path starts after status codes - trim to normalize
-      const path = line.slice(2).trim();
-
-      // Untracked files
-      if (indexStatus === "?" && workTreeStatus === "?") {
-        result.untracked.push(path);
-        continue;
-      }
-
-      // Staged changes (index has changes)
-      if (indexStatus !== " " && indexStatus !== "?") {
-        result.staged.push({
-          path,
-          status: parseStatusCode(indexStatus),
-          staged: true,
-        });
-      }
-
-      // Unstaged changes (work tree has changes)
-      if (workTreeStatus !== " " && workTreeStatus !== "?") {
-        result.unstaged.push({
-          path,
-          status: parseStatusCode(workTreeStatus),
-          staged: false,
-        });
-      }
-    }
-
-    return result;
-  } catch {
+  if (!output) {
     return result;
   }
+
+  result.clean = false;
+
+  for (const line of output.split("\n")) {
+    if (!line) continue;
+
+    const indexStatus = line[0];
+    const workTreeStatus = line[1];
+    // Path starts after status codes - trim to normalize
+    const path = line.slice(2).trim();
+
+    // Untracked files
+    if (indexStatus === "?" && workTreeStatus === "?") {
+      result.untracked.push(path);
+      continue;
+    }
+
+    // Staged changes (index has changes)
+    if (indexStatus !== " " && indexStatus !== "?") {
+      result.staged.push({
+        path,
+        status: parseStatusCode(indexStatus),
+        staged: true,
+      });
+    }
+
+    // Unstaged changes (work tree has changes)
+    if (workTreeStatus !== " " && workTreeStatus !== "?") {
+      result.unstaged.push({
+        path,
+        status: parseStatusCode(workTreeStatus),
+        staged: false,
+      });
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -198,47 +183,34 @@ export function getWorkingTreeStatus(cwd?: string): GitWorkingTree {
  * @returns Diff output as string, or null if no changes or error
  */
 export function getDiffSince(since: Date, cwd?: string): string | null {
-  try {
-    // Get the commit hash at the given time
-    const sinceCommit = execSync(`git log --format="%H" --before="${since.toISOString()}" -n 1`, {
-      cwd,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "ignore"],
-    }).trim();
+  // Get the commit hash at the given time
+  const sinceLog = runGit(
+    ["log", "--format=%H", `--before=${since.toISOString()}`, "-n", "1"],
+    cwd,
+  );
+  if (sinceLog === null) return null;
+  const sinceCommit = sinceLog.trim();
 
-    if (!sinceCommit) {
-      // No commit before this time, diff from the beginning
-      // Using Git's magic empty tree hash - this is the hash of an empty tree object
-      // that exists conceptually in every Git repo (commonly used for initial diffs)
-      const diff = execSync("git diff 4b825dc642cb6eb9a060e54bf8d69288fbee4904..HEAD", {
-        cwd,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "ignore"],
-      }).trim();
+  if (!sinceCommit) {
+    // No commit before this time, diff from the beginning
+    // Using Git's magic empty tree hash - this is the hash of an empty tree object
+    // that exists conceptually in every Git repo (commonly used for initial diffs)
+    const diff = runGit(["diff", "4b825dc642cb6eb9a060e54bf8d69288fbee4904..HEAD"], cwd)?.trim();
 
-      return diff || null;
-    }
-
-    // Get diff from that commit to HEAD (includes committed changes)
-    const committedDiff = execSync(`git diff ${sinceCommit}..HEAD`, {
-      cwd,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "ignore"],
-    }).trim();
-
-    // Get diff for working tree changes (uncommitted)
-    const workingTreeDiff = execSync("git diff HEAD", {
-      cwd,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "ignore"],
-    }).trim();
-
-    // Combine both diffs
-    const combined = [committedDiff, workingTreeDiff].filter(Boolean).join("\n\n");
-    return combined || null;
-  } catch {
-    return null;
+    return diff || null;
   }
+
+  // Get diff from that commit to HEAD (includes committed changes)
+  const committedDiff = runGit(["diff", `${sinceCommit}..HEAD`], cwd);
+  if (committedDiff === null) return null;
+
+  // Get diff for working tree changes (uncommitted)
+  const workingTreeDiff = runGit(["diff", "HEAD"], cwd);
+  if (workingTreeDiff === null) return null;
+
+  // Combine both diffs
+  const combined = [committedDiff.trim(), workingTreeDiff.trim()].filter(Boolean).join("\n\n");
+  return combined || null;
 }
 
 /**
@@ -246,17 +218,7 @@ export function getDiffSince(since: Date, cwd?: string): string | null {
  * AC: @portable-task-submission-linkage ac-1
  */
 export function getHeadCommit(cwd?: string): string | null {
-  try {
-    return (
-      execSync("git rev-parse HEAD", {
-        cwd,
-        encoding: "utf-8",
-        stdio: ["pipe", "pipe", "ignore"],
-      }).trim() || null
-    );
-  } catch {
-    return null;
-  }
+  return runGit(["rev-parse", "HEAD"], cwd)?.trim() || null;
 }
 
 /**
@@ -270,37 +232,17 @@ export function getBranchRemote(
   branch: string,
   cwd?: string,
 ): { remote: string; url: string; upstream_ref: string | null } | null {
-  try {
-    const remote = execSync(`git config --get branch.${branch}.remote`, {
-      cwd,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "ignore"],
-    }).trim();
-    if (!remote) return null;
+  const remote = runGit(["config", "--get", `branch.${branch}.remote`], cwd)?.trim();
+  if (!remote) return null;
 
-    const url = execSync(`git remote get-url ${remote}`, {
-      cwd,
-      encoding: "utf-8",
-      stdio: ["pipe", "pipe", "ignore"],
-    }).trim();
+  const url = runGit(["remote", "get-url", remote], cwd);
+  if (url === null) return null;
 
-    // Capture the upstream merge ref (e.g. refs/heads/some-branch)
-    let upstreamRef: string | null = null;
-    try {
-      upstreamRef =
-        execSync(`git config --get branch.${branch}.merge`, {
-          cwd,
-          encoding: "utf-8",
-          stdio: ["pipe", "pipe", "ignore"],
-        }).trim() || null;
-    } catch {
-      // No merge ref configured — tracking remote but no specific branch
-    }
+  // Capture the upstream merge ref (e.g. refs/heads/some-branch)
+  // null when no merge ref is configured — tracking remote but no specific branch
+  const upstreamRef = runGit(["config", "--get", `branch.${branch}.merge`], cwd)?.trim() || null;
 
-    return { remote, url: url || "", upstream_ref: upstreamRef };
-  } catch {
-    return null;
-  }
+  return { remote, url: url.trim() || "", upstream_ref: upstreamRef };
 }
 
 /**
