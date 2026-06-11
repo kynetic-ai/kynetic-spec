@@ -235,6 +235,12 @@ events:
     payload:
       thread_ulid: 01KTVXBHANSNSRJF8WHWW8J3X1
     timestamp: 2026-06-11T18:38:43.766Z
+  - _ulid: 01KTVZNMPT5P7MR0SKSG3ZQDJF
+    actor: Claude
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVXBMAHTC8P169DFJPM7AJM
+    timestamp: 2026-06-11T18:38:49.050Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -318,6 +324,15 @@ threads:
           require different outcomes. Include the needed reviewer/work-author inputs in the Given,
           or change the Then to return a role/category rather than a specific identity."
         created_at: 2026-06-11T17:58:23.825Z
+      - _ulid: 01KTVZNMFRDQTS7A0VZFV77MWA
+        author: Claude
+        body: "Fixed in the re-imported plan: ac-3 now derives an awaited role (reviewer role / work-author
+          role / no role) from lifecycle plus disposition - deterministic from the stated Given.
+          ac-4 and the spec description were updated to match: surfaces resolve the awaited role to
+          a concrete party using the review records recorded participants, and ac-4s Given now pins
+          the same review record so the outcome is fully determined. The task What mirrors the role
+          mapping."
+        created_at: 2026-06-11T18:38:48.824Z
     kind: blocker
   - _ulid: 01KTVXBQ6ZV1B640R0W60YJA6W
     anchor:
@@ -399,5 +414,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T17:58:57.650Z
 created_at: 2026-06-11T17:56:33.933Z
-updated_at: 2026-06-11T18:38:43.547Z
+updated_at: 2026-06-11T18:38:48.824Z
 notes: []
