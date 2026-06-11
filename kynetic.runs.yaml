@@ -62258,7 +62258,7 @@ runs:
     completed_at: 2026-06-11T06:17:55.416Z
   - _ulid: 01KTTNWYYGZ7S34Y9DYTVK3VDX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -62271,7 +62271,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T06:29:58.676Z
-        completed_at: 2026-06-11T06:29:58.676Z
+        completed_at: 2026-06-11T06:31:08.246Z
+        notes: "Identified 3 candidates: (1) success — task description encoding the command-route console
+          interception model + import-order solution prevented a double-logging bug, unique vs
+          existing observations; (2) friction — kspec()/kspecJson() HOME isolation to
+          <cwd>/.test-home surprised a status-path test; mechanism itself tracked (completed task
+          01KJTP68, spec @daemon-sensitive-cli-test-determinism) but no testing convention rule
+          documents it; (3) workflow show requiring run-ref while docs imply inference — already
+          tracked in inbox 01KGGPJ6, skip."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T06:31:08.246Z
+        completed_at: 2026-06-11T06:31:08.246Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T06:28:48.720Z
