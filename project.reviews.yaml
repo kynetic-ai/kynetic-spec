@@ -25482,7 +25482,7 @@ reviews:
       ref: "@01KTTD07T61PPMK5RGAJCJ01Z7"
       shadow_commit: ""
     thread_count: 2
-    unresolved_blocker_count: 2
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-11T15:15:58.452Z
-    updated_at: 2026-06-11T15:19:43.706Z
+    updated_at: 2026-06-11T15:19:58.041Z
