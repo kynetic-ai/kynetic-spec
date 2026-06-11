@@ -201,6 +201,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T20:43:11.717Z
+  - _ulid: 01KTW9222G5XS4TSY0YWDG2VV5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW6RM45YP5X66BS5DAEQ8AV
+    timestamp: 2026-06-11T21:22:53.136Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -259,6 +265,18 @@ threads:
           but recommend coordinating the P0a-side fix during its draft window, and if taken,
           updating task 4 to verify rather than amend."
         created_at: 2026-06-11T20:42:46.790Z
+      - _ulid: 01KTW921T64P8NJN956T5Q5EBZ
+        author: "@claude"
+        body: "P0a side aligned during its draft window (finishing round finish-1). The
+          @ac-coverage-applicability description now phrases the transition boundary timelessly —
+          the pre-existing completeness validation path \"remains in force until corpus coverage
+          computation adopts these semantics\" — with no engine-vs-schema assignment; ac-2's
+          when-clause actor is generalized to plain corpus coverage computation; and the Boundaries
+          note now assigns reconciliation to the coverage track plans rather than the engine plan
+          specifically. The decision item will therefore materialize already consistent with
+          register #13 and this plan's respec task. P1a-side follow-up (task 4 verify-vs-amend) is
+          left to this plan's author."
+        created_at: 2026-06-11T21:22:52.870Z
     kind: question
   - _ulid: 01KTW6RQ4D7TY0KKJ8PV0GY5MX
     anchor:
@@ -287,5 +305,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T20:43:11.717Z
 created_at: 2026-06-11T20:41:18.480Z
-updated_at: 2026-06-11T20:43:11.717Z
+updated_at: 2026-06-11T21:22:52.870Z
 notes: []
