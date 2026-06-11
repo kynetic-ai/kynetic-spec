@@ -82,7 +82,7 @@ description: |
 spec_ref: "@triage-daemon-api"
 plan_ref: "@plan-validation-and-test-coverage-integrity"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -97,8 +97,8 @@ review_ref: "@01KTVCYPG5GWYZCN996ARTWHK6"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-daemon-triage-api-tests/01kttd1d
-  captured_at: 2026-06-11T13:06:14.335Z
-  commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
+  captured_at: 2026-06-11T14:09:23.337Z
+  commit: 1b61b5f1f02c06fcc5bb74b501eae9f781daab89
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-daemon-triage-api-tests/01kttd1d
@@ -174,8 +174,35 @@ history:
         previous: 2026-06-11T12:47:47.287Z
     command: task-start
     timestamp: 2026-06-11T14:09:19.612Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-daemon-triage-api-tests/01kttd1d
+          captured_at: 2026-06-11T14:09:23.337Z
+          commit: 1b61b5f1f02c06fcc5bb74b501eae9f781daab89
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-daemon-triage-api-tests/01kttd1d
+        previous:
+          review_url: null
+          branch: dispatch/task/task-daemon-triage-api-tests/01kttd1d
+          captured_at: 2026-06-11T13:06:14.335Z
+          commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-daemon-triage-api-tests/01kttd1d
+      submitted_at:
+        new: 2026-06-11T14:09:23.341Z
+        previous: 2026-06-11T13:06:14.337Z
+    command: task-submit
+    timestamp: 2026-06-11T14:09:23.341Z
 created_at: 2026-06-11T03:53:57.351Z
 started_at: 2026-06-11T14:09:19.611Z
-submitted_at: 2026-06-11T13:06:14.337Z
+submitted_at: 2026-06-11T14:09:23.341Z
 todos: []
 automation: eligible

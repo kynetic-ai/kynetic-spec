@@ -31628,7 +31628,7 @@
   type: task
   spec_ref: "@triage-daemon-api"
   plan_ref: "@plan-validation-and-test-coverage-integrity"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -31642,7 +31642,7 @@
   todos_count: 0
   created_at: 2026-06-11T03:53:57.351Z
   started_at: 2026-06-11T14:09:19.611Z
-  submitted_at: 2026-06-11T13:06:14.337Z
+  submitted_at: 2026-06-11T14:09:23.341Z
   automation: eligible
 - _ulid: 01KTTD1E2QCNQVJSV7TZSHXD0G
   slugs:
