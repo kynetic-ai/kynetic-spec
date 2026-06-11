@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KTTKEBBEMG4AHMVH2EEAYFAR
+    content: "Added all 7 delta ACs via one atomic kspec batch (file-based payload): 5 timeout ACs on
+      @daemon-command-api (ac-command-timeout, ac-timeout-queue-bounded, ac-stuck-command-reported,
+      ac-timeout-isolation, ac-timeout-late-completion-effects), ac-external-connect-host-warning on
+      @daemon-network-endpoint-contract, ac-counts-from-summary on @ui-dashboard-overview. Verified
+      first via kspec item get that no equivalent ACs existed on any target spec (bind-host warning
+      ac-external-binding-warning differs from the new connect-host warning). kspec validate
+      --refs/--alignment/--completeness all pass with pre-existing warning baseline only. Spec-only
+      task: no code changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T05:45:52.750Z

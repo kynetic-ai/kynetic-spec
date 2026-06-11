@@ -101,7 +101,7 @@ description: |
 spec_ref: "@daemon-command-api"
 plan_ref: "@plan-daemon-operational-reliability"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -111,6 +111,14 @@ tags:
   - daemon
   - reliability
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-update-daemon-reliability-specs/01kttd04
+  captured_at: 2026-06-11T05:45:54.502Z
+  commit: 6e5a0fd936024f9832ac7d23feeff38711cad2dc
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KTTK6WYVCGQ8C9TA0EF28VD7
 history:
   - author: Jacob Chapel
@@ -133,7 +141,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-11T05:42:32.286Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-update-daemon-reliability-specs/01kttd04
+          captured_at: 2026-06-11T05:45:54.502Z
+          commit: 6e5a0fd936024f9832ac7d23feeff38711cad2dc
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-11T05:45:54.504Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-11T05:45:54.504Z
 created_at: 2026-06-11T03:53:15.872Z
 started_at: 2026-06-11T05:42:32.286Z
+submitted_at: 2026-06-11T05:45:54.504Z
 todos: []
 automation: eligible
