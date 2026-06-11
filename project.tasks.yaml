@@ -31169,6 +31169,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:52:50.560Z
+  automation: eligible
 - _ulid: 01KTTCZCTNXC6TSH9SENFSQDZG
   slugs:
     - task-standardize-node-version-docs
