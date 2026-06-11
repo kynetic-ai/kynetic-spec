@@ -209,6 +209,12 @@ events:
     payload:
       thread_ulid: 01KTW95D866NAASM2KMVSNRSSF
     timestamp: 2026-06-11T22:05:29.920Z
+  - _ulid: 01KTWBHGR1PXMP5TZ0SWW5D3G8
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTW95D866NAASM2KMVSNRSSF
+    timestamp: 2026-06-11T22:06:16.833Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -285,6 +291,8 @@ threads:
           disposition is approved); the advisory-only rationale stays in that spec description.
         created_at: 2026-06-11T22:05:29.632Z
     kind: nit
+    resolved_at: 2026-06-11T22:06:16.556Z
+    resolved_by: "@claude"
   - _ulid: 01KTW95N6955ZHEXM4AMHBKVQT
     entries:
       - _ulid: 01KTW95N691K2H5WGB65AZ4Y79
@@ -311,5 +319,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T21:25:04.342Z
 created_at: 2026-06-11T21:23:08.009Z
-updated_at: 2026-06-11T22:05:29.632Z
+updated_at: 2026-06-11T22:06:16.556Z
 notes: []
