@@ -64909,9 +64909,19 @@ runs:
     completed_at: 2026-06-11T23:32:26.298Z
   - _ulid: 01KTWGF58XS4P7JZNPXXWX7AT9
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-11T23:32:22.430Z
+        completed_at: 2026-06-11T23:35:21.574Z
+        notes: "Baseline searched: observations list, inbox list (380 items), targeted kspec search for each
+          candidate (build/test lock, review thread truncation, fix cycle submit)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-11T23:35:21.574Z
+        completed_at: 2026-06-11T23:35:21.574Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T23:32:22.430Z
