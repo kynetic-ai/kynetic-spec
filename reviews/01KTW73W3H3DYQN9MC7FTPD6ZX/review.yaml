@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T20:49:10.927Z
+  - _ulid: 01KTW74YFHER6S88VBNNZESAA9
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW74Y70KCQCS0VS6146CZ4A
+    timestamp: 2026-06-11T20:49:30.609Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,27 @@ subject:
   content_hash: ""
   ref: "@plan-web-ui-foundations"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTW74Y70KCQCS0VS6146CZ4A
+    anchor:
+      type: structured
+      ref: "@plan-web-ui-foundations"
+      section: dependencies
+    entries:
+      - _ulid: 01KTW74Y70ZA5MGB3EZF3GCVCN
+        author: "@claude"
+        body: "RE-RAISED from prior Web UI Foundations reviews (@01KTVX89, @01KTVY20, @01KTW289, @01KTW3W2).
+          The author reply correctly frames this as owner sequencing rather than a document rewrite,
+          but the sequencing has not happened: @plan-ui-redesign-global-decisions is still draft and
+          underived, and kspec item get still fails for @web-shell-platform-target,
+          @client-preference-persistence, @actor-identity-model, and @coverage-state-presentation.
+          This plan declares those refs in spec depends_on fields and task Covers lines and its own
+          Approval ordering note says it must not be approved or derived before P0a. Approving now
+          would materialize broken references and unclaimable Covers lines. Approve and derive P0a
+          first, then re-review this plan."
+        created_at: 2026-06-11T20:49:30.336Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T20:48:55.408Z
-updated_at: 2026-06-11T20:49:10.630Z
+updated_at: 2026-06-11T20:49:30.336Z
 notes: []

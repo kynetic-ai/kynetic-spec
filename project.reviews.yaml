@@ -25964,7 +25964,7 @@ reviews:
   - _ulid: 01KTW73W3H3DYQN9MC7FTPD6ZX
     slugs: []
     title: "Plan review: Web UI Foundations (round 3 verification)"
-    disposition: pending
+    disposition: changes_requested
     author: "@claude"
     check_count: 0
     lifecycle_state: open
@@ -25974,8 +25974,8 @@ reviews:
       content_hash: ""
       ref: "@plan-web-ui-foundations"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-11T20:48:55.408Z
-    updated_at: 2026-06-11T20:49:10.630Z
+    updated_at: 2026-06-11T20:49:30.336Z
