@@ -94,6 +94,20 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T08:49:33.763Z
     completed_at: 2026-06-11T08:49:33.763Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified live: @plan-ui-redesign-global-decisions is draft with 0 derived specs; binding
+      depends_on refs @annotation-freshness-provenance, @actor-identity-model,
+      @ac-coverage-applicability are absent from the corpus. Ordering exists only as prose. Internal
+      task graph is sound: no cycles, no P1-on-P2 inversions, store task correctly fans out to
+      freshness/session/compat, respec correctly precedes scanner change."
+    name: Dependency ordering
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T08:49:38.992Z
+    completed_at: 2026-06-11T08:49:38.992Z
 events:
   - _ulid: 01KTTXQVAWJ8VTNY2FXYXNJPB1
     actor: "@claude"
@@ -241,6 +255,13 @@ events:
       status: fail
       name: Spec completeness
     timestamp: 2026-06-11T08:49:33.993Z
+  - _ulid: 01KTTXYVCDNVK7X4NGYA9AJGGX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency ordering
+    timestamp: 2026-06-11T08:49:39.214Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -461,5 +482,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:49:33.763Z
+updated_at: 2026-06-11T08:49:38.992Z
 notes: []
