@@ -45,6 +45,10 @@ class MockWebSocket {
     this.readyState = MockWebSocket.CLOSED;
     this.onclose?.(event as CloseEvent);
   }
+
+  emitMessage(data: string): void {
+    this.onmessage?.({ data } as MessageEvent);
+  }
 }
 
 describe("WebSocketManager reconnect handling", () => {
@@ -130,5 +134,87 @@ describe("WebSocketManager reconnect handling", () => {
 
     vi.advanceTimersByTime(1000);
     expect(MockWebSocket.instances).toHaveLength(2);
+  });
+});
+
+describe("WebSocketManager console hygiene", () => {
+  let logSpy: ReturnType<typeof vi.spyOn>;
+  let debugSpy: ReturnType<typeof vi.spyOn>;
+  let infoSpy: ReturnType<typeof vi.spyOn>;
+  let errorSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    MockWebSocket.instances = [];
+    vi.useFakeTimers();
+    vi.stubGlobal("WebSocket", MockWebSocket);
+    vi.stubGlobal("crypto", {
+      randomUUID: vi.fn<() => string>(() => "00000000-0000-4000-8000-000000000000"),
+    });
+    logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    debugSpy = vi.spyOn(console, "debug").mockImplementation(() => {});
+    infoSpy = vi.spyOn(console, "info").mockImplementation(() => {});
+    errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  // AC: @ui-production-log-hygiene ac-no-debug-output-default
+  it("emits no debug or informational console output during a normal connection lifecycle", () => {
+    const manager = new WebSocketManager("ws://localhost:3456/ws");
+
+    // Connect and complete the handshake
+    manager.connect();
+    const socket = MockWebSocket.instances[0];
+    socket.emitOpen();
+    socket.emitMessage(JSON.stringify({ event: "connected", data: { session_id: "session-1" } }));
+
+    // Subscribe and receive a broadcast event, then a duplicate (dedup path)
+    manager.subscribe(["tasks"]);
+    const broadcast = JSON.stringify({
+      msg_id: "msg-1",
+      seq: 1,
+      topic: "tasks",
+      data: {},
+    });
+    socket.emitMessage(broadcast);
+    socket.emitMessage(broadcast);
+
+    // Unexpected disconnect followed by automatic reconnect
+    socket.emitClose({ code: 1006, reason: "network failure" });
+    vi.advanceTimersByTime(1000);
+    expect(MockWebSocket.instances).toHaveLength(2);
+    const reconnectSocket = MockWebSocket.instances[1];
+    reconnectSocket.emitOpen();
+
+    // Intentional disconnect
+    manager.disconnect();
+    reconnectSocket.emitClose({ code: 1000, reason: "Client disconnect" });
+    vi.runOnlyPendingTimers();
+
+    expect(logSpy).not.toHaveBeenCalled();
+    expect(debugSpy).not.toHaveBeenCalled();
+    expect(infoSpy).not.toHaveBeenCalled();
+  });
+
+  // AC: @ui-production-log-hygiene ac-errors-preserved
+  it("still emits a console error when a message cannot be parsed", () => {
+    const manager = new WebSocketManager("ws://localhost:3456/ws");
+
+    manager.connect();
+    const socket = MockWebSocket.instances[0];
+    socket.emitOpen();
+    socket.emitMessage("not valid json {");
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      "[WebSocketManager] Failed to parse message:",
+      expect.anything(),
+    );
+
+    manager.disconnect();
   });
 });
