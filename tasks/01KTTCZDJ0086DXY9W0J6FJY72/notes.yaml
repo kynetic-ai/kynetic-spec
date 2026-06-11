@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KTV41Z5PCST41S4DM3VTQZMS
+    content: "Approach: Update three docs/getting-started.md links (lines 102, 141, 166) to
+      docs/getting-started/index.md, keeping path-style display text in sync. Replace dead
+      README.md#how-it-works anchor with plain README.md — the sentence refers to broad context and
+      the README is a short landing page, so no anchor fits better. Verified
+      docs/getting-started/index.md exists and README headings are: kspec, Install, First steps,
+      Documentation. Test plan: extend existing link-existence pattern from
+      tests/docs-readme-structure.test.ts with an INSTALL.md link check (relative paths resolve +
+      anchors match headings), then verify all relative links manually per task description."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T10:36:12.854Z
