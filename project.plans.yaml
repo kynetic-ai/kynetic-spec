@@ -1884,3 +1884,14 @@ plans:
     notes_count: 5
     source_path: /home/chapel/Projects/kynetic-spec/plans/validation-test-integrity.md
     created_at: 2026-06-10T14:18:16.908Z
+  - _ulid: 01KTTP3YSGJ69HQDKWJWW40K8D
+    slugs:
+      - plan-ui-redesign-global-decisions
+    title: UI Redesign Global Decisions
+    status: draft
+    derived_specs: []
+    derived_tasks: []
+    module_ref: "@main"
+    notes_count: 0
+    source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-global-decisions.md
+    created_at: 2026-06-11T06:32:37.936Z
