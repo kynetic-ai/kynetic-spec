@@ -62357,7 +62357,7 @@ runs:
     completed_at: 2026-06-11T06:56:53.079Z
   - _ulid: 01KTTQK4BZS5Z7ZX8326CNW3H5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -62371,7 +62371,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T07:00:48.804Z
-        completed_at: 2026-06-11T07:00:48.804Z
+        completed_at: 2026-06-11T07:00:52.792Z
+        notes: "Identified candidates: (1) friction — npm audit fix can bump transitive deps past the
+          declared engines.node floor with no gate catching it (caused this session's fix cycle);
+          (2) actionable — engine-strict min-Node production install gate; (3) success — replicating
+          the reviewer's exact failing check command before resubmit gave direct evidence the
+          blocker was fixed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T07:00:52.792Z
+        completed_at: 2026-06-11T07:00:52.792Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T06:58:23.743Z
