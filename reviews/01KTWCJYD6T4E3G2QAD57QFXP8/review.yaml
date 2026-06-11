@@ -163,6 +163,13 @@ events:
       status: fail
       name: full test suite
     timestamp: 2026-06-11T22:46:42.213Z
+  - _ulid: 01KTWDW328CB7644DM49GF7933
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTWDW2RT7VA5NT2TB870CP52
+    timestamp: 2026-06-11T22:47:00.424Z
 examined_commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
 external_links: []
 lifecycle_state: open
@@ -216,7 +223,35 @@ threads:
           Add the new test-affecting scripts to the cache input set and cover that expectation."
         created_at: 2026-06-11T22:45:13.326Z
     kind: blocker
+  - _ulid: 01KTWDW2RT7VA5NT2TB870CP52
+    entries:
+      - _ulid: 01KTWDW2RT2FVRTPG0JTA16FKH
+        author: Jacob Chapel
+        body: "Review evidence log:\\n\\nFiles read: kspec-agents.md; package.json;
+          scripts/build-test-lock.cjs; scripts/build.cjs; scripts/test.cjs;
+          tests/build-test-lock.test.ts; tests/test-runner.test.ts; tests/workflow-runs.test.ts;
+          tests/upgrade-command.test.ts; tests/helpers/cli.ts; vitest.config.ts;
+          tests/global-setup.ts; src/cli/commands/upgrade.ts.\\n\\nCommands run: kspec task get
+          @01KTW8SGEWWF24FX36RRA5YPFP; kspec item get @test-suite-perf-reliability; git
+          diff/stat/name-only/log/show; rg searches for AC annotations, lock env, build invocations;
+          npm run format:check; npm run lint -- --quiet; npx oxlint changed files; npm run
+          typecheck; npm test -- --fresh; npm test -- tests/workflow-runs.test.ts --fresh; kspec
+          validate --refs/--alignment/--completeness --warnings-ok.\\n\\nClaims verified: Worker
+          claim that original upgrade-folder-storage test was not itself the failing logic is
+          supported by the fresh full suite passing tests/upgrade-folder-storage.test.ts 24/24.
+          Worker claim that the submitted lock stabilizes the full-suite dist rewrite race is
+          disproved by the fresh full suite failing with the same built-CLI ESM mismatch class in
+          workflow-runs, while isolated workflow-runs passed.\\n\\nCategories searched: correctness
+          (lock/reentrancy behavior), edge cases (nested runner/build subprocesses, stale/dead lock
+          handling), error handling (timeout diagnostics and release paths), test quality (AC
+          annotations and behavioral tests, no source-scanning in new test), integration (npm
+          scripts, test cache key, Vitest/global setup/build interactions).\\n\\nShared-guidance
+          neutrality: changed kspec-agents.md line is generated dynamic project convention, not a
+          package-shipped template/source edit; no templates/skills or templates/agents-sections
+          package surface changed."
+        created_at: 2026-06-11T22:47:00.122Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T22:24:32.166Z
-updated_at: 2026-06-11T22:46:41.924Z
+updated_at: 2026-06-11T22:47:00.122Z
 notes: []
