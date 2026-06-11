@@ -24,6 +24,12 @@ events:
       kind: blocker
       thread_ulid: 01KTVM7NR7ZKV6RGE8CZCS6DKN
     timestamp: 2026-06-11T15:18:57.371Z
+  - _ulid: 01KTVM8Z7SGM2Q6RCAY3Q2S8QV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVM7NR7ZKV6RGE8CZCS6DKN
+    timestamp: 2026-06-11T15:19:39.513Z
 examined_commit: 76859368017ba57e539303d633dfa9e248f05f5d
 external_links: []
 lifecycle_state: open
@@ -62,8 +68,13 @@ threads:
             /home/chapel/Projects/vibez (watcher: active)
             /home/chapel/Projects/comfy-ecaj-nodes (watcher: active), but that CLI path currently discards the new  health payload.  fetches  only to parse  08:18:53 up 2 days, 20:51,  1 user,  load average: 23.15, 9.63, 6.81, then builds a status object without the degraded command name/duration, so a user following the 504 suggestion gets no signal about the wedged dispatch. Surface  in  JSON and human output (or change the suggestion to an actually informative surface).
         created_at: 2026-06-11T15:18:57.031Z
+      - _ulid: 01KTVM8YWKYHE09T138A58XNSC
+        author: Jacob Chapel
+        body: Superseded by a cleanly formatted blocker thread; the original body was corrupted by shell
+          interpolation.
+        created_at: 2026-06-11T15:19:39.155Z
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T15:15:58.452Z
-updated_at: 2026-06-11T15:18:57.031Z
+updated_at: 2026-06-11T15:19:39.155Z
 notes: []
