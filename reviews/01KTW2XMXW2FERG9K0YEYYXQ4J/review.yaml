@@ -1,0 +1,26 @@
+_ulid: 01KTW2XMXW2FERG9K0YEYYXQ4J
+slugs: []
+title: "Plan review: Shared Mutation and Event Service (round 2 verification)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTW2XMXVXGE09VDCWK46A9N1
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T19:35:37.147Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-mutation-service"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T19:35:37.148Z
+updated_at: null
+notes: []
