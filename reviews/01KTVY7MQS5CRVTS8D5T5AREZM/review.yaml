@@ -2,7 +2,92 @@ _ulid: 01KTVY7MQS5CRVTS8D5T5AREZM
 slugs: []
 title: "Plan review: Shared Mutation and Event Service (round 1)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No existing plan review for Shared Mutation and Event Service /
+      @plan-dispatch-mutation-service appeared in the plan review list; treated as round 1.
+    name: prior review history
+    required: true
+    runner: kspec review list --subject-type plan
+    created_at: 2026-06-11T18:17:49.512Z
+    completed_at: 2026-06-11T18:17:49.512Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exported the stored plan content and dry-ran import from
+      /tmp/plan-dispatch-mutation-service-stored.md with no parse errors. The stale source_path file
+      is recorded separately as a question.
+    name: plan parse
+    required: true
+    runner: kspec plan export + kspec plan import --dry-run
+    created_at: 2026-06-11T18:17:52.267Z
+    completed_at: 2026-06-11T18:17:52.267Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read @daemon-server, @ui-data-freshness, @daemon-command-api, @daemon-entity-cache,
+      @ui-api-aggregation, @agent-invocation-lifecycle, and @api-contract. Searched mutation
+      pipeline, typed event, command_executed, review_created, items:updates, task_updated, event
+      naming, and event vocabulary; no duplicate existing spec covers this plan's cross-interface
+      mutation parity.
+    name: existing spec alignment
+    required: true
+    runner: kspec item get / kspec search
+    created_at: 2026-06-11T18:17:55.058Z
+    completed_at: 2026-06-11T18:17:55.058Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Two AC/spec-quality blockers recorded: @shared-mutation-pipeline ac-5 overbroad vs
+      no-daemon behavior, and @mutation-event-naming reserved event families not covered by ACs."
+    name: spec quality
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T18:17:57.797Z
+    completed_at: 2026-06-11T18:17:57.797Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All explicit Covers AC refs resolve, but @task-missing-event-types includes reserved
+      event-family work that has no matching AC on @mutation-event-naming.
+    name: task coverage mapping
+    required: true
+    runner: manual Covers audit
+    created_at: 2026-06-11T18:18:00.605Z
+    completed_at: 2026-06-11T18:18:00.605Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: P1 chain is shared pipeline -> command path -> missing events -> UI; dispatch engine
+      depends only on shared pipeline; no P1 task depends on the P2 relationship task; no circular
+      dependencies found.
+    name: dependency ordering
+    required: true
+    runner: manual dependency graph audit
+    created_at: 2026-06-11T18:18:03.406Z
+    completed_at: 2026-06-11T18:18:03.406Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Referenced external specs and ACs resolve: @daemon-command-api
+      ac-mutation-cache-update/ac-batch-support/ac-no-recursive-command-proxy, @daemon-entity-cache
+      ac-write-through/ac-broadcast-after-reload, @ui-api-aggregation ac-4,
+      @agent-invocation-lifecycle ac-5, @api-contract, and plan-local AC refs. Parentless
+      @mutation-event-naming is recorded as a question rather than an unresolved ref."
+    name: cross-reference validation
+    required: true
+    runner: kspec item get / plan content audit
+    created_at: 2026-06-11T18:18:06.227Z
+    completed_at: 2026-06-11T18:18:06.227Z
 events:
   - _ulid: 01KTVY7MQSWF4ZD3SPWEHY9Y73
     actor: "@claude"
@@ -10,17 +95,184 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T18:13:41.753Z
+  - _ulid: 01KTVYERFC2DD2013MFFNCBKCK
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T18:17:34.956Z
+  - _ulid: 01KTVYEWAGAZ8NFBF40VCMV9TW
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVYEW3MY5E8S70MWH5SQJM7
+    timestamp: 2026-06-11T18:17:38.896Z
+  - _ulid: 01KTVYEZ09FRDYES7YCZYEZ6G8
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVYEYSHFMTJ14PHEK01VXGV
+    timestamp: 2026-06-11T18:17:41.641Z
+  - _ulid: 01KTVYF1M0KK8432DDMRWM7Y9K
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTVYF1CZXWQSMX106VDDX07V
+    timestamp: 2026-06-11T18:17:44.320Z
+  - _ulid: 01KTVYF48RGVMSPZRS4C32JRMM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTVYF41T0W8MFRVZ896NVZ14
+    timestamp: 2026-06-11T18:17:47.032Z
+  - _ulid: 01KTVYF6Y58J2C75FYQJ8MG3GR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review history
+    timestamp: 2026-06-11T18:17:49.765Z
+  - _ulid: 01KTVYF9M61XGFV74CEH010XHR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan parse
+    timestamp: 2026-06-11T18:17:52.518Z
+  - _ulid: 01KTVYFCAK5GWFCZ7KHY9KXKCT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: existing spec alignment
+    timestamp: 2026-06-11T18:17:55.283Z
+  - _ulid: 01KTVYFF05CDS2Z5P1H5STZPMG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: spec quality
+    timestamp: 2026-06-11T18:17:58.021Z
+  - _ulid: 01KTVYFHR786VF183QCG6QS50B
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: task coverage mapping
+    timestamp: 2026-06-11T18:18:00.839Z
+  - _ulid: 01KTVYFMFN4MRAJXY7M1GYQMSC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-11T18:18:03.638Z
+  - _ulid: 01KTVYFQ7SAGYTA9BTNC73PF5P
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cross-reference validation
+    timestamp: 2026-06-11T18:18:06.457Z
+  - _ulid: 01KTVYFSY451H4JT4W43WZFYVR
+    actor: "@codex"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T18:18:09.220Z
+  - _ulid: 01KTVYFSY4H6544135468HMN63
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T18:18:09.220Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-dispatch-mutation-service"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTVYEW3MY5E8S70MWH5SQJM7
+    anchor:
+      type: structured
+      field: ac-5
+      ref: "@shared-mutation-pipeline"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTVYEW3MWYMZGAS5GS789MBJ
+        author: "@claude"
+        body: ac-5 is broader than the plan's intended daemon batch path. It says any atomic batch must
+          broadcast typed events after cache reflects the batch, but ac-4 says mutations without a
+          daemon skip cache/broadcast without error, and the covering task only implements daemon
+          command-endpoint batches. Narrow the Given to daemon-served batches or add separate
+          direct-CLI batch behavior so the AC is deterministic and non-contradictory.
+        created_at: 2026-06-11T18:17:38.676Z
+    kind: blocker
+  - _ulid: 01KTVYEYSHFMTJ14PHEK01VXGV
+    anchor:
+      type: structured
+      ref: "@mutation-event-naming"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTVYEYSHM209BGBZK9ZBFPXY
+        author: "@claude"
+        body: The description makes reserved plan-revision and coverage-state event families part of the
+          vocabulary, and @task-missing-event-types says it will record those reservations. Neither
+          ac-1 nor ac-2 asserts that reserved families exist or are on the named topics. Add an AC
+          for the reservations or move them out of the behavioral spec/task coverage.
+        created_at: 2026-06-11T18:17:41.425Z
+    kind: blocker
+  - _ulid: 01KTVYF1CZXWQSMX106VDDX07V
+    anchor:
+      type: structured
+      field: parent
+      ref: "@mutation-event-naming"
+      section: specs
+    entries:
+      - _ulid: 01KTVYF1CZ1ABC7BKDX1NQFY8H
+        author: "@claude"
+        body: This decision is the only planned spec without a parent. The stored plan has no module_ref,
+          and derive requires a module when specs are present; parentless non-trait specs attach to
+          the derive module. Is the intended parent @shared-mutation-pipeline or @api-contract? Make
+          it explicit, or store the intended module, so derivation is deterministic.
+        created_at: 2026-06-11T18:17:44.095Z
+    kind: question
+  - _ulid: 01KTVYF41T0W8MFRVZ896NVZ14
+    anchor:
+      type: structured
+      field: source_path
+      ref: "@plan-dispatch-mutation-service"
+      section: context
+    entries:
+      - _ulid: 01KTVYF41TKPXZCQS08NR3V4B4
+        author: "@claude"
+        body: The plan record's source_path still points to plans/dispatch-mutation-service.md, which is the
+          older investigation draft; dry-running that file reports no derivable content. The stored
+          content is the reviewed artifact, but safe future iteration should either update/export
+          the source file or make clear that source_path is historical.
+        created_at: 2026-06-11T18:17:46.810Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: "@codex"
+    role: plan-reviewer
+    created_at: 2026-06-11T18:18:09.220Z
 created_at: 2026-06-11T18:13:41.753Z
-updated_at: null
+updated_at: 2026-06-11T18:18:09.220Z
 notes: []
