@@ -186,9 +186,25 @@ events:
       kind: nit
       thread_ulid: 01KTVVCDEHM69RS8KQNXY4PPZ3
     timestamp: 2026-06-11T17:23:52.663Z
+  - _ulid: 01KTVVCYW9VBGR8Y72CDBCATA5
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T17:24:10.249Z
+  - _ulid: 01KTVVCYW9VC2RJJ6C9YBP583M
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T17:24:10.249Z
 examined_commit: 9222d4a7de015305cf726b68c07f68b83438851d
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -235,7 +251,14 @@ threads:
           integration (existing daemon-log status test and full-suite run).
         created_at: 2026-06-11T17:23:52.402Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-11T17:24:10.249Z
 created_at: 2026-06-11T17:03:50.569Z
-updated_at: 2026-06-11T17:23:52.402Z
+updated_at: 2026-06-11T17:24:10.249Z
 notes: []
