@@ -31,6 +31,13 @@ events:
       kind: blocker
       thread_ulid: 01KTTVG28FXDNNGF8Z45VWXT7F
     timestamp: 2026-06-11T08:06:38.364Z
+  - _ulid: 01KTTVG3C5A74SWWSK1T076XAR
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTVG27PD36FXNTEZ8D0TK7X
+    timestamp: 2026-06-11T08:06:38.725Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -75,7 +82,23 @@ threads:
           is implemented.
         created_at: 2026-06-11T08:06:37.583Z
     kind: blocker
+  - _ulid: 01KTTVG27PD36FXNTEZ8D0TK7X
+    anchor:
+      type: structured
+      field: covers
+      ref: "@task-respec-test-annotation-sweep-na"
+      section: tasks
+    entries:
+      - _ulid: 01KTTVG27PXYD3A6HST09ESHS9
+        author: "@claude"
+        body: 'The Covers line is not verifiable: it claims "@test-annotation-sweep (description update plus
+          the three new not-applicable ACs defined above)" instead of exact AC IDs. The plan also
+          does not assign IDs to those three new ACs. Give the new ACs stable IDs in the plan text
+          and make this Covers line reference those IDs explicitly, plus the exact existing
+          @ac-annotation-integrity-reporting AC it updates.'
+        created_at: 2026-06-11T08:06:37.558Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:06:37.583Z
+updated_at: 2026-06-11T08:06:37.558Z
 notes: []
