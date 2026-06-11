@@ -11332,11 +11332,11 @@ workspaces:
     canonical_branch: dispatch/task/task-daemon-log-capture/01kttd05
     canonical_branch_head: 7b5d5b3849c0f4cf06841b8ba250278e2245d6ab
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T06:53:55.503Z
+      updated_at: 2026-06-11T06:58:19.190Z
     health:
       status: healthy
       issues: []
@@ -11350,17 +11350,17 @@ workspaces:
       target_branch: dev
       target_commit: 6e5a0fd936024f9832ac7d23feeff38711cad2dc
       updated_at: 2026-06-11T06:53:55.503Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTTD05J0G7PQGFER0GY2N4KR
     task_ref: "@01KTTD05J0G7PQGFER0GY2N4KR"
     task_slug: task-daemon-log-capture
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-11T06:58:19.190Z
       last_active_at: 2026-06-11T06:36:23.908Z
       last_reconciled_at: 2026-06-11T06:57:28.567Z
       created_at: 2026-06-11T05:52:25.284Z
-      updated_at: 2026-06-11T06:57:28.567Z
+      updated_at: 2026-06-11T06:58:19.190Z
     workspace_id: dispatch-workspace-01KTTD05J0G7PQGFER0GY2N4KR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
