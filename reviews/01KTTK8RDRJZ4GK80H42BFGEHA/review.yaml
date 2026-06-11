@@ -99,6 +99,17 @@ checks:
     runner: npm run test:e2e
     created_at: 2026-06-11T06:04:22.041Z
     completed_at: 2026-06-11T06:04:22.041Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Failed on Node v20.20.2: npm ci --omit=dev --engine-strict rejects file-type@22.0.1 with
+      EBADENGINE because it requires node >=22 while package.json advertises node >=20.0.0."
+    name: node20 production install
+    required: true
+    runner: npx node@20 npm ci --omit=dev --engine-strict --ignore-scripts
+    created_at: 2026-06-11T06:04:26.622Z
+    completed_at: 2026-06-11T06:04:26.622Z
 events:
   - _ulid: 01KTTK8RDRM412KXJ9E0TEV845
     actor: Jacob Chapel
@@ -183,6 +194,13 @@ events:
       status: skipped
       name: e2e
     timestamp: 2026-06-11T06:04:22.395Z
+  - _ulid: 01KTTMGBFP727VMJYE64TNGA2Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: node20 production install
+    timestamp: 2026-06-11T06:04:26.998Z
 examined_commit: b112b02a919a15d0c4a4466a4daafae05dcf7c7c
 external_links: []
 lifecycle_state: open
@@ -217,5 +235,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T05:42:49.528Z
-updated_at: 2026-06-11T06:04:22.041Z
+updated_at: 2026-06-11T06:04:26.622Z
 notes: []
