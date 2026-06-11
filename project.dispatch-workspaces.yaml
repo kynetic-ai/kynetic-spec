@@ -22060,11 +22060,11 @@ workspaces:
     canonical_branch: dispatch/task/task-dedupe-web-ui-devdeps/01kttczh
     canonical_branch_head: 478716573eb2ac9fa72f01814b11710d07ab5045
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T23:29:34.574Z
+      updated_at: 2026-06-11T23:33:41.970Z
     health:
       status: healthy
       issues: []
@@ -22078,17 +22078,17 @@ workspaces:
       target_branch: dev
       target_commit: b2ebd466d0326d5de2d8b638f0096a2f0248ba5e
       updated_at: 2026-06-11T23:29:34.574Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTTCZH6PJHXT727JM9E0739D
     task_ref: "@01KTTCZH6PJHXT727JM9E0739D"
     task_slug: task-dedupe-web-ui-devdeps
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-11T23:33:41.970Z
       last_active_at: 2026-06-11T22:58:30.767Z
       last_reconciled_at: 2026-06-11T23:32:58.232Z
       created_at: 2026-06-11T22:24:10.493Z
-      updated_at: 2026-06-11T23:32:58.232Z
+      updated_at: 2026-06-11T23:33:41.970Z
     workspace_id: dispatch-workspace-01KTTCZH6PJHXT727JM9E0739D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
