@@ -22069,7 +22069,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T23:29:34.574Z
+      updated_at: 2026-06-11T23:32:58.232Z
     integration:
       status: merged
       detail: integration:merged
@@ -22086,18 +22086,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T22:58:30.767Z
-      last_reconciled_at: 2026-06-11T23:32:52.131Z
+      last_reconciled_at: 2026-06-11T23:32:58.232Z
       created_at: 2026-06-11T22:24:10.493Z
-      updated_at: 2026-06-11T23:32:52.131Z
+      updated_at: 2026-06-11T23:32:58.232Z
     workspace_id: dispatch-workspace-01KTTCZH6PJHXT727JM9E0739D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 478716573eb2ac9fa72f01814b11710d07ab5045
-        last_seen_at: 2026-06-11T22:57:49.544Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dedupe-web-ui-devdeps-01kttczh-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-dedupe-web-ui-devdeps/01kttczh
