@@ -11377,7 +11377,7 @@ workspaces:
         head: 7b5d5b3849c0f4cf06841b8ba250278e2245d6ab
         last_seen_at: 2026-06-11T06:35:33.564Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-log-capture-01kttd05
-  - active_role: null
+  - active_role: worker
     base_branch_point: 0f3473bba38c4e87899c06d0394c895a92aa61e3
     bootstrap:
       status: succeeded
@@ -11704,7 +11704,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T07:03:44.256Z
+      updated_at: 2026-06-11T07:04:24.490Z
     integration:
       status: pending
       detail: null
@@ -11713,17 +11713,17 @@ workspaces:
       target_branch: dev
       target_commit: 0f3473bba38c4e87899c06d0394c895a92aa61e3
       updated_at: 2026-06-11T07:03:44.256Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTD0XG6VBZ6AR49VGQ2FARF
     task_ref: "@01KTTD0XG6VBZ6AR49VGQ2FARF"
     task_slug: task-broken-shadow-safety-spec-delta
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-11T07:03:44.256Z
+      last_active_at: 2026-06-11T07:04:24.490Z
+      last_reconciled_at: 2026-06-11T07:04:24.490Z
       created_at: 2026-06-11T07:03:44.256Z
-      updated_at: 2026-06-11T07:04:08.747Z
+      updated_at: 2026-06-11T07:04:24.490Z
     workspace_id: dispatch-workspace-01KTTD0XG6VBZ6AR49VGQ2FARF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
