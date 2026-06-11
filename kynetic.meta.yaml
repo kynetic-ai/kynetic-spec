@@ -21600,6 +21600,32 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-11T16:05:11.379Z
+  - _ulid: 01KTW05M4WR41J08MQ11EG8F96
+    type: friction
+    content: "Dispatched tasks whose AC evidence requires watching a long GitHub Actions run (~40 min
+      matrix on test.yml) collide with the 60-minute invocation timeout: the prior invocation on
+      @task-ci-node-version-matrix timed out purely waiting on gh run watch, wasting the invocation
+      and requiring a resume. Mitigation that worked on resume: trigger the CI run early, run all
+      local gates while it executes, poll only the AC-relevant jobs (not the whole run), and submit
+      once those jobs pass instead of blocking on unrelated jobs like e2e. Consider documenting this
+      pattern in worker guidance or raising the timeout for CI-verification tasks."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T18:47:32.764Z
+  - _ulid: 01KTW05MDZ7PFHWWENTTEQ2768
+    type: success
+    content: "PR-less verification of CI workflow changes worked exactly as designed on
+      @task-ci-node-version-matrix: add workflow_dispatch to the workflow, push the task branch, gh
+      workflow run test.yml --ref <task-branch> (the dispatched run uses the branch's workflow
+      file), record the run URL in a task note as AC evidence. Produced concrete passing-run
+      evidence for the Node 20/24 matrix without opening a GitHub PR, consistent with the repo
+      policy reserving PRs for release-track merges. Replicable for any future .github/workflows
+      change."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T18:47:33.055Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
