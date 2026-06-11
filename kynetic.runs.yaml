@@ -63890,7 +63890,7 @@ runs:
     started_at: 2026-06-11T15:10:42.534Z
     completed_at: 2026-06-11T15:13:13.255Z
   - _ulid: 01KTVN1EJPWQEEGKCR7F42Z80A
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -63945,7 +63945,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-11T15:35:39.856Z
-        completed_at: 2026-06-11T15:35:39.856Z
+        completed_at: 2026-06-11T15:36:08.899Z
+        notes: Captured one inbox item for review CLI long-body shell safety and one friction observation
+          about the malformed review comment path. Did not duplicate already-tracked @01KTDZ3W
+          (backtick loss in stored review thread bodies) or @01KTVA6WV (stale full-suite timing).
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T15:33:01.654Z
+    completed_at: 2026-06-11T15:36:08.899Z
