@@ -31847,3 +31847,18 @@
   created_at: 2026-06-11T21:18:12.955Z
   started_at: 2026-06-11T21:35:24.220Z
   automation: eligible
+- _ulid: 01KTWAN5NRH21J0NS4C73GSNAV
+  slugs: []
+  title: Stabilize upgrade folder-storage rebuild-index test
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - tests
+    - flaky
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T21:50:47.991Z
+  automation: eligible
