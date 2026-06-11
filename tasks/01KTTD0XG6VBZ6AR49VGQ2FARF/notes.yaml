@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KTTQZVMR7YNMHDFYXWYZV5MS
+    content: "Added ac-restore-failure-reports-state to @broken-shadow-safety via item ac add, verbatim
+      per task description. Checked existing ACs first: ac-preserve-on-failure owns the preservation
+      contract but no existing AC covers restore-failure reporting (original error + backup path +
+      shadow state + recovery steps + backup never deleted), so no duplicate substitution was
+      needed. Spec mutation only — behavioral coverage owned by @task-shadow-restore-loud-failure."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T07:05:20.793Z

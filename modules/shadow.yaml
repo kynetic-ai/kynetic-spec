@@ -699,6 +699,14 @@ features:
             then: it does not redirect reads or writes to repo-root fallback paths outside the configured shadow
               directory
             when: CLI, daemon, or dispatch code resolves kspec-managed manifest, registry, or metadata paths
+          - given: A failed shadow rebuild is restoring the preserved pre-repair shadow directory from its
+              backup location
+            id: ac-restore-failure-reports-state
+            then: The operation reports the restore failure alongside the original rebuild error, identifies the
+              absolute path of the preserved backup directory and the resulting state of the shadow
+              directory location, and provides concrete recovery steps; the backup directory is
+              never deleted on this path
+            when: The restore itself fails
         priority: high
         tags:
           - shadow
