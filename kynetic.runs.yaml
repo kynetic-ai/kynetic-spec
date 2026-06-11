@@ -63486,7 +63486,7 @@ runs:
     completed_at: 2026-06-11T13:04:36.342Z
   - _ulid: 01KTVCNFNYFA916MZRS18E4Z2W
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -63499,7 +63499,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T13:07:44.041Z
-        completed_at: 2026-06-11T13:07:44.041Z
+        completed_at: 2026-06-11T13:08:49.730Z
+        notes: "Identified 4 candidates: skipped-suite rot (friction, high confidence), E2E porting recipe
+          (skip — no remaining skipped suites, not repeatable), workflow show run-ref friction (skip
+          — duplicate of inbox @01KGGPJ6), detailed-task-description success (skip — likely
+          duplicates existing clear-scope success observations)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T13:08:49.730Z
+        completed_at: 2026-06-11T13:08:49.730Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T13:06:40.958Z
