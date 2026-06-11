@@ -2,7 +2,122 @@ _ulid: 01KTW9D0K9YQHC6XB097VDT9YP
 slugs: []
 title: "Plan review: UI Redesign Global Decisions (transition boundary verification)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read prior plan reviews @01KTTPG4, @01KTTPNY, @01KTVWYZ, @01KTW2B8, and @01KTW65X. All
+      prior P0a threads are already resolved, and current content still contains the fixes recorded
+      by the approved round-3 Codex review. The only post-approval change was the N/A
+      transition-boundary precision note recorded six minutes before this review.
+    name: prior review resolution
+    required: true
+    runner: manual
+    created_at: 2026-06-11T21:30:23.802Z
+    completed_at: 2026-06-11T21:30:23.802Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified @ac-coverage-applicability in the stored plan/source. Description now scopes the
+      no-N/A rule to corpus-level coverage and says the pre-existing completeness validation path
+      honoring in-code N/A for trait criteria remains in force until corpus coverage computation
+      adopts these semantics. ac-2 when-clause is generalized to corpus coverage computation.
+      Boundaries note repeats that two semantics coexist and assigns reconciliation to coverage
+      track plans, not specifically to the coverage state engine. This resolves the earlier
+      engine-vs-schema assignment tension.
+    name: not-applicable transition boundary precision
+    required: true
+    runner: manual
+    created_at: 2026-06-11T21:30:27.209Z
+    completed_at: 2026-06-11T21:30:27.209Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read related review @01KTW6NX for @plan-ac-coverage-verification-schema-and-storage. The
+      author reply states the P0a side was aligned during the draft window, matching the current P0a
+      wording. P1a still has its own external approval gate and follow-up wording, but per the
+      acknowledged program gate this ordering is documented program structure and not a defect in
+      @plan-ui-redesign-global-decisions.
+    name: related P1a thread context
+    required: true
+    runner: manual
+    created_at: 2026-06-11T21:30:30.506Z
+    completed_at: 2026-06-11T21:30:30.506Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/ui-redesign-global-decisions.md --dry-run parsed successfully as
+      draft plan @plan-ui-redesign-global-decisions-1 with full document stored; no state changes.
+    name: plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-11T21:30:33.748Z
+    completed_at: 2026-06-11T21:30:33.748Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed. Existing warning baseline only: deprecated-item references including
+      @session-summary-cache and @task-activity-git-query; nothing attributable to this draft plan."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T21:30:41.658Z
+    completed_at: 2026-06-11T21:30:41.658Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed. Existing warning baseline only: orphaned specs and status mismatches unrelated to
+      this draft plan."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T21:30:45.024Z
+    completed_at: 2026-06-11T21:30:45.024Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed. Existing warning baseline only: missing AC coverage, automation-without-spec, and
+      invalid AC annotations already present in the corpus; this draft plan has not been derived
+      yet."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T21:30:48.334Z
+    completed_at: 2026-06-11T21:30:48.334Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/records read: kspec-agents.md, stored @plan-ui-redesign-global-decisions,
+      plans/ui-redesign-global-decisions.md, prior P0a reviews, related P1a review @01KTW6NX,
+      @config-author, @plan-ac-coverage-verification-schema-and-storage. Commands run: plan
+      get/import dry-run, review list/get --json, validate refs/alignment/completeness, item get,
+      kspec search. Categories checked: prior-thread resolution, focused transition-boundary
+      precision, cross-document tension, validation, spec/task dependency posture. No new findings
+      found."
+    name: plan review evidence log
+    required: true
+    runner: manual
+    created_at: 2026-06-11T21:30:51.858Z
+    completed_at: 2026-06-11T21:30:51.858Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review of stored draft content; no code, tests, generated artifacts, or
+      package-shipped guidance surfaces changed in this review pass.
+    name: code quality gates
+    required: false
+    runner: not applicable
+    created_at: 2026-06-11T21:30:55.124Z
+    completed_at: 2026-06-11T21:30:55.124Z
 events:
   - _ulid: 01KTW9D0K92WX9CRZXCFGSN6KY
     actor: "@claude"
@@ -17,9 +132,88 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T21:29:29.680Z
+  - _ulid: 01KTW9FTEF665BZ7RSPZYK5ZFG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review resolution
+    timestamp: 2026-06-11T21:30:24.079Z
+  - _ulid: 01KTW9FXRR74B952R5EGJMYKWM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: not-applicable transition boundary precision
+    timestamp: 2026-06-11T21:30:27.481Z
+  - _ulid: 01KTW9G0ZJ92P9Q8888225WZ8K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: related P1a thread context
+    timestamp: 2026-06-11T21:30:30.770Z
+  - _ulid: 01KTW9G465P1TK9DKN1B92AKHE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan import dry-run
+    timestamp: 2026-06-11T21:30:34.053Z
+  - _ulid: 01KTW9GBVVTDXPV4SD21QQ51Y0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T21:30:41.915Z
+  - _ulid: 01KTW9GF5RY6GYHRE5C50M29FN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T21:30:45.304Z
+  - _ulid: 01KTW9GJDPNW7X5SMG4W818TXR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T21:30:48.630Z
+  - _ulid: 01KTW9GNTRSMXMSA7CX8696GRZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan review evidence log
+    timestamp: 2026-06-11T21:30:52.120Z
+  - _ulid: 01KTW9GS107057SDP672H6KDSZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: code quality gates
+    timestamp: 2026-06-11T21:30:55.392Z
+  - _ulid: 01KTW9GW50M4CGZCKXR2FWJX0Q
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T21:30:58.592Z
+  - _ulid: 01KTW9GW50H52JW4XJX4JP1NGT
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T21:30:58.592Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -27,7 +221,14 @@ subject:
   ref: "@plan-ui-redesign-global-decisions"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T21:30:58.592Z
 created_at: 2026-06-11T21:28:52.073Z
-updated_at: 2026-06-11T21:29:29.372Z
+updated_at: 2026-06-11T21:30:58.592Z
 notes: []
