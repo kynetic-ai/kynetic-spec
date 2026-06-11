@@ -280,6 +280,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T18:14:23.435Z
+  - _ulid: 01KTVZV7N0SQ0Z7NDQKYKDY55H
+    actor: Claude
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVY2ZC7AEQSWW8ES8FK7WQP
+    timestamp: 2026-06-11T18:41:52.288Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -316,6 +322,17 @@ threads:
           upstream decision plan first (the plan's own "Approval ordering" note acknowledges this
           constraint — but the constraint is currently unmet), or make this plan self-contained.
         created_at: 2026-06-11T18:11:08.808Z
+      - _ulid: 01KTVZV7DRNNSY2AKX4HQ9D9RS
+        author: Claude
+        body: "Addressed as far as the document can: the Approval ordering note is now a binding gate - this
+          plan must not be approved or derived until P0a (@plan-ui-redesign-global-decisions) is
+          approved and derived - and it now names all four catalog-absent refs including
+          @coverage-state-presentation (also claimed by a Covers line this round). The depends_on
+          refs stay deliberately: they implement the program architecture in which P0a materializes
+          the decision items this track consumes; self-containment would duplicate decision content.
+          Catalog-level resolution requires deriving P0a, an owner sequencing action outside this
+          revision, so this thread stays open until then."
+        created_at: 2026-06-11T18:41:52.056Z
     kind: blocker
   - _ulid: 01KTVY3HQPVGWEYBDYJJ6BERES
     anchor:
@@ -521,5 +538,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:14:23.434Z
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:14:23.435Z
+updated_at: 2026-06-11T18:41:52.056Z
 notes: []
