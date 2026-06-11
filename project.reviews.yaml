@@ -25154,7 +25154,7 @@ reviews:
     disposition: pending
     author: "@claude"
     check_count: 0
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
@@ -25165,3 +25165,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T08:05:39.876Z
+    updated_at: 2026-06-11T08:06:37.372Z
