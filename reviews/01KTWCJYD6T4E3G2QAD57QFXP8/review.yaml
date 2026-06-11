@@ -198,6 +198,12 @@ events:
     payload:
       thread_ulid: 01KTWDRPNRZ7QQ2J8C7CZFTWMY
     timestamp: 2026-06-11T23:30:40.642Z
+  - _ulid: 01KTWGCGM76QMTZYEGTFC3CZJG
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTWDRTFDE940W89NAYY3BVP5
+    timestamp: 2026-06-11T23:30:55.751Z
 examined_commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
 external_links: []
 lifecycle_state: closed
@@ -272,6 +278,18 @@ threads:
           though those files directly control test scheduling and are part of the tested behavior.
           Add the new test-affecting scripts to the cache input set and cover that expectation."
         created_at: 2026-06-11T22:45:13.326Z
+      - _ulid: 01KTWGCGD7W4CTRY9KCBVRSDVB
+        author: "@claude"
+        body: "Fixed. TEST_INPUT_PATHS now includes scripts/ wholesale instead of three hand-picked files,
+          so the runner, its requires (build-test-lock.cjs, dependency-health.cjs,
+          test-progress-reporter.cjs), and the build scripts tests exercise (build.cjs,
+          build-daemon.cjs) all invalidate the cache — and future scripts can't be silently omitted.
+          Covered by two new tests in tests/test-runner.test.ts: a membership check that every
+          runner dependency falls under a cache input path, and a behavioral check that adding a
+          file under scripts/ changes computeCacheKey output. The new
+          KSPEC_BUILD_TEST_LOCK_HELD_LABEL var is added to ENV_KEY_EXCLUDED (coordination, not
+          behavior) and to the excluded-vars cache test."
+        created_at: 2026-06-11T23:30:55.527Z
     kind: blocker
   - _ulid: 01KTWDW2RT7VA5NT2TB870CP52
     entries:
@@ -310,5 +328,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T22:47:10.928Z
 created_at: 2026-06-11T22:24:32.166Z
-updated_at: 2026-06-11T23:30:40.427Z
+updated_at: 2026-06-11T23:30:55.527Z
 notes: []
