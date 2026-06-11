@@ -24,6 +24,16 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-11T11:08:05.477Z
     completed_at: 2026-06-11T11:08:05.477Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: changed test file reported 0 warnings and 0 errors."
+    name: focused-lint
+    required: false
+    runner: npx oxlint tests/docs-readme-structure.test.ts
+    created_at: 2026-06-11T11:08:15.182Z
+    completed_at: 2026-06-11T11:08:15.182Z
 events:
   - _ulid: 01KTV54K0JRKS1Q6WVPC04E799
     actor: Jacob Chapel
@@ -52,6 +62,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-11T11:08:05.693Z
+  - _ulid: 01KTV5WMNG40CX9F2KF5JNSEX8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-11T11:08:15.409Z
 examined_commit: 1f80fd17ed0ab5ad080373ae1d5691ca6d84767f
 external_links: []
 lifecycle_state: open
@@ -64,5 +81,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T10:55:07.282Z
-updated_at: 2026-06-11T11:08:05.477Z
+updated_at: 2026-06-11T11:08:15.182Z
 notes: []
