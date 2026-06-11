@@ -21590,7 +21590,7 @@ workspaces:
         head: 5decaf10680757ae541fe2ec5b718952a8f7be1f
         last_seen_at: 2026-06-11T22:23:01.491Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-upgrade-folder-storage-test-01ktw8sg
-  - active_role: null
+  - active_role: worker
     base_branch_point: b2ebd466d0326d5de2d8b638f0096a2f0248ba5e
     bootstrap:
       status: succeeded
@@ -21926,7 +21926,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T22:24:10.493Z
+      updated_at: 2026-06-11T22:25:10.428Z
     integration:
       status: pending
       detail: null
@@ -21935,17 +21935,17 @@ workspaces:
       target_branch: dev
       target_commit: b2ebd466d0326d5de2d8b638f0096a2f0248ba5e
       updated_at: 2026-06-11T22:24:10.493Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTCZH6PJHXT727JM9E0739D
     task_ref: "@01KTTCZH6PJHXT727JM9E0739D"
     task_slug: task-dedupe-web-ui-devdeps
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-11T22:24:10.493Z
+      last_active_at: 2026-06-11T22:25:10.428Z
+      last_reconciled_at: 2026-06-11T22:25:10.428Z
       created_at: 2026-06-11T22:24:10.493Z
-      updated_at: 2026-06-11T22:24:40.626Z
+      updated_at: 2026-06-11T22:25:10.428Z
     workspace_id: dispatch-workspace-01KTTCZH6PJHXT727JM9E0739D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
