@@ -21548,6 +21548,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T15:13:03.243Z
+  - _ulid: 01KTVN6TYKG89XH81BHACW421X
+    type: friction
+    content: During review @01KTVM27, a kspec review comment body with markdown backticks was passed
+      through a shell command and command-substituted before kspec received it. The malformed
+      blocker had to be superseded and resolved. Long review bodies need shell-safe submission
+      habits or CLI support for file/stdin payloads.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T15:35:58.164Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
