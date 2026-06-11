@@ -64597,7 +64597,7 @@ runs:
     completed_at: 2026-06-11T21:24:28.393Z
   - _ulid: 01KTW9AT1CEFQY84NP034B6N2N
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -64608,7 +64608,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T21:30:05.544Z
-        completed_at: 2026-06-11T21:30:05.544Z
+        completed_at: 2026-06-11T21:30:09.865Z
+        notes: "Candidates: (1) workflow show requires run-ref — already tracked in inbox 01KGGPJ6, skip;
+          (2) task description quality enabled zero-fix-cycle implementation — already captured in
+          obs 01KTTXAQ and many prior, skip; (3) testing convention documents full suite ~150s but
+          measured 3269s (2778 suites, 10537 tests) on full uncached dispatch run — concrete,
+          measured, untracked; (4) 160+ stale active workflow runs make 'workflow next' without ref
+          unusable — checking coverage."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T21:30:09.865Z
+        completed_at: 2026-06-11T21:30:09.865Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T21:27:39.821Z
