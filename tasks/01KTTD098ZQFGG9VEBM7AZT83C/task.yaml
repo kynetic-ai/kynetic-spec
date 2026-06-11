@@ -48,8 +48,11 @@ description: |
 spec_ref: "@ui-production-log-hygiene"
 plan_ref: "@plan-daemon-operational-reliability"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 3a5555974a873199bc55b92068d8f6ef691e8b16. Removed shipped web UI
+  debug console output by deleting TaskList debug logs and false-gating WebSocketManager connection
+  tracing while preserving warn/error output; AC-tagged websocket manager tests pass.
 depends_on: []
 context: []
 priority: 3
@@ -116,8 +119,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-11T19:18:52.831Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 3a5555974a873199bc55b92068d8f6ef691e8b16. Removed shipped web UI debug console
+          output by deleting TaskList debug logs and false-gating WebSocketManager connection
+          tracing while preserving warn/error output; AC-tagged websocket manager tests pass.
+        previous: null
+      completed_at:
+        new: 2026-06-11T19:37:37.011Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-11T19:37:37.018Z
 created_at: 2026-06-11T03:53:20.415Z
 started_at: 2026-06-11T18:51:44.992Z
 submitted_at: 2026-06-11T19:13:15.652Z
+completed_at: 2026-06-11T19:37:37.011Z
 todos: []
 automation: eligible
