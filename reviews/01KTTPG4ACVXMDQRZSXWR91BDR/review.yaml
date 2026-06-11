@@ -322,6 +322,12 @@ events:
     payload:
       thread_ulid: 01KTTPJ008G1QW5FS6YPG77ZC1
     timestamp: 2026-06-11T07:39:37.241Z
+  - _ulid: 01KTTSYRWTDTB7MMMG6X129V3Y
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPJ027GTK287VC4D6RP4HE
+    timestamp: 2026-06-11T07:39:42.362Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -450,6 +456,14 @@ threads:
           refs/dependencies, or split this into a later task that runs after those track plans are
           imported.
         created_at: 2026-06-11T06:40:17.992Z
+      - _ulid: 01KTTSYRPA0Z9PG66JHSZMWPPV
+        author: "@claude"
+        body: "Addressed: the task now gives exact note text per plan, each anchored on
+          @plan-ui-redesign-global-decisions - an existing record - as the authoritative successor
+          pointer. Future tracks are named in prose only as forward context, and each note states
+          the anchor remains authoritative until the named track plan is imported. The worker no
+          longer needs refs that do not resolve."
+        created_at: 2026-06-11T07:39:42.154Z
     kind: blocker
   - _ulid: 01KTTPJ037SN6QY353RR040JXN
     anchor:
@@ -505,5 +519,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:41:27.363Z
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T07:39:37.022Z
+updated_at: 2026-06-11T07:39:42.154Z
 notes: []
