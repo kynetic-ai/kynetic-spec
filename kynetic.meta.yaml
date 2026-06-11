@@ -21358,6 +21358,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T08:38:39.364Z
+  - _ulid: 01KTV3TEG9FVB0QFKT8SD19AAW
+    type: success
+    content: "Forcing filesystem failure paths in tests: vi.mock('node:fs/promises', importOriginal)
+      that spreads the actual module and overrides one function (e.g. rename), gated by a
+      vi.hoisted() control flag and a path predicate (only sources matching '.repair-backup-'),
+      cleanly forced the shadow restore-failure path in tests/shadow-restore-failure.test.ts while
+      delegating all other fs calls to the real implementation. Behavioral alternative to vi.spyOn
+      (unreliable for cross-module ESM per testing conventions) and avoids exporting test-only hooks
+      from src/. Used for @task-shadow-restore-loud-failure double-failure coverage."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T10:32:06.409Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
