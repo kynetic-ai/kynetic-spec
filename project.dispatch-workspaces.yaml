@@ -18015,7 +18015,7 @@ workspaces:
         head: 76859368017ba57e539303d633dfa9e248f05f5d
         last_seen_at: 2026-06-11T15:43:44.483Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-command-dispatch-timeout-01kttd07
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 870cbfc6eba54cbe3cb55ff705a8c5284284969b
     bootstrap:
       status: succeeded
@@ -18489,12 +18489,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T17:25:38.491Z
+      updated_at: 2026-06-11T17:28:10.382Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T17:25:38.491Z
+      updated_at: 2026-06-11T17:28:10.382Z
     integration:
       status: merged
       detail: integration:merged
@@ -18502,7 +18502,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 870cbfc6eba54cbe3cb55ff705a8c5284284969b
-      updated_at: 2026-06-11T17:25:38.491Z
+      updated_at: 2026-06-11T17:28:10.382Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_id: 01KTTD073BSRG8AMPS4RZS6979
@@ -18511,9 +18511,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T17:02:33.315Z
-      last_reconciled_at: 2026-06-11T17:28:07.705Z
+      last_reconciled_at: 2026-06-11T17:28:10.382Z
       created_at: 2026-06-11T16:31:34.061Z
-      updated_at: 2026-06-11T17:28:07.705Z
+      updated_at: 2026-06-11T17:28:10.382Z
     workspace_id: dispatch-workspace-01KTTD073BSRG8AMPS4RZS6979
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
