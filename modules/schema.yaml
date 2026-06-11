@@ -894,7 +894,7 @@ features:
           persisted task record regardless of the task storage layout.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
