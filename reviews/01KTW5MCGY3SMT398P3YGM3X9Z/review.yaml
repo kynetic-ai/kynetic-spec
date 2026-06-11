@@ -149,6 +149,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T20:43:31.550Z
+  - _ulid: 01KTW6TRG1WN8VH4SXYK21DE2X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTW6TR7VFMYDV51Q93DR3B6M
+    timestamp: 2026-06-11T20:43:56.801Z
 examined_commit: 74ab85fe3b5971918484ee84f6942fe7ed04e165
 external_links: []
 lifecycle_state: open
@@ -158,8 +165,30 @@ subject:
   content_hash: ""
   ref: "@01KTTD1ETQ674218060ZCJNKAM"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTW6TR7VFMYDV51Q93DR3B6M
+    entries:
+      - _ulid: 01KTW6TR7VZ1D841BE26RJY1XF
+        author: Jacob Chapel
+        body: "Evidence log (non-blocking):\\n\\nFiles read: kspec-agents.md, scripts/test.cjs,
+          tests/test-runner.test.ts, package.json, relevant full-test log excerpt.\\n\\nCommands
+          run: kspec task get @01KTTD1ETQ674218060ZCJNKAM; kspec review add/open/get; git
+          diff/stat/log/status; kspec search; kspec meta get testing; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; npm run format:check; npm run lint --
+          --quiet; npx oxlint scripts/test.cjs tests/test-runner.test.ts; npm run typecheck; npm
+          test -- --fresh; npm test -- --fresh tests/upgrade-folder-storage.test.ts; focused cache
+          behavior check with isolated KSPEC_SESSION_ID and CI=true; kspec task add for flaky
+          follow-up @01KTW6P2.\\n\\nClaims verified: cache key now includes behavior-affecting env
+          vars; direct tests cover allowlist, KSPEC_* inclusion/exclusions, unset-vs-empty,
+          ordering, separator ambiguity, and computeCacheKey env sensitivity. Focused behavioral run
+          proved same-env cache hit and CI=true cache miss. Testing convention was updated in
+          project meta and regenerated into kspec-agents.md.\\n\\nCategories searched: correctness,
+          edge cases, error handling, test quality, integration, generated guidance scope. No code
+          findings. Shared-guidance neutrality: no package-shipped source touched; kspec-agents.md
+          change came from project-local testing convention regeneration."
+        created_at: 2026-06-11T20:43:56.539Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T20:22:59.358Z
-updated_at: 2026-06-11T20:43:31.277Z
+updated_at: 2026-06-11T20:43:56.539Z
 notes: []
