@@ -465,60 +465,6 @@ conventions:
       - Include examples for non-trivial concepts
       - Keep documentation close to code (inline comments for complex logic, README for overview)
       - Update documentation when behavior changes
-  - _ulid: 01KHYXJKYD2HREAGMY9XB9XEEG
-    domain: testing
-    examples: []
-    rules:
-      - ULIDs use Crockford base32 (excludes I, L, O, U) — invalid ULIDs cause SILENT test failures
-      - Use testUlid() helper or kspec util ulid for valid test ULIDs
-      - Never use JSON.stringify() for YAML — use template strings or yaml library stringify()
-      - Playwright E2E tests excluded from vitest — run separately with npm run test:e2e
-      - E2E fixtures are SEPARATE from unit test fixtures — never mix them
-      - Use npm run test:shard1/shard2/shard3 for faster local dev runs (~50s vs ~150s). Full suite
-        still required before PR.
-      - testUlid(prefix) is deterministic unless you pass a sequence; use testUlids() or explicit
-        sequences when tests need distinct IDs.
-      - In tests that run git commit in temp repos, set git config user.name and git config
-        user.email after git init.
-      - Always use npm test (or npm run test:shard1/2/3 for faster dev runs) to run tests. Never
-        invoke vitest or npx vitest directly — the test runner script (scripts/test.cjs) performs
-        environment readiness checks before executing.
-      - Test runner caches results by content hash (git blob SHAs + unstaged diffs + untracked files
-        + Node version + vitest args). Same content = cache hit, even after commits/rebases. Use
-        --fresh to force a full re-run.
-      - "Test output is condensed by default: success shows only summary stats, failure shows failed
-        tests with error snippets. Full verbose log path is printed. Use --verbose (or CI=true) for
-        full streaming output."
-      - Cache is session-scoped under KSPEC_SESSION_ID for dispatch isolation. Parallel agents get
-        independent caches. --fresh clears only the current session's cache.
-      - expect.anything() does not match undefined or null in vitest — use the literal undefined
-        when asserting undefined args
-      - vi.spyOn(Class.prototype, 'method') may have empty spy.mock.calls for cross-module ESM calls
-        — use a closure variable to capture args instead of asserting on the spy directly
-      - setupTempFixtures() returns a flat dir where tempDir IS the specDir — do not path.join with
-        .kspec/ for session or budget operations
-      - Prefer behavioral/integration tests over static source analysis. The no-source-scanning
-        oxlint rule enforces at lint time. Use readTestOutput/readTestOutputSync from
-        tests/helpers/cli.ts for legitimate test output file reads.
-      - When tests fail after a code change, evaluate whether the tests are correct before adding
-        workarounds — the test may be exposing a real bug in the change
-      - Multi-project test fixtures need a git repo and shadow detection for initContext() to
-        resolve specDir — use setupMultiDirFixtures() or manually init git and create .kspec/
-        markers
-      - Test daemons must register cleanup via vitest's onTestFinished at spawn time, not in the
-        test body. Prefer direct spawn() (see tests/e2e/fixtures/test-base.ts) so the OS reaps the
-        daemon via process group on parent death. If a test must invoke 'kspec serve start --detach'
-        because the CLI command itself is under test, read the PID immediately after the spawn
-        returns and register process.kill(pid, 'SIGTERM') in onTestFinished — never rely on inline
-        cleanup that won't run on assertion failure.
-      - Test helpers that drive kspec CLI subprocesses must require an explicit cwd parameter. Never
-        fall back to process.cwd() — a missing cwd is a test bug, not a default. A silent fallback
-        caused a shadow worktree destruction incident on 2026-04-11.
-      - Test helpers that spawn subprocesses inheriting process.env must route env through
-        buildTestSubprocessEnv() (tests/helpers/cli.ts) so runner-mode vars (CI,
-        KSPEC_TEST_PROGRESS, FORCE_COLOR, NO_COLOR) plus dispatch/agent vars are stripped. Direct {
-        ...process.env, ... } spreads leak the parent's CI-mode behavior into the subprocess and
-        silently break non-verbose-path tests in CI.
   - _ulid: 01KHYXJVNDVVFF6PR7K4X6545H
     domain: development
     examples: []
@@ -603,6 +549,62 @@ conventions:
       - Project-neutrality enforcement belongs in convention and reviewer judgment, not in broad
         markdown scanners or string-denylist tests. Do not add prose-neutrality AC-tagged tests or
         broad markdown scanners as the primary enforcement mechanism.
+  - _ulid: 01KTW2BSWYSHWZYJQ3TE33G2TA
+    domain: testing
+    examples: []
+    rules:
+      - ULIDs use Crockford base32 (excludes I, L, O, U) — invalid ULIDs cause SILENT test failures
+      - Use testUlid() helper or kspec util ulid for valid test ULIDs
+      - Never use JSON.stringify() for YAML — use template strings or yaml library stringify()
+      - Playwright E2E tests excluded from vitest — run separately with npm run test:e2e
+      - E2E fixtures are SEPARATE from unit test fixtures — never mix them
+      - Use npm run test:shard1/shard2/shard3 for faster local dev runs (~50s vs ~150s). Full suite
+        still required before PR.
+      - testUlid(prefix) is deterministic unless you pass a sequence; use testUlids() or explicit
+        sequences when tests need distinct IDs.
+      - In tests that run git commit in temp repos, set git config user.name and git config
+        user.email after git init.
+      - Always use npm test (or npm run test:shard1/2/3 for faster dev runs) to run tests. Never
+        invoke vitest or npx vitest directly — the test runner script (scripts/test.cjs) performs
+        environment readiness checks before executing.
+      - "Test runner caches results by content hash (git blob SHAs + unstaged diffs + untracked
+        files + Node version + vitest args + behavior-affecting env vars: CI, TZ, NODE_ENV,
+        NODE_OPTIONS, and KSPEC_*-prefixed vars except KSPEC_SESSION_ID and KSPEC_TEST_PROGRESS).
+        Same content = cache hit, even after commits/rebases; changing a behavior-affecting env var
+        produces a distinct cache entry. Use --fresh to force a full re-run."
+      - "Test output is condensed by default: success shows only summary stats, failure shows failed
+        tests with error snippets. Full verbose log path is printed. Use --verbose (or CI=true) for
+        full streaming output."
+      - Cache is session-scoped under KSPEC_SESSION_ID for dispatch isolation. Parallel agents get
+        independent caches. --fresh clears only the current session's cache.
+      - expect.anything() does not match undefined or null in vitest — use the literal undefined
+        when asserting undefined args
+      - vi.spyOn(Class.prototype, 'method') may have empty spy.mock.calls for cross-module ESM calls
+        — use a closure variable to capture args instead of asserting on the spy directly
+      - setupTempFixtures() returns a flat dir where tempDir IS the specDir — do not path.join with
+        .kspec/ for session or budget operations
+      - Prefer behavioral/integration tests over static source analysis. The no-source-scanning
+        oxlint rule enforces at lint time. Use readTestOutput/readTestOutputSync from
+        tests/helpers/cli.ts for legitimate test output file reads.
+      - When tests fail after a code change, evaluate whether the tests are correct before adding
+        workarounds — the test may be exposing a real bug in the change
+      - Multi-project test fixtures need a git repo and shadow detection for initContext() to
+        resolve specDir — use setupMultiDirFixtures() or manually init git and create .kspec/
+        markers
+      - Test daemons must register cleanup via vitest's onTestFinished at spawn time, not in the
+        test body. Prefer direct spawn() (see tests/e2e/fixtures/test-base.ts) so the OS reaps the
+        daemon via process group on parent death. If a test must invoke 'kspec serve start --detach'
+        because the CLI command itself is under test, read the PID immediately after the spawn
+        returns and register process.kill(pid, 'SIGTERM') in onTestFinished — never rely on inline
+        cleanup that won't run on assertion failure.
+      - Test helpers that drive kspec CLI subprocesses must require an explicit cwd parameter. Never
+        fall back to process.cwd() — a missing cwd is a test bug, not a default. A silent fallback
+        caused a shadow worktree destruction incident on 2026-04-11.
+      - Test helpers that spawn subprocesses inheriting process.env must route env through
+        buildTestSubprocessEnv() (tests/helpers/cli.ts) so runner-mode vars (CI,
+        KSPEC_TEST_PROGRESS, FORCE_COLOR, NO_COLOR) plus dispatch/agent vars are stripped. Direct {
+        ...process.env, ... } spreads leak the parent's CI-mode behavior into the subprocess and
+        silently break non-verbose-path tests in CI.
 hooks:
   - _ulid: 01KP8MGJN5FW5NSD46MAHGCF25
     action:
