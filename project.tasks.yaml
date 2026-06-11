@@ -31668,3 +31668,19 @@
   todos_count: 0
   created_at: 2026-06-11T03:53:58.871Z
   automation: eligible
+- _ulid: 01KTV7R5NQRAMWPD4SX1VJC07V
+  slugs:
+    - task-stabilize-daemon-command-api-stdout-test
+  title: Stabilize daemon command API stdout parity test
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - tests
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T11:40:46.135Z
+  automation: eligible
