@@ -62859,7 +62859,7 @@ runs:
     completed_at: 2026-06-11T10:32:17.059Z
   - _ulid: 01KTV4THCE73M9XF36WBYVJ13D
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -62871,7 +62871,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T10:50:32.618Z
-        completed_at: 2026-06-11T10:50:32.618Z
+        completed_at: 2026-06-11T10:51:20.796Z
+        notes: "Identified 3 candidates from the INSTALL.md link-fix session: (1) friction: 'kspec workflow
+          show' requires run-ref instead of inferring active run; (2) friction: full npm test took
+          ~44 min for a docs-only change; (3) success: precise task description (line numbers +
+          verification commands) enabled zero-exploration autonomous fix."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T10:51:20.796Z
+        completed_at: 2026-06-11T10:51:20.796Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T10:49:37.934Z
