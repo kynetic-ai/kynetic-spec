@@ -2,7 +2,90 @@ _ulid: 01KTV8KAADVK68M5DH8WSYQM02
 slugs: []
 title: Review task-git-utils-execfile
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1005 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T12:10:17.073Z
+    completed_at: 2026-06-11T12:10:17.073Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide lint passed with 0 errors and existing warning baseline (738 warnings). Focused
+      changed-file lint also passed: `npx oxlint src/utils/git.ts tests/git.test.ts` found 0
+      warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T12:10:19.694Z
+    completed_at: 2026-06-11T12:10:19.694Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: `tsc --noEmit` exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T12:10:22.318Z
+    completed_at: 2026-06-11T12:10:22.318Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Initial full `npm test` run executed the full suite and `tests/git.test.ts` passed, but 3
+      unrelated tests failed intermittently in agent-runner-e2e, skill-cli, and workflow-runs. Per
+      review-gates Test Failure Triage, reran the failing suites fresh: `npm test -- --fresh
+      tests/agent-runner-e2e.test.ts tests/skill-cli.test.ts tests/workflow-runs.test.ts` passed (46
+      suites, 200 tests). Created follow-up bug @01KTV9BT for the intermittent full-suite CLI/dist
+      failures. Fresh changed-file run also passed: `npm test -- --fresh tests/git.test.ts` (8
+      suites, 19 tests). Treating this gate as pass for this task because the failure was classified
+      as flaky/unrelated and tracked separately."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T12:10:24.921Z
+    completed_at: 2026-06-11T12:10:24.921Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec validate --refs --warnings-ok` passed: schema OK, references OK, 6 existing
+      reference warnings accepted by --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T12:10:27.587Z
+    completed_at: 2026-06-11T12:10:27.587Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec validate --alignment --warnings-ok` passed with existing alignment warning
+      baseline (50 warnings)."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T12:10:30.243Z
+    completed_at: 2026-06-11T12:10:30.243Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "`kspec validate --completeness --warnings-ok` passed with existing completeness warning
+      baseline (276 warnings). Verified this task's AC annotations in tests/git.test.ts cover all
+      three @subprocess-argument-literalness ACs."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T12:10:32.816Z
+    completed_at: 2026-06-11T12:10:32.816Z
 events:
   - _ulid: 01KTV8KAAC21773H4TCD8R16KY
     actor: Jacob Chapel
@@ -17,17 +100,126 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T11:55:52.426Z
+  - _ulid: 01KTV9E7ARR8DF1E3GQAKR59DZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T12:10:17.304Z
+  - _ulid: 01KTV9E9WEA0M8ZW1YRFF4QA0F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T12:10:19.918Z
+  - _ulid: 01KTV9ECDVBAAM673X4Q9WF1H1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T12:10:22.523Z
+  - _ulid: 01KTV9EEZNZRAF1BQN05Y9CBDH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T12:10:25.141Z
+  - _ulid: 01KTV9EHKFQ8182HK7MB5ZZJ4W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T12:10:27.823Z
+  - _ulid: 01KTV9EM5FNR2FB5F4JX1V8EBB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T12:10:30.447Z
+  - _ulid: 01KTV9EPPX7TEMX1SBCN8QGF4M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T12:10:33.053Z
+  - _ulid: 01KTV9ES9RM4ZA94C04B78WQBB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTV9ES1Y42J8TCB7FY25F4AS
+    timestamp: 2026-06-11T12:10:35.704Z
+  - _ulid: 01KTV9EVSR21YETC4BXDMEQC9F
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T12:10:38.264Z
+  - _ulid: 01KTV9EVSRN2G3XPCQV74DNHAD
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T12:10:38.264Z
 examined_commit: 64821fec5490891ef86e378907888118f12ff4a2
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KTTD0ZPTTX0N18MEY53HFKMK"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTV9ES1Y42J8TCB7FY25F4AS
+    entries:
+      - _ulid: 01KTV9ES1YB8DDM1SJ18530HDT
+        author: Jacob Chapel
+        body: >-
+          Review evidence log (no code findings):
+
+
+          Files read: kspec-agents.md; src/utils/git.ts; tests/git.test.ts; base versions of
+          src/utils/git.ts and tests/git.test.ts; task @01KTTD0ZPTTX0N18MEY53HFKMK; spec
+          @subprocess-argument-literalness; full test failure log
+          /tmp/kspec-test-cache/01KTV8HCJTAH61RTNH59ZA3JVV/3bb3732fb54d1ae9.log.
+
+
+          Commands run: git diff/stat/log; kspec task get; kspec item get; rg AC annotations;
+          format/lint/focused lint/typecheck; npm test; fresh rerun of failing suites; fresh
+          tests/git.test.ts; kspec validate refs/alignment/completeness.
+
+
+          Claims verified: all src/utils/git.ts git subprocess call sites now route through
+          spawnSync with an args array; dynamic branch and remote metadata are passed as literal
+          argv elements; documented null/empty/default failure results are preserved for non-repo
+          and missing-upstream cases; new AC tests are behavioral and pass.
+
+
+          Categories searched: correctness, edge cases, error handling, security/literalness, test
+          quality, integration. No blocker or should-fix findings found in the submitted diff. Test
+          flakiness outside this branch was tracked separately as @01KTV9BT.
+        created_at: 2026-06-11T12:10:35.454Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T12:10:38.264Z
 created_at: 2026-06-11T11:55:35.629Z
-updated_at: 2026-06-11T11:55:52.202Z
+updated_at: 2026-06-11T12:10:38.264Z
 notes: []
