@@ -4534,3 +4534,13 @@ inbox:
       - dx
     added_by: "@claude"
     created_at: 2026-06-11T21:30:39.009Z
+  - _ulid: 01KTWBE2T0XH86DQWQNSF95EWG
+    text: E2E runs (npx playwright test in test:e2e scripts) spawn daemons from dist/ but only the
+      build:e2e step holds the build/test lock — a concurrent npm run build during a playwright run
+      can still rewrite dist mid-run. Consider holding the per-worktree build/test lock
+      (scripts/build-test-lock.cjs) across the playwright invocation too.
+    tags:
+      - infra
+      - testing
+    added_by: "@claude"
+    created_at: 2026-06-11T22:04:24.256Z
