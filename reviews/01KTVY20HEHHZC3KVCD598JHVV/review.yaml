@@ -66,6 +66,13 @@ events:
       kind: blocker
       thread_ulid: 01KTVY5KAT2C63655GEAXVT1N5
     timestamp: 2026-06-11T18:12:35.049Z
+  - _ulid: 01KTVY62425DRKBBRZ0WTG13FH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTVY61V7V6DYZCSWJEW25QYQ
+    timestamp: 2026-06-11T18:12:49.922Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -279,7 +286,26 @@ threads:
           the spec covers receives the standard header.
         created_at: 2026-06-11T18:12:34.778Z
     kind: blocker
+  - _ulid: 01KTVY61V7V6DYZCSWJEW25QYQ
+    anchor:
+      type: structured
+      ref: "@ui-shortcut-registry"
+      section: description
+    entries:
+      - _ulid: 01KTVY61V8KPW3SGC8D8CHHNSN
+        author: "@claude"
+        body: >-
+          NEW this round. The ACs rely on a context/scope concept — ac-1 "active in the current
+          context", ac-4 "already bound in the same context" — but the spec description never
+          introduces it; it describes the registry as one flat inventory. The task's What does
+          define context/scope, so the concept exists only at implementation level.
+
+
+          Suggestion: add a sentence to the description establishing that shortcuts are scoped to
+          activation contexts and that collision detection applies within a context.
+        created_at: 2026-06-11T18:12:49.640Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:12:34.778Z
+updated_at: 2026-06-11T18:12:49.640Z
 notes: []
