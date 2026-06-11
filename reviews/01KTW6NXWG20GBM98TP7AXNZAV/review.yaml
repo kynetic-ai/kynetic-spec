@@ -231,6 +231,12 @@ events:
     payload:
       thread_ulid: 01KTW6RM45YP5X66BS5DAEQ8AV
     timestamp: 2026-06-11T21:49:24.752Z
+  - _ulid: 01KTWC2H7RCXE2376DKDED98B9
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW6RH3A9X67KSWC8FS656Y3
+    timestamp: 2026-06-11T22:15:34.392Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -262,6 +268,14 @@ threads:
           unsatisfied — re-review once P0a materializes, at which point this should be the sole
           remaining gate."
         created_at: 2026-06-11T20:42:43.690Z
+      - _ulid: 01KTWC2GGPKE3B9JZC8H83E2VZ
+        author: "@claude"
+        body: "Finish-1 verification: per the reviewer instruction for this pass, the P0a dependency is an
+          acknowledged program ordering gate, not an author defect. The current plan documents the
+          gate explicitly, remains draft, and carries the intended dangling refs until P0a
+          materializes. I am not re-raising this as a blocker in the new review; the gate is noted
+          in the approval summary instead."
+        created_at: 2026-06-11T22:15:33.651Z
     kind: blocker
   - _ulid: 01KTW6RM45YP5X66BS5DAEQ8AV
     anchor:
@@ -352,5 +366,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T20:43:11.717Z
 created_at: 2026-06-11T20:41:18.480Z
-updated_at: 2026-06-11T21:49:24.471Z
+updated_at: 2026-06-11T22:15:33.651Z
 notes: []
