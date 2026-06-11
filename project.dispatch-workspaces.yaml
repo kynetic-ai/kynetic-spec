@@ -9363,7 +9363,7 @@ workspaces:
         head: 489f516a77ea21743ebcfb9a48184ca679139752
         last_seen_at: 2026-06-10T05:22:01.008Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/show-unmatched-review-task-resource-references-without-task-resource-refs-01ktqy1c
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 8335c393bd35c3216a876ea40949c41cf80e9b8b
     bootstrap:
       status: succeeded
@@ -9853,9 +9853,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T04:37:28.152Z
-      last_reconciled_at: 2026-06-11T04:58:58.260Z
+      last_reconciled_at: 2026-06-11T05:02:06.151Z
       created_at: 2026-06-11T03:58:19.787Z
-      updated_at: 2026-06-11T04:58:58.260Z
+      updated_at: 2026-06-11T05:02:06.151Z
     workspace_id: dispatch-workspace-01KTTCZB9VP137NEH3QGSJK0DS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
