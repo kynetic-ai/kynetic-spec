@@ -9,6 +9,11 @@
  * - @daemon-command-api ac-response-parity: stdout/stderr/exitCode match direct CLI
  * - @daemon-command-api ac-cache-context-propagation: command execution receives entity cache async context
  * - @daemon-command-api ac-no-recursive-command-proxy: daemon-internal command execution sees proxying suppressed
+ * - @daemon-command-api ac-command-timeout: structured 504 when the execution limit elapses
+ * - @daemon-command-api ac-timeout-queue-bounded: queued callers bounded; expired queued commands discarded
+ * - @daemon-command-api ac-stuck-command-reported: health surface reports degraded dispatch while wedged
+ * - @daemon-command-api ac-timeout-isolation: late output/rejections stay isolated from later commands
+ * - @daemon-command-api ac-timeout-late-completion-effects: late completions still write through and broadcast
  * - @trait-api-endpoint ac-1: returns 2xx with JSON body
  * - @trait-api-endpoint ac-3: returns 400 on invalid body
  * - @trait-api-endpoint ac-6: includes X-Request-Id header
@@ -209,6 +214,37 @@ async function withInjectedCommand<T>(
     return await fn();
   } finally {
     prepareProgram = undefined;
+  }
+}
+
+interface Deferred<T> {
+  promise: Promise<T>;
+  resolve: (value: T) => void;
+  reject: (err: unknown) => void;
+}
+
+/** Manually-settled promise used to wedge or gate stubbed command actions. */
+function deferred<T = void>(): Deferred<T> {
+  let resolve!: (value: T) => void;
+  let reject!: (err: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+
+/** Poll until condition holds — for asserting effects of detached late completions. */
+async function waitFor(
+  condition: () => boolean | Promise<boolean>,
+  timeoutMs = 3000,
+): Promise<void> {
+  const startedAt = Date.now();
+  while (!(await condition())) {
+    if (Date.now() - startedAt > timeoutMs) {
+      throw new Error("waitFor: condition not met in time");
+    }
+    await new Promise((res) => setTimeout(res, 10));
   }
 }
 
@@ -451,6 +487,38 @@ conventions: []
   execSync('git add -A && git commit -m "kspec project setup"', { cwd: tempDir, stdio: "pipe" });
 }
 
+/**
+ * (Re)build the route app under test. Timeout tests pass a short
+ * commandTimeoutMs (e.g. 50ms) — never the 120s default.
+ */
+function rebuildApp(routeOptions: { commandTimeoutMs?: number } = {}) {
+  const getEntityCache: EntityCacheAccessor = (projectPath: string) => {
+    // Return mock cache only for the temp project
+    if (projectPath === tempDir) return mockCache;
+    return null;
+  };
+  const { middleware } = projectContextMiddleware();
+  app = new Elysia()
+    // Polyfill Elysia's `error` context function for app.handle() in
+    // Node.js — same approach as tests/daemon-api/helpers.ts. The real
+    // server adapter provides it natively.
+    .resolve(({ set }) => ({
+      error: (status: number, body: unknown) => {
+        set.status = status;
+        return body;
+      },
+    }))
+    .use(middleware)
+    .use(
+      createCommandRoutes({
+        pubsub,
+        getEntityCache,
+        prepareProgram: (program) => prepareProgram?.(program),
+        ...routeOptions,
+      }),
+    );
+}
+
 describe("Daemon Command API", () => {
   beforeEach(async () => {
     prepareProgram = undefined;
@@ -461,19 +529,7 @@ describe("Daemon Command API", () => {
     pubsub = new PubSubManager();
     cacheSnapshot = await buildCacheSnapshot();
     mockCache = createMockEntityCache();
-    const getEntityCache: EntityCacheAccessor = (projectPath: string) => {
-      // Return mock cache only for the temp project
-      if (projectPath === tempDir) return mockCache;
-      return null;
-    };
-    const { middleware } = projectContextMiddleware();
-    app = new Elysia().use(middleware).use(
-      createCommandRoutes({
-        pubsub,
-        getEntityCache,
-        prepareProgram: (program) => prepareProgram?.(program),
-      }),
-    );
+    rebuildApp();
   });
 
   afterEach(async () => {
@@ -1639,5 +1695,379 @@ describe("Daemon Command API", () => {
     });
 
     expect(response.status).toBeGreaterThanOrEqual(400);
+  });
+
+  // ───────────────────────────────────────────────────────────────────
+  // Command execution timeout
+  // AC: @daemon-command-api ac-command-timeout, ac-timeout-queue-bounded,
+  //     ac-stuck-command-reported, ac-timeout-isolation,
+  //     ac-timeout-late-completion-effects
+  // ───────────────────────────────────────────────────────────────────
+
+  describe("command execution timeout", () => {
+    const SHORT_TIMEOUT_MS = 50;
+
+    function captureBroadcasts() {
+      const events: Array<{ event: string; data: Record<string, unknown> }> = [];
+      const origBroadcast = pubsub.broadcast.bind(pubsub);
+      pubsub.broadcast = (
+        topic: string,
+        event: string,
+        data: Record<string, unknown>,
+        projectPath?: string,
+      ) => {
+        events.push({ event, data });
+        origBroadcast(topic, event, data, projectPath);
+      };
+      return events;
+    }
+
+    beforeEach(() => {
+      rebuildApp({ commandTimeoutMs: SHORT_TIMEOUT_MS });
+    });
+
+    // AC: @daemon-command-api ac-command-timeout
+    it("returns a structured 504 command_timeout error when a command exceeds its limit", async () => {
+      const wedge = deferred();
+      prepareProgram = (program) => {
+        program.command("debug-wedge").action(() => wedge.promise);
+      };
+
+      try {
+        const response = await makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({ command: "debug-wedge", args: {} }),
+        });
+
+        expect(response.status).toBe(504);
+        const body = await response.json();
+        expect(body.error).toBe("command_timeout");
+        // Identifies the command and the elapsed limit
+        expect(body.message).toContain("debug-wedge");
+        expect(body.message).toContain(`${SHORT_TIMEOUT_MS}ms`);
+        expect(body.suggestion).toContain("kspec serve status");
+      } finally {
+        // Resolve the wedge stub so no handles leak, and let the abandoned
+        // execution drain before the next test inspects module state
+        wedge.resolve();
+        await new Promise((res) => setTimeout(res, 25));
+      }
+    });
+
+    // AC: @daemon-command-api ac-timeout-queue-bounded
+    it("bounds queued commands behind a wedge and discards them once expired", async () => {
+      const wedge = deferred();
+      let trackedExecuted = false;
+      prepareProgram = (program) => {
+        program.command("debug-wedge").action(() => wedge.promise);
+        program.command("debug-tracked").action(async () => {
+          trackedExecuted = true;
+        });
+      };
+
+      try {
+        // First command wedges the dispatch queue and times out for its caller
+        const first = await makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({ command: "debug-wedge", args: {} }),
+        });
+        expect(first.status).toBe(504);
+
+        // Second command queues behind the wedge; it must get its own
+        // bounded timeout response instead of an unbounded hang.
+        const queuedAt = Date.now();
+        const second = await makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({ command: "debug-tracked", args: {} }),
+        });
+        const elapsed = Date.now() - queuedAt;
+
+        expect(second.status).toBe(504);
+        const body = await second.json();
+        expect(body.error).toBe("command_timeout");
+        // Bounded: response well within the same order as the limit, not the wedge duration
+        expect(elapsed).toBeLessThan(SHORT_TIMEOUT_MS * 20);
+
+        // Clear the wedge — the discarded command's slot frees up
+        wedge.resolve();
+
+        // Give the queue time to drain; the expired queued command must
+        // never execute after its caller was already told it timed out.
+        await new Promise((res) => setTimeout(res, 100));
+        expect(trackedExecuted).toBe(false);
+      } finally {
+        wedge.resolve();
+      }
+    });
+
+    // AC: @daemon-command-api ac-stuck-command-reported
+    it("reports degraded command dispatch on the health surface while wedged, clearing on completion", async () => {
+      const { buildHealthResponse } = await import("../dist/daemon/server.js");
+      const healthApp = new Elysia().get("/api/health", () =>
+        buildHealthResponse({ connections: 0, runtime: "node" }),
+      );
+      const getHealth = async () => {
+        const response = await healthApp.handle(
+          new Request("http://localhost/api/health", { headers: { Host: "localhost" } }),
+        );
+        expect(response.status).toBe(200);
+        return response.json();
+      };
+
+      const wedge = deferred();
+      prepareProgram = (program) => {
+        program.command("debug-wedge").action(() => wedge.promise);
+      };
+
+      try {
+        // Before the wedge: dispatch reported healthy
+        const before = await getHealth();
+        expect(before.command_dispatch).toEqual({ status: "ok" });
+
+        // Wedge the queue past its limit (the 504 only returns once the
+        // limit has elapsed, so the dispatch is stuck by then)
+        const response = await makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({ command: "debug-wedge", args: {} }),
+        });
+        expect(response.status).toBe(504);
+
+        // Ensure measurable time past the limit before querying health
+        await new Promise((res) => setTimeout(res, 10));
+        const during = await getHealth();
+        expect(during.command_dispatch.status).toBe("degraded");
+        expect(during.command_dispatch.stuck_command).toBe("debug-wedge");
+        expect(during.command_dispatch.running_for_ms).toBeGreaterThan(SHORT_TIMEOUT_MS);
+        expect(during.command_dispatch.limit_ms).toBe(SHORT_TIMEOUT_MS);
+
+        // Completion clears the report
+        wedge.resolve();
+        await waitFor(async () => (await getHealth()).command_dispatch.status === "ok");
+      } finally {
+        wedge.resolve();
+      }
+    });
+
+    // AC: @daemon-command-api ac-timeout-isolation
+    it("keeps late output isolated and frees waiting commands when the slow command completes", async () => {
+      const slowGate = deferred();
+      prepareProgram = (program) => {
+        program.command("debug-slow").action(async () => {
+          await slowGate.promise;
+          console.log("SLOW_OUTPUT_SENTINEL");
+        });
+        program.command("debug-after").action(async () => {
+          console.log("AFTER_OUTPUT_SENTINEL");
+        });
+      };
+
+      try {
+        // Slow command times out for its caller but keeps running
+        const slowResponse = await makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({ command: "debug-slow", args: {} }),
+        });
+        expect(slowResponse.status).toBe(504);
+
+        // Queue the next command behind the still-running slow command,
+        // then complete the slow command: its completion must free the
+        // waiting command to proceed within its own limit.
+        const afterPromise = makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({ command: "debug-after", args: {} }),
+        });
+        slowGate.resolve();
+
+        const afterResponse = await afterPromise;
+        expect(afterResponse.status).toBe(200);
+        const afterBody = await afterResponse.json();
+        expect(afterBody.exitCode).toBe(0);
+        // Late output from the timed-out command is not attributed to the
+        // next command's response.
+        expect(afterBody.stdout).toContain("AFTER_OUTPUT_SENTINEL");
+        expect(afterBody.stdout).not.toContain("SLOW_OUTPUT_SENTINEL");
+      } finally {
+        slowGate.resolve();
+      }
+    });
+
+    // AC: @daemon-command-api ac-timeout-isolation
+    it("survives a late rejection from an abandoned command", async () => {
+      const rejectGate = deferred();
+      prepareProgram = (program) => {
+        program.command("debug-late-reject").action(() => rejectGate.promise);
+      };
+
+      try {
+        const response = await makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({ command: "debug-late-reject", args: {} }),
+        });
+        expect(response.status).toBe(504);
+
+        // Reject the abandoned execution after the caller already got 504.
+        // Without the route's .catch this would surface as an unhandled
+        // rejection (which kills the daemon via its fatal handlers and
+        // fails this test in vitest).
+        rejectGate.reject(new Error("late failure from abandoned command"));
+        await new Promise((res) => setTimeout(res, 50));
+
+        // The daemon (test process) is still alive and serving commands
+        const followUp = await makeRequest("/api/command", {
+          method: "POST",
+          body: JSON.stringify({ command: "task list", args: { json: true } }),
+        });
+        expect(followUp.status).toBe(200);
+      } finally {
+        rejectGate.resolve(undefined);
+      }
+    });
+
+    // AC: @daemon-command-api ac-timeout-late-completion-effects
+    it("runs cache write-through and broadcast when a mutating command completes after its caller timed out", async () => {
+      const broadcasts = captureBroadcasts();
+      const gate = deferred();
+
+      await withInjectedCommand(
+        (program) => {
+          const inboxCmd = findCommand(program, ["inbox", "add"]);
+          const originalHandler = (
+            inboxCmd as Command & { _actionHandler?: (...args: unknown[]) => unknown }
+          )._actionHandler;
+          if (!originalHandler) {
+            throw new Error("inbox add has no action handler");
+          }
+          (
+            inboxCmd as Command & { _actionHandler: (...args: unknown[]) => Promise<unknown> }
+          )._actionHandler = async (...args: unknown[]) => {
+            await gate.promise;
+            return originalHandler(...args);
+          };
+        },
+        async () => {
+          try {
+            // Mutating command wedges past the caller's limit
+            const response = await makeRequest("/api/command", {
+              method: "POST",
+              body: JSON.stringify({
+                command: "inbox add",
+                args: { text: "Late completion test item" },
+              }),
+            });
+            expect(response.status).toBe(504);
+            const body = await response.json();
+            expect(body.error).toBe("command_timeout");
+
+            // Nothing completed yet — no effects
+            expect(writeThroughCalls).toEqual([]);
+            expect(broadcasts.find((e) => e.event === "command_executed")).toBeUndefined();
+
+            // Let the abandoned execution complete successfully
+            gate.resolve();
+
+            // The same completion effects as an in-time success still occur
+            await waitFor(
+              () =>
+                writeThroughCalls.includes("inbox") &&
+                broadcasts.some((e) => e.event === "command_executed"),
+            );
+            const event = broadcasts.find((e) => e.event === "command_executed");
+            expect(event!.data.mutating).toBe(true);
+            expect(event!.data.success).toBe(true);
+            expect(event!.data.command).toBe("inbox add");
+            // Write-through covers all mutation-affected domains
+            expect(writeThroughCalls).toContain("tasks");
+            expect(writeThroughCalls).toContain("inbox");
+          } finally {
+            gate.resolve();
+          }
+        },
+      );
+    });
+
+    // AC: @daemon-command-api ac-timeout-late-completion-effects
+    // AC: @daemon-command-api ac-command-timeout — whole-batch bound
+    it("runs batch write-through and batch_executed broadcast after a late successful batch completion", async () => {
+      const broadcasts = captureBroadcasts();
+      const gate = deferred();
+
+      await withInjectedCommand(
+        (program) => {
+          const inboxCmd = findCommand(program, ["inbox", "add"]);
+          const originalHandler = (
+            inboxCmd as Command & { _actionHandler?: (...args: unknown[]) => unknown }
+          )._actionHandler;
+          if (!originalHandler) {
+            throw new Error("inbox add has no action handler");
+          }
+          (
+            inboxCmd as Command & { _actionHandler: (...args: unknown[]) => Promise<unknown> }
+          )._actionHandler = async (...args: unknown[]) => {
+            await gate.promise;
+            return originalHandler(...args);
+          };
+        },
+        async () => {
+          try {
+            const response = await makeRequest("/api/command/batch", {
+              method: "POST",
+              body: JSON.stringify({
+                commands: [
+                  {
+                    command: "inbox add",
+                    args: { text: "Late batch completion item" },
+                    id: "late-batch-1",
+                  },
+                ],
+              }),
+            });
+
+            // The whole batch is one atomic dispatch with one bound
+            expect(response.status).toBe(504);
+            const body = await response.json();
+            expect(body.error).toBe("command_timeout");
+            expect(body.message).toContain("inbox add");
+
+            expect(writeThroughCalls).toEqual([]);
+            expect(broadcasts.find((e) => e.event === "batch_executed")).toBeUndefined();
+
+            gate.resolve();
+
+            await waitFor(
+              () =>
+                writeThroughCalls.includes("inbox") &&
+                broadcasts.some((e) => e.event === "batch_executed"),
+            );
+            const event = broadcasts.find((e) => e.event === "batch_executed");
+            expect(event!.data.mutating).toBe(true);
+            expect(event!.data.success).toBe(true);
+            expect(event!.data.total).toBe(1);
+            expect(event!.data.succeeded).toBe(1);
+          } finally {
+            gate.resolve();
+          }
+        },
+      );
+    });
+
+    // AC: @daemon-command-api ac-command-timeout — commands completing in
+    // time are unaffected by the timeout machinery
+    it("returns normal results for commands that complete within the limit", async () => {
+      prepareProgram = (program) => {
+        program.command("debug-quick").action(async () => {
+          console.log("QUICK_OUTPUT");
+        });
+      };
+
+      const response = await makeRequest("/api/command", {
+        method: "POST",
+        body: JSON.stringify({ command: "debug-quick", args: {} }),
+      });
+
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      expect(body.exitCode).toBe(0);
+      expect(body.stdout).toContain("QUICK_OUTPUT");
+    });
   });
 });

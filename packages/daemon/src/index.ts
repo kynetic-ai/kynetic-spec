@@ -46,6 +46,9 @@ const { values } = parseArgs({
     // AC: @daemon-log-capture ac-bounded-rotation
     // Configured daemon.log_max_size_bytes forwarded by the CLI.
     "log-max-size": { type: "string" },
+    // AC: @daemon-command-api ac-command-timeout
+    // Configured daemon.command_timeout_ms forwarded by the CLI.
+    "command-timeout": { type: "string" },
   },
   allowPositionals: true,
 });
@@ -59,6 +62,16 @@ const runtimeValue =
 const bindHost = (values.host as string | undefined) ?? undefined;
 const hostExplicit = values["host-explicit"] === true;
 const connectHost = (values["connect-host"] as string | undefined) ?? undefined;
+
+// AC: @daemon-command-api ac-command-timeout — configured execution limit
+// forwarded by the CLI; invalid or absent values fall back to the default.
+let commandTimeoutMs: number | undefined;
+if (values["command-timeout"] !== undefined) {
+  const parsed = parseInt(values["command-timeout"] as string, 10);
+  if (!isNaN(parsed) && parsed > 0) {
+    commandTimeoutMs = parsed;
+  }
+}
 
 // AC: @daemon-log-capture ac-bounded-rotation — apply the configured size
 // limit once startup configuration is parsed. The tee installed with the
@@ -105,6 +118,7 @@ async function main() {
       bindHost,
       bindHostExplicitlyConfigured: hostExplicit,
       connectHost: connectHost ?? null,
+      commandTimeoutMs,
     });
 
     // Server will start listening in createServer

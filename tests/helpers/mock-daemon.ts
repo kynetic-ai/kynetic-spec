@@ -122,6 +122,13 @@ export interface StartMockDaemonOptions {
    */
   __testStartupTimeoutMs?: number;
   /**
+   * Optional `command_dispatch` payload included in the /api/health response
+   * body. Tests that verify clients surface command-dispatch health (e.g.
+   * `kspec serve status` reporting a wedged dispatch) use this to simulate
+   * the daemon's degraded health shape. Omitted from /api/health when unset.
+   */
+  healthCommandDispatch?: Record<string, unknown>;
+  /**
    * Explicit env overrides for the spawned child (child-process mode only).
    *
    * The base env is built via `buildTestSubprocessEnv` so dispatch / agent /
@@ -230,12 +237,21 @@ function respondJson(res: http.ServerResponse, status: number, payload: unknown)
   res.end(JSON.stringify(payload));
 }
 
-function handleInProcessRequest(ctx: InProcessHandlerContext, mode: MockDaemonMode): void {
+function handleInProcessRequest(
+  ctx: InProcessHandlerContext,
+  mode: MockDaemonMode,
+  healthCommandDispatch?: Record<string, unknown>,
+): void {
   const path = ctx.url.pathname;
   const method = ctx.request.method;
 
   if (path === "/api/health") {
-    return respondJson(ctx.response, 200, { status: "ok", uptime: 1, runtime: "node" });
+    return respondJson(ctx.response, 200, {
+      status: "ok",
+      uptime: 1,
+      runtime: "node",
+      ...(healthCommandDispatch ? { command_dispatch: healthCommandDispatch } : {}),
+    });
   }
   if (path === "/api/projects") {
     return respondJson(ctx.response, 200, { status: "ok" });
@@ -323,6 +339,7 @@ const IN_PROCESS_STOP_BOUND_MS = 1_000;
 async function startInProcessMockDaemon(
   bindHost: string,
   mode: MockDaemonMode,
+  healthCommandDispatch?: Record<string, unknown>,
 ): Promise<MockDaemonClient | null> {
   return new Promise((resolve) => {
     const recorded: RecordedMockRequest[] = [];
@@ -339,7 +356,11 @@ async function startInProcessMockDaemon(
         receivedAt: Date.now(),
       });
       const url = new URL(req.url ?? "/", `http://${req.headers.host ?? bindHost}`);
-      handleInProcessRequest({ body, url, request: req, response: res }, mode);
+      handleInProcessRequest(
+        { body, url, request: req, response: res },
+        mode,
+        healthCommandDispatch,
+      );
     });
     server.on("connection", (socket: Socket) => {
       activeSockets.add(socket);
@@ -441,6 +462,7 @@ async function startChildMockDaemon(
   injectArgs: string[],
   startupTimeoutMs: number,
   envOverrides: Record<string, string>,
+  healthCommandDispatch?: Record<string, unknown>,
 ): Promise<MockDaemonClient | null> {
   return new Promise((resolve) => {
     const child: ChildProcess = spawn(
@@ -453,6 +475,9 @@ async function startChildMockDaemon(
         mode,
         "--record",
         recordPath,
+        ...(healthCommandDispatch
+          ? ["--health-command-dispatch", JSON.stringify(healthCommandDispatch)]
+          : []),
         ...injectArgs,
       ],
       {
@@ -610,9 +635,10 @@ export async function startMockDaemon(
       injectArgs,
       startupTimeoutMs,
       envOverrides,
+      opts.healthCommandDispatch,
     );
   }
-  return startInProcessMockDaemon(bindHost, mode);
+  return startInProcessMockDaemon(bindHost, mode, opts.healthCommandDispatch);
 }
 
 // ── Metadata writing ──────────────────────────────────────────────────
