@@ -1,0 +1,26 @@
+_ulid: 01KTW5MCGY3SMT398P3YGM3X9Z
+slugs: []
+title: Review task-test-cache-env-key
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTW5MCGYK7222WZNX5W2AR6A
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T20:22:59.358Z
+examined_commit: 74ab85fe3b5971918484ee84f6942fe7ed04e165
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTD1ETQ674218060ZCJNKAM"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T20:22:59.358Z
+updated_at: null
+notes: []
