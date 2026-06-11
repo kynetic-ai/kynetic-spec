@@ -2,7 +2,81 @@ _ulid: 01KTVRDS3F9BM69M0E45HN3HES
 slugs: []
 title: Review task-command-dispatch-timeout cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0: oxfmt checked 1009 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T16:46:55.099Z
+    completed_at: 2026-06-11T16:46:55.099Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0: repo-wide oxlint reported 0 errors with existing warning baseline. Focused
+      changed-file oxlint on changed TS/test files also reported 0 errors; its 6 warnings were on
+      unchanged pre-existing tests/daemon-command-api.test.ts lines outside the diff hunks."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T16:46:57.802Z
+    completed_at: 2026-06-11T16:46:57.802Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0: tsc --noEmit completed cleanly."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T16:47:00.547Z
+    completed_at: 2026-06-11T16:47:00.547Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0: 2770 test suites passed; 10508 tests passed, 3 skipped; full log
+      /tmp/kspec-test-cache/01KTVRC5E4YVB0P0A3BVSGGA9H/c27b2b843af677b0.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T16:47:03.211Z
+    completed_at: 2026-06-11T16:47:03.211Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0: schema/references OK; existing reference warnings allowed by --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T16:47:05.871Z
+    completed_at: 2026-06-11T16:47:05.871Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0: schema/references OK; existing alignment warning baseline allowed by --warnings-ok."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T16:47:09.636Z
+    completed_at: 2026-06-11T16:47:09.636Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0: schema/references OK; existing completeness warning baseline allowed by
+      --warnings-ok."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T16:47:12.351Z
+    completed_at: 2026-06-11T16:47:12.351Z
 events:
   - _ulid: 01KTVRDS3FXT70HD2VTVP4GMJ1
     actor: Jacob Chapel
@@ -17,6 +91,62 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T16:32:32.177Z
+  - _ulid: 01KTVS8RBNZTC5PDH5S5CS12TM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T16:46:55.350Z
+  - _ulid: 01KTVS8TZDW0AYCFGA1C7H9HTN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T16:46:58.029Z
+  - _ulid: 01KTVS8XN1EG503S03DDW68F32
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T16:47:00.769Z
+  - _ulid: 01KTVS908F5YRQHKY0BHDREJPZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T16:47:03.439Z
+  - _ulid: 01KTVS92W7RBZ1VJSTJ90MDB4V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T16:47:06.119Z
+  - _ulid: 01KTVS96JYC5QPMF6T2DMRW8JG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T16:47:09.918Z
+  - _ulid: 01KTVS995YG5PBXJ35NH082JH7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T16:47:12.574Z
+  - _ulid: 01KTVS9BQNG752RXZSXRHGCR7W
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTVS9BH5M3YW7RVX3NJA7SNY
+    timestamp: 2026-06-11T16:47:15.189Z
 examined_commit: 6a4c811fac5105c9b430fa2cab768460b6aabce4
 external_links: []
 lifecycle_state: open
@@ -26,8 +156,42 @@ subject:
   content_hash: ""
   ref: "@01KTTD07T61PPMK5RGAJCJ01Z7"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTVS9BH5M3YW7RVX3NJA7SNY
+    entries:
+      - _ulid: 01KTVS9BH5FS44KV7CSW77DF56
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; task @01KTTD07T61PPMK5RGAJCJ01Z7; spec @daemon-command-api;
+          prior review @01KTVM27BMMVKHG1QV706BH53W; packages/daemon/src/routes/command.ts;
+          packages/daemon/src/server.ts; packages/daemon/src/index.ts; packages/daemon/src/pid.ts;
+          src/cli/commands/serve.ts; src/parser/config.ts; src/daemon-shared/endpoint.ts;
+          scripts/build-daemon.cjs; tests/daemon-command-api.test.ts;
+          tests/cli-serve-status-command-dispatch.test.ts; tests/helpers/mock-daemon.ts;
+          tests/helpers/mock-daemon.cjs.
+
+          Commands run: git status --short --branch; git log --oneline; git diff
+          --stat/name-only/check and focused diffs; kspec task get; kspec item get; kspec review
+          for-task/get/add/open; npm run format:check; npm run lint -- --quiet; npx oxlint <changed
+          TS/test files>; npm run typecheck; npm test; kspec validate
+          --refs/--alignment/--completeness --warnings-ok.
+
+          Claims verified: prior blocker is resolved because /api/health exposes command_dispatch
+          and kspec serve status now includes degraded/ok command dispatch in JSON and human output
+          with behavioral CLI tests. Timeout ACs are covered by route tests for structured 504s,
+          queued discard, health degradation/clear, late output isolation, late rejection handling,
+          late single mutation effects, late batch effects, and normal fast command behavior.
+
+          Categories searched: correctness, queue timeout edge cases, late completion/error
+          handling, operator health/status visibility, test quality, AC annotations,
+          config/spawn/daemon wiring, cache-served read/batch integration, and source-scanning test
+          risk. No blockers found. Shared/package guidance neutrality not applicable; no shared
+          guidance surfaces were touched.
+        created_at: 2026-06-11T16:47:14.981Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T16:32:11.375Z
-updated_at: 2026-06-11T16:32:31.963Z
+updated_at: 2026-06-11T16:47:14.981Z
 notes: []

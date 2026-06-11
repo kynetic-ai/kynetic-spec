@@ -25510,7 +25510,7 @@ reviews:
     title: Review task-command-dispatch-timeout cycle 2
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 7
     examined_commit: 6a4c811fac5105c9b430fa2cab768460b6aabce4
     lifecycle_state: open
     related_refs: []
@@ -25519,8 +25519,8 @@ reviews:
       content_hash: ""
       ref: "@01KTTD07T61PPMK5RGAJCJ01Z7"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T16:32:11.375Z
-    updated_at: 2026-06-11T16:32:31.963Z
+    updated_at: 2026-06-11T16:47:14.981Z
