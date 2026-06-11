@@ -2,8 +2,8 @@ _ulid: 01KTRY9VG1T0Q5R95KF7NQR058
 slugs:
   - plan-release-packaging-and-onboarding-readiness
 title: Release Packaging and Onboarding Readiness
-status: draft
-approved_at: null
+status: approved
+approved_at: 2026-06-11T03:47:41.514Z
 branch: null
 derived_specs: []
 derived_tasks: []

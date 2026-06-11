@@ -1805,7 +1805,8 @@ plans:
     slugs:
       - plan-release-packaging-and-onboarding-readiness
     title: Release Packaging and Onboarding Readiness
-    status: draft
+    status: approved
+    approved_at: 2026-06-11T03:47:41.514Z
     derived_specs: []
     derived_tasks: []
     module_ref: "@main"
@@ -1816,7 +1817,8 @@ plans:
     slugs:
       - plan-daemon-operational-reliability
     title: Daemon Operational Reliability
-    status: draft
+    status: approved
+    approved_at: 2026-06-11T03:47:41.814Z
     derived_specs: []
     derived_tasks: []
     module_ref: "@web-ui"
@@ -1827,7 +1829,8 @@ plans:
     slugs:
       - plan-data-integrity-and-upgrade-safety
     title: Data Integrity and Upgrade Safety
-    status: draft
+    status: approved
+    approved_at: 2026-06-11T03:47:42.093Z
     derived_specs: []
     derived_tasks: []
     module_ref: "@core"
@@ -1838,7 +1841,8 @@ plans:
     slugs:
       - plan-validation-and-test-coverage-integrity
     title: Validation and Test Coverage Integrity
-    status: draft
+    status: approved
+    approved_at: 2026-06-11T03:47:42.376Z
     derived_specs: []
     derived_tasks: []
     module_ref: "@core"
