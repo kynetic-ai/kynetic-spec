@@ -132,6 +132,13 @@ export const DAEMON_LOG_FILENAME = "daemon.log";
  * AC: @daemon-log-capture ac-bounded-rotation
  */
 export const DEFAULT_DAEMON_LOG_MAX_SIZE_BYTES = 5 * 1024 * 1024;
+/**
+ * Default execution time limit for commands dispatched through the daemon
+ * command API (120 seconds). Overridable via daemon.command_timeout_ms in
+ * project config.
+ * AC: @daemon-command-api ac-command-timeout
+ */
+export const DEFAULT_DAEMON_COMMAND_TIMEOUT_MS = 120_000;
 
 // ── Path helpers ───────────────────────────────────────────────────
 

@@ -44,7 +44,7 @@ import {
   getDispatchEngine,
   stopAllEngines,
 } from "./routes/agent-dispatch.js";
-import { createCommandRoutes } from "./routes/command.js";
+import { createCommandRoutes, getCommandDispatchHealth } from "./routes/command.js";
 import { createAutomationRoutes } from "./routes/automation.js";
 import { createDebugRoutes } from "./routes/debug.js";
 import { createSessionRoutes } from "./routes/sessions.js";
@@ -102,6 +102,13 @@ export interface ServerOptions {
    * Tests use this to avoid writing to the real ~/.config/kspec.
    */
   configDir?: string;
+  /**
+   * Execution time limit in milliseconds for commands dispatched through
+   * the command API. Defaults to 120 seconds when omitted.
+   *
+   * AC: @daemon-command-api ac-command-timeout
+   */
+  commandTimeoutMs?: number;
 }
 
 type ManagedServer = {
@@ -512,6 +519,29 @@ export function localhostOnly(options: LocalhostOnlyOptions = {}) {
 }
 
 /**
+ * Build the GET /api/health response body. Exported so tests exercise the
+ * production health shape without booting the full server.
+ *
+ * Top-level status stays "ok" while the process is serving requests;
+ * command-dispatch degradation is reported in the command_dispatch
+ * sub-object so existing status consumers keep working.
+ *
+ * AC: @daemon-server ac-11 — {status, uptime, connections, version, runtime}
+ * AC: @daemon-command-api ac-stuck-command-reported — degraded command
+ * dispatch reported with stuck command name and held duration
+ */
+export function buildHealthResponse(args: { connections: number; runtime: DaemonRuntime }) {
+  return {
+    status: "ok",
+    uptime: process.uptime(),
+    connections: args.connections,
+    version: "0.1.0",
+    runtime: args.runtime,
+    command_dispatch: getCommandDispatchHealth(),
+  };
+}
+
+/**
  * Creates and configures the Elysia server instance.
  *
  * AC Coverage:
@@ -531,6 +561,7 @@ export async function createServer(options: ServerOptions) {
     bindHostExplicitlyConfigured,
     connectHost,
     configDir,
+    commandTimeoutMs,
   } = options;
 
   // Determine startup project path (project root, not .kspec/)
@@ -722,13 +753,14 @@ export async function createServer(options: ServerOptions) {
     .use(projectMiddleware)
 
     // AC-11: Health check endpoint
-    .get("/api/health", () => ({
-      status: "ok",
-      uptime: process.uptime(),
-      connections: pubsubManager.getConnectionCount(),
-      version: "0.1.0",
-      runtime,
-    }))
+    // AC: @daemon-command-api ac-stuck-command-reported — reports degraded
+    // command dispatch with the stuck command name and held duration
+    .get("/api/health", () =>
+      buildHealthResponse({
+        connections: pubsubManager.getConnectionCount(),
+        runtime,
+      }),
+    )
 
     // AC: @api-contract ac-2 through ac-7 - Task API endpoints
     // AC: @multi-directory-daemon ac-24 - Routes use projectContext from middleware
@@ -835,10 +867,12 @@ export async function createServer(options: ServerOptions) {
     .use(createAgentDispatchRoutes({ pubsub: pubsubManager }))
 
     // AC: @daemon-command-api ac-command-endpoint, ac-batch-support - Command execution API
+    // AC: @daemon-command-api ac-command-timeout — configured execution limit
     .use(
       createCommandRoutes({
         pubsub: pubsubManager,
         getEntityCache: entityCacheModule.getEntityCache,
+        commandTimeoutMs,
       }),
     )
 

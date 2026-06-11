@@ -11,6 +11,11 @@
  * - @daemon-command-api ac-concurrent-mutations: file lock serialization
  * - @daemon-command-api ac-response-parity: stdout/stderr/exitCode match direct CLI
  * - @daemon-command-api ac-cache-context-propagation: command execution receives entity cache async context
+ * - @daemon-command-api ac-command-timeout: bounded caller wait with structured 504
+ * - @daemon-command-api ac-timeout-queue-bounded: queued commands get their own bound; expired ones are discarded
+ * - @daemon-command-api ac-stuck-command-reported: wedge registry feeds the health endpoint
+ * - @daemon-command-api ac-timeout-isolation: abandoned executions stay detached from later responses
+ * - @daemon-command-api ac-timeout-late-completion-effects: completion side effects bound to completion, not response
  * - @trait-api-endpoint ac-1: returns 2xx with JSON body on success
  * - @trait-api-endpoint ac-3: returns 400 on invalid body
  * - @trait-api-endpoint ac-6: includes X-Request-Id header
@@ -32,6 +37,7 @@ import {
 } from "../../parser/yaml.js";
 import { runWithOutputState } from "../../cli/output.js";
 import { runWithDaemonProxySuppressed } from "../../cli/daemon-proxy.js";
+import { DEFAULT_DAEMON_COMMAND_TIMEOUT_MS } from "../pid.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -176,22 +182,91 @@ interface CommandRouteOptions {
   pubsub: PubSubManager;
   getEntityCache?: EntityCacheAccessor;
   prepareProgram?: (program: Command) => void | Promise<void>;
+  /**
+   * Execution time limit in milliseconds for dispatched commands.
+   * Defaults to 120 seconds when not configured.
+   * AC: @daemon-command-api ac-command-timeout
+   */
+  commandTimeoutMs?: number;
+}
+
+// ── Wedge Registry ─────────────────────────────────────────────────
+
+/**
+ * The dispatch currently holding the mutex slot, tracked at module scope so
+ * the health endpoint can report a wedged command queue. Null when no
+ * serialized dispatch is executing.
+ *
+ * AC: @daemon-command-api ac-stuck-command-reported
+ */
+interface ActiveDispatchRecord {
+  command: string;
+  startedAt: number;
+  limitMs: number;
+}
+
+let activeDispatch: ActiveDispatchRecord | null = null;
+
+/** Current serialized dispatch, or null when the queue is idle. */
+export function getActiveDispatch(): ActiveDispatchRecord | null {
+  return activeDispatch;
+}
+
+export type CommandDispatchHealth =
+  | { status: "ok" }
+  | {
+      status: "degraded";
+      stuck_command: string;
+      running_for_ms: number;
+      limit_ms: number;
+    };
+
+/**
+ * Health view of the command dispatch queue. Reports degraded with the
+ * stuck command name and held duration once the currently executing
+ * dispatch has exceeded its execution time limit; clears when it completes.
+ *
+ * AC: @daemon-command-api ac-stuck-command-reported
+ */
+export function getCommandDispatchHealth(): CommandDispatchHealth {
+  if (activeDispatch) {
+    const runningForMs = Date.now() - activeDispatch.startedAt;
+    if (runningForMs > activeDispatch.limitMs) {
+      return {
+        status: "degraded",
+        stuck_command: activeDispatch.command,
+        running_for_ms: runningForMs,
+        limit_ms: activeDispatch.limitMs,
+      };
+    }
+  }
+  return { status: "ok" };
 }
 
 // ── In-Process Dispatch Mutex ────────────────────────────────────────
 
 /**
  * Promise-based mutex that serializes all command dispatches within the
- * daemon process. Required because executeCommand mutates process-global
- * state (process.cwd(), console.log/error/warn, process.stdout/stderr.write,
- * process.exit interceptor) that would corrupt concurrent requests if not
- * serialized.
+ * daemon process. Console/stdout/stderr/exit interception is installed once
+ * at module load and routed per call via AsyncLocalStorage, and the working
+ * directory is ALS-scoped (runWithWorkingDirectory) — so there are no
+ * process globals to restore between dispatches. The mutex remains the
+ * serialization point for command execution: it keeps mutations ordered
+ * (alongside the cross-process file lock) and gives non-allowlisted reads a
+ * single execution lane.
  *
  * The file lock (withFileLock) only serializes mutating commands across
- * processes; this mutex serializes ALL dispatches (including reads) within
- * the same process to protect the shared console/cwd state.
+ * processes; this mutex serializes ALL dispatches (excluding cache-served
+ * reads) within the same process.
+ *
+ * Timeout semantics: a caller whose execution time limit elapses receives a
+ * structured 504, but the mutex slot is NOT released and the underlying
+ * execution is NOT killed — releasing the slot would let new commands run
+ * concurrently with the abandoned one (which may still hold the file lock).
+ * Subsequent callers queue behind it, each with its own bounded timeout.
  *
  * AC: @daemon-command-api ac-concurrent-mutations — in-process serialization
+ * AC: @daemon-command-api ac-command-timeout — slot held on timeout
  */
 class DispatchMutex {
   private _queue: Promise<void> = Promise.resolve();
@@ -572,9 +647,113 @@ const MUTATION_AFFECTED_DOMAINS: CacheDomain[] = [
 export function createCommandRoutes(options: CommandRouteOptions) {
   const { pubsub, getEntityCache, prepareProgram } = options;
 
-  // In-process mutex serializes all command dispatches to protect
-  // process-global state (cwd, console, exit interceptor).
+  // AC: @daemon-command-api ac-command-timeout — default 120s when not configured
+  const commandTimeoutMs = options.commandTimeoutMs ?? DEFAULT_DAEMON_COMMAND_TIMEOUT_MS;
+
+  // In-process mutex serializes all command dispatches (see DispatchMutex).
   const dispatchMutex = new DispatchMutex();
+
+  /** Sentinel: the caller timed out before execution began, so the queued
+   * dispatch was discarded without executing. */
+  const DISCARDED = Symbol("dispatch-discarded");
+  /** Sentinel: the execution time limit elapsed before completion. */
+  const TIMED_OUT = Symbol("dispatch-timed-out");
+
+  /**
+   * Run a dispatch through the mutex with a bounded caller wait.
+   *
+   * The completion side effects (`onComplete` — cache write-through and
+   * WebSocket broadcast) ride on the execution promise, NOT the route
+   * handler's await path: they run when the command actually completes,
+   * before the response on the normal path and after the 504 has already
+   * gone out on the timeout path.
+   *
+   * On timeout the mutex slot is NOT released and the execution is NOT
+   * killed — the caller just stops waiting. A dispatch whose caller timed
+   * out while it was still queued is discarded when its slot frees: it must
+   * not execute after its caller was already told it timed out.
+   *
+   * AC: @daemon-command-api ac-command-timeout — bounded caller wait
+   * AC: @daemon-command-api ac-timeout-queue-bounded — queued-command discard
+   * AC: @daemon-command-api ac-timeout-isolation — abandoned execution stays detached
+   * AC: @daemon-command-api ac-timeout-late-completion-effects — effects bound to completion
+   */
+  async function dispatchWithTimeout<T>(dispatch: {
+    label: string;
+    run: () => Promise<T>;
+    onComplete: (result: T) => Promise<void>;
+  }): Promise<{ timedOut: true } | { timedOut: false; result: T }> {
+    const state = { timedOut: false };
+
+    const execution = dispatchMutex
+      .run(async (): Promise<T | typeof DISCARDED> => {
+        // AC: @daemon-command-api ac-timeout-queue-bounded — a command whose
+        // limit elapsed while still queued never executes.
+        if (state.timedOut) {
+          return DISCARDED;
+        }
+
+        // AC: @daemon-command-api ac-stuck-command-reported — register the
+        // executing dispatch so health can report a wedge; cleared on
+        // completion (including failure) in the finally block.
+        activeDispatch = {
+          command: dispatch.label,
+          startedAt: Date.now(),
+          limitMs: commandTimeoutMs,
+        };
+        try {
+          return await dispatch.run();
+        } finally {
+          activeDispatch = null;
+        }
+      })
+      .then(async (result) => {
+        // Completion side effects are bound to command completion, not the
+        // HTTP response — a mutating command that timed out for its caller
+        // but later completes still updates the cache and broadcasts.
+        // Discarded dispatches never executed, so they skip the effects.
+        // AC: @daemon-command-api ac-timeout-late-completion-effects
+        if (result !== DISCARDED) {
+          await dispatch.onComplete(result as T);
+        }
+        return result;
+      });
+
+    let timer: NodeJS.Timeout | undefined;
+    const timeout = new Promise<typeof TIMED_OUT>((resolve) => {
+      timer = setTimeout(() => {
+        // Set the discard flag synchronously in the timer callback so a
+        // queued dispatch can never start between the timer firing and the
+        // race settling.
+        state.timedOut = true;
+        resolve(TIMED_OUT);
+      }, commandTimeoutMs);
+    });
+
+    try {
+      const raced = await Promise.race([execution, timeout]);
+      if (raced === TIMED_OUT) {
+        // The abandoned execution keeps running detached from this request.
+        // The .catch is REQUIRED: the daemon installs an unhandledRejection
+        // handler that exits the process, so a late rejection (or a failing
+        // late completion side effect) must never crash the daemon. This
+        // handler runs outside any command capture store, so console.warn
+        // reaches the daemon console directly.
+        // AC: @daemon-command-api ac-timeout-isolation
+        execution.catch((err: unknown) => {
+          console.warn(
+            `[command-api] Abandoned dispatch "${dispatch.label}" failed after its caller timed out:`,
+            err,
+          );
+        });
+        return { timedOut: true };
+      }
+      return { timedOut: false, result: raced as T };
+    } finally {
+      // Clear the timer on normal completion to avoid open-handle leaks.
+      clearTimeout(timer);
+    }
+  }
 
   const getProgram = async (): Promise<Command> => {
     // Ensure the split storage backend is registered before CLI commands execute.
@@ -609,7 +788,7 @@ export function createCommandRoutes(options: CommandRouteOptions) {
       // AC: @trait-api-endpoint ac-3 — returns 400 on invalid body
       .post(
         "/",
-        async ({ body, projectContext, set }) => {
+        async ({ body, error: errorResponse, projectContext, set }) => {
           const program = await getProgram();
 
           // Single command mode
@@ -622,52 +801,74 @@ export function createCommandRoutes(options: CommandRouteOptions) {
           const mutating = await isCommandMutating(payload, program);
           const cache = getEntityCache?.(projectContext.path) ?? null;
 
+          // Cache-served reads bypass the mutex and keep working during a
+          // wedge — deliberately outside the timeout machinery.
           if (!mutating && cache && canServeFromCache(payload, cache)) {
             return executeCommand(payload, program, projectContext.path, getEntityCache);
           }
 
-          // All command execution goes through the dispatch mutex to serialize
-          // process-global state (cwd, console capture, exit interceptor).
-          // Mutating commands additionally acquire the cross-process file lock.
-          const result = await dispatchMutex.run(async () => {
-            if (mutating) {
-              // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
-              // Uses the canonical dispatch shadow mutation lock path so that the command API
-              // coordinates with the CLI and dispatch engine's mutation serialization.
-              const { withFileLock } = await import("../../parser/file-lock.js");
-              const lockPath = getDispatchShadowMutationLockPath(projectContext.path);
-              return withFileLock(lockPath, () =>
-                executeCommand(payload, program, projectContext.path, getEntityCache),
-              );
-            }
-            return executeCommand(payload, program, projectContext.path, getEntityCache);
+          // All command execution goes through the dispatch mutex (see
+          // DispatchMutex). Mutating commands additionally acquire the
+          // cross-process file lock.
+          const outcome = await dispatchWithTimeout({
+            label: payload.command,
+            run: async () => {
+              if (mutating) {
+                // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
+                // Uses the canonical dispatch shadow mutation lock path so that the command API
+                // coordinates with the CLI and dispatch engine's mutation serialization.
+                const { withFileLock } = await import("../../parser/file-lock.js");
+                const lockPath = getDispatchShadowMutationLockPath(projectContext.path);
+                return withFileLock(lockPath, () =>
+                  executeCommand(payload, program, projectContext.path, getEntityCache),
+                );
+              }
+              return executeCommand(payload, program, projectContext.path, getEntityCache);
+            },
+            // Completion side effects ride on the execution promise: before
+            // the response on the normal path (update-before-response), and
+            // after the 504 has gone out when the caller timed out.
+            // AC: @daemon-command-api ac-mutation-cache-update — update cache before response
+            // AC: @daemon-command-api ac-timeout-late-completion-effects — effects on late completion
+            onComplete: async (result) => {
+              if (mutating && result.exitCode === 0) {
+                const mutationCache = getEntityCache?.(projectContext.path);
+                if (mutationCache) {
+                  await Promise.all(
+                    MUTATION_AFFECTED_DOMAINS.map((domain) =>
+                      mutationCache.writeThrough(domain).catch(() => {
+                        // Non-fatal: cache may not have this domain loaded
+                      }),
+                    ),
+                  );
+                }
+
+                // AC: @daemon-command-api ac-mutation-cache-update — WebSocket broadcast
+                pubsub.broadcast(
+                  "command",
+                  "command_executed",
+                  {
+                    command: payload.command,
+                    mutating: true,
+                    success: true,
+                  },
+                  projectContext.path,
+                );
+              }
+            },
           });
 
-          // AC: @daemon-command-api ac-mutation-cache-update — update cache before response
-          if (mutating && result.exitCode === 0) {
-            const cache = getEntityCache?.(projectContext.path);
-            if (cache) {
-              await Promise.all(
-                MUTATION_AFFECTED_DOMAINS.map((domain) =>
-                  cache.writeThrough(domain).catch(() => {
-                    // Non-fatal: cache may not have this domain loaded
-                  }),
-                ),
-              );
-            }
-
-            // AC: @daemon-command-api ac-mutation-cache-update — WebSocket broadcast
-            pubsub.broadcast(
-              "command",
-              "command_executed",
-              {
-                command: payload.command,
-                mutating: true,
-                success: true,
-              },
-              projectContext.path,
-            );
+          // AC: @daemon-command-api ac-command-timeout — structured 504 on timeout
+          if (outcome.timedOut) {
+            return errorResponse(504, {
+              error: "command_timeout",
+              message: `Command "${payload.command}" did not complete within ${commandTimeoutMs}ms`,
+              suggestion:
+                "Check daemon health with `kspec serve status`. If command dispatch stays wedged, restart the daemon.",
+            });
           }
+
+          const result = outcome.result;
 
           // AC: @trait-api-endpoint ac-1 — success response
           if (result.exitCode === 0) {
@@ -748,51 +949,104 @@ export function createCommandRoutes(options: CommandRouteOptions) {
             interceptedExitCode: undefined,
           };
 
-          const batchResult = await dispatchMutex.run(async () => {
-            const runBatch = () => {
-              // Wrap batch execution in the same ALS nesting pattern as
-              // executeCommand: entity cache → working directory → output
-              // state → command execution storage. This ensures:
-              // - Cache-backed reads work inside batch commands
-              // - process.cwd() is not mutated (concurrent read safety)
-              // - process.stdout.write/stderr.write are captured
-              // - Output format is request-scoped
-              const parseCommands = () =>
-                runWithOutputState(
-                  () =>
-                    runWithoutSpecDirOverride(() =>
-                      runWithWorkingDirectory(
-                        () =>
-                          executeBatch(batchCommands, program, {
-                            atomic: body.atomic !== false, // Default atomic
-                            continueOnError: body.continue_on_error ?? false,
-                            dryRun: false,
-                            json: true,
-                          }),
-                        projectPath,
+          // AC: @daemon-command-api ac-command-timeout — the bound applies
+          // whole-batch: a batch is one atomic dispatch.
+          const batchLabel = `batch [${batchCommands.map((cmd) => cmd.command).join(", ")}]`;
+          const outcome = await dispatchWithTimeout({
+            label: batchLabel,
+            run: async () => {
+              const runBatch = () => {
+                // Wrap batch execution in the same ALS nesting pattern as
+                // executeCommand: entity cache → working directory → output
+                // state → command execution storage. This ensures:
+                // - Cache-backed reads work inside batch commands
+                // - process.cwd() is not mutated (concurrent read safety)
+                // - process.stdout.write/stderr.write are captured
+                // - Output format is request-scoped
+                const parseCommands = () =>
+                  runWithOutputState(
+                    () =>
+                      runWithoutSpecDirOverride(() =>
+                        runWithWorkingDirectory(
+                          () =>
+                            executeBatch(batchCommands, program, {
+                              atomic: body.atomic !== false, // Default atomic
+                              continueOnError: body.continue_on_error ?? false,
+                              dryRun: false,
+                              json: true,
+                            }),
+                          projectPath,
+                        ),
                       ),
+                    { outputFormat: "text", verboseMode: false },
+                  );
+
+                return commandExecutionStorage.run(capture, () => {
+                  if (cacheAccessor) {
+                    return runWithEntityCache(parseCommands, cacheAccessor, projectPath);
+                  }
+                  return parseCommands();
+                });
+              };
+
+              if (hasMutating) {
+                // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
+                // Uses the canonical dispatch shadow mutation lock path so that the command API
+                // coordinates with the CLI and dispatch engine's mutation serialization.
+                const { withFileLock } = await import("../../parser/file-lock.js");
+                const lockPath = getDispatchShadowMutationLockPath(projectPath);
+                return withFileLock(lockPath, runBatch);
+              }
+              return runBatch();
+            },
+            // AC: @daemon-command-api ac-batch-support, ac-mutation-cache-update
+            // Update cache once after batch completes — bound to completion,
+            // so a late successful completion after a caller timeout still
+            // writes through and broadcasts.
+            // AC: @daemon-command-api ac-timeout-late-completion-effects
+            onComplete: async (batchResult) => {
+              if (hasMutating && batchResult.success) {
+                const cache = getEntityCache?.(projectPath);
+                if (cache) {
+                  await Promise.all(
+                    MUTATION_AFFECTED_DOMAINS.map((domain) =>
+                      cache.writeThrough(domain).catch(() => {
+                        // Non-fatal
+                      }),
                     ),
-                  { outputFormat: "text", verboseMode: false },
-                );
-
-              return commandExecutionStorage.run(capture, () => {
-                if (cacheAccessor) {
-                  return runWithEntityCache(parseCommands, cacheAccessor, projectPath);
+                  );
                 }
-                return parseCommands();
-              });
-            };
 
-            if (hasMutating) {
-              // AC: @daemon-command-api ac-concurrent-mutations — file lock for cross-process safety
-              // Uses the canonical dispatch shadow mutation lock path so that the command API
-              // coordinates with the CLI and dispatch engine's mutation serialization.
-              const { withFileLock } = await import("../../parser/file-lock.js");
-              const lockPath = getDispatchShadowMutationLockPath(projectPath);
-              return withFileLock(lockPath, runBatch);
-            }
-            return runBatch();
+                // WebSocket broadcast for batch completion
+                pubsub.broadcast(
+                  "command",
+                  "batch_executed",
+                  {
+                    total: batchResult.summary.total,
+                    succeeded: batchResult.summary.succeeded,
+                    failed: batchResult.summary.failed,
+                    mutating: true,
+                    success: batchResult.success,
+                  },
+                  projectPath,
+                );
+              }
+            },
           });
+
+          // AC: @daemon-command-api ac-command-timeout — structured 504 on timeout.
+          // Late capture content is discarded with the per-request store.
+          // AC: @daemon-command-api ac-timeout-isolation
+          if (outcome.timedOut) {
+            return errorResponse(504, {
+              error: "command_timeout",
+              message: `${batchLabel} did not complete within ${commandTimeoutMs}ms`,
+              suggestion:
+                "Check daemon health with `kspec serve status`. If command dispatch stays wedged, restart the daemon.",
+            });
+          }
+
+          const batchResult = outcome.result;
 
           // Merge process.stdout.write/stderr.write output captured by the
           // ALS-based commandExecutionStorage hook into the batch response.
@@ -806,35 +1060,6 @@ export function createCommandRoutes(options: CommandRouteOptions) {
           if (capturedStdout || capturedStderr) {
             (batchResult as Record<string, unknown>).stdout = capturedStdout;
             (batchResult as Record<string, unknown>).stderr = capturedStderr;
-          }
-
-          // AC: @daemon-command-api ac-batch-support, ac-mutation-cache-update
-          // Update cache once after batch completes
-          if (hasMutating && batchResult.success) {
-            const cache = getEntityCache?.(projectPath);
-            if (cache) {
-              await Promise.all(
-                MUTATION_AFFECTED_DOMAINS.map((domain) =>
-                  cache.writeThrough(domain).catch(() => {
-                    // Non-fatal
-                  }),
-                ),
-              );
-            }
-
-            // WebSocket broadcast for batch completion
-            pubsub.broadcast(
-              "command",
-              "batch_executed",
-              {
-                total: batchResult.summary.total,
-                succeeded: batchResult.summary.succeeded,
-                failed: batchResult.summary.failed,
-                mutating: true,
-                success: batchResult.success,
-              },
-              projectPath,
-            );
           }
 
           if (!batchResult.success) {

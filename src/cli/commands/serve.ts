@@ -429,6 +429,9 @@ async function startServer(opts: {
   // AC: @daemon-log-capture ac-bounded-rotation — forward the configured
   // rotation cap so the daemon's in-process log tee applies it at startup.
   daemonArgs.push("--log-max-size", String(config.daemon.log_max_size_bytes));
+  // AC: @daemon-command-api ac-command-timeout — forward the configured
+  // command execution limit so the command API bounds caller waits.
+  daemonArgs.push("--command-timeout", String(config.daemon.command_timeout_ms));
 
   // AC: @daemon-network-endpoint-contract ac-external-binding-warning
   // AC: @trait-localhost-security ac-external-warning
