@@ -458,6 +458,12 @@ events:
     payload:
       thread_ulid: 01KTTXVR4YDBJW23B4QGJZ19DV
     timestamp: 2026-06-11T17:30:24.501Z
+  - _ulid: 01KTVVRHWQFFXXK1AM42JQK0JK
+    actor: plan-author
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTXVXQX58RS7DCTJD1V9FJ0
+    timestamp: 2026-06-11T17:30:30.167Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -732,6 +738,8 @@ threads:
           plan may still revisit the rule, but that would be a spec change, not an undefined gap."
         created_at: 2026-06-11T17:27:42.890Z
     kind: question
+    resolved_at: 2026-06-11T17:30:29.921Z
+    resolved_by: plan-author
   - _ulid: 01KTTXWC485J4Y9GHFE561TB1W
     anchor:
       type: structured
@@ -788,5 +796,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:50:22.029Z
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T17:30:24.160Z
+updated_at: 2026-06-11T17:30:29.921Z
 notes: []
