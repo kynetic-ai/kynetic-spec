@@ -271,6 +271,12 @@ events:
     payload:
       thread_ulid: 01KTW0C8P8BSAHPA0DMBWJWQME
     timestamp: 2026-06-11T19:30:56.429Z
+  - _ulid: 01KTW2PFRAMSTG0ZH9ABC13W5V
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTW0CBGK9D5QQTX8RGY66WND
+    timestamp: 2026-06-11T19:31:42.474Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -413,6 +419,8 @@ threads:
           names the resolver dependency explicitly for ac-absent-store-no-behavior-change."
         created_at: 2026-06-11T19:27:50.264Z
     kind: question
+    resolved_at: 2026-06-11T19:31:42.110Z
+    resolved_by: "@claude"
   - _ulid: 01KTW0CE9H0VAH7S5GNRBE1B91
     anchor:
       type: structured
@@ -507,5 +515,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:51:46.718Z
 created_at: 2026-06-11T18:48:47.217Z
-updated_at: 2026-06-11T19:30:56.046Z
+updated_at: 2026-06-11T19:31:42.110Z
 notes: []
