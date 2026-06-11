@@ -144,9 +144,25 @@ events:
       status: pass
       name: Dependency ordering
     timestamp: 2026-06-11T19:53:39.030Z
+  - _ulid: 01KTW3Z17TEWZDEQTDFY9MDYWJ
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T19:53:51.099Z
+  - _ulid: 01KTW3Z17VNEVGYWHPZ12Y5K89
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T19:53:51.099Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -204,7 +220,14 @@ threads:
           conflict is settled before either plan derives."
         created_at: 2026-06-11T19:53:21.220Z
     kind: question
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-06-11T19:53:51.098Z
 created_at: 2026-06-11T19:52:14.114Z
-updated_at: 2026-06-11T19:53:38.778Z
+updated_at: 2026-06-11T19:53:51.099Z
 notes: []
