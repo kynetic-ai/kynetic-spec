@@ -4,11 +4,17 @@ const fs = require("fs");
 const path = require("path");
 const childProcess = require("child_process");
 const esbuild = require("esbuild");
+const { acquireBuildTestLock } = require("./build-test-lock.cjs");
 
 const projectRoot = path.dirname(__dirname);
 const distRoot = path.join(projectRoot, "dist");
-const stageDir = path.join(distRoot, "daemon-src");
-const outDir = path.join(distRoot, "daemon");
+// Tests exercise this build by pointing the output at an isolated root:
+// rewriting the live dist/daemon/ from inside the test suite would race
+// against concurrently running tests that spawn the daemon.
+const buildDistRoot = process.env.KSPEC_DAEMON_BUILD_DIST_ROOT || distRoot;
+const isIsolatedBuild = buildDistRoot !== distRoot;
+const stageDir = path.join(buildDistRoot, "daemon-src");
+const outDir = path.join(buildDistRoot, "daemon");
 const daemonSourceDir = path.join(projectRoot, "packages", "daemon", "src");
 const entityCacheSource = path.join(projectRoot, "src", "daemon", "entity-cache.ts");
 const shadowSyncManagerSource = path.join(projectRoot, "src", "daemon", "shadow-sync-manager.ts");
@@ -35,7 +41,34 @@ function collectTypeScriptFiles(dir) {
 }
 
 async function main() {
+  // Writing the real dist/ must serialize with test runs (and other builds).
+  // Under `npm run build` the wrapper already holds the lock (same-label
+  // reentrant); standalone `npm run build:daemon` acquires it here. Isolated
+  // builds never touch the live dist/, so they need no lock — which also
+  // lets tests invoke them while the suite itself holds the lock.
+  const lock = isIsolatedBuild
+    ? null
+    : await acquireBuildTestLock({
+        rootDir: projectRoot,
+        label: "build",
+        onWait: (msg) => process.stderr.write(`[build:daemon] ${msg}\n`),
+      });
+  try {
+    await runDaemonBuild();
+  } finally {
+    if (lock) lock.release();
+  }
+}
+
+async function runDaemonBuild() {
   if (!fs.existsSync(parserIndexDist)) {
+    if (isIsolatedBuild) {
+      // The tsc fallback writes the real dist/, which an isolated build must
+      // never do (its caller may be a live test run).
+      throw new Error(
+        `${parserIndexDist} not found. Run 'npm run build' before an isolated daemon build.`,
+      );
+    }
     childProcess.execFileSync(
       process.execPath,
       [path.join(projectRoot, "node_modules", "typescript", "bin", "tsc"), "-p", "tsconfig.json"],

@@ -17,8 +17,15 @@
  *   KSPEC_BUILD_TEST_LOCK_HELD        Set by a lock-holding process for its
  *                                     children; a matching value makes
  *                                     acquire a reentrant no-op so nested
- *                                     build/test invocations don't deadlock
- *                                     against their ancestor.
+ *                                     invocations of the same kind don't
+ *                                     deadlock against their ancestor.
+ *   KSPEC_BUILD_TEST_LOCK_HELD_LABEL  The holder's label ("build" or "test"),
+ *                                     set alongside the HELD marker. A nested
+ *                                     acquire with a DIFFERENT label fails
+ *                                     fast: reentrancy must not let a build
+ *                                     spawned from inside a running test
+ *                                     suite rewrite dist/ under live tests
+ *                                     (or tests run against a mid-emit dist).
  *   KSPEC_BUILD_TEST_LOCK_PATH        Override the lock directory path
  *                                     (tests point this at a temp dir).
  *   KSPEC_BUILD_TEST_LOCK_TIMEOUT_MS  Override the acquire timeout.
@@ -32,6 +39,7 @@ const os = require("os");
 const path = require("path");
 
 const HELD_ENV_VAR = "KSPEC_BUILD_TEST_LOCK_HELD";
+const HELD_LABEL_ENV_VAR = "KSPEC_BUILD_TEST_LOCK_HELD_LABEL";
 const LOCK_PATH_ENV_VAR = "KSPEC_BUILD_TEST_LOCK_PATH";
 const TIMEOUT_ENV_VAR = "KSPEC_BUILD_TEST_LOCK_TIMEOUT_MS";
 
@@ -129,9 +137,25 @@ async function acquireBuildTestLock(options = {}) {
   const timeoutMs = resolveTimeoutMs(options.timeoutMs);
 
   // Reentrant: an ancestor process already holds this exact lock and marked
-  // the environment for its children. Nested build/test runs are covered by
-  // the ancestor's exclusion, so they proceed without acquiring.
+  // the environment for its children. Same-kind nested runs are covered by
+  // the ancestor's exclusion, so they proceed without acquiring. A nested
+  // run of the OTHER kind must not piggyback on that exclusion: a build
+  // spawned from inside a running test suite would rewrite dist/ while
+  // vitest is executing — exactly the race this lock exists to prevent —
+  // and it cannot wait either (the ancestor won't release until the spawning
+  // test finishes). Fail fast with a diagnostic instead. An ancestor that
+  // did not record a label (older script version) keeps the permissive
+  // reentrant behavior.
   if (process.env[HELD_ENV_VAR] === lockPath) {
+    const ancestorLabel = process.env[HELD_LABEL_ENV_VAR];
+    if (ancestorLabel && ancestorLabel !== label) {
+      throw new Error(
+        `Refusing to start a ${label} while an ancestor ${ancestorLabel} run holds the ` +
+          `build/test lock ${lockPath}. A ${label} nested inside a running ${ancestorLabel} ` +
+          `would race against it on dist/ (and waiting would deadlock). Builds invoked from ` +
+          `inside the test suite must target an isolated output directory instead of dist/.`,
+      );
+    }
     return { lockPath, reentrant: true, release: () => {} };
   }
 
@@ -199,6 +223,7 @@ module.exports = {
   acquireBuildTestLock,
   getDefaultLockPath,
   HELD_ENV_VAR,
+  HELD_LABEL_ENV_VAR,
   LOCK_PATH_ENV_VAR,
   TIMEOUT_ENV_VAR,
 };

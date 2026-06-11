@@ -17,7 +17,7 @@ import { buildTestSubprocessEnv } from "./helpers/cli";
 
 // Import the shipped module — tests exercise this, not reimplemented logic
 const lockModule = require("../scripts/build-test-lock.cjs");
-const { acquireBuildTestLock, getDefaultLockPath, HELD_ENV_VAR } = lockModule;
+const { acquireBuildTestLock, getDefaultLockPath, HELD_ENV_VAR, HELD_LABEL_ENV_VAR } = lockModule;
 
 interface LockHandle {
   lockPath: string;
@@ -171,6 +171,73 @@ describe("build/test lock module", () => {
     }
   });
 
+  describe("label-aware reentrancy", () => {
+    /** Run fn with the ancestor held marker + label set, restoring after. */
+    async function withHeldMarker(label: string, fn: () => Promise<void>): Promise<void> {
+      const savedHeld = process.env[HELD_ENV_VAR];
+      const savedLabel = process.env[HELD_LABEL_ENV_VAR];
+      process.env[HELD_ENV_VAR] = lockPath;
+      process.env[HELD_LABEL_ENV_VAR] = label;
+      try {
+        await fn();
+      } finally {
+        if (savedHeld === undefined) delete process.env[HELD_ENV_VAR];
+        else process.env[HELD_ENV_VAR] = savedHeld;
+        if (savedLabel === undefined) delete process.env[HELD_LABEL_ENV_VAR];
+        else process.env[HELD_LABEL_ENV_VAR] = savedLabel;
+      }
+    }
+
+    // AC: @test-suite-perf-reliability ac-7
+    it("a same-kind nested acquire stays a reentrant no-op when the ancestor label matches", async () => {
+      const holder: LockHandle = await acquireBuildTestLock({ lockPath, label: "test" });
+      try {
+        await withHeldMarker("test", async () => {
+          const nested: LockHandle = await acquireBuildTestLock({
+            lockPath,
+            label: "test",
+            timeoutMs: 300,
+          });
+          expect(nested.reentrant).toBe(true);
+          nested.release();
+          expect(fs.existsSync(lockPath)).toBe(true);
+        });
+      } finally {
+        holder.release();
+      }
+    });
+
+    // AC: @test-suite-perf-reliability ac-7
+    it("a build acquire nested inside a running test holder fails fast instead of bypassing the lock", async () => {
+      const holder: LockHandle = await acquireBuildTestLock({ lockPath, label: "test" });
+      try {
+        await withHeldMarker("test", async () => {
+          await expect(
+            acquireBuildTestLock({ lockPath, label: "build", timeoutMs: 300 }),
+          ).rejects.toThrow(/Refusing to start a build while an ancestor test run holds/);
+          // The ancestor's lock is untouched.
+          expect(fs.existsSync(lockPath)).toBe(true);
+        });
+      } finally {
+        holder.release();
+      }
+    });
+
+    // AC: @test-suite-perf-reliability ac-7
+    it("a test acquire nested inside a running build holder fails fast as well", async () => {
+      const holder: LockHandle = await acquireBuildTestLock({ lockPath, label: "build" });
+      try {
+        await withHeldMarker("build", async () => {
+          await expect(
+            acquireBuildTestLock({ lockPath, label: "test", timeoutMs: 300 }),
+          ).rejects.toThrow(/Refusing to start a test while an ancestor build run holds/);
+        });
+      } finally {
+        holder.release();
+      }
+    });
+  });
+
   it("default lock path is stable per worktree and lives under the OS tempdir", () => {
     const a = getDefaultLockPath(projectRoot);
     const b = getDefaultLockPath(projectRoot);
@@ -258,6 +325,31 @@ describe("build/test lock integration with runner and build scripts", () => {
     );
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain("build/test lock");
+  });
+
+  // AC: @test-suite-perf-reliability ac-7
+  it("scripts/build.cjs refuses to build when its ancestor lock holder is a test run", () => {
+    // Simulates a build spawned from inside the suite (e.g. an npm lifecycle
+    // hook): the held marker says a test run owns the lock, so the build
+    // must fail fast rather than reentrantly rewriting dist/ under vitest.
+    const result = spawnSync(
+      "node",
+      [path.join(projectRoot, "scripts", "build.cjs"), "build:unlocked"],
+      {
+        cwd: projectRoot,
+        encoding: "utf8",
+        env: buildTestSubprocessEnv({
+          KSPEC_BUILD_TEST_LOCK_PATH: lockPath,
+          KSPEC_BUILD_TEST_LOCK_HELD: lockPath,
+          KSPEC_BUILD_TEST_LOCK_HELD_LABEL: "test",
+        }),
+        timeout: 30_000,
+      },
+    );
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("Refusing to start a build while an ancestor test run holds");
+    // It bailed before creating or touching the lock directory.
+    expect(fs.existsSync(lockPath)).toBe(false);
   });
 
   it("scripts/build.cjs rejects unknown build script names without acquiring the lock", () => {

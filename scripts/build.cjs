@@ -15,7 +15,7 @@
 
 const { spawnSync } = require("child_process");
 const path = require("path");
-const { acquireBuildTestLock, HELD_ENV_VAR } = require("./build-test-lock.cjs");
+const { acquireBuildTestLock, HELD_ENV_VAR, HELD_LABEL_ENV_VAR } = require("./build-test-lock.cjs");
 
 const projectRoot = path.dirname(__dirname);
 const ALLOWED_SCRIPTS = new Set(["build:unlocked", "build:e2e-unlocked"]);
@@ -40,7 +40,7 @@ async function main() {
     const result = spawnSync("npm", ["run", script], {
       cwd: projectRoot,
       stdio: "inherit",
-      env: { ...process.env, [HELD_ENV_VAR]: lock.lockPath },
+      env: { ...process.env, [HELD_ENV_VAR]: lock.lockPath, [HELD_LABEL_ENV_VAR]: "build" },
     });
     status = result.status ?? 1;
   } finally {
