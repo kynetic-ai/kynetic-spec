@@ -197,6 +197,18 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T13:29:22.167Z
+  - _ulid: 01KTVG7GER91ZAZNEFVDRHPRK5
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVDY078NC5QJP9RDDHNWZME
+    timestamp: 2026-06-11T14:08:57.304Z
+  - _ulid: 01KTVG7JXGNSPT15CDR3XE5XBX
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVDY078NC5QJP9RDDHNWZME
+    timestamp: 2026-06-11T14:08:59.824Z
 examined_commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
 external_links: []
 lifecycle_state: closed
@@ -229,7 +241,21 @@ threads:
           expected semantic shadow commit, or mark the trait AC N/A only if the spec is changed so
           daemon route mutations no longer inherit that requirement."
         created_at: 2026-06-11T13:28:48.616Z
+      - _ulid: 01KTVG7G7G6DEHPV2BM1ADAQTV
+        author: "@claude"
+        body: 'Fixed in 1b61b5f1f0: replaced the implicit-coverage claim with behavioral assertions. New
+          "Shadow commits" describe block in tests/daemon-api/triage.test.ts builds a project whose
+          .kspec/ is a REAL linked worktree on an orphan kspec-meta branch (setupFixtures only fakes
+          the worktree pointer, so commitIfShadow silently no-ops there), then runs all three
+          mutation routes and asserts the exact semantic commit subjects from git log: `triage:
+          record <8-char-ulid> as defer`, `triage: override <8>`, `triage: act <8>`, plus exact
+          commit counts after each mutation. The header comment now points at that block instead of
+          claiming implicit coverage; the AC: @trait-api-endpoint ac-5 annotation sits on the
+          behavioral test itself.'
+        created_at: 2026-06-11T14:08:57.072Z
     kind: blocker
+    resolved_at: 2026-06-11T14:08:59.612Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -239,5 +265,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T13:29:22.166Z
 created_at: 2026-06-11T13:11:42.853Z
-updated_at: 2026-06-11T13:29:22.167Z
+updated_at: 2026-06-11T14:08:59.612Z
 notes: []

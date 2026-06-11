@@ -32,3 +32,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-11T13:29:24.067Z
+  - _ulid: 01KTVG7KYBKT5TM4SQKHGT13SG
+    content: "Fix cycle 1: addressed the single review blocker (false @trait-api-endpoint ac-5 coverage
+      claim at triage.test.ts:22). Added a behavioral Shadow commits test: real orphan kspec-meta
+      worktree (mktree/commit-tree plumbing, no git>=2.42 dependency), all three mutation routes
+      exercised, semantic commit subjects and commit counts asserted via git log. Gotcha found:
+      testUlid() is all-digit, so the inbox fixture ULID must be quoted in YAML or it parses as a
+      number and the item is silently skipped. Re-verified remaining ACs 1-9 unchanged. Gates:
+      format/lint/oxlint/typecheck green, full suite 10492 passed / 0 failed, kspec validate
+      refs/alignment/completeness pass. Commit 1b61b5f1f0 pushed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T14:09:00.875Z
