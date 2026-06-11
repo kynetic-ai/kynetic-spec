@@ -2,7 +2,85 @@ _ulid: 01KTW3W2H2WT1Y6K3325ZX2VQJ
 slugs: []
 title: "Plan review: Web UI Foundations (round 3)"
 author: "@claude"
-checks: []
+checks:
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec item get fails for @web-shell-platform-target, @client-preference-persistence,
+      @actor-identity-model, @coverage-state-presentation — all referenced in spec depends_on fields
+      and task Covers lines. @plan-ui-redesign-global-decisions is still draft/underived. The plan's
+      own binding approval-ordering gate is unmet.
+    name: Cross-reference resolution
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T19:53:24.446Z
+    completed_at: 2026-06-11T19:53:24.446Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All six content fixes from round 1/2 independently verified present in the stored plan:
+      (1) ancestry API serves review and session chains plus single-segment fallback; (2)
+      @actor-display ac-3/ac-4 now role-based and deterministic from lifecycle+disposition, with
+      participant resolution pinned to the same review record; (3) Covers lines claim all five P0a
+      claim-table rows assigned to this plan, verified against the P0a table; (4)
+      @task-review-author-resolution is the canonical-write layer with new
+      @actor-identity-resolution ac-7/ac-8 and @config-author reconciliation; (5)
+      @trait-api-endpoint application owned by @task-identity-endpoint-classifier with Covers for
+      ac-1/ac-6 and accurate N/A reasons for ac-2..ac-5 (verified against the trait's actual AC
+      text: entity-ref 404, body validation, list pagination, mutation shadow-commit — none apply to
+      a bodyless read-only non-list endpoint); (6) @ui-view-header ac-1 narrowed plus new ac-6
+      pinning review/session detail adoption; shortcut-registry description now grounds the context
+      concept (round 2 nit)."
+    name: Prior-round fix verification
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:53:27.827Z
+    completed_at: 2026-06-11T19:53:27.827Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 39 local ACs claimed by exactly one task with no orphans: ui-breadcrumb ac-1..9
+      (component task) + ac-10 (ancestry API); ui-view-header ac-1..6; ui-shortcut-registry ac-1..6;
+      ui-preference-store ac-1..6; actor-identity-resolution ac-1..5 (classifier task) + ac-6..8
+      (author-resolution task); actor-display ac-1..4; actor-history-normalization ac-1..5. Split
+      claims on ui-breadcrumb and actor-identity-resolution have clear division of responsibility.
+      Decision-AC claims match the P0a claim table rows assigned to this plan."
+    name: AC coverage mapping
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:53:31.059Z
+    completed_at: 2026-06-11T19:53:31.059Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified against the working tree: exactly 10 anonymous fallbacks in
+      packages/daemon/src/routes/reviews.ts; exactly 4 getStatusColor implementations (ItemDetail,
+      TaskList, DiffFileList, DiffFileView); uncoordinated key handlers exist in CommandPalette,
+      sidebar-provider, and the triage route; project store talks to localStorage directly;
+      @web-dashboard ac-23 is the Cmd/Ctrl+K palette chord the registry task preserves; reviews/[id]
+      and sessions/[id] detail routes exist as adoption targets."
+    name: Factual codebase claims
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:53:35.527Z
+    completed_at: 2026-06-11T19:53:35.527Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No cycles; no P1 task depends on a P2 task (review-author-resolution P1 -> classifier P1;
+      display/upgrade P2 -> classifier P1; breadcrumb-component P2 -> ancestry-api P2). Independent
+      P1 tasks (classifier, view-header, preference-utility) parallelize; no over-constraining
+      dependencies found.
+    name: Dependency ordering
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:53:38.778Z
+    completed_at: 2026-06-11T19:53:38.778Z
 events:
   - _ulid: 01KTW3W2H29SS7EY08HAQ6VYGE
     actor: "@claude"
@@ -17,6 +95,55 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T19:52:28.258Z
+  - _ulid: 01KTW3Y12ES8RN21JJZZG6AMGF
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW3Y0TAXNKB4TGVZ0YW6GMS
+    timestamp: 2026-06-11T19:53:18.158Z
+  - _ulid: 01KTW3Y4AJKZ98PFTCXHA5GAW8
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTW3Y424X50KMH3MZTQHV4Q9
+    timestamp: 2026-06-11T19:53:21.490Z
+  - _ulid: 01KTW3Y7FV7XWMBMHD07SYSVZS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Cross-reference resolution
+    timestamp: 2026-06-11T19:53:24.731Z
+  - _ulid: 01KTW3YARRFPRTQC3B6EFVJH38
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior-round fix verification
+    timestamp: 2026-06-11T19:53:28.088Z
+  - _ulid: 01KTW3YDXX2GYQCY6ENR1AGGBB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-11T19:53:31.325Z
+  - _ulid: 01KTW3YJ8ZDYEXK4G4YBGCGVD2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Factual codebase claims
+    timestamp: 2026-06-11T19:53:35.775Z
+  - _ulid: 01KTW3YNEP48SAF35E744JNRA9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-11T19:53:39.030Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +153,58 @@ subject:
   content_hash: ""
   ref: "@plan-web-ui-foundations"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTW3Y0TAXNKB4TGVZ0YW6GMS
+    anchor:
+      type: structured
+      ref: "@plan-web-ui-foundations"
+      section: dependencies
+    entries:
+      - _ulid: 01KTW3Y0TA3KQBR3118QP520XA
+        author: "@claude"
+        body: "RE-RAISED from rounds 1 and 2 (threads 01KTVXBEGNMFE1YPQA1QNG3AJN,
+          01KTVY2ZC7AEQSWW8ES8FK7WQP, 01KTW2F8BXHWGXZ50XM7NT868Q). The approval-ordering gate the
+          plan itself declares binding is still unmet: @plan-ui-redesign-global-decisions remains
+          status=draft with no derived specs, and kspec item get fails this round for all four
+          referenced decision items (@web-shell-platform-target, @client-preference-persistence,
+          @actor-identity-model, @coverage-state-presentation). Approving or deriving this plan now
+          would materialize broken depends_on refs and unclaimable Covers lines by construction. New
+          information this round: P0a now carries multiple approving review records (including
+          @01KTW14Z9KCM3H1S699BKCH33W codex round 2 and @01KTW2B8FSDCY518FGHR05J1Y5 claude round 2),
+          so the unblock path is purely an owner sequencing action — set P0a to approved and derive
+          it, then this plan can be approved with no further document changes required for this
+          finding."
+        created_at: 2026-06-11T19:53:17.898Z
+    kind: blocker
+  - _ulid: 01KTW3Y424X50KMH3MZTQHV4Q9
+    anchor:
+      type: structured
+      field: Covers
+      ref: "@task-review-author-resolution"
+      section: tasks
+    entries:
+      - _ulid: 01KTW3Y424TJH9566YRD4G6YM7
+        author: "@claude"
+        body: "NEW this round. The task claims @actor-identity-model ac-1, whose Then-clause in the P0a
+          document reads: the actor value is a canonical agent identifier or the configured human
+          identity, never a free-form variant. This plan's deliberate canonical-write boundary
+          (@actor-identity-resolution ac-8 and the Canonical-write boundary design note) persists
+          out-of-roster values as supplied — a value that is neither a canonical agent identifier
+          nor the configured human identity. The design itself is sound (rewriting out-of-roster
+          actors would fabricate attribution) and the prior round accepted it, but the literal texts
+          now disagree: at task-review time, a behavioral test writing an out-of-roster actor
+          through the daemon will persist the supplied string and the Covers claim of ac-1 will be
+          checkable as unmet against its literal wording. The plan already reconciles @config-author
+          wording at execution time but does not reconcile @actor-identity-model ac-1. Since P0a is
+          still draft, the cheap fix is to align ac-1's wording there now (e.g. scope the canonical
+          guarantee to values that classify to a canonical identity, with unclassifiable values
+          preserved and surfaced as unknown); alternatively extend this task's reconciliation step
+          to cover the decision AC the same way it covers @config-author. Non-blocking because the
+          design intent is documented and consistent across this plan; raising so the textual
+          conflict is settled before either plan derives."
+        created_at: 2026-06-11T19:53:21.220Z
+    kind: question
 verdicts: []
 created_at: 2026-06-11T19:52:14.114Z
-updated_at: 2026-06-11T19:52:27.979Z
+updated_at: 2026-06-11T19:53:38.778Z
 notes: []
