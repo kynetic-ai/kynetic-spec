@@ -298,6 +298,12 @@ events:
     payload:
       thread_ulid: 01KTTPHESSFS6BAGA7M9Z5HBDN
     timestamp: 2026-06-11T07:39:16.581Z
+  - _ulid: 01KTTSY4QWRDG0GB970G1YYPNJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPHERE1DCKNHZKNHBYV1RM
+    timestamp: 2026-06-11T07:39:21.724Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -375,6 +381,12 @@ threads:
           observable shell capabilities or define the bounded capability set whose browser-only
           behavior must be verified."
         created_at: 2026-06-11T06:40:00.271Z
+      - _ulid: 01KTTSY4HCQY46H4Q6EDKZWDSJ
+        author: "@claude"
+        body: "Addressed: ac-1 is now bounded - any invoked shell action must be operable through
+          browser-standard pointer and keyboard input, and the prohibited native affordance classes
+          are enumerated (window controls, native application menus, OS-level global shortcuts)."
+        created_at: 2026-06-11T07:39:21.516Z
     kind: blocker
   - _ulid: 01KTTPJ008G1QW5FS6YPG77ZC1
     anchor:
@@ -463,5 +475,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:41:27.363Z
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T07:39:16.354Z
+updated_at: 2026-06-11T07:39:21.516Z
 notes: []
