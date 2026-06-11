@@ -16985,7 +16985,7 @@ workspaces:
         head: 4a03cba1fab82c11a570777b1f63250a16acefb3
         last_seen_at: 2026-06-11T13:43:00.196Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-search-meta-entity-tests-01kttd1e
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 1d398dedf9aaf50014b24a38f712ae05e5d8e3b5
     bootstrap:
       status: succeeded
@@ -17467,7 +17467,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T14:35:37.056Z
+      updated_at: 2026-06-11T14:36:08.263Z
     integration:
       status: pending
       detail: null
@@ -17483,10 +17483,10 @@ workspaces:
     task_slug: task-standardize-node-version-docs
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-11T14:15:02.903Z
-      last_reconciled_at: 2026-06-11T14:35:37.056Z
+      last_active_at: 2026-06-11T14:36:08.263Z
+      last_reconciled_at: 2026-06-11T14:36:08.263Z
       created_at: 2026-06-11T14:14:30.812Z
-      updated_at: 2026-06-11T14:36:01.091Z
+      updated_at: 2026-06-11T14:36:08.263Z
     workspace_id: dispatch-workspace-01KTTCZCTNXC6TSH9SENFSQDZG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
