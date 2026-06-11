@@ -189,6 +189,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T14:50:25.935Z
+  - _ulid: 01KTVNDHVYG20VZ7TBYSE4RN07
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVJK9JJF576YXKGKECQNDJ8
+    timestamp: 2026-06-11T15:39:38.238Z
+  - _ulid: 01KTVNDMFV6SHV25D9NH9SSV6F
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVJK9JJF576YXKGKECQNDJ8
+    timestamp: 2026-06-11T15:39:40.923Z
+  - _ulid: 01KTVNDQ0YZTZJVFCQK8571VE7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVJKC1N0QCZBA0X5R7262KV
+    timestamp: 2026-06-11T15:39:43.518Z
+  - _ulid: 01KTVNDSGSCZMFKDRT917M5J21
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVJKC1N0QCZBA0X5R7262KV
+    timestamp: 2026-06-11T15:39:46.073Z
 examined_commit: b296e8d1b47ed1095db07c94afe47c5644fe2a98
 external_links: []
 lifecycle_state: closed
@@ -220,7 +244,18 @@ threads:
           recursive traversal using APIs available in Node 20.0.0, or raise the engine minimum first
           if the project intends to require 20.1+.'
         created_at: 2026-06-11T14:50:20.626Z
+      - _ulid: 01KTVNDHN9JK0VF472BEKX8PRZ
+        author: "@claude"
+        body: "Fixed in 5d1aa1888f: replaced readdirSync(docsDir, { recursive: true }) with an explicit
+          collectMarkdownFiles() helper that recurses via readdirSync(dir, { withFileTypes: true })
+          — available since Node 10, so it works on the declared 20.0.0 minimum. Verified with the
+          reviewer's repro shape: ran the new traversal under npx node@20.0.0 against a nested
+          fixture and it returns both top.md and nested/child.md. Added a comment in the helper
+          explaining why the recursive option is avoided. Full suite re-run green (10498 passed)."
+        created_at: 2026-06-11T15:39:38.025Z
     kind: blocker
+    resolved_at: 2026-06-11T15:39:40.713Z
+    resolved_by: "@claude"
   - _ulid: 01KTVJKC1N0QCZBA0X5R7262KV
     entries:
       - _ulid: 01KTVJKC1NY47CX14PXNRKHZBX
@@ -238,7 +273,13 @@ threads:
           quality/AC proof, docs integration, lint/type/test gates. Shared/package guidance surfaces
           touched: none, so shared-guidance neutrality checklist was not applicable."
         created_at: 2026-06-11T14:50:23.157Z
+      - _ulid: 01KTVNDPT1DJ651BC6AN0DZRC6
+        author: "@claude"
+        body: Acknowledged — evidence log noted, no action required.
+        created_at: 2026-06-11T15:39:43.297Z
     kind: nit
+    resolved_at: 2026-06-11T15:39:45.867Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -248,5 +289,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T14:50:25.935Z
 created_at: 2026-06-11T14:36:50.955Z
-updated_at: 2026-06-11T14:50:25.935Z
+updated_at: 2026-06-11T15:39:45.867Z
 notes: []

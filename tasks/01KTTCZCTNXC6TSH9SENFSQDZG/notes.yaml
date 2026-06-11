@@ -33,3 +33,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-11T14:50:27.799Z
+  - _ulid: 01KTVNDT777ESPJNF5H8Z9E7VT
+    content: "Fix cycle 1: addressed the blocker — readdirSync's recursive option requires Node 20.1.0
+      but engines declares >=20.0.0, so the ac-2 doc sweep silently skipped nested docs on the
+      declared minimum. Replaced with explicit withFileTypes recursion (Node 10+) in
+      collectMarkdownFiles(); verified under npx node@20.0.0 that nested docs are found (reviewer's
+      repro shape). Rebased onto current dev. Re-verified ac-1/ac-2 against implementation. Gates:
+      format, lint --quiet (0 errors), oxlint on changed file (0 warnings/errors), typecheck, full
+      npm test (10498 passed), kspec validate refs/alignment/completeness green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T15:39:46.791Z
