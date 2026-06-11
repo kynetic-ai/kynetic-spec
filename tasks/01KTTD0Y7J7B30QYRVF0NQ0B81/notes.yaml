@@ -84,3 +84,22 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T11:56:30.611Z
+  - _ulid: 01KTV9ZS15MT2M4XRF9C26CVMM
+    content: "Fix cycle 2: addressed the shell-safety blocker (4e35fa9ca6, branch rebased onto
+      origin/dev first). Recovery commands previously interpolated paths into double-quoted shell
+      strings, which the shell still expands — a path containing $HOME, backticks, backslashes, or
+      double quotes made the prescribed mv/rmdir address a different path or fail to parse. All
+      three command-producing steps now single-quote paths via shellQuotePath() (POSIX '\\'' idiom
+      for embedded quotes). Behavioral coverage: two new tests run the double-failure flow (missing
+      and occupied-partial-dir states) in a directory named with $HOME, backticks, double/single
+      quotes, backslash, and spaces, executing the prescribed commands verbatim through /bin/sh and
+      asserting the backup contents are restored and the repair re-run succeeds; these fail against
+      the old double-quoted form. Tests refactored to fixture-parameterized helpers; setup git calls
+      taking fixture paths use execFileSync arg arrays; backup-path extraction is line-anchored so
+      paths with spaces survive. Re-verified all 5 spec ACs. Gates: format:check, lint --quiet (0
+      errors), focused oxlint (0 warnings), typecheck, full npm test (10447 passed / 5 skipped / 0
+      failed), kspec validate refs/alignment/completeness green. Both cycle-2 review threads replied
+      to and resolved."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T12:19:52.485Z
