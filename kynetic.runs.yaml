@@ -64444,9 +64444,20 @@ runs:
     started_at: 2026-06-11T20:16:30.368Z
   - _ulid: 01KTW6VRWDE9MQJ9RW0ZCTDMT8
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-11T20:44:29.965Z
+        completed_at: 2026-06-11T20:45:25.886Z
+        notes: "Baseline searched: observations list (many success/friction entries), inbox list (375
+          items), tasks list. Notable existing coverage: 01KGGPJ6 (workflow show should infer active
+          run), several task-stabilize-*-dist-flake tasks for full-suite issues."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-11T20:45:25.886Z
+        completed_at: 2026-06-11T20:45:25.886Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T20:44:29.965Z
