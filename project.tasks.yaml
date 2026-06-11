@@ -31261,6 +31261,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:52:54.318Z
+  automation: eligible
 - _ulid: 01KTTCZGFDCPVXA51S6PEFCWYZ
   slugs:
     - task-workspace-packages-private
