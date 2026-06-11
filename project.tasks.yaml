@@ -31203,16 +31203,17 @@
   title: Fix broken documentation links in INSTALL.md
   type: task
   plan_ref: "@plan-release-packaging-and-onboarding-readiness"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
   tags:
     - docs
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-06-11T03:52:52.032Z
   started_at: 2026-06-11T10:35:04.742Z
+  submitted_at: 2026-06-11T10:49:14.980Z
   automation: eligible
 - _ulid: 01KTTCZEB4XRKP80A7YXN2M9PD
   slugs:

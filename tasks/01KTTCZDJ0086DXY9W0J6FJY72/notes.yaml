@@ -11,3 +11,16 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T10:36:12.854Z
+  - _ulid: 01KTV4ST5JKGEH5A9BYE7NWYP0
+    content: "Work complete in commit 1f80fd17ed. Fixed all four broken links in INSTALL.md: three
+      docs/getting-started.md references (lines 102, 141, 166) now point to
+      docs/getting-started/index.md with display text updated to match, and the dead
+      README.md#how-it-works anchor is now plain README.md. Verified every relative link target
+      exists and the one remaining anchor (kspec-agents.md#shadow-branch-architecture) matches its
+      heading. Extended tests/docs-readme-structure.test.ts with an INSTALL.md links describe block
+      (file existence + anchor-to-heading resolution), per the task testing guidance to extend the
+      existing link-check test. Gates: format:check, lint --quiet (0 errors), oxlint on changed file
+      (0 warnings), typecheck, full npm test suite, and all three kspec validations pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T10:49:14.162Z

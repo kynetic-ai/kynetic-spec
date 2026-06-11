@@ -31,7 +31,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-release-packaging-and-onboarding-readiness"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -39,6 +39,14 @@ priority: 2
 tags:
   - docs
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-fix-install-doc-links/01kttczd
+  captured_at: 2026-06-11T10:49:14.978Z
+  commit: 1f80fd17ed0ab5ad080373ae1d5691ca6d84767f
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-fix-install-doc-links/01kttczd
 session_id: 01KTV3YZSDQJT3KWRJ7AZ4TFVC
 history:
   - author: Jacob Chapel
@@ -61,7 +69,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-11T10:35:04.742Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fix-install-doc-links/01kttczd
+          captured_at: 2026-06-11T10:49:14.978Z
+          commit: 1f80fd17ed0ab5ad080373ae1d5691ca6d84767f
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-fix-install-doc-links/01kttczd
+        previous: null
+      submitted_at:
+        new: 2026-06-11T10:49:14.980Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-11T10:49:14.980Z
 created_at: 2026-06-11T03:52:52.032Z
 started_at: 2026-06-11T10:35:04.742Z
+submitted_at: 2026-06-11T10:49:14.980Z
 todos: []
 automation: eligible
