@@ -1001,6 +1001,9 @@ features:
             where the operation requires a newer layout).
           - A manifest with no declared format version retains its existing
             legacy interpretation and is not affected by this contract.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@format-version"
         implements: []
