@@ -25171,7 +25171,7 @@ reviews:
     title: Review format version ceiling
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 7
     examined_commit: d66ac7104626eef77356d93a8429a6620ffd18da
     lifecycle_state: open
     related_refs: []
@@ -25180,8 +25180,8 @@ reviews:
       content_hash: ""
       ref: "@01KTTD0YZ0M10BR94V7PW4GJRJ"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T08:15:17.606Z
-    updated_at: 2026-06-11T08:15:36.530Z
+    updated_at: 2026-06-11T08:28:41.909Z
