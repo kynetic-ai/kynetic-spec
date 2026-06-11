@@ -1,0 +1,26 @@
+_ulid: 01KTWB46E5EC7E0KWNYEP37ZRC
+slugs: []
+title: "Plan review: Web UI Foundations (latest fixes verification)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTWB46E54Q1E70M59HSNGX34
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T21:59:00.293Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-web-ui-foundations"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T21:59:00.293Z
+updated_at: null
+notes: []

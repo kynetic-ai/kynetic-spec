@@ -26071,3 +26071,20 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-11T21:40:13.553Z
     updated_at: 2026-06-11T21:41:38.963Z
+  - _ulid: 01KTWB46E5EC7E0KWNYEP37ZRC
+    slugs: []
+    title: "Plan review: Web UI Foundations (latest fixes verification)"
+    disposition: pending
+    author: "@claude"
+    check_count: 0
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-web-ui-foundations"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-11T21:59:00.293Z
