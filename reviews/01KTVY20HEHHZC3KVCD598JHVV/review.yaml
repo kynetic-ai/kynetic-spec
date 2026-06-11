@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KTVY2ZC7AEQSWW8ES8FK7WQP
     timestamp: 2026-06-11T18:11:09.093Z
+  - _ulid: 01KTVY3J18V9NC41C4NWKS56GG
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVY3HQPVGWEYBDYJJ6BERES
+    timestamp: 2026-06-11T18:11:27.912Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -61,7 +68,32 @@ threads:
           constraint — but the constraint is currently unmet), or make this plan self-contained.
         created_at: 2026-06-11T18:11:08.808Z
     kind: blocker
+  - _ulid: 01KTVY3HQPVGWEYBDYJJ6BERES
+    anchor:
+      type: structured
+      field: What
+      ref: "@task-breadcrumb-ancestry-api"
+      section: tasks
+    entries:
+      - _ulid: 01KTVY3HQPAAZY78VCH0C8KCXX
+        author: "@claude"
+        body: >-
+          RE-RAISED from round 1 (thread 01KTVXBHANSNSRJF8WHWW8J3X1) — unaddressed.
+
+
+          The ancestry API task's What covers items, tasks, and plans as breadcrumb leaves, but
+          @task-breadcrumb-component adopts the breadcrumb on the review detail and session detail
+          routes and consumes this task's ancestor-chain payload. Reviews and sessions are not in
+          the ancestry task's scope.
+
+
+          Impact: the dependent component task cannot implement its stated route adoption without
+          inventing unplanned data support. Add review/session chain support to this task, change
+          the component task's adoption targets, or add a prerequisite task serving those entity
+          chains.
+        created_at: 2026-06-11T18:11:27.606Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:11:08.808Z
+updated_at: 2026-06-11T18:11:27.606Z
 notes: []
