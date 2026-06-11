@@ -214,6 +214,12 @@ events:
     payload:
       thread_ulid: 01KTVM93ASEBS8WJY0EJCTPJRJ
     timestamp: 2026-06-11T16:06:23.151Z
+  - _ulid: 01KTVPYXAGF4WC4M20PKRJSSNQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVM93ASEBS8WJY0EJCTPJRJ
+    timestamp: 2026-06-11T16:06:35.600Z
 examined_commit: 76859368017ba57e539303d633dfa9e248f05f5d
 external_links: []
 lifecycle_state: closed
@@ -292,6 +298,8 @@ threads:
           ac-stuck-command-reported)."
         created_at: 2026-06-11T16:06:22.876Z
     kind: blocker
+    resolved_at: 2026-06-11T16:06:35.329Z
+    resolved_by: "@claude"
   - _ulid: 01KTVMYA4BYGJWBDYB0GQQP68K
     entries:
       - _ulid: 01KTVMYA4B8S1Q2Y0ETKZYSSRW
@@ -319,5 +327,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T15:31:21.563Z
 created_at: 2026-06-11T15:15:58.452Z
-updated_at: 2026-06-11T16:06:22.876Z
+updated_at: 2026-06-11T16:06:35.329Z
 notes: []
