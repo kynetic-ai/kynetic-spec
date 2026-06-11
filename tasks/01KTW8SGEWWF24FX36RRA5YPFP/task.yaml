@@ -1,0 +1,29 @@
+_ulid: 01KTW8SGEWWF24FX36RRA5YPFP
+slugs:
+  - task-stabilize-upgrade-folder-storage-test
+title: Stabilize intermittent upgrade folder storage test
+type: bug
+description: During review of @task-workspace-packages-private on 2026-06-11, a full npm test run
+  reported one failure in tests/upgrade-folder-storage.test.ts (24 tests, 1 failed) before the
+  overall runner later hung in the Vitest parent process. A focused retry with npm test --
+  tests/upgrade-folder-storage.test.ts --fresh passed 24/24 in 57.7s. The reviewed branch only
+  changed workspace package.json private flags and tests/release-packaging.test.ts, so this appears
+  intermittent or unrelated to the manifest change. Investigate the failed assertion path in
+  tests/upgrade-folder-storage.test.ts under full-suite conditions, reproduce with repeated fresh
+  runs if needed, and make the test deterministic without weakening its coverage.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - flaky
+  - infra
+vcs_refs: []
+created_at: 2026-06-11T21:18:12.955Z
+todos: []
+automation: eligible

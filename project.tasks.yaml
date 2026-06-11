@@ -31825,3 +31825,20 @@
   todos_count: 0
   created_at: 2026-06-11T20:41:22.947Z
   automation: eligible
+- _ulid: 01KTW8SGEWWF24FX36RRA5YPFP
+  slugs:
+    - task-stabilize-upgrade-folder-storage-test
+  title: Stabilize intermittent upgrade folder storage test
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - flaky
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T21:18:12.955Z
+  automation: eligible
