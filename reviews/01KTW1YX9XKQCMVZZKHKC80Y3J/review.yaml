@@ -35,6 +35,16 @@ checks:
     runner: npx oxlint packages/web-ui/src/lib/websocket/manager.ts tests/websocket-manager.test.ts
     created_at: 2026-06-11T19:35:35.238Z
     completed_at: 2026-06-11T19:35:35.238Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit completed with exit code 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T19:35:45.986Z
+    completed_at: 2026-06-11T19:35:45.986Z
 events:
   - _ulid: 01KTW1YX9XYD8DF8ZGG6ZAME6X
     actor: Jacob Chapel
@@ -70,6 +80,13 @@ events:
       status: pass
       name: focused-lint
     timestamp: 2026-06-11T19:35:35.518Z
+  - _ulid: 01KTW2XXTGC8GBV5RK472N0C8S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T19:35:46.256Z
 examined_commit: 740b3ec859b126508e0165f0e5cefdbab83ecba3
 external_links: []
 lifecycle_state: open
@@ -82,5 +99,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T19:18:49.917Z
-updated_at: 2026-06-11T19:35:35.238Z
+updated_at: 2026-06-11T19:35:45.986Z
 notes: []
