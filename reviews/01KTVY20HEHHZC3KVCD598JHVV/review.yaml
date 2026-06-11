@@ -45,6 +45,13 @@ events:
       kind: blocker
       thread_ulid: 01KTVY4D78V7J8CFV2TCKDMKXW
     timestamp: 2026-06-11T18:11:56.343Z
+  - _ulid: 01KTVY56QFAF854NXCDH553DZS
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVY56CPJF03R43997WT85VB
+    timestamp: 2026-06-11T18:12:21.871Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -179,7 +186,37 @@ threads:
           approval.
         created_at: 2026-06-11T18:11:55.753Z
     kind: blocker
+  - _ulid: 01KTVY56CPJF03R43997WT85VB
+    anchor:
+      type: structured
+      field: What
+      ref: "@task-review-author-resolution"
+      section: tasks
+    entries:
+      - _ulid: 01KTVY56CP3QEVNP7Y01JWPA7K
+        author: "@claude"
+        body: >-
+          RE-RAISED from round 1 (thread 01KTVXBSWDR8P1VDNSGNCH2BAZ) — unaddressed.
+
+
+          The upstream claim table assigns @actor-identity-model ac-1 to "UI foundations plan
+          (canonical-write identity layer)". That decision requires every newly written actor field,
+          through any interface, to be a canonical agent identifier or the configured human identity
+          — never a free-form variant. This task only replaces the ten anonymous fallbacks in the
+          review routes (count re-verified this round) and explicitly passes caller-supplied actor
+          values through unchanged; the getAuthor() chain it adopts ends in git/OS fallbacks that
+          the decision itself classifies as free-form-variant-producing. This plan's
+          @actor-identity-resolution ac-6 codifies that chain, so the plan as written can complete
+          while new mutations still persist free-form variants, leaving ac-1 unsatisfied with no
+          other claimant.
+
+
+          Fix: add canonical-write work that covers @actor-identity-model ac-1, narrow the upstream
+          consumer mapping, or state explicitly that this plan defers that criterion (and where it
+          lands).
+        created_at: 2026-06-11T18:12:21.526Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:11:55.753Z
+updated_at: 2026-06-11T18:12:21.526Z
 notes: []
