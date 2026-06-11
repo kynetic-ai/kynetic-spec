@@ -21709,6 +21709,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T22:20:55.074Z
+  - _ulid: 01KTWGDR0338MJ6P3VGN1EH03E
+    type: success
+    content: Detached reviewer merge helper cleanly merged approved task work from a detached review
+      snapshot into the dispatch target without requiring manual checkout or persistent target
+      worktree management.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T23:31:36.067Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

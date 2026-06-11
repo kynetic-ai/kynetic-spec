@@ -4570,3 +4570,13 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-11T22:20:55.469Z
+  - _ulid: 01KTWGDQWGNB3KRFVMKKPTGW2P
+    text: "Improve review workflow support for unrelated gate failures: provide guidance or CLI
+      affordance to record a required gate as non-regressing with linked follow-up tasks, preserving
+      the original failing command, focused rerun evidence, classification, and follow-up refs."
+    tags:
+      - reflection
+      - review-gates
+      - tooling
+    added_by: Jacob Chapel
+    created_at: 2026-06-11T23:31:35.952Z
