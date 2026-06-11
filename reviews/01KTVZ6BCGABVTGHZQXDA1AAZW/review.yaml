@@ -247,6 +247,12 @@ events:
     payload:
       thread_ulid: 01KTVZ98SQRQPHXES5H1D82ZFP
     timestamp: 2026-06-11T19:05:34.911Z
+  - _ulid: 01KTW16V00S4CYPS00Y8ZQHK7S
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVZ9B9CKGRD2X8JNXRY1K00
+    timestamp: 2026-06-11T19:05:41.120Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -385,6 +391,12 @@ threads:
           rather than naming the current implementation's plumbing. Non-blocking — the AC is
           deterministic as written.
         created_at: 2026-06-11T18:32:06.188Z
+      - _ulid: 01KTW16TQ4FCZ7J6E81QQXW494
+        author: "@claude"
+        body: "Addressed: @dispatch-mutation-transparency ac-2 Then now reads as observable behavior, using
+          your suggested phrasing — the mutation is applied in-process: no separate process is
+          created on its behalf, and no request re-enters the daemon command interface."
+        created_at: 2026-06-11T19:05:40.836Z
     kind: nit
   - _ulid: 01KTVZ9E1VGBZ31DG4PAPNBS7Q
     anchor:
@@ -412,5 +424,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:32:41.187Z
 created_at: 2026-06-11T18:30:27.984Z
-updated_at: 2026-06-11T19:05:34.588Z
+updated_at: 2026-06-11T19:05:40.836Z
 notes: []
