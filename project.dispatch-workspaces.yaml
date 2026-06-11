@@ -14939,7 +14939,7 @@ workspaces:
         head: fb7f92add5b79e32e4c5c35ec8ec51f76ee7c889
         last_seen_at: 2026-06-11T11:26:19.358Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-contributing-security-docs-01kttczf
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 387dbcf743ece951c4c6fa54e0421927add632ff
     bootstrap:
       status: succeeded
@@ -15438,9 +15438,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T11:54:37.566Z
-      last_reconciled_at: 2026-06-11T12:11:51.366Z
+      last_reconciled_at: 2026-06-11T12:26:02.908Z
       created_at: 2026-06-11T11:27:08.727Z
-      updated_at: 2026-06-11T12:11:51.366Z
+      updated_at: 2026-06-11T12:26:02.908Z
     workspace_id: dispatch-workspace-01KTTD0ZPTTX0N18MEY53HFKMK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
