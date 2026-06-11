@@ -25261,7 +25261,7 @@ reviews:
   - _ulid: 01KTV3ZC0MBBJDS5DMSSJ3ZWZT
     slugs: []
     title: Review task-shadow-restore-loud-failure
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 8
     examined_commit: 7388f96a218e7e69bc8cba03a97cd5c8723fbe21
@@ -25272,8 +25272,8 @@ reviews:
       content_hash: ""
       ref: "@01KTTD0Y7J7B30QYRVF0NQ0B81"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-11T10:34:47.700Z
-    updated_at: 2026-06-11T10:48:48.659Z
+    updated_at: 2026-06-11T10:49:07.870Z
