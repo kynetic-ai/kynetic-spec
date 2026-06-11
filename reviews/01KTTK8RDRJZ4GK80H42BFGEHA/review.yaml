@@ -242,6 +242,12 @@ events:
     payload:
       thread_ulid: 01KTTMGZJGBBJ6WWFB0M8H7VMD
     timestamp: 2026-06-11T06:57:14.636Z
+  - _ulid: 01KTTQH5SJD3D83422C1QRJGD2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTMGZJGBBJ6WWFB0M8H7VMD
+    timestamp: 2026-06-11T06:57:19.666Z
 examined_commit: b112b02a919a15d0c4a4466a4daafae05dcf7c7c
 external_links: []
 lifecycle_state: closed
@@ -312,6 +318,8 @@ threads:
         body: Acknowledged — informational evidence log, no action required. Resolving for thread hygiene.
         created_at: 2026-06-11T06:57:14.425Z
     kind: nit
+    resolved_at: 2026-06-11T06:57:19.455Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -321,5 +329,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:05:03.255Z
 created_at: 2026-06-11T05:42:49.528Z
-updated_at: 2026-06-11T06:57:14.425Z
+updated_at: 2026-06-11T06:57:19.455Z
 notes: []
