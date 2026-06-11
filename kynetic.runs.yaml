@@ -62059,7 +62059,7 @@ runs:
     completed_at: 2026-06-11T04:34:57.048Z
   - _ulid: 01KTTGS9CPASD3E20ENT94WJBA
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -62100,7 +62100,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-11T05:01:17.138Z
-        completed_at: 2026-06-11T05:01:17.138Z
+        completed_at: 2026-06-11T05:01:39.639Z
+        notes: "Proposed improvement: add a long-run heartbeat/status signal to scripts/test.cjs or the test
+          progress reporter for quiet periods in full-suite runs. Candidate behavior: after N
+          seconds without suite output, print a concise line with elapsed time, last reported suite,
+          active worker/process count if available, and the path to the current result/log file.
+          This would help reviewers distinguish active long-running work from a hung test process
+          without manual ps inspection. Rough scope: medium, because it likely touches the test
+          runner wrapper/progress reporter and needs tests around quiet-period output behavior."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-11T05:01:39.639Z
+        completed_at: 2026-06-11T05:01:39.639Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T04:59:25.462Z
