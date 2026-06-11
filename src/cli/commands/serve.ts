@@ -130,6 +130,63 @@ function parseUptimeSeconds(raw: unknown): number | null {
   return null;
 }
 
+/**
+ * Command-dispatch health as reported by GET /api/health. Mirrors the
+ * CommandDispatchHealth shape built in packages/daemon/src/routes/command.ts
+ * (the daemon package depends on src/, not the reverse, so the shape is
+ * re-declared structurally here).
+ *
+ * AC: @daemon-command-api ac-stuck-command-reported
+ */
+type CommandDispatchStatus =
+  | { status: "ok" }
+  | { status: "degraded"; stuck_command: string; running_for_ms: number; limit_ms: number };
+
+function parseCommandDispatchHealth(raw: unknown): CommandDispatchStatus | null {
+  if (!raw || typeof raw !== "object") {
+    return null;
+  }
+  const candidate = raw as {
+    status?: unknown;
+    stuck_command?: unknown;
+    running_for_ms?: unknown;
+    limit_ms?: unknown;
+  };
+  if (candidate.status === "ok") {
+    return { status: "ok" };
+  }
+  if (
+    candidate.status === "degraded" &&
+    typeof candidate.stuck_command === "string" &&
+    typeof candidate.running_for_ms === "number" &&
+    Number.isFinite(candidate.running_for_ms) &&
+    typeof candidate.limit_ms === "number" &&
+    Number.isFinite(candidate.limit_ms)
+  ) {
+    return {
+      status: "degraded",
+      stuck_command: candidate.stuck_command,
+      running_for_ms: candidate.running_for_ms,
+      limit_ms: candidate.limit_ms,
+    };
+  }
+  return null;
+}
+
+function formatMsDuration(ms: number): string {
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  if (hours > 0) {
+    return `${hours}h ${minutes}m ${seconds}s`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${seconds}s`;
+  }
+  return `${seconds}s`;
+}
+
 function getProjectRootFromKspecDir(kspecDir: string): string {
   return dirname(kspecDir);
 }
@@ -654,6 +711,7 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
   // AC: @multi-directory-daemon ac-12 - Fetch list of registered projects and uptime
   let projects: Array<{ path: string; registeredAt: string; watcherStatus: string }> = [];
   let uptime: number | null = null;
+  let commandDispatch: CommandDispatchStatus | null = null;
   if (running && apiUrl) {
     try {
       const response = await fetch(`${apiUrl}/api/projects`);
@@ -674,7 +732,15 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
       try {
         const healthResponse = await fetch(`${apiUrl}/api/health`);
         if (healthResponse.ok) {
-          const healthData = (await healthResponse.json()) as { status: string; uptime?: unknown };
+          const healthData = (await healthResponse.json()) as {
+            status: string;
+            uptime?: unknown;
+            command_dispatch?: unknown;
+          };
+          // AC: @daemon-command-api ac-stuck-command-reported — the timeout
+          // error directs operators here, so status must surface the
+          // command_dispatch health payload, not just uptime.
+          commandDispatch = parseCommandDispatchHealth(healthData.command_dispatch);
           const parsed = parseUptimeSeconds(healthData.uptime);
           if (parsed !== null) {
             uptime = parsed;
@@ -713,6 +779,9 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
     connect_host: connectHost,
     runtime,
     uptime,
+    // AC: @daemon-command-api ac-stuck-command-reported — surface wedged
+    // command dispatch where the timeout error directs operators.
+    command_dispatch: commandDispatch,
     log_path: logPath,
     last_exit: lastExit,
     projects,
@@ -748,6 +817,18 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
           output(`  Uptime: ${minutes}m ${seconds}s`);
         } else {
           output(`  Uptime: ${seconds}s`);
+        }
+      }
+      // AC: @daemon-command-api ac-stuck-command-reported — the command
+      // timeout error suggests `kspec serve status`, so a wedged dispatch
+      // must be visible here with the stuck command name and held duration.
+      if (commandDispatch) {
+        if (commandDispatch.status === "degraded") {
+          output(
+            `  Command dispatch: DEGRADED — '${commandDispatch.stuck_command}' has been running for ${formatMsDuration(commandDispatch.running_for_ms)} (limit ${formatMsDuration(commandDispatch.limit_ms)}). Restart the daemon if it stays wedged.`,
+          );
+        } else {
+          output(`  Command dispatch: ok`);
         }
       }
       // AC: @multi-directory-daemon ac-12 - Show registered projects

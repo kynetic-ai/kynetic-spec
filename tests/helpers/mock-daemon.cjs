@@ -10,7 +10,8 @@
  *   node tests/helpers/mock-daemon.cjs \
  *     [--bind-host 127.0.0.1] \
  *     [--mode normal|error|hang] \
- *     [--record /path/to/requests.jsonl]
+ *     [--record /path/to/requests.jsonl] \
+ *     [--health-command-dispatch '{"status":"degraded",...}']
  *
  * On `listening`, writes one JSON line `{"port":<n>,"bindHost":"<host>"}` to
  * stdout so the parent can build daemon.connection.json pointing at the
@@ -44,6 +45,19 @@ function getArg(name, fallback) {
 const bindHost = getArg("bind-host", "127.0.0.1");
 const mode = getArg("mode", "normal");
 const recordFile = getArg("record", null);
+
+// Optional command_dispatch payload merged into the /api/health body so
+// CLI tests can simulate a daemon reporting a wedged command dispatch.
+const healthCommandDispatchRaw = getArg("health-command-dispatch", null);
+let healthCommandDispatch = null;
+if (healthCommandDispatchRaw !== null) {
+  try {
+    healthCommandDispatch = JSON.parse(healthCommandDispatchRaw);
+  } catch {
+    process.stderr.write("mock daemon: invalid --health-command-dispatch JSON\n");
+    process.exit(2);
+  }
+}
 
 // ── Test-only failure-injection seams ─────────────────────────────────
 // These flags exist to drive the failure-path contract tests in
@@ -162,7 +176,12 @@ const server = http.createServer(async (req, res) => {
   const method = req.method;
 
   if (path === "/api/health") {
-    return ok(res, { status: "ok", uptime: 1, runtime: "node" });
+    return ok(res, {
+      status: "ok",
+      uptime: 1,
+      runtime: "node",
+      ...(healthCommandDispatch ? { command_dispatch: healthCommandDispatch } : {}),
+    });
   }
   if (path === "/api/projects") {
     return ok(res, { status: "ok" });
