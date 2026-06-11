@@ -14,6 +14,17 @@ checks:
     runner: kspec validate --refs --warnings-ok
     created_at: 2026-06-11T08:07:24.524Z
     completed_at: 2026-06-11T08:07:24.524Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed for the live corpus with existing completeness warnings unrelated to this underived
+      draft plan.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T08:07:24.559Z
+    completed_at: 2026-06-11T08:07:24.559Z
 events:
   - _ulid: 01KTTVE9X3PA6393J23QSHZ51G
     actor: "@claude"
@@ -84,6 +95,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-11T08:07:24.799Z
+  - _ulid: 01KTTVHGPF0RGHG1GN4Y8Q0K91
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T08:07:25.135Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -208,5 +226,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:07:24.524Z
+updated_at: 2026-06-11T08:07:24.559Z
 notes: []
