@@ -33,3 +33,18 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T05:18:57.459Z
+  - _ulid: 01KTTJXSRF4WTWPZ7YVF18MABB
+    content: "Final verification complete. E2E attribution is airtight: ran the FULL Playwright suite
+      twice — upgraded deps (41 failed / 451 passed) vs baseline origin/dev deps with identical
+      source (42 failed / 450 passed). Failure sets are identical except baseline had one extra
+      flaky failure (inbox.spec.ts empty-inbox state) that passed on upgraded deps. All 41 shared
+      failures are confined to plans.spec.ts, review-detail-page.spec.ts,
+      review-interaction.spec.ts, reviews-detail.spec.ts, and tasks.spec.ts Task Reviews Section —
+      all caused by the pre-existing daemon 500 (EntityStorageCompatibilityError
+      legacy_plan/review_storage_removed on the kynetic 1.0 e2e fixture), captured as inbox item
+      01KTTH... for separate migration. The dependency upgrade introduces ZERO new test failures
+      across unit (10381 passed) and e2e suites. npm audit --omit=dev: 0 vulnerabilities. Lock-only
+      change pushed as b112b02a91 on dispatch/task/task-audit-fix-production-deps/01kttczc."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T05:36:50.448Z
