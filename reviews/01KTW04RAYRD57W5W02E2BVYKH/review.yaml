@@ -208,9 +208,25 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-06-11T18:49:57.561Z
+  - _ulid: 01KTW0AJJP9YSTQKRKPE6XTVWE
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T18:50:14.998Z
+  - _ulid: 01KTW0AJJP1FKSFWWM165KN30V
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T18:50:14.998Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -286,7 +302,14 @@ threads:
           interfaces to CLI/API for now and add a follow-up spec for UI behavior?
         created_at: 2026-06-11T18:48:17.114Z
     kind: question
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T18:50:14.998Z
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:49:57.314Z
+updated_at: 2026-06-11T18:50:14.998Z
 notes: []
