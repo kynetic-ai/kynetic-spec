@@ -219,7 +219,10 @@
     from the record alone, so a consumer can answer "when was this
     criterion last verified, and by which session" without correlating
     other data sources. Session linkage is optional — verifications
-    produced outside any session omit it.
+    produced outside any session omit it. When a session reference is
+    supplied, it must be a well-formed session identifier; a malformed
+    reference rejects the write rather than storing an unusable
+    linkage.
   acceptance_criteria:
     - id: ac-session-reference-stored
       given: |
@@ -238,6 +241,15 @@
       then: |
         the stamp is accepted, and reads return it with no session
         linkage
+    - id: ac-malformed-session-ref-rejected
+      given: |
+        a verification stamp write carrying a session reference that
+        is not a well-formed session identifier
+      when: |
+        the write is attempted
+      then: |
+        the write is rejected and the stored verification state is
+        unchanged
     - id: ac-evidence-readable-from-record
       given: |
         a stored stamp carrying a session reference
@@ -525,8 +537,8 @@ derive_from_specs: false
     semantics plus their tests).
 
     Covers: @verification-session-evidence ac-session-reference-stored,
-    ac-sessionless-stamps-valid, ac-evidence-readable-from-record,
-    ac-pruned-session-tolerated.
+    ac-sessionless-stamps-valid, ac-malformed-session-ref-rejected,
+    ac-evidence-readable-from-record, ac-pruned-session-tolerated.
 
 - title: Respec test-annotation-sweep so not-applicable annotations are not coverage signals
   slug: task-respec-test-annotation-sweep-na
