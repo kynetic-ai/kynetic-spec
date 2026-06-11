@@ -80,6 +80,13 @@ events:
       kind: question
       thread_ulid: 01KTTXVXQX58RS7DCTJD1V9FJ0
     timestamp: 2026-06-11T08:48:03.585Z
+  - _ulid: 01KTTXWCDCNN6HR15HK1CJ56CT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTTXWC485J4Y9GHFE561TB1W
+    timestamp: 2026-06-11T08:48:18.348Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -264,7 +271,25 @@ threads:
           description if you deliberately want it non-binding until the engine plan revisits it.
         created_at: 2026-06-11T08:48:03.326Z
     kind: question
+  - _ulid: 01KTTXWC485J4Y9GHFE561TB1W
+    anchor:
+      type: structured
+      ref: "@ac-verification-record-store"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTXWC49KDWHN9DRQVM7C1YV
+        author: "@claude"
+        body: "NEW this round. Two then-clauses carry rationale, which the behavioral language rules reserve
+          for descriptions: ac-keyed-by-canonical-identity ends with \"because records are keyed by
+          the item's canonical identifier and the criterion id rather than by slug or file
+          location\", and ac-versioned-persistence ends with \"because stamp writes are committed to
+          the shadow-branch history like other metadata mutations\". The observable assertions stand
+          on their own (\"the stamp still resolves to the same acceptance criterion\"; \"the same
+          stamps are reproduced\") — move the because-clauses into the description, which already
+          states the keying and versioning design."
+        created_at: 2026-06-11T08:48:18.057Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:48:03.326Z
+updated_at: 2026-06-11T08:48:18.057Z
 notes: []
