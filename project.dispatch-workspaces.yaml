@@ -9866,7 +9866,7 @@ workspaces:
         head: 3a3f3bdd74e6e6a978be5cf2888e70c853fe255f
         last_seen_at: 2026-06-11T04:36:37.562Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-license-file-01kttczb
-  - active_role: worker
+  - active_role: null
     base_branch_point: 8335c393bd35c3216a876ea40949c41cf80e9b8b
     bootstrap:
       status: succeeded
@@ -10340,12 +10340,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T06:43:20.706Z
+      updated_at: 2026-06-11T07:01:53.568Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T06:43:20.706Z
+      updated_at: 2026-06-11T07:01:53.568Z
     integration:
       status: pending
       detail: null
@@ -10353,8 +10353,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8335c393bd35c3216a876ea40949c41cf80e9b8b
-      updated_at: 2026-06-11T06:43:20.706Z
-    lifecycle_state: active
+      updated_at: 2026-06-11T07:01:53.568Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KTTCZC40FDTA2WWB7E20V00R
     task_ref: "@01KTTCZC40FDTA2WWB7E20V00R"
@@ -10362,9 +10362,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T06:35:19.048Z
-      last_reconciled_at: 2026-06-11T06:43:20.706Z
+      last_reconciled_at: 2026-06-11T07:01:53.568Z
       created_at: 2026-06-11T04:37:37.325Z
-      updated_at: 2026-06-11T06:43:20.706Z
+      updated_at: 2026-06-11T07:01:53.568Z
     workspace_id: dispatch-workspace-01KTTCZC40FDTA2WWB7E20V00R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
