@@ -25088,11 +25088,11 @@ reviews:
       content_hash: ""
       ref: "@01KTTCZC40FDTA2WWB7E20V00R"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T07:04:09.948Z
-    updated_at: 2026-06-11T07:21:12.207Z
+    updated_at: 2026-06-11T07:21:28.306Z
   - _ulid: 01KTTRCWG81Q4T9KJ84JCDHP3M
     slugs: []
     title: Review task-broken-shadow-safety-spec-delta
