@@ -61,3 +61,20 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T15:47:50.342Z
+  - _ulid: 01KTVR1AWQNVVG2E498P4DZZCN
+    content: "Fix cycle 1 complete (commit 6a4c811fac): addressed the single blocker — serve status
+      discarded the command_dispatch health payload the timeout 504 directs operators to.
+      statusServer now parses command_dispatch from /api/health, includes it in --json output, and
+      prints a human line (ok / DEGRADED with stuck command name, running duration, limit, restart
+      guidance); null + no line for daemons not reporting the field. Extended
+      tests/helpers/mock-daemon.{ts,cjs} with a healthCommandDispatch option and added 4 behavioral
+      CLI tests in tests/cli-serve-status-command-dispatch.test.ts (degraded json, degraded human,
+      ok, absent) annotated AC: @daemon-command-api ac-stuck-command-reported. Re-verified all 5
+      timeout ACs remain covered in tests/daemon-command-api.test.ts. Blocker thread replied +
+      resolved; nit thread is the reviewer's evidence log (no action requested). Gates: format ✓,
+      lint --quiet 0 errors ✓, focused oxlint clean ✓, typecheck ✓, FRESH full suite 10508 passed /
+      3 skipped ✓ (one unrelated workflow-runs flake in the first run passed in isolation and in the
+      fresh run), kspec validate refs/alignment/completeness ✓."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T16:25:23.608Z
