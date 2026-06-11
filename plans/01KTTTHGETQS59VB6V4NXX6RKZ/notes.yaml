@@ -30,3 +30,15 @@ notes:
     content: Address review findings (finishing round finish-1)
     author: "@claude"
     created_at: 2026-06-11T21:45:04.451Z
+  - _ulid: 01KTWAKWRP56RZAQ67KS387GAA
+    content: "Finishing round finish-1: addressed non-gate findings from round-2 claude review
+      @01KTW6NXWG20GBM98TP7AXNZAV. Nit: added ac-malformed-session-ref-rejected to
+      @verification-session-evidence (malformed session reference rejects the write, stored state
+      unchanged) with matching description sentence, and added it to the
+      task-session-verification-evidence Covers line so the malformed-rejection test binds to an AC.
+      Question (cross-document tension): P0a boundary text was aligned in parallel in this pass; no
+      P1a content change needed — task 4 amend bullet becomes a verify/no-op against the aligned
+      text. Both threads replied and resolved. Standing P0a approval-ordering gate threads left
+      open; plan remains draft pending P0a approve+derive."
+    author: "@claude"
+    created_at: 2026-06-11T21:50:06.102Z
