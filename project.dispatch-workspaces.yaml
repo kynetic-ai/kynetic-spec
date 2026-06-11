@@ -11840,7 +11840,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T07:27:00.145Z
+      updated_at: 2026-06-11T07:30:53.355Z
     integration:
       status: merged
       detail: integration:merged
@@ -11857,18 +11857,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T07:11:41.645Z
-      last_reconciled_at: 2026-06-11T07:30:44.051Z
+      last_reconciled_at: 2026-06-11T07:30:53.355Z
       created_at: 2026-06-11T07:03:44.256Z
-      updated_at: 2026-06-11T07:30:44.051Z
+      updated_at: 2026-06-11T07:30:53.355Z
     workspace_id: dispatch-workspace-01KTTD0XG6VBZ6AR49VGQ2FARF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 0f3473bba38c4e87899c06d0394c895a92aa61e3
-        last_seen_at: 2026-06-11T07:11:03.022Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-broken-shadow-safety-spec-delta-01kttd0x-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-broken-shadow-safety-spec-delta/01kttd0x
