@@ -50,6 +50,18 @@ checks:
     runner: manual
     created_at: 2026-06-11T18:13:23.474Z
     completed_at: 2026-06-11T18:13:23.474Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No cycles; no P1 task depends on a P2 task; 3 declared deps all justified
+      (display->classifier shares classifier, upgrade->classifier shares variant map,
+      component->ancestry-api consumes payload); remaining tasks correctly parallel
+    name: Dependency ordering
+    required: true
+    runner: manual
+    created_at: 2026-06-11T18:13:28.826Z
+    completed_at: 2026-06-11T18:13:28.826Z
 events:
   - _ulid: 01KTVY20HDMERJRGK4RSYWVR2G
     actor: "@claude"
@@ -148,6 +160,13 @@ events:
       status: pass
       name: Local AC coverage mapping
     timestamp: 2026-06-11T18:13:23.696Z
+  - _ulid: 01KTVY78B0GETNSYANFSPYG1E2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-11T18:13:29.056Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -382,5 +401,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:13:23.474Z
+updated_at: 2026-06-11T18:13:28.826Z
 notes: []
