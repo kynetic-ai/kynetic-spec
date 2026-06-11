@@ -1,0 +1,59 @@
+_ulid: 01KTTD08J12B14SB244JRFNDFX
+slugs:
+  - task-connect-host-exposure-warning
+title: Warn on non-loopback connect host
+type: task
+description: |
+  Emit a visible warning when daemon.connect_host is configured to a
+  non-loopback address, mirroring the existing bind-host warning.
+
+  Why: The localhostOnly middleware in packages/daemon/src/server.ts
+  (~line 459) extends the Host-header allowlist with endpoint.bindHost
+  and endpoint.connectHost (~line 646). Wildcards are filtered
+  (WILDCARD_HOSTS, line 351) but an explicit external IP/hostname in
+  connect_host is silently added to the accepted Host values and
+  advertised to all clients. Note this does NOT make a loopback-bound
+  daemon externally reachable (the bind host controls the listening
+  interface, and the existing ac-external-binding-warning covers
+  external binds) — but a misconfigured connect_host silently weakens
+  the Host-header (DNS-rebinding) protection and misroutes clients, so
+  it must be loud.
+
+  What: When the effective connect host is non-loopback: (1)
+  startServer() in src/cli/commands/serve.ts emits a warning alongside
+  the existing bind-host warning block (~line 432); (2) statusServer()
+  (~line 633) does the same when reporting the endpoint. Reuse
+  isExternallyReachable() from src/daemon-shared/endpoint.ts (line 250).
+  Wording parallel to the existing warning: requests addressed to that
+  host value will be accepted by the daemon; verify the value is
+  intended.
+
+  How: Pure additive warnings via warn() (already routes to stderr in
+  JSON mode). No behavior change to binding, allowlisting, or metadata.
+
+  Testing: CLI-level tests beside the existing external-binding-warning
+  tests (find them via grep for ac-external-binding-warning under
+  tests/): configure daemon.connect_host to a non-loopback value in a
+  temp project's kspec.config.yaml and assert the warning text on
+  stderr for start (can use --json mode to keep stdout clean) and
+  status. Loopback connect_host produces no warning. Annotate
+  @daemon-network-endpoint-contract ac-external-connect-host-warning.
+
+  Covers: @daemon-network-endpoint-contract
+  ac-external-connect-host-warning.
+spec_ref: "@daemon-network-endpoint-contract"
+plan_ref: "@plan-daemon-operational-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-daemon-reliability-specs"
+context: []
+priority: 3
+tags:
+  - daemon
+  - cli
+  - security
+vcs_refs: []
+created_at: 2026-06-11T03:53:19.681Z
+todos: []

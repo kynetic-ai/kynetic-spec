@@ -1,0 +1,57 @@
+_ulid: 01KTTD073BSRG8AMPS4RZS6979
+slugs:
+  - task-serve-logs-command
+title: Implement kspec serve logs and status log path
+type: task
+description: |
+  Implement the long-spec'd kspec serve logs command and report the log
+  file location from kspec serve status.
+
+  Why: @cli-serve-commands ac-8 and ac-9 specify kspec serve logs
+  (tail) and kspec serve logs --follow (stream) against the daemon log
+  file — they have never been implemented because the log file did not
+  exist. task-daemon-log-capture creates it.
+
+  What: (1) New "logs" subcommand in registerServeCommands() in
+  src/cli/commands/serve.ts (~line 214, alongside start/stop/status/
+  restart): kspec serve logs prints the last N lines (default 50,
+  --lines <n> to override) of the daemon log; kspec serve logs --follow
+  keeps streaming appended lines until Ctrl+C. Works whether or not the
+  daemon is currently running (the file persists); prints a clear
+  actionable error if no log file exists yet. (2) statusServer() output
+  gains a "Log file: <path>" line (and log_file field in --json).
+
+  How: Resolve the path via the shared filename constant from
+  src/daemon-shared/endpoint.ts added by task-daemon-log-capture. For
+  --follow, use fs.watch or a 500ms polling stat/read loop on the file
+  (polling is simpler and rotation-safe: reopen when the inode shrinks
+  or the file is replaced). Respect rotation: when the active file is
+  rotated mid-follow, continue from the new active file. Honor --json
+  for the non-follow mode per @trait-json-output (lines array).
+
+  Testing: CLI tests using kspec()/kspecJson() from tests/helpers/cli.ts
+  with a fabricated log file in a temp global config dir (point HOME or
+  the config-dir override at a temp dir): tail returns last lines,
+  --lines respected, missing file error includes guidance, status shows
+  the path. Follow mode: behavioral test with a child process appending
+  lines, or document a manual check if timing proves flaky in CI.
+  Annotate @cli-serve-commands ac-8, ac-9.
+
+  Covers: @cli-serve-commands ac-8, ac-9; @daemon-log-capture
+  ac-log-location-discoverable.
+spec_ref: "@cli-serve-commands"
+plan_ref: "@plan-daemon-operational-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-daemon-log-capture"
+context: []
+priority: 2
+tags:
+  - cli
+  - daemon
+  - reliability
+vcs_refs: []
+created_at: 2026-06-11T03:53:18.187Z
+todos: []

@@ -1,0 +1,115 @@
+_ulid: 01KTTD04V0RXJDT6YRMEJMAYBD
+slugs:
+  - task-update-daemon-reliability-specs
+title: Add daemon reliability delta ACs to existing specs
+type: task
+description: |
+  Add the delta acceptance criteria this plan needs on existing specs.
+  The new specs in this plan (@daemon-failure-observability,
+  @daemon-log-capture, @ui-production-log-hygiene) are materialized by
+  kspec plan derive after the plan is approved — plan import only stores
+  the plan document. This task covers only the deltas to specs that
+  already exist.
+
+  Why: Command timeout behavior belongs on @daemon-command-api (which
+  already owns command execution semantics), the connect-host warning
+  belongs on @daemon-network-endpoint-contract (which already owns the
+  bind-host external warning via ac-external-binding-warning), and the
+  dashboard counts contract belongs on @ui-dashboard-overview. Creating
+  parallel specs would duplicate existing contracts.
+
+  What: Use kspec item ac add (via kspec batch) to add the following ACs
+  exactly, unless an equivalent AC already exists.
+
+  1. Add to @daemon-command-api:
+
+     ac-command-timeout:
+       given: A command submitted through the command execution endpoint
+         is still executing when the configured execution time limit
+         elapses (default 120 seconds when not configured)
+       when: The limit elapses
+       then: The caller receives a structured error response identifying
+         the command and the elapsed limit, while the command's
+         underlying execution is not forcibly terminated and command
+         execution remains serialized
+
+     ac-timeout-queue-bounded:
+       given: A previously timed-out command is still executing, so
+         commands that require serialized execution are waiting behind
+         it
+       when: A new command is submitted through the command execution
+         endpoint
+       then: The caller receives a response within its own configured
+         execution time limit — the normal result if execution begins
+         and completes in time, otherwise the same structured timeout
+         error — and a command whose limit elapses before its execution
+         begins is discarded without ever executing
+
+     ac-stuck-command-reported:
+       given: A dispatched command has exceeded the configured execution
+         time limit and has not completed
+       when: The daemon health reporting surface is queried
+       then: The response reports that command dispatch is degraded,
+         identifying the stuck command and how long it has been
+         executing, and stops reporting it once the command completes
+
+     ac-timeout-isolation:
+       given: A command timed out and its underlying execution later
+         completes or emits further output
+       when: Subsequent commands execute through the command execution
+         endpoint
+       then: The late output from the timed-out command is not attributed
+         to any other command's response, and its completion frees
+         waiting commands to proceed
+
+     ac-timeout-late-completion-effects:
+       given: A mutating command, or a batch containing mutating
+         commands, timed out for its caller while its underlying
+         execution continued
+       when: The underlying execution later completes successfully
+       then: The same completion effects that follow an in-time
+         successful mutation still occur — the entity cache is
+         updated and the corresponding WebSocket event is broadcast
+         to connected clients — so the timed-out caller can observe
+         the eventual result through subsequent reads
+
+  2. Add to @daemon-network-endpoint-contract:
+
+     ac-external-connect-host-warning:
+       given: The configured connect host is a non-loopback address
+       when: The daemon starts or a lifecycle command reports the
+         endpoint
+       then: The output includes a visible warning that the daemon will
+         accept requests addressed to that host value
+
+  3. Add to @ui-dashboard-overview:
+
+     ac-counts-from-summary:
+       given: The dashboard is connected to a live backend
+       when: The dashboard computes the status summary counts
+       then: The counts are obtained from the pre-computed server-side
+         status summary rather than by retrieving the full task list
+
+  How: Run kspec item get on each target spec first to confirm no
+  equivalent AC exists, then add via kspec batch with item ac add
+  commands. Use file-based payloads for the multi-line given/when/then
+  text.
+
+  Testing: kspec validate passes; kspec item get @daemon-command-api,
+  @daemon-network-endpoint-contract, and @ui-dashboard-overview show the
+  new ACs.
+spec_ref: "@daemon-command-api"
+plan_ref: "@plan-daemon-operational-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - daemon
+  - reliability
+vcs_refs: []
+created_at: 2026-06-11T03:53:15.872Z
+todos: []

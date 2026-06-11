@@ -1,0 +1,162 @@
+_ulid: 01KTTD07T61PPMK5RGAJCJ01Z7
+slugs:
+  - task-command-dispatch-timeout
+title: Add command execution timeout to daemon command API
+type: task
+description: |
+  Bound the time a caller of the daemon command route can be left
+  waiting, and surface a wedged command queue to operators, so one hung
+  command cannot silently make the daemon unusable.
+
+  Why: packages/daemon/src/routes/command.ts serializes command
+  dispatches through DispatchMutex (~line 196; cache-servable reads at
+  ~line 625 bypass it). The mutex has no timeout: if a command hangs
+  (deadlocked file lock, stuck network call), every subsequent
+  serialized command request queues behind it indefinitely and the
+  daemon is effectively dead for CLI proxy mode, the web UI, and
+  dispatch — with no operator-visible signal. Live evidence: inbox item
+  01KTRYDX records POST /api/command hanging indefinitely even for
+  util ulid on a fresh daemon, with nothing to tell the operator why.
+
+  Design decision — the timeout is client-observed, NOT an unwedge: on
+  timeout the HTTP caller gets a structured error, but the mutex slot
+  is NOT released and the abandoned execution is NOT killed. The
+  abandoned execution runs to completion (or hangs forever) holding
+  its slot; subsequent serialized commands queue behind it, and each
+  gets its own bounded timeout response instead of an unbounded hang.
+  Rationale: releasing the slot would let new commands run
+  concurrently with the abandoned one, and for mutations the abandoned
+  execution still holds the cross-process file lock (withFileLock,
+  ~lines 638/751) — which same-process callers can NEVER reclaim
+  (src/parser/file-lock.ts checkStaleLock treats the daemon's own live
+  PID as not-stale), so follow-up mutations would only fail on lock
+  timeouts. Holding the slot preserves the ac-concurrent-mutations
+  serialization contract and keeps the semantics honest: the timeout
+  buys diagnosability, and the paired degraded health report tells
+  operators the remedy is a restart. Note the DispatchMutex doc
+  comment claiming executeCommand mutates process-global cwd/console
+  is stale: interception is installed once at module load and routed
+  per call via AsyncLocalStorage, and the working directory is
+  ALS-scoped (runWithWorkingDirectory in src/parser/yaml.ts — no
+  process.chdir). There are no globals to restore on timeout; update
+  that comment if you touch it, but keep the mutex.
+
+  What: (1) A per-caller wait bound: default 120000 ms, overridable
+  via daemon config (daemon.command_timeout_ms — extend
+  DaemonConfigSchema in src/parser/config.ts; there is no src/config/
+  directory). Forward the value to the daemon process through the
+  spawn argv in src/cli/commands/serve.ts the same way --connect-host
+  is forwarded (~line 422), parsed in packages/daemon/src/index.ts and
+  threaded into the command route options. (2) On timeout the caller
+  receives a structured error via the route's existing errorResponse
+  pattern — HTTP 504 with body { error: "command_timeout", message:
+  <command path + elapsed limit>, suggestion: <check kspec serve
+  status / restart guidance> }. Do NOT look for an error helper in
+  response-envelope.ts: wrapResponse there only shapes success
+  envelopes; errors in these routes are errorResponse bodies of the
+  { error, message, suggestion } / { error, details } form. (3) A
+  command whose limit elapses while still queued (execution never
+  started) is discarded when its slot finally frees — it must not
+  execute after its caller was already told it timed out. (4) A wedge
+  registry: track { command, startedAt } for the currently executing
+  dispatch in command.ts module scope, export a getter, and extend the
+  GET /api/health handler (packages/daemon/src/server.ts ~line 710) to
+  report degraded command dispatch with the stuck command name and
+  held duration whenever the current dispatch has exceeded its limit,
+  clearing once it completes. (5) Batch path (~line 751): same bound
+  applied whole-batch (a batch is one atomic dispatch). (6) Completion
+  side effects are bound to command completion, NOT to the HTTP
+  response: a mutating command (or batch containing mutations) that
+  times out for its caller but later completes successfully still
+  gets the full post-mutation effects — entity-cache write-through
+  and the command_executed/batch_executed WebSocket broadcast — so
+  the daemon cache never goes stale, the existing
+  ac-mutation-cache-update contract holds for late completions, and
+  the timed-out caller can observe the eventual result via
+  subsequent reads.
+
+  How: Restructure the two route-handler call sites (~lines 632 and
+  751) so completion side effects ride on the execution promise
+  instead of the route handler's await path: build
+  execution = dispatchMutex.run(...).then(result => run completion
+  side effects, then return result) and race THAT augmented promise
+  against the timer. The completion side effects are exactly the
+  work that currently runs after the await returns: single path —
+  when the command is mutating and exited 0, the
+  MUTATION_AFFECTED_DOMAINS cache write-through loop (~lines
+  647-657) and the command_executed pubsub broadcast (~lines
+  659-669); batch path — when hasMutating and batchResult.success,
+  the same write-through loop (~lines 814-823) and the
+  batch_executed broadcast (~lines 825-837). Bound to the execution
+  promise they run when the command actually completes: before the
+  response on the normal path (preserving ac-mutation-cache-update's
+  update-before-response ordering) and after the 504 has already
+  gone out on the timeout path (ac-timeout-late-completion-effects).
+  Response-only shaping stays in the route handler: status selection
+  (200/422/504) and the batch path's merge of daemon-captured
+  stdout/stderr into the response body (~lines 804-809) apply only
+  when a response is still pending; a timed-out caller got the 504
+  body, and late capture content is discarded with its per-request
+  store (covered by ac-timeout-isolation). Clear the timer on normal
+  completion to avoid open-handle leaks in tests. Do NOT modify
+  DispatchMutex to drop the slot on timeout. Set a per-request
+  timed-out flag when the race fires; the fn passed to
+  dispatchMutex.run checks the flag first and returns immediately
+  without executing (queued-command discard — discarded executions
+  skip the completion side effects too, since nothing ran). Attach a
+  .catch to the abandoned augmented promise that logs a warning via
+  plain console.warn/console.error at daemon level — the .catch is
+  registered in the route handler outside any command capture store,
+  so it reaches the daemon console directly today, and once
+  task-daemon-log-capture lands the same console call flows into the
+  daemon log file automatically; no dependency on or ordering with
+  that task. The .catch itself is REQUIRED, because
+  task-daemon-fatal-failure-observability installs an
+  unhandledRejection handler that exits the process; an abandoned
+  command's late rejection (or a failing late completion side
+  effect) must never crash the daemon. Leave the cache-served read
+  path (~line 625) untouched — it bypasses the mutex and keeps
+  working during a wedge. Cross-process callers contending on the
+  file lock self-heal via the 30-second duration-ceiling reclaim in
+  file-lock.ts; no work needed there.
+
+  Testing: Vitest tests in the existing daemon route test suites with
+  short configured timeouts (e.g. 50ms), never the 120s default: a
+  stubbed never-resolving command times out with the 504
+  command_timeout body (AC: @daemon-command-api ac-command-timeout); a
+  second command submitted during the wedge receives its own bounded
+  timeout response and is verifiably never executed after the wedge
+  clears (AC: @daemon-command-api ac-timeout-queue-bounded); while
+  wedged, GET /api/health reports the stuck command name and held
+  duration, and stops reporting after completion (AC:
+  @daemon-command-api ac-stuck-command-reported); a slow command that
+  resolves after its timeout does not corrupt the response of the next
+  command, and a late rejection from an abandoned command does not
+  kill the process (AC: @daemon-command-api ac-timeout-isolation); a
+  stubbed MUTATING command that resolves successfully after its
+  caller's 504 still triggers the cache write-through and the
+  command_executed broadcast (assert on a pubsub spy and cache stub),
+  and the batch path likewise still emits batch_executed and writes
+  through after a late successful completion (AC: @daemon-command-api
+  ac-timeout-late-completion-effects). Resolve wedge stubs at test
+  end so no handles leak.
+
+  Covers: @daemon-command-api ac-command-timeout,
+  ac-timeout-queue-bounded, ac-stuck-command-reported,
+  ac-timeout-isolation, ac-timeout-late-completion-effects.
+spec_ref: "@daemon-command-api"
+plan_ref: "@plan-daemon-operational-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-daemon-reliability-specs"
+context: []
+priority: 2
+tags:
+  - daemon
+  - api
+  - reliability
+vcs_refs: []
+created_at: 2026-06-11T03:53:18.918Z
+todos: []

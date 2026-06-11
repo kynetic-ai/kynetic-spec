@@ -1,0 +1,92 @@
+_ulid: 01KTTD05J0G7PQGFER0GY2N4KR
+slugs:
+  - task-daemon-log-capture
+title: Implement daemon log file with rotation
+type: task
+description: |
+  Give the daemon a durable log file with deterministic size-based
+  rotation, and tee daemon console output into it in all run modes.
+
+  Why: src/cli/commands/serve.ts:444 spawns the detached daemon with
+  stdio: "ignore" and an open TODO ("redirect to log file when logging
+  implemented"). Every console.log/console.error in the daemon is
+  discarded in detached mode, so production crashes and errors leave no
+  accessible trace. @cli-serve-commands ac-8/ac-9 already promise a
+  "daemon log file from the global daemon state directory under
+  ~/.config/kspec/" that has never existed.
+
+  What: A daemon-internal file logger that captures everything the daemon
+  writes via console.log/warn/error (the daemon's only logging mechanism
+  today) into ~/.config/kspec/daemon.log, with timestamps per line.
+  Rotation: when an append would push daemon.log past the size limit
+  (default 5 MiB, overridable via daemon config —
+  daemon.log_max_size_bytes; extend DaemonConfigSchema in
+  src/parser/config.ts, there is no src/config/ directory), rotate FIRST
+  (rename daemon.log to daemon.log.1, replacing any existing
+  daemon.log.1), then append to a fresh daemon.log — retained total
+  bounded at 2x the limit plus at most one line. Foreground mode keeps
+  terminal output and also writes the file.
+
+  How: Implement the logger in packages/daemon/src (e.g. a new
+  packages/daemon/src/logger.ts) that wraps console.log/warn/error to
+  tee into an append-only file stream. Do the teeing inside the daemon
+  process — do NOT change the stdio: "ignore" spawn in serve.ts;
+  in-process capture works identically for foreground and detached
+  modes and avoids parent-process file handle lifetime issues. Reuse
+  getDefaultDaemonConfigDir() from src/daemon-shared/endpoint.ts
+  (line 121, returns ~/.config/kspec) for the log path, and export a
+  shared constant for the log filename from
+  src/daemon-shared/endpoint.ts so the CLI (serve status / serve logs)
+  resolves the same path.
+
+  Interaction with the command-route console interception — get the
+  model right: packages/daemon/src/routes/command.ts installs its
+  console/stdout/stderr/exit interceptors ONCE at module load (~lines
+  90-171: the current console.log etc. are captured as "originals" at
+  import time and permanently replaced), then routes per call via
+  AsyncLocalStorage (commandExecutionStorage) — output emitted during a
+  command execution is pushed into that request's capture store and
+  never reaches the captured originals. There is no per-command
+  wrap/unwrap. packages/daemon/src/index.ts statically imports
+  server.js, which statically imports command.js, so those interceptors
+  are already installed before any index.ts body code runs — a tee
+  installed "before createServer()" in the index.ts body would sit
+  ABOVE the interception and double-log command output. To put the tee
+  BENEATH the interception: install it at module load of the logger and
+  make the logger the FIRST import in index.ts (a side-effect import
+  line above the server.js import — ES module evaluation order runs it
+  first). command.ts then captures the tee'd functions as its
+  originals: daemon-side output (no active capture) flows interceptor →
+  tee → file + terminal, while command output is swallowed by the
+  capture store and never double-logged. Alternative if import ordering
+  proves fragile: export an is-capturing check from command.ts and make
+  the tee skip writes while a command capture store is active. The
+  logger installs with built-in defaults at module load and applies the
+  configured size limit once startup configuration is parsed. Rotate
+  before any append that would cross the limit.
+
+  Testing: Unit tests in tests/ (vitest, npm test) for the logger:
+  timestamped lines appended, rotation triggers before the write that
+  would cross the limit, exactly one .1 generation retained, total
+  bounded at 2x limit plus one line. A guard test that output emitted
+  while a command capture store is active does NOT land in the daemon
+  log (no double-logging). Use createTempDir() and point the logger at
+  a temp path. Annotate tests with AC comments.
+
+  Covers: @daemon-log-capture ac-detached-output-captured,
+  ac-foreground-tee, ac-log-line-timestamps, ac-bounded-rotation.
+spec_ref: "@daemon-log-capture"
+plan_ref: "@plan-daemon-operational-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+  - infra
+  - reliability
+vcs_refs: []
+created_at: 2026-06-11T03:53:16.608Z
+todos: []

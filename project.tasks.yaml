@@ -31289,3 +31289,152 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:52:55.766Z
+- _ulid: 01KTTD04V0RXJDT6YRMEJMAYBD
+  slugs:
+    - task-update-daemon-reliability-specs
+  title: Add daemon reliability delta ACs to existing specs
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-daemon-operational-reliability"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - spec-update
+    - daemon
+    - reliability
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:53:15.872Z
+- _ulid: 01KTTD05J0G7PQGFER0GY2N4KR
+  slugs:
+    - task-daemon-log-capture
+  title: Implement daemon log file with rotation
+  type: task
+  spec_ref: "@daemon-log-capture"
+  plan_ref: "@plan-daemon-operational-reliability"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - daemon
+    - infra
+    - reliability
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:53:16.608Z
+- _ulid: 01KTTD06BWZAEDXS79B66C260R
+  slugs:
+    - task-daemon-fatal-failure-observability
+  title: Record and surface daemon termination reasons
+  type: task
+  spec_ref: "@daemon-failure-observability"
+  plan_ref: "@plan-daemon-operational-reliability"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-daemon-log-capture"
+  priority: 1
+  tags:
+    - daemon
+    - reliability
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:53:17.436Z
+- _ulid: 01KTTD073BSRG8AMPS4RZS6979
+  slugs:
+    - task-serve-logs-command
+  title: Implement kspec serve logs and status log path
+  type: task
+  spec_ref: "@cli-serve-commands"
+  plan_ref: "@plan-daemon-operational-reliability"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-daemon-log-capture"
+  priority: 2
+  tags:
+    - cli
+    - daemon
+    - reliability
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:53:18.187Z
+- _ulid: 01KTTD07T61PPMK5RGAJCJ01Z7
+  slugs:
+    - task-command-dispatch-timeout
+  title: Add command execution timeout to daemon command API
+  type: task
+  spec_ref: "@daemon-command-api"
+  plan_ref: "@plan-daemon-operational-reliability"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-daemon-reliability-specs"
+  priority: 2
+  tags:
+    - daemon
+    - api
+    - reliability
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:53:18.918Z
+- _ulid: 01KTTD08J12B14SB244JRFNDFX
+  slugs:
+    - task-connect-host-exposure-warning
+  title: Warn on non-loopback connect host
+  type: task
+  spec_ref: "@daemon-network-endpoint-contract"
+  plan_ref: "@plan-daemon-operational-reliability"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-daemon-reliability-specs"
+  priority: 3
+  tags:
+    - daemon
+    - cli
+    - security
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:53:19.681Z
+- _ulid: 01KTTD098ZQFGG9VEBM7AZT83C
+  slugs:
+    - task-web-ui-debug-log-cleanup
+  title: Remove debug console output from shipped web UI
+  type: task
+  spec_ref: "@ui-production-log-hygiene"
+  plan_ref: "@plan-daemon-operational-reliability"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - web-ui
+    - cleanup
+    - reliability
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:53:20.415Z
+- _ulid: 01KTTD09ZTH4AJ62M1A4M7YWC0
+  slugs:
+    - task-dashboard-summary-adoption
+  title: Use server-side task summary for dashboard counts
+  type: task
+  spec_ref: "@ui-dashboard-overview"
+  plan_ref: "@plan-daemon-operational-reliability"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-update-daemon-reliability-specs"
+  priority: 3
+  tags:
+    - web-ui
+    - performance
+    - reliability
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:53:21.146Z

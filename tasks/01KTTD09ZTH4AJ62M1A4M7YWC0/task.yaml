@@ -1,0 +1,82 @@
+_ulid: 01KTTD09ZTH4AJ62M1A4M7YWC0
+slugs:
+  - task-dashboard-summary-adoption
+title: Use server-side task summary for dashboard counts
+type: task
+description: |
+  Switch the dashboard status counts from a full task-list fetch to the
+  existing pre-computed summary endpoint.
+
+  Why: packages/web-ui/src/routes/+page.svelte (~line 66) has an open
+  TODO: it fetches ALL tasks via fetchTasks() just to count statuses in
+  a $derived block (~line 100). The project convention requires
+  server-side aggregation for computed statistics, and the server side
+  already exists: GET /api/aggregation/tasks/summary
+  (packages/daemon/src/routes/aggregation.ts, AC-covered by
+  @ui-api-aggregation ac-1, returns { counts: Record<status, number>,
+  ready, blocked_by_dependencies, total }). No web UI code calls it
+  today.
+
+  What: (1) Add fetchTaskStatusSummary() to
+  packages/web-ui/src/lib/api.ts following the existing fetcher
+  pattern: in static mode (isStaticMode()), derive the same summary
+  shape client-side from fetchTasksStatic() in
+  packages/web-ui/src/lib/api-static.ts (static snapshots are local
+  files — deriving there is fine and keeps GH Pages builds working);
+  in live mode, call /api/aggregation/tasks/summary. (2) In
+  +page.svelte, replace the tasksQuery full-list fetch with a query for
+  the summary (add a queryKeys entry under
+  packages/web-ui/src/lib/query/), and compute the TaskCounts object
+  (ready, in_progress, needs_work, pending_review, blocked, completed,
+  cancelled) with these EXPLICIT semantics: every card except ready
+  maps 1:1 from summary.counts — in particular blocked stays
+  summary.counts.blocked (status 'blocked' only), preserving the
+  current display semantics; do NOT fold
+  summary.blocked_by_dependencies into the blocked card. The ready
+  card deliberately adopts summary.ready — the server's canonical
+  dependency-aware definition (pending OR needs_work tasks with no
+  blockers and all dependencies met,
+  packages/daemon/src/routes/aggregation.ts ~lines 100-112). This is a
+  deliberate, documented change from the current client computation
+  (+page.svelte ~lines 99-152 counts only pending tasks with met
+  dependencies), so the displayed ready number may rise where
+  needs_work tasks are dispatch-ready; record the semantic change in
+  the task notes and commit message. The static-mode derivation must
+  implement these same semantics so both modes agree. (3) Remove the
+  now-dead full-list aggregation code and
+  the TODO comment. If other parts of +page.svelte genuinely need task
+  items (check before deleting — e.g. active-work cards), keep those
+  usages on their existing queries and only move the counts; do not
+  expand scope to refactor unrelated dashboard data fetching.
+
+  How: Follow the TanStack Query patterns already used in +page.svelte
+  (createQuery with queryKeys, enabled: isProjectInitialized()). See
+  the ui-data-layer skill for cache invalidation conventions — the
+  summary query should invalidate on the same WebSocket task events as
+  the task list queries so counts stay live.
+
+  Testing: Web UI unit tests for fetchTaskStatusSummary (live path hits
+  the aggregation URL; static path derives identical shape from a
+  snapshot fixture). Component/page test or E2E check that the
+  dashboard renders counts without issuing a full /api/tasks list
+  request in live mode (assert on fetch calls). Annotate
+  AC: @ui-dashboard-overview ac-counts-from-summary. Run the Playwright
+  E2E dashboard specs (npm run test:e2e) to confirm no regression.
+
+  Covers: @ui-dashboard-overview ac-counts-from-summary.
+spec_ref: "@ui-dashboard-overview"
+plan_ref: "@plan-daemon-operational-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-update-daemon-reliability-specs"
+context: []
+priority: 3
+tags:
+  - web-ui
+  - performance
+  - reliability
+vcs_refs: []
+created_at: 2026-06-11T03:53:21.146Z
+todos: []

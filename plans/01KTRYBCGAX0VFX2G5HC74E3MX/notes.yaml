@@ -48,3 +48,88 @@ notes:
       remains draft."
     author: "@claude"
     created_at: 2026-06-10T15:23:23.411Z
+  - _ulid: 01KTTD0ARSB9TMDXPWRKTQ2A9Y
+    content: |-
+      - **Related in-progress work (do not modify):** P1 task
+        `@investigate-daemon-dispatch-oom` (01KRMEKN) is investigating daemon OOM
+        under dispatch workload. `task-daemon-log-capture` and
+        `task-daemon-fatal-failure-observability` directly improve that
+        investigation (an OOM kill or fatal rejection will finally leave a durable
+        trace), but this plan does not change that task's scope.
+      - **Completed OOM plan:** "Daemon Dispatch OOM Hardening Spec Alignment"
+        (01KRYJ0Z) covered event-lineage bounding, reconciliation overlap,
+        recursive command proxying, and cleanup diagnostics gating — disjoint from
+        this plan; no spec touched twice.
+      - **Network exposure finding corrected:** the audit claim that a
+        misconfigured external connect host "silently makes the daemon externally
+        reachable" is not accurate — reachability is controlled by the bind host,
+        which already requires explicit configuration
+        (@trait-localhost-security ac-external-host-explicit) and already warns
+        (@daemon-network-endpoint-contract ac-external-binding-warning, implemented
+        in serve.ts start and status). The real residual gap is the silent
+        Host-allowlist extension and client misrouting for non-loopback
+        connect_host, handled as a single delta AC + warning task.
+      - **`serve logs` was already spec'd:** @cli-serve-commands ac-8/ac-9 promised
+        the command against a log file that never existed (the original "Implement
+        daemon logging" task 01KFMMMN was cancelled). This plan implements those
+        ACs rather than re-specifying them.
+      - **Spec-purity placement:** concrete file names (daemon.log,
+        daemon.last-exit.json), env/config key names, and line numbers live only in
+        task descriptions; specs state the behavior with deterministic defaults
+        (5 MiB rotation cap, one retained generation, 120-second command timeout).
+      - **Command-timeout design (fix cycle 1):** the chosen semantics are a
+        client-observed timeout without unwedging — the dispatch slot stays held
+        by the abandoned execution, subsequent serialized callers receive bounded
+        structured timeout errors (and queued-but-never-started commands are
+        discarded), paired with a degraded-dispatch report on the daemon health
+        surface so operators know to restart. Releasing the dispatch slot on
+        timeout was rejected: console/stdout/exit interception and the working
+        directory are AsyncLocalStorage-scoped (there are no globals to restore),
+        but an abandoned MUTATING command still holds the cross-process file
+        lock, and same-process lock acquisition never reclaims a lock from the
+        daemon's own live PID — a released-slot design would run new commands
+        concurrently with the abandoned one and fail follow-up mutations on lock
+        timeouts, violating both the serialization contract and any
+        "subsequent commands execute normally" promise. Cross-process lock
+        contenders self-heal via the existing 30s duration-ceiling reclaim.
+        AbortSignal-based cancellation is deferred: command implementations do
+        not accept signals today; it can layer onto this contract later.
+      - **Command-timeout completion effects + logging decoupling (fix cycle 2):**
+        the command route's post-completion side effects (single path: the
+        MUTATION_AFFECTED_DOMAINS cache write-through and the command_executed
+        broadcast; batch path: the same write-through and the batch_executed
+        broadcast) previously ran on the route handler's await path, which the
+        client-observed timeout would have skipped for mutations completing
+        after a 504 — leaving the daemon cache stale and clients unnotified
+        despite a persisted mutation, violating @daemon-command-api
+        ac-mutation-cache-update. The redesign binds those effects to the
+        execution promise itself so they run at actual command completion
+        whether or not the HTTP response already went out; the new delta AC
+        ac-timeout-late-completion-effects makes the contract explicit.
+        Response-only shaping (status selection, the batch response's
+        stdout/stderr merge) stays on the response path. Separately, the
+        abandoned-promise .catch logs via plain console at daemon level
+        rather than through the task-daemon-log-capture logger — registered
+        outside any command capture store it reaches the daemon console
+        today and flows into the daemon log automatically once log capture
+        lands, so task-command-dispatch-timeout has no dependency on
+        task-daemon-log-capture.
+      - **Rotation bound (fix cycle 1):** rotate-before-append chosen so the
+        retained-size bound is deterministic (2x the limit plus at most one
+        captured line) and the AC matches the prescribed mechanism exactly.
+      - **Log tee ordering (fix cycle 1):** the command-route interceptors are
+        installed once at module load and routed per call via AsyncLocalStorage;
+        the tee must be installed before that module is evaluated (first
+        side-effect import in the daemon entry) or be capture-aware, otherwise
+        command output double-logs into the daemon log.
+      - **Dashboard ready/blocked semantics (fix cycle 1):** the blocked card
+        keeps status-only counts (no silent change); the ready card deliberately
+        adopts the server's dependency-aware ready definition (which also counts
+        needs_work tasks with met dependencies) — a documented display change,
+        not an accident.
+      - **Ordering:** task-update-daemon-reliability-specs first (delta ACs gate the
+        three tasks that cover them). task-daemon-log-capture before the
+        fatal-failure and serve-logs tasks. The two web-ui tasks and the
+        connect-host warning are independent of the daemon logging chain.
+    author: Jacob Chapel
+    created_at: 2026-06-11T03:53:21.945Z

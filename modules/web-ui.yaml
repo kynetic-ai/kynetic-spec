@@ -554,6 +554,71 @@ features:
             notes: []
         created: 2026-03-26T05:50:40.217Z
         notes: []
+      - _ulid: 01KTTD04MAEXCAXYSWYFSGSV0J
+        slugs:
+          - daemon-log-capture
+        title: Daemon Log Capture
+        type: feature
+        description: |
+          The daemon emits an operational log that survives the process. Daemon
+          output is captured to a durable log file under the global daemon state
+          location in every run mode, so background (detached) runs — which have
+          no attached terminal — leave the same diagnostic trail as foreground
+          runs. Log growth is bounded deterministically by size-based rotation
+          with a fixed default cap, and the log location is discoverable from the
+          lifecycle status surface.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              The daemon was started in background (detached) mode
+            id: ac-detached-output-captured
+            then: |
+              Each emitted line is appended to a durable log file under the
+              global daemon state location instead of being discarded
+            when: |
+              The daemon emits startup, diagnostic, warning, or error output
+          - given: |
+              The daemon is running in foreground mode
+            id: ac-foreground-tee
+            then: |
+              The output appears on the attached terminal and the same content is
+              also appended to the durable log file
+            when: |
+              The daemon emits output
+          - given: |
+              The daemon appends a line to the durable log file
+            id: ac-log-line-timestamps
+            then: |
+              Each captured line carries a timestamp
+            when: |
+              The log file is read
+          - given: |
+              Appending the next captured line would push the active daemon log
+              file past the configured maximum size (default 5 MiB when not
+              configured)
+            id: ac-bounded-rotation
+            then: |
+              The active log is rotated before the write so the new line begins
+              a fresh active file, exactly one prior rotated generation is
+              retained, older rotated content is deleted, and the combined size
+              of retained log files never exceeds twice the configured maximum
+              size plus the size of a single captured line
+            when: |
+              The daemon writes that output
+          - given: |
+              The daemon is running or has previously run
+            id: ac-log-location-discoverable
+            then: |
+              The output includes the daemon log file location
+            when: |
+              The daemon lifecycle status command reports daemon state
+        tags: []
+        created: 2026-06-11T03:53:15.658Z
+        notes: []
     requirements:
       - _ulid: 01KJRZWDCC8W2WT0Q3A9CZAAGY
         slugs:
@@ -1534,6 +1599,67 @@ features:
             when: A new daemon-backed test attempts to acquire the lock
         tags: []
         created: 2026-05-12T00:14:51.847Z
+        notes: []
+      - _ulid: 01KTTD04G4N5CKCZM9K4FN3TAK
+        slugs:
+          - daemon-failure-observability
+        title: Daemon Failure Observability
+        type: requirement
+        description: |
+          When the daemon process terminates — gracefully or because of a fatal
+          error — the termination reason is durably recorded outside the process
+          and can be retrieved after the fact. Fatal conditions that would
+          otherwise end the process without a trace (uncaught errors, unhandled
+          asynchronous rejections) are captured with diagnostic detail before the
+          process exits. The daemon lifecycle status surface reports the most
+          recent termination when no daemon is running, so a user investigating a
+          disappeared daemon can see why it stopped without reproducing the
+          failure.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              The daemon process is running
+            id: ac-fatal-error-recorded
+            then: |
+              The error message, available stack detail, and a timestamp are
+              durably recorded before the process exits, and the process exits
+              with a non-zero exit code
+            when: |
+              An uncaught error or an unhandled asynchronous rejection occurs in
+              the daemon process
+          - given: |
+              The daemon process has terminated for any reason
+            id: ac-exit-record-durable
+            then: |
+              A durable record of the most recent termination is retrievable
+              without a running daemon, containing the termination kind
+              (graceful shutdown, fatal error, or startup failure), the reason
+              detail, and a timestamp
+            when: |
+              A user inspects daemon state after the process is gone
+          - given: |
+              No daemon is running and a prior termination record exists
+            id: ac-status-surfaces-last-exit
+            then: |
+              The output reports that the daemon is not running and includes the
+              most recent termination kind, reason, and timestamp
+            when: |
+              The daemon lifecycle status command runs
+          - given: |
+              The daemon shuts down in response to a shutdown signal or the stop
+              command
+            id: ac-graceful-exit-recorded
+            then: |
+              The termination record identifies the termination as a graceful
+              shutdown, so a later status check does not report it as a failure
+            when: |
+              The shutdown completes
+        tags: []
+        created: 2026-06-11T03:53:15.524Z
         notes: []
     created: 2026-01-22T01:18:09.314Z
     notes: []
@@ -5759,5 +5885,46 @@ requirements:
           the daemon resolves the resource request
     tags: []
     created: 2026-06-06T01:29:20.250Z
+    notes: []
+  - _ulid: 01KTTD04QT8Y7PA61J29JHNHSS
+    slugs:
+      - ui-production-log-hygiene
+    title: Shipped UI Console Hygiene
+    type: requirement
+    description: |
+      The shipped web interface does not emit debug- or informational-level
+      diagnostic output to the browser console during normal operation.
+      Console output in the shipped interface is reserved for actionable
+      warnings and errors. Routine lifecycle activity — navigation, item
+      selection, realtime connection progress, duplicate-event suppression —
+      produces no console output by default.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          The shipped web interface is loaded in a browser with default
+          settings
+        id: ac-no-debug-output-default
+        then: |
+          No debug- or informational-level diagnostic messages are written to
+          the browser console
+        when: |
+          A user performs routine interactions (navigating views, selecting
+          items) and the realtime connection performs its normal lifecycle
+          (connect, receive events, disconnect, reconnect)
+      - given: |
+          A genuine failure occurs in the shipped interface (a request fails,
+          a message cannot be parsed, or an internal handler throws)
+        id: ac-errors-preserved
+        then: |
+          A warning- or error-level console message is emitted that describes
+          the failure
+        when: |
+          The interface handles the failure
+    tags: []
+    created: 2026-06-11T03:53:15.770Z
     notes: []
 notes: []

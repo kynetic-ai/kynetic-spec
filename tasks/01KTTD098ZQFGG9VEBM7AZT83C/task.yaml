@@ -1,0 +1,62 @@
+_ulid: 01KTTD098ZQFGG9VEBM7AZT83C
+slugs:
+  - task-web-ui-debug-log-cleanup
+title: Remove debug console output from shipped web UI
+type: task
+description: |
+  Strip debug/informational console output from the shipped web UI,
+  keeping warnings and errors. Mechanical, tightly bounded change.
+
+  Why: Debug logs ship to every user's browser console. Confirmed
+  call sites (the full inventory — console.error/console.warn calls
+  elsewhere are actionable-failure output and stay):
+
+  - packages/web-ui/src/lib/components/TaskList.svelte lines 25, 28 —
+    two console.log debug statements in selectTask.
+  - packages/web-ui/src/lib/websocket/manager.ts lines 160, 168, 199,
+    321, 408 (console.log connection tracing) and line 353
+    (console.debug duplicate-event skip).
+
+  What: Delete the two TaskList.svelte console.log lines. In
+  manager.ts, remove the console.log/console.debug calls OR gate them
+  behind a module-level debug flag that is false by default (e.g.
+  const WS_DEBUG = false with a private debugLog helper) — choose
+  gating for manager.ts since the connection traces have diagnostic
+  value during development; choose deletion for TaskList.svelte (pure
+  leftovers). Keep every console.warn/console.error in both files
+  untouched (manager.ts lines 153, 184, 192, 342, 366, 378, 385, 395,
+  469).
+
+  Bounds — explicitly forbidden in this task: any semantic change to
+  selection handling, reconnection logic, event dispatch, or message
+  parsing; touching any file other than the two listed; introducing a
+  logging library or new dependency; changing console.warn/error
+  call sites.
+
+  Testing: Run the web-ui unit suite and lint/format gates (see the
+  work-gates skill for commands). Existing tests must pass unchanged —
+  if a test asserts on the removed logs, update only that assertion.
+  For AC annotation, add or extend a manager.ts unit test asserting no
+  console.log/debug is called during a normal
+  connect/message/disconnect cycle (spy on console), annotated with
+  AC: @ui-production-log-hygiene ac-no-debug-output-default, and one
+  asserting console.error still fires on a malformed message,
+  annotated with AC: @ui-production-log-hygiene ac-errors-preserved.
+
+  Covers: @ui-production-log-hygiene ac-no-debug-output-default,
+  ac-errors-preserved.
+spec_ref: "@ui-production-log-hygiene"
+plan_ref: "@plan-daemon-operational-reliability"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - web-ui
+  - cleanup
+  - reliability
+vcs_refs: []
+created_at: 2026-06-11T03:53:20.415Z
+todos: []

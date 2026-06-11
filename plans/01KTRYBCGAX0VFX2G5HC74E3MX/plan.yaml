@@ -2,11 +2,22 @@ _ulid: 01KTRYBCGAX0VFX2G5HC74E3MX
 slugs:
   - plan-daemon-operational-reliability
 title: Daemon Operational Reliability
-status: approved
+status: active
 approved_at: 2026-06-11T03:47:41.814Z
 branch: null
-derived_specs: []
-derived_tasks: []
+derived_specs:
+  - "@daemon-failure-observability"
+  - "@daemon-log-capture"
+  - "@ui-production-log-hygiene"
+derived_tasks:
+  - "@task-update-daemon-reliability-specs"
+  - "@task-daemon-log-capture"
+  - "@task-daemon-fatal-failure-observability"
+  - "@task-serve-logs-command"
+  - "@task-command-dispatch-timeout"
+  - "@task-connect-host-exposure-warning"
+  - "@task-web-ui-debug-log-cleanup"
+  - "@task-dashboard-summary-adoption"
 module_ref: "@web-ui"
 source_path: /home/chapel/Projects/kynetic-spec/plans/daemon-operational-reliability.md
 created_at: 2026-06-10T14:18:01.098Z
