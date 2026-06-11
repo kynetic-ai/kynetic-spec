@@ -20,7 +20,7 @@ import { ConnectionStateManager } from "./websocket/connection-state.js";
 import { getWebSocketContextId } from "./websocket/context-id.js";
 import { resolveWebSocketProject } from "./websocket/project-resolution.js";
 import type { ConnectionData, ConnectedEvent } from "./websocket/types.js";
-import { PidFileManager } from "./pid.js";
+import { PidFileManager, writeDaemonLastExitRecord } from "./pid.js";
 import {
   DEFAULT_BIND_HOST,
   formatHostForUrl,
@@ -1178,6 +1178,16 @@ export async function createServer(options: ServerOptions) {
   const shutdown = async (signal: string) => {
     console.log(`[daemon] Received ${signal}, shutting down gracefully...`);
 
+    // AC: @daemon-failure-observability ac-graceful-exit-recorded — record
+    // the graceful termination up front so even a teardown hang (followed
+    // by a forced SIGKILL from `kspec serve stop`) leaves an accurate
+    // record. A teardown failure overwrites this with a fatal record in
+    // the catch below. Unlike pidManager.remove(), the last-exit record is
+    // deliberately NOT removed — it must survive the process.
+    if (isDaemon) {
+      writeDaemonLastExitRecord({ kind: "graceful", reason: `Received ${signal}` });
+    }
+
     try {
       // Stop heartbeat monitoring
       heartbeatManager.stop();
@@ -1224,6 +1234,16 @@ export async function createServer(options: ServerOptions) {
       process.exit(0);
     } catch (error) {
       console.error("[daemon] Error during shutdown:", error);
+      // A failed teardown is not a graceful exit — overwrite the record
+      // written above so status reports the failure.
+      if (isDaemon) {
+        const err = error instanceof Error ? error : new Error(String(error));
+        writeDaemonLastExitRecord({
+          kind: "fatal",
+          reason: `Error during ${signal} shutdown: ${err.message}`,
+          stack: err.stack,
+        });
+      }
       process.exit(1);
     }
   };

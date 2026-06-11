@@ -12,6 +12,7 @@ export {
   PidFileManager,
   isNoDaemonModeEnabled,
   getDaemonLogPath,
+  writeDaemonLastExitRecord,
   DAEMON_LOG_FILENAME,
   DEFAULT_DAEMON_LOG_MAX_SIZE_BYTES,
 } from "../../../src/daemon-shared/endpoint.js";
