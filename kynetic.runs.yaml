@@ -64254,7 +64254,7 @@ runs:
     completed_at: 2026-06-11T17:27:42.839Z
   - _ulid: 01KTW01KNJNZP8895WS236P20Z
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -64266,7 +64266,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T18:47:06.104Z
-        completed_at: 2026-06-11T18:47:06.104Z
+        completed_at: 2026-06-11T18:47:10.188Z
+        notes: "Candidates: (1) friction — 60-min dispatch invocation timeout vs ~40-min CI workflow runs
+          needed as AC evidence; prior invocation on @task-ci-node-version-matrix timed out purely
+          waiting on gh run watch. High confidence, systemic for any CI-verification task. (2)
+          success — workflow_dispatch trigger + gh workflow run as PR-less verification path for
+          workflow changes; worked exactly as designed, produced concrete AC evidence. (3) stale
+          dist/ test failures — already tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T18:47:10.188Z
+        completed_at: 2026-06-11T18:47:10.188Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T18:45:21.202Z
