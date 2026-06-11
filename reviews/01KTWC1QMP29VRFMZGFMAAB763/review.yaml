@@ -17,6 +17,17 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T22:15:55.101Z
     completed_at: 2026-06-11T22:15:55.101Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import /tmp/ac-coverage-plan.md --dry-run succeeded; stored
+      title/status/content parsed as draft plan with no derived specs/tasks during dry run.
+    name: plan parse
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-11T22:16:08.442Z
+    completed_at: 2026-06-11T22:16:08.442Z
 events:
   - _ulid: 01KTWC1QMPXS7YZAMWEG4MCAC0
     actor: "@claude"
@@ -38,6 +49,13 @@ events:
       status: pass
       name: prior review follow-up
     timestamp: 2026-06-11T22:15:55.402Z
+  - _ulid: 01KTWC3JRVK4ZW789GRFDNNXAY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan parse
+    timestamp: 2026-06-11T22:16:08.732Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -50,5 +68,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:15:08.182Z
-updated_at: 2026-06-11T22:15:55.101Z
+updated_at: 2026-06-11T22:16:08.442Z
 notes: []
