@@ -63183,7 +63183,7 @@ runs:
     completed_at: 2026-06-11T11:45:42.586Z
   - _ulid: 01KTV89DYNF2QKARK5GP6HRYP7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -63199,7 +63199,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T11:51:49.324Z
-        completed_at: 2026-06-11T11:51:49.324Z
+        completed_at: 2026-06-11T11:51:58.792Z
+        notes: "High-confidence candidate (1): security-fix regression-test payload verification. When
+          hardening a shell-injection site, the metacharacter test payload must (a) be valid input
+          for the real producer and (b) actually execute under the pre-fix code, else the test gives
+          false coverage. Concrete, systemic, repeatable, not tracked. CAPTURE as success. Rejected
+          (already covered): excellent task description quality (dup of 01KTTP1Q/01KTTXAQ). No
+          genuine friction this session — payload iteration was the learning, not friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T11:51:58.792Z
+        completed_at: 2026-06-11T11:51:58.792Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T11:50:11.669Z
