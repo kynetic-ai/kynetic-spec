@@ -25869,7 +25869,7 @@ reviews:
     unresolved_blocker_count: 1
     verdict_count: 1
     created_at: 2026-06-11T19:52:14.114Z
-    updated_at: 2026-06-11T19:53:51.099Z
+    updated_at: 2026-06-11T20:28:27.348Z
   - _ulid: 01KTW52KA3YPE2VRMJFXZSY8C4
     slugs: []
     title: "Plan review: Shared Mutation and Event Service (round 2 follow-up — findings verification)"
