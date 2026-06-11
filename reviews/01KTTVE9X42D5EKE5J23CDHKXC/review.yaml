@@ -2,7 +2,18 @@ _ulid: 01KTTVE9X42D5EKE5J23CDHKXC
 slugs: []
 title: "Plan review: AC Coverage Verification Schema and Storage"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed for the live corpus with only pre-existing deprecated-reference warnings; this does
+      not validate underived plan refs.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T08:07:24.524Z
+    completed_at: 2026-06-11T08:07:24.524Z
 events:
   - _ulid: 01KTTVE9X3PA6393J23QSHZ51G
     actor: "@claude"
@@ -66,6 +77,13 @@ events:
       kind: question
       thread_ulid: 01KTTVGSMTMC8JQ9B66MF9Q2X7
     timestamp: 2026-06-11T08:07:02.846Z
+  - _ulid: 01KTTVHGBZRD7HEHM7RCNFCQGJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T08:07:24.799Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -190,5 +208,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:07:01.530Z
+updated_at: 2026-06-11T08:07:24.524Z
 notes: []
