@@ -11334,7 +11334,7 @@ features:
           the server-side counterpart to CLI daemon proxy mode.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
