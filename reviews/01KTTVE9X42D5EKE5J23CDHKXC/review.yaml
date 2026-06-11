@@ -59,6 +59,13 @@ events:
       kind: nit
       thread_ulid: 01KTTVGSSCHYX5BKJ5YMV9SS24
     timestamp: 2026-06-11T08:07:02.490Z
+  - _ulid: 01KTTVGTXYNZMY081ZY0Y137MF
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTTVGSMTMC8JQ9B66MF9Q2X7
+    timestamp: 2026-06-11T08:07:02.846Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -165,7 +172,23 @@ threads:
           source count with stored provenance enum values.
         created_at: 2026-06-11T08:07:01.676Z
     kind: nit
+  - _ulid: 01KTTVGSMTMC8JQ9B66MF9Q2X7
+    anchor:
+      type: structured
+      ref: "@plan-ac-coverage-verification-schema-and-storage"
+      section: dependencies
+    entries:
+      - _ulid: 01KTTVGSMTB99J1S4Z5ZTJT50X
+        author: "@claude"
+        body: This plan has binding depends_on refs to @annotation-freshness-provenance,
+          @actor-identity-model, and @ac-coverage-applicability, but those refs are still absent
+          from the live corpus because @plan-ui-redesign-global-decisions remains draft. Should this
+          plan stay unapproved until P0a is approved and derived, or should the dependency on P0a be
+          represented in a machine-visible way? As written, the ordering is only prose in
+          Implementation Notes.
+        created_at: 2026-06-11T08:07:01.530Z
+    kind: question
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:07:01.676Z
+updated_at: 2026-06-11T08:07:01.530Z
 notes: []
