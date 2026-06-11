@@ -18,3 +18,20 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T05:59:40.225Z
+  - _ulid: 01KTTNW19NPQBFNFX03HYVAKSS
+    content: "Implemented daemon log capture (commit 7b5d5b3849). DaemonLogWriter
+      (packages/daemon/src/logger.ts) appends per-line ISO-timestamped entries and rotates
+      daemon.log -> daemon.log.1 (replacing the old generation) before any append that would cross
+      the limit; writes never throw. Console tee installed via logger-install.ts as the FIRST import
+      in index.ts so routes/command.ts captures the tee'd console as its originals — verified by a
+      guard test that runs an injected command through createCommandRoutes and asserts command
+      output reaches the API response but not the log, while daemon-side output does. Default 5 MiB
+      cap; daemon.log_max_size_bytes added to DaemonConfigSchema/ResolvedKspecConfig; serve start
+      forwards --log-max-size. serve status now reports log_path (JSON always; human output when
+      running or when the file exists). spawn stdio stays 'ignore' per task guidance. All 5 ACs have
+      annotated behavioral tests in tests/daemon-log-capture.test.ts (11 tests). Gates:
+      format/lint(0 errors, 0 new warnings in changed files)/typecheck/full suite (10395 passed)
+      /kspec validate refs+alignment+completeness all green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T06:28:18.358Z
