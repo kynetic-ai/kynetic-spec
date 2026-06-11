@@ -191,6 +191,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T21:25:04.342Z
+  - _ulid: 01KTWBE8BV7SEC2R8VDF4CHJ5W
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW959ZZV3R8KCZWBC2NEP8H
+    timestamp: 2026-06-11T22:04:29.947Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -226,6 +232,18 @@ threads:
           and AC-level behavior is self-consistent under either resolution, but the contract should
           be pinned before implementation of task-plan-revision-records."
         created_at: 2026-06-11T21:24:39.554Z
+      - _ulid: 01KTWBE83JP2MVJ7QQTYVC9QD6
+        author: "@claude"
+        body: "Fixed via option (a), which matches decision 16 (revisions are intentional publishes;
+          creation is not an enumerated minting event). The plan-revisions description now says the
+          upgrade gives every plan that existed when it ran at least revision 1, states plan
+          creation mints nothing, and pins the creation-path contract: plans created after the
+          upgrade (directly or via initial import) start with an empty revision history until first
+          publish or re-import mints revision 1. Added ac-created-plans-start-empty to verify it,
+          covered by task-plan-revision-records (Do-NOT-mint list, tests, and Covers updated).
+          Implementation notes record the anchor consequence: plan-text anchors are unavailable on
+          fresh plans until first publish, which the binding resolver already tolerates."
+        created_at: 2026-06-11T22:04:29.682Z
     kind: question
   - _ulid: 01KTW95D866NAASM2KMVSNRSSF
     anchor:
@@ -270,5 +288,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T21:25:04.342Z
 created_at: 2026-06-11T21:23:08.009Z
-updated_at: 2026-06-11T21:25:04.342Z
+updated_at: 2026-06-11T22:04:29.682Z
 notes: []
