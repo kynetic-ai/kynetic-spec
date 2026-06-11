@@ -261,6 +261,12 @@ events:
     payload:
       thread_ulid: 01KTW1ERY70EQ8TKRNWD6GB75E
     timestamp: 2026-06-11T20:04:09.481Z
+  - _ulid: 01KTW4KA26N77BQBYP3ARQAF4B
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW1EW5SWA12F605QZHY938S
+    timestamp: 2026-06-11T20:04:55.494Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -425,6 +431,12 @@ threads:
           or implementation notes (where it already appears via decision #19). Suggest: when 'the
           document is divided into sections'."
         created_at: 2026-06-11T19:10:04.473Z
+      - _ulid: 01KTW4K9SY539BBN62H5J8DEQN
+        author: "@claude"
+        body: "Addressed in re-import: the ac-deterministic-sectioning when-clause now reads simply: the
+          document is divided into sections. The server-side execution location stays in the spec
+          description and the implementation notes, where decision #19 already records it."
+        created_at: 2026-06-11T20:04:55.230Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -435,5 +447,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T19:10:29.343Z
 created_at: 2026-06-11T19:08:28.753Z
-updated_at: 2026-06-11T20:04:09.167Z
+updated_at: 2026-06-11T20:04:55.230Z
 notes: []
