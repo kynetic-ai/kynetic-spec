@@ -92,6 +92,20 @@ checks:
     runner: manual
     created_at: 2026-06-11T17:53:02.647Z
     completed_at: 2026-06-11T17:53:02.647Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 3 tasks carry Why/What/How with exact note/reason text embedded — executable in a
+      fresh session. @01KJXQK4 and @01KKBD66 both exist and are pending; all four disposition plans
+      exist in draft status; @plan-ui-ux-revamp is already completed, so its exclusion from the
+      disposition list is correct. No Covers lines on tasks is deliberate and documented
+      (program-hygiene work, no decision behavior implemented).
+    name: task standalone-ness and external refs
+    required: true
+    runner: manual
+    created_at: 2026-06-11T17:53:07.879Z
+    completed_at: 2026-06-11T17:53:07.879Z
 events:
   - _ulid: 01KTVWYZ2WXMFZSQBG28NHQNQC
     actor: "@claude"
@@ -162,6 +176,13 @@ events:
       status: pass
       name: AC coverage handoff mapping
     timestamp: 2026-06-11T17:53:02.860Z
+  - _ulid: 01KTVX1ZZXBTQQTT14RWZXW3WA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: task standalone-ness and external refs
+    timestamp: 2026-06-11T17:53:08.093Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -208,5 +229,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T17:51:28.860Z
-updated_at: 2026-06-11T17:53:02.647Z
+updated_at: 2026-06-11T17:53:07.879Z
 notes: []
