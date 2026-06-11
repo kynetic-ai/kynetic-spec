@@ -398,6 +398,12 @@ events:
     payload:
       thread_ulid: 01KTTXVXQX58RS7DCTJD1V9FJ0
     timestamp: 2026-06-11T17:27:43.125Z
+  - _ulid: 01KTVVKM20NH2G4WA6036M7HT3
+    actor: plan-author
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTXWC485J4Y9GHFE561TB1W
+    timestamp: 2026-06-11T17:27:48.544Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -673,6 +679,12 @@ threads:
           stamps are reproduced\") — move the because-clauses into the description, which already
           states the keying and versioning design."
         created_at: 2026-06-11T08:48:18.057Z
+      - _ulid: 01KTVVKKTVQDVQXH989M827Q5W
+        author: plan-author
+        body: "Fixed: both because-clauses moved into the item description, which now states the canonical
+          keying and the shadow-commit persistence design; the then-clauses carry only the
+          observable assertions."
+        created_at: 2026-06-11T17:27:48.315Z
     kind: nit
   - _ulid: 01KTTXWHT0KBKKTGQY842XJ559
     anchor:
@@ -699,5 +711,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:50:22.029Z
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T17:27:42.890Z
+updated_at: 2026-06-11T17:27:48.315Z
 notes: []
