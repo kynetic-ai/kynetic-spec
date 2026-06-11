@@ -24962,3 +24962,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-10T16:08:42.465Z
     updated_at: 2026-06-10T16:09:17.282Z
+  - _ulid: 01KTTFJFQHMKN6G6YS59HGQB8Y
+    slugs: []
+    title: Review task-add-license-file
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 3a3f3bdd74e6e6a978be5cf2888e70c853fe255f
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KTTCZB9VP137NEH3QGSJK0DS"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-11T04:38:14.001Z

@@ -1,0 +1,26 @@
+_ulid: 01KTTFJFQHMKN6G6YS59HGQB8Y
+slugs: []
+title: Review task-add-license-file
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTTFJFQG5G917GYARVM1VWH5
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T04:38:14.000Z
+examined_commit: 3a3f3bdd74e6e6a978be5cf2888e70c853fe255f
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTCZB9VP137NEH3QGSJK0DS"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T04:38:14.001Z
+updated_at: null
+notes: []
