@@ -31363,7 +31363,7 @@
   type: task
   spec_ref: "@daemon-failure-observability"
   plan_ref: "@plan-daemon-operational-reliability"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-daemon-log-capture"
@@ -31372,10 +31372,11 @@
     - daemon
     - reliability
     - cli
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-06-11T03:53:17.436Z
   started_at: 2026-06-11T08:41:55.589Z
+  submitted_at: 2026-06-11T09:08:36.089Z
   automation: eligible
 - _ulid: 01KTTD073BSRG8AMPS4RZS6979
   slugs:

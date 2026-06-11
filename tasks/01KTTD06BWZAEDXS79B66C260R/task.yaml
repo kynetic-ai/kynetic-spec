@@ -55,7 +55,7 @@ description: |
 spec_ref: "@daemon-failure-observability"
 plan_ref: "@plan-daemon-operational-reliability"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-daemon-log-capture"
@@ -66,6 +66,14 @@ tags:
   - reliability
   - cli
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-daemon-fatal-failure-observability/01kttd06
+  captured_at: 2026-06-11T09:08:36.087Z
+  commit: 97f10f3b5c87ba10d761643d782f023ef8ad8e6b
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-daemon-fatal-failure-observability/01kttd06
 session_id: 01KTTXFVT3WG309BT4JHF0QZ8K
 history:
   - author: Jacob Chapel
@@ -88,7 +96,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-11T08:41:55.589Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-daemon-fatal-failure-observability/01kttd06
+          captured_at: 2026-06-11T09:08:36.087Z
+          commit: 97f10f3b5c87ba10d761643d782f023ef8ad8e6b
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-daemon-fatal-failure-observability/01kttd06
+        previous: null
+      submitted_at:
+        new: 2026-06-11T09:08:36.089Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-11T09:08:36.089Z
 created_at: 2026-06-11T03:53:17.436Z
 started_at: 2026-06-11T08:41:55.589Z
+submitted_at: 2026-06-11T09:08:36.089Z
 todos: []
 automation: eligible

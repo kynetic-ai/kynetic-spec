@@ -20,3 +20,23 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T08:47:07.541Z
+  - _ulid: 01KTTZ1GR3ART9FYFRADCGCJBT
+    content: "Implementation complete. Shared last-exit helpers (getDaemonLastExitPath,
+      write/readDaemonLastExitRecord, LAST_EXIT_FILENAME) live in src/daemon-shared/endpoint.ts;
+      write stamps timestamp+pid, never throws; read tolerates missing/malformed files. New
+      packages/daemon/src/fatal-handlers.ts installs uncaughtException/unhandledRejection handlers
+      (tee-logged console.error + fatal record + exit 1), installed in index.ts before createServer.
+      Startup catch and arg-validation exits write startup_failure records. server.ts shutdown()
+      writes the graceful record at shutdown start (survives hung-teardown SIGKILL) and overwrites
+      with fatal on teardown error. serve status surfaces last_exit (kind/reason/timestamp) in human
+      and JSON output when no daemon is running. Added [daemon] Startup complete marker after
+      createServer resolves — needed because /api/health goes live at listen time before SIGTERM
+      handlers register, so a health-gated SIGTERM raced the graceful path (caught by the new test).
+      15 tests in tests/daemon-last-exit.test.ts cover all 4 ACs behaviorally: fatal tests spawn
+      node importing the production dist/daemon/fatal-handlers.js under isolated HOME;
+      startup-failure uses the EADDRINUSE blocker pattern; graceful uses startTestDaemon + SIGTERM.
+      Gates: format, lint (0 errors, 0 new warnings in changed files), typecheck, full suite 10432
+      passed/0 failed, kspec refs/alignment/completeness validations green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T09:08:35.204Z
