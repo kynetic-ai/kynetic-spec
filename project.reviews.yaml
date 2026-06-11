@@ -26058,8 +26058,8 @@ reviews:
     title: "Plan review: UI Redesign Global Decisions (finish-1 N/A boundary precision verification)"
     disposition: pending
     author: "@claude"
-    check_count: 0
-    lifecycle_state: draft
+    check_count: 6
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
@@ -26070,3 +26070,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T21:40:13.553Z
+    updated_at: 2026-06-11T21:41:25.247Z

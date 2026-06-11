@@ -2,7 +2,93 @@ _ulid: 01KTWA1T3H4C4M5W65MWFYPPD3
 slugs: []
 title: "Plan review: UI Redesign Global Decisions (finish-1 N/A boundary precision verification)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All prior P0a reviews (@01KTTPG4, @01KTTPNY, @01KTTTVA, @01KTVWYZ, @01KTW2B8, plus
+      approved verification rounds @01KTTYZ9, @01KTVWK6, @01KTW14Z, @01KTW65X, @01KTW9D0) are closed
+      with every thread resolved and all later rounds approved. Re-verified the round-2 relates_to
+      thread fix is still present: the disposition task carries the explicit What bullet adding
+      relates_to from the derived @actor-identity-model item to @config-author, with the exact
+      command in its How. Nothing to re-raise."
+    name: prior review thread resolution
+    required: true
+    runner: claude
+    created_at: 2026-06-11T21:41:08.609Z
+    completed_at: 2026-06-11T21:41:08.609Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified the finish-1 reword (re-import 2026-06-11T21:20:50Z) against the current stored
+      content. (1) @ac-coverage-applicability description now phrases the boundary timelessly: the
+      pre-existing completeness validation path honoring in-code N/A for trait criteria remains in
+      force until corpus coverage computation adopts these semantics — no engine-vs-schema plan
+      assignment. (2) ac-2 when-clause actor is generalized to corpus coverage is computed. (3)
+      Boundaries note assigns reconciling the validate exemption behavior to the coverage track
+      plans, not the coverage state engine plan specifically. Factual basis confirmed in code:
+      src/parser/validate.ts:1043,1058 strips/honors the em-dash N/A suffix in AC annotations, so
+      the legacy-path claim is accurate."
+    name: N/A transition boundary precision reword
+    required: true
+    runner: claude
+    created_at: 2026-06-11T21:41:12.056Z
+    completed_at: 2026-06-11T21:41:12.056Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "plans/ui-redesign/decisions.md #13 assigns the N/A-stop to P1a/P1b (stop the parser's
+      silent N/A-counts-as-covered behavior; in-code N/A annotations are not corpus-coverage
+      signals; retirement out of program scope). Current P0a wording matches on all three points:
+      corpus model has no N/A state (ac-1), in-code N/A neither covers nor exempts under corpus
+      coverage (ac-2), and convention retirement is explicitly out of program scope in Boundaries.
+      The P1a round-2 review thread (@01KTW6NX, question on @task-respec-test-annotation-sweep-na)
+      that raised the cross-document tension carries the author reply confirming the P0a-side
+      alignment; the reply accurately describes the current stored content. The remaining
+      verify-vs-amend follow-up is a P1a-side concern, not a P0a defect."
+    name: "alignment with decision register #13 and P1a thread"
+    required: true
+    runner: claude
+    created_at: 2026-06-11T21:41:15.487Z
+    completed_at: 2026-06-11T21:41:15.487Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exported stored content via kspec plan export and dry-ran import: parses cleanly, full
+      document stored, draft status, no state changes."
+    name: plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-11T21:41:18.782Z
+    completed_at: 2026-06-11T21:41:18.782Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All three passes succeed with the pre-existing warning baseline only (deprecated
+      @task-activity-git-query spec_ref, Agent Definition Schema status drift, malformed AC tokens
+      in cli-agent-commands.test.ts). Nothing attributable to this draft plan.
+    name: kspec validate refs/alignment/completeness
+    required: true
+    runner: kspec validate --warnings-ok
+    created_at: 2026-06-11T21:41:21.940Z
+    completed_at: 2026-06-11T21:41:21.940Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@config-author ac-3 still reads: falls back to git user.name then OS user — exactly the
+      fallback chain the @actor-identity-model transition boundary cites. No drift since the prior
+      approved rounds."
+    name: external reference spot-check
+    required: true
+    runner: claude
+    created_at: 2026-06-11T21:41:25.247Z
+    completed_at: 2026-06-11T21:41:25.247Z
 events:
   - _ulid: 01KTWA1T3GVTABWMNA2B5FK5ZE
     actor: "@claude"
@@ -10,9 +96,58 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T21:40:13.553Z
+  - _ulid: 01KTWA3CT7K2RKBYQMHC3K5A73
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T21:41:05.479Z
+  - _ulid: 01KTWA3G5B95BP79X7MRXQ0E04
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review thread resolution
+    timestamp: 2026-06-11T21:41:08.907Z
+  - _ulid: 01KTWA3KFVCZ8EQ560FX5BK0TE
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: N/A transition boundary precision reword
+    timestamp: 2026-06-11T21:41:12.315Z
+  - _ulid: 01KTWA3PV8Y6AFMHJ6AB73Z5GA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "alignment with decision register #13 and P1a thread"
+    timestamp: 2026-06-11T21:41:15.752Z
+  - _ulid: 01KTWA3T24KP2DTDSCA4XZDE23
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan import dry-run
+    timestamp: 2026-06-11T21:41:19.044Z
+  - _ulid: 01KTWA3X5HZ4R2PSWYXQDA0CT8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs/alignment/completeness
+    timestamp: 2026-06-11T21:41:22.225Z
+  - _ulid: 01KTWA40CAEF13KXTPPZ3RPH0W
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: external reference spot-check
+    timestamp: 2026-06-11T21:41:25.515Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
@@ -22,5 +157,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T21:40:13.553Z
-updated_at: null
+updated_at: 2026-06-11T21:41:25.247Z
 notes: []
