@@ -1,6 +1,7 @@
 {
   "name": "@kynetic-ai/shared",
   "version": "0.1.0",
+  "private": true,
   "description": "Shared types and utilities for kspec packages",
   "type": "module",
   "main": "dist/index.js",

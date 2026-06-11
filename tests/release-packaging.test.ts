@@ -20,6 +20,9 @@ import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildTestSubprocessEnv, cleanupTempDir, createTempDir } from "./helpers/cli";
 import packageJson from "../package.json" with { type: "json" };
+import webUiPackageJson from "../packages/web-ui/package.json" with { type: "json" };
+import sharedPackageJson from "../packages/shared/package.json" with { type: "json" };
+import daemonPackageJson from "../packages/daemon/package.json" with { type: "json" };
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const VERIFY_PACKAGE_SCRIPT = join(REPO_ROOT, "scripts", "verify-package.cjs");
@@ -155,6 +158,25 @@ describe("Supported runtime version range", () => {
       mismatches,
       `Docs stating a Node.js version different from the engines minimum (${minimumMajor})`,
     ).toEqual([]);
+  });
+});
+
+describe("Workspace package privacy", () => {
+  // Task: @task-workspace-packages-private — only the root package is ever
+  // published; the workspace packages are internal and must refuse
+  // accidental publication (e.g. `npm publish --workspaces`).
+  const workspaceManifests = [
+    { name: "@kynetic-ai/web-ui", manifest: webUiPackageJson },
+    { name: "@kynetic-ai/shared", manifest: sharedPackageJson },
+    { name: "@kynetic-ai/daemon", manifest: daemonPackageJson },
+  ];
+
+  it.each(workspaceManifests)("marks $name as private", ({ manifest }) => {
+    expect(manifest.private).toBe(true);
+  });
+
+  it("keeps the root package publishable", () => {
+    expect("private" in packageJson).toBe(false);
   });
 });
 
