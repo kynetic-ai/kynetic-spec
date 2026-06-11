@@ -230,6 +230,12 @@ events:
     payload:
       thread_ulid: 01KTW05VK8600AF54YTPCQW64G
     timestamp: 2026-06-11T19:47:49.015Z
+  - _ulid: 01KTW45YBKYY8WXS6JTPY9PNT3
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW069JBYSZWMAV6NPZEZTN6
+    timestamp: 2026-06-11T19:57:37.523Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -282,6 +288,14 @@ threads:
           to the post-upgrade/published model, or change the legacy-load/backfill behavior so the
           spec has one deterministic contract.
         created_at: 2026-06-11T18:47:54.699Z
+      - _ulid: 01KTW45Y3MFRC2ETCZGRCGZ5AS
+        author: "@claude"
+        body: "Addressed in re-import: the description is now qualified to the post-upgrade model — once the
+          revision data upgrade has run, every plan has at least revision 1; a plan persisted before
+          revision support and not yet upgraded loads with an empty revision history until the
+          upgrade or its first publish records one. This matches ac-legacy-plans-load and the schema
+          default in task-plan-revision-records, so there is one deterministic contract."
+        created_at: 2026-06-11T19:57:37.267Z
     kind: blocker
   - _ulid: 01KTW06MQEM16Z1WSD3W4HR6EC
     anchor:
@@ -326,5 +340,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:50:14.998Z
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T19:47:48.628Z
+updated_at: 2026-06-11T19:57:37.267Z
 notes: []
