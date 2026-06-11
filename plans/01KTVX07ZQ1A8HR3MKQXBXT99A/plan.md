@@ -145,9 +145,8 @@
       when: |
         the anchor is validated at creation time
       then: |
-        the mutation is rejected with actionable feedback, so every
-        stored plan-text anchor resolves to its quoted text within the
-        revision it was created against
+        the mutation is rejected with actionable feedback and no thread
+        is stored
 
 # ─── Thread Kinds ───
 
@@ -181,8 +180,7 @@
       when: |
         the disposition is computed
       then: |
-        the disposition is approved — unresolved idea threads never
-        prevent approval
+        the disposition is approved
     - id: ac-kind-validation
       given: |
         a thread whose kind is not one of blocker, question, nit, or idea
@@ -208,10 +206,13 @@
     published content; the document body is never duplicated into the
     revision record. Revision authors use the same actor attribution
     vocabulary as other authored records; no revision-specific author
-    format exists. Once the revision data upgrade has run, every plan
-    has at least revision 1; a plan persisted before revision support
-    and not yet upgraded loads with an empty revision history until the
-    upgrade or its first publish records one. A review of a plan
+    format exists. The revision data upgrade gives every plan that
+    existed when it ran at least revision 1. Plan creation mints
+    nothing: a plan created after the upgrade — directly or through an
+    initial document import — starts with an empty revision history
+    until its first publish or document re-import mints revision 1. A
+    plan persisted before revision support and not yet upgraded
+    likewise loads with an empty revision history. A review of a plan
     resolves to the revision it examined through the review's pinned
     subject version, with no new field on the review record.
   acceptance_criteria:
@@ -273,6 +274,14 @@
         upgraded
       when: |
         the plan is loaded and validated
+      then: |
+        it loads without error and reports an empty revision history
+    - id: ac-created-plans-start-empty
+      given: |
+        a plan created after the revision data upgrade has run, with no
+        publish or document re-import yet completed on it
+      when: |
+        the plan is loaded and its revisions are read
       then: |
         it loads without error and reports an empty revision history
     - id: ac-review-revision-binding
@@ -416,8 +425,11 @@ derive_from_specs: false
     - Mint a revision when kspec plan import --into completes
       successfully, using --note when supplied or the existing
       "Content updated from file" auto-note text as the summary default.
-    - Do NOT mint on plan set --content-file, plan note, plan set
-      status/title/branch, or any other non-publish mutation.
+    - Do NOT mint on plan creation (plan add or an initial document
+      import), plan set --content-file, plan note, plan set
+      status/title/branch, or any other non-publish mutation. New plans
+      start with an empty revision history until their first publish or
+      re-import mints revision 1 (the N+1 ordinal rule with N=0).
     - Author resolution reuses the actor attribution already used for
       review records and notes (resolved agent or user identity),
       centralized in one helper; do not introduce a new free-form author
@@ -441,11 +453,14 @@ derive_from_specs: false
     commit inside the shadow worktree. Tests: ordinal sequencing across
     publish and import minting; non-publish paths leave revisions
     unchanged; resolved content is byte-identical to what was published;
-    legacy plan fixtures load with empty revision history.
+    legacy plan fixtures load with empty revision history; a freshly
+    created plan reports an empty revision history until its first
+    publish.
 
     Covers: @plan-revisions ac-publish-mints-revision,
     ac-import-mints-revision, ac-draft-edits-do-not-mint,
-    ac-no-body-duplication, ac-revision-ordering, ac-legacy-plans-load.
+    ac-no-body-duplication, ac-revision-ordering, ac-legacy-plans-load,
+    ac-created-plans-start-empty.
 
 - title: Implement plan-text anchor variant with deterministic heading sectioning
   slug: task-plan-text-anchors
@@ -765,6 +780,12 @@ cross-plan references.
 - Backfill pointers use shadow HEAD at upgrade time — any commit at or
   after the plan's last content change correctly designates "current
   content".
+- Plan creation mints nothing: decision #16 enumerates the minting
+  events (explicit publish, `import --into` completion), and creation is
+  not one. A plan created after the upgrade starts with an empty
+  revision history, so plan-text anchors are unavailable on it until its
+  first publish or re-import — the binding resolver already tolerates
+  revisionless plans (no revision rather than a wrong one).
 
 ### Review ↔ revision join
 
