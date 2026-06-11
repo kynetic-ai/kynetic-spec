@@ -145,9 +145,25 @@ events:
       status: pass
       name: external reference spot-check
     timestamp: 2026-06-11T21:41:25.515Z
+  - _ulid: 01KTWA4DGK5KCEGB4XJQ7Z8MRV
+    actor: claude
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T21:41:38.963Z
+  - _ulid: 01KTWA4DGKMZ1AYETYVXJWY501
+    actor: claude
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T21:41:38.963Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -155,7 +171,14 @@ subject:
   ref: "@plan-ui-redesign-global-decisions"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude
+    role: reviewer
+    created_at: 2026-06-11T21:41:38.963Z
 created_at: 2026-06-11T21:40:13.553Z
-updated_at: 2026-06-11T21:41:25.247Z
+updated_at: 2026-06-11T21:41:38.963Z
 notes: []
