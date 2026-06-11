@@ -93,5 +93,14 @@ tags:
   - api
   - triage
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-11T03:55:31.607Z
 created_at: 2026-06-11T03:53:57.351Z
 todos: []
+automation: eligible
