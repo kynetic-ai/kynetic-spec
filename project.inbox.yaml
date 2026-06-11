@@ -4426,3 +4426,16 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-11T13:40:59.618Z
+  - _ulid: 01KTVGEAD0Z0GSJGX8Y1CCJE9D
+    text: "Extend behavioral shadow-commit coverage (@trait-api-endpoint ac-5) to the other mutating
+      daemon-api route suites (inbox, tasks, reviews, plans): extract the real-kspec-meta-worktree
+      setup from tests/daemon-api/triage.test.ts Shadow commits block into a shared helper in
+      tests/daemon-api/helpers.ts (e.g. setupRealShadowFixtures) and assert semantic commit subjects
+      per mutation route. Today triage is the only route group with behavioral ac-5 coverage; other
+      suites mark it N/A or rely on implicit claims."
+    tags:
+      - testing
+      - daemon
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-11T14:12:40.480Z

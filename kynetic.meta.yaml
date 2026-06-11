@@ -21473,6 +21473,32 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T13:40:59.320Z
+  - _ulid: 01KTVGE9X067RB5ST8JK0GVPPV
+    type: friction
+    content: "Silent YAML number-parse trap with testUlid(): testUlid() returns an all-digit ULID
+      (01000000000000000000000000), so embedding it UNQUOTED in a YAML template-string fixture makes
+      the YAML parser read it as a number. Schema validation then skips the record with only a
+      stderr warning, surfacing as confusing downstream 404s/empty lists. Hit in
+      tests/daemon-api/triage.test.ts shadow-commit test (fix cycle for
+      @task-daemon-triage-api-tests). Rule of thumb: always quote _ulid values in YAML template
+      strings. Candidate for a testing convention rule."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T14:12:39.968Z
+  - _ulid: 01KTVGEA638QDJ1HPCTHSX3JSF
+    type: friction
+    content: "Fake shadow worktrees in test fixtures (setupFixtures/setupShadowDetection) enable shadow
+      DETECTION but git commands inside .kspec/ fail, so commitIfShadow silently returns false —
+      tests cannot assert shadow commits and the gap invites false AC coverage claims (exactly what
+      review 01KTVCYP caught on @task-daemon-triage-api-tests). Working pattern now exists: the
+      Shadow commits block in tests/daemon-api/triage.test.ts builds a real orphan kspec-meta
+      worktree via mktree/commit-tree plumbing (no git>=2.42 dependency) and asserts semantic commit
+      subjects from git log."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T14:12:40.259Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
