@@ -87,6 +87,18 @@ checks:
     runner: npm audit --omit=dev
     created_at: 2026-06-11T06:04:17.294Z
     completed_at: 2026-06-11T06:04:17.294Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Not rerun in this review cycle because the submitted lockfile already has a blocking Node
+      20 production-install regression. Worker notes report current e2e failures are pre-existing
+      fixture-storage issues; this review did not rely on e2e for approval.
+    name: e2e
+    required: false
+    runner: npm run test:e2e
+    created_at: 2026-06-11T06:04:22.041Z
+    completed_at: 2026-06-11T06:04:22.041Z
 events:
   - _ulid: 01KTTK8RDRM412KXJ9E0TEV845
     actor: Jacob Chapel
@@ -164,6 +176,13 @@ events:
       status: pass
       name: npm audit production
     timestamp: 2026-06-11T06:04:17.689Z
+  - _ulid: 01KTTMG6ZV9C0HQSN7PG95DN8D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: e2e
+    timestamp: 2026-06-11T06:04:22.395Z
 examined_commit: b112b02a919a15d0c4a4466a4daafae05dcf7c7c
 external_links: []
 lifecycle_state: open
@@ -198,5 +217,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T05:42:49.528Z
-updated_at: 2026-06-11T06:04:17.294Z
+updated_at: 2026-06-11T06:04:22.041Z
 notes: []
