@@ -25891,10 +25891,10 @@ reviews:
   - _ulid: 01KTW5AY14SG64CKGK5BHC8S7E
     slugs: []
     title: "Plan review: Review Anchors and Plan Revisions Schema (round 2 verification)"
-    disposition: pending
+    disposition: approved
     author: codex
-    check_count: 0
-    lifecycle_state: draft
+    check_count: 8
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -25903,5 +25903,6 @@ reviews:
       shadow_commit: ""
     thread_count: 0
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-06-11T20:17:49.604Z
+    updated_at: 2026-06-11T20:19:15.573Z

@@ -2,7 +2,134 @@ _ulid: 01KTW5AY14SG64CKGK5BHC8S7E
 slugs: []
 title: "Plan review: Review Anchors and Plan Revisions Schema (round 2 verification)"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified prior review records @01KTW04R and @01KTW1BY. All prior threads are already
+      resolved by author replies. Current plan content addresses them: @plan-revisions no longer
+      depends on missing @actor-identity-model; legacy revision-history wording is qualified to
+      post-upgrade/published behavior; plan-text offsets are Unicode code points with non-ASCII test
+      guidance; idea kind includes @review-records-web-ui ac-2/ac-3 respec and shipped UI
+      enumeration changes; task-plan-revision-backfill is P1 and task-plan-text-anchors depends on
+      it; ac-deterministic-sectioning no longer says server-side in the when clause. No prior
+      finding needed re-raise."
+    name: prior review continuity
+    required: false
+    runner: kspec review get @01KTW04R/@01KTW1BY --json + current plan review
+    created_at: 2026-06-11T20:18:49.212Z
+    completed_at: 2026-06-11T20:18:49.212Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Parents and existing refs verified: @review-record-core-model,
+      @review-comment-threads-and-anchors, @plan-support, @review-subject-bindings,
+      @review-records-web-ui, @folder-backed-plan-storage-1, @review-record-validation,
+      @review-records-daemon-api, @review-cli-mutation-commands all resolve. Missing
+      @actor-identity-model still does not resolve, but the current plan no longer references it as
+      a structured dependency; it is only future sequencing context in implementation notes.
+      Plan-local task/spec refs and depends_on entries form a resolvable derivation graph by slug.
+      Existing AC references in Covers lines were checked against item get output."
+    name: cross-reference validation
+    required: true
+    runner: kspec item get/search + manual Covers audit
+    created_at: 2026-06-11T20:18:52.528Z
+    completed_at: 2026-06-11T20:18:52.528Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Specs are timeless enough for derivation and ACs are observable/deterministic. Prior
+      contradictions were removed. Error/boundary cases are covered: malformed spec refs/AC ids,
+      legacy anchor load, invalid anchor discriminators, plan-text malformed fields, nonexistent
+      revision ordinal, non-plan subject, span mismatch, duplicate headings, preamble sections,
+      legacy plans before upgrade, backfill, and review revision binding. The remaining
+      implementation terms live in task descriptions or implementation notes where appropriate."
+    name: spec quality
+    required: true
+    runner: manual plan review against kspec-writing-specs
+    created_at: 2026-06-11T20:18:55.656Z
+    completed_at: 2026-06-11T20:18:55.656Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All seven tasks include Why/What/How, concrete files or command/API surfaces,
+      verification guidance, spec_ref, and Covers lines. All new ACs are claimed:
+      review-spec-ac-anchors 4/4, review-plan-text-anchors 6/6, review-idea-threads 3/3,
+      plan-revisions 8/8, subject-revision-vocabulary 3/3. Existing-spec respec work is explicitly
+      carried for @review-comment-threads-and-anchors ac-6 and @review-records-web-ui
+      ac-2/ac-3/ac-11 plus matching shipped UI text/enumeration updates."
+    name: task completeness and coverage mapping
+    required: true
+    runner: manual task graph and Covers audit
+    created_at: 2026-06-11T20:18:58.848Z
+    completed_at: 2026-06-11T20:18:58.848Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Task graph is acyclic and priority-aligned. Independent P1 tasks can run in parallel:
+      spec-AC anchor variant, plan revision records, idea thread kind. Backfill is now P1 and
+      depends on revision records; plan-text anchors depend on spec-AC anchors, revision records,
+      and backfill, so legacy plans have revision 1 before plan-text anchors validate against
+      revision ordinals. P2 review revision binding depends on revision records; P2 review-pass
+      vocabulary respec depends on binding. No P1 task depends on a P2 task."
+    name: dependency ordering
+    required: true
+    runner: manual dependency graph review
+    created_at: 2026-06-11T20:19:02.156Z
+    completed_at: 2026-06-11T20:19:02.156Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Searched anchor, revision, plan revision, idea thread, review pass, subject revision, and
+      actor identity; inspected siblings under @review-record-core-model and @plan-support. New
+      specs extend existing review anchors, review subject bindings, plan support, and web UI
+      vocabulary without duplicating existing requirements. Scope exclusions are explicit for anchor
+      rematching, revision diff UI/API, planning workspace, review hub, dispatch events, and
+      first-class spec revisions.
+    name: scope and existing-spec alignment
+    required: false
+    runner: kspec search/item list/item get
+    created_at: 2026-06-11T20:19:05.357Z
+    completed_at: 2026-06-11T20:19:05.357Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan export @plan-review-anchors-and-plan-revisions-schema --output
+      /tmp/review-anchors-plan.md succeeded. kspec plan import /tmp/review-anchors-plan.md --into
+      @plan-review-anchors-and-plan-revisions-schema --dry-run exited 0 and previewed title/content
+      updates with no changes. Fresh import dry-run with --module @core also exited 0.
+    name: plan storage dry run
+    required: false
+    runner: kspec plan export/import --dry-run
+    created_at: 2026-06-11T20:19:08.635Z
+    completed_at: 2026-06-11T20:19:08.635Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/records read: kspec-agents.md, .agents/skills/kspec-review-plan/SKILL.md, plan
+      @plan-review-anchors-and-plan-revisions-schema, prior reviews @01KTW04R and @01KTW1BY,
+      existing specs @review-record-core-model, @review-comment-threads-and-anchors, @plan-support,
+      @review-subject-bindings, @review-records-web-ui, @folder-backed-plan-storage-1,
+      @review-record-validation, @review-records-daemon-api, @review-structured-content-viewer,
+      @review-checks-and-gate-evaluation, @review-cli-mutation-commands. Commands run included kspec
+      plan get/export/import --dry-run, kspec review list/get, kspec item get/list/search, kspec
+      trait list, kspec shadow status. Categories searched: spec quality, task standalone-ness,
+      Covers accuracy, dependency ordering, cross-reference resolution, existing-spec alignment,
+      scope discipline. Some kspec search commands warned about shadow sync conflict but continued
+      with local state; kspec shadow status reported the shadow branch healthy."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-06-11T20:19:11.905Z
+    completed_at: 2026-06-11T20:19:11.905Z
 events:
   - _ulid: 01KTW5AY13HS08Z5ZD3CR8KMPJ
     actor: codex
@@ -10,9 +137,88 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T20:17:49.603Z
+  - _ulid: 01KTW5CN7MTMJMW0N8HKB5XG1H
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T20:18:46.132Z
+  - _ulid: 01KTW5CRGC3CJBJCZ69MGSCC6A
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review continuity
+    timestamp: 2026-06-11T20:18:49.484Z
+  - _ulid: 01KTW5CVR06JSWB8ZKYPE6FMYS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cross-reference validation
+    timestamp: 2026-06-11T20:18:52.800Z
+  - _ulid: 01KTW5CYT5FTF6WDHSCVJAPFT7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec quality
+    timestamp: 2026-06-11T20:18:55.942Z
+  - _ulid: 01KTW5D1X4W9NZGAGP673W5QMJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: task completeness and coverage mapping
+    timestamp: 2026-06-11T20:18:59.108Z
+  - _ulid: 01KTW5D54BYHHPBY1R3S6EDST6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-11T20:19:02.412Z
+  - _ulid: 01KTW5D89SKAM84ECFDS8KKESW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: scope and existing-spec alignment
+    timestamp: 2026-06-11T20:19:05.657Z
+  - _ulid: 01KTW5DBFH8AB0HFS0XAA02WJZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan storage dry run
+    timestamp: 2026-06-11T20:19:08.913Z
+  - _ulid: 01KTW5DEPG1198PQ11F79B7VPT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-11T20:19:12.208Z
+  - _ulid: 01KTW5DHZN1NW202Z4YZAH0WW0
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T20:19:15.573Z
+  - _ulid: 01KTW5DHZNKZWFP9GY9YV5N3HR
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T20:19:15.573Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +226,14 @@ subject:
   ref: "@plan-review-anchors-and-plan-revisions-schema"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T20:19:15.573Z
 created_at: 2026-06-11T20:17:49.604Z
-updated_at: null
+updated_at: 2026-06-11T20:19:15.573Z
 notes: []
