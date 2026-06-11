@@ -77,6 +77,16 @@ checks:
     runner: npm test
     created_at: 2026-06-11T06:03:46.837Z
     completed_at: 2026-06-11T06:03:46.837Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm audit --omit=dev exited 0 and reported 0 vulnerabilities."
+    name: npm audit production
+    required: true
+    runner: npm audit --omit=dev
+    created_at: 2026-06-11T06:04:17.294Z
+    completed_at: 2026-06-11T06:04:17.294Z
 events:
   - _ulid: 01KTTK8RDRM412KXJ9E0TEV845
     actor: Jacob Chapel
@@ -147,6 +157,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-11T06:03:47.244Z
+  - _ulid: 01KTTMG2CR1JGK8JW79CDRDRKY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: npm audit production
+    timestamp: 2026-06-11T06:04:17.689Z
 examined_commit: b112b02a919a15d0c4a4466a4daafae05dcf7c7c
 external_links: []
 lifecycle_state: open
@@ -181,5 +198,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T05:42:49.528Z
-updated_at: 2026-06-11T06:03:46.837Z
+updated_at: 2026-06-11T06:04:17.294Z
 notes: []
