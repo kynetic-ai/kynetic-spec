@@ -62685,7 +62685,7 @@ runs:
     completed_at: 2026-06-11T08:38:49.694Z
   - _ulid: 01KTTYFDF4HWVYKXZY1YBAYXD7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -62700,7 +62700,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T08:59:48.916Z
-        completed_at: 2026-06-11T08:59:48.916Z
+        completed_at: 2026-06-11T09:00:00.053Z
+        notes: "Friction: The required review evidence log still has no first-class place in review records,
+          so it was recorded as a non-finding nit thread. This is systemic rather than
+          task-specific, but it is already tracked as observation @01KR2JD1. No additional friction
+          from the code review itself: package verification commands were direct, and the merge
+          helper completed cleanly."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T09:00:00.053Z
+        completed_at: 2026-06-11T09:00:00.053Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T08:58:42.020Z
