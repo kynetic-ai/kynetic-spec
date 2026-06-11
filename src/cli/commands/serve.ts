@@ -15,7 +15,11 @@ import {
   resolveDaemonClientEndpoint,
   isExternallyReachable,
 } from "../pid-utils.js";
-import { getDaemonLogPath } from "../../daemon-shared/endpoint.js";
+import {
+  getDaemonLogPath,
+  readDaemonLastExitRecord,
+  type DaemonLastExitRecord,
+} from "../../daemon-shared/endpoint.js";
 import { loadProjectConfig } from "../../parser/config.js";
 import { initContext } from "../../parser/yaml.js";
 
@@ -688,6 +692,14 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
   // reports the daemon log file location.
   const logPath = getDaemonLogPath();
 
+  // AC: @daemon-failure-observability ac-status-surfaces-last-exit — when
+  // no daemon is running, surface the most recent termination so a user
+  // investigating a disappeared daemon can see why it stopped.
+  let lastExit: DaemonLastExitRecord | null = null;
+  if (!running) {
+    lastExit = readDaemonLastExitRecord();
+  }
+
   // AC: @cli-serve-commands ac-6 — status JSON returns the same fields
   //     as human-readable mode, including bind_host, connect_host, runtime.
   const status = {
@@ -699,6 +711,7 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
     runtime,
     uptime,
     log_path: logPath,
+    last_exit: lastExit,
     projects,
   };
 
@@ -745,6 +758,12 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
       }
     } else {
       output("Daemon not running");
+      // AC: @daemon-failure-observability ac-status-surfaces-last-exit —
+      // report the most recent termination kind, reason, and timestamp.
+      if (lastExit) {
+        output(`  Last exit: ${lastExit.kind} at ${lastExit.timestamp}`);
+        output(`  Reason: ${lastExit.reason}`);
+      }
       // AC: @daemon-log-capture ac-log-location-discoverable — point at the
       // log from a previous run so a disappeared daemon stays diagnosable.
       if (existsSync(logPath)) {

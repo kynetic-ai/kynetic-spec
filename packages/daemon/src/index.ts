@@ -12,11 +12,19 @@
 // and its console interceptors), so this side-effect import stays first.
 // oxlint-disable-next-line eslint-plugin-import/no-unassigned-import -- intentional side-effect import
 import "./logger-install.js";
+import { installDaemonFatalHandlers } from "./fatal-handlers.js";
 import { configureDaemonLogWriter } from "./logger.js";
 import { createServer } from "./server.js";
+import { writeDaemonLastExitRecord } from "./pid.js";
 import { parseArgs } from "util";
 import { join } from "path";
 import type { DaemonRuntime } from "./server.js";
+
+// AC: @daemon-failure-observability ac-fatal-error-recorded — fault handlers
+// must be active before createServer() (and any other async work) so an
+// uncaught error or unhandled rejection at any point is recorded before the
+// process dies.
+installDaemonFatalHandlers();
 
 function detectProcessRuntime(): DaemonRuntime {
   return typeof process.versions.bun === "string" ? "bun" : "node";
@@ -63,13 +71,23 @@ if (values["log-max-size"] !== undefined) {
 }
 
 // Validate port
+// AC: @daemon-failure-observability ac-exit-record-durable — startup
+// validation exits record why the daemon never came up.
 if (isNaN(port) || port < 1 || port > 65535) {
   console.error("[daemon] Invalid port number. Must be between 1 and 65535.");
+  writeDaemonLastExitRecord({
+    kind: "startup_failure",
+    reason: `Invalid port number: ${values.port as string}. Must be between 1 and 65535.`,
+  });
   process.exit(1);
 }
 
 if (runtimeValue !== "bun" && runtimeValue !== "node") {
   console.error("[daemon] Invalid runtime. Must be 'bun' or 'node'.");
+  writeDaemonLastExitRecord({
+    kind: "startup_failure",
+    reason: `Invalid runtime: ${runtimeValue}. Must be 'bun' or 'node'.`,
+  });
   process.exit(1);
 }
 
@@ -91,8 +109,22 @@ async function main() {
 
     // Server will start listening in createServer
     // Graceful shutdown handled in server.ts
+
+    // createServer resolves only after the shutdown signal handlers are
+    // registered, so this marker means the daemon is fully operational
+    // (listening AND able to shut down gracefully). Tests and operators
+    // rely on it to distinguish "port is up" from "startup complete".
+    console.log("[daemon] Startup complete");
   } catch (error) {
     console.error("[daemon] Failed to start:", error);
+    // AC: @daemon-failure-observability ac-exit-record-durable — a daemon
+    // that never came up leaves a startup_failure record explaining why.
+    const err = error instanceof Error ? error : new Error(String(error));
+    writeDaemonLastExitRecord({
+      kind: "startup_failure",
+      reason: err.message,
+      stack: err.stack,
+    });
     process.exit(1);
   }
 }
