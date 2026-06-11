@@ -54,7 +54,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-validation-and-test-coverage-integrity"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -63,6 +63,14 @@ tags:
   - testing
   - infra
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-test-cache-env-key/01kttd1e
+  captured_at: 2026-06-11T20:16:00.710Z
+  commit: 74ab85fe3b5971918484ee84f6942fe7ed04e165
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-test-cache-env-key/01kttd1e
 session_id: 01KTW1ZMEQDT7C44849HBBJRA6
 history:
   - author: Jacob Chapel
@@ -85,7 +93,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-11T19:19:53.623Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-test-cache-env-key/01kttd1e
+          captured_at: 2026-06-11T20:16:00.710Z
+          commit: 74ab85fe3b5971918484ee84f6942fe7ed04e165
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-test-cache-env-key/01kttd1e
+        previous: null
+      submitted_at:
+        new: 2026-06-11T20:16:00.713Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-11T20:16:00.713Z
 created_at: 2026-06-11T03:53:58.871Z
 started_at: 2026-06-11T19:19:53.623Z
+submitted_at: 2026-06-11T20:16:00.713Z
 todos: []
 automation: eligible
