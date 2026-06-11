@@ -68,3 +68,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-11T11:33:40.734Z
+  - _ulid: 01KTV8N00K9KWPCWV4ZN0G9CK3
+    content: "Fix cycle 2 approach: the recovery commands in buildRestoreRecoverySteps interpolate paths
+      into double-quoted shell strings, which the shell expands/mangles for paths containing $,
+      backticks, backslashes, or double quotes. Adding a shellQuotePath() helper (POSIX single-quote
+      escaping with the '\\'' idiom — single quotes suppress all expansion) and using it for the
+      rmdir/mv-aside/mv-back commands. Prose path mentions (preserved-at, location-state lines) stay
+      as plain text since they are not executed. Tests: refactor
+      tests/shadow-restore-failure.test.ts helpers to be fixture-parameterized, switch setup git
+      invocations to execFileSync (arg arrays, no shell interpolation), loosen backup-path
+      extraction to line-anchored so spaces survive, and add a behavioral double-failure test in a
+      directory whose name contains space, $HOME, backtick, double-quote, and single-quote —
+      executing the prescribed commands verbatim through /bin/sh and asserting the backup lands back
+      in place and repair succeeds."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T11:56:30.611Z
