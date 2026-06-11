@@ -38,6 +38,18 @@ checks:
     runner: kspec item get / kspec search
     created_at: 2026-06-11T18:48:59.260Z
     completed_at: 2026-06-11T18:48:59.260Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Failed: @plan-revisions has contradictory revision-history language versus
+      legacy-load/backfill behavior; @review-plan-text-anchors leaves character offset unit
+      undefined, making span ACs non-deterministic for non-ASCII content."
+    name: spec quality
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T18:49:08.409Z
+    completed_at: 2026-06-11T18:49:08.409Z
 events:
   - _ulid: 01KTW04RAXP60HJ6RBPF07YM74
     actor: "@claude"
@@ -101,6 +113,13 @@ events:
       status: fail
       name: cross-reference validation
     timestamp: 2026-06-11T18:48:59.494Z
+  - _ulid: 01KTW08HRV0PPNF6X9HSZ21R5A
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: spec quality
+    timestamp: 2026-06-11T18:49:08.635Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -181,5 +200,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:48:59.260Z
+updated_at: 2026-06-11T18:49:08.409Z
 notes: []
