@@ -4356,3 +4356,17 @@ inbox:
       - release
     added_by: "@claude"
     created_at: 2026-06-11T08:38:39.261Z
+  - _ulid: 01KTV6C46P6WKYZK7AV044TND4
+    text: "Fix-cycle resubmit ergonomics: kspec task submit rejects needs_work status (requires
+      in_progress), but the task-work skill fix-cycle section step 7 says only Re-submit with kspec
+      task submit @ref — no mention of running kspec task start first. Every dispatched fix cycle
+      hits this (observed 2026-06-11: atomic batch note+submit failed and rolled back, needed
+      start+note+submit). Fix either direction: allow submit from needs_work with an implicit
+      needs_work->in_progress transition, or document the required task start in the fix-cycle steps
+      of the task-work skill."
+    tags:
+      - cli
+      - dx
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-11T11:16:42.838Z

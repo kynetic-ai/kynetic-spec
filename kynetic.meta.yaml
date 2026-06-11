@@ -21383,6 +21383,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T11:13:20.308Z
+  - _ulid: 01KTV6C4A14KZWAZZBD5Z6WGAW
+    type: success
+    content: "Executable-guidance tests: when an error message prescribes concrete shell recovery
+      commands, write tests that parse the commands out of the message and execute them verbatim,
+      asserting the system actually recovers — instead of only string-matching the message. On
+      task-shadow-restore-loud-failure, review caught that the prescribed mv was wrong for
+      occupied-destination states precisely because the reviewer executed it; the fix added tests
+      running each prescribed rmdir/mv plus the re-run repair end-to-end, making guidance
+      correctness regression-proof."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T11:16:42.945Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
