@@ -364,6 +364,12 @@ events:
     payload:
       thread_ulid: 01KTVY61V7V6DYZCSWJEW25QYQ
     timestamp: 2026-06-11T18:45:17.214Z
+  - _ulid: 01KTW01N3B78JKN3B37JPJS17F
+    actor: Claude
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVY61V7V6DYZCSWJEW25QYQ
+    timestamp: 2026-06-11T18:45:22.667Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -691,6 +697,8 @@ threads:
           ac-1/ac-4 context references now have a description-level grounding."
         created_at: 2026-06-11T18:45:16.921Z
     kind: nit
+    resolved_at: 2026-06-11T18:45:22.441Z
+    resolved_by: Claude
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -700,5 +708,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:14:23.434Z
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:45:16.921Z
+updated_at: 2026-06-11T18:45:22.441Z
 notes: []
