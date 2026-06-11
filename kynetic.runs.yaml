@@ -63087,7 +63087,7 @@ runs:
     completed_at: 2026-06-11T11:25:09.798Z
   - _ulid: 01KTV7CW45NVZ7KSGSRTPHVY8P
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -63101,7 +63101,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T11:35:05.968Z
-        completed_at: 2026-06-11T11:35:05.968Z
+        completed_at: 2026-06-11T11:35:43.924Z
+        notes: "High-confidence items: (1) Success already covered by existing observation @01KTV6C4:
+          executable-guidance tests are valuable when error output gives copy-paste recovery
+          commands; this review confirmed that pattern by executing generated recovery steps. (2)
+          Friction: generated recovery commands can be correct for normal paths but unsafe for shell
+          metacharacter paths unless command construction has explicit quoting/escaping coverage.
+          Search coverage: no matches for shell-safe recovery steps/path quoting/shell metacharacter
+          path/recovery command; adjacent items exist for full-suite quiet periods and review
+          shell-quoting payloads, but not this code-output command contract. The active review
+          blocker on @task-shadow-restore-loud-failure now tracks the concrete fix, so do not create
+          a duplicate task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T11:35:43.924Z
+        completed_at: 2026-06-11T11:35:43.924Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T11:34:35.910Z
