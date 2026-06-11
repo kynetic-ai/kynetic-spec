@@ -147,7 +147,7 @@ description: |
 spec_ref: "@daemon-command-api"
 plan_ref: "@plan-daemon-operational-reliability"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-daemon-reliability-specs"
@@ -162,8 +162,8 @@ review_ref: "@01KTVM27BMMVKHG1QV706BH53W"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-command-dispatch-timeout/01kttd07
-  captured_at: 2026-06-11T15:10:14.100Z
-  commit: 76859368017ba57e539303d633dfa9e248f05f5d
+  captured_at: 2026-06-11T16:25:43.668Z
+  commit: 6a4c811fac5105c9b430fa2cab768460b6aabce4
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-command-dispatch-timeout/01kttd07
@@ -239,8 +239,35 @@ history:
         previous: 2026-06-11T14:37:10.863Z
     command: task-start
     timestamp: 2026-06-11T16:25:39.889Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-command-dispatch-timeout/01kttd07
+          captured_at: 2026-06-11T16:25:43.668Z
+          commit: 6a4c811fac5105c9b430fa2cab768460b6aabce4
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-command-dispatch-timeout/01kttd07
+        previous:
+          review_url: null
+          branch: dispatch/task/task-command-dispatch-timeout/01kttd07
+          captured_at: 2026-06-11T15:10:14.100Z
+          commit: 76859368017ba57e539303d633dfa9e248f05f5d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-command-dispatch-timeout/01kttd07
+      submitted_at:
+        new: 2026-06-11T16:25:43.673Z
+        previous: 2026-06-11T15:10:14.102Z
+    command: task-submit
+    timestamp: 2026-06-11T16:25:43.674Z
 created_at: 2026-06-11T03:53:18.918Z
 started_at: 2026-06-11T16:25:39.889Z
-submitted_at: 2026-06-11T15:10:14.102Z
+submitted_at: 2026-06-11T16:25:43.673Z
 todos: []
 automation: eligible
