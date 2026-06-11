@@ -63003,9 +63003,19 @@ runs:
     completed_at: 2026-06-11T11:13:32.673Z
   - _ulid: 01KTV67X3K8CWSX5Q2R227VWM9
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-11T11:14:24.499Z
+        completed_at: 2026-06-11T11:15:25.697Z
+        notes: "Baseline: observations list (mostly Jan 2026 success/friction entries), inbox 363 items
+          reviewed for relevant overlap, targeted kspec search used for candidate dedup."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-11T11:15:25.697Z
+        completed_at: 2026-06-11T11:15:25.697Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T11:14:24.499Z
