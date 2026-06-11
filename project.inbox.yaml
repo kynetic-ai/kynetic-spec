@@ -4467,3 +4467,30 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-11T15:13:03.612Z
+  - _ulid: 01KTVNK8EKFSGKJMEKXDDHW670
+    text: "task-work core skill fix-cycle section (templates/skills/task-work/SKILL.md, step 7
+      'Re-submit') omits that a needs_work task must first be transitioned with 'kspec task start
+      @ref' before 'kspec task submit @ref' succeeds — submit rejects needs_work with 'Task must be
+      in_progress'. Every fix-cycle agent hits a failed submit (or rolled-back atomic batch) on
+      first attempt. Fix: add the task start step to the fix-cycle list and re-render skill
+      outputs."
+    tags:
+      - reflection
+      - skills
+      - dx
+    added_by: "@claude"
+    created_at: 2026-06-11T15:42:45.203Z
+  - _ulid: 01KTVNK8J1519D6V07DATNPWZS
+    text: "Add a CI gate (or lint check) that catches Node APIs newer than the declared engines minimum
+      (>=20.0.0). This session, readdirSync recursive:true (added in Node 20.1.0) passed
+      format/lint/typecheck/full-suite locally and in CI because both run newer Node — it was only
+      caught by the reviewer manually reproducing under npx node@20.0.0. Options: run one CI test
+      job on the exact engines floor (node 20.0.0), or enable an eslint-plugin-n style rule checking
+      API availability against engines. Related but distinct from @01KFPDCY (OS matrix, not Node
+      version floor)."
+    tags:
+      - reflection
+      - ci
+      - testing
+    added_by: "@claude"
+    created_at: 2026-06-11T15:42:45.313Z

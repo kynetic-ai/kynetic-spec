@@ -21561,6 +21561,17 @@ observations:
     resolved_at: 2026-06-11T15:37:45.773Z
     resolved_by: Jacob Chapel
     created_at: 2026-06-11T15:35:58.164Z
+  - _ulid: 01KTVNK8M8NKGFXV08D60JDG5Q
+    type: friction
+    content: No quality gate runs at the declared engines minimum Node version, so code using APIs newer
+      than the floor (e.g. readdirSync recursive:true, Node 20.1+) passes every gate on dev/CI Node
+      and ships a silent incompatibility. Caught this session only by a reviewer's manual
+      node@20.0.0 repro during @task-standardize-node-version-docs review. Engines-floor
+      compatibility is currently enforced by reviewer diligence, not tooling.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T15:42:45.384Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
