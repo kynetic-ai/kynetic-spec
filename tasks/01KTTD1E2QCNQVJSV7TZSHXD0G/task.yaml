@@ -88,6 +88,7 @@ tags:
   - cli
   - search
 vcs_refs: []
+review_ref: "@01KTVET5TEYD44HSNFYNSQJ2R2"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-search-meta-entity-tests/01kttd1e
@@ -138,6 +139,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-11T13:38:04.878Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTVET5TEYD44HSNFYNSQJ2R2"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-11T13:44:14.108Z
 created_at: 2026-06-11T03:53:58.103Z
 started_at: 2026-06-11T13:11:54.193Z
 submitted_at: 2026-06-11T13:38:04.878Z

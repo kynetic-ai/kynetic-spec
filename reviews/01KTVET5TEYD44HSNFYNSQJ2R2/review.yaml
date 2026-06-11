@@ -1,0 +1,26 @@
+_ulid: 01KTVET5TEYD44HSNFYNSQJ2R2
+slugs: []
+title: Review task-fix-search-meta-entity-tests
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTVET5TDBYBNT8QZ8AR0SSCZ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T13:44:11.853Z
+examined_commit: 4a03cba1fab82c11a570777b1f63250a16acefb3
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTD1E2QCNQVJSV7TZSHXD0G"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T13:44:11.854Z
+updated_at: null
+notes: []
