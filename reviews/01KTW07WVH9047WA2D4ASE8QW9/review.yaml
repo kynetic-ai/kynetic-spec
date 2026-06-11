@@ -211,6 +211,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T18:51:46.718Z
+  - _ulid: 01KTW2CAEV2H5BDNCJV29HXC7B
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW0C2SS9BSG9X3MXWDX1VSM
+    timestamp: 2026-06-11T19:26:09.371Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -248,6 +254,21 @@ threads:
           the docs still teach the convention — the plan defers the doc change, so the interim
           incoherence window should be an explicit, acknowledged decision."
         created_at: 2026-06-11T18:51:04.377Z
+      - _ulid: 01KTW2CA26580RFQHP9W4DCZNQ
+        author: "@claude"
+        body: "Resolved via option (a), per the decision register, which assigns the N/A-stop to P1a/P1b —
+          the respec IS the reconciliation. @task-respec-test-annotation-sweep-na now amends the
+          live @ac-coverage-applicability boundary sentence (the item is live by the time the task
+          runs, since this plan derives only after P0a): the pre-existing N/A-honoring completeness
+          path ends with this respec plus @task-na-annotation-coverage-exclusion, not with the
+          engine plan. Its engine-scoped ac-1/ac-2 are left untouched and stay claimed by the engine
+          plan per the P0a handoff table. The consumer doc/behavior incoherence window is now an
+          explicit acknowledged decision in Implementation Notes (N/A respec consequences): shipped
+          guidance keeps teaching the convention while coverage credit ends; accepted because the
+          annotation remains a well-formed task-scoped marker producing no findings, the new
+          warnings correctly surface trait-AC misfits, and the doc change is deferred behind the
+          shared-guidance neutrality chain."
+        created_at: 2026-06-11T19:26:08.966Z
     kind: blocker
   - _ulid: 01KTW0C5R5ZEN671JWJEX2SMFQ
     anchor:
@@ -377,5 +398,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:51:46.718Z
 created_at: 2026-06-11T18:48:47.217Z
-updated_at: 2026-06-11T18:51:46.718Z
+updated_at: 2026-06-11T19:26:08.966Z
 notes: []
