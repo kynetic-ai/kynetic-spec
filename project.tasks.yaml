@@ -31419,7 +31419,7 @@
   type: task
   spec_ref: "@daemon-command-api"
   plan_ref: "@plan-daemon-operational-reliability"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-update-daemon-reliability-specs"
@@ -31432,7 +31432,7 @@
   notes_count: 5
   todos_count: 0
   created_at: 2026-06-11T03:53:18.918Z
-  started_at: 2026-06-11T14:37:10.863Z
+  started_at: 2026-06-11T16:25:39.889Z
   submitted_at: 2026-06-11T15:10:14.102Z
   automation: eligible
 - _ulid: 01KTTD08J12B14SB244JRFNDFX
