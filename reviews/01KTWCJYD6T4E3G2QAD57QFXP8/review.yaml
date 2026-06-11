@@ -58,6 +58,18 @@ checks:
     runner: kspec
     created_at: 2026-06-11T22:46:16.493Z
     completed_at: 2026-06-11T22:46:16.493Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0. Existing AC
+      coverage/annotation warning baseline remains, no errors; new @test-suite-perf-reliability ac-7
+      annotations found in tests/build-test-lock.test.ts and implementation files."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T22:46:27.770Z
+    completed_at: 2026-06-11T22:46:27.770Z
 events:
   - _ulid: 01KTWCJYD6GNB5WS72FM4XBS4A
     actor: Jacob Chapel
@@ -121,6 +133,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-11T22:46:16.815Z
+  - _ulid: 01KTWDV3FEWTXFVKK1YE1Y53HB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T22:46:28.078Z
 examined_commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
 external_links: []
 lifecycle_state: open
@@ -176,5 +195,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T22:24:32.166Z
-updated_at: 2026-06-11T22:46:16.493Z
+updated_at: 2026-06-11T22:46:27.770Z
 notes: []
