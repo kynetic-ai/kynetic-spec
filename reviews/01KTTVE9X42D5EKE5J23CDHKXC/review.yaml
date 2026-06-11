@@ -38,6 +38,13 @@ events:
       kind: blocker
       thread_ulid: 01KTTVG27PD36FXNTEZ8D0TK7X
     timestamp: 2026-06-11T08:06:38.725Z
+  - _ulid: 01KTTVGSWJ16WBJ43FFDA6MEKH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTVGSMYSWPX2BZS6KMGFP5N
+    timestamp: 2026-06-11T08:07:01.778Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -98,7 +105,23 @@ threads:
           @ac-annotation-integrity-reporting AC it updates.'
         created_at: 2026-06-11T08:06:37.558Z
     kind: blocker
+  - _ulid: 01KTTVGSMYSWPX2BZS6KMGFP5N
+    anchor:
+      type: structured
+      ref: "@coverage-record-compatibility"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTVGSMYVREP5FYN7NXBG8JQ
+        author: "@claude"
+        body: The plan promises and tasks require an older tool version without verification-store support
+          to ignore the sidecar when reading a project that has one, but
+          @coverage-record-compatibility has no AC for that behavior. Its ACs cover absent store
+          behavior, no upgrade rewrite, first write materialization, newer record-format refusal,
+          and unknown-field roundtrip only. Add an AC for older-tool sidecar tolerance, or remove
+          the older-tool guarantee/test from the plan so the spec and task scope match.
+        created_at: 2026-06-11T08:07:01.534Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:06:37.558Z
+updated_at: 2026-06-11T08:07:01.534Z
 notes: []
