@@ -31,6 +31,13 @@ events:
       kind: question
       thread_ulid: 01KTTTWNNQHWXDMASMKXZCME0Y
     timestamp: 2026-06-11T07:56:02.355Z
+  - _ulid: 01KTTTX2T29RM0EENSJ5TVC63F
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTTTX2HQJNPYGVMYCE9943VV
+    timestamp: 2026-06-11T07:56:15.554Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -79,7 +86,24 @@ threads:
           asserts membership of the rendered vocabulary, not presence of all four buckets."
         created_at: 2026-06-11T07:56:02.103Z
     kind: question
+  - _ulid: 01KTTTX2HQJNPYGVMYCE9943VV
+    anchor:
+      type: structured
+      field: ac-2
+      ref: "@ac-coverage-applicability"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTTX2HQVD3HY6MV2PJ024G5
+        author: "@claude"
+        body: "Residual phrasing from the round-1 fix: the When clause 'corpus coverage is computed by the
+          coverage engine this program introduces' is deictic — once derived into the corpus, 'this
+          program' has no referent on the standalone item. The scoping itself is correct and was the
+          requested fix; suggest a self-contained subject (e.g. 'the corpus coverage engine' or a
+          named engine) in the AC, keeping the program/transition context in the description where
+          it already lives."
+        created_at: 2026-06-11T07:56:15.287Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T07:55:18.224Z
-updated_at: 2026-06-11T07:56:02.103Z
+updated_at: 2026-06-11T07:56:15.287Z
 notes: []
