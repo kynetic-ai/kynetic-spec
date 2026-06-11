@@ -605,6 +605,10 @@ conventions:
         KSPEC_TEST_PROGRESS, FORCE_COLOR, NO_COLOR) plus dispatch/agent vars are stripped. Direct {
         ...process.env, ... } spreads leak the parent's CI-mode behavior into the subprocess and
         silently break non-verbose-path tests in CI.
+      - "Builds and test runs in the same worktree serialize on a per-worktree advisory lock
+        (scripts/build-test-lock.cjs): npm run build / build:e2e waits for a running npm test and
+        vice versa, so a 'Waiting for build/test lock' message is normal, not a hang. Lock
+        coordination vars (KSPEC_BUILD_TEST_LOCK_*) are excluded from the test cache key."
 hooks:
   - _ulid: 01KP8MGJN5FW5NSD46MAHGCF25
     action:
