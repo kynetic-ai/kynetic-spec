@@ -25966,7 +25966,7 @@ reviews:
     title: "Plan review: Web UI Foundations (round 3 verification)"
     disposition: changes_requested
     author: "@claude"
-    check_count: 0
+    check_count: 12
     lifecycle_state: open
     related_refs: []
     subject:
@@ -25978,4 +25978,4 @@ reviews:
     unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-11T20:48:55.408Z
-    updated_at: 2026-06-11T20:49:30.336Z
+    updated_at: 2026-06-11T20:50:50.546Z
