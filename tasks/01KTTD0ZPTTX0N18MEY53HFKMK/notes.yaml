@@ -12,3 +12,28 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T11:29:31.956Z
+  - _ulid: 01KTV88J71SNT204EXEQ6HC83B
+    content: >-
+      Implemented: added private runGit(args, cwd) helper (spawnSync, no shell) and routed all 11
+      execSync call sites through it — isGitRepo, getCurrentBranch, getRecentCommits,
+      getWorkingTreeStatus, getDiffSince (4 sites), getHeadCommit, getBranchRemote (3 sites).
+      Failure semantics preserved: runGit returns null on spawn error or non-zero exit; callers map
+      to their documented null/[]/default. getBranchRemote: url===null and
+      committedDiff/workingTreeDiff===null now short-circuit to the same failure result execSync's
+      throw->catch produced.
+
+
+      Tests (tests/git.test.ts): metacharacter branch literalness uses a real valid git refname
+      containing $(...), backticks, semicolons, and quotes — verified manually that the OLD
+      shell-string code executes both embedded substitutions (creates canary-* files) while the new
+      args-array code does not. getCurrentBranch/getBranchRemote return the exact literal name;
+      metachar remote name fails the lookup literally with no side effect;
+      getRecentCommits/getDiffSince unchanged on a normal repo; all helpers return null/[]/default
+      outside a repo. Annotated with the three spec ACs.
+
+
+      Gates: format:check, lint (0 errors), typecheck, full suite (10445 passed / 5 skipped / 0
+      fail), kspec refs/alignment/completeness all green.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T11:49:43.266Z
