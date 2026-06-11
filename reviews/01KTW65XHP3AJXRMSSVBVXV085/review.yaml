@@ -2,7 +2,164 @@ _ulid: 01KTW65XHP3AJXRMSSVBVXV085
 slugs: []
 title: "Plan review: UI Redesign Global Decisions (round 3, codex)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified prior UI Redesign Global Decisions review records. Earlier
+      blockers/questions/nits from @01KTTPG4 and @01KTTPNY are resolved and current content still
+      contains the fixes: bounded shell AC, endpoint-handler boundaries, N/A transition boundary,
+      observable preference persistence, coverage handoff, added freshness ACs, trimmed actor view
+      AC, standalone dashboard cancellation, concrete disposition notes. Round-1 derive-placement
+      blocker @01KTVWYZ is resolved in current content: @ui-redesign-decisions is documented as
+      created under @main. Round-2 nit @01KTW2B8 is resolved in current content:
+      task-record-overlapping-plan-dispositions includes the @actor-identity-model -> @config-author
+      relates_to step and verification."
+    name: prior review resolution
+    required: true
+    runner: manual
+    created_at: 2026-06-11T20:33:36.324Z
+    completed_at: 2026-06-11T20:33:36.324Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exported stored plan to /tmp/ui-redesign-global-decisions.review.md and ran kspec plan
+      import --dry-run. It parsed as draft plan @plan-ui-redesign-global-decisions-1 with full
+      document stored; no state changes.
+    name: plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-11T20:33:40.856Z
+    completed_at: 2026-06-11T20:33:40.856Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline only: deprecated-item references including
+      @session-summary-cache and @task-activity-git-query. Nothing attributable to this draft plan."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T20:33:45.911Z
+    completed_at: 2026-06-11T20:33:45.911Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline only: 36 orphaned specs and 10 status mismatches,
+      unrelated to this draft plan. Alignment stats 476/646 specs have tasks, 466 aligned."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T20:33:49.400Z
+    completed_at: 2026-06-11T20:33:49.400Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline only: missing AC coverage, automation-without-spec,
+      and invalid AC annotations already present in the corpus. This draft plan has not been derived
+      yet."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T20:33:52.756Z
+    completed_at: 2026-06-11T20:33:52.756Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reviewed 10 planned specs: one module plus nine decision items. All 23 decision ACs are
+      sequential and deterministic. ACs are observable from user/API/result/state boundaries;
+      rationale and transition commentary are kept in descriptions or implementation notes.
+      Transition coexistence with @config-author ac-3 and in-code N/A completeness semantics is
+      explicit rather than contradictory."
+    name: spec quality
+    required: true
+    runner: manual
+    created_at: 2026-06-11T20:33:56.254Z
+    completed_at: 2026-06-11T20:33:56.254Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Parsed the plan YAML and handoff table: 23 decision ACs exactly match 23 handoff rows;
+      missing=0, extra=0. Manual tasks intentionally carry no spec_ref/Covers lines because
+      derive_from_specs is false and the plan documents them as hygiene work that implements no
+      decision behavior."
+    name: AC coverage handoff mapping
+    required: true
+    runner: node/manual
+    created_at: 2026-06-11T20:33:59.843Z
+    completed_at: 2026-06-11T20:33:59.843Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All three manual tasks include Why/What/How, exact note/reason text, concrete commands or
+      command families, and verification steps. Referenced task targets @01KJXQK4 and @01KKBD66
+      resolve and are pending/cancellable. The four overlapping plan refs resolve;
+      @plan-dispatch-mutation-service is already promoted, matching the disposition text.
+    name: task completeness and standalone-ness
+    required: true
+    runner: manual
+    created_at: 2026-06-11T20:34:03.309Z
+    completed_at: 2026-06-11T20:34:03.309Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The three P2 hygiene tasks are independent and have no depends_on entries. None consumes
+      another task's output; actions touch disjoint task/plan/spec metadata records. No cycles,
+      missing dependencies, over-serialization, or priority inversions found.
+    name: dependency ordering
+    required: true
+    runner: manual
+    created_at: 2026-06-11T20:34:06.740Z
+    completed_at: 2026-06-11T20:34:06.740Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@main and @config-author resolve; @config-author ac-3 matches the fallback chain cited by
+      @actor-identity-model. All 10 planned spec slugs and 3 planned task slugs are currently
+      unclaimed. Plan refs and task refs used by the hygiene tasks resolve."
+    name: cross-references and slug collisions
+    required: true
+    runner: kspec-cli/manual
+    created_at: 2026-06-11T20:34:10.350Z
+    completed_at: 2026-06-11T20:34:10.350Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Targeted searches for test result ingestion, coverage state, actor identity, preference
+      persistence/local storage, merge authority, browser shell/window controls, and not-applicable
+      annotation coverage found no overlapping existing specs. Existing @config-author and N/A
+      semantics are handled through explicit transition boundaries.
+    name: existing spec alignment
+    required: true
+    runner: kspec search/manual
+    created_at: 2026-06-11T20:34:13.867Z
+    completed_at: 2026-06-11T20:34:13.867Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/records read: kspec-agents.md, kspec-review-plan skill,
+      @plan-ui-redesign-global-decisions, prior reviews
+      @01KTTPG4/@01KTTPNY/@01KTVWYZ/@01KTW14Z/@01KTW2B8, @config-author, @main, referenced tasks and
+      plans. Commands run: plan get/export/import dry-run, review list/get, validate
+      refs/alignment/completeness, task get, plan get, item get, kspec search, parsed exported plan
+      with Node. Categories checked: prior findings, spec quality, AC coverage mapping, task
+      executability, dependencies, references, slug collisions, existing-spec alignment."
+    name: review evidence log
+    required: true
+    runner: manual
+    created_at: 2026-06-11T20:34:17.393Z
+    completed_at: 2026-06-11T20:34:17.393Z
 events:
   - _ulid: 01KTW65XHN3A6Y6DTJN9JP46CM
     actor: "@claude"
@@ -10,9 +167,116 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T20:32:33.845Z
+  - _ulid: 01KTW67P9V8SNFP965YFC2TXMM
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T20:33:31.963Z
+  - _ulid: 01KTW67TYCNDQXEZDV20DD1P7J
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review resolution
+    timestamp: 2026-06-11T20:33:36.716Z
+  - _ulid: 01KTW67ZC7SJJPCSRTJ8TG41M7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan import dry-run
+    timestamp: 2026-06-11T20:33:41.256Z
+  - _ulid: 01KTW6846MCHH5KCDZMXMT7EAY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T20:33:46.196Z
+  - _ulid: 01KTW687KADVHYM39QT6DV621X
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T20:33:49.674Z
+  - _ulid: 01KTW68AWAD75V14A39XSCNCY6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T20:33:53.034Z
+  - _ulid: 01KTW68E9F9QK2PNYPC5575RG9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec quality
+    timestamp: 2026-06-11T20:33:56.527Z
+  - _ulid: 01KTW68HSG5HSK7AYY82AB12J8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage handoff mapping
+    timestamp: 2026-06-11T20:34:00.112Z
+  - _ulid: 01KTW68N5TPJZ569V45FT147YR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: task completeness and standalone-ness
+    timestamp: 2026-06-11T20:34:03.578Z
+  - _ulid: 01KTW68RHKY0QRG7C1CZHY4EA0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-11T20:34:07.027Z
+  - _ulid: 01KTW68W26DV735M6XCK7XKJS3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cross-references and slug collisions
+    timestamp: 2026-06-11T20:34:10.630Z
+  - _ulid: 01KTW68ZFV3CES89DFS7X0ET80
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: existing spec alignment
+    timestamp: 2026-06-11T20:34:14.139Z
+  - _ulid: 01KTW692XHBWSAJB8J2W6WZX0X
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-11T20:34:17.649Z
+  - _ulid: 01KTW69650N3RJVE86A0ZWZDAH
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T20:34:20.960Z
+  - _ulid: 01KTW696501FPFKWXK3SGZB8GP
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T20:34:20.960Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +284,14 @@ subject:
   ref: "@plan-ui-redesign-global-decisions"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T20:34:20.960Z
 created_at: 2026-06-11T20:32:33.846Z
-updated_at: null
+updated_at: 2026-06-11T20:34:20.960Z
 notes: []
