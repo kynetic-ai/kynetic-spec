@@ -9871,7 +9871,7 @@ workspaces:
         head: 3a3f3bdd74e6e6a978be5cf2888e70c853fe255f
         last_seen_at: 2026-06-11T04:36:37.562Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-license-file-01kttczb
-  - active_role: null
+  - active_role: worker
     base_branch_point: 8335c393bd35c3216a876ea40949c41cf80e9b8b
     bootstrap:
       status: succeeded
@@ -10201,7 +10201,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T04:37:37.325Z
+      updated_at: 2026-06-11T04:38:27.690Z
     integration:
       status: pending
       detail: null
@@ -10210,17 +10210,17 @@ workspaces:
       target_branch: dev
       target_commit: 8335c393bd35c3216a876ea40949c41cf80e9b8b
       updated_at: 2026-06-11T04:37:37.325Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTCZC40FDTA2WWB7E20V00R
     task_ref: "@01KTTCZC40FDTA2WWB7E20V00R"
     task_slug: task-audit-fix-production-deps
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-11T04:37:37.325Z
+      last_active_at: 2026-06-11T04:38:27.690Z
+      last_reconciled_at: 2026-06-11T04:38:27.690Z
       created_at: 2026-06-11T04:37:37.325Z
-      updated_at: 2026-06-11T04:38:13.272Z
+      updated_at: 2026-06-11T04:38:27.690Z
     workspace_id: dispatch-workspace-01KTTCZC40FDTA2WWB7E20V00R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
