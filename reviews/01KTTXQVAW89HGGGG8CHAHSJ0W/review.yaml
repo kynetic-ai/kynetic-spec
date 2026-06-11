@@ -422,6 +422,12 @@ events:
     payload:
       thread_ulid: 01KTTXSCCEY8B58B1P1Y9252M2
     timestamp: 2026-06-11T17:29:45.787Z
+  - _ulid: 01KTVVQEGJWWC6RRGSXMRX8KC6
+    actor: plan-author
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTXSHZV9JYAZV3CH7KMS4B5
+    timestamp: 2026-06-11T17:29:53.939Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -520,6 +526,8 @@ threads:
           in the respec task, so the implementation task coverage claim is verifiable."
         created_at: 2026-06-11T17:26:18.561Z
     kind: blocker
+    resolved_at: 2026-06-11T17:29:53.709Z
+    resolved_by: plan-author
   - _ulid: 01KTTXT20J0MK3RARA7RPJPQ86
     anchor:
       type: structured
@@ -740,5 +748,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:50:22.029Z
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T17:29:45.555Z
+updated_at: 2026-06-11T17:29:53.709Z
 notes: []
