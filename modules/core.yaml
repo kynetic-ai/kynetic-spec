@@ -3358,7 +3358,7 @@ requirements:
       metadata must treat every dynamic value as literal data.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
