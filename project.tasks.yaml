@@ -31874,7 +31874,7 @@
     - task-stabilize-workflow-runs-cli-dist-export
   title: Stabilize workflow-runs CLI dist export failure
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -31884,6 +31884,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T23:15:55.881Z
+  started_at: 2026-06-11T23:38:10.760Z
   automation: eligible
 - _ulid: 01KTWG0DBVCNS31XQF000XDEGJ
   slugs:
