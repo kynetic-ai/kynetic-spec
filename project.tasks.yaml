@@ -31335,6 +31335,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:53:16.608Z
+  automation: eligible
 - _ulid: 01KTTD06BWZAEDXS79B66C260R
   slugs:
     - task-daemon-fatal-failure-observability
