@@ -63524,7 +63524,7 @@ runs:
     completed_at: 2026-06-11T13:09:11.242Z
   - _ulid: 01KTVE0JS7GG1765Z37Y9X8KRP
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -63539,7 +63539,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T13:31:04.187Z
-        completed_at: 2026-06-11T13:31:04.187Z
+        completed_at: 2026-06-11T13:31:18.664Z
+        notes: "High-confidence items: success pattern: review record checks plus anchored blocker made the
+          outcome auditable and left a precise fix target. Friction: shell-passed long descriptions
+          containing command text can execute unintended command substitution; this is systemic but
+          already tracked by existing observations and inbox items found via searches for quoted
+          heredoc and file-based payload. Friction: full-suite order-sensitive stale dist failure
+          was confirmed by one full-run failure and two clean focused reruns; already captured as
+          task @01KTVDV1 during the review."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T13:31:18.664Z
+        completed_at: 2026-06-11T13:31:18.664Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T13:30:13.159Z
