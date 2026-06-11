@@ -75,6 +75,20 @@ checks:
     runner: manual plan review
     created_at: 2026-06-11T18:49:32.624Z
     completed_at: 2026-06-11T18:49:32.624Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Task graph is acyclic and priority-aligned: P1 anchor/revision/kind tasks run first; P1
+      plan-text correctly depends on spec-AC anchors and revision records; P2 backfill and subject
+      revision binding depend on revision records; P2 review-pass respec depends on subject revision
+      binding. The unresolved external spec ref is recorded separately under cross-reference
+      validation."
+    name: dependency ordering
+    required: false
+    runner: manual plan review
+    created_at: 2026-06-11T18:49:42.270Z
+    completed_at: 2026-06-11T18:49:42.270Z
 events:
   - _ulid: 01KTW04RAXP60HJ6RBPF07YM74
     actor: "@claude"
@@ -159,6 +173,13 @@ events:
       status: pass
       name: task completeness
     timestamp: 2026-06-11T18:49:32.853Z
+  - _ulid: 01KTW09JVKMWWQZ5S3T1DV627C
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-11T18:49:42.515Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -239,5 +260,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:49:32.624Z
+updated_at: 2026-06-11T18:49:42.270Z
 notes: []
