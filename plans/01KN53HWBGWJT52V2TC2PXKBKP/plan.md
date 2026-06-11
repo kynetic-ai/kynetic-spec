@@ -59,7 +59,8 @@
         broadcast stages produce no error
     - id: ac-5
       given: |
-        a batch of mutations executes atomically
+        a batch of mutations executes atomically through a
+        daemon-served interface
       when: |
         the batch completes successfully
       then: |
@@ -74,6 +75,15 @@
       then: |
         the report includes the underlying error description rather
         than only a generic failure indication
+    - id: ac-7
+      given: |
+        a batch of mutations executes atomically while no daemon is
+        serving the project
+      when: |
+        the batch completes successfully
+      then: |
+        exactly one shadow commit records the batch, and the
+        unavailable cache and broadcast stages produce no error
 
 - title: Dispatch Mutation Transparency
   slug: dispatch-mutation-transparency
@@ -105,9 +115,9 @@
       when: |
         the mutation executes
       then: |
-        it is applied within that process, without spawning a child
-        process and without issuing a request back through the daemon's
-        own command interface
+        the mutation is applied in-process: no separate process is
+        created on its behalf, and no request re-enters the daemon's
+        command interface
     - id: ac-3
       given: |
         a dispatch-initiated bookkeeping mutation fails
@@ -184,6 +194,7 @@
 - title: Mutation Event Naming
   slug: mutation-event-naming
   type: decision
+  parent: "@api-contract"
   description: |
     Broadcast vocabulary is organized by entity domain: each domain has
     one updates topic, and entity-scoped event types within it name the
@@ -214,6 +225,17 @@
         every entity-scoped event for that domain arrives on that one
         topic, and no other topic carries entity-scoped events for the
         same domain
+    - id: ac-3
+      given: |
+        the two reserved event families — plan-revision and
+        coverage-state
+      when: |
+        the broadcast vocabulary is enumerated
+      then: |
+        the plan-revision family appears as a named reservation on the
+        plan domain's updates topic and the coverage-state family as a
+        named reservation on the spec-item domain's updates topic, each
+        with no payload or semantics defined
 
 # ─── Client Consumption ───
 
@@ -286,8 +308,9 @@ derive_from_specs: false
     routes to call it instead of inlining the sequence per handler.
 
     Why: The four-stage sequence is currently copy-pasted across every
-    daemon route handler (routes/tasks.ts, inbox.ts, triage.ts,
-    reviews.ts, review-resources.ts, plan-resources.ts), and other
+    daemon route handler (packages/daemon/src/routes/ — tasks.ts,
+    inbox.ts, triage.ts, reviews.ts, review-resources.ts,
+    plan-resources.ts), and other
     mutation origins bypass parts of it entirely. One service is the
     precondition for every other task in this plan and for later
     daemon-initiated writes (the spec-revert mutation class routes
@@ -303,7 +326,9 @@ derive_from_specs: false
     - Cache and pubsub are optional injected capabilities. The daemon
       constructs the pipeline with its entity cache and pubsub at
       project registration; direct CLI execution constructs it with
-      neither, and both stages no-op without error.
+      neither, and both stages no-op without error — for single
+      mutations and for atomic batches alike (a no-daemon batch still
+      produces exactly one shadow commit).
     - Native error propagation: stage failures surface the underlying
       error message to the caller — no exit-code-only or empty-stderr
       failure shapes.
@@ -317,14 +342,15 @@ derive_from_specs: false
       double-reload domains the pipeline already updated.
 
     How: Follow the route handler sequence documented at
-    routes/tasks.ts (mutateTask → commitIfShadow → writeThrough →
-    broadcast) as the extraction template. Thread the pipeline through
-    the project-context middleware so handlers receive a ready instance.
-    Add unit tests for stage ordering, optional-capability degradation,
-    and failure propagation; run the existing route test suites to prove
-    payload-schema preservation.
+    packages/daemon/src/routes/tasks.ts (mutateTask → commitIfShadow →
+    writeThrough → broadcast) as the extraction template. Thread the
+    pipeline through the project-context middleware so handlers receive
+    a ready instance. Add unit tests for stage ordering,
+    optional-capability degradation (single mutations and atomic
+    batches), and failure propagation; run the existing route test
+    suites to prove payload-schema preservation.
 
-    Covers: @shared-mutation-pipeline ac-1, ac-2, ac-4, ac-6.
+    Covers: @shared-mutation-pipeline ac-1, ac-2, ac-4, ac-6, ac-7.
 
 - title: Route command-proxy execution through the pipeline with typed entity events
   slug: task-command-path-typed-events
@@ -424,8 +450,8 @@ derive_from_specs: false
     subscribed test client and a proxied item mutation.
 
     Covers: @mutation-event-coverage ac-1, ac-2, ac-3, ac-4.
-    @mutation-event-naming ac-1, ac-2. @ui-api-aggregation ac-4 (for
-    the new event types).
+    @mutation-event-naming ac-1, ac-2, ac-3. @ui-api-aggregation ac-4
+    (for the new event types).
 
 - title: Move dispatch engine bookkeeping mutations onto the pipeline
   slug: task-dispatch-engine-mutation-path
@@ -579,6 +605,16 @@ service with optional cache/pubsub dependencies — is what this revision
 specs. The P0a global-decisions plan's disposition task records the
 promotion on the overlapping draft records.
 
+The record's stored `source_path` (`plans/dispatch-mutation-service.md`)
+is **historical**: it names the retired investigation draft, which has
+no `## Specs` section and no derivable content. Do not iterate by
+editing that file. The authoritative source document for this plan is
+`plans/ui-redesign-mutation-event-service.md`; iterate by editing it
+and re-importing with `--into @plan-dispatch-mutation-service`.
+(`plan import --into` preserves the stored `source_path`, so the stale
+pointer persists on the record — treat this note as the source of
+truth.)
+
 ### Resolutions of the draft's open questions
 
 - **Commit boundaries**: the pipeline owns the commit for a single
@@ -656,13 +692,15 @@ Verified at program research time (plans/ui-redesign/research/state-api.md
   note write itself fails, which `ac-5` leaves open.
 - `@api-contract` — owns the WS message envelope and subscribe
   protocol; the naming decision governs vocabulary within that
-  envelope.
+  envelope, which is why `@mutation-event-naming` is parented under
+  `@api-contract`.
 
 ### Scope exclusions
 
 - **Reserved event families only named, not built**: plan-revision and
-  coverage-state events get reserved names and owning topics; payloads
-  and semantics belong to the plans that introduce those capabilities.
+  coverage-state events get reserved names and owning topics
+  (`@mutation-event-naming` ac-3); payloads and semantics belong to the
+  plans that introduce those capabilities.
 - **No event replay or resume**: the existing reconnect contract
   (resubscribe + full refetch, no missed-event delivery) is unchanged.
 - **No SSE or new transport**; no change to per-connection project

@@ -3,3 +3,12 @@ notes:
     content: Promote as the redesign programs shared mutation/event service foundation
     author: "@claude"
     created_at: 2026-06-11T17:44:23.807Z
+  - _ulid: 01KTW0VS0W1KQZ9NDE8QVTA2C5
+    content: "Address review round 1 findings: narrow ac-5 to daemon-served batches and add ac-7 for
+      direct-CLI batch behavior; add @mutation-event-naming ac-3 covering the reserved event-family
+      names and topics; parent @mutation-event-naming under @api-contract; rephrase
+      @dispatch-mutation-transparency ac-2 as observable behavior; use full repo-relative route
+      paths in @task-shared-mutation-pipeline; document that stored source_path is historical and
+      this file is the authoritative source."
+    author: "@claude"
+    created_at: 2026-06-11T18:59:38.653Z

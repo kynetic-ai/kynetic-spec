@@ -1099,7 +1099,7 @@ plans:
     status: draft
     derived_specs: []
     derived_tasks: []
-    notes_count: 1
+    notes_count: 2
     resource_summary:
       count: 0
       total_bytes: 0
