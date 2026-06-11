@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KTW05VK8600AF54YTPCQW64G
     timestamp: 2026-06-11T18:47:40.636Z
+  - _ulid: 01KTW069SZBFTBESBD94H3FBGS
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW069JBYSZWMAV6NPZEZTN6
+    timestamp: 2026-06-11T18:47:54.943Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -52,7 +59,23 @@ threads:
           dependency and task text that relies on it.'
         created_at: 2026-06-11T18:47:40.392Z
     kind: blocker
+  - _ulid: 01KTW069JBYSZWMAV6NPZEZTN6
+    anchor:
+      type: structured
+      ref: "@plan-revisions"
+      section: description
+    entries:
+      - _ulid: 01KTW069JBRE3JTR692MR4AEAN
+        author: "@claude"
+        body: The description says 'Every plan has at least revision 1', but ac-legacy-plans-load requires a
+          pre-upgrade plan to load and report an empty revision history, and
+          task-plan-revision-records says the schema defaults legacy plans to an empty list before
+          backfill. Those statements define incompatible observable states. Qualify the description
+          to the post-upgrade/published model, or change the legacy-load/backfill behavior so the
+          spec has one deterministic contract.
+        created_at: 2026-06-11T18:47:54.699Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:47:40.392Z
+updated_at: 2026-06-11T18:47:54.699Z
 notes: []
