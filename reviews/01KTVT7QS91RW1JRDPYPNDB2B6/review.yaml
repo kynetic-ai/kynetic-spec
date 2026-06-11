@@ -54,6 +54,17 @@ checks:
     runner: npm test -- --fresh tests/cli-serve-logs.test.ts
     created_at: 2026-06-11T17:22:55.894Z
     completed_at: 2026-06-11T17:22:55.894Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok exited 0; schema/references OK with existing
+      deprecated-reference warning baseline."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T17:23:12.933Z
+    completed_at: 2026-06-11T17:23:12.933Z
 events:
   - _ulid: 01KTVT7QS8GK8TKGYR4HJH7XXK
     actor: Jacob Chapel
@@ -103,6 +114,13 @@ events:
       status: pass
       name: focused serve logs tests
     timestamp: 2026-06-11T17:22:56.140Z
+  - _ulid: 01KTVVB754JFRWHS4PWNWCSASM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T17:23:13.188Z
 examined_commit: 9222d4a7de015305cf726b68c07f68b83438851d
 external_links: []
 lifecycle_state: open
@@ -115,5 +133,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T17:03:50.569Z
-updated_at: 2026-06-11T17:22:55.894Z
+updated_at: 2026-06-11T17:23:12.933Z
 notes: []
