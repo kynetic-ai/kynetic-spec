@@ -63351,13 +63351,16 @@ runs:
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T12:42:37.068Z
   - _ulid: 01KTVBA2JPA1599P8GPE8WDF3D
-    status: active
+    status: aborted
+    abort_reason: Accidentally started alongside session-reflect-loop; continuing autonomous reflection
+      with loop run @01KTVBA3.
     current_step: 0
     initiated_by: Jacob Chapel
     step_results: []
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T12:42:58.518Z
+    completed_at: 2026-06-11T12:43:20.818Z
   - _ulid: 01KTVBA3SD9E4SBQ4Q5YP0WVAW
     status: active
     current_step: 0
