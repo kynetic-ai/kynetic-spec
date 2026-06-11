@@ -2,7 +2,106 @@ _ulid: 01KTVZ6BCGABVTGHZQXDA1AAZW
 slugs: []
 title: "Plan review: Shared Mutation and Event Service (round 2)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found round-1 review 01KTVY7M (closed, changes_requested, 2 blockers + 2 questions, all
+      unresolved). Verified via shadow-branch history that the plan record was last modified
+      2026-06-11T17:44Z — before the round-1 findings — with no author replies and no re-import. All
+      four prior findings verified still present in the stored content and re-raised in this round's
+      threads.
+    name: prior review history
+    required: true
+    runner: kspec review list / kspec review get 01KTVY7M
+    created_at: 2026-06-11T18:32:11.700Z
+    completed_at: 2026-06-11T18:32:11.700Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exported stored content (701 lines) and dry-ran import with no parse errors: 5 specs, 6
+      tasks, derive_from_specs: false, full document stored. Note the implementation notes correctly
+      instruct importing with --into @plan-dispatch-mutation-service."
+    name: plan parse
+    required: true
+    runner: kspec plan export + kspec plan import --dry-run
+    created_at: 2026-06-11T18:32:14.180Z
+    completed_at: 2026-06-11T18:32:14.180Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Parents @daemon-server and @ui-data-freshness exist and fit. Searched 'typed event
+      broadcast' and 'event naming topic' (no overlapping existing spec) and enumerated the 20 items
+      under @daemon-server — no existing spec covers cross-interface mutation/event parity. No
+      contradictions with @daemon-entity-cache or @daemon-command-api ordering guarantees; the plan
+      extends rather than edits them.
+    name: existing spec alignment
+    required: true
+    runner: kspec item get / kspec search / kspec item list --under
+    created_at: 2026-06-11T18:32:16.680Z
+    completed_at: 2026-06-11T18:32:16.680Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Both round-1 spec-quality blockers remain in the unchanged content:
+      @shared-mutation-pipeline ac-5 contradicts ac-4 for no-daemon batches, and
+      @mutation-event-naming's reserved event families are description-only with no covering AC. One
+      new nit: mechanism-level wording in @dispatch-mutation-transparency ac-2. Remaining ACs are
+      atomic, observable, and deterministic."
+    name: spec quality
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T18:32:19.156Z
+    completed_at: 2026-06-11T18:32:19.156Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 20 ACs across the 5 specs are claimed by exactly one task each
+      (shared-mutation-pipeline 6/6 split across two tasks with annotated division; transparency
+      4/4; coverage 4/4; naming 2/2; ui consumption 4/4) and every Covers ref resolves. Fail stands
+      because @task-missing-event-types' reserved-families deliverable has no matching AC on
+      @mutation-event-naming — same gap as round 1.
+    name: task coverage mapping
+    required: true
+    runner: manual Covers audit
+    created_at: 2026-06-11T18:32:21.646Z
+    completed_at: 2026-06-11T18:32:21.646Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "P1 chain: pipeline -> command-path -> missing-events -> ui-consumption (which also
+      depends on missing-events); dispatch-engine depends only on pipeline and can run parallel to
+      the command-path chain. P2 metadata task has no deps and no dependents — no P1-depends-on-P2
+      inversion, no cycles, no over-serialization found."
+    name: dependency ordering
+    required: true
+    runner: manual dependency graph audit
+    created_at: 2026-06-11T18:32:24.126Z
+    completed_at: 2026-06-11T18:32:24.126Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "External AC refs all resolve: @daemon-command-api
+      ac-mutation-cache-update/ac-batch-support/ac-no-recursive-command-proxy; @daemon-entity-cache
+      ac-write-through/ac-broadcast-after-reload; @ui-api-aggregation ac-4;
+      @agent-invocation-lifecycle ac-5; @ui-data-freshness ac-3/ac-10; @api-contract. No slug
+      collisions among the 5 planned specs and 6 planned tasks. Implementation claims verified:
+      FILE_WATCHER_INVALIDATION_DELAYS_MS=[650,1500] in ws-invalidation.ts;
+      mutateTask/commitIfShadow/writeThrough sequence in packages/daemon/src/routes/tasks.ts;
+      src/agent-runtime/invocation.ts and packages/shared/src/websocket.ts exist; 'kspec link create
+      --type relates_to' is a real command."
+    name: cross-reference validation
+    required: true
+    runner: kspec item get / filesystem + symbol verification
+    created_at: 2026-06-11T18:32:26.624Z
+    completed_at: 2026-06-11T18:32:26.624Z
 events:
   - _ulid: 01KTVZ6BCFHJ08S9V9F2TT9G38
     actor: "@claude"
@@ -17,6 +116,97 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T18:31:51.030Z
+  - _ulid: 01KTVZ91NWA3DHR8EEA2QGXSNQ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVZ91F7W6S3FTYAWZ9HWFZ8
+    timestamp: 2026-06-11T18:31:56.348Z
+  - _ulid: 01KTVZ944DXTRYQ8APCVVTTWSZ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVZ93XWXW7HX179TJHEYNMH
+    timestamp: 2026-06-11T18:31:58.861Z
+  - _ulid: 01KTVZ96K7X83QARGPT19WZHHM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTVZ96CYV2HJFH69CT09CM3Z
+    timestamp: 2026-06-11T18:32:01.383Z
+  - _ulid: 01KTVZ990B0PJB5RPHE5TJ1V1T
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTVZ98SQRQPHXES5H1D82ZFP
+    timestamp: 2026-06-11T18:32:03.851Z
+  - _ulid: 01KTVZ9BFX4PFM7BN0H6K7D1GJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTVZ9B9CKGRD2X8JNXRY1K00
+    timestamp: 2026-06-11T18:32:06.397Z
+  - _ulid: 01KTVZ9E9BSSSQC46626XSQDSN
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTVZ9E1VGBZ31DG4PAPNBS7Q
+    timestamp: 2026-06-11T18:32:09.259Z
+  - _ulid: 01KTVZ9GVVS47AHF56HQWJ72C3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review history
+    timestamp: 2026-06-11T18:32:11.899Z
+  - _ulid: 01KTVZ9K9Q4EZH33KMYX21FX6F
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan parse
+    timestamp: 2026-06-11T18:32:14.391Z
+  - _ulid: 01KTVZ9NQXYN1QXCS95AQZJEV0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: existing spec alignment
+    timestamp: 2026-06-11T18:32:16.893Z
+  - _ulid: 01KTVZ9R5JGJ9887NSXE8QPHSW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: spec quality
+    timestamp: 2026-06-11T18:32:19.378Z
+  - _ulid: 01KTVZ9TJVXGHF7JJ48AD5T19F
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: task coverage mapping
+    timestamp: 2026-06-11T18:32:21.851Z
+  - _ulid: 01KTVZ9X0A2K83GZ6GA21AA5HT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-11T18:32:24.330Z
+  - _ulid: 01KTVZ9ZE9FRT09RE10X8W01HG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cross-reference validation
+    timestamp: 2026-06-11T18:32:26.825Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +216,120 @@ subject:
   content_hash: ""
   ref: "@plan-dispatch-mutation-service"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTVZ91F7W6S3FTYAWZ9HWFZ8
+    anchor:
+      type: structured
+      field: ac-5
+      ref: "@shared-mutation-pipeline"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTVZ91F74RX6V672BAWTD0Q4
+        author: "@claude"
+        body: RE-RAISED from round 1 (thread 01KTVYEW3MY5E8S70MWH5SQJM7) — plan content unchanged since that
+          finding (last shadow commit to the plan record 2026-06-11T17:44Z, before the round-1
+          verdict; no author replies). ac-5's Given is 'a batch of mutations executes atomically',
+          which includes direct-CLI batches with no daemon, yet its Then requires a typed event
+          broadcast per affected entity. ac-4 says no-daemon mutations skip cache and broadcast
+          without error, and the covering task (@task-command-path-typed-events) only implements
+          daemon command-endpoint batches. Narrow ac-5's Given to daemon-served batches, or add a
+          separate AC for direct-CLI batch behavior, so the two ACs are non-contradictory and
+          deterministic.
+        created_at: 2026-06-11T18:31:56.135Z
+    kind: blocker
+  - _ulid: 01KTVZ93XWXW7HX179TJHEYNMH
+    anchor:
+      type: structured
+      ref: "@mutation-event-naming"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTVZ93XWVKVFCWT1T3FE4JTX
+        author: "@claude"
+        body: "RE-RAISED from round 1 (thread 01KTVYEYSHFMTJ14PHEK01VXGV) — unchanged. The decision's
+          description makes the reserved plan-revision and coverage-state event families part of the
+          vocabulary ('The reserved names are part of this vocabulary'), and
+          @task-missing-event-types commits to recording those reservations in the shared typed
+          event definitions. But neither ac-1 nor ac-2 asserts that the reserved families exist or
+          live on their named topics, so the reservation work is uncovered by any AC and the task's
+          'Covers: @mutation-event-naming ac-1, ac-2' line does not actually cover that deliverable.
+          Either add an AC asserting the reservations (names + owning topics enumerable), or move
+          the reservations out of the spec description and task scope into implementation notes
+          only."
+        created_at: 2026-06-11T18:31:58.652Z
+    kind: blocker
+  - _ulid: 01KTVZ96CYV2HJFH69CT09CM3Z
+    anchor:
+      type: structured
+      field: parent
+      ref: "@mutation-event-naming"
+      section: specs
+    entries:
+      - _ulid: 01KTVZ96CYQ3XR3BSXQVDH8SMJ
+        author: "@claude"
+        body: "RE-RAISED from round 1 (thread 01KTVYF1CZXWQSMX106VDDX07V) — unchanged.
+          @mutation-event-naming is still the only planned spec without a parent, and the stored
+          plan record still has module_ref: null. Derive requires a module when specs are present,
+          and a parentless non-trait spec attaches to the derive module — so where this decision
+          lands is currently determined at derive time rather than by the plan. Make the intended
+          parent explicit (e.g. @shared-mutation-pipeline or @api-contract, which the notes say owns
+          the WS envelope this vocabulary lives inside) or store the intended module on the plan
+          record."
+        created_at: 2026-06-11T18:32:01.182Z
+    kind: question
+  - _ulid: 01KTVZ98SQRQPHXES5H1D82ZFP
+    anchor:
+      type: structured
+      field: source_path
+      ref: "@plan-dispatch-mutation-service"
+      section: context
+    entries:
+      - _ulid: 01KTVZ98SQQQT786B52ZX6H1K2
+        author: "@claude"
+        body: "RE-RAISED from round 1 (thread 01KTVYF41T0W8MFRVZ896NVZ14) — unchanged, and independently
+          verified this round: plans/dispatch-mutation-service.md is still the old 'WIP Draft —
+          investigation notes' document with no '## Specs' section (zero derivable content), while
+          the record's source_path points at it. Anyone iterating via 'edit source file, re-import'
+          would silently replace the reviewed spec/task content with the investigation draft. Export
+          the stored content over the source file, repoint source_path, or note explicitly that
+          source_path is historical."
+        created_at: 2026-06-11T18:32:03.639Z
+    kind: question
+  - _ulid: 01KTVZ9B9CKGRD2X8JNXRY1K00
+    anchor:
+      type: structured
+      field: ac-2
+      ref: "@dispatch-mutation-transparency"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTVZ9B9CHAR74JGHCTTGEEPJ
+        author: "@claude"
+        body: New in round 2. ac-2's Then ('without spawning a child process and without issuing a request
+          back through the daemon's own command interface') is mechanism-level language in an AC.
+          The in-process requirement is the real contract and is testable, but consider phrasing the
+          observable boundary ('the mutation is applied in-process; no separate process is created
+          and no request re-enters the daemon's command endpoint') so the AC reads as behavior
+          rather than naming the current implementation's plumbing. Non-blocking — the AC is
+          deterministic as written.
+        created_at: 2026-06-11T18:32:06.188Z
+    kind: nit
+  - _ulid: 01KTVZ9E1VGBZ31DG4PAPNBS7Q
+    anchor:
+      type: structured
+      ref: "@task-shared-mutation-pipeline"
+      section: description
+    entries:
+      - _ulid: 01KTVZ9E1V0V5C2V378A9ERF8T
+        author: "@claude"
+        body: New in round 2. The Why section names the route files as 'routes/tasks.ts, inbox.ts,
+          triage.ts, reviews.ts, review-resources.ts, plan-resources.ts' without a package prefix;
+          the actual location is packages/daemon/src/routes/ (verified — all six files exist there,
+          and the mutateTask → commitIfShadow → writeThrough sequence cited as the extraction
+          template is at packages/daemon/src/routes/tasks.ts). Other tasks in this plan use full
+          repo-relative paths (src/agent-runtime/invocation.ts, packages/web-ui/...). Use the full
+          path here too so a fresh agent doesn't go looking under src/ first.
+        created_at: 2026-06-11T18:32:09.019Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T18:30:27.984Z
-updated_at: 2026-06-11T18:31:50.817Z
+updated_at: 2026-06-11T18:32:26.624Z
 notes: []
