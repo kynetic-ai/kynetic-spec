@@ -1,0 +1,26 @@
+_ulid: 01KTW0DFKNP9PSYE60S9GESYFJ
+slugs: []
+title: Review task-ci-node-version-matrix
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTW0DFKNWGRW7RM1ABAXQ95M
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T18:51:50.261Z
+examined_commit: 8478c83153acaf6b2cbb47188e84bffb5befaedc
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTCZF245ZGK3T0KJPHG6E4W"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T18:51:50.261Z
+updated_at: null
+notes: []
