@@ -246,6 +246,12 @@ events:
     payload:
       thread_ulid: 01KTW2VMXNNRRAA2QE9JNBA14F
     timestamp: 2026-06-11T20:15:21.117Z
+  - _ulid: 01KTW57P5NF76SEGRDPQBDVMJZ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTW2VMXNNRRAA2QE9JNBA14F
+    timestamp: 2026-06-11T20:16:03.253Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -283,6 +289,8 @@ threads:
           review round 2 findings".'
         created_at: 2026-06-11T20:15:20.839Z
     kind: nit
+    resolved_at: 2026-06-11T20:16:02.977Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -292,5 +300,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T19:34:35.466Z
 created_at: 2026-06-11T19:25:34.585Z
-updated_at: 2026-06-11T20:15:20.839Z
+updated_at: 2026-06-11T20:16:02.977Z
 notes: []
