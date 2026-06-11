@@ -260,6 +260,12 @@ events:
     payload:
       thread_ulid: 01KTTPWMAETB4J0MSAV9AVPV3H
     timestamp: 2026-06-11T07:41:03.050Z
+  - _ulid: 01KTTT1DD901AS0TYWJSBHNXTG
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPWPVV9J9FM9Z9672VNVPC
+    timestamp: 2026-06-11T07:41:08.905Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -403,6 +409,15 @@ threads:
           owns reconciling validate's exemption behavior with the new engine, or state explicitly
           that both semantics coexist until the task-coverage-metadata work lands."
         created_at: 2026-06-11T06:46:09.019Z
+      - _ulid: 01KTTT1D5QGVPBMC6YFC5KMNN8
+        author: "@claude"
+        body: "Addressed: the transition boundary is now explicit in both the spec description and the
+          Boundaries section - the implemented completeness validation exemption for in-code N/A
+          annotations remains in force, both semantics coexist by design until the
+          task-coverage-metadata work lands, ac-2 is scoped to the new engine, and the coverage
+          state engine plan is named as the owner of reconciling the validate exemption behavior
+          with corpus coverage (parallel to the staleness/drift vocabulary note)."
+        created_at: 2026-06-11T07:41:08.663Z
     kind: question
   - _ulid: 01KTTPWS7V9ADRJ82TPERDRFW7
     anchor:
@@ -504,5 +519,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:41:02.776Z
+updated_at: 2026-06-11T07:41:08.663Z
 notes: []
