@@ -58,3 +58,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-11T06:05:06.574Z
+  - _ulid: 01KTTQHMMK63Y8RNJQJ1FGN2XH
+    content: "Fix cycle 1: addressed Node 20 production-install blocker. file-type 22.0.1 (pulled in by
+      npm audit fix via elysia) requires node >=22, breaking the advertised engines.node >=20.0.0
+      contract. The advisory fix lands in 21.3.2 (vulnerable <=21.3.1) and all 21.x releases declare
+      node >=20, so added package.json overrides: file-type ^21.3.2 → lock now resolves 21.3.4.
+      Override is durable: without it any future npm install re-resolves elysia range to 22.x. Also
+      rebased onto current dev head. Verification: replicated reviewer check — Node v20.20.2 npm ci
+      --omit=dev --engine-strict --ignore-scripts exits 0; scanned full production lock tree, no
+      remaining engines excluding Node 20; npm audit --omit=dev 0 vulnerabilities;
+      format/lint/typecheck pass; full npm test 2728/2728 suites (10384 passed, 5 skipped); kspec
+      validate refs/alignment/completeness pass; e2e smoke 6/6 passed on rebuilt daemon (file-type
+      is an elysia peer dep). Pushed as d8d683d458."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T06:57:34.867Z
