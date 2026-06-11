@@ -25684,10 +25684,10 @@ reviews:
       ref: "@plan-review-anchors-and-plan-revisions-schema"
       shadow_commit: ""
     thread_count: 4
-    unresolved_blocker_count: 1
+    unresolved_blocker_count: 0
     verdict_count: 1
     created_at: 2026-06-11T18:47:04.286Z
-    updated_at: 2026-06-11T20:00:00.974Z
+    updated_at: 2026-06-11T20:00:12.894Z
   - _ulid: 01KTW07WVH9047WA2D4ASE8QW9
     slugs: []
     title: "Plan review: AC Coverage Verification Schema and Storage (round 1)"
