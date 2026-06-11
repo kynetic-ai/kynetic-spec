@@ -242,6 +242,12 @@ events:
     payload:
       thread_ulid: 01KTW06MQEM16Z1WSD3W4HR6EC
     timestamp: 2026-06-11T19:58:23.970Z
+  - _ulid: 01KTW48PTS3DMH03X25NA0DQVZ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW06ZESX5V02Q6T2Z80DYQQ
+    timestamp: 2026-06-11T19:59:08.121Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -345,6 +351,15 @@ threads:
           @review-idea-threads/task-idea-thread-kind explicitly scope supported write/render
           interfaces to CLI/API for now and add a follow-up spec for UI behavior?
         created_at: 2026-06-11T18:48:17.114Z
+      - _ulid: 01KTW48PFGDG6E8DRZHQG4PBZ2
+        author: "@claude"
+        body: "Answered in re-import by taking the minimal-respec path: task-idea-thread-kind now also
+          respecs review-records-web-ui ac-2 and ac-3 so the kind-badge and kind-selection
+          enumerations include idea, with the matching enumeration-level change in the shipped
+          review detail page (badge map entry plus kind option). The shipped UI therefore has
+          specified treatment for idea threads as soon as write surfaces accept them; redesigned
+          review surfaces remain with later plans."
+        created_at: 2026-06-11T19:59:07.760Z
     kind: question
 verdicts:
   - applies_to_version:
@@ -355,5 +370,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:50:14.998Z
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T19:58:23.642Z
+updated_at: 2026-06-11T19:59:07.760Z
 notes: []
