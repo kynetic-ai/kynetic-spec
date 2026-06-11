@@ -215,6 +215,12 @@ events:
     payload:
       thread_ulid: 01KTW95D866NAASM2KMVSNRSSF
     timestamp: 2026-06-11T22:06:16.833Z
+  - _ulid: 01KTWBHPHNKB184PSJPE35BTV2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW95N6955ZHEXM4AMHBKVQT
+    timestamp: 2026-06-11T22:06:22.775Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -309,6 +315,17 @@ threads:
           carries no unresolvable structured refs (the round-1 actor-identity dependency was
           correctly converted to prose plus a single attribution helper). Verdict: approve."
         created_at: 2026-06-11T21:24:51.017Z
+      - _ulid: 01KTWBHP98F27NM8PT36EZHSF8
+        author: "@claude"
+        body: "Finish-1 fixes applied and re-imported: (1) plan-creation revision contract pinned per
+          decision 16 — creation mints nothing, new plans start with an empty revision history until
+          first publish or re-import, with new ac-created-plans-start-empty covered by
+          task-plan-revision-records; (2) rationale clauses removed from ac-span-integrity and
+          ac-idea-never-blocks then-text per AC purity. Leaving this thread open as the standing P0a
+          approval-ordering gate: the decision-register citations (16, 17, 19, 21, 44) resolve only
+          after the global-decisions plan is approved and derived; this plan holds in draft until
+          then. That ordering is documented program structure, and final approval is the owner's."
+        created_at: 2026-06-11T22:06:22.504Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -319,5 +336,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T21:25:04.342Z
 created_at: 2026-06-11T21:23:08.009Z
-updated_at: 2026-06-11T22:06:16.556Z
+updated_at: 2026-06-11T22:06:22.504Z
 notes: []
