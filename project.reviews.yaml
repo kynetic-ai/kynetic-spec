@@ -25320,7 +25320,7 @@ reviews:
     title: Review task-add-contributing-security-docs
     disposition: pending
     author: Jacob Chapel
-    check_count: 5
+    check_count: 6
     examined_commit: fb7f92add5b79e32e4c5c35ec8ec51f76ee7c889
     lifecycle_state: open
     related_refs: []
@@ -25333,4 +25333,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T11:27:34.571Z
-    updated_at: 2026-06-11T11:41:45.317Z
+    updated_at: 2026-06-11T11:41:48.221Z
