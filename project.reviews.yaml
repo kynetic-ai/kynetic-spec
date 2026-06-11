@@ -25209,7 +25209,7 @@ reviews:
     title: "Plan review: AC Coverage Verification Schema and Storage (round 1, claude)"
     disposition: changes_requested
     author: "@claude"
-    check_count: 1
+    check_count: 2
     lifecycle_state: open
     related_refs: []
     subject:
@@ -25221,4 +25221,4 @@ reviews:
     unresolved_blocker_count: 4
     verdict_count: 0
     created_at: 2026-06-11T08:45:49.788Z
-    updated_at: 2026-06-11T08:48:42.270Z
+    updated_at: 2026-06-11T08:48:47.993Z

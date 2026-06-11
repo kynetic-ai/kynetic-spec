@@ -14,6 +14,16 @@ checks:
     runner: kspec plan import --dry-run
     created_at: 2026-06-11T08:48:42.270Z
     completed_at: 2026-06-11T08:48:42.270Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 on the live corpus. Does not validate underived draft-plan refs.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T08:48:47.993Z
+    completed_at: 2026-06-11T08:48:47.993Z
 events:
   - _ulid: 01KTTXQVAWJ8VTNY2FXYXNJPB1
     actor: "@claude"
@@ -112,6 +122,13 @@ events:
       status: pass
       name: Plan parse
     timestamp: 2026-06-11T08:48:42.562Z
+  - _ulid: 01KTTXX9KZP9BCRJ29Y6XZZ73H
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T08:48:48.255Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -332,5 +349,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:48:42.270Z
+updated_at: 2026-06-11T08:48:47.993Z
 notes: []
