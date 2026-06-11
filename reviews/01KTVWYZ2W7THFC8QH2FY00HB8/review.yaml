@@ -20,6 +20,18 @@ checks:
     runner: manual
     created_at: 2026-06-11T17:52:13.509Z
     completed_at: 2026-06-11T17:52:13.509Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exported stored content and ran kspec plan import --dry-run: parses, full document
+      stored, no state change. Derive dry-run unavailable on draft plans; YAML blocks independently
+      parsed (10 specs, 3 tasks)."
+    name: plan import dry-run
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T17:52:18.771Z
+    completed_at: 2026-06-11T17:52:18.771Z
 events:
   - _ulid: 01KTVWYZ2WXMFZSQBG28NHQNQC
     actor: "@claude"
@@ -48,6 +60,13 @@ events:
       status: pass
       name: prior review resolution
     timestamp: 2026-06-11T17:52:13.715Z
+  - _ulid: 01KTVX0G1EHV985J40WJ6704Z4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan import dry-run
+    timestamp: 2026-06-11T17:52:18.991Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -94,5 +113,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T17:51:28.860Z
-updated_at: 2026-06-11T17:52:13.509Z
+updated_at: 2026-06-11T17:52:18.771Z
 notes: []
