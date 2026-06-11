@@ -207,6 +207,21 @@ async function inferVersionFromProbes(
     const manifest = yaml.parse(raw);
     if (manifest) {
       const kyneticVer = manifest.kynetic || manifest.kynetic_spec;
+      // AC: @data-format-forward-compatibility ac-upgrade-refuses-newer
+      // Defense in depth: a declared version above the maximum supported is a
+      // newer-than-supported project, NOT an old-era one. Without this check
+      // it would fall into the 0.1.0-0.8.99 bucket below (or the run-everything
+      // "unknown" safety net) and the pipeline would execute migrations against
+      // newer-format data. The user-visible CLI refusal is owned by the
+      // context-initialization ceiling check (initContext throws before
+      // detectSourceVersion on the runUpgradePipeline path); this throw covers
+      // callers that reach probe inference without initContext.
+      const { describeFormatVersionIncompatibility, FORMAT_VERSION_NEWER_THAN_SUPPORTED_CODE } =
+        await import("../../parser/format-version.js");
+      const ceilingErr = describeFormatVersionIncompatibility(kyneticVer);
+      if (ceilingErr?.code === FORMAT_VERSION_NEWER_THAN_SUPPORTED_CODE) {
+        throw ceilingErr;
+      }
       if (kyneticVer === "1.2") {
         // kynetic 1.2 introduces folder-backed plan/review/resource storage
         probeResults.push({ minVersion: "0.14.0", maxVersion: "99.99.99" });
@@ -231,7 +246,15 @@ async function inferVersionFromProbes(
         versionedProbeMatched = true;
       }
     }
-  } catch {
+  } catch (err) {
+    // AC: @data-format-forward-compatibility ac-upgrade-refuses-newer
+    // The newer-than-supported refusal must escape — only read/parse
+    // failures count as an "old project" indicator.
+    const { isDeterministicFormatVersionIncompatibility } =
+      await import("../../parser/format-version.js");
+    if (isDeterministicFormatVersionIncompatibility(err)) {
+      throw err;
+    }
     // Manifest unreadable — counts as "old project" indicator
   }
 
@@ -2255,7 +2278,19 @@ export function registerUpgradeCommand(program: Command): void {
         let ctx;
         try {
           ctx = await initContext();
-        } catch {
+        } catch (err) {
+          // AC: @data-format-forward-compatibility ac-upgrade-refuses-newer
+          // The context-initialization ceiling check owns the upgrade refusal
+          // for newer-format projects: surface it with its deterministic code
+          // instead of collapsing it into "no project found". The refusal
+          // fires before detectSourceVersion or any pipeline step runs.
+          const { isDeterministicFormatVersionIncompatibility } =
+            await import("../../parser/format-version.js");
+          if (isDeterministicFormatVersionIncompatibility(err)) {
+            error(err.message, { code: err.code, suggestion: err.suggestion });
+            process.exit(EXIT_CODES.ERROR);
+            return;
+          }
           // AC: @trait-error-guidance ac-1, ac-2
           // AC: @trait-json-output ac-3 — guidance included in structured error
           error("No kspec project found in the current directory.", {

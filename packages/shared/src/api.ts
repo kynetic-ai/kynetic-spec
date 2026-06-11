@@ -130,6 +130,21 @@ export interface ErrorResponse {
    * AC: @entity-folder-migration-and-compatibility-1 ac-daemon-returns-structured-conflict
    */
   domain?: string;
+  /**
+   * The project manifest's literal declared format version, set on
+   * format-version incompatibility responses (project data written by a
+   * newer kspec than this daemon supports).
+   *
+   * AC: @data-format-forward-compatibility ac-daemon-structured-error
+   */
+  declared_version?: string;
+  /**
+   * The running daemon's maximum supported format version, paired with
+   * `declared_version` on format-version incompatibility responses.
+   *
+   * AC: @data-format-forward-compatibility ac-daemon-structured-error
+   */
+  max_supported_version?: string;
 }
 
 /**

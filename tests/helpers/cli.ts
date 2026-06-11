@@ -468,7 +468,7 @@ export async function downgradeManifestToLegacyStorage(projectDir: string): Prom
  * (src/parser/yaml.ts) so the test helper finds either `kynetic.yaml`,
  * `kynetic.spec.yaml`, or any `<slug>.yaml` that carries a `kynetic` field.
  */
-async function findManifestFileInDir(specDir: string): Promise<string | null> {
+export async function findManifestFileInDir(specDir: string): Promise<string | null> {
   for (const candidate of ["kynetic.yaml", "kynetic.spec.yaml"]) {
     const filePath = path.join(specDir, candidate);
     try {

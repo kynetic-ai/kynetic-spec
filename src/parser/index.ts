@@ -7,6 +7,7 @@ export * from "./dispatch-workspaces.js";
 export * from "./assess.js";
 export * from "./entity-local-resources.js";
 export * from "./entity-storage-compatibility.js";
+export * from "./format-version.js";
 export * from "./convention-validation.js";
 export * from "./coverage-cache.js";
 export * from "./file-lock.js";
