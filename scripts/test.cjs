@@ -81,6 +81,16 @@ const TEST_INPUT_PATHS = [
 
 const CACHE_ROOT = path.join(os.tmpdir(), "kspec-test-cache");
 
+// Environment variables that affect test behavior — included in the cache key
+// so runs under different env conditions cannot serve each other's results
+// (e.g. CI=true skips file-watcher tests). Curated allowlist rather than the
+// full environment: hashing everything would invalidate the cache on
+// irrelevant churn (PWD, SHLVL, terminal vars).
+const ENV_KEY_VARS = ["CI", "TZ", "NODE_ENV", "NODE_OPTIONS"];
+// KSPEC_SESSION_ID already scopes the cache directory (getCacheDir);
+// KSPEC_TEST_PROGRESS affects only progress rendering, not test outcomes.
+const ENV_KEY_EXCLUDED = new Set(["KSPEC_SESSION_ID", "KSPEC_TEST_PROGRESS"]);
+
 // ─── Output helpers ────────────────────────────────────────────────
 
 function logSetup(msg) {
@@ -102,7 +112,29 @@ function logErr(msg) {
 // ─── Cache key computation ────────────────────────────────────────
 
 /**
- * Compute a deterministic cache key from repo content state + vitest args.
+ * Compute the env component of the cache key: behavior-affecting variables
+ * (allowlist + KSPEC_* prefix, minus exclusions) as JSON-encoded sorted
+ * [name, value] pairs. Absent vars are excluded entirely, so unset and
+ * empty-string values produce different components. JSON encoding keeps
+ * pair boundaries unambiguous even when values contain separators.
+ */
+function computeEnvCacheComponent(env) {
+  const names = new Set(ENV_KEY_VARS);
+  for (const name of Object.keys(env)) {
+    if (name.startsWith("KSPEC_") && !ENV_KEY_EXCLUDED.has(name)) {
+      names.add(name);
+    }
+  }
+  const pairs = [...names]
+    .filter((name) => env[name] !== undefined)
+    .toSorted()
+    .map((name) => [name, env[name]]);
+  return JSON.stringify(pairs);
+}
+
+/**
+ * Compute a deterministic cache key from repo content state + vitest args
+ * + behavior-affecting environment variables.
  * Uses git blob SHAs (content-addressed) so commits/rebases don't invalidate.
  */
 function computeCacheKey(vitestArgs) {
@@ -162,6 +194,9 @@ function computeCacheKey(vitestArgs) {
 
   // 5. Vitest args (different filters = different cache entries)
   hash.update(vitestArgs.join(" "));
+
+  // 6. Behavior-affecting environment variables
+  hash.update(computeEnvCacheComponent(process.env));
 
   return hash.digest("hex").slice(0, 16);
 }
@@ -683,6 +718,7 @@ module.exports = {
   checkBuild,
   ensureEnvironment,
   computeCacheKey,
+  computeEnvCacheComponent,
   getCacheDir,
   getCachedResults,
   formatCondensedOutput,

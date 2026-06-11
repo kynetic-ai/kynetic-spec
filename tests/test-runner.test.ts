@@ -14,6 +14,32 @@ function stripAnsi(str: string): string {
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const runnerScript = path.join(projectRoot, "scripts", "test.cjs");
 
+/** Apply env overrides (undefined = unset), run fn, restore originals. */
+function withEnv(overrides: Record<string, string | undefined>, fn: () => void): void {
+  const saved: Record<string, string | undefined> = {};
+  for (const key of Object.keys(overrides)) {
+    saved[key] = process.env[key];
+    const value = overrides[key];
+    if (value === undefined) {
+      delete process.env[key];
+    } else {
+      process.env[key] = value;
+    }
+  }
+  try {
+    fn();
+  } finally {
+    for (const key of Object.keys(saved)) {
+      const value = saved[key];
+      if (value === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = value;
+      }
+    }
+  }
+}
+
 /**
  * Run the test runner script as a subprocess and capture output.
  * Uses --dry-run to avoid actually running vitest.
@@ -589,6 +615,86 @@ describe("test runner environment checks", () => {
         expect(typeof hook.check).toBe("function");
         expect(typeof hook.fix).toBe("function");
       }
+    });
+  });
+
+  // Coverage: task-test-cache-env-key (test infrastructure — convention + task, no spec ACs)
+  describe("cache key environment component", () => {
+    describe("computeEnvCacheComponent", () => {
+      it("includes allowlisted vars and ignores irrelevant environment churn", () => {
+        const base = { CI: "true", TZ: "UTC" };
+        const withChurn = { ...base, PWD: "/somewhere/else", SHLVL: "7", TERM: "xterm" };
+        expect(runner.computeEnvCacheComponent(withChurn)).toBe(
+          runner.computeEnvCacheComponent(base),
+        );
+      });
+
+      it("includes KSPEC_-prefixed vars except KSPEC_SESSION_ID and KSPEC_TEST_PROGRESS", () => {
+        const base = { KSPEC_NO_DAEMON: "1" };
+        expect(
+          runner.computeEnvCacheComponent({
+            ...base,
+            KSPEC_SESSION_ID: "session-a",
+            KSPEC_TEST_PROGRESS: "0",
+          }),
+        ).toBe(runner.computeEnvCacheComponent(base));
+
+        expect(runner.computeEnvCacheComponent({ ...base, KSPEC_SOME_FLAG: "on" })).not.toBe(
+          runner.computeEnvCacheComponent(base),
+        );
+      });
+
+      it("distinguishes unset from empty-string values", () => {
+        expect(runner.computeEnvCacheComponent({ CI: "" })).not.toBe(
+          runner.computeEnvCacheComponent({}),
+        );
+      });
+
+      it("is deterministic regardless of env key insertion order", () => {
+        const a = runner.computeEnvCacheComponent({ TZ: "UTC", CI: "true", NODE_ENV: "test" });
+        const b = runner.computeEnvCacheComponent({ NODE_ENV: "test", CI: "true", TZ: "UTC" });
+        expect(a).toBe(b);
+      });
+
+      it("keeps pair boundaries unambiguous for values containing separators", () => {
+        expect(runner.computeEnvCacheComponent({ NODE_OPTIONS: "--a\nTZ=UTC" })).not.toBe(
+          runner.computeEnvCacheComponent({ NODE_OPTIONS: "--a", TZ: "UTC" }),
+        );
+      });
+    });
+
+    describe("computeCacheKey env sensitivity", () => {
+      it("produces a different key when a behavior-affecting var changes, stable otherwise", () => {
+        withEnv({ CI: undefined, KSPEC_CACHE_KEY_PROBE: undefined }, () => {
+          const baseline = runner.computeCacheKey([]);
+          expect(baseline).not.toBeNull();
+
+          // Same env → same key
+          expect(runner.computeCacheKey([])).toBe(baseline);
+
+          // CI set → different key
+          withEnv({ CI: "true" }, () => {
+            expect(runner.computeCacheKey([])).not.toBe(baseline);
+          });
+
+          // Arbitrary KSPEC_* var set → different key
+          withEnv({ KSPEC_CACHE_KEY_PROBE: "1" }, () => {
+            expect(runner.computeCacheKey([])).not.toBe(baseline);
+          });
+
+          // Back to baseline env → original key again (distinct keys coexist)
+          expect(runner.computeCacheKey([])).toBe(baseline);
+        });
+      });
+
+      it("excluded vars do not change the key", () => {
+        const baseline = runner.computeCacheKey([]);
+        expect(baseline).not.toBeNull();
+
+        withEnv({ KSPEC_SESSION_ID: "some-other-session", KSPEC_TEST_PROGRESS: "0" }, () => {
+          expect(runner.computeCacheKey([])).toBe(baseline);
+        });
+      });
     });
   });
 
