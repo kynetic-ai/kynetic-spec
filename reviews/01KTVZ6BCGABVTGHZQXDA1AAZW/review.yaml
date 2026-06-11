@@ -289,6 +289,12 @@ events:
     payload:
       thread_ulid: 01KTVZ9B9CKGRD2X8JNXRY1K00
     timestamp: 2026-06-11T19:07:22.644Z
+  - _ulid: 01KTW1A42HX2HT32JH3SBERHYT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVZ9E1VGBZ31DG4PAPNBS7Q
+    timestamp: 2026-06-11T19:07:28.721Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -468,6 +474,8 @@ threads:
           packages/daemon/src/routes/tasks.ts for the extraction template."
         created_at: 2026-06-11T19:05:47.108Z
     kind: nit
+    resolved_at: 2026-06-11T19:07:28.440Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -477,5 +485,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:32:41.187Z
 created_at: 2026-06-11T18:30:27.984Z
-updated_at: 2026-06-11T19:07:22.368Z
+updated_at: 2026-06-11T19:07:28.440Z
 notes: []
