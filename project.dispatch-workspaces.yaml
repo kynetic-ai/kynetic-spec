@@ -14752,18 +14752,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-add-contributing-security-docs/01kttczf
-    canonical_branch_head: 387dbcf743ece951c4c6fa54e0421927add632ff
+    canonical_branch_head: fb7f92add5b79e32e4c5c35ec8ec51f76ee7c889
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T11:18:35.503Z
+      updated_at: 2026-06-11T11:22:59.192Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T11:19:05.985Z
+      updated_at: 2026-06-11T11:22:59.192Z
     integration:
       status: pending
       detail: null
@@ -14771,7 +14771,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 387dbcf743ece951c4c6fa54e0421927add632ff
-      updated_at: 2026-06-11T11:18:35.503Z
+      updated_at: 2026-06-11T11:22:59.192Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTCZFSEFHZY0DX7B8NN7GTM
@@ -14780,9 +14780,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T11:19:05.985Z
-      last_reconciled_at: 2026-06-11T11:19:05.985Z
+      last_reconciled_at: 2026-06-11T11:22:59.192Z
       created_at: 2026-06-11T11:18:35.503Z
-      updated_at: 2026-06-11T11:19:05.985Z
+      updated_at: 2026-06-11T11:22:59.192Z
     workspace_id: dispatch-workspace-01KTTCZFSEFHZY0DX7B8NN7GTM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
