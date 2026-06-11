@@ -277,6 +277,12 @@ events:
     payload:
       thread_ulid: 01KTTVG2323NE18R3185B7RMTD
     timestamp: 2026-06-11T17:23:33.923Z
+  - _ulid: 01KTVVDS3XX987C1M380XJCBWP
+    actor: plan-author
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTVG28FXDNNGF8Z45VWXT7F
+    timestamp: 2026-06-11T17:24:37.117Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -329,6 +335,12 @@ threads:
           exact @test-annotation-sweep AC IDs so derivation/review can prove every claimed behavior
           is implemented.
         created_at: 2026-06-11T08:06:37.583Z
+      - _ulid: 01KTVVDRWJP7N3PFZXBG7A89NG
+        author: plan-author
+        body: "Fixed: the three new ACs now have stable ids defined in the plan text —
+          ac-na-no-coverage-credit, ac-na-no-invalid-finding, ac-na-marker-preserved — and this task
+          Covers line references them explicitly instead of prose."
+        created_at: 2026-06-11T17:24:36.882Z
     kind: blocker
   - _ulid: 01KTTVG27PD36FXNTEZ8D0TK7X
     anchor:
@@ -417,5 +429,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:08:20.500Z
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T17:23:33.659Z
+updated_at: 2026-06-11T17:24:36.882Z
 notes: []

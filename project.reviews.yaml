@@ -8569,8 +8569,7 @@ reviews:
     updated_at: 2026-03-29T00:59:15.845Z
   - _ulid: 01KMVJ8QGEZTKRG0P3X7RM1MBV
     slugs: []
-    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle
-      2)
+    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle 2)
     disposition: changes_requested
     author: Test User
     check_count: 1
@@ -8589,8 +8588,7 @@ reviews:
     updated_at: 2026-03-29T01:25:47.473Z
   - _ulid: 01KMVKBBSJCVHNCZXBBYMBVKHY
     slugs: []
-    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle
-      3)
+    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle 3)
     disposition: approved
     author: Test User
     check_count: 2
@@ -10709,8 +10707,7 @@ reviews:
     updated_at: 2026-04-02T05:40:34.899Z
   - _ulid: 01KN6BXRNZ0CCDAPDPENT8ZHPG
     slugs: []
-    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup
-      tests
+    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup tests
     disposition: changes_requested
     author: Jacob Chapel
     check_count: 2
@@ -10748,8 +10745,7 @@ reviews:
     updated_at: 2026-04-02T06:54:51.621Z
   - _ulid: 01KN6EPC97A6JH0QZVVSG9PHHM
     slugs: []
-    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup
-      tests (cycle 2)
+    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup tests (cycle 2)
     disposition: approved
     author: Jacob Chapel
     check_count: 4
@@ -16373,8 +16369,7 @@ reviews:
     updated_at: 2026-04-22T09:15:15.636Z
   - _ulid: 01KPT7RHHNR05B655W4Y00CF4H
     slugs: []
-    title: "Plan re-review: Portable Skill File References and Detached Reviewer Merge Foundation (cycle
-      2)"
+    title: "Plan re-review: Portable Skill File References and Detached Reviewer Merge Foundation (cycle 2)"
     disposition: approved
     author: Jacob Chapel
     check_count: 5
@@ -25165,7 +25160,7 @@ reviews:
     unresolved_blocker_count: 4
     verdict_count: 1
     created_at: 2026-06-11T08:05:39.876Z
-    updated_at: 2026-06-11T17:23:33.659Z
+    updated_at: 2026-06-11T17:24:36.882Z
   - _ulid: 01KTTVZY36TNEDCFPDRHK4DJ8D
     slugs: []
     title: Review format version ceiling
