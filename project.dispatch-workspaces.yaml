@@ -18993,11 +18993,11 @@ workspaces:
     canonical_branch: dispatch/task/task-ci-node-version-matrix/01kttczf
     canonical_branch_head: 8478c83153acaf6b2cbb47188e84bffb5befaedc
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T19:14:03.277Z
+      updated_at: 2026-06-11T19:23:46.428Z
     health:
       status: healthy
       issues: []
@@ -19011,17 +19011,17 @@ workspaces:
       target_branch: dev
       target_commit: 6ff4bda2a31529ff92123a518b853a311729965a
       updated_at: 2026-06-11T19:14:03.277Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTTCZF245ZGK3T0KJPHG6E4W
     task_ref: "@01KTTCZF245ZGK3T0KJPHG6E4W"
     task_slug: task-ci-node-version-matrix
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-11T19:23:46.428Z
       last_active_at: 2026-06-11T18:50:34.133Z
       last_reconciled_at: 2026-06-11T19:17:43.993Z
       created_at: 2026-06-11T17:02:45.094Z
-      updated_at: 2026-06-11T19:17:43.993Z
+      updated_at: 2026-06-11T19:23:46.428Z
     workspace_id: dispatch-workspace-01KTTCZF245ZGK3T0KJPHG6E4W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
