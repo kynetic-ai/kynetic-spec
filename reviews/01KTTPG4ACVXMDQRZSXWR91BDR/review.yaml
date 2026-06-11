@@ -340,6 +340,12 @@ events:
     payload:
       thread_ulid: 01KTTPJ037SN6QY353RR040JXN
     timestamp: 2026-06-11T07:39:52.797Z
+  - _ulid: 01KTTSZ83CW7NQMBDDJ2QE7DBV
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTPJ037SN6QY353RR040JXN
+    timestamp: 2026-06-11T07:39:57.932Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -500,6 +506,8 @@ threads:
           owner-preference branch is removed."
         created_at: 2026-06-11T07:39:52.577Z
     kind: blocker
+    resolved_at: 2026-06-11T07:39:57.708Z
+    resolved_by: "@claude"
   - _ulid: 01KTTPJC3FP05PGJ43Z8B8EP3F
     anchor:
       type: structured
@@ -539,5 +547,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:41:27.363Z
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T07:39:52.577Z
+updated_at: 2026-06-11T07:39:57.708Z
 notes: []
