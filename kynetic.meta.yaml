@@ -21588,6 +21588,18 @@ observations:
     resolved_by: codex-reviewer
     workflow_ref: "@session-reflect"
     created_at: 2026-06-11T16:04:34.526Z
+  - _ulid: 01KTVPWB2KA0K58T31T5BNM2P8
+    type: success
+    content: During review of @task-standardize-node-version-docs, running the focused release-packaging
+      test under the declared minimum runtime (npx -y node@20.0.0 scripts/test.cjs
+      tests/release-packaging.test.ts --fresh) directly verified the previous compatibility blocker.
+      For future changes tied to package engine floors, include a focused gate under the exact
+      declared minimum runtime instead of relying only on the developer current Node version.
+    author: codex-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-11T16:05:11.379Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
