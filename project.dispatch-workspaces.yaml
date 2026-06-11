@@ -14904,7 +14904,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T11:43:50.434Z
+      updated_at: 2026-06-11T11:46:09.553Z
     integration:
       status: merged
       detail: integration:merged
@@ -14921,18 +14921,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T11:26:56.460Z
-      last_reconciled_at: 2026-06-11T11:46:00.571Z
+      last_reconciled_at: 2026-06-11T11:46:09.553Z
       created_at: 2026-06-11T11:18:35.503Z
-      updated_at: 2026-06-11T11:46:00.571Z
+      updated_at: 2026-06-11T11:46:09.553Z
     workspace_id: dispatch-workspace-01KTTCZFSEFHZY0DX7B8NN7GTM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: fb7f92add5b79e32e4c5c35ec8ec51f76ee7c889
-        last_seen_at: 2026-06-11T11:26:19.358Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-contributing-security-docs-01kttczf-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-contributing-security-docs/01kttczf
