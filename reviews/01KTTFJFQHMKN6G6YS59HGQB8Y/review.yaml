@@ -2,7 +2,99 @@ _ulid: 01KTTFJFQHMKN6G6YS59HGQB8Y
 slugs: []
 title: Review task-add-license-file
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "oxfmt --check .: all matched files use the correct format; 993 files checked."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T04:57:28.545Z
+    completed_at: 2026-06-11T04:57:28.545Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide oxlint exited 0 with 0 errors and the existing warning baseline; focused
+      changed-file lint via npx oxlint tests/release-packaging.test.ts reported 0 warnings and 0
+      errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T04:57:32.656Z
+    completed_at: 2026-06-11T04:57:32.656Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit exited 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T04:57:37.805Z
+    completed_at: 2026-06-11T04:57:37.805Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Test Suites: 2728 passed of 2728; Tests: 5 skipped, 10384 passed of 10389; Duration:
+      4050.4s. Full log: /tmp/kspec-test-cache/01KTTFGSTV62913BE2W6SVD5Q9/d56cdfeb269e261f.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T04:57:41.989Z
+    completed_at: 2026-06-11T04:57:41.989Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with warnings-ok; schema and references OK. Existing reference warnings only.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T04:57:46.161Z
+    completed_at: 2026-06-11T04:57:46.161Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with warnings-ok; existing orphan/status alignment warning baseline remains.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T04:57:50.317Z
+    completed_at: 2026-06-11T04:57:50.317Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with warnings-ok; existing completeness warning baseline remains.
+      Task-scoped coverage for @published-artifact-completeness ac-1 found at
+      tests/release-packaging.test.ts lines 32, 54, and 59.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T04:57:54.552Z
+    completed_at: 2026-06-11T04:57:54.552Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, LICENSE, tests/release-packaging.test.ts, package.json, git
+      diff 8335c393..HEAD, task/spec context. Commands run: task get, item get, review
+      for-task/add/open, format, lint, focused oxlint, typecheck, npm test, kspec validate
+      refs/alignment/completeness, npm pack --dry-run --json, AC annotation rg. Claims verified: npm
+      pack includes LICENSE at package root; package.json declares MIT; LICENSE header is MIT
+      License and Kynetic AI copyright; commit has Task and Spec trailers. Categories searched:
+      correctness, packaging integration, test quality/source-scanning exception, AC coverage for
+      task-scoped ac-1, release metadata, merge readiness. Findings: none."
+    name: review evidence log
+    required: false
+    runner: manual reviewer
+    created_at: 2026-06-11T04:57:58.685Z
+    completed_at: 2026-06-11T04:57:58.685Z
 events:
   - _ulid: 01KTTFJFQG5G917GYARVM1VWH5
     actor: Jacob Chapel
@@ -17,9 +109,81 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T04:38:36.949Z
+  - _ulid: 01KTTGNQHZH8MNE7AJVD5K0HZ2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T04:57:28.895Z
+  - _ulid: 01KTTGNVJDZD8XPRMVKG5Y8FZ2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T04:57:33.005Z
+  - _ulid: 01KTTGP0KR9T0CBMFDD2KHAMD7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T04:57:38.168Z
+  - _ulid: 01KTTGP4QFBNECV429MN91EZFM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T04:57:42.383Z
+  - _ulid: 01KTTGP8R2DT4WKNG6SAHFA7GW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T04:57:46.498Z
+  - _ulid: 01KTTGPCT77WDZKMY1A4F8F9CC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T04:57:50.663Z
+  - _ulid: 01KTTGPGY7WDY7BQ6K2B3MAMJ1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T04:57:54.887Z
+  - _ulid: 01KTTGPN14NWB4V8GQF3JGRTYW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-11T04:57:59.076Z
+  - _ulid: 01KTTGPRZWH8ETGN1GCPKKRX4M
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T04:58:03.132Z
+  - _ulid: 01KTTGPRZW018730GRX99TSMDT
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T04:58:03.132Z
 examined_commit: 3a3f3bdd74e6e6a978be5cf2888e70c853fe255f
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -27,7 +191,14 @@ subject:
   ref: "@01KTTCZB9VP137NEH3QGSJK0DS"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-11T04:58:03.132Z
 created_at: 2026-06-11T04:38:14.001Z
-updated_at: 2026-06-11T04:38:36.611Z
+updated_at: 2026-06-11T04:58:03.132Z
 notes: []
