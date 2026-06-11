@@ -66,6 +66,13 @@ events:
       kind: nit
       thread_ulid: 01KTTXV4QX275GFZY6F354VE3C
     timestamp: 2026-06-11T08:47:37.967Z
+  - _ulid: 01KTTXVRCYQZR3EN95SRCJVTP1
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTTXVR4YDBJW23B4QGJZ19DV
+    timestamp: 2026-06-11T08:47:57.854Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -214,7 +221,26 @@ threads:
           stored provenance enum.
         created_at: 2026-06-11T08:47:37.725Z
     kind: nit
+  - _ulid: 01KTTXVR4YDBJW23B4QGJZ19DV
+    anchor:
+      type: structured
+      ref: "@ac-freshness-resolution"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTXVR4ZHWYMD2B3RNS8KHHF
+        author: "@claude"
+        body: "NEW this round. Boundary case not covered by the ACs: an acceptance criterion whose
+          annotation exists in a configured scan path but whose location has no version-control
+          history — an uncommitted file, or an annotation line added in the working tree but not yet
+          committed. ac-bootstrap-when-unstamped presumes history exists at the annotation's
+          location; ac-absence-reported covers only the no-annotation-and-no-stamp case. What does
+          the resolver return for an annotated-but-uncommitted location: no freshness value, or a
+          present-time value? Whichever is intended, the spec should say so — this is the first
+          state every newly written annotation passes through, so the bootstrap path will hit it
+          constantly."
+        created_at: 2026-06-11T08:47:57.599Z
+    kind: question
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:47:37.725Z
+updated_at: 2026-06-11T08:47:57.599Z
 notes: []
