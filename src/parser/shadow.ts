@@ -101,6 +101,131 @@ async function discardStashedWorktreeDir(backupDir: string | null): Promise<void
   await fs.rm(backupDir, { recursive: true, force: true });
 }
 
+type WorktreeDirState = "missing" | "non-directory" | "empty-directory" | "partial-directory";
+
+/**
+ * Inspect what currently exists at the shadow worktree location, for
+ * failure reporting. Stats at call time so the description reflects the
+ * actual outcome of a partially-failed restore (restoreStashedWorktreeDir
+ * removes the worktree directory before renaming the backup into place —
+ * if the rename fails, the location is usually empty and the backup is the
+ * only copy of the prior shadow state, but a concurrent recreation of the
+ * location can leave a directory or file behind).
+ */
+async function inspectWorktreeDirState(
+  worktreeDir: string,
+): Promise<{ state: WorktreeDirState; description: string }> {
+  const stat = await fs.stat(worktreeDir).catch(() => null);
+  if (!stat) {
+    return {
+      state: "missing",
+      description: "now empty — the backup directory is the only copy of the prior shadow state",
+    };
+  }
+  if (!stat.isDirectory()) {
+    return {
+      state: "non-directory",
+      description:
+        "occupied by a non-directory file — the backup directory holds the prior shadow state",
+    };
+  }
+  const entries = await fs.readdir(worktreeDir).catch(() => null);
+  if (entries && entries.length === 0) {
+    return {
+      state: "empty-directory",
+      description:
+        "an empty directory — the backup directory is the only copy of the prior shadow state",
+    };
+  }
+  return {
+    state: "partial-directory",
+    description:
+      "occupied by a partial or incomplete directory — the backup directory holds the prior shadow state",
+  };
+}
+
+/**
+ * Quote a path for literal use in a POSIX shell command. Double quotes
+ * still let the shell expand `$`, backticks, and backslashes, so a path
+ * containing those would make the command address a different path or fail
+ * to parse. Single quotes suppress all expansion; embedded single quotes
+ * use the standard close-escape-reopen idiom (' -> '\'').
+ */
+function shellQuotePath(value: string): string {
+  return `'${value.replaceAll("'", "'\\''")}'`;
+}
+
+/**
+ * Build recovery steps that match the actual state of the worktree
+ * location. `mv <backup> <worktreeDir>` only restores the backup when
+ * nothing exists at the destination: if a directory is still there, mv
+ * moves the backup *inside* it, and an existing file makes it fail. States
+ * that leave something at the location therefore get an explicit
+ * clear-the-destination step before the move.
+ */
+function buildRestoreRecoverySteps(
+  state: WorktreeDirState,
+  backupDir: string,
+  worktreeDir: string,
+): string[] {
+  const quotedBackup = shellQuotePath(path.resolve(backupDir));
+  const quotedWorktree = shellQuotePath(path.resolve(worktreeDir));
+  const steps: string[] = [];
+  if (state === "empty-directory") {
+    steps.push(`Remove the leftover empty directory: rmdir ${quotedWorktree}`);
+  } else if (state === "non-directory" || state === "partial-directory") {
+    const leftover = state === "non-directory" ? "file" : "partial directory";
+    const quotedAside = shellQuotePath(`${path.resolve(worktreeDir)}.failed-rebuild-${Date.now()}`);
+    steps.push(`Move the leftover ${leftover} out of the way: mv ${quotedWorktree} ${quotedAside}`);
+  }
+  steps.push(`Move the backup back into place: mv ${quotedBackup} ${quotedWorktree}`);
+  steps.push("Re-run: kspec shadow repair");
+  return steps.map((step, index) => `  ${index + 1}. ${step}`);
+}
+
+/**
+ * After a failed shadow rebuild, attempt to restore the stashed pre-repair
+ * shadow directory and produce the user-facing error message.
+ *
+ * On restore success, the rebuild error is reported with a note that the
+ * prior shadow state was restored. On restore failure, the message combines
+ * the rebuild error, the restore error, the absolute path of the preserved
+ * backup directory, the resulting state of the worktree location, and
+ * concrete recovery steps. The backup directory is never deleted on this
+ * path.
+ *
+ * AC: @broken-shadow-safety ac-preserve-on-failure
+ * AC: @broken-shadow-safety ac-restore-failure-reports-state
+ */
+async function restoreStashedWorktreeDirAfterFailure(
+  backupDir: string | null,
+  worktreeDir: string,
+  rebuildError: unknown,
+): Promise<string> {
+  const rebuildMessage =
+    rebuildError instanceof Error ? rebuildError.message : String(rebuildError);
+  if (!backupDir) {
+    return rebuildMessage;
+  }
+
+  try {
+    await restoreStashedWorktreeDir(backupDir, worktreeDir);
+    return `${rebuildMessage}\nThe prior shadow directory state was restored to ${path.resolve(worktreeDir)}.`;
+  } catch (restoreError) {
+    const restoreMessage =
+      restoreError instanceof Error ? restoreError.message : String(restoreError);
+    const { state, description } = await inspectWorktreeDirState(worktreeDir);
+    return [
+      `Shadow rebuild failed: ${rebuildMessage}`,
+      `Restoring the previous shadow directory also failed: ${restoreMessage}`,
+      `The previous shadow directory is preserved at: ${path.resolve(backupDir)}`,
+      `The shadow directory location (${path.resolve(worktreeDir)}) is ${description}.`,
+      "Recovery steps:",
+      ...buildRestoreRecoverySteps(state, backupDir, worktreeDir),
+    ].join("\n");
+  }
+}
+
 function runGitSync(cwd: string, args: string[]): { ok: boolean; stdout: string } {
   const result = spawnSync("git", args, {
     cwd,
@@ -2920,8 +3045,12 @@ export async function initializeShadow(
     result.success = true;
     return result;
   } catch (error) {
-    await restoreStashedWorktreeDir(stashedWorktreeDir, worktreeDir).catch(() => {});
-    result.error = error instanceof Error ? error.message : String(error);
+    // AC: @broken-shadow-safety ac-restore-failure-reports-state
+    result.error = await restoreStashedWorktreeDirAfterFailure(
+      stashedWorktreeDir,
+      worktreeDir,
+      error,
+    );
     return result;
   }
 }
@@ -3053,7 +3182,7 @@ export async function repairShadow(
       pushedToRemote: false,
     };
   } catch (error) {
-    await restoreStashedWorktreeDir(stashedWorktreeDir, worktreeDir).catch(() => {});
+    // AC: @broken-shadow-safety ac-restore-failure-reports-state
     return {
       success: false,
       branchCreated: false,
@@ -3063,7 +3192,7 @@ export async function repairShadow(
       alreadyExists: false,
       createdFromRemote: false,
       pushedToRemote: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: await restoreStashedWorktreeDirAfterFailure(stashedWorktreeDir, worktreeDir, error),
     };
   }
 }
