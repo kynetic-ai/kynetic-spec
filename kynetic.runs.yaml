@@ -63891,7 +63891,7 @@ runs:
     completed_at: 2026-06-11T15:13:13.255Z
   - _ulid: 01KTVN1EJPWQEEGKCR7F42Z80A
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -63905,7 +63905,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T15:34:27.338Z
-        completed_at: 2026-06-11T15:34:27.338Z
+        completed_at: 2026-06-11T15:34:40.056Z
+        notes: "Friction points: (1) a review comment body containing markdown backticks was passed through
+          a shell command and got command-substituted before kspec received it, creating a malformed
+          blocker that had to be superseded and resolved; kspec review comment only accepts --body
+          and has no --body-file/stdin option. (2) The review finding itself showed an
+          operator-surface gap: timeout errors point to kspec serve status, but serve status
+          currently drops command_dispatch health data. (3) Full fresh npm test completed
+          successfully but took 2742.2s, reinforcing the already-known long full-suite review cost."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T15:34:40.056Z
+        completed_at: 2026-06-11T15:34:40.056Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T15:33:01.654Z
