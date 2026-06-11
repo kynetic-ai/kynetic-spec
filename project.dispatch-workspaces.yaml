@@ -21034,11 +21034,11 @@ workspaces:
     canonical_branch: dispatch/task/task-connect-host-exposure-warning/01kttd08
     canonical_branch_head: b56d32163b5e1592b58554f46c4ddc391684b109
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T21:55:45.568Z
+      updated_at: 2026-06-11T21:58:18.092Z
     health:
       status: healthy
       issues: []
@@ -21052,17 +21052,17 @@ workspaces:
       target_branch: dev
       target_commit: 5989d006c97653a6d3de7039c8b5cb47bec6507c
       updated_at: 2026-06-11T21:55:45.568Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTTD08J12B14SB244JRFNDFX
     task_ref: "@01KTTD08J12B14SB244JRFNDFX"
     task_slug: task-connect-host-exposure-warning
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-11T21:58:18.092Z
       last_active_at: 2026-06-11T21:33:30.542Z
       last_reconciled_at: 2026-06-11T21:57:21.113Z
       created_at: 2026-06-11T20:50:29.351Z
-      updated_at: 2026-06-11T21:57:21.113Z
+      updated_at: 2026-06-11T21:58:18.092Z
     workspace_id: dispatch-workspace-01KTTD08J12B14SB244JRFNDFX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
