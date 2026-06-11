@@ -2,7 +2,114 @@ _ulid: 01KTW1BYPH4V7T8MCDWBW62827
 slugs: []
 title: "Plan review: Review Anchors and Plan Revisions Schema (round 2)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Round 1 review 01KTW04RAYRD57W5W02E2BVYKH (closed, changes_requested) raised 3 blockers +
+      1 question. Plan record shows no re-import, no notes, updated_at null since that review — no
+      findings addressed, none resolvable. All 4 re-raised in this round with original thread ULIDs
+      cited.
+    name: prior review continuity
+    required: false
+    runner: claude
+    created_at: 2026-06-11T19:10:07.456Z
+    completed_at: 2026-06-11T19:10:07.456Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "FAIL: @actor-identity-model (depends_on of @plan-revisions) does not resolve. All other
+      refs verified: parents @review-record-core-model and @plan-support exist; depends_on
+      @review-comment-threads-and-anchors and @review-subject-bindings exist; task spec_refs and
+      depends_on resolve to plan-local slugs or existing items; cited external AC ids verified to
+      exist (@review-comment-threads-and-anchors ac-6, @review-records-web-ui ac-11,
+      @review-subject-bindings ac-4/ac-5, @folder-backed-plan-storage-1
+      ac-plan-metadata-sidecar-is-authoritative and ac-plan-index-has-bounded-projection,
+      @review-record-validation ac-2). AC ids within each new spec are unique and consistently
+      referenced by Covers lines."
+    name: cross-reference validation
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:10:10.463Z
+    completed_at: 2026-06-11T19:10:10.463Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "FAIL on two carried-over blockers: (1) @plan-revisions description 'Every plan has at
+      least revision 1' contradicts ac-legacy-plans-load empty-history contract; (2) plan-text
+      anchor offset unit undefined, making ac-plan-text-anchor-stored/ac-span-integrity
+      non-deterministic for non-ASCII text. Otherwise strong: ACs are atomic, behavioral,
+      given/when/then-deterministic; error paths and boundary cases covered (validation rejections,
+      legacy loads, duplicate headings, preamble sections, idempotent backfill); no overlap with
+      existing specs — new requirements extend @review-comment-threads-and-anchors rather than
+      duplicating it, and no existing spec covers plan revisions (verified via kspec search for
+      revision/anchor and item list under @review-record-core-model)."
+    name: spec quality
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:10:13.645Z
+    completed_at: 2026-06-11T19:10:13.645Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 23 ACs across 5 specs claimed by Covers lines: review-spec-ac-anchors 4/4 (3 by
+      task-spec-ac-anchor-variant, ac-anchor-variant-guidance by task-plan-text-anchors with the
+      split annotated as finalization); review-plan-text-anchors 5/5; review-idea-threads 3/3;
+      plan-revisions 8/8 (6 + backfill + binding tasks); subject-revision-vocabulary 3/3. No orphan
+      ACs. Cross-spec respec work (@review-comment-threads-and-anchors ac-6, @review-records-web-ui
+      ac-11) is explicitly carried in task Covers lines."
+    name: AC coverage mapping
+    required: false
+    runner: claude
+    created_at: 2026-06-11T19:10:16.718Z
+    completed_at: 2026-06-11T19:10:16.718Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 7 tasks carry Why/What/How with concrete file targets and test lists; executable
+      without chat history. Implementation-note claims independently verified against the codebase:
+      anchor union is exactly code+structured at src/schema/review-records.ts:82-106;
+      getUnresolvedBlockers filters kind===blocker (src/parser/review-threads.ts:250);
+      formatActionableMessage emits 'Anchor type must be one of: code, structured'
+      (src/parser/review-validation.ts:46); AcIdSchema exists in src/schema/common.ts;
+      subject_refreshed is in the events vocabulary;
+      plan.ts/plan-storage-manager.ts/plan-folder-migration.ts/subject-bindings.ts all exist; plan
+      content is served as a single markdown section in packages/daemon/src/routes/diff.ts."
+    name: task completeness
+    required: false
+    runner: claude
+    created_at: 2026-06-11T19:10:19.780Z
+    completed_at: 2026-06-11T19:10:19.780Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No cycles. No P1 task depends on a P2 task. Parallelism preserved:
+      task-spec-ac-anchor-variant, task-plan-revision-records, task-idea-thread-kind run in
+      parallel; task-plan-text-anchors correctly gates on both anchor and revision foundations; P2
+      chain (backfill, binding, respec) correctly downstream. One advisory question raised
+      separately: legacy-plan usability of plan-text anchors before backfill lands."
+    name: dependency ordering
+    required: false
+    runner: claude
+    created_at: 2026-06-11T19:10:22.823Z
+    completed_at: 2026-06-11T19:10:22.823Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec plan export + kspec plan import --into --dry-run round-trips cleanly: full document
+      stored, YAML blocks parse, no errors."
+    name: plan re-import dry run
+    required: false
+    runner: claude
+    created_at: 2026-06-11T19:10:25.951Z
+    completed_at: 2026-06-11T19:10:25.951Z
 events:
   - _ulid: 01KTW1BYPG9QVVE91EV0Y4D2BH
     actor: "@claude"
@@ -10,17 +117,248 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T19:08:28.753Z
+  - _ulid: 01KTW1E9HJDGJD5B6A56QQD43X
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T19:09:45.394Z
+  - _ulid: 01KTW1ECP59Y2K8NGH4M2P5N6Q
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW1ECDQR9PTMBBYX7XFQJE3
+    timestamp: 2026-06-11T19:09:48.613Z
+  - _ulid: 01KTW1EFVBHQER2FMXSMEE7F8J
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW1EFKG5HBS9P1XESDM6DRJ
+    timestamp: 2026-06-11T19:09:51.851Z
+  - _ulid: 01KTW1EJZ4QK79Y20JQP3BSR69
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW1EJPMWYYY0RA4MKM5ZMHG
+    timestamp: 2026-06-11T19:09:55.044Z
+  - _ulid: 01KTW1EP33NT0D7MY56R119X35
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTW1ENTYCKA2CBTQPJH5BDME
+    timestamp: 2026-06-11T19:09:58.243Z
+  - _ulid: 01KTW1ES7PW1F938SCQCS9F863
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTW1ERY70EQ8TKRNWD6GB75E
+    timestamp: 2026-06-11T19:10:01.462Z
+  - _ulid: 01KTW1EWE05N9VD755NJPPAJYY
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTW1EW5SWA12F605QZHY938S
+    timestamp: 2026-06-11T19:10:04.736Z
+  - _ulid: 01KTW1EZA6FC09W3SND3GY1D78
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review continuity
+    timestamp: 2026-06-11T19:10:07.686Z
+  - _ulid: 01KTW1F29824RAP31654K50EA0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: cross-reference validation
+    timestamp: 2026-06-11T19:10:10.728Z
+  - _ulid: 01KTW1F5CD5D2Y0WCD5818YW3D
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: spec quality
+    timestamp: 2026-06-11T19:10:13.901Z
+  - _ulid: 01KTW1F8D6TWXD2TRTBVC7T06H
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-11T19:10:16.998Z
+  - _ulid: 01KTW1FBBCMQ4AB7MM65FADWC8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: task completeness
+    timestamp: 2026-06-11T19:10:20.012Z
+  - _ulid: 01KTW1FEB8MKTBPT048YVH0MPR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-11T19:10:23.080Z
+  - _ulid: 01KTW1FHCTYG4EQ6EB69CY1D3R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan re-import dry run
+    timestamp: 2026-06-11T19:10:26.203Z
+  - _ulid: 01KTW1FMEZXE29JHCHDYQY6DAM
+    actor: claude
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T19:10:29.343Z
+  - _ulid: 01KTW1FMEZJ289NVH0SZPNPKH6
+    actor: claude
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T19:10:29.343Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-review-anchors-and-plan-revisions-schema"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTW1ECDQR9PTMBBYX7XFQJE3
+    anchor:
+      type: structured
+      field: depends_on
+      ref: "@plan-revisions"
+      section: dependencies
+    entries:
+      - _ulid: 01KTW1ECDQ21W1Z181H0F50486
+        author: "@claude"
+        body: "RE-RAISED from round 1 (thread 01KTW05VK8600AF54YTPCQW64G) — plan content unchanged since
+          that review. @plan-revisions declares depends_on: @actor-identity-model, and
+          task-plan-revision-records and task-plan-revision-backfill both rely on it for author
+          resolution, but the ref still does not resolve (verified: kspec item get
+          @actor-identity-model returns Item not found). The plan's own Approval ordering note
+          acknowledges the P0a dependency, but the plan is not derivable as written. Either
+          materialize the upstream P0a spec first and keep the ref, or remove/replace the dependency
+          and the task text that leans on it."
+        created_at: 2026-06-11T19:09:48.343Z
+    kind: blocker
+  - _ulid: 01KTW1EFKG5HBS9P1XESDM6DRJ
+    anchor:
+      type: structured
+      ref: "@plan-revisions"
+      section: description
+    entries:
+      - _ulid: 01KTW1EFKG979Z0R1AJ7ZW6AFY
+        author: "@claude"
+        body: RE-RAISED from round 1 (thread 01KTW069JBYSZWMAV6NPZEZTN6) — unchanged. The description states
+          'Every plan has at least revision 1', but ac-legacy-plans-load requires a pre-upgrade plan
+          to load and report an empty revision history, and task-plan-revision-records defaults
+          legacy plans to an empty list. These define incompatible observable states for the same
+          entity. Qualify the description to the post-upgrade model (e.g. 'after the data upgrade,
+          every plan has at least revision 1'), or change the legacy-load contract — one
+          deterministic contract, not two.
+        created_at: 2026-06-11T19:09:51.600Z
+    kind: blocker
+  - _ulid: 01KTW1EJPMWYYY0RA4MKM5ZMHG
+    anchor:
+      type: structured
+      field: ac-plan-text-anchor-stored
+      ref: "@review-plan-text-anchors"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTW1EJPMDCEGY3SX1PA9BGQ1
+        author: "@claude"
+        body: RE-RAISED from round 1 (thread 01KTW06MQEM16Z1WSD3W4HR6EC) — unchanged. Plan-text anchors
+          persist a 'character offset', but neither the spec nor task-plan-text-anchors defines the
+          offset unit (bytes, Unicode scalar values, or UTF-16 code units). For non-ASCII plan text
+          this makes ac-plan-text-anchor-stored and ac-span-integrity non-deterministic, and CLI,
+          daemon, and future UI writers can disagree while each claims AC compliance. Define the
+          unit in the spec (description and/or AC text) and add a non-ASCII span case to the task's
+          test list.
+        created_at: 2026-06-11T19:09:54.772Z
+    kind: blocker
+  - _ulid: 01KTW1ENTYCKA2CBTQPJH5BDME
+    anchor:
+      type: structured
+      ref: "@task-idea-thread-kind"
+      section: tasks
+    entries:
+      - _ulid: 01KTW1ENTYWYT7GWBZN9T55MT2
+        author: "@claude"
+        body: RE-RAISED from round 1 (thread 01KTW06ZESX5V02Q6T2Z80DYQQ) — unchanged. @review-idea-threads
+          says idea threads 'behave like every other kind' and the supported write interfaces accept
+          them, but the existing @review-records-web-ui ACs still specify blocker/question/nit
+          badges and kind selection, while this task updates only type unions and defers rendering
+          to later plans. Once the schema accepts idea, the shipped UI will encounter idea threads
+          it has no specified treatment for. Should @review-idea-threads / task-idea-thread-kind
+          explicitly scope supported write/render surfaces to CLI/API for this plan (with a
+          follow-up for UI), or should the existing web-ui spec get a minimal respec in this plan
+          the way ac-11 does for review passes?
+        created_at: 2026-06-11T19:09:57.982Z
+    kind: question
+  - _ulid: 01KTW1ERY70EQ8TKRNWD6GB75E
+    anchor:
+      type: structured
+      ref: "@task-plan-text-anchors"
+      section: dependencies
+    entries:
+      - _ulid: 01KTW1ERY8M43Q6NQ3841N737X
+        author: "@claude"
+        body: "NEW in round 2. Sequencing gap between plan-text anchors (P1) and revision backfill (P2):
+          creation-time validation requires the anchor's revision ordinal to exist on the subject
+          plan and resolves span integrity against that revision's content. Legacy plans report an
+          empty revision history until task-plan-revision-backfill (P2) runs or someone publishes,
+          so in the shipped order plan-text anchors are unusable on every pre-existing plan (93 in
+          this project alone) — precisely the draft-plan reviews this feature targets. Consider
+          making task-plan-text-anchors depend on task-plan-revision-backfill, or raising backfill
+          to P1. Relatedly, the nonexistent-ordinal rejection is asserted only in task text —
+          consider an explicit AC on @review-plan-text-anchors for a creation revision that does not
+          exist on the subject plan, since ac-plan-text-anchor-validation covers only shape-level
+          failures (negative offset, empty quote, non-positive ordinal)."
+        created_at: 2026-06-11T19:10:01.160Z
+    kind: question
+  - _ulid: 01KTW1EW5SWA12F605QZHY938S
+    anchor:
+      type: structured
+      field: ac-deterministic-sectioning
+      ref: "@review-plan-text-anchors"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTW1EW5SE4G80V40Z5B5EQ86
+        author: "@claude"
+        body: "NEW in round 2. The when-clause 'the document is divided into sections on the server side'
+          carries an architectural term into AC text. The observable contract is the deterministic
+          sectioning itself, not where it executes; 'on the server side' belongs in the description
+          or implementation notes (where it already appears via decision #19). Suggest: when 'the
+          document is divided into sections'."
+        created_at: 2026-06-11T19:10:04.473Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude
+    role: reviewer
+    created_at: 2026-06-11T19:10:29.343Z
 created_at: 2026-06-11T19:08:28.753Z
-updated_at: null
+updated_at: 2026-06-11T19:10:29.343Z
 notes: []
