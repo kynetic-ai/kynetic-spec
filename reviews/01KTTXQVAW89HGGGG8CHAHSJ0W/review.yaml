@@ -44,6 +44,19 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-06-11T08:48:58.529Z
     completed_at: 2026-06-11T08:48:58.529Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Prior review 01KTTVE9X42D5EKE5J23CDHKXC (changes_requested, 2026-06-11T08:08Z) raised 4
+      blockers, 2 questions, 1 nit. Plan record has no notes, no re-import, and the stored content
+      is unchanged since that review; no author replies on any thread. All 7 findings re-raised in
+      this review.
+    name: Prior-review follow-up
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T08:49:18.187Z
+    completed_at: 2026-06-11T08:49:18.187Z
 events:
   - _ulid: 01KTTXQVAWJ8VTNY2FXYXNJPB1
     actor: "@claude"
@@ -163,6 +176,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T08:48:58.798Z
+  - _ulid: 01KTTXY723EF5S8EXFF9XS9B4K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Prior-review follow-up
+    timestamp: 2026-06-11T08:49:18.403Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -383,5 +403,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:48:58.529Z
+updated_at: 2026-06-11T08:49:18.187Z
 notes: []
