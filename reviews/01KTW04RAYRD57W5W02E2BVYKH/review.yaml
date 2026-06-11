@@ -63,6 +63,18 @@ checks:
     runner: manual plan review
     created_at: 2026-06-11T18:49:23.019Z
     completed_at: 2026-06-11T18:49:23.019Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Each task includes Why/What/How, concrete file or command surfaces, verification guidance,
+      spec_ref, and Covers mapping. One non-blocking question remains on whether
+      task-idea-thread-kind intentionally excludes Web UI write/render support.
+    name: task completeness
+    required: false
+    runner: manual plan review
+    created_at: 2026-06-11T18:49:32.624Z
+    completed_at: 2026-06-11T18:49:32.624Z
 events:
   - _ulid: 01KTW04RAXP60HJ6RBPF07YM74
     actor: "@claude"
@@ -140,6 +152,13 @@ events:
       status: pass
       name: AC coverage mapping
     timestamp: 2026-06-11T18:49:23.260Z
+  - _ulid: 01KTW099DNS61E3VSGZ8R9BM4F
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: task completeness
+    timestamp: 2026-06-11T18:49:32.853Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -220,5 +239,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:49:23.019Z
+updated_at: 2026-06-11T18:49:32.624Z
 notes: []
