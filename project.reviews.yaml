@@ -25093,3 +25093,21 @@ reviews:
     verdict_count: 0
     created_at: 2026-06-11T07:04:09.948Z
     updated_at: 2026-06-11T07:04:36.318Z
+  - _ulid: 01KTTRCWG81Q4T9KJ84JCDHP3M
+    slugs: []
+    title: Review task-broken-shadow-safety-spec-delta
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 0f3473bba38c4e87899c06d0394c895a92aa61e3
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KTTD0XG6VBZ6AR49VGQ2FARF"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-11T07:12:27.656Z

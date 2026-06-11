@@ -57,6 +57,7 @@ tags:
   - spec-update
   - shadow
 vcs_refs: []
+review_ref: "@01KTTRCWG81Q4T9KJ84JCDHP3M"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-broken-shadow-safety-spec-delta/01kttd0x
@@ -107,6 +108,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-11T07:06:03.663Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTTRCWG81Q4T9KJ84JCDHP3M"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-11T07:12:30.317Z
 created_at: 2026-06-11T03:53:41.126Z
 started_at: 2026-06-11T07:04:53.726Z
 submitted_at: 2026-06-11T07:06:03.663Z

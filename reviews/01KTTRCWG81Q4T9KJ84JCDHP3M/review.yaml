@@ -1,0 +1,26 @@
+_ulid: 01KTTRCWG81Q4T9KJ84JCDHP3M
+slugs: []
+title: Review task-broken-shadow-safety-spec-delta
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTTRCWG74JNRC8W75MQ747WH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T07:12:27.655Z
+examined_commit: 0f3473bba38c4e87899c06d0394c895a92aa61e3
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTD0XG6VBZ6AR49VGQ2FARF"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T07:12:27.656Z
+updated_at: null
+notes: []
