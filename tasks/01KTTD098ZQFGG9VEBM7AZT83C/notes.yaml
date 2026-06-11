@@ -12,3 +12,17 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T18:52:43.581Z
+  - _ulid: 01KTW1MNXHMRQS7NPX0XHGE4YR
+    content: "Implementation complete in commit 740b3ec859. Deleted both TaskList.svelte console.log
+      leftovers; gated all 5 console.log + 1 console.debug sites in websocket/manager.ts behind
+      WS_DEBUG=false via a debugLog helper (connection traces keep dev diagnostic value). All
+      console.warn/error sites untouched. Added two AC-annotated tests in
+      tests/websocket-manager.test.ts: full lifecycle
+      (connect/connected-event/broadcast/duplicate/unexpected-close/reconnect/disconnect) asserts no
+      log/debug/info output (ac-no-debug-output-default); malformed message asserts console.error
+      fires (ac-errors-preserved). Gates: format:check, lint --quiet (0 errors), focused oxlint
+      (only 5 pre-existing warnings; fixed the one new vi.fn type-param warning), typecheck, full
+      npm test (10524 passed / 0 failed), kspec validate refs+alignment+completeness all green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T19:13:14.673Z
