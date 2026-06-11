@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KTW22VK9AQK0RBHSFKHG95JM
+    content: "Approach: add an env component to computeCacheKey in scripts/test.cjs via a new pure
+      helper computeEnvCacheComponent(env) — curated allowlist (CI, TZ, NODE_ENV, NODE_OPTIONS) plus
+      all KSPEC_*-prefixed vars except KSPEC_SESSION_ID (already scopes cache dir) and
+      KSPEC_TEST_PROGRESS (rendering only). Absent vars excluded so unset != empty-string. Encoded
+      as JSON of sorted [name, value] pairs to avoid pair-boundary ambiguity from values containing
+      separators, then hashed as section 6 of the existing key. --fresh, dry-run, and session
+      scoping untouched. Edge cases: empty vs unset var, KSPC_ vs KSPEC_ prefix, value containing
+      newline, excluded vars changing must NOT change key. Test plan: unit tests in
+      tests/test-runner.test.ts on the exported helpers (env-sensitivity of computeCacheKey via
+      process.env mutation with restore, plus direct computeEnvCacheComponent cases). Behavioral
+      cache-hit/miss verification (npm test x2, CI=true npm test x2, npm test again) recorded in
+      notes per task description. Also: kspec meta set testing to extend the cache-key convention
+      rule, then kspec agents generate."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T19:20:59.241Z
