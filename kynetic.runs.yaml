@@ -64636,7 +64636,7 @@ runs:
     completed_at: 2026-06-11T21:30:50.343Z
   - _ulid: 01KTWAVMJMNAGEZJQJKY32BYK0
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -64657,9 +64657,19 @@ runs:
           could inspect it with rg/sed, reducing evidence available for triage. The flaky test
           itself was already captured separately as @01KTWAN5."
       - status: completed
+        exit_confirmed: true
         step_index: 2
         started_at: 2026-06-11T21:55:16.562Z
-        completed_at: 2026-06-11T21:55:16.562Z
+        completed_at: 2026-06-11T21:55:29.593Z
+        notes: "Coverage search: 'upgrade-folder-storage runner-validation' had no pre-existing match before
+          I created @01KTWAN5, and @01KTWAN5 now covers the flaky test failure itself. 'detached
+          reviewer merge helper' is already well-covered by existing feature/tasks, so no new
+          success-tracking needed. 'test cache log fresh clears full log' returned no matches, so
+          the evidence-preservation friction appears untracked."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-11T21:55:29.593Z
+        completed_at: 2026-06-11T21:55:29.593Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T21:54:19.860Z
