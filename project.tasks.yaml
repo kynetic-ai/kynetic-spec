@@ -31434,6 +31434,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:53:20.415Z
+  automation: eligible
 - _ulid: 01KTTD09ZTH4AJ62M1A4M7YWC0
   slugs:
     - task-dashboard-summary-adoption
