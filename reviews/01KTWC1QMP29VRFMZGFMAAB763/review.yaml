@@ -109,6 +109,20 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T22:17:13.901Z
     completed_at: 2026-06-11T22:17:13.901Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Acknowledged program gate: @plan-ui-redesign-global-decisions is still draft, so
+      @annotation-freshness-provenance, @actor-identity-model, and @ac-coverage-applicability are
+      not yet live items. The current plan documents this ordering and remains draft. Per reviewer
+      instruction, this is program structure, not an author defect, and does not block this approval
+      verdict."
+    name: P0a program gate
+    required: false
+    runner: kspec-review-plan
+    created_at: 2026-06-11T22:17:25.325Z
+    completed_at: 2026-06-11T22:17:25.325Z
 events:
   - _ulid: 01KTWC1QMPXS7YZAMWEG4MCAC0
     actor: "@claude"
@@ -179,6 +193,13 @@ events:
       status: pass
       name: spec neighborhood and quality
     timestamp: 2026-06-11T22:17:14.188Z
+  - _ulid: 01KTWC5XVHSJW2S92KR8V1D3XW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: P0a program gate
+    timestamp: 2026-06-11T22:17:25.617Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -191,5 +212,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:15:08.182Z
-updated_at: 2026-06-11T22:17:13.901Z
+updated_at: 2026-06-11T22:17:25.325Z
 notes: []
