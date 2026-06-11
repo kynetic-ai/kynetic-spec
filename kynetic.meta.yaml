@@ -21641,6 +21641,19 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-11T19:40:23.625Z
+  - _ulid: 01KTW94NFS0CCMCKR3FKR2XZVJ
+    type: friction
+    content: During review of @task-workspace-packages-private, npm test reported one unrelated failure,
+      continued through visible suite output, then left the Vitest parent process alive with no
+      worker children or progress. The reviewer had to inspect process state, run a focused retry,
+      create @01KTW8SG for the flaky suite, and manually terminate the stale process tree before
+      completing review. This suggests the test runner could benefit from stale-parent detection,
+      clearer timeout diagnostics, or cleanup handling for hung Vitest parents after failures.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-11T21:24:18.554Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
