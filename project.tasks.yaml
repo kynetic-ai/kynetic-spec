@@ -31316,6 +31316,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:53:15.872Z
+  automation: eligible
 - _ulid: 01KTTD05J0G7PQGFER0GY2N4KR
   slugs:
     - task-daemon-log-capture
