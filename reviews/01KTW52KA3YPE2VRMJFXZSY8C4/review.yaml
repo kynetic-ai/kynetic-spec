@@ -2,7 +2,129 @@ _ulid: 01KTW52KA3YPE2VRMJFXZSY8C4
 slugs: []
 title: "Plan review: Shared Mutation and Event Service (round 2 follow-up — findings verification)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 6 findings from rounds 1 (@01KTVY7MQS5CRVTS8D5T5AREZM) and 2
+      (@01KTVZ6BCGABVTGHZQXDA1AAZW) verified addressed in current stored content, not just claimed
+      in replies: (1) @shared-mutation-pipeline ac-5 Given narrowed to daemon-served batches and new
+      ac-7 specifies no-daemon batch behavior (one shadow commit, cache/broadcast no-op without
+      error), with ac-7 in @task-shared-mutation-pipeline Covers; (2) @mutation-event-naming ac-3
+      added asserting the two reserved event families as named reservations on their owning topics,
+      and @task-missing-event-types Covers extended to ac-1..ac-3; (3) @mutation-event-naming
+      declares parent: @api-contract explicitly with rationale in Existing spec relationships note;
+      (4) Promotion and record continuity note marks stored source_path as historical and names
+      plans/ui-redesign-mutation-event-service.md as authoritative; (5)
+      @dispatch-mutation-transparency ac-2 Then rephrased as observable behavior (applied
+      in-process, no separate process created, no request re-enters the command interface); (6)
+      @task-shared-mutation-pipeline uses full repo-relative paths (packages/daemon/src/routes/) in
+      Why and How. Prior threads were resolved by the author with accurate replies; nothing to
+      re-raise."
+    name: prior findings verification
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T20:13:59.077Z
+    completed_at: 2026-06-11T20:13:59.077Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan export @plan-dispatch-mutation-service round-tripped through kspec plan import
+      --dry-run cleanly (title, status, full document stored). Derive --dry-run is gated on approved
+      status so it could not be exercised on the draft; the Specs/Tasks YAML blocks were read in
+      full and are well-formed with block scalars throughout.
+    name: plan parse
+    required: true
+    runner: kspec-cli
+    created_at: 2026-06-11T20:14:02.253Z
+    completed_at: 2026-06-11T20:14:02.253Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 22 ACs across 5 specs use given/when/then with observable, deterministic outcomes;
+      timeless phrasing (no before/after-change framing); no internal function names, field names,
+      or file paths in ACs; rationale kept to descriptions and implementation notes. ac-2 of
+      @dispatch-mutation-transparency now states the in-process boundary as observable behavior.
+      Decision-type spec @mutation-event-naming has enumerable vocabulary ACs including the
+      reserved-family reservation (ac-3).
+    name: spec quality
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T20:14:05.352Z
+    completed_at: 2026-06-11T20:14:05.352Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 6 tasks have Why/What/How, concrete file paths (verified:
+      packages/daemon/src/routes/{tasks,inbox,triage,reviews,review-resources,plan-resources}.ts all
+      exist; src/agent-runtime/invocation.ts has runKspecCli/addTaskNote/blockTask;
+      packages/web-ui/src/lib/query/ws-invalidation.ts:33 has FILE_WATCHER_INVALIDATION_DELAYS_MS =
+      [650, 1500]; packages/shared/src/websocket.ts exists; commitIfShadow/writeThrough sequence
+      confirmed in tasks.ts), and verification steps. Covers lines partition all 22 ACs disjointly
+      with no orphans: @shared-mutation-pipeline ac-1/2/4/6/7 (task 1) + ac-3/5 (task 2);
+      @mutation-event-coverage ac-1..4 + @mutation-event-naming ac-1..3 (task 3);
+      @dispatch-mutation-transparency ac-1..4 (task 4); @ui-targeted-event-consumption ac-1..4 (task
+      5). Task 6 is honestly annotated as relationship metadata only."
+    name: task completeness and AC coverage
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T20:14:08.486Z
+    completed_at: 2026-06-11T20:14:08.486Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No cycles; no P1-depends-on-P2. Topology: pipeline extraction (no deps) -> command-path
+      and dispatch-engine tasks in parallel -> missing-event-types -> UI consumption.
+      task-dispatch-engine-mutation-path correctly depends only on the pipeline task since mutation
+      operations carry their own event descriptors. task-ui-targeted-consumption's dep on
+      task-command-path-typed-events is transitively implied via task-missing-event-types but adds
+      no serialization. P2 spec-links task has no deps and needs none (specs exist at derive time)."
+    name: dependency ordering
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T20:14:11.574Z
+    completed_at: 2026-06-11T20:14:11.574Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 7 external refs exist (@daemon-server, @api-contract, @ui-data-freshness,
+      @daemon-command-api, @daemon-entity-cache, @ui-api-aggregation, @agent-invocation-lifecycle)
+      and every cited AC id exists (ac-batch-support, ac-mutation-cache-update,
+      ac-no-recursive-command-proxy, ac-write-through, ac-broadcast-after-reload,
+      @ui-api-aggregation ac-4, @ui-data-freshness ac-3/ac-10, @agent-invocation-lifecycle ac-5). No
+      contradictions: @ui-data-freshness does not codify the delayed re-invalidation the plan
+      removes; @daemon-command-api batch/cache/no-recursion ACs remain satisfied; command_executed
+      retention is consistent with @mutation-event-naming ac-2 since it is not entity-scoped. No
+      planned slug collides with an existing item. Feature-under-feature parenting matches existing
+      practice under @daemon-server. New specs are refinements, not duplicates, of the foundation
+      specs they extend."
+    name: existing spec alignment
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T20:14:14.645Z
+    completed_at: 2026-06-11T20:14:14.645Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Scope exclusions are explicit (reserved families named only, no replay/transport changes,
+      dispatch event registry untouched, no actor attribution, files:updates retained, shadow-branch
+      state only) and every task stays inside them. Migration notes preserve existing topics, event
+      types, and payload schemas. Derive-time note: the record has no stored module_ref, so kspec
+      plan derive will require --module (verified in src/cli/commands/plan.ts:1865); explicit
+      parents on all five specs make placement deterministic regardless — already adjudicated in the
+      resolved round-1 parent thread."
+    name: scope discipline
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T20:14:17.835Z
+    completed_at: 2026-06-11T20:14:17.835Z
 events:
   - _ulid: 01KTW52KA32QSWKV3M0XMXZJCG
     actor: "@claude"
@@ -10,9 +132,81 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T20:13:16.483Z
+  - _ulid: 01KTW53T3DSQQ1P5BR6F59TA2G
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T20:13:56.205Z
+  - _ulid: 01KTW53X5BFFZAGJH2XZ6MZ9PK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior findings verification
+    timestamp: 2026-06-11T20:13:59.339Z
+  - _ulid: 01KTW5408EWXXYRBFVXCB7A913
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan parse
+    timestamp: 2026-06-11T20:14:02.510Z
+  - _ulid: 01KTW5439XPHPXEK7QVC2M00YJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec quality
+    timestamp: 2026-06-11T20:14:05.629Z
+  - _ulid: 01KTW546B5RBCW1209WNP20R5Q
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: task completeness and AC coverage
+    timestamp: 2026-06-11T20:14:08.741Z
+  - _ulid: 01KTW549B92NQS84N8MP7JE6R7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-11T20:14:11.817Z
+  - _ulid: 01KTW54CBPM6KWS01PTWJKBAMT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: existing spec alignment
+    timestamp: 2026-06-11T20:14:14.902Z
+  - _ulid: 01KTW54FEVY2SRF781NKTAZRZ7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: scope discipline
+    timestamp: 2026-06-11T20:14:18.075Z
+  - _ulid: 01KTW54JEG2C89JXC0PT3KXJ9M
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T20:14:21.136Z
+  - _ulid: 01KTW54JEGZSHMPXGKR134QZRG
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T20:14:21.136Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +214,14 @@ subject:
   ref: "@plan-dispatch-mutation-service"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-06-11T20:14:21.136Z
 created_at: 2026-06-11T20:13:16.483Z
-updated_at: null
+updated_at: 2026-06-11T20:14:21.136Z
 notes: []
