@@ -153,9 +153,25 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T14:01:15.503Z
+  - _ulid: 01KTVFT3CK3412XZ23SVH2MR62
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T14:01:37.939Z
+  - _ulid: 01KTVFT3CKWMQ6FHK2YGCACY8W
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T14:01:37.939Z
 examined_commit: 4a03cba1fab82c11a570777b1f63250a16acefb3
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -182,7 +198,14 @@ threads:
           integration with CLI search output. No shared/package guidance surfaces were changed."
         created_at: 2026-06-11T13:59:56.768Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T14:01:37.939Z
 created_at: 2026-06-11T13:44:11.854Z
-updated_at: 2026-06-11T14:01:15.282Z
+updated_at: 2026-06-11T14:01:37.939Z
 notes: []
