@@ -12332,11 +12332,11 @@ workspaces:
     canonical_branch: dispatch/task/task-format-version-ceiling/01kttd0y
     canonical_branch_head: d66ac7104626eef77356d93a8429a6620ffd18da
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T08:29:52.528Z
+      updated_at: 2026-06-11T08:33:06.609Z
     health:
       status: healthy
       issues: []
@@ -12350,17 +12350,17 @@ workspaces:
       target_branch: dev
       target_commit: 0f3473bba38c4e87899c06d0394c895a92aa61e3
       updated_at: 2026-06-11T08:29:52.528Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTTD0YZ0M10BR94V7PW4GJRJ
     task_ref: "@01KTTD0YZ0M10BR94V7PW4GJRJ"
     task_slug: task-format-version-ceiling
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-11T08:33:06.609Z
       last_active_at: 2026-06-11T08:14:01.459Z
       last_reconciled_at: 2026-06-11T08:32:37.284Z
       created_at: 2026-06-11T07:11:58.796Z
-      updated_at: 2026-06-11T08:32:37.284Z
+      updated_at: 2026-06-11T08:33:06.609Z
     workspace_id: dispatch-workspace-01KTTD0YZ0M10BR94V7PW4GJRJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
