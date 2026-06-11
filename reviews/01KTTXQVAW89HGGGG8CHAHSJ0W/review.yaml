@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KTTXRVEDYZJXQX0JY9WTGF8P
     timestamp: 2026-06-11T08:46:22.915Z
+  - _ulid: 01KTTXSCKMQF6NWK4VF0ZSZTBR
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTXSCCEY8B58B1P1Y9252M2
+    timestamp: 2026-06-11T08:46:40.244Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -58,7 +65,27 @@ threads:
           coverage-annotation contract, so the corpus does not end up with contradictory specs.'
         created_at: 2026-06-11T08:46:22.670Z
     kind: blocker
+  - _ulid: 01KTTXSCCEY8B58B1P1Y9252M2
+    anchor:
+      type: structured
+      field: covers
+      ref: "@task-respec-test-annotation-sweep-na"
+      section: tasks
+    entries:
+      - _ulid: 01KTTXSCCEN5SEBPN00BYEJGZ5
+        author: "@claude"
+        body: 'RE-RAISED from prior review 01KTTVE9X42D5EKE5J23CDHKXC (no author reply, plan content
+          unchanged). The Covers line is not verifiable: it claims "@test-annotation-sweep
+          (description update plus the three new not-applicable ACs defined above)" instead of exact
+          AC IDs, and the plan never assigns IDs to the three new ACs it describes in prose under
+          What. Assign stable IDs in the plan text (e.g. ac-na-no-coverage-credit,
+          ac-na-no-invalid-finding, ac-na-marker-preserved) and make this Covers line reference
+          those IDs explicitly, plus the exact @ac-annotation-integrity-reporting AC being
+          reconciled (ac-valid-annotation-covers-target). Without stable IDs, neither derivation nor
+          review can prove every claimed behavior was implemented.'
+        created_at: 2026-06-11T08:46:40.014Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:46:22.670Z
+updated_at: 2026-06-11T08:46:40.014Z
 notes: []
