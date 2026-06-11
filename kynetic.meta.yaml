@@ -21580,8 +21580,12 @@ observations:
       exact declared minimum runtime instead of relying only on the developer's current Node
       version.
     author: codex-reviewer
-    resolution: null
-    resolved: false
+    resolution: "Superseded immediately during reflection: shell command substitution removed the
+      focused command text from the observation content; replacement observation records the
+      intended success pattern."
+    resolved: true
+    resolved_at: 2026-06-11T16:04:59.085Z
+    resolved_by: codex-reviewer
     workflow_ref: "@session-reflect"
     created_at: 2026-06-11T16:04:34.526Z
 schedules:
