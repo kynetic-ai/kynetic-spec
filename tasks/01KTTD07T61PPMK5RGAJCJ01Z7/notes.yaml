@@ -1,1 +1,26 @@
-notes: []
+notes:
+  - _ulid: 01KTVJ43B9HT40SRTETQWHVYT0
+    content: "Approach: follow the task's prescribed design. (1)
+      DEFAULT_DAEMON_COMMAND_TIMEOUT_MS=120000 in src/daemon-shared/endpoint.ts, re-exported via
+      packages/daemon/src/pid.ts shim (same pattern as DEFAULT_DAEMON_LOG_MAX_SIZE_BYTES). (2)
+      daemon.command_timeout_ms in DaemonConfigSchema + ResolvedKspecConfig +
+      defaults/resolution/getDefaultConfig in src/parser/config.ts. (3) serve.ts forwards
+      --command-timeout argv like --log-max-size; daemon index.ts parses it and threads
+      commandTimeoutMs into createServer -> createCommandRoutes. (4) command.ts: module-scope
+      activeDispatch registry with exported getCommandDispatchHealth(); shared dispatchWithTimeout
+      helper inside createCommandRoutes that races dispatchMutex.run(...).then(completionEffects)
+      against a timer, sets per-request timedOut flag inside the setTimeout callback (queued-discard
+      check happens inside the mutex fn), attaches .catch to abandoned executions logging via plain
+      console.warn, clears timer in finally. Completion side effects (write-through + broadcast)
+      move into the execution promise for both single and batch paths; response shaping (status,
+      batch capture merge) stays in the handler and only applies pre-timeout. 504 via errorResponse
+      {error: command_timeout, message, suggestion}. (5) Health: server.ts exports
+      buildHealthResponse() including command_dispatch from getCommandDispatchHealth(); /api/health
+      uses it; top-level status stays 'ok' to avoid breaking existing consumers, degradation
+      reported in command_dispatch sub-object. Tests: extend tests/daemon-command-api.test.ts with
+      50ms timeouts via new commandTimeoutMs route option; wedge stubs resolved at test end. Edge
+      cases: timer cleared on normal completion; discarded queued commands skip completion effects;
+      abandoned rejection must not crash (fatal-handlers unhandledRejection)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T14:42:02.729Z
