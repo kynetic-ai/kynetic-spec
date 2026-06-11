@@ -145,6 +145,17 @@ async function inspectWorktreeDirState(
 }
 
 /**
+ * Quote a path for literal use in a POSIX shell command. Double quotes
+ * still let the shell expand `$`, backticks, and backslashes, so a path
+ * containing those would make the command address a different path or fail
+ * to parse. Single quotes suppress all expansion; embedded single quotes
+ * use the standard close-escape-reopen idiom (' -> '\'').
+ */
+function shellQuotePath(value: string): string {
+  return `'${value.replaceAll("'", "'\\''")}'`;
+}
+
+/**
  * Build recovery steps that match the actual state of the worktree
  * location. `mv <backup> <worktreeDir>` only restores the backup when
  * nothing exists at the destination: if a directory is still there, mv
@@ -157,18 +168,17 @@ function buildRestoreRecoverySteps(
   backupDir: string,
   worktreeDir: string,
 ): string[] {
-  const resolvedBackup = path.resolve(backupDir);
-  const resolvedWorktree = path.resolve(worktreeDir);
+  const quotedBackup = shellQuotePath(path.resolve(backupDir));
+  const quotedWorktree = shellQuotePath(path.resolve(worktreeDir));
   const steps: string[] = [];
   if (state === "empty-directory") {
-    steps.push(`Remove the leftover empty directory: rmdir "${resolvedWorktree}"`);
+    steps.push(`Remove the leftover empty directory: rmdir ${quotedWorktree}`);
   } else if (state === "non-directory" || state === "partial-directory") {
     const leftover = state === "non-directory" ? "file" : "partial directory";
-    steps.push(
-      `Move the leftover ${leftover} out of the way: mv "${resolvedWorktree}" "${resolvedWorktree}.failed-rebuild-${Date.now()}"`,
-    );
+    const quotedAside = shellQuotePath(`${path.resolve(worktreeDir)}.failed-rebuild-${Date.now()}`);
+    steps.push(`Move the leftover ${leftover} out of the way: mv ${quotedWorktree} ${quotedAside}`);
   }
-  steps.push(`Move the backup back into place: mv "${resolvedBackup}" "${resolvedWorktree}"`);
+  steps.push(`Move the backup back into place: mv ${quotedBackup} ${quotedWorktree}`);
   steps.push("Re-run: kspec shadow repair");
   return steps.map((step, index) => `  ${index + 1}. ${step}`);
 }
