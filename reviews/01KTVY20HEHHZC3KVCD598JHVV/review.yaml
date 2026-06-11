@@ -38,6 +38,13 @@ events:
       kind: blocker
       thread_ulid: 01KTVY3QR1R6VBJ3D2H7TAZV6A
     timestamp: 2026-06-11T18:11:34.032Z
+  - _ulid: 01KTVY4DSQ4NGYG3ERSY796B7X
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVY4D78V7J8CFV2TCKDMKXW
+    timestamp: 2026-06-11T18:11:56.343Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -128,7 +135,51 @@ threads:
           concrete identity.
         created_at: 2026-06-11T18:11:33.761Z
     kind: blocker
+  - _ulid: 01KTVY4D78V7J8CFV2TCKDMKXW
+    anchor:
+      type: structured
+      field: Covers
+      ref: "@plan-web-ui-foundations"
+      section: tasks
+    entries:
+      - _ulid: 01KTVY4D79JQPVN1C80ZHB7EFR
+        author: "@claude"
+        body: >-
+          RE-RAISED from round 1 (thread 01KTVXBQ6ZV1B640R0W60YJA6W) — unaddressed, and EXTENDED
+          this round with an additional unclaimed row.
+
+
+          @plan-ui-redesign-global-decisions makes its claim table binding on track plans: "a track
+          plan that implements a decision's behavior claims the relevant criteria with task Covers:
+          lines referencing the decision item directly." Re-verified against that table this round;
+          rows assigned to this plan's work that no task here claims:
+
+
+          - @web-shell-platform-target ac-3 → "keyboard registry plan" — this plan's
+          @task-shortcut-registry implements exactly this (central platform mapping,
+          browser-reserved avoidance) but covers only @ui-shortcut-registry.
+
+          - @client-preference-persistence ac-1 → "UI foundations plan (preference utility)" —
+          @task-preference-utility covers only @ui-preference-store.
+
+          - @actor-identity-model ac-2 → "data upgrade plan (one-time migration)" —
+          @task-actor-normalization-upgrade implements the one-time migration but covers only
+          @actor-history-normalization. (If "data upgrade plan" means a different plan, state that
+          in the implementation notes.)
+
+          - NEW this round: @coverage-state-presentation ac-2 → "UI foundations plan (shared state
+          tokens)" — @task-view-header-status-tokens builds the shared status-token module the table
+          points at, and the plan's own design notes discuss the relationship to
+          @coverage-state-presentation, but no Covers line claims ac-2.
+
+
+          Impact: after the decision specs materialize, these decision ACs remain orphaned even
+          though this plan implements their behavior, and the program cannot close while table rows
+          are unclaimed. Add the Covers entries or adjust the upstream consumer mapping before
+          approval.
+        created_at: 2026-06-11T18:11:55.753Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:11:33.761Z
+updated_at: 2026-06-11T18:11:55.753Z
 notes: []
