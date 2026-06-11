@@ -278,6 +278,12 @@ events:
     payload:
       thread_ulid: 01KTTPWS7V9ADRJ82TPERDRFW7
     timestamp: 2026-06-11T07:41:20.350Z
+  - _ulid: 01KTTT1Y708RXGDM77Y59W57WP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTPWS7V9ADRJ82TPERDRFW7
+    timestamp: 2026-06-11T07:41:26.113Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -455,6 +461,8 @@ threads:
           branch is removed."
         created_at: 2026-06-11T07:41:20.081Z
     kind: question
+    resolved_at: 2026-06-11T07:41:25.826Z
+    resolved_by: "@claude"
   - _ulid: 01KTTPWVN9B4YWVHMRCD3VN2ZK
     anchor:
       type: structured
@@ -539,5 +547,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:41:20.081Z
+updated_at: 2026-06-11T07:41:25.826Z
 notes: []
