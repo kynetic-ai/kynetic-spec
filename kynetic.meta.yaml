@@ -21715,8 +21715,12 @@ observations:
       snapshot into the dispatch target without requiring manual checkout or persistent target
       worktree management.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate success observation; existing detached reviewer merge helper success
+      observations already cover this pattern. Keeping the workflow notes, but no separate new
+      success observation needed.
+    resolved: true
+    resolved_at: 2026-06-11T23:32:15.074Z
+    resolved_by: Jacob Chapel
     created_at: 2026-06-11T23:31:36.067Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
