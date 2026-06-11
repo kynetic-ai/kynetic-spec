@@ -19,7 +19,8 @@
  */
 
 // Trait N/A annotations — @triage-daemon-api inherits from @trait-api-endpoint and @trait-websocket-protocol:
-// AC: @trait-api-endpoint ac-5 — covered: shadow commits triggered by POST /api/triage, POST /:ref/override, POST /:ref/act mutations; commitIfShadow called in each handler and verified implicitly by mutation persistence tests
+// @trait-api-endpoint ac-5 — covered behaviorally: the "Shadow commits" describe block below runs the
+//   three mutation routes against a real kspec-meta worktree and asserts the semantic commit subjects.
 // AC: @trait-api-endpoint ac-6 — N/A: X-Request-Id header is server-level infrastructure; not asserted in route-handler integration tests
 // AC: @trait-websocket-protocol ac-1 — N/A: server connection lifecycle; tested in daemon-api/websocket-protocol.test.ts
 // AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe command; tested in daemon-api/websocket-protocol.test.ts
@@ -30,6 +31,9 @@
 // AC: @trait-websocket-protocol ac-7 — N/A: clean shutdown code tested in daemon-api/websocket-protocol.test.ts; timeout close code tested in daemon-heartbeat.test.ts
 // AC: @trait-websocket-protocol ac-8 — N/A: reconnection behavior tested in tests/e2e/connection.spec.ts
 
+import { execSync } from "node:child_process";
+import { mkdirSync, writeFileSync } from "node:fs";
+import * as path from "node:path";
 import type { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PubSubManager } from "../../dist/daemon/websocket/pubsub.js";
@@ -42,6 +46,7 @@ import {
   makeRequest,
   requestJson,
   setupFixtures,
+  testUlid,
 } from "./helpers.js";
 
 // Fixture ULIDs defined in tests/e2e/fixtures/project.triage.yaml (setupFixtures
@@ -696,6 +701,132 @@ describe("POST /api/triage/:ref/act", () => {
     expect(body.error).toBe("not_found");
     expect(body).toHaveProperty("message");
     expect(body).toHaveProperty("suggestion");
+  });
+});
+
+describe("Shadow commits", () => {
+  // setupFixtures() (used by the suite-level beforeEach) creates only a fake
+  // worktree pointer — enough for shadow *detection*, but git commands inside
+  // .kspec/ fail silently, so commitIfShadow never commits there. This block
+  // builds a project whose .kspec/ is a REAL linked worktree on an orphan
+  // kspec-meta branch so the mutation routes' shadow commits actually land
+  // and their semantic messages can be asserted from git history.
+  const SHADOW_INBOX_ULID = testUlid();
+  let shadowProjectDir: string;
+
+  beforeEach(async () => {
+    shadowProjectDir = await createTempDir("kspec-daemon-api-triage-shadow-");
+    initGitRepo(shadowProjectDir);
+    writeFileSync(path.join(shadowProjectDir, "README.md"), "# Shadow commit test project\n");
+    execSync('git add -A && git commit -m "initial"', { cwd: shadowProjectDir, stdio: "pipe" });
+
+    // Orphan-style kspec-meta branch rooted at the empty tree, attached as
+    // the .kspec worktree. Uses plumbing (mktree/commit-tree) instead of
+    // `git worktree add --orphan`, which requires git >= 2.42.
+    const emptyTree = execSync("git mktree", {
+      cwd: shadowProjectDir,
+      input: "",
+      encoding: "utf-8",
+    }).trim();
+    const rootCommit = execSync(`git commit-tree ${emptyTree} -m "Initialize spec"`, {
+      cwd: shadowProjectDir,
+      encoding: "utf-8",
+    }).trim();
+    execSync(`git branch kspec-meta ${rootCommit}`, { cwd: shadowProjectDir, stdio: "pipe" });
+    execSync("git worktree add .kspec kspec-meta", { cwd: shadowProjectDir, stdio: "pipe" });
+
+    // Minimal shadow-mode project: in shadow mode specDir is .kspec/, so all
+    // project files live inside the worktree.
+    const specDir = path.join(shadowProjectDir, ".kspec");
+    mkdirSync(path.join(specDir, "modules"), { recursive: true });
+    writeFileSync(
+      path.join(specDir, "kynetic.yaml"),
+      `kynetic: "1.1"
+task_storage:
+  format: split
+project:
+  name: Shadow Commit Test
+  version: "0.1.0"
+  status: draft
+includes:
+  - modules/test.yaml
+`,
+    );
+    writeFileSync(path.join(specDir, "modules", "test.yaml"), "features: []\n");
+    writeFileSync(
+      path.join(specDir, "project.inbox.yaml"),
+      `inbox:
+  - _ulid: "${SHADOW_INBOX_ULID}"
+    text: Shadow commit test item
+    tags: []
+    added_by: test-user
+    created_at: "2026-01-01T10:00:00Z"
+`,
+    );
+    mkdirSync(path.join(shadowProjectDir, ".kspec-sessions"), { recursive: true });
+    execSync('git add -A && git commit -m "seed project"', {
+      cwd: specDir,
+      stdio: "pipe",
+    });
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(shadowProjectDir);
+  });
+
+  function shadowCommitSubjects(): string[] {
+    return execSync("git log --format=%s kspec-meta", {
+      cwd: shadowProjectDir,
+      encoding: "utf-8",
+    })
+      .trim()
+      .split("\n");
+  }
+
+  // AC: @trait-api-endpoint ac-5
+  it("each mutation route creates a semantic shadow commit on kspec-meta", async () => {
+    const baselineCount = shadowCommitSubjects().length;
+
+    // POST /api/triage — record a decision
+    const recordResponse = await requestJson(app, shadowProjectDir, "POST", "/api/triage", {
+      inbox_ref: `@${SHADOW_INBOX_ULID}`,
+      action: "defer",
+      reasoning: "Shadow commit assertion",
+    });
+    expect(recordResponse.status).toBe(200);
+    const recordBody = await recordResponse.json();
+    const shortUlid = recordBody.record._ulid.slice(0, 8);
+
+    let subjects = shadowCommitSubjects();
+    expect(subjects.length).toBe(baselineCount + 1);
+    expect(subjects[0]).toBe(`triage: record ${shortUlid} as defer`);
+
+    // POST /api/triage/:ref/override — override the decision
+    const overrideResponse = await requestJson(
+      app,
+      shadowProjectDir,
+      "POST",
+      `/api/triage/@${recordBody.record._ulid}/override`,
+      { action: "delete", reasoning: "Override for shadow commit assertion" },
+    );
+    expect(overrideResponse.status).toBe(200);
+
+    subjects = shadowCommitSubjects();
+    expect(subjects.length).toBe(baselineCount + 2);
+    expect(subjects[0]).toBe(`triage: override ${shortUlid}`);
+
+    // POST /api/triage/:ref/act — execute the action
+    const actResponse = await requestJson(
+      app,
+      shadowProjectDir,
+      "POST",
+      `/api/triage/@${recordBody.record._ulid}/act`,
+    );
+    expect(actResponse.status).toBe(200);
+
+    subjects = shadowCommitSubjects();
+    expect(subjects.length).toBe(baselineCount + 3);
+    expect(subjects[0]).toBe(`triage: act ${shortUlid}`);
   });
 });
 
