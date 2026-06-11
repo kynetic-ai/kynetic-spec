@@ -10,3 +10,16 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T22:26:02.304Z
+  - _ulid: 01KTWE7GF7H49DVRMNS3A8WA0E
+    content: "Completed: removed the 8 web-ui-only packages from root devDependencies and regenerated
+      package-lock.json. Lockfile diff is dedup-only — no version changes; the only extra change is
+      a peer:true flag on tailwind-merge (now reachable solely via web-ui declarations). All gates
+      green: format:check, lint --quiet (0 errors), typecheck, full npm test (10538 passed/3
+      skipped), npm run build (dist/web-ui produced, tailwind/postcss pipeline exercised, pagefind
+      indexing intact), npm run test:e2e (451 passed, exit 0), kspec validate
+      refs/alignment/completeness. pagefind and packages/web-ui/package.json untouched per task
+      scope. Infra-only change, no spec_ref — no AC annotations applicable. Commit 478716573e
+      pushed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T22:53:14.599Z
