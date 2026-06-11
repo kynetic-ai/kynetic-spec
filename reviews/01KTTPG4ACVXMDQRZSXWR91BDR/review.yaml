@@ -316,6 +316,12 @@ events:
     payload:
       thread_ulid: 01KTTPJ008G1QW5FS6YPG77ZC1
     timestamp: 2026-06-11T07:39:32.031Z
+  - _ulid: 01KTTSYKWSVM4HNQEJSRECXWXW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTPJ008G1QW5FS6YPG77ZC1
+    timestamp: 2026-06-11T07:39:37.241Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -427,6 +433,8 @@ threads:
           section names that plan as the owner."
         created_at: 2026-06-11T07:39:31.809Z
     kind: blocker
+    resolved_at: 2026-06-11T07:39:37.022Z
+    resolved_by: "@claude"
   - _ulid: 01KTTPJ027GTK287VC4D6RP4HE
     anchor:
       type: structured
@@ -497,5 +505,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:41:27.363Z
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T07:39:31.809Z
+updated_at: 2026-06-11T07:39:37.022Z
 notes: []
