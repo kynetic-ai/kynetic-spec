@@ -2,7 +2,94 @@ _ulid: 01KTW07WVH9047WA2D4ASE8QW9
 slugs: []
 title: "Plan review: AC Coverage Verification Schema and Storage (round 1)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All live-corpus refs verified via kspec item get: @test-annotation-sweep
+      (ac-explicit-mapping, ac-annotation-format, ac-no-blanket-credit),
+      @ac-annotation-integrity-reporting (ac-valid-annotation-covers-target),
+      @ac-annotation-identifier-format (ac-valid-token-covers-ac), @coverage-scan-config,
+      @data-format-forward-compatibility. Four pending refs (@annotation-freshness-provenance,
+      @actor-identity-model, @ac-coverage-applicability, @client-preference-persistence) confirmed
+      absent from live corpus and present as spec slugs in @plan-ui-redesign-global-decisions
+      (draft), exactly as the Approval ordering note claims. Gate documented: this plan must not be
+      approved/derived before P0a derives."
+    name: Cross-reference validation
+    required: true
+    runner: manual
+    created_at: 2026-06-11T18:51:29.718Z
+    completed_at: 2026-06-11T18:51:29.718Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 24 new ACs across 4 specs claimed by exactly one implementing task each (7 store, 7
+      freshness, 4 session, 6 compatibility). The three new @test-annotation-sweep ACs are claimed
+      by both tasks 4 and 5 with the division annotated (spec mutation vs parser implementation). No
+      orphan ACs.
+    name: AC coverage mapping
+    required: true
+    runner: manual
+    created_at: 2026-06-11T18:51:32.621Z
+    completed_at: 2026-06-11T18:51:32.621Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No cycles; no P1-depends-on-P2 inversions; respec-before-implementation ordering correct
+      (task 5 depends on task 4); tasks 2/3/6 correctly fan out from task 1. One missing edge:
+      @task-coverage-record-compatibility covers an AC asserting bootstrap freshness resolution but
+      does not depend on @task-freshness-resolution-read-path (see question thread)."
+    name: Dependency ordering
+    required: true
+    runner: manual
+    created_at: 2026-06-11T18:51:35.398Z
+    completed_at: 2026-06-11T18:51:35.398Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: parseACAnnotationLine strips the N/A suffix before tokenizing and discards the reason
+      (src/parser/validate.ts:1058-1059; doc example shows an N/A line yielding acIds:['ac-1']) —
+      the respec premise is accurate. Folder-storage precedents exist
+      (src/parser/plan-storage-manager.ts, review-folder-migration.ts, folder-backed-entity.ts),
+      coverage cache exists (src/parser/coverage-cache.ts), commitIfShadow exists
+      (src/parser/shadow.ts:1270).
+    name: Codebase claims verification
+    required: true
+    runner: manual
+    created_at: 2026-06-11T18:51:38.133Z
+    completed_at: 2026-06-11T18:51:38.133Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No overlap with existing specs for verification storage/freshness (kspec search
+      'verification stamp'/'freshness'/'coverage' — clean neighborhood; storage-home and
+      naming-collision notes are sound). However: (1) tasks 4-5 conflict with the
+      transition-boundary clause of @ac-coverage-applicability as authored in P0a (blocker thread);
+      (2) @trait-validation ac-2 grants no-warning credit to trait AC annotations and is missing
+      from the reconciliation list (blocker thread)."
+    name: Alignment with existing specs and decisions
+    required: true
+    runner: manual
+    created_at: 2026-06-11T18:51:40.835Z
+    completed_at: 2026-06-11T18:51:40.835Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan touches no shared/package guidance surfaces (templates/, plugin/, agents-sections).
+      The N/A respec note explicitly leaves consumer-facing N/A documentation untouched and flags
+      that any future doc change takes the neutrality review chain. The interim doc/behavior
+      incoherence for consumers is raised in the transition-boundary blocker thread.
+    name: Shared guidance neutrality
+    required: false
+    runner: manual
+    created_at: 2026-06-11T18:51:43.636Z
+    completed_at: 2026-06-11T18:51:43.636Z
 events:
   - _ulid: 01KTW07WVHRGSRW51B5C71XSEH
     actor: "@claude"
@@ -10,17 +97,285 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T18:48:47.217Z
+  - _ulid: 01KTW0C046FTQTCQ0W14DJ9NX6
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T18:51:01.638Z
+  - _ulid: 01KTW0C32NMS04YTK8C5M5HNA0
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW0C2SS9BSG9X3MXWDX1VSM
+    timestamp: 2026-06-11T18:51:04.661Z
+  - _ulid: 01KTW0C5ZSJ3S868BMYFJZ81EX
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW0C5R5ZEN671JWJEX2SMFQ
+    timestamp: 2026-06-11T18:51:07.641Z
+  - _ulid: 01KTW0C8XR155BPHE4Q2VJYHV9
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW0C8P8BSAHPA0DMBWJWQME
+    timestamp: 2026-06-11T18:51:10.648Z
+  - _ulid: 01KTW0CBRK09ET09F3EGDBFT8T
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTW0CBGK9D5QQTX8RGY66WND
+    timestamp: 2026-06-11T18:51:13.555Z
+  - _ulid: 01KTW0CEGPPBMD4VD841992A57
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTW0CE9H0VAH7S5GNRBE1B91
+    timestamp: 2026-06-11T18:51:16.374Z
+  - _ulid: 01KTW0CH8A92YN8HRQSXVK6F2G
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTW0CH16ZRGZ68YG5NQ738T3
+    timestamp: 2026-06-11T18:51:19.178Z
+  - _ulid: 01KTW0CKZ924JG1W6BMX63FBCN
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTW0CKRA70GP0MHYYXZ9K4YH
+    timestamp: 2026-06-11T18:51:21.961Z
+  - _ulid: 01KTW0CVSB3E18ZE8QAJVZD2SZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation
+    timestamp: 2026-06-11T18:51:29.963Z
+  - _ulid: 01KTW0CYM2C4TPDJG0NFDW6FZX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-11T18:51:32.866Z
+  - _ulid: 01KTW0D1AA1Q8NRFMWAPASAY5R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency ordering
+    timestamp: 2026-06-11T18:51:35.627Z
+  - _ulid: 01KTW0D3ZR8ZEDXXYQKGE9KMVW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Codebase claims verification
+    timestamp: 2026-06-11T18:51:38.360Z
+  - _ulid: 01KTW0D6MD1RZEMJ990MR52T91
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Alignment with existing specs and decisions
+    timestamp: 2026-06-11T18:51:41.069Z
+  - _ulid: 01KTW0D9BTHKP3J7TGYMV2TKC0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared guidance neutrality
+    timestamp: 2026-06-11T18:51:43.866Z
+  - _ulid: 01KTW0DC4Y7QZ7SVTBSK5TBFDK
+    actor: claude
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T18:51:46.718Z
+  - _ulid: 01KTW0DC4Y76SFSYFJVHJJNS2B
+    actor: claude
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T18:51:46.718Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-ac-coverage-verification-schema-and-storage"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTW0C2SS9BSG9X3MXWDX1VSM
+    anchor:
+      type: structured
+      ref: "@task-na-annotation-coverage-exclusion"
+      section: description
+    entries:
+      - _ulid: 01KTW0C2SSV2JKJVXKWD1KE17J
+        author: "@claude"
+        body: "Conflict with the transition boundary in @ac-coverage-applicability (P0a, a decision this
+          plan depends on). The decision states: 'the pre-existing completeness validation path that
+          honors in-code not-applicable annotations for trait criteria remains in force until the
+          coverage state engine work reconciles the two semantics.' Its ac-2 scopes the no-N/A rule
+          to 'corpus coverage computed by the coverage state engine.' This task (with
+          @task-respec-test-annotation-sweep-na) changes the pre-existing completeness validation
+          path now — 'they earn no coverage credit in completeness validation, item APIs, task
+          review context, or static export' — while the plan's own Implementation Notes declare the
+          coverage-state engine a later plan and out of scope. As written, once both plans
+          materialize, the live decision text will contradict this plan's implemented behavior.
+          Resolve in one of two ways before approval: (a) amend the P0a decision wording so the
+          transition boundary ends with this plan's respec (i.e., the respec IS the reconciliation),
+          or (b) rescope tasks 4-5 so the pre-existing completeness path keeps honoring N/A until
+          the engine plan, per the decision as written. Note the consumer-facing consequence rides
+          on this choice: shipped guidance still documents the N/A trait-AC convention, and under
+          option (a) every consumer project using it gains unresolvable completeness warnings while
+          the docs still teach the convention — the plan defers the doc change, so the interim
+          incoherence window should be an explicit, acknowledged decision."
+        created_at: 2026-06-11T18:51:04.377Z
+    kind: blocker
+  - _ulid: 01KTW0C5R5ZEN671JWJEX2SMFQ
+    anchor:
+      type: structured
+      ref: "@task-respec-test-annotation-sweep-na"
+      section: description
+    entries:
+      - _ulid: 01KTW0C5R56X9AAFT511CY3EZA
+        author: "@claude"
+        body: "Reconciliation gap: @trait-validation ac-2 is not in the task's reconciliation list. ac-2
+          reads 'Given spec implementing trait, When trait AC has test annotation // AC: @trait-ref
+          ac-N, Then no warning for that AC.' The current parser strips the N/A suffix
+          (src/parser/validate.ts, parseACAnnotationLine), so today an N/A-marked annotation
+          satisfies that given and suppresses the warning. After
+          @task-na-annotation-coverage-exclusion, a trait AC whose only annotation carries an N/A
+          marker WILL warn — contradicting ac-2 under the currently-implemented reading. This is the
+          same class of conflict the task already reconciles for @ac-annotation-integrity-reporting
+          ac-valid-annotation-covers-target and @ac-annotation-identifier-format
+          ac-valid-token-covers-ac, and trait ACs are precisely where the N/A convention is used
+          most. Add @trait-validation ac-2 to the reconciliation list (narrow its given to
+          coverage-claiming annotations), or document why its literal annotation form is judged to
+          exclude N/A-marked lines."
+        created_at: 2026-06-11T18:51:07.397Z
+    kind: blocker
+  - _ulid: 01KTW0C8P8BSAHPA0DMBWJWQME
+    anchor:
+      type: structured
+      field: ac-bootstrap-when-unstamped
+      ref: "@ac-freshness-resolution"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTW0C8P9CFP4FWPYY4K53HSE
+        author: "@claude"
+        body: "Given-clause overlap with conflicting outcomes. ac-bootstrap-when-unstamped's given ('at
+          least one annotation in a configured scan path and no recorded verification stamp')
+          includes the scenario ac-no-history-absence covers (all annotation locations lack
+          version-control history) — but the two thens conflict: one asserts a bootstrap value is
+          produced, the other asserts no freshness value is produced. The description resolves the
+          intent, but the ACs are the testable contract, and a test author working from ACs alone
+          could implement either behavior for an uncommitted annotation location. Narrow
+          ac-bootstrap-when-unstamped's given to '...at least one annotation in a configured scan
+          path whose location has version-control history, and no recorded verification stamp' so
+          the two givens are disjoint and each AC is deterministic."
+        created_at: 2026-06-11T18:51:10.409Z
+    kind: blocker
+  - _ulid: 01KTW0CBGK9D5QQTX8RGY66WND
+    anchor:
+      type: structured
+      ref: "@task-coverage-record-compatibility"
+      section: dependencies
+    entries:
+      - _ulid: 01KTW0CBGK2KZCTWXFX8N2XMY5
+        author: "@claude"
+        body: "Missing dependency: this task claims coverage of @coverage-record-compatibility
+          ac-absent-store-no-behavior-change, whose then-clause asserts 'freshness resolves through
+          the bootstrap provenance source alone' — but the freshness resolver is built in
+          @task-freshness-resolution-read-path, which this task does not depend on. With only
+          @task-ac-verification-record-store landed, that clause cannot be implemented or tested.
+          Either add depends_on @task-freshness-resolution-read-path, or split the freshness clause
+          of that AC's coverage onto task 2 and annotate the division in both Covers lines."
+        created_at: 2026-06-11T18:51:13.299Z
+    kind: question
+  - _ulid: 01KTW0CE9H0VAH7S5GNRBE1B91
+    anchor:
+      type: structured
+      field: ac-older-tool-ignores-sidecar
+      ref: "@coverage-record-compatibility"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTW0CE9HB8QF2S2DRHFNTJAM
+        author: "@claude"
+        body: "This AC specifies the behavior of tool versions predating the store — behavior this codebase
+          cannot exercise (the task itself concedes 'the suite cannot execute an older released
+          binary' and substitutes a mechanism-level proxy: unrecognized sidecar directories are
+          ignored by shadow-state readers). An AC whose stated subject is untestable and whose
+          verification is a different, narrower property invites annotation drift: the test will be
+          annotated against an AC it does not actually prove. Consider rewording the AC to the
+          property the current system guarantees and can verify — e.g., given a shadow state
+          containing an unrecognized sidecar directory, when the metadata is loaded, validated, and
+          written elsewhere, then the unrecognized directory's contents are neither read nor
+          modified; plus an assertion that store creation touches no pre-existing file. The
+          older-tool guarantee then belongs in the description as the purpose those properties
+          serve."
+        created_at: 2026-06-11T18:51:16.145Z
+    kind: question
+  - _ulid: 01KTW0CH16ZRGZ68YG5NQ738T3
+    anchor:
+      type: structured
+      field: ac-multi-annotation-most-recent
+      ref: "@ac-freshness-resolution"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTW0CH16AJR96YXV731858TB
+        author: "@claude"
+        body: "Boundary gap: the multi-annotation AC requires 'each location having version-control
+          history,' and ac-no-history-absence requires ALL locations to lack history. The mixed case
+          — some annotated locations with history, some without — falls between the two givens and
+          is uncovered by any AC, though the description implies the intended behavior (locations
+          without history yield no value; the bootstrap is the most recent of the values that
+          exist). The task's test list also omits the mixed case. Either extend this AC's given to
+          cover mixed locations or add a dedicated AC, and add the mixed-location test to
+          @task-freshness-resolution-read-path."
+        created_at: 2026-06-11T18:51:18.950Z
+    kind: question
+  - _ulid: 01KTW0CKRA70GP0MHYYXZ9K4YH
+    anchor:
+      type: structured
+      field: ac-timestamp-or-commit
+      ref: "@ac-freshness-resolution"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTW0CKRAKF2AN8TSY77MHWZN
+        author: "@claude"
+        body: "Compound AC: three independently-verifiable assertions in one then (value carries
+          timestamp/commit/both; value names its provenance source; recorded values also carry the
+          provenance class). Acceptable as a single value-shape contract, but splitting the
+          provenance-class assertion out (or folding it into ac-recorded-supersedes-bootstrap, which
+          already asserts it) would keep each AC to one behavior."
+        created_at: 2026-06-11T18:51:21.738Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude
+    role: reviewer
+    created_at: 2026-06-11T18:51:46.718Z
 created_at: 2026-06-11T18:48:47.217Z
-updated_at: null
+updated_at: 2026-06-11T18:51:46.718Z
 notes: []
