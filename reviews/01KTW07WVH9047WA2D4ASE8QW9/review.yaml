@@ -277,6 +277,12 @@ events:
     payload:
       thread_ulid: 01KTW0CBGK9D5QQTX8RGY66WND
     timestamp: 2026-06-11T19:31:42.474Z
+  - _ulid: 01KTW2PPEXB93V6YMCZMKNWQ25
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTW0CE9H0VAH7S5GNRBE1B91
+    timestamp: 2026-06-11T19:31:49.341Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -454,6 +460,8 @@ threads:
           annotations will be made against properties the tests actually prove."
         created_at: 2026-06-11T19:28:28.359Z
     kind: question
+    resolved_at: 2026-06-11T19:31:48.986Z
+    resolved_by: "@claude"
   - _ulid: 01KTW0CH16ZRGZ68YG5NQ738T3
     anchor:
       type: structured
@@ -515,5 +523,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:51:46.718Z
 created_at: 2026-06-11T18:48:47.217Z
-updated_at: 2026-06-11T19:31:42.110Z
+updated_at: 2026-06-11T19:31:48.986Z
 notes: []
