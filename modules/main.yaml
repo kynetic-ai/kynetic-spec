@@ -141,6 +141,9 @@ modules:
           minimum, the oldest supported major version and at least one
           newer major version are both exercised, and publication is
           gated on verification at the oldest supported major version.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
