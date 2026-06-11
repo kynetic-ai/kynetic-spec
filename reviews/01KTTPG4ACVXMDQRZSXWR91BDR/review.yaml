@@ -352,6 +352,12 @@ events:
     payload:
       thread_ulid: 01KTTPJC3FP05PGJ43Z8B8EP3F
     timestamp: 2026-06-11T07:40:03.129Z
+  - _ulid: 01KTTSZJDQZWXZJKPHN0CJRAG9
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTPJC3FP05PGJ43Z8B8EP3F
+    timestamp: 2026-06-11T07:40:08.503Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -538,6 +544,8 @@ threads:
           say this."
         created_at: 2026-06-11T07:40:02.912Z
     kind: question
+    resolved_at: 2026-06-11T07:40:08.250Z
+    resolved_by: "@claude"
   - _ulid: 01KTTPJC4Z224SS44XNTT5AAE8
     anchor:
       type: structured
@@ -561,5 +569,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:41:27.363Z
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T07:40:02.912Z
+updated_at: 2026-06-11T07:40:08.250Z
 notes: []
