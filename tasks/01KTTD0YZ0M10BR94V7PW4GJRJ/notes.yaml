@@ -1,1 +1,23 @@
-notes: []
+notes:
+  - _ulid: 01KTTS2QTR1S7Z8BB7H2YWNJXZ
+    content: "Approach: new src/parser/format-version.ts module (MAX_SUPPORTED_KYNETIC_VERSION='1.2',
+      FormatVersionCompatibilityError with deterministic codes format_version_newer_than_supported /
+      unrecognized_format_version; code embedded in message so every CLI surface presents it).
+      initContext: pre-sync raw manifest ceiling check in shadow path before
+      hasRemoteTracking/shadowPull; all three manifest-read paths (override/shadow/traditional)
+      re-check the raw kynetic field via shared readManifestWithVersionCeiling, giving the post-sync
+      re-check on the freshly pulled manifest. Daemon parity: verified empirically that an Elysia
+      parent-level onError registered before route .use() maps plugin-route errors even when route
+      groups have their own onError (fall-through on undefined) — wiring a global onError in
+      server.ts using a new packages/daemon/src/routes/format-version-error.ts 409 mapper mirroring
+      entity-storage-error.ts; same handler wired into tests/daemon-api createTestApp. Doctor:
+      read-only check in getDoctorReport (raw manifest read, no initContext — verified doctor never
+      calls initContext). Upgrade: inferVersionFromProbes throws the deterministic error on
+      declared>max (refusal callers cannot ignore), pinned by unit test; CLI-level refusal owned by
+      initContext throw at runUpgradePipeline:345. Tests: CLI fixture tests
+      (9.9/garbage/1.2/missing-field + mtime no-modification), real-git dual-fixture sync-pull test
+      (local 1.2, remote kspec-meta 9.9), daemon-api route test, doctor test, detectSourceVersion
+      unit test."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T07:24:23.768Z
