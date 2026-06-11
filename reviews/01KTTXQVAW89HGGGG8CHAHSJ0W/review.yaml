@@ -328,9 +328,25 @@ events:
       status: pass
       name: Evidence log
     timestamp: 2026-06-11T08:50:07.682Z
+  - _ulid: 01KTTY056DD3MVNX50FVHQ364K
+    actor: claude
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T08:50:22.029Z
+  - _ulid: 01KTTY056DJFF0WR6JQK5WXKXS
+    actor: claude
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T08:50:22.029Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -546,7 +562,14 @@ threads:
           a read-back AC and a rejection AC."
         created_at: 2026-06-11T08:48:23.872Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude
+    role: reviewer
+    created_at: 2026-06-11T08:50:22.029Z
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:50:07.458Z
+updated_at: 2026-06-11T08:50:22.029Z
 notes: []
