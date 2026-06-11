@@ -18524,7 +18524,7 @@ workspaces:
         head: 9222d4a7de015305cf726b68c07f68b83438851d
         last_seen_at: 2026-06-11T17:01:30.788Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-serve-logs-command-01kttd07
-  - active_role: worker
+  - active_role: null
     base_branch_point: 6ff4bda2a31529ff92123a518b853a311729965a
     bootstrap:
       status: succeeded
@@ -18854,12 +18854,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T18:08:00.302Z
+      updated_at: 2026-06-11T18:48:03.078Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T18:08:00.302Z
+      updated_at: 2026-06-11T18:48:03.078Z
     integration:
       status: pending
       detail: null
@@ -18867,8 +18867,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6ff4bda2a31529ff92123a518b853a311729965a
-      updated_at: 2026-06-11T18:08:00.302Z
-    lifecycle_state: active
+      updated_at: 2026-06-11T18:48:03.078Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KTTCZF245ZGK3T0KJPHG6E4W
     task_ref: "@01KTTCZF245ZGK3T0KJPHG6E4W"
@@ -18876,9 +18876,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T18:06:08.836Z
-      last_reconciled_at: 2026-06-11T18:08:00.302Z
+      last_reconciled_at: 2026-06-11T18:48:03.078Z
       created_at: 2026-06-11T17:02:45.094Z
-      updated_at: 2026-06-11T18:08:00.302Z
+      updated_at: 2026-06-11T18:48:03.078Z
     workspace_id: dispatch-workspace-01KTTCZF245ZGK3T0KJPHG6E4W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
