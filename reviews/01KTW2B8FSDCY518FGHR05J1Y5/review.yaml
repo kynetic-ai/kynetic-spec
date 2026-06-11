@@ -2,7 +2,137 @@ _ulid: 01KTW2B8FSDCY518FGHR05J1Y5
 slugs: []
 title: "Plan review: UI Redesign Global Decisions (claude round 2)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Round 1 (@01KTVWYZ2W7THFC8QH2FY00HB8) had one blocker: the 'Module placement and derive
+      sequencing' notes misstated derive placement ('created top-level', stored module inert).
+      Verified fixed: current plan content states derive parents parentless non-trait specs under
+      the stored module so @ui-redesign-decisions is created as a child of @main, and that @main is
+      load-bearing for exactly that one record. Confirmed against src/cli/commands/plan.ts:441-466
+      (parent = moduleItem branch for parentless non-trait specs). Author reply and re-import (plan
+      note 'Address review round 1 findings') match the actual content. Nothing to re-raise."
+    name: prior review resolution
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:33:53.682Z
+    completed_at: 2026-06-11T19:33:53.682Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exported stored content (kspec plan export) and ran kspec plan import --dry-run: parses
+      cleanly, full document stored, 9 decision specs + 1 module + 3 manual tasks,
+      derive_from_specs: false."
+    name: plan import dry-run
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T19:33:58.720Z
+    completed_at: 2026-06-11T19:33:58.720Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passes with pre-existing warnings only (deprecated @task-activity-git-query spec_ref),
+      unrelated to this plan.
+    name: kspec validate --refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T19:34:03.734Z
+    completed_at: 2026-06-11T19:34:03.734Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passes; pre-existing warnings only (Agent Definition Schema status drift), unrelated to
+      this plan.
+    name: kspec validate --alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T19:34:07.475Z
+    completed_at: 2026-06-11T19:34:07.475Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passes; pre-existing warnings only (malformed AC tokens in cli-agent-commands.test.ts),
+      unrelated to this plan.
+    name: kspec validate --completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T19:34:11.171Z
+    completed_at: 2026-06-11T19:34:11.171Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 23 ACs across 9 decision items are observable and deterministic (operability without
+      native facilities, leading-zone clearance, ingestion-only results, four presentation buckets,
+      canonical actor writes, no inline structured-choice resolution, no daemon merge execution).
+      Rationale and transition boundaries (config-author fallback, in-code N/A coexistence) are
+      confined to descriptions and implementation notes, not ACs. Decision-type framing is
+      appropriate for cross-track contracts.
+    name: spec quality
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:34:14.913Z
+    completed_at: 2026-06-11T19:34:14.913Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 3 hygiene tasks carry Why/What/How with verbatim note content and a verification
+      step; executable in a fresh session with no chat history. No Covers lines by design
+      (derive_from_specs: false, tasks implement no decision behavior) and the AC coverage handoff
+      table converts that into a binding claim list: all 23 decision ACs (3+4+2+3+2+2+3+2+2) are
+      claimed by named track work; no orphans."
+    name: task standalone-ness and coverage mapping
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:34:18.096Z
+    completed_at: 2026-06-11T19:34:18.096Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Three independent P2 metadata tasks with no depends_on; none consumes another's output, so
+      parallel execution is safe. No priority inversions, no cycles, no missing dependencies.
+    name: dependency ordering
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:34:21.568Z
+    completed_at: 2026-06-11T19:34:21.568Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "External refs verified live: @01KJXQK4 (pending) and @01KKBD66 (pending) are cancellable;
+      all four disposition plan refs resolve as drafts; @config-author ac-3 text matches the
+      fallback chain the actor-identity-model description cites; @main module exists. All 13 new
+      slugs (10 spec, 3 task) are unclaimed by existing items and tasks. @plan-ui-ux-revamp (parent
+      of the superseded umbrella task) is already completed, so no disposition gap. Neighborhood
+      searches (test result ingestion, coverage state, actor identity, merge authority, preference
+      persistence) return no overlapping existing specs."
+    name: cross-references and slug collisions
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:34:24.994Z
+    completed_at: 2026-06-11T19:34:24.994Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Round 1 failing check, now passing: the Module placement and derive sequencing notes
+      accurately describe plan derive behavior (parentless non-trait specs parent under the stored
+      module; single derive creates @ui-redesign-decisions under @main with its nine children; @ux
+      reparent contingency recorded on the ux plan by the disposition task)."
+    name: derive placement semantics
+    required: true
+    runner: claude
+    created_at: 2026-06-11T19:34:28.126Z
+    completed_at: 2026-06-11T19:34:28.126Z
 events:
   - _ulid: 01KTW2B8FRRSSPRKSW19P49RWN
     actor: "@claude"
@@ -17,17 +147,135 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T19:25:55.168Z
+  - _ulid: 01KTW2TG7Z6TNCE2GD0JCFMW5R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review resolution
+    timestamp: 2026-06-11T19:33:54.047Z
+  - _ulid: 01KTW2TN6PN4D2NDH28YCT2R8T
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan import dry-run
+    timestamp: 2026-06-11T19:33:59.126Z
+  - _ulid: 01KTW2TT1KFX47F71RR1K5NPMW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs
+    timestamp: 2026-06-11T19:34:04.083Z
+  - _ulid: 01KTW2TXKX15GJGW0V69BP0CAS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --alignment
+    timestamp: 2026-06-11T19:34:07.741Z
+  - _ulid: 01KTW2V19ANE354KFH07B2R5RB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness
+    timestamp: 2026-06-11T19:34:11.498Z
+  - _ulid: 01KTW2V4WSSM9RQ17MCZ9QJJ4Y
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec quality
+    timestamp: 2026-06-11T19:34:15.194Z
+  - _ulid: 01KTW2V80CF57MCK971C4R2SBB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: task standalone-ness and coverage mapping
+    timestamp: 2026-06-11T19:34:18.380Z
+  - _ulid: 01KTW2VBCFW00M5HJ2G5J98HJ1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-11T19:34:21.839Z
+  - _ulid: 01KTW2VEPTFVWM2F36XQ732XRG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cross-references and slug collisions
+    timestamp: 2026-06-11T19:34:25.242Z
+  - _ulid: 01KTW2VHRY9777YT94HHBAB7YP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: derive placement semantics
+    timestamp: 2026-06-11T19:34:28.382Z
+  - _ulid: 01KTW2VN5YBJ184Y3RZ26AJTGJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTW2VMXNNRRAA2QE9JNBA14F
+    timestamp: 2026-06-11T19:34:31.870Z
+  - _ulid: 01KTW2VRPA0ZD6AXGRSAD2P6P3
+    actor: claude
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T19:34:35.466Z
+  - _ulid: 01KTW2VRPA8F31R31VEHG59YZC
+    actor: claude
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T19:34:35.466Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-ui-redesign-global-decisions"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTW2VMXNNRRAA2QE9JNBA14F
+    anchor:
+      type: structured
+      ref: "@actor-identity-model"
+      section: description
+    entries:
+      - _ulid: 01KTW2VMXNRCGQB4E4HDCNBMJB
+        author: "@claude"
+        body: "The transition relationship to @config-author is documented in prose (description +
+          Boundaries notes), which is correct per spec language rules, but the plan import format
+          has no relates_to field, so the corpus link will exist only as description text after
+          derive. Suggestion, no plan change needed: after derivation, add a relates_to between the
+          derived @actor-identity-model item and @config-author (kspec item set
+          @actor-identity-model --relates-to @config-author) so the reconciliation obligation is
+          machine-traversable rather than prose-only. Could be a one-line addition to the
+          disposition task's How, or simply done at derive time."
+        created_at: 2026-06-11T19:34:31.605Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude
+    role: reviewer
+    created_at: 2026-06-11T19:34:35.466Z
 created_at: 2026-06-11T19:25:34.585Z
-updated_at: 2026-06-11T19:25:54.806Z
+updated_at: 2026-06-11T19:34:35.466Z
 notes: []
