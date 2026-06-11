@@ -82,6 +82,18 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T08:49:28.616Z
     completed_at: 2026-06-11T08:49:28.616Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@coverage-record-compatibility omits an AC for the promised older-tool sidecar tolerance;
+      @ac-freshness-resolution leaves the uncommitted-annotation boundary and the multi-annotation
+      bootstrap rule unspecified at AC level."
+    name: Spec completeness
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T08:49:33.763Z
+    completed_at: 2026-06-11T08:49:33.763Z
 events:
   - _ulid: 01KTTXQVAWJ8VTNY2FXYXNJPB1
     actor: "@claude"
@@ -222,6 +234,13 @@ events:
       status: fail
       name: AC coverage mapping
     timestamp: 2026-06-11T08:49:28.843Z
+  - _ulid: 01KTTXYP99EJYTRQ5HEHHQMBHY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Spec completeness
+    timestamp: 2026-06-11T08:49:33.993Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -442,5 +461,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:49:28.616Z
+updated_at: 2026-06-11T08:49:33.763Z
 notes: []
