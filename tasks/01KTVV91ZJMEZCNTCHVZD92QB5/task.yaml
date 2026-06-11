@@ -1,0 +1,29 @@
+_ulid: 01KTVV91ZJMEZCNTCHVZD92QB5
+slugs:
+  - task-stabilize-skill-rendering-dist-export-flake
+title: Stabilize skill-rendering full-suite dist export flake
+type: bug
+description: "During review of @01KTTD073BSRG8AMPS4RZS6979 on 2026-06-11, full npm test -- --fresh
+  failed once in tests/skill-rendering.test.ts: 'should not rewrite claude-style references for
+  non-core codex skills'. The failing subprocess was 'kspec skill add --id project-refs ...
+  --platform codex' and Node reported: SyntaxError: The requested module './upgrade.js' does not
+  provide an export named 'registerUpgradeCommand'. Immediately after the full run,
+  dist/cli/commands/upgrade.js did contain that export, and 'npm test -- --fresh
+  tests/skill-rendering.test.ts' passed all 89 tests. Investigate test-runner parallelism or
+  build/dist mutation interference so the full suite cannot observe a transient incomplete dist/cli
+  module graph."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - tests
+  - infra
+vcs_refs: []
+created_at: 2026-06-11T17:22:02.354Z
+todos: []
+automation: eligible

@@ -31761,3 +31761,19 @@
   todos_count: 0
   created_at: 2026-06-11T13:59:19.574Z
   automation: eligible
+- _ulid: 01KTVV91ZJMEZCNTCHVZD92QB5
+  slugs:
+    - task-stabilize-skill-rendering-dist-export-flake
+  title: Stabilize skill-rendering full-suite dist export flake
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - tests
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T17:22:02.354Z
+  automation: eligible
