@@ -204,6 +204,12 @@ events:
     payload:
       thread_ulid: 01KTWDRTFDE940W89NAYY3BVP5
     timestamp: 2026-06-11T23:30:55.751Z
+  - _ulid: 01KTWGCNWBKFAXRD8EA32FCTSW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTWDRTFDE940W89NAYY3BVP5
+    timestamp: 2026-06-11T23:31:01.131Z
 examined_commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
 external_links: []
 lifecycle_state: closed
@@ -291,6 +297,8 @@ threads:
           behavior) and to the excluded-vars cache test."
         created_at: 2026-06-11T23:30:55.527Z
     kind: blocker
+    resolved_at: 2026-06-11T23:31:00.903Z
+    resolved_by: "@claude"
   - _ulid: 01KTWDW2RT7VA5NT2TB870CP52
     entries:
       - _ulid: 01KTWDW2RT2FVRTPG0JTA16FKH
@@ -328,5 +336,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T22:47:10.928Z
 created_at: 2026-06-11T22:24:32.166Z
-updated_at: 2026-06-11T23:30:55.527Z
+updated_at: 2026-06-11T23:31:00.903Z
 notes: []
