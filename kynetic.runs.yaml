@@ -64736,7 +64736,7 @@ runs:
     completed_at: 2026-06-11T22:21:08.742Z
   - _ulid: 01KTWDY2RGCDBXYTMSM293QYA9
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -64762,7 +64762,19 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-11T22:48:47.333Z
-        completed_at: 2026-06-11T22:48:47.333Z
+        completed_at: 2026-06-11T22:49:38.719Z
+        notes: "Coverage check: searched 'test cache key', 'build test lock', 'full suite concurrency',
+          'dist rewrite', 'partially-written dist', 'reentrant lock', and 'workflow-runs'. Existing
+          coverage found: @task-test-cache-env-key covers cache-key behavior generally;
+          @task-stabilize-upgrade-folder-storage-test now has review blockers for the concrete
+          cache-key omission and failed full-suite lock behavior;
+          @task-stabilize-full-suite-cli-dist-flakes and
+          @task-stabilize-workflow-runs-stale-dist-failure already track the broader full-suite
+          stale/inconsistent dist symptom. No duplicate task or inbox item needed."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-11T22:49:38.719Z
+        completed_at: 2026-06-11T22:49:38.719Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T22:48:05.648Z
