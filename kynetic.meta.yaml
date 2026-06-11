@@ -21441,6 +21441,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T12:44:48.912Z
+  - _ulid: 01KTVCSYZ5ATBR5EJGYDB0PJFX
+    type: friction
+    content: "Fully-skipped test suites rot silently. The skipped E2E triage suite (deleted in
+      @task-daemon-triage-api-tests) carried two assertions that no longer matched current behavior:
+      a strict item_snapshot equality against inbox fixture text that had since drifted, and a 422
+      expectation for missing fields where the project-context middleware now normalizes Elysia
+      validation errors to 400. When porting or re-enabling skipped tests, re-verify every assertion
+      against current behavior (run them, check fixtures, check error normalization in
+      daemon-api/errors.test.ts) rather than copying verbatim. One lingering skip remains:
+      tests/e2e/tasks.spec.ts:641 test.skip."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T13:09:07.685Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
