@@ -12043,8 +12043,11 @@ requirements:
           concurrently in the same worktree
         id: ac-7
         then: they serialize on a per-worktree advisory lock so test-spawned CLI subprocesses never load a
-          partially-written dist/; locks held by dead processes are reclaimed automatically, and
-          nested invocations spawned by the lock-holding run proceed without re-acquiring
+          partially-written dist/; locks held by dead processes are reclaimed automatically;
+          same-kind nested invocations spawned by the lock-holding run proceed without re-acquiring,
+          and a cross-kind nested invocation (a build spawned from inside a running test run, or
+          vice versa) fails fast with a diagnostic instead of bypassing the lock and rewriting dist/
+          under live tests
         when: either one starts while the other is still running
     tags:
       - testing

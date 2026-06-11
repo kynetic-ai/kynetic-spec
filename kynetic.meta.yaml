@@ -609,6 +609,10 @@ conventions:
         (scripts/build-test-lock.cjs): npm run build / build:e2e waits for a running npm test and
         vice versa, so a 'Waiting for build/test lock' message is normal, not a hang. Lock
         coordination vars (KSPEC_BUILD_TEST_LOCK_*) are excluded from the test cache key."
+      - Tests must never trigger a rebuild of the real dist/ (npm pack without --ignore-scripts runs
+        prepack; npm run build:daemon rewrites dist/daemon) — the build/test lock fails such nested
+        builds fast. Build into an isolated output root instead (npm pack --ignore-scripts;
+        KSPEC_DAEMON_BUILD_DIST_ROOT for the daemon build).
 hooks:
   - _ulid: 01KP8MGJN5FW5NSD46MAHGCF25
     action:
