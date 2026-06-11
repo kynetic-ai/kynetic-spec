@@ -33,3 +33,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-11T18:03:46.224Z
+  - _ulid: 01KTW007V0HY5HGFP9YVWCAE5G
+    content: "Resumed after timeout. Rebased onto origin/dev (318a2912d7, clean) and force-pushed; head
+      is now 8478c83153. AC evidence: ac-1 — workflow_dispatch run on the rebased head
+      https://github.com/lepahc/kynetic-spec/actions/runs/27368129375 shows all six matrix jobs
+      (node 20 and node 24 x shards 1-3) completed successfully as distinct runs; the earlier run on
+      the pre-rebase commit (https://github.com/lepahc/kynetic-spec/actions/runs/27365025300) also
+      passed all six matrix jobs. ac-2 — structural: publish.yml verify-min-node job (checkout main,
+      setup-node 20, npm ci, build, npm test) with publish declaring needs: verify-min-node; both
+      workflow files parse via the yaml package with the expected structure. Gates on rebased head:
+      format/lint(0 errors)/typecheck green, full npm test passed, kspec validate
+      refs/alignment/completeness pass with pre-existing warning baseline."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T18:44:36.320Z

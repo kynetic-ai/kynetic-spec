@@ -31252,7 +31252,7 @@
   type: task
   spec_ref: "@prepublish-runtime-verification"
   plan_ref: "@plan-release-packaging-and-onboarding-readiness"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-prepack-full-build-and-verification"
@@ -31261,10 +31261,11 @@
     - ci
     - release
     - infra
-  notes_count: 3
+  notes_count: 4
   todos_count: 0
   created_at: 2026-06-11T03:52:53.572Z
   started_at: 2026-06-11T17:04:19.263Z
+  submitted_at: 2026-06-11T18:44:37.234Z
   automation: eligible
 - _ulid: 01KTTCZFSEFHZY0DX7B8NN7GTM
   slugs:
