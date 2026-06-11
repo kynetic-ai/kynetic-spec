@@ -15,6 +15,17 @@ checks:
     runner: kspec review list --subject-type plan
     created_at: 2026-06-11T18:48:37.497Z
     completed_at: 2026-06-11T18:48:37.497Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/ui-redesign-review-plan-schema.md --dry-run --module @core exited
+      0 and confirmed the draft plan can be stored without changing state.
+    name: plan storage dry run
+    required: false
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-11T18:48:49.401Z
+    completed_at: 2026-06-11T18:48:49.401Z
 events:
   - _ulid: 01KTW04RAXP60HJ6RBPF07YM74
     actor: "@claude"
@@ -64,6 +75,13 @@ events:
       status: pass
       name: prior review history
     timestamp: 2026-06-11T18:48:37.728Z
+  - _ulid: 01KTW07Z7Z8M4CS6D1MTMXM8EP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan storage dry run
+    timestamp: 2026-06-11T18:48:49.664Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -144,5 +162,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:48:37.497Z
+updated_at: 2026-06-11T18:48:49.401Z
 notes: []
