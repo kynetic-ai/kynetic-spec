@@ -2,7 +2,106 @@ _ulid: 01KTW77C3FP394523TZM0FF8JN
 slugs: []
 title: Review task-workspace-packages-private
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1010 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T21:19:30.913Z
+    completed_at: 2026-06-11T21:19:30.913Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with 0 errors. Focused lint also passed: npx oxlint
+      tests/release-packaging.test.ts found 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T21:19:34.422Z
+    completed_at: 2026-06-11T21:19:34.422Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T21:19:37.902Z
+    completed_at: 2026-06-11T21:19:37.902Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Full npm test run exercised the suite and tests/release-packaging.test.ts passed 13/13.
+      One unrelated intermittent failure appeared in tests/upgrade-folder-storage.test.ts, then npm
+      test hung in the Vitest parent; focused retry `npm test --
+      tests/upgrade-folder-storage.test.ts --fresh` passed 24/24. Follow-up flaky-test task created:
+      @01KTW8SG. Classified as flaky/unrelated per review-gates test failure triage."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T21:19:41.464Z
+    completed_at: 2026-06-11T21:19:41.464Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repository warning baseline: 6 reference warnings, exit 0 due to --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T21:19:44.864Z
+    completed_at: 2026-06-11T21:19:44.864Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repository warning baseline: 46 alignment warnings, exit 0 due to --warnings-ok."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T21:19:48.374Z
+    completed_at: 2026-06-11T21:19:48.374Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repository warning baseline: 275 completeness warnings, including this
+      approved spec-less infra task, exit 0 due to --warnings-ok."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T21:19:51.793Z
+    completed_at: 2026-06-11T21:19:51.793Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: TypeScript, shared package, daemon bundle, web UI static build, docs search, and
+      plugin build completed. Svelte build emitted pre-existing warnings only."
+    name: build
+    required: true
+    runner: npm run build
+    created_at: 2026-06-11T21:19:55.260Z
+    completed_at: 2026-06-11T21:19:55.260Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm pack --dry-run --json --ignore-scripts for root listed 30 files and no
+      packages/ files; npm publish --workspaces --dry-run emitted skip warnings for
+      @kynetic-ai/daemon, @kynetic-ai/shared, and @kynetic-ai/web-ui marked as private."
+    name: publication dry-runs
+    required: true
+    runner: npm pack / npm publish dry-run
+    created_at: 2026-06-11T21:19:58.533Z
+    completed_at: 2026-06-11T21:19:58.533Z
 events:
   - _ulid: 01KTW77C3EN1EKYKR0PD2RFSEH
     actor: Jacob Chapel
@@ -17,6 +116,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T20:51:28.418Z
+  - _ulid: 01KTW8VWWBP6P7RPZ1GM2E81SW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T21:19:31.212Z
+  - _ulid: 01KTW8W0990XST2V8TVN1QPVD1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T21:19:34.697Z
+  - _ulid: 01KTW8W3QAXMG5GCF26EA3FX3Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T21:19:38.218Z
+  - _ulid: 01KTW8W75MYYRKH4VAPCM2HPS0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T21:19:41.748Z
+  - _ulid: 01KTW8WAFB8B3BXR51Y8SC2V0M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T21:19:45.131Z
+  - _ulid: 01KTW8WDXYD1HAZRJTJCJ6KJRP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T21:19:48.670Z
+  - _ulid: 01KTW8WH97VE53HT87839EKKK1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T21:19:52.103Z
+  - _ulid: 01KTW8WMM3MAE9FK8VPMXCDRRC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-06-11T21:19:55.523Z
+  - _ulid: 01KTW8WQT7X44VGVQPARQAQEKH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: publication dry-runs
+    timestamp: 2026-06-11T21:19:58.791Z
+  - _ulid: 01KTW8WV0HC0YERTD88WVRXWBT
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTW8WTRS4H21SSDZJ0DF6YV5
+    timestamp: 2026-06-11T21:20:02.065Z
 examined_commit: 6bf23da09a3d54e706404bfdf2853cfcbd813e2d
 external_links: []
 lifecycle_state: open
@@ -26,8 +195,35 @@ subject:
   content_hash: ""
   ref: "@01KTTCZGFDCPVXA51S6PEFCWYZ"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTW8WTRS4H21SSDZJ0DF6YV5
+    entries:
+      - _ulid: 01KTW8WTRS6ETVW0S69S5V1SND
+        author: codex
+        body: >-
+          Review evidence log (no blocking findings):
+
+          Files read: packages/daemon/package.json, packages/shared/package.json,
+          packages/web-ui/package.json, tests/release-packaging.test.ts, package.json, plan
+          @plan-release-packaging-and-onboarding-readiness, kspec-agents.md.
+
+          Commands run: git diff/stat/name-only/show/log/status; kspec task get; kspec review
+          for-task/get; kspec plan get; kspec validate refs/alignment/completeness; npm run
+          format:check; npm run lint -- --quiet; npx oxlint tests/release-packaging.test.ts; npm run
+          typecheck; npm run build; npm pack --dry-run --json --ignore-scripts; npm publish
+          --workspaces --dry-run; npm test; npm test -- tests/upgrade-folder-storage.test.ts
+          --fresh.
+
+          Claims verified: all three workspace manifests now have private === true; root package has
+          no private field; root pack listing contains no packages/ entries; workspace publish
+          dry-run skips all three private workspaces.
+
+          Categories searched: correctness, test quality, publication behavior, package integration,
+          validation/quality gates, and regression risk. No blockers found. Shared-guidance
+          neutrality not applicable: no shared/package guidance surfaces were changed.
+        created_at: 2026-06-11T21:20:01.817Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T20:50:50.095Z
-updated_at: 2026-06-11T20:51:28.114Z
+updated_at: 2026-06-11T21:20:01.817Z
 notes: []
