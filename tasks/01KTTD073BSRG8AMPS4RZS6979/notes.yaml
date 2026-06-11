@@ -18,3 +18,22 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T16:36:37.380Z
+  - _ulid: 01KTVST57YP7T2FKHF71HT7YQP
+    content: "Implemented kspec serve logs in registerServeCommands (src/cli/commands/serve.ts). Tail
+      mode: last 50 lines default, --lines <n> override, --json emits {log_path, lines}. Follow
+      mode: 500ms polling loop, rotation-safe via inode-change/size-shrink detection (matches
+      DaemonLogWriter rename-to-.1 rotation), SIGINT exits 0. Missing log file -> actionable error
+      with kspec serve start --detach suggestion, exit NOT_FOUND(3); invalid --lines and
+      --follow+--json -> VALIDATION_FAILED(4) with guidance, matching the invalid-port pattern. The
+      status log-location surface (Log file: line + log_path JSON field) was already implemented by
+      task-daemon-log-capture; kept the existing log_path field name instead of introducing log_file
+      to avoid breaking the existing tested contract. Added tests/cli-serve-logs.test.ts (12 tests):
+      tail/lines/json/empty/missing/invalid-flag cases plus a behavioral --follow test (spawned CLI,
+      appended lines, rotation continuity, Ctrl+C) with bounded cleanup registered at spawn time,
+      and human-readable status Log file line coverage. Annotated @cli-serve-commands ac-8/ac-9,
+      @daemon-log-capture ac-log-location-discoverable, and json-output/error-guidance/exit-code
+      trait ACs. Gates: format, lint --quiet (0 errors), focused oxlint (clean), typecheck, full npm
+      test (10510 passed/0 failed), kspec validate refs/alignment/completeness all green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T16:56:25.599Z
