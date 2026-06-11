@@ -48,6 +48,16 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-06-11T06:40:46.974Z
     completed_at: 2026-06-11T06:40:46.974Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Manual tasks do not include spec_ref/Covers lines and derive_from_specs is false, so the
+      decision specs' 22 ACs are not claimed by executable tasks.
+    name: AC coverage mapping
+    required: true
+    created_at: 2026-06-11T06:40:59.380Z
+    completed_at: 2026-06-11T06:40:59.380Z
 events:
   - _ulid: 01KTTPG4AC91PKB75PX2C5M2VB
     actor: "@claude"
@@ -146,6 +156,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-11T06:40:48.828Z
+  - _ulid: 01KTTPK8VMYWF97GWFS0ADZXF6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC coverage mapping
+    timestamp: 2026-06-11T06:40:59.764Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -283,5 +300,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T06:40:46.974Z
+updated_at: 2026-06-11T06:40:59.380Z
 notes: []

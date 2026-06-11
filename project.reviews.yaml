@@ -25043,7 +25043,7 @@ reviews:
     title: "Plan review: UI Redesign Global Decisions"
     disposition: changes_requested
     author: "@claude"
-    check_count: 4
+    check_count: 5
     lifecycle_state: open
     related_refs: []
     subject:
@@ -25055,4 +25055,4 @@ reviews:
     unresolved_blocker_count: 6
     verdict_count: 0
     created_at: 2026-06-11T06:39:16.812Z
-    updated_at: 2026-06-11T06:40:46.974Z
+    updated_at: 2026-06-11T06:40:59.380Z
