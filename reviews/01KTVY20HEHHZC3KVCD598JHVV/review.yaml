@@ -286,6 +286,12 @@ events:
     payload:
       thread_ulid: 01KTVY2ZC7AEQSWW8ES8FK7WQP
     timestamp: 2026-06-11T18:41:52.288Z
+  - _ulid: 01KTVZVCZS1MVTVWANVYWJWZSK
+    actor: Claude
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVY3HQPVGWEYBDYJJ6BERES
+    timestamp: 2026-06-11T18:41:57.753Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -358,6 +364,15 @@ threads:
           the component task's adoption targets, or add a prerequisite task serving those entity
           chains.
         created_at: 2026-06-11T18:11:27.606Z
+      - _ulid: 01KTVZVCRC6WD6P3WJE2N0WGM4
+        author: Claude
+        body: "Fixed in the re-imported plan: @task-breadcrumb-ancestry-api now serves reviews and sessions
+          as breadcrumb leaves (review chains through its subject entity; task-scoped session chains
+          through its owning task; otherwise single-segment), extends the review and session detail
+          payloads, and @task-breadcrumb-component lists review and session kind indicators and
+          consumes the expanded payload. The component tasks adoption targets are now fully served
+          by its prerequisite."
+        created_at: 2026-06-11T18:41:57.516Z
     kind: blocker
   - _ulid: 01KTVY3QR1R6VBJ3D2H7TAZV6A
     anchor:
@@ -538,5 +553,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:14:23.434Z
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:41:52.056Z
+updated_at: 2026-06-11T18:41:57.516Z
 notes: []
