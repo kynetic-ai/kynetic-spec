@@ -13365,7 +13365,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T09:27:13.994Z
+      updated_at: 2026-06-11T09:30:33.588Z
     integration:
       status: merged
       detail: integration:merged
@@ -13382,18 +13382,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T09:12:50.868Z
-      last_reconciled_at: 2026-06-11T09:30:21.119Z
+      last_reconciled_at: 2026-06-11T09:30:33.588Z
       created_at: 2026-06-11T08:41:01.668Z
-      updated_at: 2026-06-11T09:30:21.119Z
+      updated_at: 2026-06-11T09:30:33.588Z
     workspace_id: dispatch-workspace-01KTTD06BWZAEDXS79B66C260R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 97f10f3b5c87ba10d761643d782f023ef8ad8e6b
-        last_seen_at: 2026-06-11T09:12:17.633Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-fatal-failure-observability-01kttd06-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-fatal-failure-observability/01kttd06
