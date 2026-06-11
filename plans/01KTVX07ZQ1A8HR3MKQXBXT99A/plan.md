@@ -74,9 +74,12 @@
     plan-text anchor. The plan document divides into sections derived
     from its headings on the server side, and the anchor addresses a span
     with four fields: the identifier of the containing section, the
-    character offset of the span within that section, the quoted text of
-    the span, and the ordinal of the plan revision the anchor was created
-    against. Together these fields fully describe the anchored span:
+    offset of the span within that section, the quoted text of the span,
+    and the ordinal of the plan revision the anchor was created against.
+    Offsets are counted in Unicode code points from the start of the
+    section's content — never bytes and never UTF-16 code units — so
+    every write surface measures the same span identically regardless of
+    text encoding. Together these fields fully describe the anchored span:
     given the anchor and the content of its creation revision, the exact
     span is recoverable without consulting any other state. Plan-text
     anchors are valid only on reviews whose subject is a plan; the
@@ -89,15 +92,16 @@
         the thread is created through a supported write interface with a
         plan-text anchor
       then: |
-        the anchor stores the section identifier, the character offset of
-        the span within that section, the quoted span text, and the
-        ordinal of the plan revision it was created against, and the
-        stored record round-trips through load and save unchanged
+        the anchor stores the section identifier, the offset of the span
+        within that section counted in Unicode code points, the quoted
+        span text, and the ordinal of the plan revision it was created
+        against, and the stored record round-trips through load and save
+        unchanged
     - id: ac-deterministic-sectioning
       given: |
         the content of a plan revision
       when: |
-        the document is divided into sections on the server side
+        the document is divided into sections
       then: |
         each heading begins a section whose identifier derives
         deterministically from the heading text, duplicate heading texts
@@ -114,6 +118,16 @@
       then: |
         the mutation is rejected, no thread is stored, and the feedback
         names the offending field
+    - id: ac-nonexistent-revision-rejected
+      given: |
+        a plan-text anchor whose creation revision ordinal is a positive
+        integer that does not exist in the subject plan's revision
+        history
+      when: |
+        the anchor is validated at creation time
+      then: |
+        the mutation is rejected with feedback naming the revision field
+        and the ordinal that failed to resolve
     - id: ac-plan-subject-only
       given: |
         a thread creation that supplies a plan-text anchor on a review
@@ -184,8 +198,6 @@
   slug: plan-revisions
   type: feature
   parent: "@plan-support"
-  depends_on:
-    - "@actor-identity-model"
   description: |
     Plans carry a first-class revision history. A revision marks an
     intentional publish of the plan document: an explicit publish action
@@ -194,8 +206,13 @@
     not. A revision record stores its ordinal, author, summary note,
     timestamp, and a pointer to the shadow-branch commit containing the
     published content; the document body is never duplicated into the
-    revision record. Every plan has at least revision 1. A review of a
-    plan resolves to the revision it examined through the review's pinned
+    revision record. Revision authors use the same actor attribution
+    vocabulary as other authored records; no revision-specific author
+    format exists. Once the revision data upgrade has run, every plan
+    has at least revision 1; a plan persisted before revision support
+    and not yet upgraded loads with an empty revision history until the
+    upgrade or its first publish records one. A review of a plan
+    resolves to the revision it examined through the review's pinned
     subject version, with no new field on the review record.
   acceptance_criteria:
     - id: ac-publish-mints-revision
@@ -401,9 +418,13 @@ derive_from_specs: false
       "Content updated from file" auto-note text as the summary default.
     - Do NOT mint on plan set --content-file, plan note, plan set
       status/title/branch, or any other non-publish mutation.
-    - Author resolution uses the canonical actor identity (per
-      @actor-identity-model); do not introduce a new free-form author
-      path.
+    - Author resolution reuses the actor attribution already used for
+      review records and notes (resolved agent or user identity),
+      centralized in one helper; do not introduce a new free-form author
+      path. The redesign's actor-identity decision (register #21) will
+      be specd by the P0a global-decisions plan — keeping resolution in
+      one helper lets revisions adopt the canonical identity model when
+      that spec lands, with no revision schema change.
     - Read surfaces: kspec plan get lists revisions (ordinal, author,
       note, timestamp); a revision content resolver reads the plan
       document at the pointed commit from the shadow branch (first-party
@@ -434,11 +455,15 @@ derive_from_specs: false
   depends_on:
     - "@task-spec-ac-anchor-variant"
     - "@task-plan-revision-records"
+    - "@task-plan-revision-backfill"
   description: |
     Add the plan-text anchor variant (section, offset, quoted text,
     creation revision) with creation-time span-integrity validation, plus
     the server-side deterministic heading-sectioning utility the anchor
-    addresses against.
+    addresses against. Depends on the revision backfill so that every
+    pre-existing plan already has revision 1 by the time anchors ship —
+    anchors validate against revision ordinals, so without backfill they
+    would be unusable on all legacy plans.
 
     Why: Reviewers must be able to anchor threads to spans of plan text
     that survive small edits (decision #19: anchor = section + offset +
@@ -451,8 +476,11 @@ derive_from_specs: false
     What:
     - Add a plan-text variant to the anchor union: type literal
       (plan_text) with section identifier (non-empty string), offset
-      (non-negative integer), quoted_text (non-empty string), and
-      created-at revision ordinal (positive integer).
+      (non-negative integer, counted in Unicode code points from the
+      start of the section content — never bytes or UTF-16 code units),
+      quoted_text (non-empty string), and created-at revision ordinal
+      (positive integer). Document the code-point unit on the schema
+      field so every writer measures spans identically.
     - Server-side sectioning utility: a pure function dividing markdown
       content into heading-delimited sections. Section identifier =
       slugified heading text, with a deterministic document-order suffix
@@ -477,13 +505,18 @@ derive_from_specs: false
     How: Same union-extension pattern as the spec-AC variant task. The
     sectioning utility lives next to the plan document parsing code
     (src/parser/). Tests: round-trip; each rejection case (negative
-    offset, empty quote, bad revision ordinal, non-plan subject, quote
-    mismatch); sectioning determinism including duplicate headings and
+    offset, empty quote, non-positive revision ordinal, positive ordinal
+    absent from the plan's revision history, non-plan subject, quote
+    mismatch); a non-ASCII span case where multi-byte and surrogate-pair
+    characters (e.g. CJK text and emoji) precede the span, proving
+    offsets count Unicode code points rather than bytes or UTF-16 code
+    units; sectioning determinism including duplicate headings and
     preamble-only documents.
 
     Covers: @review-plan-text-anchors ac-plan-text-anchor-stored,
     ac-deterministic-sectioning, ac-plan-text-anchor-validation,
-    ac-plan-subject-only, ac-span-integrity.
+    ac-nonexistent-revision-rejected, ac-plan-subject-only,
+    ac-span-integrity.
     @review-spec-ac-anchors ac-anchor-variant-guidance.
 
 - title: Implement advisory idea thread kind
@@ -518,19 +551,30 @@ derive_from_specs: false
     - Respec @review-comment-threads-and-anchors ac-6 wording so the
       non-blocking enumeration includes idea (currently it names only
       nit and question as non-blocking), via kspec item commands.
+    - Respec @review-records-web-ui ac-2 and ac-3 so the kind-badge and
+      kind-selection enumerations include idea, and make the matching
+      enumeration-level change in the shipped review detail page (kind
+      badge map entry plus kind option in the comment form). This keeps
+      the shipped UI's specified treatment in step with the schema —
+      once write surfaces accept idea, existing reviews will contain
+      idea threads, and the UI must not encounter a kind it has no
+      specified treatment for. Redesigned review surfaces remain with
+      later plans; this is enumeration-level only.
 
     How: Enum addition plus tests; the gating behavior requires no
     disposition-code change, only the regression test. Use kspec batch
-    for the spec wording update.
+    for the spec wording updates.
 
     Covers: @review-idea-threads ac-idea-kind-accepted,
     ac-idea-never-blocks, ac-kind-validation.
     @review-comment-threads-and-anchors (ac-6 wording update to include
     idea among non-blocking kinds).
+    @review-records-web-ui (ac-2/ac-3 kind enumeration respec plus the
+    matching shipped badge/kind-option update).
 
 - title: Implement revision-one backfill for existing plans
   slug: task-plan-revision-backfill
-  priority: 2
+  priority: 1
   tags: [plans, migration]
   spec_ref: "@plan-revisions"
   depends_on:
@@ -543,14 +587,17 @@ derive_from_specs: false
     ordinals; without backfill, every existing plan (93 in this project
     alone, plus consumer projects) would have no revision to bind or pin
     against. Decision #16 sets the policy: rev 1 = current content.
+    This runs at priority 1, ahead of plan-text anchors, so anchors are
+    usable on every pre-existing plan the moment they ship instead of
+    only on plans published after the upgrade.
 
     What:
     - Upgrade step: every plan with an empty revision history gets one
-      revision with ordinal 1, a system/upgrade author resolved through
-      the canonical actor identity, a fixed backfill summary note, the
-      upgrade timestamp, and a shadow-commit pointer that resolves to the
-      plan's content as of the upgrade (the shadow HEAD at upgrade time
-      satisfies this).
+      revision with ordinal 1, a fixed system/upgrade author recorded
+      through the same author-resolution helper publish uses, a fixed
+      backfill summary note, the upgrade timestamp, and a shadow-commit
+      pointer that resolves to the plan's content as of the upgrade (the
+      shadow HEAD at upgrade time satisfies this).
     - Idempotent: re-running the upgrade neither duplicates revision 1
       nor touches plans that already have revisions.
     - Runs through the established storage-upgrade path used by prior
@@ -663,12 +710,19 @@ register as specd behavior (cited, not re-argued):
 | #19 anchors — server sections, rev-pinned `{section, offset, quoted_text, created_at_rev}` | @review-plan-text-anchors |
 | #44 idea-kind gating — advisory-only | @review-idea-threads |
 
-### Approval ordering
+### Actor-identity sequencing
 
-`@plan-revisions` depends on `@actor-identity-model`, a P0a decision item
-(plan: UI Redesign Global Decisions) that is pending materialization. P0a
-must be approved and derived before this plan derives, or the reference
-will not resolve. This is the only cross-plan pending reference.
+An earlier draft declared a structured `depends_on` from
+`@plan-revisions` to the P0a actor-identity decision spec; that spec is
+not yet materialized, and the unresolvable reference made this plan
+underivable, so the structured dependency was removed. Revision-author
+attribution instead reuses the actor attribution that already exists
+for review records and notes, centralized in one resolution helper (see
+task-plan-revision-records). When the P0a global-decisions plan
+materializes the actor-identity decision (register #21), that spec
+governs canonical identity values and the helper adopts it — no
+revision schema change is expected. This plan carries no unresolved
+cross-plan references.
 
 ### Anchor union mechanics
 
@@ -730,6 +784,13 @@ and @review-checks-and-gate-evaluation ac-4. Adding `idea` is therefore
 structurally non-blocking today; @review-idea-threads ac-idea-never-blocks
 turns that from an implementation accident into a contract so future
 gate changes cannot silently start gating on idea threads.
+
+Shipped-UI treatment: once the schema accepts idea, existing reviews
+will contain idea threads, so the existing review detail UI gets an
+enumeration-level update in this plan (kind badge + kind option, under
+the @review-records-web-ui ac-2/ac-3 respec carried by
+task-idea-thread-kind). The redesigned review surfaces still belong to
+later plans.
 
 ### Scope exclusions (later plans in this track)
 

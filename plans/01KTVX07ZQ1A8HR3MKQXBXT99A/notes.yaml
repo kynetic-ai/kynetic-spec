@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KTW3EJBZA04ENSQD74X4N9V1
+    content: "Address review round 1 findings: remove unresolvable actor-identity dependency, qualify
+      legacy revision-history contract, define code-point offset unit with non-ASCII test, add
+      nonexistent-ordinal AC, raise backfill to P1 ahead of plan-text anchors, respec web-ui kind
+      enumerations for idea, move server-side wording out of AC text"
+    author: "@claude"
+    created_at: 2026-06-11T19:44:51.583Z
