@@ -87,6 +87,13 @@ events:
       kind: nit
       thread_ulid: 01KTTXWC485J4Y9GHFE561TB1W
     timestamp: 2026-06-11T08:48:18.348Z
+  - _ulid: 01KTTXWJ2BSXTKKKSC0GTH4WGD
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTTXWHT0KBKKTGQY842XJ559
+    timestamp: 2026-06-11T08:48:24.139Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -289,7 +296,23 @@ threads:
           states the keying and versioning design."
         created_at: 2026-06-11T08:48:18.057Z
     kind: nit
+  - _ulid: 01KTTXWHT0KBKKTGQY842XJ559
+    anchor:
+      type: structured
+      field: ac-stamp-contents
+      ref: "@ac-verification-record-store"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTXWHT00YJBEMSDP2R9RVY1
+        author: "@claude"
+        body: "NEW this round. ac-stamp-contents combines two independently testable behaviors: (1) an
+          accepted stamp reads back with verification time, actor, and provenance class; (2) a stamp
+          missing any of the three fields is rejected at write time. These have different givens (a
+          valid write vs an invalid write) and would be two separate tests. Consider splitting into
+          a read-back AC and a rejection AC."
+        created_at: 2026-06-11T08:48:23.872Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:48:18.057Z
+updated_at: 2026-06-11T08:48:23.872Z
 notes: []

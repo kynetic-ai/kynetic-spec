@@ -25217,8 +25217,8 @@ reviews:
       content_hash: ""
       ref: "@plan-ac-coverage-verification-schema-and-storage"
       shadow_commit: ""
-    thread_count: 10
+    thread_count: 11
     unresolved_blocker_count: 4
     verdict_count: 0
     created_at: 2026-06-11T08:45:49.788Z
-    updated_at: 2026-06-11T08:48:18.057Z
+    updated_at: 2026-06-11T08:48:23.872Z
