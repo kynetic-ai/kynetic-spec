@@ -11,3 +11,21 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T04:01:17.831Z
+  - _ulid: 01KTTF2RGJXDYTXJXZA4Y7GAXH
+    content: "Implementation complete. Added LICENSE at repo root with canonical MIT text, copyright (c)
+      2026 Kynetic AI (first commit is 2026; holder matches package.json author). Created
+      tests/release-packaging.test.ts with 3 behavioral tests all annotated AC:
+      @published-artifact-completeness ac-1: (a) spawns npm pack --dry-run --json with explicit
+      cwd=repo root and env via buildTestSubprocessEnv, parses the JSON tarball listing (skipping
+      prepack script output preceding the array), asserts LICENSE present; (b) imports package.json
+      via import attributes, asserts license === MIT; (c) reads LICENSE header lines with the
+      sanctioned eslint-disable for no-source-scanning/no-source-file-reads (reason: the LICENSE
+      text is the release artifact under test), asserts MIT License header + Kynetic AI copyright.
+      Gates all green: format:check, lint --quiet (0 errors), focused oxlint on new test (0
+      warnings), typecheck, full npm test (2728 suites / 10384 passed / 5 pre-existing skips), kspec
+      validate refs/alignment/completeness (warnings-ok, pre-existing only). Verified npm pack
+      dry-run includes LICENSE. No package.json files change needed — npm always packs LICENSE*.
+      ac-2/3/4 remain for later tasks that extend this test file."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T04:29:38.707Z

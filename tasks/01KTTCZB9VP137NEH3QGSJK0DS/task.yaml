@@ -45,7 +45,7 @@ description: |
 spec_ref: "@published-artifact-completeness"
 plan_ref: "@plan-release-packaging-and-onboarding-readiness"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -55,6 +55,14 @@ tags:
   - infra
   - docs
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-add-license-file/01kttczb
+  captured_at: 2026-06-11T04:29:41.875Z
+  commit: 3a3f3bdd74e6e6a978be5cf2888e70c853fe255f
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-add-license-file/01kttczb
 session_id: 01KTTDB8ZC08N74EGVWEVAXB8F
 history:
   - author: Jacob Chapel
@@ -77,7 +85,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-11T04:00:02.199Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-add-license-file/01kttczb
+          captured_at: 2026-06-11T04:29:41.875Z
+          commit: 3a3f3bdd74e6e6a978be5cf2888e70c853fe255f
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-add-license-file/01kttczb
+        previous: null
+      submitted_at:
+        new: 2026-06-11T04:29:41.886Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-11T04:29:41.886Z
 created_at: 2026-06-11T03:52:49.723Z
 started_at: 2026-06-11T04:00:02.199Z
+submitted_at: 2026-06-11T04:29:41.886Z
 todos: []
 automation: eligible

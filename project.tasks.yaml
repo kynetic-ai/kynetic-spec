@@ -31140,7 +31140,7 @@
   type: task
   spec_ref: "@published-artifact-completeness"
   plan_ref: "@plan-release-packaging-and-onboarding-readiness"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -31148,10 +31148,11 @@
     - release
     - infra
     - docs
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-06-11T03:52:49.723Z
   started_at: 2026-06-11T04:00:02.199Z
+  submitted_at: 2026-06-11T04:29:41.886Z
   automation: eligible
 - _ulid: 01KTTCZC40FDTA2WWB7E20V00R
   slugs:
