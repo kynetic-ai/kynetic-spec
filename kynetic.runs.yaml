@@ -62398,7 +62398,7 @@ runs:
     completed_at: 2026-06-11T07:01:29.288Z
   - _ulid: 01KTTR1V7APHP7SWRMMG9MTCMQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -62411,7 +62411,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T07:07:12.302Z
-        completed_at: 2026-06-11T07:07:12.302Z
+        completed_at: 2026-06-11T07:08:05.509Z
+        notes: "Candidates identified: (1) FRICTION — spec-delta tasks (spec mutation only, like this
+          session's AC addition) trigger task-start auto-sync that flips the linked spec
+          implementation status from implemented to in_progress, misleading since no implementation
+          regressed; concrete, observed directly, systemic for the established existing-spec-delta
+          task pattern. (2) workflow show requiring explicit run-ref — already tracked in inbox
+          @01KGGPJ6, skip. (3) Success candidates (precise task descriptions, batch file payloads)
+          are existing documented conventions, not novel — skip."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T07:08:05.509Z
+        completed_at: 2026-06-11T07:08:05.509Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T07:06:25.898Z
