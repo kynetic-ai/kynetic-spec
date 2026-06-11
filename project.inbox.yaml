@@ -4509,3 +4509,15 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-11T16:29:07.665Z
+  - _ulid: 01KTVSZJC8XZP6JNJPBV2M0937
+    text: "kspec serve logs tail mode reads only the active daemon.log; immediately after a rotation the
+      active file may hold far fewer than the requested --lines even though daemon.log.1 contains
+      recent history. Consider spanning the rotated generation when the active file has fewer lines
+      than requested (read tail of <log>.1 first, then active). Small scope: logsServer() in
+      src/cli/commands/serve.ts; rotation contract is DaemonLogWriter rename-to-<log>.1."
+    tags:
+      - reflection
+      - cli
+      - daemon
+    added_by: "@claude"
+    created_at: 2026-06-11T16:59:22.888Z
