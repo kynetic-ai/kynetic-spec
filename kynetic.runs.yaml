@@ -64636,7 +64636,7 @@ runs:
     completed_at: 2026-06-11T21:30:50.343Z
   - _ulid: 01KTWAVMJMNAGEZJQJKY32BYK0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -64650,7 +64650,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T21:55:06.769Z
-        completed_at: 2026-06-11T21:55:06.769Z
+        completed_at: 2026-06-11T21:55:16.562Z
+        notes: "Friction points: Full npm test took a long time and produced one unrelated transient failure
+          that required triage. More specifically, running the fresh targeted rerun cleared the same
+          session-scoped test cache directory and removed the original full-suite log path before I
+          could inspect it with rg/sed, reducing evidence available for triage. The flaky test
+          itself was already captured separately as @01KTWAN5."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T21:55:16.562Z
+        completed_at: 2026-06-11T21:55:16.562Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T21:54:19.860Z
