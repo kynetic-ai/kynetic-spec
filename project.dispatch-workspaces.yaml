@@ -14391,7 +14391,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T11:10:49.923Z
+      updated_at: 2026-06-11T11:14:18.493Z
     integration:
       status: merged
       detail: integration:merged
@@ -14408,18 +14408,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T10:54:03.030Z
-      last_reconciled_at: 2026-06-11T11:14:03.610Z
+      last_reconciled_at: 2026-06-11T11:14:18.493Z
       created_at: 2026-06-11T10:34:09.697Z
-      updated_at: 2026-06-11T11:14:03.610Z
+      updated_at: 2026-06-11T11:14:18.493Z
     workspace_id: dispatch-workspace-01KTTCZDJ0086DXY9W0J6FJY72
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 1f80fd17ed0ab5ad080373ae1d5691ca6d84767f
-        last_seen_at: 2026-06-11T10:53:25.015Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-install-doc-links-01kttczd-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-install-doc-links/01kttczd
