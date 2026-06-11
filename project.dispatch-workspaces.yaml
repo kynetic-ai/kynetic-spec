@@ -16945,11 +16945,11 @@ workspaces:
     canonical_branch: dispatch/task/task-fix-search-meta-entity-tests/01kttd1e
     canonical_branch_head: 4a03cba1fab82c11a570777b1f63250a16acefb3
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T14:05:52.705Z
+      updated_at: 2026-06-11T14:06:05.849Z
     health:
       status: healthy
       issues: []
@@ -16963,17 +16963,17 @@ workspaces:
       target_branch: dev
       target_commit: fdc8c6c5d4230fb2f4e72007236e5936107a500f
       updated_at: 2026-06-11T14:05:52.705Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTTD1E2QCNQVJSV7TZSHXD0G
     task_ref: "@01KTTD1E2QCNQVJSV7TZSHXD0G"
     task_slug: task-fix-search-meta-entity-tests
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-11T14:06:05.849Z
       last_active_at: 2026-06-11T13:43:31.383Z
       last_reconciled_at: 2026-06-11T14:05:52.705Z
       created_at: 2026-06-11T13:11:00.951Z
-      updated_at: 2026-06-11T14:05:52.705Z
+      updated_at: 2026-06-11T14:06:05.849Z
     workspace_id: dispatch-workspace-01KTTD1E2QCNQVJSV7TZSHXD0G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
