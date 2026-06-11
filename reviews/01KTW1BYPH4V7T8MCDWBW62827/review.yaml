@@ -255,6 +255,12 @@ events:
     payload:
       thread_ulid: 01KTW1ENTYCKA2CBTQPJH5BDME
     timestamp: 2026-06-11T20:03:24.139Z
+  - _ulid: 01KTW4HX494WTKHQWJN0T5YMFY
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW1ERY70EQ8TKRNWD6GB75E
+    timestamp: 2026-06-11T20:04:09.481Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -394,6 +400,15 @@ threads:
           exist on the subject plan, since ac-plan-text-anchor-validation covers only shape-level
           failures (negative offset, empty quote, non-positive ordinal)."
         created_at: 2026-06-11T19:10:01.160Z
+      - _ulid: 01KTW4HWTFK0BRVDRWFEG7SGW4
+        author: "@claude"
+        body: "Addressed in re-import, both suggestions taken: task-plan-revision-backfill is raised to
+          priority 1 and task-plan-text-anchors now depends on it, so every pre-existing plan has
+          revision 1 before anchors ship — anchors are usable on legacy plans from day one. A new AC
+          ac-nonexistent-revision-rejected on review-plan-text-anchors covers a positive ordinal
+          absent from the subject plan revision history (rejection naming the revision field and the
+          failing ordinal), and task-plan-text-anchors Covers it with an explicit rejection test."
+        created_at: 2026-06-11T20:04:09.167Z
     kind: question
   - _ulid: 01KTW1EW5SWA12F605QZHY938S
     anchor:
@@ -420,5 +435,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T19:10:29.343Z
 created_at: 2026-06-11T19:08:28.753Z
-updated_at: 2026-06-11T20:03:23.760Z
+updated_at: 2026-06-11T20:04:09.167Z
 notes: []
