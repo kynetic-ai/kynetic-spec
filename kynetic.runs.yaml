@@ -62134,7 +62134,7 @@ runs:
     started_at: 2026-06-11T05:37:22.761Z
   - _ulid: 01KTTKF5QY9RH66P5SWWAVVYAB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -62146,7 +62146,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T05:48:43.652Z
-        completed_at: 2026-06-11T05:48:43.652Z
+        completed_at: 2026-06-11T05:48:48.960Z
+        notes: "Identified: (1) friction — kspec workflow show/next require run-ref when many active runs
+          exist, though skill docs show argless usage; (2) success — task description embedded exact
+          AC ids and given/when/then text, enabling deterministic one-batch autonomous execution;
+          (3) low-confidence — task start auto-flipping spec implementation status on a spec-delta
+          task (arguably correct since new ACs are unimplemented)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T05:48:48.960Z
+        completed_at: 2026-06-11T05:48:48.960Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T05:46:19.775Z
