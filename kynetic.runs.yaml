@@ -64735,7 +64735,7 @@ runs:
     started_at: 2026-06-11T22:18:05.824Z
     completed_at: 2026-06-11T22:21:08.742Z
   - _ulid: 01KTWDY2RGCDBXYTMSM293QYA9
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -64791,7 +64791,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-11T22:49:59.541Z
-        completed_at: 2026-06-11T22:49:59.541Z
+        completed_at: 2026-06-11T22:50:13.923Z
+        notes: "Capture: no new inbox items, tasks, or observations created. Durable capture already exists
+          in review @01KTWCJY: two blocker threads, failed full-suite check with log path, isolated
+          rerun evidence, and evidence log. Existing tasks
+          @task-stabilize-full-suite-cli-dist-flakes and
+          @task-stabilize-workflow-runs-stale-dist-failure cover the broader stale-dist pattern."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T22:48:05.648Z
+    completed_at: 2026-06-11T22:50:13.923Z
