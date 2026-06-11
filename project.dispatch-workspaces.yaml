@@ -15446,7 +15446,7 @@ workspaces:
         head: 64821fec5490891ef86e378907888118f12ff4a2
         last_seen_at: 2026-06-11T11:54:06.505Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-git-utils-execfile-01kttd0z
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 23b3288dd8fdb58ab097e8dd5a09398d442ad7b5
     bootstrap:
       status: succeeded
@@ -15928,7 +15928,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T12:46:09.970Z
+      updated_at: 2026-06-11T12:46:41.611Z
     integration:
       status: pending
       detail: null
@@ -15944,10 +15944,10 @@ workspaces:
     task_slug: task-reenable-split-storage-ref-validation-test
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-11T12:26:30.406Z
-      last_reconciled_at: 2026-06-11T12:46:09.970Z
+      last_active_at: 2026-06-11T12:46:41.611Z
+      last_reconciled_at: 2026-06-11T12:46:41.611Z
       created_at: 2026-06-11T12:26:00.250Z
-      updated_at: 2026-06-11T12:46:33.858Z
+      updated_at: 2026-06-11T12:46:41.611Z
     workspace_id: dispatch-workspace-01KTTD1CGTV3QFPSD8F8DZCA34
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
