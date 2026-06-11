@@ -93,6 +93,51 @@ checks:
     runner: manual
     created_at: 2026-06-11T22:31:50.377Z
     completed_at: 2026-06-11T22:31:50.377Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified current stored plan content addresses the latest round-3 replies:
+      @plan-revisions now says the upgrade gives revision 1 only to plans that existed when it ran,
+      plan creation mints nothing, and new plans start empty until publish or import --into.
+      ac-created-plans-start-empty exists and task-plan-revision-records covers it.
+      @review-plan-text-anchors ac-span-integrity and @review-idea-threads ac-idea-never-blocks no
+      longer carry rationale clauses in then-text. No @actor-identity-model structured ref remains;
+      actor identity is prose sequencing only under the acknowledged P0a program gate."
+    name: codex latest-fix verification
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T22:34:01.213Z
+    completed_at: 2026-06-11T22:34:01.213Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Ran kspec plan export @plan-review-anchors-and-plan-revisions-schema --output
+      /tmp/review-anchors-current.md; kspec plan import /tmp/review-anchors-current.md --into
+      @plan-review-anchors-and-plan-revisions-schema --dry-run; kspec validate --refs --warnings-ok;
+      kspec validate --alignment --warnings-ok; kspec validate --completeness --warnings-ok. All
+      exited 0. Remaining validation warnings are repo-wide pre-existing baselines, not introduced
+      by this draft plan.
+    name: codex validation and dry-run
+    required: true
+    runner: kspec plan/validate
+    created_at: 2026-06-11T22:34:05.702Z
+    completed_at: 2026-06-11T22:34:05.702Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read prior review records 01KTW04R, 01KTW1BY, 01KTW5AY, 01KTW92G, and current 01KTWCXP.
+      Round-1/2 findings were already resolved and round-3 verified them. The two round-3 fix
+      threads were resolved by author replies and are verified in current content. The remaining
+      open round-3 nit is the acknowledged P0a global-decisions approval-ordering marker; per the
+      requested program gate, it is not an author defect and does not block approval.
+    name: codex prior-thread audit
+    required: true
+    runner: manual review
+    created_at: 2026-06-11T22:34:10.174Z
+    completed_at: 2026-06-11T22:34:10.174Z
 events:
   - _ulid: 01KTWCXP4AT02BB9Q9S9T60AGF
     actor: "@claude"
@@ -172,6 +217,36 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T22:32:34.075Z
+  - _ulid: 01KTWD4AGAX3YMYX89ECRHXGAS
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: codex latest-fix verification
+    timestamp: 2026-06-11T22:34:01.610Z
+  - _ulid: 01KTWD4ETX7XR267G77JX6NPTD
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: codex validation and dry-run
+    timestamp: 2026-06-11T22:34:06.045Z
+  - _ulid: 01KTWD4K7B48JNGXXYX75SY7CH
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: codex prior-thread audit
+    timestamp: 2026-06-11T22:34:10.539Z
+  - _ulid: 01KTWD4QD06NEEZPBZVSV4ZMQX
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T22:34:14.816Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -209,6 +284,13 @@ verdicts:
     reviewer: claude
     role: reviewer
     created_at: 2026-06-11T22:32:34.074Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T22:34:14.815Z
 created_at: 2026-06-11T22:30:24.138Z
-updated_at: 2026-06-11T22:32:34.075Z
+updated_at: 2026-06-11T22:34:14.815Z
 notes: []
