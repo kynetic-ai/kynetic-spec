@@ -3390,7 +3390,7 @@ features:
           The search finds items; the pattern is just the filter criteria.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
