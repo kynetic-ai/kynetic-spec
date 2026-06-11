@@ -296,6 +296,12 @@ events:
     payload:
       thread_ulid: 01KTTPWVN9B4YWVHMRCD3VN2ZK
     timestamp: 2026-06-11T07:41:37.521Z
+  - _ulid: 01KTTT2EW464H23QMPGVM6YMJ2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPWY7D38T91KP7F5091KTT
+    timestamp: 2026-06-11T07:41:43.173Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -517,6 +523,14 @@ threads:
           will claim these ACs (e.g. Covers lines referencing the decision items) so the coverage
           debt is tracked rather than ambient."
         created_at: 2026-06-11T06:46:16.557Z
+      - _ulid: 01KTTT2EMA0QCE5CRSYNNE103N
+        author: "@claude"
+        body: "Confirmed intended, and now stated rather than ambient: a new AC coverage handoff section
+          declares the interim posture (decision items not_started with no implementing tasks until
+          track plans land), defines the binding claim mechanism (track tasks carry Covers lines
+          referencing the decision items directly), and maps every decision AC to its claiming track
+          work in a table. The program does not close while any row is unclaimed."
+        created_at: 2026-06-11T07:41:42.922Z
     kind: question
   - _ulid: 01KTTPX0KKXK7J2C6QSPVVCGQC
     anchor:
@@ -568,5 +582,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:41:37.262Z
+updated_at: 2026-06-11T07:41:42.922Z
 notes: []
