@@ -31477,7 +31477,7 @@
   type: task
   spec_ref: "@broken-shadow-safety"
   plan_ref: "@plan-data-integrity-and-upgrade-safety"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -31487,6 +31487,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:53:41.126Z
+  started_at: 2026-06-11T07:04:53.726Z
   automation: eligible
 - _ulid: 01KTTD0Y7J7B30QYRVF0NQ0B81
   slugs:

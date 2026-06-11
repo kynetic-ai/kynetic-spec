@@ -48,7 +48,7 @@ description: |
 spec_ref: "@broken-shadow-safety"
 plan_ref: "@plan-data-integrity-and-upgrade-safety"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -57,6 +57,7 @@ tags:
   - spec-update
   - shadow
 vcs_refs: []
+session_id: 01KTTQXWAATV5988Y94GY56EK5
 history:
   - author: Jacob Chapel
     changes:
@@ -65,6 +66,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-11T03:55:25.966Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KTTQXWAATV5988Y94GY56EK5
+        previous: null
+      started_at:
+        new: 2026-06-11T07:04:53.726Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-11T07:04:53.726Z
 created_at: 2026-06-11T03:53:41.126Z
+started_at: 2026-06-11T07:04:53.726Z
 todos: []
 automation: eligible
