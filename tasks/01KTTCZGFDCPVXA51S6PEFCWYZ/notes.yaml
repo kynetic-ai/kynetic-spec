@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KTW5R1WQ7QTMPSSTAR261THS
+    content: "Approach: add \"private\": true to packages/web-ui, packages/shared, packages/daemon
+      manifests (one-line each, after name). Extend tests/release-packaging.test.ts with a
+      'Workspace package privacy' describe importing each workspace package.json as a JSON module
+      (import attributes, per task description — keeps no-source-scanning lint clean) asserting
+      private === true. Verify npm pack --dry-run root output unchanged and npm publish --workspaces
+      --dry-run refuses all three. No spec_ref — infra task, no spec AC annotation; test comments
+      reference the task. Gates: format, lint, typecheck, npm test, kspec validate."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T20:24:59.543Z
