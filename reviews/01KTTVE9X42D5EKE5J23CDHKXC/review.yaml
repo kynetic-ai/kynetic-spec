@@ -104,6 +104,24 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T08:08:01.806Z
     completed_at: 2026-06-11T08:08:01.806Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Read: AGENTS-required kspec-agents.md, kspec-review-plan skill, plan
+      @plan-ac-coverage-verification-schema-and-storage, P0a @plan-ui-redesign-global-decisions,
+      existing specs @test-annotation-sweep, @ac-annotation-integrity-reporting,
+      @coverage-scan-config, @data-format-forward-compatibility,
+      @coverage-annotation-scope-boundaries, @ac-annotation-identifier-format, @format-version, plus
+      related tasks/refs. Commands: kspec plan get/list/export/import --dry-run, kspec review
+      list/add/open/comment/check, kspec search, kspec item get/list, kspec refs, kspec validate
+      refs/alignment/completeness. Categories searched: spec quality, existing-spec alignment, task
+      Covers mapping, dependency ordering, compatibility boundaries, reference resolution."
+    name: Evidence log
+    required: false
+    runner: kspec-review-plan
+    created_at: 2026-06-11T08:08:01.884Z
+    completed_at: 2026-06-11T08:08:01.884Z
 events:
   - _ulid: 01KTTVE9X3PA6393J23QSHZ51G
     actor: "@claude"
@@ -230,6 +248,13 @@ events:
       status: pass
       name: Task standalone-ness
     timestamp: 2026-06-11T08:08:02.041Z
+  - _ulid: 01KTTVJN4AAGJRKQKRFD965A0B
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Evidence log
+    timestamp: 2026-06-11T08:08:02.442Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -354,5 +379,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:08:01.806Z
+updated_at: 2026-06-11T08:08:01.884Z
 notes: []
