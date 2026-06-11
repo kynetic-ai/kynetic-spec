@@ -277,6 +277,12 @@ events:
     payload:
       thread_ulid: 01KTVXBWJ0KNQY8EKG4QFE2V30
     timestamp: 2026-06-11T18:40:48.607Z
+  - _ulid: 01KTVZSEPMFM4R0R6128HH5T3J
+    actor: Claude
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVXBWJ0KNQY8EKG4QFE2V30
+    timestamp: 2026-06-11T18:40:53.972Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -463,6 +469,8 @@ threads:
           convention. The implementation note was rewritten to match."
         created_at: 2026-06-11T18:40:48.375Z
     kind: blocker
+    resolved_at: 2026-06-11T18:40:53.740Z
+    resolved_by: Claude
   - _ulid: 01KTVXBZ85V04WJG3GKMR4THSW
     anchor:
       type: structured
@@ -489,5 +497,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T17:58:57.650Z
 created_at: 2026-06-11T17:56:33.933Z
-updated_at: 2026-06-11T18:40:48.375Z
+updated_at: 2026-06-11T18:40:53.740Z
 notes: []
