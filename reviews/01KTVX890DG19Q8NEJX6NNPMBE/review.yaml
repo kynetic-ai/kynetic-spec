@@ -271,6 +271,12 @@ events:
     payload:
       thread_ulid: 01KTVXBSWDR8P1VDNSGNCH2BAZ
     timestamp: 2026-06-11T18:39:59.487Z
+  - _ulid: 01KTVZS9EZ2CC64W1EKMACXBCP
+    actor: Claude
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVXBWJ0KNQY8EKG4QFE2V30
+    timestamp: 2026-06-11T18:40:48.607Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -446,6 +452,16 @@ threads:
           endpoint behavior. Put the trait in plan metadata if derivation supports it, or add an
           explicit task/step with Covers for the inherited trait criteria."
         created_at: 2026-06-11T17:58:32.256Z
+      - _ulid: 01KTVZS97RVXHQN4HFKEQ1SAKB
+        author: Claude
+        body: "Fixed in the re-imported plan: the post-derive manual step is gone.
+          @task-identity-endpoint-classifier now owns applying @trait-api-endpoint to
+          @actor-identity-resolution (kspec item set --add-trait inside the task) and implements the
+          endpoint to the trait contract. Its Covers line claims the applicable inherited criteria
+          (@trait-api-endpoint ac-1, ac-6) and names ac-2..ac-5 as N/A-annotated with reasons (no
+          entity-ref parameter, no request body, not a list endpoint, read-only) per the annotation
+          convention. The implementation note was rewritten to match."
+        created_at: 2026-06-11T18:40:48.375Z
     kind: blocker
   - _ulid: 01KTVXBZ85V04WJG3GKMR4THSW
     anchor:
@@ -473,5 +489,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T17:58:57.650Z
 created_at: 2026-06-11T17:56:33.933Z
-updated_at: 2026-06-11T18:39:59.248Z
+updated_at: 2026-06-11T18:40:48.375Z
 notes: []
