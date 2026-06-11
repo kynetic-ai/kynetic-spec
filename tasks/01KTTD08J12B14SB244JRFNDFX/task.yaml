@@ -55,5 +55,14 @@ tags:
   - cli
   - security
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-11T03:55:23.038Z
 created_at: 2026-06-11T03:53:19.681Z
 todos: []
+automation: eligible

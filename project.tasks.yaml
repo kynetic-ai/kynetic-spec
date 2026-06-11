@@ -31415,6 +31415,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:53:19.681Z
+  automation: eligible
 - _ulid: 01KTTD098ZQFGG9VEBM7AZT83C
   slugs:
     - task-web-ui-debug-log-cleanup
