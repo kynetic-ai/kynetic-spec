@@ -1,0 +1,26 @@
+_ulid: 01KTVY20HEHHZC3KVCD598JHVV
+slugs: []
+title: "Plan review: Web UI Foundations (round 2 — re-review of unchanged content)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTVY20HDMERJRGK4RSYWVR2G
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T18:10:37.229Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-web-ui-foundations"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T18:10:37.230Z
+updated_at: null
+notes: []
