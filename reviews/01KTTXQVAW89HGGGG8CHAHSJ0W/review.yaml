@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T08:46:04.069Z
+  - _ulid: 01KTTXRVP3EYQXA0QWKX2WGCVZ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTXRVEDYZJXQX0JY9WTGF8P
+    timestamp: 2026-06-11T08:46:22.915Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,32 @@ subject:
   content_hash: ""
   ref: "@plan-ac-coverage-verification-schema-and-storage"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTTXRVEDYZJXQX0JY9WTGF8P
+    anchor:
+      type: structured
+      field: what
+      ref: "@task-respec-test-annotation-sweep-na"
+      section: tasks
+    entries:
+      - _ulid: 01KTTXRVEEMDXEEYMWKPVJQZ70
+        author: "@claude"
+        body: 'RE-RAISED from prior review 01KTTVE9X42D5EKE5J23CDHKXC (no author reply, plan content
+          unchanged). The N/A respec reconciles @test-annotation-sweep and
+          @ac-annotation-integrity-reporting ac-valid-annotation-covers-target, but leaves
+          @ac-annotation-identifier-format ac-valid-token-covers-ac unchanged. That AC states a
+          coverage annotation naming an existing AC with the required token format grants coverage
+          credit; after this plan, an N/A-marked annotation still names valid AC tokens but must
+          grant no credit. Verified against the live corpus this round: the AC still reads "The
+          named acceptance criterion receives coverage credit from the annotation" with no
+          applicability qualifier. Add an explicit reconciliation step for
+          @ac-annotation-identifier-format to @task-respec-test-annotation-sweep-na (narrow its
+          given to coverage-claiming annotations, mirroring the planned
+          ac-valid-annotation-covers-target fix), or define N/A markers outside the
+          coverage-annotation contract, so the corpus does not end up with contradictory specs.'
+        created_at: 2026-06-11T08:46:22.670Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:46:03.819Z
+updated_at: 2026-06-11T08:46:22.670Z
 notes: []
