@@ -82,7 +82,7 @@ description: |
 spec_ref: "@triage-daemon-api"
 plan_ref: "@plan-validation-and-test-coverage-integrity"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -93,6 +93,14 @@ tags:
   - api
   - triage
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-daemon-triage-api-tests/01kttd1d
+  captured_at: 2026-06-11T13:06:14.335Z
+  commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-daemon-triage-api-tests/01kttd1d
 session_id: 01KTVBHXFNCCNJ1AFZ9MXED7Y7
 history:
   - author: Jacob Chapel
@@ -115,7 +123,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-11T12:47:47.287Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-daemon-triage-api-tests/01kttd1d
+          captured_at: 2026-06-11T13:06:14.335Z
+          commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-daemon-triage-api-tests/01kttd1d
+        previous: null
+      submitted_at:
+        new: 2026-06-11T13:06:14.337Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-11T13:06:14.337Z
 created_at: 2026-06-11T03:53:57.351Z
 started_at: 2026-06-11T12:47:47.287Z
+submitted_at: 2026-06-11T13:06:14.337Z
 todos: []
 automation: eligible

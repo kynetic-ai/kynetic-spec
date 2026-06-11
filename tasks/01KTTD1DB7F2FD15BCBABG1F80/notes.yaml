@@ -12,3 +12,18 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T12:50:14.712Z
+  - _ulid: 01KTVCMMWHKXW7MQY42GGD7P1A
+    content: "Completed: all 37 assertions from the skipped E2E suite ported to
+      tests/daemon-api/triage.test.ts (37 tests, all passing). Deleted tests/e2e/api-triage.spec.ts.
+      Spec ACs 4/5/8/9 updated PUT->POST via item ac set; stale header comment in triage.ts
+      corrected. AC annotations preserved (@triage-daemon-api ac-1..ac-9, @trait-api-endpoint
+      ac-1..ac-5, @trait-websocket-protocol ac-3) plus updated N/A header block. Deviations from old
+      suite: (1) missing-required-fields asserts 400 validation_error instead of E2E's 422 — the
+      project-context middleware normalizes Elysia validation errors in this environment (matches
+      daemon-api/errors.test.ts); (2) item_snapshot upsert assertion uses toContain since the inbox
+      fixture text now includes backticks. Gates: format/lint/typecheck green, full npm test 10491
+      passed / 0 failed, kspec validate refs/alignment/completeness pass (no triage-daemon-api
+      warnings). Commit aed37c6f4e pushed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T13:06:13.521Z
