@@ -27,3 +27,53 @@ notes:
       Notes (incl. post-derive relates_to @docs-getting-started-section)."
     author: "@claude"
     created_at: 2026-06-10T14:52:16.678Z
+  - _ulid: 01KTTCZHXKXMZDVSN8GHQC4YN5
+    content: |-
+      - Findings intentionally excluded from this plan:
+        - "INSTALL.md:3 references a README anchor that may not exist": false positive —
+          INSTALL.md line 3 links plain README.md with no anchor. The actual dead anchor is
+          README.md#how-it-works at line 102, which task-fix-install-doc-links covers.
+        - Bun as an undocumented build requirement: false as stated. scripts/build-daemon.cjs
+          bundles with esbuild; Bun is only needed for the optional standalone daemon binary
+          (packages/daemon `build:compile`) and the Bun daemon runtime, which is already
+          spec-covered (`@daemon-runtime-adapter`, `@web-ui` ac-2 error guidance). The optional
+          nature is documented by the CONTRIBUTING.md task instead.
+        - Workspace version drift (0.14.0 vs 0.1.0): not "fixed" by syncing versions — the
+          policy (internal packages, not release-managed) is documented in CONTRIBUTING.md and
+          enforced by `private: true`.
+      - The publish workflow already runs a full `npm run build` before publishing, so the
+        prepack gap is primarily a local-publish hazard; the tarball verification step closes
+        the remaining CI gap (a build that silently produces no dist/web-ui/), and the
+        clean-pack verification proves the prepack path itself from a no-build-output state.
+      - Execution ordering is now encoded in depends_on rather than prose: license → {node-docs
+        test, prepack/verification → CI matrix, workspace-private}, audit-fix → devdep-dedupe.
+      - Review fix-cycle 1 decisions (codex @01KTRYS2, claude @01KTRZ06):
+        - Specs are parented under a new "Release and Distribution" module created in this
+          plan instead of the @main placeholder. Derive requires every non-trait spec to have
+          a parent, so the module itself nests under @main at derive time; if a top-level
+          module is preferred it can be re-parented afterward via the CLI — accepted tradeoff.
+        - The plan format does not carry relates_to; after derive, add
+          @supported-runtime-range relates_to @docs-getting-started-section (its Installation
+          page contract is one of the documents ac-2 quantifies over).
+        - npm audit fix scope decision: the acceptance bar is production advisories only;
+          semver-compatible dev-tree side-effect bumps from the same command are accepted,
+          and unfixed dev-only advisories go to the inbox rather than expanding scope.
+        - tests/release-packaging.test.ts has a single owner (task-add-license-file creates
+          it); the two tasks extending it now depend on it. The two publish.yml edits are
+          serialized via depends_on. package-lock.json writers are serialized via depends_on.
+        - Testing sections route around the no-source-scanning lint rule explicitly:
+          behavioral subprocess output (npm pack --dry-run --json, script exit codes) and
+          JSON module imports where possible; where reading doc/license text is genuinely the
+          contract (LICENSE text, markdown version statements), tasks direct the worker to
+          the rule's sanctioned inline eslint-disable-with-reason escape hatch.
+        - "Newest verified major version" was self-referential; the spec/AC now require the
+          oldest supported major plus at least one newer major — deterministic and falsifiable
+          (the task pins the concrete matrix to 20 and 24 at workflow-edit time).
+        - CI workflow verification is now executable without a GitHub PR: the task adds a
+          workflow_dispatch trigger and verifies via gh workflow run on the task branch.
+        - CONTRIBUTING.md/SECURITY.md stay spec-less repo hygiene: they are contributor-facing
+          repository meta-documents rather than product documentation surfaces; if a durable
+          contract emerges (e.g. a committed response window), promote a requirement under
+          @user-documentation then.
+    author: Jacob Chapel
+    created_at: 2026-06-11T03:52:56.500Z

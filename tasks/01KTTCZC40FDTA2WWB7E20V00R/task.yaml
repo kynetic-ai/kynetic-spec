@@ -1,0 +1,64 @@
+_ulid: 01KTTCZC40FDTA2WWB7E20V00R
+slugs:
+  - task-audit-fix-production-deps
+title: Upgrade vulnerable production dependencies via npm audit fix
+type: task
+description: |
+  Why: `npm audit --omit=dev` reports 8 production
+  vulnerabilities (2 high, 6 moderate): devalue 5.6.3-5.8.0
+  (high, DoS via sparse array deserialization), undici
+  7.0.0-7.23.0 (high, WebSocket parser crash, request
+  smuggling, memory consumption), dompurify <=3.3.3 (XSS
+  chain), file-type 13-21.3.1 (DoS), smol-toml <1.6.1 (DoS),
+  svelte <=5.55.6 (SSR XSS chain), ws 8.0.0-8.20.0
+  (uninitialized memory disclosure), yaml 2.0.0-2.8.2 (stack
+  overflow on deeply nested collections). `npm audit` claims
+  all are fixable via `npm audit fix` (no --force needed).
+
+  What: Run `npm audit fix` (NEVER `npm audit fix --force`).
+  Scope, precisely: the acceptance bar is production
+  advisories only — `npm audit --omit=dev` must report 0
+  vulnerabilities afterward. Note that `npm audit fix`
+  operates on the whole install tree, so it may also bump
+  dev-only/workspace tooling advisories (e.g. @sveltejs/kit,
+  cookie); those side-effect bumps are accepted as part of
+  this task PROVIDED they are semver-compatible lock-only
+  changes. Review the entire package-lock.json diff (dev bumps
+  included) and confirm every bump is semver-compatible
+  (patch/minor within declared ranges). Dev-only advisories
+  that `npm audit fix` does not resolve are explicitly out of
+  scope: leave them and capture a follow-up inbox item. Direct
+  root deps affected: yaml, ws, smol-toml (package.json
+  dependencies). Transitive/web-ui tree: devalue, dompurify,
+  file-type, svelte, undici.
+
+  How: Pay special attention to yaml — it is kspec's core
+  parsing library (used throughout src/parser/). Read the yaml
+  changelog between the locked version and the fixed version
+  for behavior changes (the fix lands in the 2.8.x line, so a
+  lock-only bump is expected; package.json already allows
+  ^2.8.2). If any advisory's fix requires a semver-major bump,
+  exclude it from this task, leave a task note, and capture a
+  follow-up inbox item instead of forcing it.
+
+  Testing: Full gates are the acceptance bar: npm run
+  typecheck, npm run lint, npm run format:check, npm test
+  (full suite, not shards), and npm run test:e2e (svelte/
+  devalue/dompurify affect the web UI SSR/render paths; yaml
+  affects every parser test). Confirm `npm audit --omit=dev`
+  exits clean afterward.
+spec_ref: null
+plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - security
+  - deps
+  - infra
+vcs_refs: []
+created_at: 2026-06-11T03:52:50.560Z
+todos: []

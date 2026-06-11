@@ -1,0 +1,68 @@
+_ulid: 01KTTCZCTNXC6TSH9SENFSQDZG
+slugs:
+  - task-standardize-node-version-docs
+title: Standardize documented Node.js minimum on the engines value
+type: task
+description: |
+  Why: package.json "engines" requires node >=20.0.0, but
+  INSTALL.md line 7 says "Node.js v18 or later" and
+  docs/getting-started/tutorial.md line 17 says "Node.js 18+".
+  Other user-facing docs already say 20+
+  (docs/getting-started/installation.md line 7,
+  docs/guides/upgrading-kspec.md line 8,
+  docs/guides/starting-a-new-project.md line 8) and must not
+  regress. Users on Node 18 following INSTALL.md will hit
+  engine warnings or runtime failures.
+
+  What: Update INSTALL.md:7 to "**Node.js** v20 or later" and
+  docs/getting-started/tutorial.md:17 to "Node.js 20+". Then
+  sweep ALL user-facing docs — README.md, INSTALL.md, and
+  every markdown file under docs/ (including
+  docs/guides/starting-a-new-project.md and
+  docs/guides/upgrading-kspec.md) — with:
+  `grep -rn "18" README.md INSTALL.md docs/ | grep -i node`
+  and fix any further stale minimums.
+
+  How: The engines value (>=20.0.0) is the source of truth —
+  change docs to match it, do not change engines.
+
+  Testing: Extend tests/release-packaging.test.ts (created by
+  @task-add-license-file) with a consistency test that:
+  (a) obtains the minimum major version by importing
+  package.json as a JSON module (import attributes) — no fs
+  read; (b) derives the checked document set DYNAMICALLY —
+  README.md, INSTALL.md, and a recursive glob of markdown
+  files under docs/ — instead of enumerating fixed filenames,
+  so every current user-facing doc (installation, tutorial,
+  starting-a-new-project, upgrading-kspec, and any future doc)
+  is covered and a new doc stating a stale minimum fails the
+  test; (c) scans each document for Node.js version
+  statements and asserts every stated minimum equals the
+  engines minimum. Reading the markdown files is a
+  project-file read that the no-source-scanning lint rule
+  (error severity in tests) flags: isolate the reads in a
+  small helper and use the rule's sanctioned escape hatch —
+  an inline eslint-disable comment for
+  no-source-scanning/no-source-file-reads with a written
+  reason (the docs are the artifacts whose published content
+  is the AC contract). Do not claim the rule does not apply.
+  Annotate with `// AC: @supported-runtime-range ac-1` and
+  `// AC: @supported-runtime-range ac-2`.
+  Run gates: npm run lint, npm test.
+
+  Covers: @supported-runtime-range ac-1, ac-2.
+spec_ref: "@supported-runtime-range"
+plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-license-file"
+context: []
+priority: 2
+tags:
+  - docs
+  - release
+vcs_refs: []
+created_at: 2026-06-11T03:52:51.285Z
+todos: []

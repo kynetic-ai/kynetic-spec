@@ -1,0 +1,54 @@
+_ulid: 01KTTCZFSEFHZY0DX7B8NN7GTM
+slugs:
+  - task-add-contributing-security-docs
+title: Add CONTRIBUTING.md and SECURITY.md
+type: task
+description: |
+  Why: The repository has no CONTRIBUTING.md and no
+  SECURITY.md. The package ships a daemon exposing a local
+  HTTP API (default port 3456), so a documented vulnerability
+  reporting path matters; and external contributors currently
+  have to reverse-engineer the dev workflow from AGENTS.md,
+  which is written for agents, not humans.
+
+  What: (1) Create CONTRIBUTING.md covering: prerequisites
+  (Node.js 20+, npm; Bun optional — only needed for the Bun
+  daemon runtime and the standalone daemon binary
+  `build:compile`, the default build uses esbuild), first-time
+  setup (`node scripts/bootstrap.cjs`), build (`npm run
+  build`), tests (`npm test`, `npm run test:shard1/2/3`,
+  `npm run test:e2e`), lint/format (oxlint/oxfmt via `npm run
+  lint` / `npm run format`), branch naming (feat/, fix/,
+  refactor/, docs/ prefixes, kebab-case), conventional
+  commits, and the workspace versioning policy: only the root
+  @kynetic-ai/spec package is published; packages/web-ui,
+  packages/shared, and packages/daemon are internal workspace
+  packages whose 0.1.0 versions are not release-managed. (2)
+  Create SECURITY.md stating: supported version (latest
+  published release), how to report (GitHub private
+  vulnerability reporting / security advisories on
+  lepahc/kynetic-spec), expected response window, and a note
+  that the daemon binds a local HTTP API so reports about
+  network-reachable surfaces are in scope.
+
+  How: Keep both files short and factual. Link CONTRIBUTING.md
+  from README.md's Documentation section. Do not duplicate
+  agent-specific policy from AGENTS.md — link to it instead.
+
+  Testing: Verify all relative links in both new files
+  resolve. Run npm run format:check. No unit tests required
+  for prose-only files.
+spec_ref: null
+plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - docs
+  - release
+vcs_refs: []
+created_at: 2026-06-11T03:52:54.318Z
+todos: []

@@ -1,0 +1,52 @@
+_ulid: 01KTTCZGFDCPVXA51S6PEFCWYZ
+slugs:
+  - task-workspace-packages-private
+title: Mark workspace packages private
+type: task
+description: |
+  Why: packages/web-ui/package.json, packages/shared/package.json,
+  and packages/daemon/package.json have no "private": true and
+  are versioned 0.1.0 while the root package is 0.14.0. They
+  are never intentionally published (the publish workflow only
+  publishes the root package), but nothing prevents an
+  accidental `npm publish --workspaces` or a future tooling
+  change from pushing stale 0.1.0 packages under the
+  @kynetic-ai scope. packages/web-ui also lacks main/exports,
+  making its publishability ambiguous. Depends on
+  @task-add-license-file because it extends the packaging test
+  file that task creates.
+
+  What: Add "private": true to all three workspace package
+  manifests: packages/web-ui/package.json,
+  packages/shared/package.json, packages/daemon/package.json.
+  Leave their versions at 0.1.0 (the versioning policy —
+  internal, not release-managed — is documented by
+  @task-add-contributing-security-docs).
+
+  How: One-line addition near the top of each manifest. Then
+  confirm `npm pack --dry-run` output for the root package is
+  unchanged (workspace sources are not part of the tarball)
+  and `npm publish --workspaces --dry-run` refuses all three.
+
+  Testing: Extend tests/release-packaging.test.ts (created by
+  @task-add-license-file) with an assertion that each of the
+  three workspace manifests has private === true — import each
+  packages/*/package.json as a JSON module (import attributes)
+  rather than fs-reading it, which keeps the test clean under
+  the no-source-scanning lint rule. Run gates: npm run build
+  (workspace resolution unchanged), npm test.
+spec_ref: null
+plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-add-license-file"
+context: []
+priority: 3
+tags:
+  - infra
+  - release
+vcs_refs: []
+created_at: 2026-06-11T03:52:55.021Z
+todos: []

@@ -1,0 +1,59 @@
+_ulid: 01KTTCZB9VP137NEH3QGSJK0DS
+slugs:
+  - task-add-license-file
+title: Add MIT LICENSE file to repository root
+type: task
+description: |
+  Why: package.json declares "license": "MIT" but no LICENSE
+  file exists at the repository root, so the published npm
+  package ships with no license text. This is a legal gap for
+  a publicly published package.
+
+  What: Create /LICENSE at the repository root containing the
+  standard MIT license text with copyright holder "Kynetic AI"
+  (matching the package.json "author" field) and an
+  appropriate year range. No package.json "files" change is
+  needed: npm always includes LICENSE* files in the packed
+  tarball regardless of the files array. This task also
+  CREATES tests/release-packaging.test.ts — it owns that file;
+  later tasks extend it and depend on this task.
+
+  How: Use the canonical MIT text (https://opensource.org/license/mit).
+  Verify inclusion with `npm pack --dry-run` and confirm
+  LICENSE appears in the tarball file listing.
+
+  Testing: Create tests/release-packaging.test.ts with
+  behavioral assertions that stay clean under the
+  no-source-scanning lint rule (error severity in tests):
+  (a) spawn `npm pack --dry-run --json` (pass the repo root as
+  an explicit cwd) and assert the parsed JSON file listing
+  contains LICENSE — subprocess output parsing, no file read;
+  (b) import package.json as a JSON module (import attributes)
+  and assert license === "MIT" — module import, no fs read;
+  (c) for the terms-match-identifier check, read the first
+  lines of LICENSE and assert they identify the MIT license —
+  this is a project-file read, so use the rule's sanctioned
+  escape hatch: an inline eslint-disable comment for
+  no-source-scanning/no-source-file-reads with a written
+  reason (the LICENSE text is the release artifact under
+  test). Do not claim the rule does not apply. Annotate with
+  `// AC: @published-artifact-completeness ac-1`.
+  Run gates: npm run format, npm run lint, npm run typecheck,
+  npm test.
+
+  Covers: @published-artifact-completeness ac-1.
+spec_ref: "@published-artifact-completeness"
+plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - release
+  - infra
+  - docs
+vcs_refs: []
+created_at: 2026-06-11T03:52:49.723Z
+todos: []

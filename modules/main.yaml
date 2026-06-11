@@ -1,12 +1,166 @@
 _ulid: 01KPQQD7D9699RHY3593221X1B
 slugs:
   - main
-title: "Kynetic Spec - Main Module"
+title: Kynetic Spec - Main Module
 type: module
+description: |
+  Default module for Kynetic Spec. Add your spec items here.
 status:
   maturity: draft
   implementation: not_started
-description: |
-  Default module for Kynetic Spec. Add your spec items here.
-
 items: []
+modules:
+  - _ulid: 01KTTCZB85DZ36FX1HPSXX3KZF
+    slugs:
+      - release-and-distribution
+    title: Release and Distribution
+    type: module
+    description: |
+      Packaging, publication, and release verification for the
+      kspec distribution: what the installable artifact contains,
+      which runtimes it supports, and how publication is gated on
+      verification evidence.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    tags: []
+    requirements:
+      - _ulid: 01KTTCZB8TJFSTXE9C0D5RNAKE
+        slugs:
+          - supported-runtime-range
+        title: Single Supported Runtime Version Range
+        type: requirement
+        description: |
+          kspec declares exactly one supported Node.js runtime version
+          range, and every user-facing installation or onboarding
+          document that states a runtime requirement states that same
+          range. The package manifest's engine declaration is the
+          single source of truth; documentation follows it, never the
+          other way around.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              The published package's manifest is examined
+            id: ac-1
+            then: |
+              Exactly one supported Node.js version range is declared,
+              with an explicit minimum major version
+            when: |
+              The runtime engine constraint is read
+          - given: |
+              A user-facing installation or onboarding document states
+              a Node.js version requirement
+            id: ac-2
+            then: |
+              The stated minimum version equals the declared minimum;
+              no user-facing document states a lower or otherwise
+              different minimum
+            when: |
+              The stated requirement is compared with the declared
+              engine constraint
+        tags: []
+        created: 2026-06-11T03:52:49.695Z
+        notes: []
+      - _ulid: 01KTTCZB93HC7YB4KBGW0MQD6Q
+        slugs:
+          - published-artifact-completeness
+        title: Published Artifact Completeness
+        type: requirement
+        description: |
+          The artifact a user installs contains everything needed to
+          run kspec and the legal terms it is distributed under: a
+          license text matching the declared license identifier, the
+          complete built command-line interface, and the complete
+          built web interface. Packaging from a clean source state
+          produces a complete artifact; it never silently depends on
+          previously built output being present.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              The package is packed for publication
+            id: ac-1
+            then: |
+              A license document is present at the package root and
+              its terms match the license identifier declared in the
+              package manifest
+            when: |
+              The packed contents are inspected
+          - given: |
+              The package is packed for publication
+            id: ac-2
+            then: |
+              The declared command-line entry point resolves to a file
+              that is present in the package
+            when: |
+              The packed contents are inspected
+          - given: |
+              The package is packed for publication
+            id: ac-3
+            then: |
+              The built web interface assets are present, including
+              the entry document required to serve the interface
+            when: |
+              The packed contents are inspected
+          - given: |
+              A source checkout with no pre-existing build output
+            id: ac-4
+            then: |
+              The packing step itself produces the built artifacts,
+              and the resulting package satisfies the completeness
+              criteria above
+            when: |
+              The package is packed for publication
+        tags: []
+        created: 2026-06-11T03:52:49.699Z
+        notes: []
+      - _ulid: 01KTTCZB96SWJVDND7YJ64Z5Z3
+        slugs:
+          - prepublish-runtime-verification
+        title: Pre-Publish Verification Across Supported Runtimes
+        type: requirement
+        description: |
+          Automated verification exercises kspec across the supported
+          Node.js runtime range rather than on a single version, so
+          the declared engine constraint is backed by evidence. At
+          minimum, the oldest supported major version and at least one
+          newer major version are both exercised, and publication is
+          gated on verification at the oldest supported major version.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              The automated test pipeline runs for a proposed change
+            id: ac-1
+            then: |
+              The test suite executes on the oldest supported Node.js
+              major version and on at least one newer major version,
+              as distinct runs that must each pass
+            when: |
+              The pipeline's runtime coverage is examined
+          - given: |
+              A release publish is initiated
+            id: ac-2
+            then: |
+              Publication proceeds only after build and test
+              verification has passed on the oldest supported Node.js
+              major version
+            when: |
+              The publish pipeline executes
+        tags: []
+        created: 2026-06-11T03:52:49.702Z
+        notes: []
+    created: 2026-06-11T03:52:49.669Z
+    notes: []

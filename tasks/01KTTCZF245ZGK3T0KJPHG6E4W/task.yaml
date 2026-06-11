@@ -1,0 +1,84 @@
+_ulid: 01KTTCZF245ZGK3T0KJPHG6E4W
+slugs:
+  - task-ci-node-version-matrix
+title: Add Node.js version matrix to CI and gate publish on minimum version
+type: task
+description: |
+  Why: package.json engines allows node >=20.0.0, but every CI
+  job pins node-version "24" (.github/workflows/test.yml lines
+  37, 71, 112; publish.yml line 30). Nothing ever runs the
+  suite on Node 20, so the declared support floor is untested
+  — a Node-24-only API could slip in unnoticed. The test
+  workflow also invokes `npx vitest run --shard=...` directly,
+  which bypasses the project's required test runner script
+  (scripts/test.cjs performs environment readiness checks; the
+  testing convention forbids invoking vitest directly).
+  Depends on @task-prepack-full-build-and-verification because
+  both tasks edit .github/workflows/publish.yml and must not
+  run in parallel.
+
+  What: (1) In .github/workflows/test.yml, add a
+  `workflow_dispatch:` trigger so the workflow can be run
+  on-demand against any branch — this is what makes the change
+  verifiable without opening a GitHub PR (this repo's policy
+  reserves PRs for release-track merges). (2) Extend the
+  `test` job's strategy matrix to cross shard [1, 2, 3] with
+  node-version ["20", "24"], and use
+  `node-version: ${{ matrix.node-version }}` in the setup-node
+  step; update the job `name` to include the node version.
+  Leave the `lint` and `e2e` jobs on "24" (lint/format results
+  are version-independent and e2e doubles CI cost for little
+  signal). (3) Replace the direct
+  `npx vitest run --shard=${{ matrix.shard }}/3` step with
+  `npm test -- --shard=${{ matrix.shard }}/3` so CI goes
+  through scripts/test.cjs like all other test invocations
+  (CI=true already selects full streaming output). (4) In
+  .github/workflows/publish.yml, add a `verify-min-node` job
+  (checkout, setup-node with node-version "20", setup-bun,
+  npm ci, npm run build, npm test) and make the `publish` job
+  declare `needs: verify-min-node`.
+
+  How: Keep fail-fast: false so a Node-20-only failure reports
+  alongside Node 24 results. The "Verify CLI functionality"
+  step currently gated on `matrix.shard == 1` should run once
+  per node version (condition stays shard == 1, which now
+  matches one shard per node version — that is the desired
+  behavior).
+
+  Testing: Concrete verification path that works in the normal
+  task flow without a PR: (a) before pushing, validate both
+  workflow files parse (e.g. a node one-liner loading each
+  with the yaml package); (b) run `npm test` locally to
+  confirm the runner-script invocation form works and no test
+  assumes Node 24; (c) after pushing the task branch, trigger
+  the updated workflow on that branch via
+  `gh workflow run test.yml --ref <task-branch>` (enabled by
+  the new workflow_dispatch trigger — the dispatched run uses
+  the branch's workflow file) and watch it with
+  `gh run watch`, confirming distinct Node 20 and Node 24
+  matrix runs appear and pass; record the run URL in a task
+  note as the ac-1 evidence. ac-2 (publish gating) is
+  structural: the `needs: verify-min-node` edge plus the
+  Node-20 job definition; verify publish.yml parses and the
+  job graph is correct with `gh workflow view` after push.
+  Workflow YAML is not unit-testable in vitest, so AC evidence
+  lives in the recorded workflow runs rather than annotated
+  tests.
+
+  Covers: @prepublish-runtime-verification ac-1, ac-2.
+spec_ref: "@prepublish-runtime-verification"
+plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-prepack-full-build-and-verification"
+context: []
+priority: 2
+tags:
+  - ci
+  - release
+  - infra
+vcs_refs: []
+created_at: 2026-06-11T03:52:53.572Z
+todos: []

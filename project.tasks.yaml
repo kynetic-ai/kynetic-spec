@@ -31133,3 +31133,159 @@
   submitted_at: 2026-06-10T05:18:37.374Z
   completed_at: 2026-06-10T05:42:51.089Z
   automation: eligible
+- _ulid: 01KTTCZB9VP137NEH3QGSJK0DS
+  slugs:
+    - task-add-license-file
+  title: Add MIT LICENSE file to repository root
+  type: task
+  spec_ref: "@published-artifact-completeness"
+  plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - release
+    - infra
+    - docs
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:52:49.723Z
+- _ulid: 01KTTCZC40FDTA2WWB7E20V00R
+  slugs:
+    - task-audit-fix-production-deps
+  title: Upgrade vulnerable production dependencies via npm audit fix
+  type: task
+  plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - security
+    - deps
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:52:50.560Z
+- _ulid: 01KTTCZCTNXC6TSH9SENFSQDZG
+  slugs:
+    - task-standardize-node-version-docs
+  title: Standardize documented Node.js minimum on the engines value
+  type: task
+  spec_ref: "@supported-runtime-range"
+  plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-license-file"
+  priority: 2
+  tags:
+    - docs
+    - release
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:52:51.285Z
+- _ulid: 01KTTCZDJ0086DXY9W0J6FJY72
+  slugs:
+    - task-fix-install-doc-links
+  title: Fix broken documentation links in INSTALL.md
+  type: task
+  plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - docs
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:52:52.032Z
+- _ulid: 01KTTCZEB4XRKP80A7YXN2M9PD
+  slugs:
+    - task-prepack-full-build-and-verification
+  title: Make prepack run the full build and verify tarball contents
+  type: task
+  spec_ref: "@published-artifact-completeness"
+  plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-license-file"
+  priority: 1
+  tags:
+    - release
+    - ci
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:52:52.836Z
+- _ulid: 01KTTCZF245ZGK3T0KJPHG6E4W
+  slugs:
+    - task-ci-node-version-matrix
+  title: Add Node.js version matrix to CI and gate publish on minimum version
+  type: task
+  spec_ref: "@prepublish-runtime-verification"
+  plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-prepack-full-build-and-verification"
+  priority: 2
+  tags:
+    - ci
+    - release
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:52:53.572Z
+- _ulid: 01KTTCZFSEFHZY0DX7B8NN7GTM
+  slugs:
+    - task-add-contributing-security-docs
+  title: Add CONTRIBUTING.md and SECURITY.md
+  type: task
+  plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - docs
+    - release
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:52:54.318Z
+- _ulid: 01KTTCZGFDCPVXA51S6PEFCWYZ
+  slugs:
+    - task-workspace-packages-private
+  title: Mark workspace packages private
+  type: task
+  plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-add-license-file"
+  priority: 3
+  tags:
+    - infra
+    - release
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:52:55.021Z
+- _ulid: 01KTTCZH6PJHXT727JM9E0739D
+  slugs:
+    - task-dedupe-web-ui-devdeps
+  title: Remove web-ui-only devDependencies duplicated at the root
+  type: task
+  plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-audit-fix-production-deps"
+  priority: 3
+  tags:
+    - deps
+    - infra
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T03:52:55.766Z

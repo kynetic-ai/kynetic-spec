@@ -1,0 +1,49 @@
+_ulid: 01KTTCZH6PJHXT727JM9E0739D
+slugs:
+  - task-dedupe-web-ui-devdeps
+title: Remove web-ui-only devDependencies duplicated at the root
+type: task
+description: |
+  Why: Root package.json devDependencies declares packages
+  used only by the web UI, all of which packages/web-ui/package.json
+  already declares itself: @lucide/svelte, @tailwindcss/postcss,
+  autoprefixer, clsx, postcss, tailwind-merge,
+  tailwind-variants, tailwindcss. Verified unused in src/,
+  tests/, and scripts/ (no imports, no root tailwind/postcss
+  config files). The duplication bloats root installs and
+  invites version skew between the two declarations. Depends
+  on @task-audit-fix-production-deps because both tasks
+  rewrite package.json/package-lock.json and must not race
+  under parallel dispatch.
+
+  What: Remove those eight entries from root package.json
+  devDependencies. Do NOT remove pagefind — it is used by the
+  root script scripts/build-docs-search.cjs (dynamic import at
+  line 118). Do NOT touch packages/web-ui/package.json.
+
+  How: Edit root package.json, then run `npm install` to
+  regenerate package-lock.json. Because npm workspaces hoist,
+  the packages remain installed at the root node_modules via
+  the web-ui workspace declarations — but the hoisted layout
+  can shift, so the full build is the safety gate.
+
+  Testing: npm install, npm run build (must produce
+  dist/web-ui/ — this exercises the tailwind/postcss pipeline),
+  npm test, npm run test:e2e (renders the built UI). Confirm
+  `git diff package-lock.json` shows only dedup/relocation,
+  not version changes.
+spec_ref: null
+plan_ref: "@plan-release-packaging-and-onboarding-readiness"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-audit-fix-production-deps"
+context: []
+priority: 3
+tags:
+  - deps
+  - infra
+vcs_refs: []
+created_at: 2026-06-11T03:52:55.766Z
+todos: []
