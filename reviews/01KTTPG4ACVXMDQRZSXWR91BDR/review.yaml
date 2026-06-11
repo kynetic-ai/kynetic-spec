@@ -26,6 +26,17 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-06-11T06:40:47.015Z
     completed_at: 2026-06-11T06:40:47.015Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reference validation passed. Existing warning baseline: deprecated-item references; kspec
+      also printed a shadow sync conflict warning and continued with local state."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T06:40:46.963Z
+    completed_at: 2026-06-11T06:40:46.963Z
 events:
   - _ulid: 01KTTPG4AC91PKB75PX2C5M2VB
     actor: "@claude"
@@ -110,6 +121,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T06:40:47.843Z
+  - _ulid: 01KTTPJXP6P83CCJCP384T4VNQ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T06:40:48.326Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -247,5 +265,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T06:40:47.015Z
+updated_at: 2026-06-11T06:40:46.963Z
 notes: []
