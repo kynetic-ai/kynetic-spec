@@ -21,7 +21,9 @@
     keyed by the owning item's canonical identifier and the criterion
     id; spec source files never carry verification state. The store
     holds one current stamp per criterion, and superseded stamps remain
-    recoverable through the metadata's version history.
+    recoverable through the metadata's version history. Stamp writes
+    commit to the shadow-branch history like other metadata mutations,
+    so a fresh checkout of the metadata reproduces the store.
   acceptance_criteria:
     - id: ac-keyed-by-canonical-identity
       given: |
@@ -30,19 +32,26 @@
         the owning spec item is later renamed or moved to a different
         spec source file
       then: |
-        the stamp still resolves to the same acceptance criterion,
-        because records are keyed by the item's canonical identifier
-        and the criterion id rather than by slug or file location
-    - id: ac-stamp-contents
+        the stamp still resolves to the same acceptance criterion
+    - id: ac-stamp-read-back
       given: |
-        a verification stamp write
+        a verification stamp written with a verification time, an
+        actor, and a provenance class drawn from the recorded classes
+        — validation pass, ingested run, or explicit re-verification
       when: |
         the stamp is accepted and read back
       then: |
-        it carries a verification time, an actor, and a provenance
-        class drawn from the recorded classes — validation pass,
-        ingested run, or explicit re-verification — and a stamp
-        missing any of these three fields is rejected at write time
+        it carries the same verification time, actor, and provenance
+        class
+    - id: ac-incomplete-stamp-rejected
+      given: |
+        a verification stamp write missing its verification time, its
+        actor, or its provenance class
+      when: |
+        the write is attempted
+      then: |
+        the write is rejected and the stored verification state is
+        unchanged
     - id: ac-spec-source-untouched
       given: |
         a project's spec source files
@@ -68,9 +77,7 @@
         the project's shadow-branch metadata is checked out fresh
         elsewhere
       then: |
-        the same stamps are reproduced, because stamp writes are
-        committed to the shadow-branch history like other metadata
-        mutations
+        the same current stamps are reproduced in the fresh checkout
     - id: ac-unresolvable-keys-tolerated
       given: |
         a stored stamp whose item identifier or criterion id no longer
@@ -92,14 +99,29 @@
     - "@coverage-scan-config"
   description: |
     The read contract resolving an acceptance criterion's annotation
-    freshness across two provenance classes. When no recorded
-    verification stamp exists, freshness derives from version-control
-    history of the annotation's location — a bootstrap value that
-    requires no prior bookkeeping, so every existing annotation has
-    freshness from day one. Once a recorded stamp exists for a
-    criterion, it supersedes the bootstrap value. Resolved freshness
-    always names its provenance class, and a freshness value is
-    expressed as a timestamp, a commit reference, or both.
+    freshness from two provenance sources — bootstrap-derived and
+    recorded. When no recorded verification stamp exists, freshness
+    derives from version-control history of the annotation's location
+    — a bootstrap value that requires no prior bookkeeping, so every
+    annotation whose location has version-control history has
+    freshness from day one. When a criterion has annotations at
+    several locations and no recorded stamp, the bootstrap value is
+    the most recent of the locations' history values. A location with
+    no version-control history — an uncommitted file, or a line that
+    exists only in the working tree — yields no bootstrap value;
+    until such a location gains history or a recorded stamp is
+    written, the criterion's freshness is absent, and absent
+    freshness is a distinct, observable outcome — not a present-time
+    value, not an error. Once a recorded stamp exists for a
+    criterion, resolution returns the stamp verbatim as the resolved
+    freshness; resolution never compares a recorded stamp against
+    annotation history, and the bootstrap-derived value remains
+    separately retrievable alongside it, so a consumer assessing
+    whether a stamp predates later annotation edits performs that
+    comparison itself. Resolved freshness always names its provenance
+    source, recorded values also carry the stamp's provenance class,
+    and a freshness value is expressed as a timestamp, a commit
+    reference, or both.
   acceptance_criteria:
     - id: ac-bootstrap-when-unstamped
       given: |
@@ -110,25 +132,61 @@
       then: |
         the result is a bootstrap value derived from the
         version-control history of the annotation's location, labeled
-        with the bootstrap provenance class
+        with the bootstrap provenance source
     - id: ac-recorded-supersedes-bootstrap
       given: |
         an acceptance criterion with a recorded verification stamp
       when: |
         its freshness is resolved
       then: |
-        the recorded stamp is returned with its recorded provenance
-        class, and the bootstrap value is not used — including when the
-        version-control history at the annotation's location is more
-        recent than the stamp
+        the recorded stamp is returned verbatim — carrying its
+        provenance class — as the resolved freshness, and the
+        bootstrap value is not used as the resolved freshness,
+        including when the version-control history at the
+        annotation's location is more recent than the stamp
+    - id: ac-both-provenances-retrievable
+      given: |
+        an acceptance criterion with a recorded verification stamp and
+        at least one annotation in a configured scan path whose
+        location has version-control history
+      when: |
+        a consumer requests the bootstrap-derived value alongside the
+        resolved freshness
+      then: |
+        both the recorded stamp and the bootstrap-derived value are
+        returned, each labeled with its provenance source, and the
+        resolution neither alters nor compares them
+    - id: ac-multi-annotation-most-recent
+      given: |
+        an acceptance criterion with annotations at several locations
+        in configured scan paths, each location having version-control
+        history, and no recorded verification stamp
+      when: |
+        its freshness is resolved
+      then: |
+        the bootstrap value is the most recent of the locations'
+        history values, labeled with the bootstrap provenance source
+    - id: ac-no-history-absence
+      given: |
+        an acceptance criterion with no recorded verification stamp
+        whose annotations are all at locations with no version-control
+        history
+      when: |
+        its freshness is resolved
+      then: |
+        no freshness value is produced for that criterion, the absence
+        is reported as a distinct observable outcome, and no
+        present-time or fabricated value is substituted and no error
+        is raised
     - id: ac-timestamp-or-commit
       given: |
         a resolved freshness value
       when: |
         it is delivered to a consumer
       then: |
-        it carries a timestamp, a commit reference, or both, and it
-        names its provenance class
+        it carries a timestamp, a commit reference, or both, it names
+        its provenance source, and a recorded value also carries the
+        stamp's provenance class
     - id: ac-absence-reported
       given: |
         an acceptance criterion with no annotation in any configured
@@ -200,10 +258,13 @@
     containing no verification records is fully valid, behaves exactly
     as it did before the store existed, and is never rewritten by tool
     upgrade. The store materializes only when the first stamp is
-    written. Stored records declare a record-format version: data
-    declaring a newer record format than the running tool supports is
-    refused rather than misread, and records carrying unrecognized
-    fields survive read-modify-write cycles intact.
+    written. Because the store is purely additive, a project that
+    contains one remains fully operable by tool versions predating the
+    store — such tools neither read nor modify it. Stored records
+    declare a record-format version: data declaring a newer record
+    format than the running tool supports is refused rather than
+    misread, and records carrying unrecognized fields survive
+    read-modify-write cycles intact.
   acceptance_criteria:
     - id: ac-absent-store-no-behavior-change
       given: |
@@ -212,8 +273,8 @@
         any command or daemon request reads coverage or freshness data
       then: |
         the operation succeeds, freshness resolves through the
-        bootstrap provenance class alone, and no store is created as a
-        side effect of the read
+        bootstrap provenance source alone, and no store is created as
+        a side effect of the read
     - id: ac-upgrade-without-rewrite
       given: |
         an existing project created before the verification record
@@ -254,6 +315,15 @@
       then: |
         the unrecognized fields persist unchanged in the stored
         records
+    - id: ac-older-tool-ignores-sidecar
+      given: |
+        a project whose metadata contains a verification record store
+      when: |
+        the project is operated by a tool version predating the
+        store's existence
+      then: |
+        every operation behaves as it does on a project without the
+        store, and the store's contents are neither read nor modified
 ```
 
 ## Tasks
@@ -313,9 +383,9 @@ derive_from_specs: false
     endpoint changes in this task beyond the validation orphan finding.
 
     Covers: @ac-verification-record-store ac-keyed-by-canonical-identity,
-    ac-stamp-contents, ac-spec-source-untouched,
-    ac-current-stamp-replacement, ac-versioned-persistence,
-    ac-unresolvable-keys-tolerated.
+    ac-stamp-read-back, ac-incomplete-stamp-rejected,
+    ac-spec-source-untouched, ac-current-stamp-replacement,
+    ac-versioned-persistence, ac-unresolvable-keys-tolerated.
 
 - title: Implement freshness resolution with bootstrap and recorded provenance
   slug: task-freshness-resolution-read-path
@@ -332,7 +402,7 @@ derive_from_specs: false
     Why: The coverage-state engine (a later plan) consumes per-AC
     freshness; the resolution rule — recorded supersedes bootstrap —
     is the storage layer's read contract per
-    @annotation-freshness-provenance, and the bootstrap class is what
+    @annotation-freshness-provenance, and the bootstrap source is what
     makes the system useful on day one for ~20 existing projects with
     thousands of annotations and an empty store.
 
@@ -348,17 +418,32 @@ derive_from_specs: false
       store; bootstrap is always derived on read.
     - Multi-annotation rule: when an AC has several annotation
       locations and no recorded stamp, the bootstrap value is the most
-      recent location's history value (see Implementation Notes).
+      recent location's history value, per
+      ac-multi-annotation-most-recent (see Implementation Notes).
+    - No-history locations: an annotation location without
+      version-control history (uncommitted file, or a line that exists
+      only in the working tree) yields no bootstrap value; an AC whose
+      only annotations sit at such locations and which has no recorded
+      stamp resolves to absent freshness — a distinct observable
+      outcome, not a present-time value and not an error.
     - Recorded lookup: when the store holds a stamp for the AC, return
-      it with its recorded provenance class and do not perform the
-      bootstrap derivation — even if the annotation location's history
-      is newer than the stamp.
+      it verbatim — with its provenance class — as the resolved
+      freshness and do not use the bootstrap value as the resolved
+      freshness, even if the annotation location's history is newer
+      than the stamp. The bootstrap-derived value stays separately
+      retrievable alongside the stamp on request; the resolver
+      performs no staleness comparison between them (that is the
+      coverage-state engine's job, in a later plan).
     - Absence: an AC with neither an annotation in configured scan
       paths nor a recorded stamp yields no freshness value.
     - Tests: bootstrap-only resolution in a fixture repo with committed
       annotations; recorded-wins including the bootstrap-newer case;
-      timestamp/commit/provenance shape on every resolved value;
-      absence for unannotated, unstamped ACs.
+      both-provenances read returning the stamp and the bootstrap
+      value side by side, unaltered; most-recent-wins across multiple
+      annotated locations; absent freshness for an
+      annotated-but-uncommitted location; timestamp/commit/provenance
+      shape on every resolved value; absence for unannotated,
+      unstamped ACs.
 
     How: New module alongside the existing coverage cache in
     src/parser/; reuse the structured annotation scan for locations and
@@ -367,8 +452,9 @@ derive_from_specs: false
     freshness into coverage states.
 
     Covers: @ac-freshness-resolution ac-bootstrap-when-unstamped,
-    ac-recorded-supersedes-bootstrap, ac-timestamp-or-commit,
-    ac-absence-reported.
+    ac-recorded-supersedes-bootstrap, ac-both-provenances-retrievable,
+    ac-multi-annotation-most-recent, ac-no-history-absence,
+    ac-timestamp-or-commit, ac-absence-reported.
 
 - title: Add session evidence linkage to verification stamps
   slug: task-session-verification-evidence
@@ -437,15 +523,17 @@ derive_from_specs: false
     - Update the item description to state that coverage credit
       accrues only to annotations that claim coverage; an annotation
       carrying a not-applicable marker claims none.
-    - Add three ACs to @test-annotation-sweep:
-      (1) a well-formed annotation carrying a not-applicable marker
-      grants no coverage credit for the AC ids it names;
-      (2) such an annotation produces no invalid-annotation finding —
-      it remains a valid task-scoped marker while the in-code
-      convention exists (integrity checks on its target reference and
-      AC ids still apply);
-      (3) structured scan output preserves the not-applicable marker
-      and its reason text rather than discarding them.
+    - Add three ACs to @test-annotation-sweep, with these stable ids:
+      ac-na-no-coverage-credit — a well-formed annotation carrying a
+      not-applicable marker grants no coverage credit for the AC ids
+      it names;
+      ac-na-no-invalid-finding — such an annotation produces no
+      invalid-annotation finding — it remains a valid task-scoped
+      marker while the in-code convention exists (integrity checks on
+      its target reference and AC ids still apply);
+      ac-na-marker-preserved — structured scan output preserves the
+      not-applicable marker and its reason text rather than discarding
+      them.
     - Add depends_on @ac-coverage-applicability to the item so the
       decision linkage is durable.
     - Reconcile @ac-annotation-integrity-reporting
@@ -453,15 +541,25 @@ derive_from_specs: false
       coverage-claiming annotations (those without a not-applicable
       marker) so the two items do not contradict once N/A annotations
       stop covering.
+    - Reconcile @ac-annotation-identifier-format
+      ac-valid-token-covers-ac the same way: its given ("A coverage
+      annotation names an existing acceptance criterion using the
+      required token format") currently grants coverage credit to any
+      valid token, which an N/A-marked annotation still carries.
+      Narrow the given to coverage-claiming annotations (those without
+      a not-applicable marker) so no live AC grants coverage credit to
+      an N/A-marked annotation.
 
-    How: kspec item set / item ac add via a single kspec batch; verify
-    the result with kspec item get on both items. Spec mutation only —
-    the parser behavior change is
+    How: kspec item set / item ac add / item ac set via a single kspec
+    batch; verify the result with kspec item get on all three items.
+    Spec mutation only — the parser behavior change is
     @task-na-annotation-coverage-exclusion, which depends on this task.
 
-    Covers: @test-annotation-sweep (description update plus the three
-    new not-applicable ACs defined above);
+    Covers: @test-annotation-sweep ac-na-no-coverage-credit,
+    ac-na-no-invalid-finding, ac-na-marker-preserved (the new ACs this
+    task adds, plus the description update);
     @ac-annotation-integrity-reporting ac-valid-annotation-covers-target
+    and @ac-annotation-identifier-format ac-valid-token-covers-ac
     (given-clause reconciliation only).
 
 - title: Stop counting not-applicable annotations as coverage in the scanner
@@ -517,8 +615,9 @@ derive_from_specs: false
     structured shapes backward-compatible extensions so existing
     consumers compile unchanged.
 
-    Covers: @test-annotation-sweep (the three not-applicable ACs added
-    by @task-respec-test-annotation-sweep-na).
+    Covers: @test-annotation-sweep ac-na-no-coverage-credit,
+    ac-na-no-invalid-finding, ac-na-marker-preserved (added by
+    @task-respec-test-annotation-sweep-na).
 
 - title: Implement coverage record compatibility and format gating
   slug: task-coverage-record-compatibility
@@ -560,9 +659,19 @@ derive_from_specs: false
     - Upgrade verification: fixture project created without the store
       (temp-project E2E) — run upgrade and ordinary commands; assert no
       project file is rewritten, no migration prompt appears, and the
-      manifest format version is unchanged. Also verify a tool version
-      without store support ignores the sidecar when reading a project
-      that has one.
+      manifest format version is unchanged.
+    - Older-tool tolerance (ac-older-tool-ignores-sidecar): a project
+      containing the sidecar remains fully operable by tool versions
+      predating the store, which neither read nor modify it. The suite
+      cannot execute an older released binary, so verify through the
+      mechanism that guarantees the property: shadow-state loading
+      enumerates only the paths it knows and leaves unrecognized
+      sidecar directories untouched. Assert that an unrecognized
+      sidecar directory in shadow state is ignored by readers — loads,
+      validation, and writes elsewhere succeed, and its files are
+      neither read nor rewritten — and that creating the verification
+      sidecar is purely additive, touching no pre-existing file an
+      older reader depends on.
     - Tests annotate the relevant @data-format-forward-compatibility
       precedent only where this store's gating intersects it; the
       manifest-level contract keeps its own coverage.
@@ -575,7 +684,7 @@ derive_from_specs: false
     Covers: @coverage-record-compatibility
     ac-absent-store-no-behavior-change, ac-upgrade-without-rewrite,
     ac-first-write-materializes, ac-newer-record-format-refused,
-    ac-unknown-fields-roundtrip.
+    ac-unknown-fields-roundtrip, ac-older-tool-ignores-sidecar.
 ```
 
 ## Implementation Notes
@@ -624,17 +733,20 @@ behavior (keying, replacement, tolerance, gating), not layout.
 
 ### Provenance vocabulary
 
-- **bootstrap** — derived on read from version-control history of the
-  annotation's location in the code repository. Never stored; the
-  store starts empty in every project, so there is no backfill
-  migration anywhere.
-- **Recorded classes** (stored in stamps): `validation` |
-  `ingestion` | `re_verification`. The flows that write them —
-  validation-pass wiring, result ingestion, explicit re-verify
-  commands and UI — arrive in later plans. This plan ships the storage
-  layer and its programmatic read/write contract only; no new CLI
-  commands or daemon endpoints beyond validation's orphaned-record
-  finding.
+Freshness has two provenance **sources**; recorded stamps additionally
+carry a provenance **class**:
+
+- **bootstrap** (source) — derived on read from version-control
+  history of the annotation's location in the code repository. Never
+  stored; the store starts empty in every project, so there is no
+  backfill migration anywhere.
+- **recorded** (source) — a stored verification stamp, carrying a
+  provenance class: `validation` | `ingestion` | `re_verification`.
+  The flows that write them — validation-pass wiring, result
+  ingestion, explicit re-verify commands and UI — arrive in later
+  plans. This plan ships the storage layer and its programmatic
+  read/write contract only; no new CLI commands or daemon endpoints
+  beyond validation's orphaned-record finding.
 
 ### Current-stamp-only design
 
@@ -648,11 +760,25 @@ shadow history.
 ### Multi-annotation bootstrap rule
 
 When an AC has several annotation locations and no recorded stamp, the
-bootstrap value is the most recent location's history value. This is
-deterministic and optimistic (any fresh annotation refreshes the AC).
-The engine plan may revisit this rule when it computes stale/drifted;
-choosing it here keeps the resolver deterministic without blocking on
-engine design.
+bootstrap value is the most recent location's history value — bound by
+@ac-freshness-resolution ac-multi-annotation-most-recent, since
+consumers can observe the difference between most-recent-wins,
+oldest-wins, and undefined. This is deterministic and optimistic (any
+fresh annotation refreshes the AC). The engine plan may revisit this
+rule when it computes stale/drifted; choosing it here keeps the
+resolver deterministic without blocking on engine design.
+
+### Storage reads do not assess staleness
+
+The resolver returns recorded stamps verbatim and keeps the
+bootstrap-derived value retrievable alongside them
+(ac-both-provenances-retrievable); it deliberately performs no
+recorded-vs-annotation-history comparison. A stale recorded stamp
+masking a newer annotation edit is therefore visible to consumers —
+both values are in hand — but classifying that situation into
+coverage states is the coverage-state engine's responsibility in a
+later plan, not the storage read contract's. The storage layer stays a
+pure, deterministic read surface.
 
 ### N/A respec consequences
 
@@ -687,8 +813,12 @@ neutrality review chain.
 @annotation-freshness-provenance, @ac-coverage-applicability, and
 @actor-identity-model are authored in the P0a global-decisions plan
 and are pending materialization — verified absent from the live corpus
-at authoring time. P0a must be approved and derived before this plan
-derives, so the depends_on references above resolve. Other P0a
+at authoring time. The pending refs are intentional: the depends_on
+links are the durable, machine-visible ordering once P0a derives, and
+removing them would lose that linkage. The corresponding gate is that
+this plan must not be approved or derived before
+@plan-ui-redesign-global-decisions is approved and derived — at that
+point every pending ref above resolves against the live corpus. Other P0a
 decision slugs mentioned in these notes
 (@client-preference-persistence, @test-result-acquisition,
 @coverage-state-presentation) are likewise pending materialization but
