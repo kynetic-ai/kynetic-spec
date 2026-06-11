@@ -21345,6 +21345,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T08:11:08.529Z
+  - _ulid: 01KTTXAQ041Z2HVQE3FZJSR14Z
+    type: success
+    content: "Task description quality enabled a zero-fix-cycle dispatch run:
+      @task-prepack-full-build-and-verification pre-stated a known tooling pitfall in its How
+      section (npm pack --dry-run lifecycle behavior varies across npm versions), which let the
+      worker detect that npm 11 does run prepack on dry runs and make a justified design deviation
+      (--ignore-scripts on verification dry-run paths) with rationale recorded in task notes instead
+      of a review fix cycle. Pattern: when plan-derived tasks document known tool quirks up front,
+      workers can adapt safely. Worth replicating in plan authoring."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T08:38:39.364Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

@@ -4342,3 +4342,17 @@ inbox:
       - reliability
     added_by: "@claude"
     created_at: 2026-06-11T08:11:08.124Z
+  - _ulid: 01KTTXAPWXWFCJEDK9VEXQKQBS
+    text: "Add a testing convention rule: any npm pack --dry-run invocation in tests or verification
+      scripts must pass --ignore-scripts. Since @task-prepack-full-build-and-verification, prepack
+      runs the full multi-minute build, and npm 11 DOES run prepack on dry runs — a dry-run without
+      --ignore-scripts inside vitest or a CI verification step silently re-triggers the entire
+      build. In-repo cases (tests/release-packaging.test.ts, scripts/verify-package.cjs) already
+      comply; the convention prevents reintroduction. The real-pack path
+      (scripts/verify-clean-pack.cjs) intentionally keeps scripts enabled — that is the ac-4 proof."
+    tags:
+      - reflection
+      - testing
+      - release
+    added_by: "@claude"
+    created_at: 2026-06-11T08:38:39.261Z
