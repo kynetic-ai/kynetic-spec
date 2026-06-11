@@ -153,9 +153,25 @@ events:
       kind: nit
       thread_ulid: 01KTWARW9GWJCCN7G23YENC2SH
     timestamp: 2026-06-11T21:52:49.766Z
+  - _ulid: 01KTWASE5A1QWQREZTN5F7CX4H
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T21:53:07.755Z
+  - _ulid: 01KTWASE5B1SHG7P7AT3921V7H
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T21:53:07.755Z
 examined_commit: b56d32163b5e1592b58554f46c4ddc391684b109
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -193,7 +209,14 @@ threads:
           follow-up flaky task @01KTWAN5 records the transient failure.
         created_at: 2026-06-11T21:52:49.457Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-11T21:53:07.754Z
 created_at: 2026-06-11T21:34:17.445Z
-updated_at: 2026-06-11T21:52:49.457Z
+updated_at: 2026-06-11T21:53:07.755Z
 notes: []
