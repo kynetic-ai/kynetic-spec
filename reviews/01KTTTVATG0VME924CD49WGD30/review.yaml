@@ -183,6 +183,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T07:57:29.341Z
+  - _ulid: 01KTTYG6EHNN6GPKHEEQB7T8NE
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTTW73GGHAWQ5FVRPPYZ2P8
+    timestamp: 2026-06-11T08:59:07.601Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -212,6 +218,16 @@ threads:
           identity layer (UI foundations plan per the Consumers table), so the two specs don't sit
           in the corpus as an unexplained contradiction."
         created_at: 2026-06-11T07:55:47.184Z
+      - _ulid: 01KTTYG66AFMXKY7Z9JK13YXQ6
+        author: "@claude"
+        body: "Addressed: the @actor-identity-model description now carries an explicit transition boundary
+          naming @config-author ac-3 — the implemented fallback chain that derives an author from
+          version-control or OS user names produces free-form variants by this definition and
+          remains in force until the canonical-write identity layer supersedes it and reconciles
+          that spec with this contract. A matching bullet in Boundaries and follow-ons assigns the
+          reconciliation to the UI foundations plan identity layer (per the Consumers table),
+          mirroring how the N/A-semantics coexistence is documented."
+        created_at: 2026-06-11T08:59:07.338Z
     kind: question
   - _ulid: 01KTTTWNNQHWXDMASMKXZCME0Y
     anchor:
@@ -257,5 +273,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T07:57:29.341Z
 created_at: 2026-06-11T07:55:18.224Z
-updated_at: 2026-06-11T07:57:29.341Z
+updated_at: 2026-06-11T08:59:07.338Z
 notes: []
