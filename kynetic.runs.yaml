@@ -63003,7 +63003,7 @@ runs:
     completed_at: 2026-06-11T11:13:32.673Z
   - _ulid: 01KTV67X3K8CWSX5Q2R227VWM9
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -63015,7 +63015,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T11:15:25.697Z
-        completed_at: 2026-06-11T11:15:25.697Z
+        completed_at: 2026-06-11T11:16:19.469Z
+        notes: "Candidates: (1) fix-cycle resubmit requires explicit task start before task submit — skill
+          says only 'task submit', CLI rejects needs_work; concrete, hit this session, systemic for
+          every fix cycle. (2) Success pattern: tests that parse and execute
+          error-message-prescribed recovery commands verbatim — caught-by-review gap closed this
+          way. (3) 'kspec workflow show' requiring run-ref while 'workflow next' infers active run —
+          already tracked in inbox @01KGGPJ6, skip."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T11:16:19.469Z
+        completed_at: 2026-06-11T11:16:19.469Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T11:14:24.499Z
