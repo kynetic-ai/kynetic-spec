@@ -64839,7 +64839,7 @@ runs:
     completed_at: 2026-06-11T22:55:49.256Z
   - _ulid: 01KTWG9DS5WYJBJM2FAZKBAC7X
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -64877,7 +64877,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-11T23:30:31.646Z
-        completed_at: 2026-06-11T23:30:31.646Z
+        completed_at: 2026-06-11T23:30:42.890Z
+        notes: "Proposed improvement (medium): add a clearer review workflow affordance for unrelated gate
+          failures, such as guidance or CLI support to record a required gate as non-regressing with
+          linked follow-up tasks. It should capture: original failing command, rerun/focused
+          evidence, classification as pre-existing/flaky/unrelated, created follow-up refs, and how
+          the required check should be represented in the review record. Benefit: reduces reviewer
+          ambiguity and mechanical write-up effort while preserving the no-false-blocker policy from
+          review-gates."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-11T23:30:42.890Z
+        completed_at: 2026-06-11T23:30:42.890Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T23:29:14.533Z
