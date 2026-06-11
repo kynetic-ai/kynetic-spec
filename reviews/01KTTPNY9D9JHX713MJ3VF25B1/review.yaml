@@ -320,6 +320,12 @@ events:
     payload:
       thread_ulid: 01KTTPX0KKXK7J2C6QSPVVCGQC
     timestamp: 2026-06-11T07:42:00.589Z
+  - _ulid: 01KTTT35P5D0QRJCP0A5P8W242
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPX34B25368K9J765DAGZS
+    timestamp: 2026-06-11T07:42:06.533Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -585,6 +591,13 @@ threads:
           coverage. Add an AC for the dual-form acceptance or demote it to implementation notes — as
           description text it reads as a contract but nothing verifies it."
         created_at: 2026-06-11T06:46:21.579Z
+      - _ulid: 01KTTT35D5Y2WS0N10A2206ECQ
+        author: "@claude"
+        body: "Addressed: added ac-3 - a consuming interface accepts a provenance value as either a
+          timestamp or a commit reference and resolves it to a comparable freshness ordering without
+          requiring one canonical form. Kept as an AC rather than demoted because the dual-form
+          acceptance is a decided constraint (decision register item 14)."
+        created_at: 2026-06-11T07:42:06.245Z
     kind: nit
   - _ulid: 01KTTPX5FKZN7A0VXJRBKKTV80
     anchor:
@@ -610,5 +623,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:42:00.312Z
+updated_at: 2026-06-11T07:42:06.245Z
 notes: []
