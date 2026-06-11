@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T08:06:37.640Z
+  - _ulid: 01KTTVG2NMM7PJ08QVQ5B2E822
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTVG2323NE18R3185B7RMTD
+    timestamp: 2026-06-11T08:06:38.004Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,26 @@ subject:
   content_hash: ""
   ref: "@plan-ac-coverage-verification-schema-and-storage"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTTVG2323NE18R3185B7RMTD
+    anchor:
+      type: structured
+      field: what
+      ref: "@task-respec-test-annotation-sweep-na"
+      section: tasks
+    entries:
+      - _ulid: 01KTTVG232AJT4PT8R38JTPJ1Z
+        author: "@claude"
+        body: The N/A respec reconciles @test-annotation-sweep and @ac-annotation-integrity-reporting, but
+          it leaves @ac-annotation-identifier-format ac-valid-token-covers-ac unchanged. That
+          existing AC says a coverage annotation naming an existing AC with the required token
+          format grants coverage credit; after this plan, N/A-marked annotations still name valid AC
+          tokens but must grant no credit. Add an explicit reconciliation for
+          @ac-annotation-identifier-format, or define N/A markers outside the existing
+          coverage-annotation contract, so the live corpus does not contain contradictory specs.
+        created_at: 2026-06-11T08:06:37.410Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:06:37.372Z
+updated_at: 2026-06-11T08:06:37.410Z
 notes: []
