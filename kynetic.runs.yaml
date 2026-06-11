@@ -62440,7 +62440,7 @@ runs:
     started_at: 2026-06-11T07:06:25.898Z
     completed_at: 2026-06-11T07:08:36.190Z
   - _ulid: 01KTTS0PEJ40B1HCMY4RZD624E
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -62488,10 +62488,14 @@ runs:
         completed_at: 2026-06-11T07:25:14.650Z
         notes: Skipped discussion because there are no new proposed improvements. All high-confidence
           reflection items from this session already have existing tracking refs.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-11T07:25:14.650Z
-        completed_at: 2026-06-11T07:25:14.650Z
+        completed_at: 2026-06-11T07:25:27.235Z
+        notes: "No capture performed. Search found existing tracking for all high-confidence items:
+          @01KTTMPC, @01KTTQRE, @01KTTHX2, @01KT5ZGF, plus existing evidence-log observations.
+          Capturing duplicates would add noise."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T07:23:16.818Z
+    completed_at: 2026-06-11T07:25:27.235Z
