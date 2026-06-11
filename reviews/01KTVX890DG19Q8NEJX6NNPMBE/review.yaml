@@ -2,7 +2,93 @@ _ulid: 01KTVX890DG19Q8NEJX6NNPMBE
 slugs: []
 title: "Plan review: Web UI Foundations (round 1)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Current project state validates with warnings only: 1614 files, 646 items, 1606 tasks;
+      references OK. This does not validate underived plan-local depends_on refs, which are covered
+      by the cross-reference blocker."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T17:58:37.728Z
+    completed_at: 2026-06-11T17:58:37.728Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Current project state validates with warnings only: 36 orphaned specs and 10 status
+      mismatch warnings in existing catalog. No new plan-derived items exist yet."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T17:58:40.401Z
+    completed_at: 2026-06-11T17:58:40.401Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Current project state validates with warnings only: existing missing AC coverage,
+      automation-without-spec, and invalid annotation warnings. No new plan-derived items exist
+      yet."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T17:58:42.959Z
+    completed_at: 2026-06-11T17:58:42.959Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan references @web-shell-platform-target, @client-preference-persistence, and
+      @actor-identity-model. kspec item get/search cannot resolve them; they exist only in draft
+      @plan-ui-redesign-global-decisions.
+    name: Plan cross-reference validation
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T17:58:45.564Z
+    completed_at: 2026-06-11T17:58:45.564Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every local plan AC is claimed by a task, but Covers lines omit upstream decision ACs this
+      track is assigned to implement, and @ui-view-header ac-1 is over-claimed relative to the task
+      adoption scope.
+    name: AC coverage mapping
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T17:58:48.222Z
+    completed_at: 2026-06-11T17:58:48.222Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@task-breadcrumb-component depends on ancestry data for review/session route adoption,
+      but @task-breadcrumb-ancestry-api only specifies item/task/plan chains."
+    name: Task standalone-ness and dependencies
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T17:58:50.884Z
+    completed_at: 2026-06-11T17:58:50.884Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Read: AGENTS.md-included kspec-agents.md, kspec-review-plan skill,
+      @plan-web-ui-foundations, @plan-ui-redesign-global-decisions, @web-ui neighborhood,
+      @config-author, @web-dashboard, @ui-api-aggregation, trait list. Commands: kspec plan
+      get/list, kspec review list, kspec item list/get, kspec search, kspec validate
+      refs/alignment/completeness. Categories searched: spec quality, existing-spec overlap,
+      reference validity, task Covers mapping, task standalone-ness, dependency ordering, scope
+      discipline."
+    name: Review evidence log
+    required: false
+    runner: manual plan review
+    created_at: 2026-06-11T17:58:53.568Z
+    completed_at: 2026-06-11T17:58:53.568Z
 events:
   - _ulid: 01KTVX890C3SVB7P5BYNW1MYA4
     actor: "@claude"
@@ -17,17 +103,260 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T17:56:49.550Z
+  - _ulid: 01KTVXBER6FCYNAKH7STDQZBC5
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVXBEGNMFE1YPQA1QNG3AJN
+    timestamp: 2026-06-11T17:58:18.118Z
+  - _ulid: 01KTVXBHJW95RZRK9KZTPX5XNM
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVXBHANSNSRJF8WHWW8J3X1
+    timestamp: 2026-06-11T17:58:21.020Z
+  - _ulid: 01KTVXBMJR3RQQWS3HG0BN94WA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVXBMAHTC8P169DFJPM7AJM
+    timestamp: 2026-06-11T17:58:24.089Z
+  - _ulid: 01KTVXBQDWH75MWHBR5KK1S0TH
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVXBQ6ZV1B640R0W60YJA6W
+    timestamp: 2026-06-11T17:58:27.004Z
+  - _ulid: 01KTVXBT3EJ0A30BCR0PRNXTGF
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVXBSWDR8P1VDNSGNCH2BAZ
+    timestamp: 2026-06-11T17:58:29.742Z
+  - _ulid: 01KTVXBWS6J58QZ9M5D8Y309HA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVXBWJ0KNQY8EKG4QFE2V30
+    timestamp: 2026-06-11T17:58:32.487Z
+  - _ulid: 01KTVXBZF40NKAE6ZCVGTWSP8D
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVXBZ85V04WJG3GKMR4THSW
+    timestamp: 2026-06-11T17:58:35.236Z
+  - _ulid: 01KTVXC244YNH12346M2A5XXEG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T17:58:37.956Z
+  - _ulid: 01KTVXC4Q0TNR4DEPK9ZRVVYX6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T17:58:40.608Z
+  - _ulid: 01KTVXC77D6A9DEMC680Z6RNZK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T17:58:43.181Z
+  - _ulid: 01KTVXC9RMJXCXFNAKNCTH0E8G
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Plan cross-reference validation
+    timestamp: 2026-06-11T17:58:45.780Z
+  - _ulid: 01KTVXCCCH95MSC5DMF9YNM63Z
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC coverage mapping
+    timestamp: 2026-06-11T17:58:48.465Z
+  - _ulid: 01KTVXCEZNENRA1TF94TYA8WQK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task standalone-ness and dependencies
+    timestamp: 2026-06-11T17:58:51.125Z
+  - _ulid: 01KTVXCHJWWSQDKN3KJ0K21VSF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-06-11T17:58:53.788Z
+  - _ulid: 01KTVXCNBJ5XBQ458JK5ED5VE0
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T17:58:57.650Z
+  - _ulid: 01KTVXCNBJNCF03ASYSGTQRA58
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T17:58:57.650Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-web-ui-foundations"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTVXBEGNMFE1YPQA1QNG3AJN
+    anchor:
+      type: structured
+      ref: "@plan-web-ui-foundations"
+      section: dependencies
+    entries:
+      - _ulid: 01KTVXBEGN5QX47E4P3YFJFDPF
+        author: "@claude"
+        body: "Cross-reference validation fails for this plan as stored: @web-shell-platform-target,
+          @client-preference-persistence, and @actor-identity-model are referenced in depends_on
+          fields but do not exist in the current spec catalog. They are present only inside
+          @plan-ui-redesign-global-decisions, which is still draft and underived. Impact:
+          approving/deriving this plan now would produce broken refs; either derive/approve the
+          upstream decision plan first, or make this plan self-contained by moving/replacing those
+          dependencies."
+        created_at: 2026-06-11T17:58:17.877Z
+    kind: blocker
+  - _ulid: 01KTVXBHANSNSRJF8WHWW8J3X1
+    anchor:
+      type: structured
+      field: What
+      ref: "@task-breadcrumb-ancestry-api"
+      section: tasks
+    entries:
+      - _ulid: 01KTVXBHANNV3N9KFE1BKBGJ8Q
+        author: "@claude"
+        body: "The breadcrumb data task serves item/task/plan ancestry, but @task-breadcrumb-component
+          adopts the breadcrumb on review detail and session detail routes and says it consumes the
+          ancestor-chain payload. Reviews and sessions are not included in the ancestry API task's
+          What/How. Impact: the dependent component task cannot implement its stated route adoption
+          without inventing unplanned data support. Add review/session chain support here, change
+          the adoption targets, or add a prerequisite task that serves those entity chains."
+        created_at: 2026-06-11T17:58:20.757Z
+    kind: blocker
+  - _ulid: 01KTVXBMAHTC8P169DFJPM7AJM
+    anchor:
+      type: structured
+      field: ac-3
+      ref: "@actor-display"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTVXBMAHDVXPRPCFFHBQ7M9Z
+        author: "@claude"
+        body: "ac-3 is not deterministic as written. The Given only provides a review's lifecycle state and
+          disposition, but the Then requires selecting a reviewing identity or work author. Those
+          identities are not derivable from lifecycle/disposition alone. Impact: two reviews with
+          the same state/disposition but different reviewers/authors would satisfy the Given and
+          require different outcomes. Include the needed reviewer/work-author inputs in the Given,
+          or change the Then to return a role/category rather than a specific identity."
+        created_at: 2026-06-11T17:58:23.825Z
+    kind: blocker
+  - _ulid: 01KTVXBQ6ZV1B640R0W60YJA6W
+    anchor:
+      type: structured
+      field: Covers
+      ref: "@plan-web-ui-foundations"
+      section: tasks
+    entries:
+      - _ulid: 01KTVXBQ6ZZ1JZJ5C1GMVPF1TV
+        author: "@claude"
+        body: "The plan does not claim the upstream decision ACs that its own upstream decision plan assigns
+          to this track. @plan-ui-redesign-global-decisions says track plans must claim decision
+          criteria with Covers lines, including @web-shell-platform-target ac-3 for the keyboard
+          registry, @client-preference-persistence ac-1 for the preference utility, and
+          @actor-identity-model ac-2 for the data upgrade. The corresponding tasks only cover local
+          specs. Impact: after the decision specs materialize, these decision ACs remain orphaned
+          even though this plan implements their behavior. Add explicit Covers entries for the
+          decision ACs or adjust the upstream consumer mapping before approval."
+        created_at: 2026-06-11T17:58:26.784Z
+    kind: blocker
+  - _ulid: 01KTVXBSWDR8P1VDNSGNCH2BAZ
+    anchor:
+      type: structured
+      field: What
+      ref: "@task-review-author-resolution"
+      section: tasks
+    entries:
+      - _ulid: 01KTVXBSWD6CKR9MHWFG3MHFEA
+        author: "@claude"
+        body: "The plan appears to be the UI-foundations consumer for @actor-identity-model ac-1, but the
+          task only replaces anonymous review-route fallbacks and explicitly leaves caller-supplied
+          actor values unchanged. The upstream decision requires every newly written actor field to
+          be canonical, not just non-anonymous, across interfaces. Impact: the plan can complete
+          while new review mutations still persist free-form actor variants, leaving the decision
+          unsatisfied. Either add canonical-write work that covers @actor-identity-model ac-1,
+          narrow the upstream decision handoff, or state that this plan intentionally does not
+          implement that decision criterion."
+        created_at: 2026-06-11T17:58:29.517Z
+    kind: blocker
+  - _ulid: 01KTVXBWJ0KNQY8EKG4QFE2V30
+    anchor:
+      type: structured
+      ref: "@actor-identity-resolution"
+      section: traits
+    entries:
+      - _ulid: 01KTVXBWJ0AHJPRT3YHKFWJ605
+        author: "@claude"
+        body: "The implementation notes say the identity endpoint should receive @trait-api-endpoint after
+          derivation, but the plan neither declares the trait on the spec nor creates a task/manual
+          step that applies it and covers the inherited trait ACs. Impact: the API endpoint contract
+          can be skipped silently after derive, and completeness validation will not enforce the
+          endpoint behavior. Put the trait in plan metadata if derivation supports it, or add an
+          explicit task/step with Covers for the inherited trait criteria."
+        created_at: 2026-06-11T17:58:32.256Z
+    kind: blocker
+  - _ulid: 01KTVXBZ85V04WJG3GKMR4THSW
+    anchor:
+      type: structured
+      field: ac-1
+      ref: "@ui-view-header"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTVXBZ85RRZ4YFJR5Z2V4Y31
+        author: "@claude"
+        body: "@ui-view-header ac-1 applies to any entity detail view, but @task-view-header-status-tokens
+          adopts the header only on review detail and session detail pages as first consumers.
+          Impact: the task's Covers line claims ac-1 while leaving other existing entity detail
+          views outside the guarantee. Either narrow the spec/AC to the intended initial surfaces,
+          or expand/add tasks so every entity detail view covered by the spec receives the standard
+          header."
+        created_at: 2026-06-11T17:58:35.013Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T17:58:57.650Z
 created_at: 2026-06-11T17:56:33.933Z
-updated_at: 2026-06-11T17:56:49.299Z
+updated_at: 2026-06-11T17:58:57.650Z
 notes: []
