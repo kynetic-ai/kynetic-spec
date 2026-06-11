@@ -21266,6 +21266,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T05:49:05.012Z
+  - _ulid: 01KTTMPC63EB6GWT7319M8ZXR1
+    type: friction
+    content: Dependency/security reviews should include a minimum-supported-Node production install
+      check when lockfile updates affect production dependencies. In review of
+      @task-audit-fix-production-deps, npm audit, lint, typecheck, and full tests passed on Node 24,
+      but Node 20 npm ci --omit=dev --engine-strict failed because file-type@22 requires Node >=22
+      while package.json still advertises >=20. Existing tracking covers Node docs and CI matrix,
+      but not this review-gate/process check.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KTTMKK"
+    created_at: 2026-06-11T06:07:44.323Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
