@@ -58,6 +58,18 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T08:07:44.939Z
     completed_at: 2026-06-11T08:07:44.939Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Binding depends_on refs to @annotation-freshness-provenance, @actor-identity-model, and
+      @ac-coverage-applicability depend on @plan-ui-redesign-global-decisions, which is still draft
+      and underived. Current ordering is documented only in prose.
+    name: Dependency ordering
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T08:07:44.993Z
+    completed_at: 2026-06-11T08:07:44.993Z
 events:
   - _ulid: 01KTTVE9X3PA6393J23QSHZ51G
     actor: "@claude"
@@ -156,6 +168,13 @@ events:
       status: fail
       name: Spec completeness
     timestamp: 2026-06-11T08:07:45.189Z
+  - _ulid: 01KTTVJ4KKRP1EKQDJ7HVG196C
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency ordering
+    timestamp: 2026-06-11T08:07:45.523Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -280,5 +299,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:07:44.939Z
+updated_at: 2026-06-11T08:07:44.993Z
 notes: []
