@@ -21510,6 +21510,30 @@ observations:
     resolved: false
     workflow_ref: "@01KTVHFW"
     created_at: 2026-06-11T14:33:24.934Z
+  - _ulid: 01KTVHN5SGSNSR79WYJP585WK1
+    type: friction
+    content: "Negative-check verification can clobber uncommitted work: pattern of mutating a file (sed)
+      to prove a new test fails, then restoring with git checkout <file>, reverts to HEAD and
+      silently wipes any uncommitted fix to that same file (happened in
+      @task-standardize-node-version-docs: doc fix had to be re-applied). Safe orderings: commit the
+      fix before the negative check, or restore by re-applying the inverse edit instead of git
+      checkout."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T14:33:53.712Z
+  - _ulid: 01KTVHN62NDFW4QDSFS6W9YNF0
+    type: success
+    content: "Doc/content-scanning tests: before encoding a detection regex in a consistency test,
+      dry-run it over the full real corpus with a one-off node script (in
+      @task-standardize-node-version-docs: confirmed exactly the 6 real Node-version statements
+      across 47 markdown docs, zero false positives), then run a negative check proving the test
+      fails on a regressed input. Catches both vacuous-pass and false-positive failure modes before
+      commit."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T14:33:54.005Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
