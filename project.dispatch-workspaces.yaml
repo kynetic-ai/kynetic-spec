@@ -12888,7 +12888,7 @@ workspaces:
         head: 570dc9e8b212f7072ee2a03f110c74aa0f7bc18a
         last_seen_at: 2026-06-11T08:40:12.283Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-prepack-full-build-and-verification-01kttcze
-  - active_role: null
+  - active_role: worker
     base_branch_point: 1a7f9791d9f9826ac42a8e6df0ab93d918630e8f
     bootstrap:
       status: succeeded
@@ -13224,7 +13224,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T08:41:01.668Z
+      updated_at: 2026-06-11T08:41:30.752Z
     integration:
       status: pending
       detail: null
@@ -13233,17 +13233,17 @@ workspaces:
       target_branch: dev
       target_commit: 1a7f9791d9f9826ac42a8e6df0ab93d918630e8f
       updated_at: 2026-06-11T08:41:01.668Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTD06BWZAEDXS79B66C260R
     task_ref: "@01KTTD06BWZAEDXS79B66C260R"
     task_slug: task-daemon-fatal-failure-observability
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-11T08:41:01.668Z
+      last_active_at: 2026-06-11T08:41:30.752Z
+      last_reconciled_at: 2026-06-11T08:41:30.752Z
       created_at: 2026-06-11T08:41:01.668Z
-      updated_at: 2026-06-11T08:41:25.997Z
+      updated_at: 2026-06-11T08:41:30.752Z
     workspace_id: dispatch-workspace-01KTTD06BWZAEDXS79B66C260R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
