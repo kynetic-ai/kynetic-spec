@@ -869,6 +869,113 @@ describe("kspec serve commands", () => {
     runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
   });
 
+  // AC: @daemon-network-endpoint-contract ac-external-connect-host-warning
+  //
+  // "localhost" is the non-loopback host value of choice here:
+  // isLoopbackHost() deliberately recognizes only numeric loopback
+  // addresses (no OS-resolver dependency), so a DNS name triggers the
+  // warning while still resolving locally — the daemon stays reachable
+  // for health checks and stop. A connect_host that differs from a
+  // non-wildcard bind is rejected by resolveDaemonConnectHost, so the
+  // wildcard bind is required for this configuration to be valid.
+  it("surfaces connect-host warning from the parent CLI on detached starts", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  host: 0.0.0.0", "  connect_host: localhost", `  port: ${port}`, ""].join("\n"),
+      "utf-8",
+    );
+
+    const result = runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    expect(result.stderr).toMatch(/WARNING/i);
+    expect(result.stderr).toMatch(/connect host is localhost/i);
+    expect(result.stderr).toMatch(/accept requests addressed to localhost/i);
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-external-connect-host-warning
+  it("surfaces connect-host warning when serve status reports a non-loopback connect host", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  host: 0.0.0.0", "  connect_host: localhost", `  port: ${port}`, ""].join("\n"),
+      "utf-8",
+    );
+
+    runKspec(`serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    await waitForDaemonHealth();
+
+    const status = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    expect(status.stderr).toMatch(/WARNING/i);
+    expect(status.stderr).toMatch(/connect host is localhost/i);
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
+  // AC: @daemon-network-endpoint-contract ac-external-connect-host-warning
+  // Negative case: a loopback connect_host must not trigger the
+  // connect-host warning on start or status. The wildcard bind keeps
+  // the configuration valid (and its own bind warning proves stderr
+  // warnings are flowing, so the absence assertion is meaningful).
+  it("does not warn on a loopback connect host", async () => {
+    if (!nodeAvailable) {
+      console.log("  ⊘ Skipping test - Node runtime required");
+      return;
+    }
+
+    const port = await getAvailablePort();
+
+    writeFileSync(
+      join(tempDir, "kspec.config.yaml"),
+      ["daemon:", "  host: 0.0.0.0", "  connect_host: 127.0.0.1", `  port: ${port}`, ""].join("\n"),
+      "utf-8",
+    );
+
+    const result = runKspec(
+      `serve start --detach --port ${port} --kspec-dir ${join(tempDir, ".kspec")}`,
+      tempDir,
+    );
+
+    const pid = parseInt(readTestOutputSync(globalPidFilePath).trim(), 10);
+    onTestFinished(() => killPid(pid));
+
+    // The bind warning still fires for the wildcard bind...
+    expect(result.stderr).toContain("0.0.0.0");
+    // ...but the connect-host warning must not.
+    expect(result.stderr).not.toMatch(/connect host/i);
+
+    await waitForDaemonHealth();
+
+    const status = runKspec(`serve status --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+    expect(status.stderr).not.toMatch(/connect host/i);
+
+    runKspec(`serve stop --kspec-dir ${join(tempDir, ".kspec")}`, tempDir);
+  });
+
   // AC: @daemon-network-endpoint-contract ac-configured-bind-host
   // AC: @config-daemon ac-host-config
   // AC: @daemon-server ac-1
