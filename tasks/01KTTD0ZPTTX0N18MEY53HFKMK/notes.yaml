@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KTV73K9MRF9DN1CMG11XKB4N
+    content: "Approach: add private runGit(args, cwd) helper in src/utils/git.ts mirroring runGitSync
+      from src/parser/shadow.ts (spawnSync('git', args, { encoding: utf-8, stdio: [pipe,pipe,ignore]
+      }), returns string|null, never throws). Route all 11 execSync call sites through it. Edge
+      cases: git config --get exits 1 when key unset (must map to null like execSync throw did),
+      empty-repo HEAD failures, non-repo dirs. Test plan: metachar branch name with embedded $(touch
+      canary) asserting literal return + no canary file (ac-metacharacter-branch-literal); metachar
+      remote-name config value asserting literal failure + no side effect, plus unchanged
+      getRecentCommits/getDiffSince on normal repo (ac-dynamic-values-treated-literally); non-repo
+      null/[]/default returns for all helpers (ac-failure-results-preserved)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T11:29:31.956Z
