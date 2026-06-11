@@ -112,6 +112,18 @@ checks:
     runner: manual
     created_at: 2026-06-11T18:14:04.500Z
     completed_at: 2026-06-11T18:14:04.500Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Round 1 review 01KTVX890DG19Q8NEJX6NNPMBE: 0 of 7 blocker threads addressed — no author
+      replies, no plan re-import (no updated_at, no notes), source file unmodified since import; all
+      7 re-raised in this review"
+    name: Prior-round findings addressed
+    required: true
+    runner: manual
+    created_at: 2026-06-11T18:14:09.897Z
+    completed_at: 2026-06-11T18:14:09.897Z
 events:
   - _ulid: 01KTVY20HDMERJRGK4RSYWVR2G
     actor: "@claude"
@@ -245,6 +257,13 @@ events:
       status: fail
       name: Upstream decision AC claim mapping
     timestamp: 2026-06-11T18:14:04.734Z
+  - _ulid: 01KTVY8GESVGCTVSEGFKKND8JM
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Prior-round findings addressed
+    timestamp: 2026-06-11T18:14:10.137Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -479,5 +498,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:14:04.500Z
+updated_at: 2026-06-11T18:14:09.897Z
 notes: []
