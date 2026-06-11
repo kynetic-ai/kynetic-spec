@@ -64946,7 +64946,7 @@ runs:
     completed_at: 2026-06-11T23:35:33.563Z
   - _ulid: 01KTWHPM065TWQBGB3Y0CFYRP9
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -65009,7 +65009,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-11T23:54:48.910Z
-        completed_at: 2026-06-11T23:54:48.910Z
+        completed_at: 2026-06-11T23:54:54.853Z
+        notes: 'Friction points: The reflection skill says to use kspec workflow show, but the CLI returned
+          "error: missing required argument run-ref"; the actual command needed kspec workflow show
+          @01KTWHPM. This is small but repeatable documentation/CLI ergonomics friction for anyone
+          following the skill literally. The review check recording also involved a long manual
+          evidence batch, but batch handled it acceptably and this did not rise to a new issue by
+          itself.'
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-11T23:54:54.853Z
+        completed_at: 2026-06-11T23:54:54.853Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T23:53:55.463Z
