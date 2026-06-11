@@ -10190,18 +10190,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-audit-fix-production-deps/01kttczc
-    canonical_branch_head: 8335c393bd35c3216a876ea40949c41cf80e9b8b
+    canonical_branch_head: b112b02a919a15d0c4a4466a4daafae05dcf7c7c
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T04:37:37.325Z
+      updated_at: 2026-06-11T05:01:58.209Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T04:38:27.690Z
+      updated_at: 2026-06-11T05:01:58.209Z
     integration:
       status: pending
       detail: null
@@ -10209,7 +10209,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8335c393bd35c3216a876ea40949c41cf80e9b8b
-      updated_at: 2026-06-11T04:37:37.325Z
+      updated_at: 2026-06-11T05:01:58.209Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTCZC40FDTA2WWB7E20V00R
@@ -10218,9 +10218,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T04:38:27.690Z
-      last_reconciled_at: 2026-06-11T04:38:27.690Z
+      last_reconciled_at: 2026-06-11T05:01:58.209Z
       created_at: 2026-06-11T04:37:37.325Z
-      updated_at: 2026-06-11T04:38:27.690Z
+      updated_at: 2026-06-11T05:01:58.209Z
     workspace_id: dispatch-workspace-01KTTCZC40FDTA2WWB7E20V00R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
