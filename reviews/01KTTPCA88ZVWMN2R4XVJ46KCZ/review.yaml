@@ -2,7 +2,111 @@ _ulid: 01KTTPCA88ZVWMN2R4XVJ46KCZ
 slugs: []
 title: Review daemon log capture
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; 996 files checked.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T06:51:52.521Z
+    completed_at: 2026-06-11T06:51:52.521Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint completed with 0 errors; existing warning baseline reported 738 warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T06:51:55.134Z
+    completed_at: 2026-06-11T06:51:55.134Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused oxlint on packages/daemon/src/index.ts, logger-install.ts, logger.ts, pid.ts,
+      src/cli/commands/serve.ts, src/daemon-shared/endpoint.ts, src/parser/config.ts,
+      tests/daemon-log-capture.test.ts: 0 warnings, 0 errors."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed-ts-or-test-files>
+    created_at: 2026-06-11T06:51:57.778Z
+    completed_at: 2026-06-11T06:51:57.778Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T06:52:00.403Z
+    completed_at: 2026-06-11T06:52:00.403Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2733 suites passed; 10395 tests passed, 5 skipped; duration 2970.3s; log
+      /tmp/kspec-test-cache/01KTTPAATJ69MEYTCT61MCDFJD/e4cab183e33b6229.log.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T06:52:03.070Z
+    completed_at: 2026-06-11T06:52:03.070Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; references OK; existing deprecated-reference warnings allowed by
+      --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T06:52:05.603Z
+    completed_at: 2026-06-11T06:52:05.603Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; existing alignment warning baseline allowed by --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T06:52:09.333Z
+    completed_at: 2026-06-11T06:52:09.333Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; existing completeness warning baseline allowed by --warnings-ok.
+      @daemon-log-capture AC annotations present in tests/daemon-log-capture.test.ts.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T06:52:11.988Z
+    completed_at: 2026-06-11T06:52:11.988Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: packages/daemon/src/index.ts, logger-install.ts, logger.ts, pid.ts,
+      routes/command.ts; scripts/build-daemon.cjs; src/cli/commands/serve.ts;
+      src/daemon-shared/endpoint.ts; src/parser/config.ts; tests/daemon-log-capture.test.ts;
+      tests/helpers/cli.ts; package.json; kspec-agents.md. Commands run: git diff/stat/log, kspec
+      task get, kspec item get, AC annotation rg, format/lint/focused lint/typecheck/npm test, kspec
+      validate refs/alignment/completeness, git diff --check. Claims verified: first-import tee
+      ordering against routes/command.ts console interception; rotation behavior and one-generation
+      retention via tests; status log_path via test; build-daemon pid shim exports log helpers.
+      Categories searched: correctness, edge cases, error handling, test quality, integration; no
+      blockers found."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-06-11T06:52:14.543Z
+    completed_at: 2026-06-11T06:52:14.543Z
 events:
   - _ulid: 01KTTPCA8717G123ZBPHN6G340
     actor: Jacob Chapel
@@ -17,6 +121,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T06:37:27.355Z
+  - _ulid: 01KTTQ76HKAHGA4KX3T2DH2ZZ1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T06:51:52.756Z
+  - _ulid: 01KTTQ793DN6131WBSNH96M36Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T06:51:55.373Z
+  - _ulid: 01KTTQ7BNXPPKKY814P6V20JHX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-11T06:51:58.013Z
+  - _ulid: 01KTTQ7E7B20SYWR2PE7Y8451N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T06:52:00.619Z
+  - _ulid: 01KTTQ7GT9HXZRSG5Y0H6GNFPG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T06:52:03.273Z
+  - _ulid: 01KTTQ7K9SHCKDJ0TTZJWY97TD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T06:52:05.817Z
+  - _ulid: 01KTTQ7PZ7XX2M526G43NN7VXY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T06:52:09.576Z
+  - _ulid: 01KTTQ7SH1CAQ19NVKQPNG97M0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T06:52:12.193Z
+  - _ulid: 01KTTQ7W0YAXZ5NPXVF1E91EB8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-11T06:52:14.750Z
 examined_commit: 7b5d5b3849c0f4cf06841b8ba250278e2245d6ab
 external_links: []
 lifecycle_state: open
@@ -29,5 +196,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T06:37:11.816Z
-updated_at: 2026-06-11T06:37:27.125Z
+updated_at: 2026-06-11T06:52:14.543Z
 notes: []
