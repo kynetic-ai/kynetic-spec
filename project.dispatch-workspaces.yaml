@@ -19867,12 +19867,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T20:20:07.916Z
+      updated_at: 2026-06-11T20:21:40.459Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T20:20:07.916Z
+      updated_at: 2026-06-11T20:21:40.459Z
     integration:
       status: pending
       detail: null
@@ -19880,7 +19880,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b28147ca373712390caf931395bb6ab743e28277
-      updated_at: 2026-06-11T20:20:07.916Z
+      updated_at: 2026-06-11T20:21:40.459Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTTD1ETQ674218060ZCJNKAM
@@ -19889,16 +19889,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T19:19:25.308Z
-      last_reconciled_at: 2026-06-11T20:20:07.916Z
+      last_reconciled_at: 2026-06-11T20:21:40.459Z
       created_at: 2026-06-11T19:18:38.177Z
-      updated_at: 2026-06-11T20:20:07.916Z
+      updated_at: 2026-06-11T20:21:40.459Z
     workspace_id: dispatch-workspace-01KTTD1ETQ674218060ZCJNKAM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 74ab85fe3b5971918484ee84f6942fe7ed04e165
+        last_seen_at: 2026-06-11T20:21:40.459Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-cache-env-key-01kttd1e-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-test-cache-env-key/01kttd1e
-        head: b28147ca373712390caf931395bb6ab743e28277
-        last_seen_at: 2026-06-11T19:18:38.177Z
+        head: 74ab85fe3b5971918484ee84f6942fe7ed04e165
+        last_seen_at: 2026-06-11T20:21:40.459Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-cache-env-key-01kttd1e
