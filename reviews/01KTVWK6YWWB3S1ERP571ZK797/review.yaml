@@ -1,0 +1,26 @@
+_ulid: 01KTVWK6YWWB3S1ERP571ZK797
+slugs: []
+title: "Plan review: UI Redesign Global Decisions (requested round 1)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTVWK6YVYWZ9R4T1G9BNVFFM
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T17:45:03.708Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-ui-redesign-global-decisions"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T17:45:03.708Z
+updated_at: null
+notes: []
