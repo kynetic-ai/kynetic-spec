@@ -14944,7 +14944,7 @@ workspaces:
         head: fb7f92add5b79e32e4c5c35ec8ec51f76ee7c889
         last_seen_at: 2026-06-11T11:26:19.358Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-contributing-security-docs-01kttczf
-  - active_role: null
+  - active_role: worker
     base_branch_point: 387dbcf743ece951c4c6fa54e0421927add632ff
     bootstrap:
       status: succeeded
@@ -15280,7 +15280,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T11:27:08.727Z
+      updated_at: 2026-06-11T11:27:45.425Z
     integration:
       status: pending
       detail: null
@@ -15289,17 +15289,17 @@ workspaces:
       target_branch: dev
       target_commit: 387dbcf743ece951c4c6fa54e0421927add632ff
       updated_at: 2026-06-11T11:27:08.727Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTD0ZPTTX0N18MEY53HFKMK
     task_ref: "@01KTTD0ZPTTX0N18MEY53HFKMK"
     task_slug: task-git-utils-execfile
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-11T11:27:08.727Z
+      last_active_at: 2026-06-11T11:27:45.425Z
+      last_reconciled_at: 2026-06-11T11:27:45.425Z
       created_at: 2026-06-11T11:27:08.727Z
-      updated_at: 2026-06-11T11:27:33.610Z
+      updated_at: 2026-06-11T11:27:45.425Z
     workspace_id: dispatch-workspace-01KTTD0ZPTTX0N18MEY53HFKMK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
