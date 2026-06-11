@@ -31781,3 +31781,19 @@
   todos_count: 0
   created_at: 2026-06-11T17:22:02.354Z
   automation: eligible
+- _ulid: 01KTW1G3TFE4K1HFPKEBXBCH9B
+  slugs:
+    - task-stabilize-workflow-runs-stale-dist
+  title: Stabilize workflow-runs test against stale dist during full suite
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - test
+    - flaky
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T19:10:45.071Z
+  automation: eligible

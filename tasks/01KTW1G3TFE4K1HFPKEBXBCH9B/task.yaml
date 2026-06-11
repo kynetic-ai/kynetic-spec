@@ -1,0 +1,28 @@
+_ulid: 01KTW1G3TFE4K1HFPKEBXBCH9B
+slugs:
+  - task-stabilize-workflow-runs-stale-dist
+title: Stabilize workflow-runs test against stale dist during full suite
+type: bug
+description: "During review of @task-ci-node-version-matrix on 2026-06-11, a full npm test run
+  failed once in tests/workflow-runs.test.ts: 'workflow next - completing last step should output
+  summary in JSON mode'. The CLI subprocess failed importing dist/parser/meta.js because
+  dist/schema/index.js did not export AgentSchema. The branch under review only changed workflow
+  YAML; the focused rerun 'npm test -- tests/workflow-runs.test.ts --fresh' passed before and after
+  'npm run build', so this appears to be a pre-existing full-suite stale-dist/race issue rather than
+  a task regression. Investigate why full-suite runs can execute CLI subprocesses against
+  inconsistent dist output and stabilize the test/build isolation."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - test
+  - flaky
+vcs_refs: []
+created_at: 2026-06-11T19:10:45.071Z
+todos: []
+automation: eligible
