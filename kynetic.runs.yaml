@@ -63996,7 +63996,7 @@ runs:
     completed_at: 2026-06-11T15:42:49.148Z
   - _ulid: 01KTVPP82GHDSV3YNVCS7B3AFX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -64013,7 +64013,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T16:02:52.491Z
-        completed_at: 2026-06-11T16:02:52.491Z
+        completed_at: 2026-06-11T16:03:02.981Z
+        notes: "Friction points: Full npm test took 2434.5s in this review; that is systemic but already
+          tracked by inbox item @01KNTB8Z4, so no duplicate. The kspec-reflect skill says to use
+          'kspec workflow show' without arguments, but this run required 'kspec workflow show
+          @01KTVPP8'; that mismatch caused a small failed command and is likely repeatable for
+          agents when more than one active run or command semantics require a run ref. Review check
+          recording also required sequential shadow writes, but that is expected behavior rather
+          than a capture-worthy issue."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T16:03:02.981Z
+        completed_at: 2026-06-11T16:03:02.981Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T16:01:51.696Z
