@@ -2,7 +2,93 @@ _ulid: 01KTVM27BMMVKHG1QV706BH53W
 slugs: []
 title: Review task-command-dispatch-timeout
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T15:30:57.976Z
+    completed_at: 2026-06-11T15:30:57.976Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint completed with 0 errors. Focused lint via npx oxlint on changed TS/test
+      files completed with 0 errors and 6 warnings; checked warnings are pre-existing test-helper
+      warnings outside the added timeout test diff.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T15:31:00.618Z
+    completed_at: 2026-06-11T15:31:00.618Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T15:31:03.353Z
+    completed_at: 2026-06-11T15:31:03.353Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- --fresh: 2768 suites passed; 10504 tests passed, 3 skipped; duration 2742.2s.
+      Full log: /tmp/kspec-test-cache/01KTVM0ZSJ551MRSFTNDN4BZHK/23c4112208fce81a.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T15:31:05.971Z
+    completed_at: 2026-06-11T15:31:05.971Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; existing reference warnings allowed by
+      --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T15:31:08.564Z
+    completed_at: 2026-06-11T15:31:08.564Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; existing alignment warnings allowed by
+      --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T15:31:11.132Z
+    completed_at: 2026-06-11T15:31:11.132Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warnings allowed
+      by --warnings-ok. New daemon-command-api timeout AC annotations found in behavioral tests.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T15:31:13.690Z
+    completed_at: 2026-06-11T15:31:13.690Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused daemon command API tests passed: 46 tests passed across 3 suites; duration 5.3s."
+    name: focused daemon command tests
+    required: false
+    runner: npm test -- tests/daemon-command-api.test.ts --fresh
+    created_at: 2026-06-11T15:31:16.211Z
+    completed_at: 2026-06-11T15:31:16.211Z
 events:
   - _ulid: 01KTVM27BKEH862ZYSH2DZBPXK
     actor: Jacob Chapel
@@ -43,9 +129,88 @@ events:
     payload:
       thread_ulid: 01KTVM7NR7ZKV6RGE8CZCS6DKN
     timestamp: 2026-06-11T15:19:58.403Z
+  - _ulid: 01KTVMXP109KM44BD51ZJ2A5YR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T15:30:58.209Z
+  - _ulid: 01KTVMXRKSZ6K23GH1EZHF38FR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T15:31:00.857Z
+  - _ulid: 01KTVMXV8VA0ZMBXSE8NNVBW3Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T15:31:03.579Z
+  - _ulid: 01KTVMXXV291BVKH8W8BZRHQGW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T15:31:06.210Z
+  - _ulid: 01KTVMY0AZQVKP0K5TTGEN5WGF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T15:31:08.767Z
+  - _ulid: 01KTVMY2VPF8HB2VPZ0Y8WCD3H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T15:31:11.350Z
+  - _ulid: 01KTVMY5BNZBJRT8WQGRBZ77R3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T15:31:13.909Z
+  - _ulid: 01KTVMY7T7NQQSJHGA2ASTCREE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon command tests
+    timestamp: 2026-06-11T15:31:16.423Z
+  - _ulid: 01KTVMYABYN5BAS8PG0YZ6ZFZ7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTVMYA4BYGJWBDYB0GQQP68K
+    timestamp: 2026-06-11T15:31:19.038Z
+  - _ulid: 01KTVMYCTVR1VF92PDY3DQN0N7
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T15:31:21.563Z
+  - _ulid: 01KTVMYCTVZ92W80PVHNDZAKNY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T15:31:21.563Z
 examined_commit: 76859368017ba57e539303d633dfa9e248f05f5d
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -108,7 +273,32 @@ threads:
           output, or change the timeout suggestion to an actually informative surface."
         created_at: 2026-06-11T15:19:43.706Z
     kind: blocker
-verdicts: []
+  - _ulid: 01KTVMYA4BYGJWBDYB0GQQP68K
+    entries:
+      - _ulid: 01KTVMYA4B8S1Q2Y0ETKZYSSRW
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: packages/daemon/src/routes/command.ts,
+          packages/daemon/src/server.ts, packages/daemon/src/index.ts, packages/daemon/src/pid.ts,
+          scripts/build-daemon.cjs, src/cli/commands/serve.ts, src/daemon-shared/endpoint.ts,
+          src/parser/config.ts, tests/daemon-command-api.test.ts, kspec-agents.md. Commands run:
+          kspec task get, kspec item get, git diff/stat/log, rg AC annotation search, focused daemon
+          command tests, focused oxlint, git diff --check, format, lint, typecheck, full npm test --
+          --fresh, kspec validate refs/alignment/completeness. Claims verified: timeout ACs are
+          covered by behavioral route tests; timeout config is threaded from kspec config through
+          serve argv to daemon route options; late completion side effects are attached to execution
+          promises. Categories searched: correctness, queue/timeout edge cases, health/operator
+          surface, error handling, test quality, config plumbing, and integration. Finding: serve
+          status does not surface command_dispatch despite timeout guidance pointing there."
+        created_at: 2026-06-11T15:31:18.795Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T15:31:21.563Z
 created_at: 2026-06-11T15:15:58.452Z
-updated_at: 2026-06-11T15:19:58.041Z
+updated_at: 2026-06-11T15:31:21.563Z
 notes: []
