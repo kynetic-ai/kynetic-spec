@@ -146,8 +146,7 @@
       given: |
         a test annotation that marks a criterion not-applicable
       when: |
-        corpus coverage is computed by the coverage engine this program
-        introduces
+        corpus coverage is computed by the coverage state engine
       then: |
         the annotation neither counts as coverage for that criterion nor
         exempts it from the corpus coverage states
@@ -215,8 +214,10 @@
       when: |
         states are rendered
       then: |
-        exactly the four presentation buckets appear, with the
-        stale-versus-drifted distinction available only as cause detail
+        every rendered coverage state is one of the four presentation
+        buckets — covered, failing, not yet, re-verify — and the
+        stale-versus-drifted distinction is available only as cause
+        detail
     - id: ac-2
       given: |
         the same coverage state appearing on two different surfaces
@@ -273,7 +274,14 @@
     upgrade's observable contract is its end state: every actor field
     canonical. Identity is attribution: it powers filtering and display
     such as ownership and awaiting-action views, and carries no
-    authentication or access-control semantics.
+    authentication or access-control semantics. This is a transition
+    boundary, not a silent contradiction: the implemented
+    author-resolution fallback chain (@config-author ac-3), which derives
+    an author from version-control or operating-system user names when no
+    explicit identity is configured, produces free-form variants by this
+    decision's definition and remains in force until the canonical-write
+    identity layer supersedes it and reconciles that spec with this
+    contract.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -566,6 +574,15 @@ not close while any row below is unclaimed.
   (@ac-coverage-applicability ac-2 is scoped to the new engine for this
   reason). The coverage state engine plan owns reconciling the validate
   exemption behavior with corpus coverage.
+- @actor-identity-model coexists with the implemented author-resolution
+  spec (@config-author) during the transition: @config-author ac-3 falls
+  back to git user.name then OS user when no env var or configured
+  author exists — a free-form variant under @actor-identity-model ac-1.
+  That implemented fallback remains in force until the UI foundations
+  plan's canonical-write identity layer (per the Consumers table)
+  supersedes it; that work owns reconciling @config-author — updating or
+  superseding its fallback chain — so the two specs do not sit in the
+  corpus as an unexplained contradiction.
 - Routing all preference access through the shared utility
   (@client-preference-persistence) is the decided mechanism, but its
   enforcement is a lint-rule concern, not a behavioral test — the
