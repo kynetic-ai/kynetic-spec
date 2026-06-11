@@ -70,6 +70,18 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T08:49:23.360Z
     completed_at: 2026-06-11T08:49:23.360Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The four new specs' 19 ACs are all claimed with exact IDs by their tasks (6+4+4+5,
+      verified line by line). But the two N/A-respec tasks use prose Covers lines and the three new
+      @test-annotation-sweep ACs have no stable IDs, so that coverage claim is unverifiable.
+    name: AC coverage mapping
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T08:49:28.616Z
+    completed_at: 2026-06-11T08:49:28.616Z
 events:
   - _ulid: 01KTTXQVAWJ8VTNY2FXYXNJPB1
     actor: "@claude"
@@ -203,6 +215,13 @@ events:
       status: fail
       name: Existing spec alignment
     timestamp: 2026-06-11T08:49:23.565Z
+  - _ulid: 01KTTXYH8BMS50PKQF74ERPTM4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC coverage mapping
+    timestamp: 2026-06-11T08:49:28.843Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -423,5 +442,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:49:23.360Z
+updated_at: 2026-06-11T08:49:28.616Z
 notes: []
