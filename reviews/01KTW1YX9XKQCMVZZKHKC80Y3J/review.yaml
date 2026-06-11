@@ -2,7 +2,17 @@ _ulid: 01KTW1YX9XKQCMVZZKHKC80Y3J
 slugs: []
 title: Review task-web-ui-debug-log-cleanup
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1010 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T19:35:07.051Z
+    completed_at: 2026-06-11T19:35:07.051Z
 events:
   - _ulid: 01KTW1YX9XYD8DF8ZGG6ZAME6X
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T19:19:20.603Z
+  - _ulid: 01KTW2WQSYX7YSDNVCFRD98RJA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T19:35:07.326Z
 examined_commit: 740b3ec859b126508e0165f0e5cefdbab83ecba3
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T19:18:49.917Z
-updated_at: 2026-06-11T19:19:20.320Z
+updated_at: 2026-06-11T19:35:07.051Z
 notes: []
