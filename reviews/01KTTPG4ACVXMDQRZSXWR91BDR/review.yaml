@@ -364,6 +364,12 @@ events:
     payload:
       thread_ulid: 01KTTPJC4Z224SS44XNTT5AAE8
     timestamp: 2026-06-11T07:40:13.692Z
+  - _ulid: 01KTTSZWMM84FCFAA8SKPDAQ4D
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTPJC4Z224SS44XNTT5AAE8
+    timestamp: 2026-06-11T07:40:18.964Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -573,6 +579,8 @@ threads:
           every top-chrome element clears that value."
         created_at: 2026-06-11T07:40:13.464Z
     kind: nit
+    resolved_at: 2026-06-11T07:40:18.717Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -582,5 +590,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:41:27.363Z
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T07:40:13.464Z
+updated_at: 2026-06-11T07:40:18.717Z
 notes: []
