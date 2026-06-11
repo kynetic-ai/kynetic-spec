@@ -63247,7 +63247,7 @@ runs:
     started_at: 2026-06-11T12:11:59.092Z
   - _ulid: 01KTVA1EBEJBMN6VM9VH1GNFJK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -63261,7 +63261,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T12:23:02.413Z
-        completed_at: 2026-06-11T12:23:02.413Z
+        completed_at: 2026-06-11T12:23:06.376Z
+        notes: "Candidates: (1) friction/improvement — shellQuotePath added in shadow.ts is private; three
+          other user-facing guidance strings still embed unquoted paths in shell commands
+          (validation.ts:133, shadow.ts:623, yaml.ts:822) — same class the cycle-2 review blocked
+          on; high confidence, concrete, unique. (2) success — test pattern of parsing prescribed
+          recovery commands from error output and executing them verbatim via /bin/sh, proving
+          guidance correctness behaviorally; this pattern would have caught both cycle-1 and cycle-2
+          blockers up front. (3) stale testing-convention timing (~150s full suite documented vs
+          ~2420s observed twice today) — concrete, affects agent time budgeting."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T12:23:06.376Z
+        completed_at: 2026-06-11T12:23:06.376Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T12:20:47.086Z
