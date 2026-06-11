@@ -131,8 +131,8 @@
     neither cover a criterion nor exempt it. This is a transition
     boundary, not a retroactive change: the pre-existing completeness
     validation path that honors in-code not-applicable annotations for
-    trait criteria remains in force until the coverage state engine work
-    reconciles the two semantics.
+    trait criteria remains in force until corpus coverage computation
+    adopts these semantics.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -146,7 +146,7 @@
       given: |
         a test annotation that marks a criterion not-applicable
       when: |
-        corpus coverage is computed by the coverage state engine
+        corpus coverage is computed
       then: |
         the annotation neither counts as coverage for that criterion nor
         exempts it from the corpus coverage states
@@ -582,8 +582,10 @@ not close while any row below is unclaimed.
   completeness validation path continues to honor in-code N/A
   annotations for trait criteria, while the corpus coverage introduced
   by this program treats them as neither covering nor exempting
-  (@ac-coverage-applicability ac-2 is scoped to the new engine for this
-  reason). The coverage state engine plan owns reconciling the validate
+  (@ac-coverage-applicability ac-2 is scoped to the corpus coverage
+  this program introduces for this reason). The legacy completeness
+  path remains in force until corpus coverage computation adopts these
+  semantics; the coverage track plans own reconciling the validate
   exemption behavior with corpus coverage.
 - @actor-identity-model coexists with the implemented author-resolution
   spec (@config-author) during the transition: @config-author ac-3 falls
