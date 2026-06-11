@@ -145,6 +145,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-11T13:28:30.749Z
+  - _ulid: 01KTVDY0FR98BFE0YYNHZV3ECM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVDY078NC5QJP9RDDHNWZME
+    timestamp: 2026-06-11T13:28:48.888Z
 examined_commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
 external_links: []
 lifecycle_state: open
@@ -154,8 +161,31 @@ subject:
   content_hash: ""
   ref: "@01KTTD1DB7F2FD15BCBABG1F80"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTVDY078NC5QJP9RDDHNWZME
+    anchor:
+      type: code
+      commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
+      line_end: 22
+      line_start: 22
+      path: tests/daemon-api/triage.test.ts
+      side: head
+    entries:
+      - _ulid: 01KTVDY078NJQES36ZJH5YH5QW
+        author: Jacob Chapel
+        body: "MUST-FIX: This annotation claims coverage for @trait-api-endpoint ac-5, whose required
+          behavior is that mutating API endpoints create a shadow commit with a semantic message.
+          The new tests only verify persisted route effects and PubSub calls; they never inspect
+          shadow git history or the commit subject after POST /api/triage, POST /:ref/override, or
+          POST /:ref/act. Evidence: rg in tests/daemon-api/triage.test.ts finds only this header
+          comment for commitIfShadow/shadow commit/git log, while
+          packages/daemon/src/routes/triage.ts awaits commitIfShadow at lines 276, 465, and 568.
+          Replace this claim with a behavioral assertion that at least one mutation creates the
+          expected semantic shadow commit, or mark the trait AC N/A only if the spec is changed so
+          daemon route mutations no longer inherit that requirement."
+        created_at: 2026-06-11T13:28:48.616Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T13:11:42.853Z
-updated_at: 2026-06-11T13:28:30.455Z
+updated_at: 2026-06-11T13:28:48.616Z
 notes: []
