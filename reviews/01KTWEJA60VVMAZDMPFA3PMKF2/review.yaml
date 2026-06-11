@@ -179,6 +179,13 @@ events:
       status: fail
       name: e2e
     timestamp: 2026-06-11T23:27:07.718Z
+  - _ulid: 01KTWG6D6JWJA6Q1NNYP3MMGZF
+    actor: jacob.chapel@gmail.com
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTWG6CYCKFV5RX681GVTBDSD
+    timestamp: 2026-06-11T23:27:35.634Z
 examined_commit: 478716573eb2ac9fa72f01814b11710d07ab5045
 external_links: []
 lifecycle_state: open
@@ -188,8 +195,43 @@ subject:
   content_hash: ""
   ref: "@01KTTCZH6PJHXT727JM9E0739D"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTWG6CYCKFV5RX681GVTBDSD
+    entries:
+      - _ulid: 01KTWG6CYCRWMW8BPASV45P9CQ
+        author: jacob.chapel@gmail.com
+        body: >-
+          Evidence log (non-blocking):
+
+
+          Files read: package.json; package-lock.json; packages/web-ui/package.json;
+          scripts/build-docs-search.cjs; src/cli/commands/index.ts; src/cli/commands/validate.ts;
+          dist/cli/commands/index.js; dist/cli/commands/validate.js;
+          tests/e2e/fixtures/project.plans.yaml; packages/daemon/src/routes/plans.ts; E2E error
+          context for the plans failure.
+
+
+          Commands run: git diff dev...HEAD; dependency and usage searches with rg/jq; npm run
+          format:check; npm run lint -- --quiet; npm run typecheck; kspec validate --refs
+          --warnings-ok; kspec validate --alignment --warnings-ok; kspec validate --completeness
+          --warnings-ok; npm run build; npm test; npm test -- tests/workflow-runs.test.ts --fresh;
+          npm run test:e2e; focused plans E2E rerun.
+
+
+          Claims verified: the branch removes only the eight duplicated web-ui-only root
+          devDependencies; packages/web-ui still declares them; pagefind remains at the root because
+          scripts/build-docs-search.cjs imports it; no root source/test/config usage of the removed
+          packages was found; lockfile change is dependency metadata only.
+
+
+          Categories searched: correctness, package/lockfile integration, test quality and gate
+          behavior, AC coverage applicability, edge/error/security surface. Task has no spec_ref, so
+          AC annotation coverage does not apply. No blocking findings found. Unrelated
+          flaky/pre-existing gate failures were tracked as @01KTWFH1 and @01KTWG0D per review
+          policy.
+        created_at: 2026-06-11T23:27:35.372Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T22:59:08.608Z
-updated_at: 2026-06-11T23:27:07.446Z
+updated_at: 2026-06-11T23:27:35.372Z
 notes: []
