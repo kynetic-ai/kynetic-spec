@@ -11341,7 +11341,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T06:53:55.503Z
+      updated_at: 2026-06-11T06:57:28.567Z
     integration:
       status: merged
       detail: integration:merged
@@ -11358,18 +11358,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T06:36:23.908Z
-      last_reconciled_at: 2026-06-11T06:57:19.552Z
+      last_reconciled_at: 2026-06-11T06:57:28.567Z
       created_at: 2026-06-11T05:52:25.284Z
-      updated_at: 2026-06-11T06:57:19.552Z
+      updated_at: 2026-06-11T06:57:28.567Z
     workspace_id: dispatch-workspace-01KTTD05J0G7PQGFER0GY2N4KR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 7b5d5b3849c0f4cf06841b8ba250278e2245d6ab
-        last_seen_at: 2026-06-11T06:35:33.564Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-log-capture-01kttd05-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-log-capture/01kttd05
