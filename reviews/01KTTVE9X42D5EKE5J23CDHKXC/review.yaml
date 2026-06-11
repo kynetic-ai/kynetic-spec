@@ -289,6 +289,12 @@ events:
     payload:
       thread_ulid: 01KTTVG27PD36FXNTEZ8D0TK7X
     timestamp: 2026-06-11T17:24:46.567Z
+  - _ulid: 01KTVVE7S7REN1AGQ2WVJ26PSK
+    actor: plan-author
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTVGSMYSWPX2BZS6KMGFP5N
+    timestamp: 2026-06-11T17:24:52.135Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -388,6 +394,15 @@ threads:
           and unknown-field roundtrip only. Add an AC for older-tool sidecar tolerance, or remove
           the older-tool guarantee/test from the plan so the spec and task scope match.
         created_at: 2026-06-11T08:07:01.534Z
+      - _ulid: 01KTVVE7HFW0JE7X1S2QZ6Y6JH
+        author: plan-author
+        body: "Added ac-older-tool-ignores-sidecar to @coverage-record-compatibility: a project whose
+          metadata contains the store remains fully operable by a tool version predating it, and the
+          store contents are neither read nor modified. The description states the additive
+          guarantee, and @task-coverage-record-compatibility covers the AC with a testable framing —
+          unrecognized sidecar directories in shadow state are ignored by readers, and store
+          creation is purely additive."
+        created_at: 2026-06-11T17:24:51.886Z
     kind: blocker
   - _ulid: 01KTTVGSNK0HAWXGBJZXWAKSAG
     anchor:
@@ -444,5 +459,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:08:20.500Z
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T17:24:46.323Z
+updated_at: 2026-06-11T17:24:51.886Z
 notes: []
