@@ -464,7 +464,13 @@ import {
   beforeEach,
   afterEach,
 } from "vitest";
-import { kspec, createTempDir, initGitRepo } from "./helpers/cli.js";
+import {
+  kspec,
+  createTempDir,
+  setupShadowDetection,
+  seedSplitTask,
+  testUlid,
+} from "./helpers/cli.js";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { writeYamlFilePreserveFormat } from "../src/parser/yaml.js";
@@ -478,12 +484,14 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
 
   beforeEach(async () => {
     tempDir = await createTempDir();
-    await initGitRepo(tempDir);
-    await kspec("init", tempDir);
 
-    // Ensure spec directory exists
+    // Create the spec directory, then set up the fake shadow worktree markers
+    // so initContext() resolves specDir to .kspec/. (`kspec init` cannot be
+    // used here: it prompts interactively and silently aborts under vitest's
+    // closed stdin, leaving an unrecognized bare directory behind.)
     const specDir = path.join(tempDir, ".kspec");
     await fs.mkdir(specDir, { recursive: true });
+    await setupShadowDetection(tempDir);
 
     // Create a simple spec file
     const kspecContent = {
@@ -495,7 +503,7 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
     const itemContent = {
       items: [
         {
-          _ulid: "01TESTITEM0000000000000",
+          _ulid: testUlid("ITEM"),
           slugs: ["test-item"],
           title: "Test Item",
           type: "feature",
@@ -505,18 +513,20 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
     };
     await writeYamlFilePreserveFormat(path.join(specDir, "test.yaml"), itemContent);
 
-    const taskContent = {
-      tasks: [
-        {
-          _ulid: "01TESTTASK0000000000000",
-          slugs: ["test-task"],
-          title: "Test Task",
-          status: "pending",
-          priority: 3,
-        },
-      ],
-    };
-    await writeYamlFilePreserveFormat(path.join(specDir, "project.tasks.yaml"), taskContent);
+    // Tasks must be seeded in split storage format — a monolithic entry in
+    // project.tasks.yaml fails the split-backend migration check
+    seedSplitTask(specDir, {
+      _ulid: testUlid("TASK"),
+      slugs: ["test-task"],
+      title: "Test Task",
+      type: "task",
+      status: "pending",
+      priority: 3,
+      depends_on: [],
+      notes: [],
+      todos: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
   });
 
   afterEach(async () => {
@@ -532,8 +542,14 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
     // Search for pattern in inbox
     const result = kspec('search "inbox-keyword"', tempDir);
 
-    expectE2E(result.stdout).toContain("inbox");
+    // Must be a real match, not the 'No matches found for "inbox-keyword"' echo
+    // (which contains the entity-type word as a substring of the pattern)
+    expectE2E(result.exitCode).toBe(0);
+    expectE2E(result.stdout).not.toContain("No matches found");
+    expectE2E(result.stdout).toContain("[inbox]");
     expectE2E(result.stdout).toContain("inbox-keyword");
+    expectE2E(result.stdout).toContain("matched:");
+    expectE2E(result.stdout).toContain("1 result(s)");
   });
 
   itE2E("should search meta observations", async () => {
@@ -542,11 +558,10 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
     const metaContent = {
       observations: [
         {
-          _ulid: "01TESTOBS00000000000000",
+          _ulid: testUlid("OBS"),
           type: "friction",
           content: "Found friction with observation-keyword process",
           created_at: new Date().toISOString(),
-          resolved_at: null,
         },
       ],
     };
@@ -555,8 +570,12 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
     // Search for pattern in observations
     const result = kspec('search "observation-keyword"', tempDir);
 
-    expectE2E(result.stdout).toContain("observation");
+    expectE2E(result.exitCode).toBe(0);
+    expectE2E(result.stdout).not.toContain("No matches found");
+    expectE2E(result.stdout).toContain("[observation]");
     expectE2E(result.stdout).toContain("observation-keyword");
+    expectE2E(result.stdout).toContain("matched:");
+    expectE2E(result.stdout).toContain("1 result(s)");
   });
 
   itE2E("should search meta agents", async () => {
@@ -565,7 +584,7 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
     const metaContent = {
       agents: [
         {
-          _ulid: "01TESTAGENT000000000000",
+          _ulid: testUlid("AGENT"),
           id: "test-agent",
           name: "Agent role with agent-keyword",
         },
@@ -576,18 +595,23 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
     // Search for pattern in agents
     const result = kspec('search "agent-keyword"', tempDir);
 
-    expectE2E(result.stdout).toContain("agent");
+    expectE2E(result.exitCode).toBe(0);
+    expectE2E(result.stdout).not.toContain("No matches found");
+    expectE2E(result.stdout).toContain("[agent]");
     expectE2E(result.stdout).toContain("agent-keyword");
+    expectE2E(result.stdout).toContain("matched:");
+    expectE2E(result.stdout).toContain("1 result(s)");
   });
 
   itE2E("should search meta workflows", async () => {
-    // Create meta manifest with workflow
+    // Create meta manifest with workflow (trigger is required by WorkflowSchema)
     const specDir = path.join(tempDir, ".kspec");
     const metaContent = {
       workflows: [
         {
-          _ulid: "01TESTWORKFLOW000000000",
+          _ulid: testUlid("WF"),
           id: "test-workflow",
+          trigger: "manual",
           description: "Workflow description with workflow-keyword",
           steps: [],
         },
@@ -598,8 +622,12 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
     // Search for pattern in workflows
     const result = kspec('search "workflow-keyword"', tempDir);
 
-    expectE2E(result.stdout).toContain("workflow");
+    expectE2E(result.exitCode).toBe(0);
+    expectE2E(result.stdout).not.toContain("No matches found");
+    expectE2E(result.stdout).toContain("[workflow]");
     expectE2E(result.stdout).toContain("workflow-keyword");
+    expectE2E(result.stdout).toContain("matched:");
+    expectE2E(result.stdout).toContain("1 result(s)");
   });
 
   itE2E("should search meta conventions", async () => {
@@ -608,7 +636,7 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
     const metaContent = {
       conventions: [
         {
-          _ulid: "01TESTCONV0000000000000",
+          _ulid: testUlid("CONV"),
           domain: "test-domain",
           rules: ["Convention rule with convention-keyword"],
         },
@@ -619,29 +647,29 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
     // Search for pattern in conventions
     const result = kspec('search "convention-keyword"', tempDir);
 
-    expectE2E(result.stdout).toContain("convention");
+    expectE2E(result.exitCode).toBe(0);
+    expectE2E(result.stdout).not.toContain("No matches found");
+    expectE2E(result.stdout).toContain("[convention]");
     expectE2E(result.stdout).toContain("convention-keyword");
+    expectE2E(result.stdout).toContain("matched:");
+    expectE2E(result.stdout).toContain("1 result(s)");
   });
 
-  // TODO: This test has an intermittent issue where meta entities aren't being loaded
-  // Individual entity type tests all pass, so the core functionality works
-  // oxlint-disable-next-line jest/no-disabled-tests -- intermittent load issue, individual entity type tests cover functionality
-  itE2E.skip("should search all entity types together", async () => {
+  itE2E("should search all entity types together", async () => {
     // Create meta manifest with multiple entities containing same keyword FIRST
     const specDir = path.join(tempDir, ".kspec");
     const metaContent = {
       observations: [
         {
-          _ulid: "01TESTOBS00000000000000",
+          _ulid: testUlid("OBS"),
           type: "success",
           content: "Universal keyword in observation",
           created_at: new Date().toISOString(),
-          resolved_at: null,
         },
       ],
       agents: [
         {
-          _ulid: "01TESTAGENT000000000000",
+          _ulid: testUlid("AGENT"),
           id: "test-agent",
           name: "Universal keyword in agent",
         },
@@ -655,10 +683,14 @@ describeE2E("AC-7: Search inbox and meta entities (E2E)", () => {
     // Search for universal pattern
     const result = kspec('search "Universal"', tempDir);
 
-    // Should find matches in multiple entity types
-    expectE2E(result.stdout).toContain("inbox");
-    expectE2E(result.stdout).toContain("observation");
-    expectE2E(result.stdout).toContain("agent");
+    // Should find matches in all three entity types — the no-match echo
+    // cannot satisfy these assertions
+    expectE2E(result.exitCode).toBe(0);
+    expectE2E(result.stdout).not.toContain("No matches found");
+    expectE2E(result.stdout).toContain("[inbox]");
+    expectE2E(result.stdout).toContain("[observation]");
+    expectE2E(result.stdout).toContain("[agent]");
     expectE2E(result.stdout).toContain("Universal");
+    expectE2E(result.stdout).toContain("3 result(s)");
   });
 });
