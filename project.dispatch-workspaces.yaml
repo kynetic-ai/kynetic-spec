@@ -15958,7 +15958,7 @@ workspaces:
         head: 3c1b56f24101b99dd2a646dc0afda611d5aa1663
         last_seen_at: 2026-06-11T12:46:09.970Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-reenable-split-storage-ref-validation-test-01kttd1c
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 7603dc7c8a51f80a528f93cd9c8c4cef90afe728
     bootstrap:
       status: succeeded
@@ -16435,12 +16435,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T13:10:12.709Z
+      updated_at: 2026-06-11T13:32:04.980Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T13:10:48.515Z
+      updated_at: 2026-06-11T13:32:04.980Z
     integration:
       status: pending
       detail: null
@@ -16448,7 +16448,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7603dc7c8a51f80a528f93cd9c8c4cef90afe728
-      updated_at: 2026-06-11T13:10:12.709Z
+      updated_at: 2026-06-11T13:32:04.980Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTTD1DB7F2FD15BCBABG1F80
@@ -16457,9 +16457,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T13:10:48.515Z
-      last_reconciled_at: 2026-06-11T13:10:48.515Z
+      last_reconciled_at: 2026-06-11T13:32:04.980Z
       created_at: 2026-06-11T12:46:49.445Z
-      updated_at: 2026-06-11T13:10:48.515Z
+      updated_at: 2026-06-11T13:32:04.980Z
     workspace_id: dispatch-workspace-01KTTD1DB7F2FD15BCBABG1F80
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
