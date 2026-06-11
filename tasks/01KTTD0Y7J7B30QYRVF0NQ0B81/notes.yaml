@@ -18,3 +18,23 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T10:13:55.284Z
+  - _ulid: 01KTV3NESRKNR3DPYBJ2NP3461
+    content: "Implementation complete on dispatch/task/task-shadow-restore-loud-failure/01kttd0y
+      (7388f96a21). Replaced both silent .catch(() => {}) restore calls (initializeShadow +
+      repairShadow catch blocks) with restoreStashedWorktreeDirAfterFailure(): on double failure the
+      error string now reports rebuild error + restore error + absolute backup path + actual
+      worktree-location state (stat at failure time, covering the rm-before-rename empty case from
+      the restoreStashedWorktreeDir audit) + recovery steps (mv backup back, re-run kspec shadow
+      repair); backup never deleted on failure paths (discardStashedWorktreeDir untouched,
+      success-path-only). On restore success the rebuild error gains a prior-state-restored note.
+      Detail folded into the error string — all CLI consumers (init, shadow repair, setup) print
+      result.error directly, no interface widening. Tests: tests/shadow-restore-failure.test.ts (4
+      tests) covers double-failure and restore-success for both functions via vi.mock of
+      node:fs/promises rename (fails only the restore direction), annotated with AC:
+      @broken-shadow-safety ac-preserve-on-failure and ac-restore-failure-reports-state. Gates:
+      format:check, lint --quiet (0 errors), oxlint on changed files (0 warnings), typecheck, full
+      npm test (10440 passed / 5 skipped / 0 failed), kspec validate refs/alignment/completeness all
+      green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T10:29:22.872Z
