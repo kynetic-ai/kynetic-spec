@@ -44,7 +44,7 @@ description: |
 spec_ref: "@daemon-network-endpoint-contract"
 plan_ref: "@plan-daemon-operational-reliability"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-daemon-reliability-specs"
@@ -55,6 +55,14 @@ tags:
   - cli
   - security
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-connect-host-exposure-warning/01kttd08
+  captured_at: 2026-06-11T21:27:11.717Z
+  commit: b56d32163b5e1592b58554f46c4ddc391684b109
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-connect-host-exposure-warning/01kttd08
 session_id: 01KTW784YC1BRQZATANFYH47SP
 history:
   - author: Jacob Chapel
@@ -77,7 +85,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-11T20:52:08.819Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-connect-host-exposure-warning/01kttd08
+          captured_at: 2026-06-11T21:27:11.717Z
+          commit: b56d32163b5e1592b58554f46c4ddc391684b109
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-connect-host-exposure-warning/01kttd08
+        previous: null
+      submitted_at:
+        new: 2026-06-11T21:27:11.718Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-11T21:27:11.718Z
 created_at: 2026-06-11T03:53:19.681Z
 started_at: 2026-06-11T20:52:08.818Z
+submitted_at: 2026-06-11T21:27:11.718Z
 todos: []
 automation: eligible

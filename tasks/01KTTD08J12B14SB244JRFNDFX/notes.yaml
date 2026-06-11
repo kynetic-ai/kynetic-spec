@@ -13,3 +13,17 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T21:07:05.882Z
+  - _ulid: 01KTW99XFWTQT6DV4XBEAK7TZM
+    content: "Implemented connect-host warning in startServer (configured daemon.connect_host) and
+      statusServer (metadata connect_host) in src/cli/commands/serve.ts, gated on
+      isExternallyReachable(), mirroring the bind-host warning blocks. Three CLI-level tests added
+      beside the existing ac-external-binding-warning tests in tests/cli-serve.test.ts: warning on
+      detached start, warning on serve status, and negative case (loopback connect_host produces no
+      connect warning on start or status). Tests use connect_host: localhost with a wildcard bind
+      because isLoopbackHost recognizes only numeric loopback (no OS-resolver dependency), so a DNS
+      name triggers the warning while staying locally reachable for health checks and stop. All
+      gates green: format, lint (0 errors, 0 new warnings in changed files), typecheck, full suite
+      (10534 passed / 0 failed), kspec refs/alignment/completeness validation. Commit b56d32163b."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T21:27:10.588Z
