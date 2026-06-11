@@ -16440,7 +16440,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T13:32:04.980Z
+      updated_at: 2026-06-11T13:32:11.502Z
     integration:
       status: pending
       detail: null
@@ -16449,7 +16449,7 @@ workspaces:
       target_branch: dev
       target_commit: 7603dc7c8a51f80a528f93cd9c8c4cef90afe728
       updated_at: 2026-06-11T13:32:04.980Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KTTD1DB7F2FD15BCBABG1F80
     task_ref: "@01KTTD1DB7F2FD15BCBABG1F80"
@@ -16457,18 +16457,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T13:10:48.515Z
-      last_reconciled_at: 2026-06-11T13:32:04.980Z
+      last_reconciled_at: 2026-06-11T13:32:11.502Z
       created_at: 2026-06-11T12:46:49.445Z
-      updated_at: 2026-06-11T13:32:04.980Z
+      updated_at: 2026-06-11T13:32:11.502Z
     workspace_id: dispatch-workspace-01KTTD1DB7F2FD15BCBABG1F80
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: aed37c6f4e34f4ed3ecf795ec901555129753a1d
-        last_seen_at: 2026-06-11T13:10:12.709Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-triage-api-tests-01kttd1d-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-triage-api-tests/01kttd1d
