@@ -52,6 +52,13 @@ events:
       kind: question
       thread_ulid: 01KTTVGSNK0HAWXGBJZXWAKSAG
     timestamp: 2026-06-11T08:07:02.134Z
+  - _ulid: 01KTTVGTJTWFJT27N6BRYCYCWB
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTTVGSSCHYX5BKJ5YMV9SS24
+    timestamp: 2026-06-11T08:07:02.490Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -144,7 +151,21 @@ threads:
           consumers must compare stamp freshness against annotation/code revisions elsewhere?
         created_at: 2026-06-11T08:07:01.556Z
     kind: question
+  - _ulid: 01KTTVGSSCHYX5BKJ5YMV9SS24
+    anchor:
+      type: structured
+      ref: "@ac-freshness-resolution"
+      section: description
+    entries:
+      - _ulid: 01KTTVGSSC5S1TAC4WE2TEV8W9
+        author: "@claude"
+        body: The description says freshness resolves "across two provenance classes" but then names
+          bootstrap plus three recorded provenance classes. Consider wording this as two provenance
+          sources, with recorded stamps carrying one of the recorded classes, to avoid confusing
+          source count with stored provenance enum values.
+        created_at: 2026-06-11T08:07:01.676Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:07:01.556Z
+updated_at: 2026-06-11T08:07:01.676Z
 notes: []
