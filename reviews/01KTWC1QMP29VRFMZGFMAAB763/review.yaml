@@ -52,6 +52,17 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-06-11T22:16:29.058Z
     completed_at: 2026-06-11T22:16:29.058Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command passed with the existing completeness-warning baseline under --warnings-ok. The
+      reviewed draft plan is not derived yet; plan-level AC/task coverage was checked separately.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T22:16:38.834Z
+    completed_at: 2026-06-11T22:16:38.834Z
 events:
   - _ulid: 01KTWC1QMPXS7YZAMWEG4MCAC0
     actor: "@claude"
@@ -94,6 +105,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-11T22:16:29.365Z
+  - _ulid: 01KTWC4GEH1EYNASANJ58T9MRH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T22:16:39.121Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -106,5 +124,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:15:08.182Z
-updated_at: 2026-06-11T22:16:29.058Z
+updated_at: 2026-06-11T22:16:38.834Z
 notes: []
