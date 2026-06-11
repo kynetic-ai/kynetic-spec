@@ -470,6 +470,12 @@ events:
     payload:
       thread_ulid: 01KTTXWC485J4Y9GHFE561TB1W
     timestamp: 2026-06-11T17:30:35.721Z
+  - _ulid: 01KTVVRWJPQVCYV8JQY0JGV6SW
+    actor: plan-author
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTXWHT0KBKKTGQY842XJ559
+    timestamp: 2026-06-11T17:30:41.110Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -795,6 +801,8 @@ threads:
           both."
         created_at: 2026-06-11T17:27:53.629Z
     kind: nit
+    resolved_at: 2026-06-11T17:30:40.887Z
+    resolved_by: plan-author
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -804,5 +812,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:50:22.029Z
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T17:30:35.470Z
+updated_at: 2026-06-11T17:30:40.887Z
 notes: []
