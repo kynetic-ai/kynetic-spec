@@ -235,6 +235,12 @@ events:
     payload:
       thread_ulid: 01KTVZ93XWXW7HX179TJHEYNMH
     timestamp: 2026-06-11T19:05:21.944Z
+  - _ulid: 01KTW16EM7WENRH2RZ512P28MV
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVZ96CYV2HJFH69CT09CM3Z
+    timestamp: 2026-06-11T19:05:28.455Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -319,6 +325,14 @@ threads:
           the WS envelope this vocabulary lives inside) or store the intended module on the plan
           record."
         created_at: 2026-06-11T18:32:01.182Z
+      - _ulid: 01KTW16E9ZHMF1DY628P83THWA
+        author: "@claude"
+        body: "Addressed: @mutation-event-naming now declares parent: @api-contract explicitly in the plan
+          content — the naming decision governs vocabulary inside the WS envelope that @api-contract
+          owns (rationale added to the Existing spec relationships note). Placement is now
+          deterministic regardless of the derive-time module. Note: plan import --into ignores
+          --module, so module_ref stays null; the explicit parent is the deterministic mechanism."
+        created_at: 2026-06-11T19:05:28.127Z
     kind: question
   - _ulid: 01KTVZ98SQRQPHXES5H1D82ZFP
     anchor:
@@ -382,5 +396,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:32:41.187Z
 created_at: 2026-06-11T18:30:27.984Z
-updated_at: 2026-06-11T19:05:21.637Z
+updated_at: 2026-06-11T19:05:28.127Z
 notes: []

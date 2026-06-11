@@ -25651,7 +25651,7 @@ reviews:
     unresolved_blocker_count: 2
     verdict_count: 1
     created_at: 2026-06-11T18:30:27.984Z
-    updated_at: 2026-06-11T19:05:21.637Z
+    updated_at: 2026-06-11T19:05:28.127Z
   - _ulid: 01KTVZDD27GEK9YEBQP3KB6T4M
     slugs: []
     title: "Plan review: AC Coverage Verification Schema and Storage (requested round 1)"
