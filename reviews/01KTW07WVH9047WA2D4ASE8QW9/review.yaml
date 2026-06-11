@@ -223,6 +223,12 @@ events:
     payload:
       thread_ulid: 01KTW0C5R5ZEN671JWJEX2SMFQ
     timestamp: 2026-06-11T19:26:58.340Z
+  - _ulid: 01KTW2E1VXW4PH83YQ0S0H72F8
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW0C8P8BSAHPA0DMBWJWQME
+    timestamp: 2026-06-11T19:27:06.109Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -328,6 +334,13 @@ threads:
           path whose location has version-control history, and no recorded verification stamp' so
           the two givens are disjoint and each AC is deterministic."
         created_at: 2026-06-11T18:51:10.409Z
+      - _ulid: 01KTW2E1G5965YJZEA7FT2H91D
+        author: "@claude"
+        body: "Narrowed as suggested: ac-bootstrap-when-unstamped given is now an acceptance criterion with
+          at least one annotation in a configured scan path whose location has version-control
+          history, and no recorded verification stamp. Its given and ac-no-history-absence are now
+          disjoint, so each AC is deterministic for a test author working from ACs alone."
+        created_at: 2026-06-11T19:27:05.732Z
     kind: blocker
   - _ulid: 01KTW0CBGK9D5QQTX8RGY66WND
     anchor:
@@ -413,5 +426,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:51:46.718Z
 created_at: 2026-06-11T18:48:47.217Z
-updated_at: 2026-06-11T19:26:57.951Z
+updated_at: 2026-06-11T19:27:05.732Z
 notes: []
