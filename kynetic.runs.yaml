@@ -63609,7 +63609,7 @@ runs:
     completed_at: 2026-06-11T13:41:10.652Z
   - _ulid: 01KTVFWKVMVN87VKSGSR2HA4T5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -63624,7 +63624,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T14:03:35.798Z
-        completed_at: 2026-06-11T14:03:35.798Z
+        completed_at: 2026-06-11T14:04:08.936Z
+        notes: "High-confidence observations: (1) Success: detached-reviewer helper plus review records gave
+          a clean end-to-end review/merge/complete path from a detached snapshot; already covered by
+          existing detached-reviewer merge helper specs/tasks, so no capture. (2) Success: repeated
+          fresh focused runs are strong evidence for re-enabled tests; this matches existing
+          review-gates practice, no new item. (3) Friction: full npm test exposed a stale
+          dist/export failure unrelated to the reviewed diff and only became actionable at final
+          summary; existing tracking found @01KTN0CE for earlier failure-summary visibility,
+          @01KT2F6H for long full-suite progress visibility, @01KTV9BT for intermittent full-suite
+          CLI/dist failures, and specific follow-up @01KTVFNW. (4) Friction: silent kspec
+          init/test-helper masking created vacuous tests; already captured as observation @01KTVEMA.
+          No new capture proposed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T14:04:08.936Z
+        completed_at: 2026-06-11T14:04:08.936Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T14:03:00.340Z
