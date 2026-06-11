@@ -25358,7 +25358,7 @@ reviews:
     title: Review task-shadow-restore-loud-failure cycle 3
     disposition: pending
     author: Jacob Chapel
-    check_count: 3
+    check_count: 4
     examined_commit: 4e35fa9ca6806c0dc664fe27265bf09046062c1f
     lifecycle_state: open
     related_refs: []
@@ -25371,4 +25371,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T12:26:44.257Z
-    updated_at: 2026-06-11T12:40:19.806Z
+    updated_at: 2026-06-11T12:40:28.902Z
