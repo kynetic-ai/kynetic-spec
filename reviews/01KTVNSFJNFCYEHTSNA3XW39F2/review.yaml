@@ -87,6 +87,17 @@ checks:
     runner: kspec
     created_at: 2026-06-11T15:59:44.583Z
     completed_at: 2026-06-11T15:59:44.583Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed under Node v20.0.0: tests/release-packaging.test.ts, 9 tests passed; verifies
+      explicit docs recursion does not rely on Node 20.1.0 readdirSync recursive behavior."
+    name: node 20.0.0 focused release-packaging
+    required: false
+    runner: npx -y node@20.0.0 scripts/test.cjs tests/release-packaging.test.ts --fresh
+    created_at: 2026-06-11T15:59:59.642Z
+    completed_at: 2026-06-11T15:59:59.642Z
 events:
   - _ulid: 01KTVNSFJMWZKE8X2RG9AECWR0
     actor: Jacob Chapel
@@ -157,6 +168,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T15:59:44.829Z
+  - _ulid: 01KTVPJTWDZJJ3N3SZ3ZJQC07C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: node 20.0.0 focused release-packaging
+    timestamp: 2026-06-11T15:59:59.885Z
 examined_commit: 5d1aa1888f4e262f2759a90f315bf3bf739f4601
 external_links: []
 lifecycle_state: open
@@ -169,5 +187,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T15:46:09.109Z
-updated_at: 2026-06-11T15:59:44.583Z
+updated_at: 2026-06-11T15:59:59.642Z
 notes: []
