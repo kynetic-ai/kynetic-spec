@@ -2,7 +2,95 @@ _ulid: 01KTWC5H33YRNYM0ZZXB850K8K
 slugs: []
 title: "Plan review: AC Coverage Verification Schema and Storage (round 3, claude)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Round-2 nit (thread 01KTW6RQ4D7TY0KKJ8PV0GY5MX) verified addressed in stored content:
+      @verification-session-evidence now carries ac-malformed-session-ref-rejected (given: stamp
+      write with a session reference that is not a well-formed session identifier; then: write
+      rejected, stored verification state unchanged), a matching description sentence, and the
+      task-session-verification-evidence Covers line lists the new AC so the malformed-rejection
+      test binds to an AC. AC is atomic, behavioral, and distinct from ac-incomplete-stamp-rejected
+      (missing required fields vs malformed optional field)."
+    name: "Prior-finding verification: malformed-session-ref AC"
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T22:18:29.350Z
+    completed_at: 2026-06-11T22:18:29.350Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Round-2 question (thread 01KTW6RM45YP5X66BS5DAEQ8AV) resolution verified: P0a draft
+      (@plan-ui-redesign-global-decisions) now phrases the @ac-coverage-applicability transition
+      boundary timelessly (remains in force until corpus coverage computation adopts these
+      semantics) with no engine-plan deferral, consistent with decision register #13 and this plan's
+      respec task, whose amend bullet executes as verify/no-op against the aligned text."
+    name: "Prior-finding verification: P0a boundary-text alignment"
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T22:18:32.525Z
+    completed_at: 2026-06-11T22:18:32.525Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All live external refs and named AC ids verified via kspec item get:
+      @test-annotation-sweep (ac-explicit-mapping, ac-annotation-format, ac-no-blanket-credit),
+      @ac-annotation-integrity-reporting (ac-valid-annotation-covers-target),
+      @ac-annotation-identifier-format (ac-valid-token-covers-ac), @trait-validation (ac-2),
+      @coverage-scan-config, @data-format-forward-compatibility. kspec validate --refs passes with
+      only pre-existing warnings unrelated to this plan. The three pending refs
+      (@annotation-freshness-provenance, @actor-identity-model, @ac-coverage-applicability) remain
+      unresolved by design until P0a derives — covered by the acknowledged ordering gate."
+    name: External ref validation
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T22:18:35.740Z
+    completed_at: 2026-06-11T22:18:35.740Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 26 ACs across the four specs are claimed: task-ac-verification-record-store covers
+      all 7 store ACs; task-freshness-resolution-read-path covers all 7 freshness ACs;
+      task-session-verification-evidence covers all 5 session-evidence ACs including the new
+      ac-malformed-session-ref-rejected; task-coverage-record-compatibility covers all 7
+      compatibility ACs. The three new @test-annotation-sweep ACs are claimed by the respec task
+      (spec mutation) and the scanner task (implementation) with the division annotated in both
+      Covers lines. No orphan ACs."
+    name: AC coverage mapping
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T22:18:38.791Z
+    completed_at: 2026-06-11T22:18:38.791Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No cycles. No P1-depends-on-P2 misalignment: task 2 (P1) depends only on task 1 (P1); P2
+      tasks depend on P1 tasks or on each other (task 5 on task 4; task 6 on tasks 1+2; task 3 on
+      task 1). Tasks 3/4 parallelize correctly against the store/freshness chain."
+    name: Dependency ordering
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T22:18:42.012Z
+    completed_at: 2026-06-11T22:18:42.012Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The only content delta since the round-2 reviews is the malformed-session-ref AC addition
+      and its description sentence. Both use behavioral language (no internal field names, no
+      implementation mechanism), the AC is independently testable, and no overlap or contradiction
+      with existing session specs found via kspec search.
+    name: Spec quality (delta since round 2)
+    required: true
+    runner: claude-plan-review
+    created_at: 2026-06-11T22:18:45.158Z
+    completed_at: 2026-06-11T22:18:45.158Z
 events:
   - _ulid: 01KTWC5H3324WTEXMDSNZ9TX3K
     actor: "@claude"
@@ -17,6 +105,48 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T22:17:26.044Z
+  - _ulid: 01KTWC7WBHNST4R9QJ687ABR74
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Prior-finding verification: malformed-session-ref AC"
+    timestamp: 2026-06-11T22:18:29.617Z
+  - _ulid: 01KTWC7ZDDSKPEYXQXKRAVTRTZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Prior-finding verification: P0a boundary-text alignment"
+    timestamp: 2026-06-11T22:18:32.749Z
+  - _ulid: 01KTWC82JVFY8ASVXF67AZQMW3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: External ref validation
+    timestamp: 2026-06-11T22:18:35.995Z
+  - _ulid: 01KTWC85J53SKC24TMQM6SK09R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-11T22:18:39.045Z
+  - _ulid: 01KTWC88PXBH2WBCC4A3TY7Z3Q
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-11T22:18:42.269Z
+  - _ulid: 01KTWC8BS6KWEG2PGK09G74DFV
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec quality (delta since round 2)
+    timestamp: 2026-06-11T22:18:45.414Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -29,5 +159,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:17:12.547Z
-updated_at: 2026-06-11T22:17:25.778Z
+updated_at: 2026-06-11T22:18:45.158Z
 notes: []
