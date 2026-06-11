@@ -2,7 +2,163 @@ _ulid: 01KTW289VC0GA5518TKRQ8X820
 slugs: []
 title: "Plan review: Web UI Foundations (round 2)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Existing catalog validation passed with warnings only: 1615 files, 646 items, 1607 tasks;
+      schema and references OK. Warning baseline is pre-existing deprecated refs. Underived
+      plan-local refs are checked separately below."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T19:26:49.276Z
+    completed_at: 2026-06-11T19:26:49.276Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Existing catalog alignment validation passed with warning baseline only: 476/646 specs
+      have tasks, 466 aligned, with 36 orphaned specs and 10 status mismatch warnings unrelated to
+      this underived plan."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T19:26:53.963Z
+    completed_at: 2026-06-11T19:26:53.963Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Existing catalog completeness validation passed with warning baseline only: missing AC
+      coverage, automation-without-spec, and invalid annotation warnings unrelated to this underived
+      plan."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T19:26:58.628Z
+    completed_at: 2026-06-11T19:26:58.628Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/ui-redesign-ui-foundations.md --dry-run succeeded and would store
+      the full Web UI Foundations document as draft without mutating state.
+    name: Plan document parse
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-11T19:27:03.569Z
+    completed_at: 2026-06-11T19:27:03.569Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 45 local plan ACs are claimed by task Covers lines: ui-breadcrumb ac-1..9 via
+      component plus ac-10 via ancestry API; ui-view-header ac-1..6; ui-shortcut-registry ac-1..6;
+      ui-preference-store ac-1..6; actor-identity-resolution ac-1..5 via classifier plus ac-6..8 via
+      canonical write path; actor-display ac-1..4; actor-history-normalization ac-1..5. Upstream
+      decision AC claims are also present in task Covers lines, but the decision refs remain
+      underived and are covered by the dependency blocker."
+    name: Local AC coverage mapping
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T19:27:08.402Z
+    completed_at: 2026-06-11T19:27:08.402Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Tasks include Why/What/How, file or module areas, verification expectations, and concrete
+      scope boundaries. Prior gaps are addressed: breadcrumb API now covers review/session leaves,
+      trait-api-endpoint application is owned by the classifier task, canonical-write work is
+      explicit, and view-header adoption is scoped to review/session first adopters."
+    name: Task completeness and standalone-ness
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T19:27:12.959Z
+    completed_at: 2026-06-11T19:27:12.959Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No task cycles found. P1 tasks do not depend on lower-priority work. Declared task
+      dependencies are justified: review author canonicalization, actor display, and historical
+      normalization consume the classifier; breadcrumb component consumes the ancestry payload.
+      Independent P1/P2 work remains parallelizable."
+    name: Dependency ordering
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T19:27:17.298Z
+    completed_at: 2026-06-11T19:27:17.298Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read existing @config-author, @ui-api-aggregation, @web-dashboard, @trait-api-endpoint,
+      @web-ui neighborhood, and P0a plan content. The plan extends those contracts without
+      contradicting them once P0a derives; no existing catalog spec already covers breadcrumb,
+      shortcut registry, preference utility, or actor identity behavior.
+    name: Existing spec alignment
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T19:27:21.790Z
+    completed_at: 2026-06-11T19:27:21.790Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified four getStatusColor implementations in ItemDetail, TaskList, DiffFileList, and
+      DiffFileView; verified ten anonymous fallbacks in packages/daemon/src/routes/reviews.ts;
+      verified @web-dashboard ac-23..25 exist for command palette behavior; verified
+      @trait-api-endpoint ac-1..6.
+    name: Factual claims verification
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T19:27:26.407Z
+    completed_at: 2026-06-11T19:27:26.407Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Prior review records @01KTVX89 and @01KTVY20 were read. Seven content/task/AC findings
+      were addressed in the current plan and already resolved in the prior records. The dependency
+      blocker remains valid because @plan-ui-redesign-global-decisions is still draft/underived and
+      @web-shell-platform-target, @client-preference-persistence, @actor-identity-model, and
+      @coverage-state-presentation remain absent from the current catalog.
+    name: Prior-round findings addressed
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T19:27:31.358Z
+    completed_at: 2026-06-11T19:27:31.358Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec search returned no catalog matches for web-shell-platform-target,
+      client-preference-persistence, actor-identity-model, or coverage-state-presentation. The
+      current plan's own Approval ordering note says it must not be approved or derived until P0a is
+      approved and derived; P0a is still draft.
+    name: Plan cross-reference validation
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-11T19:27:36.202Z
+    completed_at: 2026-06-11T19:27:36.202Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, kspec-review-plan skill,
+      plans/ui-redesign-ui-foundations.md, P0a plan content via kspec plan get. Commands run: kspec
+      plan get/import --dry-run, kspec review list/get --json, kspec item list/get, kspec search,
+      kspec validate refs/alignment/completeness, rg getStatusColor, rg anonymous. Categories
+      searched: spec quality, AC determinism, task standalone-ness, Covers mapping, dependency
+      ordering, existing-spec overlap, factual claims, prior-review resolution."
+    name: Review evidence log
+    required: false
+    runner: manual plan review
+    created_at: 2026-06-11T19:27:40.863Z
+    completed_at: 2026-06-11T19:27:40.863Z
 events:
   - _ulid: 01KTW289VCQXXW61Z0M701EHQD
     actor: "@claude"
@@ -10,17 +166,156 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T19:23:57.676Z
+  - _ulid: 01KTW2DDMZRZD0AQ54YTZ42SCC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T19:26:45.407Z
+  - _ulid: 01KTW2DHSHBA2JPJV09Y6YS2SD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T19:26:49.649Z
+  - _ulid: 01KTW2DPB6J9JQ7GHD0JWSGMX8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T19:26:54.310Z
+  - _ulid: 01KTW2DTXD75EEB02V32F46CX5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T19:26:58.989Z
+  - _ulid: 01KTW2DZRQTEYYTMKGYWJZ2BZ4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan document parse
+    timestamp: 2026-06-11T19:27:03.959Z
+  - _ulid: 01KTW2E4GAB2GMJ1F77TKJQAK9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Local AC coverage mapping
+    timestamp: 2026-06-11T19:27:08.810Z
+  - _ulid: 01KTW2E8WQP6GRTDERQQC2FK83
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task completeness and standalone-ness
+    timestamp: 2026-06-11T19:27:13.303Z
+  - _ulid: 01KTW2ED4FPT6RPES4EQF1A4ZZ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-11T19:27:17.647Z
+  - _ulid: 01KTW2EHHR9GHS2Y9K8FG48270
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec alignment
+    timestamp: 2026-06-11T19:27:22.168Z
+  - _ulid: 01KTW2EP1PETF4NXQK56Q64S6K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Factual claims verification
+    timestamp: 2026-06-11T19:27:26.774Z
+  - _ulid: 01KTW2ETX4R96YK14H74E4KCR9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Prior-round findings addressed
+    timestamp: 2026-06-11T19:27:31.748Z
+  - _ulid: 01KTW2EZK7TKJGARZ5FG7N3PS8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Plan cross-reference validation
+    timestamp: 2026-06-11T19:27:36.551Z
+  - _ulid: 01KTW2F45NAQWAH7Y6BFR8TAEA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-06-11T19:27:41.237Z
+  - _ulid: 01KTW2F8R2SD6M5HJQR52G5EY1
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW2F8BXHWGXZ50XM7NT868Q
+    timestamp: 2026-06-11T19:27:45.922Z
+  - _ulid: 01KTW2FDXV2XZKHTFRS0E8TQ4S
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T19:27:51.227Z
+  - _ulid: 01KTW2FDXVRABC35WT691W2KSX
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T19:27:51.227Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-web-ui-foundations"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTW2F8BXHWGXZ50XM7NT868Q
+    anchor:
+      type: structured
+      ref: "@plan-web-ui-foundations"
+      section: dependencies
+    entries:
+      - _ulid: 01KTW2F8BXXX1CP2P8B5ME3EA5
+        author: "@claude"
+        body: "RE-RAISED from prior reviews @01KTVX89 thread 01KTVXBEGNMFE1YPQA1QNG3AJN and @01KTVY20 thread
+          01KTVY2ZC7AEQSWW8ES8FK7WQP. The content update correctly adds a binding approval-ordering
+          gate, but the gate is still unmet: @plan-ui-redesign-global-decisions remains
+          draft/underived, and the catalog still cannot resolve @web-shell-platform-target,
+          @client-preference-persistence, @actor-identity-model, or @coverage-state-presentation.
+          Impact: approving or deriving this plan now would violate the plan's own ordering rule and
+          materialize broken references/Covers claims. Approve and derive P0a first, or make this
+          plan self-contained before approval."
+        created_at: 2026-06-11T19:27:45.533Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T19:27:51.227Z
 created_at: 2026-06-11T19:23:57.676Z
-updated_at: null
+updated_at: 2026-06-11T19:27:51.227Z
 notes: []
