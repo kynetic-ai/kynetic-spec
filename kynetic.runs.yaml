@@ -64636,7 +64636,7 @@ runs:
     completed_at: 2026-06-11T21:30:50.343Z
   - _ulid: 01KTWAVMJMNAGEZJQJKY32BYK0
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -64669,7 +64669,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-11T21:55:29.593Z
-        completed_at: 2026-06-11T21:55:29.593Z
+        completed_at: 2026-06-11T21:55:39.965Z
+        notes: "Proposed improvement: Preserve failed test-run logs across subsequent --fresh reruns, or
+          copy failed-run logs to a stable per-run archive before clearing the session cache. This
+          would make review/test triage easier because rerunning a flaky suite would not erase the
+          original failure evidence. Scope: small to medium, likely in scripts/test.cjs test-cache
+          cleanup/log-retention behavior."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-11T21:55:39.965Z
+        completed_at: 2026-06-11T21:55:39.965Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T21:54:19.860Z
