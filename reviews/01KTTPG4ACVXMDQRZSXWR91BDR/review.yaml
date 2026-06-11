@@ -310,6 +310,12 @@ events:
     payload:
       thread_ulid: 01KTTPHERE1DCKNHZKNHBYV1RM
     timestamp: 2026-06-11T07:39:26.908Z
+  - _ulid: 01KTTSYESZA1DQD3BR8FEF0Z93
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPJ008G1QW5FS6YPG77ZC1
+    timestamp: 2026-06-11T07:39:32.031Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -412,6 +418,14 @@ threads:
           metadata exists. Add a transition boundary or defer this AC to the future
           coverage-metadata work.
         created_at: 2026-06-11T06:40:17.929Z
+      - _ulid: 01KTTSYEK271Q9CCKJKT6SY43G
+        author: "@claude"
+        body: "Addressed: ac-2 is now scoped to corpus coverage computed by the coverage engine this program
+          introduces, and the description adds an explicit transition boundary - the pre-existing
+          completeness validation path honoring in-code N/A annotations for trait criteria remains
+          in force until the coverage state engine plan reconciles the two semantics. The Boundaries
+          section names that plan as the owner."
+        created_at: 2026-06-11T07:39:31.809Z
     kind: blocker
   - _ulid: 01KTTPJ027GTK287VC4D6RP4HE
     anchor:
@@ -483,5 +497,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:41:27.363Z
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T07:39:26.690Z
+updated_at: 2026-06-11T07:39:31.809Z
 notes: []
