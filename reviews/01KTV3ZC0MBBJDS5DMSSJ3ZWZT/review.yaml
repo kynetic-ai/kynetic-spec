@@ -76,6 +76,18 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-06-11T10:48:36.608Z
     completed_at: 2026-06-11T10:48:36.608Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: completeness validation exited 0 with existing coverage/annotation warnings under
+      --warnings-ok; changed tests include AC annotations for @broken-shadow-safety
+      ac-preserve-on-failure and ac-restore-failure-reports-state."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T10:48:48.659Z
+    completed_at: 2026-06-11T10:48:48.659Z
 events:
   - _ulid: 01KTV3ZC0K9PGDCP76Z0YEY7S3
     actor: Jacob Chapel
@@ -139,6 +151,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-11T10:48:36.831Z
+  - _ulid: 01KTV4S1FXWZ6Q7BF9F4VFHF1K
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T10:48:48.893Z
 examined_commit: 7388f96a218e7e69bc8cba03a97cd5c8723fbe21
 external_links: []
 lifecycle_state: open
@@ -151,5 +170,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T10:34:47.700Z
-updated_at: 2026-06-11T10:48:36.608Z
+updated_at: 2026-06-11T10:48:48.659Z
 notes: []
