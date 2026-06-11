@@ -132,6 +132,19 @@ checks:
     runner: manual
     created_at: 2026-06-11T17:53:18.335Z
     completed_at: 2026-06-11T17:53:18.335Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: src/cli/commands/plan.ts:441-466 — parentless non-trait specs are parented under the
+      stored plan module; only parentless traits get project-level placement. The plan's 'created
+      top-level' / 'nothing depends on it' claims for @ui-redesign-decisions and the stored @main
+      module are factually wrong. See blocker thread.
+    name: derive placement semantics
+    required: true
+    runner: manual
+    created_at: 2026-06-11T17:53:23.694Z
+    completed_at: 2026-06-11T17:53:23.694Z
 events:
   - _ulid: 01KTVWYZ2WXMFZSQBG28NHQNQC
     actor: "@claude"
@@ -223,6 +236,13 @@ events:
       status: pass
       name: slug collisions and neighborhood
     timestamp: 2026-06-11T17:53:18.566Z
+  - _ulid: 01KTVX2FEDBTRMWQB6689BQ75A
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: derive placement semantics
+    timestamp: 2026-06-11T17:53:23.917Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -269,5 +289,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T17:51:28.860Z
-updated_at: 2026-06-11T17:53:18.335Z
+updated_at: 2026-06-11T17:53:23.694Z
 notes: []
