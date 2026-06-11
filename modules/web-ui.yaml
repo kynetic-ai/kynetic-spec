@@ -1623,6 +1623,9 @@ features:
           recent termination when no daemon is running, so a user investigating a
           disappeared daemon can see why it stopped without reproducing the
           failure.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
