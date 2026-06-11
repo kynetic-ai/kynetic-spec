@@ -1906,3 +1906,14 @@ plans:
     notes_count: 2
     source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-coverage-schema.md
     created_at: 2026-06-11T07:49:56.314Z
+  - _ulid: 01KTVWAG22MC8GTVXPZ72E40TR
+    slugs:
+      - plan-web-ui-foundations
+    title: Web UI Foundations
+    status: draft
+    derived_specs: []
+    derived_tasks: []
+    module_ref: "@web-ui"
+    notes_count: 0
+    source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-ui-foundations.md
+    created_at: 2026-06-11T17:40:18.114Z
