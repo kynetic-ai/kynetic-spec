@@ -62,6 +62,19 @@ checks:
     runner: manual
     created_at: 2026-06-11T18:13:28.826Z
     completed_at: 2026-06-11T18:13:28.826Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified independently: exactly 4 getStatusColor implementations (ItemDetail, TaskList,
+      DiffFileList, DiffFileView), exactly 10 'anonymous' fallbacks in
+      packages/daemon/src/routes/reviews.ts, @web-dashboard ac-23..25 exist as described,
+      @config-author and @ui-api-aggregation exist and match the plan's relationship notes"
+    name: Factual claims verification
+    required: true
+    runner: manual
+    created_at: 2026-06-11T18:13:48.337Z
+    completed_at: 2026-06-11T18:13:48.337Z
 events:
   - _ulid: 01KTVY20HDMERJRGK4RSYWVR2G
     actor: "@claude"
@@ -167,6 +180,13 @@ events:
       status: pass
       name: Dependency ordering
     timestamp: 2026-06-11T18:13:29.056Z
+  - _ulid: 01KTVY7VCG0TFMJPA9D4JKJ7Q2
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Factual claims verification
+    timestamp: 2026-06-11T18:13:48.560Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -401,5 +421,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:13:28.826Z
+updated_at: 2026-06-11T18:13:48.337Z
 notes: []
