@@ -35,6 +35,23 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-11T20:42:43.763Z
     completed_at: 2026-06-11T20:42:43.763Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test -- --fresh live. Result: 2775/2777 suites passed, 10528 passed, 3 skipped;
+      one tests/upgrade-folder-storage.test.ts smoke failed with stale/incoherent dist export error
+      for resolveDefaultBranch. Triage: source export exists in both dev base b28147ca3737 and head
+      74ab85fe3b59; targeted fresh rerun npm test -- --fresh tests/upgrade-folder-storage.test.ts
+      passed 24/24; follow-up flaky stabilization task created as @01KTW6P2. Changed
+      tests/test-runner.test.ts passed in full run. Focused cache behavior check with isolated
+      KSPEC_SESSION_ID passed: fresh tests/test-runner.test.ts ran, same-env rerun hit cache,
+      CI=true rerun missed cache and passed."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T20:42:57.122Z
+    completed_at: 2026-06-11T20:42:57.122Z
 events:
   - _ulid: 01KTW5MCGYK7222WZNX5W2AR6A
     actor: Jacob Chapel
@@ -70,6 +87,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-11T20:42:44.060Z
+  - _ulid: 01KTW6RYGK86KPNZ8PS6X5P5RF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T20:42:57.427Z
 examined_commit: 74ab85fe3b5971918484ee84f6942fe7ed04e165
 external_links: []
 lifecycle_state: open
@@ -82,5 +106,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T20:22:59.358Z
-updated_at: 2026-06-11T20:42:43.763Z
+updated_at: 2026-06-11T20:42:57.122Z
 notes: []
