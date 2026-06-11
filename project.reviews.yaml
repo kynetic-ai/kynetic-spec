@@ -25415,7 +25415,7 @@ reviews:
     title: Review task-fix-search-meta-entity-tests
     disposition: pending
     author: Jacob Chapel
-    check_count: 4
+    check_count: 5
     examined_commit: 4a03cba1fab82c11a570777b1f63250a16acefb3
     lifecycle_state: open
     related_refs: []
@@ -25428,4 +25428,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T13:44:11.854Z
-    updated_at: 2026-06-11T14:00:44.485Z
+    updated_at: 2026-06-11T14:00:55.526Z
