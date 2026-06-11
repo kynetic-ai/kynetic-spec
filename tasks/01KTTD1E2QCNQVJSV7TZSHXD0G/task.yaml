@@ -1,0 +1,92 @@
+_ulid: 01KTTD1E2QCNQVJSV7TZSHXD0G
+slugs:
+  - task-fix-search-meta-entity-tests
+title: Fix vacuous search meta-entity tests and re-enable combined search test
+type: task
+description: |
+  Fix the AC-7 search integration tests in tests/grep.test.ts so they
+  actually verify entity loading, and re-enable the skipped combined test
+  at tests/grep.test.ts:629 ("should search all entity types together").
+
+  Why: The skip comment blames an "intermittent issue where meta entities
+  aren't being loaded" and claims "individual entity type tests all pass,
+  so the core functionality works". Code reading shows the failure is
+  DETERMINISTIC today and the passing sibling tests are vacuous — they
+  pass even when nothing loads. (The skip is itE2E.skip, where itE2E is
+  vitest's own `it` aliased at the late-import block around line 462 —
+  the suite runs in every plain vitest pass, not under a separate E2E
+  runner, so the failure reproduced in every test run.)
+
+  Root cause (verified by reading source and git history, not by
+  running tests):
+  1. loadMetaFile (src/parser/meta.ts ~250-332) silently skips any meta
+     entity whose Zod safeParse fails — no error surfaces.
+  2. MetaUlidSchema was tightened from z.string().min(1) to the strict
+     26-char Crockford UlidSchema (/^[0-9A-HJKMNP-TV-Z]{26}$/i) in commit
+     703f4b6764 ("feat: implement agent reference validation (AC-3)",
+     2026-01-17) — five days BEFORE these tests were written in
+     8f1f9534ec (2026-01-22). The fixtures were therefore invalid from
+     the day they were created; they were never broken later by a schema
+     change. The hand-written fixture ULIDs are all 23 characters
+     (vs the required 26): "01TESTOBS00000000000000" (also contains the
+     excluded letter O), "01TESTAGENT000000000000",
+     "01TESTWORKFLOW000000000" (also contains excluded letters O and
+     L), and "01TESTCONV0000000000000" (also
+     contains an O); the beforeEach block adds invalid item/task ULIDs
+     "01TESTITEM0000000000000" and "01TESTTASK0000000000000". All such
+     entities are silently dropped at load time.
+  3. The skipped test's observation also sets resolved_at: null, but
+     ObservationSchema uses DateTimeSchema.optional(), which rejects null
+     (optional is not nullable in zod) — a second independent parse
+     failure.
+  4. The sibling tests pass vacuously: when search finds nothing it
+     prints 'No matches found for "<pattern>"'
+     (src/cli/commands/search.ts ~351). Assertions like
+     toContain("convention-keyword") and toContain("convention") are
+     satisfied by that echo (the entity-type word is a substring of the
+     search pattern). The combined test is the only one whose assertions
+     ("inbox", "observation", "agent" type labels vs pattern "Universal")
+     cannot be satisfied by the echo — which is why it alone failed and
+     got skipped.
+
+  What:
+  - Replace all hand-written fixture ULIDs in the AC-7 describe block
+    (items, tasks, observations, agents, workflows, conventions) with
+    valid ULIDs from testUlid()/testUlids() (tests/helpers/cli.ts).
+  - Make the observation fixture schema-valid: drop resolved_at (or use
+    a valid ISO datetime string); keep required type/content/created_at.
+  - Strengthen every AC-7 test so it cannot pass on the no-match echo:
+    assert stdout does NOT contain "No matches found" and assert a
+    positive result marker (the result-count line and/or the matched:
+    field output) in addition to the keyword.
+  - Re-enable the skipped combined test, remove the TODO and the
+    oxlint-disable-next-line jest/no-disabled-tests comment.
+
+  How: This is a test-fixture fix; no production code change is expected.
+  If the re-enabled test still fails with valid fixtures, the residual
+  failure is real (e.g. meta entities genuinely not searched) — fix that
+  in src/cli/commands/search.ts / src/parser/meta.ts rather than
+  re-skipping.
+
+  Testing / stability criterion: with schema-valid fixtures the old
+  failure mode is deterministic, so stability is verified by running the
+  file at least 10 consecutive times with zero failures:
+  npm test -- tests/grep.test.ts --fresh (repeat; --fresh forces re-runs
+  past the content-hash cache). Then full npm test.
+
+  Covers: @fuzzy-item-search ac-7.
+spec_ref: "@fuzzy-item-search"
+plan_ref: "@plan-validation-and-test-coverage-integrity"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - cli
+  - search
+vcs_refs: []
+created_at: 2026-06-11T03:53:58.103Z
+todos: []

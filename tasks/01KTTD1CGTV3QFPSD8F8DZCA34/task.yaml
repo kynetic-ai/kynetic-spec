@@ -1,0 +1,99 @@
+_ulid: 01KTTD1CGTV3QFPSD8F8DZCA34
+slugs:
+  - task-reenable-split-storage-ref-validation-test
+title: Re-enable split-storage dangling-reference validation test
+type: task
+description: |
+  Re-enable and extend the skipped validation test at
+  tests/task-plan-ref.test.ts:148 ("should warn when plan_ref points to
+  non-existent plan").
+
+  Why: The skip comment says "kspec validate doesn't load per-task detail
+  files in split format, so can't detect dangling plan_ref". That was true
+  when the test was written (commit 147d25b6b4, 2026-03-25), but the blind
+  spot was closed a month later by the Spec Catalog Health work (commits
+  87c41864b7, 2525fa93d5, b8aed7ebb9, 2026-04-24): validate() now loads
+  tasks through the canonical TaskDataManager, so split-storage task detail
+  files (including plan_ref, spec_ref, depends_on) participate in reference
+  validation. The test was never re-enabled, so the core reference-integrity
+  promise for split storage has zero regression coverage. If the canonical
+  load path ever regresses, nothing fails.
+
+  What: Re-enable the test, fix its stale expectations, and extend it to
+  cover the whole class of task reference fields in split storage
+  (plan_ref, spec_ref, depends_on), not just plan_ref.
+
+  Code-reading findings (verified against current source — trust but
+  re-verify the line numbers):
+  - src/parser/validate.ts validate() (~lines 2405-2464): non-legacy
+    projects load tasks via resolveTaskDataManager().loadAllTasks(ctx);
+    validatePerTaskFiles() additionally feeds partial tasks (malformed
+    records skipped by loadAllTasks) into ref validation.
+  - src/parser/refs.ts REF_FIELDS (~line 407) includes depends_on,
+    spec_ref, and plan_ref; plan targets resolve because validate()
+    builds the ReferenceIndex with loadPlans() output (validate.ts ~2555).
+  - Default validation.strict_refs is TRUE (src/parser/config.ts ~518),
+    so a dangling ref is an ERROR and kspec validate exits non-zero. The
+    skipped test calls the success-asserting kspec() helper and expects
+    "warn" semantics — that is why it cannot be un-skipped as-is. The
+    re-enabled test must use kspecRun(..., { expectFail: true }) and
+    assert the combined stdout/stderr contains the dangling ref (e.g.
+    "@nonexistent-plan") and a not-found message.
+
+  Spec-reality drift found during verification: @plan-validation ac-10's
+  Then clause says "Validation warns about dangling plan reference" (and
+  the spec description says "warn about dangling references"), but
+  validation.strict_refs defaults to true, so the implemented behavior —
+  and what the re-enabled test asserts — is an ERROR with non-zero exit
+  by default. Update the spec to match reality as part of this task
+  (same policy as the triage AC correction in this plan):
+  - Set ac-10's Then text, verbatim: "Validation reports the dangling
+    plan reference as a finding — an error with non-zero exit when
+    strict references mode is active (the default), a warning otherwise"
+  - Update the spec description: replace "warn about dangling references
+    to non-existent plans" with "report dangling references to
+    non-existent plans as validation findings"
+  Use kspec item ac set / kspec item set for these edits.
+  @validation-task-data-source's ACs are already behavior-neutral
+  ("contributes to validation findings") and need no change.
+
+  How: Keep the test's approach of manually editing the per-task file
+  (tasks/<ulid>/task.yaml under the temp specDir) to inject the dangling
+  ref — this is the correct way to bypass CLI-time ref validation. Find
+  the task ULID from project.tasks.yaml (index) as the test already does.
+  Add sibling cases for a dangling spec_ref and a dangling depends_on
+  entry injected the same way, asserting each is reported. Remove the
+  TODO comment. Annotate the tests with all three covered ACs:
+  AC: @plan-validation ac-10,
+  AC: @validation-task-data-source ac-task-references-checked, and
+  AC: @validation-task-data-source ac-all-persisted-tasks-included.
+  The third annotation is justified because the dangling ref is injected
+  directly into the persisted per-task detail file, so the finding can
+  only surface if validation included that persisted record in its task
+  set — the test is direct evidence the split-storage record participates.
+
+  If a re-enabled case genuinely fails, that is a real regression in the
+  canonical validation load path — fix it in src/parser/validate.ts /
+  src/parser/refs.ts rather than re-skipping (root cause, not symptom).
+
+  Testing: full npm test passes; tests/task-plan-ref.test.ts contains no
+  it.skip entries afterwards.
+
+  Covers: @plan-validation ac-10, @validation-task-data-source
+  ac-task-references-checked, @validation-task-data-source
+  ac-all-persisted-tasks-included.
+spec_ref: "@validation-task-data-source"
+plan_ref: "@plan-validation-and-test-coverage-integrity"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - validation
+  - tasks
+vcs_refs: []
+created_at: 2026-06-11T03:53:56.506Z
+todos: []

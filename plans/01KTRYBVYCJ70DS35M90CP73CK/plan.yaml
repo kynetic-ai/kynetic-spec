@@ -2,11 +2,15 @@ _ulid: 01KTRYBVYCJ70DS35M90CP73CK
 slugs:
   - plan-validation-and-test-coverage-integrity
 title: Validation and Test Coverage Integrity
-status: approved
+status: active
 approved_at: 2026-06-11T03:47:42.376Z
 branch: null
 derived_specs: []
-derived_tasks: []
+derived_tasks:
+  - "@task-reenable-split-storage-ref-validation-test"
+  - "@task-daemon-triage-api-tests"
+  - "@task-fix-search-meta-entity-tests"
+  - "@task-test-cache-env-key"
 module_ref: "@core"
 source_path: /home/chapel/Projects/kynetic-spec/plans/validation-test-integrity.md
 created_at: 2026-06-10T14:18:16.908Z

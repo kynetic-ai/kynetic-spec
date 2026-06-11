@@ -1,0 +1,67 @@
+_ulid: 01KTTD1ETQ674218060ZCJNKAM
+slugs:
+  - task-test-cache-env-key
+title: Include behavior-affecting environment variables in test cache key
+type: task
+description: |
+  Add an environment component to the test runner's result-cache key so
+  runs under different test-affecting environments cannot serve each
+  other's cached results.
+
+  Why: computeCacheKey in scripts/test.cjs (~lines 107-166) hashes
+  (1) git blob SHAs of TEST_INPUT_PATHS, (2) the unstaged diff,
+  (3) untracked file contents, (4) the Node version, and (5) vitest
+  args — but NO environment variables. Verified concrete staleness: the
+  CI env var changes which tests execute (file-watcher tests skip when
+  CI is set — see the project ci convention), yet CI=true npm test
+  produces the same cache key as a plain local run in the same session,
+  so the cached non-CI result (including watcher tests that never ran
+  under CI conditions) is served as if it were a CI run. The same
+  applies to any KSPEC_* or TZ/NODE_OPTIONS-style variable a test reads.
+  Note the cache directory is already scoped by KSPEC_SESSION_ID
+  (getCacheDir, ~line 171), so cross-agent dispatch isolation is not
+  the gap — same-session env changes are.
+
+  What: Extend computeCacheKey with a normalized env section: a curated
+  allowlist of behavior-affecting variables, hashed as sorted
+  name=value pairs (absent vars excluded so unset and empty differ from
+  set). Recommended allowlist: CI, TZ, NODE_ENV, NODE_OPTIONS, and all
+  KSPEC_*-prefixed variables EXCEPT KSPEC_SESSION_ID (already scopes the
+  cache directory) and KSPEC_TEST_PROGRESS (affects only runner progress
+  rendering, not test outcomes). Use an allowlist, not full-env hashing —
+  hashing the whole environment would invalidate the cache on irrelevant
+  churn (PWD, SHLVL, terminal vars) and destroy the cache's value.
+
+  Also update the project testing convention as part of this task: the
+  existing rule documenting the cache key ("Test runner caches results
+  by content hash (git blob SHAs + unstaged diffs + untracked files +
+  Node version + vitest args)...") must mention the env component. Use
+  kspec meta set testing (replace/extend the relevant rule text), then
+  run kspec agents generate to refresh kspec-agents.md, per the
+  development convention. Per project policy, this is test
+  infrastructure: convention + task, NO spec ACs.
+
+  How: scripts/test.cjs is plain CommonJS with no test harness of its
+  own. Keep the change inside computeCacheKey so --fresh, dry-run, and
+  session scoping behavior are untouched.
+
+  Testing: behavioral verification, recorded in task notes:
+  (1) npm test twice in a row → second run is a cache hit;
+  (2) CI=true npm test → cache miss (new key), and after it completes,
+      CI=true npm test again → cache hit;
+  (3) npm test (without CI) → hits the original entry, proving distinct
+      keys coexist. Full npm test must pass.
+spec_ref: null
+plan_ref: "@plan-validation-and-test-coverage-integrity"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - infra
+vcs_refs: []
+created_at: 2026-06-11T03:53:58.871Z
+todos: []

@@ -1,0 +1,97 @@
+_ulid: 01KTTD1DB7F2FD15BCBABG1F80
+slugs:
+  - task-daemon-triage-api-tests
+title: Port triage API coverage to vitest daemon integration tests
+type: task
+description: |
+  Replace the fully-skipped triage API E2E suite with vitest daemon
+  integration tests, then delete the skipped suite.
+
+  Why: tests/e2e/api-triage.spec.ts:163 wraps the entire "Triage API"
+  suite (37 tests) in test.describe.skip with the note "Migrating from
+  E2E to vitest daemon integration tests" — but the migration never
+  happened. Verified current vitest coverage of the triage routes is
+  only: one promote write-through test
+  (tests/daemon-triage-write-through.test.ts) and one error-shape case
+  (tests/daemon-api/errors.test.ts:167). @triage-daemon-api ac-1 through
+  ac-9 are implemented but effectively unverified. The infrastructure
+  for the migration already exists: tests/daemon-api/helpers.ts
+  createTestApp() registers createTriageRoutes and the directory has
+  established patterns (makeRequest, requestJson, captureBroadcasts).
+
+  What: Create tests/daemon-api/triage.test.ts covering the endpoints
+  implemented in packages/daemon/src/routes/triage.ts:
+  - GET  /api/triage            (list: sorted created_at desc, status
+                                 filter, pagination limit/offset, total)
+  - GET  /api/triage/export     (format parameter: format=json —
+                                 structured JSON, the default — vs
+                                 format=context — markdown context
+                                 output for agent handoff; the skipped
+                                 suite tests ?format=context)
+  - POST /api/triage            (record decision: item_snapshot created,
+                                 404 for nonexistent inbox_ref,
+                                 validation errors for invalid action /
+                                 missing fields)
+  - GET  /api/triage/:ref       (single record; 404 with guidance for
+                                 unknown ref)
+  - POST /api/triage/:ref/override (stores override_reasoning,
+                                 override_by, override_at, updates action)
+  - POST /api/triage/:ref/act   (executes action, transitions to
+                                 acted_on, sets result_ref; 409 when
+                                 already acted_on; 422 when status is
+                                 pending)
+  Port the assertions from the skipped suite (it annotates
+  @triage-daemon-api ac-1..ac-9 plus @trait-api-endpoint and
+  @trait-websocket-protocol ACs — keep those AC annotations and the N/A
+  annotations from the suite header, updating N/A reasons that referenced
+  the E2E context). Use captureBroadcasts(pubsub) to assert
+  triage:updates broadcasts on the three mutation routes. After the new
+  suite passes, delete tests/e2e/api-triage.spec.ts entirely.
+
+  Spec-reality drift found during verification: @triage-daemon-api ac-4,
+  ac-5, ac-8, and ac-9 all describe PUT requests, but the implementation
+  uses POST /api/triage/:ref/override and POST /api/triage/:ref/act:
+  - ac-4: "a PUT request is sent to /api/triage/:ref with override
+    fields" → POST /api/triage/:ref/override
+  - ac-5: "a PUT request is sent to /api/triage/:ref with act flag" →
+    POST /api/triage/:ref/act
+  - ac-8: "a PUT request with act flag targets a record with status
+    acted_on" → "a POST request to /api/triage/:ref/act targets a record
+    with status acted_on" (409 case, triage.ts ~523-529)
+  - ac-9: "a PUT request with act flag targets a record with status
+    pending" → "a POST request to /api/triage/:ref/act targets a record
+    with status pending" (422 case, triage.ts ~533-540)
+  Update ALL FOUR ACs via kspec item ac commands to match the
+  implemented endpoints (spec updated to match reality), and annotate
+  tests against the corrected ACs. Also correct the stale file-header
+  AC-coverage comment block in packages/daemon/src/routes/triage.ts
+  (~lines 1-22), which still says "PUT override" / "PUT act" for ac-4,
+  ac-5, ac-8, ac-9.
+
+  How: Follow tests/daemon-api/inbox.test.ts as the structural model.
+  Fixtures: setupInlineFixtures / setupFixtures from helpers.ts; the
+  E2E fixture tests/e2e/fixtures/project.triage.yaml shows the record
+  shapes the old suite relied on (E2E fixtures must NOT be reused
+  directly — daemon-api tests build their own temp-project fixtures).
+
+  Testing: full npm test passes; npm run test:e2e is unaffected by the
+  deleted spec file (it was fully skipped).
+
+  Covers: @triage-daemon-api ac-1 through ac-9, @trait-api-endpoint
+  ac-1, ac-2, ac-3, ac-4, ac-5, @trait-websocket-protocol ac-3.
+spec_ref: "@triage-daemon-api"
+plan_ref: "@plan-validation-and-test-coverage-integrity"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - api
+  - triage
+vcs_refs: []
+created_at: 2026-06-11T03:53:57.351Z
+todos: []
