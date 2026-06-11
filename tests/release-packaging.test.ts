@@ -3,19 +3,26 @@
  * Spec: @published-artifact-completeness
  *
  * Verifies the packed npm artifact ships with everything a consumer needs.
- * Created by @task-add-license-file (license coverage, ac-1); later
- * release-packaging tasks extend this file with further completeness checks.
+ * Created by @task-add-license-file (license coverage, ac-1); extended by
+ * @task-prepack-full-build-and-verification (built artifact completeness,
+ * ac-2/ac-3, via scripts/verify-package.cjs).
+ *
+ * ac-4 (clean-source pack produces a complete package) is covered
+ * behaviorally by scripts/verify-clean-pack.cjs, which performs a real
+ * `npm pack` (full build via prepack) and runs in the publish workflow —
+ * too slow for the vitest suite.
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildTestSubprocessEnv } from "./helpers/cli";
+import { buildTestSubprocessEnv, cleanupTempDir, createTempDir } from "./helpers/cli";
 import packageJson from "../package.json" with { type: "json" };
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const VERIFY_PACKAGE_SCRIPT = join(REPO_ROOT, "scripts", "verify-package.cjs");
 
 /** Entry in `npm pack --json` output's `files` array. */
 interface PackFileEntry {
@@ -28,10 +35,58 @@ interface PackResult {
   files: PackFileEntry[];
 }
 
+/** Run scripts/verify-package.cjs against the package rooted at `cwd`. */
+function runVerifyPackage(cwd: string) {
+  return spawnSync("node", [VERIFY_PACKAGE_SCRIPT], {
+    cwd,
+    encoding: "utf-8",
+    timeout: 120_000,
+    env: buildTestSubprocessEnv(),
+  });
+}
+
+/**
+ * Artifacts a staged fixture tree needs to satisfy verify-package.cjs
+ * (the plugin/ entry stands in for "at least one plugin/ file").
+ */
+const FIXTURE_ARTIFACTS = [
+  "LICENSE",
+  "dist/cli/index.js",
+  "dist/index.js",
+  "dist/web-ui/index.html",
+  "templates/skills/manifest.yaml",
+  "plugin/plugins/kspec/skills/help/SKILL.md",
+];
+
+/**
+ * Stage a minimal packable tree containing every required artifact,
+ * optionally omitting some to simulate an incomplete build.
+ */
+function stagePackageTree(dir: string, omit: string[] = []): void {
+  writeFileSync(
+    join(dir, "package.json"),
+    JSON.stringify({
+      name: "verify-package-fixture",
+      version: "0.0.0",
+      license: "MIT",
+      files: ["dist", "templates", "plugin"],
+    }),
+  );
+  for (const relPath of FIXTURE_ARTIFACTS) {
+    if (omit.includes(relPath)) continue;
+    const absPath = join(dir, relPath);
+    mkdirSync(dirname(absPath), { recursive: true });
+    writeFileSync(absPath, `fixture content for ${relPath}\n`);
+  }
+}
+
 describe("Release packaging", () => {
   // AC: @published-artifact-completeness ac-1
   it("includes LICENSE at the package root when packed for publication", () => {
-    const result = spawnSync("npm", ["pack", "--dry-run", "--json"], {
+    // --ignore-scripts: prepack runs the full build, which must not be
+    // triggered from inside the test suite; LICENSE inclusion is
+    // independent of lifecycle scripts.
+    const result = spawnSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], {
       cwd: REPO_ROOT,
       encoding: "utf-8",
       timeout: 120_000,
@@ -40,8 +95,8 @@ describe("Release packaging", () => {
     expect(result.error).toBeUndefined();
     expect(result.status).toBe(0);
 
-    // The prepack lifecycle script prints progress lines to stdout before
-    // npm emits the JSON array, so parse from the array's opening bracket.
+    // npm may print notice/log lines to stdout before the JSON array,
+    // so parse from the array's opening bracket.
     const stdout = result.stdout;
     const jsonStart = stdout.indexOf("[");
     expect(jsonStart).toBeGreaterThanOrEqual(0);
@@ -64,5 +119,55 @@ describe("Release packaging", () => {
     expect(headerLines[0]).toBe("MIT License");
     expect(headerLines[2]).toContain("Copyright (c)");
     expect(headerLines[2]).toContain("Kynetic AI");
+  });
+
+  describe("verify-package script", () => {
+    let tempDir: string | undefined;
+
+    afterEach(async () => {
+      if (tempDir) {
+        await cleanupTempDir(tempDir);
+        tempDir = undefined;
+      }
+    });
+
+    // AC: @published-artifact-completeness ac-2
+    // AC: @published-artifact-completeness ac-3
+    it("exits 0 against the built repository (CLI entry point and web UI assets packed)", () => {
+      // CI builds before running tests, so the real package must verify
+      // clean: bin's dist/cli/index.js, dist/index.js main, and the
+      // dist/web-ui entry document all present in the pack listing.
+      const result = runVerifyPackage(REPO_ROOT);
+      expect(result.error).toBeUndefined();
+      expect(result.status).toBe(0);
+    }, 180_000);
+
+    it("exits 0 against a staged tree containing all required artifacts", async () => {
+      tempDir = await createTempDir("kspec-verify-package-");
+      stagePackageTree(tempDir);
+      const result = runVerifyPackage(tempDir);
+      expect(result.error).toBeUndefined();
+      expect(result.status).toBe(0);
+    }, 60_000);
+
+    // AC: @published-artifact-completeness ac-2
+    it("exits non-zero when the CLI entry point is missing", async () => {
+      tempDir = await createTempDir("kspec-verify-package-");
+      stagePackageTree(tempDir, ["dist/cli/index.js"]);
+      const result = runVerifyPackage(tempDir);
+      expect(result.error).toBeUndefined();
+      expect(result.status).not.toBe(0);
+      expect(result.stderr).toContain("dist/cli/index.js");
+    }, 60_000);
+
+    // AC: @published-artifact-completeness ac-3
+    it("exits non-zero when the web UI entry document is missing", async () => {
+      tempDir = await createTempDir("kspec-verify-package-");
+      stagePackageTree(tempDir, ["dist/web-ui/index.html"]);
+      const result = runVerifyPackage(tempDir);
+      expect(result.error).toBeUndefined();
+      expect(result.status).not.toBe(0);
+      expect(result.stderr).toContain("dist/web-ui/index.html");
+    }, 60_000);
   });
 });
