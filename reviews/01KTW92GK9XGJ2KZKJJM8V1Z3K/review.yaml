@@ -2,7 +2,102 @@ _ulid: 01KTW92GK9XGJ2KZKJJM8V1Z3K
 slugs: []
 title: "Plan review: Review Anchors and Plan Revisions Schema (round 3 — full pass)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 6 round-1/round-2 findings independently verified against current stored content: (1)
+      actor-identity depends_on removed, helper approach documented; (2) revision-1 claim qualified
+      to post-upgrade model matching ac-legacy-plans-load; (3) offset unit defined as Unicode code
+      points in description + ac-plan-text-anchor-stored with non-ASCII test in task; (4) idea kind
+      respec of @review-records-web-ui ac-2/ac-3 plus shipped badge/option change; (5) backfill
+      raised to P1 with task-plan-text-anchors depends_on it, ac-nonexistent-revision-rejected
+      added; (6) server-side wording removed from ac-deterministic-sectioning. All 10 prior threads
+      were already resolved; each resolution verified correct, no reopens needed."
+    name: Prior findings addressed
+    required: true
+    runner: claude
+    created_at: 2026-06-11T21:24:19.487Z
+    completed_at: 2026-06-11T21:24:19.487Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 8 referenced existing specs resolve (@review-record-core-model,
+      @review-comment-threads-and-anchors, @plan-support, @review-subject-bindings,
+      @review-records-web-ui, @folder-backed-plan-storage-1, @review-record-validation,
+      @review-checks-and-gate-evaluation). Claimed AC texts verified verbatim: threads ac-6 names
+      only nit/question as non-blocking; web-ui ac-2/ac-3 enumerate blocker/question/nit; ac-11 says
+      revision dropdown; description carries the revisions-with-dropdown sentence; folder-backed
+      storage sidecar/bounded-projection ACs exist; validation ac-2 and gate-eval ac-4 as cited;
+      subject-bindings ac-4/ac-5 pin shadow_commit + content_hash. No slug collisions across the 12
+      new spec/task slugs (kspec item get / task get all return not-found). All local
+      spec_ref/depends_on/Covers refs resolve within the plan."
+    name: Cross-reference validation
+    required: true
+    runner: claude
+    created_at: 2026-06-11T21:24:22.876Z
+    completed_at: 2026-06-11T21:24:22.876Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 24 ACs across the 5 new specs are claimed by at least one task:
+      review-spec-ac-anchors 4/4 (3 by task-spec-ac-anchor-variant, ac-anchor-variant-guidance by
+      task-plan-text-anchors), review-plan-text-anchors 6/6, review-idea-threads 3/3, plan-revisions
+      8/8 (6 by revision-records, backfill by backfill task, review-revision-binding by binding
+      task), subject-revision-vocabulary 3/3 (2 by binding task, ac-review-pass-labeling by respec
+      task). Multi-task coverage divisions are annotated in Covers lines. Respec side-effects on
+      existing specs (threads ac-6, web-ui ac-2/ac-3/ac-11 + description) are explicitly claimed."
+    name: AC coverage
+    required: true
+    runner: claude
+    created_at: 2026-06-11T21:24:26.110Z
+    completed_at: 2026-06-11T21:24:26.110Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No cycles. No higher-priority task depends on a lower-priority one.
+      task-plan-text-anchors (P1) depends on anchor-variant, revision-records, and backfill (all
+      P1); backfill depends on revision-records; binding (P2) depends on revision-records (P1);
+      respec (P2) depends on binding (P2). Parallelism preserved: anchor-variant, revision-records,
+      and idea-kind are independently startable."
+    name: Dependency ordering
+    required: true
+    runner: claude
+    created_at: 2026-06-11T21:24:29.533Z
+    completed_at: 2026-06-11T21:24:29.533Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified in code: anchor union is exactly code+structured (src/schema/review-records.ts
+      ~82-106); ReviewThreadKindSchema enumerates blocker/question/nit (line 110);
+      getUnresolvedBlockers filters kind === 'blocker' (src/parser/review-threads.ts:250);
+      formatActionableMessage emits 'Anchor type must be one of: code, structured'
+      (src/parser/review-validation.ts:46); AcIdSchema exists in src/schema/common.ts;
+      src/schema/plan.ts, src/parser/plan-storage-manager.ts, src/parser/plan-folder-migration.ts,
+      src/review/subject-bindings.ts, packages/daemon/src/routes/diff.ts all exist. Plan migration
+      runs through the explicit kspec upgrade command (src/cli/commands/upgrade.ts), consistent with
+      the backfill task's storage-upgrade-path claim."
+    name: Source claims
+    required: true
+    runner: claude
+    created_at: 2026-06-11T21:24:32.886Z
+    completed_at: 2026-06-11T21:24:32.886Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exits 0 with --warnings-ok; remaining warnings are pre-existing and unrelated to this plan
+      (dangling spec_ref on an old task).
+    name: kspec validate --refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T21:24:36.192Z
+    completed_at: 2026-06-11T21:24:36.192Z
 events:
   - _ulid: 01KTW92GK9PEHCYEP4GSY8NS26
     actor: "@claude"
@@ -10,17 +105,147 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T21:23:08.009Z
+  - _ulid: 01KTW94KENNR3VD3MKSS21MY5X
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T21:24:16.469Z
+  - _ulid: 01KTW94PMZC0KJDM80YHKWSCXJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior findings addressed
+    timestamp: 2026-06-11T21:24:19.743Z
+  - _ulid: 01KTW94SYM36S6F41SZKAAC8VG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation
+    timestamp: 2026-06-11T21:24:23.124Z
+  - _ulid: 01KTW94X48820VWZ3T2PEN09DF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-06-11T21:24:26.376Z
+  - _ulid: 01KTW950FG788J5218KC7C25BR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-11T21:24:29.808Z
+  - _ulid: 01KTW953QSB2HXG9YDV0T5PNHP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Source claims
+    timestamp: 2026-06-11T21:24:33.145Z
+  - _ulid: 01KTW956ZJTR95Q9Z38K8RYH7F
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --refs
+    timestamp: 2026-06-11T21:24:36.466Z
+  - _ulid: 01KTW95AA01N40FZSW6Y7HEN4B
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTW959ZZV3R8KCZWBC2NEP8H
+    timestamp: 2026-06-11T21:24:39.872Z
+  - _ulid: 01KTW95DFMNWNBPB5XA4AF6QAG
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTW95D866NAASM2KMVSNRSSF
+    timestamp: 2026-06-11T21:24:43.124Z
+  - _ulid: 01KTW95NE766XHKWWXGS6N714P
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTW95N6955ZHEXM4AMHBKVQT
+    timestamp: 2026-06-11T21:24:51.271Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-review-anchors-and-plan-revisions-schema"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTW959ZZV3R8KCZWBC2NEP8H
+    anchor:
+      type: structured
+      ref: "@plan-revisions"
+      section: description
+    entries:
+      - _ulid: 01KTW95A013XAG7M7DPCG2QMKE
+        author: "@claude"
+        body: "Post-upgrade plan-creation gap (new, narrower successor to the resolved round-1/2 revision-1
+          blocker): the description says 'Once the revision data upgrade has run, every plan has at
+          least revision 1', but no minting path covers plan creation. ac-publish-mints-revision
+          covers explicit publish, ac-import-mints-revision covers re-import into an EXISTING plan,
+          and the backfill runs via the explicit upgrade command. A plan created after the upgrade
+          has run (plan add or a fresh import) therefore observably carries an empty revision
+          history until its first publish or re-import — contradicting the universal claim.
+          Practical effect: plan-text anchors validate against revision ordinals, so they are
+          unusable on freshly created draft plans until first publish; the implementation notes
+          already tolerate revisionless states ('resolves to no revision rather than a wrong one'),
+          so this looks intended rather than broken. Suggest either (a) qualifying the sentence to
+          plans that existed when the upgrade ran and stating the creation-path contract explicitly
+          (new plans start with an empty revision history until first publish), or (b) specifying
+          that plan creation / initial import mints revision 1. Non-blocking: the plan is derivable
+          and AC-level behavior is self-consistent under either resolution, but the contract should
+          be pinned before implementation of task-plan-revision-records."
+        created_at: 2026-06-11T21:24:39.554Z
+    kind: question
+  - _ulid: 01KTW95D866NAASM2KMVSNRSSF
+    anchor:
+      type: structured
+      field: ac-span-integrity
+      ref: "@review-plan-text-anchors"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTW95D86FCXM0H155HWK2RP8
+        author: "@claude"
+        body: Trailing consequence clause in the then-text — '..., so every stored plan-text anchor resolves
+          to its quoted text within the revision it was created against' — is rationale, not an
+          assertion; per the AC-purity rule it belongs in the description (which already states the
+          equivalent recoverability invariant). Same pattern appears in @review-idea-threads
+          ac-idea-never-blocks ('— unresolved idea threads never prevent approval'). Cosmetic only;
+          no behavior ambiguity.
+        created_at: 2026-06-11T21:24:42.886Z
+    kind: nit
+  - _ulid: 01KTW95N6955ZHEXM4AMHBKVQT
+    entries:
+      - _ulid: 01KTW95N691K2H5WGB65AZ4Y79
+        author: "@claude"
+        body: "Round-3 full-pass summary. Verified: all 6 prior findings addressed in the current stored
+          content and all 10 prior threads correctly resolved; all existing-spec references and
+          cited AC texts accurate; all source-code claims accurate; 24/24 ACs task-claimed;
+          dependency graph sound. New findings: one non-blocking question (post-upgrade
+          plan-creation revision contract on @plan-revisions) and one cosmetic nit (rationale clause
+          in AC then-text). ACKNOWLEDGED PROGRAM GATE: the plan cites redesign decision-register
+          items (#16, #17, #19, #21, #44) defined by the draft plan
+          @plan-ui-redesign-global-decisions, whose decision specs derive only after that plan is
+          approved. That ordering is documented program structure, not an author defect — the plan
+          carries no unresolvable structured refs (the round-1 actor-identity dependency was
+          correctly converted to prose plus a single attribution helper). Verdict: approve."
+        created_at: 2026-06-11T21:24:51.017Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T21:23:08.009Z
-updated_at: null
+updated_at: 2026-06-11T21:24:51.017Z
 notes: []
