@@ -63,6 +63,24 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-06-11T22:16:38.834Z
     completed_at: 2026-06-11T22:16:38.834Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All new-spec ACs are claimed by tasks: @ac-verification-record-store 7/7 by
+      task-ac-verification-record-store; @ac-freshness-resolution 7/7 by
+      task-freshness-resolution-read-path; @verification-session-evidence 5/5 by
+      task-session-verification-evidence, including ac-malformed-session-ref-rejected;
+      @coverage-record-compatibility 7/7 by task-coverage-record-compatibility. The three planned
+      @test-annotation-sweep ACs are claimed by the respec task and implementation task with the
+      division called out. Reconciliation coverage for @ac-annotation-integrity-reporting,
+      @ac-annotation-identifier-format, and @trait-validation is scoped to the listed clause
+      updates."
+    name: AC coverage mapping
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T22:16:50.883Z
+    completed_at: 2026-06-11T22:16:50.883Z
 events:
   - _ulid: 01KTWC1QMPXS7YZAMWEG4MCAC0
     actor: "@claude"
@@ -112,6 +130,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T22:16:39.121Z
+  - _ulid: 01KTWC4W6S4TJ049Q1P35841AR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-11T22:16:51.161Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -124,5 +149,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:15:08.182Z
-updated_at: 2026-06-11T22:16:38.834Z
+updated_at: 2026-06-11T22:16:50.883Z
 notes: []
