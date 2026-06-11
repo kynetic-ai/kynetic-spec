@@ -21427,6 +21427,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T12:23:45.835Z
+  - _ulid: 01KTVBDECGQ14P4AATC7WY88WR
+    type: success
+    content: "Dispatch task authoring pattern: @task-reenable-split-storage-ref-validation-test embedded
+      pre-verified code-reading findings (exact file:line claims explicitly marked 'trust but
+      re-verify the line numbers'), the precise reason the naive approach would fail (strict_refs
+      default makes dangling refs errors, not warnings), and verbatim spec-edit text for known spec
+      drift. Worker re-verified all claims with 3 greps, all held; tests passed first run and the
+      task went start-to-submit with zero rework. Embedding verified claims plus uncertainty markers
+      in dispatched task descriptions is a high-leverage authoring pattern — extends @01KFA0DV
+      (clear problem statements) with the verify-and-mark-uncertainty nuance."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T12:44:48.912Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

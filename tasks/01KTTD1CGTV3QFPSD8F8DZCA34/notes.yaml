@@ -28,3 +28,11 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T12:42:09.509Z
+  - _ulid: 01KTVBDFBP4Y3MC28QNJ72Z20R
+    content: "Session reflection (loop mode) complete: 1 success observation captured (dispatch task
+      authoring with verified claims + uncertainty markers). One friction point identified ('kspec
+      workflow show' requires run-ref instead of inferring the active run) but skipped as duplicate
+      of inbox @01KGGPJ6."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T12:44:49.910Z
