@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KTVD373JB60AK50HVAPT7S1R
+    content: "Approach confirmed by source reading: (1) loadMetaFile silently drops entities failing Zod
+      safeParse; (2) all hand-written 23-char fixture ULIDs fail the strict 26-char UlidSchema; (3)
+      observation fixtures' resolved_at: null fails DateTimeSchema.optional(); (4) NEW finding
+      beyond task description: WorkflowSchema requires trigger (min 1) which the workflow fixture
+      omits — a third independent parse failure, will add trigger to the fixture; (5) sibling tests
+      pass vacuously via the 'No matches found for \"<pattern>\"' echo. Fix: testUlid() ULIDs for
+      all fixtures, drop resolved_at, add trigger, strengthen every test with not.toContain('No
+      matches found') + positive markers ([type] label, 'matched:', 'N result(s)', exitCode 0),
+      re-enable combined test. Stability: 10x npm test -- tests/grep.test.ts --fresh, then full
+      suite."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T13:14:10.931Z
