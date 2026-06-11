@@ -2,7 +2,112 @@ _ulid: 01KTW6NXWG20GBM98TP7AXNZAV
 slugs: []
 title: "Plan review: AC Coverage Verification Schema and Storage (round 2, claude)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 7 threads from my round-1 review @01KTW07WVH9047WA2D4ASE8QW9 (3 blockers, 3
+      questions, 1 nit) were replied to, resolved by the author, and each fix verified present in
+      the re-imported content: (1) transition-boundary conflict resolved via option (a) — task 4
+      amends @ac-coverage-applicability's boundary sentence and the interim doc/behavior window is
+      an explicit accepted decision in Implementation Notes; register #13 in
+      plans/ui-redesign/decisions.md confirms the P1a/P1b assignment; (2) @trait-validation ac-2
+      added to the reconciliation list and Covers line; (3) ac-bootstrap-when-unstamped given
+      narrowed to locations with version-control history — now disjoint from ac-no-history-absence;
+      (4) @task-coverage-record-compatibility now depends_on @task-freshness-resolution-read-path;
+      (5) ac-older-tool-ignores-sidecar replaced by directly-verifiable
+      ac-unrecognized-sidecar-untouched + ac-store-creation-additive with older-tool guarantee moved
+      to description; (6) ac-multi-annotation-most-recent extended to the mixed history/no-history
+      case with matching test in task 2; (7) provenance-class assertion folded into
+      ac-recorded-supersedes-bootstrap, ac-timestamp-or-commit now binds value shape only."
+    name: Round-1 findings resolution verification
+    required: true
+    runner: claude
+    created_at: 2026-06-11T20:42:52.878Z
+    completed_at: 2026-06-11T20:42:52.878Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Live refs verified via kspec item get: @test-annotation-sweep (ac-explicit-mapping,
+      ac-annotation-format, ac-no-blanket-credit confirmed present),
+      @ac-annotation-integrity-reporting (ac-valid-annotation-covers-target text matches the task's
+      quoted given), @ac-annotation-identifier-format (ac-valid-token-covers-ac text matches),
+      @trait-validation (ac-2 when-clause matches), @coverage-scan-config,
+      @data-format-forward-compatibility. Parser claim verified: src/parser/validate.ts line 1058
+      strips the N/A suffix in parseACAnnotationLine, as the task Why sections state. Three pending
+      refs (@annotation-freshness-provenance, @actor-identity-model, @ac-coverage-applicability) are
+      intentionally dangling pending P0a derive, exactly as the plan's Approval gate section
+      declares. All 10 new spec/task slugs checked collision-free against the live corpus."
+    name: External reference validation
+    required: true
+    runner: claude
+    created_at: 2026-06-11T20:42:56.001Z
+    completed_at: 2026-06-11T20:42:56.001Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 25 ACs across the 4 new specs are claimed: @ac-verification-record-store 7/7 by task
+      1; @ac-freshness-resolution 7/7 by task 2; @verification-session-evidence 4/4 by task 3;
+      @coverage-record-compatibility 7/7 by task 6. The 3 new @test-annotation-sweep ACs are
+      dual-claimed by tasks 4 and 5 with the division annotated (task 4 = spec mutation, task 5 =
+      parser implementation + tests). Reconciliation claims on @ac-annotation-integrity-reporting,
+      @ac-annotation-identifier-format, and @trait-validation are scoped as given/when-clause
+      reconciliation only. No orphan ACs."
+    name: AC coverage mapping
+    required: true
+    runner: claude
+    created_at: 2026-06-11T20:42:59.120Z
+    completed_at: 2026-06-11T20:42:59.120Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Task graph acyclic: task 1 (P1, no deps) -> task 2 (P1), task 3 (P2), task 6 (P2, also on
+      task 2); task 4 (P2, no deps) -> task 5 (P2). No P1 task depends on a P2 task. Tasks 2/3 and
+      the 4->5 chain can run in parallel after task 1; no over-constraining edges found. The round-1
+      missing edge (task 6 -> task 2 for the bootstrap-resolution clause of
+      ac-absent-store-no-behavior-change) is now declared. Task 4's implicit dependency on P0a
+      materialization is covered by the plan-level approval gate rather than a task edge, which is
+      correct since the target item cannot be referenced as a task dep before it exists."
+    name: Dependency ordering
+    required: true
+    runner: claude
+    created_at: 2026-06-11T20:43:02.276Z
+    completed_at: 2026-06-11T20:43:02.276Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec search for verification stamp / freshness / coverage features: no existing spec
+      covers per-AC verification storage or freshness resolution; the only adjacent items
+      (@coverage-scan-config, @test-annotation-sweep family, @trait-validation) are exactly the ones
+      the plan reconciles. Trait catalog reviewed: @trait-folder-backed-entity-1 does not apply (the
+      store is file-per-spec-item inside a sidecar, not an indexed entity-per-directory),
+      @trait-shadow-commit binds CLI commands while this plan ships a programmatic API only —
+      non-application of both judged correct. Hierarchy placement (feature + three child
+      requirements under @core module) is sound. AC given-clauses within @ac-freshness-resolution
+      checked pairwise disjoint or compatibly nested after the round-1 narrowing."
+    name: Spec neighborhood and overlap
+    required: true
+    runner: claude
+    created_at: 2026-06-11T20:43:05.259Z
+    completed_at: 2026-06-11T20:43:05.259Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec plan get @plan-ui-redesign-global-decisions: status=draft. kspec item get for
+      @annotation-freshness-provenance, @actor-identity-model, @ac-coverage-applicability: all not
+      found in live corpus. The plan's binding depends_on refs cannot resolve until P0a is approved
+      and derived; per the plan's own gate, it must remain draft and unapproved until then."
+    name: P0a approval gate
+    required: true
+    runner: claude
+    created_at: 2026-06-11T20:43:08.327Z
+    completed_at: 2026-06-11T20:43:08.327Z
 events:
   - _ulid: 01KTW6NXWFH1GEK1VAKD4MQPWK
     actor: "@claude"
@@ -10,17 +115,177 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T20:41:18.480Z
+  - _ulid: 01KTW6RE5SQ2WMKY7YSNTXCN8Q
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T20:42:40.698Z
+  - _ulid: 01KTW6RHBKZAPGWFTQGYY82YHJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW6RH3A9X67KSWC8FS656Y3
+    timestamp: 2026-06-11T20:42:43.955Z
+  - _ulid: 01KTW6RMBYVZSKYMQW1G3Y2K93
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTW6RM45YP5X66BS5DAEQ8AV
+    timestamp: 2026-06-11T20:42:47.038Z
+  - _ulid: 01KTW6RQCEM704DHJMJKQ49968
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTW6RQ4D7TY0KKJ8PV0GY5MX
+    timestamp: 2026-06-11T20:42:50.126Z
+  - _ulid: 01KTW6RTABHTD190AJZD7XZMD9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Round-1 findings resolution verification
+    timestamp: 2026-06-11T20:42:53.131Z
+  - _ulid: 01KTW6RXBW3CNMTBN7WH9EQP3Y
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: External reference validation
+    timestamp: 2026-06-11T20:42:56.253Z
+  - _ulid: 01KTW6S0DG82PJ2Z6BA58JA78W
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-11T20:42:59.377Z
+  - _ulid: 01KTW6S3FR6FKA918QERNYWBBD
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-11T20:43:02.520Z
+  - _ulid: 01KTW6S6DETCFAH3EMB79QCD53
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec neighborhood and overlap
+    timestamp: 2026-06-11T20:43:05.518Z
+  - _ulid: 01KTW6S9DKC24Q1Y9Y7KWQPPRS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: P0a approval gate
+    timestamp: 2026-06-11T20:43:08.596Z
+  - _ulid: 01KTW6SCF5M2BAWSC0X8DXRE3P
+    actor: claude
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T20:43:11.717Z
+  - _ulid: 01KTW6SCF5H2B3S36M1NRNBTW7
+    actor: claude
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T20:43:11.717Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-ac-coverage-verification-schema-and-storage"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTW6RH3A9X67KSWC8FS656Y3
+    anchor:
+      type: structured
+      ref: "@plan-ac-coverage-verification-schema-and-storage"
+      section: dependencies
+    entries:
+      - _ulid: 01KTW6RH3AR8ZAXCMAN4FNZDNH
+        author: "@claude"
+        body: "RE-RAISED (standing external gate, carried from reviews @01KTVZDD27GEK9YEBQP3KB6T4M and
+          @01KTW3KF3H9C9FK093WT406JE2). Verified in live state at this round:
+          @plan-ui-redesign-global-decisions (P0a) is still status=draft, and the three binding
+          depends_on refs (@annotation-freshness-provenance, @actor-identity-model,
+          @ac-coverage-applicability) do not resolve in the live corpus (kspec item get returns
+          not-found for all three). The plan's own approval-gate banner and 'Approval gate and
+          ordering' section correctly state it must not be approved or derived until P0a is approved
+          and derived. The document-side remedy (gate banner, draft-status discipline, dangling-ref
+          failure mode via kspec validate --refs) is in place and adequate; nothing further is
+          required of the author. This thread blocks approval only because the external condition is
+          unsatisfied — re-review once P0a materializes, at which point this should be the sole
+          remaining gate."
+        created_at: 2026-06-11T20:42:43.690Z
+    kind: blocker
+  - _ulid: 01KTW6RM45YP5X66BS5DAEQ8AV
+    anchor:
+      type: structured
+      ref: "@task-respec-test-annotation-sweep-na"
+      section: description
+    entries:
+      - _ulid: 01KTW6RM46ES59G2F0CZ3BT5VP
+        author: "@claude"
+        body: "Cross-document tension worth resolving while P0a is still draft. I verified the round-1
+          resolution claim against the decision register (plans/ui-redesign/decisions.md #13): it
+          does assign the N/A-stop to P1a/P1b ('stop the parser's silent N/A counts as covered
+          behavior'), so option (a) is substantiated. However, P0a's own draft content still says
+          the opposite in two places: the @ac-coverage-applicability description ('remains in force
+          until the coverage state engine work reconciles the two semantics') and the 'Boundaries
+          and follow-ons' section ('The coverage state engine plan owns reconciling the validate
+          exemption behavior with corpus coverage'). This plan's remedy — task 4 amending the live
+          decision item immediately after P0a derives it — works, but since P0a has not yet derived,
+          the cleaner path is to fix the boundary sentence in P0a's draft so the item materializes
+          already-correct, making task 4's amendment bullet unnecessary (or a no-op verification).
+          Secondary fragility: task 4's amendment instruction quotes the current P0a draft wording
+          ('replace the deferral to \"the coverage state engine work\"'); if P0a's text shifts
+          during its remaining review rounds, the instruction's anchor text may not match what
+          derives. The defensive end-state phrasing mostly mitigates this. Non-blocking either way —
+          but recommend coordinating the P0a-side fix during its draft window, and if taken,
+          updating task 4 to verify rather than amend."
+        created_at: 2026-06-11T20:42:46.790Z
+    kind: question
+  - _ulid: 01KTW6RQ4D7TY0KKJ8PV0GY5MX
+    anchor:
+      type: structured
+      ref: "@verification-session-evidence"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTW6RQ4DTSXE7VQES9HD9KW0
+        author: "@claude"
+        body: Task 3's test list includes 'malformed session identifier rejected at write', but no AC on
+          @verification-session-evidence binds that rejection behavior — the spec's ACs cover
+          stored-with-reference, sessionless-accepted, readable-from-record, and pruned-session
+          tolerance, and @ac-verification-record-store ac-incomplete-stamp-rejected covers only
+          missing time/actor/provenance. A test asserting behavior no AC binds invites annotation
+          drift. Either add a small AC (given a stamp write carrying a session reference that is not
+          a well-formed session identifier, the write is rejected and stored state is unchanged) or
+          drop the rejection test to implementation discretion. Suggestion only.
+        created_at: 2026-06-11T20:42:49.869Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude
+    role: reviewer
+    created_at: 2026-06-11T20:43:11.717Z
 created_at: 2026-06-11T20:41:18.480Z
-updated_at: null
+updated_at: 2026-06-11T20:43:11.717Z
 notes: []
