@@ -4439,3 +4439,31 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-11T14:12:40.480Z
+  - _ulid: 01KTVKWWHF9RT86D83529XDFC0
+    text: "Centralize the Elysia error-helper polyfill for app.handle() route tests: extract the
+      .resolve error polyfill from tests/daemon-api/helpers.ts into a shared test helper (e.g.
+      tests/helpers/) and/or add a testing convention rule documenting that errorResponse is
+      undefined under app.handle() in Node. Prevents repeat debugging of opaque 500s when new route
+      test files build their own Elysia app (hit again in tests/daemon-command-api.test.ts during
+      task-command-dispatch-timeout)."
+    tags:
+      - testing
+      - daemon
+      - dx
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-11T15:13:03.535Z
+  - _ulid: 01KTVKWWKWQ1R9SE57QGYVGE0V
+    text: scripts/build-daemon.cjs hardcodes the packages/daemon/src/pid.ts shim re-export list as a
+      string literal — adding a new shared constant (e.g. DEFAULT_DAEMON_COMMAND_TIMEOUT_MS)
+      requires editing src/daemon-shared/endpoint.ts, the pid.ts shim, AND the build script string;
+      a missed build-script edit is silent until the bundled daemon fails at import time. Improve by
+      generating the staged shim from the pid.ts source export list (or rewriting only the import
+      specifier) so the list lives in one place.
+    tags:
+      - build
+      - daemon
+      - dx
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-11T15:13:03.612Z
