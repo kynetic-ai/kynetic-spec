@@ -63764,7 +63764,7 @@ runs:
     completed_at: 2026-06-11T14:33:35.705Z
   - _ulid: 01KTVHJ4G38727F9E7TY3HGKP5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -63776,7 +63776,13 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T14:34:05.367Z
-        completed_at: 2026-06-11T14:34:05.367Z
+        completed_at: 2026-06-11T14:34:09.388Z
+        notes: Identified 2 high-confidence items (git-checkout-clobbers-uncommitted friction;
+          regex-corpus-dry-run + negative-check success) and 2 skips.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T14:34:09.388Z
+        completed_at: 2026-06-11T14:34:09.388Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T14:32:14.083Z
