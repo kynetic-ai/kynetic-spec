@@ -105,6 +105,19 @@ checks:
     required: false
     created_at: 2026-06-11T06:41:15.274Z
     completed_at: 2026-06-11T06:41:15.274Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Checked plan refs/tasks and searched/read nearby specs: coverage-scan-config,
+      coverage-annotation-scope-boundaries, ac-annotation-integrity-reporting,
+      test-annotation-sweep, ui-validation-view, and active
+      plan-validation-and-test-coverage-integrity. No direct duplicate decision spec found; one
+      transition conflict found for N/A coverage semantics."
+    name: existing spec neighborhood
+    required: false
+    created_at: 2026-06-11T06:41:15.367Z
+    completed_at: 2026-06-11T06:41:15.367Z
 events:
   - _ulid: 01KTTPG4AC91PKB75PX2C5M2VB
     actor: "@claude"
@@ -238,6 +251,13 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-06-11T06:41:16.181Z
+  - _ulid: 01KTTPKSEZG3J1PY7VXF0DH831
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: existing spec neighborhood
+    timestamp: 2026-06-11T06:41:16.768Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -375,5 +395,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T06:41:15.274Z
+updated_at: 2026-06-11T06:41:15.367Z
 notes: []
