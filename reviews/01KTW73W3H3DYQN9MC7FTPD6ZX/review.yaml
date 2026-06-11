@@ -258,9 +258,25 @@ events:
       status: pass
       name: Review evidence log
     timestamp: 2026-06-11T20:50:50.833Z
+  - _ulid: 01KTW77P7QGMP7C06DHPR5JK59
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T20:51:00.471Z
+  - _ulid: 01KTW77P7QH0ZQ4HAY2FZH5QEJ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T20:51:00.471Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -287,7 +303,14 @@ threads:
           first, then re-review this plan."
         created_at: 2026-06-11T20:49:30.336Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T20:51:00.470Z
 created_at: 2026-06-11T20:48:55.408Z
-updated_at: 2026-06-11T20:50:50.546Z
+updated_at: 2026-06-11T20:51:00.471Z
 notes: []
