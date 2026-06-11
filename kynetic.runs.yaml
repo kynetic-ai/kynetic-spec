@@ -63224,7 +63224,7 @@ runs:
     started_at: 2026-06-11T11:50:11.669Z
     completed_at: 2026-06-11T11:52:25.035Z
   - _ulid: 01KTV9HAQMDCP8VPMYF3YXXVAS
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -63282,10 +63282,16 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-11T12:25:04.869Z
-        completed_at: 2026-06-11T12:25:04.869Z
+        completed_at: 2026-06-11T12:25:19.299Z
+        notes: "Capture: no new inbox item or observation was created to avoid duplicating existing
+          tracking. Existing bug task @01KTV9BT now carries the full-suite CLI/dist flake evidence
+          from the review plus the additional triage-cli failure observed during reflection. Success
+          pattern retained in the workflow notes: detached review checks plus the supported merge
+          helper made the approve/merge/complete path clear and auditable."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T12:11:59.092Z
+    completed_at: 2026-06-11T12:25:19.299Z
   - _ulid: 01KTVA1EBEJBMN6VM9VH1GNFJK
     status: completed
     current_step: 3
