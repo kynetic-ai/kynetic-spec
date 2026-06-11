@@ -21293,6 +21293,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T06:31:25.367Z
+  - _ulid: 01KTTQREW0YWW2F2YC6F98WNV1
+    type: success
+    content: "Fix-cycle verification pattern: replicate the reviewer's exact failing check command (from
+      the review record's check runner/evidence) locally before resubmitting. In
+      @task-audit-fix-production-deps fix cycle 1, the review's failing check was 'Node 20 npm ci
+      --omit=dev --engine-strict --ignore-scripts'; reproducing it verbatim (via npx node@20 against
+      a temp package copy) before and after the fix gave direct evidence the blocker was resolved,
+      and the thread reply could cite the reviewer's own check now passing. Generalizes to any fix
+      cycle where the review records a concrete failing check — stronger signal than re-running
+      generic gates."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T07:01:18.336Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
