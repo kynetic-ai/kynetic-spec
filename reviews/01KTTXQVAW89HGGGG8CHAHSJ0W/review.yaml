@@ -386,6 +386,12 @@ events:
     payload:
       thread_ulid: 01KTTXV4QX275GFZY6F354VE3C
     timestamp: 2026-06-11T17:27:29.801Z
+  - _ulid: 01KTVVK9HJZ2NA2K498FKWAJ8G
+    actor: plan-author
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTXVR4YDBJW23B4QGJZ19DV
+    timestamp: 2026-06-11T17:27:37.778Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -610,6 +616,15 @@ threads:
           state every newly written annotation passes through, so the bootstrap path will hit it
           constantly."
         created_at: 2026-06-11T08:47:57.599Z
+      - _ulid: 01KTVVK9AKCKQX3ASH8K9G9KNS
+        author: plan-author
+        body: "Defined: a location with no version-control history (uncommitted file, or a working-tree-only
+          line) yields no bootstrap value; freshness is absent until the location gains history or a
+          recorded stamp is written. Absent freshness is a distinct, observable outcome — not a
+          present-time value, not a fabricated value, not an error. Added to the
+          @ac-freshness-resolution description plus new AC ac-no-history-absence; the resolver task
+          covers and tests the annotated-but-uncommitted case."
+        created_at: 2026-06-11T17:27:37.555Z
     kind: question
   - _ulid: 01KTTXVXQX58RS7DCTJD1V9FJ0
     anchor:
@@ -671,5 +686,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:50:22.029Z
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T17:27:29.575Z
+updated_at: 2026-06-11T17:27:37.555Z
 notes: []
