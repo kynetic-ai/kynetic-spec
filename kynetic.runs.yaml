@@ -64945,7 +64945,7 @@ runs:
     started_at: 2026-06-11T23:32:22.430Z
     completed_at: 2026-06-11T23:35:33.563Z
   - _ulid: 01KTWHPM065TWQBGB3Y0CFYRP9
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -65034,7 +65034,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-11T23:56:01.009Z
-        completed_at: 2026-06-11T23:56:01.009Z
+        completed_at: 2026-06-11T23:56:13.984Z
+        notes: "Capture: no new items created. Existing coverage found for workflow-show run-ref mismatch
+          (inbox 01KQ0RH7, 01KQBGKT, 01KR293G, 01KRYTG7) and shell-fragile CLI payload/backtick
+          handling (observations such as 01KN818C plus related review CLI quoting observations).
+          Session success pattern was noted in workflow notes only: precise prior-review blockers
+          plus full fresh-suite verification made the review/merge decision reliable."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T23:53:55.463Z
+    completed_at: 2026-06-11T23:56:13.984Z
