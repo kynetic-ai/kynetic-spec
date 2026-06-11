@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KTWDRPNRZ7QQ2J8C7CZFTWMY
     timestamp: 2026-06-11T22:45:09.740Z
+  - _ulid: 01KTWDRTRQTVEHB6A2J55JEM3A
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTWDRTFDE940W89NAYY3BVP5
+    timestamp: 2026-06-11T22:45:13.623Z
 examined_commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
 external_links: []
 lifecycle_state: open
@@ -57,7 +64,27 @@ threads:
           allowing a build to rewrite dist while Vitest is executing."
         created_at: 2026-06-11T22:45:09.433Z
     kind: blocker
+  - _ulid: 01KTWDRTFDE940W89NAYY3BVP5
+    anchor:
+      type: code
+      commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
+      line_end: 81
+      line_start: 68
+      path: scripts/test.cjs
+      side: head
+    entries:
+      - _ulid: 01KTWDRTFEPQSZ5B842P2VRBYD
+        author: Jacob Chapel
+        body: "MUST-FIX: The test cache key omits the new files that now affect test runner behavior.
+          scripts/test.cjs now requires scripts/build-test-lock.cjs, and the new tests exercise
+          scripts/build.cjs, but TEST_INPUT_PATHS still hashes only scripts/test.cjs,
+          scripts/test-progress-reporter.cjs, and scripts/dependency-health.cjs. As a result, future
+          edits to the lock/build wrapper can be hidden by a stale cached 'npm test' result even
+          though those files directly control test scheduling and are part of the tested behavior.
+          Add the new test-affecting scripts to the cache input set and cover that expectation."
+        created_at: 2026-06-11T22:45:13.326Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T22:24:32.166Z
-updated_at: 2026-06-11T22:45:09.433Z
+updated_at: 2026-06-11T22:45:13.326Z
 notes: []
