@@ -88,6 +88,7 @@ tags:
   - infra
   - reliability
 vcs_refs: []
+review_ref: "@01KTTPCA88ZVWMN2R4XVJ46KCZ"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-daemon-log-capture/01kttd05
@@ -138,6 +139,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-11T06:28:22.008Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTTPCA88ZVWMN2R4XVJ46KCZ"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-11T06:37:14.150Z
 created_at: 2026-06-11T03:53:16.608Z
 started_at: 2026-06-11T05:53:50.197Z
 submitted_at: 2026-06-11T06:28:22.007Z

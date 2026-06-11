@@ -1,0 +1,26 @@
+_ulid: 01KTTPCA88ZVWMN2R4XVJ46KCZ
+slugs: []
+title: Review daemon log capture
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTTPCA8717G123ZBPHN6G340
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T06:37:11.816Z
+examined_commit: 7b5d5b3849c0f4cf06841b8ba250278e2245d6ab
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTD05J0G7PQGFER0GY2N4KR"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T06:37:11.816Z
+updated_at: null
+notes: []
