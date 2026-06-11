@@ -31420,7 +31420,7 @@
   type: task
   spec_ref: "@daemon-command-api"
   plan_ref: "@plan-daemon-operational-reliability"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-update-daemon-reliability-specs"
@@ -31435,6 +31435,7 @@
   created_at: 2026-06-11T03:53:18.918Z
   started_at: 2026-06-11T16:25:39.889Z
   submitted_at: 2026-06-11T16:25:43.673Z
+  completed_at: 2026-06-11T16:47:46.374Z
   automation: eligible
 - _ulid: 01KTTD08J12B14SB244JRFNDFX
   slugs:
