@@ -31549,6 +31549,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:53:44.123Z
+  automation: eligible
 - _ulid: 01KTTD1CGTV3QFPSD8F8DZCA34
   slugs:
     - task-reenable-split-storage-ref-validation-test
