@@ -62685,7 +62685,7 @@ runs:
     completed_at: 2026-06-11T08:38:49.694Z
   - _ulid: 01KTTYFDF4HWVYKXZY1YBAYXD7
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -62709,7 +62709,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-11T09:00:00.053Z
-        completed_at: 2026-06-11T09:00:00.053Z
+        completed_at: 2026-06-11T09:00:10.600Z
+        notes: "Coverage checked before capture: kspec search 'review evidence log' returned @01KR2JD1
+          (friction: no first-class place for evidence logs) and @01KT5ZGF (success: evidence log
+          plus detached merge helper made review safe). kspec search 'evidence log' also returned
+          @01KMP87Q3 (review CLI body quoting friction), @01KSS63E (batch-recording review checks
+          worked), @01KSZN68 (detached reviewer flow worked), and related review workflow successes.
+          The session's concrete friction is already tracked; success pattern is also already
+          tracked."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-11T09:00:10.600Z
+        completed_at: 2026-06-11T09:00:10.600Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T08:58:42.020Z
