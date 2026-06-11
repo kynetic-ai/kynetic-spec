@@ -147,9 +147,25 @@ events:
       kind: nit
       thread_ulid: 01KTVS9BH5M3YW7RVX3NJA7SNY
     timestamp: 2026-06-11T16:47:15.189Z
+  - _ulid: 01KTVS9NTXF914Q6PBBEZBKPAW
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T16:47:25.533Z
+  - _ulid: 01KTVS9NTXG8WNG883F93TBV5E
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T16:47:25.533Z
 examined_commit: 6a4c811fac5105c9b430fa2cab768460b6aabce4
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -191,7 +207,14 @@ threads:
           guidance surfaces were touched.
         created_at: 2026-06-11T16:47:14.981Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T16:47:25.532Z
 created_at: 2026-06-11T16:32:11.375Z
-updated_at: 2026-06-11T16:47:14.981Z
+updated_at: 2026-06-11T16:47:25.533Z
 notes: []
