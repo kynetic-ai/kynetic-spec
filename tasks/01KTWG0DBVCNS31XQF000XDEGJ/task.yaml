@@ -1,0 +1,32 @@
+_ulid: 01KTWG0DBVCNS31XQF000XDEGJ
+slugs:
+  - task-stabilize-e2e-plan-review-fixture-routes
+title: Stabilize E2E plan and review fixture route failures
+type: bug
+description: 'Observed during review of @task-dedupe-web-ui-devdeps on 2026-06-11: `npm run
+  test:e2e` completed its build but failed 45 Playwright tests. The earliest failures were daemon
+  setup/WebSocket timeouts, followed by deterministic plans/review fixture failures. Full run
+  summary: 45 failed, 1 skipped, 17 did not run, 447 passed. A focused rerun `npm run test:e2e --
+  tests/e2e/plans.spec.ts --workers=1` repeated the plans failure immediately. The captured page for
+  `tests/e2e/plans.spec.ts:105` shows the Plans page rendering `0 plans`, an alert `Unexpected token
+  e, "errorRespo"... is not valid JSON`, and no `plans-list`. API checks in the same run returned
+  500 for `/api/plans/test-plan-active` and `/api/plans/01KG0RRPCA45ZT43W2T6HJMVP1`. The E2E fixture
+  currently has `tests/e2e/fixtures/project.plans.yaml` but no `tests/e2e/fixtures/plans/` folder,
+  while the live plans route enforces folder-backed plan storage. Investigate the fixture/storage
+  mismatch and review route 500s, migrate or repair E2E fixtures as needed, and ensure `npm run
+  test:e2e` passes from a clean workspace.'
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - e2e
+  - flaky
+vcs_refs: []
+created_at: 2026-06-11T23:24:19.195Z
+todos: []
+automation: eligible

@@ -31884,3 +31884,19 @@
   todos_count: 0
   created_at: 2026-06-11T23:15:55.881Z
   automation: eligible
+- _ulid: 01KTWG0DBVCNS31XQF000XDEGJ
+  slugs:
+    - task-stabilize-e2e-plan-review-fixture-routes
+  title: Stabilize E2E plan and review fixture route failures
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - e2e
+    - flaky
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T23:24:19.195Z
+  automation: eligible
