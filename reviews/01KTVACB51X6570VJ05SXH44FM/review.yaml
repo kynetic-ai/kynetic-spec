@@ -164,9 +164,25 @@ events:
       kind: nit
       thread_ulid: 01KTVB7GSKDCTDA65CZT6SXZS2
     timestamp: 2026-06-11T12:41:34.998Z
+  - _ulid: 01KTVB7XM5A96XHBSADJ4KK0S0
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T12:41:47.909Z
+  - _ulid: 01KTVB7XM580976YG9Z89N3SK7
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T12:41:47.909Z
 examined_commit: 4e35fa9ca6806c0dc664fe27265bf09046062c1f
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -192,7 +208,14 @@ threads:
           integration, shadow recovery safety. Findings: none."
         created_at: 2026-06-11T12:41:34.771Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-11T12:41:47.909Z
 created_at: 2026-06-11T12:26:44.257Z
-updated_at: 2026-06-11T12:41:34.771Z
+updated_at: 2026-06-11T12:41:47.909Z
 notes: []
