@@ -64063,7 +64063,7 @@ runs:
     completed_at: 2026-06-11T16:05:22.991Z
   - _ulid: 01KTVR3AGME6632SXKFZPZTECV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -64077,7 +64077,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T16:29:19.750Z
-        completed_at: 2026-06-11T16:29:19.750Z
+        completed_at: 2026-06-11T16:29:30.973Z
+        notes: "Identified from fix-cycle session: (1) workflow-runs full-suite flake (empty stdout JSON
+          parse) — concrete, directly observed, matches known family; (2) test runner whole-run
+          cache verdict forcing full --fresh rerun after one flaky file — concrete, directly
+          experienced, systemic since flakes recur across review gates; (3) corrupted review thread
+          body from shell interpolation (observed in the review record I consumed); (4) successes:
+          shared mock-daemon fixture + isolated kspec home made CLI behavioral tests straightforward
+          — established pattern, not novel."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T16:29:30.973Z
+        completed_at: 2026-06-11T16:29:30.973Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T16:26:28.756Z
