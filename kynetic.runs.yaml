@@ -64839,7 +64839,7 @@ runs:
     completed_at: 2026-06-11T22:55:49.256Z
   - _ulid: 01KTWG9DS5WYJBJM2FAZKBAC7X
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -64855,7 +64855,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T23:29:41.644Z
-        completed_at: 2026-06-11T23:29:41.644Z
+        completed_at: 2026-06-11T23:29:51.433Z
+        notes: "Friction points: review-gates require creating follow-up work for pre-existing/flaky
+          failures before proceeding, but the reviewer currently has to manually convert long
+          npm/test:e2e output into task descriptions and decide how to represent pass-with-caveat
+          versus optional failures in review checks. The E2E suite produced broad fixture/route
+          failures unrelated to this package-only diff, and classifying that required reading error
+          contexts, rerunning focused tests, inspecting fixtures/routes, then separately adding a
+          task. No code-review blocker came from this, but the process added significant mechanical
+          overhead."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T23:29:51.433Z
+        completed_at: 2026-06-11T23:29:51.433Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T23:29:14.533Z
