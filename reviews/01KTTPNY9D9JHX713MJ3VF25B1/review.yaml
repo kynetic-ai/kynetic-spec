@@ -266,6 +266,12 @@ events:
     payload:
       thread_ulid: 01KTTPWPVV9J9FM9Z9672VNVPC
     timestamp: 2026-06-11T07:41:08.905Z
+  - _ulid: 01KTTT1JZS6TTSS3BK401XTGK7
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTPWPVV9J9FM9Z9672VNVPC
+    timestamp: 2026-06-11T07:41:14.617Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -419,6 +425,8 @@ threads:
           with corpus coverage (parallel to the staleness/drift vocabulary note)."
         created_at: 2026-06-11T07:41:08.663Z
     kind: question
+    resolved_at: 2026-06-11T07:41:14.356Z
+    resolved_by: "@claude"
   - _ulid: 01KTTPWS7V9ADRJ82TPERDRFW7
     anchor:
       type: structured
@@ -519,5 +527,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:41:08.663Z
+updated_at: 2026-06-11T07:41:14.356Z
 notes: []
