@@ -14,7 +14,7 @@ description: During review of @task-workspace-packages-private on 2026-06-11, a 
 spec_ref: "@test-suite-perf-reliability"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -28,8 +28,8 @@ review_ref: "@01KTWCJYD6T4E3G2QAD57QFXP8"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-stabilize-upgrade-folder-storage-test/01ktw8sg
-  captured_at: 2026-06-11T22:17:35.151Z
-  commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
+  captured_at: 2026-06-11T23:31:36.496Z
+  commit: d04e6a064585e522c60d9f0ebf39204948a20254
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-stabilize-upgrade-folder-storage-test/01ktw8sg
@@ -105,8 +105,35 @@ history:
         previous: 2026-06-11T21:35:24.220Z
     command: task-start
     timestamp: 2026-06-11T23:31:32.815Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-stabilize-upgrade-folder-storage-test/01ktw8sg
+          captured_at: 2026-06-11T23:31:36.496Z
+          commit: d04e6a064585e522c60d9f0ebf39204948a20254
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-stabilize-upgrade-folder-storage-test/01ktw8sg
+        previous:
+          review_url: null
+          branch: dispatch/task/task-stabilize-upgrade-folder-storage-test/01ktw8sg
+          captured_at: 2026-06-11T22:17:35.151Z
+          commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-stabilize-upgrade-folder-storage-test/01ktw8sg
+      submitted_at:
+        new: 2026-06-11T23:31:36.500Z
+        previous: 2026-06-11T22:17:35.153Z
+    command: task-submit
+    timestamp: 2026-06-11T23:31:36.501Z
 created_at: 2026-06-11T21:18:12.955Z
 started_at: 2026-06-11T23:31:32.815Z
-submitted_at: 2026-06-11T22:17:35.153Z
+submitted_at: 2026-06-11T23:31:36.500Z
 todos: []
 automation: eligible
