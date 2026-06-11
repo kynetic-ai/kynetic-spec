@@ -64336,7 +64336,7 @@ runs:
     completed_at: 2026-06-11T19:16:28.383Z
   - _ulid: 01KTW1Q0Y3HEWQDTBHFM7VHHT0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -64351,7 +64351,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T19:16:02.173Z
-        completed_at: 2026-06-11T19:16:02.173Z
+        completed_at: 2026-06-11T19:16:34.926Z
+        notes: "High-confidence findings: (1) Success: workflow-only review benefited from pairing
+          structural YAML parsing with an actual branch-scoped GitHub Actions run; this gave
+          stronger AC evidence than local tests alone. (2) Friction: full-suite npm test can produce
+          order-sensitive stale/inconsistent dist import failures in tests/workflow-runs.test.ts
+          while focused reruns pass. This is systemic and repeatable across reviews today. (3)
+          Process correction: the stale-dist friction was already tracked, so the newly created
+          follow-up was duplicate and was canceled after adding its evidence to @01KTVDV1."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T19:16:34.926Z
+        completed_at: 2026-06-11T19:16:34.926Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T19:14:31.492Z
