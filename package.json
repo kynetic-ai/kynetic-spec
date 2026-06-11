@@ -102,6 +102,9 @@
     "typescript": "^5.3.3",
     "vitest": "^4.0.17"
   },
+  "overrides": {
+    "file-type": "^21.3.2"
+  },
   "engines": {
     "node": ">=20.0.0"
   }
