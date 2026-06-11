@@ -64529,9 +64529,22 @@ runs:
     completed_at: 2026-06-11T20:47:23.824Z
   - _ulid: 01KTW90J56B8XG5AA32FTPQ4NR
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-11T21:22:04.071Z
+        completed_at: 2026-06-11T21:22:47.724Z
+        notes: "What worked well: the detached-review merge helper provided a clean path from approved
+          review to dev without checking out the integration branch in the reviewer snapshot. Review
+          records captured gate evidence cleanly, and the publication dry-runs directly verified the
+          task's core behavior: root pack output excluded workspace packages and workspace publish
+          dry-run skipped all three private workspaces."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-11T21:22:47.724Z
+        completed_at: 2026-06-11T21:22:47.724Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T21:22:04.071Z
