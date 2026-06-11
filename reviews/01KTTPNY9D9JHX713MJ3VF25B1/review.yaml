@@ -326,6 +326,12 @@ events:
     payload:
       thread_ulid: 01KTTPX34B25368K9J765DAGZS
     timestamp: 2026-06-11T07:42:06.533Z
+  - _ulid: 01KTTT3BF607NTK4F36NNZMDRB
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTPX34B25368K9J765DAGZS
+    timestamp: 2026-06-11T07:42:12.454Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -599,6 +605,8 @@ threads:
           acceptance is a decided constraint (decision register item 14)."
         created_at: 2026-06-11T07:42:06.245Z
     kind: nit
+    resolved_at: 2026-06-11T07:42:12.146Z
+    resolved_by: "@claude"
   - _ulid: 01KTTPX5FKZN7A0VXJRBKKTV80
     anchor:
       type: structured
@@ -623,5 +631,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:42:06.245Z
+updated_at: 2026-06-11T07:42:12.146Z
 notes: []
