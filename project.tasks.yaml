@@ -31454,7 +31454,7 @@
   type: task
   spec_ref: "@daemon-network-endpoint-contract"
   plan_ref: "@plan-daemon-operational-reliability"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-update-daemon-reliability-specs"
@@ -31466,6 +31466,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:53:19.681Z
+  started_at: 2026-06-11T20:52:08.818Z
   automation: eligible
 - _ulid: 01KTTD098ZQFGG9VEBM7AZT83C
   slugs:
