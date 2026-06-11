@@ -21279,6 +21279,20 @@ observations:
     resolved: false
     workflow_ref: "@01KTTMKK"
     created_at: 2026-06-11T06:07:44.323Z
+  - _ulid: 01KTTP1QXQ02VGXAV9XMW4302V
+    type: success
+    content: "Task description encoding the precise runtime interaction model paid off directly:
+      @task-daemon-log-capture documented that routes/command.ts captures console functions as
+      originals at module load and routes via AsyncLocalStorage, prescribed the import-order fix
+      (logger tee as first entry-point import), and named a fallback. Implementation landed in one
+      pass with no double-logging bug and all gates green. Pattern: for cross-cutting changes
+      touching process-global state (console, cwd, process.exit), spell out the
+      interception/ownership model and required ordering in the task description rather than leaving
+      it to discovery."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T06:31:25.367Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

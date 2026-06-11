@@ -4311,3 +4311,16 @@ inbox:
       - e2e
     added_by: "@claude"
     created_at: 2026-06-11T05:18:57.991Z
+  - _ulid: 01KTTP1R756HGPW4F5A2SHR2GN
+    text: "Add testing convention rule: kspec()/kspecJson() CLI helpers isolate HOME to
+      <cwd>/.test-home, so global daemon state paths (config dir, daemon.pid, daemon.log via
+      getDefaultDaemonConfigDir) resolve under the temp cwd, not the real home. Tests asserting
+      those paths must expect <cwd>/.test-home/.config/kspec/... Mechanism exists (task 01KJTP68,
+      spec @daemon-sensitive-cli-test-determinism) but is undocumented in conventions; cost a failed
+      first test run in @task-daemon-log-capture."
+    tags:
+      - testing
+      - dx
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-11T06:31:25.669Z
