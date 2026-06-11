@@ -73,6 +73,13 @@ events:
       kind: question
       thread_ulid: 01KTTXVR4YDBJW23B4QGJZ19DV
     timestamp: 2026-06-11T08:47:57.854Z
+  - _ulid: 01KTTXVY018ECZ4Z06459ZMY8W
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTTXVXQX58RS7DCTJD1V9FJ0
+    timestamp: 2026-06-11T08:48:03.585Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -240,7 +247,24 @@ threads:
           constantly."
         created_at: 2026-06-11T08:47:57.599Z
     kind: question
+  - _ulid: 01KTTXVXQX58RS7DCTJD1V9FJ0
+    anchor:
+      type: structured
+      ref: "@ac-freshness-resolution"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTXVXQY5DEQR8920F507M6H
+        author: "@claude"
+        body: NEW this round. The multi-annotation bootstrap rule (when an AC has several annotation
+          locations and no recorded stamp, the bootstrap value is the most recent location's history
+          value) is observable read-contract behavior, but it is defined only in the task What and
+          Implementation Notes — no AC binds it. A consumer can distinguish most-recent from
+          oldest-wins from undefined, so the rule belongs in the spec. Consider adding an AC to
+          @ac-freshness-resolution for the multi-location case, or stating the rule in the spec
+          description if you deliberately want it non-binding until the engine plan revisits it.
+        created_at: 2026-06-11T08:48:03.326Z
+    kind: question
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:47:57.599Z
+updated_at: 2026-06-11T08:48:03.326Z
 notes: []
