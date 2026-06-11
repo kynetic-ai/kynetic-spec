@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T22:24:50.104Z
+  - _ulid: 01KTWDRPZCGRN7AZYDJFRVCH5N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTWDRPNRZ7QQ2J8C7CZFTWMY
+    timestamp: 2026-06-11T22:45:09.740Z
 examined_commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,31 @@ subject:
   content_hash: ""
   ref: "@01KTW8SGEWWF24FX36RRA5YPFP"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTWDRPNRZ7QQ2J8C7CZFTWMY
+    anchor:
+      type: code
+      commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
+      line_end: 611
+      line_start: 596
+      path: scripts/test.cjs
+      side: head
+    entries:
+      - _ulid: 01KTWDRPNS0H3Z0R7XEEJXPS55
+        author: Jacob Chapel
+        body: "MUST-FIX: The submitted lock does not actually eliminate the full-suite dist/ rewrite race it
+          is meant to stabilize. Evidence: a fresh full suite run via 'npm test -- --fresh' failed
+          in tests/workflow-runs.test.ts with the same class of built-CLI ESM mismatch
+          ('./upgrade.js' did not provide registerUpgradeCommand) while a test-spawned
+          'dist/cli/index.js' was starting. The targeted original file passed, but this proves
+          another CLI-spawning test can still observe a partially rewritten dist/ during the same
+          locked test run. An isolated fresh rerun of tests/workflow-runs.test.ts passed 88/88,
+          confirming the failure is full-suite concurrency rather than deterministic workflow
+          behavior. The lock/reentrancy design needs to cover nested build/test runner paths without
+          allowing a build to rewrite dist while Vitest is executing."
+        created_at: 2026-06-11T22:45:09.433Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T22:24:32.166Z
-updated_at: 2026-06-11T22:24:49.820Z
+updated_at: 2026-06-11T22:45:09.433Z
 notes: []
