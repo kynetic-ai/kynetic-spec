@@ -63225,7 +63225,7 @@ runs:
     completed_at: 2026-06-11T11:52:25.035Z
   - _ulid: 01KTV9HAQMDCP8VPMYF3YXXVAS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -63241,7 +63241,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T12:13:06.043Z
-        completed_at: 2026-06-11T12:13:06.043Z
+        completed_at: 2026-06-11T12:23:50.350Z
+        notes: >-
+          Friction points: The full 
+
+          > @kynetic-ai/spec@0.14.0 test
+
+          > node scripts/test.cjs review gate took a long time and produced three unrelated
+          intermittent failures involving CLI/dist module imports or empty JSON output. The changed
+          suite passed, and the failed suites passed on a fresh targeted rerun, but the reviewer
+          still had to inspect logs, rerun subsets, classify the failure, and create follow-up
+          tracking manually. This is systemic because future reviewers can hit the same
+          non-deterministic full-suite gate and lose time unless the underlying flake is stabilized.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T12:23:50.350Z
+        completed_at: 2026-06-11T12:23:50.350Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T12:11:59.092Z
