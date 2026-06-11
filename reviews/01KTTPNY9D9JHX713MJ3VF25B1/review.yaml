@@ -196,9 +196,25 @@ events:
       status: pass
       name: Spec neighborhood alignment
     timestamp: 2026-06-11T06:46:36.903Z
+  - _ulid: 01KTTPXYTTGYE34P0ZYXDABB9E
+    actor: claude
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T06:46:49.947Z
+  - _ulid: 01KTTPXYTV7V1JT5BQSY5398XE
+    actor: claude
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T06:46:49.947Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -389,7 +405,14 @@ threads:
           (the view derives from canonical identities).
         created_at: 2026-06-11T06:46:23.987Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude
+    role: reviewer
+    created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T06:46:36.694Z
+updated_at: 2026-06-11T06:46:49.947Z
 notes: []
