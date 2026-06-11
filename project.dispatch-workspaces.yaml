@@ -14895,11 +14895,11 @@ workspaces:
     canonical_branch: dispatch/task/task-add-contributing-security-docs/01kttczf
     canonical_branch_head: fb7f92add5b79e32e4c5c35ec8ec51f76ee7c889
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T11:43:50.434Z
+      updated_at: 2026-06-11T11:47:00.819Z
     health:
       status: healthy
       issues: []
@@ -14913,17 +14913,17 @@ workspaces:
       target_branch: dev
       target_commit: 387dbcf743ece951c4c6fa54e0421927add632ff
       updated_at: 2026-06-11T11:43:50.434Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTTCZFSEFHZY0DX7B8NN7GTM
     task_ref: "@01KTTCZFSEFHZY0DX7B8NN7GTM"
     task_slug: task-add-contributing-security-docs
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-11T11:47:00.819Z
       last_active_at: 2026-06-11T11:26:56.460Z
       last_reconciled_at: 2026-06-11T11:46:09.553Z
       created_at: 2026-06-11T11:18:35.503Z
-      updated_at: 2026-06-11T11:46:09.553Z
+      updated_at: 2026-06-11T11:47:00.819Z
     workspace_id: dispatch-workspace-01KTTCZFSEFHZY0DX7B8NN7GTM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
