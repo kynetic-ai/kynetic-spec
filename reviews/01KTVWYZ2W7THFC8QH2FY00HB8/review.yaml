@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T17:51:39.693Z
+  - _ulid: 01KTVWZT0E6STBPEW9Y7GWYJ39
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVWZSSES7KWTX15SXP6FG10
+    timestamp: 2026-06-11T17:51:56.430Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,42 @@ subject:
   content_hash: ""
   ref: "@plan-ui-redesign-global-decisions"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTVWZSSES7KWTX15SXP6FG10
+    anchor:
+      type: structured
+      ref: "@ui-redesign-decisions"
+      section: context
+    entries:
+      - _ulid: 01KTVWZSSEGVNJ22WAXWSATEYM
+        author: "@claude"
+        body: >-
+          The 'Module placement and derive sequencing' implementation notes misstate derive
+          placement. They claim '@ui-redesign-decisions is created top-level' and that the stored
+          @main module is inert ('nothing depends on it'). Neither is true: plan derive parents
+          every parentless non-trait spec under the plan's stored module — only parentless
+          trait-type specs get project-level placement (src/cli/commands/plan.ts:441-466, the
+          `parent = moduleItem` branch). On derive, the ui-redesign-decisions module will therefore
+          be created as a child of @main ('Default module for Kynetic Spec. Add your spec items
+          here.'), and the stored module is load-bearing for exactly this one spec.
+
+
+          This is the residue of the round-1 placement blocker: the nine decisions are now
+          cohesively parented under their register (that part of the fix is real and verified), but
+          the register itself lands inside the placeholder module while the plan documents the
+          opposite. Impact: the section that resolved the round-1 blocker describes a post-derive
+          state that will not exist, and a future editor trusting 'nothing depends on it' could
+          change the stored module believing it inert.
+
+
+          Fix either way: (a) correct the notes to state the module is created under @main as the
+          interim home — the recorded @ux reparent contingency already covers later moves — or (b)
+          declare the intended parent explicitly (e.g. derive with --module pointing at the intended
+          home, or a parent field). Prose-only fix; derive succeeds and the hierarchy is valid
+          either way.
+        created_at: 2026-06-11T17:51:56.206Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T17:51:28.860Z
-updated_at: 2026-06-11T17:51:39.471Z
+updated_at: 2026-06-11T17:51:56.206Z
 notes: []
