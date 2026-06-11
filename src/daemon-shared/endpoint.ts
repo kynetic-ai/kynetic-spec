@@ -111,6 +111,19 @@ export const LEGACY_PORT_FILENAME = "daemon.port";
 export const CONNECTION_METADATA_FILENAME = "daemon.connection.json";
 /** Filename for the daemon PID file. */
 export const PID_FILENAME = "daemon.pid";
+/**
+ * Filename for the daemon operational log. Shared between the daemon's
+ * in-process console tee and the CLI lifecycle commands so both resolve
+ * the same path.
+ * AC: @daemon-log-capture ac-detached-output-captured
+ */
+export const DAEMON_LOG_FILENAME = "daemon.log";
+/**
+ * Default maximum size of the active daemon log before rotation (5 MiB).
+ * Overridable via daemon.log_max_size_bytes in project config.
+ * AC: @daemon-log-capture ac-bounded-rotation
+ */
+export const DEFAULT_DAEMON_LOG_MAX_SIZE_BYTES = 5 * 1024 * 1024;
 
 // ── Path helpers ───────────────────────────────────────────────────
 
@@ -134,6 +147,14 @@ export function getDaemonConnectionMetadataPath(
   configDir: string = getDefaultDaemonConfigDir(),
 ): string {
   return join(configDir, CONNECTION_METADATA_FILENAME);
+}
+
+/**
+ * Path to the daemon operational log file.
+ * AC: @daemon-log-capture ac-log-location-discoverable
+ */
+export function getDaemonLogPath(configDir: string = getDefaultDaemonConfigDir()): string {
+  return join(configDir, DAEMON_LOG_FILENAME);
 }
 
 // ── Pure host helpers ──────────────────────────────────────────────

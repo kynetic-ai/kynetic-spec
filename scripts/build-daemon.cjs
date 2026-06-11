@@ -58,7 +58,7 @@ async function main() {
   // Replace the pid.ts shim with a sibling re-export so it does not reach back into src/
   fs.writeFileSync(
     path.join(stageDir, "pid.ts"),
-    'export { PidFileManager, isNoDaemonModeEnabled } from "./endpoint.js";\n',
+    'export { PidFileManager, isNoDaemonModeEnabled, getDaemonLogPath, DAEMON_LOG_FILENAME, DEFAULT_DAEMON_LOG_MAX_SIZE_BYTES } from "./endpoint.js";\n',
     "utf-8",
   );
 
