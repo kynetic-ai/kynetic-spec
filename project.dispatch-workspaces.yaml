@@ -9363,7 +9363,7 @@ workspaces:
         head: 489f516a77ea21743ebcfb9a48184ca679139752
         last_seen_at: 2026-06-10T05:22:01.008Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/show-unmatched-review-task-resource-references-without-task-resource-refs-01ktqy1c
-  - active_role: null
+  - active_role: worker
     base_branch_point: 8335c393bd35c3216a876ea40949c41cf80e9b8b
     bootstrap:
       status: succeeded
@@ -9693,7 +9693,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T03:58:19.787Z
+      updated_at: 2026-06-11T03:59:26.346Z
     integration:
       status: pending
       detail: null
@@ -9702,17 +9702,17 @@ workspaces:
       target_branch: dev
       target_commit: 8335c393bd35c3216a876ea40949c41cf80e9b8b
       updated_at: 2026-06-11T03:58:19.787Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTCZB9VP137NEH3QGSJK0DS
     task_ref: "@01KTTCZB9VP137NEH3QGSJK0DS"
     task_slug: task-add-license-file
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-11T03:58:19.787Z
+      last_active_at: 2026-06-11T03:59:26.346Z
+      last_reconciled_at: 2026-06-11T03:59:26.346Z
       created_at: 2026-06-11T03:58:19.787Z
-      updated_at: 2026-06-11T03:59:16.310Z
+      updated_at: 2026-06-11T03:59:26.346Z
     workspace_id: dispatch-workspace-01KTTCZB9VP137NEH3QGSJK0DS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
