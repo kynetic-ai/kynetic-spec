@@ -62017,7 +62017,7 @@ runs:
     completed_at: 2026-06-10T05:45:49.596Z
   - _ulid: 01KTTF3SE3704HS33BBK5RRRKA
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -62029,7 +62029,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T04:31:38.310Z
-        completed_at: 2026-06-11T04:31:38.310Z
+        completed_at: 2026-06-11T04:34:07.385Z
+        notes: "Candidates identified from LICENSE/release-packaging session: (1) friction: full test suite
+          took 5285s vs documented ~150s under dispatch load; (2) friction: kspec workflow show
+          requires explicit run-ref while workflow next infers it; (3) friction: npm pack --json
+          emits prepack stdout before JSON array; (4) success: task description pre-resolving the
+          no-source-scanning lint interaction enabled single-pass implementation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T04:34:07.385Z
+        completed_at: 2026-06-11T04:34:07.385Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T04:30:12.419Z
