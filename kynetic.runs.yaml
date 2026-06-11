@@ -63995,7 +63995,7 @@ runs:
     started_at: 2026-06-11T15:40:22.982Z
     completed_at: 2026-06-11T15:42:49.148Z
   - _ulid: 01KTVPP82GHDSV3YNVCS7B3AFX
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -64052,7 +64052,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-11T16:04:16.838Z
-        completed_at: 2026-06-11T16:04:16.838Z
+        completed_at: 2026-06-11T16:05:22.991Z
+        notes: "Capture: no new friction inbox/task items created because the friction found is already
+          tracked. Created success observation @01KTVPWB for the minimum-runtime focused
+          verification pattern. Resolved malformed superseded observation @01KTVPV7 that was created
+          after shell command substitution stripped command text."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T16:01:51.696Z
+    completed_at: 2026-06-11T16:05:22.991Z
