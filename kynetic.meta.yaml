@@ -21628,6 +21628,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T18:47:33.055Z
+  - _ulid: 01KTW36CP93A302SPSPNSAREWA
+    type: friction
+    content: "Review gate friction: this mechanical three-file web UI cleanup required waiting for a
+      full npm test run that took 3152.4s before approval/merge. Existing coverage:
+      @task-test-cache-env-key addresses cache correctness, and @01KS9FFH covers format fail-fast
+      ordering, but no searched item directly covers risk-scoped or faster review-gate evidence for
+      narrow diffs. Consider triaging whether review gates can preserve confidence while using
+      cached, sharded, or risk-scoped evidence for low-risk changes."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-11T19:40:23.625Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
