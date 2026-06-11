@@ -9688,12 +9688,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T04:35:42.474Z
+      updated_at: 2026-06-11T04:36:37.562Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T04:35:42.474Z
+      updated_at: 2026-06-11T04:36:37.562Z
     integration:
       status: pending
       detail: null
@@ -9701,8 +9701,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8335c393bd35c3216a876ea40949c41cf80e9b8b
-      updated_at: 2026-06-11T04:35:42.474Z
-    lifecycle_state: ready
+      updated_at: 2026-06-11T04:36:37.562Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTTCZB9VP137NEH3QGSJK0DS
     task_ref: "@01KTTCZB9VP137NEH3QGSJK0DS"
@@ -9710,16 +9710,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T03:59:26.346Z
-      last_reconciled_at: 2026-06-11T04:35:42.474Z
+      last_reconciled_at: 2026-06-11T04:36:37.562Z
       created_at: 2026-06-11T03:58:19.787Z
-      updated_at: 2026-06-11T04:35:42.474Z
+      updated_at: 2026-06-11T04:36:37.562Z
     workspace_id: dispatch-workspace-01KTTCZB9VP137NEH3QGSJK0DS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 3a3f3bdd74e6e6a978be5cf2888e70c853fe255f
+        last_seen_at: 2026-06-11T04:36:37.562Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-license-file-01kttczb-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-add-license-file/01kttczb
-        head: 8335c393bd35c3216a876ea40949c41cf80e9b8b
-        last_seen_at: 2026-06-11T03:58:19.787Z
+        head: 3a3f3bdd74e6e6a978be5cf2888e70c853fe255f
+        last_seen_at: 2026-06-11T04:36:37.562Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-add-license-file-01kttczb
