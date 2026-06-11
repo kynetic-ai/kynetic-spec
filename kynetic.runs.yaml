@@ -64736,7 +64736,7 @@ runs:
     completed_at: 2026-06-11T22:21:08.742Z
   - _ulid: 01KTWDY2RGCDBXYTMSM293QYA9
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -64774,7 +64774,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-11T22:49:38.719Z
-        completed_at: 2026-06-11T22:49:38.719Z
+        completed_at: 2026-06-11T22:49:48.720Z
+        notes: "Proposed improvements: none newly captured. The concrete improvements are already
+          represented as active review feedback on @task-stabilize-upgrade-folder-storage-test:
+          close the remaining nested build/test race and include new runner/build helper scripts in
+          TEST_INPUT_PATHS. The broader stale-dist pattern is also already tracked by
+          @task-stabilize-full-suite-cli-dist-flakes and
+          @task-stabilize-workflow-runs-stale-dist-failure."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-11T22:49:48.720Z
+        completed_at: 2026-06-11T22:49:48.720Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T22:48:05.648Z
