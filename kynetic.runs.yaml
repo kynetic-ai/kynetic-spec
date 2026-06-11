@@ -64838,7 +64838,7 @@ runs:
     started_at: 2026-06-11T22:53:37.154Z
     completed_at: 2026-06-11T22:55:49.256Z
   - _ulid: 01KTWG9DS5WYJBJM2FAZKBAC7X
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -64896,10 +64896,17 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-11T23:30:57.519Z
-        completed_at: 2026-06-11T23:30:57.519Z
+        completed_at: 2026-06-11T23:32:26.298Z
+        notes: "Capture completed: added inbox item @01KTWGDQ for the untracked improvement to review
+          workflow support around unrelated gate failures/pass-with-caveat evidence. Initially
+          captured success observation @01KTWGDR for detached reviewer merge helper, then resolved
+          it as duplicate after observation search showed existing detached-merge-helper success
+          observations already cover the pattern. Concrete test failures from the review remain
+          tracked separately by @01KTWFH1 and @01KTWG0D."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T23:29:14.533Z
+    completed_at: 2026-06-11T23:32:26.298Z
   - _ulid: 01KTWGF58XS4P7JZNPXXWX7AT9
     status: active
     current_step: 0
