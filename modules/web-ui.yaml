@@ -1012,6 +1012,11 @@ features:
             id: ac-tests-use-resolved-endpoint
             then: the test uses the canonical resolved daemon endpoint
             when: the test creates HTTP clients, WebSocket clients, browser URLs, or daemon connection metadata
+          - given: The configured connect host is a non-loopback address
+            id: ac-external-connect-host-warning
+            then: The output includes a visible warning that the daemon will accept requests addressed to that
+              host value
+            when: The daemon starts or a lifecycle command reports the endpoint
         tags: []
         requirements:
           - _ulid: 01KR22GJ9F6RW5C6A97G46RKVD
@@ -3988,6 +3993,11 @@ features:
           cards. The board has constrained height with per-column scroll. Active Fleet row appears
           above the board when agents are running.
         when: Tasks exist in various states
+      - given: The dashboard is connected to a live backend
+        id: ac-counts-from-summary
+        then: The counts are obtained from the pre-computed server-side status summary rather than by
+          retrieving the full task list
+        when: The dashboard computes the status summary counts
     tags: []
     created: 2026-03-05T01:30:02.857Z
     notes: []

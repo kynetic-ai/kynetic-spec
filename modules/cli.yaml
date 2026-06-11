@@ -11406,6 +11406,39 @@ features:
             then: The command is executed directly in the current daemon request instead of posting back to the
               command API
             when: That command evaluates whether it should proxy through the daemon
+          - given: A command submitted through the command execution endpoint is still executing when the
+              configured execution time limit elapses (default 120 seconds when not configured)
+            id: ac-command-timeout
+            then: The caller receives a structured error response identifying the command and the elapsed limit,
+              while the command's underlying execution is not forcibly terminated and command
+              execution remains serialized
+            when: The limit elapses
+          - given: A previously timed-out command is still executing, so commands that require serialized
+              execution are waiting behind it
+            id: ac-timeout-queue-bounded
+            then: The caller receives a response within its own configured execution time limit — the normal
+              result if execution begins and completes in time, otherwise the same structured
+              timeout error — and a command whose limit elapses before its execution begins is
+              discarded without ever executing
+            when: A new command is submitted through the command execution endpoint
+          - given: A dispatched command has exceeded the configured execution time limit and has not completed
+            id: ac-stuck-command-reported
+            then: The response reports that command dispatch is degraded, identifying the stuck command and how
+              long it has been executing, and stops reporting it once the command completes
+            when: The daemon health reporting surface is queried
+          - given: A command timed out and its underlying execution later completes or emits further output
+            id: ac-timeout-isolation
+            then: The late output from the timed-out command is not attributed to any other command's response,
+              and its completion frees waiting commands to proceed
+            when: Subsequent commands execute through the command execution endpoint
+          - given: A mutating command, or a batch containing mutating commands, timed out for its caller while
+              its underlying execution continued
+            id: ac-timeout-late-completion-effects
+            then: The same completion effects that follow an in-time successful mutation still occur — the
+              entity cache is updated and the corresponding WebSocket event is broadcast to
+              connected clients — so the timed-out caller can observe the eventual result through
+              subsequent reads
+            when: The underlying execution later completes successfully
         tags: []
         created: 2026-03-26T05:50:40.740Z
         notes: []
