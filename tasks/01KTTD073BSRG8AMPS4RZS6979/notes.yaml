@@ -1,1 +1,20 @@
-notes: []
+notes:
+  - _ulid: 01KTVRNWW4572XDSPE6JF7RMCN
+    content: "Approach: status log path portion (Log file line + log_path JSON field) already landed
+      with task-daemon-log-capture (statusServer + daemon-log-capture.test.ts); keeping the existing
+      log_path field name rather than introducing log_file. Remaining work: new 'logs' subcommand in
+      registerServeCommands using getDaemonLogPath() from daemon-shared/endpoint. Tail default 50
+      lines, --lines <n> override, --json emits {log_path, lines}. --follow uses a 500ms polling
+      loop (rotation-safe: reopen from offset 0 when inode changes or size shrinks; rotated
+      generation is <log>.1 per DaemonLogWriter). Missing file -> error with suggestion, exit
+      NOT_FOUND(3). Invalid --lines -> VALIDATION_FAILED(4) matching invalid-port pattern. --follow
+      + --json rejected with validation error (task scopes JSON to non-follow mode). Edge cases:
+      empty file (exit 0, empty result), rotation mid-follow, file briefly absent mid-rotation. Test
+      plan: new tests/cli-serve-logs.test.ts with fabricated log under
+      <tempDir>/.test-home/.config/kspec/daemon.log (kspec() helper isolates HOME there); behavioral
+      follow test spawning the CLI and appending/rotating, bounded cleanup via
+      stopChildProcessBounded. Annotate @cli-serve-commands ac-8/ac-9, @daemon-log-capture
+      ac-log-location-discoverable, plus json-output/error-guidance trait ACs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T16:36:37.380Z
