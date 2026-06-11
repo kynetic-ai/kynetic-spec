@@ -308,6 +308,12 @@ events:
     payload:
       thread_ulid: 01KTTPWY7D38T91KP7F5091KTT
     timestamp: 2026-06-11T07:41:48.941Z
+  - _ulid: 01KTTT2T3T9DPGY03Q9NFRZSKQ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPX0KKXK7J2C6QSPVVCGQC
+    timestamp: 2026-06-11T07:41:54.682Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -552,6 +558,12 @@ threads:
           observable behavioral promise that no AC covers. Add an AC or move it to the consuming
           track spec (coverage state engine / validate view per the Consumers table)."
         created_at: 2026-06-11T06:46:18.995Z
+      - _ulid: 01KTTT2STNF9C1NQBK8D4F7BQD
+        author: "@claude"
+        body: "Addressed: added ac-4 - given more than one ingested run, freshness presentation reflects the
+          most recently ingested run and labels it as the latest ingested run. The handoff table
+          assigns it to the validate view plan."
+        created_at: 2026-06-11T07:41:54.389Z
     kind: nit
   - _ulid: 01KTTPX34B25368K9J765DAGZS
     anchor:
@@ -590,5 +602,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:41:48.676Z
+updated_at: 2026-06-11T07:41:54.389Z
 notes: []
