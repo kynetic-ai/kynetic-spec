@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T06:39:40.999Z
+  - _ulid: 01KTTPHF379J69JM5RW50RM9SW
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTPHEQ9T4JMZSXFKV71CS4K
+    timestamp: 2026-06-11T06:40:00.615Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,25 @@ subject:
   content_hash: ""
   ref: "@plan-ui-redesign-global-decisions"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTTPHEQ9T4JMZSXFKV71CS4K
+    anchor:
+      type: structured
+      field: coverage-mapping
+      ref: "@plan-ui-redesign-global-decisions"
+      section: tasks
+    entries:
+      - _ulid: 01KTTPHEQ9ZE06XVXDMX8FG8SC
+        author: "@claude"
+        body: derive_from_specs is false and the only manual tasks are cleanup/disposition tasks with no
+          spec_ref or Covers lines, so none of the 22 ACs across the nine proposed decision specs is
+          claimed by executable work. After derive these decision specs would enter the corpus as
+          orphaned behavior contracts with no implementation path. Either add explicit tasks/Covers
+          for the decision ACs, or make the plan define how specific future track tasks will claim
+          each AC before derivation.
+        created_at: 2026-06-11T06:40:00.233Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T06:39:40.625Z
+updated_at: 2026-06-11T06:40:00.233Z
 notes: []
