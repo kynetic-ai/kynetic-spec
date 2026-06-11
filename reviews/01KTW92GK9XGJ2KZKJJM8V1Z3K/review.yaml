@@ -175,9 +175,25 @@ events:
       kind: nit
       thread_ulid: 01KTW95N6955ZHEXM4AMHBKVQT
     timestamp: 2026-06-11T21:24:51.271Z
+  - _ulid: 01KTW9626P4K4093ACHV5Q74Q7
+    actor: claude
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T21:25:04.342Z
+  - _ulid: 01KTW9626PQ05T6SM8H5G522HV
+    actor: claude
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T21:25:04.342Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -245,7 +261,14 @@ threads:
           correctly converted to prose plus a single attribution helper). Verdict: approve."
         created_at: 2026-06-11T21:24:51.017Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude
+    role: reviewer
+    created_at: 2026-06-11T21:25:04.342Z
 created_at: 2026-06-11T21:23:08.009Z
-updated_at: 2026-06-11T21:24:51.017Z
+updated_at: 2026-06-11T21:25:04.342Z
 notes: []
