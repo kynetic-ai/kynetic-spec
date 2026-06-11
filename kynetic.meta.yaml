@@ -11553,8 +11553,13 @@ observations:
       before tests start (observed rm ENOENT on dist/daemon/index.ts when two --fresh runs started
       together). A build lock or serialized readiness fix would make multi-agent verification safer.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: "Fixed by per-worktree build/test lock (scripts/build-test-lock.cjs): scripts/test.cjs
+      holds the lock for the whole run (readiness fixes + vitest), so parallel npm test invocations
+      serialize instead of racing the build self-heal. Task
+      @task-stabilize-upgrade-folder-storage-test."
+    resolved: true
+    resolved_at: 2026-06-11T22:04:37.712Z
+    resolved_by: Jacob Chapel
     created_at: 2026-04-02T06:35:23.165Z
   - _ulid: 01KN6FGKESX88J9H5A05EMGTXJ
     type: friction
@@ -18205,8 +18210,13 @@ observations:
       manifest-full.js ENOENT, while a single serial npm run build followed by serial tests passed.
       Consider adding a per-worktree build lock or in-progress build reuse in scripts/test.cjs.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: "Fixed by per-worktree build/test lock (scripts/build-test-lock.cjs): npm run build /
+      build:e2e and scripts/test.cjs serialize on the same lock, so concurrent invocations wait
+      instead of racing on dist/ and .svelte-kit outputs. Task
+      @task-stabilize-upgrade-folder-storage-test."
+    resolved: true
+    resolved_at: 2026-06-11T22:04:40.249Z
+    resolved_by: Jacob Chapel
     workflow_ref: "@01KRC2VW"
     created_at: 2026-05-11T17:57:30.801Z
   - _ulid: 01KRC32D1J0Y3D0FFAS5X56RWG
