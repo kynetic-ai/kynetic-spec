@@ -187,9 +187,25 @@ events:
       kind: nit
       thread_ulid: 01KTTYBS6WV1S8G6G9K31R6W6K
     timestamp: 2026-06-11T08:56:43.222Z
+  - _ulid: 01KTTYCHX7PRAK6K9WCNC9ECEX
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T08:57:08.263Z
+  - _ulid: 01KTTYCHX7SDX8VED1XPEFNY59
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T08:57:08.263Z
 examined_commit: 570dc9e8b212f7072ee2a03f110c74aa0f7bc18a
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -216,7 +232,14 @@ threads:
           artifacts, test quality/source-scanning, package integration. No blocking findings."
         created_at: 2026-06-11T08:56:42.972Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: automated-reviewer
+    created_at: 2026-06-11T08:57:08.263Z
 created_at: 2026-06-11T08:42:16.318Z
-updated_at: 2026-06-11T08:56:42.972Z
+updated_at: 2026-06-11T08:57:08.263Z
 notes: []
