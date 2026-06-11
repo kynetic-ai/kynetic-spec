@@ -4521,3 +4521,16 @@ inbox:
       - daemon
     added_by: "@claude"
     created_at: 2026-06-11T16:59:22.888Z
+  - _ulid: 01KTW9G911DSSJDDCFJNACR3Z4
+    text: "Testing convention timing docs are stale: convention states full suite ~150s / shards ~50s,
+      but a full uncached 'npm test' run measured 3269s (2778 suites, 10537 tests) in a dispatch
+      worktree on 2026-06-11. The suite has grown ~20x since the numbers were written (sharding task
+      01KJA66Z, Feb 2026). Misleads agents budgeting test time before submit. Scope: re-measure
+      representative full/shard durations and update the testing convention text; consider whether
+      3-way sharding is still the right split at this suite size."
+    tags:
+      - reflection
+      - testing
+      - dx
+    added_by: "@claude"
+    created_at: 2026-06-11T21:30:39.009Z
