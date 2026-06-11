@@ -3,3 +3,22 @@ notes:
     content: Address dual-review round 1 findings
     author: "@claude"
     created_at: 2026-06-11T17:19:59.791Z
+  - _ulid: 01KTVVTAB5WDQRGPCTC6XEN2HJ
+    content: "Round-1 dual-review fix set applied (reviews 01KTTVE9X42D5EKE5J23CDHKXC and
+      01KTTXQVAW89HGGGG8CHAHSJ0W; 18 threads, all replied and resolved). Blockers: respec task now
+      reconciles @ac-annotation-identifier-format ac-valid-token-covers-ac alongside
+      ac-valid-annotation-covers-target; the three new @test-annotation-sweep ACs got stable ids
+      (ac-na-no-coverage-credit, ac-na-no-invalid-finding, ac-na-marker-preserved) referenced
+      concretely in both Covers lines; added @coverage-record-compatibility
+      ac-older-tool-ignores-sidecar with a testable task framing (unrecognized sidecar directories
+      ignored by readers). Questions: spec now states recorded stamps return verbatim with the
+      bootstrap value separately retrievable (ac-both-provenances-retrievable) and staleness
+      comparison deferred to the engine plan; Approval ordering section states the plan must not be
+      approved or derived before P0a derives (depends_on refs intentionally pending); no-history
+      annotation locations defined as absent freshness (ac-no-history-absence); multi-annotation
+      most-recent rule promoted to spec (ac-multi-annotation-most-recent). Nits: provenance reworded
+      as two sources with recorded classes; because-rationale moved out of then-clauses;
+      ac-stamp-contents split into ac-stamp-read-back and ac-incomplete-stamp-rejected. Content
+      re-imported via plan import --into; plan remains draft."
+    author: "@claude"
+    created_at: 2026-06-11T17:31:27.973Z
