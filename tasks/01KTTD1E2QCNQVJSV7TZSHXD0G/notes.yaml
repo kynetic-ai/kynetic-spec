@@ -13,3 +13,22 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T13:14:10.931Z
+  - _ulid: 01KTVDQ710K4CVAJMKRWKCCT0Z
+    content: "Investigation found the root cause runs deeper than the task description: the entire AC-7
+      suite was running against an UNRECOGNIZED project. The beforeEach 'kspec init' silently aborts
+      under vitest (interactive prompt + closed stdin; helper swallows the non-zero exit because
+      stdout contains the prompt text), leaving a bare .kspec/ dir that initContext() never resolves
+      as specDir — so search scanned NOTHING (not even the spec item/task fixtures), and every test
+      passed vacuously on the no-match echo. Fix (test-only, no production change): (1) bootstrap
+      with setupShadowDetection() instead of kspec init; (2) seed the task fixture via
+      seedSplitTask() — split is the default storage format and a monolithic project.tasks.yaml
+      entry fails the split-backend migration check; (3) valid testUlid() ULIDs everywhere; (4) drop
+      resolved_at: null from observations; (5) add required trigger field to the workflow fixture
+      (WorkflowSchema requires it — a failure mode beyond those listed in the task); (6)
+      strengthened all 6 tests: exitCode 0, not.toContain('No matches found'), [type] label,
+      matched: marker, exact 'N result(s)' count; (7) re-enabled the combined test, removed TODO +
+      oxlint-disable. Verified: 10/10 consecutive fresh runs of tests/grep.test.ts green;
+      format/lint/typecheck green; full suite running."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T13:25:06.208Z
