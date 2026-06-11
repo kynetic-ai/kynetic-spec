@@ -39,6 +39,9 @@ modules:
           range. The package manifest's engine declaration is the
           single source of truth; documentation follows it, never the
           other way around.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
