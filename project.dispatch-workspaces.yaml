@@ -16472,7 +16472,7 @@ workspaces:
         head: aed37c6f4e34f4ed3ecf795ec901555129753a1d
         last_seen_at: 2026-06-11T13:42:23.035Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-triage-api-tests-01kttd1d
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: fdc8c6c5d4230fb2f4e72007236e5936107a500f
     bootstrap:
       status: succeeded
@@ -16954,7 +16954,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T13:43:00.196Z
+      updated_at: 2026-06-11T13:43:31.383Z
     integration:
       status: pending
       detail: null
@@ -16970,10 +16970,10 @@ workspaces:
     task_slug: task-fix-search-meta-entity-tests
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-11T13:11:30.137Z
-      last_reconciled_at: 2026-06-11T13:43:00.196Z
+      last_active_at: 2026-06-11T13:43:31.383Z
+      last_reconciled_at: 2026-06-11T13:43:31.383Z
       created_at: 2026-06-11T13:11:00.951Z
-      updated_at: 2026-06-11T13:43:24.812Z
+      updated_at: 2026-06-11T13:43:31.383Z
     workspace_id: dispatch-workspace-01KTTD1E2QCNQVJSV7TZSHXD0G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
