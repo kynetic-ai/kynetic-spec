@@ -62642,7 +62642,7 @@ runs:
     completed_at: 2026-06-11T08:32:11.389Z
   - _ulid: 01KTTX6Y4MEH7ARBRD7Z1BQY5P
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -62654,7 +62654,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T08:37:38.822Z
-        completed_at: 2026-06-11T08:37:38.822Z
+        completed_at: 2026-06-11T08:38:15.277Z
+        notes: "Identified: (1) HIGH-CONF friction/improvement — npm 11 runs prepack on 'npm pack
+          --dry-run'; prepack is now the full multi-minute build, so any future test/script dry-run
+          without --ignore-scripts silently re-triggers full builds. Concrete, systemic, observed
+          directly this session. (2) HIGH-CONF success — task description pre-stated the dry-run
+          lifecycle pitfall, enabling a justified --ignore-scripts deviation without a fix cycle.
+          (3) 'kspec workflow show' requires run-ref while docs/skill show bare usage — matches
+          existing inbox 01KGGPJ6, skip."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T08:38:15.277Z
+        completed_at: 2026-06-11T08:38:15.277Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T08:36:35.605Z
