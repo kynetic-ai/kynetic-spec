@@ -94,6 +94,21 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T22:17:02.191Z
     completed_at: 2026-06-11T22:17:02.191Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read the stored plan and adjacent specs @test-annotation-sweep, @coverage-scan-config,
+      @ac-annotation-integrity-reporting, @ac-annotation-identifier-format, @trait-validation, and
+      @data-format-forward-compatibility. Search found no existing live specs for verification
+      stamps or annotation freshness. Current plan reconciles the adjacent annotation-coverage specs
+      and keeps storage/freshness/session/compatibility boundaries separate. ACs are testable and
+      the malformed-session-ref addition is atomic and behaviorally phrased.
+    name: spec neighborhood and quality
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T22:17:13.901Z
+    completed_at: 2026-06-11T22:17:13.901Z
 events:
   - _ulid: 01KTWC1QMPXS7YZAMWEG4MCAC0
     actor: "@claude"
@@ -157,6 +172,13 @@ events:
       status: pass
       name: dependency ordering
     timestamp: 2026-06-11T22:17:02.490Z
+  - _ulid: 01KTWC5JPCVTME5Y3Q3GY3M7YJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec neighborhood and quality
+    timestamp: 2026-06-11T22:17:14.188Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -169,5 +191,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:15:08.182Z
-updated_at: 2026-06-11T22:17:02.191Z
+updated_at: 2026-06-11T22:17:13.901Z
 notes: []
