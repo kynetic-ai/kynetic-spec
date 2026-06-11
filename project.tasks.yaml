@@ -31604,7 +31604,7 @@
   type: task
   spec_ref: "@validation-task-data-source"
   plan_ref: "@plan-validation-and-test-coverage-integrity"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -31612,10 +31612,11 @@
     - testing
     - validation
     - tasks
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-06-11T03:53:56.506Z
   started_at: 2026-06-11T12:26:53.624Z
+  submitted_at: 2026-06-11T12:42:10.353Z
   automation: eligible
 - _ulid: 01KTTD1DB7F2FD15BCBABG1F80
   slugs:

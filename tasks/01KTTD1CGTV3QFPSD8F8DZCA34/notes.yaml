@@ -12,3 +12,19 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T12:27:54.014Z
+  - _ulid: 01KTVB8JQ5BTZ7GKT6YPX1R4FX
+    content: "Work complete. Re-enabled the skipped dangling plan_ref validation test in
+      tests/task-plan-ref.test.ts with corrected expectations (strict_refs defaults true, so
+      dangling refs are errors with non-zero exit — used kspecRun with expectFail and asserted
+      combined stdout/stderr contains the ref and a not-found message). Added sibling cases for
+      dangling spec_ref and depends_on injected into the per-task detail file via a shared
+      injectIntoTaskDetailFile helper. No it.skip entries remain in the file. Annotated tests with
+      @plan-validation ac-10 and @validation-task-data-source ac-task-references-checked +
+      ac-all-persisted-tasks-included. Spec drift fixed via CLI: ac-10 Then clause and spec
+      description updated from warn to finding/error semantics. All tests passed on first run — no
+      regression in the canonical validation load path. Gates: format:check, lint --quiet (0
+      errors), focused oxlint clean, typecheck, full npm test (10448 passed / 4 pre-existing skips
+      elsewhere), kspec validate refs/alignment/completeness all green. Branch pushed to origin."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T12:42:09.509Z
