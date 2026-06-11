@@ -31833,7 +31833,7 @@
     - task-stabilize-upgrade-folder-storage-test
   title: Stabilize intermittent upgrade folder storage test
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -31844,4 +31844,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T21:18:12.955Z
+  started_at: 2026-06-11T21:35:24.220Z
   automation: eligible
