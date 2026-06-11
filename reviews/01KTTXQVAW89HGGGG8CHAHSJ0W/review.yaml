@@ -428,6 +428,12 @@ events:
     payload:
       thread_ulid: 01KTTXSHZV9JYAZV3CH7KMS4B5
     timestamp: 2026-06-11T17:29:53.939Z
+  - _ulid: 01KTVVQKVKSAZ0Z9GW62C020XM
+    actor: plan-author
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTXT20J0MK3RARA7RPJPQ86
+    timestamp: 2026-06-11T17:29:59.411Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -561,6 +567,8 @@ threads:
           store creation is purely additive."
         created_at: 2026-06-11T17:26:24.347Z
     kind: blocker
+    resolved_at: 2026-06-11T17:29:59.186Z
+    resolved_by: plan-author
   - _ulid: 01KTTXTQ4P1H7R3TG4NNCY0BTH
     anchor:
       type: structured
@@ -748,5 +756,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:50:22.029Z
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T17:29:53.709Z
+updated_at: 2026-06-11T17:29:59.186Z
 notes: []
