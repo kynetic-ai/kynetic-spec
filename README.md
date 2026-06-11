@@ -31,3 +31,4 @@ The [Getting Started](docs/getting-started/index.md) walkthrough covers the full
 - [Guides](docs/guides/index.md) — step-by-step procedures for common workflows
 - [Troubleshooting](docs/troubleshooting/index.md) — solutions for common issues
 - [INSTALL.md](INSTALL.md) — detailed installation and setup modes
+- [CONTRIBUTING.md](CONTRIBUTING.md) — developer setup, build, tests, and contribution conventions
