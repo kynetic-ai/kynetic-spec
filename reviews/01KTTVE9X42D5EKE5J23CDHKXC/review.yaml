@@ -93,6 +93,17 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T08:07:44.986Z
     completed_at: 2026-06-11T08:07:44.986Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Tasks generally include Why/What/How, file/module guidance, verification expectations, and
+      dependency context. The N/A task coverage-mapping defects are tracked separately as blockers.
+    name: Task standalone-ness
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T08:08:01.806Z
+    completed_at: 2026-06-11T08:08:01.806Z
 events:
   - _ulid: 01KTTVE9X3PA6393J23QSHZ51G
     actor: "@claude"
@@ -212,6 +223,13 @@ events:
       status: fail
       name: AC coverage mapping
     timestamp: 2026-06-11T08:07:46.246Z
+  - _ulid: 01KTTVJMQSF9QD10H7BB7C1KJ3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone-ness
+    timestamp: 2026-06-11T08:08:02.041Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -336,5 +354,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:07:44.986Z
+updated_at: 2026-06-11T08:08:01.806Z
 notes: []
