@@ -5914,6 +5914,9 @@ requirements:
       warnings and errors. Routine lifecycle activity — navigation, item
       selection, realtime connection progress, duplicate-event suppression —
       produces no console output by default.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
