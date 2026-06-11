@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KTVA8982QVVYH8NPN9W016ZQ
+    content: "Additional reflection evidence: while advancing session reflection step 2, the workflow
+      mutation hook ran a broad test pass and failed in tests/triage-cli.test.ts: 'triage
+      semantic-exit-codes trait compliance should exit 0 on successful operations'. The command was
+      node dist/cli/index.js triage record @01KTV9MZ --action defer --reasoning test, and stderr
+      began at dist/cli/commands/index.js:24 exporting registerReviewCommands from ./review.js. This
+      is another transient CLI/dist failure shape during broad suite execution and should be
+      considered in the stabilization task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-11T12:24:31.234Z
