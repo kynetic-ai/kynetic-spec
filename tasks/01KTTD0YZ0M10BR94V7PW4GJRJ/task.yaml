@@ -1,0 +1,142 @@
+_ulid: 01KTTD0YZ0M10BR94V7PW4GJRJ
+slugs:
+  - task-format-version-ceiling
+title: Enforce a format version ceiling at context initialization
+type: task
+description: |
+  Why: kspec is used across ~20 real projects, and the manifest
+  already carries a format version (`kynetic: "1.0"/"1.1"/"1.2"`).
+  Backward incompatibility is well handled (entity-storage
+  compatibility gates, task-data-manager legacy gate), but there is no
+  forward check anywhere: every existing gate uses `parseFloat(v) >=
+  floor` comparisons, so a project written by a future kspec with
+  `kynetic: "1.3"` passes all gates and an older kspec will happily
+  read and write data whose layout it does not understand. Worse,
+  upgrade probe inference (src/cli/commands/upgrade.ts:208-228)
+  buckets any unrecognized kynetic value into the 0.1.0-0.8.99 old
+  era, so a newer project either gets misclassified as ancient or
+  resolves to "unknown", which runs the FULL upgrade pipeline as a
+  "safety net" — executing migrations against newer-format data.
+
+  What:
+  1. Define a single MAX_SUPPORTED_KYNETIC_VERSION constant (currently
+     "1.2") in src/parser/entity-storage-compatibility.ts (next to
+     ENTITY_FOLDER_STORAGE_MIN_KYNETIC_VERSION) or a small dedicated
+     module, exported for reuse.
+  2. In initContext (src/parser/yaml.ts:701), run the ceiling check
+     BEFORE the pre-read shadow sync block. Ordering is the critical
+     design constraint: today the shadow-mode path can call
+     hasRemoteTracking/shadowNeedsSync/shadowPull
+     (src/parser/yaml.ts:783-836) before the manifest is located and
+     parsed (src/parser/yaml.ts:838-845), so a check placed after
+     manifest parsing would let a sync pull mutate a newer-format
+     project before the refusal triggers — violating the spec's
+     no-modification guarantee. Concretely: once the spec directory is
+     known (shadow worktree dir, KSPEC_SPEC_DIR override, or
+     traditional spec dir), read the manifest's declared version RAW
+     from disk (raw YAML field read, not the schema-parsed manifest —
+     the schema defaults a missing field to "1.0", which would erase
+     the missing-field case) and apply the check before any sync or
+     other side effect. If the declared version parses to a numeric
+     version greater than the maximum supported, throw a structured
+     error with a deterministic code
+     (`format_version_newer_than_supported`) naming the declared
+     version, the maximum supported version, and guidance to upgrade
+     the kspec installation. If the field is present but not
+     parseable as a numeric version, throw
+     `unrecognized_format_version` naming the literal value. A
+     missing kynetic field keeps its existing legacy handling (the
+     raw read makes "missing" unambiguous). Then RE-APPLY the same
+     ceiling comparison to the manifest parsed after the sync block:
+     the pre-sync read only sees the local manifest, so a sync pull
+     can import a manifest upgraded remotely to a newer format even
+     when the pre-sync check passed — the same invocation must refuse
+     (same deterministic codes) after the pull and before any entity
+     read or mutation, rather than deferring refusal to the next
+     invocation. The post-sync re-check reads the freshly parsed
+     manifest's raw declared version the same way.
+  3. Daemon parity: ensure daemon routes surface this as a structured
+     error with the same code (follow the existing
+     EntityStorageCompatibilityError handling pattern for the 409-style
+     structured responses).
+  4. Doctor exemption: kspec doctor must not hard-fail — it already
+     reads the manifest directly without initContext
+     (src/parser/doctor.ts:719); add a version-mismatch check that
+     reports the incompatibility with both versions and guidance,
+     read-only.
+  5. Upgrade refusal — layer ownership: the user-visible refusal for
+     `kspec upgrade` is owned by the context-initialization check from
+     step 2. runUpgradePipeline calls initContext
+     (src/cli/commands/upgrade.ts:345-346) BEFORE detectSourceVersion
+     (line 352), so the step-2 throw fires first on the CLI path and
+     the CLI error handler presents the deterministic code and
+     guidance; do not write a CLI-level test expecting a refusal
+     message produced inside detectSourceVersion. Separately, as
+     defense in depth (detectSourceVersion is exported and exercised
+     outside runUpgradePipeline), correct probe inference
+     (src/cli/commands/upgrade.ts:208-228) so a declared version above
+     the maximum supported is classified as newer-than-supported
+     rather than bucketed into the 0.1.0-0.8.99 era or falling
+     through to the run-everything "unknown" safety net; callers that
+     reach it without initContext must treat that classification as a
+     refusal. This helper-level behavior is pinned by unit tests
+     only.
+
+  How: Make the check cheap (one raw manifest field read at a point
+  where the manifest path is already being resolved) and keep error
+  construction consistent with the deterministic-code pattern in
+  entity-storage-compatibility.ts so CLI/daemon consumers can branch
+  on the code. Decision on manifest representation: the check reads
+  the raw manifest, where a missing field is genuinely absent; on
+  schema-parsed paths the Zod default makes missing indistinguishable
+  from an explicit "1.0", which is acceptable because both routes end
+  in "no refusal" for 1.0 — do not add plumbing to distinguish them
+  downstream. Do not change behavior for kynetic values <= 1.2 or for
+  manifests without the field.
+
+  Testing: Temp-project fixtures (setupTempFixtures / initGitRepo +
+  setupShadowDetection) with manifests declaring kynetic "9.9" and a
+  garbage value: assert representative read and write commands refuse
+  with the deterministic code and non-zero exit, and assert no
+  project data changed (file content/mtimes, including the shadow
+  worktree — the refusal must fire before any pre-read sync). Add a
+  sync-pull dual fixture: local shadow manifest declares a supported
+  version while the remote kspec-meta branch holds a newer-format
+  manifest (kynetic "9.9"); assert the same invocation that performs
+  the sync pull refuses with the deterministic code after the pull
+  and before reading or mutating entity data. Assert
+  `kspec upgrade` refuses before any step executes (CLI-level, pinned
+  to the context-initialization error code), with a separate unit
+  test pinning detectSourceVersion's newer-than-supported
+  classification. Assert `kspec doctor` completes read-only with the
+  mismatch reported. Regression test that a "1.2" manifest is
+  unaffected. Annotate tests with the spec's explicit AC ids — there
+  is no ac-N numbering on this spec:
+  AC: @data-format-forward-compatibility ac-newer-version-refused,
+  AC: @data-format-forward-compatibility ac-post-sync-newer-version-refused,
+  AC: @data-format-forward-compatibility ac-daemon-structured-error,
+  AC: @data-format-forward-compatibility ac-unrecognized-version-refused,
+  AC: @data-format-forward-compatibility ac-diagnostics-report-read-only,
+  AC: @data-format-forward-compatibility ac-upgrade-refuses-newer,
+  AC: @data-format-forward-compatibility ac-supported-versions-unaffected.
+
+  Covers: @data-format-forward-compatibility ac-newer-version-refused,
+  ac-post-sync-newer-version-refused, ac-daemon-structured-error,
+  ac-unrecognized-version-refused, ac-diagnostics-report-read-only,
+  ac-upgrade-refuses-newer, ac-supported-versions-unaffected.
+spec_ref: "@data-format-forward-compatibility"
+plan_ref: "@plan-data-integrity-and-upgrade-safety"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - schema
+  - parser
+  - upgrade
+  - reliability
+vcs_refs: []
+created_at: 2026-06-11T03:53:42.624Z
+todos: []

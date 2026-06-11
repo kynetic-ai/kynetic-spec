@@ -1,0 +1,72 @@
+_ulid: 01KTTD0ZPTTX0N18MEY53HFKMK
+slugs:
+  - task-git-utils-execfile
+title: Migrate version-control utility subprocesses to args-array invocation
+type: task
+description: |
+  Why: src/utils/git.ts builds git commands via execSync with
+  template-literal interpolation. Most interpolated values are
+  internally derived, but branch and remote names come from repository
+  state, and git permits `$`, parentheses, semicolons, quotes, and
+  backticks in ref names — so a cloned repository with a crafted
+  branch name reaches a shell today via getBranchRemote, and every
+  other site is one refactor away from the same hole. The codebase
+  already has the safe pattern (runGitSync / runGitAsync in
+  src/parser/shadow.ts use spawnSync/execFile with args arrays); this
+  task migrates the remaining shell-string call sites.
+
+  What: In src/utils/git.ts, replace every execSync invocation with a
+  spawnSync("git", [...args]) (or execFileSync) call, preserving sync
+  semantics, stdio behavior, and the documented failure results
+  (null / [] / default object — never throw). Interpolating call
+  sites to convert:
+  - line 81-84: getRecentCommits — `-n ${limit}` and
+    `--since="${since.toISOString()}"`
+  - line 203: getDiffSince — `--before="${since.toISOString()}"`
+  - line 223: getDiffSince — `git diff ${sinceCommit}..HEAD`
+  - line 274: getBranchRemote — `branch.${branch}.remote`
+  - line 281: getBranchRemote — `git remote get-url ${remote}`
+  - line 291: getBranchRemote — `branch.${branch}.merge`
+  Static call sites to convert for consistency (no interpolation):
+  lines 35 (isGitRepo), 52 (getCurrentBranch), 139
+  (getWorkingTreeStatus), 213 and 230 (getDiffSince), 250
+  (getHeadCommit).
+
+  How: Add one small private helper mirroring runGitSync from
+  src/parser/shadow.ts (spawnSync with args array, encoding utf-8,
+  piped stdio) and route all call sites through it. The args-array
+  mechanism is the implementation requirement here in How — the spec
+  ACs are expressed as observable literalness outcomes, not launch
+  mechanics. No behavior change other than literal handling of
+  metacharacter values. Do not touch other files' subprocess usage in
+  this task.
+
+  Testing: Unit tests in a temp git repo (initGitRepo): create and
+  check out a branch whose name contains shell metacharacters (e.g.
+  `feat-$(canary);x`), configure a tracking remote entry, then assert
+  getCurrentBranch and getBranchRemote return the literal name and
+  that no canary side-effect occurred (e.g. no file created by the
+  embedded command). Assert getRecentCommits/getDiffSince outputs are
+  unchanged on a normal repo, and that helpers still return null/[]
+  outside a repo. Annotate with
+  AC: @subprocess-argument-literalness ac-metacharacter-branch-literal,
+  ac-dynamic-values-treated-literally, ac-failure-results-preserved.
+
+  Covers: @subprocess-argument-literalness
+  ac-metacharacter-branch-literal, ac-dynamic-values-treated-literally,
+  ac-failure-results-preserved.
+spec_ref: "@subprocess-argument-literalness"
+plan_ref: "@plan-data-integrity-and-upgrade-safety"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - infra
+  - reliability
+  - security
+vcs_refs: []
+created_at: 2026-06-11T03:53:43.386Z
+todos: []

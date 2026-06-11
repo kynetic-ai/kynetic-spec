@@ -1,0 +1,60 @@
+_ulid: 01KTTD10DV7B1G3M4DXFSTD1WJ
+slugs:
+  - task-catch-justification-comments
+title: Document justification for intentionally swallowed errors
+type: task
+description: |
+  Why: Several files swallow errors via empty catch blocks or
+  `.catch(() => {})` without stating why ignoring the error is safe.
+  Most are legitimately ignorable cleanup (best-effort rm of staging
+  files, lock release races), but the absence of justification makes
+  each one indistinguishable from a latent bug like the shadow restore
+  swallow fixed by @task-shadow-restore-loud-failure. This task is
+  comments-only hygiene. It depends only on
+  @task-shadow-restore-loud-failure because that is the one
+  behavioral task that touches an audited file (src/parser/shadow.ts);
+  the other behavioral tasks in this plan touch none of the five
+  audited files, so they are intentionally not dependencies.
+
+  What: In EXACTLY these five files — src/cli/batch-write-buffer.ts,
+  src/parser/entity-local-resources.ts, src/parser/file-lock.ts,
+  src/agents/spawner.ts, src/parser/shadow.ts — audit every empty
+  catch block and every `.catch(() => {})` / `.catch(() => null)`
+  expression. For each one that lacks an explanatory comment, add a
+  one-line comment stating why swallowing the error is safe (what the
+  error would be, why the operation is best-effort, what guarantees
+  still hold). Catches that already carry a justification comment are
+  left untouched.
+
+  Bounds (hard):
+  - Comments only. NO semantic changes, no control-flow changes, no
+    new logging, no schema or API changes, no test-assertion changes.
+  - If the audit finds a swallowed error that appears
+    behavior-affecting rather than ignorable cleanup, do NOT change
+    it in this task — capture it with `kspec inbox add` describing
+    the site and the suspected impact, and note it in the task notes.
+  - No files outside the five listed above.
+
+  How: Grep each file for `catch` and `.catch(`, classify each site,
+  write the justification at the site. Keep comments to one or two
+  lines matching the file's existing comment style.
+
+  Testing: No new tests (no behavior change). Gates: npm run lint,
+  typecheck, and the full npm test suite must pass with zero
+  modifications to test files — a test change is evidence the bounds
+  were violated.
+spec_ref: null
+plan_ref: "@plan-data-integrity-and-upgrade-safety"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-shadow-restore-loud-failure"
+context: []
+priority: 3
+tags:
+  - infra
+  - chore
+vcs_refs: []
+created_at: 2026-06-11T03:53:44.123Z
+todos: []

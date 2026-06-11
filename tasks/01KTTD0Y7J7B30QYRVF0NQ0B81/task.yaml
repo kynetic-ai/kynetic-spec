@@ -1,0 +1,77 @@
+_ulid: 01KTTD0Y7J7B30QYRVF0NQ0B81
+slugs:
+  - task-shadow-restore-loud-failure
+title: Make shadow repair restore failures loud with recovery guidance
+type: task
+description: |
+  Why: @broken-shadow-safety ac-preserve-on-failure requires that when
+  a shadow rebuild fails, the pre-repair shadow directory is "preserved
+  or restored and the failure reports recovery guidance". The current
+  implementation stashes a broken worktree directory to
+  `<worktreeDir>.repair-backup-<timestamp>` before rebuilding
+  (stashBrokenWorktreeDir, src/parser/shadow.ts:73-82) and on rebuild
+  failure attempts a restore that is wrapped in `.catch(() => {})` at
+  src/parser/shadow.ts:2923 (initShadow catch block) and
+  src/parser/shadow.ts:3056 (repairShadow catch block). When the
+  rebuild fails AND the restore also fails, the backup directory still
+  exists on disk but the user is never told it exists, where it is, or
+  that the worktree location is now empty/partial. This silently
+  violates ac-preserve-on-failure on the double-failure path — the
+  worst failure class for a system whose source of truth lives in that
+  directory. The new AC pinning this contract
+  (ac-restore-failure-reports-state) is added to the spec by
+  @task-broken-shadow-safety-spec-delta before this task runs.
+
+  What:
+  1. Replace both silent `.catch(() => {})` restore calls
+     (src/parser/shadow.ts:2923 and :3056) with handling that captures
+     the restore error and surfaces a combined failure message: the
+     original rebuild error, the restore error, the absolute backup
+     directory path, what now exists at the worktree location, and
+     recovery steps (move the backup directory back into place, then
+     re-run `kspec shadow repair`).
+  2. Audit restoreStashedWorktreeDir (src/parser/shadow.ts:84-94): it
+     removes the worktree directory before renaming the backup into
+     place — if the rename fails after the removal, the failure
+     message must accurately describe that the worktree location is
+     now empty and the backup is the only copy.
+  3. When restore succeeds after a rebuild failure, the existing
+     result.error path already reports the rebuild failure; keep that
+     behavior and additionally note that the prior shadow state was
+     restored.
+
+  How: Extend ShadowInitResult with optional fields (e.g.
+  restore_failed, backup_dir) or fold the detail into the error string
+  — choose whichever the shadow CLI handlers (kspec init / kspec
+  shadow repair output paths) can surface without widening unrelated
+  interfaces. Do not delete the backup directory on any failure path;
+  discardStashedWorktreeDir must remain success-path-only.
+
+  Testing: Unit tests in a temp git repo that force the rebuild to
+  fail and the restore to fail (e.g. stub fs.rename to reject), then
+  assert the result/error output names the backup path, the worktree
+  state, and recovery steps, and that the backup directory still
+  exists on disk. Also cover the restore-succeeds path (error reports
+  rebuild failure + restored state). Annotate tests with
+  AC: @broken-shadow-safety ac-preserve-on-failure and
+  AC: @broken-shadow-safety ac-restore-failure-reports-state.
+
+  Covers: @broken-shadow-safety ac-preserve-on-failure,
+  @broken-shadow-safety ac-restore-failure-reports-state (added by
+  @task-broken-shadow-safety-spec-delta).
+spec_ref: "@broken-shadow-safety"
+plan_ref: "@plan-data-integrity-and-upgrade-safety"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-broken-shadow-safety-spec-delta"
+context: []
+priority: 1
+tags:
+  - shadow
+  - reliability
+  - bug
+vcs_refs: []
+created_at: 2026-06-11T03:53:41.874Z
+todos: []

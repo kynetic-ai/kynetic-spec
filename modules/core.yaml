@@ -3344,6 +3344,61 @@ requirements:
     tags: []
     created: 2026-05-22T22:36:42.186Z
     notes: []
+  - _ulid: 01KTTD0XE1QWT768H2TT7C715S
+    slugs:
+      - subprocess-argument-literalness
+    title: Subprocess Argument Literalness
+    type: requirement
+    description: |
+      Dynamic values that flow into version-control subprocess invocations
+      — branch names, remote names, revision identifiers, timestamps — are
+      treated as literal data and are never interpreted by a shell.
+      Repository metadata is externally influenceable (a cloned repository
+      controls its own branch and remote names), so queries over that
+      metadata must treat every dynamic value as literal data.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          A repository's checked-out branch has a name containing shell
+          metacharacters (command substitution, semicolons, quotes,
+          backticks)
+        id: ac-metacharacter-branch-literal
+        then: |
+          The metadata is returned containing the exact literal branch
+          name, and no command embedded in the name is interpreted or
+          executed
+        when: |
+          The tool reads current-branch or upstream-tracking metadata for
+          that repository
+      - given: |
+          A version-control query incorporates a dynamic value (branch
+          name, remote name, revision identifier, or timestamp) containing
+          characters a shell would interpret (substitution, quoting,
+          separators, expansion)
+        id: ac-dynamic-values-treated-literally
+        then: |
+          The query operates on the exact literal value — it succeeds or
+          fails based solely on whether the real value exists or is valid,
+          no embedded command is executed, and no shell interpretation
+          alters the query's meaning
+        when: |
+          The query runs
+      - given: |
+          A version-control query runs against a directory that is not a
+          repository, or the underlying subprocess fails
+        id: ac-failure-results-preserved
+        then: |
+          The helper reports failure through its documented null, empty,
+          or default result rather than raising an error
+        when: |
+          The query helper is invoked
+    tags: []
+    created: 2026-06-11T03:53:41.058Z
+    notes: []
 notes:
   - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX
     content: Test note for spec item notes feature

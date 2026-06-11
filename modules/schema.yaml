@@ -950,6 +950,146 @@ features:
     priority: medium
     tags:
       - schema
+    decisions:
+      - _ulid: 01KTTD0XBM1WGY21FAKKXDSH78
+        slugs:
+          - data-format-forward-compatibility
+        title: Data Format Forward Compatibility
+        type: decision
+        description: |
+          Defines the forward-compatibility contract layered on the project
+          manifest's declared format version: each released version of the
+          tool declares a maximum supported format version it can read and
+          write, and project data declaring a newer format version is refused
+          rather than operated on.
+
+          Decision semantics:
+
+          - Stamping: the format version is written to the project manifest at
+            initialization and advanced only by the upgrade flow — never
+            implicitly by ordinary commands.
+          - Checking: the declared format version is compared against the
+            maximum supported version at two points during context
+            initialization. First, the locally declared version is checked
+            before any project data is read, mutated, or synchronized —
+            including any background synchronization performed as a side
+            effect of context initialization. Second, when that
+            synchronization imports project data, the declared version of the
+            imported data is checked again before any project data is read or
+            mutated, so data upgraded elsewhere to a newer format is refused
+            by the same invocation that imported it. The imported
+            synchronization itself is permitted — it transfers data already
+            authored elsewhere; the guarantee defended at both points is that
+            data declaring a newer format is never read or mutated. The check
+            applies uniformly to CLI commands and daemon-served requests.
+          - Newer than supported: the operation refuses with a deterministic
+            error code reserved for this condition. The refusal names both the
+            project's declared format version and the running tool's maximum
+            supported format version, directs the user to upgrade their kspec
+            installation (or use the newer version that wrote the data), and
+            guarantees no project data was modified.
+          - Unrecognized version values: a declared format version that cannot
+            be interpreted as a known version is refused as incompatible with
+            the literal value named in the error. It is never silently treated
+            as the oldest format.
+          - Diagnostic exemption: the project health diagnostic is the sole
+            surface that does not refuse — it completes read-only and reports
+            the version mismatch with upgrade guidance.
+          - Older than supported: not refused by this contract. Existing
+            per-domain storage-compatibility gates continue to govern older
+            formats (lenient reads where safe, refusal with upgrade guidance
+            where the operation requires a newer layout).
+          - A manifest with no declared format version retains its existing
+            legacy interpretation and is not affected by this contract.
+        depends_on:
+          - "@format-version"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              A project manifest locally declares a format version greater
+              than the running tool's maximum supported format version
+            id: ac-newer-version-refused
+            then: |
+              The command refuses with a deterministic error code reserved for
+              newer-than-supported format versions; the error names both the
+              project's declared version and the tool's maximum supported
+              version, includes guidance to upgrade the tool installation, and
+              no project data is modified — including by any synchronization
+              performed as part of context initialization
+            when: |
+              Any command that reads or mutates project data, other than the
+              project health diagnostic, initializes project context
+          - given: |
+              A project manifest locally declares a supported format version,
+              and synchronization performed during context initialization
+              imports project data whose manifest declares a format version
+              greater than the running tool's maximum supported format
+              version
+            id: ac-post-sync-newer-version-refused
+            then: |
+              The same invocation refuses with the deterministic
+              newer-than-supported error code, naming both versions with
+              upgrade guidance, before any project data is read or mutated;
+              refusal is not deferred to a subsequent invocation
+            when: |
+              Context initialization continues after that synchronization
+          - given: |
+              A project manifest declares a format version greater than the
+              running tool's maximum supported format version
+            id: ac-daemon-structured-error
+            then: |
+              The route responds with a structured error carrying the same
+              deterministic error code and both version values, and no project
+              data is modified
+            when: |
+              A daemon route serving that project's data handles a request
+          - given: |
+              A project manifest declares a format version value that cannot
+              be interpreted as a known version
+            id: ac-unrecognized-version-refused
+            then: |
+              The operation refuses with an error naming the literal declared
+              value and recovery guidance; the value is not silently treated
+              as the oldest supported format
+            when: |
+              Project context is initialized
+          - given: |
+              A project manifest declares a format version greater than the
+              running tool's maximum supported format version
+            id: ac-diagnostics-report-read-only
+            then: |
+              The diagnostic completes in read-only mode, reports the version
+              mismatch with both version values and upgrade guidance, and does
+              not modify project data
+            when: |
+              The project health diagnostic command runs
+          - given: |
+              A project manifest declares a format version greater than the
+              running tool's maximum supported format version
+            id: ac-upgrade-refuses-newer
+            then: |
+              The upgrade refuses before any step executes, reporting that the
+              project's data format is newer than the running tool; it does
+              not classify the project as an older-era project and no
+              migration step reads or writes project data
+            when: |
+              The upgrade flow runs against the project
+          - given: |
+              A project manifest declares a format version less than or equal
+              to the running tool's maximum supported format version
+            id: ac-supported-versions-unaffected
+            then: |
+              No forward-compatibility refusal occurs, and handling of older
+              formats remains governed by the existing storage-compatibility
+              gates
+            when: |
+              Commands initialize project context
+        tags: []
+        created: 2026-06-11T03:53:40.980Z
+        notes: []
     requirements:
       - _ulid: 01JHNKA3W6VERS100000000000
         slugs:

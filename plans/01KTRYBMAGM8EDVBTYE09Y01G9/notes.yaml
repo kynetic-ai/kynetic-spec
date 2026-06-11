@@ -63,3 +63,157 @@ notes:
       the AC partition with ac-post-sync-newer-version-refused explicit"
     author: "@claude"
     created_at: 2026-06-10T15:58:07.315Z
+  - _ulid: 01KTTD1158FPHEF2W2QBW6HGCH
+    content: |-
+      ### Audit finding verification
+
+      - **Finding 1 (silent shadow restore)** — confirmed, line numbers corrected:
+        the silent `.catch(() => {})` restore swallows live at
+        src/parser/shadow.ts:2923 (initShadow) and :3056 (repairShadow), not at
+        the lines the audit cited (73-94 are the stash/restore helper
+        definitions; 200/218-221 are unrelated, already-commented catches in
+        createOrphanBranchFallback). Handled as a delta to the existing
+        implemented spec @broken-shadow-safety (new AC
+        `ac-restore-failure-reports-state`, applied by the dedicated
+        spec-update task @task-broken-shadow-safety-spec-delta) rather than a
+        new spec, since ac-preserve-on-failure already owns this contract.
+      - **Finding 2 (no schema versioning)** — corrected: versioning DOES exist
+        (manifest `kynetic` field 1.0/1.1/1.2, per-domain storage format
+        declarations, `lastKnownVersion` in setup state, probe-based inference
+        in upgrade). What is genuinely missing is the FORWARD direction: every
+        gate is a `>= floor` check with no ceiling, so newer-format data is
+        silently operated on, and upgrade probe inference misclassifies
+        unknown newer versions as the pre-0.9 era. The spec is scoped to that
+        gap only; backward handling stays with the existing gates
+        (@entity-folder-migration-and-compatibility-1, task-data-manager
+        legacy gate).
+      - **Finding 3 (execSync interpolation)** — confirmed. Interpolating sites
+        enumerated in the task (lines 81-84, 203, 223, 274, 281, 291 of
+        src/utils/git.ts). Branch/remote names are repository-state-derived and
+        may contain shell metacharacters, so this is a real (if low-severity)
+        injection surface today, not merely future-proofing.
+      - **Finding 4 (undocumented swallowed errors)** — confirmed; many sites in
+        the five named files, a number already carry justification comments
+        (e.g. file-lock.ts:152, spawner.ts:196). Per the classification rule:
+        the one behavior-affecting case found (shadow restore) became
+        spec+task; the rest get the bounded comments-only hygiene task that
+        runs last.
+      - **Finding 5 (folder migrations lack rollback)** — dropped as a false
+        positive. The plan/review folder migrations are idempotent
+        (already-migrated short-circuit), dry-run capable, refuse partial
+        layouts without --force, run atomically through the staged write
+        buffer (runWithBuffer staging+rename with discard-on-failure and
+        rolled_back step reporting), interrupted/partial layouts are detected
+        and blocked with recovery guidance (`partial_entity_storage_layout` in
+        src/parser/entity-storage-compatibility.ts), and `kspec upgrade`
+        surfaces the pre-mutation shadow HEAD (`previousShadowCommit`) as an
+        explicit rollback point. This is the behavior the audit asked for,
+        already specced by @entity-folder-migration-and-compatibility-1.
+
+      ### Overlap with existing plans/specs
+
+      - **@versioning / @format-version (implemented specs)** — own the
+        two-version model and the manifest's declared-format-version field
+        semantics (@format-version ac-1: the declared version determines which
+        schema compatibility rules are applied). The new decision spec is a
+        true delta layered on that field: it adds the forward-direction rule
+        (refusal above the supported ceiling), the diagnostic carve-out, and
+        stamping ownership (only the upgrade flow advances the version) — it
+        does not restate the field's existence or backward-compatibility
+        semantics. The relationship is declared structurally: the spec is
+        parented under @versioning and depends_on @format-version (the plan
+        spec format supports parent/depends_on but not relates_to; depends_on
+        is the accurate relation here since the refusal rule builds on the
+        declared-version semantics).
+      - **Input Validation Hardening (completed plan)** — covers external input
+        boundaries (CLI options, HTTP bodies); does not cover internally
+        derived subprocess arguments, so @subprocess-argument-literalness is
+        complementary, not overlapping.
+      - **Init, Setup, and Upgrade Rough Edges (completed plan)** — produced
+        @single-command-version-upgrade (pipeline steps, source-version
+        detection). The forward-compatibility refusal is new behavior layered
+        on top; the task names the exact probe-inference code it corrects.
+      - **Folder-Backed Index Consistency Hardening / Folder-Backed Plans,
+        Reviews, and Local Resources (completed plans)** — own migration
+        atomicity and partial-layout semantics; finding 5 excluded because of
+        this coverage.
+      - **@shadow-recovery / @shadow-errors / @broken-shadow-safety
+        (implemented specs)** — own shadow repair behavior; finding 1 is
+        expressed as an AC delta to @broken-shadow-safety instead of a new
+        spec.
+
+      ### Review fix cycle 2 decisions
+
+      - **Post-sync re-check (claude cycle-2 question)** — the pre-sync raw
+        read only inspects the local manifest, leaving a dual gap: a remote
+        shadow branch upgraded to a newer format passes the local check, the
+        sync pull imports the newer-format data, and the invocation operates
+        on it, deferring refusal to the next invocation. Decision: step 2
+        re-applies the same ceiling comparison (same deterministic codes) to
+        the manifest parsed after the sync block, so the pulling invocation
+        itself refuses before any entity read or mutation. The pull itself is
+        acceptable mutation (it is ordinary sync of data already authored
+        remotely); the guarantee defended is "no operation on data newer than
+        supported", enforced at both check points. A sync-pull dual fixture
+        was added to Testing.
+      - **Spec/amendment coherence (codex cycle-3 blocker)** — the task
+        amendment initially left ac-newer-version-refused's "no modification
+        including synchronization" guarantee in tension with the permitted
+        pull in the remote-newer dual. Resolution: the spec now expresses the
+        two enforcement points explicitly — ac-newer-version-refused keeps
+        the full no-modification-including-sync guarantee for the
+        locally-declared-newer case, and a new
+        ac-post-sync-newer-version-refused owns the remote-newer dual (the
+        synchronized import is permitted; the same invocation refuses before
+        any project data is read or mutated). The Checking decision bullet
+        describes both points; task annotations and Covers include the new
+        AC.
+
+      ### Review fix cycle 1 decisions
+
+      - **Ceiling check placement (codex blocker)** — context initialization
+        can run pre-read shadow sync (hasRemoteTracking/shadowNeedsSync/
+        shadowPull at src/parser/yaml.ts:783-836) before it locates and parses
+        the manifest (:838-845), so a post-parse check could let a sync pull
+        mutate newer-format data first. Decision: the check reads the declared
+        version RAW from disk as soon as the spec directory is known, before
+        any sync step; the spec's Checking bullet and ac-newer-version-refused
+        now state the no-modification guarantee explicitly includes
+        context-initialization synchronization.
+      - **Upgrade refusal ownership (claude question)** — runUpgradePipeline
+        calls initContext (upgrade.ts:345-346) before detectSourceVersion
+        (:352), so the initContext throw owns the user-visible `kspec upgrade`
+        refusal; the detectSourceVersion probe correction is retained as
+        helper-level defense in depth pinned by unit tests only, so no test
+        expects a refusal message the earlier throw preempts.
+      - **Existing-spec delta mechanism (codex blocker)** — plan import has no
+        update-existing-spec support in the Specs block, so the
+        @broken-shadow-safety AC delta is a dedicated spec-update task with
+        verbatim AC text (precedent: daemon-dispatch-oom-hardening
+        spec-alignment plan), ordered before the implementation task via
+        depends_on; downstream Covers lines annotate the AC's origin.
+      - **Subprocess AC rewrite (codex question)** — ac-dynamic-values-
+        discrete-args specified launch mechanics; replaced with
+        ac-dynamic-values-treated-literally expressing observable outcomes
+        (literal success/failure, no embedded command execution, no shell
+        interpretation). The args-array requirement stays in the task How.
+      - **Diagnostic carve-out (claude question)** — moved into
+        ac-newer-version-refused's own text ("other than the project health
+        diagnostic") so the AC pair is consistent for spec-only readers
+        rather than relying on the implementation detail that the diagnostic
+        bypasses context initialization.
+      - **Raw vs schema-parsed manifest (claude nit)** — the manifest schema
+        defaults a missing version field to "1.0", making missing
+        indistinguishable from explicit "1.0" on parsed paths. Decision: the
+        ceiling check reads the raw manifest where "missing" is unambiguous;
+        the parsed-path ambiguity is accepted (both routes end in no refusal)
+        and documented in the task How.
+      - **AC annotation ids (codex question + claude nit)** — testing guidance
+        now lists the spec's explicit descriptive AC ids; this spec has no
+        ac-N numbering.
+      - **Dependency trim (claude nit)** — the comments-only hygiene task now
+        depends only on @task-shadow-restore-loud-failure, the single
+        behavioral task touching one of its five audited files; the other two
+        edges over-serialized a P3 task with no file overlap.
+    author: Jacob Chapel
+    created_at: 2026-06-11T03:53:44.872Z

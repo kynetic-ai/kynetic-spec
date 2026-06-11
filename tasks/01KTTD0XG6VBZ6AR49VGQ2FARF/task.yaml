@@ -1,0 +1,61 @@
+_ulid: 01KTTD0XG6VBZ6AR49VGQ2FARF
+slugs:
+  - task-broken-shadow-safety-spec-delta
+title: Add restore-failure reporting AC to broken-shadow-safety spec
+type: task
+description: |
+  Why: The shadow restore double-failure fix
+  (@task-shadow-restore-loud-failure) is a behavioral delta to the
+  existing implemented spec @broken-shadow-safety, not a new spec —
+  ac-preserve-on-failure already owns the preservation contract. Plan
+  import creates new specs only; it has no mechanism for updating an
+  existing spec from the Specs block. So the AC delta is applied by
+  this explicit spec-update task (same pattern as prior
+  existing-spec-delta plans, e.g. the daemon/dispatch hardening
+  spec-alignment plan), guaranteeing the AC exists before the
+  implementation task's tests and Covers annotations rely on it.
+
+  What: Add exactly one acceptance criterion to the existing spec
+  `@broken-shadow-safety` via `kspec item ac add`, with this exact id
+  and wording:
+
+  `ac-restore-failure-reports-state`
+  Given: A failed shadow rebuild is restoring the preserved
+  pre-repair shadow directory from its backup location
+  When: The restore itself fails
+  Then: The operation reports the restore failure alongside the
+  original rebuild error, identifies the absolute path of the
+  preserved backup directory and the resulting state of the shadow
+  directory location, and provides concrete recovery steps; the
+  backup directory is never deleted on this path
+
+  If an AC with the same behavioral contract already exists under a
+  different id, do not duplicate it — update the downstream task's
+  Covers/annotation ids instead and note the substitution.
+
+  How: One `kspec item ac add @broken-shadow-safety --id
+  ac-restore-failure-reports-state --given ... --when ... --then ...`
+  mutation (or a single `kspec batch`). Verify with
+  `kspec item get @broken-shadow-safety`.
+
+  Testing: `kspec validate --refs` passes and
+  `kspec item get @broken-shadow-safety` shows the AC verbatim. No
+  code or test changes in this task.
+
+  Covers: adds @broken-shadow-safety ac-restore-failure-reports-state
+  (spec mutation only — behavioral coverage of this AC is owned by
+  @task-shadow-restore-loud-failure).
+spec_ref: "@broken-shadow-safety"
+plan_ref: "@plan-data-integrity-and-upgrade-safety"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec-update
+  - shadow
+vcs_refs: []
+created_at: 2026-06-11T03:53:41.126Z
+todos: []
