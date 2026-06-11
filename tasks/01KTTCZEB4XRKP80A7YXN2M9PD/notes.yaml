@@ -1,1 +1,21 @@
-notes: []
+notes:
+  - _ulid: 01KTTW5GX8QERH0RJB2JP3NCEB
+    content: "Approach: (1) prepack -> npm run build; (2) scripts/verify-package.cjs checks dist/ on
+      disk + parses 'npm pack --dry-run --json --ignore-scripts' listing for LICENSE,
+      dist/cli/index.js, dist/index.js, dist/web-ui/index.html, templates/skills/manifest.yaml,
+      plugin/*; exports its required-file check for reuse. Using --ignore-scripts because npm 11
+      DOES run prepack on dry-run — without it every dry-run in tests/CI would trigger a redundant
+      full build (verify-package runs after the explicit CI build step, so scripts add nothing
+      there). (3) scripts/verify-clean-pack.cjs stages 'git archive HEAD' into a temp dir (no
+      dist/plugin/node_modules), symlinks the repo's root node_modules (no per-package node_modules
+      exist), runs a REAL 'npm pack --pack-destination' so prepack must produce the build, then
+      verifies the tarball via tar -tzf (robust vs parsing stdout polluted by build output). (4)
+      publish.yml: verify-package between Build and tests, verify-clean-pack before publish. (5)
+      Tests: real-repo verify-package exits 0 (ac-2+ac-3, CI builds before vitest), staged broken
+      trees (missing dist/cli, missing dist/web-ui) exit non-zero. Also updating the existing ac-1
+      test's npm pack dry-run to --ignore-scripts so the full-build prepack doesn't run inside
+      vitest. Edge cases: JSON parse must tolerate npm notice lines; tarball entries are prefixed
+      'package/'; temp cleanup must not follow the node_modules symlink."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T08:18:20.712Z
