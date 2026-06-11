@@ -19,3 +19,13 @@ notes:
     content: Address review findings (finishing round finish-1)
     author: "@claude"
     created_at: 2026-06-11T21:20:50.106Z
+  - _ulid: 01KTW93GRN84J5ENCFGJY3J72V
+    content: "Finishing round finish-1: aligned the N/A transition-boundary wording with decision
+      register #13 and the P1a coverage-schema plan. The @ac-coverage-applicability description and
+      the Boundaries note no longer defer reconciliation to \"the coverage state engine work\" — the
+      boundary is now phrased timelessly (legacy completeness path remains in force until corpus
+      coverage computation adopts these semantics), and ac-2's when-clause actor is generalized to
+      corpus coverage computation. No other content changes. Replied on the P1a claude round-2
+      review thread that raised the cross-document tension."
+    author: "@claude"
+    created_at: 2026-06-11T21:23:40.949Z
