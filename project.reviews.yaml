@@ -25375,11 +25375,11 @@ reviews:
   - _ulid: 01KTVBJPX82J6HZZJY3EDVT6QT
     slugs: []
     title: Review re-enable split-storage dangling-reference validation test
-    disposition: pending
+    disposition: approved
     author: Jacob Chapel
     check_count: 8
     examined_commit: 3c1b56f24101b99dd2a646dc0afda611d5aa1663
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -25388,6 +25388,6 @@ reviews:
       shadow_commit: ""
     thread_count: 1
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-06-11T12:47:41.480Z
-    updated_at: 2026-06-11T13:00:58.048Z
+    updated_at: 2026-06-11T13:01:08.134Z
