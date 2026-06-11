@@ -2,7 +2,89 @@ _ulid: 01KTV6HW6E1CPP8D3H096MEAZJ
 slugs: []
 title: Review task-shadow-restore-loud-failure cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; oxfmt checked 1006 files.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T11:33:12.254Z
+    completed_at: 2026-06-11T11:33:12.254Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide oxlint completed with 0 errors; existing warning baseline reported 738 warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T11:33:15.337Z
+    completed_at: 2026-06-11T11:33:15.337Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Focused oxlint on changed TypeScript/test files completed with 0 warnings and 0 errors.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-11T11:33:18.170Z
+    completed_at: 2026-06-11T11:33:18.170Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed with exit code 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T11:33:20.803Z
+    completed_at: 2026-06-11T11:33:20.803Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Test Suites: 2754 passed of 2754; Tests: 10443 passed, 5 skipped of 10448; Duration:
+      2425.4s; log /tmp/kspec-test-cache/01KTV6F6HDFZ1WCHNXMG695XAY/60d8c63300faa9c9.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T11:33:23.340Z
+    completed_at: 2026-06-11T11:33:23.340Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; schema/references OK with existing
+      deprecated-reference warning baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T11:33:25.912Z
+    completed_at: 2026-06-11T11:33:25.912Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with existing alignment warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T11:33:28.458Z
+    completed_at: 2026-06-11T11:33:28.458Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with existing completeness warning baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T11:33:31.022Z
+    completed_at: 2026-06-11T11:33:31.022Z
 events:
   - _ulid: 01KTV6HW6ETX058B1SBV0Z2N7D
     actor: Jacob Chapel
@@ -17,17 +99,163 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T11:20:08.259Z
+  - _ulid: 01KTV7AANTK5G74KN5FW4T4FZV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T11:33:12.506Z
+  - _ulid: 01KTV7ADPZH73RVGYDXXSKNS8V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T11:33:15.615Z
+  - _ulid: 01KTV7AGFFNYHS5GWA7M7HTA5R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-11T11:33:18.447Z
+  - _ulid: 01KTV7AJZW834SKG351TE317C6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T11:33:21.020Z
+  - _ulid: 01KTV7ANFBPZ5JTAN4T956XNQS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T11:33:23.563Z
+  - _ulid: 01KTV7AQZAEXKDE8ZCSEZH47P4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T11:33:26.122Z
+  - _ulid: 01KTV7ATF1Q6ZWDYR5YTKZKSVB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T11:33:28.673Z
+  - _ulid: 01KTV7AWYWYWBBY69DHDCCYM4A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T11:33:31.228Z
+  - _ulid: 01KTV7AZF8FQKV82XRNDTJRN1H
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTV7AZ8ANX1J88XWQTZBRRZB
+    timestamp: 2026-06-11T11:33:33.800Z
+  - _ulid: 01KTV7B1ZRZ201ADEFHS0E6S6R
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTV7B1RNMGSPF2E7133YZXMM
+    timestamp: 2026-06-11T11:33:36.376Z
+  - _ulid: 01KTV7B4EHT8BAP3NB1N6C9X5Z
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T11:33:38.897Z
+  - _ulid: 01KTV7B4EHP66HD6Z5JHCZXY6Q
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T11:33:38.897Z
 examined_commit: 37aea1f6ef6b3dc1fa8e701106ffadf490e975dc
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KTTD0Y7J7B30QYRVF0NQ0B81"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTV7AZ8ANX1J88XWQTZBRRZB
+    anchor:
+      type: code
+      commit: 37aea1f6ef6b3dc1fa8e701106ffadf490e975dc
+      line_end: 171
+      line_start: 164
+      path: src/parser/shadow.ts
+      side: head
+    entries:
+      - _ulid: 01KTV7AZ8ASGB6YS7G679RXZ3B
+        author: pr-reviewer
+        body: 'MUST-FIX: The recovery steps interpolate absolute paths directly inside double-quoted shell
+          commands. That handles spaces, but it is not shell-safe for valid project paths containing
+          `$`, backticks, backslashes, or double quotes, so the concrete recovery commands can
+          address a different path or fail to parse. Evidence: lines 164, 168, and 171 build
+          commands from `path.resolve(...)` without escaping. I verified with a minimal shell
+          reproduction that a literal path segment containing `$HOME` is expanded inside the
+          generated double-quoted form (`test -d "/tmp/kspec-review-$HOME.backup"` returned status 1
+          even though the literal directory existed). This violates `@broken-shadow-safety
+          ac-restore-failure-reports-state` for those checkouts because the user is told to run
+          recovery steps that do not restore the preserved backup. Please emit shell-safe commands
+          (or non-ambiguous recovery guidance that cannot be misinterpreted by the shell) and add
+          behavioral coverage with a metacharacter path.'
+        created_at: 2026-06-11T11:33:33.578Z
+    kind: blocker
+  - _ulid: 01KTV7B1RNMGSPF2E7133YZXMM
+    entries:
+      - _ulid: 01KTV7B1RNW57QM52EZC8X10FA
+        author: pr-reviewer
+        body: >-
+          Evidence log:
+
+          Files read: kspec-agents.md; task @01KTTD0Y7J7B30QYRVF0NQ0B81; previous review
+          @01KTV3ZC0MBBJDS5DMSSJ3ZWZT; @broken-shadow-safety; src/parser/shadow.ts;
+          src/daemon-shared/endpoint.ts; src/cli/commands/serve.ts;
+          packages/daemon/src/fatal-handlers.ts; packages/daemon/src/index.ts;
+          packages/daemon/src/pid.ts; packages/daemon/src/server.ts; scripts/build-daemon.cjs;
+          tests/daemon-last-exit.test.ts; tests/shadow-restore-failure.test.ts.
+
+          Commands run: git diff/name/status/log/merge-base; rg AC annotations; kspec validate
+          refs/alignment/completeness; npm run format:check; npm run lint -- --quiet; npx oxlint on
+          changed files; npm run typecheck; npm test; minimal bash path-expansion reproduction.
+
+          Claims verified: prior review blocker was addressed for occupied destination states by
+          state-aware recovery steps and tests that execute the generated commands; AC annotations
+          exist for all @broken-shadow-safety ACs including ac-restore-failure-reports-state; daemon
+          last-exit file is not removed by PidFileManager.remove(); full suite passed.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration,
+          shadow recovery safety. Finding recorded: recovery commands are not shell-safe for
+          metacharacter paths.
+        created_at: 2026-06-11T11:33:36.149Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-11T11:33:38.897Z
 created_at: 2026-06-11T11:19:51.246Z
-updated_at: 2026-06-11T11:20:08.029Z
+updated_at: 2026-06-11T11:33:38.897Z
 notes: []
