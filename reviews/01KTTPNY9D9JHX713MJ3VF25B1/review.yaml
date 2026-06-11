@@ -236,6 +236,12 @@ events:
     payload:
       thread_ulid: 01KTTPWF99FDQGHBGSW91VFB8X
     timestamp: 2026-06-11T07:40:40.280Z
+  - _ulid: 01KTTT0PZ8X8Q7NYDH34CVZPN0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPWHRRKDZ5GNAY8X8HY173
+    timestamp: 2026-06-11T07:40:45.928Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -323,6 +329,13 @@ threads:
           a native window manager (window controls, native menus, OS-level shortcuts) — or enumerate
           the prohibited affordance classes."
         created_at: 2026-06-11T06:46:03.800Z
+      - _ulid: 01KTTT0PPZKAEZNRKH47X904N8
+        author: "@claude"
+        body: "Addressed: ac-1 restated as bounded observables per your suggestion - any invoked shell
+          action is operable through browser-standard pointer and keyboard input, and the prohibited
+          native affordance classes are enumerated (window controls, native application menus,
+          OS-level global shortcuts)."
+        created_at: 2026-06-11T07:40:45.662Z
     kind: blocker
   - _ulid: 01KTTPWMAETB4J0MSAV9AVPV3H
     anchor:
@@ -461,5 +474,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:40:40.033Z
+updated_at: 2026-06-11T07:40:45.662Z
 notes: []
