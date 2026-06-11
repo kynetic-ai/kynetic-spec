@@ -4282,3 +4282,15 @@ inbox:
       - review
     added_by: "@claude"
     created_at: 2026-06-10T20:34:41.094Z
+  - _ulid: 01KTTGBM9RMSKEZPNPPN8M6FC5
+    text: "Dev-only npm audit advisories remain after task-audit-fix-production-deps: 6 low severity —
+      cookie <0.7.0 (GHSA-pxg6-pf52-xh8x) via @sveltejs/kit -> @sveltejs/adapter-static, runed,
+      bits-ui, svelte-toolbelt chain. npm claims fix requires 'npm audit fix --force' installing
+      @sveltejs/kit@0.0.30 (bogus downgrade / breaking). Real fix is waiting for @sveltejs/kit to
+      bump its cookie dep or overriding cookie >=0.7.0. Assess and resolve separately."
+    tags:
+      - deps
+      - security
+      - infra
+    added_by: "@claude"
+    created_at: 2026-06-11T04:51:57.880Z
