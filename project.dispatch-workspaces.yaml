@@ -13726,12 +13726,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T09:39:18.468Z
+      updated_at: 2026-06-11T09:39:40.151Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T09:39:18.468Z
+      updated_at: 2026-06-11T09:39:40.151Z
     integration:
       status: pending
       detail: null
@@ -13739,7 +13739,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 295c22542ec5fc475f47f4257dc0968bed4d99be
-      updated_at: 2026-06-11T09:39:18.468Z
+      updated_at: 2026-06-11T09:39:40.151Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KTTD0Y7J7B30QYRVF0NQ0B81
@@ -13748,9 +13748,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T09:39:04.832Z
-      last_reconciled_at: 2026-06-11T09:39:18.468Z
+      last_reconciled_at: 2026-06-11T09:39:40.151Z
       created_at: 2026-06-11T09:13:04.901Z
-      updated_at: 2026-06-11T09:39:18.468Z
+      updated_at: 2026-06-11T09:39:40.151Z
     workspace_id: dispatch-workspace-01KTTD0Y7J7B30QYRVF0NQ0B81
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -13759,5 +13759,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-shadow-restore-loud-failure/01kttd0y
         head: 295c22542ec5fc475f47f4257dc0968bed4d99be
-        last_seen_at: 2026-06-11T09:38:57.918Z
+        last_seen_at: 2026-06-11T09:39:40.151Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shadow-restore-loud-failure-01kttd0y
