@@ -64946,7 +64946,7 @@ runs:
     completed_at: 2026-06-11T23:35:33.563Z
   - _ulid: 01KTWHPM065TWQBGB3Y0CFYRP9
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -64962,7 +64962,54 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T23:54:29.046Z
-        completed_at: 2026-06-11T23:54:29.046Z
+        completed_at: 2026-06-11T23:54:48.910Z
+        notes: "Friction points: The reflection skill says to use , but the CLI returned ; the actual
+          command needed Workflow Run Details
+
+          ──────────────────────────────────────────────────
+
+          ID:           01KTWHPM
+
+          Workflow:     session-reflect (@01KFKS5NT2T98M70QQ4FZB2VTW)
+
+          Status:       active
+
+          Progress:     2/6
+
+          Started:      6/11/2026, 4:53:55 PM
+
+          Initiated by: Jacob Chapel
+
+
+          Step Results:
+
+          \e[90m┌────────\e[39m\e[90m┬────────────\e[39m\e[90m┬────────────────────\e[39m\e[90m┬───\
+          ─────────────────┐\e[39m
+
+          \e[90m│\e[39m\e[31m Step   \e[39m\e[90m│\e[39m\e[31m Status     \e[39m\e[90m│\e[39m\e[31m
+          Started            \e[39m\e[90m│\e[39m\e[31m Completed          \e[39m\e[90m│\e[39m
+
+          \e[90m├────────\e[39m\e[90m┼────────────\e[39m\e[90m┼────────────────────\e[39m\e[90m┼───\
+          ─────────────────┤\e[39m
+
+          \e[90m│\e[39m 1      \e[90m│\e[39m completed  \e[90m│\e[39m 6/11/2026, 4:53:5…
+          \e[90m│\e[39m 6/11/2026, 4:54:2… \e[90m│\e[39m
+
+          \e[90m├────────\e[39m\e[90m┼────────────\e[39m\e[90m┼────────────────────\e[39m\e[90m┼───\
+          ─────────────────┤\e[39m
+
+          \e[90m│\e[39m 2      \e[90m│\e[39m completed  \e[90m│\e[39m 6/11/2026, 4:54:2…
+          \e[90m│\e[39m 6/11/2026, 4:54:2… \e[90m│\e[39m
+
+          \e[90m└────────\e[39m\e[90m┴────────────\e[39m\e[90m┴────────────────────\e[39m\e[90m┴───\
+          ─────────────────┘\e[39m. This is small but repeatable documentation/CLI ergonomics
+          friction for anyone following the skill literally. The review check recording also
+          involved a long manual evidence batch, but batch handled it acceptably and this did not
+          rise to a new issue by itself."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T23:54:48.910Z
+        completed_at: 2026-06-11T23:54:48.910Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T23:53:55.463Z
