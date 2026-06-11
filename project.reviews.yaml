@@ -25634,3 +25634,20 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-11T18:13:41.753Z
     updated_at: 2026-06-11T18:18:09.220Z
+  - _ulid: 01KTVZ6BCGABVTGHZQXDA1AAZW
+    slugs: []
+    title: "Plan review: Shared Mutation and Event Service (round 2)"
+    disposition: pending
+    author: "@claude"
+    check_count: 0
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-dispatch-mutation-service"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-11T18:30:27.984Z
