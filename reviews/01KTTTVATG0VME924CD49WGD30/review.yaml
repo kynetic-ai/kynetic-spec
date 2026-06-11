@@ -2,7 +2,28 @@ _ulid: 01KTTTVATG0VME924CD49WGD30
 slugs: []
 title: "Plan review: UI Redesign Global Decisions (round 2)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified all 19 resolved threads across both round-1 reviews
+      (@01KTTPG4ACVXMDQRZSXWR91BDR: 8, @01KTTPNY9D9JHX713MJ3VF25B1: 11) against current plan
+      content. All resolutions hold: ui-redesign-decisions module created with all 9 decisions
+      parented under it; web-shell ac-1 bounded with enumerated native affordance classes;
+      test-result-acquisition ac-2 and integration-merge-authority ac-1 tightened to the
+      endpoint-handler boundary with dispatch-spawned processes carved out;
+      ac-coverage-applicability ac-2 scoped to the new engine with explicit transition boundary;
+      client-preference-persistence ac-1 restated observably with lint-rule enforcement note; both
+      meta tasks now single-outcome with exact note/reason text; disposition notes anchor on the
+      existing @plan-ui-redesign-global-decisions ref; actor-identity ac-2 states the canonical
+      end-state contract; ac-3 trimmed; freshness ac-4 and dual-form ac-3 added; leading chrome zone
+      defined."
+    name: Round-1 findings addressed
+    required: true
+    runner: manual-review
+    created_at: 2026-06-11T07:56:31.904Z
+    completed_at: 2026-06-11T07:56:31.904Z
 events:
   - _ulid: 01KTTTVATFAPAMSGQXEKXNKAGM
     actor: "@claude"
@@ -38,6 +59,13 @@ events:
       kind: nit
       thread_ulid: 01KTTTX2HQJNPYGVMYCE9943VV
     timestamp: 2026-06-11T07:56:15.554Z
+  - _ulid: 01KTTTXK0E9TA47VRYXECSABQG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Round-1 findings addressed
+    timestamp: 2026-06-11T07:56:32.142Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -105,5 +133,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T07:55:18.224Z
-updated_at: 2026-06-11T07:56:15.287Z
+updated_at: 2026-06-11T07:56:31.904Z
 notes: []
