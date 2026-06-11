@@ -27,6 +27,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { checkProjectDependencies } = require("./dependency-health.cjs");
+const { acquireBuildTestLock, HELD_ENV_VAR } = require("./build-test-lock.cjs");
 
 // ANSI colors (zero dependencies)
 const c = {
@@ -89,7 +90,14 @@ const CACHE_ROOT = path.join(os.tmpdir(), "kspec-test-cache");
 const ENV_KEY_VARS = ["CI", "TZ", "NODE_ENV", "NODE_OPTIONS"];
 // KSPEC_SESSION_ID already scopes the cache directory (getCacheDir);
 // KSPEC_TEST_PROGRESS affects only progress rendering, not test outcomes.
-const ENV_KEY_EXCLUDED = new Set(["KSPEC_SESSION_ID", "KSPEC_TEST_PROGRESS"]);
+// The build/test lock vars coordinate scheduling, not test behavior.
+const ENV_KEY_EXCLUDED = new Set([
+  "KSPEC_SESSION_ID",
+  "KSPEC_TEST_PROGRESS",
+  "KSPEC_BUILD_TEST_LOCK_HELD",
+  "KSPEC_BUILD_TEST_LOCK_PATH",
+  "KSPEC_BUILD_TEST_LOCK_TIMEOUT_MS",
+]);
 
 // ─── Output helpers ────────────────────────────────────────────────
 
@@ -584,6 +592,24 @@ async function main() {
   const verbose = args.includes("--verbose") || !!process.env.CI;
   const ownFlags = ["--dry-run", "--fresh", "--verbose"];
   const vitestArgs = args.filter((a) => !ownFlags.includes(a));
+
+  // ── Serialize against concurrent builds ──
+  // npm run build rewrites dist/ non-atomically; a CLI subprocess spawned by
+  // a test mid-emit can load mixed old/new modules and crash. Hold the
+  // per-worktree lock for the whole run (readiness fixes + vitest). The HELD
+  // marker is exported so nested build/test invocations spawned by this run
+  // (including test-spawned scripts/test.cjs subprocesses) skip the lock
+  // instead of deadlocking against their ancestor.
+  // AC: @test-suite-perf-reliability ac-7
+  const buildTestLock = await acquireBuildTestLock({
+    rootDir: projectRoot,
+    label: "test",
+    onWait: logSetup,
+  });
+  if (!buildTestLock.reentrant) {
+    process.env[HELD_ENV_VAR] = buildTestLock.lockPath;
+    process.on("exit", () => buildTestLock.release());
+  }
 
   // ── Ensure environment ──
   const fixedCount = ensureEnvironment();
