@@ -469,8 +469,16 @@ derive_from_specs: false
       module later materializes, @ui-redesign-decisions reparents under
       it."
 
-    How: kspec batch with one plan note per record; verify the notes
-    render on each plan via plan get.
+    What — also make the identity transition boundary machine-traversable:
+    - Add a relates_to reference from the derived @actor-identity-model
+      item to @config-author, so the reconciliation obligation documented
+      in both records' prose is traversable in the corpus rather than
+      description-only.
+
+    How: kspec batch with one plan note per record, plus kspec item set
+    @actor-identity-model --relates-to @config-author; verify the notes
+    render on each plan via plan get and the relates_to reference via
+    item get @actor-identity-model.
 ```
 
 ## Implementation Notes
