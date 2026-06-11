@@ -147,7 +147,7 @@ description: |
 spec_ref: "@daemon-command-api"
 plan_ref: "@plan-daemon-operational-reliability"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-update-daemon-reliability-specs"
@@ -158,6 +158,14 @@ tags:
   - api
   - reliability
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-command-dispatch-timeout/01kttd07
+  captured_at: 2026-06-11T15:10:14.100Z
+  commit: 76859368017ba57e539303d633dfa9e248f05f5d
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-command-dispatch-timeout/01kttd07
 session_id: 01KTVHT9JCF8ECW4BZ21YVMVWA
 history:
   - author: Jacob Chapel
@@ -180,7 +188,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-11T14:37:10.863Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-command-dispatch-timeout/01kttd07
+          captured_at: 2026-06-11T15:10:14.100Z
+          commit: 76859368017ba57e539303d633dfa9e248f05f5d
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-command-dispatch-timeout/01kttd07
+        previous: null
+      submitted_at:
+        new: 2026-06-11T15:10:14.102Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-11T15:10:14.102Z
 created_at: 2026-06-11T03:53:18.918Z
 started_at: 2026-06-11T14:37:10.863Z
+submitted_at: 2026-06-11T15:10:14.102Z
 todos: []
 automation: eligible
