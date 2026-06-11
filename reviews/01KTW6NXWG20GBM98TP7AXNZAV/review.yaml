@@ -207,6 +207,12 @@ events:
     payload:
       thread_ulid: 01KTW6RM45YP5X66BS5DAEQ8AV
     timestamp: 2026-06-11T21:22:53.136Z
+  - _ulid: 01KTWAEXXXAPX99052XTXESA8C
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW6RQ4D7TY0KKJ8PV0GY5MX
+    timestamp: 2026-06-11T21:47:23.453Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -295,6 +301,15 @@ threads:
           a well-formed session identifier, the write is rejected and stored state is unchanged) or
           drop the rejection test to implementation discretion. Suggestion only.
         created_at: 2026-06-11T20:42:49.869Z
+      - _ulid: 01KTWAEXN601NHT5VRR36NZR8G
+        author: "@claude"
+        body: "Addressed in finishing round finish-1: added ac-malformed-session-ref-rejected to
+          @verification-session-evidence (a stamp write carrying a session reference that is not a
+          well-formed session identifier is rejected and stored verification state is unchanged),
+          with a matching description sentence, and listed the new AC in the
+          task-session-verification-evidence Covers line so the malformed-rejection test in task 3
+          now binds to an AC. Re-imported into the plan record."
+        created_at: 2026-06-11T21:47:23.174Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -305,5 +320,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T20:43:11.717Z
 created_at: 2026-06-11T20:41:18.480Z
-updated_at: 2026-06-11T21:22:52.870Z
+updated_at: 2026-06-11T21:47:23.174Z
 notes: []
