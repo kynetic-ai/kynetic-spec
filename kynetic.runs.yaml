@@ -62938,9 +62938,22 @@ runs:
     completed_at: 2026-06-11T10:51:58.865Z
   - _ulid: 01KTV61G2H9P4S3M6QWAWRJV3R
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-11T11:10:54.545Z
+        completed_at: 2026-06-11T11:12:17.221Z
+        notes: "What worked well: The detached reviewer merge helper handled the approved manual_merge flow
+          cleanly and advanced dev without manual checkout or merge commands. The kspec review
+          record made the gate evidence explicit: format, lint, focused lint, typecheck, full suite,
+          and all validation checks were visible before approval. The new INSTALL.md link test was a
+          good low-scope regression check for a docs-only task."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-11T11:12:17.221Z
+        completed_at: 2026-06-11T11:12:17.221Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T11:10:54.545Z
