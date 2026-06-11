@@ -31512,6 +31512,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:53:42.624Z
+  automation: eligible
 - _ulid: 01KTTD0ZPTTX0N18MEY53HFKMK
   slugs:
     - task-git-utils-execfile
