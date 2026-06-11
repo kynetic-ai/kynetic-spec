@@ -3356,6 +3356,9 @@ requirements:
       Repository metadata is externally influenceable (a cloned repository
       controls its own branch and remote names), so queries over that
       metadata must treat every dynamic value as literal data.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
