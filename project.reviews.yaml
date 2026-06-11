@@ -26053,3 +26053,20 @@ reviews:
     verdict_count: 0
     created_at: 2026-06-11T21:34:17.445Z
     updated_at: 2026-06-11T21:34:46.919Z
+  - _ulid: 01KTWA1T3H4C4M5W65MWFYPPD3
+    slugs: []
+    title: "Plan review: UI Redesign Global Decisions (finish-1 N/A boundary precision verification)"
+    disposition: pending
+    author: "@claude"
+    check_count: 0
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-ui-redesign-global-decisions"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-11T21:40:13.553Z

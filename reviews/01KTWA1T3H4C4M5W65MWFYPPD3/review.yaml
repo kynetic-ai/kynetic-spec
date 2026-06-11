@@ -1,0 +1,26 @@
+_ulid: 01KTWA1T3H4C4M5W65MWFYPPD3
+slugs: []
+title: "Plan review: UI Redesign Global Decisions (finish-1 N/A boundary precision verification)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTWA1T3GVTABWMNA2B5FK5ZE
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T21:40:13.553Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-ui-redesign-global-decisions"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T21:40:13.553Z
+updated_at: null
+notes: []
