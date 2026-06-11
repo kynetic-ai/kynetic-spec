@@ -102,6 +102,18 @@ checks:
     runner: npm ci --omit=dev --engine-strict --ignore-scripts
     created_at: 2026-06-11T07:21:01.738Z
     completed_at: 2026-06-11T07:21:01.738Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:e2e succeeded, then Playwright smoke/api-server subset ran 6 tests and all
+      6 passed. Full e2e fixture failures were previously attributed as pre-existing legacy
+      plan/review storage fixture failures in cycle 1."
+    name: e2e smoke
+    required: false
+    runner: npm run test:e2e:smoke
+    created_at: 2026-06-11T07:21:12.207Z
+    completed_at: 2026-06-11T07:21:12.207Z
 events:
   - _ulid: 01KTTQXPEVZ306YGGFD0ZQN4MH
     actor: Jacob Chapel
@@ -179,6 +191,13 @@ events:
       status: pass
       name: node20 production install
     timestamp: 2026-06-11T07:21:01.968Z
+  - _ulid: 01KTTRWWZM9G0XJ70X6Z24JDW4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: e2e smoke
+    timestamp: 2026-06-11T07:21:12.436Z
 examined_commit: d8d683d458b1834d4b68908881a3d239d004a0d4
 external_links: []
 lifecycle_state: open
@@ -191,5 +210,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T07:04:09.948Z
-updated_at: 2026-06-11T07:21:01.738Z
+updated_at: 2026-06-11T07:21:12.207Z
 notes: []
