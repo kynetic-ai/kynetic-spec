@@ -34,3 +34,18 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T19:44:25.244Z
+  - _ulid: 01KTW57FNC5PADSYPMRXQQ65W3
+    content: "Behavioral verification complete (all in dispatch session 01KTW1ZMEQDT7C44849HBBJRA6,
+      before committing so the cache keys stayed stable): (1) npm test --fresh full run passed (2777
+      suites, 10529 passed, 3 skipped) and stored entry e09d5c94a3b816ab; (2) immediate npm test
+      re-run was a cache hit in ~0.17s; (3) CI=true npm test produced a cache MISS — ran the full
+      suite live (789.7s wall) and passed, storing a second entry 06fed752530271d1; (4) CI=true npm
+      test again was a cache hit; (5) plain npm test after that hit the ORIGINAL e09d5c94 entry —
+      proving distinct env-keyed entries coexist in one session. Quality gates: format:check clean,
+      repo lint 0 errors, focused oxlint on changed files leaves only 2 pre-existing prefer-template
+      warnings (not in my diff; the 2 new-code warnings — Array#sort and function scoping — were
+      fixed), typecheck clean, kspec validate refs/alignment/completeness pass with warnings-ok.
+      Committed as 74ab85fe3b and pushed to origin."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T20:15:56.589Z
