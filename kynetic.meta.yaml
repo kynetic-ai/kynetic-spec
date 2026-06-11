@@ -21658,6 +21658,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-11T21:24:18.554Z
+  - _ulid: 01KTWAYSDK4ZHB2YF5J40G4PMB
+    type: friction
+    content: During review test triage, running a fresh targeted npm test rerun cleared the same
+      session-scoped test cache directory and removed the original full-suite failure log before it
+      could be inspected. Preserve failed-run logs across --fresh reruns or copy them to a stable
+      archive path so rerunning flaky tests does not erase evidence.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KTWAVM"
+    created_at: 2026-06-11T21:56:03.125Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
