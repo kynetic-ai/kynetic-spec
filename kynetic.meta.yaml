@@ -21722,6 +21722,30 @@ observations:
     resolved_at: 2026-06-11T23:32:15.074Z
     resolved_by: Jacob Chapel
     created_at: 2026-06-11T23:31:36.067Z
+  - _ulid: 01KTWGM5T0FQ2EFFGRPRK6KFKM
+    type: friction
+    content: The task-work skill's Fix Cycle section (templates/skills/task-work) lists read review ->
+      fix -> reply/resolve -> note -> 're-submit with kspec task submit', but submit rejects
+      needs_work tasks ('Task must be in_progress') — every fix-cycle worker must run kspec task
+      start first, which the skill never mentions. Add the start step to the fix-cycle checklist so
+      workers don't discover it via the error message.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T23:35:06.816Z
+  - _ulid: 01KTWGM622NX6WRA5727GQFNZW
+    type: success
+    content: "Fix-cycle pattern that worked (task-stabilize-upgrade-folder-storage-test cycle 1):
+      instead of only patching the call sites that raced (npm pack prepack, build:daemon), the
+      lock's reentrancy was made label-aware so any future cross-kind nested build/test fails fast
+      with a diagnostic. Converting a silent race into a deterministic, explained failure makes
+      regressions of the whole class self-reporting rather than intermittent. Tracing started from
+      the reviewer's exact crash signature (missing export name) to the only in-suite trigger that
+      rewrites that file (tsc via prepack), which kept the fix targeted."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T23:35:07.075Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
