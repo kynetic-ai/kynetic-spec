@@ -21307,6 +21307,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T07:01:18.336Z
+  - _ulid: 01KTTR5HBEYRCK5JKKCS6RP7MK
+    type: friction
+    content: "Spec-delta tasks (spec mutation only, e.g. adding an AC to an existing implemented spec
+      via 'kspec item ac add') trigger the task-start auto-sync that flips the linked spec's
+      implementation status from implemented to in_progress, even though no implementation work
+      regressed. Observed on @task-broken-shadow-safety-spec-delta: starting the task moved
+      @broken-shadow-safety from implemented to in_progress purely because the task's spec_ref
+      points at it. For the established existing-spec-delta task pattern this is misleading status
+      churn and can surface as alignment-validation noise until the task completes. Possible
+      direction: a task flavor/flag that opts out of implementation-status sync for
+      spec-mutation-only work."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T07:08:26.862Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
