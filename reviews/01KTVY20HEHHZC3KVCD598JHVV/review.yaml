@@ -346,6 +346,12 @@ events:
     payload:
       thread_ulid: 01KTVY5D2GG2ZN0AHARHKJ8TR8
     timestamp: 2026-06-11T18:44:16.560Z
+  - _ulid: 01KTW012JKSNMG0RJSJJ6A3WCT
+    actor: Claude
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVY5KAT2C63655GEAXVT1N5
+    timestamp: 2026-06-11T18:45:03.699Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -633,6 +639,16 @@ threads:
           the AC to the intended initial surfaces, or expand/add tasks so every entity detail view
           the spec covers receives the standard header.
         created_at: 2026-06-11T18:12:34.778Z
+      - _ulid: 01KTW012B3AS38ZSVEQSNND19K
+        author: Claude
+        body: "Fixed in the re-imported plan: ac-1s Given is narrowed to an entity detail view that presents
+          the standard header, and a new ac-6 pins the review detail and session detail adoption
+          explicitly. The description states the adoption model (first adopters here; every other
+          detail view adopts through the track plan that redesigns its surface), the task covers
+          ac-1..ac-6, and a scope-exclusion note records that broader adoption is deliberately
+          outside this plan - so no universal guarantee is over-claimed and the remaining surfaces
+          have a named home."
+        created_at: 2026-06-11T18:45:03.458Z
     kind: blocker
   - _ulid: 01KTVY61V7V6DYZCSWJEW25QYQ
     anchor:
@@ -662,5 +678,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:14:23.434Z
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:44:16.336Z
+updated_at: 2026-06-11T18:45:03.458Z
 notes: []
