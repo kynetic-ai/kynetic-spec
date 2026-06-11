@@ -54,6 +54,17 @@ checks:
     runner: kspec
     created_at: 2026-06-11T17:52:29.243Z
     completed_at: 2026-06-11T17:52:29.243Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pre-existing warnings only (malformed AC tokens in tests/cli-agent-commands.test.ts).
+      Nothing attributable to this plan.
+    name: kspec validate --completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T17:52:34.416Z
+    completed_at: 2026-06-11T17:52:34.416Z
 events:
   - _ulid: 01KTVWYZ2WXMFZSQBG28NHQNQC
     actor: "@claude"
@@ -103,6 +114,13 @@ events:
       status: pass
       name: kspec validate --alignment
     timestamp: 2026-06-11T17:52:29.464Z
+  - _ulid: 01KTVX0ZARWJ93HDC2AZ3VBNY7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate --completeness
+    timestamp: 2026-06-11T17:52:34.648Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -149,5 +167,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T17:51:28.860Z
-updated_at: 2026-06-11T17:52:29.243Z
+updated_at: 2026-06-11T17:52:34.416Z
 notes: []
