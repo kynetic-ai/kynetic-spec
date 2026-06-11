@@ -11831,11 +11831,11 @@ workspaces:
     canonical_branch: dispatch/task/task-broken-shadow-safety-spec-delta/01kttd0x
     canonical_branch_head: 0f3473bba38c4e87899c06d0394c895a92aa61e3
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T07:27:00.145Z
+      updated_at: 2026-06-11T07:31:11.507Z
     health:
       status: healthy
       issues: []
@@ -11849,17 +11849,17 @@ workspaces:
       target_branch: dev
       target_commit: 0f3473bba38c4e87899c06d0394c895a92aa61e3
       updated_at: 2026-06-11T07:27:00.145Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTTD0XG6VBZ6AR49VGQ2FARF
     task_ref: "@01KTTD0XG6VBZ6AR49VGQ2FARF"
     task_slug: task-broken-shadow-safety-spec-delta
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-11T07:31:11.507Z
       last_active_at: 2026-06-11T07:11:41.645Z
       last_reconciled_at: 2026-06-11T07:30:53.355Z
       created_at: 2026-06-11T07:03:44.256Z
-      updated_at: 2026-06-11T07:30:53.355Z
+      updated_at: 2026-06-11T07:31:11.507Z
     workspace_id: dispatch-workspace-01KTTD0XG6VBZ6AR49VGQ2FARF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
