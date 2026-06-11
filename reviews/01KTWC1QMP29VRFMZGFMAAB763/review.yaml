@@ -2,7 +2,21 @@ _ulid: 01KTWC1QMP29VRFMZGFMAAB763
 slugs: []
 title: "Plan review: AC Coverage Verification Schema and Storage (finish-1 verification)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified latest prior review @01KTW6NX: malformed-session-ref nit is resolved and current
+      plan now includes @verification-session-evidence ac-malformed-session-ref-rejected plus the
+      matching task Covers entry. Cross-document P0a boundary question is resolved. The remaining
+      P0a ordering blocker was acknowledged as a program gate by the reviewer instruction, replied
+      to, and resolved rather than re-raised."
+    name: prior review follow-up
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T22:15:55.101Z
+    completed_at: 2026-06-11T22:15:55.101Z
 events:
   - _ulid: 01KTWC1QMPXS7YZAMWEG4MCAC0
     actor: "@claude"
@@ -17,6 +31,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T22:15:33.929Z
+  - _ulid: 01KTWC35RA89T4XPCD4RWBZ0MA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review follow-up
+    timestamp: 2026-06-11T22:15:55.402Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -29,5 +50,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:15:08.182Z
-updated_at: 2026-06-11T22:15:33.621Z
+updated_at: 2026-06-11T22:15:55.101Z
 notes: []
