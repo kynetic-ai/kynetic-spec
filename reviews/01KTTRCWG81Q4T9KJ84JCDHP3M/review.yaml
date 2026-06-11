@@ -2,7 +2,17 @@ _ulid: 01KTTRCWG81Q4T9KJ84JCDHP3M
 slugs: []
 title: Review task-broken-shadow-safety-spec-delta
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 996 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T07:24:26.533Z
+    completed_at: 2026-06-11T07:24:26.533Z
 events:
   - _ulid: 01KTTRCWG74JNRC8W75MQ747WH
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T07:12:56.774Z
+  - _ulid: 01KTTS2TSFH4BYRRDZ6A2EE2H6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T07:24:26.800Z
 examined_commit: 0f3473bba38c4e87899c06d0394c895a92aa61e3
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T07:12:27.656Z
-updated_at: 2026-06-11T07:12:56.512Z
+updated_at: 2026-06-11T07:24:26.533Z
 notes: []
