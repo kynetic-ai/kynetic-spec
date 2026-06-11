@@ -20019,7 +20019,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T20:45:29.779Z
+      updated_at: 2026-06-11T20:48:16.005Z
     integration:
       status: merged
       detail: integration:merged
@@ -20036,18 +20036,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T20:22:33.781Z
-      last_reconciled_at: 2026-06-11T20:47:56.864Z
+      last_reconciled_at: 2026-06-11T20:48:16.005Z
       created_at: 2026-06-11T19:18:38.177Z
-      updated_at: 2026-06-11T20:47:56.864Z
+      updated_at: 2026-06-11T20:48:16.005Z
     workspace_id: dispatch-workspace-01KTTD1ETQ674218060ZCJNKAM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 74ab85fe3b5971918484ee84f6942fe7ed04e165
-        last_seen_at: 2026-06-11T20:21:40.459Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-cache-env-key-01kttd1e-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-test-cache-env-key/01kttd1e
