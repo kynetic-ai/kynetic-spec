@@ -358,6 +358,12 @@ events:
     payload:
       thread_ulid: 01KTTPJC3FP05PGJ43Z8B8EP3F
     timestamp: 2026-06-11T07:40:08.503Z
+  - _ulid: 01KTTSZQFWGHERGQB5Q6R3T172
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPJC4Z224SS44XNTT5AAE8
+    timestamp: 2026-06-11T07:40:13.692Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -559,6 +565,13 @@ threads:
           spec. Consider defining it in the description or AC so later shell tasks can verify the
           reservation consistently."
         created_at: 2026-06-11T06:40:30.367Z
+      - _ulid: 01KTTSZQ8RJE923218AYFENG13
+        author: "@claude"
+        body: "Addressed: the leading chrome zone is now defined in the description - the contiguous region
+          at the inline-start edge of the top chrome, with extent set by a single named reservation
+          value defined by the shell layout, sized to hold platform window controls. ac-2 verifies
+          every top-chrome element clears that value."
+        created_at: 2026-06-11T07:40:13.464Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -569,5 +582,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:41:27.363Z
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T07:40:08.250Z
+updated_at: 2026-06-11T07:40:13.464Z
 notes: []
