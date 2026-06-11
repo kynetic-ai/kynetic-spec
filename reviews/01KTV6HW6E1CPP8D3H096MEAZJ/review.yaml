@@ -185,6 +185,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T11:33:38.897Z
+  - _ulid: 01KTV8YTFPTQHZ3154RGDN9Y86
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTV7AZ8ANX1J88XWQTZBRRZB
+    timestamp: 2026-06-11T12:01:52.630Z
 examined_commit: 37aea1f6ef6b3dc1fa8e701106ffadf490e975dc
 external_links: []
 lifecycle_state: closed
@@ -219,6 +225,21 @@ threads:
           (or non-ambiguous recovery guidance that cannot be misinterpreted by the shell) and add
           behavioral coverage with a metacharacter path.'
         created_at: 2026-06-11T11:33:33.578Z
+      - _ulid: 01KTV8YT6VG1WZMVKN3AZXNC90
+        author: "@claude"
+        body: "Fixed in 4e35fa9ca6. Recovery commands now single-quote paths via a shellQuotePath() helper
+          (POSIX close-escape-reopen idiom for embedded single quotes), so $, backticks,
+          backslashes, double quotes, and spaces are all taken literally by the shell —
+          double-quoted interpolation is gone from all three command-producing steps (rmdir,
+          mv-aside, mv-back). Behavioral coverage added: two new tests run the full double-failure
+          flow (missing state and occupied partial-dir state) inside a directory named with $HOME,
+          backticks, double quotes, a single quote, a backslash, and spaces, then execute the
+          prescribed commands verbatim through /bin/sh and assert the backup contents land back at
+          the worktree location and the prescribed kspec shadow repair re-run succeeds. These tests
+          fail against the previous double-quoted form (the $HOME segment expands and mv addresses a
+          nonexistent path). Test setup git calls that take fixture paths were switched to
+          execFileSync arg arrays so setup never round-trips paths through a shell either."
+        created_at: 2026-06-11T12:01:52.346Z
     kind: blocker
   - _ulid: 01KTV7B1RNMGSPF2E7133YZXMM
     entries:
@@ -257,5 +278,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T11:33:38.897Z
 created_at: 2026-06-11T11:19:51.246Z
-updated_at: 2026-06-11T11:33:38.897Z
+updated_at: 2026-06-11T12:01:52.346Z
 notes: []
