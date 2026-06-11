@@ -25135,7 +25135,7 @@ reviews:
     title: "Plan review: UI Redesign Global Decisions (round 2)"
     disposition: pending
     author: "@claude"
-    check_count: 5
+    check_count: 6
     lifecycle_state: open
     related_refs: []
     subject:
@@ -25147,4 +25147,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T07:55:18.224Z
-    updated_at: 2026-06-11T07:57:11.473Z
+    updated_at: 2026-06-11T07:57:17.213Z

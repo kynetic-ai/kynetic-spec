@@ -76,6 +76,20 @@ checks:
     runner: kspec
     created_at: 2026-06-11T07:57:11.473Z
     completed_at: 2026-06-11T07:57:11.473Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Neighborhood searches (merge, identity, preference, freshness, ingestion, keyboard)
+      surfaced no blocking conflicts. One unacknowledged contradiction with implemented
+      @config-author ac-3 raised as a non-blocking question thread on @actor-identity-model. The
+      N/A-semantics coexistence with the implemented validate path is now explicitly bounded in the
+      plan (round-1 fix verified).
+    name: Existing-spec alignment
+    required: true
+    runner: manual-review
+    created_at: 2026-06-11T07:57:17.213Z
+    completed_at: 2026-06-11T07:57:17.213Z
 events:
   - _ulid: 01KTTTVATFAPAMSGQXEKXNKAGM
     actor: "@claude"
@@ -146,6 +160,13 @@ events:
       status: pass
       name: kspec validate --refs
     timestamp: 2026-06-11T07:57:11.756Z
+  - _ulid: 01KTTTYZ8X5HVTH10RZACNQHX8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing-spec alignment
+    timestamp: 2026-06-11T07:57:17.469Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -213,5 +234,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T07:55:18.224Z
-updated_at: 2026-06-11T07:57:11.473Z
+updated_at: 2026-06-11T07:57:17.213Z
 notes: []
