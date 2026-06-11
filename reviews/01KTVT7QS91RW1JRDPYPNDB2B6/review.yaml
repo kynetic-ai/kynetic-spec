@@ -13,6 +13,17 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-11T17:22:33.517Z
     completed_at: 2026-06-11T17:22:33.517Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repo warning baseline: 0 errors; focused changed-file lint also passed with 0
+      warnings and 0 errors for src/cli/commands/serve.ts and tests/cli-serve-logs.test.ts."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T17:22:39.115Z
+    completed_at: 2026-06-11T17:22:39.115Z
 events:
   - _ulid: 01KTVT7QS8GK8TKGYR4HJH7XXK
     actor: Jacob Chapel
@@ -34,6 +45,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-11T17:22:33.757Z
+  - _ulid: 01KTVVA645S0C2WY44Y46F0Q7J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T17:22:39.365Z
 examined_commit: 9222d4a7de015305cf726b68c07f68b83438851d
 external_links: []
 lifecycle_state: open
@@ -46,5 +64,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T17:03:50.569Z
-updated_at: 2026-06-11T17:22:33.517Z
+updated_at: 2026-06-11T17:22:39.115Z
 notes: []
