@@ -10,3 +10,13 @@ notes:
     content: Address review findings (finishing round finish-1)
     author: "@claude"
     created_at: 2026-06-11T22:02:24.315Z
+  - _ulid: 01KTWBJZHR0X907MTST1CHWPJA
+    content: "Finish-1 fix set for claude round-3 review (01KTW92G): pinned the post-upgrade
+      plan-creation revision contract per decision 16 — plan creation mints nothing, new plans start
+      with an empty revision history until first publish or re-import mints revision 1 — adding
+      ac-created-plans-start-empty to plan-revisions and covering it in task-plan-revision-records;
+      removed rationale clauses from ac-span-integrity and ac-idea-never-blocks then-text per AC
+      purity. Re-imported; both finding threads resolved; standing P0a approval-ordering gate thread
+      left open. Plan remains draft."
+    author: "@claude"
+    created_at: 2026-06-11T22:07:04.760Z
