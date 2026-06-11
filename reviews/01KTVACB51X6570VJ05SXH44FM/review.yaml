@@ -157,6 +157,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T12:41:10.647Z
+  - _ulid: 01KTVB7H0P6C574WP4PVYDGADR
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTVB7GSKDCTDA65CZT6SXZS2
+    timestamp: 2026-06-11T12:41:34.998Z
 examined_commit: 4e35fa9ca6806c0dc664fe27265bf09046062c1f
 external_links: []
 lifecycle_state: open
@@ -166,8 +173,26 @@ subject:
   content_hash: ""
   ref: "@01KTTD0Y7J7B30QYRVF0NQ0B81"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTVB7GSKDCTDA65CZT6SXZS2
+    entries:
+      - _ulid: 01KTVB7GSK8RGKG7M72WZTT79X
+        author: pr-reviewer
+        body: "Evidence log: Files read: kspec-agents.md; task @01KTTD0Y7J7B30QYRVF0NQ0B81; previous reviews
+          @01KTV3ZC and @01KTV6HW; spec @broken-shadow-safety; src/parser/shadow.ts;
+          tests/shadow-restore-failure.test.ts. Commands run: git status/rev-parse/diff/log; kspec
+          task get; kspec review get/for-task; kspec item get @broken-shadow-safety; rg for AC
+          annotations and silent restore catches; kspec validate refs/alignment/completeness; npm
+          run format:check; npm run lint -- --quiet; npx oxlint on changed files; npm run typecheck;
+          npm test. Claims verified: cycle-2 shell-safety blocker is fixed with POSIX single-quoted
+          paths and metacharacter-path behavioral tests; cycle-1 state-aware recovery guidance
+          remains covered; restore success reports prior-state restored; backup remains preserved on
+          double-failure; changed tests exercise behavior and recovery commands rather than scanning
+          source. Categories searched: correctness, edge cases, error handling, test quality,
+          integration, shadow recovery safety. Findings: none."
+        created_at: 2026-06-11T12:41:34.771Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T12:26:44.257Z
-updated_at: 2026-06-11T12:41:10.418Z
+updated_at: 2026-06-11T12:41:34.771Z
 notes: []
