@@ -62743,7 +62743,7 @@ runs:
     completed_at: 2026-06-11T09:00:47.158Z
   - _ulid: 01KTTZ2J9JERK39Y2ZCA1F9DCZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -62755,7 +62755,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T09:10:02.447Z
-        completed_at: 2026-06-11T09:10:02.447Z
+        completed_at: 2026-06-11T09:11:00.391Z
+        notes: "Identified 2 high-confidence items: (1) daemon health-readiness vs signal-handler
+          registration gap (observed via failing graceful-shutdown test; /api/health live before
+          SIGTERM handlers register at end of createServer); (2) shared endpoint export list
+          maintained in 3 places (endpoint.ts, pid.ts shim, hardcoded string in
+          scripts/build-daemon.cjs). Skipped: test-first success (similar to existing 01KFCS35)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T09:11:00.391Z
+        completed_at: 2026-06-11T09:11:00.391Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T09:09:09.554Z
