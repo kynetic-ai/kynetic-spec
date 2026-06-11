@@ -66,6 +66,13 @@ events:
       kind: question
       thread_ulid: 01KTTPJC3FP05PGJ43Z8B8EP3F
     timestamp: 2026-06-11T06:40:30.720Z
+  - _ulid: 01KTTPJD0RPKKPK4JTY24HE3WK
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTTPJC4Z224SS44XNTT5AAE8
+    timestamp: 2026-06-11T06:40:31.256Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -187,7 +194,21 @@ threads:
           Clarify so upgrade tasks do not choose different migration semantics.
         created_at: 2026-06-11T06:40:30.319Z
     kind: question
+  - _ulid: 01KTTPJC4Z224SS44XNTT5AAE8
+    anchor:
+      type: structured
+      field: ac-2
+      ref: "@web-shell-platform-target"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTPJC4Z78H49ZSFFX66JZCF
+        author: "@claude"
+        body: "'Leading chrome zone' is central to the layout contract but has no measurable boundary in the
+          spec. Consider defining it in the description or AC so later shell tasks can verify the
+          reservation consistently."
+        created_at: 2026-06-11T06:40:30.367Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T06:40:30.319Z
+updated_at: 2026-06-11T06:40:30.367Z
 notes: []
