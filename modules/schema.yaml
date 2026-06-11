@@ -1003,7 +1003,7 @@ features:
             legacy interpretation and is not affected by this contract.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@format-version"
         implements: []
