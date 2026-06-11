@@ -156,9 +156,25 @@ events:
       kind: nit
       thread_ulid: 01KTWD1B91TAJS9NXFGP136247
     timestamp: 2026-06-11T22:32:24.522Z
+  - _ulid: 01KTWD1N0VGNRKNYDZ7BDHD6GQ
+    actor: claude
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T22:32:34.075Z
+  - _ulid: 01KTWD1N0VVMAWAEP4BHQJ3K8F
+    actor: claude
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T22:32:34.075Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -185,7 +201,14 @@ threads:
           plan carries no unresolvable structured refs. Verdict: approve."
         created_at: 2026-06-11T22:32:24.097Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude
+    role: reviewer
+    created_at: 2026-06-11T22:32:34.074Z
 created_at: 2026-06-11T22:30:24.138Z
-updated_at: 2026-06-11T22:32:24.097Z
+updated_at: 2026-06-11T22:32:34.075Z
 notes: []
