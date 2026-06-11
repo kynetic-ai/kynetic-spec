@@ -24,6 +24,16 @@ checks:
     runner: kspec validate --refs --warnings-ok
     created_at: 2026-06-11T08:48:47.993Z
     completed_at: 2026-06-11T08:48:47.993Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 on the live corpus; pre-existing warnings unrelated to this draft plan.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T08:48:53.325Z
+    completed_at: 2026-06-11T08:48:53.325Z
 events:
   - _ulid: 01KTTXQVAWJ8VTNY2FXYXNJPB1
     actor: "@claude"
@@ -129,6 +139,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-11T08:48:48.255Z
+  - _ulid: 01KTTXXESHNMY8VTVC0SGAY16D
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T08:48:53.553Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -349,5 +366,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:48:47.993Z
+updated_at: 2026-06-11T08:48:53.325Z
 notes: []
