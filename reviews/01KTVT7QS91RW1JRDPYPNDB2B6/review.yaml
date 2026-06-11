@@ -87,6 +87,21 @@ checks:
     runner: kspec
     created_at: 2026-06-11T17:23:24.495Z
     completed_at: 2026-06-11T17:23:24.495Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran npm test -- --fresh: full run completed 10509 passed, 1 failed in unrelated
+      tests/skill-rendering.test.ts with transient dist/cli export error;
+      tests/cli-serve-logs.test.ts passed in the full run and in focused run. Reran npm test --
+      --fresh tests/skill-rendering.test.ts immediately afterward: 89/89 passed. Created follow-up
+      flaky-test stabilization task @01KTVV91; classified as intermittent/pre-existing per
+      review-gates triage, not a branch regression."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T17:23:30.272Z
+    completed_at: 2026-06-11T17:23:30.272Z
 events:
   - _ulid: 01KTVT7QS8GK8TKGYR4HJH7XXK
     actor: Jacob Chapel
@@ -157,6 +172,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T17:23:24.754Z
+  - _ulid: 01KTVVBR3FFEPF7Q42QKBEVSSF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T17:23:30.543Z
 examined_commit: 9222d4a7de015305cf726b68c07f68b83438851d
 external_links: []
 lifecycle_state: open
@@ -169,5 +191,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T17:03:50.569Z
-updated_at: 2026-06-11T17:23:24.495Z
+updated_at: 2026-06-11T17:23:30.272Z
 notes: []
