@@ -38,6 +38,13 @@ events:
       kind: blocker
       thread_ulid: 01KTTXSHZV9JYAZV3CH7KMS4B5
     timestamp: 2026-06-11T08:46:46.009Z
+  - _ulid: 01KTTXT28YPBMJRR5F11MTN8WA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTXT20J0MK3RARA7RPJPQ86
+    timestamp: 2026-06-11T08:47:02.430Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -109,7 +116,30 @@ threads:
           coverage is provable.
         created_at: 2026-06-11T08:46:45.756Z
     kind: blocker
+  - _ulid: 01KTTXT20J0MK3RARA7RPJPQ86
+    anchor:
+      type: structured
+      ref: "@coverage-record-compatibility"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTXT20JKRV9GXY9Z1JCE114
+        author: "@claude"
+        body: "RE-RAISED from prior review 01KTTVE9X42D5EKE5J23CDHKXC (no author reply, plan content
+          unchanged). The plan's Implementation Notes promise that older tools ignore the sidecar
+          (\"created only on first write, and ignored by older tools\"), and
+          @task-coverage-record-compatibility requires a test (\"Also verify a tool version without
+          store support ignores the sidecar when reading a project that has one\") — but
+          @coverage-record-compatibility has no AC for that behavior. Its five ACs cover
+          absent-store behavior, upgrade-without-rewrite, first-write materialization, newer-format
+          refusal, and unknown-field roundtrip only. Add an AC for older-tool sidecar tolerance, or
+          remove the guarantee and test from the plan so spec and task scope match. Note when
+          resolving: also consider how the test would actually exercise \"a tool version without
+          store support\" — the suite cannot run an older released binary, so if the AC is added,
+          its observable framing needs to be testable (e.g. unknown sidecar directories in shadow
+          state are ignored by readers)."
+        created_at: 2026-06-11T08:47:02.162Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:46:45.756Z
+updated_at: 2026-06-11T08:47:02.162Z
 notes: []
