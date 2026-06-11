@@ -175,6 +175,13 @@ events:
       status: pass
       name: node 20.0.0 focused release-packaging
     timestamp: 2026-06-11T15:59:59.885Z
+  - _ulid: 01KTVPKMPS22W6MYF28W7CQPTX
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTVPKMF8H4BF8Y2WGK93J0BP
+    timestamp: 2026-06-11T16:00:26.329Z
 examined_commit: 5d1aa1888f4e262f2759a90f315bf3bf739f4601
 external_links: []
 lifecycle_state: open
@@ -184,8 +191,45 @@ subject:
   content_hash: ""
   ref: "@01KTTCZCTNXC6TSH9SENFSQDZG"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTVPKMF8H4BF8Y2WGK93J0BP
+    entries:
+      - _ulid: 01KTVPKMF80YEH1RXH83SHPVE9
+        author: codex-reviewer
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; task @01KTTCZCTNXC6TSH9SENFSQDZG; spec
+          @supported-runtime-range; prior review @01KTVHTJ; diff for INSTALL.md,
+          docs/getting-started/tutorial.md, tests/release-packaging.test.ts; package.json; changed
+          file context.
+
+
+          Commands run: git diff/stat/name-only/log; rg AC annotations and docs Node version sweep;
+          kspec item/task/review lookups; kspec validate refs/alignment/completeness with
+          --warnings-ok; npm run format:check; npm run lint -- --quiet; npx oxlint
+          tests/release-packaging.test.ts; npm run typecheck; npm test; npx -y node@20.0.0
+          scripts/test.cjs tests/release-packaging.test.ts --fresh.
+
+
+          Claims verified: engines remains >=20.0.0; INSTALL.md and tutorial now state Node 20;
+          README.md/INSTALL.md/docs markdown scan reports only Node 20 user-facing minimums;
+          @supported-runtime-range ac-1/ac-2 annotations are present; prior blocker is fixed by
+          explicit withFileTypes recursion and passes under Node v20.0.0.
+
+
+          Categories searched: correctness/spec alignment, Node 20.0.0 edge compatibility, test
+          quality/no vacuous pass guard, lint/source-read escape hatch, integration with
+          release-packaging tests. No findings.
+
+
+          Shared-guidance neutrality: not applicable; changed files are user-facing install/tutorial
+          docs and release-packaging tests, not one of the package shared guidance surfaces listed
+          by the project-local neutrality checklist.
+        created_at: 2026-06-11T16:00:26.088Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T15:46:09.109Z
-updated_at: 2026-06-11T15:59:59.642Z
+updated_at: 2026-06-11T16:00:26.088Z
 notes: []
