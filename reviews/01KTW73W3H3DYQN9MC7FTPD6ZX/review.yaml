@@ -1,0 +1,26 @@
+_ulid: 01KTW73W3H3DYQN9MC7FTPD6ZX
+slugs: []
+title: "Plan review: Web UI Foundations (round 3 verification)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTW73W3GC25C8J3W78ZB7ZVT
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T20:48:55.408Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-web-ui-foundations"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T20:48:55.408Z
+updated_at: null
+notes: []
