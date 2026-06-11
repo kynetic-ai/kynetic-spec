@@ -43,3 +43,23 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-11T10:49:37.057Z
+  - _ulid: 01KTV6668KQAMVH2YPWG3REQAB
+    content: 'Fix cycle 1: addressed the blocker on recovery guidance correctness (37aea1f6ef). The
+      double-failure message previously always prescribed mv "<backup>" "<worktreeDir>" even when
+      the reported state said something still occupied the location, where mv would nest the backup
+      inside an existing directory or fail on a file. Recovery steps are now state-aware:
+      inspectWorktreeDirState() returns a structured state, and buildRestoreRecoverySteps() prepends
+      rmdir for a leftover empty directory or a move-aside (mv to <worktreeDir>.failed-rebuild-<ts>)
+      for a leftover file/partial directory; the plain mv is only shown alone when the location is
+      empty. Backup is still never deleted on any failure path. Tests: 3 new tests simulate each
+      occupied state (mock recreates the destination when the restore rename fails, modeling
+      concurrent reoccupation) and execute the prescribed commands verbatim, asserting the backup
+      contents land back in place and the prescribed kspec shadow repair re-run succeeds; the
+      missing-state assertions tightened to require exactly mv+repair with no destination-clearing
+      step, and that path also now executes its steps. Re-verified all 5 spec ACs against the
+      implementation. Gates: format:check, lint --quiet (0 errors), oxlint on changed files (0
+      warnings), typecheck, full npm test (10443 passed / 5 skipped / 0 failed), kspec validate
+      refs/alignment/completeness green. Both review threads replied to and resolved.'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T11:13:28.339Z
