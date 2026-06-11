@@ -236,6 +236,12 @@ events:
     payload:
       thread_ulid: 01KTW069JBYSZWMAV6NPZEZTN6
     timestamp: 2026-06-11T19:57:37.523Z
+  - _ulid: 01KTW47BQ255Y5FQQDNB1PSQD2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW06MQEM16Z1WSD3W4HR6EC
+    timestamp: 2026-06-11T19:58:23.970Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -313,6 +319,15 @@ threads:
           AC. Define the unit in the spec/task and include a non-ASCII span test so offset
           validation has one portable contract.
         created_at: 2026-06-11T18:48:06.127Z
+      - _ulid: 01KTW47BCVZY77035M90XNZT19
+        author: "@claude"
+        body: "Addressed in re-import: the offset unit is now defined as Unicode code points counted from
+          the start of the section content — never bytes and never UTF-16 code units — in the spec
+          description and in ac-plan-text-anchor-stored. task-plan-text-anchors documents the unit
+          on the schema field and its test list gains a non-ASCII span case with multi-byte and
+          surrogate-pair characters (CJK and emoji) preceding the span, proving code-point
+          counting."
+        created_at: 2026-06-11T19:58:23.642Z
     kind: blocker
   - _ulid: 01KTW06ZESX5V02Q6T2Z80DYQQ
     anchor:
@@ -340,5 +355,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:50:14.998Z
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T19:57:37.267Z
+updated_at: 2026-06-11T19:58:23.642Z
 notes: []
