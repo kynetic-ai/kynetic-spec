@@ -54,8 +54,12 @@ description: |
 spec_ref: null
 plan_ref: "@plan-validation-and-test-coverage-integrity"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to dev at 5989d006c97653a6d3de7039c8b5cb47bec6507c. Added behavior-affecting
+  environment variables to the test cache key, updated the testing convention/regenerated
+  kspec-agents.md, and verified with review gates. Follow-up flaky test stabilization task created:
+  @01KTW6P2."
 depends_on: []
 context: []
 priority: 3
@@ -121,8 +125,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-11T20:23:02.176Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to dev at 5989d006c97653a6d3de7039c8b5cb47bec6507c. Added behavior-affecting
+          environment variables to the test cache key, updated the testing convention/regenerated
+          kspec-agents.md, and verified with review gates. Follow-up flaky test stabilization task
+          created: @01KTW6P2."
+        previous: null
+      completed_at:
+        new: 2026-06-11T20:44:39.609Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-11T20:44:39.616Z
 created_at: 2026-06-11T03:53:58.871Z
 started_at: 2026-06-11T19:19:53.623Z
 submitted_at: 2026-06-11T20:16:00.713Z
+completed_at: 2026-06-11T20:44:39.609Z
 todos: []
 automation: eligible

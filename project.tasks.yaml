@@ -31696,7 +31696,7 @@
   title: Include behavior-affecting environment variables in test cache key
   type: task
   plan_ref: "@plan-validation-and-test-coverage-integrity"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 3
@@ -31709,6 +31709,7 @@
   created_at: 2026-06-11T03:53:58.871Z
   started_at: 2026-06-11T19:19:53.623Z
   submitted_at: 2026-06-11T20:16:00.713Z
+  completed_at: 2026-06-11T20:44:39.609Z
   automation: eligible
 - _ulid: 01KTV7R5NQRAMWPD4SX1VJC07V
   slugs:
