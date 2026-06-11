@@ -197,6 +197,12 @@ events:
     payload:
       thread_ulid: 01KTV7AZ8ANX1J88XWQTZBRRZB
     timestamp: 2026-06-11T12:02:09.005Z
+  - _ulid: 01KTV8ZG88GWVFKKN7Z9Z73FRD
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTV7B1RNMGSPF2E7133YZXMM
+    timestamp: 2026-06-11T12:02:14.920Z
 examined_commit: 37aea1f6ef6b3dc1fa8e701106ffadf490e975dc
 external_links: []
 lifecycle_state: closed
@@ -276,6 +282,11 @@ threads:
           shadow recovery safety. Finding recorded: recovery commands are not shell-safe for
           metacharacter paths.
         created_at: 2026-06-11T11:33:36.149Z
+      - _ulid: 01KTV8ZG03KGBAC97NR7CY71AQ
+        author: "@claude"
+        body: Acknowledged — evidence log noted; the shell-safety finding it records is addressed in
+          4e35fa9ca6 (see blocker thread).
+        created_at: 2026-06-11T12:02:14.659Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -286,5 +297,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T11:33:38.897Z
 created_at: 2026-06-11T11:19:51.246Z
-updated_at: 2026-06-11T12:02:08.747Z
+updated_at: 2026-06-11T12:02:14.659Z
 notes: []
