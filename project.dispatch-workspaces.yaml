@@ -19861,18 +19861,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-test-cache-env-key/01kttd1e
-    canonical_branch_head: b28147ca373712390caf931395bb6ab743e28277
+    canonical_branch_head: 74ab85fe3b5971918484ee84f6942fe7ed04e165
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T19:18:38.177Z
+      updated_at: 2026-06-11T20:16:00.647Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T19:19:25.308Z
+      updated_at: 2026-06-11T20:16:00.647Z
     integration:
       status: pending
       detail: null
@@ -19880,7 +19880,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b28147ca373712390caf931395bb6ab743e28277
-      updated_at: 2026-06-11T19:18:38.177Z
+      updated_at: 2026-06-11T20:16:00.647Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTD1ETQ674218060ZCJNKAM
@@ -19889,9 +19889,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T19:19:25.308Z
-      last_reconciled_at: 2026-06-11T19:19:25.308Z
+      last_reconciled_at: 2026-06-11T20:16:00.647Z
       created_at: 2026-06-11T19:18:38.177Z
-      updated_at: 2026-06-11T19:19:25.308Z
+      updated_at: 2026-06-11T20:16:00.647Z
     workspace_id: dispatch-workspace-01KTTD1ETQ674218060ZCJNKAM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
