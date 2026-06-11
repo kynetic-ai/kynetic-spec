@@ -121,6 +121,20 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T08:49:57.043Z
     completed_at: 2026-06-11T08:49:57.043Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec search for verification stamp / freshness / coverage features: no existing spec
+      covers per-AC verification storage or freshness resolution. @coverage-scan-config and
+      @data-format-forward-compatibility exist and are correctly referenced as dependencies rather
+      than duplicated. Storage-home and current-stamp-only decisions documented in Implementation
+      Notes with alternatives weighed."
+    name: Spec neighborhood overlap
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T08:50:02.236Z
+    completed_at: 2026-06-11T08:50:02.236Z
 events:
   - _ulid: 01KTTXQVAWJ8VTNY2FXYXNJPB1
     actor: "@claude"
@@ -282,6 +296,13 @@ events:
       status: pass
       name: Task standalone-ness
     timestamp: 2026-06-11T08:49:57.260Z
+  - _ulid: 01KTTXZJ2M7JG3376VJ9PPQSXC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec neighborhood overlap
+    timestamp: 2026-06-11T08:50:02.452Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -502,5 +523,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:49:57.043Z
+updated_at: 2026-06-11T08:50:02.236Z
 notes: []
