@@ -15,6 +15,7 @@ import {
   resolveDaemonClientEndpoint,
   isExternallyReachable,
 } from "../pid-utils.js";
+import { getDaemonLogPath } from "../../daemon-shared/endpoint.js";
 import { loadProjectConfig } from "../../parser/config.js";
 import { initContext } from "../../parser/yaml.js";
 
@@ -421,6 +422,9 @@ async function startServer(opts: {
   if (connectHost) {
     daemonArgs.push("--connect-host", connectHost);
   }
+  // AC: @daemon-log-capture ac-bounded-rotation — forward the configured
+  // rotation cap so the daemon's in-process log tee applies it at startup.
+  daemonArgs.push("--log-max-size", String(config.daemon.log_max_size_bytes));
 
   // AC: @daemon-network-endpoint-contract ac-external-binding-warning
   // AC: @trait-localhost-security ac-external-warning
@@ -441,7 +445,11 @@ async function startServer(opts: {
     // Spawn detached process
     const child = spawn(getDaemonRuntimeCommand(runtime), daemonArgs, {
       detached: true,
-      stdio: "ignore", // TODO: redirect to log file when logging implemented
+      // AC: @daemon-log-capture ac-detached-output-captured — stdio stays
+      // ignored; the daemon tees its console output into the daemon log
+      // in-process (packages/daemon/src/logger.ts), which works identically
+      // for detached and foreground modes without parent-held file handles.
+      stdio: "ignore",
       cwd: process.cwd(),
       env: buildDaemonChildEnv(runtime),
     });
@@ -676,6 +684,10 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
     }
   }
 
+  // AC: @daemon-log-capture ac-log-location-discoverable — lifecycle status
+  // reports the daemon log file location.
+  const logPath = getDaemonLogPath();
+
   // AC: @cli-serve-commands ac-6 — status JSON returns the same fields
   //     as human-readable mode, including bind_host, connect_host, runtime.
   const status = {
@@ -686,6 +698,7 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
     connect_host: connectHost,
     runtime,
     uptime,
+    log_path: logPath,
     projects,
   };
 
@@ -706,6 +719,8 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
       if (runtime) {
         output(`  Runtime: ${runtime}`);
       }
+      // AC: @daemon-log-capture ac-log-location-discoverable
+      output(`  Log file: ${logPath}`);
       // AC: @multi-directory-daemon ac-12 - Show uptime
       if (uptime !== null) {
         const hours = Math.floor(uptime / 3600);
@@ -730,6 +745,11 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
       }
     } else {
       output("Daemon not running");
+      // AC: @daemon-log-capture ac-log-location-discoverable — point at the
+      // log from a previous run so a disappeared daemon stays diagnosable.
+      if (existsSync(logPath)) {
+        output(`  Log file: ${logPath}`);
+      }
     }
   }
 }

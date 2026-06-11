@@ -7,6 +7,12 @@
  * AC: @daemon-server ac-9
  */
 
+// AC: @daemon-log-capture ac-detached-output-captured — the console tee
+// must install before server.js (which statically imports routes/command.js
+// and its console interceptors), so this side-effect import stays first.
+// oxlint-disable-next-line eslint-plugin-import/no-unassigned-import -- intentional side-effect import
+import "./logger-install.js";
+import { configureDaemonLogWriter } from "./logger.js";
 import { createServer } from "./server.js";
 import { parseArgs } from "util";
 import { join } from "path";
@@ -29,6 +35,9 @@ const { values } = parseArgs({
     // value rather than the built-in default. Suppresses IPv6 fallback.
     "host-explicit": { type: "boolean" },
     "connect-host": { type: "string" },
+    // AC: @daemon-log-capture ac-bounded-rotation
+    // Configured daemon.log_max_size_bytes forwarded by the CLI.
+    "log-max-size": { type: "string" },
   },
   allowPositionals: true,
 });
@@ -42,6 +51,16 @@ const runtimeValue =
 const bindHost = (values.host as string | undefined) ?? undefined;
 const hostExplicit = values["host-explicit"] === true;
 const connectHost = (values["connect-host"] as string | undefined) ?? undefined;
+
+// AC: @daemon-log-capture ac-bounded-rotation — apply the configured size
+// limit once startup configuration is parsed. The tee installed with the
+// built-in default until now; invalid values are ignored by the writer.
+if (values["log-max-size"] !== undefined) {
+  const logMaxSize = parseInt(values["log-max-size"] as string, 10);
+  if (!isNaN(logMaxSize)) {
+    configureDaemonLogWriter({ maxSizeBytes: logMaxSize });
+  }
+}
 
 // Validate port
 if (isNaN(port) || port < 1 || port > 65535) {
