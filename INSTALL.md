@@ -4,7 +4,7 @@ This guide covers installing and setting up kspec in your own projects. For deve
 
 ## Prerequisites
 
-- **Node.js** v18 or later
+- **Node.js** v20 or later
 - **npm** (or pnpm/yarn)
 - **Git** - Your project must be a git repository for shadow branch mode (the default)
 - **Bun** (optional) - Required only for the daemon/web UI (`kspec serve`). Not needed for CLI-only usage. Install from [bun.sh](https://bun.sh/docs/installation)

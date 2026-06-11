@@ -15,8 +15,8 @@
 
 import { describe, it, expect, afterEach } from "vitest";
 import { spawnSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildTestSubprocessEnv, cleanupTempDir, createTempDir } from "./helpers/cli";
 import packageJson from "../package.json" with { type: "json" };
@@ -79,6 +79,72 @@ function stagePackageTree(dir: string, omit: string[] = []): void {
     writeFileSync(absPath, `fixture content for ${relPath}\n`);
   }
 }
+
+/**
+ * Every user-facing installation/onboarding document: README.md, INSTALL.md,
+ * and all markdown files under docs/, discovered dynamically so new docs are
+ * covered without updating this list.
+ */
+function listUserFacingDocs(): string[] {
+  const docs = [join(REPO_ROOT, "README.md"), join(REPO_ROOT, "INSTALL.md")];
+  const docsDir = join(REPO_ROOT, "docs");
+  for (const entry of readdirSync(docsDir, { recursive: true, encoding: "utf-8" })) {
+    if (entry.endsWith(".md")) docs.push(join(docsDir, entry));
+  }
+  return docs;
+}
+
+function readUserFacingDoc(docPath: string): string {
+  // eslint-disable-next-line no-source-scanning/no-source-file-reads -- The docs are the release artifacts under test: ac-2 requires their published Node.js version statements to match the engines minimum, which can only be verified by inspecting the documents themselves.
+  return readFileSync(docPath, "utf-8");
+}
+
+/**
+ * A Node.js version statement in prose, e.g. "Node.js 20+", "**Node.js** v20
+ * or later", "Node 20". Captures the stated major version.
+ */
+const NODE_VERSION_STATEMENT = /node(?:\.js)?\*{0,2}\s+v?(\d+)(?:\.\d+)*/gi;
+
+describe("Supported runtime version range", () => {
+  // AC: @supported-runtime-range ac-1
+  it("declares exactly one Node.js engine range with an explicit minimum major version", () => {
+    expect(Object.keys(packageJson.engines)).toEqual(["node"]);
+    // A single ">=<major>.<minor>.<patch>" range — no unions or upper bounds
+    // that would make the minimum ambiguous.
+    const match = packageJson.engines.node.match(/^>=(\d+)\.\d+\.\d+$/);
+    expect(match).not.toBeNull();
+    expect(Number(match![1])).toBeGreaterThan(0);
+  });
+
+  // AC: @supported-runtime-range ac-2
+  it("states the engines minimum in every user-facing doc that mentions a Node.js version", () => {
+    const minimumMajor = Number(packageJson.engines.node.match(/^>=(\d+)\./)![1]);
+    const statements: { doc: string; line: number; text: string; major: number }[] = [];
+    for (const docPath of listUserFacingDocs()) {
+      const lines = readUserFacingDoc(docPath).split("\n");
+      lines.forEach((line, index) => {
+        for (const match of line.matchAll(NODE_VERSION_STATEMENT)) {
+          statements.push({
+            doc: relative(REPO_ROOT, docPath),
+            line: index + 1,
+            text: match[0],
+            major: Number(match[1]),
+          });
+        }
+      });
+    }
+
+    // The docs do state a requirement — guard against a vacuous pass if the
+    // statement pattern stops matching.
+    expect(statements.length).toBeGreaterThan(0);
+
+    const mismatches = statements.filter((statement) => statement.major !== minimumMajor);
+    expect(
+      mismatches,
+      `Docs stating a Node.js version different from the engines minimum (${minimumMajor})`,
+    ).toEqual([]);
+  });
+});
 
 describe("Release packaging", () => {
   // AC: @published-artifact-completeness ac-1

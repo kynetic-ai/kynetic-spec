@@ -14,7 +14,7 @@ The example uses a documentation deliverable so you can try the whole flow in al
 
 ## Before you begin
 
-- Node.js 18+
+- Node.js 20+
 - Git repository initialized locally
 - `gh` installed if you want to open a pull request from the command line
 - [Bun](https://bun.sh) installed if you plan to use the web dashboard (`kspec serve`)
