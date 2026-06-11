@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KTVZJ2B3JP75N3BRJ5XHXHNV
+    content: "Address review round 1 findings: extend ancestry API to review/session chains; role-based
+      next-actor rule; canonical-write identity layer claiming @actor-identity-model ac-1; upstream
+      decision AC Covers claims; trait-api-endpoint folded into classifier task; view-header
+      adoption AC + narrowed ac-1; shortcut context scoping in description; binding P0a
+      approval-ordering gate"
+    author: "@claude"
+    created_at: 2026-06-11T18:36:51.939Z

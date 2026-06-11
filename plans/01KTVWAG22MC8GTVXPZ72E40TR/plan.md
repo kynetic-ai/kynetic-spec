@@ -127,18 +127,21 @@
     a zone for view-specific actions, arranged identically across
     views. The header's leading chrome zone stays empty. Each entity
     state is represented by exactly one visual token wherever it
-    appears.
+    appears. Detail views adopt the header as their surfaces are
+    redesigned: the review detail and session detail views are the
+    first adopters, and every other entity detail view adopts it
+    through the track plan that redesigns that surface.
   acceptance_criteria:
     - id: ac-1
       given: |
-        any entity detail view
+        an entity detail view that presents the standard header
       when: |
         its header renders
       then: |
         the header presents the entity reference, a lifecycle or state
         indicator, child counts where the entity has countable
         children, and a view-actions zone, in the arrangement shared
-        by all entity views
+        by all adopting views
     - id: ac-2
       given: |
         the same entity state presented in two different views
@@ -171,6 +174,14 @@
       then: |
         the actions appear only within the designated actions zone and
         each action is operable by keyboard
+    - id: ac-6
+      given: |
+        the review detail and session detail views
+      when: |
+        each view renders
+      then: |
+        each presents the standard view header in place of a bespoke
+        header
 
 # ─── Keyboard Shortcuts ───
 
@@ -186,8 +197,13 @@
     detects binding collisions at registration, refuses
     browser-reserved combinations, and falls back to a shortcut's
     declared alternate chords when the preferred chord cannot be
-    bound. The registry's inventory of active bindings is enumerable
-    with display labels matching the active platform.
+    bound. Each shortcut is declared with an activation context — a
+    global context or a surface-scoped context that is active only
+    while its owning surface is active — a binding is active only
+    while its context is active, and collision detection applies
+    among the bindings of the same context. The registry's inventory
+    of active bindings is enumerable with display labels matching the
+    active platform.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -329,7 +345,13 @@
     canonical form; strings that resolve to neither classify as
     unknown without failing. Records written through the daemon
     resolve their author through the standard author-resolution
-    precedence rather than an anonymous placeholder.
+    precedence rather than an anonymous placeholder, and actor values
+    persisted by daemon record writes are canonical wherever
+    classification can resolve them: a value — caller-supplied or
+    precedence-resolved — that classifies as a recognizable variant
+    of a canonical identity is stored in canonical form, and a value
+    that classifies to no canonical identity is stored as supplied
+    and classifies as unknown when read.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -386,6 +408,27 @@
         environment, then configured author, then version-control or
         system identity — and is never recorded as an anonymous
         placeholder
+    - id: ac-7
+      given: |
+        an actor value about to be persisted by a daemon record
+        write — supplied explicitly by the caller or resolved through
+        the author-resolution precedence — that classifies as a
+        recognizable variant of a canonical agent identity or of the
+        configured human identity
+      when: |
+        the record is written
+      then: |
+        the stored actor value is the canonical identity, never the
+        variant form
+    - id: ac-8
+      given: |
+        an actor value about to be persisted by a daemon record write
+        that classifies to no canonical identity
+      when: |
+        the record is written
+      then: |
+        the write succeeds, the value is stored as supplied, and
+        reading the record classifies the actor as unknown
 
 - title: Actor Display and Next-Actor Derivation
   slug: actor-display
@@ -396,8 +439,11 @@
     canonical display name with a visual distinction between human and
     agent kinds, and an honest distinct treatment for unknown actors.
     A deterministic next-actor rule derives, from a review's lifecycle
-    state and disposition, which identity the review awaits, and every
-    surface presenting that information derives it from the same rule.
+    state and disposition, which role the review awaits — the
+    reviewing party, the author of the work under review, or no one —
+    and every surface presenting whom a review awaits resolves the
+    awaited party by applying that one rule to the review's recorded
+    participants.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -421,22 +467,22 @@
       given: |
         a review's lifecycle state and disposition
       when: |
-        the review's next actor is derived
+        the review's awaited role is derived
       then: |
         the result follows the fixed mapping — an open review with
-        pending disposition awaits the reviewing identity; an open
-        review with changes-requested disposition awaits the identity
-        that authored the work under review; an open review with
-        approved disposition awaits the work's author for
-        post-approval action; a closed or archived review awaits no
-        one
+        pending disposition awaits the reviewer role; an open review
+        with changes-requested disposition awaits the work-author
+        role; an open review with approved disposition awaits the
+        work-author role for post-approval action; a closed or
+        archived review awaits no role
     - id: ac-4
       given: |
-        two surfaces presenting which identity a review awaits
+        two surfaces presenting whom the same review awaits
       when: |
-        each computes the next actor for the same review state
+        each derives the awaited party from that review's lifecycle
+        state, disposition, and recorded participants
       then: |
-        both present the same identity
+        both surfaces present the same result
 
 - title: Historical Actor Normalization
   slug: actor-history-normalization
@@ -525,6 +571,15 @@ derive_from_specs: false
       project's agent definitions: canonical id and display info per
       agent. One bounded response; no entity-list fan-out. Follow the
       standard response envelope and project-scoping middleware.
+    - Apply @trait-api-endpoint to @actor-identity-resolution as part
+      of this task (kspec item set @actor-identity-resolution
+      --add-trait trait-api-endpoint) — plan derivation does not
+      materialize plan-declared traits reliably, so the task owns the
+      application — and implement the endpoint to the trait contract:
+      success response shape and request-id tracing per the trait;
+      trait criteria that cannot apply to a bodyless, read-only,
+      non-list endpoint with no entity-ref parameter are annotated
+      N/A with reasons per the N/A annotation convention.
     - Implement an actor classifier in shared (non-daemon-only) code
       so the upgrade path can reuse it: input is a recorded actor
       string plus the identity configuration; output is
@@ -549,42 +604,75 @@ derive_from_specs: false
     data-driven (one table consumed by both the classifier and the
     upgrade step in @task-actor-normalization-upgrade).
 
-    Covers: @actor-identity-resolution ac-1, ac-2, ac-3, ac-4, ac-5.
+    Covers: @actor-identity-resolution ac-1, ac-2, ac-3, ac-4, ac-5;
+    @trait-api-endpoint ac-1, ac-6 (inherited via
+    @actor-identity-resolution; trait ac-2, ac-3, ac-4, ac-5 are
+    annotated N/A — no entity-ref parameter, no request body, not a
+    list endpoint, read-only).
 
-- title: Resolve review-route authorship through the author chain
+- title: Canonicalize daemon-write authorship and remove anonymous fallbacks
   slug: task-review-author-resolution
   priority: 1
   tags: [daemon, reviews, identity]
   spec_ref: "@actor-identity-resolution"
+  depends_on:
+    - "@task-identity-endpoint-classifier"
   description: |
-    Stop daemon review routes from defaulting authorship to
-    "anonymous"; resolve missing actor values through the standard
-    author-resolution chain instead.
+    Make daemon record writes persist canonical actor identities:
+    remove the anonymous review-route fallbacks, resolve missing
+    actor values through the standard author-resolution chain, and
+    classify every actor value to canonical form before persistence.
 
     Why: packages/daemon/src/routes/reviews.ts contains ten
     `|| "anonymous"` fallbacks (threads, replies, resolve/reopen,
-    verdicts, checks, lifecycle changes). The author-resolution chain
-    already exists and task/triage/inbox routes already use it — the
-    review routes are the outlier, and they are why 287 review
-    records carry "@claude" and singleton variants as authors.
+    verdicts, checks, lifecycle changes) — they are why 287 review
+    records carry "@claude" and singleton variants as authors. But
+    fixing the fallbacks alone is not enough: no daemon write path
+    canonicalizes, the author chain ends in free-form git/OS-derived
+    names, and caller-supplied values persist verbatim — which is how
+    the same codex agent accumulated at least 7 recorded spellings.
+    @actor-identity-model ac-1 requires newly written actor fields to
+    be canonical, and the upstream claim table assigns this plan the
+    canonical-write identity layer.
 
     What:
     - Replace every anonymous fallback in the review routes with the
       same author resolution used by the other record-writing routes
       (explicit body value wins, then environment, then configured
       author, then git/OS identity).
-    - Explicit actor values supplied by callers (e.g. dispatch
-      reviewers via CLI) continue to pass through unchanged.
+    - Add a write-path canonicalization step shared by the daemon's
+      record-writing routes (reviews, tasks, triage, inbox, plan
+      notes): after resolution — explicit caller value or chain
+      result — classify the value through the shared classifier from
+      @task-identity-endpoint-classifier and persist the canonical
+      identity whenever classification resolves it. A value that
+      classifies to no canonical identity persists as supplied and
+      surfaces as unknown on read — out-of-roster actors stay
+      honestly attributed, and no recognizable variant is ever
+      persisted by a daemon write.
+    - Reconcile @config-author with @actor-identity-model's
+      transition boundary: update that spec's fallback-chain wording
+      (kspec item set at execution time) to state that chain-resolved
+      values pass through write-time classification before
+      persistence, so the git/OS-name tail no longer persists
+      free-form variants of configured identities and the two specs
+      stop sitting in the corpus as an unexplained contradiction.
     - Behavioral tests: a review mutation without an actor in the
-      body records the resolved configured author; one with an
-      explicit actor records that actor; no path records "anonymous".
+      body records the resolved configured author in canonical form;
+      one with an explicit variant actor (e.g. codex@openai.com)
+      records the canonical agent id; one with an unrecognizable
+      actor records the supplied value and classifies unknown on
+      read; no path records "anonymous".
 
     How: Reuse the existing getAuthor() chain (the one task/triage/
-    inbox routes call) inside the review route handlers. This is a
-    write-path-only change — historical anonymous values are handled
-    by @task-actor-normalization-upgrade, not here.
+    inbox routes call) inside the review route handlers, then wrap
+    resolution + classification into one shared helper adopted by
+    all record-writing routes. This is a write-path-only change —
+    historical values are handled by
+    @task-actor-normalization-upgrade, not here.
 
-    Covers: @actor-identity-resolution ac-6.
+    Covers: @actor-identity-resolution ac-6, ac-7, ac-8;
+    @actor-identity-model ac-1.
 
 - title: Build actor display primitive and next-actor derivation
   slug: task-actor-display-next-actor
@@ -611,12 +699,15 @@ derive_from_specs: false
       human/agent kind distinction; unknown actors render the
       original string with a distinct unknown treatment. Same actor
       renders identically wherever the component is used.
-    - A next-actor derivation helper implementing the fixed mapping
-      from @actor-display ac-3 (open+pending → reviewer,
-      open+changes_requested → work author, open+approved → work
-      author, closed/archived → none). Implement it once in shared
-      code so server payload enrichment and client surfaces consume
-      the same rule; assert with a table-driven test over every
+    - A next-actor derivation helper implementing the fixed role
+      mapping from @actor-display ac-3 (open+pending → reviewer
+      role, open+changes_requested → work-author role,
+      open+approved → work-author role, closed/archived → no role).
+      Surfaces resolve the awaited role to a concrete party using
+      the review record's recorded participants (verdict reviewers,
+      work submitter). Implement the rule once in shared code so
+      server payload enrichment and client surfaces consume the same
+      rule; assert with a table-driven test over every
       lifecycle/disposition combination.
     - Adopt the primitive on the existing review detail and review
       list surfaces (thread authors, verdict reviewers) as first
@@ -647,7 +738,8 @@ derive_from_specs: false
     same agents many different ways. Identity-derived views computed
     over un-normalized history would misattribute most of the corpus.
     The decision (@actor-identity-model ac-2) requires the upgrade
-    path to resolve this once.
+    path to resolve this once, and this plan is the data-upgrade
+    claimant for that criterion.
 
     What:
     - A kspec upgrade step that scans actor-bearing fields across
@@ -676,7 +768,7 @@ derive_from_specs: false
     plans/ui-redesign/analysis.md section 4.6.
 
     Covers: @actor-history-normalization ac-1, ac-2, ac-3, ac-4,
-    ac-5.
+    ac-5; @actor-identity-model ac-2.
 
 - title: Serve server-resolved breadcrumb ancestor chains
   slug: task-breadcrumb-ancestry-api
@@ -702,16 +794,20 @@ derive_from_specs: false
     - Build the chain from the daemon entity cache / reference index
       (parent path is already computed for items); no per-request
       disk walks.
-    - Cover tasks and plans as breadcrumb leaves too: a task's chain
-      is its spec_ref's chain plus the task; a plan's chain is its
-      module plus the plan. Entities without ancestors return a
-      single-segment chain.
+    - Cover tasks, plans, reviews, and sessions as breadcrumb leaves
+      too: a task's chain is its spec_ref's chain plus the task; a
+      plan's chain is its module plus the plan; a review's chain is
+      its subject entity's chain plus the review; a session's chain
+      is its owning task's chain plus the session when the session
+      is task-scoped, otherwise a single-segment chain. Entities
+      without ancestors return a single-segment chain.
     - Static export: the snapshot carries enough parent/kind data for
       the static provider to serve the same chain shape read-only.
 
-    How: Extend the items route detail handler (and the task/plan
-    detail payloads) using the existing ref-resolution helpers in the
-    daemon. Follow the standard response envelope.
+    How: Extend the items route detail handler (and the task, plan,
+    review, and session detail payloads) using the existing
+    ref-resolution helpers in the daemon. Follow the standard
+    response envelope.
 
     Covers: @ui-breadcrumb ac-10.
 
@@ -745,10 +841,11 @@ derive_from_specs: false
       Escape closes; activation works by click, tap, and keyboard —
       never hover-only.
     - Per-segment item-kind indicators (module/feature/requirement/
-      decision/trait, task, plan) and emphasized current segment,
-      in the popover as well as the trail.
+      decision/trait, task, plan, review, session) and emphasized
+      current segment, in the popover as well as the trail.
     - Data from the ancestor-chain payload of
-      @task-breadcrumb-ancestry-api; no client-side list fetches.
+      @task-breadcrumb-ancestry-api (which serves item, task, plan,
+      review, and session chains); no client-side list fetches.
     - Adopt on the review detail and session detail routes (the two
       existing full-page detail surfaces), replacing their ad-hoc
       back links.
@@ -787,6 +884,13 @@ derive_from_specs: false
       color + glyph token, built on the existing design-token CSS
       (--design-* status variables). Replace all four duplicated
       getStatusColor() implementations with it.
+    - Include the four coverage presentation buckets (covered,
+      failing, not yet, re-verify) in the same token vocabulary as
+      data, so the coverage surfaces that later track plans build
+      draw their tokens from this single source; the
+      one-token-per-state uniqueness test covers them like every
+      other state, satisfying @coverage-state-presentation ac-2's
+      same-token-on-every-surface contract by construction.
     - A view-header component with fixed zones: entity reference
       (slug/ULID, copyable), state indicator from the token module,
       child counts, and a view-actions slot. The leading chrome zone
@@ -796,15 +900,18 @@ derive_from_specs: false
       offers no fetch-and-count path).
     - Header actions render in the actions slot and are
       keyboard-operable (focusable, Enter/Space activation).
-    - Adopt on the review detail and session detail pages as first
-      consumers, replacing their bespoke headers.
+    - Adopt on the review detail and session detail pages as the
+      first consumers, replacing their bespoke headers (per
+      @ui-view-header, every other entity detail view adopts the
+      header through the track plan that redesigns that surface).
 
     How: Token module lives in the web-ui lib next to the design
     tokens; header component in the shared component library. Assert
     token uniqueness with a table-driven test over the full state
     vocabulary (one token per state, no state unmapped).
 
-    Covers: @ui-view-header ac-1, ac-2, ac-3, ac-4, ac-5.
+    Covers: @ui-view-header ac-1, ac-2, ac-3, ac-4, ac-5, ac-6;
+    @coverage-state-presentation ac-2.
 
 - title: Implement the keyboard shortcut registry
   slug: task-shortcut-registry
@@ -825,8 +932,9 @@ derive_from_specs: false
     What:
     - Registry module: register(shortcut) with id, display label,
       platform-abstract chord (primary modifier abstraction),
-      optional ordered fallback chords, context/scope, and handler;
-      unregister on component teardown.
+      optional ordered fallback chords, activation context (global
+      or surface-scoped, active only while the owning surface is
+      active), and handler; unregister on component teardown.
     - Platform resolution: primary modifier maps to the platform
       convention (Cmd on macOS, Ctrl elsewhere); display labels
       render the resolved chord (⌘K vs Ctrl+K).
@@ -855,7 +963,7 @@ derive_from_specs: false
     data/functions for direct unit testing.
 
     Covers: @ui-shortcut-registry ac-1, ac-2, ac-3, ac-4, ac-5,
-    ac-6.
+    ac-6; @web-shell-platform-target ac-3.
 
 - title: Implement the persisted preference utility
   slug: task-preference-utility
@@ -880,7 +988,8 @@ derive_from_specs: false
       subscribe) usable from Svelte runes contexts.
     - Storage keys derived from namespace + key + version scheme so
       namespaces cannot collide; one reserved top-level prefix for
-      the application.
+      the application — the shared namespaced, versioned key format
+      under which every stored preference value is recorded.
     - Read path: parse → version check → migrate (declared rule) or
       fall back to default → validate → return; invalid or foreign
       values never propagate (return default).
@@ -902,21 +1011,46 @@ derive_from_specs: false
     guard for test environments. Keep serialization JSON-based with
     schema validation at the edge.
 
-    Covers: @ui-preference-store ac-1, ac-2, ac-3, ac-4, ac-5, ac-6.
+    Covers: @ui-preference-store ac-1, ac-2, ac-3, ac-4, ac-5, ac-6;
+    @client-preference-persistence ac-1.
 ```
 
 ## Implementation Notes
 
-### Approval ordering
+### Approval ordering (binding gate)
 
 The spec items here reference three decision items by `depends_on`
 (`@web-shell-platform-target`, `@client-preference-persistence`,
-`@actor-identity-model`). Those decisions live in the P0a plan
-(`plans/ui-redesign-global-decisions.md`) and are pending
-materialization — P0a must be imported, approved, and derived before
-this plan derives, or the reference validation will fail. This is the
-only cross-plan ordering constraint; everything else here depends on
-nothing outside the existing implemented foundation.
+`@actor-identity-model`); task Covers lines additionally claim
+decision criteria on those items and on
+`@coverage-state-presentation`. All four decision items live in the
+P0a plan (`@plan-ui-redesign-global-decisions`, source
+`plans/ui-redesign-global-decisions.md`) and enter the catalog only
+when that plan derives. **Gate: this plan must not be approved or
+derived until P0a has been approved and derived** — approving or
+deriving it earlier produces broken references by construction.
+This is the only cross-plan ordering constraint; everything else
+here depends on nothing outside the existing implemented
+foundation.
+
+### Upstream decision AC claims
+
+P0a's claim table binds track plans to claim the decision criteria
+they implement with task Covers lines. This plan claims:
+
+| Decision AC | Claiming task |
+|---|---|
+| @web-shell-platform-target ac-3 | @task-shortcut-registry |
+| @client-preference-persistence ac-1 | @task-preference-utility |
+| @actor-identity-model ac-1 | @task-review-author-resolution (canonical-write layer) |
+| @actor-identity-model ac-2 | @task-actor-normalization-upgrade |
+| @coverage-state-presentation ac-2 | @task-view-header-status-tokens (shared token source) |
+
+The "data upgrade plan" named in P0a's table row for
+@actor-identity-model ac-2 is this plan: the one-time migration is
+@task-actor-normalization-upgrade's upgrade-path step; no separate
+data-upgrade plan exists or is needed. These Covers lines resolve
+once P0a derives (see the approval-ordering gate above).
 
 ### Relationship to existing specs (verified read-only)
 
@@ -928,19 +1062,25 @@ nothing outside the existing implemented foundation.
   behavior is preserved; the shortcut-registry task migrates only the
   binding mechanism. No AC rewrite needed in this plan.
 - `@config-author` — defines the author-resolution precedence (env >
-  config > git/OS) that the review-route fix adopts and that the
-  identity surface's human identity builds on. Extended, not
-  modified.
+  config > git/OS) that the identity surface's human identity builds
+  on and that the canonical-write task adopts. That task also amends
+  the spec's fallback-chain wording to layer write-time
+  classification on top — the reconciliation @actor-identity-model's
+  transition boundary assigns to this plan. The precedence order
+  itself is unchanged.
 - `@ui-api-aggregation` — establishes the server-resolved-data
   conventions (no client list fetches for derived data) that the
   breadcrumb ancestry payload and header counts follow. Extended, not
   modified.
 
-The identity endpoint should pick up `@trait-api-endpoint` after
-derivation (`kspec item set @actor-identity-resolution --add-trait
-trait-api-endpoint`) — plan derivation does not materialize traits
-declared in plan YAML reliably, so it is deliberately a post-derive
-step rather than spec-block metadata.
+`@trait-api-endpoint` is applied to `@actor-identity-resolution`
+inside `@task-identity-endpoint-classifier` (plan derivation does
+not materialize traits declared in plan YAML reliably, so the task
+owns the application via `kspec item set --add-trait`). That task's
+Covers line claims the applicable inherited trait criteria, and
+non-applicable trait criteria are annotated N/A with reasons per
+the N/A annotation convention — the endpoint contract cannot be
+skipped silently after derive.
 
 ### Design detail
 
@@ -948,13 +1088,19 @@ step rather than spec-block metadata.
   entity inclusive. The three tiers are by segment count; the fourth
   (ancestor-stack) tier is by measured width and may collapse the
   root itself. The current segment is never collapsed.
+- **Breadcrumb leaves beyond items**: reviews and sessions are
+  first-class breadcrumb leaves — a review chains through its
+  subject entity, a session through its owning task — so the two
+  existing full-page detail surfaces (review detail, session detail)
+  can adopt the breadcrumb with the same server-resolved payload.
 - **Status tokens**: the four duplicated `getStatusColor()`
   implementations live in ItemDetail, TaskList, DiffFileList, and
-  DiffFileView; the token module replaces all four. The token-per-
-  state uniqueness contract here is the lifecycle-state counterpart
-  of `@coverage-state-presentation`'s rule for coverage states (that
-  decision governs coverage buckets; this spec governs entity
-  lifecycle states).
+  DiffFileView; the token module replaces all four. The module is
+  the single token source for both vocabularies: entity
+  lifecycle/state values (whose one-token-per-state contract is
+  `@ui-view-header`'s) and the four coverage presentation buckets
+  (registered as data here so later coverage surfaces draw from the
+  same source — claiming `@coverage-state-presentation` ac-2).
 - **Shortcut fallbacks**: this plan resolves open question #28
   (keyboard fallbacks) from the decision register: shortcuts declare
   ordered fallback chords; resolution binds the first chord that is
@@ -962,16 +1108,26 @@ step rather than spec-block metadata.
   shortcut with no resolvable chord is reported unbound, never
   silently dropped.
 - **Identity classification is read-side and permanent**: even after
-  write-time canonicalization (review-route fix) and the one-time
-  normalization, classification stays in the read path — external
-  writers and older shadow history can always reintroduce variants.
-  The variant map is one data table shared by the classifier and the
-  upgrade step.
-- **Next-actor mapping** is intentionally minimal (reviewer / work
-  author / none from lifecycle + disposition). Richer assignment
-  semantics (explicit reviewer assignment, reassignment) are deferred
-  with the A5 cluster per the decision register and can extend the
-  rule without breaking its consumers.
+  write-time canonicalization (the canonical-write layer) and the
+  one-time normalization, classification stays in the read path —
+  external writers and older shadow history can always reintroduce
+  variants. The variant map is one data table shared by the
+  classifier, the write path, and the upgrade step.
+- **Canonical-write boundary**: the daemon write path guarantees
+  that no recognizable variant of a canonical identity is ever
+  persisted; values that classify to no canonical identity persist
+  as supplied and render as unknown. This is deliberate: rewriting
+  out-of-roster actors to a default at write time would fabricate
+  attribution, while the honest unknown classification keeps
+  identity-derived views truthful.
+- **Next-actor mapping** is intentionally minimal and role-based:
+  the rule derives the awaited role (reviewer role / work-author
+  role / no role) from lifecycle + disposition, and surfaces resolve
+  the role to a concrete party via the review's recorded
+  participants. Richer assignment semantics (explicit reviewer
+  assignment, reassignment) are deferred with the A5 cluster per the
+  decision register and can extend the rule without breaking its
+  consumers.
 
 ### Scope exclusions
 
@@ -985,6 +1141,10 @@ step rather than spec-block metadata.
 - No server-synced preferences — browser-local storage only, per the
   decision register's deferred list; the storage-agnostic interface
   is the future seam.
+- No header adoption beyond the review and session detail views —
+  per `@ui-view-header`, every other entity detail view adopts the
+  standard header through the track plan that redesigns that
+  surface.
 - Assisted review of ambiguous historical actors is an operator
   activity at upgrade time (agent-assisted cleanup); the upgrade step
   itself applies only the declared variant map and declared defaults.
@@ -995,9 +1155,12 @@ step rather than spec-block metadata.
   `--dry-run` preview, a full rewrite report, and idempotent
   re-runs. It writes through the standard mutation machinery so the
   shadow branch records the change set.
-- The review-route authorship fix is write-path only; it does not
-  rewrite history (the upgrade step owns that), and explicit actor
-  values from CLI/dispatch callers pass through unchanged.
+- The canonical-write authorship change is write-path only; it does
+  not rewrite history (the upgrade step owns that). Explicit actor
+  values from CLI/dispatch callers keep winning the resolution
+  precedence, but a value that classifies as a recognizable variant
+  persists in canonical form; only out-of-roster values persist as
+  supplied.
 - The preference utility migrates the existing project-selection
   localStorage value by reading the legacy key once; no other
   persisted client state exists today.
