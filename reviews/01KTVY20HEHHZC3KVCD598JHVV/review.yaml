@@ -14,6 +14,17 @@ checks:
     runner: kspec
     created_at: 2026-06-11T18:13:07.467Z
     completed_at: 2026-06-11T18:13:07.467Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --alignment --warnings-ok: 476/646 specs have tasks, 466 aligned; baseline
+      warnings unrelated to this plan"
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T18:13:12.787Z
+    completed_at: 2026-06-11T18:13:12.787Z
 events:
   - _ulid: 01KTVY20HDMERJRGK4RSYWVR2G
     actor: "@claude"
@@ -91,6 +102,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-11T18:13:07.699Z
+  - _ulid: 01KTVY6RNGG1T3S2JT6GRCG368
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T18:13:13.009Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -325,5 +343,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:13:07.467Z
+updated_at: 2026-06-11T18:13:12.787Z
 notes: []
