@@ -18494,7 +18494,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T17:28:10.382Z
+      updated_at: 2026-06-11T17:28:32.980Z
     integration:
       status: merged
       detail: integration:merged
@@ -18511,18 +18511,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T17:02:33.315Z
-      last_reconciled_at: 2026-06-11T17:28:10.382Z
+      last_reconciled_at: 2026-06-11T17:28:32.980Z
       created_at: 2026-06-11T16:31:34.061Z
-      updated_at: 2026-06-11T17:28:10.382Z
+      updated_at: 2026-06-11T17:28:32.980Z
     workspace_id: dispatch-workspace-01KTTD073BSRG8AMPS4RZS6979
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 9222d4a7de015305cf726b68c07f68b83438851d
-        last_seen_at: 2026-06-11T17:01:30.788Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-serve-logs-command-01kttd07-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-serve-logs-command/01kttd07
