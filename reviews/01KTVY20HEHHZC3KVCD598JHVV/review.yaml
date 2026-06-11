@@ -59,6 +59,13 @@ events:
       kind: blocker
       thread_ulid: 01KTVY5D2GG2ZN0AHARHKJ8TR8
     timestamp: 2026-06-11T18:12:28.661Z
+  - _ulid: 01KTVY5KK9HXEB5TFQPDJG7QYP
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVY5KAT2C63655GEAXVT1N5
+    timestamp: 2026-06-11T18:12:35.049Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -247,7 +254,32 @@ threads:
           @task-identity-endpoint-classifier's What/Covers.
         created_at: 2026-06-11T18:12:28.368Z
     kind: blocker
+  - _ulid: 01KTVY5KAT2C63655GEAXVT1N5
+    anchor:
+      type: structured
+      field: ac-1
+      ref: "@ui-view-header"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTVY5KATC4DG0N37YR10HTKV
+        author: "@claude"
+        body: >-
+          RE-RAISED from round 1 (thread 01KTVXBZ85V04WJG3GKMR4THSW) — unaddressed.
+
+
+          @ui-view-header ac-1's Given is "any entity detail view", but
+          @task-view-header-status-tokens adopts the header only on the review detail and session
+          detail pages while its Covers line claims ac-1. Other entity detail surfaces exist today
+          (e.g. the item detail view whose getStatusColor this same task replaces).
+
+
+          Impact: the Covers claim is broader than the work — ac-1's universal guarantee is left
+          unimplemented for the remaining entity detail views with no other claimant. Either scope
+          the AC to the intended initial surfaces, or expand/add tasks so every entity detail view
+          the spec covers receives the standard header.
+        created_at: 2026-06-11T18:12:34.778Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:12:28.368Z
+updated_at: 2026-06-11T18:12:34.778Z
 notes: []
