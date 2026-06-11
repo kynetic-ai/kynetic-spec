@@ -319,6 +319,12 @@ events:
     payload:
       thread_ulid: 01KTTVG2323NE18R3185B7RMTD
     timestamp: 2026-06-11T17:28:45.734Z
+  - _ulid: 01KTVVNKHDRW6Y79KSFP2MFWXQ
+    actor: plan-author
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTVG28FXDNNGF8Z45VWXT7F
+    timestamp: 2026-06-11T17:28:53.550Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -380,6 +386,8 @@ threads:
           Covers line references them explicitly instead of prose."
         created_at: 2026-06-11T17:24:36.882Z
     kind: blocker
+    resolved_at: 2026-06-11T17:28:53.327Z
+    resolved_by: plan-author
   - _ulid: 01KTTVG27PD36FXNTEZ8D0TK7X
     anchor:
       type: structured
@@ -509,5 +517,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:08:20.500Z
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T17:28:45.504Z
+updated_at: 2026-06-11T17:28:53.327Z
 notes: []
