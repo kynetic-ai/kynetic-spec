@@ -1,1 +1,22 @@
-notes: []
+notes:
+  - _ulid: 01KTTXT78NXVCG3837DEJYA1SV
+    content: "Approach: (1) last-exit record helpers (LAST_EXIT_FILENAME, getDaemonLastExitPath,
+      write/readDaemonLastExitRecord) in src/daemon-shared/endpoint.ts next to PidFileManager; write
+      stamps timestamp+pid and never throws, read returns null on missing/malformed. (2) New
+      packages/daemon/src/fatal-handlers.ts exporting installDaemonFatalHandlers()
+      (uncaughtException + unhandledRejection -> tee'd console.error + fatal record + exit(1));
+      index.ts installs it before createServer and writes startup_failure records from the startup
+      catch and arg-validation exits. (3) server.ts shutdown() writes the graceful record at
+      shutdown start (so a hung teardown force-killed by serve stop still leaves an accurate record)
+      and overwrites with a fatal record if teardown throws; record is NOT removed by
+      pidManager.remove(). (4) statusServer reads the record when not running, adds last_exit to
+      JSON and human output. (5) pid.ts shim + scripts/build-daemon.cjs staged re-export line gain
+      writeDaemonLastExitRecord. Tests: unit round-trip/malformed via src/daemon-shared import;
+      behavioral fatal tests spawn node importing dist/daemon/fatal-handlers.js with isolated HOME
+      asserting exit 1 + record; startup-failure test reuses the EADDRINUSE blocker-port pattern
+      from cli-serve.test.ts; graceful test uses startTestDaemon + SIGTERM; status tests via kspec
+      helper .test-home. Edge cases: non-Error rejection reasons, record overwrite on each
+      termination, fresh daemon start must not delete record."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T08:47:07.541Z
