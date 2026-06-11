@@ -5,7 +5,7 @@
 
 import type { Command } from "commander";
 import { spawn, execSync } from "child_process";
-import { existsSync, readdirSync, statSync } from "fs";
+import { closeSync, existsSync, openSync, readdirSync, readFileSync, readSync, statSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
@@ -331,6 +331,26 @@ export function registerServeCommands(program: Command): void {
           output({ error: err instanceof Error ? err.message : String(err) });
         } else {
           error(`Failed to check status: ${err instanceof Error ? err.message : String(err)}`);
+        }
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // AC: @cli-serve-commands ac-8, ac-9
+  serve
+    .command("logs")
+    .description("Show the daemon log file (last 50 lines by default)")
+    .option("-n, --lines <n>", "Number of lines to show (default: 50)")
+    .option("-f, --follow", "Stream appended log lines until Ctrl+C")
+    .option("--json", "Output as JSON")
+    .action(async (opts) => {
+      try {
+        await logsServer(opts);
+      } catch (err) {
+        if (isJsonMode()) {
+          output({ error: err instanceof Error ? err.message : String(err) });
+        } else {
+          error(`Failed to read daemon log: ${err instanceof Error ? err.message : String(err)}`);
         }
         process.exit(EXIT_CODES.ERROR);
       }
@@ -853,6 +873,172 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
       if (existsSync(logPath)) {
         output(`  Log file: ${logPath}`);
       }
+    }
+  }
+}
+
+/** Default number of lines printed by `kspec serve logs`. */
+const DEFAULT_LOG_TAIL_LINES = 50;
+
+/**
+ * Poll interval for `kspec serve logs --follow`. A stat/read polling loop
+ * (rather than fs.watch) is rotation-safe: every tick re-stats the active
+ * path, so a rotated or truncated file is detected by inode change or size
+ * shrink and streaming continues from the start of the new active file.
+ */
+const FOLLOW_POLL_INTERVAL_MS = 500;
+
+/**
+ * Read the byte range [start, end) from a file. Returns null when the file
+ * cannot be opened or read (e.g. it was rotated away between the caller's
+ * stat and this read) so follow mode can retry on the next poll tick.
+ */
+function readLogRange(
+  path: string,
+  start: number,
+  end: number,
+): { text: string; bytes: number } | null {
+  let fd: number;
+  try {
+    fd = openSync(path, "r");
+  } catch {
+    return null;
+  }
+  try {
+    const buffer = Buffer.alloc(end - start);
+    const bytesRead = readSync(fd, buffer, 0, buffer.length, start);
+    return { text: buffer.toString("utf8", 0, bytesRead), bytes: bytesRead };
+  } catch {
+    return null;
+  } finally {
+    closeSync(fd);
+  }
+}
+
+/**
+ * Tail or follow the daemon log file
+ * AC: @cli-serve-commands ac-8 (tail), ac-9 (follow until Ctrl+C)
+ *
+ * Works whether or not the daemon is currently running — the log file
+ * persists across daemon restarts. Tail mode reads the active log file
+ * only; older output may live in the rotated generation at <log>.1.
+ */
+async function logsServer(opts: {
+  lines?: string;
+  follow?: boolean;
+  json?: boolean;
+}): Promise<void> {
+  const jsonMode = isJsonMode();
+  const logPath = getDaemonLogPath();
+
+  // JSON output is a structured snapshot of the tail; it cannot represent
+  // an unbounded stream, so the combination is rejected explicitly rather
+  // than silently dropping one of the flags.
+  if (opts.follow && jsonMode) {
+    const message = "--json is not supported with --follow.";
+    const suggestion =
+      "Use kspec serve logs --json for a structured tail, or --follow without --json to stream.";
+    output({ error: message, suggestion });
+    process.exit(EXIT_CODES.VALIDATION_FAILED);
+  }
+
+  let tailCount = DEFAULT_LOG_TAIL_LINES;
+  if (opts.lines !== undefined) {
+    const parsed = Number(opts.lines);
+    if (!Number.isInteger(parsed) || parsed < 1) {
+      // AC: @trait-error-guidance ac-5 — name the failing flag and value
+      const message = `Invalid --lines value: ${opts.lines}. Must be a positive integer.`;
+      const suggestion = "Try: kspec serve logs --lines 100";
+      if (jsonMode) {
+        output({ error: message, suggestion });
+      } else {
+        error(message, { suggestion });
+      }
+      process.exit(EXIT_CODES.VALIDATION_FAILED);
+    }
+    tailCount = parsed;
+  }
+
+  // AC: @trait-error-guidance ac-1, ac-2 — say what is missing and how to
+  // create it. The log file appears the first time a daemon emits output.
+  if (!existsSync(logPath)) {
+    const message = `No daemon log file found at ${logPath}`;
+    const suggestion =
+      "The log file is created the first time the daemon writes output. Start the daemon with: kspec serve start --detach";
+    if (jsonMode) {
+      output({ error: message, suggestion });
+    } else {
+      error(message, { suggestion });
+    }
+    process.exit(EXIT_CODES.NOT_FOUND);
+  }
+
+  const content = readFileSync(logPath, "utf-8");
+  const allLines = content.split("\n");
+  if (allLines.length > 0 && allLines[allLines.length - 1] === "") {
+    allLines.pop();
+  }
+  const tail = allLines.slice(-tailCount);
+
+  if (!opts.follow) {
+    // AC: @cli-serve-commands ac-8
+    if (jsonMode) {
+      // AC: @trait-json-output ac-2 — same data as human mode (lines array
+      // plus the resolved log path).
+      output({ log_path: logPath, lines: tail });
+    } else {
+      for (const line of tail) {
+        output(line);
+      }
+    }
+    return;
+  }
+
+  // AC: @cli-serve-commands ac-9 — print the tail, then stream appended
+  // lines until Ctrl+C.
+  for (const line of tail) {
+    output(line);
+  }
+
+  let position = Buffer.byteLength(content, "utf8");
+  let inode: bigint | number | null = null;
+  try {
+    inode = statSync(logPath).ino;
+  } catch {
+    inode = null;
+  }
+
+  process.on("SIGINT", () => {
+    process.exit(EXIT_CODES.SUCCESS);
+  });
+
+  for (;;) {
+    await new Promise((resolve) => setTimeout(resolve, FOLLOW_POLL_INTERVAL_MS));
+
+    let stat;
+    try {
+      stat = statSync(logPath);
+    } catch {
+      // Active file briefly absent mid-rotation (renamed away, next line
+      // not yet appended). Keep polling — the writer recreates it on the
+      // next append.
+      continue;
+    }
+
+    if ((inode !== null && stat.ino !== inode) || stat.size < position) {
+      // Rotated, replaced, or truncated: continue from the start of the
+      // new active file rather than a stale byte offset.
+      position = 0;
+    }
+    inode = stat.ino;
+
+    if (stat.size > position) {
+      const chunk = readLogRange(logPath, position, stat.size);
+      if (chunk === null) {
+        continue;
+      }
+      process.stdout.write(chunk.text);
+      position += chunk.bytes;
     }
   }
 }
