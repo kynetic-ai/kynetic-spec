@@ -24,6 +24,22 @@ checks:
     runner: manual-review
     created_at: 2026-06-11T07:56:31.904Z
     completed_at: 2026-06-11T07:56:31.904Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All external refs resolve: supersession targets @01KJXQK4 and @01KKBD66 exist and are
+      pending (cancellable); all four disposition plan refs exist as drafts
+      (plan-interactive-agent-sessions, plan-activity-timeline-diff-summaries,
+      plan-dispatch-mutation-service, plan-ux-module-and-design-decision-architecture). No slug
+      collisions for any of the 10 spec slugs or 3 task slugs against existing items/tasks. All spec
+      parents point at the in-plan @ui-redesign-decisions module; top-level modules are an
+      established corpus pattern (11 exist)."
+    name: Reference resolution
+    required: true
+    runner: manual-review
+    created_at: 2026-06-11T07:56:54.329Z
+    completed_at: 2026-06-11T07:56:54.329Z
 events:
   - _ulid: 01KTTTVATFAPAMSGQXEKXNKAGM
     actor: "@claude"
@@ -66,6 +82,13 @@ events:
       status: pass
       name: Round-1 findings addressed
     timestamp: 2026-06-11T07:56:32.142Z
+  - _ulid: 01KTTTY8XGVAVKW3S5R5FMYVRH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference resolution
+    timestamp: 2026-06-11T07:56:54.576Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -133,5 +156,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T07:55:18.224Z
-updated_at: 2026-06-11T07:56:31.904Z
+updated_at: 2026-06-11T07:56:54.329Z
 notes: []
