@@ -2720,7 +2720,7 @@ features:
       interfaces to start, stop, and monitor the daemon.
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     depends_on:
       - "@daemon-server"
     implements: []
