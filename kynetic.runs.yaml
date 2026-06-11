@@ -63344,7 +63344,7 @@ runs:
     completed_at: 2026-06-11T12:23:55.708Z
   - _ulid: 01KTVB9DMCJY375M3C3P5BN8PK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -63357,7 +63357,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T12:43:33.611Z
-        completed_at: 2026-06-11T12:43:33.611Z
+        completed_at: 2026-06-11T12:44:26.894Z
+        notes: "Candidates: (1) SUCCESS - task description with pre-verified code-reading findings
+          (file:line claims marked 'trust but re-verify') and verbatim spec-edit text enabled
+          first-run-green execution; distinct nuance vs @01KFA0DV which covers clear problem
+          statements generally. (2) FRICTION - 'kspec workflow show' requires run-ref instead of
+          inferring the single active run; also contradicts reflect skill docs."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T12:44:26.894Z
+        completed_at: 2026-06-11T12:44:26.894Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T12:42:37.068Z
