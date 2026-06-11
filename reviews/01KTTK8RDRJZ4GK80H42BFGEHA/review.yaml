@@ -201,6 +201,13 @@ events:
       status: fail
       name: node20 production install
     timestamp: 2026-06-11T06:04:26.998Z
+  - _ulid: 01KTTMGZXN5SKC8MJ6VJ67GXGP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTTMGZJGBBJ6WWFB0M8H7VMD
+    timestamp: 2026-06-11T06:04:47.925Z
 examined_commit: b112b02a919a15d0c4a4466a4daafae05dcf7c7c
 external_links: []
 lifecycle_state: open
@@ -233,7 +240,26 @@ threads:
           support contract in scope."
         created_at: 2026-06-11T06:02:48.727Z
     kind: blocker
+  - _ulid: 01KTTMGZJGBBJ6WWFB0M8H7VMD
+    entries:
+      - _ulid: 01KTTMGZJG59D2DQF47R9DQKQ6
+        author: Jacob Chapel
+        body: "Review evidence log:\\n\\nFiles read: kspec-agents.md, package-lock.json diff, package.json
+          dependency/engines/scripts, GitHub workflow/docs Node-version references.\\n\\nCommands
+          run: git diff/stat/log/show, kspec task get, kspec validate refs/alignment/completeness
+          with --warnings-ok, npm run format:check, npm run lint -- --quiet, npm run typecheck, npm
+          test, npm audit --omit=dev, npm ls selected upgraded packages, Node 20 file-type import
+          check, Node 20 npm ci --omit=dev --engine-strict --ignore-scripts against a temp package
+          copy.\\n\\nClaims verified: npm audit --omit=dev is clean; lockfile-only package update;
+          full npm test passes; worker claim that file-type 22.0.1 satisfies the semver dependency
+          range is true but incomplete because its own Node engine now requires
+          >=22.\\n\\nCategories searched: security audit result, dependency semver graph, Node
+          runtime/install compatibility, format/lint/type/test gates, kspec validation, and
+          task-specific test coverage applicability. Finding recorded: Node 20 production install
+          compatibility regression."
+        created_at: 2026-06-11T06:04:47.568Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T05:42:49.528Z
-updated_at: 2026-06-11T06:04:26.622Z
+updated_at: 2026-06-11T06:04:47.568Z
 notes: []
