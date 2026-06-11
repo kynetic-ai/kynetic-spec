@@ -64946,7 +64946,7 @@ runs:
     completed_at: 2026-06-11T23:35:33.563Z
   - _ulid: 01KTWHPM065TWQBGB3Y0CFYRP9
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -65016,10 +65016,19 @@ runs:
           following the skill literally. The review check recording also involved a long manual
           evidence batch, but batch handled it acceptably and this did not rise to a new issue by
           itself.'
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-06-11T23:54:54.853Z
-        completed_at: 2026-06-11T23:54:54.853Z
+        completed_at: 2026-06-11T23:55:50.376Z
+        notes: "Discussion step skipped: both candidate friction points are already covered by existing
+          inbox/observation records. Workflow show run-ref mismatch is already represented by inbox
+          items 01KQ0RH7, 01KQBGKT, 01KR293G, and 01KRYTG7. Shell-fragile freeform payloads and
+          backticks are already represented by observations including 01KN818C and related review
+          CLI quoting observations. No new proposal needs user approval."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-11T23:55:50.376Z
+        completed_at: 2026-06-11T23:55:50.376Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T23:53:55.463Z
