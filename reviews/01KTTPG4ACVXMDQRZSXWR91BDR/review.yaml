@@ -69,6 +69,18 @@ checks:
     required: true
     created_at: 2026-06-11T06:40:59.397Z
     completed_at: 2026-06-11T06:40:59.397Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: web-shell-platform-target ac-1 is unbounded ('any shell capability' / 'full
+      functionality'); client-preference-persistence ac-1 verifies an internal utility instead of
+      observable behavior; ac-coverage-applicability ac-2 conflicts with the current N/A annotation
+      transition boundary.
+    name: Spec quality
+    required: true
+    created_at: 2026-06-11T06:40:59.414Z
+    completed_at: 2026-06-11T06:40:59.414Z
 events:
   - _ulid: 01KTTPG4AC91PKB75PX2C5M2VB
     actor: "@claude"
@@ -181,6 +193,13 @@ events:
       status: fail
       name: Task standalone and dependencies
     timestamp: 2026-06-11T06:41:00.291Z
+  - _ulid: 01KTTPK9WB4W7AHHBXQ36NQ4Z4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Spec quality
+    timestamp: 2026-06-11T06:41:00.811Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -318,5 +337,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T06:40:59.397Z
+updated_at: 2026-06-11T06:40:59.414Z
 notes: []
