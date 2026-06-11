@@ -12,3 +12,19 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T14:16:18.309Z
+  - _ulid: 01KTVHGPNPC4XMBBGKHMZ1WXDP
+    content: "Done. Fixed the two stale Node 18 references (INSTALL.md:7,
+      docs/getting-started/tutorial.md:17) to Node 20; sweep of README.md/INSTALL.md/docs/ found no
+      other stale minimums. Added 'Supported runtime version range' tests to
+      tests/release-packaging.test.ts: ac-1 asserts engines declares exactly one node range matching
+      ^>=MAJOR.x.y$ via JSON-module import; ac-2 dynamically discovers README.md + INSTALL.md + all
+      docs/**/*.md (47 docs), extracts Node version statements via regex, asserts each major equals
+      the engines minimum, with a non-vacuous guard (statements.length > 0). Verified regex matches
+      exactly the 6 real statements and no false positives; negative check confirmed test fails when
+      a doc says 18+. Doc reads isolated in readUserFacingDoc() with eslint-disable for
+      no-source-scanning/no-source-file-reads (docs are the published artifacts under test). Gates:
+      format, lint --quiet (0 errors), oxlint on changed file (0 warnings), typecheck, full npm test
+      (10460 passed), kspec validate refs/alignment/completeness all green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T14:31:27.158Z
