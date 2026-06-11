@@ -26158,10 +26158,10 @@ reviews:
       ref: "@01KTW8SGEWWF24FX36RRA5YPFP"
       shadow_commit: ""
     thread_count: 3
-    unresolved_blocker_count: 2
+    unresolved_blocker_count: 1
     verdict_count: 1
     created_at: 2026-06-11T22:24:32.166Z
-    updated_at: 2026-06-11T23:30:35.116Z
+    updated_at: 2026-06-11T23:30:40.427Z
   - _ulid: 01KTWCXP4AX9W9A01MZKM9FCZW
     slugs: []
     title: "Plan review: Review Anchors and Plan Revisions Schema (round 4 — fix verification)"
