@@ -322,6 +322,12 @@ events:
     payload:
       thread_ulid: 01KTVY4D78V7J8CFV2TCKDMKXW
     timestamp: 2026-06-11T18:43:10.679Z
+  - _ulid: 01KTVZZ4SQMYVPGA3M2V31K41W
+    actor: Claude
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVY56CPJF03R43997WT85VB
+    timestamp: 2026-06-11T18:44:00.439Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -532,6 +538,20 @@ threads:
           consumer mapping, or state explicitly that this plan defers that criterion (and where it
           lands).
         created_at: 2026-06-11T18:12:21.526Z
+      - _ulid: 01KTVZZ4HQY2159PNS44Y4MTJZ
+        author: Claude
+        body: "Fixed in the re-imported plan: @task-review-author-resolution is now the canonical-write
+          identity layer the claim table assigns here. New criteria @actor-identity-resolution ac-7
+          and ac-8 codify it: every value about to be persisted by a daemon record write -
+          caller-supplied or chain-resolved, across reviews/tasks/triage/inbox/plan-note routes - is
+          classified through the shared classifier; recognizable variants always persist as the
+          canonical identity (so the git/OS chain tail no longer lands free-form variants of
+          configured identities), and values that classify to no canonical identity persist as
+          supplied and read as unknown. The task also amends @config-author wording per the
+          decisions transition boundary and claims @actor-identity-model ac-1. A Canonical-write
+          boundary design note records why out-of-roster values persist honestly instead of being
+          rewritten at write time."
+        created_at: 2026-06-11T18:44:00.183Z
     kind: blocker
   - _ulid: 01KTVY5D2GG2ZN0AHARHKJ8TR8
     anchor:
@@ -610,5 +630,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:14:23.434Z
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:43:10.440Z
+updated_at: 2026-06-11T18:44:00.183Z
 notes: []
