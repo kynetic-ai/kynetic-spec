@@ -64803,7 +64803,7 @@ runs:
     completed_at: 2026-06-11T22:50:13.923Z
   - _ulid: 01KTWE86G2YQNJGNKHMH6G1MVZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -64815,7 +64815,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T22:55:10.540Z
-        completed_at: 2026-06-11T22:55:10.540Z
+        completed_at: 2026-06-11T22:55:14.837Z
+        notes: "Candidates: (1) friction — full npm test took ~61min wall vs documented ~150s; (2) friction
+          — workflow next/show require explicit run-ref due to 150+ stale active runs; (3) success —
+          Why/What/How/Testing task description enabled single-pass autonomous execution."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T22:55:14.837Z
+        completed_at: 2026-06-11T22:55:14.837Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T22:53:37.154Z
