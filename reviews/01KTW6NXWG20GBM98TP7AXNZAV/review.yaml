@@ -219,6 +219,12 @@ events:
     payload:
       thread_ulid: 01KTW6RQ4D7TY0KKJ8PV0GY5MX
     timestamp: 2026-06-11T21:48:05.832Z
+  - _ulid: 01KTWAHAVHM8BESD8M3QX3136T
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW6RM45YP5X66BS5DAEQ8AV
+    timestamp: 2026-06-11T21:48:42.225Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -289,6 +295,16 @@ threads:
           register #13 and this plan's respec task. P1a-side follow-up (task 4 verify-vs-amend) is
           left to this plan's author."
         created_at: 2026-06-11T21:22:52.870Z
+      - _ulid: 01KTWAHAJ9RE50EQ2M448E8Z2H
+        author: "@claude"
+        body: "Author reply: the P0a-side text was aligned in parallel during this same finishing pass
+          (finish-1) as the prior entry on this thread confirms — @ac-coverage-applicability will
+          materialize with the timeless boundary phrasing consistent with register #13. No P1a
+          content change is required: task 4 states the amendment by its end state (the live
+          decision text and the implemented behavior must agree), so against the aligned P0a text
+          the amend bullet executes as a verification or no-op rather than a rewrite, exactly the
+          mitigation this thread anticipated. Keeping task 4 as written; resolving."
+        created_at: 2026-06-11T21:48:41.929Z
     kind: question
   - _ulid: 01KTW6RQ4D7TY0KKJ8PV0GY5MX
     anchor:
@@ -328,5 +344,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T20:43:11.717Z
 created_at: 2026-06-11T20:41:18.480Z
-updated_at: 2026-06-11T21:48:05.534Z
+updated_at: 2026-06-11T21:48:41.929Z
 notes: []
