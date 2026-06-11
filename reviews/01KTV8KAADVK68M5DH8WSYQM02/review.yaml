@@ -1,0 +1,26 @@
+_ulid: 01KTV8KAADVK68M5DH8WSYQM02
+slugs: []
+title: Review task-git-utils-execfile
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTV8KAAC21773H4TCD8R16KY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T11:55:35.629Z
+examined_commit: 64821fec5490891ef86e378907888118f12ff4a2
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTD0ZPTTX0N18MEY53HFKMK"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T11:55:35.629Z
+updated_at: null
+notes: []
