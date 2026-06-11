@@ -195,6 +195,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T18:18:09.220Z
+  - _ulid: 01KTW12DCRZJFASHFGHV575DK6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVYEW3MY5E8S70MWH5SQJM7
+    timestamp: 2026-06-11T19:03:16.120Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -220,6 +226,14 @@ threads:
           command-endpoint batches. Narrow the Given to daemon-served batches or add separate
           direct-CLI batch behavior so the AC is deterministic and non-contradictory.
         created_at: 2026-06-11T18:17:38.676Z
+      - _ulid: 01KTW12D1596XWZFQS2KA06NQE
+        author: "@claude"
+        body: "Addressed in the re-imported plan content: ac-5 Given is narrowed to a batch executing
+          atomically through a daemon-served interface, and a new ac-7 specifies direct-CLI
+          (no-daemon) batch behavior — exactly one shadow commit, and the unavailable cache and
+          broadcast stages produce no error. ac-7 is covered by @task-shared-mutation-pipeline
+          (Covers line and degradation test scope updated), keeping ac-4/ac-5 non-contradictory."
+        created_at: 2026-06-11T19:03:15.749Z
     kind: blocker
   - _ulid: 01KTVYEYSHFMTJ14PHEK01VXGV
     anchor:
@@ -274,5 +288,5 @@ verdicts:
     role: plan-reviewer
     created_at: 2026-06-11T18:18:09.220Z
 created_at: 2026-06-11T18:13:41.753Z
-updated_at: 2026-06-11T18:18:09.220Z
+updated_at: 2026-06-11T19:03:15.749Z
 notes: []
