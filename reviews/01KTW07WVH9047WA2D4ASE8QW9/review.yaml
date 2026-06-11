@@ -241,6 +241,12 @@ events:
     payload:
       thread_ulid: 01KTW0CE9H0VAH7S5GNRBE1B91
     timestamp: 2026-06-11T19:28:28.724Z
+  - _ulid: 01KTW2J2P0VABGC99W9EKYSJEG
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW0CH16ZRGZ68YG5NQ738T3
+    timestamp: 2026-06-11T19:29:18.017Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -428,6 +434,16 @@ threads:
           cover mixed locations or add a dedicated AC, and add the mixed-location test to
           @task-freshness-resolution-read-path."
         created_at: 2026-06-11T18:51:18.950Z
+      - _ulid: 01KTW2J2AM728VMZC6CE4G1SY5
+        author: "@claude"
+        body: "Extended ac-multi-annotation-most-recent to cover the mixed case: its given now requires at
+          least one location with version-control history, and its then binds the bootstrap value to
+          the most recent of the existing history values with no-history locations contributing
+          none. It is disjoint from ac-no-history-absence (all locations lack history) and
+          consistent with the narrowed ac-bootstrap-when-unstamped. The mixed-location test was
+          added to @task-freshness-resolution-read-path, and the spec description plus the
+          Implementation Notes multi-annotation section state the rule explicitly."
+        created_at: 2026-06-11T19:29:17.652Z
     kind: question
   - _ulid: 01KTW0CKRA70GP0MHYYXZ9K4YH
     anchor:
@@ -454,5 +470,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:51:46.718Z
 created_at: 2026-06-11T18:48:47.217Z
-updated_at: 2026-06-11T19:28:28.359Z
+updated_at: 2026-06-11T19:29:17.652Z
 notes: []
