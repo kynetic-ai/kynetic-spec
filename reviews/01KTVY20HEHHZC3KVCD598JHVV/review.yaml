@@ -36,6 +36,20 @@ checks:
     runner: kspec
     created_at: 2026-06-11T18:13:18.119Z
     completed_at: 2026-06-11T18:13:18.119Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 42 ACs across the 7 plan specs are claimed by task Covers lines with no gaps or
+      double-claims: ui-breadcrumb ac-1..9 (component task) + ac-10 (ancestry task); ui-view-header
+      ac-1..5; ui-shortcut-registry ac-1..6; ui-preference-store ac-1..6; actor-identity-resolution
+      ac-1..5 (classifier task) + ac-6 (author-resolution task); actor-display ac-1..4;
+      actor-history-normalization ac-1..5"
+    name: Local AC coverage mapping
+    required: true
+    runner: manual
+    created_at: 2026-06-11T18:13:23.474Z
+    completed_at: 2026-06-11T18:13:23.474Z
 events:
   - _ulid: 01KTVY20HDMERJRGK4RSYWVR2G
     actor: "@claude"
@@ -127,6 +141,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T18:13:18.342Z
+  - _ulid: 01KTVY733G81K9YHA5EEJNQN3F
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Local AC coverage mapping
+    timestamp: 2026-06-11T18:13:23.696Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -361,5 +382,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:13:18.119Z
+updated_at: 2026-06-11T18:13:23.474Z
 notes: []
