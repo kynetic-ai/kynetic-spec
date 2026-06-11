@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KTWABXA751MKXNWJ8W16S95H
+    content: "Root cause identified from cached runner log
+      (/tmp/kspec-test-cache/01KTW9N0MM4QX1FJC9G0TCNWQ3/1781213717561-109150.log): the failing test
+      'legacy reviews migrated with empty external_links produce no repeated drift' did not fail on
+      its own assertions — the spawned dist/cli/index.js crashed with SyntaxError:
+      dist/cli/commands/agent.js imported buildRunnerValidationReport from
+      dist/agents/runner-validation.js which lacked that export. Earlier kspec() spawns in the SAME
+      test succeeded, proving dist/ was rewritten by a concurrent 'npm run build' (tsc emits
+      non-atomically) while vitest was running — reviewer sessions run the build gate and the full
+      test suite in the same session. Two prior friction observations (@01KN6EEP, @01KRC2ZQH)
+      already recommended a per-worktree build lock. Approach: (1) new scripts/build-test-lock.cjs —
+      per-worktree advisory lock (mkdir-atomic, pid+timestamp owner metadata, dead-pid stale
+      reclaim, env-based ancestor reentrancy via KSPEC_BUILD_TEST_LOCK_HELD, path override via
+      KSPEC_BUILD_TEST_LOCK_PATH, timeout via KSPEC_BUILD_TEST_LOCK_TIMEOUT_MS); (2)
+      scripts/test.cjs acquires the lock for the whole run and exports the held marker so nested
+      test.cjs invocations in the suite skip it; (3) npm run build and build:e2e wrapped by
+      scripts/build.cjs which acquires the same lock; (4) lock env vars excluded from the test cache
+      key; (5) behavioral tests in tests/build-test-lock.test.ts annotated to a new AC on
+      @test-suite-perf-reliability. Test plan: lock acquire/release, contention blocking + release
+      handoff, timeout with holder diagnostics, dead-pid steal, reentrancy, and runner/build script
+      integration via held-lock fast-fail subprocess runs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T21:45:44.520Z

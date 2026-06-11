@@ -12039,6 +12039,13 @@ requirements:
         then: output is structured with clear pass/fail summary, noise from setup steps is suppressed, and
           the script provides an extensible hook point for future pre/post-test actions
         when: tests complete
+      - given: a build (npm run build or npm run build:e2e) and a test run (scripts/test.cjs) execute
+          concurrently in the same worktree
+        id: ac-7
+        then: they serialize on a per-worktree advisory lock so test-spawned CLI subprocesses never load a
+          partially-written dist/; locks held by dead processes are reclaimed automatically, and
+          nested invocations spawned by the lock-holding run proceed without re-acquiring
+        when: either one starts while the other is still running
     tags:
       - testing
       - infra
