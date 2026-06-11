@@ -1,1 +1,20 @@
-notes: []
+notes:
+  - _ulid: 01KTTM7KE1EY5V2YP25YQKNTVG
+    content: "Approach: new packages/daemon/src/logger.ts (pure DaemonLogWriter + console tee install)
+      plus logger-install.ts side-effect module imported FIRST in index.ts so the tee sits beneath
+      the command-route interceptors (command.ts captures the tee'd console as its originals;
+      capture-store output never reaches the file). Log path/filename + 5MiB default exported from
+      src/daemon-shared/endpoint.ts (getDaemonLogPath, DAEMON_LOG_FILENAME,
+      DEFAULT_DAEMON_LOG_MAX_SIZE_BYTES), re-exported through the pid.ts shim (source +
+      build-daemon.cjs staging shim). Config: daemon.log_max_size_bytes in DaemonConfigSchema +
+      ResolvedKspecConfig; serve start forwards --log-max-size to the daemon; index.ts applies it
+      after parseArgs. serve status reports log_path (JSON + human) for
+      ac-log-location-discoverable. Rotation: rename daemon.log -> daemon.log.1 (replacing old .1)
+      before any append that would cross the limit; per-line ISO timestamps; writer never throws.
+      Tests: tests/daemon-log-capture.test.ts against dist/daemon/logger.js with temp paths —
+      timestamps, rotate-before-cross, single .1 generation, 2x+1-line bound, tee passthrough, and a
+      guard test importing logger before routes/command.js then running an injected command through
+      createCommandRoutes to prove capture-store output does not land in the log."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T05:59:40.225Z
