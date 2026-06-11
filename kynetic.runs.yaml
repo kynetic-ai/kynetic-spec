@@ -62398,9 +62398,20 @@ runs:
     completed_at: 2026-06-11T07:01:29.288Z
   - _ulid: 01KTTR1V7APHP7SWRMMG9MTCMQ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-11T07:06:25.898Z
+        completed_at: 2026-06-11T07:07:12.302Z
+        notes: "Baseline searched: observations list (~many success/friction entries from Jan 2026), inbox
+          list (361 items), task context known from session. Ready to evaluate candidates against
+          baseline."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-11T07:07:12.302Z
+        completed_at: 2026-06-11T07:07:12.302Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T07:06:25.898Z
