@@ -25391,3 +25391,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-11T12:47:41.480Z
     updated_at: 2026-06-11T13:01:08.134Z
+  - _ulid: 01KTVCYPG5GWYZCN996ARTWHK6
+    slugs: []
+    title: Review task-daemon-triage-api-tests
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KTTD1DB7F2FD15BCBABG1F80"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-11T13:11:42.853Z

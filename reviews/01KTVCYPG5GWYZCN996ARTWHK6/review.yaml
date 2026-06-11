@@ -1,0 +1,26 @@
+_ulid: 01KTVCYPG5GWYZCN996ARTWHK6
+slugs: []
+title: Review task-daemon-triage-api-tests
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTVCYPG441GDTGK5GHBMN5ET
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T13:11:42.852Z
+examined_commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTD1DB7F2FD15BCBABG1F80"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T13:11:42.853Z
+updated_at: null
+notes: []
