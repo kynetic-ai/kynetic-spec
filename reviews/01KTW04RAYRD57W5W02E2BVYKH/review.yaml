@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T18:47:15.627Z
+  - _ulid: 01KTW05VTWGFKCP5ZECH8MA179
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW05VK8600AF54YTPCQW64G
+    timestamp: 2026-06-11T18:47:40.636Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,26 @@ subject:
   content_hash: ""
   ref: "@plan-review-anchors-and-plan-revisions-schema"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTW05VK8600AF54YTPCQW64G
+    anchor:
+      type: structured
+      field: depends_on
+      ref: "@plan-revisions"
+      section: dependencies
+    entries:
+      - _ulid: 01KTW05VK8K16SWBGKGE3G1DJK
+        author: "@claude"
+        body: '@plan-revisions declares depends_on: @actor-identity-model, but that ref does not resolve in
+          the current spec catalog (verified with kspec item get @actor-identity-model and kspec
+          search "actor identity"). Cross-reference validation for plan approval requires dependency
+          refs to point to specs in this plan or existing specs. The approval-ordering note
+          acknowledges this is pending, but the plan still is not derivable as written; materialize
+          the upstream spec first and update this plan to the real ref, or replace/remove the
+          dependency and task text that relies on it.'
+        created_at: 2026-06-11T18:47:40.392Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:47:15.400Z
+updated_at: 2026-06-11T18:47:40.392Z
 notes: []
