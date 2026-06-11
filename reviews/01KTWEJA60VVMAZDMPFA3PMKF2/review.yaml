@@ -13,6 +13,17 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-11T23:25:43.174Z
     completed_at: 2026-06-11T23:25:43.174Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo lint completed with 0 errors and known warning baseline. Focused
+      changed-file lint not applicable because only package.json and package-lock.json changed."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T23:25:52.646Z
+    completed_at: 2026-06-11T23:25:52.646Z
 events:
   - _ulid: 01KTWEJA60STHYMNKKQ44V7HDN
     actor: Jacob Chapel
@@ -34,6 +45,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-11T23:25:43.450Z
+  - _ulid: 01KTWG38WRBDCYYBH1E2SJ87BX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T23:25:52.920Z
 examined_commit: 478716573eb2ac9fa72f01814b11710d07ab5045
 external_links: []
 lifecycle_state: open
@@ -46,5 +64,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:59:08.608Z
-updated_at: 2026-06-11T23:25:43.174Z
+updated_at: 2026-06-11T23:25:52.646Z
 notes: []
