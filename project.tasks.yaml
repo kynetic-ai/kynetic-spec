@@ -31279,6 +31279,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:52:55.021Z
+  automation: eligible
 - _ulid: 01KTTCZH6PJHXT727JM9E0739D
   slugs:
     - task-dedupe-web-ui-devdeps
