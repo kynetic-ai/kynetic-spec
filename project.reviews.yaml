@@ -25630,10 +25630,10 @@ reviews:
       ref: "@plan-dispatch-mutation-service"
       shadow_commit: ""
     thread_count: 4
-    unresolved_blocker_count: 2
+    unresolved_blocker_count: 1
     verdict_count: 1
     created_at: 2026-06-11T18:13:41.753Z
-    updated_at: 2026-06-11T19:04:19.921Z
+    updated_at: 2026-06-11T19:06:33.692Z
   - _ulid: 01KTVZ6BCGABVTGHZQXDA1AAZW
     slugs: []
     title: "Plan review: Shared Mutation and Event Service (round 2)"
