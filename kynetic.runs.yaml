@@ -62684,7 +62684,7 @@ runs:
     started_at: 2026-06-11T08:36:35.605Z
     completed_at: 2026-06-11T08:38:49.694Z
   - _ulid: 01KTTYFDF4HWVYKXZY1YBAYXD7
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -62733,7 +62733,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-11T09:00:36.764Z
-        completed_at: 2026-06-11T09:00:36.764Z
+        completed_at: 2026-06-11T09:00:47.157Z
+        notes: "Capture: no new items created. Existing coverage is sufficient: @01KR2JD1 tracks the
+          evidence-log friction; @01KT5ZGF and related observations cover the successful review
+          evidence plus detached merge helper pattern. Avoided duplicate inbox/observation entries."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T08:58:42.020Z
+    completed_at: 2026-06-11T09:00:47.158Z
