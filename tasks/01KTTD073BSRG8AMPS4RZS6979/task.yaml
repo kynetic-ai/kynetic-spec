@@ -42,8 +42,13 @@ description: |
 spec_ref: "@cli-serve-commands"
 plan_ref: "@plan-daemon-operational-reliability"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved in review @01KTVT7Q and merged
+  dispatch/task/task-serve-logs-command/01kttd07 into dev via detached reviewer merge helper.
+  Implemented kspec serve logs tail/follow behavior and verified status log path coverage; dev
+  advanced to 318a2912d735519904d2b81773d7ea4fceb76eaf. Created follow-up @01KTVV91 for unrelated
+  intermittent skill-rendering full-suite flake.
 depends_on:
   - "@task-daemon-log-capture"
 context: []
@@ -111,8 +116,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-11T17:03:54.045Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved in review @01KTVT7Q and merged dispatch/task/task-serve-logs-command/01kttd07 into dev
+          via detached reviewer merge helper. Implemented kspec serve logs tail/follow behavior and
+          verified status log path coverage; dev advanced to
+          318a2912d735519904d2b81773d7ea4fceb76eaf. Created follow-up @01KTVV91 for unrelated
+          intermittent skill-rendering full-suite flake.
+        previous: null
+      completed_at:
+        new: 2026-06-11T17:24:43.367Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-11T17:24:43.375Z
 created_at: 2026-06-11T03:53:18.187Z
 started_at: 2026-06-11T16:32:33.389Z
 submitted_at: 2026-06-11T16:56:26.834Z
+completed_at: 2026-06-11T17:24:43.367Z
 todos: []
 automation: eligible
