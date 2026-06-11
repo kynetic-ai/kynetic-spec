@@ -149,9 +149,25 @@ events:
       kind: nit
       thread_ulid: 01KTTS5XYEPR2RYX0WBKREWQT4
     timestamp: 2026-06-11T07:26:08.566Z
+  - _ulid: 01KTTS69CXCMNMR7GV5F6AA60A
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T07:26:20.061Z
+  - _ulid: 01KTTS69CXNT05FPW6GDWQJ4KF
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T07:26:20.061Z
 examined_commit: 0f3473bba38c4e87899c06d0394c895a92aa61e3
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -183,7 +199,14 @@ threads:
           guidance neutrality not applicable: no package-shipped guidance surface was changed."
         created_at: 2026-06-11T07:26:08.334Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T07:26:20.061Z
 created_at: 2026-06-11T07:12:27.656Z
-updated_at: 2026-06-11T07:26:08.334Z
+updated_at: 2026-06-11T07:26:20.061Z
 notes: []
