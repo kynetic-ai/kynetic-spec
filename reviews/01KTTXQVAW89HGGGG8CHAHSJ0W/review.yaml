@@ -57,6 +57,19 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T08:49:18.187Z
     completed_at: 2026-06-11T08:49:18.187Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified live: @ac-annotation-identifier-format ac-valid-token-covers-ac still grants
+      coverage credit to any valid-token annotation; the plan's N/A respec reconciles
+      @ac-annotation-integrity-reporting only, leaving a contradiction once N/A annotations stop
+      covering."
+    name: Existing spec alignment
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T08:49:23.360Z
+    completed_at: 2026-06-11T08:49:23.360Z
 events:
   - _ulid: 01KTTXQVAWJ8VTNY2FXYXNJPB1
     actor: "@claude"
@@ -183,6 +196,13 @@ events:
       status: fail
       name: Prior-review follow-up
     timestamp: 2026-06-11T08:49:18.403Z
+  - _ulid: 01KTTXYC3DG9K1AMHKCNXP21Z3
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Existing spec alignment
+    timestamp: 2026-06-11T08:49:23.565Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -403,5 +423,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:49:18.187Z
+updated_at: 2026-06-11T08:49:23.360Z
 notes: []
