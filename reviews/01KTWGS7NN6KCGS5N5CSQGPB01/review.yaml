@@ -2,7 +2,85 @@ _ulid: 01KTWGS7NN6KCGS5N5CSQGPB01
 slugs: []
 title: Review task-stabilize-upgrade-folder-storage-test fix cycle 1
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1013 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T23:52:02.366Z
+    completed_at: 2026-06-11T23:52:02.366Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo lint reported 0 errors with existing warning baseline (736 warnings).
+      Focused lint also passed with 0 warnings/errors: npx oxlint scripts/build-test-lock.cjs
+      scripts/build.cjs scripts/build-daemon.cjs scripts/test.cjs tests/build-test-lock.test.ts
+      tests/cli-serve.test.ts tests/daemon-build.test.ts tests/test-runner.test.ts."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T23:52:05.722Z
+    completed_at: 2026-06-11T23:52:05.722Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T23:52:09.086Z
+    completed_at: 2026-06-11T23:52:09.086Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed fresh run: npm test -- --fresh. 2784/2784 suites passed; 10552 tests passed, 3
+      skipped, 0 failed. Full log:
+      /tmp/kspec-test-cache/01KTWGQHH19DMR80108GCY36H1/c11e5bb67837cdec.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T23:52:12.496Z
+    completed_at: 2026-06-11T23:52:12.496Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok. Schema and references OK; existing
+      deprecated-reference warnings accepted under warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T23:52:15.962Z
+    completed_at: 2026-06-11T23:52:15.962Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok. Existing alignment warning baseline
+      accepted under warnings-ok."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T23:52:19.316Z
+    completed_at: 2026-06-11T23:52:19.316Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok. Existing completeness warning
+      baseline accepted under warnings-ok."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T23:52:22.721Z
+    completed_at: 2026-06-11T23:52:22.721Z
 events:
   - _ulid: 01KTWGS7NNEX2Z1NGVMTZNDTZ2
     actor: Jacob Chapel
@@ -17,6 +95,62 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T23:38:08.938Z
+  - _ulid: 01KTWHK5VE0F393N9PD3SZ15CF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T23:52:02.670Z
+  - _ulid: 01KTWHK92TJY9YQ9F8C876FDFZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T23:52:05.978Z
+  - _ulid: 01KTWHKCCWZ1CNN45ZMGB4ZNE4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T23:52:09.372Z
+  - _ulid: 01KTWHKFQ71D85T1MD7DAK4GR2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T23:52:12.775Z
+  - _ulid: 01KTWHKK3BNZG711PHMK24GXEF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T23:52:16.235Z
+  - _ulid: 01KTWHKPBXE76QN2FSB63KJ3NK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T23:52:19.581Z
+  - _ulid: 01KTWHKSPMZ83S9WBFY0E51KZM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T23:52:22.996Z
+  - _ulid: 01KTWHKX3FQYNZ7AZ3TD67H1RA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTWHKWT8E96GWX9PHHTFPKCW
+    timestamp: 2026-06-11T23:52:26.479Z
 examined_commit: d04e6a064585e522c60d9f0ebf39204948a20254
 external_links: []
 lifecycle_state: open
@@ -26,8 +160,48 @@ subject:
   content_hash: ""
   ref: "@01KTW8SGEWWF24FX36RRA5YPFP"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTWHKWT8E96GWX9PHHTFPKCW
+    entries:
+      - _ulid: 01KTWHKWT88NFZEF0V4XY77B5R
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; package.json; scripts/build-test-lock.cjs; scripts/build.cjs;
+          scripts/build-daemon.cjs; scripts/test.cjs; tests/build-test-lock.test.ts;
+          tests/cli-serve.test.ts; tests/daemon-build.test.ts; tests/test-runner.test.ts; prior
+          review @01KTWCJYD6T4E3G2QAD57QFXP8.
+
+
+          Commands run: git diff/stat/name-only; kspec task get; kspec review for-task/get/add/open;
+          kspec item get @test-suite-perf-reliability; rg for build/test lock and AC annotations;
+          npm run format:check; npm run lint -- --quiet; npx oxlint on changed scripts/tests; npm
+          run typecheck; kspec validate refs/alignment/completeness with --warnings-ok; npm test --
+          --fresh.
+
+
+          Claims verified: prior blocker 1 is addressed by label-aware lock reentrancy plus
+          removal/isolation of in-suite real-dist rebuilds (npm pack --ignore-scripts, isolated
+          daemon build root, standalone build:daemon lock); prior blocker 2 is addressed by hashing
+          scripts/ in TEST_INPUT_PATHS plus tests for membership and cache invalidation. AC
+          @test-suite-perf-reliability ac-7 has behavioral coverage for contention, stale reclaim,
+          same-kind reentrancy, cross-kind fail-fast, runner/build integration, and full-suite
+          execution.
+
+
+          Categories searched: correctness, edge cases/stale locks, error handling/diagnostics, test
+          quality/AC annotations, integration with npm scripts and daemon build tests. No blocker
+          findings.
+
+
+          Shared guidance check: no package core skill/template source changed. kspec-agents.md
+          changed in project convention-generated content for this repo; no shared package prose
+          neutrality finding.
+        created_at: 2026-06-11T23:52:26.184Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T23:37:52.565Z
-updated_at: 2026-06-11T23:38:08.688Z
+updated_at: 2026-06-11T23:52:26.184Z
 notes: []
