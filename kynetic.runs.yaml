@@ -62824,7 +62824,7 @@ runs:
     completed_at: 2026-06-11T09:30:01.167Z
   - _ulid: 01KTV3P924C0SKT40FDT4XG9SY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -62836,7 +62836,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T10:31:06.586Z
-        completed_at: 2026-06-11T10:31:06.586Z
+        completed_at: 2026-06-11T10:31:50.517Z
+        notes: "Candidates: (1) full-suite duration ~39min — duplicate of inbox @01KNTB8Z4, skip; (2)
+          workflow show requires run-ref — duplicate of inbox @01KGGPJ6, skip; (3) selective vi.mock
+          of node:fs/promises with importOriginal delegation + vi.hoisted flag to force fs failure
+          paths — unique, high confidence, capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T10:31:50.517Z
+        completed_at: 2026-06-11T10:31:50.517Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T10:29:49.765Z
