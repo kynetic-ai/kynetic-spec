@@ -172,6 +172,12 @@ events:
     payload:
       thread_ulid: 01KTW3Y424X50KMH3MZTQHV4Q9
     timestamp: 2026-06-11T20:28:46.306Z
+  - _ulid: 01KTW5ZD1FRZGRYKE2TE84BRRV
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTW3Y424X50KMH3MZTQHV4Q9
+    timestamp: 2026-06-11T20:29:00.335Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -252,6 +258,8 @@ threads:
           ac-1 is verifiable as written at task-review time. Resolving."
         created_at: 2026-06-11T20:28:45.817Z
     kind: question
+    resolved_at: 2026-06-11T20:28:59.827Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -261,5 +269,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T19:53:51.098Z
 created_at: 2026-06-11T19:52:14.114Z
-updated_at: 2026-06-11T20:28:45.817Z
+updated_at: 2026-06-11T20:28:59.827Z
 notes: []
