@@ -203,6 +203,12 @@ events:
     payload:
       thread_ulid: 01KTV7B1RNMGSPF2E7133YZXMM
     timestamp: 2026-06-11T12:02:14.920Z
+  - _ulid: 01KTV8ZP1644G99TFT9VE1GMWS
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTV7B1RNMGSPF2E7133YZXMM
+    timestamp: 2026-06-11T12:02:20.839Z
 examined_commit: 37aea1f6ef6b3dc1fa8e701106ffadf490e975dc
 external_links: []
 lifecycle_state: closed
@@ -288,6 +294,8 @@ threads:
           4e35fa9ca6 (see blocker thread).
         created_at: 2026-06-11T12:02:14.659Z
     kind: nit
+    resolved_at: 2026-06-11T12:02:20.571Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -297,5 +305,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T11:33:38.897Z
 created_at: 2026-06-11T11:19:51.246Z
-updated_at: 2026-06-11T12:02:14.659Z
+updated_at: 2026-06-11T12:02:20.571Z
 notes: []
