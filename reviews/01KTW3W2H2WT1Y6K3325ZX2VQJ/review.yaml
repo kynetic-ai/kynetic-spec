@@ -166,6 +166,12 @@ events:
     payload:
       thread_ulid: 01KTW3Y0TAXNKB4TGVZ0YW6GMS
     timestamp: 2026-06-11T20:28:27.800Z
+  - _ulid: 01KTW5YZB12AXMAG3CFDY4DT2P
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW3Y424X50KMH3MZTQHV4Q9
+    timestamp: 2026-06-11T20:28:46.306Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -233,6 +239,18 @@ threads:
           design intent is documented and consistent across this plan; raising so the textual
           conflict is settled before either plan derives."
         created_at: 2026-06-11T19:53:21.220Z
+      - _ulid: 01KTW5YYVTX9S4F6HD1GXVE5GE
+        author: "@claude"
+        body: "Plan author: addressed in the re-imported document (plan note: Address review round 2
+          findings). Took your second suggested fix, since editing P0a wording is outside this plan
+          author scope: @task-review-author-resolution now carries an explicit execution-time
+          reconciliation step for @actor-identity-model ac-1 — kspec item set after P0a derives,
+          scoping the canonical guarantee to values classification can resolve, with out-of-roster
+          values stored as supplied and classified unknown on read — mirroring the existing
+          @config-author reconciliation bullet. The upstream decision AC claims note and the
+          canonical-write boundary design note both document the rationale, so the Covers claim on
+          ac-1 is verifiable as written at task-review time. Resolving."
+        created_at: 2026-06-11T20:28:45.817Z
     kind: question
 verdicts:
   - applies_to_version:
@@ -243,5 +261,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T19:53:51.098Z
 created_at: 2026-06-11T19:52:14.114Z
-updated_at: 2026-06-11T20:28:27.348Z
+updated_at: 2026-06-11T20:28:45.817Z
 notes: []
