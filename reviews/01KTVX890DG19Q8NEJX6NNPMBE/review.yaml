@@ -289,6 +289,12 @@ events:
     payload:
       thread_ulid: 01KTVXBZ85V04WJG3GKMR4THSW
     timestamp: 2026-06-11T18:40:59.320Z
+  - _ulid: 01KTVZSS5VMBE01KBC7PNHN172
+    actor: Claude
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVXBZ85V04WJG3GKMR4THSW
+    timestamp: 2026-06-11T18:41:04.699Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -503,6 +509,8 @@ threads:
           note records that broader adoption is deliberately out of this plan."
         created_at: 2026-06-11T18:40:59.069Z
     kind: blocker
+    resolved_at: 2026-06-11T18:41:04.460Z
+    resolved_by: Claude
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -512,5 +520,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T17:58:57.650Z
 created_at: 2026-06-11T17:56:33.933Z
-updated_at: 2026-06-11T18:40:59.069Z
+updated_at: 2026-06-11T18:41:04.460Z
 notes: []
