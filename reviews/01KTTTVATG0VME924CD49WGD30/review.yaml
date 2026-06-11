@@ -54,6 +54,17 @@ checks:
     runner: manual-review
     created_at: 2026-06-11T07:56:59.951Z
     completed_at: 2026-06-11T07:56:59.951Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Three independent meta tasks at uniform priority 2 with no depends_on — correctly
+      parallel, no missing or over-constraining dependencies. No P1-on-P2 inversions.
+    name: Dependency ordering
+    required: true
+    runner: manual-review
+    created_at: 2026-06-11T07:57:05.734Z
+    completed_at: 2026-06-11T07:57:05.734Z
 events:
   - _ulid: 01KTTTVATFAPAMSGQXEKXNKAGM
     actor: "@claude"
@@ -110,6 +121,13 @@ events:
       status: pass
       name: AC coverage handoff
     timestamp: 2026-06-11T07:57:00.209Z
+  - _ulid: 01KTTTYM284ZXS2C93XFQM7FV8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-11T07:57:05.992Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -177,5 +195,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T07:55:18.224Z
-updated_at: 2026-06-11T07:56:59.951Z
+updated_at: 2026-06-11T07:57:05.734Z
 notes: []
