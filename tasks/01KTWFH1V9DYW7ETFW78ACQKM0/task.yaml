@@ -1,0 +1,31 @@
+_ulid: 01KTWFH1V9DYW7ETFW78ACQKM0
+slugs:
+  - task-stabilize-workflow-runs-cli-dist-export
+title: Stabilize workflow-runs CLI dist export failure
+type: bug
+description: 'Observed during review of @task-dedupe-web-ui-devdeps on 2026-06-11: full npm test
+  failed once in tests/workflow-runs.test.ts, test "workflow show should display run details in
+  human-readable format". The failed subprocess was `node dist/cli/index.js workflow show
+  @01KTWEQ3DQ2D50JGR29051GCWQ`, which threw `SyntaxError: The requested module ./validate.js does
+  not provide an export named registerValidateCommand` from dist/cli/commands/index.js. A focused
+  rerun with `npm test -- tests/workflow-runs.test.ts --fresh` passed all 88 tests, and current
+  src/cli/commands/validate.ts plus dist/cli/commands/validate.js both export
+  registerValidateCommand. Investigate the transient dist CLI inconsistency during full-suite
+  execution, identify the test or build step that can leave dist/cli/commands/validate.js out of
+  sync while workflow-runs invokes the compiled CLI, and fix the test isolation/build ordering so
+  the full suite cannot observe a partially rebuilt dist tree.'
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - flaky
+vcs_refs: []
+created_at: 2026-06-11T23:15:55.881Z
+todos: []
+automation: eligible
