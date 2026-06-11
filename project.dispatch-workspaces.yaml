@@ -19539,7 +19539,7 @@ workspaces:
         head: 740b3ec859b126508e0165f0e5cefdbab83ecba3
         last_seen_at: 2026-06-11T19:17:19.868Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-web-ui-debug-log-cleanup-01kttd09
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: b28147ca373712390caf931395bb6ab743e28277
     bootstrap:
       status: succeeded
@@ -20019,7 +20019,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T20:21:40.459Z
+      updated_at: 2026-06-11T20:22:33.781Z
     integration:
       status: pending
       detail: null
@@ -20035,10 +20035,10 @@ workspaces:
     task_slug: task-test-cache-env-key
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-11T19:19:25.308Z
-      last_reconciled_at: 2026-06-11T20:21:40.459Z
+      last_active_at: 2026-06-11T20:22:33.781Z
+      last_reconciled_at: 2026-06-11T20:22:33.781Z
       created_at: 2026-06-11T19:18:38.177Z
-      updated_at: 2026-06-11T20:22:10.589Z
+      updated_at: 2026-06-11T20:22:33.781Z
     workspace_id: dispatch-workspace-01KTTD1ETQ674218060ZCJNKAM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
