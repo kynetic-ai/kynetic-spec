@@ -1,3 +1,14 @@
+# CONFLICT: Field "check_count" modified with different values in both branches
+# Path: reviews[01KTW1YX9XKQCMVZZKHKC80Y3J].check_count
+# Ours:   9
+# Theirs: 3
+# Resolution: Using ours (run merge interactively to resolve)
+# CONFLICT: Field "updated_at" modified with different values in both branches
+# Path: reviews[01KTW1YX9XKQCMVZZKHKC80Y3J].updated_at
+# Ours:   "2026-06-11T19:36:53.923Z"
+# Theirs: "2026-06-11T19:35:35.238Z"
+# Resolution: Using ours (run merge interactively to resolve)
+
 kynetic_reviews: "1.0"
 reviews:
   - _ulid: 01KKPTE827F3G45RH8T37AM9YB
@@ -8569,8 +8580,7 @@ reviews:
     updated_at: 2026-03-29T00:59:15.845Z
   - _ulid: 01KMVJ8QGEZTKRG0P3X7RM1MBV
     slugs: []
-    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle
-      2)
+    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle 2)
     disposition: changes_requested
     author: Test User
     check_count: 1
@@ -8589,8 +8599,7 @@ reviews:
     updated_at: 2026-03-29T01:25:47.473Z
   - _ulid: 01KMVKBBSJCVHNCZXBBYMBVKHY
     slugs: []
-    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle
-      3)
+    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle 3)
     disposition: approved
     author: Test User
     check_count: 2
@@ -10709,8 +10718,7 @@ reviews:
     updated_at: 2026-04-02T05:40:34.899Z
   - _ulid: 01KN6BXRNZ0CCDAPDPENT8ZHPG
     slugs: []
-    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup
-      tests
+    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup tests
     disposition: changes_requested
     author: Jacob Chapel
     check_count: 2
@@ -10748,8 +10756,7 @@ reviews:
     updated_at: 2026-04-02T06:54:51.621Z
   - _ulid: 01KN6EPC97A6JH0QZVVSG9PHHM
     slugs: []
-    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup
-      tests (cycle 2)
+    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup tests (cycle 2)
     disposition: approved
     author: Jacob Chapel
     check_count: 4
@@ -16373,8 +16380,7 @@ reviews:
     updated_at: 2026-04-22T09:15:15.636Z
   - _ulid: 01KPT7RHHNR05B655W4Y00CF4H
     slugs: []
-    title: "Plan re-review: Portable Skill File References and Detached Reviewer Merge Foundation (cycle
-      2)"
+    title: "Plan re-review: Portable Skill File References and Detached Reviewer Merge Foundation (cycle 2)"
     disposition: approved
     author: Jacob Chapel
     check_count: 5
@@ -25819,10 +25825,10 @@ reviews:
   - _ulid: 01KTW2XMXW2FERG9K0YEYYXQ4J
     slugs: []
     title: "Plan review: Shared Mutation and Event Service (round 2 verification)"
-    disposition: pending
+    disposition: approved
     author: "@claude"
-    check_count: 0
-    lifecycle_state: draft
+    check_count: 7
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -25831,5 +25837,6 @@ reviews:
       shadow_commit: ""
     thread_count: 0
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-06-11T19:35:37.148Z
+    updated_at: 2026-06-11T19:36:59.580Z

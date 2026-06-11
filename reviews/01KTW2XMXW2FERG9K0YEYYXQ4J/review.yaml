@@ -2,7 +2,102 @@ _ulid: 01KTW2XMXW2FERG9K0YEYYXQ4J
 slugs: []
 title: "Plan review: Shared Mutation and Event Service (round 2 verification)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Read the two prior Shared Mutation and Event Service plan reviews. All six prior round-2
+      threads had author replies and were marked resolved. Verified current stored plan content
+      includes each claimed fix: ac-5 narrowed to daemon-served batches, ac-7 added for no-daemon
+      batches, mutation-event-naming ac-3 added for reserved families, mutation-event-naming parent
+      set to @api-contract, source_path historical note added, dispatch ac-2 rephrased, and route
+      paths expanded."
+    name: prior review history
+    required: true
+    runner: kspec review get @01KTVY7M / @01KTVZ6B
+    created_at: 2026-06-11T19:36:31.274Z
+    completed_at: 2026-06-11T19:36:31.274Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exported @plan-dispatch-mutation-service to /tmp/plan-dispatch-mutation-service.md and
+      dry-ran import successfully. Stored content reviewed contains 5 planned specs and 6 manual
+      tasks with derive_from_specs: false."
+    name: plan parse
+    required: true
+    runner: kspec plan export + kspec plan import --dry-run
+    created_at: 2026-06-11T19:36:34.716Z
+    completed_at: 2026-06-11T19:36:34.716Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reviewed all 22 planned ACs: @shared-mutation-pipeline 7, @dispatch-mutation-transparency
+      4, @mutation-event-coverage 4, @mutation-event-naming 3, @ui-targeted-event-consumption 4. ACs
+      are deterministic and observable enough for tests; prior contradiction and reserved-family
+      coverage gaps are addressed."
+    name: spec quality
+    required: true
+    runner: kspec-review-plan manual AC audit
+    created_at: 2026-06-11T19:36:38.187Z
+    completed_at: 2026-06-11T19:36:38.187Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 22 planned ACs are claimed by implementation tasks: shared pipeline
+      ac-1/ac-2/ac-4/ac-6/ac-7, command path ac-3/ac-5, dispatch transparency ac-1..ac-4, mutation
+      coverage ac-1..ac-4, mutation naming ac-1..ac-3, UI targeted consumption ac-1..ac-4. Tasks
+      include Why, What, How, concrete files or subsystems, and verification approach. The P2
+      relationship task explicitly covers relationship metadata only and no ACs."
+    name: task completeness and AC coverage
+    required: true
+    runner: manual Covers audit
+    created_at: 2026-06-11T19:36:41.591Z
+    completed_at: 2026-06-11T19:36:41.591Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "P1 graph is coherent: shared pipeline -> command path -> missing events -> UI
+      consumption; dispatch engine depends only on shared pipeline and can run in parallel with
+      command-path work. P2 relationship metadata has no blocking role. No cycles, missing
+      dependencies, or P1-on-P2 inversions found."
+    name: dependency ordering
+    required: true
+    runner: manual dependency graph audit
+    created_at: 2026-06-11T19:36:44.924Z
+    completed_at: 2026-06-11T19:36:44.924Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read existing @daemon-command-api, @daemon-entity-cache, @api-contract,
+      @ui-data-freshness, @ui-api-aggregation, and @agent-invocation-lifecycle. The plan extends
+      existing command/cache/event freshness contracts without contradicting them;
+      @mutation-event-naming under @api-contract is appropriate; searches for mutation event, typed
+      event, plan-revision, and coverage-state did not reveal overlapping current specs.
+    name: existing spec alignment
+    required: true
+    runner: kspec item get / kspec item list / kspec search
+    created_at: 2026-06-11T19:36:48.268Z
+    completed_at: 2026-06-11T19:36:48.268Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Ran kspec validate --refs --warnings-ok, --alignment --warnings-ok, and --completeness
+      --warnings-ok; all exited 0 with existing warning baselines. Verified relevant commands and
+      files exist: kspec link create, kspec refs, packages/daemon/src/routes/tasks.ts sequence,
+      src/agent-runtime/invocation.ts runKspecCli helpers, packages/web-ui ws-invalidation delay
+      constants, and packages/shared/src/websocket.ts."
+    name: cross-reference validation
+    required: true
+    runner: kspec validate + command/file checks
+    created_at: 2026-06-11T19:36:51.504Z
+    completed_at: 2026-06-11T19:36:51.504Z
 events:
   - _ulid: 01KTW2XMXVXGE09VDCWK46A9N1
     actor: "@claude"
@@ -10,9 +105,81 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T19:35:37.147Z
+  - _ulid: 01KTW2Z6QNVDFZCGJ78R366FXQ
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T19:36:28.149Z
+  - _ulid: 01KTW2ZA1HWT62A9M0R9VBVF9V
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review history
+    timestamp: 2026-06-11T19:36:31.537Z
+  - _ulid: 01KTW2ZDF7380CGTNRV47G9FCA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan parse
+    timestamp: 2026-06-11T19:36:35.047Z
+  - _ulid: 01KTW2ZGSWHM6XVZ3KZ5SS19FT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: spec quality
+    timestamp: 2026-06-11T19:36:38.460Z
+  - _ulid: 01KTW2ZM3S2VWNJRJZGH6JMVQ8
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: task completeness and AC coverage
+    timestamp: 2026-06-11T19:36:41.849Z
+  - _ulid: 01KTW2ZQCDJTZWXP2QTCAZG9X5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-11T19:36:45.197Z
+  - _ulid: 01KTW2ZTMRE9RQDA2MMJDP6JP6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: existing spec alignment
+    timestamp: 2026-06-11T19:36:48.536Z
+  - _ulid: 01KTW2ZXSES5SGX983VQMXMK5F
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: cross-reference validation
+    timestamp: 2026-06-11T19:36:51.758Z
+  - _ulid: 01KTW305DWVNP82JRBP3YRXTDA
+    actor: "@codex"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T19:36:59.580Z
+  - _ulid: 01KTW305DX1SHMRMRXBCNXJXME
+    actor: "@codex"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T19:36:59.581Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +187,14 @@ subject:
   ref: "@plan-dispatch-mutation-service"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@codex"
+    role: plan-reviewer
+    created_at: 2026-06-11T19:36:59.580Z
 created_at: 2026-06-11T19:35:37.148Z
-updated_at: null
+updated_at: 2026-06-11T19:36:59.580Z
 notes: []
