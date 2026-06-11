@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KTWCNPDZPYT0X8V1CFXV2D4N
+    content: "Approach: verified the 8 packages (@lucide/svelte, @tailwindcss/postcss, autoprefixer,
+      clsx, postcss, tailwind-merge, tailwind-variants, tailwindcss) are declared in
+      packages/web-ui/package.json at identical version ranges and have zero references in src/,
+      tests/, scripts/, and no root tailwind/postcss config. Removing them from root
+      devDependencies, regenerating package-lock.json via npm install, then gating with npm run
+      build (exercises tailwind/postcss pipeline), npm test, npm run test:e2e. pagefind stays (used
+      by scripts/build-docs-search.cjs)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T22:26:02.304Z
