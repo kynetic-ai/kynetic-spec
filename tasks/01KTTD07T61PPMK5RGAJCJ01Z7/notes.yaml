@@ -48,3 +48,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-11T15:31:23.332Z
+  - _ulid: 01KTVNWJE6TK63N74FNRATXAZV
+    content: "Fix cycle 1 approach: address blocker 01KTVM93AS (serve status discards command_dispatch).
+      Plan: (1) statusServer in src/cli/commands/serve.ts parses command_dispatch from /api/health
+      alongside uptime, includes it in status JSON, and renders a human line (ok vs DEGRADED with
+      stuck command name + running duration + limit). (2) Extend tests/helpers/mock-daemon.{ts,cjs}
+      with an optional commandDispatchHealth payload for /api/health. (3) New behavioral test
+      running real 'kspec serve status' (json + human) against child-process mock daemon with
+      isolated kspec home, annotated AC: @daemon-command-api ac-stuck-command-reported. No spec
+      change needed: the AC's 'daemon health reporting surface' covers the operator-facing status
+      path."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T15:47:50.342Z
