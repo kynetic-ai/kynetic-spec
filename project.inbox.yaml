@@ -4370,3 +4370,14 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-11T11:16:42.838Z
+  - _ulid: 01KTV6VARAZGJ25HR7V30R9X1E
+    text: "Fix duplicate step numbering in task-work core skill: templates/skills/task-work/SKILL.md has
+      '### 9. Regenerate Derived Files', '### 10. Commit', then '### 9. Quality Check' and '### 10.
+      Submit' again (lines ~228-274). Renumber Quality Check/Submit to 11/12, then kspec skill
+      render and npm run build:plugin (shared package surface — keep project-neutral)."
+    tags:
+      - reflection
+      - docs
+      - skills
+    added_by: "@claude"
+    created_at: 2026-06-11T11:25:01.067Z
