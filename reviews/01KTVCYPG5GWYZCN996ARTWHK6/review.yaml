@@ -13,6 +13,18 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-11T13:27:39.290Z
     completed_at: 2026-06-11T13:27:39.290Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing repo warning baseline: 738 warnings, 0 errors. Focused changed-file
+      lint also passed with 0 warnings/0 errors for packages/daemon/src/routes/triage.ts and
+      tests/daemon-api/triage.test.ts."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T13:27:45.158Z
+    completed_at: 2026-06-11T13:27:45.158Z
 events:
   - _ulid: 01KTVCYPG441GDTGK5GHBMN5ET
     actor: Jacob Chapel
@@ -34,6 +46,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-11T13:27:39.551Z
+  - _ulid: 01KTVDW2H0ZH4H3K4X75X54M3Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T13:27:45.440Z
 examined_commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
 external_links: []
 lifecycle_state: open
@@ -46,5 +65,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T13:11:42.853Z
-updated_at: 2026-06-11T13:27:39.290Z
+updated_at: 2026-06-11T13:27:45.158Z
 notes: []
