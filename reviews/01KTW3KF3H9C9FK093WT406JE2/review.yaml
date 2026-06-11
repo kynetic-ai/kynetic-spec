@@ -1,0 +1,26 @@
+_ulid: 01KTW3KF3H9C9FK093WT406JE2
+slugs: []
+title: "Plan review: AC Coverage Verification Schema and Storage (round 2)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTW3KF3HXJXF7PZBJ535QVXN
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T19:47:32.081Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-ac-coverage-verification-schema-and-storage"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T19:47:32.081Z
+updated_at: null
+notes: []
