@@ -50,6 +50,19 @@ checks:
     runner: manual plan review
     created_at: 2026-06-11T18:49:08.409Z
     completed_at: 2026-06-11T18:49:08.409Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All plan ACs are claimed by at least one task: @review-spec-ac-anchors 4/4,
+      @review-plan-text-anchors 5/5, @review-idea-threads 3/3, @plan-revisions 8/8,
+      @subject-revision-vocabulary 3/3. Existing-spec respec work is called out for
+      @review-comment-threads-and-anchors ac-6 and @review-records-web-ui ac-11."
+    name: AC coverage mapping
+    required: false
+    runner: manual plan review
+    created_at: 2026-06-11T18:49:23.019Z
+    completed_at: 2026-06-11T18:49:23.019Z
 events:
   - _ulid: 01KTW04RAXP60HJ6RBPF07YM74
     actor: "@claude"
@@ -120,6 +133,13 @@ events:
       status: fail
       name: spec quality
     timestamp: 2026-06-11T18:49:08.635Z
+  - _ulid: 01KTW0901WKJ6BVDVHXGSFGTR1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-11T18:49:23.260Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -200,5 +220,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:49:08.409Z
+updated_at: 2026-06-11T18:49:23.019Z
 notes: []
