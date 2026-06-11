@@ -2,7 +2,91 @@ _ulid: 01KTVBJPX82J6HZZJY3EDVT6QT
 slugs: []
 title: Review re-enable split-storage dangling-reference validation test
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "oxfmt --check . completed: all matched files use correct format (1007 files)."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T13:00:36.847Z
+    completed_at: 2026-06-11T13:00:36.847Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint completed with 737 warnings and 0 errors under the existing baseline. Focused
+      oxlint on tests/task-plan-ref.test.ts also reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T13:00:39.537Z
+    completed_at: 2026-06-11T13:00:39.537Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Changed test file reported 0 warnings and 0 errors.
+    name: focused-lint
+    required: false
+    runner: npx oxlint tests/task-plan-ref.test.ts
+    created_at: 2026-06-11T13:00:42.072Z
+    completed_at: 2026-06-11T13:00:42.072Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit exited 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T13:00:44.626Z
+    completed_at: 2026-06-11T13:00:44.626Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full suite passed: 2752/2752 suites, 10448 passed, 4 skipped. Full log:
+      /tmp/kspec-test-cache/01KTVBGPGFG49QDAWAC3QXZ5B9/1bc1c63a43d8f059.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-06-11T13:00:47.263Z
+    completed_at: 2026-06-11T13:00:47.263Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; references OK. Existing reference warning baseline allowed by --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T13:00:49.930Z
+    completed_at: 2026-06-11T13:00:49.930Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; alignment warnings are existing repo baseline and exited 0 due to
+      --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T13:00:52.610Z
+    completed_at: 2026-06-11T13:00:52.610Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; completeness warnings are existing repo baseline and exited 0 due to
+      --warnings-ok.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T13:00:55.299Z
+    completed_at: 2026-06-11T13:00:55.299Z
 events:
   - _ulid: 01KTVBJPX73C8H0KJTBBG0S8YW
     actor: Jacob Chapel
@@ -17,6 +101,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T12:48:06.022Z
+  - _ulid: 01KTVCACANGVQ3BXAY0HAVWQ30
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T13:00:37.077Z
+  - _ulid: 01KTVCAEYWRP4GEAAXCBB75VTW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T13:00:39.772Z
+  - _ulid: 01KTVCAHD761AQY9Q2T8B5JW0W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-11T13:00:42.279Z
+  - _ulid: 01KTVCAKXJJ5R58JT3H9XPDYYX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T13:00:44.850Z
+  - _ulid: 01KTVCAPG65JW3PZ4B2RR45TQE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T13:00:47.494Z
+  - _ulid: 01KTVCAS2Z5YW02A6AYG663PKX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T13:00:50.143Z
+  - _ulid: 01KTVCAVR6AZ74FZZ99Z03X5R8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T13:00:52.870Z
+  - _ulid: 01KTVCAYCW7QWWS0NZG5QKGTR7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T13:00:55.580Z
+  - _ulid: 01KTVCB10FSWKSWTBG5TD3F4RP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTVCB0T0KBN4V17M0NV2E918
+    timestamp: 2026-06-11T13:00:58.255Z
 examined_commit: 3c1b56f24101b99dd2a646dc0afda611d5aa1663
 external_links: []
 lifecycle_state: open
@@ -26,8 +173,39 @@ subject:
   content_hash: ""
   ref: "@01KTTD1CGTV3QFPSD8F8DZCA34"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTVCB0T0KBN4V17M0NV2E918
+    entries:
+      - _ulid: 01KTVCB0T0AC57SHHCNVA27BCV
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; tests/task-plan-ref.test.ts;
+          tests/validate-task-data-source.test.ts; src/parser/validate.ts; src/parser/refs.ts;
+          src/parser/config.ts.
+
+
+          Commands run: git diff/stat/name-only; kspec task get @01KTTD1CGTV3QFPSD8F8DZCA34; kspec
+          item get @validation-task-data-source; kspec item get @plan-validation; kspec review
+          add/open; rg AC coverage/source-path checks; npm run format:check; npm run lint --
+          --quiet; npx oxlint tests/task-plan-ref.test.ts; npm run typecheck; npm test -- --fresh;
+          kspec validate --refs/--alignment/--completeness --warnings-ok; git diff --check.
+
+
+          Claims verified: validate() loads tasks through resolveTaskDataManager().loadAllTasks()
+          for non-legacy projects; REF_FIELDS includes depends_on/spec_ref/plan_ref; strict_refs
+          defaults true; @plan-validation ac-10 now matches strict-mode error behavior;
+          tests/task-plan-ref.test.ts has no it.skip and passes in the full suite.
+
+
+          Categories searched: correctness, edge cases around plan_ref/spec_ref/depends_on, error
+          handling/non-zero validation exits, test quality/source-scanning risk, AC coverage,
+          integration with existing validation data-source tests. No blockers found.
+        created_at: 2026-06-11T13:00:58.048Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T12:47:41.480Z
-updated_at: 2026-06-11T12:48:05.800Z
+updated_at: 2026-06-11T13:00:58.048Z
 notes: []
