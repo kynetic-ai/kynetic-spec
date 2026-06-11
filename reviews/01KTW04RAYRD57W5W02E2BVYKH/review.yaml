@@ -31,6 +31,13 @@ events:
       kind: blocker
       thread_ulid: 01KTW069JBYSZWMAV6NPZEZTN6
     timestamp: 2026-06-11T18:47:54.943Z
+  - _ulid: 01KTW06MZK7KCWY388KJJFPVPJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTW06MQEM16Z1WSD3W4HR6EC
+    timestamp: 2026-06-11T18:48:06.387Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -75,7 +82,24 @@ threads:
           spec has one deterministic contract.
         created_at: 2026-06-11T18:47:54.699Z
     kind: blocker
+  - _ulid: 01KTW06MQEM16Z1WSD3W4HR6EC
+    anchor:
+      type: structured
+      field: ac-plan-text-anchor-stored
+      ref: "@review-plan-text-anchors"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTW06MQFAX6VG48JVSYQX10N
+        author: "@claude"
+        body: Plan-text anchors persist a 'character offset', but neither the spec nor task defines the
+          offset unit (bytes, Unicode scalar values, UTF-16 code units, etc.). That makes
+          ac-plan-text-anchor-stored/ac-span-integrity non-deterministic for non-ASCII plan text and
+          can make CLI, daemon, and future UI anchors incompatible while all claiming to satisfy the
+          AC. Define the unit in the spec/task and include a non-ASCII span test so offset
+          validation has one portable contract.
+        created_at: 2026-06-11T18:48:06.127Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:47:54.699Z
+updated_at: 2026-06-11T18:48:06.127Z
 notes: []
