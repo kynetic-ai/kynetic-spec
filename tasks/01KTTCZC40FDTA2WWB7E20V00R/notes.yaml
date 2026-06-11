@@ -15,3 +15,21 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T04:51:45.168Z
+  - _ulid: 01KTTHX1XK3ZDD76N1K1GG5N63
+    content: "Gate results so far (all on upgraded deps): typecheck PASS, format:check PASS, lint
+      --quiet PASS (0 errors, 738 pre-existing warnings), full npm test PASS (10381 passed / 5
+      skipped, 2726 suites), kspec validate refs/alignment/completeness PASS with --warnings-ok. E2E
+      investigation: review/plan-related Playwright specs fail because the daemon returns 500 on
+      /api/reviews and /api/plans for the e2e fixture project — EntityStorageCompatibilityError
+      legacy_review_storage_removed / legacy_plan_storage_removed (fixture manifest is kynetic 1.0
+      with monolithic project.reviews.yaml/project.plans.yaml; daemon strict-gates these since the
+      entity-storage compatibility commits, and b4c8c7e087 deliberately left the Playwright fixture
+      at kynetic 1.0). VERIFIED PRE-EXISTING: restored origin/dev package-lock.json + npm ci +
+      rebuilt daemon from identical source — same 500 and same EntityStorageCompatibilityError with
+      baseline deps. Unrelated to this dependency upgrade. Last dev CI run predates the May 23
+      storage-gating commits, so this state was never CI-validated. Running full e2e with true exit
+      code on upgraded deps to enumerate the failure set; capturing fixture migration as a follow-up
+      inbox item."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T05:18:57.459Z

@@ -4294,3 +4294,20 @@ inbox:
       - infra
     added_by: "@claude"
     created_at: 2026-06-11T04:51:57.880Z
+  - _ulid: 01KTTHX2E79E25SC6CHC1RMHMT
+    text: "Playwright e2e fixture (tests/e2e/fixtures/) is incompatible with the entity-storage strict
+      gates: manifest is kynetic 1.0 with monolithic project.reviews.yaml/project.plans.yaml, so the
+      daemon 500s on /api/reviews and /api/plans (legacy_review_storage_removed /
+      legacy_plan_storage_removed) and all review/plan e2e specs fail (plans.spec.ts,
+      review-detail-page.spec.ts, review-interaction.spec.ts, reviews-detail.spec.ts, tasks.spec.ts
+      review sections). Pre-existing on dev (verified with baseline deps + identical source, daemon
+      rebuilt from origin/dev lockfile). Commit b4c8c7e087 migrated daemon-api vitest fixtures but
+      deliberately left the Playwright fixture at kynetic 1.0 to keep watcher specs happy — that
+      deferral broke the review/plan e2e coverage. Needs fixture migration to folder-backed storage
+      (kynetic 1.2) plus watcher-spec adjustments."
+    tags:
+      - bug
+      - infra
+      - e2e
+    added_by: "@claude"
+    created_at: 2026-06-11T05:18:57.991Z
