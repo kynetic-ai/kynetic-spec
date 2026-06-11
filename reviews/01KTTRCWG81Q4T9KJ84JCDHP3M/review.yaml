@@ -45,6 +45,17 @@ checks:
     runner: npm test
     created_at: 2026-06-11T07:24:59.614Z
     completed_at: 2026-06-11T07:24:59.614Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: schema/references OK; 6 existing deprecated-reference warnings accepted by
+      --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T07:25:09.285Z
+    completed_at: 2026-06-11T07:25:09.285Z
 events:
   - _ulid: 01KTTRCWG74JNRC8W75MQ747WH
     actor: Jacob Chapel
@@ -87,6 +98,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-11T07:24:59.835Z
+  - _ulid: 01KTTS44FST283GZ2FFVM3JX42
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T07:25:09.497Z
 examined_commit: 0f3473bba38c4e87899c06d0394c895a92aa61e3
 external_links: []
 lifecycle_state: open
@@ -99,5 +117,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T07:12:27.656Z
-updated_at: 2026-06-11T07:24:59.614Z
+updated_at: 2026-06-11T07:25:09.285Z
 notes: []
