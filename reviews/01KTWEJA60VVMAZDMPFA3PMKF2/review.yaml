@@ -89,6 +89,19 @@ checks:
     runner: npm run build
     created_at: 2026-06-11T23:26:54.124Z
     completed_at: 2026-06-11T23:26:54.124Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Non-required review evidence: full E2E run built successfully but failed 45 tests with
+      plan/review fixture route 500s and early daemon/WebSocket timeouts; focused plans rerun
+      reproduced missing plans-list/API 500 behavior. Follow-up task @01KTWG0D created. Branch
+      changes only package metadata, not E2E fixtures/routes/UI."
+    name: e2e
+    required: false
+    runner: npm run test:e2e
+    created_at: 2026-06-11T23:27:07.446Z
+    completed_at: 2026-06-11T23:27:07.446Z
 events:
   - _ulid: 01KTWEJA60STHYMNKKQ44V7HDN
     actor: Jacob Chapel
@@ -159,6 +172,13 @@ events:
       status: pass
       name: build
     timestamp: 2026-06-11T23:26:54.408Z
+  - _ulid: 01KTWG5HY6WX1PBNGJ47AEH155
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: e2e
+    timestamp: 2026-06-11T23:27:07.718Z
 examined_commit: 478716573eb2ac9fa72f01814b11710d07ab5045
 external_links: []
 lifecycle_state: open
@@ -171,5 +191,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:59:08.608Z
-updated_at: 2026-06-11T23:26:54.124Z
+updated_at: 2026-06-11T23:27:07.446Z
 notes: []
