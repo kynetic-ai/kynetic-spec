@@ -17310,18 +17310,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-standardize-node-version-docs/01kttczc
-    canonical_branch_head: 1d398dedf9aaf50014b24a38f712ae05e5d8e3b5
+    canonical_branch_head: b296e8d1b47ed1095db07c94afe47c5644fe2a98
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T14:14:30.812Z
+      updated_at: 2026-06-11T14:31:58.577Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T14:15:02.903Z
+      updated_at: 2026-06-11T14:31:58.577Z
     integration:
       status: pending
       detail: null
@@ -17329,7 +17329,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1d398dedf9aaf50014b24a38f712ae05e5d8e3b5
-      updated_at: 2026-06-11T14:14:30.812Z
+      updated_at: 2026-06-11T14:31:58.577Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTCZCTNXC6TSH9SENFSQDZG
@@ -17338,9 +17338,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T14:15:02.903Z
-      last_reconciled_at: 2026-06-11T14:15:02.903Z
+      last_reconciled_at: 2026-06-11T14:31:58.577Z
       created_at: 2026-06-11T14:14:30.812Z
-      updated_at: 2026-06-11T14:15:02.903Z
+      updated_at: 2026-06-11T14:31:58.577Z
     workspace_id: dispatch-workspace-01KTTCZCTNXC6TSH9SENFSQDZG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
