@@ -18485,11 +18485,11 @@ workspaces:
     canonical_branch: dispatch/task/task-serve-logs-command/01kttd07
     canonical_branch_head: 9222d4a7de015305cf726b68c07f68b83438851d
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T17:29:06.696Z
+      updated_at: 2026-06-11T17:29:38.217Z
     health:
       status: healthy
       issues: []
@@ -18503,17 +18503,17 @@ workspaces:
       target_branch: dev
       target_commit: 870cbfc6eba54cbe3cb55ff705a8c5284284969b
       updated_at: 2026-06-11T17:29:06.696Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTTD073BSRG8AMPS4RZS6979
     task_ref: "@01KTTD073BSRG8AMPS4RZS6979"
     task_slug: task-serve-logs-command
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-11T17:29:38.217Z
       last_active_at: 2026-06-11T17:02:33.315Z
       last_reconciled_at: 2026-06-11T17:29:06.696Z
       created_at: 2026-06-11T16:31:34.061Z
-      updated_at: 2026-06-11T17:29:06.696Z
+      updated_at: 2026-06-11T17:29:38.217Z
     workspace_id: dispatch-workspace-01KTTD073BSRG8AMPS4RZS6979
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
