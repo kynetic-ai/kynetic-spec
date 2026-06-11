@@ -156,9 +156,25 @@ events:
       kind: nit
       thread_ulid: 01KTW6TR7VFMYDV51Q93DR3B6M
     timestamp: 2026-06-11T20:43:56.801Z
+  - _ulid: 01KTW6VD2300E06TQXP2YHZT8T
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T20:44:17.859Z
+  - _ulid: 01KTW6VD23S9C7KAAWWZNKBF67
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T20:44:17.859Z
 examined_commit: 74ab85fe3b5971918484ee84f6942fe7ed04e165
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -188,7 +204,14 @@ threads:
           change came from project-local testing convention regeneration."
         created_at: 2026-06-11T20:43:56.539Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-11T20:44:17.859Z
 created_at: 2026-06-11T20:22:59.358Z
-updated_at: 2026-06-11T20:43:56.539Z
+updated_at: 2026-06-11T20:44:17.859Z
 notes: []
