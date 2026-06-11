@@ -24,6 +24,16 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-11T23:25:52.646Z
     completed_at: 2026-06-11T23:25:52.646Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run typecheck completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T23:26:02.001Z
+    completed_at: 2026-06-11T23:26:02.001Z
 events:
   - _ulid: 01KTWEJA60STHYMNKKQ44V7HDN
     actor: Jacob Chapel
@@ -52,6 +62,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-11T23:25:52.920Z
+  - _ulid: 01KTWG3J25CYZHNVSSYRQ9J16D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T23:26:02.309Z
 examined_commit: 478716573eb2ac9fa72f01814b11710d07ab5045
 external_links: []
 lifecycle_state: open
@@ -64,5 +81,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:59:08.608Z
-updated_at: 2026-06-11T23:25:52.646Z
+updated_at: 2026-06-11T23:26:02.001Z
 notes: []
