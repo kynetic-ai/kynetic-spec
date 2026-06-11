@@ -63344,9 +63344,20 @@ runs:
     completed_at: 2026-06-11T12:23:55.708Z
   - _ulid: 01KTVB9DMCJY375M3C3P5BN8PK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-11T12:42:37.068Z
+        completed_at: 2026-06-11T12:43:33.611Z
+        notes: "Baseline searched: observations list (many success/friction entries from Jan-Feb), inbox
+          list (367 items incl. workflow CLI improvements @01KGGPJ6), tasks list (current session
+          task @01KTTD1C now pending_review)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-11T12:43:33.611Z
+        completed_at: 2026-06-11T12:43:33.611Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T12:42:37.068Z
