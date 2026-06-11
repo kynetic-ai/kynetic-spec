@@ -186,6 +186,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T22:47:10.928Z
+  - _ulid: 01KTWGBWP7P5Z25KGPJZRVTBJZ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTWDRPNRZ7QQ2J8C7CZFTWMY
+    timestamp: 2026-06-11T23:30:35.335Z
 examined_commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
 external_links: []
 lifecycle_state: closed
@@ -218,6 +224,26 @@ threads:
           behavior. The lock/reentrancy design needs to cover nested build/test runner paths without
           allowing a build to rewrite dist while Vitest is executing."
         created_at: 2026-06-11T22:45:09.433Z
+      - _ulid: 01KTWGBWFC5P5SAQKKZ9389X4V
+        author: "@claude"
+        body: "Fixed. Root cause of the residual race: the reentrancy marker (KSPEC_BUILD_TEST_LOCK_HELD) is
+          inherited by every subprocess the suite spawns, so a build triggered from INSIDE the test
+          run bypassed the lock entirely. Two such paths existed: (1) tests/cli-serve.test.ts ran
+          'npm pack' without --ignore-scripts, so the prepack hook ran the full tsc build mid-suite
+          — this rewrites all of dist/cli/ and matches your workflow-runs crash ('./upgrade.js' did
+          not provide registerUpgradeCommand) exactly; (2) tests/daemon-build.test.ts ran 'npm run
+          build:daemon' against the live dist/daemon/ (rm + re-emit). Fixes: lock reentrancy is now
+          label-aware — same-kind nested runs stay reentrant, but a build nested inside a running
+          test run (or vice versa) fails fast with a diagnostic instead of silently racing
+          (KSPEC_BUILD_TEST_LOCK_HELD_LABEL); the runner's own pre-vitest build is explicitly
+          re-labelled (vitest not yet running); cli-serve packs with --ignore-scripts (runner's
+          build hook already guarantees dist/ freshness — same pattern as
+          release-packaging.test.ts); daemon-build builds into an isolated output root (new
+          KSPEC_DAEMON_BUILD_DIST_ROOT override) and build-daemon.cjs acquires the lock when
+          targeting the real dist/. New unit + integration tests cover the cross-kind fail-fast.
+          ac-7 updated to the new semantics. Verification: full fresh suite ('npm test -- --fresh')
+          passes 10552/0 failed (2784 suites)."
+        created_at: 2026-06-11T23:30:35.116Z
     kind: blocker
   - _ulid: 01KTWDRTFDE940W89NAYY3BVP5
     anchor:
@@ -276,5 +302,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T22:47:10.928Z
 created_at: 2026-06-11T22:24:32.166Z
-updated_at: 2026-06-11T22:47:10.928Z
+updated_at: 2026-06-11T23:30:35.116Z
 notes: []
