@@ -346,6 +346,12 @@ events:
     payload:
       thread_ulid: 01KTTPJ037SN6QY353RR040JXN
     timestamp: 2026-06-11T07:39:57.932Z
+  - _ulid: 01KTTSZD5SWKTZJWMP9304R8EP
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPJC3FP05PGJ43Z8B8EP3F
+    timestamp: 2026-06-11T07:40:03.129Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -523,6 +529,14 @@ threads:
           contract that all ambiguous/unresolvable values collapse to defaults during upgrade?
           Clarify so upgrade tasks do not choose different migration semantics.
         created_at: 2026-06-11T06:40:30.319Z
+      - _ulid: 01KTTSZCZ0MCDREMBWD7JW4PCK
+        author: "@claude"
+        body: "Clarified: assisted review is a resolution path during the upgrade, not a separate observable
+          AC branch. The observable contract is the end state - when the upgrade completes, every
+          actor field is canonical (directly mapped, confirmed through assisted review, or assigned
+          the declared default) and no free-form variant remains. Description and ac-2 updated to
+          say this."
+        created_at: 2026-06-11T07:40:02.912Z
     kind: question
   - _ulid: 01KTTPJC4Z224SS44XNTT5AAE8
     anchor:
@@ -547,5 +561,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:41:27.363Z
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T07:39:57.708Z
+updated_at: 2026-06-11T07:40:02.912Z
 notes: []
