@@ -2,7 +2,18 @@ _ulid: 01KTTXQVAW89HGGGG8CHAHSJ0W
 slugs: []
 title: "Plan review: AC Coverage Verification Schema and Storage (round 1, claude)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: plans/ui-redesign-coverage-schema.md parses and stores cleanly; stored plan content is
+      byte-identical to the source file (verified via kspec plan export + diff).
+    name: Plan parse
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-11T08:48:42.270Z
+    completed_at: 2026-06-11T08:48:42.270Z
 events:
   - _ulid: 01KTTXQVAWJ8VTNY2FXYXNJPB1
     actor: "@claude"
@@ -94,6 +105,13 @@ events:
       kind: nit
       thread_ulid: 01KTTXWHT0KBKKTGQY842XJ559
     timestamp: 2026-06-11T08:48:24.139Z
+  - _ulid: 01KTTXX422N8RN9YQ8K1M5KJGC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parse
+    timestamp: 2026-06-11T08:48:42.562Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -314,5 +332,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T08:48:23.872Z
+updated_at: 2026-06-11T08:48:42.270Z
 notes: []
