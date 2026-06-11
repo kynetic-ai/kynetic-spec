@@ -307,6 +307,12 @@ events:
     payload:
       thread_ulid: 01KTTVGSSCHYX5BKJ5YMV9SS24
     timestamp: 2026-06-11T17:25:03.372Z
+  - _ulid: 01KTVVERB9CW8W7N2ECSMXYQYJ
+    actor: plan-author
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTVGSMTMC8JQ9B66MF9Q2X7
+    timestamp: 2026-06-11T17:25:09.097Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -477,6 +483,14 @@ threads:
           represented in a machine-visible way? As written, the ordering is only prose in
           Implementation Notes.
         created_at: 2026-06-11T08:07:01.530Z
+      - _ulid: 01KTVVER308571J1PQW5F8PFYB
+        author: plan-author
+        body: "Resolution: the depends_on links stay — they are the durable, machine-visible ordering that
+          resolves once P0a derives; removing them would lose that linkage. The Approval ordering
+          section now states the gate explicitly: this plan must not be approved or derived before
+          @plan-ui-redesign-global-decisions is approved and derived; the pending refs are
+          intentional. The plan remains draft until then."
+        created_at: 2026-06-11T17:25:08.832Z
     kind: question
 verdicts:
   - applies_to_version:
@@ -487,5 +501,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:08:20.500Z
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T17:25:03.117Z
+updated_at: 2026-06-11T17:25:08.832Z
 notes: []
