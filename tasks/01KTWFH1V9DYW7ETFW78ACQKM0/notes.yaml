@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KTWH5CWMV72SBC0ZSSJAHWBG
+    content: "Root cause identified: tests/cli-serve.test.ts ('should start daemon from npm-installed
+      package with all deps available') runs 'npm pack' at the project root WITHOUT
+      --ignore-scripts. package.json prepack runs the full 'npm run build' (tsc + build:daemon + rm
+      -rf dist/web-ui + ...), rewriting the live dist/ tree mid-suite while parallel vitest workers
+      spawn 'node dist/cli/index.js'. A CLI spawn that reads dist/cli/commands/validate.js
+      mid-rewrite sees a partial/missing export — exactly the observed SyntaxError in
+      workflow-runs.test.ts. release-packaging.test.ts already packs with --ignore-scripts for this
+      exact reason. Plan: add --ignore-scripts to the cli-serve pack call (pretest build already
+      guarantees dist is current, so the packed artifact still reflects the current build), update
+      the comment. The race is nondeterministic so no deterministic behavioral repro test is
+      practical; will evaluate the existing custom oxlint rule infra for a cheap lint guard."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T23:44:31.124Z
