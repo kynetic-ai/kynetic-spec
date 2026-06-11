@@ -28,6 +28,18 @@ checks:
     runner: kspec plan import --dry-run
     created_at: 2026-06-11T22:16:08.442Z
     completed_at: 2026-06-11T22:16:08.442Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command passed. Existing deprecated-ref warnings remain in the repo baseline; no reference
+      errors. The plan's P0a decision refs are intentionally not live until derivation and are
+      documented as the acknowledged ordering gate.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T22:16:18.619Z
+    completed_at: 2026-06-11T22:16:18.619Z
 events:
   - _ulid: 01KTWC1QMPXS7YZAMWEG4MCAC0
     actor: "@claude"
@@ -56,6 +68,13 @@ events:
       status: pass
       name: plan parse
     timestamp: 2026-06-11T22:16:08.732Z
+  - _ulid: 01KTWC3WP8KAS7E0J76X9D8REY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T22:16:18.888Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -68,5 +87,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:15:08.182Z
-updated_at: 2026-06-11T22:16:08.442Z
+updated_at: 2026-06-11T22:16:18.619Z
 notes: []
