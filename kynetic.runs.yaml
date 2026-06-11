@@ -62938,7 +62938,7 @@ runs:
     completed_at: 2026-06-11T10:51:58.865Z
   - _ulid: 01KTV61G2H9P4S3M6QWAWRJV3R
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -62975,7 +62975,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-11T11:12:38.894Z
-        completed_at: 2026-06-11T11:12:38.894Z
+        completed_at: 2026-06-11T11:12:50.205Z
+        notes: "Proposed improvement: Add a test-runner heartbeat or active-file/active-worker status line
+          when npm test has produced no progress output for a defined interval. It would show which
+          Vitest worker/test file or child process is still active, reducing reviewer uncertainty
+          and avoiding manual ps-tree inspection during long quiet tails. Rough scope:
+          small-to-medium, likely in scripts/test.cjs or the progress reporter."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-11T11:12:50.205Z
+        completed_at: 2026-06-11T11:12:50.205Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T11:10:54.545Z
