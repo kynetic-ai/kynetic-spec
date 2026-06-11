@@ -2,7 +2,104 @@ _ulid: 01KTVGJRAZFEHSQC7NT7PPEF5V
 slugs: []
 title: Review task-daemon-triage-api-tests cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use correct formatting; oxfmt checked 1008 files.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T14:28:59.340Z
+    completed_at: 2026-06-11T14:28:59.340Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint completed with 0 errors; existing warning baseline reported 738 warnings.
+      Focused changed-file oxlint on packages/daemon/src/routes/triage.ts and
+      tests/daemon-api/triage.test.ts found 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T14:29:02.012Z
+    completed_at: 2026-06-11T14:29:02.012Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit exited 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T14:29:04.609Z
+    completed_at: 2026-06-11T14:29:04.609Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok exited 0; schema and references OK with existing
+      deprecated-ref warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T14:29:07.201Z
+    completed_at: 2026-06-11T14:29:07.201Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok exited 0 with existing orphan/status warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T14:29:09.832Z
+    completed_at: 2026-06-11T14:29:09.832Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok exited 0 with existing repo-wide completeness
+      warning baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T14:29:12.544Z
+    completed_at: 2026-06-11T14:29:12.544Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full suite passed: 2767 suites passed; 10492 tests passed, 5 skipped, 10497 total.
+      New tests/daemon-api/triage.test.ts passed 38 tests. Full log:
+      /tmp/kspec-test-cache/01KTVGH90PDMJCC70WQ7VCSBZ7/9dd9cc7d187311d1.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-06-11T14:29:15.248Z
+    completed_at: 2026-06-11T14:29:15.248Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; packages/daemon/src/routes/triage.ts;
+      tests/daemon-api/triage.test.ts; tests/daemon-api/helpers.ts;
+      tests/daemon-api/websocket-protocol.test.ts; packages/daemon/src/websocket/pubsub.ts;
+      src/parser/shadow.ts; deleted tests/e2e/api-triage.spec.ts from base. Commands run: kspec task
+      get; kspec item get @triage-daemon-api; kspec review get prior review; git diff/log/show; rg
+      AC/source-scan searches; kspec validate refs/alignment/completeness; npm run format:check; npm
+      run lint -- --quiet; npx oxlint changed files; npm run typecheck; npm test -- --fresh. Claims
+      verified: fix-cycle claim for @trait-api-endpoint ac-5 verified by reading the new Shadow
+      commits test and by full suite passing triage.test.ts 38 tests; skipped E2E deletion verified
+      against base file and new daemon-api coverage. Categories searched: correctness, edge cases,
+      error handling, test quality, trait AC coverage, websocket integration split, shadow commit
+      persistence, source-scanning avoidance. Findings: none."
+    name: review evidence log
+    required: true
+    runner: codex-reviewer
+    created_at: 2026-06-11T14:29:17.922Z
+    completed_at: 2026-06-11T14:29:17.922Z
 events:
   - _ulid: 01KTVGJRAYYX4GB6AMJA1EWCG1
     actor: Jacob Chapel
@@ -17,6 +114,62 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T14:15:30.837Z
+  - _ulid: 01KTVHC6JC4R5XT2RD2Z4SZVJW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T14:28:59.596Z
+  - _ulid: 01KTVHC95D2TPKHHT0NZ73TT7S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T14:29:02.253Z
+  - _ulid: 01KTVHCBNM53D78PXYGHVS5ZVZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T14:29:04.820Z
+  - _ulid: 01KTVHCE6QB9S5S0E2VVJCQFEE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T14:29:07.415Z
+  - _ulid: 01KTVHCGS1BCT4P7XPXMH3RZ7P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T14:29:10.049Z
+  - _ulid: 01KTVHCKEBKFG9MQFFTK1YKG5Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T14:29:12.779Z
+  - _ulid: 01KTVHCP2H0Z91A1W6PZCPSGEJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T14:29:15.473Z
+  - _ulid: 01KTVHCRNVD7X1BEMK5WG2CQK1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-11T14:29:18.139Z
 examined_commit: 1b61b5f1f02c06fcc5bb74b501eae9f781daab89
 external_links: []
 lifecycle_state: open
@@ -29,5 +182,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T14:15:05.823Z
-updated_at: 2026-06-11T14:15:30.618Z
+updated_at: 2026-06-11T14:29:17.922Z
 notes: []
