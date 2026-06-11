@@ -31244,6 +31244,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:52:53.572Z
+  automation: eligible
 - _ulid: 01KTTCZFSEFHZY0DX7B8NN7GTM
   slugs:
     - task-add-contributing-security-docs
