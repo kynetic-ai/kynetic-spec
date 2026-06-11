@@ -25562,3 +25562,20 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-11T17:45:03.708Z
     updated_at: 2026-06-11T17:46:23.918Z
+  - _ulid: 01KTVWYZ2W7THFC8QH2FY00HB8
+    slugs: []
+    title: "Plan review: UI Redesign Global Decisions (claude round 1, post-round-3 verification)"
+    disposition: pending
+    author: "@claude"
+    check_count: 0
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-ui-redesign-global-decisions"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-11T17:51:28.860Z
