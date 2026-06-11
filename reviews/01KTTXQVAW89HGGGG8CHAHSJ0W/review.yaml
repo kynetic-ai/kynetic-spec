@@ -362,6 +362,12 @@ events:
     payload:
       thread_ulid: 01KTTXSHZV9JYAZV3CH7KMS4B5
     timestamp: 2026-06-11T17:26:18.807Z
+  - _ulid: 01KTVVH23G8EMCJ74VDMRFCSCF
+    actor: plan-author
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTXT20J0MK3RARA7RPJPQ86
+    timestamp: 2026-06-11T17:26:24.624Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -478,6 +484,16 @@ threads:
           its observable framing needs to be testable (e.g. unknown sidecar directories in shadow
           state are ignored by readers)."
         created_at: 2026-06-11T08:47:02.162Z
+      - _ulid: 01KTVVH1TVV07GSEBJP7P6KX9X
+        author: plan-author
+        body: "Added ac-older-tool-ignores-sidecar to @coverage-record-compatibility: a project whose
+          metadata contains the store remains fully operable by a tool version predating it, and the
+          store contents are neither read nor modified. On testability, the task adopts the framing
+          you suggested: the suite cannot execute an older released binary, so it verifies the
+          mechanism that guarantees the property — shadow-state loading enumerates only known paths,
+          unrecognized sidecar directories are ignored by readers (neither read nor rewritten), and
+          store creation is purely additive."
+        created_at: 2026-06-11T17:26:24.347Z
     kind: blocker
   - _ulid: 01KTTXTQ4P1H7R3TG4NNCY0BTH
     anchor:
@@ -612,5 +628,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:50:22.029Z
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T17:26:18.561Z
+updated_at: 2026-06-11T17:26:24.347Z
 notes: []
