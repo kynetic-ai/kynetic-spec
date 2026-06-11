@@ -25612,10 +25612,10 @@ reviews:
       ref: "@plan-web-ui-foundations"
       shadow_commit: ""
     thread_count: 8
-    unresolved_blocker_count: 7
+    unresolved_blocker_count: 6
     verdict_count: 1
     created_at: 2026-06-11T18:10:37.230Z
-    updated_at: 2026-06-11T18:41:57.516Z
+    updated_at: 2026-06-11T18:42:02.896Z
   - _ulid: 01KTVY7MQS5CRVTS8D5T5AREZM
     slugs: []
     title: "Plan review: Shared Mutation and Event Service (round 1)"
