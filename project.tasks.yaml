@@ -31521,7 +31521,7 @@
   type: task
   spec_ref: "@data-format-forward-compatibility"
   plan_ref: "@plan-data-integrity-and-upgrade-safety"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -31536,6 +31536,7 @@
   created_at: 2026-06-11T03:53:42.624Z
   started_at: 2026-06-11T07:13:02.622Z
   submitted_at: 2026-06-11T08:07:59.304Z
+  completed_at: 2026-06-11T08:29:33.394Z
   automation: eligible
 - _ulid: 01KTTD0ZPTTX0N18MEY53HFKMK
   slugs:
