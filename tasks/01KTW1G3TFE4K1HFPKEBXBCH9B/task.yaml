@@ -14,8 +14,9 @@ description: "During review of @task-ci-node-version-matrix on 2026-06-11, a ful
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending
+status: cancelled
 blocked_by: []
+closed_reason: Duplicate of @01KTVDV1; added this review's occurrence as a note there.
 depends_on: []
 context: []
 priority: 3
@@ -23,6 +24,17 @@ tags:
   - test
   - flaky
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: cancelled
+        previous: pending
+      closed_reason:
+        new: Duplicate of @01KTVDV1; added this review's occurrence as a note there.
+        previous: null
+    command: task-cancel
+    timestamp: 2026-06-11T19:15:48.007Z
 created_at: 2026-06-11T19:10:45.071Z
 todos: []
 automation: eligible

@@ -31747,7 +31747,7 @@
   tags:
     - testing
     - flaky
-  notes_count: 0
+  notes_count: 1
   todos_count: 0
   created_at: 2026-06-11T13:27:11.331Z
   automation: eligible
@@ -31788,7 +31788,7 @@
     - task-stabilize-workflow-runs-stale-dist
   title: Stabilize workflow-runs test against stale dist during full suite
   type: bug
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   priority: 3

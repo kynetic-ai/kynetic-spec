@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KTW1S9WMH12H0RK63B64JY74
+    content: "Additional occurrence during review of @task-ci-node-version-matrix on 2026-06-11: full
+      npm test failed once in tests/workflow-runs.test.ts ('workflow next - completing last step
+      should output summary in JSON mode') because a CLI subprocess imported dist/parser/meta.js and
+      dist/schema/index.js did not export AgentSchema. Focused reruns of npm test --
+      tests/workflow-runs.test.ts --fresh passed twice, including after npm run build. This
+      reinforces the existing stale/inconsistent dist full-suite failure mode."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-11T19:15:46.197Z
