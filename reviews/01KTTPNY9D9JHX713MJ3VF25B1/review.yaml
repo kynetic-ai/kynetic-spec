@@ -2,7 +2,74 @@ _ulid: 01KTTPNY9D9JHX713MJ3VF25B1
 slugs: []
 title: "Plan review: UI Redesign Global Decisions (round 1)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All external refs resolve: @01KJXQK4 (pending, plan_ref @plan-ui-ux-revamp) and @01KKBD66
+      (pending) exist; all four disposition targets (@plan-interactive-agent-sessions,
+      @plan-activity-timeline-diff-summaries, @plan-dispatch-mutation-service,
+      @plan-ux-module-and-design-decision-architecture) exist as drafts. All 12 proposed spec/task
+      slugs are collision-free against the corpus. AC ids are sequential (ac-1..ac-N) within each
+      spec with no gaps or duplicates."
+    name: Cross-reference validation
+    required: true
+    runner: kspec-cli
+    created_at: 2026-06-11T06:46:26.541Z
+    completed_at: 2026-06-11T06:46:26.541Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Three meta tasks, all P2, no depends_on entries, mutually independent and parallelizable.
+      No cycles, no priority inversions, no missing prerequisite relationships among them.
+      Sequencing of @ux module creation relative to derive is raised separately as a blocker (module
+      placement).
+    name: Dependency ordering
+    required: true
+    runner: manual
+    created_at: 2026-06-11T06:46:29.083Z
+    completed_at: 2026-06-11T06:46:29.083Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "derive_from_specs: false; the three meta tasks claim no AC coverage and carry no Covers
+      lines — accurate against plan content, since they are housekeeping tasks covering no spec
+      behavior. All 19 decision ACs are intentionally deferred to consumer track plans per the
+      Consumers table; posture confirmed-or-revise raised as a question thread."
+    name: AC-to-task coverage mapping
+    required: true
+    runner: manual
+    created_at: 2026-06-11T06:46:31.678Z
+    completed_at: 2026-06-11T06:46:31.678Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --refs --warnings-ok: pre-existing warnings only (deprecated-item refs
+      unrelated to this plan); nothing attributable to this plan record."
+    name: Corpus validation baseline
+    required: true
+    runner: kspec-cli
+    created_at: 2026-06-11T06:46:34.152Z
+    completed_at: 2026-06-11T06:46:34.152Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Searched coverage, validate/staleness, merge, actor identity, preferences/localStorage,
+      keyboard, and ingestion neighborhoods. No existing spec already covers the 8 decisions; no
+      duplicate behavior found ('ingest' has zero corpus matches — green field). Two semantic
+      frictions with implemented specs raised as threads: N/A exemption divergence vs
+      @trait-validation, and daemon-request reach vs dispatch-hosted agent execution
+      (@test-result-acquisition ac-2, @integration-merge-authority ac-1)."
+    name: Spec neighborhood alignment
+    required: true
+    runner: manual
+    created_at: 2026-06-11T06:46:36.694Z
+    completed_at: 2026-06-11T06:46:36.694Z
 events:
   - _ulid: 01KTTPNY9CVMAQC5EHJEXMZVFD
     actor: "@claude"
@@ -10,17 +77,319 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T06:42:27.244Z
+  - _ulid: 01KTTPWA8NY9ZZ7A4MNB6RKTDN
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T06:45:56.117Z
+  - _ulid: 01KTTPWCW513S9MM1VMAC1F7G8
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTPWCMTR3GEN0ME8D5N014Y
+    timestamp: 2026-06-11T06:45:58.789Z
+  - _ulid: 01KTTPWFG7BD604JBWP38SZ9HP
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTPWF99FDQGHBGSW91VFB8X
+    timestamp: 2026-06-11T06:46:01.479Z
+  - _ulid: 01KTTPWHZPKXZZ45DEXDXWAJ6P
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTPWHRRKDZ5GNAY8X8HY173
+    timestamp: 2026-06-11T06:46:04.022Z
+  - _ulid: 01KTTPWMJ5J144A011DG2MWP3Y
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTTPWMAETB4J0MSAV9AVPV3H
+    timestamp: 2026-06-11T06:46:06.662Z
+  - _ulid: 01KTTPWQ2A9M7J363FZT7E7HNG
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTTPWPVV9J9FM9Z9672VNVPC
+    timestamp: 2026-06-11T06:46:09.226Z
+  - _ulid: 01KTTPWSE8XJD62A7X0K028R6D
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTTPWS7V9ADRJ82TPERDRFW7
+    timestamp: 2026-06-11T06:46:11.656Z
+  - _ulid: 01KTTPWVWHAPQX875AP4RRBRBT
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTTPWVN9B4YWVHMRCD3VN2ZK
+    timestamp: 2026-06-11T06:46:14.161Z
+  - _ulid: 01KTTPWYDPPR0VV0PXMF0J7RKG
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTTPWY7D38T91KP7F5091KTT
+    timestamp: 2026-06-11T06:46:16.758Z
+  - _ulid: 01KTTPX0TPSCZY53WKE76E26CB
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTTPX0KKXK7J2C6QSPVVCGQC
+    timestamp: 2026-06-11T06:46:19.222Z
+  - _ulid: 01KTTPX3AH12QKP94E2H1WYER2
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTTPX34B25368K9J765DAGZS
+    timestamp: 2026-06-11T06:46:21.777Z
+  - _ulid: 01KTTPX5NYK3VJ3A6CKCAF73RQ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTTPX5FKZN7A0VXJRBKKTV80
+    timestamp: 2026-06-11T06:46:24.190Z
+  - _ulid: 01KTTPX85WN0NSYB2EGX8WFNPS
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation
+    timestamp: 2026-06-11T06:46:26.748Z
+  - _ulid: 01KTTPXAN965F29NWQZ9XJE7ZT
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-11T06:46:29.289Z
+  - _ulid: 01KTTPXD65TTW3M8V76TGQ1B2J
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC-to-task coverage mapping
+    timestamp: 2026-06-11T06:46:31.877Z
+  - _ulid: 01KTTPXFMNWM1FJJDFYAZKMAKY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Corpus validation baseline
+    timestamp: 2026-06-11T06:46:34.389Z
+  - _ulid: 01KTTPXJ37BWGGJEQ3FRXSSWE0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec neighborhood alignment
+    timestamp: 2026-06-11T06:46:36.903Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-ui-redesign-global-decisions"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTTPWCMTR3GEN0ME8D5N014Y
+    anchor:
+      type: structured
+      section: specs
+    entries:
+      - _ulid: 01KTTPWCMT40SM4380H77JED5P
+        author: "@claude"
+        body: "Module/parent placement is unresolved for the entire decision set. The plan's stored module
+          is @main, whose description is 'Default module for Kynetic Spec. Add your spec items
+          here.' — a draft placeholder — and none of the 8 specs declares a parent. Deriving as-is
+          lands all decision items unparented in the placeholder module. Meanwhile
+          task-record-overlapping-plan-dispositions declares the
+          @plan-ux-module-and-design-decision-architecture decision architecture 'adopted' — but
+          that plan is an underived draft, so its @ux module does not exist. State the intended
+          placement explicitly: either name a parent per spec (several decisions are not UX-scoped,
+          e.g. test-result-acquisition is daemon/coverage territory), or name the target module(s)
+          and sequence creation of @ux (or another home) before or with derive."
+        created_at: 2026-06-11T06:45:58.554Z
+    kind: blocker
+  - _ulid: 01KTTPWF99FDQGHBGSW91VFB8X
+    anchor:
+      type: structured
+      field: ac-2
+      ref: "@test-result-acquisition"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTPWF997ZX3XJMGPHTK0HB4
+        author: "@claude"
+        body: "As written this AC is violated by intended system behavior. The daemon hosts the dispatch
+          engine; a daemon API request that starts dispatch results in agent invocations that
+          execute project-defined test commands (quality gates) as part of task work. 'No test suite
+          or project-defined command is executed as a result of the request' therefore fails under a
+          literal reading, and its truth value depends on how far 'as a result of' reaches — not
+          deterministic. Tighten to the actual decision boundary: the daemon exposes no endpoint
+          whose handler executes a test suite or project-defined command; processes the dispatch
+          engine spawns act in their own execution context and are out of scope."
+        created_at: 2026-06-11T06:46:01.257Z
+    kind: blocker
+  - _ulid: 01KTTPWHRRKDZ5GNAY8X8HY173
+    anchor:
+      type: structured
+      field: ac-1
+      ref: "@web-shell-platform-target"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTPWHRR5CCFY8BT82V0MJ3C
+        author: "@claude"
+        body: "'Any shell capability is exercised → full functionality is available' is the 'system works
+          correctly' anti-pattern: 'full functionality' has no bounded, observable definition, so no
+          test can prove or falsify it. Restate as a bounded observable — e.g. every shell action is
+          operable via browser-standard pointer and keyboard input with no affordance that requires
+          a native window manager (window controls, native menus, OS-level shortcuts) — or enumerate
+          the prohibited affordance classes."
+        created_at: 2026-06-11T06:46:03.800Z
+    kind: blocker
+  - _ulid: 01KTTPWMAETB4J0MSAV9AVPV3H
+    anchor:
+      type: structured
+      field: ac-1
+      ref: "@integration-merge-authority"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTPWMAER46TYP0GQS27DJST
+        author: "@claude"
+        body: "Same reach problem as test-result-acquisition ac-2, in milder form: dispatch reviewer agents
+          perform integration merges downstream of daemon-hosted dispatch. The description scopes
+          this correctly ('performed by the acting agent … in their own execution environment'), but
+          ac-1's 'any request arriving at the daemon API → no operation performs a version-control
+          merge' invites reading agent-performed merges as violations. Suggest restating to the
+          endpoint boundary: the daemon exposes no merge-execution capability and no request handler
+          performs a merge on a consumer code repository."
+        created_at: 2026-06-11T06:46:06.415Z
+    kind: question
+  - _ulid: 01KTTPWPVV9J9FM9Z9672VNVPC
+    anchor:
+      type: structured
+      ref: "@ac-coverage-applicability"
+      section: specs
+    entries:
+      - _ulid: 01KTTPWPVVA76SGQTFZB8M5EJM
+        author: "@claude"
+        body: "N/A semantics divergence with the implemented validate path is acknowledged only partially.
+          Implemented spec @trait-validation (ac-2) plus shipped agent guidance treat in-code N/A
+          annotations as exempting trait ACs from completeness warnings; this decision makes them
+          'neither cover nor exempt' for corpus coverage, while the Boundaries section defers the
+          convention's retirement out of program scope. Result: two coexisting coverage semantics
+          for the same annotation. Boundaries already names the staleness/drift vocabulary collision
+          and assigns disambiguation to the coverage engine plan — do the same here: name which plan
+          owns reconciling validate's exemption behavior with the new engine, or state explicitly
+          that both semantics coexist until the task-coverage-metadata work lands."
+        created_at: 2026-06-11T06:46:09.019Z
+    kind: question
+  - _ulid: 01KTTPWS7V9ADRJ82TPERDRFW7
+    anchor:
+      type: structured
+      ref: "@task-fold-agent-dashboard-design-task"
+      section: description
+    entries:
+      - _ulid: 01KTTPWS7VE5J8YYCM0WVF1QJ2
+        author: "@claude"
+        body: "'Cancel the task with a supersession reason (or re-point it at the owning plan when that plan
+          exists, whichever the owner prefers at execution time)' is not standalone-executable — an
+          agent picking this up in a fresh session cannot resolve 'whichever the owner prefers'.
+          Pick one default action (cancel with supersession note, matching the sibling umbrella
+          task) and drop the alternative, or state the concrete condition that selects between
+          them."
+        created_at: 2026-06-11T06:46:11.452Z
+    kind: question
+  - _ulid: 01KTTPWVN9B4YWVHMRCD3VN2ZK
+    anchor:
+      type: structured
+      field: ac-1
+      ref: "@client-preference-persistence"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTPWVN990T64FGPWYCCEJA9
+        author: "@claude"
+        body: "'Access goes through the shared preference utility rather than ad-hoc storage calls' is
+          verifiable only by source inspection, and this project rejects source-scanning tests on
+          sight (no-source-scanning lint rule; testing convention). As written the AC cannot get a
+          legitimate covering test. Either restate observably (e.g. a stored preference survives
+          reload and is recorded under the shared namespaced, versioned key format) or state that
+          enforcement is a lint rule rather than a test."
+        created_at: 2026-06-11T06:46:13.929Z
+    kind: question
+  - _ulid: 01KTTPWY7D38T91KP7F5091KTT
+    anchor:
+      type: structured
+      section: tasks
+    entries:
+      - _ulid: 01KTTPWY7D52BJVEP5SMMG3K3A
+        author: "@claude"
+        body: "Coverage posture after derive: derive_from_specs: false leaves all 19 ACs across the 8
+          decision items with no implementing tasks, and the three meta tasks correctly claim no AC
+          coverage. The Consumers table assigns each decision to future track plans, so the
+          orphaning is by design — but once derived, these items sit not_started and orphaned, and
+          kspec validate --completeness will flag them until track plans land. Confirm this is the
+          intended posture and consider stating in Implementation Notes how consuming track plans
+          will claim these ACs (e.g. Covers lines referencing the decision items) so the coverage
+          debt is tracked rather than ambient."
+        created_at: 2026-06-11T06:46:16.557Z
+    kind: question
+  - _ulid: 01KTTPX0KKXK7J2C6QSPVVCGQC
+    anchor:
+      type: structured
+      ref: "@test-result-acquisition"
+      section: description
+    entries:
+      - _ulid: 01KTTPX0KK5YYAWGTC99GRXJ57
+        author: "@claude"
+        body: "'Freshness presentation always reflects the most recently ingested run, named as such' is an
+          observable behavioral promise that no AC covers. Add an AC or move it to the consuming
+          track spec (coverage state engine / validate view per the Consumers table)."
+        created_at: 2026-06-11T06:46:18.995Z
+    kind: nit
+  - _ulid: 01KTTPX34B25368K9J765DAGZS
+    anchor:
+      type: structured
+      ref: "@annotation-freshness-provenance"
+      section: description
+    entries:
+      - _ulid: 01KTTPX34BAR28GZ7YB3G9F986
+        author: "@claude"
+        body: "'Interfaces that consume freshness accept either a timestamp or a commit reference' has no AC
+          coverage. Add an AC for the dual-form acceptance or demote it to implementation notes — as
+          description text it reads as a contract but nothing verifies it."
+        created_at: 2026-06-11T06:46:21.579Z
+    kind: nit
+  - _ulid: 01KTTPX5FKZN7A0VXJRBKKTV80
+    anchor:
+      type: structured
+      field: ac-3
+      ref: "@actor-identity-model"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTPX5FKXS0C9HKF2B8PDXZ2
+        author: "@claude"
+        body: The trailing clause 'and grants or implies no access control' is a non-observable negative —
+          no test can demonstrate the absence of implied semantics. The description already states
+          identity is attribution with no auth semantics. Trim the AC to the verifiable assertion
+          (the view derives from canonical identities).
+        created_at: 2026-06-11T06:46:23.987Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: null
+updated_at: 2026-06-11T06:46:36.694Z
 notes: []

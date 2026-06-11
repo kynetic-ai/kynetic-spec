@@ -25059,17 +25059,18 @@ reviews:
   - _ulid: 01KTTPNY9D9JHX713MJ3VF25B1
     slugs: []
     title: "Plan review: UI Redesign Global Decisions (round 1)"
-    disposition: pending
+    disposition: changes_requested
     author: "@claude"
-    check_count: 0
-    lifecycle_state: draft
+    check_count: 5
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-ui-redesign-global-decisions"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 11
+    unresolved_blocker_count: 3
     verdict_count: 0
     created_at: 2026-06-11T06:42:27.245Z
+    updated_at: 2026-06-11T06:46:36.694Z
