@@ -13400,3 +13400,80 @@ workspaces:
         head: 97f10f3b5c87ba10d761643d782f023ef8ad8e6b
         last_seen_at: 2026-06-11T09:12:17.633Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-fatal-failure-observability-01kttd06
+  - active_role: null
+    base_branch_point: 295c22542ec5fc475f47f4257dc0968bed4d99be
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-shadow-restore-loud-failure/01kttd0y
+    canonical_branch_head: 295c22542ec5fc475f47f4257dc0968bed4d99be
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-11T09:13:04.901Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-11T09:13:04.901Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 295c22542ec5fc475f47f4257dc0968bed4d99be
+      updated_at: 2026-06-11T09:13:04.901Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_id: 01KTTD0Y7J7B30QYRVF0NQ0B81
+    task_ref: "@01KTTD0Y7J7B30QYRVF0NQ0B81"
+    task_slug: task-shadow-restore-loud-failure
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-11T09:13:04.901Z
+      created_at: 2026-06-11T09:13:04.901Z
+      updated_at: 2026-06-11T09:13:04.901Z
+    workspace_id: dispatch-workspace-01KTTD0Y7J7B30QYRVF0NQ0B81
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-shadow-restore-loud-failure/01kttd0y
+        head: 295c22542ec5fc475f47f4257dc0968bed4d99be
+        last_seen_at: 2026-06-11T09:13:04.901Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shadow-restore-loud-failure-01kttd0y
