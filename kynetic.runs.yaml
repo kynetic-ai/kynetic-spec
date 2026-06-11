@@ -62214,7 +62214,7 @@ runs:
     completed_at: 2026-06-11T06:08:09.947Z
   - _ulid: 01KTTN57F4A9C6KPFP3MJZKTV5
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -62240,7 +62240,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-11T06:17:34.766Z
-        completed_at: 2026-06-11T06:17:34.766Z
+        completed_at: 2026-06-11T06:17:45.926Z
+        notes: "Duplicate/unique decision: skip all candidate captures. Long full-suite/spec-only review
+          friction duplicates existing tracking: inbox 01KNTB8Z4, requirement
+          @test-suite-perf-reliability, and observations
+          01KMW99S/01KT6105/01KTMHHG/01KT2F6H/01KTN0CE. Exact AC payload success duplicates
+          observation 01KTTKM7. No unique high-confidence item remains."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-11T06:17:45.926Z
+        completed_at: 2026-06-11T06:17:45.926Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T06:15:51.012Z
