@@ -21,3 +21,38 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T07:24:23.768Z
+  - _ulid: 01KTTVJH6YW2CV0K79VTFWH25A
+    content: "Implementation complete on dispatch/task/task-format-version-ceiling/01kttd0y (commit
+      d66ac71046). What was built: (1) src/parser/format-version.ts —
+      MAX_SUPPORTED_KYNETIC_VERSION='1.2', FormatVersionCompatibilityError with deterministic codes
+      format_version_newer_than_supported / unrecognized_format_version; the code and both versions
+      are embedded in the message so every surface that only prints err.message still presents them.
+      (2) initContext (src/parser/yaml.ts) — raw-manifest ceiling check (missing field stays
+      unambiguous) runs in the shadow path BEFORE the pre-read sync block, and all three
+      manifest-read paths (KSPEC_SPEC_DIR override, shadow post-sync, traditional) re-check via
+      shared readManifestWithVersionCeiling, which gives the post-sync re-check on a freshly pulled
+      manifest. (3) Daemon — packages/daemon/src/routes/format-version-error.ts maps the error to a
+      structured 409 (error=format_version_incompatible, code, declared_version,
+      max_supported_version added to shared ErrorResponse); wired as a parent-level onError in
+      server.ts before route plugins (verified empirically that Elysia parent onError catches
+      plugin-route errors and that route-group onError handlers fall through); the same handler is
+      mirrored in tests/daemon-api createTestApp. (4) Doctor — buildFormatVersionCheck reports the
+      mismatch read-only (doctor never calls initContext). (5) Upgrade — inferVersionFromProbes
+      throws the deterministic error for declared>max (and rethrows it past the manifest-unreadable
+      catch); registerUpgradeCommand and kspec init no longer collapse the refusal into 'No kspec
+      project found' / silent fallback. Scope decision: pre-existing best-effort initContext
+      fallbacks in agent-runtime (dispatch.ts, prompts.ts), serve.ts resolveDefaultKspecDir,
+      merge-driver, and agent watch still swallow ALL initContext errors by design; none of them
+      mutate project data and the command/daemon entry gates refuse first, so they were left
+      unchanged. Testing: 23 new tests across tests/format-version-ceiling.test.ts (unit + CLI
+      refusal/no-modification via content+mtime snapshots, upgrade refusal, detectSourceVersion
+      unit, doctor read-only on a real kspec-init project),
+      tests/format-version-ceiling-sync.test.ts (real bare-remote dual fixture: pre-sync check
+      passes on local 1.2, pull imports remote 9.9, same invocation refuses post-pull with worktree
+      clean at remote head), tests/daemon-api/format-version-ceiling-routes.test.ts (409 contract on
+      read+mutating routes). All 7 spec AC ids annotated. Gates: format:check, lint --quiet (0
+      errors), focused oxlint on changed files (0 findings), typecheck, full npm test (10418 passed
+      / 0 failed), kspec validate refs/alignment/completeness all green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T08:07:58.430Z

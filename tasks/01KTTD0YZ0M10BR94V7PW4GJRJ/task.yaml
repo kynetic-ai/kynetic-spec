@@ -127,7 +127,7 @@ description: |
 spec_ref: "@data-format-forward-compatibility"
 plan_ref: "@plan-data-integrity-and-upgrade-safety"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -138,6 +138,14 @@ tags:
   - upgrade
   - reliability
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-format-version-ceiling/01kttd0y
+  captured_at: 2026-06-11T08:07:59.302Z
+  commit: d66ac7104626eef77356d93a8429a6620ffd18da
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KTTRD5T5V9A8XS8RWXGQSVH8
 history:
   - author: Jacob Chapel
@@ -160,7 +168,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-11T07:13:02.622Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-format-version-ceiling/01kttd0y
+          captured_at: 2026-06-11T08:07:59.302Z
+          commit: d66ac7104626eef77356d93a8429a6620ffd18da
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-11T08:07:59.304Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-11T08:07:59.304Z
 created_at: 2026-06-11T03:53:42.624Z
 started_at: 2026-06-11T07:13:02.622Z
+submitted_at: 2026-06-11T08:07:59.304Z
 todos: []
 automation: eligible
