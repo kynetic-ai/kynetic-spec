@@ -13214,12 +13214,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T09:11:52.804Z
+      updated_at: 2026-06-11T09:12:17.633Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T09:11:52.804Z
+      updated_at: 2026-06-11T09:12:17.633Z
     integration:
       status: pending
       detail: null
@@ -13227,7 +13227,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1a7f9791d9f9826ac42a8e6df0ab93d918630e8f
-      updated_at: 2026-06-11T09:11:52.804Z
+      updated_at: 2026-06-11T09:12:17.633Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTTD06BWZAEDXS79B66C260R
@@ -13236,16 +13236,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T08:41:30.752Z
-      last_reconciled_at: 2026-06-11T09:11:52.804Z
+      last_reconciled_at: 2026-06-11T09:12:17.633Z
       created_at: 2026-06-11T08:41:01.668Z
-      updated_at: 2026-06-11T09:11:52.804Z
+      updated_at: 2026-06-11T09:12:17.633Z
     workspace_id: dispatch-workspace-01KTTD06BWZAEDXS79B66C260R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 97f10f3b5c87ba10d761643d782f023ef8ad8e6b
+        last_seen_at: 2026-06-11T09:12:17.633Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-fatal-failure-observability-01kttd06-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-fatal-failure-observability/01kttd06
-        head: 1a7f9791d9f9826ac42a8e6df0ab93d918630e8f
-        last_seen_at: 2026-06-11T08:41:01.668Z
+        head: 97f10f3b5c87ba10d761643d782f023ef8ad8e6b
+        last_seen_at: 2026-06-11T09:12:17.633Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-fatal-failure-observability-01kttd06
