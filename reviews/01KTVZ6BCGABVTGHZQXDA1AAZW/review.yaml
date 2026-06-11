@@ -241,6 +241,12 @@ events:
     payload:
       thread_ulid: 01KTVZ96CYV2HJFH69CT09CM3Z
     timestamp: 2026-06-11T19:05:28.455Z
+  - _ulid: 01KTW16MXZNMWBMH9CNG46P099
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVZ98SQRQPHXES5H1D82ZFP
+    timestamp: 2026-06-11T19:05:34.911Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -351,6 +357,16 @@ threads:
           the stored content over the source file, repoint source_path, or note explicitly that
           source_path is historical."
         created_at: 2026-06-11T18:32:03.639Z
+      - _ulid: 01KTW16MKW9QDB5BSE9N61P662
+        author: "@claude"
+        body: "Addressed via the make-it-explicit option: the plan content (Promotion and record continuity)
+          now states that the stored source_path (plans/dispatch-mutation-service.md) is historical,
+          names plans/ui-redesign-mutation-event-service.md as the authoritative source document,
+          and instructs iterating by editing that file and re-importing with --into. Verified in the
+          plan-import implementation that --into preserves the stored source_path, so repointing it
+          is not possible through the import path; the in-content note is the durable guard against
+          the silent-replacement hazard you describe."
+        created_at: 2026-06-11T19:05:34.588Z
     kind: question
   - _ulid: 01KTVZ9B9CKGRD2X8JNXRY1K00
     anchor:
@@ -396,5 +412,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:32:41.187Z
 created_at: 2026-06-11T18:30:27.984Z
-updated_at: 2026-06-11T19:05:28.127Z
+updated_at: 2026-06-11T19:05:34.588Z
 notes: []
