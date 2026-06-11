@@ -170,9 +170,25 @@ events:
       kind: nit
       thread_ulid: 01KTWDW2RT7VA5NT2TB870CP52
     timestamp: 2026-06-11T22:47:00.424Z
+  - _ulid: 01KTWDWDAG5PV4853QZERZRES3
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T22:47:10.928Z
+  - _ulid: 01KTWDWDAG563J098636JC4VK7
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T22:47:10.928Z
 examined_commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -251,7 +267,14 @@ threads:
           package surface changed."
         created_at: 2026-06-11T22:47:00.122Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-11T22:47:10.928Z
 created_at: 2026-06-11T22:24:32.166Z
-updated_at: 2026-06-11T22:47:00.122Z
+updated_at: 2026-06-11T22:47:10.928Z
 notes: []
