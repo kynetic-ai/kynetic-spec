@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KTTVG2323NE18R3185B7RMTD
     timestamp: 2026-06-11T08:06:38.004Z
+  - _ulid: 01KTTVG30W9ZDPA24BSPCEX7Z7
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTVG28FXDNNGF8Z45VWXT7F
+    timestamp: 2026-06-11T08:06:38.364Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -52,7 +59,23 @@ threads:
           coverage-annotation contract, so the live corpus does not contain contradictory specs.
         created_at: 2026-06-11T08:06:37.410Z
     kind: blocker
+  - _ulid: 01KTTVG28FXDNNGF8Z45VWXT7F
+    anchor:
+      type: structured
+      field: covers
+      ref: "@task-na-annotation-coverage-exclusion"
+      section: tasks
+    entries:
+      - _ulid: 01KTTVG28FKRS462NJM80KHHAE
+        author: "@claude"
+        body: This task also cannot be coverage-verified because its Covers line references "the three
+          not-applicable ACs added by @task-respec-test-annotation-sweep-na" rather than concrete AC
+          IDs. Once the respec task assigns stable IDs, this implementation task needs to list those
+          exact @test-annotation-sweep AC IDs so derivation/review can prove every claimed behavior
+          is implemented.
+        created_at: 2026-06-11T08:06:37.583Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:06:37.410Z
+updated_at: 2026-06-11T08:06:37.583Z
 notes: []
