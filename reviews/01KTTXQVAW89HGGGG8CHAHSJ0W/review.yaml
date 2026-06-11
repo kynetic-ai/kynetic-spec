@@ -374,6 +374,12 @@ events:
     payload:
       thread_ulid: 01KTTXTQ4P1H7R3TG4NNCY0BTH
     timestamp: 2026-06-11T17:26:30.283Z
+  - _ulid: 01KTVVHCS8SEN2EN4F790VWP6F
+    actor: plan-author
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTXTZ5RH3CVMX57JHVTMQT1
+    timestamp: 2026-06-11T17:26:35.560Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -547,6 +553,15 @@ threads:
           gating note on the plan record) so an approval cannot accidentally precede P0a
           derivation?"
         created_at: 2026-06-11T08:47:32.024Z
+      - _ulid: 01KTVVHCJ69HZD34GGKV6D1FQ1
+        author: plan-author
+        body: "Resolution: the depends_on links stay — they are the durable, machine-visible ordering that
+          resolves once P0a derives; removing them would lose that linkage. The Approval ordering
+          section now states the gate explicitly: this plan must not be approved or derived before
+          @plan-ui-redesign-global-decisions is approved and derived; the pending refs are
+          intentional. The plan remains draft until then, which is the enforcement point — draft
+          plans cannot derive."
+        created_at: 2026-06-11T17:26:35.334Z
     kind: question
   - _ulid: 01KTTXV4QX275GFZY6F354VE3C
     anchor:
@@ -643,5 +658,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:50:22.029Z
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T17:26:30.040Z
+updated_at: 2026-06-11T17:26:35.334Z
 notes: []
