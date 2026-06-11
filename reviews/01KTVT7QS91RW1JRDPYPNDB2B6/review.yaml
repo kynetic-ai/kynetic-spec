@@ -44,6 +44,16 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-11T17:22:50.268Z
     completed_at: 2026-06-11T17:22:50.268Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tests/cli-serve-logs.test.ts 12/12 tests in 5.7s."
+    name: focused serve logs tests
+    required: false
+    runner: npm test -- --fresh tests/cli-serve-logs.test.ts
+    created_at: 2026-06-11T17:22:55.894Z
+    completed_at: 2026-06-11T17:22:55.894Z
 events:
   - _ulid: 01KTVT7QS8GK8TKGYR4HJH7XXK
     actor: Jacob Chapel
@@ -86,6 +96,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-11T17:22:50.507Z
+  - _ulid: 01KTVVAPGCQD4AFAS8690V0G8F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused serve logs tests
+    timestamp: 2026-06-11T17:22:56.140Z
 examined_commit: 9222d4a7de015305cf726b68c07f68b83438851d
 external_links: []
 lifecycle_state: open
@@ -98,5 +115,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T17:03:50.569Z
-updated_at: 2026-06-11T17:22:50.268Z
+updated_at: 2026-06-11T17:22:55.894Z
 notes: []
