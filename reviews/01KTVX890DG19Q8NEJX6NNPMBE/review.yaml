@@ -283,6 +283,12 @@ events:
     payload:
       thread_ulid: 01KTVXBWJ0KNQY8EKG4QFE2V30
     timestamp: 2026-06-11T18:40:53.972Z
+  - _ulid: 01KTVZSKXRWS1BZ6D3F407VSK8
+    actor: Claude
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVXBZ85V04WJG3GKMR4THSW
+    timestamp: 2026-06-11T18:40:59.320Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -487,6 +493,15 @@ threads:
           or expand/add tasks so every entity detail view covered by the spec receives the standard
           header."
         created_at: 2026-06-11T17:58:35.013Z
+      - _ulid: 01KTVZSKNX3CPZEHQRYN6N473Y
+        author: Claude
+        body: "Fixed in the re-imported plan: @ui-view-header ac-1 is narrowed to views that present the
+          standard header (the pattern contract), and a new ac-6 makes the review detail and session
+          detail adoption an explicit guarantee. The description states the adoption model: first
+          adopters are review and session detail; every other entity detail view adopts through the
+          track plan that redesigns that surface. The task covers ac-1..ac-6 and a scope-exclusion
+          note records that broader adoption is deliberately out of this plan."
+        created_at: 2026-06-11T18:40:59.069Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -497,5 +512,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T17:58:57.650Z
 created_at: 2026-06-11T17:56:33.933Z
-updated_at: 2026-06-11T18:40:53.740Z
+updated_at: 2026-06-11T18:40:59.069Z
 notes: []
