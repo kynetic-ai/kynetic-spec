@@ -40,6 +40,20 @@ checks:
     runner: manual-review
     created_at: 2026-06-11T07:56:54.329Z
     completed_at: 2026-06-11T07:56:54.329Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 23 ACs across the 9 decision items are claimed in the handoff table
+      (3+4+2+3+2+2+3+2+2), each row naming its claiming track work; AC ids in the table match the
+      Specs section exactly. derive_from_specs: false posture is stated, the claim mechanism (Covers
+      lines on track tasks referencing decision items) is binding, and the program does not close
+      while any row is unclaimed."
+    name: AC coverage handoff
+    required: true
+    runner: manual-review
+    created_at: 2026-06-11T07:56:59.951Z
+    completed_at: 2026-06-11T07:56:59.951Z
 events:
   - _ulid: 01KTTTVATFAPAMSGQXEKXNKAGM
     actor: "@claude"
@@ -89,6 +103,13 @@ events:
       status: pass
       name: Reference resolution
     timestamp: 2026-06-11T07:56:54.576Z
+  - _ulid: 01KTTTYEDHFJEZFM5YTMKC6GVG
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage handoff
+    timestamp: 2026-06-11T07:57:00.209Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -156,5 +177,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T07:55:18.224Z
-updated_at: 2026-06-11T07:56:54.329Z
+updated_at: 2026-06-11T07:56:59.951Z
 notes: []
