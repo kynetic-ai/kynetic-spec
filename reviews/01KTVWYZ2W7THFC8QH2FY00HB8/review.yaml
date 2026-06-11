@@ -117,6 +117,21 @@ checks:
     runner: manual
     created_at: 2026-06-11T17:53:13.159Z
     completed_at: 2026-06-11T17:53:13.159Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 13 plan slugs free in both item and task namespaces. Keyword sweep (ingestion,
+      coverage state, preference persistence, actor identity, freshness, merge, keyboard, window)
+      found no existing spec covering these decision areas; existing @ui-* specs from the completed
+      @plan-ui-ux-revamp describe current implemented shell behavior and do not contradict the
+      forward-looking decisions; @integration-merge-authority is consistent with the implemented
+      dispatch/merge-helper model (merges in agent execution environments, not daemon handlers).
+    name: slug collisions and neighborhood
+    required: true
+    runner: manual
+    created_at: 2026-06-11T17:53:18.335Z
+    completed_at: 2026-06-11T17:53:18.335Z
 events:
   - _ulid: 01KTVWYZ2WXMFZSQBG28NHQNQC
     actor: "@claude"
@@ -201,6 +216,13 @@ events:
       status: pass
       name: dependency ordering
     timestamp: 2026-06-11T17:53:13.378Z
+  - _ulid: 01KTVX2A760G0FAQZ21GKN2FKC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: slug collisions and neighborhood
+    timestamp: 2026-06-11T17:53:18.566Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -247,5 +269,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T17:51:28.860Z
-updated_at: 2026-06-11T17:53:13.159Z
+updated_at: 2026-06-11T17:53:18.335Z
 notes: []
