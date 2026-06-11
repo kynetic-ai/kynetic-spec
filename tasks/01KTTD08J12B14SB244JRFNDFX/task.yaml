@@ -44,8 +44,11 @@ description: |
 spec_ref: "@daemon-network-endpoint-contract"
 plan_ref: "@plan-daemon-operational-reliability"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper at b2ebd466. Implemented visible
+  warnings for non-loopback daemon connect_host during serve start and serve status, with behavioral
+  CLI coverage for warning and loopback suppression.
 depends_on:
   - "@task-update-daemon-reliability-specs"
 context: []
@@ -113,8 +116,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-11T21:34:20.340Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper at b2ebd466. Implemented visible warnings for
+          non-loopback daemon connect_host during serve start and serve status, with behavioral CLI
+          coverage for warning and loopback suppression.
+        previous: null
+      completed_at:
+        new: 2026-06-11T21:53:26.589Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-11T21:53:26.600Z
 created_at: 2026-06-11T03:53:19.681Z
 started_at: 2026-06-11T20:52:08.818Z
 submitted_at: 2026-06-11T21:27:11.718Z
+completed_at: 2026-06-11T21:53:26.589Z
 todos: []
 automation: eligible
