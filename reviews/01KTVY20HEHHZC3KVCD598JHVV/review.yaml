@@ -2,7 +2,18 @@ _ulid: 01KTVY20HEHHZC3KVCD598JHVV
 slugs: []
 title: "Plan review: Web UI Foundations (round 2 — re-review of unchanged content)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --refs --warnings-ok: pre-existing catalog warnings only, none introduced
+      by this plan (plan is stored, not derived)"
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T18:13:07.467Z
+    completed_at: 2026-06-11T18:13:07.467Z
 events:
   - _ulid: 01KTVY20HDMERJRGK4RSYWVR2G
     actor: "@claude"
@@ -73,6 +84,13 @@ events:
       kind: nit
       thread_ulid: 01KTVY61V7V6DYZCSWJEW25QYQ
     timestamp: 2026-06-11T18:12:49.922Z
+  - _ulid: 01KTVY6KFKNQ05XJGYF23SNTN7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T18:13:07.699Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -307,5 +325,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:12:49.640Z
+updated_at: 2026-06-11T18:13:07.467Z
 notes: []
