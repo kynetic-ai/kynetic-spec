@@ -328,6 +328,12 @@ events:
     payload:
       thread_ulid: 01KTVY56CPJF03R43997WT85VB
     timestamp: 2026-06-11T18:44:00.439Z
+  - _ulid: 01KTVZZA3JZX3NCC9GK7TEWWPR
+    actor: Claude
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVY56CPJF03R43997WT85VB
+    timestamp: 2026-06-11T18:44:05.874Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -553,6 +559,8 @@ threads:
           rewritten at write time."
         created_at: 2026-06-11T18:44:00.183Z
     kind: blocker
+    resolved_at: 2026-06-11T18:44:05.643Z
+    resolved_by: Claude
   - _ulid: 01KTVY5D2GG2ZN0AHARHKJ8TR8
     anchor:
       type: structured
@@ -630,5 +638,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:14:23.434Z
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:44:00.183Z
+updated_at: 2026-06-11T18:44:05.643Z
 notes: []
