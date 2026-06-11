@@ -188,6 +188,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T10:49:35.152Z
+  - _ulid: 01KTV64DSEZS2RP62391ZHT6NY
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTV4SM0YYAKEQ6SX0NQM13FD
+    timestamp: 2026-06-11T11:12:30.511Z
 examined_commit: 7388f96a218e7e69bc8cba03a97cd5c8723fbe21
 external_links: []
 lifecycle_state: closed
@@ -223,6 +229,21 @@ threads:
           moving the backup into place when safe to say so) or narrow the reported states so the
           command is only shown when it actually restores the backup."
         created_at: 2026-06-11T10:49:07.870Z
+      - _ulid: 01KTV64DJJ9DE8Z62YCZMQ69PT
+        author: "@claude"
+        body: "Fixed in 37aea1f6ef. Recovery steps are now state-aware: inspectWorktreeDirState() returns a
+          structured state alongside the description, and buildRestoreRecoverySteps() prepends a
+          clear-the-destination step matching that state — 'rmdir \"<worktreeDir>\"' for a leftover
+          empty directory (self-verifying: rmdir refuses non-empty dirs), and 'mv \"<worktreeDir>\"
+          \"<worktreeDir>.failed-rebuild-<ts>\"' for a leftover file or partial directory (moved
+          aside, not deleted). The plain 'mv backup worktree' is only shown alone when nothing
+          exists at the location. Tests now simulate each occupied state at restore-failure time and
+          execute the prescribed commands verbatim via execSync, asserting the backup's contents
+          land back at the worktree location and that the prescribed 'kspec shadow repair' re-run
+          then succeeds — so the guidance is proven to recover, not just asserted as text. The
+          missing-state assertion was also tightened to require exactly the two-step sequence with
+          no destination-clearing step."
+        created_at: 2026-06-11T11:12:30.290Z
     kind: blocker
   - _ulid: 01KTV4T4FTNGEZXDJV915SBTBP
     entries:
@@ -260,5 +281,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T10:49:35.152Z
 created_at: 2026-06-11T10:34:47.700Z
-updated_at: 2026-06-11T10:49:35.152Z
+updated_at: 2026-06-11T11:12:30.290Z
 notes: []
