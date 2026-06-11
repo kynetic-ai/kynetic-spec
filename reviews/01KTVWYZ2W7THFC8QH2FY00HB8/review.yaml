@@ -2,7 +2,24 @@ _ulid: 01KTVWYZ2W7THFC8QH2FY00HB8
 slugs: []
 title: "Plan review: UI Redesign Global Decisions (claude round 1, post-round-3 verification)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 14 prior findings (11 round-1, 3 round-2 follow-up) verified against current stored
+      content: 13 fully addressed (module parenting, handler-boundary ACs on
+      @test-result-acquisition/@integration-merge-authority, bounded web-shell ac-1, observable
+      @client-preference-persistence ac-1, AC coverage handoff section, added ac-4/ac-3, trimmed
+      actor ac-3, @config-author and N/A-semantics transition boundaries, vocabulary-membership
+      coverage ac-1, self-contained 'coverage state engine' subject). Round-1 module-placement
+      resolution is partially inaccurate ('created top-level' claim) — re-raised as blocker thread
+      in this review."
+    name: prior review resolution
+    required: true
+    runner: manual
+    created_at: 2026-06-11T17:52:13.509Z
+    completed_at: 2026-06-11T17:52:13.509Z
 events:
   - _ulid: 01KTVWYZ2WXMFZSQBG28NHQNQC
     actor: "@claude"
@@ -24,6 +41,13 @@ events:
       kind: blocker
       thread_ulid: 01KTVWZSSES7KWTX15SXP6FG10
     timestamp: 2026-06-11T17:51:56.430Z
+  - _ulid: 01KTVX0AWK315WR2PVZC96H77R
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review resolution
+    timestamp: 2026-06-11T17:52:13.715Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -70,5 +94,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T17:51:28.860Z
-updated_at: 2026-06-11T17:51:56.206Z
+updated_at: 2026-06-11T17:52:13.509Z
 notes: []
