@@ -45,6 +45,13 @@ events:
       kind: blocker
       thread_ulid: 01KTTPJ008G1QW5FS6YPG77ZC1
     timestamp: 2026-06-11T06:40:18.337Z
+  - _ulid: 01KTTPJ0XP37R07QMR3GZW3JYE
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTTPJ027GTK287VC4D6RP4HE
+    timestamp: 2026-06-11T06:40:18.870Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -119,7 +126,23 @@ threads:
           coverage-metadata work.
         created_at: 2026-06-11T06:40:17.929Z
     kind: blocker
+  - _ulid: 01KTTPJ027GTK287VC4D6RP4HE
+    anchor:
+      type: structured
+      ref: "@task-record-overlapping-plan-dispositions"
+      section: tasks
+    entries:
+      - _ulid: 01KTTPJ02824EE7QJMGJE74MCF
+        author: "@claude"
+        body: The disposition task depends on future track plans named only in prose ('sessions track
+          controls plan', 'session entity plan', 'cross-project track', 'shell track'). Those
+          records do not exist in the current plan catalog, so the worker cannot write durable
+          disposition notes that point at actual successors. Add concrete successor
+          refs/dependencies, or split this into a later task that runs after those track plans are
+          imported.
+        created_at: 2026-06-11T06:40:17.992Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T06:40:17.929Z
+updated_at: 2026-06-11T06:40:17.992Z
 notes: []
