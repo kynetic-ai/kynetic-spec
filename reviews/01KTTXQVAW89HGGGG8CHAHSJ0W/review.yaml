@@ -380,6 +380,12 @@ events:
     payload:
       thread_ulid: 01KTTXTZ5RH3CVMX57JHVTMQT1
     timestamp: 2026-06-11T17:26:35.560Z
+  - _ulid: 01KTVVK1R9H39HWFK9Q58CNK1T
+    actor: plan-author
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTXV4QX275GFZY6F354VE3C
+    timestamp: 2026-06-11T17:27:29.801Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -578,6 +584,13 @@ threads:
           carrying one of the three recorded classes, so source count is not confused with the
           stored provenance enum.
         created_at: 2026-06-11T08:47:37.725Z
+      - _ulid: 01KTVVK1H7SH507CNBXGE8XEET
+        author: plan-author
+        body: Reworded everywhere as two provenance sources — bootstrap-derived and recorded — with recorded
+          stamps carrying a provenance class drawn from the recorded enum (validation, ingestion,
+          re_verification). Updated the spec description, the freshness ACs, the compatibility AC,
+          and the Provenance vocabulary section of Implementation Notes.
+        created_at: 2026-06-11T17:27:29.575Z
     kind: nit
   - _ulid: 01KTTXVR4YDBJW23B4QGJZ19DV
     anchor:
@@ -658,5 +671,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:50:22.029Z
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T17:26:35.334Z
+updated_at: 2026-06-11T17:27:29.575Z
 notes: []
