@@ -1,1 +1,20 @@
-notes: []
+notes:
+  - _ulid: 01KTV2S4YMKHSJCAX6DYBQKKH2
+    content: "Approach: replace both silent .catch(() => {}) restore calls in
+      initializeShadow/repairShadow with a shared helper restoreStashedWorktreeDirAfterFailure()
+      that attempts the restore and returns the final error string. On restore success it appends a
+      'prior shadow state restored' note to the rebuild error (item 3). On restore failure it builds
+      a combined message: rebuild error + restore error + absolute backup path + actual state of the
+      worktree location (stat'd at failure time, so the empty-after-rm case from the
+      restoreStashedWorktreeDir audit is reported accurately) + recovery steps (mv backup back,
+      re-run kspec shadow repair). Folding into the error string per task guidance — CLI handlers
+      (init/shadow repair/setup) all print result.error directly, no interface widening needed.
+      discardStashedWorktreeDir untouched (success-path-only). Tests: new
+      tests/shadow-restore-failure.test.ts with vi.mock('node:fs/promises') delegating to actual
+      except rename of .repair-backup-* sources (the restore direction) when a flag is set; rebuild
+      failure forced via corrupted .git file + competing worktree checked out on kspec-meta (same
+      pattern as existing ac-preserve-on-failure test). Covers repairShadow + initializeShadow,
+      double-failure and restore-succeeds paths, annotated with both ACs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T10:13:55.284Z
