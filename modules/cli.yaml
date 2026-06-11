@@ -5971,7 +5971,8 @@ features:
           - plan-validation
         title: Plan Reference Validation
         type: requirement
-        description: Validate plan_ref fields on tasks, warn about dangling references to non-existent plans
+        description: Validate plan_ref fields on tasks, report dangling references to non-existent plans as
+          validation findings
         status:
           maturity: draft
           implementation: implemented
@@ -5983,7 +5984,8 @@ features:
         acceptance_criteria:
           - given: A task has plan_ref pointing to a non-existent plan
             id: ac-10
-            then: Validation warns about dangling plan reference
+            then: Validation reports the dangling plan reference as a finding — an error with non-zero exit when
+              strict references mode is active (the default), a warning otherwise
             when: kspec validate is run
         tags: []
         created: 2026-02-04T08:59:07.722Z

@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KTVAEF8YHTVFK6F2JZWR5QC9
+    content: "Approach: verified task description claims against current source — validate() loads tasks
+      via resolveTaskDataManager().loadAllTasks() (src/parser/validate.ts:2423-2424), REF_FIELDS
+      includes depends_on/spec_ref/plan_ref (src/parser/refs.ts:407), strict_refs defaults to true
+      (src/parser/config.ts:530). Plan: re-enable the skipped test using kspecRun with expectFail
+      since dangling refs are errors by default, add sibling cases for dangling spec_ref and
+      depends_on injected into the per-task detail file, annotate with @plan-validation ac-10 +
+      @validation-task-data-source ac-task-references-checked + ac-all-persisted-tasks-included.
+      Spec drift fixed: ac-10 Then clause and description updated from warn semantics to
+      finding/error semantics per task instructions."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T12:27:54.014Z
