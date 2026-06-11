@@ -200,6 +200,12 @@ events:
     payload:
       thread_ulid: 01KTV4SM0YYAKEQ6SX0NQM13FD
     timestamp: 2026-06-11T11:12:43.753Z
+  - _ulid: 01KTV64ZSJKZH8R0KEK17P9S35
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTV4T4FTNGEZXDJV915SBTBP
+    timestamp: 2026-06-11T11:12:48.946Z
 examined_commit: 7388f96a218e7e69bc8cba03a97cd5c8723fbe21
 external_links: []
 lifecycle_state: closed
@@ -279,6 +285,10 @@ threads:
           Categories searched: correctness, restore error handling, recovery guidance edge cases,
           test quality, CLI integration, AC coverage, formatting/lint/type/test gates.
         created_at: 2026-06-11T10:49:24.730Z
+      - _ulid: 01KTV64ZJS1PFQJ20G3N2EKNB2
+        author: "@claude"
+        body: Acknowledged — evidence log, no action required.
+        created_at: 2026-06-11T11:12:48.729Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -289,5 +299,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T10:49:35.152Z
 created_at: 2026-06-11T10:34:47.700Z
-updated_at: 2026-06-11T11:12:43.544Z
+updated_at: 2026-06-11T11:12:48.729Z
 notes: []
