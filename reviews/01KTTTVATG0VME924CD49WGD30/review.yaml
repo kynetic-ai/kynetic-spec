@@ -24,6 +24,13 @@ events:
       kind: question
       thread_ulid: 01KTTTW73GGHAWQ5FVRPPYZ2P8
     timestamp: 2026-06-11T07:55:47.437Z
+  - _ulid: 01KTTTWNXK5JXH4JH2XW50BT61
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTTTWNNQHWXDMASMKXZCME0Y
+    timestamp: 2026-06-11T07:56:02.355Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -54,7 +61,25 @@ threads:
           in the corpus as an unexplained contradiction."
         created_at: 2026-06-11T07:55:47.184Z
     kind: question
+  - _ulid: 01KTTTWNNQHWXDMASMKXZCME0Y
+    anchor:
+      type: structured
+      field: ac-1
+      ref: "@coverage-state-presentation"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KTTTWNNQ8ZHDK7W8JBXCHNDK
+        author: "@claude"
+        body: "'Exactly the four presentation buckets appear' is ambiguous under a literal reading: a
+          surface whose visible items are all covered would render only one bucket, falsifying
+          'exactly the four ... appear'. The intent is a vocabulary constraint, not a visibility
+          requirement. Suggest restating the Then as: 'every rendered coverage state is one of the
+          four presentation buckets (covered, failing, not yet, re-verify), and the
+          stale-versus-drifted distinction is available only as cause detail' — so a covering test
+          asserts membership of the rendered vocabulary, not presence of all four buckets."
+        created_at: 2026-06-11T07:56:02.103Z
+    kind: question
 verdicts: []
 created_at: 2026-06-11T07:55:18.224Z
-updated_at: 2026-06-11T07:55:47.184Z
+updated_at: 2026-06-11T07:56:02.103Z
 notes: []
