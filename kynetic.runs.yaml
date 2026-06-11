@@ -62545,9 +62545,30 @@ runs:
     completed_at: 2026-06-11T07:30:19.193Z
   - _ulid: 01KTTVM0GQ1GK82NEBW0BP80E3
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-11T08:08:46.871Z
+        completed_at: 2026-06-11T08:10:36.968Z
+        notes: "High-confidence items: (1) FRICTION: best-effort initContext catch sites silently swallow
+          deterministic compatibility errors (verified file:line audit during format-version-ceiling
+          work: dispatch.ts _loadAgents returns [] making the engine go dark with zero diagnostics,
+          prompts.ts skill-origin fallback, serve.ts resolveDefaultKspecDir wrong-dir fallback,
+          merge-driver, agent watch). (2) FRICTION: daemon-api createTestApp cannot exercise
+          server-level global error mappers — had to mirror the production onError in the test
+          helper, a drift point (related: completed
+          @task-clarify-in-process-daemon-api-helper-boundary which documents the boundary but
+          offers no sharing mechanism). (3) SUCCESS: empirically verifying framework semantics
+          (Elysia parent onError catching plugin-route errors + fall-through) with a 10-line scratch
+          script before designing the daemon wiring — avoided building on an assumption. Skipped as
+          low-value: lint no-source-scanning escape worked as designed; manifest filename discovery
+          was one-off."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-11T08:10:36.968Z
+        completed_at: 2026-06-11T08:10:36.968Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T08:08:46.871Z
