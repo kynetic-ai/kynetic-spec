@@ -80,6 +80,21 @@ function stagePackageTree(dir: string, omit: string[] = []): void {
   }
 }
 
+/** Collect every markdown file under `dir`, recursing into subdirectories. */
+function collectMarkdownFiles(dir: string, found: string[]): void {
+  // Explicit recursion rather than readdirSync's `recursive` option: engines
+  // declares >=20.0.0 and Node honors that option only from 20.1.0 — on the
+  // declared minimum it is silently ignored, skipping all nested docs.
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const entryPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectMarkdownFiles(entryPath, found);
+    } else if (entry.name.endsWith(".md")) {
+      found.push(entryPath);
+    }
+  }
+}
+
 /**
  * Every user-facing installation/onboarding document: README.md, INSTALL.md,
  * and all markdown files under docs/, discovered dynamically so new docs are
@@ -87,10 +102,7 @@ function stagePackageTree(dir: string, omit: string[] = []): void {
  */
 function listUserFacingDocs(): string[] {
   const docs = [join(REPO_ROOT, "README.md"), join(REPO_ROOT, "INSTALL.md")];
-  const docsDir = join(REPO_ROOT, "docs");
-  for (const entry of readdirSync(docsDir, { recursive: true, encoding: "utf-8" })) {
-    if (entry.endsWith(".md")) docs.push(join(docsDir, entry));
-  }
+  collectMarkdownFiles(join(REPO_ROOT, "docs"), docs);
   return docs;
 }
 
