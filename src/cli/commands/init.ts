@@ -255,7 +255,16 @@ export function registerInitCommand(program: Command): void {
             if (ctx.manifest?.sessions?.storage === "branch") {
               sessionsConfig = ctx.manifest.sessions;
             }
-          } catch {
+          } catch (err) {
+            // AC: @data-format-forward-compatibility ac-newer-version-refused
+            // Re-initializing over an existing project whose manifest declares
+            // a newer format must refuse before initializeShadow can touch it.
+            const { isDeterministicFormatVersionIncompatibility } =
+              await import("../../parser/index.js");
+            if (isDeterministicFormatVersionIncompatibility(err)) {
+              error(err.message, { code: err.code, suggestion: err.suggestion });
+              process.exit(EXIT_CODES.ERROR);
+            }
             // No existing manifest — session branch setup deferred to kspec setup
           }
 

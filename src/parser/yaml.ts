@@ -56,6 +56,7 @@ import {
   ShadowError,
 } from "./shadow.js";
 import { loadProjectConfig, type ResolvedKspecConfig } from "./config.js";
+import { assertRawManifestFormatVersionSupported } from "./format-version.js";
 import { consumeSyncMode, type ShadowSyncMode } from "../cli/sync-mode.js";
 import { TraitIndex } from "./traits.js";
 
@@ -687,6 +688,63 @@ export interface KspecContext {
 }
 
 /**
+ * Read and schema-parse the manifest at `manifestPath`, enforcing the
+ * format-version ceiling on the RAW manifest first.
+ *
+ * The ceiling check runs against the raw YAML object (not the schema-parsed
+ * manifest) because the schema defaults a missing `kynetic` field to "1.0",
+ * which would erase the missing-field case. A read/parse failure keeps the
+ * existing "manifest exists but may be invalid" behavior (returns null);
+ * the format-version refusal is the only error allowed to escape.
+ *
+ * AC: @data-format-forward-compatibility ac-newer-version-refused
+ * AC: @data-format-forward-compatibility ac-unrecognized-version-refused
+ */
+async function readManifestWithVersionCeiling(manifestPath: string): Promise<Manifest | null> {
+  let rawManifest: unknown;
+  try {
+    rawManifest = await readYamlFile<unknown>(manifestPath);
+  } catch {
+    // Manifest exists but may be invalid
+    return null;
+  }
+
+  assertRawManifestFormatVersionSupported(rawManifest);
+
+  try {
+    return parseManifestWithWarnings(rawManifest);
+  } catch {
+    // Manifest exists but may be invalid
+    return null;
+  }
+}
+
+/**
+ * Enforce the format-version ceiling for the manifest in `specDir` BEFORE
+ * any side effect. Used by the shadow path ahead of the pre-read sync block:
+ * a sync pull must never mutate a project whose local manifest already
+ * declares a newer format than this installation supports.
+ *
+ * Missing or unreadable manifests pass — they keep their existing handling.
+ *
+ * AC: @data-format-forward-compatibility ac-newer-version-refused
+ */
+async function assertSpecDirFormatVersionSupported(specDir: string): Promise<void> {
+  const manifestPath = await findManifestInDir(specDir);
+  if (!manifestPath) return;
+
+  let rawManifest: unknown;
+  try {
+    rawManifest = await readYamlFile<unknown>(manifestPath);
+  } catch {
+    // Manifest exists but may be invalid — existing behavior, not a refusal
+    return;
+  }
+
+  assertRawManifestFormatVersionSupported(rawManifest);
+}
+
+/**
  * Initialize context by finding manifest.
  *
  * Detection order:
@@ -735,15 +793,11 @@ export async function initContext(
     const specDir = path.resolve(specDirOverride);
     const manifestPath = await findManifestInDir(specDir);
 
-    let manifest: Manifest | null = null;
-    if (manifestPath) {
-      try {
-        const rawManifest = await readYamlFile<unknown>(manifestPath);
-        manifest = parseManifestWithWarnings(rawManifest);
-      } catch {
-        // Manifest exists but may be invalid
-      }
-    }
+    // AC: @data-format-forward-compatibility ac-newer-version-refused
+    // Ceiling check on the raw manifest before any project data is served
+    const manifest: Manifest | null = manifestPath
+      ? await readManifestWithVersionCeiling(manifestPath)
+      : null;
 
     const rootDir = path.dirname(specDir);
     return {
@@ -783,6 +837,12 @@ export async function initContext(
   if (shadow?.enabled) {
     // Shadow mode: use .kspec/ for everything
     const specDir = shadow.worktreeDir;
+
+    // AC: @data-format-forward-compatibility ac-newer-version-refused
+    // Format-version ceiling check BEFORE the pre-read sync block: the sync
+    // path below can pull into the shadow worktree, and a project declaring
+    // a newer format must be refused before any such side effect.
+    await assertSpecDirFormatVersionSupported(specDir);
 
     // AC: @shadow-lazy-read-sync ac-no-sync-env — KSPEC_NO_SYNC disables all sync
     // AC: @shadow-lazy-read-sync ac-syncmode-consume-once — consume-once prevents double-pull
@@ -837,15 +897,14 @@ export async function initContext(
 
     const manifestPath = await findManifestInDir(specDir);
 
-    let manifest: Manifest | null = null;
-    if (manifestPath) {
-      try {
-        const rawManifest = await readYamlFile<unknown>(manifestPath);
-        manifest = parseManifestWithWarnings(rawManifest);
-      } catch {
-        // Manifest exists but may be invalid
-      }
-    }
+    // AC: @data-format-forward-compatibility ac-post-sync-newer-version-refused
+    // Re-apply the ceiling to the manifest read AFTER the sync block: the
+    // pre-sync check only saw the local manifest, so a sync pull can import
+    // a manifest upgraded remotely to a newer format. The same invocation
+    // must refuse here, before any entity read or mutation.
+    const manifest: Manifest | null = manifestPath
+      ? await readManifestWithVersionCeiling(manifestPath)
+      : null;
 
     return {
       rootDir: projectRoots?.worktreeRoot ?? shadow.projectRoot,
@@ -890,12 +949,9 @@ export async function initContext(
       specDir = manifestDir;
     }
 
-    try {
-      const rawManifest = await readYamlFile<unknown>(manifestPath);
-      manifest = parseManifestWithWarnings(rawManifest);
-    } catch {
-      // Manifest exists but may be invalid
-    }
+    // AC: @data-format-forward-compatibility ac-newer-version-refused
+    // Ceiling check on the raw manifest before any project data is served
+    manifest = await readManifestWithVersionCeiling(manifestPath);
   }
 
   return {

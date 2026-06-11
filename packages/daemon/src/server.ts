@@ -30,6 +30,7 @@ import {
   type DaemonConnectionMetadata,
 } from "./endpoint.js";
 import { projectContextMiddleware } from "./middleware/project-context.js";
+import { formatVersionIncompatibilityResponse } from "./routes/format-version-error.js";
 import { createTasksRoutes } from "./routes/tasks.js";
 import { createTaskResourcesRoutes } from "./routes/task-resources.js";
 import { createItemsRoutes } from "./routes/items.js";
@@ -645,7 +646,21 @@ export async function createServer(options: ServerOptions) {
       localhostOnly({
         additionalAllowedHosts: [endpoint.bindHost, endpoint.connectHost],
       }),
-    );
+    )
+
+    // AC: @data-format-forward-compatibility ac-daemon-structured-error
+    // Global mapper for format-version ceiling refusals raised by
+    // initContext inside any route handler. Registered on the parent app
+    // before route plugins so it applies to every API route; route-group
+    // onError handlers that don't match (entity/task storage mappers) fall
+    // through to this handler.
+    .onError(({ error: err, set }) => {
+      const conflict = formatVersionIncompatibilityResponse(err);
+      if (conflict) {
+        set.status = conflict.status;
+        return conflict.body;
+      }
+    });
 
   // AC: @daemon-entity-cache ac-load-on-register — lazy import entity cache module
   // The daemon build compiles packages/daemon/src plus src/daemon/entity-cache.ts

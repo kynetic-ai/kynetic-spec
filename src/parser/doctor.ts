@@ -259,6 +259,9 @@ export async function getDoctorReport(
   // AC: @doctor-reports-actionable-state ac-version-skew-detected
   await buildVersionSkewCheck(report.setup, projectRoot);
 
+  // AC: @data-format-forward-compatibility ac-diagnostics-report-read-only
+  await buildFormatVersionCheck(report.setup, projectRoot);
+
   // Build task storage section — check if project needs migration
   await buildTaskStorageSection(report.taskStorage, projectRoot);
 
@@ -610,6 +613,57 @@ async function buildVersionSkewCheck(section: SetupSection, projectRoot: string)
     message: installedVersion
       ? `kspec version matches baseline (${installedVersion})`
       : `kspec version matches baseline (${lastKnownVersion})`,
+  });
+}
+
+/**
+ * Build the format-version ceiling check.
+ *
+ * The project health diagnostic is the sole surface exempt from the
+ * format-version refusal in context initialization — doctor reads the
+ * manifest directly (no initContext) and REPORTS a newer-than-supported or
+ * unrecognized declared format version instead of refusing, naming both
+ * versions with upgrade guidance. Read-only: nothing is modified.
+ *
+ * AC: @data-format-forward-compatibility ac-diagnostics-report-read-only
+ */
+async function buildFormatVersionCheck(section: SetupSection, projectRoot: string): Promise<void> {
+  const specDir = path.join(projectRoot, ".kspec");
+  const manifestPath = await findManifestInDir(specDir);
+  if (!manifestPath) return;
+
+  let rawManifest: unknown;
+  try {
+    rawManifest = await readYamlFile<unknown>(manifestPath);
+  } catch {
+    // Manifest unreadable — other checks surface that state.
+    return;
+  }
+
+  const { describeFormatVersionIncompatibility, getRawDeclaredFormatVersion } =
+    await import("./format-version.js");
+  const incompatibility = describeFormatVersionIncompatibility(
+    getRawDeclaredFormatVersion(rawManifest),
+  );
+
+  if (incompatibility) {
+    section.checks.push({
+      name: "format-version",
+      severity: "error",
+      message: `Project data format version "${incompatibility.declaredVersion}" is not supported by this kspec installation (maximum supported: "${incompatibility.maxSupportedVersion}")`,
+      guidance: incompatibility.suggestion,
+    });
+    return;
+  }
+
+  const declared = getRawDeclaredFormatVersion(rawManifest);
+  section.checks.push({
+    name: "format-version",
+    severity: "ok",
+    message:
+      declared === undefined
+        ? "No declared format version (legacy manifest)"
+        : `Format version ${JSON.stringify(declared)} is supported`,
   });
 }
 

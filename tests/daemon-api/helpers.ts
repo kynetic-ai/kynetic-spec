@@ -60,6 +60,7 @@ import {
   testUlids,
 } from "../helpers/cli.js";
 import { projectContextMiddleware } from "../../dist/daemon/middleware/project-context.js";
+import { formatVersionIncompatibilityResponse } from "../../dist/daemon/routes/format-version-error.js";
 import { createTasksRoutes } from "../../dist/daemon/routes/tasks.js";
 import { createTaskResourcesRoutes } from "../../dist/daemon/routes/task-resources.js";
 import { createItemsRoutes } from "../../dist/daemon/routes/items.js";
@@ -598,6 +599,17 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
         return body;
       },
     }))
+    // AC: @data-format-forward-compatibility ac-daemon-structured-error
+    // Mirror of the production global onError in packages/daemon/src/server.ts:
+    // map format-version ceiling refusals from initContext into the structured
+    // 409 contract for every registered route group.
+    .onError(({ error: err, set }) => {
+      const conflict = formatVersionIncompatibilityResponse(err);
+      if (conflict) {
+        set.status = conflict.status;
+        return conflict.body;
+      }
+    })
     .use(middleware)
     .use(createTasksRoutes({ pubsub, getEntityCache }))
     .use(createTaskResourcesRoutes({ getEntityCache }))
