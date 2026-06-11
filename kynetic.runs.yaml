@@ -64529,7 +64529,7 @@ runs:
     completed_at: 2026-06-11T20:47:23.824Z
   - _ulid: 01KTW90J56B8XG5AA32FTPQ4NR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -64544,7 +64544,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T21:22:47.724Z
-        completed_at: 2026-06-11T21:22:47.724Z
+        completed_at: 2026-06-11T21:23:02.158Z
+        notes: "Friction: npm test reported one unrelated failure in tests/upgrade-folder-storage.test.ts,
+          then continued for a long time and eventually left the Vitest parent process alive after
+          visible suite output ended. I had to inspect processes, run a focused fresh retry, create
+          a flaky-test follow-up, and manually terminate the stale test process tree before
+          proceeding. This is systemic review friction because it makes gate classification slower
+          and increases risk of misclassifying flaky/non-task failures."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T21:23:02.158Z
+        completed_at: 2026-06-11T21:23:02.158Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T21:22:04.071Z
