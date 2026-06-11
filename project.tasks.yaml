@@ -31731,3 +31731,19 @@
   todos_count: 0
   created_at: 2026-06-11T13:27:11.331Z
   automation: eligible
+- _ulid: 01KTVFNW8PKQNWPD8GY9S8TM4K
+  slugs:
+    - task-stabilize-skill-cli-dist-export-flake
+  title: Stabilize skill-cli dist export full-suite flake
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - testing
+    - skills
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-11T13:59:19.574Z
+  automation: eligible

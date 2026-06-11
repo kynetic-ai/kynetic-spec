@@ -1,0 +1,29 @@
+_ulid: 01KTVFNW8PKQNWPD8GY9S8TM4K
+slugs:
+  - task-stabilize-skill-cli-dist-export-flake
+title: Stabilize skill-cli dist export full-suite flake
+type: bug
+description: "During review of @01KTTD1E2QCNQVJSV7TZSHXD0G on 2026-06-11, full npm test failed once
+  in tests/skill-cli.test.ts: Skill CLI - skill add should accept depends-on option. Failure command
+  inside the test was node dist/cli/index.js skill add --id base-skill --name \"Base Skill\". Node
+  reported SyntaxError: The requested module './upgrade.js' does not provide an export named
+  'registerUpgradeCommand' from dist/cli/commands/index.js:36. The submitted branch only changes
+  tests/grep.test.ts; the failed file passed twice on targeted fresh reruns via npm test --
+  tests/skill-cli.test.ts --fresh (96/96 tests passed both times). Investigate why the full-suite
+  run can observe a stale or inconsistent dist/cli/commands/upgrade.js export and make the skill CLI
+  test deterministic under full-suite ordering."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - skills
+vcs_refs: []
+created_at: 2026-06-11T13:59:19.574Z
+todos: []
+automation: eligible
