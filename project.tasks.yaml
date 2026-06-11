@@ -31472,6 +31472,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:53:41.126Z
+  automation: eligible
 - _ulid: 01KTTD0Y7J7B30QYRVF0NQ0B81
   slugs:
     - task-shadow-restore-loud-failure

@@ -57,5 +57,14 @@ tags:
   - spec-update
   - shadow
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-11T03:55:25.966Z
 created_at: 2026-06-11T03:53:41.126Z
 todos: []
+automation: eligible
