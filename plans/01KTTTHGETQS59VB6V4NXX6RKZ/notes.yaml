@@ -22,3 +22,7 @@ notes:
       re-imported via plan import --into; plan remains draft."
     author: "@claude"
     created_at: 2026-06-11T17:31:27.973Z
+  - _ulid: 01KTW28D59J65JXGJJE89XK4MJ
+    content: Address review round 1 findings
+    author: "@claude"
+    created_at: 2026-06-11T19:24:01.066Z

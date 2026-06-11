@@ -1,5 +1,12 @@
 # AC Coverage Verification Schema and Storage
 
+> **Approval gate:** Do not approve or derive this plan until
+> @plan-ui-redesign-global-decisions (P0a) is approved and derived.
+> The binding depends_on refs in this plan
+> (@annotation-freshness-provenance, @actor-identity-model,
+> @ac-coverage-applicability) resolve only after P0a materializes.
+> See Implementation Notes → Approval gate and ordering.
+
 ## Specs
 
 ```yaml
@@ -106,7 +113,9 @@
     annotation whose location has version-control history has
     freshness from day one. When a criterion has annotations at
     several locations and no recorded stamp, the bootstrap value is
-    the most recent of the locations' history values. A location with
+    the most recent of the history values of the locations that have
+    version-control history; locations without history contribute no
+    value. A location with
     no version-control history — an uncommitted file, or a line that
     exists only in the working tree — yields no bootstrap value;
     until such a location gains history or a recorded stamp is
@@ -126,7 +135,8 @@
     - id: ac-bootstrap-when-unstamped
       given: |
         an acceptance criterion with at least one annotation in a
-        configured scan path and no recorded verification stamp
+        configured scan path whose location has version-control
+        history, and no recorded verification stamp
       when: |
         its freshness is resolved
       then: |
@@ -159,13 +169,15 @@
     - id: ac-multi-annotation-most-recent
       given: |
         an acceptance criterion with annotations at several locations
-        in configured scan paths, each location having version-control
-        history, and no recorded verification stamp
+        in configured scan paths, at least one location having
+        version-control history, and no recorded verification stamp
       when: |
         its freshness is resolved
       then: |
-        the bootstrap value is the most recent of the locations'
-        history values, labeled with the bootstrap provenance source
+        the bootstrap value is the most recent of the history values
+        of the locations that have version-control history, locations
+        without history contribute no value, and the result is
+        labeled with the bootstrap provenance source
     - id: ac-no-history-absence
       given: |
         an acceptance criterion with no recorded verification stamp
@@ -184,9 +196,8 @@
       when: |
         it is delivered to a consumer
       then: |
-        it carries a timestamp, a commit reference, or both, it names
-        its provenance source, and a recorded value also carries the
-        stamp's provenance class
+        it carries a timestamp, a commit reference, or both, and it
+        names its provenance source
     - id: ac-absence-reported
       given: |
         an acceptance criterion with no annotation in any configured
@@ -260,7 +271,11 @@
     upgrade. The store materializes only when the first stamp is
     written. Because the store is purely additive, a project that
     contains one remains fully operable by tool versions predating the
-    store — such tools neither read nor modify it. Stored records
+    store — such tools neither read nor modify it. That older-tool
+    guarantee is the purpose served by two verifiable properties:
+    metadata readers leave sidecar directories they do not recognize
+    unread and unmodified, and creating the store modifies no
+    pre-existing metadata file an older reader depends on. Stored records
     declare a record-format version: data declaring a newer record
     format than the running tool supports is refused rather than
     misread, and records carrying unrecognized fields survive
@@ -315,15 +330,24 @@
       then: |
         the unrecognized fields persist unchanged in the stored
         records
-    - id: ac-older-tool-ignores-sidecar
+    - id: ac-unrecognized-sidecar-untouched
       given: |
-        a project whose metadata contains a verification record store
+        a project's shadow-branch metadata containing a sidecar
+        directory the running tool does not recognize
       when: |
-        the project is operated by a tool version predating the
-        store's existence
+        the metadata is loaded, validated, and written elsewhere
       then: |
-        every operation behaves as it does on a project without the
-        store, and the store's contents are neither read nor modified
+        the operations succeed and the unrecognized directory's files
+        are neither read nor modified
+    - id: ac-store-creation-additive
+      given: |
+        a project's shadow-branch metadata without a verification
+        record store
+      when: |
+        the store is created by the first stamp write
+      then: |
+        no metadata file that existed before the write is modified by
+        the store's creation
 ```
 
 ## Tasks
@@ -418,8 +442,11 @@ derive_from_specs: false
       store; bootstrap is always derived on read.
     - Multi-annotation rule: when an AC has several annotation
       locations and no recorded stamp, the bootstrap value is the most
-      recent location's history value, per
-      ac-multi-annotation-most-recent (see Implementation Notes).
+      recent of the history values of the locations that have
+      version-control history; locations without history contribute no
+      value, so the mixed case (some locations with history, some
+      without) resolves to the most recent of the values that exist,
+      per ac-multi-annotation-most-recent (see Implementation Notes).
     - No-history locations: an annotation location without
       version-control history (uncommitted file, or a line that exists
       only in the working tree) yields no bootstrap value; an AC whose
@@ -440,10 +467,12 @@ derive_from_specs: false
       annotations; recorded-wins including the bootstrap-newer case;
       both-provenances read returning the stamp and the bootstrap
       value side by side, unaltered; most-recent-wins across multiple
-      annotated locations; absent freshness for an
-      annotated-but-uncommitted location; timestamp/commit/provenance
-      shape on every resolved value; absence for unannotated,
-      unstamped ACs.
+      annotated locations; the mixed case — some annotated locations
+      with version-control history, some without — resolving to the
+      most recent of the existing history values; absent freshness
+      for an annotated-but-uncommitted location;
+      timestamp/commit/provenance shape on every resolved value;
+      absence for unannotated, unstamped ACs.
 
     How: New module alongside the existing coverage cache in
     src/parser/; reuse the structured annotation scan for locations and
@@ -518,6 +547,14 @@ derive_from_specs: false
     reason discarded. @ac-coverage-applicability supersedes that
     behavior: in-code not-applicable annotations are not coverage
     signals — they neither cover a criterion nor exempt it.
+    @ac-coverage-applicability's description draws a transition
+    boundary — the pre-existing completeness path that honors N/A for
+    trait criteria stays in force "until the coverage state engine
+    work reconciles the two semantics." Per the decision register,
+    this respec (with @task-na-annotation-coverage-exclusion) IS that
+    reconciliation: the N/A-stop is assigned to this plan, not to the
+    later engine plan, so this task also amends the boundary sentence
+    so the live decision text and the implemented behavior agree.
 
     What:
     - Update the item description to state that coverage credit
@@ -549,18 +586,39 @@ derive_from_specs: false
       Narrow the given to coverage-claiming annotations (those without
       a not-applicable marker) so no live AC grants coverage credit to
       an N/A-marked annotation.
+    - Reconcile @trait-validation ac-2 the same way: its when clause
+      ("trait AC has test annotation '// AC: @trait-ref ac-N'") is
+      satisfied today by an N/A-marked annotation because the parser
+      strips the marker before matching, so the AC currently promises
+      warning suppression that this respec removes. Narrow it to
+      coverage-claiming annotations (those without a not-applicable
+      marker) so a trait AC whose only annotations carry N/A markers
+      may warn without contradicting a live AC.
+    - Amend @ac-coverage-applicability's transition boundary (the item
+      is live by the time this task runs — this plan derives only
+      after P0a): replace the deferral to "the coverage state engine
+      work" with this plan's respec, stating that the pre-existing
+      completeness path honors in-code not-applicable annotations for
+      trait criteria only until the respecced @test-annotation-sweep
+      semantics are implemented (@task-na-annotation-coverage-exclusion),
+      which completes the reconciliation. Leave its ac-1/ac-2
+      untouched — they remain engine-scoped and are claimed by the
+      engine plan per P0a's AC coverage handoff table.
 
     How: kspec item set / item ac add / item ac set via a single kspec
-    batch; verify the result with kspec item get on all three items.
-    Spec mutation only — the parser behavior change is
-    @task-na-annotation-coverage-exclusion, which depends on this task.
+    batch; verify the result with kspec item get on all five mutated
+    items (@test-annotation-sweep, @ac-annotation-integrity-reporting,
+    @ac-annotation-identifier-format, @trait-validation,
+    @ac-coverage-applicability). Spec mutation only — the parser
+    behavior change is @task-na-annotation-coverage-exclusion, which
+    depends on this task.
 
     Covers: @test-annotation-sweep ac-na-no-coverage-credit,
     ac-na-no-invalid-finding, ac-na-marker-preserved (the new ACs this
     task adds, plus the description update);
-    @ac-annotation-integrity-reporting ac-valid-annotation-covers-target
-    and @ac-annotation-identifier-format ac-valid-token-covers-ac
-    (given-clause reconciliation only).
+    @ac-annotation-integrity-reporting ac-valid-annotation-covers-target,
+    @ac-annotation-identifier-format ac-valid-token-covers-ac, and
+    @trait-validation ac-2 (given/when-clause reconciliation only).
 
 - title: Stop counting not-applicable annotations as coverage in the scanner
   slug: task-na-annotation-coverage-exclusion
@@ -626,6 +684,7 @@ derive_from_specs: false
   spec_ref: "@coverage-record-compatibility"
   depends_on:
     - "@task-ac-verification-record-store"
+    - "@task-freshness-resolution-read-path"
   description: |
     Make the verification record store provably additive: optional
     everywhere, materialized only on first write, gated by a declared
@@ -641,8 +700,10 @@ derive_from_specs: false
     What:
     - Optionality: a project with no verification record store loads,
       validates, and serves coverage/freshness reads exactly as before
-      the store existed; reads never create the store as a side
-      effect.
+      the store existed; freshness resolves through the bootstrap
+      provenance source alone (via the resolver from
+      @task-freshness-resolution-read-path — hence the dependency),
+      and reads never create the store as a side effect.
     - First-write materialization: the first stamp write creates the
       sidecar (directory and record file) as part of that write, with
       no prior setup or migration step.
@@ -660,18 +721,17 @@ derive_from_specs: false
       (temp-project E2E) — run upgrade and ordinary commands; assert no
       project file is rewritten, no migration prompt appears, and the
       manifest format version is unchanged.
-    - Older-tool tolerance (ac-older-tool-ignores-sidecar): a project
-      containing the sidecar remains fully operable by tool versions
-      predating the store, which neither read nor modify it. The suite
-      cannot execute an older released binary, so verify through the
-      mechanism that guarantees the property: shadow-state loading
-      enumerates only the paths it knows and leaves unrecognized
-      sidecar directories untouched. Assert that an unrecognized
-      sidecar directory in shadow state is ignored by readers — loads,
-      validation, and writes elsewhere succeed, and its files are
-      neither read nor rewritten — and that creating the verification
-      sidecar is purely additive, touching no pre-existing file an
-      older reader depends on.
+    - Older-tool tolerance (ac-unrecognized-sidecar-untouched,
+      ac-store-creation-additive): the spec keeps the older-tool
+      guarantee in its description as the purpose; the ACs bind the
+      two properties the current system can verify directly.
+      Shadow-state loading enumerates only the paths it knows, so
+      assert that an unrecognized sidecar directory in shadow state is
+      ignored by readers — loads, validation, and writes elsewhere
+      succeed, and its files are neither read nor rewritten
+      (ac-unrecognized-sidecar-untouched) — and that creating the
+      verification sidecar on first stamp write modifies no
+      pre-existing metadata file (ac-store-creation-additive).
     - Tests annotate the relevant @data-format-forward-compatibility
       precedent only where this store's gating intersects it; the
       manifest-level contract keeps its own coverage.
@@ -684,7 +744,8 @@ derive_from_specs: false
     Covers: @coverage-record-compatibility
     ac-absent-store-no-behavior-change, ac-upgrade-without-rewrite,
     ac-first-write-materializes, ac-newer-record-format-refused,
-    ac-unknown-fields-roundtrip, ac-older-tool-ignores-sidecar.
+    ac-unknown-fields-roundtrip, ac-unrecognized-sidecar-untouched,
+    ac-store-creation-additive.
 ```
 
 ## Implementation Notes
@@ -760,13 +821,18 @@ shadow history.
 ### Multi-annotation bootstrap rule
 
 When an AC has several annotation locations and no recorded stamp, the
-bootstrap value is the most recent location's history value — bound by
+bootstrap value is the most recent of the history values of the
+locations that have version-control history — bound by
 @ac-freshness-resolution ac-multi-annotation-most-recent, since
 consumers can observe the difference between most-recent-wins,
-oldest-wins, and undefined. This is deterministic and optimistic (any
-fresh annotation refreshes the AC). The engine plan may revisit this
-rule when it computes stale/drifted; choosing it here keeps the
-resolver deterministic without blocking on engine design.
+oldest-wins, and undefined. Locations without history contribute no
+value, so the mixed case (some locations with history, some without)
+resolves to the most recent of the values that exist; only when no
+location has history does the criterion fall to ac-no-history-absence.
+This is deterministic and optimistic (any fresh annotation refreshes
+the AC). The engine plan may revisit this rule when it computes
+stale/drifted; choosing it here keeps the resolver deterministic
+without blocking on engine design.
 
 ### Storage reads do not assess staleness
 
@@ -787,13 +853,34 @@ annotations carry not-applicable markers become uncovered in
 completeness output — including in this repository, which uses the
 convention heavily for trait ACs. That is the decided intent: trait-AC
 misfits surface as spec-composition fixes, not as an N/A escape hatch.
-Retiring the in-code N/A convention itself (and the future task-level
-covers/covers_ac metadata that would replace it) is out of program
-scope per the deferred register; the convention's consumer-facing
-documentation in shared package guidance is untouched by this plan —
-only its coverage-credit effect ends. If the documentation is later
-changed, that touches shared guidance surfaces and takes the
-neutrality review chain.
+
+This plan is the transition boundary. @ac-coverage-applicability's
+description defers reconciliation of the two semantics to "the
+coverage state engine work"; per the decision register, the N/A-stop
+is assigned to this plan (the storage foundation of that engine work),
+so the respec here IS the reconciliation —
+@task-respec-test-annotation-sweep-na amends the live decision's
+boundary sentence accordingly, ending the pre-existing N/A-honoring
+completeness path with this plan rather than leaving it in force until
+the engine plan. The decision's engine-scoped ACs are untouched and
+stay claimed by the engine plan.
+
+The interim documentation window is an explicit, accepted decision:
+shipped consumer guidance continues to document the in-code N/A
+convention while its coverage-credit effect ends, so consumer projects
+using the convention will see previously-suppressed completeness
+warnings while the docs still teach it. This is accepted because (1)
+the annotation remains a valid task-scoped marker
+(ac-na-no-invalid-finding) — the documented convention stays
+well-formed and produces no findings; (2) the new warnings are correct
+under the decided semantics: they surface real trait-AC misfits the
+N/A escape hatch was hiding; and (3) retiring the in-code N/A
+convention itself (and the future task-level covers/covers_ac metadata
+that would replace it) is out of program scope per the deferred
+register — the consumer-facing documentation in shared package
+guidance is untouched by this plan, and when it is later changed, that
+touches shared guidance surfaces and takes the neutrality review
+chain.
 
 ### Migration / backcompat summary
 
@@ -808,18 +895,31 @@ neutrality review chain.
 - Bootstrap-only freshness (empty store) is the universal upgrade
   state, so existing projects get freshness with zero migration.
 
-### Approval ordering
+### Approval gate and ordering
+
+**Gate: this plan must not be approved or derived until
+@plan-ui-redesign-global-decisions (P0a) is approved and derived.**
 
 @annotation-freshness-provenance, @ac-coverage-applicability, and
 @actor-identity-model are authored in the P0a global-decisions plan
 and are pending materialization — verified absent from the live corpus
 at authoring time. The pending refs are intentional: the depends_on
 links are the durable, machine-visible ordering once P0a derives, and
-removing them would lose that linkage. The corresponding gate is that
-this plan must not be approved or derived before
-@plan-ui-redesign-global-decisions is approved and derived — at that
-point every pending ref above resolves against the live corpus. Other P0a
-decision slugs mentioned in these notes
+removing them would lose that linkage. Once P0a derives, every pending
+ref above resolves against the live corpus.
+
+Plan records carry no machine-readable dependency field (verified
+against the plan schema), so this gate cannot be expressed as
+plan-level metadata. It is enforced by: (1) this plan remaining in
+draft status until P0a materializes — review and re-review happen
+against the draft; (2) the gate banner at the head of this document
+and this section; and (3) a machine-visible failure mode — deriving
+this plan before P0a leaves every binding depends_on ref above
+dangling, which kspec validate --refs reports against the derived
+items. Approvers must confirm P0a is approved and derived before
+approving this plan.
+
+Other P0a decision slugs mentioned in these notes
 (@client-preference-persistence, @test-result-acquisition,
 @coverage-state-presentation) are likewise pending materialization but
 appear only as prose context, not as binding references. All other
@@ -827,8 +927,9 @@ external references were mechanically verified against the live
 corpus: @test-annotation-sweep (ac-explicit-mapping,
 ac-annotation-format, ac-no-blanket-credit),
 @ac-annotation-integrity-reporting (including
-ac-valid-annotation-covers-target), @coverage-scan-config, and
-@data-format-forward-compatibility.
+ac-valid-annotation-covers-target), @ac-annotation-identifier-format
+(ac-valid-token-covers-ac), @trait-validation (ac-2),
+@coverage-scan-config, and @data-format-forward-compatibility.
 
 ### Naming caution
 
