@@ -142,6 +142,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-11T09:25:37.930Z
+  - _ulid: 01KTV01HR12P904APG9Y25X9ZJ
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTV01HH7TR9894ZQB1ZJCFP1
+    timestamp: 2026-06-11T09:26:04.801Z
 examined_commit: 97f10f3b5c87ba10d761643d782f023ef8ad8e6b
 external_links: []
 lifecycle_state: open
@@ -151,8 +158,41 @@ subject:
   content_hash: ""
   ref: "@01KTTD06BWZAEDXS79B66C260R"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTV01HH7TR9894ZQB1ZJCFP1
+    entries:
+      - _ulid: 01KTV01HH81ESKEAX2S6Z3N21R
+        author: codex
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; task @01KTTD06BWZAEDXS79B66C260R; spec
+          @daemon-failure-observability; full diff for packages/daemon/src/fatal-handlers.ts,
+          packages/daemon/src/index.ts, packages/daemon/src/pid.ts, packages/daemon/src/server.ts,
+          scripts/build-daemon.cjs, src/cli/commands/serve.ts, src/daemon-shared/endpoint.ts,
+          tests/daemon-last-exit.test.ts; surrounding daemon lifecycle, PID/metadata, status, and
+          build-daemon code.
+
+
+          Commands run: git diff/stat/status, kspec item get, kspec validate --refs --warnings-ok,
+          kspec validate --alignment --warnings-ok, kspec validate --completeness --warnings-ok, npm
+          run format:check, npx oxlint <changed files>, npm run lint -- --quiet, npm run typecheck,
+          npm test.
+
+
+          Claims verified: fatal handlers are installed before createServer; bundled daemon build
+          re-exports writeDaemonLastExitRecord through dist daemon pid shim; startup, graceful
+          shutdown, fatal handler, helper round-trip/malformed, and serve status paths are covered
+          by behavioral tests with AC annotations; no source-scanning AC tests were added.
+
+
+          Categories searched: correctness, daemon lifecycle edge cases, startup and shutdown error
+          handling, status JSON/human integration, dist build integration, test quality, and
+          changed-file lint warnings. No blocking findings.
+        created_at: 2026-06-11T09:26:04.584Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T09:13:27.620Z
-updated_at: 2026-06-11T09:25:37.698Z
+updated_at: 2026-06-11T09:26:04.584Z
 notes: []
