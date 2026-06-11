@@ -62300,7 +62300,7 @@ runs:
     completed_at: 2026-06-11T06:31:36.580Z
   - _ulid: 01KTTQC4MVJXH1QCH6MGSKQF6B
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -62314,7 +62314,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T06:55:03.687Z
-        completed_at: 2026-06-11T06:55:03.687Z
+        completed_at: 2026-06-11T06:55:17.786Z
+        notes: "Friction point: after a clean review, recording all required checks still required manually
+          composing a long kspec batch payload with repeated review check fields and escaped
+          evidence text. This is repeatable across reviewer sessions and creates avoidable typo
+          risk. Secondary observation: npm test took about 49.5 minutes, but that is an intentional
+          full-suite gate rather than a clear workflow defect from this session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T06:55:17.786Z
+        completed_at: 2026-06-11T06:55:17.786Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T06:54:34.651Z
