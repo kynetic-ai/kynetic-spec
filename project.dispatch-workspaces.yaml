@@ -20526,12 +20526,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T21:03:18.030Z
+      updated_at: 2026-06-11T21:04:13.577Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T21:03:18.030Z
+      updated_at: 2026-06-11T21:04:13.577Z
     integration:
       status: pending
       detail: null
@@ -20539,7 +20539,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3a5555974a873199bc55b92068d8f6ef691e8b16
-      updated_at: 2026-06-11T21:03:18.030Z
+      updated_at: 2026-06-11T21:04:13.577Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTTCZGFDCPVXA51S6PEFCWYZ
@@ -20548,18 +20548,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T20:50:01.325Z
-      last_reconciled_at: 2026-06-11T21:03:18.030Z
+      last_reconciled_at: 2026-06-11T21:04:13.577Z
       created_at: 2026-06-11T20:22:52.227Z
-      updated_at: 2026-06-11T21:03:18.030Z
+      updated_at: 2026-06-11T21:04:13.577Z
     workspace_id: dispatch-workspace-01KTTCZGFDCPVXA51S6PEFCWYZ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 6bf23da09a3d54e706404bfdf2853cfcbd813e2d
+        last_seen_at: 2026-06-11T21:04:13.577Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-workspace-packages-private-01kttczg-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-workspace-packages-private/01kttczg
         head: 6bf23da09a3d54e706404bfdf2853cfcbd813e2d
-        last_seen_at: 2026-06-11T20:49:05.288Z
+        last_seen_at: 2026-06-11T21:04:13.577Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-workspace-packages-private-01kttczg
   - active_role: worker
     base_branch_point: 5989d006c97653a6d3de7039c8b5cb47bec6507c
