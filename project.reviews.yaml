@@ -25594,10 +25594,10 @@ reviews:
       ref: "@plan-web-ui-foundations"
       shadow_commit: ""
     thread_count: 7
-    unresolved_blocker_count: 7
+    unresolved_blocker_count: 6
     verdict_count: 1
     created_at: 2026-06-11T17:56:33.933Z
-    updated_at: 2026-06-11T18:38:38.305Z
+    updated_at: 2026-06-11T18:38:43.547Z
   - _ulid: 01KTVY20HEHHZC3KVCD598JHVV
     slugs: []
     title: "Plan review: Web UI Foundations (round 2 — re-review of unchanged content)"

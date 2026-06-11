@@ -229,6 +229,12 @@ events:
     payload:
       thread_ulid: 01KTVXBHANSNSRJF8WHWW8J3X1
     timestamp: 2026-06-11T18:38:38.522Z
+  - _ulid: 01KTVZNFHPJCK1CHDRQW42XF4S
+    actor: Claude
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTVXBHANSNSRJF8WHWW8J3X1
+    timestamp: 2026-06-11T18:38:43.766Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -294,6 +300,8 @@ threads:
           payload serves item, task, plan, review, and session chains."
         created_at: 2026-06-11T18:38:38.305Z
     kind: blocker
+    resolved_at: 2026-06-11T18:38:43.547Z
+    resolved_by: Claude
   - _ulid: 01KTVXBMAHTC8P169DFJPM7AJM
     anchor:
       type: structured
@@ -391,5 +399,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T17:58:57.650Z
 created_at: 2026-06-11T17:56:33.933Z
-updated_at: 2026-06-11T18:38:38.305Z
+updated_at: 2026-06-11T18:38:43.547Z
 notes: []
