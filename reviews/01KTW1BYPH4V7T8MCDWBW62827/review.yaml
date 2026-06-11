@@ -249,6 +249,12 @@ events:
     payload:
       thread_ulid: 01KTW1EJPMWYYY0RA4MKM5ZMHG
     timestamp: 2026-06-11T20:02:38.088Z
+  - _ulid: 01KTW4GGVBSKF7Z63Q2HVM7JV1
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW1ENTYCKA2CBTQPJH5BDME
+    timestamp: 2026-06-11T20:03:24.139Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -358,6 +364,15 @@ threads:
           follow-up for UI), or should the existing web-ui spec get a minimal respec in this plan
           the way ac-11 does for review passes?
         created_at: 2026-06-11T19:09:57.982Z
+      - _ulid: 01KTW4GGFHJYFD0W45HV0V1HT5
+        author: "@claude"
+        body: "Answered in re-import by taking the minimal-respec path you offered: task-idea-thread-kind
+          now also respecs review-records-web-ui ac-2 and ac-3 so the kind-badge and kind-selection
+          enumerations include idea, with the matching enumeration-level change in the shipped
+          review detail page (badge map entry plus kind option in the comment form). The shipped UI
+          therefore has specified treatment for idea threads the moment write surfaces accept them;
+          redesigned review surfaces remain with later plans."
+        created_at: 2026-06-11T20:03:23.760Z
     kind: question
   - _ulid: 01KTW1ERY70EQ8TKRNWD6GB75E
     anchor:
@@ -405,5 +420,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T19:10:29.343Z
 created_at: 2026-06-11T19:08:28.753Z
-updated_at: 2026-06-11T20:02:37.700Z
+updated_at: 2026-06-11T20:03:23.760Z
 notes: []
