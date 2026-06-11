@@ -67,6 +67,18 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-06-11T07:25:20.124Z
     completed_at: 2026-06-11T07:25:20.124Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing completeness warning baseline accepted by --warnings-ok. Reviewed
+      task scope is spec-only: @broken-shadow-safety ac-restore-failure-reports-state was added for
+      downstream behavioral coverage by @task-shadow-restore-loud-failure."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T07:25:30.664Z
+    completed_at: 2026-06-11T07:25:30.664Z
 events:
   - _ulid: 01KTTRCWG74JNRC8W75MQ747WH
     actor: Jacob Chapel
@@ -123,6 +135,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-11T07:25:20.339Z
+  - _ulid: 01KTTS4SCRJ4QYEG9G6F61P1SX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T07:25:30.905Z
 examined_commit: 0f3473bba38c4e87899c06d0394c895a92aa61e3
 external_links: []
 lifecycle_state: open
@@ -135,5 +154,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T07:12:27.656Z
-updated_at: 2026-06-11T07:25:20.124Z
+updated_at: 2026-06-11T07:25:30.664Z
 notes: []
