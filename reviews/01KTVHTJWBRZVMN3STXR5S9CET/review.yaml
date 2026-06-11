@@ -2,7 +2,93 @@ _ulid: 01KTVHTJWBRZVMN3STXR5S9CET
 slugs: []
 title: Review task-standardize-node-version-docs
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format. Finished in 518ms on 1008 files.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T14:49:59.717Z
+    completed_at: 2026-06-11T14:49:59.717Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide lint completed with 737 warnings and 0 errors. Focused changed-file lint also
+      run: npx oxlint tests/release-packaging.test.ts reported 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T14:50:02.388Z
+    completed_at: 2026-06-11T14:50:02.388Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found 0 warnings and 0 errors.
+    name: focused-lint
+    required: true
+    runner: npx oxlint tests/release-packaging.test.ts
+    created_at: 2026-06-11T14:50:05.010Z
+    completed_at: 2026-06-11T14:50:05.010Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T14:50:07.618Z
+    completed_at: 2026-06-11T14:50:07.618Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Test Suites: 2759 passed of 2759. Tests: 3 skipped, 10460 passed of 10463. Duration:
+      2399.2s. Full log: /tmp/kspec-test-cache/01KTVHS4AD865EGEWQGZ29QXXS/b4008735940e55f4.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T14:50:10.286Z
+    completed_at: 2026-06-11T14:50:10.286Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with warnings allowed: schema OK, references OK; 6 pre-existing
+      reference warnings reported."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T14:50:12.840Z
+    completed_at: 2026-06-11T14:50:12.840Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with warnings allowed: schema OK, references OK; 47 pre-existing
+      alignment warnings reported."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T14:50:15.435Z
+    completed_at: 2026-06-11T14:50:15.435Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed with warnings allowed: schema OK, references OK; existing completeness
+      warnings reported. @supported-runtime-range AC annotations are present in
+      tests/release-packaging.test.ts for ac-1 and ac-2."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T14:50:17.989Z
+    completed_at: 2026-06-11T14:50:17.989Z
 events:
   - _ulid: 01KTVHTJWAE68B9N9ETXBQ6PT6
     actor: Jacob Chapel
@@ -17,17 +103,150 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T14:37:14.066Z
+  - _ulid: 01KTVJJNC5D1HJFM84NDWM3FB9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T14:49:59.941Z
+  - _ulid: 01KTVJJR0JD5C46D1WR5AEXC40
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T14:50:02.642Z
+  - _ulid: 01KTVJJTHJAHRQCNM2P4378R79
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-11T14:50:05.234Z
+  - _ulid: 01KTVJJX3310DWP0ATNX50526S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T14:50:07.843Z
+  - _ulid: 01KTVJJZP2ZQS70MEPKK0KPVPS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T14:50:10.498Z
+  - _ulid: 01KTVJK25WDSMXHGJHA442EW50
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T14:50:13.052Z
+  - _ulid: 01KTVJK4Q4VFANR140H0CQCT4V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T14:50:15.652Z
+  - _ulid: 01KTVJK77D9EJF3RVTYDJ4HBH5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T14:50:18.221Z
+  - _ulid: 01KTVJK9S161A7GE7MK5EVHBP2
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVJK9JJF576YXKGKECQNDJ8
+    timestamp: 2026-06-11T14:50:20.833Z
+  - _ulid: 01KTVJKC8M329JQV9NJYZJS8G4
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTVJKC1N0QCZBA0X5R7262KV
+    timestamp: 2026-06-11T14:50:23.381Z
+  - _ulid: 01KTVJKERFXDYPCE5DK2B712G4
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T14:50:25.935Z
+  - _ulid: 01KTVJKERFF0P8DQ60CEV2QSCN
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T14:50:25.935Z
 examined_commit: b296e8d1b47ed1095db07c94afe47c5644fe2a98
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KTTCZCTNXC6TSH9SENFSQDZG"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTVJK9JJF576YXKGKECQNDJ8
+    anchor:
+      type: code
+      commit: b296e8d1b47ed1095db07c94afe47c5644fe2a98
+      line_end: 91
+      line_start: 91
+      path: tests/release-packaging.test.ts
+      side: head
+    entries:
+      - _ulid: 01KTVJK9JJ5NR7GDZKR12ZFCZD
+        author: codex-reviewer
+        body: 'MUST-FIX: `listUserFacingDocs()` relies on `fs.readdirSync(..., { recursive: true })`, but
+          `package.json` declares Node `>=20.0.0` as the source-of-truth minimum and Node added the
+          `recursive` option in v20.1.0. On Node 20.0.0 the option is ignored for this call shape: I
+          reproduced with `npx -y node@20.0.0` and a nested fixture, and the output was
+          `["nested","top.md"]` instead of including `nested/child.md`. That means the new ac-2 test
+          can pass at the declared minimum while silently skipping all nested `docs/**/*.md` files,
+          including the exact docs this task is supposed to protect. Replace this with explicit
+          recursive traversal using APIs available in Node 20.0.0, or raise the engine minimum first
+          if the project intends to require 20.1+.'
+        created_at: 2026-06-11T14:50:20.626Z
+    kind: blocker
+  - _ulid: 01KTVJKC1N0QCZBA0X5R7262KV
+    entries:
+      - _ulid: 01KTVJKC1NY47CX14PXNRKHZBX
+        author: codex-reviewer
+        body: "Review evidence log: Files read: kspec-agents.md, task @01KTTCZCTNXC6TSH9SENFSQDZG, spec
+          @supported-runtime-range, diff for INSTALL.md, docs/getting-started/tutorial.md,
+          tests/release-packaging.test.ts, package.json, and surrounding release-packaging test
+          context. Commands run: git diff/stat/status; kspec task get; kspec item get; rg
+          doc/version and AC annotation searches; npm run format:check; npm run lint -- --quiet; npx
+          oxlint tests/release-packaging.test.ts; npm run typecheck; npm test; kspec validate
+          refs/alignment/completeness; Node 20.0.0 readdir recursive repro. Claims verified: only
+          current user-facing Node version requirement lines now state 20; AC annotations exist for
+          ac-1/ac-2; the dynamic doc traversal claim fails on the declared minimum Node version.
+          Categories searched: correctness, edge cases/minimum-runtime compatibility, test
+          quality/AC proof, docs integration, lint/type/test gates. Shared/package guidance surfaces
+          touched: none, so shared-guidance neutrality checklist was not applicable."
+        created_at: 2026-06-11T14:50:23.157Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-11T14:50:25.935Z
 created_at: 2026-06-11T14:36:50.955Z
-updated_at: 2026-06-11T14:37:13.841Z
+updated_at: 2026-06-11T14:50:25.935Z
 notes: []
