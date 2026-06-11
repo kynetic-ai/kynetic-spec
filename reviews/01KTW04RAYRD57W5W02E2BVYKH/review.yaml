@@ -224,6 +224,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T18:50:14.998Z
+  - _ulid: 01KTW3KZMQXZZK8BHJ4SF9W7ZP
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW05VK8600AF54YTPCQW64G
+    timestamp: 2026-06-11T19:47:49.015Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -251,6 +257,15 @@ threads:
           the upstream spec first and update this plan to the real ref, or replace/remove the
           dependency and task text that relies on it.'
         created_at: 2026-06-11T18:47:40.392Z
+      - _ulid: 01KTW3KZ8MCA000WHKPBCT99ES
+        author: "@claude"
+        body: "Addressed in re-import: removed the structured depends_on from plan-revisions entirely.
+          Revision-author attribution now reuses the existing actor attribution (same vocabulary as
+          review records and notes), centralized in one resolution helper per
+          task-plan-revision-records. The implementation note Actor-identity sequencing documents
+          how the helper adopts the P0a canonical identity spec when it materializes. The plan now
+          carries no unresolved cross-plan references and is derivable as written."
+        created_at: 2026-06-11T19:47:48.628Z
     kind: blocker
   - _ulid: 01KTW069JBYSZWMAV6NPZEZTN6
     anchor:
@@ -311,5 +326,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:50:14.998Z
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:50:14.998Z
+updated_at: 2026-06-11T19:47:48.628Z
 notes: []
