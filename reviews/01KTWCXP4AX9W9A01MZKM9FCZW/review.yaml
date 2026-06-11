@@ -2,7 +2,97 @@ _ulid: 01KTWCXP4AX9W9A01MZKM9FCZW
 slugs: []
 title: "Plan review: Review Anchors and Plan Revisions Schema (round 4 — fix verification)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified in stored content: @plan-revisions description pins option (a) — upgrade gives
+      every plan that existed when it ran at least revision 1; plan creation (direct or initial
+      import) mints nothing and starts with an empty revision history until first publish or
+      re-import mints revision 1. New ac-created-plans-start-empty present and behavioral.
+      task-plan-revision-records carries the Do-NOT-mint enumeration (plan add, initial import, set
+      --content-file, note, status/title/branch), the freshly-created-plan test, and an updated
+      Covers line including ac-created-plans-start-empty. Implementation notes record the anchor
+      consequence (plan-text anchors unavailable on fresh plans until first publish; binding
+      resolver tolerates revisionless plans)."
+    name: "Round-3 fix: plan-creation revision contract"
+    required: true
+    runner: manual
+    created_at: 2026-06-11T22:31:17.467Z
+    completed_at: 2026-06-11T22:31:17.467Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@review-plan-text-anchors ac-span-integrity then-text now ends at the assertion
+      ('rejected with actionable feedback and no thread is stored' — aligned with sibling validation
+      ACs); recoverability invariant remains in the description only. @review-idea-threads
+      ac-idea-never-blocks then-text is now solely 'the disposition is approved'; advisory-only
+      rationale remains in the spec description."
+    name: "Round-3 fix: AC purity (rationale clauses removed)"
+    required: true
+    runner: manual
+    created_at: 2026-06-11T22:31:23.979Z
+    completed_at: 2026-06-11T22:31:23.979Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --refs passes (two pre-existing project warnings about a deprecated task
+      ref, unrelated to this plan). All existing-spec refs cited by the plan resolve with the
+      expected AC ids: @review-record-core-model, @review-comment-threads-and-anchors (ac-6),
+      @plan-support, @review-subject-bindings (ac-4/ac-5), @folder-backed-plan-storage-1
+      (ac-plan-index-has-bounded-projection, ac-plan-metadata-sidecar-is-authoritative),
+      @review-records-web-ui (ac-2/ac-3/ac-11). Internal parent/depends_on/spec_ref slugs are all
+      plan-local and consistent."
+    name: Reference resolution
+    required: true
+    runner: kspec-validate
+    created_at: 2026-06-11T22:31:30.548Z
+    completed_at: 2026-06-11T22:31:30.548Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "25/25 ACs claimed by Covers lines: review-spec-ac-anchors 4 (ac-anchor-variant-guidance
+      explicitly split to task-plan-text-anchors which finalizes the error map),
+      review-plan-text-anchors 6, review-idea-threads 3, plan-revisions 9 (7 on
+      task-plan-revision-records incl. new ac-created-plans-start-empty, backfill AC on
+      task-plan-revision-backfill, binding AC on task-review-revision-binding),
+      subject-revision-vocabulary 3. No orphan ACs; multi-task splits annotated."
+    name: AC coverage
+    required: true
+    runner: manual
+    created_at: 2026-06-11T22:31:36.786Z
+    completed_at: 2026-06-11T22:31:36.786Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No cycles. task-plan-text-anchors (P1) depends on the three P1 prerequisites incl.
+      backfill, with rationale stated. P2 tasks (review-revision-binding,
+      respec-review-pass-vocabulary) depend only on P1 tasks. No P1-depends-on-P2 misalignment.
+      Parallelism preserved between the anchor-variant and revision-records chains.
+    name: Dependency ordering
+    required: true
+    runner: manual
+    created_at: 2026-06-11T22:31:43.704Z
+    completed_at: 2026-06-11T22:31:43.704Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Round 1 (4 threads) and round 2 (6 threads) fully resolved and verified in round 3's full
+      pass. Round 3: both finding threads (plan-creation revision contract question; AC-purity nit)
+      resolved by the author with replies; fixes verified present in the current stored content this
+      round. The one open round-3 thread is the summary thread deliberately left open as the
+      standing P0a approval-ordering gate marker — non-blocking (kind: nit) and intentional."
+    name: Prior-thread resolution audit (rounds 1-3)
+    required: true
+    runner: manual
+    created_at: 2026-06-11T22:31:50.377Z
+    completed_at: 2026-06-11T22:31:50.377Z
 events:
   - _ulid: 01KTWCXP4AT02BB9Q9S9T60AGF
     actor: "@claude"
@@ -17,6 +107,48 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T22:30:47.493Z
+  - _ulid: 01KTWCZAM9JKR8BZMDMMD3EGTR
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Round-3 fix: plan-creation revision contract"
+    timestamp: 2026-06-11T22:31:17.897Z
+  - _ulid: 01KTWCZH27DTG3KE0CJ6BZ3NQC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "Round-3 fix: AC purity (rationale clauses removed)"
+    timestamp: 2026-06-11T22:31:24.487Z
+  - _ulid: 01KTWCZQCKYY6E9KXSQ3CSR6Q4
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Reference resolution
+    timestamp: 2026-06-11T22:31:30.963Z
+  - _ulid: 01KTWCZXK3NJ4B8AQPQE9CSV00
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage
+    timestamp: 2026-06-11T22:31:37.315Z
+  - _ulid: 01KTWD049TRC3D7BVS9WC9ZXR6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-11T22:31:44.186Z
+  - _ulid: 01KTWD0ASPV30Z4C39XY9CQVMB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior-thread resolution audit (rounds 1-3)
+    timestamp: 2026-06-11T22:31:50.838Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -29,5 +161,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:30:24.138Z
-updated_at: 2026-06-11T22:30:46.957Z
+updated_at: 2026-06-11T22:31:50.377Z
 notes: []
