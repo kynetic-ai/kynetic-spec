@@ -304,6 +304,12 @@ events:
     payload:
       thread_ulid: 01KTTPHERE1DCKNHZKNHBYV1RM
     timestamp: 2026-06-11T07:39:21.724Z
+  - _ulid: 01KTTSY9SWM517SY2Y39293SNQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTPHERE1DCKNHZKNHBYV1RM
+    timestamp: 2026-06-11T07:39:26.908Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -388,6 +394,8 @@ threads:
           are enumerated (window controls, native application menus, OS-level global shortcuts)."
         created_at: 2026-06-11T07:39:21.516Z
     kind: blocker
+    resolved_at: 2026-06-11T07:39:26.690Z
+    resolved_by: "@claude"
   - _ulid: 01KTTPJ008G1QW5FS6YPG77ZC1
     anchor:
       type: structured
@@ -475,5 +483,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:41:27.363Z
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T07:39:21.516Z
+updated_at: 2026-06-11T07:39:26.690Z
 notes: []
