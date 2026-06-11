@@ -31224,6 +31224,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T03:52:52.836Z
+  automation: eligible
 - _ulid: 01KTTCZF245ZGK3T0KJPHG6E4W
   slugs:
     - task-ci-node-version-matrix
