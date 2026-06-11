@@ -71,6 +71,18 @@ checks:
     runner: kspec
     created_at: 2026-06-11T14:01:05.007Z
     completed_at: 2026-06-11T14:01:05.007Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok exited 0. Existing completeness/annotation
+      warnings allowed by --warnings-ok; @fuzzy-item-search ac-7 annotation present in
+      tests/grep.test.ts and changed tests behaviorally exercise the AC.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T14:01:15.282Z
+    completed_at: 2026-06-11T14:01:15.282Z
 events:
   - _ulid: 01KTVET5TDBYBNT8QZ8AR0SSCZ
     actor: Jacob Chapel
@@ -134,6 +146,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-11T14:01:05.230Z
+  - _ulid: 01KTVFSDFFG6VW74826Y2PPCWP
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T14:01:15.503Z
 examined_commit: 4a03cba1fab82c11a570777b1f63250a16acefb3
 external_links: []
 lifecycle_state: open
@@ -165,5 +184,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T13:44:11.854Z
-updated_at: 2026-06-11T14:01:05.007Z
+updated_at: 2026-06-11T14:01:15.282Z
 notes: []
