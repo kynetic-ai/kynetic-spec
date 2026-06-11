@@ -62938,7 +62938,7 @@ runs:
     completed_at: 2026-06-11T10:51:58.865Z
   - _ulid: 01KTV61G2H9P4S3M6QWAWRJV3R
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -62953,7 +62953,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T11:12:17.221Z
-        completed_at: 2026-06-11T11:12:17.221Z
+        completed_at: 2026-06-11T11:12:26.691Z
+        notes: "Friction points: npm test eventually passed, but after visible tests completed it had
+          several long quiet intervals. To avoid interrupting a healthy run, I manually inspected
+          the process tree and found an active Vitest worker still running CLI scenarios. This is a
+          repeatable review friction point: reviewers need better runner heartbeat/active-test
+          visibility during long quiet tails. Existing evidence-log friction is already tracked, so
+          no duplicate there."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T11:12:26.691Z
+        completed_at: 2026-06-11T11:12:26.691Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T11:10:54.545Z
