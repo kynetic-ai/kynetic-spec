@@ -1,0 +1,26 @@
+_ulid: 01KTVRDS3F9BM69M0E45HN3HES
+slugs: []
+title: Review task-command-dispatch-timeout cycle 2
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTVRDS3FXT70HD2VTVP4GMJ1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T16:32:11.375Z
+examined_commit: 6a4c811fac5105c9b430fa2cab768460b6aabce4
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTD07T61PPMK5RGAJCJ01Z7"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T16:32:11.375Z
+updated_at: null
+notes: []
