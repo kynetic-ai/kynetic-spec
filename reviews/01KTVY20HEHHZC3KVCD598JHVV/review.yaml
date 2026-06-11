@@ -99,6 +99,19 @@ checks:
     runner: manual
     created_at: 2026-06-11T18:13:59.105Z
     completed_at: 2026-06-11T18:13:59.105Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "P0a claim table rows assigned to this plan lack Covers lines: @web-shell-platform-target
+      ac-3, @client-preference-persistence ac-1, @coverage-state-presentation ac-2,
+      @actor-identity-model ac-1 (no canonical-write layer in plan), @actor-identity-model ac-2 (if
+      the upgrade task is the claimant)"
+    name: Upstream decision AC claim mapping
+    required: true
+    runner: manual
+    created_at: 2026-06-11T18:14:04.500Z
+    completed_at: 2026-06-11T18:14:04.500Z
 events:
   - _ulid: 01KTVY20HDMERJRGK4RSYWVR2G
     actor: "@claude"
@@ -225,6 +238,13 @@ events:
       status: fail
       name: Plan cross-reference validation
     timestamp: 2026-06-11T18:13:59.329Z
+  - _ulid: 01KTVY8B5YGNEHC07D9E1XZWYN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Upstream decision AC claim mapping
+    timestamp: 2026-06-11T18:14:04.734Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -459,5 +479,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:13:59.105Z
+updated_at: 2026-06-11T18:14:04.500Z
 notes: []
