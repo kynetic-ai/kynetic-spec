@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KTVT9FTV3J0FCR0BYNTQQKTY
+    content: "Approach: (1) test.yml — add workflow_dispatch trigger; cross test-job matrix shard
+      [1,2,3] x node-version [20,24]; setup-node uses matrix.node-version; job name includes node
+      version; replace direct npx vitest invocation with npm test -- --shard=N/3 so CI goes through
+      scripts/test.cjs. lint and e2e stay on 24. (2) publish.yml — add verify-min-node job (checkout
+      main, setup-node 20, setup-bun, npm ci, build, npm test); publish gets needs: verify-min-node.
+      Verification: parse both YAML files with the yaml package, run npm test locally, push branch,
+      gh workflow run test.yml --ref <task-branch>, record run URL as ac-1 evidence; ac-2 is
+      structural (needs edge + Node 20 job), verified via gh workflow view + YAML parse. Workflow
+      YAML not unit-testable in vitest, so AC evidence lives in recorded workflow runs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T17:04:47.964Z
