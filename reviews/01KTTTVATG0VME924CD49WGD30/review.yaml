@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T07:55:30.746Z
+  - _ulid: 01KTTTW7BDYK6WKH10ZJY353JA
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTTTW73GGHAWQ5FVRPPYZ2P8
+    timestamp: 2026-06-11T07:55:47.437Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,28 @@ subject:
   content_hash: ""
   ref: "@plan-ui-redesign-global-decisions"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTTTW73GGHAWQ5FVRPPYZ2P8
+    anchor:
+      type: structured
+      ref: "@actor-identity-model"
+      section: description
+    entries:
+      - _ulid: 01KTTTW73GS32E0T4XVHKA9AX3
+        author: "@claude"
+        body: "Canonical-at-write-time contradicts the implemented @config-author spec without
+          acknowledgment. @config-author ac-3 (implemented) specifies author falls back to git
+          user.name then OS user when no env var or config author is set — a free-form variant by
+          this decision's definition — while ac-1 here asserts new records are 'never a free-form
+          variant' through any interface. The plan resolved the parallel N/A-semantics conflict
+          (@ac-coverage-applicability vs the implemented validate exemption path) with an explicit
+          transition boundary naming the owning work; do the same here: acknowledge that
+          @config-author's fallback chain is superseded or normalized by the canonical-write
+          identity layer (UI foundations plan per the Consumers table), so the two specs don't sit
+          in the corpus as an unexplained contradiction."
+        created_at: 2026-06-11T07:55:47.184Z
+    kind: question
 verdicts: []
 created_at: 2026-06-11T07:55:18.224Z
-updated_at: 2026-06-11T07:55:30.479Z
+updated_at: 2026-06-11T07:55:47.184Z
 notes: []
