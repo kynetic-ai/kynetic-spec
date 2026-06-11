@@ -524,6 +524,17 @@ async function startServer(opts: {
     );
   }
 
+  // AC: @daemon-network-endpoint-contract ac-external-connect-host-warning
+  // A configured non-loopback connect host is added to the daemon's
+  // accepted Host-header values and advertised to every client, so a
+  // wrong value silently weakens DNS-rebinding protection and misroutes
+  // clients — surface it as loudly as the bind-host warning.
+  if (connectHost && isExternallyReachable(connectHost)) {
+    warn(
+      `WARNING: daemon connect host is ${connectHost}, a non-loopback host value; the daemon will accept requests addressed to ${connectHost} and advertise it to clients. Verify connect_host is intended.`,
+    );
+  }
+
   // AC: @cli-serve-commands ac-2 - background mode
   if (opts.detach) {
     // Spawn detached process
@@ -725,6 +736,15 @@ async function statusServer(_opts: { kspecDir?: string; json?: boolean }): Promi
   if (running && bindHost && isExternallyReachable(bindHost)) {
     warn(
       `WARNING: daemon is bound to ${bindHost}, exposing unauthenticated kspec project data and mutation APIs on a non-loopback interface. Restrict access at the network/firewall level.`,
+    );
+  }
+
+  // AC: @daemon-network-endpoint-contract ac-external-connect-host-warning
+  // Mirror the connect-host warning whenever a lifecycle command reports
+  // the endpoint and the advertised connect host is non-loopback.
+  if (running && connectHost && isExternallyReachable(connectHost)) {
+    warn(
+      `WARNING: daemon connect host is ${connectHost}, a non-loopback host value; the daemon will accept requests addressed to ${connectHost} and advertise it to clients. Verify connect_host is intended.`,
     );
   }
 
