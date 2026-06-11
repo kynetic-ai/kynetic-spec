@@ -25133,10 +25133,10 @@ reviews:
   - _ulid: 01KTTTVATG0VME924CD49WGD30
     slugs: []
     title: "Plan review: UI Redesign Global Decisions (round 2)"
-    disposition: pending
+    disposition: approved
     author: "@claude"
     check_count: 6
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -25145,6 +25145,6 @@ reviews:
       shadow_commit: ""
     thread_count: 3
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-06-11T07:55:18.224Z
-    updated_at: 2026-06-11T07:57:17.213Z
+    updated_at: 2026-06-11T07:57:29.341Z
