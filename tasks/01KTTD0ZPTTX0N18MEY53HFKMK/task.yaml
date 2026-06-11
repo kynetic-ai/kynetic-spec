@@ -58,8 +58,12 @@ description: |
 spec_ref: "@subprocess-argument-literalness"
 plan_ref: "@plan-data-integrity-and-upgrade-safety"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 23b3288dd8fdb58ab097e8dd5a09398d442ad7b5 after approved review
+  @01KTV8KA. Migrated src/utils/git.ts git subprocess calls from shell-string execSync to spawnSync
+  args-array invocation and added behavioral tests for shell-metacharacter literalness and preserved
+  failure results.
 depends_on: []
 context: []
 priority: 2
@@ -126,8 +130,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-11T11:55:37.889Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 23b3288dd8fdb58ab097e8dd5a09398d442ad7b5 after approved review @01KTV8KA.
+          Migrated src/utils/git.ts git subprocess calls from shell-string execSync to spawnSync
+          args-array invocation and added behavioral tests for shell-metacharacter literalness and
+          preserved failure results.
+        previous: null
+      completed_at:
+        new: 2026-06-11T12:11:12.202Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-11T12:11:12.209Z
 created_at: 2026-06-11T03:53:43.386Z
 started_at: 2026-06-11T11:28:09.707Z
 submitted_at: 2026-06-11T11:49:46.947Z
+completed_at: 2026-06-11T12:11:12.202Z
 todos: []
 automation: eligible
