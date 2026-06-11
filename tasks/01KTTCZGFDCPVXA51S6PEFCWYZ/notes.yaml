@@ -10,3 +10,17 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T20:24:59.543Z
+  - _ulid: 01KTW6V011DJV65NZP7WQEXEKN
+    content: 'Implementation complete. Added "private": true to packages/web-ui, packages/shared,
+      packages/daemon manifests; versions left at 0.1.0 per policy. Extended
+      tests/release-packaging.test.ts with a Workspace package privacy describe: it.each over the
+      three manifests imported as JSON modules asserting private === true, plus a guard that the
+      root package has no private field (stays publishable). Behavioral verification: root npm pack
+      --dry-run lists 0 files under packages/; npm publish --workspaces --dry-run skips all three
+      with marked-as-private warnings. Gates all green: format:check, lint --quiet (0 errors),
+      oxlint on changed test (0 warnings), typecheck, npm run build, full npm test (10528 passed / 3
+      skipped / 0 failed), kspec validate refs/alignment/completeness (pre-existing warnings only).
+      No spec_ref — infra task; test comments reference the task instead of a spec AC.'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T20:44:04.513Z

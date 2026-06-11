@@ -31296,7 +31296,7 @@
   title: Mark workspace packages private
   type: task
   plan_ref: "@plan-release-packaging-and-onboarding-readiness"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-add-license-file"
@@ -31304,10 +31304,11 @@
   tags:
     - infra
     - release
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-06-11T03:52:55.021Z
   started_at: 2026-06-11T20:24:15.317Z
+  submitted_at: 2026-06-11T20:44:05.555Z
   automation: eligible
 - _ulid: 01KTTCZH6PJHXT727JM9E0739D
   slugs:
