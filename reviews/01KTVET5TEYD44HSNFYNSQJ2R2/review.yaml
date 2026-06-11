@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T13:44:29.970Z
+  - _ulid: 01KTVFQ0VDWSDXJ99XW67KS2H6
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTVFQ0K0Y8G03P3P80JPNJ7R
+    timestamp: 2026-06-11T13:59:57.037Z
 examined_commit: 4a03cba1fab82c11a570777b1f63250a16acefb3
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,27 @@ subject:
   content_hash: ""
   ref: "@01KTTD1E2QCNQVJSV7TZSHXD0G"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTVFQ0K0Y8G03P3P80JPNJ7R
+    entries:
+      - _ulid: 01KTVFQ0K0PY85JPM05RK3MZ74
+        author: codex
+        body: "Evidence log (no findings): Files read: kspec-agents.md; task @01KTTD1E2QCNQVJSV7TZSHXD0G;
+          spec @fuzzy-item-search; tests/grep.test.ts diff and changed block; tests/helpers/cli.ts
+          testUlid/seedSplitTask/setupShadowDetection helpers; src/cli/commands/search.ts
+          output/search behavior. Commands run: kspec validate --refs --warnings-ok; kspec validate
+          --alignment --warnings-ok; kspec validate --completeness --warnings-ok; npx oxlint
+          tests/grep.test.ts; npm run format:check; npm run lint -- --quiet; npm run typecheck; npm
+          test -- tests/grep.test.ts --fresh repeated 10 times; npm test; npm test --
+          tests/skill-cli.test.ts --fresh repeated twice for failure triage. Claims verified: AC-7
+          tests now use behavior via kspec CLI in temp projects, assert real result markers and not
+          the no-match echo, use schema-valid ULIDs/fixtures, and the combined entity-type test is
+          no longer skipped. Categories searched: correctness, edge cases around fixture
+          loading/schema validity, error/no-match behavior, test quality/source-scanning, and
+          integration with CLI search output. No shared/package guidance surfaces were changed."
+        created_at: 2026-06-11T13:59:56.768Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T13:44:11.854Z
-updated_at: 2026-06-11T13:44:29.750Z
+updated_at: 2026-06-11T13:59:56.768Z
 notes: []
