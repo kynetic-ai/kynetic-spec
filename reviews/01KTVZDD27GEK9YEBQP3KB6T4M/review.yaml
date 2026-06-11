@@ -2,7 +2,146 @@ _ulid: 01KTVZDD27GEK9YEBQP3KB6T4M
 slugs: []
 title: "Plan review: AC Coverage Verification Schema and Storage (requested round 1)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec plan import plans/ui-redesign-coverage-schema.md --dry-run succeeded; it stores the
+      full document as a draft plan with no derived specs/tasks.
+    name: Plan parse
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-11T18:35:58.685Z
+    completed_at: 2026-06-11T18:35:58.685Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 on the live corpus with pre-existing deprecated-reference warnings; underived
+      draft-plan refs are not included in this validation.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T18:36:01.440Z
+    completed_at: 2026-06-11T18:36:01.440Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 on the live corpus with pre-existing alignment warnings unrelated to this draft plan.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T18:36:04.182Z
+    completed_at: 2026-06-11T18:36:04.182Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 on the live corpus with pre-existing completeness warnings unrelated to this
+      underived draft plan.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T18:36:06.904Z
+    completed_at: 2026-06-11T18:36:06.904Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read prior reviews @01KTTVE9 and @01KTTXQV. Their threads have author replies and are
+      resolved. Current plan content addresses the earlier N/A reconciliation, stable AC IDs in
+      Covers lines, older-tool compatibility AC, recorded-vs-bootstrap staleness deferral,
+      no-history freshness boundary, multi-annotation bootstrap rule, rationale cleanup, and split
+      stamp read/reject ACs.
+    name: Prior-review follow-up
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T18:36:09.628Z
+    completed_at: 2026-06-11T18:36:09.628Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Reviewed all four new specs. ACs are observable and deterministic after the previous
+      revisions: 7 store ACs, 7 freshness ACs, 4 session evidence ACs, and 6 compatibility ACs. No
+      remaining compound AC or rationale-in-then issue found."
+    name: Spec quality
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T18:36:12.327Z
+    completed_at: 2026-06-11T18:36:12.327Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Checked @test-annotation-sweep, @ac-annotation-integrity-reporting,
+      @ac-annotation-identifier-format, @coverage-scan-config, and
+      @data-format-forward-compatibility. The plan now explicitly reconciles the two live
+      coverage-credit ACs before changing scanner behavior. No existing spec already covers per-AC
+      verification stamp storage.
+    name: Existing spec alignment
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T18:36:15.121Z
+    completed_at: 2026-06-11T18:36:15.121Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Every new-spec AC is claimed by an exact task Covers line: @ac-verification-record-store
+      7/7, @ac-freshness-resolution 7/7, @verification-session-evidence 4/4,
+      @coverage-record-compatibility 6/6. The N/A respec and scanner tasks now name stable future
+      @test-annotation-sweep AC IDs explicitly."
+    name: AC coverage mapping
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T18:36:17.812Z
+    completed_at: 2026-06-11T18:36:17.812Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All six tasks include Why/What/How, concrete file or subsystem guidance, test
+      expectations, and scope boundaries. The dependency chain is understandable to an agent
+      starting without chat history.
+    name: Task standalone-ness
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T18:36:20.483Z
+    completed_at: 2026-06-11T18:36:20.483Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Internal task graph is sound: store task precedes freshness/session/compatibility, and
+      respec precedes scanner behavior. External readiness fails because
+      @plan-ui-redesign-global-decisions is still draft and the binding depends_on refs
+      @annotation-freshness-provenance, @actor-identity-model, and @ac-coverage-applicability are
+      not live corpus items."
+    name: Dependency ordering
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T18:36:23.186Z
+    completed_at: 2026-06-11T18:36:23.186Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Read: AGENTS-required kspec-agents.md, kspec-review-plan skill, stored plan
+      @plan-ac-coverage-verification-schema-and-storage, prior reviews @01KTTVE9 and @01KTTXQV,
+      @plan-ui-redesign-global-decisions, @test-annotation-sweep,
+      @ac-annotation-integrity-reporting, @ac-annotation-identifier-format, @coverage-scan-config,
+      @data-format-forward-compatibility. Commands: kspec plan get/import --dry-run, kspec review
+      list/get/add/open/comment/check/verdict, kspec item get/list, kspec search, kspec validate
+      refs/alignment/completeness. Categories: prior-review follow-up, spec quality, task
+      completeness, Covers mapping, dependency ordering, scope discipline, existing-spec alignment."
+    name: Evidence log
+    required: false
+    runner: kspec-review-plan
+    created_at: 2026-06-11T18:36:25.961Z
+    completed_at: 2026-06-11T18:36:25.961Z
 events:
   - _ulid: 01KTVZDD26WZN4ECXME90T0NV2
     actor: "@claude"
@@ -17,17 +156,141 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T18:34:32.135Z
+  - _ulid: 01KTVZGBSKQ6J4YKCAD1TZ0FBJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KTVZGBJETAKJD20NZSQVT02G
+    timestamp: 2026-06-11T18:35:56.083Z
+  - _ulid: 01KTVZGEK8QM8W3284CTY4G8B6
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parse
+    timestamp: 2026-06-11T18:35:58.952Z
+  - _ulid: 01KTVZGH7XG9XV24CJCJTMBQBA
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T18:36:01.662Z
+  - _ulid: 01KTVZGKXJRZ5VXAMGACFZ8ZJK
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T18:36:04.402Z
+  - _ulid: 01KTVZGPJKPM2H8HVDC78AFNE7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T18:36:07.123Z
+  - _ulid: 01KTVZGS87RKJBMBA7C7B7WXTW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior-review follow-up
+    timestamp: 2026-06-11T18:36:09.863Z
+  - _ulid: 01KTVZGVWBMPCBK4RXCT5YWT3E
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec quality
+    timestamp: 2026-06-11T18:36:12.555Z
+  - _ulid: 01KTVZGYKW60EAQKJ6QH9DWZKP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing spec alignment
+    timestamp: 2026-06-11T18:36:15.356Z
+  - _ulid: 01KTVZH18AA4C2Q40A7AFVZQ5K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-11T18:36:18.058Z
+  - _ulid: 01KTVZH3V7XW4A4MQ97YN5FVYJ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Task standalone-ness
+    timestamp: 2026-06-11T18:36:20.711Z
+  - _ulid: 01KTVZH6FG7DRTG0AEG4JZCWE5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency ordering
+    timestamp: 2026-06-11T18:36:23.409Z
+  - _ulid: 01KTVZH966Y06C9JNR558SXB2J
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Evidence log
+    timestamp: 2026-06-11T18:36:26.182Z
+  - _ulid: 01KTVZHBVN77BV4A8Q4F29QFVT
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T18:36:28.917Z
+  - _ulid: 01KTVZHBVNSGFKVX5F31DR4G90
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T18:36:28.917Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-ac-coverage-verification-schema-and-storage"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTVZGBJETAKJD20NZSQVT02G
+    anchor:
+      type: structured
+      ref: "@plan-ac-coverage-verification-schema-and-storage"
+      section: dependencies
+    entries:
+      - _ulid: 01KTVZGBJEH86V02QP9R9BS61V
+        author: "@claude"
+        body: "The plan is not approvable in the current project state: it declares binding depends_on refs
+          to @annotation-freshness-provenance, @actor-identity-model, and
+          @ac-coverage-applicability, but @plan-ui-redesign-global-decisions remains draft and those
+          spec refs are not live in the corpus. The plan's own Approval ordering section says this
+          plan must not be approved or derived before P0a is approved and derived. Keep this plan
+          draft and re-review after P0a is materialized, or add a machine-visible plan
+          dependency/gate that prevents accidental approval while preserving these refs."
+        created_at: 2026-06-11T18:35:55.854Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T18:36:28.917Z
 created_at: 2026-06-11T18:34:19.079Z
-updated_at: 2026-06-11T18:34:31.892Z
+updated_at: 2026-06-11T18:36:28.917Z
 notes: []
