@@ -314,6 +314,12 @@ events:
     payload:
       thread_ulid: 01KTTPX0KKXK7J2C6QSPVVCGQC
     timestamp: 2026-06-11T07:41:54.682Z
+  - _ulid: 01KTTT2ZWD023WN3SRKJ1V6S0G
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTPX0KKXK7J2C6QSPVVCGQC
+    timestamp: 2026-06-11T07:42:00.589Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -565,6 +571,8 @@ threads:
           assigns it to the validate view plan."
         created_at: 2026-06-11T07:41:54.389Z
     kind: nit
+    resolved_at: 2026-06-11T07:42:00.312Z
+    resolved_by: "@claude"
   - _ulid: 01KTTPX34B25368K9J765DAGZS
     anchor:
       type: structured
@@ -602,5 +610,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:41:54.389Z
+updated_at: 2026-06-11T07:42:00.312Z
 notes: []
