@@ -14,6 +14,17 @@ checks:
     runner: kspec
     created_at: 2026-06-11T09:16:07.150Z
     completed_at: 2026-06-11T09:16:07.150Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint reported 0 errors. Focused changed-file lint also passed with 0
+      warnings and 0 errors on the 7 changed TypeScript/test files."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T09:16:10.659Z
+    completed_at: 2026-06-11T09:16:10.659Z
 events:
   - _ulid: 01KTTZAEA31HCBV6KZEZVDHFPG
     actor: Jacob Chapel
@@ -35,6 +46,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-11T09:16:07.436Z
+  - _ulid: 01KTTZFDSSQRG7MNR11CWCC6RN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T09:16:10.937Z
 examined_commit: 97f10f3b5c87ba10d761643d782f023ef8ad8e6b
 external_links: []
 lifecycle_state: open
@@ -47,5 +65,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T09:13:27.620Z
-updated_at: 2026-06-11T09:16:07.150Z
+updated_at: 2026-06-11T09:16:10.659Z
 notes: []
