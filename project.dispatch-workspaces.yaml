@@ -13208,18 +13208,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-daemon-fatal-failure-observability/01kttd06
-    canonical_branch_head: 1a7f9791d9f9826ac42a8e6df0ab93d918630e8f
+    canonical_branch_head: 97f10f3b5c87ba10d761643d782f023ef8ad8e6b
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T08:41:01.668Z
+      updated_at: 2026-06-11T09:08:57.765Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T08:41:30.752Z
+      updated_at: 2026-06-11T09:08:57.765Z
     integration:
       status: pending
       detail: null
@@ -13227,7 +13227,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1a7f9791d9f9826ac42a8e6df0ab93d918630e8f
-      updated_at: 2026-06-11T08:41:01.668Z
+      updated_at: 2026-06-11T09:08:57.765Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTD06BWZAEDXS79B66C260R
@@ -13236,9 +13236,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T08:41:30.752Z
-      last_reconciled_at: 2026-06-11T08:41:30.752Z
+      last_reconciled_at: 2026-06-11T09:08:57.765Z
       created_at: 2026-06-11T08:41:01.668Z
-      updated_at: 2026-06-11T08:41:30.752Z
+      updated_at: 2026-06-11T09:08:57.765Z
     workspace_id: dispatch-workspace-01KTTD06BWZAEDXS79B66C260R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
