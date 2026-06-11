@@ -81,6 +81,18 @@ checks:
     runner: node relative-link check
     created_at: 2026-06-11T11:41:51.052Z
     completed_at: 2026-06-11T11:41:51.052Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0; warnings are existing
+      baseline. This task has no spec_ref by approved plan choice: CONTRIBUTING/SECURITY are repo
+      hygiene docs."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-11T11:41:53.990Z
+    completed_at: 2026-06-11T11:41:53.990Z
 events:
   - _ulid: 01KTV700NBYHF7TNC3TYNTFHTM
     actor: Jacob Chapel
@@ -144,6 +156,13 @@ events:
       status: pass
       name: docs link check
     timestamp: 2026-06-11T11:41:51.275Z
+  - _ulid: 01KTV7T867AE359G2K3ADZXDHY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T11:41:54.247Z
 examined_commit: fb7f92add5b79e32e4c5c35ec8ec51f76ee7c889
 external_links: []
 lifecycle_state: open
@@ -156,5 +175,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T11:27:34.571Z
-updated_at: 2026-06-11T11:41:51.052Z
+updated_at: 2026-06-11T11:41:53.990Z
 notes: []
