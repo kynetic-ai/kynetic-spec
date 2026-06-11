@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KTV6KB76DJTRS56ND87GBR9V
+    content: "Approach: prose-only task. Verified facts from repo before writing: engines node >=20.0.0
+      (package.json), default daemon build uses esbuild (scripts/build-daemon.cjs), Bun only needed
+      for packages/daemon build:compile and Bun runtime, repo lepahc/kynetic-spec, workspace
+      packages web-ui/shared/daemon all at 0.1.0. Will create CONTRIBUTING.md + SECURITY.md, link
+      CONTRIBUTING.md from README Documentation section, link to AGENTS.md instead of duplicating
+      agent policy. Testing: verify relative links resolve, run format:check. Note: INSTALL.md says
+      Node v18 but that's covered by @task-standardize-node-version-docs — not touching it here."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T11:20:39.398Z
