@@ -58,6 +58,17 @@ checks:
     required: true
     created_at: 2026-06-11T06:40:59.380Z
     completed_at: 2026-06-11T06:40:59.380Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: task-fold-agent-dashboard-design-task leaves cancellation vs re-pointing to owner
+      preference and lacks an owning-plan ref; task-record-overlapping-plan-dispositions depends on
+      future track plans that are named only in prose and do not resolve in current plan catalog.
+    name: Task standalone and dependencies
+    required: true
+    created_at: 2026-06-11T06:40:59.397Z
+    completed_at: 2026-06-11T06:40:59.397Z
 events:
   - _ulid: 01KTTPG4AC91PKB75PX2C5M2VB
     actor: "@claude"
@@ -163,6 +174,13 @@ events:
       status: fail
       name: AC coverage mapping
     timestamp: 2026-06-11T06:40:59.764Z
+  - _ulid: 01KTTPK9C3W1Y5D0ZCTPAFCAEW
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task standalone and dependencies
+    timestamp: 2026-06-11T06:41:00.291Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -300,5 +318,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T06:40:59.380Z
+updated_at: 2026-06-11T06:40:59.397Z
 notes: []
