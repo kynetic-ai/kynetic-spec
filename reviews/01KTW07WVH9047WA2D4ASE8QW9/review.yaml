@@ -289,6 +289,12 @@ events:
     payload:
       thread_ulid: 01KTW0CH16ZRGZ68YG5NQ738T3
     timestamp: 2026-06-11T19:31:56.234Z
+  - _ulid: 01KTW2Q4860BRWE4KDV3XPZAND
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTW0CKRA70GP0MHYYXZ9K4YH
+    timestamp: 2026-06-11T19:32:03.462Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -522,6 +528,8 @@ threads:
           reference, or both, plus the provenance source label."
         created_at: 2026-06-11T19:29:55.691Z
     kind: nit
+    resolved_at: 2026-06-11T19:32:03.098Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -531,5 +539,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:51:46.718Z
 created_at: 2026-06-11T18:48:47.217Z
-updated_at: 2026-06-11T19:31:55.879Z
+updated_at: 2026-06-11T19:32:03.098Z
 notes: []
