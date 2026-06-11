@@ -172,9 +172,25 @@ events:
       kind: nit
       thread_ulid: 01KTV4T4FTNGEZXDJV915SBTBP
     timestamp: 2026-06-11T10:49:24.954Z
+  - _ulid: 01KTV4TENGH4PRKFXW2REWEP0S
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-11T10:49:35.152Z
+  - _ulid: 01KTV4TENGR4Q09XSYF6PZR5WV
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T10:49:35.152Z
 examined_commit: 7388f96a218e7e69bc8cba03a97cd5c8723fbe21
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -235,7 +251,14 @@ threads:
           test quality, CLI integration, AC coverage, formatting/lint/type/test gates.
         created_at: 2026-06-11T10:49:24.730Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-11T10:49:35.152Z
 created_at: 2026-06-11T10:34:47.700Z
-updated_at: 2026-06-11T10:49:24.730Z
+updated_at: 2026-06-11T10:49:35.152Z
 notes: []
