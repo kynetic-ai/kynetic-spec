@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KTVBQCHR3G6DK9P6AP86HSZ3
+    content: "Approach: port skipped E2E triage suite to tests/daemon-api/triage.test.ts using
+      createTestApp/makeRequest/requestJson/setupFixtures (inbox+triage fixture ULIDs identical to
+      E2E since setupFixtures copies the same files). Broadcasts asserted via
+      captureBroadcasts(pubsub) instance spy (pattern from daemon-review-websocket.test.ts).
+      Adaptation: in-process app normalizes Elysia schema validation to 400 validation_error (per
+      project-context middleware onError, confirmed by daemon-api/errors.test.ts), so the old E2E
+      422-for-missing-fields expectation becomes 400 here. Spec ACs 4/5/8/9 updated PUT->POST to
+      match implemented routes; stale header comment in packages/daemon/src/routes/triage.ts also
+      corrected. Old E2E file deleted after new suite passes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T12:50:14.712Z

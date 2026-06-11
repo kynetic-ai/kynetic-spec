@@ -7471,16 +7471,14 @@ features:
               and broadcasts triage:updates via WebSocket
             when: |
               the referenced inbox item exists
-          - given: |
-              a PUT request is sent to /api/triage/:ref with override fields
+          - given: a POST request is sent to /api/triage/:ref/override with override fields
             id: ac-4
             then: |
               stores override_reasoning, override_by, override_at, updates
               action, and broadcasts triage:updates
             when: |
               the triage record exists
-          - given: |
-              a PUT request is sent to /api/triage/:ref with act flag
+          - given: a POST request is sent to /api/triage/:ref/act
             id: ac-5
             then: |
               executes the action, transitions to acted_on, sets result_ref,
@@ -7501,15 +7499,13 @@ features:
               returns 404 with error guidance
             when: |
               the inbox_ref does not resolve
-          - given: |
-              a PUT request with act flag targets a record with status acted_on
+          - given: a POST request to /api/triage/:ref/act targets a record with status acted_on
             id: ac-8
             then: |
               returns 409 conflict with guidance message
             when: |
               the record has already been executed
-          - given: |
-              a PUT request with act flag targets a record with status pending
+          - given: a POST request to /api/triage/:ref/act targets a record with status pending
             id: ac-9
             then: |
               returns 422 with guidance to complete triage first

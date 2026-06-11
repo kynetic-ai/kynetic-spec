@@ -31636,7 +31636,7 @@
     - daemon
     - api
     - triage
-  notes_count: 0
+  notes_count: 1
   todos_count: 0
   created_at: 2026-06-11T03:53:57.351Z
   started_at: 2026-06-11T12:47:47.287Z
