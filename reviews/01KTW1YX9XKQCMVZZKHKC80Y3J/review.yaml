@@ -24,6 +24,17 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-11T19:35:24.050Z
     completed_at: 2026-06-11T19:35:24.050Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors. 5 warnings observed; diff check shows warning lines are pre-existing/unchanged,
+      not introduced by this task.
+    name: focused-lint
+    required: false
+    runner: npx oxlint packages/web-ui/src/lib/websocket/manager.ts tests/websocket-manager.test.ts
+    created_at: 2026-06-11T19:35:35.238Z
+    completed_at: 2026-06-11T19:35:35.238Z
 events:
   - _ulid: 01KTW1YX9XYD8DF8ZGG6ZAME6X
     actor: Jacob Chapel
@@ -52,6 +63,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-11T19:35:24.337Z
+  - _ulid: 01KTW2XKAYM0DXQAK1G75V8A2M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-11T19:35:35.518Z
 examined_commit: 740b3ec859b126508e0165f0e5cefdbab83ecba3
 external_links: []
 lifecycle_state: open
@@ -64,5 +82,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T19:18:49.917Z
-updated_at: 2026-06-11T19:35:24.050Z
+updated_at: 2026-06-11T19:35:35.238Z
 notes: []
