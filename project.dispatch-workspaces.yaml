@@ -21404,12 +21404,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T22:22:40.316Z
+      updated_at: 2026-06-11T22:23:01.491Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T22:22:40.316Z
+      updated_at: 2026-06-11T22:23:01.491Z
     integration:
       status: pending
       detail: null
@@ -21417,7 +21417,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 19926fc493c9d88eda87b57fd0c063c52d71611c
-      updated_at: 2026-06-11T22:22:40.316Z
+      updated_at: 2026-06-11T22:23:01.491Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTW8SGEWWF24FX36RRA5YPFP
@@ -21426,16 +21426,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T21:35:00.175Z
-      last_reconciled_at: 2026-06-11T22:22:40.316Z
+      last_reconciled_at: 2026-06-11T22:23:01.491Z
       created_at: 2026-06-11T21:34:06.672Z
-      updated_at: 2026-06-11T22:22:40.316Z
+      updated_at: 2026-06-11T22:23:01.491Z
     workspace_id: dispatch-workspace-01KTW8SGEWWF24FX36RRA5YPFP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 5decaf10680757ae541fe2ec5b718952a8f7be1f
+        last_seen_at: 2026-06-11T22:23:01.491Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-upgrade-folder-storage-test-01ktw8sg-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-stabilize-upgrade-folder-storage-test/01ktw8sg
-        head: 19926fc493c9d88eda87b57fd0c063c52d71611c
-        last_seen_at: 2026-06-11T21:34:06.672Z
+        head: 5decaf10680757ae541fe2ec5b718952a8f7be1f
+        last_seen_at: 2026-06-11T22:23:01.491Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-upgrade-folder-storage-test-01ktw8sg
