@@ -242,6 +242,12 @@ events:
     payload:
       thread_ulid: 01KTTPWHRRKDZ5GNAY8X8HY173
     timestamp: 2026-06-11T07:40:45.928Z
+  - _ulid: 01KTTT0WKEQ9YS6R51EPBT69XW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTTPWHRRKDZ5GNAY8X8HY173
+    timestamp: 2026-06-11T07:40:51.694Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -337,6 +343,8 @@ threads:
           OS-level global shortcuts)."
         created_at: 2026-06-11T07:40:45.662Z
     kind: blocker
+    resolved_at: 2026-06-11T07:40:51.445Z
+    resolved_by: "@claude"
   - _ulid: 01KTTPWMAETB4J0MSAV9AVPV3H
     anchor:
       type: structured
@@ -474,5 +482,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:40:45.662Z
+updated_at: 2026-06-11T07:40:51.445Z
 notes: []
