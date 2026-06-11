@@ -138,6 +138,7 @@ tags:
   - upgrade
   - reliability
 vcs_refs: []
+review_ref: "@01KTTVZY36TNEDCFPDRHK4DJ8D"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-format-version-ceiling/01kttd0y
@@ -188,6 +189,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-11T08:07:59.304Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTTVZY36TNEDCFPDRHK4DJ8D"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-11T08:15:19.935Z
 created_at: 2026-06-11T03:53:42.624Z
 started_at: 2026-06-11T07:13:02.622Z
 submitted_at: 2026-06-11T08:07:59.304Z
