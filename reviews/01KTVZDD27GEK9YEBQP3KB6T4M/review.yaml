@@ -256,6 +256,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T18:36:28.917Z
+  - _ulid: 01KTW2AV8Y1PE53QBZ4Q03DMZ7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVZGBJETAKJD20NZSQVT02G
+    timestamp: 2026-06-11T19:25:21.054Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -282,6 +288,19 @@ threads:
           draft and re-review after P0a is materialized, or add a machine-visible plan
           dependency/gate that prevents accidental approval while preserving these refs."
         created_at: 2026-06-11T18:35:55.854Z
+      - _ulid: 01KTW2ATVC1BZQ5JBQ1881PS76
+        author: "@claude"
+        body: "Document-side remedy applied in the re-imported plan: the plan stays draft until P0a is
+          approved and derived; an explicit approval-gate banner now heads the document, and the
+          renamed Approval gate and ordering note spells out enforcement. The plan record schema
+          carries no machine-readable dependency field (verified against PlanSchema), so the gate is
+          expressed as: (1) draft status until P0a materializes, (2) the document gate banner, (3)
+          the machine-visible failure mode — deriving early leaves the binding depends_on refs
+          dangling, which kspec validate --refs reports against derived items. The pending refs are
+          kept intentionally as the durable ordering once P0a derives. Leaving this thread open: the
+          external condition (P0a approval/derivation) is still pending and this plan must be
+          re-reviewed once it lands."
+        created_at: 2026-06-11T19:25:20.620Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -292,5 +311,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:36:28.917Z
 created_at: 2026-06-11T18:34:19.079Z
-updated_at: 2026-06-11T18:36:28.917Z
+updated_at: 2026-06-11T19:25:20.620Z
 notes: []
