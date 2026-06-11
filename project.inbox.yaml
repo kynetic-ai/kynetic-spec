@@ -4494,3 +4494,18 @@ inbox:
       - testing
     added_by: "@claude"
     created_at: 2026-06-11T15:42:45.313Z
+  - _ulid: 01KTVR85PH8KPCRZNJYVHJ91D7
+    text: "Test runner: support retrying only failed files instead of full --fresh rerun. The result
+      cache stores a whole-run verdict keyed by content hash: when one flaky file fails a full suite
+      run, rerunning npm test returns the cached failed verdict, and rerunning the failed file in
+      isolation (which passes) does not update the full-run verdict. Only remedy today is npm test
+      -- --fresh (~40 min). Improvement: per-file result caching or a --retry-failed mode that
+      reruns only previously-failed files and merges results into the cached run verdict. Cost
+      recurs every time a known flake (see task-stabilize-full-suite-cli-dist-flakes) fires in a
+      worker/reviewer gate run."
+    tags:
+      - testing
+      - dx
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-11T16:29:07.665Z

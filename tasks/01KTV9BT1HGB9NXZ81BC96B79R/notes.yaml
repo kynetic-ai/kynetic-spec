@@ -10,3 +10,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-11T12:24:31.234Z
+  - _ulid: 01KTVR85B71JK5D8GK3SXZWDWJ
+    content: "Another occurrence during fix cycle of @task-command-dispatch-timeout on 2026-06-11: full
+      npm test failed once in tests/workflow-runs.test.ts 'workflow next - multiple active runs
+      error' with SyntaxError: Unexpected end of JSON input at line 662 (JSON.parse of empty stdout
+      from 'kspec workflow start @test-workflow --json' subprocess). File passed in isolation and a
+      subsequent full --fresh run was fully green (10508 passed). Same transient
+      CLI-subprocess-under-full-suite-load shape; system load was high (parallel dispatch agents)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T16:29:07.304Z
