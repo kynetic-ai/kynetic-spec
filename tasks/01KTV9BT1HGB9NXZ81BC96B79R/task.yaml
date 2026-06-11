@@ -1,0 +1,44 @@
+_ulid: 01KTV9BT1HGB9NXZ81BC96B79R
+slugs:
+  - task-stabilize-full-suite-cli-dist-flakes
+title: Stabilize intermittent full-suite CLI/dist failures
+type: bug
+description: >-
+  During review of @01KTTD0ZPTTX0N18MEY53HFKMK on 2026-06-11, the full `npm test` run failed
+  intermittently in unrelated suites while the changed-file suite `tests/git.test.ts` passed. Failed
+  tests from the full run:
+
+
+  - `tests/agent-runner-e2e.test.ts`: e2e: project runner config with known secret keys is rejected
+  > surfaces project-layer rejections through the CLI runners validate JSON output. Error:
+  `SyntaxError: Unexpected end of JSON input` at `tests/agent-runner-e2e.test.ts:636:28`.
+
+  - `tests/skill-cli.test.ts`: Skill CLI - skill add > should accept version option. Error from
+  `node dist/cli/index.js skill add ... --json`: `SyntaxError: The requested module './yaml.js' does
+  not provide an export named 'updateSpecItem'`.
+
+  - `tests/workflow-runs.test.ts`: workflow next - notes capture > should handle empty notes. Error
+  from `node dist/cli/index.js workflow start @test-workflow --json`: `SyntaxError: The requested
+  module './setup-status.js' does not provide an export named 'getSetupStatus'`.
+
+
+  The failed suites were immediately rerun with `npm test -- --fresh tests/agent-runner-e2e.test.ts
+  tests/skill-cli.test.ts tests/workflow-runs.test.ts` and passed: 46 suites, 200 tests. Investigate
+  why the full-suite run can observe these transient CLI/dist module or JSON-output failures, and
+  stabilize the tests or underlying setup so full-suite review gates do not produce intermittent
+  failures.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - tests
+  - infra
+vcs_refs: []
+created_at: 2026-06-11T12:08:58.161Z
+todos: []
+automation: eligible
