@@ -4324,3 +4324,21 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-11T06:31:25.669Z
+  - _ulid: 01KTTVRAEWX70JSK712NK2WC7V
+    text: "Best-effort initContext catch sites silently swallow deterministic compatibility errors
+      (EntityStorageCompatibilityError, TaskDataManagerError, new FormatVersionCompatibilityError).
+      Audit during @task-format-version-ceiling found: src/agent-runtime/dispatch.ts _loadAgents
+      returns [] (dispatch engine sees no agents with zero diagnostics), dispatch.ts lenient
+      filter/dependency paths, src/agent-runtime/prompts.ts skill-origin fallback,
+      src/cli/commands/serve.ts resolveDefaultKspecDir falls back to cwd/.kspec,
+      src/cli/commands/merge-driver.ts buildRefIndex, src/cli/commands/agent.ts dispatch watch. None
+      mutate data, but a project in a deterministic incompatible state degrades silently instead of
+      surfacing the actionable error. Proposal: make best-effort catches rethrow or at least log
+      deterministic compatibility errors (shared isDeterministic* guards already exist). Two sites
+      (upgrade, init) were already fixed in that task."
+    tags:
+      - reflection
+      - dx
+      - reliability
+    added_by: "@claude"
+    created_at: 2026-06-11T08:11:08.124Z

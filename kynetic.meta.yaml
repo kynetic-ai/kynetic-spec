@@ -21322,6 +21322,29 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T07:08:26.862Z
+  - _ulid: 01KTTVRAJEC4JW4MMRES3ZJ83C
+    type: friction
+    content: Daemon parity features that hang off server-level wiring (global onError mappers,
+      middleware) cannot be exercised by tests/daemon-api createTestApp — the production handler had
+      to be mirrored into the test helper for the format-version 409 contract, creating a
+      production/test drift point. The boundary is documented as deliberate
+      (@task-clarify-in-process-daemon-api-helper-boundary) but there is no shared composition
+      mechanism; each new global mapper must be wired twice and kept in sync by hand.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T08:11:08.238Z
+  - _ulid: 01KTTVRAVGTH799DERKR9V7W2C
+    type: success
+    content: "Empirically verifying framework semantics with a throwaway scratch script before designing
+      around an assumption: a 10-line node -e Elysia experiment proved parent-level onError catches
+      plugin-route errors and that route-group onError handlers fall through on undefined, which
+      de-risked the daemon global error mapper design for @task-format-version-ceiling in under a
+      minute. Cheaper and more reliable than doc-reading for behavior-critical framework questions."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T08:11:08.529Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
