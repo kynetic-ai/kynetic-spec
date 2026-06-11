@@ -2,7 +2,19 @@ _ulid: 01KTW04RAYRD57W5W02E2BVYKH
 slugs: []
 title: "Plan review: Review Anchors and Plan Revisions Schema (round 1)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Reviewed all 172 plan review records returned by kspec review list --subject-type plan; no
+      prior stored review for @plan-review-anchors-and-plan-revisions-schema was found, so this is
+      treated as round 1.
+    name: prior review history
+    required: false
+    runner: kspec review list --subject-type plan
+    created_at: 2026-06-11T18:48:37.497Z
+    completed_at: 2026-06-11T18:48:37.497Z
 events:
   - _ulid: 01KTW04RAXP60HJ6RBPF07YM74
     actor: "@claude"
@@ -45,6 +57,13 @@ events:
       kind: question
       thread_ulid: 01KTW06ZESX5V02Q6T2Z80DYQQ
     timestamp: 2026-06-11T18:48:17.356Z
+  - _ulid: 01KTW07KK02T1FGKZJNG6YFEXH
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review history
+    timestamp: 2026-06-11T18:48:37.728Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -125,5 +144,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T18:47:04.286Z
-updated_at: 2026-06-11T18:48:17.114Z
+updated_at: 2026-06-11T18:48:37.497Z
 notes: []
