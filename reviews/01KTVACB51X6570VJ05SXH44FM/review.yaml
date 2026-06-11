@@ -2,7 +2,17 @@ _ulid: 01KTVACB51X6570VJ05SXH44FM
 slugs: []
 title: Review task-shadow-restore-loud-failure cycle 3
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; oxfmt checked 1008 files.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T12:39:55.620Z
+    completed_at: 2026-06-11T12:39:55.620Z
 events:
   - _ulid: 01KTVACB50Y7086W10Y6VR478F
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T12:27:00.858Z
+  - _ulid: 01KTVB4G5Z4P6D0CQPK6DS6TMA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T12:39:55.839Z
 examined_commit: 4e35fa9ca6806c0dc664fe27265bf09046062c1f
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T12:26:44.257Z
-updated_at: 2026-06-11T12:27:00.638Z
+updated_at: 2026-06-11T12:39:55.620Z
 notes: []
