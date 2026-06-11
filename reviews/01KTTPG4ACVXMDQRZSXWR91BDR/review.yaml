@@ -37,6 +37,17 @@ checks:
     runner: kspec validate --refs --warnings-ok
     created_at: 2026-06-11T06:40:46.963Z
     completed_at: 2026-06-11T06:40:46.963Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Alignment validation passed with existing warning baseline: 36 orphaned specs and 15
+      status mismatches. No derived records from this draft plan exist yet."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T06:40:46.974Z
+    completed_at: 2026-06-11T06:40:46.974Z
 events:
   - _ulid: 01KTTPG4AC91PKB75PX2C5M2VB
     actor: "@claude"
@@ -128,6 +139,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-11T06:40:48.326Z
+  - _ulid: 01KTTPJY5WABTZ3ZEDEP6TN6ZX
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T06:40:48.828Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -265,5 +283,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T06:40:46.963Z
+updated_at: 2026-06-11T06:40:46.974Z
 notes: []
