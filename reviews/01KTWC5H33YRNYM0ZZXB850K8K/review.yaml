@@ -147,17 +147,69 @@ events:
       status: pass
       name: Spec quality (delta since round 2)
     timestamp: 2026-06-11T22:18:45.414Z
+  - _ulid: 01KTWC9EWHDT778THTMMRE9QFJ
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KTWC9EKX2CNDRP5CHM1NQQXG
+    timestamp: 2026-06-11T22:19:21.361Z
+  - _ulid: 01KTWC9HYXTCH2ASR66VXSECBV
+    actor: "@claude"
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T22:19:24.509Z
+  - _ulid: 01KTWC9HYXXF8TWT9CWAGHNVG4
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T22:19:24.509Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-ac-coverage-verification-schema-and-storage"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTWC9EKX2CNDRP5CHM1NQQXG
+    anchor:
+      type: structured
+      ref: "@plan-ac-coverage-verification-schema-and-storage"
+      section: dependencies
+    entries:
+      - _ulid: 01KTWC9EKXKB9TKQNZ7ZGHSPYT
+        author: "@claude"
+        body: "ACKNOWLEDGED PROGRAM GATE (non-blocking, documented for the approval record):
+          @plan-ui-redesign-global-decisions (P0a) is still status=draft and the three binding
+          depends_on refs (@annotation-freshness-provenance, @actor-identity-model,
+          @ac-coverage-applicability) do not yet resolve in the live corpus — verified at this
+          round. Per program direction this ordering is documented program structure, not an author
+          defect: the plan's gate banner and the Approval gate and ordering section state the plan
+          must not be approved (status) or derived until P0a is approved and derived, and early
+          derivation fails machine-visibly via kspec validate --refs. This review approves the plan
+          CONTENT; the plan must remain in draft status until P0a materializes, at which point the
+          pending refs resolve and derivation can proceed. This supersedes the standing blocker
+          threads in prior reviews @01KTVZDD27GEK9YEBQP3KB6T4M, @01KTW3KF3H9C9FK093WT406JE2, and
+          @01KTW6NXWG20GBM98TP7AXNZAV, which were held only on this external condition."
+        created_at: 2026-06-11T22:19:21.085Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: "@claude"
+    role: reviewer
+    created_at: 2026-06-11T22:19:24.509Z
 created_at: 2026-06-11T22:17:12.547Z
-updated_at: 2026-06-11T22:18:45.158Z
+updated_at: 2026-06-11T22:19:24.509Z
 notes: []
