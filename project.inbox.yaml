@@ -4544,3 +4544,29 @@ inbox:
       - testing
     added_by: "@claude"
     created_at: 2026-06-11T22:04:24.256Z
+  - _ulid: 01KTWCCAPAQBWW7HRCNJ2TPC6S
+    text: "kspec meta set <convention> supports only --add-rule — there is no
+      --remove-rule/--replace-rule, so stale convention rule text cannot be corrected via CLI. Hit
+      concretely: after adding the build/test lock, the existing testing rule listing cache-key env
+      exclusions ('except KSPEC_SESSION_ID and KSPEC_TEST_PROGRESS') became inaccurate (lock vars
+      are now also excluded) and could only be supplemented with a new rule, not fixed. Add rule
+      removal/replacement (by index or by matching text) to kspec meta set."
+    tags:
+      - cli
+      - meta
+      - dx
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-11T22:20:55.370Z
+  - _ulid: 01KTWCCASD7ZPBN8BRGF184FJR
+    text: "CLI/docs mismatch: 'kspec workflow show' requires a run-ref argument, but the reflect skill
+      and workflow guidance document bare 'kspec workflow show' / 'kspec workflow next --notes'
+      usage (next also required the run ref). Either default these commands to the caller's single
+      active workflow run or update the skill docs to show the run-ref form."
+    tags:
+      - cli
+      - docs
+      - workflows
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-11T22:20:55.469Z

@@ -21679,6 +21679,32 @@ observations:
     resolved: false
     workflow_ref: "@01KTWAVM"
     created_at: 2026-06-11T21:56:03.125Z
+  - _ulid: 01KTWCCA1H66BNXVQR3P4604S4
+    type: success
+    content: "Flaky-test forensics via session-scoped runner logs: the intermittent
+      upgrade-folder-storage failure was root-caused without any reproduction attempt by grepping
+      /tmp/kspec-test-cache/*/  logs from OTHER agent sessions — one preserved the exact subprocess
+      crash (ESM export mismatch from a mid-run dist/ rewrite). Pattern: when investigating an
+      intermittent test failure, search existing cached runner logs across sessions for the failing
+      test name BEFORE attempting repeated reproduction runs; the evidence often already exists."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T22:20:54.705Z
+  - _ulid: 01KTWCCAD20BZVKWXBTGZDPR7R
+    type: friction
+    content: "Failed/hung test-run evidence survives only incidentally: scripts/test.cjs deletes its
+      temp runId .log/.json after caching, and a run whose Vitest parent hangs and is killed never
+      reaches storeCachedResults — the failure evidence exists only if the process died before
+      cleanup. The upgrade-folder-storage flake task started with no failing-assertion details for
+      exactly this reason; diagnosis depended on a different session's leftover temp log.
+      Improvement direction: persist failed-run summaries (failing test names + log path) durably,
+      e.g. always store the log under the cache dir on non-zero exit even when the JSON reporter
+      output is missing."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T22:20:55.074Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
