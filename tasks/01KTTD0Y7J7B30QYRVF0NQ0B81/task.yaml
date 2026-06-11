@@ -62,8 +62,12 @@ description: |
 spec_ref: "@broken-shadow-safety"
 plan_ref: "@plan-data-integrity-and-upgrade-safety"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 7603dc7c8a51. Shadow repair/initialize failure handling now reports
+  restore failures loudly with backup location, resulting worktree state, and shell-safe recovery
+  steps; behavioral coverage verifies double-failure, restore-success, occupied-destination, and
+  shell-metacharacter paths.
 depends_on:
   - "@task-broken-shadow-safety-spec-delta"
 context: []
@@ -245,8 +249,25 @@ history:
         previous: "@01KTV6HW6E1CPP8D3H096MEAZJ"
     command: review-link
     timestamp: 2026-06-11T12:26:46.602Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 7603dc7c8a51. Shadow repair/initialize failure handling now reports restore
+          failures loudly with backup location, resulting worktree state, and shell-safe recovery
+          steps; behavioral coverage verifies double-failure, restore-success, occupied-destination,
+          and shell-metacharacter paths.
+        previous: null
+      completed_at:
+        new: 2026-06-11T12:42:17.527Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-11T12:42:17.536Z
 created_at: 2026-06-11T03:53:41.874Z
 started_at: 2026-06-11T11:54:54.858Z
 submitted_at: 2026-06-11T12:19:56.502Z
+completed_at: 2026-06-11T12:42:17.527Z
 todos: []
 automation: eligible
