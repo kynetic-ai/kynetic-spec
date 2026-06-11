@@ -186,9 +186,25 @@ events:
       kind: nit
       thread_ulid: 01KTW8WTRS4H21SSDZJ0DF6YV5
     timestamp: 2026-06-11T21:20:02.065Z
+  - _ulid: 01KTW8XQQDPRB4S2ECDVGX93Z9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T21:20:31.470Z
+  - _ulid: 01KTW8XQQENPQ0617H9G9TQ1K5
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T21:20:31.470Z
 examined_commit: 6bf23da09a3d54e706404bfdf2853cfcbd813e2d
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -223,7 +239,14 @@ threads:
           neutrality not applicable: no shared/package guidance surfaces were changed.
         created_at: 2026-06-11T21:20:01.817Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T21:20:31.469Z
 created_at: 2026-06-11T20:50:50.095Z
-updated_at: 2026-06-11T21:20:01.817Z
+updated_at: 2026-06-11T21:20:31.470Z
 notes: []
