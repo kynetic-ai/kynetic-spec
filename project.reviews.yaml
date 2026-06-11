@@ -25282,7 +25282,7 @@ reviews:
     title: Review fix broken documentation links in INSTALL.md
     disposition: pending
     author: Jacob Chapel
-    check_count: 4
+    check_count: 5
     examined_commit: 1f80fd17ed0ab5ad080373ae1d5691ca6d84767f
     lifecycle_state: open
     related_refs: []
@@ -25295,4 +25295,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T10:55:07.282Z
-    updated_at: 2026-06-11T11:08:24.365Z
+    updated_at: 2026-06-11T11:08:34.607Z
