@@ -291,6 +291,12 @@ events:
     payload:
       thread_ulid: 01KTW1ENTYCKA2CBTQPJH5BDME
     timestamp: 2026-06-11T20:05:58.211Z
+  - _ulid: 01KTW4NDC42Y2Q1VQPYEHKCPH2
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTW1ERY70EQ8TKRNWD6GB75E
+    timestamp: 2026-06-11T20:06:04.420Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -448,6 +454,8 @@ threads:
           failing ordinal), and task-plan-text-anchors Covers it with an explicit rejection test."
         created_at: 2026-06-11T20:04:09.167Z
     kind: question
+    resolved_at: 2026-06-11T20:06:04.130Z
+    resolved_by: "@claude"
   - _ulid: 01KTW1EW5SWA12F605QZHY938S
     anchor:
       type: structured
@@ -479,5 +487,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T19:10:29.343Z
 created_at: 2026-06-11T19:08:28.753Z
-updated_at: 2026-06-11T20:05:57.927Z
+updated_at: 2026-06-11T20:06:04.130Z
 notes: []
