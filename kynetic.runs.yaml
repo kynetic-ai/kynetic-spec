@@ -64444,7 +64444,7 @@ runs:
     started_at: 2026-06-11T20:16:30.368Z
   - _ulid: 01KTW6VRWDE9MQJ9RW0ZCTDMT8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -64457,7 +64457,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T20:45:25.886Z
-        completed_at: 2026-06-11T20:45:25.886Z
+        completed_at: 2026-06-11T20:46:28.838Z
+        notes: "Candidates identified and checked: (1) 'workflow show' requiring explicit run-ref while
+          skill docs show argless usage — already tracked in inbox @01KGGPJ6. (2) Full test suite
+          took 3531s in dispatch workspace vs ~150s convention figure — already tracked in inbox
+          @01KNTB8Z4 (test suite duration too long and trending worse). (3) Success: task
+          description prescribing exact test technique (JSON-module imports under no-source-scanning
+          rule) and behavioral verification commands enabled one-pass completion — pattern already
+          captured repeatedly (@01KJDXCB, @01KJDZV0, @01KMKNG4, @01KMKPTD, @01KMKQMZ, @01KMM7JT). No
+          other high-confidence items; session was smooth."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T20:46:28.838Z
+        completed_at: 2026-06-11T20:46:28.838Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T20:44:29.965Z
