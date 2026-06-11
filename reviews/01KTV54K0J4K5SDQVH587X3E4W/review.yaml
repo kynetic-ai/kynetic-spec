@@ -1,0 +1,26 @@
+_ulid: 01KTV54K0J4K5SDQVH587X3E4W
+slugs: []
+title: Review fix broken documentation links in INSTALL.md
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTV54K0JRKS1Q6WVPC04E799
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T10:55:07.282Z
+examined_commit: 1f80fd17ed0ab5ad080373ae1d5691ca6d84767f
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTCZDJ0086DXY9W0J6FJY72"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T10:55:07.282Z
+updated_at: null
+notes: []

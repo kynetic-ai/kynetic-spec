@@ -39,6 +39,7 @@ priority: 2
 tags:
   - docs
 vcs_refs: []
+review_ref: "@01KTV54K0J4K5SDQVH587X3E4W"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-fix-install-doc-links/01kttczd
@@ -89,6 +90,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-11T10:49:14.980Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTV54K0J4K5SDQVH587X3E4W"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-11T10:55:09.553Z
 created_at: 2026-06-11T03:52:52.032Z
 started_at: 2026-06-11T10:35:04.742Z
 submitted_at: 2026-06-11T10:49:14.980Z
