@@ -21371,6 +21371,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T10:32:06.409Z
+  - _ulid: 01KTV65YDMVZ3G71QV1ERCWPNN
+    type: friction
+    content: During review, full npm test can enter long quiet tails after visible test output, leaving
+      reviewers unsure whether the run is healthy or hung. In this session the suite eventually
+      passed, but I had to inspect the process tree manually to see an active Vitest worker and
+      child CLI command. Consider adding a test-runner heartbeat or active-file/active-worker status
+      line after a quiet interval so reviewers can distinguish normal long-tail execution from a
+      stalled run without manual ps inspection.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T11:13:20.308Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
