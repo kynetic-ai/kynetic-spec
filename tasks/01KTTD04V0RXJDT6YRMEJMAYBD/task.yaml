@@ -101,8 +101,12 @@ description: |
 spec_ref: "@daemon-command-api"
 plan_ref: "@plan-daemon-operational-reliability"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Review approved and merge helper reported no-op:
+  dispatch/task/task-update-daemon-reliability-specs/01kttd04 at
+  6e5a0fd936024f9832ac7d23feeff38711cad2dc is already integrated at dev. Added daemon reliability
+  delta ACs to @daemon-command-api, @daemon-network-endpoint-contract, and @ui-dashboard-overview."
 depends_on: []
 context: []
 priority: 1
@@ -169,8 +173,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-11T05:53:11.300Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Review approved and merge helper reported no-op:
+          dispatch/task/task-update-daemon-reliability-specs/01kttd04 at
+          6e5a0fd936024f9832ac7d23feeff38711cad2dc is already integrated at dev. Added daemon
+          reliability delta ACs to @daemon-command-api, @daemon-network-endpoint-contract, and
+          @ui-dashboard-overview."
+        previous: null
+      completed_at:
+        new: 2026-06-11T06:14:57.825Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-11T06:14:57.839Z
 created_at: 2026-06-11T03:53:15.872Z
 started_at: 2026-06-11T05:42:32.286Z
 submitted_at: 2026-06-11T05:45:54.504Z
+completed_at: 2026-06-11T06:14:57.825Z
 todos: []
 automation: eligible
