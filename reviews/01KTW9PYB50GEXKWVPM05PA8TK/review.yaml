@@ -146,6 +146,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T21:52:20.998Z
+  - _ulid: 01KTWARWK6YH3ZNGED5SZMB44A
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTWARW9GWJCCN7G23YENC2SH
+    timestamp: 2026-06-11T21:52:49.766Z
 examined_commit: b56d32163b5e1592b58554f46c4ddc391684b109
 external_links: []
 lifecycle_state: open
@@ -155,8 +162,38 @@ subject:
   content_hash: ""
   ref: "@01KTTD08J12B14SB244JRFNDFX"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTWARW9GWJCCN7G23YENC2SH
+    entries:
+      - _ulid: 01KTWARW9H84B68MPZJE1S668X
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: src/cli/commands/serve.ts; src/daemon-shared/endpoint.ts;
+          packages/daemon/src/server.ts; tests/cli-serve.test.ts; kspec-agents.md.
+
+          Commands run: kspec task get @01KTTD08J12B14SB244JRFNDFX; kspec item get
+          @daemon-network-endpoint-contract; git diff/stat/log; rg AC/source-scan checks; kspec
+          validate --refs/--alignment/--completeness --warnings-ok; npm run format:check; npm run
+          lint -- --quiet; npx oxlint src/cli/commands/serve.ts tests/cli-serve.test.ts; npm run
+          typecheck; npm test; npm test -- --fresh tests/upgrade-folder-storage.test.ts; kspec task
+          add for flaky follow-up @01KTWAN5.
+
+          Claims verified: The new warning uses the shared isExternallyReachable predicate; serve
+          start warns from the parent CLI before detached stdio is ignored; serve status warns from
+          resolved metadata connectHost; ac-external-connect-host-warning has behavioral CLI tests
+          for start, status, and loopback suppression.
+
+          Categories searched: correctness, edge cases, error handling, security/Host-header
+          exposure, test quality, and integration. No blocking findings found.
+
+          Test triage: First full npm test run had one unrelated upgrade-folder-storage failure;
+          changed cli-serve suite passed. Fresh targeted rerun of the failing suite passed, and
+          follow-up flaky task @01KTWAN5 records the transient failure.
+        created_at: 2026-06-11T21:52:49.457Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-11T21:34:17.445Z
-updated_at: 2026-06-11T21:52:20.705Z
+updated_at: 2026-06-11T21:52:49.457Z
 notes: []
