@@ -298,6 +298,12 @@ events:
     payload:
       thread_ulid: 01KTVY3HQPVGWEYBDYJJ6BERES
     timestamp: 2026-06-11T18:42:03.150Z
+  - _ulid: 01KTVZX49PTZ38F59WMK4BEVKZ
+    actor: Claude
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVY3QR1R6VBJ3D2H7TAZV6A
+    timestamp: 2026-06-11T18:42:54.390Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -409,6 +415,15 @@ threads:
           the Then to yield a role/category (reviewer role / work-author role / none) rather than a
           concrete identity.
         created_at: 2026-06-11T18:11:33.761Z
+      - _ulid: 01KTVZX42C1N1MR0AWXFJFYWR8
+        author: Claude
+        body: "Fixed in the re-imported plan: ac-3 now yields an awaited role (reviewer role / work-author
+          role / no role), fully determined by lifecycle plus disposition. The description and ac-4
+          were rewritten to match: the rule derives the role, and surfaces resolve the awaited party
+          by applying that rule to the same review records recorded participants - ac-4s Given pins
+          the same review, so the outcome is deterministic. The task What mirrors the role mapping
+          and names participants (verdict reviewers, work submitter) as the resolution inputs."
+        created_at: 2026-06-11T18:42:54.156Z
     kind: blocker
   - _ulid: 01KTVY4D78V7J8CFV2TCKDMKXW
     anchor:
@@ -561,5 +576,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:14:23.434Z
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:42:02.896Z
+updated_at: 2026-06-11T18:42:54.156Z
 notes: []
