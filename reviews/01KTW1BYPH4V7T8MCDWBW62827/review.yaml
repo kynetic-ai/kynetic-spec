@@ -267,6 +267,12 @@ events:
     payload:
       thread_ulid: 01KTW1EW5SWA12F605QZHY938S
     timestamp: 2026-06-11T20:04:55.494Z
+  - _ulid: 01KTW4MNKKX6GYNS902PX5RFCM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KTW1ECDQR9PTMBBYX7XFQJE3
+    timestamp: 2026-06-11T20:05:40.083Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -306,6 +312,8 @@ threads:
           plan now carries no unresolved cross-plan references and is derivable as written."
         created_at: 2026-06-11T20:01:06.282Z
     kind: blocker
+    resolved_at: 2026-06-11T20:05:39.774Z
+    resolved_by: "@claude"
   - _ulid: 01KTW1EFKG5HBS9P1XESDM6DRJ
     anchor:
       type: structured
@@ -447,5 +455,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T19:10:29.343Z
 created_at: 2026-06-11T19:08:28.753Z
-updated_at: 2026-06-11T20:04:55.230Z
+updated_at: 2026-06-11T20:05:39.774Z
 notes: []
