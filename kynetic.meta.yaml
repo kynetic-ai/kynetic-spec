@@ -21396,6 +21396,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T11:16:42.945Z
+  - _ulid: 01KTV8D9FAZ4Z02KAGWYYD6K46
+    type: success
+    content: "Security-fix regression tests need a verified-toothed payload. When hardening a
+      shell-injection call site (e.g. migrating execSync shell-strings to spawnSync args arrays in
+      src/utils/git.ts), a metacharacter test payload only proves anything if it (a) is valid input
+      for the real producer AND (b) actually executes under the PRE-fix code path. Two non-obvious
+      traps hit this session migrating git utils: git refnames forbid spaces, so $(touch f) is an
+      invalid branch name — use a redirect like $(date>f) instead; and a payload with unbalanced
+      trailing quotes makes the old shell invocation throw before the injection runs, so the test
+      passes against BOTH old and new code (false coverage). Fix: before trusting the test, replay
+      the old shell-string pattern against candidate values and confirm which actually create canary
+      side-effect files. Settled payload: feat;$(date>canary-dollar);`date>canary-bt`;'q';dq\"\" — a
+      valid refname whose substitution and backtick both fire under execSync but not under
+      spawnSync."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T11:52:18.154Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
