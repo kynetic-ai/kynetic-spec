@@ -17497,7 +17497,7 @@ workspaces:
         head: b296e8d1b47ed1095db07c94afe47c5644fe2a98
         last_seen_at: 2026-06-11T14:35:37.056Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-standardize-node-version-docs-01kttczc
-  - active_role: worker
+  - active_role: null
     base_branch_point: efc53d813cb228b14a5c2d93fc8c60814b4154f0
     bootstrap:
       status: succeeded
@@ -17828,12 +17828,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T15:09:53.311Z
+      updated_at: 2026-06-11T15:13:34.397Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T15:09:53.311Z
+      updated_at: 2026-06-11T15:13:34.397Z
     integration:
       status: pending
       detail: null
@@ -17841,8 +17841,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: efc53d813cb228b14a5c2d93fc8c60814b4154f0
-      updated_at: 2026-06-11T15:09:53.311Z
-    lifecycle_state: active
+      updated_at: 2026-06-11T15:13:34.397Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KTTD07T61PPMK5RGAJCJ01Z7
     task_ref: "@01KTTD07T61PPMK5RGAJCJ01Z7"
@@ -17850,9 +17850,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T14:36:43.526Z
-      last_reconciled_at: 2026-06-11T15:09:53.311Z
+      last_reconciled_at: 2026-06-11T15:13:34.397Z
       created_at: 2026-06-11T14:36:15.712Z
-      updated_at: 2026-06-11T15:09:53.311Z
+      updated_at: 2026-06-11T15:13:34.397Z
     workspace_id: dispatch-workspace-01KTTD07T61PPMK5RGAJCJ01Z7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
