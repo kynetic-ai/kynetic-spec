@@ -2,7 +2,89 @@ _ulid: 01KTTKVM74K3ZF2MTS3PYE9F13
 slugs: []
 title: Review task-update-daemon-reliability-specs
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 993 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T06:13:32.024Z
+    completed_at: 2026-06-11T06:13:32.024Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors; repo warning baseline remains 738 warnings. No code diff in this task.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-11T06:13:37.395Z
+    completed_at: 2026-06-11T06:13:37.395Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Not applicable: git diff --name-only dev...HEAD returned no changed TypeScript or test files."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed-ts-or-test-files>
+    created_at: 2026-06-11T06:13:42.856Z
+    completed_at: 2026-06-11T06:13:42.856Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit completed with exit 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-11T06:13:48.562Z
+    completed_at: 2026-06-11T06:13:48.562Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2728/2728 test suites, 10384 passed and 5 skipped of 10389 tests, duration
+      4284.9s. Full log: /tmp/kspec-test-cache/01KTTKSP7AZJEZB33D9GG7Q9MP/d56cdfeb269e261f.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T06:13:54.247Z
+    completed_at: 2026-06-11T06:13:54.247Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: schema OK and references OK; exited 0 with existing reference warning baseline."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-11T06:14:00.065Z
+    completed_at: 2026-06-11T06:14:00.065Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: exited 0 with existing alignment warning baseline (51 warnings)."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-11T06:14:05.373Z
+    completed_at: 2026-06-11T06:14:05.373Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: exited 0 with existing completeness warning baseline (281 warnings). This task is
+      spec-only and follow-up implementation tasks cover the new ACs."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-11T06:14:10.556Z
+    completed_at: 2026-06-11T06:14:10.556Z
 events:
   - _ulid: 01KTTKVM74R98VT4HWFE89S678
     actor: Jacob Chapel
@@ -17,17 +99,124 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T05:53:28.955Z
+  - _ulid: 01KTTN0TP11TS5Q1VVM83HSRNP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTTN0TA637Y0SCRTFBZMYPCN
+    timestamp: 2026-06-11T06:13:26.849Z
+  - _ulid: 01KTTN107F8Y4VBVSCZJKWJ2ZH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T06:13:32.527Z
+  - _ulid: 01KTTN15BZYTPGPYY1PM6C2W85
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-11T06:13:37.791Z
+  - _ulid: 01KTTN1ARA9JD879JWXRHHS319
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: focused-lint
+    timestamp: 2026-06-11T06:13:43.311Z
+  - _ulid: 01KTTN1GAA56EKQ9JMB503CCE5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-11T06:13:49.002Z
+  - _ulid: 01KTTN1NWK12B2JVJSYSXARWF5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T06:13:54.707Z
+  - _ulid: 01KTTN1VG9ATXBENA2QP2SMXKX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-11T06:14:00.457Z
+  - _ulid: 01KTTN20QBBSXQQV9E11ATAX1G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-11T06:14:05.803Z
+  - _ulid: 01KTTN25R2B5CBF2DDDTGM6R0J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-11T06:14:10.946Z
+  - _ulid: 01KTTN2AZFAWX0YSYPWNTGYHBA
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-11T06:14:16.304Z
+  - _ulid: 01KTTN2AZG9E896SMDBGNREFK0
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-11T06:14:16.304Z
 examined_commit: 6e5a0fd936024f9832ac7d23feeff38711cad2dc
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KTTD04V0RXJDT6YRMEJMAYBD"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTTN0TA637Y0SCRTFBZMYPCN
+    entries:
+      - _ulid: 01KTTN0TA67RMH4ZHTYSAT3B8Q
+        author: Jacob Chapel
+        body: "Review evidence log: Files/surfaces read: kspec-agents.md; task @01KTTD04V0RXJDT6YRMEJMAYBD;
+          plan @plan-daemon-operational-reliability; specs @daemon-command-api,
+          @daemon-network-endpoint-contract, @ui-dashboard-overview; git diff dev...HEAD. Commands
+          run: git status --short --branch; git diff --stat/name-only dev...HEAD; git rev-parse
+          HEAD/dev; kspec task get; kspec review for-task; kspec item get for all three target
+          specs; kspec plan get; kspec search for command timeout, connect host warning, and
+          pre-computed server-side status summary; kspec validate --refs/--alignment/--completeness
+          --warnings-ok; npm run format:check; npm run lint -- --quiet; npm run typecheck; npm test.
+          Claims verified: all 7 requested delta ACs are present on the intended existing specs;
+          code diff is empty; search did not surface an equivalent existing connect-host or
+          dashboard summary contract; the plan's follow-up tasks cover implementation for these ACs.
+          Categories searched: correctness/spec placement, duplicate coverage, spec
+          wording/testability, integration with follow-up tasks, validation, and quality gates.
+          Shared/package guidance surfaces touched: none. Focused changed-file lint: not applicable
+          because git diff dev...HEAD has no changed TypeScript or test files. Findings: none."
+        created_at: 2026-06-11T06:13:26.470Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-11T06:14:16.303Z
 created_at: 2026-06-11T05:53:07.812Z
-updated_at: 2026-06-11T05:53:28.589Z
+updated_at: 2026-06-11T06:14:16.304Z
 notes: []
