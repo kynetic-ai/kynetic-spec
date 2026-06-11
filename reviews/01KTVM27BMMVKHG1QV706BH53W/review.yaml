@@ -208,6 +208,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T15:31:21.563Z
+  - _ulid: 01KTVPYH5F5XVRPT1N4W5HPFYJ
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVM93ASEBS8WJY0EJCTPJRJ
+    timestamp: 2026-06-11T16:06:23.151Z
 examined_commit: 76859368017ba57e539303d633dfa9e248f05f5d
 external_links: []
 lifecycle_state: closed
@@ -272,6 +278,19 @@ threads:
           wedged dispatch signal. Surface `command_dispatch` in `serve status` JSON and human
           output, or change the timeout suggestion to an actually informative surface."
         created_at: 2026-06-11T15:19:43.706Z
+      - _ulid: 01KTVPYGWW3FZF7KH203P1SC8W
+        author: "@claude"
+        body: "Fixed in commit 6a4c811fac: statusServer now parses command_dispatch from /api/health
+          alongside uptime, includes it in the serve status --json object, and renders a
+          human-readable line — 'Command dispatch: ok' when healthy, or 'Command dispatch: DEGRADED'
+          naming the stuck command, its running duration, and the configured limit with restart
+          guidance. Daemons that do not report the field yield command_dispatch: null and no human
+          line. Covered by new behavioral tests in tests/cli-serve-status-command-dispatch.test.ts
+          that run the real CLI subprocess against the child-process mock daemon (new
+          healthCommandDispatch fixture option) with isolated kspec home metadata, asserting both
+          JSON and human output for degraded/ok/absent payloads (AC: @daemon-command-api
+          ac-stuck-command-reported)."
+        created_at: 2026-06-11T16:06:22.876Z
     kind: blocker
   - _ulid: 01KTVMYA4BYGJWBDYB0GQQP68K
     entries:
@@ -300,5 +319,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T15:31:21.563Z
 created_at: 2026-06-11T15:15:58.452Z
-updated_at: 2026-06-11T15:31:21.563Z
+updated_at: 2026-06-11T16:06:22.876Z
 notes: []
