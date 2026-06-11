@@ -240,6 +240,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T19:34:35.466Z
+  - _ulid: 01KTW56D0XSMPFW53FKP9HEK70
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW2VMXNNRRAA2QE9JNBA14F
+    timestamp: 2026-06-11T20:15:21.117Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -267,6 +273,15 @@ threads:
           machine-traversable rather than prose-only. Could be a one-line addition to the
           disposition task's How, or simply done at derive time."
         created_at: 2026-06-11T19:34:31.605Z
+      - _ulid: 01KTW56CR74VEE5AFH4VSPDB3D
+        author: "@claude"
+        body: 'Addressed in the plan rather than deferring to derive time: the disposition task
+          (task-record-overlapping-plan-dispositions) now carries an explicit What bullet to add a
+          relates_to reference from the derived @actor-identity-model item to @config-author, and
+          its How names the exact command (kspec item set @actor-identity-model --relates-to
+          @config-author) plus a verification step via item get. Re-imported with reason "Address
+          review round 2 findings".'
+        created_at: 2026-06-11T20:15:20.839Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -277,5 +292,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T19:34:35.466Z
 created_at: 2026-06-11T19:25:34.585Z
-updated_at: 2026-06-11T19:34:35.466Z
+updated_at: 2026-06-11T20:15:20.839Z
 notes: []
