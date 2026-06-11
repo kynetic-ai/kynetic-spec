@@ -2,7 +2,17 @@ _ulid: 01KTVCYPG5GWYZCN996ARTWHK6
 slugs: []
 title: Review task-daemon-triage-api-tests
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1008 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-11T13:27:39.290Z
+    completed_at: 2026-06-11T13:27:39.290Z
 events:
   - _ulid: 01KTVCYPG441GDTGK5GHBMN5ET
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-11T13:12:15.923Z
+  - _ulid: 01KTVDVWRYQ873QSD9ZGBK4EZ4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-11T13:27:39.551Z
 examined_commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T13:11:42.853Z
-updated_at: 2026-06-11T13:12:15.660Z
+updated_at: 2026-06-11T13:27:39.290Z
 notes: []
