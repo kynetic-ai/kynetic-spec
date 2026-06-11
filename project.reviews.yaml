@@ -25396,7 +25396,7 @@ reviews:
     title: Review task-daemon-triage-api-tests
     disposition: pending
     author: Jacob Chapel
-    check_count: 4
+    check_count: 5
     examined_commit: aed37c6f4e34f4ed3ecf795ec901555129753a1d
     lifecycle_state: open
     related_refs: []
@@ -25409,4 +25409,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-11T13:11:42.853Z
-    updated_at: 2026-06-11T13:28:03.770Z
+    updated_at: 2026-06-11T13:28:09.682Z
