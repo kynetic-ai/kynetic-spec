@@ -64635,7 +64635,7 @@ runs:
     started_at: 2026-06-11T21:27:39.821Z
     completed_at: 2026-06-11T21:30:50.343Z
   - _ulid: 01KTWAVMJMNAGEZJQJKY32BYK0
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -64684,7 +64684,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-11T21:55:49.918Z
-        completed_at: 2026-06-11T21:55:49.918Z
+        completed_at: 2026-06-11T21:56:12.298Z
+        notes: Captured friction observation @01KTWAYS about preserving failed test-run logs across --fresh
+          reruns. No new capture for merge-helper success because existing specs/tasks cover that
+          area. No duplicate capture for the flaky upgrade-folder-storage failure because follow-up
+          task @01KTWAN5 already tracks it.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T21:54:19.860Z
+    completed_at: 2026-06-11T21:56:12.299Z
