@@ -1,5 +1,6 @@
 import { spawnSync, type SpawnSyncReturns } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, onTestFinished } from "vitest";
 
@@ -13,7 +14,6 @@ import {
 } from "./helpers/daemon.js";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
-const daemonEntry = path.join(projectRoot, "dist", "daemon", "index.js");
 
 // Per-call fetch budget for the build smoke. Each request targets a freshly
 // started local daemon, so a healthy response should land within a few hundred
@@ -75,11 +75,16 @@ function tail(text: string | null | undefined, lines = 40): string {
   return split.slice(Math.max(0, split.length - lines)).join("\n");
 }
 
-function runCommand(command: string, args: string[], timeoutMs = BUILD_TIMEOUT_MS) {
+function runCommand(
+  command: string,
+  args: string[],
+  options: { timeoutMs?: number; env?: Record<string, string> } = {},
+) {
   return spawnSync(command, args, {
     cwd: projectRoot,
     encoding: "utf8",
-    timeout: timeoutMs,
+    timeout: options.timeoutMs ?? BUILD_TIMEOUT_MS,
+    ...(options.env ? { env: { ...process.env, ...options.env } } : {}),
   });
 }
 
@@ -201,17 +206,29 @@ describe("daemon build pipeline", { timeout: 180_000 }, () => {
 
   // AC: @daemon-runtime-adapter ac-runtime-selection
   it("build:daemon emits compiled JavaScript artifacts", () => {
+    // Build into an isolated output root: rewriting the live dist/daemon/
+    // from inside the suite would race against concurrently running tests
+    // that spawn the daemon (the dist-rewrite flake class the build/test
+    // lock exists to prevent — the lock itself refuses in-suite builds that
+    // target the real dist/).
+    const isolatedDistRoot = fs.mkdtempSync(path.join(os.tmpdir(), "kspec-daemon-build-"));
+    onTestFinished(() => {
+      fs.rmSync(isolatedDistRoot, { recursive: true, force: true });
+    });
+
     const command = "npm";
     const args = ["run", "build:daemon"];
-    const result = runCommand(command, args);
+    const result = runCommand(command, args, {
+      env: { KSPEC_DAEMON_BUILD_DIST_ROOT: isolatedDistRoot },
+    });
     if (result.status !== 0 || result.signal || result.error) {
       throw new Error(
         describeCommandFailure({ step: "build:daemon (artifact emit)", command, args, result }),
       );
     }
     expect(result.stderr).not.toContain("error");
-    expect(fs.existsSync(daemonEntry)).toBe(true);
-    expect(fs.existsSync(path.join(projectRoot, "dist", "daemon", "entity-cache.js"))).toBe(true);
+    expect(fs.existsSync(path.join(isolatedDistRoot, "daemon", "index.js"))).toBe(true);
+    expect(fs.existsSync(path.join(isolatedDistRoot, "daemon", "entity-cache.js"))).toBe(true);
   });
 
   // AC: @daemon-runtime-adapter ac-runtime-selection
@@ -232,20 +249,14 @@ describe("daemon build pipeline", { timeout: 180_000 }, () => {
   // AC: @daemon-test-runtime-selection ac-missing-optional-runtime-skips
   // AC: @daemon-test-mode-boundaries ac-full-process-tests-use-real-daemon
   it("compiled daemon entrypoint starts and serves health checks and SPA routes under node and bun", async () => {
-    const buildCmd = "npm";
-    const buildArgs = ["run", "build:daemon"];
-    const buildResult = runCommand(buildCmd, buildArgs);
-    if (buildResult.status !== 0 || buildResult.signal || buildResult.error) {
-      throw new Error(
-        describeCommandFailure({
-          step: "build:daemon (runtime smoke)",
-          command: buildCmd,
-          args: buildArgs,
-          result: buildResult,
-        }),
-      );
-    }
-
+    // No in-test rebuild: the runner's pre-test build hook guarantees
+    // dist/daemon/ is current (mtime staleness check against all build
+    // inputs), and rebuilding the live dist/ mid-suite is exactly the race
+    // the build/test lock forbids. The artifacts exercised here are produced
+    // by the same scripts/build-daemon.cjs pipeline the previous in-test
+    // build ran; the build's own emit behavior is covered by the isolated
+    // artifact-emit test above. startTestDaemon() fails with an actionable
+    // error if the entry is missing.
     const candidateRuntimes: DaemonTestRuntime[] = ["node", "bun"];
     for (const runtimeName of candidateRuntimes) {
       const isRequired = runtimeName === "node";

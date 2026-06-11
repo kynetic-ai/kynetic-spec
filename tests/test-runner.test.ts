@@ -691,9 +691,57 @@ describe("test runner environment checks", () => {
         const baseline = runner.computeCacheKey([]);
         expect(baseline).not.toBeNull();
 
-        withEnv({ KSPEC_SESSION_ID: "some-other-session", KSPEC_TEST_PROGRESS: "0" }, () => {
-          expect(runner.computeCacheKey([])).toBe(baseline);
-        });
+        withEnv(
+          {
+            KSPEC_SESSION_ID: "some-other-session",
+            KSPEC_TEST_PROGRESS: "0",
+            KSPEC_BUILD_TEST_LOCK_HELD: "/tmp/some.lock",
+            KSPEC_BUILD_TEST_LOCK_HELD_LABEL: "test",
+          },
+          () => {
+            expect(runner.computeCacheKey([])).toBe(baseline);
+          },
+        );
+      });
+    });
+
+    // Coverage: task-stabilize-upgrade-folder-storage-test (test infrastructure
+    // — convention + task, no spec ACs). The cache key must hash every script
+    // that shapes test runner behavior, or edits to them can be hidden by a
+    // stale cached result.
+    describe("cache key input paths", () => {
+      function isCacheInput(file: string): boolean {
+        return runner.TEST_INPUT_PATHS.some((entry: string) =>
+          entry.endsWith("/") ? file.startsWith(entry) : file === entry,
+        );
+      }
+
+      it("covers the runner, its requires, and the build scripts tests exercise", () => {
+        const required = [
+          "scripts/test.cjs",
+          "scripts/test-progress-reporter.cjs",
+          "scripts/dependency-health.cjs",
+          "scripts/build-test-lock.cjs",
+          "scripts/build.cjs",
+          "scripts/build-daemon.cjs",
+        ];
+        expect(required.filter((file) => !isCacheInput(file))).toEqual([]);
+      });
+
+      it("invalidates the key when a file under scripts/ changes", () => {
+        const baseline = runner.computeCacheKey([]);
+        expect(baseline).not.toBeNull();
+
+        // Untracked files in cache input paths are content-hashed, so an
+        // added (or edited) script must produce a different key.
+        const probe = path.join(projectRoot, "scripts", `_cache-key-probe-${process.pid}.cjs`);
+        fs.writeFileSync(probe, "// cache key probe — safe to delete\n");
+        try {
+          expect(runner.computeCacheKey([])).not.toBe(baseline);
+        } finally {
+          fs.rmSync(probe, { force: true });
+        }
+        expect(runner.computeCacheKey([])).toBe(baseline);
       });
     });
   });

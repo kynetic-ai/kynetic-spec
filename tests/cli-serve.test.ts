@@ -1545,8 +1545,13 @@ describe("kspec serve commands", () => {
     const installDir = await createTempDir();
 
     try {
-      // Fresh pack so we test the current build output
-      const packOutput = execSync(`npm pack --pack-destination ${installDir}`, {
+      // --ignore-scripts: prepack runs the full build, which would rewrite
+      // dist/ while other vitest workers are spawning CLI subprocesses from
+      // it (the dist-rewrite flake class the build/test lock forbids — with
+      // the lock held by this test run, the nested build fails fast instead).
+      // The runner's pre-test build hook already guarantees dist/ is current,
+      // so packing the existing output tests the current build.
+      const packOutput = execSync(`npm pack --ignore-scripts --pack-destination ${installDir}`, {
         cwd: projectRoot,
         encoding: "utf-8",
         stdio: ["pipe", "pipe", "pipe"],
