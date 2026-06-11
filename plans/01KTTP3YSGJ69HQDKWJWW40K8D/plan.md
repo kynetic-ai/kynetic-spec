@@ -487,18 +487,21 @@ distributed model.
 
 ### Module placement and derive sequencing
 
-The plan record's stored module is @main (the import-time default);
-nothing depends on it. Placement is explicit in the Specs section: this
-plan creates the @ui-redesign-decisions module, and every decision item
+The plan record's stored module is @main (the import-time default), and
+it is load-bearing for exactly one record: derive parents parentless
+non-trait specs under the stored module, so the @ui-redesign-decisions
+module itself is created as a child of @main. Every decision item
 declares `parent: "@ui-redesign-decisions"`, so a single derive creates
-the module and its children together — no out-of-band module setup
-precedes derivation.
+the module and its nine children together — no out-of-band module setup
+precedes derivation, and no decision item is parented under @main
+directly.
 
-@ui-redesign-decisions is created top-level. The adopted decision
-architecture's @ux module (from @plan-ux-module-and-design-decision-architecture,
-an underived draft) does not exist yet; if it materializes,
-@ui-redesign-decisions reparents under it. That contingency is recorded
-on the ux plan by the disposition task, not left implicit.
+@main is the interim home for @ui-redesign-decisions, not the intended
+final one. The adopted decision architecture's @ux module (from
+@plan-ux-module-and-design-decision-architecture, an underived draft)
+does not exist yet; if it materializes, @ui-redesign-decisions reparents
+under it. That contingency is recorded on the ux plan by the disposition
+task, not left implicit.
 
 ### Consumers
 
