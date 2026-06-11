@@ -334,6 +334,12 @@ events:
     payload:
       thread_ulid: 01KTVY56CPJF03R43997WT85VB
     timestamp: 2026-06-11T18:44:05.874Z
+  - _ulid: 01KTVZZF92A4MPK16NP118K6E6
+    actor: Claude
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTVY5D2GG2ZN0AHARHKJ8TR8
+    timestamp: 2026-06-11T18:44:11.170Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -584,6 +590,16 @@ threads:
           derivation supports it, or fold the trait application plus inherited-AC coverage into
           @task-identity-endpoint-classifier's What/Covers.
         created_at: 2026-06-11T18:12:28.368Z
+      - _ulid: 01KTVZZF1QSX5F7AX406DF597W
+        author: Claude
+        body: "Fixed in the re-imported plan: the post-derive manual step is gone.
+          @task-identity-endpoint-classifier owns applying @trait-api-endpoint to
+          @actor-identity-resolution and implementing the endpoint to the trait contract; its Covers
+          line claims the applicable inherited criteria (@trait-api-endpoint ac-1, ac-6) and names
+          ac-2..ac-5 as N/A-annotated with reasons (no entity-ref parameter, no request body, not a
+          list endpoint, read-only). The implementation note now states the trait application cannot
+          be skipped silently after derive."
+        created_at: 2026-06-11T18:44:10.935Z
     kind: blocker
   - _ulid: 01KTVY5KAT2C63655GEAXVT1N5
     anchor:
@@ -638,5 +654,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:14:23.434Z
 created_at: 2026-06-11T18:10:37.230Z
-updated_at: 2026-06-11T18:44:05.643Z
+updated_at: 2026-06-11T18:44:10.935Z
 notes: []
