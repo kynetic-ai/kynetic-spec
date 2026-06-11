@@ -70,6 +70,18 @@ checks:
     runner: kspec-review-plan
     created_at: 2026-06-11T08:07:44.993Z
     completed_at: 2026-06-11T08:07:44.993Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@test-annotation-sweep N/A respec leaves @ac-annotation-identifier-format
+      ac-valid-token-covers-ac unreconciled, creating a likely contradiction about valid AC-token
+      annotations receiving coverage credit."
+    name: Existing spec alignment
+    required: true
+    runner: kspec-review-plan
+    created_at: 2026-06-11T08:07:44.934Z
+    completed_at: 2026-06-11T08:07:44.934Z
 events:
   - _ulid: 01KTTVE9X3PA6393J23QSHZ51G
     actor: "@claude"
@@ -175,6 +187,13 @@ events:
       status: fail
       name: Dependency ordering
     timestamp: 2026-06-11T08:07:45.523Z
+  - _ulid: 01KTTVJ4YP52AV48FHZFF00AE9
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: fail
+      name: Existing spec alignment
+    timestamp: 2026-06-11T08:07:45.878Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -299,5 +318,5 @@ threads:
     kind: question
 verdicts: []
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:07:44.993Z
+updated_at: 2026-06-11T08:07:44.934Z
 notes: []

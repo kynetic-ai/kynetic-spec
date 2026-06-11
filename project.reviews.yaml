@@ -25153,7 +25153,7 @@ reviews:
     title: "Plan review: AC Coverage Verification Schema and Storage"
     disposition: changes_requested
     author: "@claude"
-    check_count: 6
+    check_count: 7
     lifecycle_state: open
     related_refs: []
     subject:
@@ -25165,4 +25165,4 @@ reviews:
     unresolved_blocker_count: 4
     verdict_count: 0
     created_at: 2026-06-11T08:05:39.876Z
-    updated_at: 2026-06-11T08:07:44.993Z
+    updated_at: 2026-06-11T08:07:44.934Z
