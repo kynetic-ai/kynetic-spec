@@ -81,6 +81,16 @@ checks:
     required: true
     created_at: 2026-06-11T06:40:59.414Z
     completed_at: 2026-06-11T06:40:59.414Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Searched plan review records; no prior review for @plan-ui-redesign-global-decisions was
+      found, so this was treated as round 1.
+    name: prior review history
+    required: false
+    created_at: 2026-06-11T06:41:15.245Z
+    completed_at: 2026-06-11T06:41:15.245Z
 events:
   - _ulid: 01KTTPG4AC91PKB75PX2C5M2VB
     actor: "@claude"
@@ -200,6 +210,13 @@ events:
       status: fail
       name: Spec quality
     timestamp: 2026-06-11T06:41:00.811Z
+  - _ulid: 01KTTPKRC48VAK7CB810KVFY9B
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review history
+    timestamp: 2026-06-11T06:41:15.652Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -337,5 +354,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T06:39:16.812Z
-updated_at: 2026-06-11T06:40:59.414Z
+updated_at: 2026-06-11T06:41:15.245Z
 notes: []
