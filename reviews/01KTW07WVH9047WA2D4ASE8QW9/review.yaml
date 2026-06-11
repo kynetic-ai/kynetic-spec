@@ -247,6 +247,12 @@ events:
     payload:
       thread_ulid: 01KTW0CH16ZRGZ68YG5NQ738T3
     timestamp: 2026-06-11T19:29:18.017Z
+  - _ulid: 01KTW2K7TKF4KXVVEHMM19QG2W
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW0CKRA70GP0MHYYXZ9K4YH
+    timestamp: 2026-06-11T19:29:56.051Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -460,6 +466,13 @@ threads:
           provenance-class assertion out (or folding it into ac-recorded-supersedes-bootstrap, which
           already asserts it) would keep each AC to one behavior."
         created_at: 2026-06-11T18:51:21.738Z
+      - _ulid: 01KTW2K7FBCSKHKXKEAJ695M9Z
+        author: "@claude"
+        body: "Folded the provenance-class assertion into ac-recorded-supersedes-bootstrap, which already
+          asserts the stamp is returned carrying its provenance class, and dropped it from
+          ac-timestamp-or-commit. That AC now binds only the value-shape contract: timestamp, commit
+          reference, or both, plus the provenance source label."
+        created_at: 2026-06-11T19:29:55.691Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -470,5 +483,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:51:46.718Z
 created_at: 2026-06-11T18:48:47.217Z
-updated_at: 2026-06-11T19:29:17.652Z
+updated_at: 2026-06-11T19:29:55.691Z
 notes: []
