@@ -34,6 +34,21 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-11T14:00:30.146Z
     completed_at: 2026-06-11T14:00:30.146Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused changed file: npm test -- tests/grep.test.ts --fresh passed 10/10 consecutive
+      runs (32/32 tests each). Full npm test ran: tests/grep.test.ts passed in the suite; aggregate
+      had one unrelated tests/skill-cli.test.ts failure (SyntaxError from dist/cli/commands/index.js
+      expecting registerUpgradeCommand from ./upgrade.js). Per test failure triage, reran npm test
+      -- tests/skill-cli.test.ts --fresh twice; both passed 96/96. Classified as flaky/pre-existing
+      and created follow-up task @01KTVFNW. No regression attributed to this branch."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T14:00:44.485Z
+    completed_at: 2026-06-11T14:00:44.485Z
 events:
   - _ulid: 01KTVET5TDBYBNT8QZ8AR0SSCZ
     actor: Jacob Chapel
@@ -76,6 +91,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-11T14:00:30.369Z
+  - _ulid: 01KTVFRFD44RP37E4GBG1YBJP0
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-11T14:00:44.708Z
 examined_commit: 4a03cba1fab82c11a570777b1f63250a16acefb3
 external_links: []
 lifecycle_state: open
@@ -107,5 +129,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-06-11T13:44:11.854Z
-updated_at: 2026-06-11T14:00:30.146Z
+updated_at: 2026-06-11T14:00:44.485Z
 notes: []
