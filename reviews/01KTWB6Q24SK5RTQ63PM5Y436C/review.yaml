@@ -1,0 +1,26 @@
+_ulid: 01KTWB6Q24SK5RTQ63PM5Y436C
+slugs: []
+title: "Plan review: Web UI Foundations (round 4 — fix verification sweep)"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KTWB6Q24BK243M0R6ZP2R21G
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-11T22:00:22.852Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-web-ui-foundations"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-11T22:00:22.852Z
+updated_at: null
+notes: []
