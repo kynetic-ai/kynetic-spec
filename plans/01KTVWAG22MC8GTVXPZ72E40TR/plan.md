@@ -657,6 +657,19 @@ derive_from_specs: false
       persistence, so the git/OS-name tail no longer persists
       free-form variants of configured identities and the two specs
       stop sitting in the corpus as an unexplained contradiction.
+    - Reconcile @actor-identity-model ac-1 with the canonical-write
+      boundary the same way: update that criterion's wording (kspec
+      item set at execution time — the item exists by then, since
+      P0a derives before this plan) to scope the canonical guarantee
+      to values classification can resolve — a value that classifies
+      to a canonical identity is stored in canonical form, never a
+      variant; a value that classifies to no canonical identity is
+      stored as supplied and classifies as unknown on read. Without
+      this rewording, ac-1's literal "never a free-form variant"
+      text is unmeetable against @actor-identity-resolution ac-8's
+      deliberate preserve-as-supplied behavior for out-of-roster
+      actors, and this task's Covers claim on ac-1 could not be
+      verified as written.
     - Behavioral tests: a review mutation without an actor in the
       body records the resolved configured author in canonical form;
       one with an explicit variant actor (e.g. codex@openai.com)
@@ -1052,6 +1065,17 @@ The "data upgrade plan" named in P0a's table row for
 data-upgrade plan exists or is needed. These Covers lines resolve
 once P0a derives (see the approval-ordering gate above).
 
+@actor-identity-model ac-1's literal wording ("never a free-form
+variant") predates the canonical-write boundary adopted here and
+would be unmeetable against @actor-identity-resolution ac-8's
+preserve-as-supplied behavior for out-of-roster actors.
+@task-review-author-resolution therefore reconciles that
+criterion's wording at execution time — scoping the canonical
+guarantee to values classification can resolve, with unclassifiable
+values preserved and surfaced as unknown — exactly the way it
+already reconciles @config-author, so its Covers claim on ac-1 is
+verifiable as written.
+
 ### Relationship to existing specs (verified read-only)
 
 - `@ui-app-shell` — owns sidebar/navigation chrome; untouched here.
@@ -1120,6 +1144,11 @@ skipped silently after derive.
   out-of-roster actors to a default at write time would fabricate
   attribution, while the honest unknown classification keeps
   identity-derived views truthful.
+  @task-review-author-resolution reconciles
+  @actor-identity-model ac-1's wording with this boundary at
+  execution time (see the upstream decision AC claims note) so the
+  decision criterion and this behavior agree literally, not just in
+  intent.
 - **Next-actor mapping** is intentionally minimal and role-based:
   the rule derives the awaited role (reviewer role / work-author
   role / no role) from lifecycle + disposition, and surfaces resolve
