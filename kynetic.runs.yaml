@@ -63704,7 +63704,7 @@ runs:
     completed_at: 2026-06-11T14:12:50.757Z
   - _ulid: 01KTVHFW94GRN3N32X5HAVJ4JN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -63718,7 +63718,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T14:32:06.331Z
-        completed_at: 2026-06-11T14:32:06.331Z
+        completed_at: 2026-06-11T14:32:29.636Z
+        notes: "Friction points: review-check evidence recording still has known rough edges around
+          structured batch args for optional checks; search found this is already tracked by
+          @01KQ1272, so no duplicate capture. The fresh full suite took 2630.5s, but that is
+          expected for this repository's required review gate and not a new actionable friction item
+          from this session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T14:32:29.636Z
+        completed_at: 2026-06-11T14:32:29.636Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T14:31:00.132Z
