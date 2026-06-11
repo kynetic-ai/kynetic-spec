@@ -55,8 +55,11 @@ description: |
 spec_ref: "@daemon-failure-observability"
 plan_ref: "@plan-daemon-operational-reliability"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 1695e06495b960d89ef4acec171e0b656c5b1c2a after approved review
+  @01KTTZAE. Implemented durable daemon last-exit records for fatal, startup failure, and graceful
+  termination paths, and surfaced the last exit from serve status.
 depends_on:
   - "@task-daemon-log-capture"
 context: []
@@ -124,8 +127,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-11T09:13:30.102Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 1695e06495b960d89ef4acec171e0b656c5b1c2a after approved review @01KTTZAE.
+          Implemented durable daemon last-exit records for fatal, startup failure, and graceful
+          termination paths, and surfaced the last exit from serve status.
+        previous: null
+      completed_at:
+        new: 2026-06-11T09:26:56.348Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-11T09:26:56.355Z
 created_at: 2026-06-11T03:53:17.436Z
 started_at: 2026-06-11T08:41:55.589Z
 submitted_at: 2026-06-11T09:08:36.089Z
+completed_at: 2026-06-11T09:26:56.348Z
 todos: []
 automation: eligible
