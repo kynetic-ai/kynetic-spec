@@ -64736,9 +64736,23 @@ runs:
     completed_at: 2026-06-11T22:21:08.742Z
   - _ulid: 01KTWDY2RGCDBXYTMSM293QYA9
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-11T22:48:05.648Z
+        completed_at: 2026-06-11T22:48:37.792Z
+        notes: "What worked well: The review workflow forced independent verification instead of accepting
+          the worker's full-suite claim. Running the fresh full suite caught the same dist/ ESM
+          mismatch class in a different CLI-spawning test, and the isolated fresh rerun of
+          tests/workflow-runs.test.ts cleanly classified it as a remaining full-suite concurrency
+          race rather than deterministic workflow behavior. Anchored review threads and required
+          checks made the outcome machine-readable."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-11T22:48:37.792Z
+        completed_at: 2026-06-11T22:48:37.792Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T22:48:05.648Z
