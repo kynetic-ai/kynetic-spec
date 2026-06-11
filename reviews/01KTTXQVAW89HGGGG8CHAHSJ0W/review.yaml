@@ -404,6 +404,12 @@ events:
     payload:
       thread_ulid: 01KTTXWC485J4Y9GHFE561TB1W
     timestamp: 2026-06-11T17:27:48.544Z
+  - _ulid: 01KTVVKS8GRZQ54PGQRE7JER0M
+    actor: plan-author
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTXWHT0KBKKTGQY842XJ559
+    timestamp: 2026-06-11T17:27:53.872Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -701,6 +707,13 @@ threads:
           valid write vs an invalid write) and would be two separate tests. Consider splitting into
           a read-back AC and a rejection AC."
         created_at: 2026-06-11T08:48:23.872Z
+      - _ulid: 01KTVVKS0X9VD57X3E83K2P67E
+        author: plan-author
+        body: "Split: ac-stamp-read-back (a valid write reads back with the same verification time, actor,
+          and provenance class) and ac-incomplete-stamp-rejected (a write missing any of the three
+          fields is rejected with stored state unchanged). The store task Covers line references
+          both."
+        created_at: 2026-06-11T17:27:53.629Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -711,5 +724,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:50:22.029Z
 created_at: 2026-06-11T08:45:49.788Z
-updated_at: 2026-06-11T17:27:48.315Z
+updated_at: 2026-06-11T17:27:53.629Z
 notes: []
