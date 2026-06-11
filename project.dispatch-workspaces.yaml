@@ -13395,7 +13395,7 @@ workspaces:
         head: 97f10f3b5c87ba10d761643d782f023ef8ad8e6b
         last_seen_at: 2026-06-11T09:12:17.633Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-fatal-failure-observability-01kttd06
-  - active_role: null
+  - active_role: worker
     base_branch_point: 295c22542ec5fc475f47f4257dc0968bed4d99be
     bootstrap:
       status: succeeded
@@ -13731,7 +13731,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T09:55:09.334Z
+      updated_at: 2026-06-11T09:55:16.975Z
     integration:
       status: pending
       detail: null
@@ -13740,17 +13740,17 @@ workspaces:
       target_branch: dev
       target_commit: 295c22542ec5fc475f47f4257dc0968bed4d99be
       updated_at: 2026-06-11T09:55:09.334Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTD0Y7J7B30QYRVF0NQ0B81
     task_ref: "@01KTTD0Y7J7B30QYRVF0NQ0B81"
     task_slug: task-shadow-restore-loud-failure
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-11T09:54:33.021Z
-      last_reconciled_at: 2026-06-11T09:55:09.334Z
+      last_active_at: 2026-06-11T09:55:16.975Z
+      last_reconciled_at: 2026-06-11T09:55:16.975Z
       created_at: 2026-06-11T09:13:04.901Z
-      updated_at: 2026-06-11T09:55:09.839Z
+      updated_at: 2026-06-11T09:55:16.975Z
     workspace_id: dispatch-workspace-01KTTD0Y7J7B30QYRVF0NQ0B81
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
