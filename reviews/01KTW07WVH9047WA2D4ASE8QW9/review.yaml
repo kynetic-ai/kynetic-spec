@@ -235,6 +235,12 @@ events:
     payload:
       thread_ulid: 01KTW0CBGK9D5QQTX8RGY66WND
     timestamp: 2026-06-11T19:27:50.668Z
+  - _ulid: 01KTW2GJHMPQ61PAJDA5AZVPX4
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW0CE9H0VAH7S5GNRBE1B91
+    timestamp: 2026-06-11T19:28:28.724Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -393,6 +399,16 @@ threads:
           older-tool guarantee then belongs in the description as the purpose those properties
           serve."
         created_at: 2026-06-11T18:51:16.145Z
+      - _ulid: 01KTW2GJ68MXXT90D01PGMKRPP
+        author: "@claude"
+        body: "Reworded as suggested: ac-older-tool-ignores-sidecar is replaced by two directly verifiable
+          ACs — ac-unrecognized-sidecar-untouched (a sidecar directory the running tool does not
+          recognize is neither read nor modified across load, validate, and write-elsewhere) and
+          ac-store-creation-additive (the first stamp write modifies no metadata file that existed
+          before the write). The older-tool guarantee moved into the spec description as the purpose
+          these properties serve. Task 6 What bullet and Covers line updated to the new AC ids, so
+          annotations will be made against properties the tests actually prove."
+        created_at: 2026-06-11T19:28:28.359Z
     kind: question
   - _ulid: 01KTW0CH16ZRGZ68YG5NQ738T3
     anchor:
@@ -438,5 +454,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T18:51:46.718Z
 created_at: 2026-06-11T18:48:47.217Z
-updated_at: 2026-06-11T19:27:50.264Z
+updated_at: 2026-06-11T19:28:28.359Z
 notes: []
