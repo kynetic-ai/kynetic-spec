@@ -101,27 +101,76 @@ async function discardStashedWorktreeDir(backupDir: string | null): Promise<void
   await fs.rm(backupDir, { recursive: true, force: true });
 }
 
+type WorktreeDirState = "missing" | "non-directory" | "empty-directory" | "partial-directory";
+
 /**
- * Describe what currently exists at the shadow worktree location, for
+ * Inspect what currently exists at the shadow worktree location, for
  * failure reporting. Stats at call time so the description reflects the
  * actual outcome of a partially-failed restore (restoreStashedWorktreeDir
  * removes the worktree directory before renaming the backup into place —
- * if the rename fails, the location is empty and the backup is the only
- * copy of the prior shadow state).
+ * if the rename fails, the location is usually empty and the backup is the
+ * only copy of the prior shadow state, but a concurrent recreation of the
+ * location can leave a directory or file behind).
  */
-async function describeWorktreeDirState(worktreeDir: string): Promise<string> {
+async function inspectWorktreeDirState(
+  worktreeDir: string,
+): Promise<{ state: WorktreeDirState; description: string }> {
   const stat = await fs.stat(worktreeDir).catch(() => null);
   if (!stat) {
-    return "now empty — the backup directory is the only copy of the prior shadow state";
+    return {
+      state: "missing",
+      description: "now empty — the backup directory is the only copy of the prior shadow state",
+    };
   }
   if (!stat.isDirectory()) {
-    return "occupied by a non-directory file — the backup directory holds the prior shadow state";
+    return {
+      state: "non-directory",
+      description:
+        "occupied by a non-directory file — the backup directory holds the prior shadow state",
+    };
   }
   const entries = await fs.readdir(worktreeDir).catch(() => null);
   if (entries && entries.length === 0) {
-    return "an empty directory — the backup directory is the only copy of the prior shadow state";
+    return {
+      state: "empty-directory",
+      description:
+        "an empty directory — the backup directory is the only copy of the prior shadow state",
+    };
   }
-  return "occupied by a partial or incomplete directory — the backup directory holds the prior shadow state";
+  return {
+    state: "partial-directory",
+    description:
+      "occupied by a partial or incomplete directory — the backup directory holds the prior shadow state",
+  };
+}
+
+/**
+ * Build recovery steps that match the actual state of the worktree
+ * location. `mv <backup> <worktreeDir>` only restores the backup when
+ * nothing exists at the destination: if a directory is still there, mv
+ * moves the backup *inside* it, and an existing file makes it fail. States
+ * that leave something at the location therefore get an explicit
+ * clear-the-destination step before the move.
+ */
+function buildRestoreRecoverySteps(
+  state: WorktreeDirState,
+  backupDir: string,
+  worktreeDir: string,
+): string[] {
+  const resolvedBackup = path.resolve(backupDir);
+  const resolvedWorktree = path.resolve(worktreeDir);
+  const steps: string[] = [];
+  if (state === "empty-directory") {
+    steps.push(`Remove the leftover empty directory: rmdir "${resolvedWorktree}"`);
+  } else if (state === "non-directory" || state === "partial-directory") {
+    const leftover = state === "non-directory" ? "file" : "partial directory";
+    steps.push(
+      `Move the leftover ${leftover} out of the way: mv "${resolvedWorktree}" "${resolvedWorktree}.failed-rebuild-${Date.now()}"`,
+    );
+  }
+  steps.push(`Move the backup back into place: mv "${resolvedBackup}" "${resolvedWorktree}"`);
+  steps.push("Re-run: kspec shadow repair");
+  return steps.map((step, index) => `  ${index + 1}. ${step}`);
 }
 
 /**
@@ -155,15 +204,14 @@ async function restoreStashedWorktreeDirAfterFailure(
   } catch (restoreError) {
     const restoreMessage =
       restoreError instanceof Error ? restoreError.message : String(restoreError);
-    const worktreeState = await describeWorktreeDirState(worktreeDir);
+    const { state, description } = await inspectWorktreeDirState(worktreeDir);
     return [
       `Shadow rebuild failed: ${rebuildMessage}`,
       `Restoring the previous shadow directory also failed: ${restoreMessage}`,
       `The previous shadow directory is preserved at: ${path.resolve(backupDir)}`,
-      `The shadow directory location (${path.resolve(worktreeDir)}) is ${worktreeState}.`,
+      `The shadow directory location (${path.resolve(worktreeDir)}) is ${description}.`,
       "Recovery steps:",
-      `  1. Move the backup back into place: mv "${path.resolve(backupDir)}" "${path.resolve(worktreeDir)}"`,
-      "  2. Re-run: kspec shadow repair",
+      ...buildRestoreRecoverySteps(state, backupDir, worktreeDir),
     ].join("\n");
   }
 }
