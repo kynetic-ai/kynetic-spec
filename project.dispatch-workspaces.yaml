@@ -17470,7 +17470,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T16:01:55.012Z
+      updated_at: 2026-06-11T16:06:00.165Z
     integration:
       status: merged
       detail: integration:merged
@@ -17487,18 +17487,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T15:44:50.124Z
-      last_reconciled_at: 2026-06-11T16:05:51.486Z
+      last_reconciled_at: 2026-06-11T16:06:00.165Z
       created_at: 2026-06-11T14:14:30.812Z
-      updated_at: 2026-06-11T16:05:51.486Z
+      updated_at: 2026-06-11T16:06:00.165Z
     workspace_id: dispatch-workspace-01KTTCZCTNXC6TSH9SENFSQDZG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 5d1aa1888f4e262f2759a90f315bf3bf739f4601
-        last_seen_at: 2026-06-11T15:44:17.242Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-standardize-node-version-docs-01kttczc-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-standardize-node-version-docs/01kttczc
