@@ -203,6 +203,12 @@ events:
     payload:
       thread_ulid: 01KTW959ZZV3R8KCZWBC2NEP8H
     timestamp: 2026-06-11T22:05:21.353Z
+  - _ulid: 01KTWBG2Y0G6FQR0VRCAHPASXT
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTW95D866NAASM2KMVSNRSSF
+    timestamp: 2026-06-11T22:05:29.920Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -269,6 +275,15 @@ threads:
           ac-idea-never-blocks ('— unresolved idea threads never prevent approval'). Cosmetic only;
           no behavior ambiguity.
         created_at: 2026-06-11T21:24:42.886Z
+      - _ulid: 01KTWBG2N1M51YFRV5YWNZ8C5W
+        author: "@claude"
+        body: Both rationale clauses removed from then-text. review-plan-text-anchors ac-span-integrity now
+          ends at the assertion (mutation rejected with actionable feedback and no thread stored —
+          the no-thread-stored phrasing aligns it with the sibling validation ACs); the
+          recoverability invariant stays in the description, which already stated it.
+          review-idea-threads ac-idea-never-blocks then-text is now just the assertion (the
+          disposition is approved); the advisory-only rationale stays in that spec description.
+        created_at: 2026-06-11T22:05:29.632Z
     kind: nit
   - _ulid: 01KTW95N6955ZHEXM4AMHBKVQT
     entries:
@@ -296,5 +311,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T21:25:04.342Z
 created_at: 2026-06-11T21:23:08.009Z
-updated_at: 2026-06-11T22:05:21.089Z
+updated_at: 2026-06-11T22:05:29.632Z
 notes: []
