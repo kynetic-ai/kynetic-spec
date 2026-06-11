@@ -19,3 +19,26 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T08:18:20.712Z
+  - _ulid: 01KTTX5X0Q9X5M9C2PF5Z7RXD5
+    content: "Implementation complete on 570dc9e8b2. prepack now runs 'npm run build'; added
+      scripts/verify-package.cjs (on-disk dist checks + 'npm pack --dry-run --json --ignore-scripts'
+      listing check for LICENSE, dist/cli/index.js, dist/index.js, dist/web-ui/index.html,
+      templates/skills/manifest.yaml, plugin/*) exposed as 'verify-package', and
+      scripts/verify-clean-pack.cjs (AC ac-4 annotation; stages git archive HEAD in a temp dir,
+      symlinks root node_modules, real 'npm pack --pack-destination', verifies tarball via tar -tzf)
+      exposed as 'verify-clean-pack'. publish.yml runs verify-package between Build and tests,
+      verify-clean-pack before publish. Tests: extended tests/release-packaging.test.ts — real-repo
+      verify-package exits 0 (ac-2+ac-3), staged temp trees missing dist/cli/index.js (ac-2) or
+      dist/web-ui/index.html (ac-3) exit non-zero; existing ac-1 dry-run test now passes
+      --ignore-scripts so the full-build prepack never runs inside vitest (coverage unchanged —
+      LICENSE inclusion is script-independent). Deviation from task text: verify-package's dry-run
+      uses --ignore-scripts because npm 11 DOES run prepack on dry runs; without it every vitest run
+      and the CI verify-package step would each trigger a redundant full build. The real-pack path
+      (verify-clean-pack) deliberately keeps scripts enabled — that is the ac-4 proof. Verification
+      results: 'npm run build && npm run verify-package' → passed; 'npm run verify-clean-pack' →
+      passed (complete package, 1183 files, from clean git-archive tree). Gates: format:check OK,
+      lint --quiet 0 errors, oxlint on changed files 0 warnings, typecheck OK, full npm test 10399
+      passed/0 failed, kspec validate refs/alignment/completeness OK (warnings-ok)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T08:36:01.687Z
