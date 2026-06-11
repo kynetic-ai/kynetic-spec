@@ -271,6 +271,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T08:08:20.500Z
+  - _ulid: 01KTVVBVD3SNVFRKAEXRZBE22K
+    actor: plan-author
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTVG2323NE18R3185B7RMTD
+    timestamp: 2026-06-11T17:23:33.923Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -298,6 +304,15 @@ threads:
           @ac-annotation-identifier-format, or define N/A markers outside the existing
           coverage-annotation contract, so the live corpus does not contain contradictory specs.
         created_at: 2026-06-11T08:06:37.410Z
+      - _ulid: 01KTVVBV4VWMB0YH0X3M9BG855
+        author: plan-author
+        body: "Addressed in the round-1 revision: @task-respec-test-annotation-sweep-na now includes an
+          explicit reconciliation step for @ac-annotation-identifier-format ac-valid-token-covers-ac
+          — its given clause is narrowed to coverage-claiming annotations (those without a
+          not-applicable marker), mirroring the planned ac-valid-annotation-covers-target fix, so no
+          live AC grants coverage credit to N/A-marked annotations. The task Covers line names it
+          explicitly."
+        created_at: 2026-06-11T17:23:33.659Z
     kind: blocker
   - _ulid: 01KTTVG28FXDNNGF8Z45VWXT7F
     anchor:
@@ -402,5 +417,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T08:08:20.500Z
 created_at: 2026-06-11T08:05:39.876Z
-updated_at: 2026-06-11T08:08:20.500Z
+updated_at: 2026-06-11T17:23:33.659Z
 notes: []
