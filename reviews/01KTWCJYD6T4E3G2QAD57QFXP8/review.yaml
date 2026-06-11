@@ -70,6 +70,22 @@ checks:
     runner: kspec
     created_at: 2026-06-11T22:46:27.770Z
     completed_at: 2026-06-11T22:46:27.770Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Failed: npm test -- --fresh exited 1 after 10545 passed / 1 failed / 3 skipped. Failure:
+      tests/workflow-runs.test.ts > workflow next - basic step advancement > should complete current
+      step and show next step; spawned dist/cli/index.js crashed with SyntaxError: './upgrade.js'
+      does not provide export registerUpgradeCommand. Full log:
+      /tmp/kspec-test-cache/01KTWCH76N2GX39N22EN4QJZK1/a0de96172dd1fcd0.log. Isolated rerun 'npm
+      test -- tests/workflow-runs.test.ts --fresh' passed 88/88, showing full-suite concurrency
+      remains. The original tests/upgrade-folder-storage.test.ts passed 24/24 in the full run."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-11T22:46:41.924Z
+    completed_at: 2026-06-11T22:46:41.924Z
 events:
   - _ulid: 01KTWCJYD6GNB5WS72FM4XBS4A
     actor: Jacob Chapel
@@ -140,6 +156,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T22:46:28.078Z
+  - _ulid: 01KTWDVH947T34YXMQ3CC0ZD4A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full test suite
+    timestamp: 2026-06-11T22:46:42.213Z
 examined_commit: 5decaf10680757ae541fe2ec5b718952a8f7be1f
 external_links: []
 lifecycle_state: open
@@ -195,5 +218,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-11T22:24:32.166Z
-updated_at: 2026-06-11T22:46:27.770Z
+updated_at: 2026-06-11T22:46:41.924Z
 notes: []
