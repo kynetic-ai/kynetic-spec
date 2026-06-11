@@ -17976,11 +17976,11 @@ workspaces:
     canonical_branch: dispatch/task/task-command-dispatch-timeout/01kttd07
     canonical_branch_head: 6a4c811fac5105c9b430fa2cab768460b6aabce4
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-11T16:48:55.490Z
+      updated_at: 2026-06-11T16:53:23.179Z
     health:
       status: healthy
       issues: []
@@ -17994,17 +17994,17 @@ workspaces:
       target_branch: dev
       target_commit: efc53d813cb228b14a5c2d93fc8c60814b4154f0
       updated_at: 2026-06-11T16:48:55.490Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTTD07T61PPMK5RGAJCJ01Z7
     task_ref: "@01KTTD07T61PPMK5RGAJCJ01Z7"
     task_slug: task-command-dispatch-timeout
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-11T16:53:23.179Z
       last_active_at: 2026-06-11T16:31:25.664Z
       last_reconciled_at: 2026-06-11T16:52:28.670Z
       created_at: 2026-06-11T14:36:15.712Z
-      updated_at: 2026-06-11T16:52:28.670Z
+      updated_at: 2026-06-11T16:53:23.179Z
     workspace_id: dispatch-workspace-01KTTD07T61PPMK5RGAJCJ01Z7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
