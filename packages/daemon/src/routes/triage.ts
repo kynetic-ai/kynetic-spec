@@ -13,12 +13,12 @@
  * - @triage-daemon-api ac-1: GET list sorted by created_at desc
  * - @triage-daemon-api ac-2: Status filter on GET list
  * - @triage-daemon-api ac-3: POST creates record with snapshot
- * - @triage-daemon-api ac-4: PUT override sets override fields
- * - @triage-daemon-api ac-5: PUT act executes and transitions
+ * - @triage-daemon-api ac-4: POST /:ref/override sets override fields
+ * - @triage-daemon-api ac-5: POST /:ref/act executes and transitions
  * - @triage-daemon-api ac-6: GET export with format parameter
  * - @triage-daemon-api ac-7: POST 404 for nonexistent inbox item
- * - @triage-daemon-api ac-8: PUT act 409 for already acted
- * - @triage-daemon-api ac-9: PUT act 422 for pending record
+ * - @triage-daemon-api ac-8: POST /:ref/act 409 for already acted
+ * - @triage-daemon-api ac-9: POST /:ref/act 422 for pending record
  */
 
 import { Elysia, t } from "elysia";
