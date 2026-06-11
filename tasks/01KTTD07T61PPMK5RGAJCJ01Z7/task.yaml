@@ -158,6 +158,7 @@ tags:
   - api
   - reliability
 vcs_refs: []
+review_ref: "@01KTVM27BMMVKHG1QV706BH53W"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-command-dispatch-timeout/01kttd07
@@ -208,6 +209,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-11T15:10:14.102Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTVM27BMMVKHG1QV706BH53W"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-11T15:16:00.798Z
 created_at: 2026-06-11T03:53:18.918Z
 started_at: 2026-06-11T14:37:10.863Z
 submitted_at: 2026-06-11T15:10:14.102Z
