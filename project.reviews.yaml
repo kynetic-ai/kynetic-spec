@@ -25204,3 +25204,20 @@ reviews:
     verdict_count: 0
     created_at: 2026-06-11T08:42:16.318Z
     updated_at: 2026-06-11T08:42:30.925Z
+  - _ulid: 01KTTXQVAW89HGGGG8CHAHSJ0W
+    slugs: []
+    title: "Plan review: AC Coverage Verification Schema and Storage (round 1, claude)"
+    disposition: pending
+    author: "@claude"
+    check_count: 0
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-ac-coverage-verification-schema-and-storage"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-11T08:45:49.788Z
