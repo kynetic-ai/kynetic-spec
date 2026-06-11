@@ -15776,18 +15776,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-reenable-split-storage-ref-validation-test/01kttd1c
-    canonical_branch_head: 23b3288dd8fdb58ab097e8dd5a09398d442ad7b5
+    canonical_branch_head: 3c1b56f24101b99dd2a646dc0afda611d5aa1663
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T12:26:00.250Z
+      updated_at: 2026-06-11T12:40:51.977Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T12:26:30.406Z
+      updated_at: 2026-06-11T12:40:51.977Z
     integration:
       status: pending
       detail: null
@@ -15795,7 +15795,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 23b3288dd8fdb58ab097e8dd5a09398d442ad7b5
-      updated_at: 2026-06-11T12:26:00.250Z
+      updated_at: 2026-06-11T12:40:51.977Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTD1CGTV3QFPSD8F8DZCA34
@@ -15804,9 +15804,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T12:26:30.406Z
-      last_reconciled_at: 2026-06-11T12:26:30.406Z
+      last_reconciled_at: 2026-06-11T12:40:51.977Z
       created_at: 2026-06-11T12:26:00.250Z
-      updated_at: 2026-06-11T12:26:30.406Z
+      updated_at: 2026-06-11T12:40:51.977Z
     workspace_id: dispatch-workspace-01KTTD1CGTV3QFPSD8F8DZCA34
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
