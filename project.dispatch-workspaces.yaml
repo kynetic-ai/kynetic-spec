@@ -19365,12 +19365,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-11T19:16:54.432Z
+      updated_at: 2026-06-11T19:17:19.868Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-11T19:16:54.432Z
+      updated_at: 2026-06-11T19:17:19.868Z
     integration:
       status: pending
       detail: null
@@ -19378,8 +19378,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 318a2912d735519904d2b81773d7ea4fceb76eaf
-      updated_at: 2026-06-11T19:16:54.432Z
-    lifecycle_state: ready
+      updated_at: 2026-06-11T19:17:19.868Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTTD098ZQFGG9VEBM7AZT83C
     task_ref: "@01KTTD098ZQFGG9VEBM7AZT83C"
@@ -19387,16 +19387,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-11T18:51:21.204Z
-      last_reconciled_at: 2026-06-11T19:16:54.432Z
+      last_reconciled_at: 2026-06-11T19:17:19.868Z
       created_at: 2026-06-11T18:50:48.343Z
-      updated_at: 2026-06-11T19:16:54.432Z
+      updated_at: 2026-06-11T19:17:19.868Z
     workspace_id: dispatch-workspace-01KTTD098ZQFGG9VEBM7AZT83C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 740b3ec859b126508e0165f0e5cefdbab83ecba3
+        last_seen_at: 2026-06-11T19:17:19.868Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-web-ui-debug-log-cleanup-01kttd09-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-web-ui-debug-log-cleanup/01kttd09
-        head: 318a2912d735519904d2b81773d7ea4fceb76eaf
-        last_seen_at: 2026-06-11T18:50:48.343Z
+        head: 740b3ec859b126508e0165f0e5cefdbab83ecba3
+        last_seen_at: 2026-06-11T19:17:19.868Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-web-ui-debug-log-cleanup-01kttd09
