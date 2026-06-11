@@ -62938,7 +62938,7 @@ runs:
     completed_at: 2026-06-11T10:51:58.865Z
   - _ulid: 01KTV61G2H9P4S3M6QWAWRJV3R
     status: active
-    current_step: 4
+    current_step: 5
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -62984,7 +62984,15 @@ runs:
       - status: completed
         step_index: 4
         started_at: 2026-06-11T11:12:50.205Z
-        completed_at: 2026-06-11T11:12:50.205Z
+        completed_at: 2026-06-11T11:13:10.329Z
+        notes: "Discussion decision: capture one high-confidence friction observation about long quiet npm
+          test tails requiring manual process-tree inspection. Do not capture duplicate review
+          evidence-log or merge-helper items; those already have coverage. Route as meta
+          observation, not task, because implementation shape should be triaged later."
+      - status: completed
+        step_index: 5
+        started_at: 2026-06-11T11:13:10.329Z
+        completed_at: 2026-06-11T11:13:10.329Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T11:10:54.545Z
