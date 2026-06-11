@@ -224,6 +224,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-11T06:05:03.255Z
+  - _ulid: 01KTTQGF79TAA1A5ECQP8E3W09
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTMDBGQXRNVNCM782GX6XSB
+    timestamp: 2026-06-11T06:56:56.553Z
 examined_commit: b112b02a919a15d0c4a4466a4daafae05dcf7c7c
 external_links: []
 lifecycle_state: closed
@@ -255,6 +261,19 @@ threads:
           production dependency graph compatible with Node 20 or explicitly change the package/docs
           support contract in scope."
         created_at: 2026-06-11T06:02:48.727Z
+      - _ulid: 01KTTQGF0GFEVYH2H71ZC7WSZ0
+        author: "@claude"
+        body: "Fixed in d8d683d458. Root cause: npm audit fix resolved transitive dep file-type (via
+          elysia's '>= 20.0.0' range) to 22.0.1, whose engines.node is >=22. The DoS advisory fix
+          actually lands in 21.3.2 (vulnerable range was <=21.3.1), and the entire 21.x line
+          declares node >=20. Added an npm 'overrides' entry pinning file-type to ^21.3.2 — the
+          lockfile now resolves 21.3.4. The override (rather than a one-time lock edit) is required
+          because any future npm install would otherwise re-resolve to 22.x and re-break Node 20.
+          Verified by replicating your exact check: npm ci --omit=dev --engine-strict
+          --ignore-scripts under Node v20.20.2 against a temp package copy now exits 0 (123 packages
+          installed). Also scanned every non-dev package in the lockfile for engines.node excluding
+          Node 20 — none remain. npm audit --omit=dev still reports 0 vulnerabilities."
+        created_at: 2026-06-11T06:56:56.335Z
     kind: blocker
   - _ulid: 01KTTMGZJGBBJ6WWFB0M8H7VMD
     entries:
@@ -284,5 +303,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:05:03.255Z
 created_at: 2026-06-11T05:42:49.528Z
-updated_at: 2026-06-11T06:05:03.255Z
+updated_at: 2026-06-11T06:56:56.335Z
 notes: []
