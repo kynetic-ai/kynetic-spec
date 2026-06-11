@@ -63955,7 +63955,7 @@ runs:
     completed_at: 2026-06-11T15:36:08.899Z
   - _ulid: 01KTVNEXJ6H38VWXBZG0N0Q1SQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -63967,7 +63967,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-11T15:41:14.079Z
-        completed_at: 2026-06-11T15:41:14.079Z
+        completed_at: 2026-06-11T15:42:23.059Z
+        notes: "Identified 2 high-confidence items: (1) task-work skill fix-cycle section omits required
+          'task start' before resubmit — verified against templates/skills/task-work/SKILL.md and
+          hit directly this session (batch submit failed with 'Task must be in_progress'); (2) no
+          gate runs at the declared engines minimum Node version — readdirSync recursive:true (needs
+          20.1+) passed all local/CI gates on newer Node and was only caught by reviewer's manual
+          node@20.0.0 repro. Skipped low-value successes per loop-mode volume guidance."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-11T15:42:23.059Z
+        completed_at: 2026-06-11T15:42:23.059Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-11T15:40:22.982Z
