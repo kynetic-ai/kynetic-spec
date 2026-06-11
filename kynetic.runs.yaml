@@ -62937,7 +62937,7 @@ runs:
     started_at: 2026-06-11T10:50:20.353Z
     completed_at: 2026-06-11T10:51:58.865Z
   - _ulid: 01KTV61G2H9P4S3M6QWAWRJV3R
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -62992,7 +62992,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-11T11:13:10.329Z
-        completed_at: 2026-06-11T11:13:10.329Z
+        completed_at: 2026-06-11T11:13:32.673Z
+        notes: "Captured friction observation @01KTV65Y: full npm test can have long quiet tails during
+          review, requiring manual process-tree inspection to determine whether a Vitest worker is
+          still active. No duplicate captures for evidence-log storage or merge-helper success
+          because searches showed existing coverage."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-11T11:10:54.545Z
+    completed_at: 2026-06-11T11:13:32.673Z
