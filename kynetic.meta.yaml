@@ -21455,6 +21455,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T13:09:07.685Z
+  - _ulid: 01KTVEM9SQK5K22W8ZKHZQTE2P
+    type: friction
+    content: "Vacuous test setup via silent 'kspec init' failure: 'kspec init' prompts interactively and
+      aborts with exit 2 when stdin is closed (every vitest subprocess), printing the prompt text to
+      stdout. The kspec() test helper's backwards-compat rule 'return result instead of throwing
+      when exitCode != 0 but stdout is non-empty' then swallows the failure, so beforeEach continues
+      against a bare unrecognized .kspec/ dir that initContext() never resolves. Search/load
+      commands then scan nothing and tests pass vacuously on the 'No matches found' echo. This was
+      the true root cause behind the skipped AC-7 combined search test
+      (task-fix-search-meta-entity-tests) — deeper than the invalid fixture ULIDs the task
+      described. Remaining callers with the same hazard: tests/native-guard-setup.test.ts:26 and
+      tests/cli/session-note-limit.test.ts:21. Correct pattern: setupShadowDetection() +
+      hand-written fixtures (plus seedSplitTask() for tasks, since split storage is the default and
+      monolithic project.tasks.yaml entries fail the migration check)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-11T13:40:59.320Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

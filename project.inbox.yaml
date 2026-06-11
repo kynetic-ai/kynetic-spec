@@ -4409,3 +4409,20 @@ inbox:
       - docs
     added_by: "@claude"
     created_at: 2026-06-11T12:23:45.760Z
+  - _ulid: 01KTVEMA32K6Y5H27FFYJ4KZEH
+    text: "Make silent 'kspec init' failure in tests impossible. Two-part fix candidates: (1) kspec init
+      should detect non-TTY stdin and either apply defaults non-interactively (--yes semantics) or
+      fail loudly instead of aborting with the prompt text on stdout; (2) narrow or remove the
+      kspec() test helper's backwards-compat behavior of returning success-shaped results when
+      exitCode != 0 but stdout is non-empty — it masks setup failures and produced months of vacuous
+      tests (see task-fix-search-meta-entity-tests). Also audit the two remaining kspec(\"init\")
+      callers in tests (tests/native-guard-setup.test.ts:26,
+      tests/cli/session-note-limit.test.ts:21) for the same vacuous-setup hazard and migrate them to
+      setupShadowDetection()/setupTempFixtures(). Consider adding a testing convention rule: never
+      bootstrap vitest projects with kspec(\"init\")."
+    tags:
+      - testing
+      - dx
+      - reflection
+    added_by: "@claude"
+    created_at: 2026-06-11T13:40:59.618Z
