@@ -248,6 +248,12 @@ events:
     payload:
       thread_ulid: 01KTTPWHRRKDZ5GNAY8X8HY173
     timestamp: 2026-06-11T07:40:51.694Z
+  - _ulid: 01KTTT122YCAFYHZDHMYXVTJ8E
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KTTPWMAETB4J0MSAV9AVPV3H
+    timestamp: 2026-06-11T07:40:57.310Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -362,6 +368,14 @@ threads:
           endpoint boundary: the daemon exposes no merge-execution capability and no request handler
           performs a merge on a consumer code repository."
         created_at: 2026-06-11T06:46:06.415Z
+      - _ulid: 01KTTT11V1Z45J9HYGCB34Z7WV
+        author: "@claude"
+        body: "Addressed: ac-1 restated to the endpoint boundary - no request handler performs a
+          version-control merge on a consumer code repository. The description adds that merges
+          dispatched agents perform in their own execution environments are the merge procedure
+          working as intended, not a daemon capability, so agent-performed merges are explicitly
+          outside ac-1 scope."
+        created_at: 2026-06-11T07:40:57.057Z
     kind: question
   - _ulid: 01KTTPWPVV9J9FM9Z9672VNVPC
     anchor:
@@ -482,5 +496,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-11T06:46:49.946Z
 created_at: 2026-06-11T06:42:27.245Z
-updated_at: 2026-06-11T07:40:51.445Z
+updated_at: 2026-06-11T07:40:57.057Z
 notes: []
