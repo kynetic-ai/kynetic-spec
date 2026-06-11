@@ -2,7 +2,100 @@ _ulid: 01KTWB6Q24SK5RTQ63PM5Y436C
 slugs: []
 title: "Plan review: Web UI Foundations (round 4 — fix verification sweep)"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All resolved content findings from rounds 1-3 independently re-verified against the
+      stored document: (1) ancestry API task now serves review and session chains consumed by the
+      component task's adoption targets; (2) @actor-display ac-3/ac-4 are role-based and
+      deterministic from lifecycle+disposition, parties resolved via recorded participants; (3) all
+      five P0a claim-table rows carry task Covers lines (@web-shell-platform-target ac-3,
+      @client-preference-persistence ac-1, @actor-identity-model ac-1 and ac-2,
+      @coverage-state-presentation ac-2) plus a tabulating implementation note; (4)
+      @task-review-author-resolution is the canonical-write layer with @actor-identity-resolution
+      ac-7/ac-8 codifying it and execution-time reconciliation steps for both @config-author and
+      @actor-identity-model ac-1; (5) @trait-api-endpoint application is owned by
+      @task-identity-endpoint-classifier with Covers for trait ac-1/ac-6 and N/A for ac-2..ac-5; (6)
+      @ui-view-header ac-1 narrowed to adopting views with ac-6 pinning review/session detail
+      adoption; (7) @ui-shortcut-registry description introduces activation-context scoping (round-2
+      nit)."
+    name: Prior-round fix verification
+    required: true
+    runner: claude-plan-reviewer
+    created_at: 2026-06-11T22:01:21.030Z
+    completed_at: 2026-06-11T22:01:21.030Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Stored plan content is byte-identical to plans/ui-redesign-ui-foundations.md (sha256
+      45c6ec1463528c99 both sides); kspec plan import --dry-run parses the document cleanly.
+    name: Stored content integrity
+    required: true
+    runner: claude-plan-reviewer
+    created_at: 2026-06-11T22:01:24.323Z
+    completed_at: 2026-06-11T22:01:24.323Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All existing-catalog refs resolve: @web-ui (parent module), @config-author,
+      @trait-api-endpoint (ACs ac-1..ac-6 confirmed; N/A reasons for ac-2 ref-not-found, ac-3 body
+      validation, ac-4 pagination, ac-5 mutation persistence are genuinely inapplicable to a
+      bodyless read-only non-list endpoint), @ui-app-shell, @web-dashboard (ac-23..ac-25 present),
+      @ui-api-aggregation. All 7 spec slugs and 9 task slugs are collision-free against the current
+      catalog. Internal parents and depends_on resolve within the plan. kspec validate --refs
+      reports only pre-existing warnings unrelated to this plan."
+    name: Cross-reference validation (existing catalog)
+    required: true
+    runner: claude-plan-reviewer
+    created_at: 2026-06-11T22:01:27.699Z
+    completed_at: 2026-06-11T22:01:27.699Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 45 ACs across the 7 plan specs are claimed by exactly one task with no orphans:
+      @ui-breadcrumb ac-1..9 (component) + ac-10 (ancestry API); @ui-view-header ac-1..6;
+      @ui-shortcut-registry ac-1..6; @ui-preference-store ac-1..6; @actor-identity-resolution
+      ac-1..5 (classifier) + ac-6..8 (author resolution); @actor-display ac-1..4;
+      @actor-history-normalization ac-1..5. Upstream decision AC claims match the P0a claim table."
+    name: AC coverage mapping
+    required: true
+    runner: claude-plan-reviewer
+    created_at: 2026-06-11T22:01:32.167Z
+    completed_at: 2026-06-11T22:01:32.167Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No circular dependencies; no priority inversion (no P1 task depends on a P2 task —
+      @task-review-author-resolution P1 depends only on @task-identity-endpoint-classifier P1). Five
+      independent root tasks (classifier, view-header, preference, shortcut registry, ancestry API)
+      preserve parallelism; the two dependency chains (classifier ->
+      author-resolution/display/upgrade, ancestry -> component) reflect real data prerequisites.
+    name: Dependency ordering
+    required: true
+    runner: claude-plan-reviewer
+    created_at: 2026-06-11T22:01:35.596Z
+    completed_at: 2026-06-11T22:01:35.596Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Informational, per acknowledged program structure: @plan-ui-redesign-global-decisions
+      remains draft/underived, so @web-shell-platform-target, @client-preference-persistence,
+      @actor-identity-model, and @coverage-state-presentation are catalog-absent. The plan's own
+      binding Approval ordering note forbids approving/deriving this plan before P0a derives. This
+      is documented program sequencing, not an author defect — not held as a blocker this round.
+      Owner action: approve+derive P0a, then approve this plan."
+    name: P0a approval-ordering gate
+    required: false
+    runner: claude-plan-reviewer
+    created_at: 2026-06-11T22:01:38.880Z
+    completed_at: 2026-06-11T22:01:38.880Z
 events:
   - _ulid: 01KTWB6Q24BK243M0R6ZP2R21G
     actor: "@claude"
@@ -10,9 +103,58 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-11T22:00:22.852Z
+  - _ulid: 01KTWB8CXVKB7GY8EP2QXTJ0GD
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-11T22:01:18.011Z
+  - _ulid: 01KTWB8G4N6GNBKTAB7YG5NQ7N
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Prior-round fix verification
+    timestamp: 2026-06-11T22:01:21.301Z
+  - _ulid: 01KTWB8KBB9BT5WKJ1BYG9C34B
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Stored content integrity
+    timestamp: 2026-06-11T22:01:24.587Z
+  - _ulid: 01KTWB8PMSZFR5SGC6F6ADMSCC
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Cross-reference validation (existing catalog)
+    timestamp: 2026-06-11T22:01:27.961Z
+  - _ulid: 01KTWB8V0QM6ZHRVW4NKYB9A7J
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-11T22:01:32.439Z
+  - _ulid: 01KTWB8YB5M3DK7MTQ4Q1FS75C
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-06-11T22:01:35.845Z
+  - _ulid: 01KTWB91JD879A7AACNGCWFRQB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: skipped
+      name: P0a approval-ordering gate
+    timestamp: 2026-06-11T22:01:39.149Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
@@ -22,5 +164,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T22:00:22.852Z
-updated_at: null
+updated_at: 2026-06-11T22:01:38.880Z
 notes: []
