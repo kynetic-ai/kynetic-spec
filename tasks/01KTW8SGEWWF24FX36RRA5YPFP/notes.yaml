@@ -23,3 +23,29 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T21:45:44.520Z
+  - _ulid: 01KTWC6654T0C769DVX95PAYF9
+    content: "Work complete (commit 5decaf1068). Investigation: the failure was NOT test logic — a
+      cached runner log captured the exact crash: the test's spawned dist/cli/index.js died with
+      'SyntaxError: ../../agents/runner-validation.js does not provide an export named
+      buildRunnerValidationReport' while earlier kspec() spawns in the SAME test succeeded, proving
+      dist/ was rewritten mid-run by a concurrent npm run build (tsc emits non-atomically; reviewer
+      sessions run the build gate and the full suite concurrently). Fix: per-worktree advisory lock
+      (scripts/build-test-lock.cjs) — scripts/test.cjs holds it for the whole run; npm run build /
+      build:e2e route through scripts/build.cjs taking the same lock; KSPEC_BUILD_TEST_LOCK_HELD
+      makes nested invocations spawned by the lock holder reentrant (test-runner.test.ts spawns
+      nested test.cjs runs); lock env vars excluded from the test cache key. No changes to
+      upgrade-folder-storage.test.ts itself — its coverage is untouched. Verification: reproduced
+      the original race deliberately (npm run build launched 20s into a fresh run of the flaky file)
+      — the build waited ~27s on the lock and all 24 tests passed. New tests/build-test-lock.test.ts
+      (11 tests, AC @test-suite-perf-reliability ac-7: acquire/release, contention blocking, timeout
+      diagnostics, dead-pid + ownerless stale reclaim, reentrancy, runner/build-script integration).
+      Gates: format, lint --quiet (0 errors), focused oxlint (no new warnings in changed lines),
+      typecheck, FULL suite 10546 passed / 0 failed, kspec validate refs/alignment/completeness all
+      pass. Also: added testing convention rule about the lock + regenerated kspec-agents.md;
+      resolved prior friction observations @01KN6EEP and @01KRC2ZQH (same root cause); captured
+      remaining e2e/playwright lock gap as inbox item 01KTWBE2. Note: full-suite run started before
+      a one-line lint fix in build-test-lock.cjs (string concat to template literal, identical
+      output); re-ran the three affected test files fresh on the final tree (76/76 pass)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-11T22:17:34.117Z
