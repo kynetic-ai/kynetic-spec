@@ -90,6 +90,23 @@ checks:
     runner: kspec
     created_at: 2026-06-11T19:36:35.812Z
     completed_at: 2026-06-11T19:36:35.812Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; TaskList.svelte; manager.ts;
+      tests/websocket-manager.test.ts; diff dev...HEAD. Commands run: kspec task get; kspec item
+      get; git diff/log/show; rg console scans; AC annotation scan;
+      format/lint/focused-lint/typecheck/npm test/kspec validations. Claims verified: debug/info
+      output removed or false-gated by default; warn/error call inventory preserved against dev; AC
+      tests are behavioral and pass. Categories searched: correctness, edge cases
+      (connect/message/duplicate/reconnect/disconnect), error handling (malformed message), test
+      quality, integration, source-scanning avoidance. Findings: none."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-06-11T19:36:53.923Z
+    completed_at: 2026-06-11T19:36:53.923Z
 events:
   - _ulid: 01KTW1YX9XYD8DF8ZGG6ZAME6X
     actor: Jacob Chapel
@@ -160,6 +177,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-11T19:36:36.117Z
+  - _ulid: 01KTW3005QSD98GDK32YWBPNNW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-11T19:36:54.200Z
 examined_commit: 740b3ec859b126508e0165f0e5cefdbab83ecba3
 external_links: []
 lifecycle_state: open
@@ -172,5 +196,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-11T19:18:49.917Z
-updated_at: 2026-06-11T19:36:35.812Z
+updated_at: 2026-06-11T19:36:53.923Z
 notes: []
