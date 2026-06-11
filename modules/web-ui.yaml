@@ -567,6 +567,9 @@ features:
           runs. Log growth is bounded deterministically by size-based rotation
           with a fixed default cap, and the log location is discoverable from the
           lifecycle status surface.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
