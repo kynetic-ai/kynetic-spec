@@ -31942,7 +31942,7 @@
   slugs: []
   title: Stabilize daemon last-exit graceful SIGTERM test flake
   type: bug
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 3
@@ -31956,6 +31956,7 @@
   created_at: 2026-06-12T16:07:47.676Z
   started_at: 2026-06-12T16:20:00.946Z
   submitted_at: 2026-06-12T16:42:12.332Z
+  completed_at: 2026-06-12T17:03:25.534Z
   automation: eligible
 - _ulid: 01KTYB6MNWXYFFGXGX7MXM3SEG
   slugs:

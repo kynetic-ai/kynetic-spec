@@ -15,8 +15,11 @@ description: During review of @task-catch-justification-comments, the full `npm 
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 2289971215869976899db1534192fb0e76596c20. Stabilized daemon graceful
+  SIGTERM test by running daemon-last-exit in heavy-serial and bounding the post-SIGTERM child exit
+  wait without weakening graceful record assertions.
 depends_on: []
 context: []
 priority: 3
@@ -76,8 +79,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-12T16:47:29.535Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 2289971215869976899db1534192fb0e76596c20. Stabilized daemon graceful SIGTERM
+          test by running daemon-last-exit in heavy-serial and bounding the post-SIGTERM child exit
+          wait without weakening graceful record assertions.
+        previous: null
+      completed_at:
+        new: 2026-06-12T17:03:25.534Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-12T17:03:25.543Z
 created_at: 2026-06-12T16:07:47.676Z
 started_at: 2026-06-12T16:20:00.946Z
 submitted_at: 2026-06-12T16:42:12.332Z
+completed_at: 2026-06-12T17:03:25.534Z
 todos: []
 automation: eligible
