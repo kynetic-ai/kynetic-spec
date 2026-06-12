@@ -21841,6 +21841,30 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-12T15:49:49.621Z
+  - _ulid: 01KTY9Z36FD2Q2R9N7VKQ1V36V
+    type: friction
+    content: "E2E assertion budgets derived from focused single-worker timing are guaranteed flake under
+      parallel runs: the daemon-restart reconnect test asserted Connected within 10s (30s test
+      timeout), but spec-mandated exponential backoff (@web-dashboard ac-28, 30s cap) plus the
+      global daemon port-start lock shared by all parallel workers means the first reconnect attempt
+      after restart can be a full 30s gap away. Lesson: derive timing budgets for E2E assertions
+      from worst-case spec schedules plus fixture lock contention, not observed focused-run timing.
+      Fixed in @01KTY55GSE54FCQ5FVRW0JNXJF."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-12T16:17:13.423Z
+  - _ulid: 01KTY9Z3GB3HGNZC6X4T5WW12Z
+    type: success
+    content: Flake-stabilization task description included the exact failing test path/line, observed
+      failure mode (30s timeout in full run), and the focused-rerun command that passed
+      (--workers=1). This made root-cause investigation immediate — the parallel-vs-focused
+      asymmetry pointed straight at lock contention vs backoff timing with zero re-discovery. Worth
+      replicating when filing flake tasks from review runs.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-12T16:17:13.739Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
