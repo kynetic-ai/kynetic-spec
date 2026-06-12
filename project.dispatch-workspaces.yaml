@@ -23608,7 +23608,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-12T15:46:42.420Z
+      updated_at: 2026-06-12T15:50:09.655Z
     integration:
       status: merged
       detail: integration:merged
@@ -23625,18 +23625,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-12T15:28:37.036Z
-      last_reconciled_at: 2026-06-12T15:50:02.869Z
+      last_reconciled_at: 2026-06-12T15:50:09.655Z
       created_at: 2026-06-12T14:55:26.973Z
-      updated_at: 2026-06-12T15:50:02.869Z
+      updated_at: 2026-06-12T15:50:09.655Z
     workspace_id: dispatch-workspace-01KTTD09ZTH4AJ62M1A4M7YWC0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 73c67ff831fadc6789cef9939bc035773857d730
-        last_seen_at: 2026-06-12T15:28:02.876Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dashboard-summary-adoption-01kttd09-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-dashboard-summary-adoption/01kttd09
