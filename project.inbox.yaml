@@ -4678,23 +4678,6 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-12T17:15:43.062Z
-  - _ulid: 01KTYQ1R5H4BJJJVD64XJYNWQA
-    text: "Root-fix the recurring note/history author validation loop from dispatched Claude workers. In
-      claude-headed-acp, task note/start/submit repeatedly wrote author values shaped like @claude;
-      kspec validate --refs then rejected notes[].author as an unresolved reference, causing
-      otherwise source-focused review cycles to fail and forcing workers to hand-edit notes.yaml.
-      The latest API-error work burned a full extra review/worker round on this metadata-only issue.
-      Fix options: dispatch sets a plain author (Claude/claude), kspec canonicalizes non-ref author
-      identities before persistence, or validators only treat author strings as refs when they
-      resolve. Source observations: claude-headed-acp @01KTWSMCCS0M3HBVSTGG6S2R5A,
-      @01KTWY9ZSPG8H0X84YSSEAS70M, @01KTWK2FVTCQYEYERH4YWJE1N6."
-    tags:
-      - dispatch
-      - validation
-      - author
-      - headed-claude-acp
-    added_by: Hermes
-    created_at: 2026-06-12T20:05:51.922Z
   - _ulid: 01KTYQ1R8WMBHT8NB1B2FFGNCZ
     text: "Dispatch task submit should capture submission_linkage from the actual worker worktree, not
       blindly from the kspec command cwd. In claude-headed-acp, a dispatched worker ran kspec task
