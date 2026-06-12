@@ -21829,6 +21829,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-12T15:48:59.729Z
+  - _ulid: 01KTY8CXXN8VKWWPYQVQJVGHRY
+    type: success
+    content: "Task authoring pattern for dispatch (from @task-catch-justification-comments): a hygiene
+      task with an exact file list, explicit hard bounds (comments only, no semantic/test changes),
+      and a machine-checkable violation signal (any test-file modification = bounds violated)
+      enabled clean autonomous completion with zero scope drift. Worker verified bounds mechanically
+      by grepping the diff for non-comment added lines. Worth replicating for future comments-only
+      or refactor-bounded dispatch tasks."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-12T15:49:49.621Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
