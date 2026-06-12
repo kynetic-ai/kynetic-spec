@@ -65508,7 +65508,7 @@ runs:
     started_at: 2026-06-12T16:42:34.321Z
   - _ulid: 01KTYBDNAJSFCJXHGA7ZTEE6NY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -65523,7 +65523,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-12T16:44:35.870Z
-        completed_at: 2026-06-12T16:44:35.870Z
+        completed_at: 2026-06-12T16:44:39.609Z
+        notes: "Candidates: (1) friction — wait budgets exceeding testTimeout / unbounded awaits yield
+          diagnostics-free timeouts (unique nuance vs 01KTY9Z3); (2) success — heavySerialSuites
+          config comments documenting failure signatures enabled instant root-cause pattern match
+          (untracked); (3) port-start lock systemic fix (already 01KTYB2R); (4) task-description
+          quality success (already 01KTY9Z3)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-12T16:44:39.609Z
+        completed_at: 2026-06-12T16:44:39.609Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T16:42:39.314Z
