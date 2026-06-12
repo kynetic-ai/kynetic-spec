@@ -21784,6 +21784,38 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-12T00:45:12.820Z
+  - _ulid: 01KTY576NDA08ZTZ88567PJ3H2
+    type: friction
+    content: "Fix-cycle dispatch raced manual maintainer intervention on
+      @task-stabilize-workflow-runs-cli-dist-export (2026-06-12). The fix cycle was created for a
+      merge conflict, but the maintainer resolved the conflict and merged the branch into dev
+      (adefc545ee) before the worker invocation ran. The dispatched context was stale: it instructed
+      conflict resolution and listed an outdated dev head, so the worker had to discover via git
+      inspection that the merge already existed; the maintainer then completed the task concurrently
+      mid-invocation, making the worker's task complete fail with already-completed (and roll back a
+      batched note). Consider a pre-dispatch staleness check for fix-cycle invocations: if the
+      canonical branch head is already an ancestor of the integration target, skip dispatch or
+      annotate the context as already-merged. Related: @01KPA0Q5 (pre-dispatch dedup checks)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-12T14:54:16.237Z
+  - _ulid: 01KTY576YTQXXA15PRYY1NBA7H
+    type: success
+    content: "Merged-tree gate verification after manual conflict resolution proved valuable on
+      @task-stabilize-workflow-runs-cli-dist-export: the conflict-resolution merge commit on dev
+      differed from every tree either review had tested (two independently-reviewed branches
+      composing), so the worker fast-forwarded the canonical branch to the merge commit and ran full
+      gates there — format, lint, typecheck, full 10562-test suite, kspec validations. This both
+      verified the semantic composition (new no-unguarded-npm-pack lint rule + sibling task's
+      build/test lock) and validated the dist-rewrite fix under real contention, since the suite
+      passed while another agent's full suite ran concurrently in a sibling worktree. Pattern:
+      whenever a merge result differs from all reviewed trees, run gates on the integrated head
+      before completing."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-12T14:54:16.538Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
