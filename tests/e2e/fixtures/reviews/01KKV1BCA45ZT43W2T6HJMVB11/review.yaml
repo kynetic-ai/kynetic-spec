@@ -1,0 +1,22 @@
+_ulid: 01KKV1BCA45ZT43W2T6HJMVB11
+slugs:
+  - test-code-review-main-2
+title: Code review for feat/review-detail (cycle 2)
+author: reviewer@test.com
+checks: []
+events: []
+examined_commit: ccc33333
+external_links: []
+lifecycle_state: closed
+related_refs: []
+subject:
+  type: code
+  base_branch: dev
+  base_commit: bbb22222
+  head_branch: feat/review-detail
+  head_commit: ccc33333
+threads: []
+verdicts: []
+created_at: 2026-03-15T08:00:00Z
+updated_at: null
+notes: []

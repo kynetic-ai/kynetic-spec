@@ -1,0 +1,11 @@
+_ulid: 01KG0RRRCA45ZT43W2T6HJMVP2
+slugs:
+  - test-plan-draft
+title: Draft Feature Plan
+status: draft
+approved_at: null
+derived_specs: []
+derived_tasks: []
+source_path: null
+created_at: 2026-02-01T08:00:00Z
+completed_at: null

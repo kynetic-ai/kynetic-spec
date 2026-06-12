@@ -4,78 +4,35 @@ plans:
     slugs:
       - test-plan-active
     title: Active Implementation Plan
-    content: |
-      # Active Plan
-      This plan is actively being implemented.
-
-      ## Specs
-
-      ```yaml
-      - title: Test Feature
-        slug: test-feature
-        type: feature
-      ```
-
-      ## Tasks
-
-      ```yaml
-      derive_from_specs: true
-      ```
-
-      ## Implementation Notes
-
-      Run `npm test` before opening review.
     status: active
+    approved_at: 2026-01-16T12:00:00Z
+    derived_specs:
+      - "@test-feature"
     derived_tasks:
       - "@test-task-in-progress"
       - "@test-task-completed"
       - "@test-task-ready"
-    derived_specs:
-      - "@test-feature"
-    source_path: null
-    created_at: "2026-01-15T10:00:00Z"
-    approved_at: "2026-01-16T12:00:00Z"
-    completed_at: null
-    notes:
-      - _ulid: 01KG0RRQCA45ZT43W2T6HJMVN1
-        created_at: "2026-01-15T10:00:00Z"
-        author: "test-user"
-        content: Plan created for testing
-
+    notes_count: 1
+    created_at: 2026-01-15T10:00:00Z
   - _ulid: 01KG0RRRCA45ZT43W2T6HJMVP2
     slugs:
       - test-plan-draft
     title: Draft Feature Plan
-    content: |
-      # Draft Plan
-      Still being designed.
     status: draft
-    derived_tasks: []
     derived_specs: []
-    source_path: null
-    created_at: "2026-02-01T08:00:00Z"
-    approved_at: null
-    completed_at: null
-    notes: []
-
+    derived_tasks: []
+    notes_count: 0
+    created_at: 2026-02-01T08:00:00Z
   - _ulid: 01KG0RRSCA45ZT43W2T6HJMVP3
     slugs:
       - test-plan-completed
     title: Completed Migration Plan
-    content: |
-      # Completed Plan
-      Migration completed successfully.
     status: completed
-    derived_tasks:
-      - "@test-task-completed"
+    approved_at: 2026-01-02T09:00:00Z
     derived_specs:
       - "@test-feature"
-    source_path: null
-    created_at: "2026-01-01T06:00:00Z"
-    approved_at: "2026-01-02T09:00:00Z"
-    completed_at: "2026-01-20T15:00:00Z"
-    notes:
-      - _ulid: 01KG0RRTCA45ZT43W2T6HJMVN3
-        created_at: "2026-01-20T15:00:00Z"
-        author: "test-user"
-        content: All tasks completed successfully
+    derived_tasks:
+      - "@test-task-completed"
+    notes_count: 1
+    created_at: 2026-01-01T06:00:00Z
+    completed_at: 2026-01-20T15:00:00Z

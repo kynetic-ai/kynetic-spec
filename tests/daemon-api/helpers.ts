@@ -118,52 +118,20 @@ export function setupFixtures(tempDir: string): void {
     cpSync(src, dest);
   }
 
-  // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
-  // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
-  //   — daemon review/plan/resource routes require folder-backed storage. The
-  //   on-disk e2e fixture remains kynetic 1.0 to keep Playwright watcher specs
-  //   happy, but every in-process daemon API test that calls setupFixtures()
-  //   exercises the post-upgrade contract, so we overwrite the copied manifest
-  //   with the 1.2 folder-backed declaration here and materialise matching
-  //   `.kspec/reviews/<ulid>/` and `.kspec/plans/<ulid>/` shells below.
-  writeFileSync(
-    path.join(kspecDir, "kynetic.yaml"),
-    `kynetic: "1.2"
-
-project:
-  name: "E2E Test Project"
-  version: "0.1.0"
-  status: draft
-  description: A test project for E2E testing
-
-includes:
-  - modules/core.yaml
-
-tasks_file: project.tasks.yaml
-inbox_file: project.inbox.yaml
-meta_file: kynetic.meta.yaml
-
-task_storage:
-  format: split
-plan_storage:
-  format: folder
-review_storage:
-  format: folder
-resource_storage:
-  format: entity_scoped
-`,
-  );
-
   // Copy modules directory
   cpSync(path.join(E2E_FIXTURES, "modules"), path.join(kspecDir, "modules"), { recursive: true });
 
+  // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
+  // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
   // AC: @entity-folder-migration-and-compatibility-1 ac-partial-folder-layouts-are-blocked
-  // Create folder shells so detectPartialLayoutForDomain sees a consistent
-  // layout. `loadPlans` / `loadReviewRecords` still serve full record data
-  // from the copied monolithic files until the sibling folder-backed storage
-  // manager replaces those readers.
-  materializeFolderBackedReviewShells(kspecDir);
-  materializeFolderBackedPlanShells(kspecDir);
+  //   — daemon review/plan/resource routes require folder-backed storage. The
+  //   on-disk e2e fixture is a kynetic 1.2 folder-backed snapshot (lean
+  //   `project.plans.yaml` / `project.reviews.yaml` indexes copied above,
+  //   per-entity folders copied here), so the copied project exercises the
+  //   post-upgrade contract as-is.
+  for (const dir of ["plans", "reviews"]) {
+    cpSync(path.join(E2E_FIXTURES, dir), path.join(kspecDir, dir), { recursive: true });
+  }
 
   // Copy tasks directory (split task storage)
   cpSync(path.join(E2E_FIXTURES, "tasks"), path.join(kspecDir, "tasks"), { recursive: true });
