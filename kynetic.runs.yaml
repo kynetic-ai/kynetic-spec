@@ -65678,9 +65678,22 @@ runs:
     completed_at: 2026-06-12T17:15:53.944Z
   - _ulid: 01KTYEJ74MD1MPHCMTAD13VJV1
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-12T17:37:34.356Z
+        completed_at: 2026-06-12T17:38:20.405Z
+        notes: "What worked well: detached-reviewer flow was clear end to end. Review record gates made the
+          approval auditable; the merge helper safely advanced dev from the detached snapshot;
+          focused E2E plus full npm test gave concrete evidence for a test-only flake stabilization.
+          Specific reusable pattern: read diff first, verify worker root-cause claims against
+          ws-invalidation.ts and WebSocketManager, then record checks and evidence before merge."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-12T17:38:20.405Z
+        completed_at: 2026-06-12T17:38:20.405Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-12T17:37:34.356Z
