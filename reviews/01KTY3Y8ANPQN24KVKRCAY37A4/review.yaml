@@ -161,6 +161,13 @@ events:
       status: pass
       name: e2e triage
     timestamp: 2026-06-12T14:54:45.157Z
+  - _ulid: 01KTY58NJG6VY8QEJTJGCK6YVQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTY58NBCZYJNJWP61CQCVMEF
+    timestamp: 2026-06-12T14:55:04.272Z
 examined_commit: 06cdadb93910226b913319c7e7bcc7861b45f837
 external_links: []
 lifecycle_state: open
@@ -170,8 +177,48 @@ subject:
   content_hash: ""
   ref: "@01KTWG0DBVCNS31XQF000XDEGJ"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTY58NBCZYJNJWP61CQCVMEF
+    entries:
+      - _ulid: 01KTY58NBCX555NJF0W56X7MT0
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: .gitignore; tests/daemon-api/helpers.ts; tests/e2e/fixtures/kynetic.yaml;
+          tests/e2e/fixtures/project.plans.yaml; tests/e2e/fixtures/project.reviews.yaml;
+          tests/e2e/fixtures/plans/*/{plan.yaml,plan.md,notes.yaml,resources.yaml};
+          tests/e2e/fixtures/reviews/*/{review.yaml,resources.yaml};
+          src/parser/entity-storage-compatibility.ts; src/parser/plan-storage-manager.ts;
+          src/parser/review-storage-manager.ts; tests/e2e/fixture.ts; tests/e2e/test-base.ts;
+          tests/e2e/plans.spec.ts; tests/e2e/review-detail.spec.ts;
+          tests/e2e/review-interactions.spec.ts; tests/e2e/resource-lifecycle.spec.ts;
+          tests/daemon-api/helpers.test.ts; tests/daemon-api/plans-routes.test.ts;
+          tests/daemon-api/reviews-list.test.ts; tests/daemon-api/reviews-threads.test.ts.
+
+
+          Commands run: git diff --check; kspec task get @01KTWG0DBVCNS31XQF000XDEGJ; kspec validate
+          --refs --warnings-ok; kspec validate --alignment --warnings-ok; kspec validate
+          --completeness --warnings-ok; npm run format:check; npm run lint -- --quiet; npx oxlint
+          tests/daemon-api/helpers.ts; npm run typecheck; npm test; npm run test:e2e; focused rerun
+          of tests/e2e/api-websocket.spec.ts restart test.
+
+
+          Claims verified: the original plan fixture route failure is resolved because the full
+          Playwright run passed the plan/review/resource route areas, including the previously
+          failing plans.spec.ts path; the fixture migration is coherent because the manifest now
+          declares folder-backed plan/review storage, index files are lean, and per-entity sidecars
+          are tracked and match the storage managers.
+
+
+          Categories searched: correctness, edge cases around missing index/sidebar fields, storage
+          compatibility, test quality, fixture inclusion via .gitignore, integration with
+          plan/review/resource routes. No blocking findings. The single unrelated WebSocket E2E
+          timeout was captured as @01KTY55G after its focused rerun passed.
+        created_at: 2026-06-12T14:55:04.044Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-12T14:31:54.453Z
-updated_at: 2026-06-12T14:54:44.920Z
+updated_at: 2026-06-12T14:55:04.044Z
 notes: []
