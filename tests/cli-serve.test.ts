@@ -1545,8 +1545,13 @@ describe("kspec serve commands", () => {
     const installDir = await createTempDir();
 
     try {
-      // Fresh pack so we test the current build output
-      const packOutput = execSync(`npm pack --pack-destination ${installDir}`, {
+      // --ignore-scripts: prepack runs the full build (tsc, build:daemon,
+      // rm -rf dist/web-ui), which would rewrite the live dist/ tree while
+      // parallel vitest workers spawn `node dist/cli/index.js` — a race that
+      // corrupts in-flight CLI module loads. The test runner's pre-test build
+      // hook already guarantees dist/ reflects the current sources, so packing
+      // the existing output still tests the current build.
+      const packOutput = execSync(`npm pack --ignore-scripts --pack-destination ${installDir}`, {
         cwd: projectRoot,
         encoding: "utf-8",
         stdio: ["pipe", "pipe", "pipe"],
