@@ -65677,7 +65677,7 @@ runs:
     started_at: 2026-06-12T17:13:41.968Z
     completed_at: 2026-06-12T17:15:53.944Z
   - _ulid: 01KTYEJ74MD1MPHCMTAD13VJV1
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -65726,10 +65726,13 @@ runs:
         completed_at: 2026-06-12T17:39:12.729Z
         notes: No proposed improvements; discussion skipped because this reflection found no new untracked
           capture candidates.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-12T17:39:12.729Z
-        completed_at: 2026-06-12T17:39:12.729Z
+        completed_at: 2026-06-12T17:39:22.150Z
+        notes: No new captures. Existing tracking covers the relevant friction, and the successful review
+          pattern is recorded in this workflow run rather than duplicated as a new observation.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-12T17:37:34.356Z
+    completed_at: 2026-06-12T17:39:22.150Z
