@@ -1,0 +1,27 @@
+_ulid: 01KTY55GSE54FCQ5FVRW0JNXJF
+slugs: []
+title: Stabilize WebSocket E2E daemon-restart reconnect flake
+type: bug
+description: During review of @01KTWG0DBVCNS31XQF000XDEGJ on 2026-06-12, the full Playwright run npm
+  run test:e2e failed once in tests/e2e/api-websocket.spec.ts:71, WebSocket UI Behavior > shows
+  disconnection and reconnects after the daemon restarts, with a 30000ms timeout. A focused rerun of
+  that exact test passed using npm run test:e2e -- tests/e2e/api-websocket.spec.ts -g "shows
+  disconnection and reconnects after the daemon restarts" --workers=1. Treat this as an unrelated
+  flaky/non-regression signal and investigate daemon restart/reconnect timing so the full E2E suite
+  is stable.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - e2e
+  - flaky
+  - websocket
+vcs_refs: []
+created_at: 2026-06-12T14:53:21.070Z
+todos: []
+automation: eligible
