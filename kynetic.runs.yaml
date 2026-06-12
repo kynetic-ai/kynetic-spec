@@ -65338,9 +65338,19 @@ runs:
     started_at: 2026-06-12T15:47:18.102Z
   - _ulid: 01KTY898W9SKKJMFD46FTD0426
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-12T15:47:49.769Z
+        completed_at: 2026-06-12T15:48:45.040Z
+        notes: "Baseline searched: observations list, inbox list (383 items), tasks reviewed during session.
+          Key existing refs: @01KGGPJ6 (workflow show should infer active run)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-12T15:48:45.040Z
+        completed_at: 2026-06-12T15:48:45.040Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T15:47:49.769Z
