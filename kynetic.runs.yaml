@@ -65098,7 +65098,7 @@ runs:
     completed_at: 2026-06-12T00:12:44.397Z
   - _ulid: 01KTWKXWGSA5NZ5K4Z6JQD4BNZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -65114,7 +65114,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-12T00:34:39.037Z
-        completed_at: 2026-06-12T00:34:39.037Z
+        completed_at: 2026-06-12T00:34:42.836Z
+        notes: "Friction checked: merge helper conflict after approval, evidence log stored as a nit thread
+          because review records do not expose a first-class evidence-log field, and npm
+          pack/prepack dist rebuild race. Searched existing tracking before capture: merge helper
+          conflict, evidence log, npm pack, workflow-runs, prepack, dist rebuild."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-12T00:34:42.836Z
+        completed_at: 2026-06-12T00:34:42.836Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T00:32:50.713Z
