@@ -57,3 +57,8 @@ plans/
 .kspec-dispatch-shadow-mutation
 .kspec-dispatch-shadow-mutation.lock/
 # <<< kspec managed
+
+# The plans/ rule above targets the repo-root plan-document directory; the
+# folder-backed E2E fixture plans must stay tracked. Keep this negation
+# AFTER the kspec-managed block so it wins over the managed plans/ rule.
+!tests/e2e/fixtures/plans/

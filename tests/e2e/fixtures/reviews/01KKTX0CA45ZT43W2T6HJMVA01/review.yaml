@@ -1,0 +1,106 @@
+_ulid: 01KKTX0CA45ZT43W2T6HJMVA01
+slugs:
+  - test-review-open
+title: Review of test task
+author: reviewer@test.com
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: hash123
+    evidence: All 342 tests passed
+    name: vitest
+    required: true
+    runner: vitest
+    created_at: 2026-03-15T10:30:00Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: hash123
+    evidence: 3 errors found
+    name: lint
+    required: true
+    runner: eslint
+    created_at: 2026-03-15T10:31:00Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: stale-hash
+    evidence: 87% coverage
+    name: coverage
+    required: false
+    runner: vitest
+    created_at: 2026-03-15T09:00:00Z
+events:
+  - _ulid: 01KKTX8CA45ZT43W2T6HJMVA09
+    actor: reviewer@test.com
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-03-15T09:00:00Z
+examined_commit: null
+external_links: []
+lifecycle_state: open
+related_refs: []
+subject:
+  type: task
+  content_hash: hash123
+  ref: "@test-task-pending-review"
+  shadow_commit: abc1234
+threads:
+  - _ulid: 01KKTX1CA45ZT43W2T6HJMVA02
+    entries:
+      - _ulid: 01KKTX2CA45ZT43W2T6HJMVA03
+        author: reviewer@test.com
+        body: Missing error handling for edge case
+        created_at: 2026-03-15T10:00:00Z
+    kind: blocker
+  - _ulid: 01KKTX3CA45ZT43W2T6HJMVA04
+    entries:
+      - _ulid: 01KKTX4CA45ZT43W2T6HJMVA05
+        author: reviewer@test.com
+        body: Consider renaming this variable
+        created_at: 2026-03-15T10:05:00Z
+    kind: nit
+  - _ulid: 01KKTX5CA45ZT43W2T6HJMVA06
+    entries:
+      - _ulid: 01KKTX6CA45ZT43W2T6HJMVA07
+        author: reviewer@test.com
+        body: Why was this approach chosen?
+        created_at: 2026-03-15T10:10:00Z
+      - _ulid: 01KKTX7CA45ZT43W2T6HJMVA08
+        author: worker@test.com
+        body: Because it handles concurrent writes better
+        created_at: 2026-03-15T10:30:00Z
+    kind: question
+    resolved_at: 2026-03-15T11:00:00Z
+    resolved_by: worker@test.com
+  - _ulid: 01KKV0RCA45ZT43W2T6HJMVB01
+    entries:
+      - _ulid: 01KKV0SCA45ZT43W2T6HJMVB02
+        author: reviewer@test.com
+        body: |
+          Found a **critical bug** in `validateInput()`:
+
+          ```typescript
+          if (input.length > MAX_LENGTH) {
+            return null; // should throw Error
+          }
+          ```
+
+          This silently returns `null` instead of throwing.
+          See [OWASP guidelines](https://example.com) for more.
+        created_at: 2026-03-15T10:15:00Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: hash123
+    decision: request_changes
+    reviewer: reviewer@test.com
+    role: reviewer
+    created_at: 2026-03-15T11:00:00Z
+created_at: 2026-03-15T09:00:00Z
+updated_at: 2026-03-15T11:00:00Z
+notes: []

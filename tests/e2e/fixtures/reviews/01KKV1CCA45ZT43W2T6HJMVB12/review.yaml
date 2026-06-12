@@ -1,0 +1,22 @@
+_ulid: 01KKV1CCA45ZT43W2T6HJMVB12
+slugs:
+  - test-code-review-other
+title: Code review for feat/other-work
+author: reviewer@test.com
+checks: []
+events: []
+examined_commit: eee55555
+external_links: []
+lifecycle_state: open
+related_refs: []
+subject:
+  type: code
+  base_branch: dev
+  base_commit: ddd44444
+  head_branch: feat/other-work
+  head_commit: eee55555
+threads: []
+verdicts: []
+created_at: 2026-03-16T08:00:00Z
+updated_at: null
+notes: []

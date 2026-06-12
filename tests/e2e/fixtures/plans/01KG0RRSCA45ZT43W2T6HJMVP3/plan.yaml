@@ -1,0 +1,13 @@
+_ulid: 01KG0RRSCA45ZT43W2T6HJMVP3
+slugs:
+  - test-plan-completed
+title: Completed Migration Plan
+status: completed
+approved_at: 2026-01-02T09:00:00Z
+derived_specs:
+  - "@test-feature"
+derived_tasks:
+  - "@test-task-completed"
+source_path: null
+created_at: 2026-01-01T06:00:00Z
+completed_at: 2026-01-20T15:00:00Z
