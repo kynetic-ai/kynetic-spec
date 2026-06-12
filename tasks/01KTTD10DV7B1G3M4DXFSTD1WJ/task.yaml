@@ -46,7 +46,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-data-integrity-and-upgrade-safety"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-shadow-restore-loud-failure"
@@ -56,6 +56,7 @@ tags:
   - infra
   - chore
 vcs_refs: []
+session_id: 01KTY77A26ZSNKRXK6KK17DY98
 history:
   - author: Jacob Chapel
     changes:
@@ -64,6 +65,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-11T03:55:29.680Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KTY77A26ZSNKRXK6KK17DY98
+        previous: null
+      started_at:
+        new: 2026-06-12T15:29:45.279Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-12T15:29:45.279Z
 created_at: 2026-06-11T03:53:44.123Z
+started_at: 2026-06-12T15:29:45.279Z
 todos: []
 automation: eligible
