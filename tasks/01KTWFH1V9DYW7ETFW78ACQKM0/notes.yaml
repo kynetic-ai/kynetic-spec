@@ -32,3 +32,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-12T00:09:05.114Z
+  - _ulid: 01KTWKW6TSH31HAQ8YJN6B226Q
+    content: "[FIX_CYCLE: 1] Review findings: Review approved, but detached merge helper failed with a
+      content conflict while merging
+      dispatch/task/task-stabilize-workflow-runs-cli-dist-export/01ktwfh1 into dev. Helper output:
+      Auto-merging tests/cli-serve.test.ts; CONFLICT (content): Merge conflict in
+      tests/cli-serve.test.ts; Automatic merge failed. Per detached reviewer flow, conflict
+      resolution is left to the worker on the canonical branch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-12T00:31:55.737Z
