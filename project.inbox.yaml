@@ -4825,3 +4825,18 @@ inbox:
       - plan-branch
     added_by: Jacob Chapel
     created_at: 2026-06-12T20:56:53.495Z
+  - _ulid: 01KTYSZ89EYTCQJV2Z06E3PYP6
+    text: "Hyphoria-mined: reviewer findings should include anchored-commit evidence for claimed code
+      state. In Hyphoria observation @01KTX3XCFNXBJVA9AAYJQ4RTT9, a reviewer blocker cited an
+      implicit Convex db.patch form that did not exist in the examined commit; the fix cycle spent
+      time proving zero code change was needed. Add review guidance or tooling so blockers that
+      quote code include `git show <examined-commit>:<path>`/line evidence, and workers verify each
+      flagged line at the anchored commit before editing."
+    tags:
+      - reflection
+      - hyphoria-mined
+      - review
+      - evidence
+      - fix-cycle
+    added_by: Jacob Chapel
+    created_at: 2026-06-12T20:56:55.854Z
