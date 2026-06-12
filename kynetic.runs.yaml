@@ -65629,7 +65629,7 @@ runs:
     completed_at: 2026-06-12T17:05:50.638Z
   - _ulid: 01KTYD6GAG5EVFXTQF9H8MJHV5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -65643,7 +65643,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-12T17:14:35.162Z
-        completed_at: 2026-06-12T17:14:35.162Z
+        completed_at: 2026-06-12T17:15:16.727Z
+        notes: "Identified 2 high-confidence items. (1) SUCCESS: root-cause-first E2E flake stabilization
+          technique proven on the WS dedup flake — enumerate noise sources feeding the measured
+          signal (delayed 650/1500ms file-watcher invalidation timers in ws-invalidation.ts, slow
+          in-flight responses, cache-warming domain_ready broadcasts), make the measurement hermetic
+          by cutting server->client WS forwarding, assert on request initiation instead of response
+          arrival, settle window > longest delayed timer. (2) ACTIONABLE: other E2E specs
+          (observations, plans, tasks, sessions, triage) also use response listeners; audit for
+          negative response-count assertions / sub-1500ms settle windows and consider extracting the
+          trackTasksApi tracker into a shared E2E helper. Skipped: nothing else rose above one-off
+          level — session was a single task that went smoothly."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-12T17:15:16.727Z
+        completed_at: 2026-06-12T17:15:16.727Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T17:13:41.968Z
