@@ -65046,7 +65046,7 @@ runs:
     completed_at: 2026-06-11T23:56:13.984Z
   - _ulid: 01KTWJM072BNYYJBVGARZ7A6FD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -65062,7 +65062,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-12T00:11:28.138Z
-        completed_at: 2026-06-12T00:11:28.138Z
+        completed_at: 2026-06-12T00:11:52.639Z
+        notes: "Identified 2 high-confidence items: (1) FRICTION/HAZARD — tests/daemon-build.test.ts runs
+          'npm run build:daemon' mid-suite; scripts/build-daemon.cjs rmSync's dist/daemon and
+          rebuilds, so parallel workers spawning dist/daemon/index.js can observe a missing/partial
+          tree (same race class as the npm pack incident just fixed); additionally build-daemon.cjs
+          falls back to full tsc over all of dist/ if dist/parser/index.js is missing. Verified
+          directly in code this session. (2) SUCCESS — hazard knowledge that lived only in a comment
+          (release-packaging's --ignore-scripts rationale) failed to protect a second call site
+          (cli-serve); encoding the invariant as a custom oxlint rule with behavioral tests makes it
+          durable. Rejected as low-confidence/one-off: Write tool NUL-byte mishap (harness issue,
+          not kspec)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-12T00:11:52.639Z
+        completed_at: 2026-06-12T00:11:52.639Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T00:09:58.243Z
