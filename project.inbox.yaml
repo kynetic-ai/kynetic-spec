@@ -4678,3 +4678,102 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-12T17:15:43.062Z
+  - _ulid: 01KTYQ1R5H4BJJJVD64XJYNWQA
+    text: "Root-fix the recurring note/history author validation loop from dispatched Claude workers. In
+      claude-headed-acp, task note/start/submit repeatedly wrote author values shaped like @claude;
+      kspec validate --refs then rejected notes[].author as an unresolved reference, causing
+      otherwise source-focused review cycles to fail and forcing workers to hand-edit notes.yaml.
+      The latest API-error work burned a full extra review/worker round on this metadata-only issue.
+      Fix options: dispatch sets a plain author (Claude/claude), kspec canonicalizes non-ref author
+      identities before persistence, or validators only treat author strings as refs when they
+      resolve. Source observations: claude-headed-acp @01KTWSMCCS0M3HBVSTGG6S2R5A,
+      @01KTWY9ZSPG8H0X84YSSEAS70M, @01KTWK2FVTCQYEYERH4YWJE1N6."
+    tags:
+      - dispatch
+      - validation
+      - author
+      - headed-claude-acp
+    added_by: Hermes
+    created_at: 2026-06-12T20:05:51.922Z
+  - _ulid: 01KTYQ1R8WMBHT8NB1B2FFGNCZ
+    text: "Dispatch task submit should capture submission_linkage from the actual worker worktree, not
+      blindly from the kspec command cwd. In claude-headed-acp, a dispatched worker ran kspec task
+      submit from the project root because that is where .kspec was available; kspec captured
+      branch: main and the main commit even though the submitted work lived on
+      dispatch/task/task-preserve-assistant-tool-interleaving/01ktf67s. The worker had to patch
+      submission_linkage manually before review. Candidate fixes: detect KSPEC_DISPATCH_* /
+      .kspec-dispatch-workspace.json and rev-parse the registered workspace; add a documented
+      KSPEC_GIT_WORKTREE=<path> override; or make command/root discovery support running kspec from
+      the worker worktree safely. Source observation: claude-headed-acp
+      @01KTFE72GN2DQ2HPT1YR8C3EGW."
+    tags:
+      - dispatch
+      - submission-linkage
+      - worktree
+      - headed-claude-acp
+    added_by: Hermes
+    created_at: 2026-06-12T20:05:52.028Z
+  - _ulid: 01KTYQ1RBD87Y1TGGY2MW8P4PB
+    text: "Dispatch worker prompts/guidance should explicitly cover file-tool absolute paths in isolated
+      worktrees. In claude-headed-acp, the task prompt warned not to cd to the project root, but an
+      agent used absolute paths under /home/<user>/Projects/<repo>/... with Read/Edit while the real
+      worker files lived under .kspec-worktrees/<task-slug>-<ulid>/; file tools operated on
+      main-branch bytes and repeated edits failed with 'String to replace not found' until md5sum
+      revealed the path mismatch. Mitigations: include 'use the worker workspace path prefix for
+      Read/Edit/Write absolute paths, not the main repo path' in dispatch prompts, and/or emit
+      WORKSPACE_PATH as a first-class variable in agent context. Source observation:
+      claude-headed-acp @01KTFBYANWNJWZVGVENNJQD2G6."
+    tags:
+      - dispatch
+      - agent-prompt
+      - worktree
+      - tooling
+      - headed-claude-acp
+    added_by: Hermes
+    created_at: 2026-06-12T20:05:52.109Z
+  - _ulid: 01KTYQ1RE2EZG2Z9JESW3ZBRQB
+    text: "kspec doctor and kspec shadow repair should agree about shadow worktree health in dispatch
+      worktrees. In claude-headed-acp, kspec doctor reported 'Shadow Branch: Worktree directory
+      missing — Run kspec shadow repair to recreate worktree', but immediately running kspec shadow
+      repair reported 'Shadow branch is already healthy, nothing to repair'; spec writes still
+      worked, suggesting a cosmetic/path-resolution-dependent doctor failure. Either doctor's check
+      or repair's health check is wrong, and doctor should not prescribe a remedy that declines to
+      act. Source observation: claude-headed-acp @01KTWH7D2KHHTT7QHPVCVPQKVA."
+    tags:
+      - doctor
+      - shadow
+      - dispatch-worktree
+      - headed-claude-acp
+    added_by: Hermes
+    created_at: 2026-06-12T20:05:52.194Z
+  - _ulid: 01KTYQ1RGVV40MBJA9XJKHAWBY
+    text: "Add or document a metadata/spec-catalog review gate profile for detached reviews whose branch
+      changes only kspec metadata and no source/package behavior. In claude-headed-acp,
+      spec-catalog-only reviews still defaulted to a full serial npm test gate, and another review
+      spent 431.8s on the full suite after a focused probe had already found a blocker. Desired
+      shape: rigorous kspec validate plus exact spec/AC/status checks and source-diff confirmation,
+      with a policy for when focused gates can short-circuit before final full-suite requirements.
+      Source observations: claude-headed-acp @01KTWHVYG7RCPWR94BBF5BHQTW and
+      @01KTWPHEJK2MV5F2HWRQ20M0GM."
+    tags:
+      - review
+      - metadata-only
+      - gates
+      - workflow
+      - headed-claude-acp
+    added_by: Hermes
+    created_at: 2026-06-12T20:05:52.283Z
+  - _ulid: 01KTYQ1RK4SQWVWG0N6BY2TW5P
+    text: "Investigate transient kspec review for-task failures immediately after creating a
+      folder-backed review record. In claude-headed-acp, review for-task briefly failed with
+      EntityStorageCompatibilityError about folder-backed review storage and project.reviews.yaml
+      index mismatch; the direct review ref remained usable and later lookup recovered, but the
+      failure interrupted normal fix-cycle orientation. Source observation: claude-headed-acp
+      @01KTFCX18FH04WD0BZZXNQH7CQ."
+    tags:
+      - review
+      - storage
+      - compatibility
+      - headed-claude-acp
+    added_by: Hermes
+    created_at: 2026-06-12T20:05:52.356Z
