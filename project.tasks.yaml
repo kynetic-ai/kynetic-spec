@@ -31506,7 +31506,7 @@
   type: task
   spec_ref: "@ui-dashboard-overview"
   plan_ref: "@plan-daemon-operational-reliability"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-update-daemon-reliability-specs"
@@ -31519,6 +31519,7 @@
   todos_count: 0
   created_at: 2026-06-11T03:53:21.146Z
   started_at: 2026-06-12T14:56:30.338Z
+  submitted_at: 2026-06-12T15:24:33.866Z
   automation: eligible
 - _ulid: 01KTTD0XG6VBZ6AR49VGQ2FARF
   slugs:
