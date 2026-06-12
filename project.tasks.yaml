@@ -31934,3 +31934,19 @@
   created_at: 2026-06-12T14:53:21.070Z
   started_at: 2026-06-12T15:52:14.871Z
   automation: eligible
+- _ulid: 01KTY9DTPW4E1G33BEFFQNK47X
+  slugs: []
+  title: Stabilize daemon last-exit graceful SIGTERM test flake
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - tests
+    - daemon
+    - flake
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-12T16:07:47.676Z
+  automation: eligible

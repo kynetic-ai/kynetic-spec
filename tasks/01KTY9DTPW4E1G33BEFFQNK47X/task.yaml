@@ -1,0 +1,30 @@
+_ulid: 01KTY9DTPW4E1G33BEFFQNK47X
+slugs: []
+title: Stabilize daemon last-exit graceful SIGTERM test flake
+type: bug
+description: During review of @task-catch-justification-comments, the full `npm test` run failed
+  once in `tests/daemon-last-exit.test.ts > daemon termination paths > records a graceful exit when
+  the daemon shuts down on SIGTERM` after 45005ms with STACK_TRACE_ERROR. The same file passed on
+  immediate focused rerun via `npm test -- --fresh tests/daemon-last-exit.test.ts` (14/14, 1.6s).
+  The reviewed branch only changed comments in src/agents/spawner.ts, src/cli/batch-write-buffer.ts,
+  src/parser/entity-local-resources.ts, src/parser/file-lock.ts, and src/parser/shadow.ts, so this
+  appears flaky rather than caused by that branch. Investigate why the graceful SIGTERM path
+  occasionally times out in the full suite, especially interaction with daemon process cleanup,
+  port/process contention, and test isolation. Fix should make the test deterministic without
+  weakening the assertion.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - tests
+  - daemon
+  - flake
+vcs_refs: []
+created_at: 2026-06-12T16:07:47.676Z
+todos: []
+automation: eligible
