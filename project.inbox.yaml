@@ -4793,3 +4793,18 @@ inbox:
       - tasks
     added_by: Jacob Chapel
     created_at: 2026-06-12T20:56:49.099Z
+  - _ulid: 01KTYSZ3RN6A4RZJ6VKJX0EMVM
+    text: "Hyphoria-mined: add a structured way to mark tasks as intentionally spec-exempt. In Hyphoria
+      observation @01KTRBQV3M3Z1YAD3VSJZ23TEG, kspec validate --completeness warned on an
+      automation-eligible product-direction/documentation task with no spec_ref even though the task
+      explicitly stated the omission was intentional. A field such as spec_exempt: <reason> or a
+      task kind could let validation distinguish deliberate metadata/docs/support tasks from
+      accidentally unspecced implementation work."
+    tags:
+      - reflection
+      - hyphoria-mined
+      - validation
+      - tasks
+      - completeness
+    added_by: Jacob Chapel
+    created_at: 2026-06-12T20:56:51.221Z
