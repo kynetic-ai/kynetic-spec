@@ -21865,6 +21865,34 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-12T16:17:13.739Z
+  - _ulid: 01KTYBHY8HWNK5KW9GSX8W66WX
+    type: friction
+    content: "Test waits whose budgets exceed the 45s vitest testTimeout (or are unbounded) convert
+      environmental contention into diagnostics-free timeout failures. In
+      @01KTY9DTPW4E1G33BEFFQNK47X the global port-start lock wait has a 120s budget and the
+      post-SIGTERM exit wait was unbounded, so when full-suite contention pushed either past 45s the
+      test died as opaque STACK_TRACE_ERROR with zero diagnostics — distinct from 01KTY9Z3 (budgets
+      too SMALL under load): here budgets are too LARGE relative to the test timeout to ever report.
+      Rule of thumb: every wait inside a test should be bounded BELOW the test timeout and fail with
+      a diagnostic payload (waitForStartup is the model; waitForChildExitBounded in
+      tests/daemon-last-exit.test.ts applies it to exit waits)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-12T16:44:59.538Z
+  - _ulid: 01KTYBHYKC6H4E53NWZCAGY6PH
+    type: success
+    content: "Documenting flake signatures in vitest.config.ts heavySerialSuites comments (symptom +
+      mechanism, e.g. the websocket-protocol.test.ts entry: STACK_TRACE_ERROR in full suite,
+      deterministic in isolation, cross-file contention cause) made root-causing a new flake
+      near-instant: the daemon-last-exit SIGTERM flake matched the documented signature exactly,
+      pointing straight at the established remedy. Pattern worth replicating: when quarantining a
+      suite or adding a contention workaround, record the observed failure signature and the causal
+      mechanism in a comment at the config site, not just in task notes."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-12T16:44:59.884Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
