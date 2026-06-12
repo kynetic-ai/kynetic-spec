@@ -4808,3 +4808,20 @@ inbox:
       - completeness
     added_by: Jacob Chapel
     created_at: 2026-06-12T20:56:51.221Z
+  - _ulid: 01KTYSZ5ZQV0YGQFS8GRN41RN6
+    text: "Hyphoria-mined: dispatch readiness and detached review/merge should account for unmerged
+      plan-branch lineage and post-approval integration drift. Hyphoria observations
+      @01KTX3RHCHVD1PED1F4F3WQJEA and @01KTX4VR3EX8E282X5B3V2VHQP showed tasks naming files/UX
+      introduced only on a reviewed-but-unmerged plan branch, and an approved branch later
+      conflicting after main/dev moved. Consider surfacing required plan-branch lineage before
+      worker start, rebasing/refreshing branches immediately before review or merge, and when
+      conflicts are routine porting work, kicking back with conflict context without discarding
+      useful approval evidence."
+    tags:
+      - reflection
+      - hyphoria-mined
+      - dispatch
+      - merge
+      - plan-branch
+    added_by: Jacob Chapel
+    created_at: 2026-06-12T20:56:53.495Z
