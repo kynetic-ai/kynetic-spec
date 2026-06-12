@@ -21893,6 +21893,23 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-12T16:44:59.884Z
+  - _ulid: 01KTYDA68FD2CMTRZ4HVS34WTT
+    type: success
+    content: "E2E flake stabilization technique (proven on
+      @stabilize-websocket-duplicate-event-e2e-response-count-flake): for tests that assert API
+      traffic counts while proxying the WebSocket to a real daemon, (1) enumerate every noise source
+      feeding the measured signal first — delayed file-watcher invalidation timers (+650ms/+1500ms
+      in ws-invalidation.ts), slow in-flight responses under parallel load, late cache-warming
+      domain_ready broadcasts; (2) make the measurement hermetic by cutting server->client WS
+      forwarding after page load (safe: client manager has no heartbeat, daemon pong timeout is
+      90s); (3) assert on request INITIATION (synchronous on the client when invalidation fires)
+      instead of response arrival; (4) any settle/stability window must exceed the longest delayed
+      invalidation timer (1500ms). Root-cause analysis also proved product dedup correct before
+      touching the test, avoiding a symptom patch."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-12T17:15:42.735Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
