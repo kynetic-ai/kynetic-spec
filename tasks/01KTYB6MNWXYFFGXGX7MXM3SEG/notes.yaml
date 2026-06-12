@@ -1,1 +1,22 @@
-notes: []
+notes:
+  - _ulid: 01KTYBZN9Y6CX41RYE32JJA5HB
+    content: "Root cause analysis: the dedup test proxies the WS to the real fixture daemon, so real
+      broadcasts (cache:status domain_ready, files:updates, tasks:updates) keep flowing during the
+      measurement. Three noise paths can add /api/tasks responses after the settle window: (1)
+      files:updates events schedule DELAYED invalidations at +650ms/+1500ms (ws-invalidation.ts
+      FILE_WATCHER_INVALIDATION_DELAYS_MS) while the settle helper only requires 750ms stability — a
+      1500ms timer can fire after settle returns, invalidate tasks.all, and produce extra responses
+      in the 1s post-replay window (two timers = exactly the observed 4→6); (2) under full-suite
+      load (10 workers), in-flight /api/tasks responses can take >750ms and land after settle
+      returns since the helper counts responses, not in-flight requests; (3) late cache-warming
+      domain_ready broadcasts invalidate tasks.all. Product dedup is correct (global
+      lastSeqProcessed; post-injection real events have seq<<500 and are skipped). Fix is test-side:
+      make the measurement hermetic by stopping server->client WS forwarding once the page is loaded
+      (client heartbeat: none; daemon pong timeout 90s — safe), settle BEFORE establishing the
+      baseline, track request initiation + in-flight requests instead of responses only, and raise
+      the stability window above the 1500ms delayed-invalidation tail. Assert on request count
+      (initiated client-side immediately on invalidation) rather than response count so the negative
+      check is deterministic in both directions."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T16:52:29.118Z
