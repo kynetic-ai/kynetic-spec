@@ -24662,7 +24662,7 @@ workspaces:
         head: 3f10a37da2c83f3a03f2ea45ce272087b4252cde
         last_seen_at: 2026-06-12T16:18:02.974Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-websocket-e2e-daemon-restart-reconnect-flake-01kty55g
-  - active_role: worker
+  - active_role: null
     base_branch_point: 09c595c91aed681d9fed841df60036e95933b25f
     bootstrap:
       status: succeeded
@@ -24993,12 +24993,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-12T16:42:41.941Z
+      updated_at: 2026-06-12T16:45:44.187Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-12T16:42:41.941Z
+      updated_at: 2026-06-12T16:45:44.187Z
     integration:
       status: pending
       detail: null
@@ -25006,8 +25006,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 09c595c91aed681d9fed841df60036e95933b25f
-      updated_at: 2026-06-12T16:42:41.941Z
-    lifecycle_state: active
+      updated_at: 2026-06-12T16:45:44.187Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KTY9DTPW4E1G33BEFFQNK47X
     task_ref: "@01KTY9DTPW4E1G33BEFFQNK47X"
@@ -25015,9 +25015,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-12T16:19:32.291Z
-      last_reconciled_at: 2026-06-12T16:42:41.941Z
+      last_reconciled_at: 2026-06-12T16:45:44.187Z
       created_at: 2026-06-12T16:18:59.882Z
-      updated_at: 2026-06-12T16:42:41.941Z
+      updated_at: 2026-06-12T16:45:44.187Z
     workspace_id: dispatch-workspace-01KTY9DTPW4E1G33BEFFQNK47X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
