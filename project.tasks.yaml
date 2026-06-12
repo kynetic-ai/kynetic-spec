@@ -31774,7 +31774,7 @@
     - task-stabilize-skill-cli-dist-export-flake
   title: Stabilize skill-cli dist export full-suite flake
   type: bug
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   priority: 3
