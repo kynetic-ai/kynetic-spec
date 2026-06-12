@@ -23456,18 +23456,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-dashboard-summary-adoption/01kttd09
-    canonical_branch_head: adefc545eed8512af020a5fc64de9424113467f2
+    canonical_branch_head: f166c484e9e2f109f909ba71c7c612a06134a086
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-12T14:55:26.973Z
+      updated_at: 2026-06-12T14:56:45.338Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-12T14:56:06.135Z
+      updated_at: 2026-06-12T14:56:45.338Z
     integration:
       status: pending
       detail: null
@@ -23475,7 +23475,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: adefc545eed8512af020a5fc64de9424113467f2
-      updated_at: 2026-06-12T14:55:26.973Z
+      updated_at: 2026-06-12T14:56:45.338Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTD09ZTH4AJ62M1A4M7YWC0
@@ -23484,9 +23484,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-12T14:56:06.135Z
-      last_reconciled_at: 2026-06-12T14:56:06.135Z
+      last_reconciled_at: 2026-06-12T14:56:45.338Z
       created_at: 2026-06-12T14:55:26.973Z
-      updated_at: 2026-06-12T14:56:06.135Z
+      updated_at: 2026-06-12T14:56:45.338Z
     workspace_id: dispatch-workspace-01KTTD09ZTH4AJ62M1A4M7YWC0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
