@@ -2,7 +2,7 @@ _ulid: 01KTRYBCGAX0VFX2G5HC74E3MX
 slugs:
   - plan-daemon-operational-reliability
 title: Daemon Operational Reliability
-status: active
+status: completed
 approved_at: 2026-06-11T03:47:41.814Z
 branch: null
 derived_specs:

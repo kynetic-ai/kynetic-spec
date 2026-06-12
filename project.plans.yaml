@@ -1833,7 +1833,7 @@ plans:
     slugs:
       - plan-daemon-operational-reliability
     title: Daemon Operational Reliability
-    status: active
+    status: completed
     approved_at: 2026-06-11T03:47:41.814Z
     derived_specs:
       - "@daemon-failure-observability"
