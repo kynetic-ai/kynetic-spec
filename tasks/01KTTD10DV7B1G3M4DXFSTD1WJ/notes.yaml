@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KTY78QTDN1M1FXAPSXWT5MR3
+    content: "Approach: grep each of the five files for catch/.catch sites, read surrounding code to
+      classify each as (a) already justified, (b) swallow needing a comment, (c) not a swallow
+      (error is handled/rethrown/logged). Add one-line justification comments only at unjustified
+      swallows. Comments-only: no semantic/control-flow/test changes. Gates: lint, typecheck, full
+      npm test."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T15:30:03.726Z
