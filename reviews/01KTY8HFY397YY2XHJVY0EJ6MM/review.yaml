@@ -1,0 +1,26 @@
+_ulid: 01KTY8HFY397YY2XHJVY0EJ6MM
+slugs: []
+title: Review task-catch-justification-comments
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTY8HFY34Q1NTQK3527VWDMB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-12T15:52:19.139Z
+examined_commit: 6bebecae82d7dffac2f904df2eb0a5fa6383029d
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTD10DV7B1G3M4DXFSTD1WJ"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-12T15:52:19.139Z
+updated_at: null
+notes: []
