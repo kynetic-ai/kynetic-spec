@@ -27,6 +27,7 @@ tags:
   - e2e
   - flaky
 vcs_refs: []
+review_ref: "@01KTY3Y8ANPQN24KVKRCAY37A4"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-stabilize-e2e-plan-review-fixture-routes/01ktwg0d
@@ -70,6 +71,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-12T00:41:58.260Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KTY3Y8ANPQN24KVKRCAY37A4"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-12T14:31:56.759Z
 created_at: 2026-06-11T23:24:19.195Z
 started_at: 2026-06-12T00:15:39.771Z
 submitted_at: 2026-06-12T00:41:58.260Z
