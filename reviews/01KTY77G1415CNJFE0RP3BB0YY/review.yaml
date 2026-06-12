@@ -1,0 +1,26 @@
+_ulid: 01KTY77G1415CNJFE0RP3BB0YY
+slugs: []
+title: Review task-dashboard-summary-adoption
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KTY77G140TQSXNH4RJ3K2A4W
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-12T15:29:22.980Z
+examined_commit: 73c67ff831fadc6789cef9939bc035773857d730
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KTTD09ZTH4AJ62M1A4M7YWC0"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-12T15:29:22.980Z
+updated_at: null
+notes: []

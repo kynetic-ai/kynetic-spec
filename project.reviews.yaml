@@ -26256,3 +26256,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-12T14:31:54.453Z
     updated_at: 2026-06-12T14:55:16.147Z
+  - _ulid: 01KTY77G1415CNJFE0RP3BB0YY
+    slugs: []
+    title: Review task-dashboard-summary-adoption
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 73c67ff831fadc6789cef9939bc035773857d730
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KTTD09ZTH4AJ62M1A4M7YWC0"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-12T15:29:22.980Z
