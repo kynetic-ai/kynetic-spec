@@ -2,6 +2,9 @@
   AC: @ui-dashboard-overview ac-1 — Dashboard home view
   Active work section, status summary, needs-attention aggregation.
 
+  AC: @ui-dashboard-overview ac-counts-from-summary — Status counts come from
+  the pre-computed server-side summary endpoint, not the full task list.
+
   AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
   AC: @ui-data-freshness ac-3 — WebSocket events invalidate dashboard queries
   AC: @ui-data-freshness ac-6 — Static mode compatibility via queryFn dispatch
@@ -15,7 +18,7 @@
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
 	import {
-		fetchTasks,
+		fetchTaskStatusSummary,
 		fetchInbox,
 		fetchObservations,
 		fetchValidation,
@@ -61,12 +64,13 @@
 	// --- Queries ---
 	// AC: @ui-data-freshness ac-1 — createQuery caches results; revisits render from cache
 	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
-	// AC: @ui-data-freshness ac-6 — fetchTasks/fetchInbox/etc. already dispatch to static mode
-	// Fetch all tasks for status counting. Uses default server pagination (returns all).
-	// TODO: Replace with server-side task summary/counts aggregation endpoint.
-	const tasksQuery = createQuery(() => ({
-		queryKey: queryKeys.tasks.list({}),
-		queryFn: () => fetchTasks(),
+	// AC: @ui-data-freshness ac-6 — fetchTaskStatusSummary/fetchInbox/etc. already dispatch to static mode
+	// AC: @ui-dashboard-overview ac-counts-from-summary — pre-computed server-side
+	// summary instead of fetching the full task list. WS task events invalidate
+	// queryKeys.tasks.all, which covers this key (see ws-invalidation.ts).
+	const taskSummaryQuery = createQuery(() => ({
+		queryKey: queryKeys.tasks.summary(),
+		queryFn: () => fetchTaskStatusSummary(),
 		enabled: isProjectInitialized(),
 	}));
 
@@ -97,58 +101,24 @@
 	}));
 
 	// --- Derived state from queries ---
+	// AC: @ui-dashboard-overview ac-counts-from-summary
+	// Every card except ready maps 1:1 from summary.counts — blocked stays
+	// status 'blocked' only (blocked_by_dependencies is NOT folded in). The
+	// ready card adopts summary.ready, the server's canonical dependency-aware
+	// definition: pending OR needs_work tasks with no blockers and all
+	// dependencies met.
 	let counts = $derived.by(() => {
-		const tasks = tasksQuery.data?.items ?? [];
+		const summary = taskSummaryQuery.data;
+		const statusCounts = summary?.counts ?? {};
 		const newCounts: TaskCounts = {
-			ready: 0,
-			in_progress: 0,
-			needs_work: 0,
-			pending_review: 0,
-			blocked: 0,
-			completed: 0,
-			cancelled: 0,
+			ready: summary?.ready ?? 0,
+			in_progress: statusCounts.in_progress ?? 0,
+			needs_work: statusCounts.needs_work ?? 0,
+			pending_review: statusCounts.pending_review ?? 0,
+			blocked: statusCounts.blocked ?? 0,
+			completed: statusCounts.completed ?? 0,
+			cancelled: statusCounts.cancelled ?? 0,
 		};
-
-		const completedRefs = new Set(
-			tasks
-				.filter((t) => t.status === 'completed')
-				.flatMap((t) => [t._ulid, ...(t.slugs || [])])
-		);
-
-		for (const task of tasks) {
-			switch (task.status) {
-				case 'completed':
-					newCounts.completed++;
-					break;
-				case 'in_progress':
-					newCounts.in_progress++;
-					break;
-				case 'pending_review':
-					newCounts.pending_review++;
-					break;
-				case 'blocked':
-					newCounts.blocked++;
-					break;
-				case 'needs_work':
-					newCounts.needs_work++;
-					break;
-				case 'cancelled':
-					newCounts.cancelled++;
-					break;
-				case 'pending': {
-					const deps = task.depends_on || [];
-					const hasUnmetDeps = deps.some((dep: string) => {
-						const ref = dep.startsWith('@') ? dep.slice(1) : dep;
-						return !completedRefs.has(ref);
-					});
-					if (!hasUnmetDeps) {
-						newCounts.ready++;
-					}
-					break;
-				}
-			}
-		}
-
 		return newCounts;
 	});
 
@@ -183,7 +153,7 @@
 
 	// AC: @ui-data-freshness ac-7 — Surface error with retry capability
 	let error = $derived.by(() => {
-		if (tasksQuery.error) return tasksQuery.error.message;
+		if (taskSummaryQuery.error) return taskSummaryQuery.error.message;
 		if (inboxQuery.error) return inboxQuery.error.message;
 		if (observationsQuery.error) return observationsQuery.error.message;
 		return null;
@@ -191,7 +161,7 @@
 
 	// AC: @ui-data-freshness ac-1 — Only show loading skeleton on initial fetch (no cache)
 	let loading = $derived(
-		tasksQuery.isLoading ||
+		taskSummaryQuery.isLoading ||
 		inboxQuery.isLoading ||
 		observationsQuery.isLoading
 	);

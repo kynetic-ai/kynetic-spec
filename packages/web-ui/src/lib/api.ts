@@ -37,6 +37,7 @@ import type {
   AgentDefinition,
   AgentUpdatePayload,
   ValidationAggregation,
+  TaskStatusSummary,
 } from "@kynetic-ai/shared";
 import type { TriageRecord } from "./types/triage";
 import {
@@ -49,6 +50,7 @@ import { isStaticMode, assertWritable } from "./stores/mode.svelte";
 import {
   fetchTasksStatic,
   fetchTaskStatic,
+  fetchTaskStatusSummaryStatic,
   fetchItemsStatic,
   fetchItemStatic,
   fetchItemTasksStatic,
@@ -280,6 +282,27 @@ export async function fetchTasks(params?: {
   }
 
   return unwrapPaginatedEnvelope(await response.json());
+}
+
+/**
+ * Fetch pre-computed task status summary counts.
+ * Live mode hits the server-side aggregation endpoint instead of retrieving
+ * the full task list; static mode derives the same shape from the snapshot.
+ * AC: @ui-dashboard-overview ac-counts-from-summary
+ * AC: @ui-api-aggregation ac-1
+ */
+export async function fetchTaskStatusSummary(): Promise<TaskStatusSummary> {
+  if (isStaticMode()) {
+    return unwrapEnvelope(fetchTaskStatusSummaryStatic());
+  }
+
+  const response = await fetch(`${API_BASE}/api/aggregation/tasks/summary`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return unwrapEnvelope(await response.json());
 }
 
 /**

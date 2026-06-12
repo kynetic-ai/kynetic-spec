@@ -86,6 +86,20 @@ function fixtureTasks() {
   return envelope(items, { total: 5, limit: 50, offset: 0 });
 }
 
+/**
+ * Task status summary matching fixtureTasks(): 2 pending (1 ready, 1 blocked
+ * by an incomplete dependency), 1 in_progress, 1 pending_review, 1 completed.
+ * Mirrors GET /api/aggregation/tasks/summary semantics.
+ */
+function fixtureTaskSummary() {
+  return envelope({
+    counts: { pending: 2, in_progress: 1, pending_review: 1, completed: 1 },
+    ready: 1,
+    blocked_by_dependencies: 1,
+    total: 5,
+  });
+}
+
 /** Inbox data: 3 items matching fixture */
 function fixtureInbox() {
   return envelope([], { total: 3, limit: 0, offset: 0 });
@@ -124,6 +138,18 @@ function fixtureAgentStatus() {
  * Intercepts browser-side fetches to localhost:3456 and fulfills with fixture data.
  */
 async function interceptDashboardAPIs(page: import("@playwright/test").Page) {
+  // AC: @ui-dashboard-overview ac-counts-from-summary — dashboard counts come
+  // from the pre-computed summary endpoint
+  await page.route("**/api/aggregation/tasks/summary", (route) => {
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(fixtureTaskSummary()),
+    });
+  });
+
+  // Filtered task list queries (e.g. the sidebar's pending_review count)
+  // still go through /api/tasks.
   await page.route(/\/api\/tasks(\?|$)/, (route) => {
     route.fulfill({
       status: 200,
@@ -185,6 +211,13 @@ test.describe("Dashboard Overview", () => {
 
     test("shows active fleet when agents are running", async ({ page }) => {
       // Override agent status to show active invocations
+      await page.route("**/api/aggregation/tasks/summary", (route) => {
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(fixtureTaskSummary()),
+        });
+      });
       await page.route(/\/api\/tasks(\?|$)/, (route) => {
         route.fulfill({
           status: 200,
@@ -283,10 +316,11 @@ test.describe("Dashboard Overview", () => {
     });
 
     // AC: @ui-dashboard-overview ac-1 — Validates UI renders correct aggregated counts
+    // AC: @ui-dashboard-overview ac-counts-from-summary
     // AC: @web-dashboard ac-1
-    // Fixture: 2 pending (1 ready, 1 dep-blocked), 1 in_progress, 1 pending_review, 1 completed
-    // Expected: ready=1, in_progress=1, pending_review=1, blocked=0, completed=1
-    test("renders correct aggregated counts from task data", async ({ page }) => {
+    // Summary fixture: 2 pending (1 ready, 1 dep-blocked), 1 in_progress, 1 pending_review, 1 completed
+    // Expected: ready=1 (summary.ready), in_progress=1, pending_review=1, blocked=0, completed=1
+    test("renders correct aggregated counts from the summary endpoint", async ({ page }) => {
       await interceptDashboardAPIs(page);
       await page.goto("/");
       await expect(page.getByTestId("status-summary-section")).toBeVisible();
@@ -296,10 +330,38 @@ test.describe("Dashboard Overview", () => {
       await expect(page.getByTestId("task-count-in_progress")).toContainText("1");
       await expect(page.getByTestId("task-count-needs_work")).toContainText("0");
       await expect(page.getByTestId("task-count-pending_review")).toContainText("1");
-      // Blocked card counts only status=blocked tasks, not dep-blocked pending tasks
+      // Blocked card counts only status=blocked tasks (summary.counts.blocked),
+      // not summary.blocked_by_dependencies
       await expect(page.getByTestId("task-count-blocked")).toContainText("0");
       await expect(page.getByTestId("task-count-completed")).toContainText("1");
       await expect(page.getByTestId("task-count-cancelled")).toContainText("0");
+    });
+
+    // AC: @ui-dashboard-overview ac-counts-from-summary — counts come from the
+    // pre-computed summary endpoint; no unfiltered full task list request is issued
+    test("renders counts without fetching the full task list", async ({ page }) => {
+      await interceptDashboardAPIs(page);
+
+      const fullListRequests: string[] = [];
+      let summaryRequested = false;
+      page.on("request", (request) => {
+        const url = new URL(request.url());
+        if (url.pathname.endsWith("/api/aggregation/tasks/summary")) {
+          summaryRequested = true;
+        }
+        // Unfiltered list fetch = /api/tasks without a status filter (the
+        // sidebar legitimately issues a filtered limit=0 count query)
+        if (url.pathname.endsWith("/api/tasks") && !url.searchParams.has("status")) {
+          fullListRequests.push(request.url());
+        }
+      });
+
+      await page.goto("/");
+      await expect(page.getByTestId("status-summary-section")).toBeVisible();
+      await expect(page.getByTestId("task-count-ready")).toContainText("1");
+
+      expect(summaryRequested).toBe(true);
+      expect(fullListRequests).toEqual([]);
     });
 
     // AC: @web-dashboard ac-3
@@ -404,6 +466,15 @@ test.describe("Dashboard Overview", () => {
 
     test("shows no-attention empty state when all counts are zero", async ({ page }) => {
       // Override all APIs to return zero counts
+      await page.route("**/api/aggregation/tasks/summary", (route) => {
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(
+            envelope({ counts: {}, ready: 0, blocked_by_dependencies: 0, total: 0 }),
+          ),
+        });
+      });
       await page.route(/\/api\/tasks(\?|$)/, (route) => {
         route.fulfill({
           status: 200,
@@ -561,6 +632,35 @@ test.describe("Dashboard Overview", () => {
           `Unexpected status "${status}" in API response with count ${count}`,
         ).toBe(count);
       }
+    });
+
+    // AC: @ui-dashboard-overview ac-counts-from-summary — the pre-computed
+    // summary endpoint the dashboard consumes matches fixture task data
+    test("daemon returns task status summary matching fixture data", async ({ daemon }) => {
+      const expectedCounts = getFixtureTaskCounts();
+      const summaryEnvelope = await fetchWhenReady(
+        daemon.baseUrl,
+        "/api/aggregation/tasks/summary",
+      );
+
+      const summary = summaryEnvelope.data as {
+        counts: Record<string, number>;
+        ready: number;
+        blocked_by_dependencies: number;
+        total: number;
+      };
+
+      expect(summary.total).toBe(expectedCounts.total);
+      for (const [status, expectedCount] of Object.entries(expectedCounts.byStatus)) {
+        expect(
+          summary.counts[status] ?? 0,
+          `Expected ${expectedCount} tasks with status "${status}"`,
+        ).toBe(expectedCount);
+      }
+      // ready and blocked_by_dependencies partition the pending + needs_work tasks
+      const pendingPool =
+        (expectedCounts.byStatus["pending"] ?? 0) + (expectedCounts.byStatus["needs_work"] ?? 0);
+      expect(summary.ready + summary.blocked_by_dependencies).toBe(pendingPool);
     });
 
     test("daemon returns inbox items", async ({ daemon }) => {

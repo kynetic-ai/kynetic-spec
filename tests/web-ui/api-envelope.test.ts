@@ -82,6 +82,7 @@ import {
   fetchMergedInbox,
   fetchTriageRecords,
   fetchValidationAggregation,
+  fetchTaskStatusSummary,
   CacheWarmingError,
 } from "../../packages/web-ui/src/lib/api";
 
@@ -513,6 +514,38 @@ describe("live fetch envelope unwrapping", () => {
 
       const result = await fetchValidationAggregation();
       expect(result.entity_count).toBe(10);
+    });
+
+    // AC: @ui-dashboard-overview ac-counts-from-summary — live mode hits the
+    // pre-computed aggregation endpoint instead of the full task list
+    // AC: @ui-api-aggregation ac-1
+    it("fetchTaskStatusSummary calls the aggregation endpoint and unwraps the envelope", async () => {
+      const summary = {
+        counts: { pending: 3, in_progress: 1, completed: 2, blocked: 1 },
+        ready: 2,
+        blocked_by_dependencies: 1,
+        total: 7,
+      };
+      const fetchMock = mockFetchJson(detailEnvelope(summary));
+      globalThis.fetch = fetchMock;
+
+      const result = await fetchTaskStatusSummary();
+
+      expect(result).toEqual(summary);
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const requestedUrl = String(fetchMock.mock.calls[0][0]);
+      expect(requestedUrl).toBe("http://localhost:3456/api/aggregation/tasks/summary");
+    });
+
+    // AC: @api-contract ac-cache-status-field — warming summary throws instead
+    // of caching empty counts
+    it("fetchTaskStatusSummary throws CacheWarmingError when cache is loading", async () => {
+      globalThis.fetch = mockFetchJson({
+        data: { counts: {}, ready: 0, blocked_by_dependencies: 0, total: 0 },
+        meta: { cache_status: "loading" },
+      });
+
+      await expect(fetchTaskStatusSummary()).rejects.toBeInstanceOf(CacheWarmingError);
     });
   });
 
