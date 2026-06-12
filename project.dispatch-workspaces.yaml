@@ -23968,18 +23968,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-catch-justification-comments/01kttd10
-    canonical_branch_head: f166c484e9e2f109f909ba71c7c612a06134a086
+    canonical_branch_head: 6bebecae82d7dffac2f904df2eb0a5fa6383029d
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-12T15:28:50.482Z
+      updated_at: 2026-06-12T15:47:45.505Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-12T15:29:20.303Z
+      updated_at: 2026-06-12T15:47:45.505Z
     integration:
       status: pending
       detail: null
@@ -23987,7 +23987,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f166c484e9e2f109f909ba71c7c612a06134a086
-      updated_at: 2026-06-12T15:28:50.482Z
+      updated_at: 2026-06-12T15:47:45.505Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTTD10DV7B1G3M4DXFSTD1WJ
@@ -23996,9 +23996,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-12T15:29:20.303Z
-      last_reconciled_at: 2026-06-12T15:29:20.303Z
+      last_reconciled_at: 2026-06-12T15:47:45.505Z
       created_at: 2026-06-12T15:28:50.482Z
-      updated_at: 2026-06-12T15:29:20.303Z
+      updated_at: 2026-06-12T15:47:45.505Z
     workspace_id: dispatch-workspace-01KTTD10DV7B1G3M4DXFSTD1WJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
