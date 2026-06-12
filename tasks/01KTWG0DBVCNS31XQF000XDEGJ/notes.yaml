@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KTWK55QEM1TMVJFW9291537W
+    content: "Root cause: tests/e2e/fixtures/ is a pre-1.2 .kspec snapshot — kynetic '1.0' manifest with
+      monolithic project.plans.yaml/project.reviews.yaml and no plans//reviews/ folders. The daemon
+      routes now gate on folder-backed storage (describeStrictManifestIncompatibility →
+      legacy_plan_storage_removed for kynetic < 1.2), so /api/plans/* and review detail routes 500,
+      which the Plans page surfaces as the 'errorRespo... is not valid JSON' alert and '0 plans'.
+      Approach: migrate fixtures using the real migration code
+      (applyPlanMigration/applyReviewMigration from src/parser) against a temp copy, update the
+      fixture kynetic.yaml to 1.2 with plan_storage/review_storage/resource_storage folder
+      declarations matching kspec init output, commit the folder-backed fixture. Verify with npm run
+      test:e2e from a clean workspace."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T00:19:20.942Z
