@@ -21,3 +21,25 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-12T14:59:51.074Z
+  - _ulid: 01KTY6YCEKS75P8M9XC7FPR1VB
+    content: "Completed: dashboard counts now come from GET /api/aggregation/tasks/summary (commit
+      73c67ff831). SEMANTIC CHANGE (deliberate, per task description): the Ready card adopts
+      summary.ready — the server's canonical dependency-aware definition (pending OR needs_work with
+      no blocked_by and all depends_on completed). Previously the client counted only pending tasks
+      with met dependencies, so the displayed ready number may rise where needs_work tasks are
+      dispatch-ready. All other cards map 1:1 from summary.counts; Blocked stays
+      summary.counts.blocked only (blocked_by_dependencies NOT folded in). Static mode derives the
+      identical shape/semantics from the snapshot (fetchTaskStatusSummaryStatic), keeping GH Pages
+      builds working. No invalidation wiring change needed: queryKeys.tasks.summary() is under
+      queryKeys.tasks.all, which ws-invalidation already invalidates on task events. Verified
+      active-work cards use agentStatusQuery, not the task list, so no other +page.svelte usage
+      needed task items — the full-list query was removed outright. Gates: format clean, focused
+      oxlint 0 new warnings (renamed shadowed var, hoisted test helper), root typecheck clean
+      (svelte-check has 61 pre-existing baseline errors, none in changed lines), full suite 10567
+      passed/3 skipped, E2E dashboard.spec.ts 26/26 passed incl. new no-full-list-fetch test and
+      daemon summary contract test, kspec validate refs/alignment/completeness pass with
+      pre-existing warnings only. AC ac-counts-from-summary annotated in +page.svelte, api.ts,
+      api-static.ts, and all three test files."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T15:24:24.404Z
