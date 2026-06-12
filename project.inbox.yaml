@@ -4777,3 +4777,19 @@ inbox:
       - headed-claude-acp
     added_by: Hermes
     created_at: 2026-06-12T20:05:52.356Z
+  - _ulid: 01KTYSZ1PB2T8CBGDFFK57K4TH
+    text: "Hyphoria-mined: support secondary/spec coverage for tasks that intentionally cover ACs from
+      multiple specs. In Hyphoria observation @01KTR3026DQV7ABTQ9H8K99V6P, a plan-derived task had a
+      single spec_ref but AC-tagged tests for a second spec named only in Covers; kspec validate
+      --alignment/completeness treated the secondary spec as orphan/unimplemented and task start
+      only synced the primary spec status. Consider multi-valued spec_ref, structured
+      covers/secondary-spec metadata, or validation/status logic that recognizes task Covers AC refs
+      as intentional coverage while preserving clear ownership."
+    tags:
+      - reflection
+      - hyphoria-mined
+      - validation
+      - spec-status
+      - tasks
+    added_by: Jacob Chapel
+    created_at: 2026-06-12T20:56:49.099Z
