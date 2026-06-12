@@ -1875,7 +1875,7 @@ plans:
     slugs:
       - plan-validation-and-test-coverage-integrity
     title: Validation and Test Coverage Integrity
-    status: active
+    status: completed
     approved_at: 2026-06-11T03:47:42.376Z
     derived_specs: []
     derived_tasks:
