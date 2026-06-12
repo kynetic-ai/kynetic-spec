@@ -197,6 +197,42 @@ describe("daemon fatal handlers", () => {
   });
 });
 
+/**
+ * Wait for an already-signaled daemon child to exit, bounded so a graceful
+ * shutdown stall fails with the daemon's output tails instead of an opaque
+ * test timeout. Register before sending the signal so the exit event cannot
+ * be missed. The budget is far above a healthy shutdown (<1s) — it exists
+ * only to convert a hang into an actionable failure, not to race it.
+ */
+function waitForChildExitBounded(
+  started: Awaited<ReturnType<typeof startTestDaemon>>,
+  budgetMs: number,
+): Promise<number | null> {
+  return new Promise((resolve, reject) => {
+    if (started.child.exitCode !== null || started.child.signalCode !== null) {
+      resolve(started.child.exitCode);
+      return;
+    }
+    const onExit = (code: number | null): void => {
+      clearTimeout(timer);
+      resolve(code);
+    };
+    const timer = setTimeout(() => {
+      started.child.off("exit", onExit);
+      reject(
+        new Error(
+          [
+            `daemon child (pid=${started.pid ?? "<none>"}) did not exit within ${budgetMs}ms of SIGTERM`,
+            `stdout-tail:\n${started.stdoutTail() || "<empty>"}`,
+            `stderr-tail:\n${started.stderrTail() || "<empty>"}`,
+          ].join("\n"),
+        ),
+      );
+    }, budgetMs);
+    started.child.once("exit", onExit);
+  });
+}
+
 describe("daemon termination paths", () => {
   // AC: @daemon-failure-observability ac-graceful-exit-recorded
   it("records a graceful exit when the daemon shuts down on SIGTERM", async () => {
@@ -225,9 +261,7 @@ describe("daemon termination paths", () => {
       },
     });
 
-    const exited = new Promise<number | null>((resolve) => {
-      started.child.once("exit", (code) => resolve(code));
-    });
+    const exited = waitForChildExitBounded(started, 20_000);
     started.child.kill("SIGTERM");
     const code = await exited;
     expect(code).toBe(0);

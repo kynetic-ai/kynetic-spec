@@ -43,6 +43,15 @@ const heavySerialSuites = [
   // test passes deterministically in isolation. Run serially after the
   // default pool to remove cross-file contention.
   "tests/daemon-api/websocket-protocol.test.ts",
+  // Spawns real daemon children via startTestDaemon, which serializes
+  // dynamic-port startups on a global port-start lock held through each
+  // holder's full readiness wait. In the default pool the lock queue behind
+  // helpers/daemon.test.ts (whose contract tests deliberately hold the lock
+  // through failing-readiness budgets) plus general CPU saturation can
+  // exceed the 45s test timeout — the graceful-SIGTERM test then dies as an
+  // opaque timeout even though the file passes deterministically in
+  // isolation. Run serially after the default pool drains.
+  "tests/daemon-last-exit.test.ts",
 ];
 
 // On machines with many cores vitest spawns one worker per core by default.
