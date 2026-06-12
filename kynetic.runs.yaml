@@ -65429,7 +65429,7 @@ runs:
     completed_at: 2026-06-12T16:13:07.925Z
   - _ulid: 01KTY9V95WR7RN66G56TR9Q0EF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -65444,7 +65444,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-12T16:16:34.762Z
-        completed_at: 2026-06-12T16:16:34.762Z
+        completed_at: 2026-06-12T16:16:46.922Z
+        notes: "Identified candidates: (1) FRICTION, high confidence: the daemon-restart E2E test budgeted
+          assertion timeouts from focused single-worker timing (10s Connected, 30s test), but spec'd
+          exponential backoff (ac-28, 30s cap) plus the global daemon port-start lock shared by all
+          parallel workers makes worst-case reconnect gaps exceed those budgets — systemic lesson
+          for any timing-sensitive E2E assertion. (2) SUCCESS, high confidence: the flake task
+          description included the exact failing test, observed failure mode, and the focused-rerun
+          command, which made root-cause investigation immediate with zero re-discovery. (3)
+          Workflow show run-ref friction — already tracked in @01KGGPJ6, skip. (4) Considered
+          proposing an audit of other E2E tests for similar tight budgets —
+          hypothetical/speculative, skip per low-confidence rule."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-12T16:16:46.922Z
+        completed_at: 2026-06-12T16:16:46.922Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T16:15:08.477Z
