@@ -71,6 +71,8 @@ async function runGitAsync(
 }
 
 async function stashBrokenWorktreeDir(worktreeDir: string): Promise<string | null> {
+  // stat failure (ENOENT etc.) means nothing usable exists at the location —
+  // there is nothing to stash, which the null return reports explicitly.
   const stat = await fs.stat(worktreeDir).catch(() => null);
   if (!stat) {
     return null;
@@ -115,6 +117,8 @@ type WorktreeDirState = "missing" | "non-directory" | "empty-directory" | "parti
 async function inspectWorktreeDirState(
   worktreeDir: string,
 ): Promise<{ state: WorktreeDirState; description: string }> {
+  // This is failure *reporting* — a stat error just means the location is
+  // gone, which is exactly the "missing" state described below.
   const stat = await fs.stat(worktreeDir).catch(() => null);
   if (!stat) {
     return {
@@ -129,6 +133,8 @@ async function inspectWorktreeDirState(
         "occupied by a non-directory file — the backup directory holds the prior shadow state",
     };
   }
+  // An unreadable directory can't be confirmed empty — fall through to the
+  // conservative "partial or incomplete directory" description.
   const entries = await fs.readdir(worktreeDir).catch(() => null);
   if (entries && entries.length === 0) {
     return {
@@ -756,7 +762,8 @@ export async function detectRunningFromShadowWorktree(
             return mainProjectRoot;
           }
         } catch {
-          // Ignore read errors
+          // Unreadable cwd can't be confirmed as a kspec shadow worktree —
+          // fall through to "not detected", the safe default for detection.
         }
       }
     }

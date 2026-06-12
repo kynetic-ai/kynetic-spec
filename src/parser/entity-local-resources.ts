@@ -1213,6 +1213,9 @@ export async function copySourceIntoOwnerResources(options: {
   }
   const containment = path.relative(realOwner, realDest);
   if (containment === "" || containment.startsWith("..") || path.isAbsolute(containment)) {
+    // Best-effort cleanup of the escaped write — the structured rejection
+    // below is returned either way, so an rm failure only leaves the file
+    // for the operator to remove; it never converts the escape into success.
     await fs.rm(destAbsolute, { force: true }).catch(() => {});
     return {
       ok: false,
