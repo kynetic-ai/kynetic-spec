@@ -2,7 +2,126 @@ _ulid: 01KTY77G1415CNJFE0RP3BB0YY
 slugs: []
 title: Review task-dashboard-summary-adoption
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1038 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-12T15:45:17.727Z
+    completed_at: 2026-06-12T15:45:17.727Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxlint reported 0 errors. Existing warning baseline remains (736 warnings)."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-12T15:45:20.533Z
+    completed_at: 2026-06-12T15:45:20.533Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors. Reported 7 warnings; verified warning patterns were pre-existing on
+      the base commit (dashboard envelope shadowing/API mock type-parameter warnings), with no new
+      changed-diff blocker.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed ts/test files>
+    created_at: 2026-06-12T15:45:23.274Z
+    completed_at: 2026-06-12T15:45:23.274Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-12T15:45:26.017Z
+    completed_at: 2026-06-12T15:45:26.017Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2787 suites passed; 10567 passed / 3 skipped of 10570 tests. Full log:
+      /tmp/kspec-test-cache/01KTY75VB2J8HWWE5QKRHWK8Z8/e96b1ccd8e4dfed8.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-12T15:45:28.713Z
+    completed_at: 2026-06-12T15:45:28.713Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:e2e completed and Playwright dashboard spec ran 26/26 passing, including
+      the no-full-task-list-fetch assertion."
+    name: dashboard e2e
+    required: true
+    runner: npm run test:e2e -- tests/e2e/dashboard.spec.ts
+    created_at: 2026-06-12T15:45:31.432Z
+    completed_at: 2026-06-12T15:45:31.432Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok: schema/references OK; existing reference warnings only
+      (deprecated item refs)."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-12T15:45:34.396Z
+    completed_at: 2026-06-12T15:45:34.396Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok: existing alignment warnings only (orphan/status mismatch
+      baseline)."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-12T15:45:37.322Z
+    completed_at: 2026-06-12T15:45:37.322Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok: existing completeness warnings only; AC @ui-dashboard-overview
+      ac-counts-from-summary annotations found in dashboard/API/unit/E2E coverage."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-12T15:45:40.211Z
+    completed_at: 2026-06-12T15:45:40.211Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; task/spec output; changed files .gitignore,
+      packages/web-ui/src/lib/api.ts, api-static.ts, routes/+page.svelte,
+      tests/daemon-api/helpers.ts, tests/e2e/dashboard.spec.ts, e2e fixture plan/review
+      files/indexes, tests/web-ui/api-envelope.test.ts, tests/web-ui/api-static.test.ts; surrounding
+      code packages/daemon/src/routes/aggregation.ts, src/parser/yaml.ts,
+      packages/web-ui/src/lib/query/keys.ts, ws-invalidation.ts. Commands run: git
+      diff/stat/name-status/diff --check/status/log; kspec task get/item get/review add/open/get;
+      validations; format/lint/focused lint/typecheck/npm test/dashboard e2e. Claims verified: live
+      fetcher uses /api/aggregation/tasks/summary; static derivation mirrors server ready/dependency
+      semantics; dashboard no longer fetches unfiltered task list for counts; task query invalidates
+      via tasks.all. Categories searched: correctness, edge cases, error handling/cache warming,
+      test quality/source scanning, integration/query invalidation, fixture storage, lint
+      regressions."
+    name: review evidence log
+    required: true
+    runner: codex review
+    created_at: 2026-06-12T15:45:43.053Z
+    completed_at: 2026-06-12T15:45:43.053Z
 events:
   - _ulid: 01KTY77G140TQSXNH4RJ3K2A4W
     actor: Jacob Chapel
@@ -17,9 +136,95 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-12T15:29:42.178Z
+  - _ulid: 01KTY84MMHKBTKYF2FED4X385T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-12T15:45:17.969Z
+  - _ulid: 01KTY84QC1785GB4313K6FEAAQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-12T15:45:20.769Z
+  - _ulid: 01KTY84T1DGWS7ANN3WN86PHBR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-12T15:45:23.502Z
+  - _ulid: 01KTY84WPR005RZGRARYSQ8DWZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-12T15:45:26.232Z
+  - _ulid: 01KTY84ZB76Y0PS6VF1PCS3RVC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-12T15:45:28.935Z
+  - _ulid: 01KTY851ZZV3XA50G53BE85SGC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dashboard e2e
+    timestamp: 2026-06-12T15:45:31.647Z
+  - _ulid: 01KTY854XB2CWT2XYBWCVCQ8HS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-12T15:45:34.635Z
+  - _ulid: 01KTY857RJMZBT7VB2EQK8RV8C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-12T15:45:37.554Z
+  - _ulid: 01KTY85AJYQ9WEJNEWDY4BS3JV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-12T15:45:40.446Z
+  - _ulid: 01KTY85DBWGMZGE2V9Q2K44AA5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-12T15:45:43.292Z
+  - _ulid: 01KTY85G5VY4GQZX2ZE5A4TX6B
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-12T15:45:46.171Z
+  - _ulid: 01KTY85G5V6W1ABHAWRD6PXSMC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-12T15:45:46.171Z
 examined_commit: 73c67ff831fadc6789cef9939bc035773857d730
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -27,7 +232,14 @@ subject:
   ref: "@01KTTD09ZTH4AJ62M1A4M7YWC0"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-12T15:45:46.171Z
 created_at: 2026-06-12T15:29:22.980Z
-updated_at: 2026-06-12T15:29:41.924Z
+updated_at: 2026-06-12T15:45:46.171Z
 notes: []
