@@ -4624,3 +4624,17 @@ inbox:
       - dx
     added_by: "@claude"
     created_at: 2026-06-12T00:45:13.045Z
+  - _ulid: 01KTYB2R088GR5QN2E7F7GJ9HM
+    text: startTestDaemon holds the global port-start lock through each holder's FULL readiness wait
+      (including deliberately-failing contract-test readiness budgets + 5s diagnostic sampling),
+      serializing all dynamic-port daemon startups suite-wide. The lock only needs to cover
+      allocate-port -> child-binds-port; releasing it once the child has observably bound (e.g.
+      bounded TCP connect probe) would shrink hold times from tens of seconds to <1s and remove a
+      whole class of full-suite contention timeouts (see @01KTY9DTPW4E1G33BEFFQNK47X). Needs care
+      for never-binding children (synthetic/failing daemons) and the
+      @daemon-backed-test-fixture-contract spec.
+    tags:
+      - tests
+      - infra
+    added_by: "@claude"
+    created_at: 2026-06-12T16:36:41.608Z
