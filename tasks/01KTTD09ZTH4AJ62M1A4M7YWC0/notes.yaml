@@ -1,1 +1,23 @@
-notes: []
+notes:
+  - _ulid: 01KTY5HDN260KGCAVSNE54YSPD
+    content: "Approach: add fetchTaskStatusSummary() in api.ts (live: GET
+      /api/aggregation/tasks/summary, unwrapEnvelope; static: new fetchTaskStatusSummaryStatic() in
+      api-static.ts deriving TaskStatusSummary from snapshot tasks with server semantics from
+      packages/daemon/src/routes/aggregation.ts: counts by status; ready/blocked_by_dependencies
+      computed over pending+needs_work tasks using blocked_by and depends_on-completed resolution).
+      queryKeys.tasks.summary() already exists; ws-invalidation already invalidates
+      queryKeys.tasks.all which covers the summary key, so counts stay live with no wiring change.
+      Dashboard +page.svelte: replace tasksQuery full-list fetch with summary query; counts map 1:1
+      from summary.counts except ready which adopts summary.ready (deliberate semantic change:
+      server-canonical ready includes needs_work tasks with met deps/no blockers; blocked card stays
+      summary.counts.blocked only). Remove dead client aggregation + TODO. Tests: live fetcher test
+      in tests/web-ui/api-envelope.test.ts (asserts aggregation URL), static derivation tests in
+      tests/web-ui/api-static.test.ts (same semantics incl. needs_work-ready and dep-blocked cases),
+      E2E dashboard.spec.ts updated to intercept summary endpoint + new test asserting no unfiltered
+      /api/tasks list request (Sidebar's filtered limit=0 count query excluded), plus daemon API
+      contract test for /api/aggregation/tasks/summary. Edge cases: missing blocked_by on older
+      snapshots (defensive ?? []), unresolvable depends_on refs count as unmet (matches server
+      findTaskByRef), CacheWarmingError handled by existing retry."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T14:59:51.074Z
