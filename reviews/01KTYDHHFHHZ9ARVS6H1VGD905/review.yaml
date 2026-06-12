@@ -2,7 +2,99 @@ _ulid: 01KTYDHHFHHZ9ARVS6H1VGD905
 slugs: []
 title: Review WebSocket duplicate-event E2E flake
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: all matched files use correct format (1038 files)."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-12T17:35:36.475Z
+    completed_at: 2026-06-12T17:35:36.475Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repo warning baseline: 736 warnings, 0 errors. Focused changed-file lint also
+      passed with 0 warnings and 0 errors for tests/e2e/connection.spec.ts."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-12T17:35:39.545Z
+    completed_at: 2026-06-12T17:35:39.545Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 0 warnings and 0 errors on the only changed file."
+    name: focused-lint
+    required: true
+    runner: npx oxlint tests/e2e/connection.spec.ts
+    created_at: 2026-06-12T17:35:42.601Z
+    completed_at: 2026-06-12T17:35:42.601Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-12T17:35:45.777Z
+    completed_at: 2026-06-12T17:35:45.777Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2787 suites passed; 10567 tests passed, 3 skipped; duration 2693.8s."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-12T17:35:48.871Z
+    completed_at: 2026-06-12T17:35:48.871Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; existing reference warning baseline reported.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-12T17:35:52.073Z
+    completed_at: 2026-06-12T17:35:52.073Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; existing alignment warning baseline reported.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-12T17:35:55.020Z
+    completed_at: 2026-06-12T17:35:55.020Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warning baseline
+      reported.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-12T17:35:58.170Z
+    completed_at: 2026-06-12T17:35:58.170Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 7 Playwright tests in tests/e2e/connection.spec.ts passed in 48.5s after build:e2e."
+    name: focused e2e connection spec
+    required: false
+    runner: npm run test:e2e -- tests/e2e/connection.spec.ts --workers=1
+    created_at: 2026-06-12T17:36:01.228Z
+    completed_at: 2026-06-12T17:36:01.228Z
 events:
   - _ulid: 01KTYDHHFHEKY3W58HQTNT8CKQ
     actor: Jacob Chapel
@@ -17,17 +109,149 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-12T17:20:10.508Z
+  - _ulid: 01KTYEEM8TVEMJGKKXV0GZNG31
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-12T17:35:36.730Z
+  - _ulid: 01KTYEEQ886FW3MQWM0ADG83EX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-12T17:35:39.784Z
+  - _ulid: 01KTYEET916PREP2ZPV9MSW1WD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-12T17:35:42.881Z
+  - _ulid: 01KTYEEXB087A9N84F8D3N1V7S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-12T17:35:46.016Z
+  - _ulid: 01KTYEF0CA1WEWPAES1B3YKEBR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-12T17:35:49.131Z
+  - _ulid: 01KTYEF3FJ13K8JYH9HE0X2D78
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-12T17:35:52.306Z
+  - _ulid: 01KTYEF6BNTZG197BR485VNY23
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-12T17:35:55.253Z
+  - _ulid: 01KTYEF9FK58B672G0JF340PJN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-12T17:35:58.451Z
+  - _ulid: 01KTYEFCDYX81YAYPZRJFPD5QS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e connection spec
+    timestamp: 2026-06-12T17:36:01.470Z
+  - _ulid: 01KTYEFFB4868YPCZSBJ77TNVF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTYEFF30Z7HJAMPQ52KMTMEA
+    timestamp: 2026-06-12T17:36:04.452Z
+  - _ulid: 01KTYEFJ6HKVBKKKPHW9G8J2G5
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-12T17:36:07.377Z
+  - _ulid: 01KTYEFJ6HPA0GEAS5DXZD61QB
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-12T17:36:07.377Z
 examined_commit: f25c25ea5a7bfa955e44779822eed2b1e3b3aee3
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KTYB6MNWXYFFGXGX7MXM3SEG"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KTYEFF30Z7HJAMPQ52KMTMEA
+    entries:
+      - _ulid: 01KTYEFF31MD5CV4ZVQXT3VSAM
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md, tests/e2e/connection.spec.ts,
+          packages/web-ui/src/lib/websocket/manager.ts,
+          packages/web-ui/src/lib/query/ws-invalidation.ts,
+          packages/web-ui/src/routes/+layout.svelte, packages/web-ui/src/routes/tasks/+page.svelte,
+          packages/web-ui/src/lib/stores/connection.svelte.ts,
+          packages/web-ui/src/lib/query/keys.ts.
+
+
+          Commands run: git diff/stat/name-only against dev base; kspec task get
+          @01KTYB6MNWXYFFGXGX7MXM3SEG; kspec item get @web-dashboard; kspec review add/open; git
+          show f25c25e; rg searches for websocket invalidation and AC annotations; npm run
+          format:check; npm run lint -- --quiet; npx oxlint tests/e2e/connection.spec.ts; npm run
+          typecheck; npm test; npm run test:e2e -- tests/e2e/connection.spec.ts --workers=1; kspec
+          validate --refs/--alignment/--completeness --warnings-ok.
+
+
+          Claims verified: Confirmed files:updates delayed invalidations are 650ms and 1500ms in
+          ws-invalidation.ts; confirmed tasks:updates invalidates queryKeys.tasks.all; confirmed
+          WebSocketManager skips seq <= lastSeqProcessed and resets lastSeqProcessed to -1 on
+          connected events; confirmed the changed E2E test isolates duplicate-event measurement by
+          stopping server-to-client forwarding and counting request initiation/in-flight completion
+          rather than late responses.
+
+
+          Categories searched: correctness, timing/edge cases under delayed invalidation and
+          in-flight requests, error handling for failed requests in the tracker, test quality/AC
+          coverage for @web-dashboard ac-30/ac-31/ac-32, integration with TanStack query
+          invalidation, and shared-guidance impact. No blocking findings. Shared/package surfaces
+          touched: none.
+        created_at: 2026-06-12T17:36:04.193Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: pr-reviewer
+    created_at: 2026-06-12T17:36:07.377Z
 created_at: 2026-06-12T17:19:43.601Z
-updated_at: 2026-06-12T17:20:10.264Z
+updated_at: 2026-06-12T17:36:07.377Z
 notes: []

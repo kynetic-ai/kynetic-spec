@@ -26335,19 +26335,19 @@ reviews:
   - _ulid: 01KTYDHHFHHZ9ARVS6H1VGD905
     slugs: []
     title: Review WebSocket duplicate-event E2E flake
-    disposition: pending
+    disposition: approved
     author: Jacob Chapel
-    check_count: 0
+    check_count: 9
     examined_commit: f25c25ea5a7bfa955e44779822eed2b1e3b3aee3
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KTYB6MNWXYFFGXGX7MXM3SEG"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-06-12T17:19:43.601Z
-    updated_at: 2026-06-12T17:20:10.264Z
+    updated_at: 2026-06-12T17:36:07.377Z
