@@ -65508,9 +65508,22 @@ runs:
     started_at: 2026-06-12T16:42:34.321Z
   - _ulid: 01KTYBDNAJSFCJXHGA7ZTEE6NY
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-12T16:42:39.314Z
+        completed_at: 2026-06-12T16:44:35.870Z
+        notes: "Baseline searched: observations list, inbox list, searches for STACK_TRACE_ERROR /
+          port-start lock / bounded wait / flake. Existing coverage found: inbox 01KTYB2R
+          (port-start lock hold, captured earlier this session), pending task 01KN69W9
+          (STACK_TRACE_ERROR shard stabilization), observation 01KTY9Z3 friction+success (assertion
+          budgets under parallel load; task-description quality)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-12T16:44:35.870Z
+        completed_at: 2026-06-12T16:44:35.870Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T16:42:39.314Z
