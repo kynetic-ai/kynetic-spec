@@ -31922,7 +31922,7 @@
   slugs: []
   title: Stabilize WebSocket E2E daemon-restart reconnect flake
   type: bug
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 3
@@ -31936,6 +31936,7 @@
   created_at: 2026-06-12T14:53:21.070Z
   started_at: 2026-06-12T15:52:14.871Z
   submitted_at: 2026-06-12T16:14:45.098Z
+  completed_at: 2026-06-12T16:41:47.319Z
   automation: eligible
 - _ulid: 01KTY9DTPW4E1G33BEFFQNK47X
   slugs: []
