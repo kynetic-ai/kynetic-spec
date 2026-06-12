@@ -22612,7 +22612,7 @@ workspaces:
         head: 7972b4608173f5a44ec58f128f648c95c9164e8a
         last_seen_at: 2026-06-12T00:13:54.002Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-workflow-runs-cli-dist-export-01ktwfh1
-  - active_role: worker
+  - active_role: null
     base_branch_point: 237cc4f207aa95ee6070d36d519f6b02542913bc
     bootstrap:
       status: succeeded
@@ -22943,12 +22943,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-12T00:37:31.483Z
+      updated_at: 2026-06-12T00:45:45.076Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-12T00:37:31.483Z
+      updated_at: 2026-06-12T00:45:45.076Z
     integration:
       status: pending
       detail: null
@@ -22956,8 +22956,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 237cc4f207aa95ee6070d36d519f6b02542913bc
-      updated_at: 2026-06-12T00:37:31.483Z
-    lifecycle_state: active
+      updated_at: 2026-06-12T00:45:45.076Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KTWG0DBVCNS31XQF000XDEGJ
     task_ref: "@01KTWG0DBVCNS31XQF000XDEGJ"
@@ -22965,9 +22965,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-12T00:15:16.676Z
-      last_reconciled_at: 2026-06-12T00:37:31.483Z
+      last_reconciled_at: 2026-06-12T00:45:45.076Z
       created_at: 2026-06-12T00:14:46.430Z
-      updated_at: 2026-06-12T00:37:31.483Z
+      updated_at: 2026-06-12T00:45:45.076Z
     workspace_id: dispatch-workspace-01KTWG0DBVCNS31XQF000XDEGJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
