@@ -24993,12 +24993,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-12T16:45:44.187Z
+      updated_at: 2026-06-12T16:46:11.400Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-12T16:45:44.187Z
+      updated_at: 2026-06-12T16:46:11.400Z
     integration:
       status: pending
       detail: null
@@ -25006,8 +25006,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 09c595c91aed681d9fed841df60036e95933b25f
-      updated_at: 2026-06-12T16:45:44.187Z
-    lifecycle_state: ready
+      updated_at: 2026-06-12T16:46:11.400Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTY9DTPW4E1G33BEFFQNK47X
     task_ref: "@01KTY9DTPW4E1G33BEFFQNK47X"
@@ -25015,16 +25015,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-12T16:19:32.291Z
-      last_reconciled_at: 2026-06-12T16:45:44.187Z
+      last_reconciled_at: 2026-06-12T16:46:11.400Z
       created_at: 2026-06-12T16:18:59.882Z
-      updated_at: 2026-06-12T16:45:44.187Z
+      updated_at: 2026-06-12T16:46:11.400Z
     workspace_id: dispatch-workspace-01KTY9DTPW4E1G33BEFFQNK47X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 9c4ea490815dc67f9f31d004ba45ce48bb006a0c
+        last_seen_at: 2026-06-12T16:46:11.400Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-last-exit-graceful-sigterm-test-flake-01kty9dt-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-daemon-last-exit-graceful-sigterm-test-flake/01kty9dt
-        head: 09c595c91aed681d9fed841df60036e95933b25f
-        last_seen_at: 2026-06-12T16:18:59.882Z
+        head: 9c4ea490815dc67f9f31d004ba45ce48bb006a0c
+        last_seen_at: 2026-06-12T16:46:11.400Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-last-exit-graceful-sigterm-test-flake-01kty9dt
