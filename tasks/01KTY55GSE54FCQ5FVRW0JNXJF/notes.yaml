@@ -13,3 +13,13 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-12T15:55:19.927Z
+  - _ulid: 01KTY9TAEXAG3X9MSQGSJWA6A2
+    content: "Verification complete. Full E2E suite (483 passed, 1 skipped, ~5m, fully parallel)
+      including the restart test; focused websocket spec passes in 3.9s. Quality gates all green:
+      format:check, lint --quiet (0 errors), oxlint on changed file (0 warnings), typecheck, full
+      unit suite (10567 passed, 3 skipped), kspec validate refs/alignment/completeness with
+      --warnings-ok. Change is test-only (tests/e2e/api-websocket.spec.ts) — no product code
+      touched; AC annotations ac-28/ac-29 unchanged."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T16:14:37.021Z
