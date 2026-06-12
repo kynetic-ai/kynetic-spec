@@ -1,1 +1,21 @@
-notes: []
+notes:
+  - _ulid: 01KTYAD11M5KCA7BQTDVMN78N9
+    content: "Root cause analysis: the test body has two waits whose worst case exceeds the 45s vitest
+      testTimeout. (1) startTestDaemon without an explicit port acquires the GLOBAL port-start lock
+      (tmpdir file, budget 120s) and every holder keeps it through spawn + its full readiness wait.
+      In the default pool this test contends with tests/helpers/daemon.test.ts (~10 lock-taking
+      spawns, several deliberately holding the lock through failing-readiness budgets + 5s
+      diagnostic sampling + bounded stop) and tests/cli-serve.test.ts. Under full-suite load (8
+      workers spawning CLI subprocesses) real daemon startups slow to multiple seconds, so the lock
+      queue wait can exceed 45s — the test then dies at the opaque vitest timeout (the observed
+      STACK_TRACE_ERROR after 45005ms) and passes instantly on focused rerun. (2) The post-SIGTERM
+      'await exited' is unbounded, so any graceful-shutdown stall would hit the same opaque timeout.
+      Approach: (a) move tests/daemon-last-exit.test.ts into heavySerialSuites in vitest.config.ts —
+      the established remedy for exactly this signature (see the websocket-protocol.test.ts entry
+      with identical symptoms); (b) bound the SIGTERM exit wait with a generous 20s budget that
+      fails with stdout/stderr tails so a real shutdown hang surfaces as an actionable failure
+      instead of an opaque timeout. Assertions unchanged (exit code 0 + graceful record contents) —
+      nothing weakened. Test plan: focused file run + full npm test."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T16:24:49.972Z
