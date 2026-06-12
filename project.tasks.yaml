@@ -31894,7 +31894,7 @@
     - task-stabilize-e2e-plan-review-fixture-routes
   title: Stabilize E2E plan and review fixture route failures
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -31904,4 +31904,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-11T23:24:19.195Z
+  started_at: 2026-06-12T00:15:39.771Z
   automation: eligible
