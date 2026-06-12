@@ -13,3 +13,24 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-12T00:19:20.942Z
+  - _ulid: 01KTWMEFY6A60GJQPMKH1BFDXH
+    content: "Fix complete in commit 06cdadb939. Migrated tests/e2e/fixtures to folder-backed
+      plan/review storage using the real migration code (applyPlanMigration/applyReviewMigration run
+      against a temp copy): 3 plans/<ulid>/ folders (plan.yaml + plan.md + notes.yaml +
+      resources.yaml), 6 reviews/<ulid>/ folders (review.yaml + resources.yaml), lean
+      project.plans.yaml/project.reviews.yaml indexes. Fixture kynetic.yaml bumped to 1.2 with
+      plan_storage/review_storage folder + resource_storage entity_scoped declarations matching
+      kspec init. setupFixtures in tests/daemon-api/helpers.ts now copies the real folder layout
+      instead of overwriting the manifest and materializing shells from monolithic files (the
+      materialize helpers remain for setupInlineFixtures). Added a .gitignore negation for
+      tests/e2e/fixtures/plans/ — the repo-root plans/ ignore rule was silently swallowing the new
+      fixture folders, which would have broken clean checkouts. Verification: full unit suite 10555
+      passed/0 failed; full npm run test:e2e 509 passed/1 skipped/0 failed (was 45 failed/17 did not
+      run); re-ran plan/review-affected unit tests (153) and e2e specs (76) against the final
+      committed state after oxfmt touched the plan.md fixtures; format:check, lint --quiet,
+      typecheck, and kspec validate refs/alignment/completeness all green. The earlier daemon
+      setup/WebSocket timeout failures did not reproduce — consistent with them being load-order
+      fallout from the deterministic route 500s."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T00:41:54.886Z
