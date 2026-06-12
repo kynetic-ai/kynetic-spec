@@ -49,3 +49,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-12T14:35:22.926Z
+  - _ulid: 01KTY50VS5JW7D4TCP0NWWSAH1
+    content: "Fix cycle 1 worker verification (task was completed concurrently by maintainer during this
+      run): the tests/cli-serve.test.ts conflict arose because
+      @task-stabilize-upgrade-folder-storage-test (dev merge 237cc4f207) independently added
+      --ignore-scripts to the same npm pack call — both branches made the same functional fix; merge
+      adefc545ee kept this branch's version, nothing dropped from either side. Verified merged dev
+      tree: fast-forwarded canonical branch to adefc545ee and pushed; format:check clean; lint
+      --quiet 0 errors; typecheck clean; full npm test 2786 suites / 10562 tests passed (ran
+      concurrently with another agent's full suite in a sibling worktree — the exact dist-rewrite
+      race class this task fixed — zero flakes); kspec validate refs/alignment/completeness pass.
+      Replied to and resolved the review evidence-log thread on @01KTWJY85H3FNF572G2TWV3CXY."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T14:50:48.485Z
