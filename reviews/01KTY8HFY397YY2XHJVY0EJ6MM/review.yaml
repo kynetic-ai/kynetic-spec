@@ -145,6 +145,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-12T16:09:27.179Z
+  - _ulid: 01KTY9HFAA33AW72VH3518Z7H2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KTY9HF26WVFHSYHPQWT6VY9M
+    timestamp: 2026-06-12T16:09:47.082Z
 examined_commit: 6bebecae82d7dffac2f904df2eb0a5fa6383029d
 external_links: []
 lifecycle_state: open
@@ -154,8 +161,48 @@ subject:
   content_hash: ""
   ref: "@01KTTD10DV7B1G3M4DXFSTD1WJ"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KTY9HF26WVFHSYHPQWT6VY9M
+    entries:
+      - _ulid: 01KTY9HF26TACZRXGW2SR0KYDS
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; full diff for src/agents/spawner.ts,
+          src/cli/batch-write-buffer.ts, src/parser/entity-local-resources.ts,
+          src/parser/file-lock.ts, src/parser/shadow.ts; surrounding catch-site context in all five
+          files.
+
+
+          Commands run: git status/log/diff/diff --check; rg catch/.catch scan; TypeScript-parser
+          enumeration of empty catch blocks and .catch(() => null/{}) sites; npm run format:check;
+          npm run lint -- --quiet; npx oxlint on changed TS files; npm run typecheck; npm test; npm
+          test -- --fresh tests/daemon-last-exit.test.ts; kspec validate
+          --refs/--alignment/--completeness --warnings-ok.
+
+
+          Claims verified: branch changes are comments-only; changed files are exactly the five
+          task-scoped files; no test files changed; new/expanded comments explain why swallowed
+          errors are safe; remaining empty catches/.catch sites already had local justification or
+          handled/returned errors. Focused lint warning at src/parser/entity-local-resources.ts:948
+          is pre-existing (git blame 153ed3a92e5) and outside this diff.
+
+
+          Categories searched: correctness/bounds (no control-flow or semantic diff), error handling
+          (swallowed cleanup/probe/fallback sites reviewed), edge cases (cleanup failures,
+          unreadable/missing paths, process group already gone), test quality (no source-scanning
+          tests added, no tests changed), integration (full suite triaged; daemon-last-exit timeout
+          treated as flaky/non-regression with follow-up @01KTY9DT), security (resource symlink
+          escape cleanup comment preserves rejection semantics).
+
+
+          Shared/package guidance surfaces touched: none; shared-guidance neutrality checklist not
+          applicable.
+        created_at: 2026-06-12T16:09:46.822Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-12T15:52:19.139Z
-updated_at: 2026-06-12T16:09:26.925Z
+updated_at: 2026-06-12T16:09:46.822Z
 notes: []
