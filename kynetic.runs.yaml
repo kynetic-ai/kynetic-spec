@@ -65178,9 +65178,20 @@ runs:
     completed_at: 2026-06-12T00:45:22.723Z
   - _ulid: 01KTY51Y2WGZMBM44YHG4Q1792
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-12T14:51:23.612Z
+        completed_at: 2026-06-12T14:52:26.519Z
+        notes: "Baseline searched: observations list, inbox list (383 items), tasks list. Noted existing
+          inbox 01KGGPJ6 (workflow show should infer active run) and the cancelled-duplicate
+          stabilize-flake task cluster."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-12T14:52:26.519Z
+        completed_at: 2026-06-12T14:52:26.519Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T14:51:23.612Z
