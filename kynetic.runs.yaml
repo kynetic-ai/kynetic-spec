@@ -65520,7 +65520,7 @@ runs:
     started_at: 2026-06-12T16:42:34.321Z
     completed_at: 2026-06-12T16:44:53.952Z
   - _ulid: 01KTYBDNAJSFCJXHGA7ZTEE6NY
-    status: active
+    status: completed
     current_step: 3
     initiated_by: "@claude"
     step_results:
@@ -65551,7 +65551,13 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-12T16:44:43.449Z
-        completed_at: 2026-06-12T16:44:43.449Z
+        completed_at: 2026-06-12T16:45:10.529Z
+        notes: "Captured 2 observations: friction (wait budgets exceeding testTimeout produce
+          diagnostics-free failures; bound every wait below testTimeout with diagnostics) and
+          success (documenting flake signature + mechanism in config comments enables instant
+          pattern-matching). Skipped duplicates: port-start lock fix (inbox 01KTYB2R),
+          task-description quality (01KTY9Z3), STACK_TRACE_ERROR class (task 01KN69W9)."
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T16:42:39.314Z
+    completed_at: 2026-06-12T16:45:10.529Z
