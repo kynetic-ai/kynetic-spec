@@ -25644,11 +25644,11 @@ workspaces:
     canonical_branch: dispatch/task/stabilize-websocket-duplicate-event-e2e-response-count-flake/01ktyb6m
     canonical_branch_head: f25c25ea5a7bfa955e44779822eed2b1e3b3aee3
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-12T17:37:41.089Z
+      updated_at: 2026-06-12T17:41:07.374Z
     health:
       status: healthy
       issues: []
@@ -25662,17 +25662,17 @@ workspaces:
       target_branch: dev
       target_commit: 64beba835a189403a6c3c969f083e759b4623cdf
       updated_at: 2026-06-12T17:37:41.089Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTYB6MNWXYFFGXGX7MXM3SEG
     task_ref: "@01KTYB6MNWXYFFGXGX7MXM3SEG"
     task_slug: stabilize-websocket-duplicate-event-e2e-response-count-flake
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-12T17:41:07.374Z
       last_active_at: 2026-06-12T17:18:35.421Z
       last_reconciled_at: 2026-06-12T17:40:02.203Z
       created_at: 2026-06-12T16:47:05.819Z
-      updated_at: 2026-06-12T17:40:02.203Z
+      updated_at: 2026-06-12T17:41:07.374Z
     workspace_id: dispatch-workspace-01KTYB6MNWXYFFGXGX7MXM3SEG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
