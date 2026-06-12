@@ -168,9 +168,25 @@ events:
       kind: nit
       thread_ulid: 01KTY58NBCZYJNJWP61CQCVMEF
     timestamp: 2026-06-12T14:55:04.272Z
+  - _ulid: 01KTY5915KD029GV9FYCVT2MWV
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-12T14:55:16.147Z
+  - _ulid: 01KTY5915KJ8NWHV4MX0AM1AFJ
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-12T14:55:16.147Z
 examined_commit: 06cdadb93910226b913319c7e7bcc7861b45f837
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -218,7 +234,14 @@ threads:
           timeout was captured as @01KTY55G after its focused rerun passed.
         created_at: 2026-06-12T14:55:04.044Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-12T14:55:16.147Z
 created_at: 2026-06-12T14:31:54.453Z
-updated_at: 2026-06-12T14:55:04.044Z
+updated_at: 2026-06-12T14:55:16.147Z
 notes: []
