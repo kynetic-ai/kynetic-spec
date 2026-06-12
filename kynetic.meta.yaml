@@ -21816,6 +21816,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-12T14:54:16.538Z
+  - _ulid: 01KTY8BD6HMYHKV41N6J57HCZ8
+    type: friction
+    content: During automated review of @task-dashboard-summary-adoption, the required full npm test
+      gate passed but took 2573.2s (~43 minutes) for a narrow dashboard/API change. This creates
+      high review latency even when focused lint, typecheck, unit tests, and targeted dashboard E2E
+      are clean. Consider triaging whether reviewer gates can use stronger cache reuse, sharded
+      full-suite evidence, or a policy for task-scoped verification plus separately scheduled
+      full-suite confirmation without weakening regression protection.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-12T15:48:59.729Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
