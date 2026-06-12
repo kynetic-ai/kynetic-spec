@@ -24481,12 +24481,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-12T16:17:46.818Z
+      updated_at: 2026-06-12T16:18:02.974Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-12T16:17:46.818Z
+      updated_at: 2026-06-12T16:18:02.974Z
     integration:
       status: pending
       detail: null
@@ -24494,8 +24494,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e82949fd0090db8490d2a605c7419622301dd206
-      updated_at: 2026-06-12T16:17:46.818Z
-    lifecycle_state: ready
+      updated_at: 2026-06-12T16:18:02.974Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KTY55GSE54FCQ5FVRW0JNXJF
     task_ref: "@01KTY55GSE54FCQ5FVRW0JNXJF"
@@ -24503,16 +24503,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-12T15:51:52.415Z
-      last_reconciled_at: 2026-06-12T16:17:46.818Z
+      last_reconciled_at: 2026-06-12T16:18:02.974Z
       created_at: 2026-06-12T15:51:15.438Z
-      updated_at: 2026-06-12T16:17:46.818Z
+      updated_at: 2026-06-12T16:18:02.974Z
     workspace_id: dispatch-workspace-01KTY55GSE54FCQ5FVRW0JNXJF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 3f10a37da2c83f3a03f2ea45ce272087b4252cde
+        last_seen_at: 2026-06-12T16:18:02.974Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-websocket-e2e-daemon-restart-reconnect-flake-01kty55g-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/stabilize-websocket-e2e-daemon-restart-reconnect-flake/01kty55g
-        head: e82949fd0090db8490d2a605c7419622301dd206
-        last_seen_at: 2026-06-12T15:51:15.438Z
+        head: 3f10a37da2c83f3a03f2ea45ce272087b4252cde
+        last_seen_at: 2026-06-12T16:18:02.974Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-websocket-e2e-daemon-restart-reconnect-flake-01kty55g
