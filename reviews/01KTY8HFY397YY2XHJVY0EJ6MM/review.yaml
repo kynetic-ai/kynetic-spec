@@ -57,6 +57,18 @@ checks:
     runner: kspec
     created_at: 2026-06-12T16:09:05.516Z
     completed_at: 2026-06-12T16:09:05.516Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok. Existing AC-coverage/annotation
+      warning baseline exited 0; this direct chore task has no spec_ref, so task bounds were
+      reviewed directly."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-12T16:09:15.676Z
+    completed_at: 2026-06-12T16:09:15.676Z
 events:
   - _ulid: 01KTY8HFY34Q1NTQK3527VWDMB
     actor: Jacob Chapel
@@ -106,6 +118,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-12T16:09:05.748Z
+  - _ulid: 01KTY9GGWWHSVBGQMTBTSRWRKY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-12T16:09:15.932Z
 examined_commit: 6bebecae82d7dffac2f904df2eb0a5fa6383029d
 external_links: []
 lifecycle_state: open
@@ -118,5 +137,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-12T15:52:19.139Z
-updated_at: 2026-06-12T16:09:05.516Z
+updated_at: 2026-06-12T16:09:15.676Z
 notes: []
