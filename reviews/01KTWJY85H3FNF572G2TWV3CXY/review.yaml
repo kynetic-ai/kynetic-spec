@@ -58,6 +58,18 @@ checks:
     runner: npm test
     created_at: 2026-06-12T00:30:37.639Z
     completed_at: 2026-06-12T00:30:37.639Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed fresh focused tests: lint-no-unguarded-npm-pack + workflow-runs (28 suites, 95
+      tests), and cli-serve npm-installed package case (1 selected test passed, 46 skipped by
+      filter)."
+    name: focused tests
+    required: false
+    runner: npm test
+    created_at: 2026-06-12T00:30:42.689Z
+    completed_at: 2026-06-12T00:30:42.689Z
 events:
   - _ulid: 01KTWJY85GGC33BNFXBZBCGZHK
     actor: Jacob Chapel
@@ -107,6 +119,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-12T00:30:37.873Z
+  - _ulid: 01KTWKSZQKG00J2Z70QXFVMDDV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-06-12T00:30:42.931Z
 examined_commit: 7972b4608173f5a44ec58f128f648c95c9164e8a
 external_links: []
 lifecycle_state: open
@@ -119,5 +138,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-12T00:15:34.065Z
-updated_at: 2026-06-12T00:30:37.639Z
+updated_at: 2026-06-12T00:30:42.689Z
 notes: []
