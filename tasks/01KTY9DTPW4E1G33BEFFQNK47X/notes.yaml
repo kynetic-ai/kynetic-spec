@@ -19,3 +19,21 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-12T16:24:49.972Z
+  - _ulid: 01KTYBCT40F8E42RXP2EKKZ5S1
+    content: "Implemented and verified. Changes: (1) vitest.config.ts — moved
+      tests/daemon-last-exit.test.ts into heavySerialSuites with a comment documenting the
+      port-start-lock contention mechanism; this is the codebase-established remedy for the
+      passes-in-isolation/STACK_TRACE_ERROR-in-full-suite signature (same as
+      websocket-protocol.test.ts). (2) tests/daemon-last-exit.test.ts — replaced the unbounded
+      post-SIGTERM exit wait with waitForChildExitBounded (20s budget, far above the <1s healthy
+      shutdown), which fails with the daemon stdout/stderr tails so a real graceful-shutdown stall
+      becomes an actionable failure instead of an opaque vitest timeout. Assertions unchanged: exit
+      code 0, graceful record kind/reason/timestamp/pid all still asserted. Gates: format:check,
+      lint --quiet (0 errors), focused oxlint on changed files (0 warnings), typecheck, full npm
+      test (2787 suites / 10567 tests passed; daemon-last-exit ran in heavy-serial in 1.7s), and
+      kspec validate refs/alignment/completeness all green. Also captured an inbox item (01KTYB2R)
+      proposing the systemic fix — releasing the port-start lock once the child binds instead of
+      after full readiness — as follow-up outside this task scope."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T16:42:11.456Z
