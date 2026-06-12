@@ -24992,18 +24992,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/stabilize-daemon-last-exit-graceful-sigterm-test-flake/01kty9dt
-    canonical_branch_head: 09c595c91aed681d9fed841df60036e95933b25f
+    canonical_branch_head: 9c4ea490815dc67f9f31d004ba45ce48bb006a0c
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-12T16:18:59.882Z
+      updated_at: 2026-06-12T16:42:41.941Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-12T16:19:32.291Z
+      updated_at: 2026-06-12T16:42:41.941Z
     integration:
       status: pending
       detail: null
@@ -25011,7 +25011,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 09c595c91aed681d9fed841df60036e95933b25f
-      updated_at: 2026-06-12T16:18:59.882Z
+      updated_at: 2026-06-12T16:42:41.941Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTY9DTPW4E1G33BEFFQNK47X
@@ -25020,9 +25020,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-12T16:19:32.291Z
-      last_reconciled_at: 2026-06-12T16:19:32.291Z
+      last_reconciled_at: 2026-06-12T16:42:41.941Z
       created_at: 2026-06-12T16:18:59.882Z
-      updated_at: 2026-06-12T16:19:32.291Z
+      updated_at: 2026-06-12T16:42:41.941Z
     workspace_id: dispatch-workspace-01KTY9DTPW4E1G33BEFFQNK47X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
