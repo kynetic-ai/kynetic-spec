@@ -14,3 +14,21 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-11T23:44:31.124Z
+  - _ulid: 01KTWJJCAT9EMX0GQ12JGT69Z0
+    content: "Fix implemented and verified. (1) tests/cli-serve.test.ts npm pack now passes
+      --ignore-scripts — prepack runs the full build (tsc + build:daemon + rm -rf dist/web-ui),
+      which rewrote the live dist/ tree mid-suite while parallel vitest workers spawned node
+      dist/cli/index.js; a CLI subprocess reading dist/cli/commands/validate.js mid-rewrite saw the
+      transient missing-export SyntaxError. release-packaging.test.ts already used --ignore-scripts
+      for this exact reason. The packed tarball still reflects the current build because the test
+      runner pre-test hook guarantees dist/ is fresh, and the test still verified runtime dep
+      resolution (ran 4.7s, not skipped). (2) Added tools/eslint-rules/no-unguarded-npm-pack.js
+      (registered in .oxlintrc.json tests override, error level) flagging npm pack without
+      --ignore-scripts in string/template/spawn-array forms, with behavioral coverage in
+      tests/lint-no-unguarded-npm-pack.test.ts (7 tests). Gates: format:check clean, lint --quiet 0
+      errors, focused oxlint on changed files 0 warnings, typecheck clean, full npm test 2781 suites
+      / 10545 tests passed, kspec validate refs/alignment/completeness pass. Commit 7972b46081
+      pushed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T00:09:05.114Z
