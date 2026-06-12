@@ -26299,7 +26299,7 @@ reviews:
     title: Review stabilize websocket e2e daemon restart reconnect flake
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 10
     examined_commit: 3f10a37da2c83f3a03f2ea45ce272087b4252cde
     lifecycle_state: open
     related_refs: []
@@ -26312,4 +26312,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-12T16:19:54.782Z
-    updated_at: 2026-06-12T16:20:23.345Z
+    updated_at: 2026-06-12T16:40:23.756Z

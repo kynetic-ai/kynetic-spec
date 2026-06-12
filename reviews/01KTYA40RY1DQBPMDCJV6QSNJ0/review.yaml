@@ -2,7 +2,115 @@ _ulid: 01KTYA40RY1DQBPMDCJV6QSNJ0
 slugs: []
 title: Review stabilize websocket e2e daemon restart reconnect flake
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; 1038 files checked.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-12T16:39:57.788Z
+    completed_at: 2026-06-12T16:39:57.788Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint completed with 0 errors; existing warning baseline reported 736 warnings.
+      Focused changed-file lint via npx oxlint tests/e2e/api-websocket.spec.ts reported 0 warnings
+      and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-12T16:40:00.732Z
+    completed_at: 2026-06-12T16:40:00.732Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found 0 warnings and 0 errors on changed E2E file.
+    name: focused-lint
+    required: false
+    runner: npx oxlint tests/e2e/api-websocket.spec.ts
+    created_at: 2026-06-12T16:40:03.628Z
+    completed_at: 2026-06-12T16:40:03.628Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit exited 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-12T16:40:06.569Z
+    completed_at: 2026-06-12T16:40:06.569Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2787 test suites passed; 10567 tests passed, 3 skipped; duration 2671.9s. Full log:
+      /tmp/kspec-test-cache/01KTYA1FY08F0DB6YPT7MH7F3R/0d199bff76b1ab32.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-12T16:40:09.441Z
+    completed_at: 2026-06-12T16:40:09.441Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with warnings allowed; schema OK, references OK, 6 reference warnings in
+      existing baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-12T16:40:12.321Z
+    completed_at: 2026-06-12T16:40:12.321Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with warnings allowed; 46 alignment warnings in existing baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-12T16:40:15.154Z
+    completed_at: 2026-06-12T16:40:15.154Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with warnings allowed; 267 completeness warnings in existing baseline,
+      including this bug task having no spec_ref.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-12T16:40:18.006Z
+    completed_at: 2026-06-12T16:40:18.006Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full Playwright run executed tests/e2e/api-websocket.spec.ts:71, the changed
+      daemon-restart reconnect test, without failure.
+    name: target e2e coverage
+    required: false
+    runner: npm run test:e2e
+    created_at: 2026-06-12T16:40:20.852Z
+    completed_at: 2026-06-12T16:40:20.852Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Informational unrelated flake: full Playwright run had 510 passed, 1 skipped, 1 failed in
+      tests/e2e/connection.spec.ts:165 duplicate-event response-count test. The failing test passed
+      in two focused reruns with --workers=1. Follow-up task created: @01KTYB6M."
+    name: full e2e suite
+    required: false
+    runner: npm run test:e2e
+    created_at: 2026-06-12T16:40:23.756Z
+    completed_at: 2026-06-12T16:40:23.756Z
 events:
   - _ulid: 01KTYA40RY3X6SMJKY12BH5FV7
     actor: Jacob Chapel
@@ -17,6 +125,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-12T16:20:23.601Z
+  - _ulid: 01KTYB8QTAXTS2BA3SQ3DDJWB7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-12T16:39:58.026Z
+  - _ulid: 01KTYB8TPD0G4MQ6J4YRX2V877
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-12T16:40:00.973Z
+  - _ulid: 01KTYB8XGWV1VKCGK98XGNTVPD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-12T16:40:03.868Z
+  - _ulid: 01KTYB90D3EZVEDJ17048KWKBC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-12T16:40:06.819Z
+  - _ulid: 01KTYB9362PVGQSX262T60GFM8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-12T16:40:09.666Z
+  - _ulid: 01KTYB960ACJVW216CYNY279BP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-12T16:40:12.554Z
+  - _ulid: 01KTYB98SA0N10ZVKDR6BTJPAP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-12T16:40:15.402Z
+  - _ulid: 01KTYB9BJ9VN2VPJGTZ5MHVC83
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-12T16:40:18.249Z
+  - _ulid: 01KTYB9EB101AFN5B5548H0MYD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: target e2e coverage
+    timestamp: 2026-06-12T16:40:21.089Z
+  - _ulid: 01KTYB9H5X9KKT83A1Y7ZR3TFS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full e2e suite
+    timestamp: 2026-06-12T16:40:23.997Z
 examined_commit: 3f10a37da2c83f3a03f2ea45ce272087b4252cde
 external_links: []
 lifecycle_state: open
@@ -29,5 +207,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-12T16:19:54.782Z
-updated_at: 2026-06-12T16:20:23.345Z
+updated_at: 2026-06-12T16:40:23.756Z
 notes: []
