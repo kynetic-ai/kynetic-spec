@@ -22937,18 +22937,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-stabilize-e2e-plan-review-fixture-routes/01ktwg0d
-    canonical_branch_head: 237cc4f207aa95ee6070d36d519f6b02542913bc
+    canonical_branch_head: 06cdadb93910226b913319c7e7bcc7861b45f837
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-12T00:14:46.430Z
+      updated_at: 2026-06-12T00:37:31.483Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-12T00:15:16.676Z
+      updated_at: 2026-06-12T00:37:31.483Z
     integration:
       status: pending
       detail: null
@@ -22956,7 +22956,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 237cc4f207aa95ee6070d36d519f6b02542913bc
-      updated_at: 2026-06-12T00:14:46.430Z
+      updated_at: 2026-06-12T00:37:31.483Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTWG0DBVCNS31XQF000XDEGJ
@@ -22965,9 +22965,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-12T00:15:16.676Z
-      last_reconciled_at: 2026-06-12T00:15:16.676Z
+      last_reconciled_at: 2026-06-12T00:37:31.483Z
       created_at: 2026-06-12T00:14:46.430Z
-      updated_at: 2026-06-12T00:15:16.676Z
+      updated_at: 2026-06-12T00:37:31.483Z
     workspace_id: dispatch-workspace-01KTWG0DBVCNS31XQF000XDEGJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
