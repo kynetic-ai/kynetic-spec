@@ -17,8 +17,11 @@ description: 'Observed during review of @task-dedupe-web-ui-devdeps on 2026-06-1
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: completed
 blocked_by: []
+closed_reason: Review had approved the guard; manual merge conflict in tests/cli-serve.test.ts
+  resolved on dev and committed as adefc54 after preserving npm pack --ignore-scripts behavior and
+  adding the lint regression guard.
 depends_on: []
 context: []
 priority: 2
@@ -100,8 +103,24 @@ history:
         previous: 2026-06-11T23:38:10.760Z
     command: task-start
     timestamp: 2026-06-12T14:32:13.426Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: in_progress
+      closed_reason:
+        new: Review had approved the guard; manual merge conflict in tests/cli-serve.test.ts resolved on dev
+          and committed as adefc54 after preserving npm pack --ignore-scripts behavior and adding
+          the lint regression guard.
+        previous: null
+      completed_at:
+        new: 2026-06-12T14:35:22.909Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-12T14:35:22.926Z
 created_at: 2026-06-11T23:15:55.881Z
 started_at: 2026-06-12T14:32:13.426Z
 submitted_at: 2026-06-12T00:09:05.926Z
+completed_at: 2026-06-12T14:35:22.909Z
 todos: []
 automation: eligible

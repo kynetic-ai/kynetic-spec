@@ -42,3 +42,10 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-12T00:31:55.737Z
+  - _ulid: 01KTY44KXEQK4TAAN7MSABNX07
+    content: "Completed with --force from in_progress state. Reason: Review had approved the guard;
+      manual merge conflict in tests/cli-serve.test.ts resolved on dev and committed as adefc54
+      after preserving npm pack --ignore-scripts behavior and adding the lint regression guard."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-12T14:35:22.926Z
