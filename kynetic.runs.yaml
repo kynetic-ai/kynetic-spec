@@ -65258,7 +65258,7 @@ runs:
     completed_at: 2026-06-12T14:58:28.087Z
   - _ulid: 01KTY6ZED6KN5NB5R79P4CJNHP
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -65270,7 +65270,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-12T15:26:45.619Z
-        completed_at: 2026-06-12T15:26:45.619Z
+        completed_at: 2026-06-12T15:26:59.712Z
+        notes: "Candidates identified from task-dashboard-summary-adoption session: (1) FRICTION:
+          svelte-check 61-error baseline in packages/web-ui blocks use of npm run check as a type
+          gate for .svelte files (root tsc --noEmit does not cover Svelte components) — concrete,
+          systemic. (2) SUCCESS: task description with explicit display semantics (blocked card must
+          NOT fold in blocked_by_dependencies; ready deliberately adopts server definition)
+          eliminated all scope ambiguity for automated work. (3) SUCCESS: hierarchical TanStack
+          query keys meant queryKeys.tasks.summary() was auto-covered by existing tasks.all WS
+          invalidation — zero wiring needed. (4) One-off items (shadowed lint var, wrong-cwd npm
+          test) — low confidence/not systemic."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-12T15:26:59.712Z
+        completed_at: 2026-06-12T15:26:59.712Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T15:24:59.175Z
