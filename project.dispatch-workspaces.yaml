@@ -25174,7 +25174,7 @@ workspaces:
         head: 9c4ea490815dc67f9f31d004ba45ce48bb006a0c
         last_seen_at: 2026-06-12T16:46:11.400Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-last-exit-graceful-sigterm-test-flake-01kty9dt
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 64beba835a189403a6c3c969f083e759b4623cdf
     bootstrap:
       status: succeeded
@@ -25644,25 +25644,25 @@ workspaces:
     canonical_branch: dispatch/task/stabilize-websocket-duplicate-event-e2e-response-count-flake/01ktyb6m
     canonical_branch_head: f25c25ea5a7bfa955e44779822eed2b1e3b3aee3
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-06-12T17:17:35.421Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-06-12T17:36:57.507Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-12T17:18:35.421Z
+      updated_at: 2026-06-12T17:36:57.507Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 64beba835a189403a6c3c969f083e759b4623cdf
-      updated_at: 2026-06-12T17:17:35.421Z
-    lifecycle_state: integrating
+      updated_at: 2026-06-12T17:36:57.507Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_id: 01KTYB6MNWXYFFGXGX7MXM3SEG
     task_ref: "@01KTYB6MNWXYFFGXGX7MXM3SEG"
@@ -25670,9 +25670,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-12T17:18:35.421Z
-      last_reconciled_at: 2026-06-12T17:18:35.421Z
+      last_reconciled_at: 2026-06-12T17:36:57.507Z
       created_at: 2026-06-12T16:47:05.819Z
-      updated_at: 2026-06-12T17:18:35.421Z
+      updated_at: 2026-06-12T17:36:57.507Z
     workspace_id: dispatch-workspace-01KTYB6MNWXYFFGXGX7MXM3SEG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
