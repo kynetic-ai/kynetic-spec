@@ -21746,6 +21746,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-11T23:35:07.075Z
+  - _ulid: 01KTWJREBB6CSRKVCRF5AW8NZP
+    type: success
+    content: "Incident-to-lint-guard pattern: the npm pack prepack hazard was already documented in a
+      release-packaging.test.ts comment, but the comment did not protect a second call site
+      (cli-serve.test.ts), which caused the flaky workflow-runs dist export failure. Encoding the
+      invariant as a custom oxlint rule (tools/eslint-rules/no-unguarded-npm-pack.js) with
+      behavioral lint tests made it enforceable for all current and future call sites. When a
+      test-hygiene invariant is discovered via incident, prefer a narrow custom lint rule over a
+      code comment — comments inform one file, rules protect the whole tree."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-12T00:12:23.787Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
