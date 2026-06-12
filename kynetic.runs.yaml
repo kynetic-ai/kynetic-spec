@@ -65429,9 +65429,22 @@ runs:
     completed_at: 2026-06-12T16:13:07.925Z
   - _ulid: 01KTY9V95WR7RN66G56TR9Q0EF
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-12T16:15:08.477Z
+        completed_at: 2026-06-12T16:16:34.762Z
+        notes: "Searched observations, inbox (383 items), and tasks. Relevant existing refs: 01KGGPJ6
+          (workflow show should infer active run — friction re-encountered this session, already
+          tracked), 01KFQ517 (E2E port isolation — different concern from this session's
+          timing-budget issue). No existing observation covers deriving E2E assertion budgets from
+          worst-case spec'd timing under lock contention."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-12T16:16:34.762Z
+        completed_at: 2026-06-12T16:16:34.762Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T16:15:08.477Z
