@@ -4610,3 +4610,17 @@ inbox:
       - reflection
     added_by: "@claude"
     created_at: 2026-06-12T00:12:23.669Z
+  - _ulid: 01KTWMMHEN9WERDEMAR5QDMHEK
+    text: "kspec-managed .gitignore block uses unanchored patterns (e.g. 'plans/') that match ANY
+      directory with that name at any depth, not just the repo-root transient dir. This silently
+      swallowed tests/e2e/fixtures/plans/ (folder-backed fixture storage) and required a manual
+      '!tests/e2e/fixtures/plans/' negation placed after the managed block — fragile if the block is
+      ever re-appended. Fix: anchor managed entries to repo root ('/plans/', '/.kspec-sessions/',
+      etc.). Touches shipped scaffolding + @complete-auto-gitignore spec, so needs spec-first
+      check."
+    tags:
+      - reflection
+      - infra
+      - dx
+    added_by: "@claude"
+    created_at: 2026-06-12T00:45:13.045Z

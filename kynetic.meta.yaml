@@ -21759,6 +21759,31 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-12T00:12:23.787Z
+  - _ulid: 01KTWMMGYBY8XFPZ1HB0AZRP9T
+    type: friction
+    content: "Storage-format migrations that remove a legacy reader must migrate checked-in fixture
+      snapshots (and the test helpers papering over them) in the same change. The kynetic 1.2
+      folder-backed migration left tests/e2e/fixtures/ on monolithic plan/review storage, with
+      setupFixtures masking the gap via manifest overwrite + shell materialization and a comment
+      deferring the Playwright fixture 'to keep watcher specs happy'. That deferral surfaced later
+      as 45 deterministic E2E failures (route 500s) that looked like flakiness. Pattern: when a
+      compatibility gate goes strict, grep for fixtures still on the old format before merging."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-12T00:45:12.524Z
+  - _ulid: 01KTWMMH7MP39WRXVR90Y0YJGX
+    type: success
+    content: Regenerating fixtures by running the real migration code
+      (applyPlanMigration/applyReviewMigration) against a temp copy, then copying results back,
+      guaranteed the E2E fixture matched the storage managers' exact on-disk contract (sidecar
+      split, lean index projection, resources.yaml stubs). Hand-authoring folder layouts would have
+      risked subtle drift; the migration-code approach also exercised the production path as a side
+      benefit. Replicable for any future storage-layout fixture refresh.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-12T00:45:12.820Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
