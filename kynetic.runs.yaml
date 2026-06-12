@@ -65215,7 +65215,7 @@ runs:
     completed_at: 2026-06-12T14:54:25.646Z
   - _ulid: 01KTY5BQ5MW4N9XNJXCB1C2GT1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -65228,7 +65228,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-12T14:57:56.450Z
-        completed_at: 2026-06-12T14:57:56.450Z
+        completed_at: 2026-06-12T14:58:06.534Z
+        notes: "High-confidence candidates identified: safe detached-reviewer merge helper worked as
+          intended for approved manual_merge review; unrelated E2E gate failure triage worked by
+          focused rerun plus separate task @01KTY55G; shell quoting in long CLI descriptions is
+          hazardous when command text contains shell metacharacters; workflow command guidance
+          mismatch appeared because workflow show required an explicit run ref. Existing baseline
+          already covers these candidates, so none is unique yet."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-12T14:58:06.534Z
+        completed_at: 2026-06-12T14:58:06.534Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T14:56:44.212Z
