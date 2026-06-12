@@ -31726,7 +31726,7 @@
     - task-stabilize-daemon-command-api-stdout-test
   title: Stabilize daemon command API stdout parity test
   type: bug
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   priority: 3

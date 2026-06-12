@@ -15,8 +15,11 @@ description: "During review of @task-add-contributing-security-docs, the first f
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending
+status: cancelled
 blocked_by: []
+closed_reason: "Superseded by completed root fix @01KTW8SG and merged regression guard @01KTWFH1:
+  these were duplicate observations of the same full-suite stale/incoherent dist CLI import flake
+  class."
 depends_on: []
 context: []
 priority: 3
@@ -24,6 +27,19 @@ tags:
   - tests
   - daemon
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: cancelled
+        previous: pending
+      closed_reason:
+        new: "Superseded by completed root fix @01KTW8SG and merged regression guard @01KTWFH1: these were
+          duplicate observations of the same full-suite stale/incoherent dist CLI import flake
+          class."
+        previous: null
+    command: task-cancel
+    timestamp: 2026-06-12T14:35:27.021Z
 created_at: 2026-06-11T11:40:46.135Z
 todos: []
 automation: eligible
