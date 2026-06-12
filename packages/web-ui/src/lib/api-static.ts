@@ -32,6 +32,7 @@ import type {
   SearchResult,
   ApiResponse,
   ApiResponseMeta,
+  TaskStatusSummary,
 } from "@kynetic-ai/shared";
 import type { ValidationResponse } from "$lib/api";
 import type {
@@ -436,6 +437,52 @@ export function fetchTaskStatic(ref: string): ApiResponse<TaskDetail> | null {
 
   // ExportedTask extends TaskDetail, so we can return it directly
   return wrapEnvelope<TaskDetail>(task);
+}
+
+/**
+ * Derive the task status summary from the static snapshot.
+ *
+ * Mirrors GET /api/aggregation/tasks/summary semantics so live and static
+ * modes agree: counts per status, plus dependency-aware ready vs
+ * blocked_by_dependencies over pending and needs_work tasks. A task is ready
+ * when it has no blocked_by entries and every depends_on ref resolves to a
+ * completed task; unresolvable refs count as unmet, matching the server.
+ *
+ * AC: @ui-dashboard-overview ac-counts-from-summary
+ * AC: @api-contract ac-envelope
+ */
+export function fetchTaskStatusSummaryStatic(): ApiResponse<TaskStatusSummary> {
+  const snapshot = getSnapshot();
+  const tasks = snapshot?.tasks ?? [];
+
+  const counts: Record<string, number> = {};
+  for (const task of tasks) {
+    counts[task.status] = (counts[task.status] || 0) + 1;
+  }
+
+  let ready = 0;
+  let blockedByDependencies = 0;
+  for (const task of tasks) {
+    if (task.status !== "pending" && task.status !== "needs_work") continue;
+    // Older snapshots may omit blocked_by — treat missing as empty
+    const blockedBy = task.blocked_by ?? [];
+    const dependenciesMet = (task.depends_on ?? []).every((depRef) => {
+      const depTask = findTaskByRef(tasks, depRef);
+      return depTask?.status === "completed";
+    });
+    if (blockedBy.length > 0 || !dependenciesMet) {
+      blockedByDependencies++;
+    } else {
+      ready++;
+    }
+  }
+
+  return wrapEnvelope<TaskStatusSummary>({
+    counts,
+    ready,
+    blocked_by_dependencies: blockedByDependencies,
+    total: tasks.length,
+  });
 }
 
 /**

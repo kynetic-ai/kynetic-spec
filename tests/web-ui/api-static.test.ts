@@ -45,6 +45,7 @@ import {
   fetchPlanContentStatic,
   fetchPlansStatic,
   fetchTasksStatic,
+  fetchTaskStatusSummaryStatic,
   fetchTriageRecordsStatic,
   fetchValidationStatic,
 } from "../../packages/web-ui/src/lib/api-static";
@@ -196,6 +197,27 @@ function createSnapshot(): KspecSnapshot {
   };
 }
 
+/** Minimal exported task for summary derivation scenarios. */
+function summaryTask(overrides: Record<string, unknown>) {
+  return {
+    _ulid: "01TASK00000000000000000099",
+    slugs: [],
+    title: "Summary Task",
+    type: "task",
+    status: "pending",
+    priority: 2,
+    tags: [],
+    depends_on: [],
+    blocked_by: [],
+    notes: [],
+    todos: [],
+    notes_count: 0,
+    todos_count: 0,
+    created_at: "2026-03-05T00:00:00.000Z",
+    ...overrides,
+  } as any;
+}
+
 describe("static API snapshot adapters", () => {
   beforeEach(() => {
     modeState.snapshot = createSnapshot();
@@ -270,6 +292,102 @@ describe("static API snapshot adapters", () => {
     // No filter returns all
     const all = fetchTasksStatic();
     expect(all.meta.total).toBe(4);
+  });
+
+  // AC: @ui-dashboard-overview ac-counts-from-summary — static mode derives
+  // the same TaskStatusSummary shape and semantics as the live aggregation
+  // endpoint (counts per status; ready = pending OR needs_work with no
+  // blockers and all dependencies completed; everything else dep-blocked)
+  describe("fetchTaskStatusSummaryStatic", () => {
+    it("derives counts, ready, and blocked_by_dependencies with server semantics", () => {
+      modeState.snapshot!.tasks = [
+        // ready: pending, no deps, no blockers
+        summaryTask({ _ulid: "01TASK000000000000000000A1", slugs: ["sum-ready-pending"] }),
+        // ready: needs_work counts as ready (server-canonical definition)
+        summaryTask({
+          _ulid: "01TASK000000000000000000A2",
+          slugs: ["sum-ready-needs-work"],
+          status: "needs_work",
+        }),
+        // ready: pending with a completed dependency (resolved by slug)
+        summaryTask({
+          _ulid: "01TASK000000000000000000A3",
+          slugs: ["sum-ready-dep-met"],
+          depends_on: ["@sum-completed"],
+        }),
+        // dep-blocked: depends on a non-completed task
+        summaryTask({
+          _ulid: "01TASK000000000000000000A4",
+          slugs: ["sum-dep-unmet"],
+          depends_on: ["@sum-in-progress"],
+        }),
+        // dep-blocked: unresolvable dependency ref counts as unmet
+        summaryTask({
+          _ulid: "01TASK000000000000000000A5",
+          slugs: ["sum-dep-missing"],
+          depends_on: ["@does-not-exist"],
+        }),
+        // dep-blocked: explicit blocked_by entries
+        summaryTask({
+          _ulid: "01TASK000000000000000000A6",
+          slugs: ["sum-blocked-by"],
+          blocked_by: ["@sum-in-progress"],
+        }),
+        // non-pending statuses only contribute to counts
+        summaryTask({
+          _ulid: "01TASK000000000000000000A7",
+          slugs: ["sum-in-progress"],
+          status: "in_progress",
+        }),
+        summaryTask({
+          _ulid: "01TASK000000000000000000A8",
+          slugs: ["sum-completed"],
+          status: "completed",
+        }),
+        summaryTask({
+          _ulid: "01TASK000000000000000000A9",
+          slugs: ["sum-status-blocked"],
+          status: "blocked",
+        }),
+      ];
+
+      const envelope = fetchTaskStatusSummaryStatic();
+      expect(envelope.meta.cache_status).toBe("ready");
+      expect(envelope.data).toEqual({
+        counts: {
+          pending: 5,
+          needs_work: 1,
+          in_progress: 1,
+          completed: 1,
+          blocked: 1,
+        },
+        ready: 3,
+        blocked_by_dependencies: 3,
+        total: 9,
+      });
+    });
+
+    it("tolerates snapshots whose tasks omit blocked_by", () => {
+      const task = summaryTask({ slugs: ["sum-no-blocked-by"] });
+      delete task.blocked_by;
+      modeState.snapshot!.tasks = [task];
+
+      const envelope = fetchTaskStatusSummaryStatic();
+      expect(envelope.data.ready).toBe(1);
+      expect(envelope.data.blocked_by_dependencies).toBe(0);
+    });
+
+    it("returns an empty summary when no snapshot is loaded", () => {
+      modeState.snapshot = null;
+
+      const envelope = fetchTaskStatusSummaryStatic();
+      expect(envelope.data).toEqual({
+        counts: {},
+        ready: 0,
+        blocked_by_dependencies: 0,
+        total: 0,
+      });
+    });
   });
 
   // AC: @gh-pages-export ac-23
