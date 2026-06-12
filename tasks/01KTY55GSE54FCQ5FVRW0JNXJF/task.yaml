@@ -12,7 +12,7 @@ description: During review of @01KTWG0DBVCNS31XQF000XDEGJ on 2026-06-12, the ful
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -22,6 +22,22 @@ tags:
   - flaky
   - websocket
 vcs_refs: []
+session_id: 01KTY8GFQZHTWMVDBB90611MYY
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KTY8GFQZHTWMVDBB90611MYY
+        previous: null
+      started_at:
+        new: 2026-06-12T15:52:14.871Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-12T15:52:14.871Z
 created_at: 2026-06-12T14:53:21.070Z
+started_at: 2026-06-12T15:52:14.871Z
 todos: []
 automation: eligible
