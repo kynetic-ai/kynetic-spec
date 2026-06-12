@@ -31859,7 +31859,7 @@
   slugs: []
   title: Stabilize upgrade folder-storage rebuild-index test
   type: bug
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   priority: 3
