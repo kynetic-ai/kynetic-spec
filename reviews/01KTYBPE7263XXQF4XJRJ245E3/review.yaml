@@ -150,9 +150,25 @@ events:
       kind: nit
       thread_ulid: 01KTYCJMFC49Y21YAK9EAGQMAR
     timestamp: 2026-06-12T17:02:51.141Z
+  - _ulid: 01KTYCJZ9JVSG29801WHY8D7QH
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-12T17:03:01.938Z
+  - _ulid: 01KTYCJZ9J8RA3S976V1228T36
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-12T17:03:01.938Z
 examined_commit: 9c4ea490815dc67f9f31d004ba45ce48bb006a0c
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -188,7 +204,14 @@ threads:
           cleanup. No blockers found.
         created_at: 2026-06-12T17:02:50.861Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-12T17:03:01.938Z
 created_at: 2026-06-12T16:47:26.946Z
-updated_at: 2026-06-12T17:02:50.861Z
+updated_at: 2026-06-12T17:03:01.938Z
 notes: []
