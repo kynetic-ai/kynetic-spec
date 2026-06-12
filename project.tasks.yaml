@@ -31742,7 +31742,7 @@
     - task-stabilize-full-suite-cli-dist-flakes
   title: Stabilize intermittent full-suite CLI/dist failures
   type: bug
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   priority: 3
