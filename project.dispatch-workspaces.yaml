@@ -22573,18 +22573,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-stabilize-workflow-runs-cli-dist-export/01ktwfh1
-    canonical_branch_head: 7972b4608173f5a44ec58f128f648c95c9164e8a
+    canonical_branch_head: adefc545eed8512af020a5fc64de9424113467f2
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-12T14:28:36.008Z
+      updated_at: 2026-06-12T14:32:43.137Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-12T14:29:32.631Z
+      updated_at: 2026-06-12T14:32:43.137Z
     integration:
       status: pending
       detail: null
@@ -22592,7 +22592,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 50bd13a9ec65f6ca0e2fdd73024db9e565ea5f92
-      updated_at: 2026-06-12T14:28:36.008Z
+      updated_at: 2026-06-12T14:32:43.137Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KTWFH1V9DYW7ETFW78ACQKM0
@@ -22601,9 +22601,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-12T14:29:32.631Z
-      last_reconciled_at: 2026-06-12T14:29:32.631Z
+      last_reconciled_at: 2026-06-12T14:32:43.137Z
       created_at: 2026-06-11T23:37:14.286Z
-      updated_at: 2026-06-12T14:29:32.631Z
+      updated_at: 2026-06-12T14:32:43.137Z
     workspace_id: dispatch-workspace-01KTWFH1V9DYW7ETFW78ACQKM0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
