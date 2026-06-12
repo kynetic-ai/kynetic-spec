@@ -65562,7 +65562,7 @@ runs:
     started_at: 2026-06-12T16:42:39.314Z
     completed_at: 2026-06-12T16:45:10.529Z
   - _ulid: 01KTYCN1K0YPAPM6Q5RSGQW7S7
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -65617,7 +65617,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-12T17:05:39.917Z
-        completed_at: 2026-06-12T17:05:39.917Z
+        completed_at: 2026-06-12T17:05:50.638Z
+        notes: "Capture: no new inbox items, observations, or questions created. Existing coverage already
+          tracks the session's systemic friction: @01KTYB2R for daemon port-start lock release,
+          @01KNTB8Z4/@01KT0GTA for full-suite duration, and @01KR2JD1/@01KT5ZGF for review evidence
+          log practice. Success pattern noted in workflow only: detached-reviewer helper plus
+          explicit evidence-log checks made approval and merge auditable."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-12T17:04:09.824Z
+    completed_at: 2026-06-12T17:05:50.638Z
