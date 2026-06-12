@@ -65257,7 +65257,7 @@ runs:
     started_at: 2026-06-12T14:56:44.212Z
     completed_at: 2026-06-12T14:58:28.087Z
   - _ulid: 01KTY6ZED6KN5NB5R79P4CJNHP
-    status: active
+    status: completed
     current_step: 3
     initiated_by: "@claude"
     step_results:
@@ -65296,7 +65296,12 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-12T15:27:11.734Z
-        completed_at: 2026-06-12T15:27:11.734Z
+        completed_at: 2026-06-12T15:27:21.123Z
+        notes: No items captured — all candidates were either duplicates of existing tracking (inbox
+          @01KT0AEV for the svelte-check baseline) or already-documented patterns (ui-data-layer
+          skill, prior success observations). Capturing nothing per the lower-volume/higher-quality
+          rule.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T15:24:59.175Z
+    completed_at: 2026-06-12T15:27:21.123Z
