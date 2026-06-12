@@ -65258,9 +65258,19 @@ runs:
     completed_at: 2026-06-12T14:58:28.087Z
   - _ulid: 01KTY6ZED6KN5NB5R79P4CJNHP
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-12T15:24:59.175Z
+        completed_at: 2026-06-12T15:26:45.619Z
+        notes: "Baseline established: reviewed observations list, inbox (383 items), tasks list, plus
+          targeted searches (svelte-check, web-ui typecheck, baseline errors)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-12T15:26:45.619Z
+        completed_at: 2026-06-12T15:26:45.619Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T15:24:59.175Z
