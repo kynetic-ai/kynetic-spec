@@ -20,3 +20,25 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-12T16:52:29.118Z
+  - _ulid: 01KTYD5CG9PYC88DV1G37EAVGG
+    content: "Implemented and verified. Changes (tests/e2e/connection.spec.ts only): (1) replaced the
+      response-count settle helper with a trackTasksApi(page) tracker that counts request
+      initiation, completion (finished+failed), and responses; settle() now requires no new requests
+      AND zero in-flight requests for 2000ms (> the 1500ms delayed file-watcher invalidation tail in
+      ws-invalidation.ts), timeout 15s. (2) Dedup test now cuts server->client WS forwarding after
+      the task list loads, making the measurement hermetic — real daemon broadcasts cannot schedule
+      invalidations during the check; verified safe (client manager has no heartbeat, daemon pong
+      timeout is 90s). (3) Baseline is settled BEFORE the first injection so the post-injection
+      waitForRequest is attributable to the injected seq=500 event; added explicit afterFirst >
+      baseline assertion. (4) Final dedup assertion is on request COUNT INITIATED (synchronous on
+      the client when invalidation fires) rather than responses received, deterministic in both
+      directions under load. (5) Reconnect test adapted to the shared tracker (request-based waits);
+      both timing-sensitive tests get 60s timeouts. Gates: oxlint changed file 0/0, format:check
+      pass, typecheck pass, repo lint 0 errors, npm test 10567 passed, full npm run test:e2e 511
+      passed/1 skipped (original flake reproduction condition), plus --repeat-each=8 stress on both
+      WS tests passed. kspec validate refs/alignment/completeness pass with --warnings-ok. No
+      product code changed — dedup behavior confirmed correct (per-connection seq starts near 0, so
+      post-injection real events are skipped by the global lastSeqProcessed=500)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T17:13:05.289Z
