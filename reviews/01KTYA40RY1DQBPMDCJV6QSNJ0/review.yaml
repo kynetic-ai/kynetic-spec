@@ -111,6 +111,28 @@ checks:
     runner: npm run test:e2e
     created_at: 2026-06-12T16:40:23.756Z
     completed_at: 2026-06-12T16:40:23.756Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: tests/e2e/api-websocket.spec.ts;
+      packages/web-ui/src/lib/websocket/manager.ts;
+      packages/web-ui/src/lib/components/ConnectionStatus.svelte;
+      tests/e2e/fixtures/daemon-fixture.ts; tests/e2e/connection.spec.ts; kspec-agents.md. Commands
+      run: git diff/stat/log/status; kspec task get; kspec item get @web-dashboard; kspec review
+      for-task/add/open/get/check; kspec validate refs/alignment/completeness; npm run format:check;
+      npm run lint -- --quiet; npx oxlint tests/e2e/api-websocket.spec.ts; npm run typecheck; npm
+      test; npm run test:e2e; focused duplicate-event E2E rerun twice. Claims verified: ac-28
+      backoff is 1s, 2s, 4s, 8s, 16s, capped at 30s in WebSocketManager; ac-29 can render Connection
+      Lost after the lost timer; changed restart test passed during full E2E. Categories searched:
+      correctness, backoff edge timing, connection-status state transitions, test quality/AC
+      annotations, integration with daemon fixture restart behavior, and unrelated full-suite E2E
+      failures. No blocking findings for this task."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-06-12T16:41:01.911Z
+    completed_at: 2026-06-12T16:41:01.911Z
 events:
   - _ulid: 01KTYA40RY3X6SMJKY12BH5FV7
     actor: Jacob Chapel
@@ -195,6 +217,13 @@ events:
       status: fail
       name: full e2e suite
     timestamp: 2026-06-12T16:40:23.997Z
+  - _ulid: 01KTYBAPE6P374SJRZP85ME99H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-12T16:41:02.151Z
 examined_commit: 3f10a37da2c83f3a03f2ea45ce272087b4252cde
 external_links: []
 lifecycle_state: open
@@ -207,5 +236,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-12T16:19:54.782Z
-updated_at: 2026-06-12T16:40:23.756Z
+updated_at: 2026-06-12T16:41:01.911Z
 notes: []
