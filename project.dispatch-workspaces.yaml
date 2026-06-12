@@ -23087,11 +23087,11 @@ workspaces:
     canonical_branch: dispatch/task/task-stabilize-e2e-plan-review-fixture-routes/01ktwg0d
     canonical_branch_head: 06cdadb93910226b913319c7e7bcc7861b45f837
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-12T14:56:44.443Z
+      updated_at: 2026-06-12T14:59:49.046Z
     health:
       status: healthy
       issues: []
@@ -23105,17 +23105,17 @@ workspaces:
       target_branch: dev
       target_commit: 237cc4f207aa95ee6070d36d519f6b02542913bc
       updated_at: 2026-06-12T14:56:44.443Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KTWG0DBVCNS31XQF000XDEGJ
     task_ref: "@01KTWG0DBVCNS31XQF000XDEGJ"
     task_slug: task-stabilize-e2e-plan-review-fixture-routes
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-12T14:59:49.046Z
       last_active_at: 2026-06-12T14:30:47.861Z
       last_reconciled_at: 2026-06-12T14:58:58.521Z
       created_at: 2026-06-12T00:14:46.430Z
-      updated_at: 2026-06-12T14:58:58.521Z
+      updated_at: 2026-06-12T14:59:49.046Z
     workspace_id: dispatch-workspace-01KTWG0DBVCNS31XQF000XDEGJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
