@@ -65350,7 +65350,7 @@ runs:
     completed_at: 2026-06-12T15:49:08.753Z
   - _ulid: 01KTY898W9SKKJMFD46FTD0426
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -65362,7 +65362,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-12T15:48:45.040Z
-        completed_at: 2026-06-12T15:48:45.040Z
+        completed_at: 2026-06-12T15:49:34.823Z
+        notes: "Identified 4 candidates: slow full test on comments-only diff (dup of @01KQ16J7), workflow
+          show run-ref UX (dup of @01KGGPJ6), lint-baseline stash dance (one-off, skip),
+          bounded-task success pattern (unique, capture)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-12T15:49:34.823Z
+        completed_at: 2026-06-12T15:49:34.823Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T15:47:49.769Z
