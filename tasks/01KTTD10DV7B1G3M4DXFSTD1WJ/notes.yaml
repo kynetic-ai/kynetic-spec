@@ -8,3 +8,19 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-12T15:30:03.726Z
+  - _ulid: 01KTY88D1ZDAK7MHRFRF4JV65Y
+    content: "Audit complete. Classified all catch/.catch sites in the five files. Added justification
+      comments at 9 unjustified swallows: batch-write-buffer.ts:431,472 (best-effort staging
+      cleanup), entity-local-resources.ts:1216 (best-effort escape cleanup), file-lock.ts:138
+      (best-effort lockDir rollback), spawner.ts:251 (ESRCH group-kill fallback),
+      shadow.ts:74,118,132 (.catch(()=>null) existence probes), shadow.ts:758 (expanded
+      non-justifying Ignore-read-errors comment). All other sites either rethrow, map errors to
+      structured results, or already carry justification comments (left untouched per bounds). No
+      behavior-affecting swallows found — no inbox items needed. Diff verified comments-only (every
+      added line is a // comment; only removals are the two replaced comments). Gates: format:check,
+      lint --quiet (0 errors; 1 oxlint warning in changed-file lint verified pre-existing at HEAD
+      via stash), typecheck, full npm test, and all three kspec validations pass. No test files
+      modified."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T15:47:21.279Z
