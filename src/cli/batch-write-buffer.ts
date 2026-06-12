@@ -425,7 +425,9 @@ export class WriteBuffer {
       } catch (err) {
         // Rename/delete failed — track uncommitted
         uncommitted.push(filePath);
-        // Clean up remaining staging files
+        // Clean up remaining staging files. Best-effort: the commit error
+        // below is the primary failure, and a leftover staging file is inert
+        // (never read as real content), so a failed rm is safe to ignore.
         for (const [remainingPath, remainingStagingPath] of stagingMap) {
           if (!committed.includes(remainingPath) && remainingStagingPath) {
             await fs.rm(remainingStagingPath, { force: true }).catch(() => {});
@@ -469,6 +471,8 @@ export class WriteBuffer {
   private async _cleanupStaging(stagingMap: Map<string, string>): Promise<void> {
     for (const [, stagingPath] of stagingMap) {
       if (stagingPath) {
+        // Best-effort: the caller is already throwing the staging failure,
+        // and an orphaned staging file is inert (never read as real content).
         await fs.rm(stagingPath, { force: true }).catch(() => {});
       }
     }

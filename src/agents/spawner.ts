@@ -249,6 +249,8 @@ export function spawnAgent(adapter: AgentAdapter, options: SpawnAgentOptions): S
       try {
         process.kill(-child.pid, signal);
       } catch {
+        // Group kill fails (ESRCH) when the process group is already gone —
+        // fall back to signaling the child directly instead of surfacing it.
         if (!child.killed) {
           child.kill(signal);
         }
