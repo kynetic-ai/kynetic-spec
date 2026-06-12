@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KTY8Q0FPM35MF544J95ATX77
+    content: "Root cause: spec'd exponential backoff (ac-28: 1s,2s,4s..cap 30s) vs test budget.
+      daemon.stop()/start() serialize on the global port-start lock shared by all parallel workers
+      plus a 2-stage readiness wait, so under full-suite load the daemon is down >15s. The next
+      reconnect attempt after restart can then be up to 16-30s away, but the test asserted Connected
+      within 10s inside a 30s overall timeout. Focused --workers=1 reruns have no lock contention,
+      daemon restarts in ~2s, early backoff attempts catch it — matching the observed flake pattern.
+      Fix: test-side budgets only (no product change): per-test timeout 120s, accept
+      Disconnected|Connection Lost for the offline assertion (ac-29 upgrades the badge after 10s
+      offline), and 45s Connected timeout to cover the 30s worst-case backoff gap plus the reconnect
+      attempt itself."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-12T15:55:19.927Z
