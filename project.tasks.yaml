@@ -31622,7 +31622,7 @@
   title: Document justification for intentionally swallowed errors
   type: task
   plan_ref: "@plan-data-integrity-and-upgrade-safety"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-shadow-restore-loud-failure"
@@ -31636,6 +31636,7 @@
   created_at: 2026-06-11T03:53:44.123Z
   started_at: 2026-06-12T15:29:45.279Z
   submitted_at: 2026-06-12T15:47:22.208Z
+  completed_at: 2026-06-12T16:10:51.302Z
   automation: eligible
 - _ulid: 01KTTD1CGTV3QFPSD8F8DZCA34
   slugs:

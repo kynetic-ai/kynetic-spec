@@ -46,8 +46,12 @@ description: |
 spec_ref: null
 plan_ref: "@plan-data-integrity-and-upgrade-safety"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 09c595c91aed681d9fed841df60036e95933b25f after approved review
+  @01KTY8HF. Comments-only audit added/expanded justifications for intentionally swallowed errors in
+  the five scoped files. Full review gates recorded; transient daemon-last-exit test flake captured
+  separately as @01KTY9DT.
 depends_on:
   - "@task-shadow-restore-loud-failure"
 context: []
@@ -114,8 +118,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-12T15:52:21.552Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 09c595c91aed681d9fed841df60036e95933b25f after approved review @01KTY8HF.
+          Comments-only audit added/expanded justifications for intentionally swallowed errors in
+          the five scoped files. Full review gates recorded; transient daemon-last-exit test flake
+          captured separately as @01KTY9DT.
+        previous: null
+      completed_at:
+        new: 2026-06-12T16:10:51.302Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-12T16:10:51.309Z
 created_at: 2026-06-11T03:53:44.123Z
 started_at: 2026-06-12T15:29:45.279Z
 submitted_at: 2026-06-12T15:47:22.208Z
+completed_at: 2026-06-12T16:10:51.302Z
 todos: []
 automation: eligible
