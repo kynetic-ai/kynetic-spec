@@ -17,7 +17,7 @@ description: 'Observed during review of @task-dedupe-web-ui-devdeps on 2026-06-1
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -35,7 +35,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-stabilize-workflow-runs-cli-dist-export/01ktwfh1
-session_id: null
+session_id: 01KTY3SCTCFAXB2ZXGSWGMDTT7
 history:
   - author: "@claude"
     changes:
@@ -87,8 +87,21 @@ history:
         previous: 01KTWGRZEYHBJDMT36AGZNT441
     command: task-needs-work
     timestamp: 2026-06-12T00:31:55.737Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KTY3SCTCFAXB2ZXGSWGMDTT7
+        previous: null
+      started_at:
+        new: 2026-06-12T14:32:13.426Z
+        previous: 2026-06-11T23:38:10.760Z
+    command: task-start
+    timestamp: 2026-06-12T14:32:13.426Z
 created_at: 2026-06-11T23:15:55.881Z
-started_at: 2026-06-11T23:38:10.760Z
+started_at: 2026-06-12T14:32:13.426Z
 submitted_at: 2026-06-12T00:09:05.926Z
 todos: []
 automation: eligible
