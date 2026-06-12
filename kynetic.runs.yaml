@@ -65678,7 +65678,7 @@ runs:
     completed_at: 2026-06-12T17:15:53.944Z
   - _ulid: 01KTYEJ74MD1MPHCMTAD13VJV1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -65693,7 +65693,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-12T17:38:20.405Z
-        completed_at: 2026-06-12T17:38:20.405Z
+        completed_at: 2026-06-12T17:38:35.814Z
+        notes: "Friction points: deterministic gates were lengthy because npm test held the per-worktree
+          build/test lock for roughly 45 minutes, causing the focused Playwright build to wait. This
+          was operationally clear because the lock messages named the holder and AGENTS/testing
+          guidance explains this as normal. No new failure or missing command surfaced; the only
+          minor CLI friction was workflow show requiring the run ref, which was resolved
+          immediately."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-12T17:38:35.814Z
+        completed_at: 2026-06-12T17:38:35.814Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-12T17:37:34.356Z
