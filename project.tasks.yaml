@@ -31822,7 +31822,7 @@
     - task-stabilize-upgrade-folder-storage-dist-coherence
   title: Stabilize upgrade folder-storage smoke test dist coherence
   type: bug
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   priority: 3
