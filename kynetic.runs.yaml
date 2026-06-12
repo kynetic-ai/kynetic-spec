@@ -65178,7 +65178,7 @@ runs:
     completed_at: 2026-06-12T00:45:22.723Z
   - _ulid: 01KTY51Y2WGZMBM44YHG4Q1792
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -65191,7 +65191,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-12T14:52:26.519Z
-        completed_at: 2026-06-12T14:52:26.519Z
+        completed_at: 2026-06-12T14:53:57.694Z
+        notes: "Identified 2 high-confidence items (stale fix-cycle dispatch race; merged-tree gate
+          verification success). Skipped: duplicate flake tasks (covered by @01KPA0Q5), workflow
+          show run-ref friction (covered by inbox 01KGGPJ6), batch note rollback (one-off
+          consequence of the race)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-12T14:53:57.694Z
+        completed_at: 2026-06-12T14:53:57.694Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-12T14:51:23.612Z
