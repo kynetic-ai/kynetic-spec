@@ -4838,3 +4838,109 @@ inbox:
       - exit-codes
     added_by: Jacob Chapel
     created_at: 2026-06-12T20:56:58.247Z
+  - _ulid: 01KTZTRAKC0Y54099WP2JFBV14
+    text: "Hawse-mined from observation @01KTS7FVE3PDNV9WCYSWQGH7TM: core task-work quality-check
+      guidance should render project-appropriate gates instead of hardcoding Node/npm commands. In
+      Hawse, the rendered kspec:task-work skill prescribed npm format/lint/typecheck/oxlint even
+      though the project is a pure Rust cargo workspace with justfile gates. Workers must silently
+      translate to cargo fmt/clippy/test/no-std. Candidate direction: gate guidance sourced from
+      per-project config/justfile/meta conventions, with package defaults only when no project gate
+      profile exists."
+    tags:
+      - hawse-mined
+      - skills
+      - quality-gates
+      - project-config
+      - dx
+    added_by: Jacob Chapel
+    created_at: 2026-06-13T06:29:51.852Z
+  - _ulid: 01KTZTRAQSVCAXQK4FWCCHBYJX
+    text: "Hawse-mined from observation @01KTS65KEAE2YG3TA7ZGFBXQ82: add a way to withdraw or edit
+      mis-posted review threads. A shell-quoting/backtick issue corrupted the first blocker body in
+      review @01KTS56N35GKEJHWE0H9E2KSYX; the reviewer had to file a duplicate thread, resolve the
+      broken one as duplicate, and the worker then had two blocker threads for one finding. A kspec
+      review thread withdraw/edit command would preserve auditability while avoiding permanent
+      broken-body duplicate noise."
+    tags:
+      - hawse-mined
+      - review
+      - cli
+      - ergonomics
+      - dx
+    added_by: Jacob Chapel
+    created_at: 2026-06-13T06:29:51.993Z
+  - _ulid: 01KTZTRAV069B77TPK4J9KER1X
+    text: "Hawse-mined from observation @01KT56CS3C2KWEYJFRCMA81HC1: support review-check bundles,
+      multi-check entry, or a documented batch pattern for standard gates. Hawse reviewers routinely
+      record fmt, validation variants, focused tests, workspace tests, diff checks, and no-std as
+      separate review-check commands. A reusable bundle should reduce repeated shadow-branch writes
+      while preserving individual check names, runners, commands, and evidence."
+    tags:
+      - hawse-mined
+      - review
+      - review-gates
+      - batch
+      - dx
+    added_by: Jacob Chapel
+    created_at: 2026-06-13T06:29:52.096Z
+  - _ulid: 01KTZTRAY7G0B44DT1EV4MS5Z3
+    text: "Hawse-mined from observations @01KT59E2K1ZNWE5XEFH14JC9B0 and @01KPSDD2CAEJFSB7HMS4NMA24Q:
+      rendered reflection skills/prompts can reference @session-reflect or @session-reflect-loop
+      even when the project has no workflows installed, causing Workflow not found and undocumented
+      manual fallback. Fix direction: either install/render the referenced reflection workflows into
+      consumer project meta, or make the skill detect/document the manual fallback and avoid
+      requiring absent workflow refs."
+    tags:
+      - hawse-mined
+      - reflection
+      - workflow
+      - skills
+      - dx
+    added_by: Jacob Chapel
+    created_at: 2026-06-13T06:29:52.199Z
+  - _ulid: 01KTZTRB2TCRN5SGEQNBK4X972
+    text: "Hawse-mined from observations @01KTTQ4DFPF8MCTQDBWE77QE9Y and @01KTYF0RA97BYQ5ZJ3VYSF7RJB:
+      dispatch/reviewer prompts can mention supporting script placeholders such as
+      {supporting:scripts/detached-reviewer-merge.sh} while the executable in the checkout lives at
+      .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh. Reviewers had to search
+      manually before merging. Prompt rendering should expand supporting-script placeholders to the
+      exact rendered path or include a copy-paste-safe skill-relative command."
+    tags:
+      - hawse-mined
+      - dispatch
+      - review
+      - skills
+      - merge-helper
+      - dx
+    added_by: Jacob Chapel
+    created_at: 2026-06-13T06:29:52.346Z
+  - _ulid: 01KTZTRB69XTYRFYXZRNAYDWHX
+    text: "Hawse-mined from observation @01KTTR5WAZCXEAY6KNQ49GHDQ0: CLI error/help hints for
+      observation refs point at a nonexistent command. kspec item get <obs-ulid> and search results
+      suggested 'kspec meta observe get <ref>', but meta observe accepts only a new observation
+      type; the working command is kspec meta get <ref>. Update hint text and tests so observation
+      refs point to the real retrieval command."
+    tags:
+      - hawse-mined
+      - cli
+      - meta
+      - observations
+      - dx
+    added_by: Jacob Chapel
+    created_at: 2026-06-13T06:29:52.457Z
+  - _ulid: 01KTZTRB9DBWY75SHWQ2K9VXBM
+    text: "Hawse-mined from observations @01KNNV1D8N8PGGT3VK8YK4B9KE, @01KNNXBZ98DYVB2D6P8B96301K, and
+      @01KNRGW0NP2H5K0JZ5P7ZRMSYZ: AC coverage validation missed crate-local Rust integration tests
+      until coverage.scan_paths was configured. The failure mode was non-obvious because cargo tests
+      passed and AC comments grepped correctly, but review still showed 0/N coverage. Improve
+      validation diagnostics/config discovery: when annotations are present outside scanned roots or
+      a project has cargo/package test directories, surface scan_paths guidance instead of only
+      uncovered AC warnings."
+    tags:
+      - hawse-mined
+      - validation
+      - ac-coverage
+      - rust
+      - dx
+    added_by: Jacob Chapel
+    created_at: 2026-06-13T06:29:52.557Z
