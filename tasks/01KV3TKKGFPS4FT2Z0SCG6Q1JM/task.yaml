@@ -39,7 +39,7 @@ description: |
 spec_ref: "@client-preference-persistence"
 plan_ref: "@plan-ui-redesign-global-decisions"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -58,7 +58,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KV3WEN3ZREX1WCWY88DWWV8K
 history:
   - author: Jacob Chapel
     changes:
@@ -117,8 +117,21 @@ history:
         previous: 01KV3TXBQD14SNT5BJY8A6RHMA
     command: review-verdict-needs-work
     timestamp: 2026-06-14T20:12:32.402Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KV3WEN3ZREX1WCWY88DWWV8K
+        previous: null
+      started_at:
+        new: 2026-06-14T20:20:02.735Z
+        previous: 2026-06-14T19:50:22.845Z
+    command: task-start
+    timestamp: 2026-06-14T20:20:02.735Z
 created_at: 2026-06-14T19:44:14.863Z
-started_at: 2026-06-14T19:50:22.845Z
+started_at: 2026-06-14T20:20:02.735Z
 submitted_at: 2026-06-14T19:52:35.506Z
 todos: []
 automation: eligible
