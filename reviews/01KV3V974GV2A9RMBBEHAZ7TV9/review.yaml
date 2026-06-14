@@ -70,6 +70,19 @@ checks:
     runner: kspec
     created_at: 2026-06-14T20:11:21.970Z
     completed_at: 2026-06-14T20:11:21.970Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0. Existing baseline warnings:
+      242 missing own AC coverage, 3 automation-without-spec, 32 invalid annotations; semantic AC-15
+      coverage mismatch is recorded as blocker because completeness does not detect that the active
+      AC-15 tests prove the old behavior."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-14T20:11:31.834Z
+    completed_at: 2026-06-14T20:11:31.834Z
 events:
   - _ulid: 01KV3V974G05GWQKWG0S72YB8W
     actor: Jacob Chapel
@@ -126,6 +139,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-14T20:11:22.198Z
+  - _ulid: 01KV3W5JAZTEKQ2BXY1YTTD0JN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-14T20:11:32.063Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: open
@@ -138,5 +158,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-14T19:56:03.088Z
-updated_at: 2026-06-14T20:11:21.970Z
+updated_at: 2026-06-14T20:11:31.834Z
 notes: []
