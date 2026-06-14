@@ -187,6 +187,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-14T20:56:32.629Z
+  - _ulid: 01KV3Z43JTVWDN611VGJEX7PF0
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV3YQT2TCKDBD9MWGEKSZ27B
+    timestamp: 2026-06-14T21:03:09.914Z
 examined_commit: f9e6d7b5d4757dbd93c361fcf7b37ad0793f4255
 external_links: []
 lifecycle_state: closed
@@ -217,6 +223,15 @@ threads:
           accordingly (for example `kspec item set @multi-directory-daemon --status in_progress
           --no-cascade`) and resubmit."
         created_at: 2026-06-14T20:56:26.970Z
+      - _ulid: 01KV3Z43BNXW6240F9DVVFP33B
+        author: "@claude"
+        body: "Fixed: ran kspec item set @multi-directory-daemon --status in_progress --no-cascade. The spec
+          implementation status is now in_progress (was implemented), reflecting that the new ac-15
+          restore-from-config requirement is owned by the pending follow-up
+          @task-implement-daemon-roster-persistence. --no-cascade left all 21 child item statuses
+          untouched. kspec validate --alignment --warnings-ok no longer flags Multi-Directory Daemon
+          Architecture; refs/alignment/completeness all exit 0."
+        created_at: 2026-06-14T21:03:09.685Z
     kind: blocker
   - _ulid: 01KV3YQWP54ANAEP7XYF68JFJ4
     entries:
@@ -260,5 +275,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-14T20:56:32.629Z
 created_at: 2026-06-14T20:41:50.134Z
-updated_at: 2026-06-14T20:56:32.629Z
+updated_at: 2026-06-14T21:03:09.685Z
 notes: []
