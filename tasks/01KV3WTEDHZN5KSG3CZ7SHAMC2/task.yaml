@@ -1,0 +1,32 @@
+_ulid: 01KV3WTEDHZN5KSG3CZ7SHAMC2
+slugs:
+  - task-implement-daemon-roster-persistence
+title: Implement daemon roster persistence (multi-directory-daemon ac-15)
+type: task
+description: "Implement the restart-restore behavior promised by @multi-directory-daemon ac-15:
+  persist the registered-project roster (project paths and registration metadata) in the daemon
+  configuration directory, and restore it on daemon startup without client involvement. Restored
+  entries whose project metadata is no longer valid must be surfaced and removed via the existing
+  invalid-project handling (ac-20, ac-34) rather than poisoning the roster. Preserve ac-14
+  request-time auto-registration. Add behavioral tests proving roster restore (write roster,
+  restart, assert roster restored) and add the ac-15 coverage annotation there. Covers
+  @client-preference-persistence ac-2 at the implementation layer. Carved out of the respec task
+  @task-respec-daemon-project-roster-persistence, which only updated the spec text;
+  ProjectContextManager.listProjects() currently holds in-memory runtime state only and does not
+  restore from config."
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+plan_ref: "@plan-ui-redesign-global-decisions"
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon
+  - persistence
+  - post-mvp
+vcs_refs: []
+created_at: 2026-06-14T20:22:56.177Z
+todos: []
+automation: needs_review

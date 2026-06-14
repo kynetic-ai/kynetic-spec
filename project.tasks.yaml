@@ -32062,3 +32062,22 @@
   started_at: 2026-06-14T20:20:02.735Z
   submitted_at: 2026-06-14T19:52:35.506Z
   automation: eligible
+- _ulid: 01KV3WTEDHZN5KSG3CZ7SHAMC2
+  slugs:
+    - task-implement-daemon-roster-persistence
+  title: Implement daemon roster persistence (multi-directory-daemon ac-15)
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  plan_ref: "@plan-ui-redesign-global-decisions"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - daemon
+    - persistence
+    - post-mvp
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-14T20:22:56.177Z
+  automation: needs_review
