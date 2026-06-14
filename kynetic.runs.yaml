@@ -65861,7 +65861,7 @@ runs:
     completed_at: 2026-06-14T20:15:40.741Z
   - _ulid: 01KV3WDHGD1EJVEF5C0ZWHZ9V4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -65875,7 +65875,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-14T20:16:53.854Z
-        completed_at: 2026-06-14T20:16:53.854Z
+        completed_at: 2026-06-14T20:17:04.267Z
+        notes: "Friction: for a task whose submitted branch had no changed files and only kspec metadata
+          effects, the review still required the full npm gate set, including npm test. This
+          produced strong evidence, but it took 2583.8s and most of that signal was unrelated to the
+          reviewed metadata operation. The workflow has no documented lightweight gate profile for
+          no-diff metadata-only task reviews, so reviewers must choose between over-verifying and
+          under-documenting."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-14T20:17:04.267Z
+        completed_at: 2026-06-14T20:17:04.267Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-14T20:15:53.358Z
