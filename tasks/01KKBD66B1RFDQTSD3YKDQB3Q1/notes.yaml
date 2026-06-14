@@ -1,1 +1,9 @@
-notes: []
+notes:
+  - _ulid: 01KV3VK2C0XB8X6CEBC944APW7
+    content: "Superseded by the kspec interface redesign program: the cross-project track's all-projects
+      dashboard and live-agent rail absorb this task's scope. Program anchor:
+      @plan-ui-redesign-global-decisions. Until the cross-project track plan is imported, that
+      anchor is the authoritative successor pointer."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-14T20:01:25.888Z
