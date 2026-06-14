@@ -299,7 +299,7 @@ decisions:
       configuration directory and never depends on browser storage.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
