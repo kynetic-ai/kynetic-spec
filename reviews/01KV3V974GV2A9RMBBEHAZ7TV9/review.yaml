@@ -83,6 +83,17 @@ checks:
     runner: kspec
     created_at: 2026-06-14T20:11:31.834Z
     completed_at: 2026-06-14T20:11:31.834Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped: the code diff against feat/ui-redesign is empty; submitted changes are kspec
+      shadow/spec state only, so there are no changed TypeScript/test files for focused lint."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed-ts-or-test-files>
+    created_at: 2026-06-14T20:11:44.791Z
+    completed_at: 2026-06-14T20:11:44.791Z
 events:
   - _ulid: 01KV3V974G05GWQKWG0S72YB8W
     actor: Jacob Chapel
@@ -146,6 +157,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-14T20:11:32.063Z
+  - _ulid: 01KV3W5Z05V317TQW965WRMCGT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: focused-lint
+    timestamp: 2026-06-14T20:11:45.029Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: open
@@ -158,5 +176,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-14T19:56:03.088Z
-updated_at: 2026-06-14T20:11:31.834Z
+updated_at: 2026-06-14T20:11:44.791Z
 notes: []
