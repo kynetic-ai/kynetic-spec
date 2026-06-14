@@ -66097,7 +66097,7 @@ runs:
     completed_at: 2026-06-14T20:59:31.127Z
   - _ulid: 01KV406P69NCAYW311SMQBWXA4
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66131,7 +66131,20 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-14T21:23:10.885Z
-        completed_at: 2026-06-14T21:23:10.885Z
+        completed_at: 2026-06-14T21:23:23.541Z
+        notes: "Proposed improvement: Add an explicit review/confirmation surface or clearer post-complete
+          audit output for kspec task complete when it auto-syncs linked spec implementation status,
+          especially for spec-only or cross-spec tasks. It should make the old/new status and reason
+          easy to notice and, if possible, link to the affected AC coverage basis. Help: reduces
+          missed status drift after completing tasks whose real implementation work is split across
+          follow-ups. Scope: small to medium, depending on whether this is output-only or adds a
+          flag/confirmation control. Success observation candidate: detached review merge helper
+          plus review-record gates provided a reliable approval-to-merge path in a detached
+          snapshot."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-14T21:23:23.541Z
+        completed_at: 2026-06-14T21:23:23.541Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-14T21:22:03.081Z
