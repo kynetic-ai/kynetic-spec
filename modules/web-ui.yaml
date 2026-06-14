@@ -3230,7 +3230,7 @@ features:
       BREAKING CHANGE: PID/port files move from .kspec/.daemon.pid to ~/.config/kspec/daemon.pid
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     depends_on:
       - "@daemon-server"
       - "@api-contract"
