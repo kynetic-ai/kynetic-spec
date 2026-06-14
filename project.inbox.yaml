@@ -4957,3 +4957,15 @@ inbox:
       - task-lineage
     added_by: Jacob Chapel
     created_at: 2026-06-14T05:52:13.424Z
+  - _ulid: 01KV3WHP0HYD1RC7FZZ3QGRH1X
+    text: "Define a metadata-only/no-code-diff review gate profile. Reflection source: reviewing
+      @task-supersede-legacy-revamp-umbrella found git diff against feat/ui-redesign was empty and
+      the task only verified kspec metadata, but the required review gates still ran the full npm
+      suite; npm test passed but took 2583.8s. Consider project guidance for when reviewers may mark
+      npm gates skipped/non-required while still requiring exact entity JSON verification,
+      successor/ref lookup, kspec validations, and detached merge-helper/no-op evidence."
+    tags:
+      - reflection
+      - review-gates
+    added_by: Jacob Chapel
+    created_at: 2026-06-14T20:18:09.041Z
