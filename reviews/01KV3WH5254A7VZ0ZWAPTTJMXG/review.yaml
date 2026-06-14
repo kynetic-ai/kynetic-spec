@@ -68,6 +68,18 @@ checks:
     runner: kspec
     created_at: 2026-06-14T20:32:42.953Z
     completed_at: 2026-06-14T20:32:42.953Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0. Completeness warnings are
+      existing corpus debt plus plan-approved hygiene tasks without spec_ref; this task has
+      derive_from_specs=false in @plan-ui-redesign-global-decisions and no behavior ACs."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-14T20:32:45.979Z
+    completed_at: 2026-06-14T20:32:45.979Z
 events:
   - _ulid: 01KV3WH525SN8Q2F2HM8QZZK8B
     actor: Jacob Chapel
@@ -124,6 +136,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-14T20:32:43.197Z
+  - _ulid: 01KV3XCEM79S3QP0T2G74RWGG2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-14T20:32:46.215Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: open
@@ -136,5 +155,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-14T20:17:51.685Z
-updated_at: 2026-06-14T20:32:42.953Z
+updated_at: 2026-06-14T20:32:45.979Z
 notes: []
