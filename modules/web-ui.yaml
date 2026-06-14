@@ -297,6 +297,9 @@ decisions:
       configuration describing the daemon's own world, such as the roster
       of registered projects — persists server-side in the daemon's
       configuration directory and never depends on browser storage.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
