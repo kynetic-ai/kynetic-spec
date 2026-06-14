@@ -162,6 +162,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-14T21:20:13.336Z
+  - _ulid: 01KV403X6YG3MTHRG0SAPM6N4M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV403WZSTAEQEWEKHZ3WWPGG
+    timestamp: 2026-06-14T21:20:31.966Z
 examined_commit: f9e6d7b5d4757dbd93c361fcf7b37ad0793f4255
 external_links: []
 lifecycle_state: open
@@ -171,8 +178,44 @@ subject:
   content_hash: ""
   ref: "@01KV3TKKGFPS4FT2Z0SCG6Q1JM"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV403WZSTAEQEWEKHZ3WWPGG
+    entries:
+      - _ulid: 01KV403WZSK53BH1DZZK7MVYE0
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; git diff for packages/daemon/src/project-context.ts and
+          tests/daemon-context-manager.test.ts; surrounding context in both changed files; task
+          @01KV3TKKGFPS4FT2Z0SCG6Q1JM; prior reviews @01KV3V97 and @01KV3XX1; spec
+          @multi-directory-daemon; follow-up task @task-implement-daemon-roster-persistence.
+
+
+          Commands run: git status --short --branch; git diff --stat/name-only/full patch; git log;
+          kspec task get; kspec review for-task/get/add/open; kspec item get
+          @multi-directory-daemon; kspec search implement daemon roster persistence; rg for
+          ac-15/roster annotations; npx oxlint changed files; npm run format:check; npm run lint --
+          --quiet; npm run typecheck; npm test; kspec validate --refs/--alignment/--completeness
+          --warnings-ok.
+
+
+          Claims verified: The stale ac-15 source/test annotations are removed; listProjects() and
+          daemon-context-manager tests no longer claim restart roster restore coverage; the old
+          empty-roster tests were removed; @multi-directory-daemon is in_progress; follow-up
+          @task-implement-daemon-roster-persistence owns implementation and future ac-15 behavioral
+          coverage; all required gates pass.
+
+
+          Categories searched: correctness (spec/task alignment and false-coverage removal), test
+          quality (no source-scanning or stale ac-15 coverage in changed files), edge
+          cases/integration (ac-14 auto-registration preserved while ac-15 moved to follow-up),
+          error handling/security (no behavioral runtime change in this patch; invalid/deleted
+          restored-entry handling remains in AC/follow-up). No blocking findings found.
+        created_at: 2026-06-14T21:20:31.737Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-14T21:06:27.864Z
-updated_at: 2026-06-14T21:20:13.104Z
+updated_at: 2026-06-14T21:20:31.737Z
 notes: []
