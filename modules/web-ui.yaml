@@ -3212,14 +3212,17 @@ features:
       - multi-directory-daemon
     title: Multi-Directory Daemon Architecture
     type: feature
-    description: |
+    description: |-
       Extends the daemon server to support multiple kspec projects simultaneously from a single
       daemon process. Projects are identified via X-Kspec-Dir HTTP header. Enables E2E testing
       with isolated fixtures and multi-project development workflows.
 
       Key architectural changes:
       - Global daemon with PID/port files at ~/.config/kspec/
-      - Project context caching with on-demand registration
+      - Project context caching with on-demand registration. The registered-project roster
+        (project paths and registration metadata) is daemon-level state persisted in the daemon
+        configuration directory and restored on restart; it is distinct from runtime watcher and
+        cache state, which is per-process and rebuilt after a restart.
       - Per-project file watchers
       - WebSocket connections bound to specific projects
 
@@ -3316,9 +3319,13 @@ features:
         id: ac-14
         then: project is re-registered automatically (same as initial registration)
         when: first request for a project arrives
-      - given: daemon running with registered projects
+      - given: daemon running with registered projects whose registration metadata is persisted in the
+          daemon configuration directory
         id: ac-15
-        then: registered project list is empty (no persistence across restarts)
+        then: the registered-project roster is restored from the daemon configuration directory without any
+          client involvement; restored entries whose project metadata is no longer valid are
+          surfaced and removed through the existing invalid-project handling (see ac-20 and ac-34)
+          rather than silently poisoning the roster
         when: daemon restarts
       - given: two concurrent requests for unregistered project with same path
         id: ac-16
