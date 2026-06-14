@@ -59,5 +59,14 @@ tags:
   - meta
   - planning
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-14T19:45:12.039Z
 created_at: 2026-06-14T19:44:14.524Z
 todos: []
+automation: eligible

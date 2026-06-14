@@ -32029,6 +32029,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-14T19:44:14.524Z
+  automation: eligible
 - _ulid: 01KV3TKKGFPS4FT2Z0SCG6Q1JM
   slugs:
     - task-respec-daemon-project-roster-persistence
