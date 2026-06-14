@@ -66096,7 +66096,7 @@ runs:
     started_at: 2026-06-14T20:57:12.598Z
     completed_at: 2026-06-14T20:59:31.127Z
   - _ulid: 01KV406P69NCAYW311SMQBWXA4
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -66152,7 +66152,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-14T21:23:33.872Z
-        completed_at: 2026-06-14T21:23:33.872Z
+        completed_at: 2026-06-14T21:24:06.676Z
+        notes: "Captured two observations via kspec batch: one friction observation about task-complete
+          auto-syncing linked spec implementation status in spec-only/cross-spec completion flows;
+          one success observation about detached review snapshots plus fresh review records and the
+          detached-reviewer merge helper providing an auditable approval-to-merge path. No
+          inbox/task created; the friction is systemic and should feed observation triage first."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-14T21:22:03.081Z
+    completed_at: 2026-06-14T21:24:06.676Z
