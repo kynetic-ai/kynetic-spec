@@ -39,7 +39,7 @@ description: |
 spec_ref: "@client-preference-persistence"
 plan_ref: "@plan-ui-redesign-global-decisions"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -58,7 +58,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KV3TXBQD14SNT5BJY8A6RHMA
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -107,6 +107,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-14T19:56:05.360Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KV3TXBQD14SNT5BJY8A6RHMA
+    command: review-verdict-needs-work
+    timestamp: 2026-06-14T20:12:32.402Z
 created_at: 2026-06-14T19:44:14.863Z
 started_at: 2026-06-14T19:50:22.845Z
 submitted_at: 2026-06-14T19:52:35.506Z
