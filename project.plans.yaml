@@ -1917,6 +1917,7 @@ plans:
       - plan-web-ui-foundations
     title: Web UI Foundations
     status: draft
+    branch: feat/ui-redesign
     derived_specs: []
     derived_tasks: []
     module_ref: "@web-ui"
