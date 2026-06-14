@@ -80,6 +80,18 @@ checks:
     runner: kspec
     created_at: 2026-06-14T21:20:02.795Z
     completed_at: 2026-06-14T21:20:02.795Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed. Completeness has existing warning
+      baseline; changed files no longer claim @multi-directory-daemon ac-15 coverage, and AC-15
+      implementation is tracked by @task-implement-daemon-roster-persistence.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-14T21:20:13.104Z
+    completed_at: 2026-06-14T21:20:13.104Z
 events:
   - _ulid: 01KV3ZA4WRP12REXQAPJZEQVWW
     actor: Jacob Chapel
@@ -143,6 +155,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-14T21:20:03.051Z
+  - _ulid: 01KV403B0R3DTZZZ2ZPW9ZSNJK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-14T21:20:13.336Z
 examined_commit: f9e6d7b5d4757dbd93c361fcf7b37ad0793f4255
 external_links: []
 lifecycle_state: open
@@ -155,5 +174,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-14T21:06:27.864Z
-updated_at: 2026-06-14T21:20:02.795Z
+updated_at: 2026-06-14T21:20:13.104Z
 notes: []
