@@ -65924,7 +65924,7 @@ runs:
     completed_at: 2026-06-14T20:18:19.504Z
   - _ulid: 01KV3XFX0P2N9P7F4CMMWEJWCR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -65940,7 +65940,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-14T20:35:08.613Z
-        completed_at: 2026-06-14T20:35:08.613Z
+        completed_at: 2026-06-14T20:35:21.498Z
+        notes: "Friction points: (1) Required review-gate evidence for a pure shadow-meta/no-code review
+          still drove the full npm test suite, which took 2678.2s even though git diff against
+          feat/ui-redesign was empty and the actual risk was task-state correctness. (2) kspec
+          validate --completeness warned that this approved plan-hygiene task had no spec_ref;
+          interpreting that correctly required reading @plan-ui-redesign-global-decisions and its
+          derive_from_specs=false note. (3) Review evidence has no first-class evidence-log field,
+          so the durable log had to be stored as an unresolved non-blocking nit thread."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-14T20:35:21.498Z
+        completed_at: 2026-06-14T20:35:21.498Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-14T20:34:39.255Z
