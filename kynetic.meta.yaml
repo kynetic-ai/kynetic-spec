@@ -21910,6 +21910,21 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-12T17:15:42.735Z
+  - _ulid: 01KV3WCK1J5CNFGKFSSAG3S5QY
+    type: friction
+    content: "Review friction: AC coverage validation can be syntactically correct while semantically
+      stale after a spec-only AC rewrite. In @task-respec-daemon-project-roster-persistence,
+      @multi-directory-daemon ac-15 was changed from restart-empty/no-persistence to
+      restore-from-daemon-config, but the existing AC-tagged tests still asserted the old
+      empty-after-restart behavior and the full suite passed. Reviewers need to compare changed AC
+      text against the asserted behavior, not just rely on kspec validate completeness. Related but
+      not duplicate: @test-annotation-sweep and @ac-annotation-integrity-reporting cover annotation
+      syntax/target validity; inbox @01KTYQ1RG covers metadata/spec-catalog gate profiles."
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KV3W92"
+    created_at: 2026-06-14T20:15:22.162Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
