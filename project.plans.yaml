@@ -1892,7 +1892,8 @@ plans:
     slugs:
       - plan-ui-redesign-global-decisions
     title: UI Redesign Global Decisions
-    status: draft
+    status: approved
+    approved_at: 2026-06-14T19:43:55.265Z
     branch: feat/ui-redesign
     derived_specs: []
     derived_tasks: []
