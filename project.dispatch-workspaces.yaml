@@ -23671,7 +23671,7 @@ workspaces:
         head: f25c25ea5a7bfa955e44779822eed2b1e3b3aee3
         last_seen_at: 2026-06-12T17:17:35.421Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-websocket-duplicate-event-e2e-response-count-flake-01ktyb6m
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: e254caec535bd3c303869283977944fa05b2f513
     bootstrap:
       status: succeeded
@@ -24143,12 +24143,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-14T19:54:56.158Z
+      updated_at: 2026-06-14T20:16:04.986Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-14T19:55:28.518Z
+      updated_at: 2026-06-14T20:16:04.986Z
     integration:
       status: pending
       detail: null
@@ -24156,7 +24156,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: e254caec535bd3c303869283977944fa05b2f513
-      updated_at: 2026-06-14T19:54:56.158Z
+      updated_at: 2026-06-14T20:16:04.986Z
     lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV3TKKGFPS4FT2Z0SCG6Q1JM
@@ -24165,9 +24165,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-14T19:55:28.518Z
-      last_reconciled_at: 2026-06-14T19:55:28.518Z
+      last_reconciled_at: 2026-06-14T20:16:04.986Z
       created_at: 2026-06-14T19:49:08.744Z
-      updated_at: 2026-06-14T19:55:28.518Z
+      updated_at: 2026-06-14T20:16:04.986Z
     workspace_id: dispatch-workspace-01KV3TKKGFPS4FT2Z0SCG6Q1JM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
