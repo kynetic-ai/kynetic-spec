@@ -24646,11 +24646,11 @@ workspaces:
     canonical_branch: dispatch/task/task-supersede-legacy-revamp-umbrella/01kv3tkj
     canonical_branch_head: e254caec535bd3c303869283977944fa05b2f513
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-14T20:15:49.264Z
+      updated_at: 2026-06-14T20:19:26.134Z
     health:
       status: healthy
       issues: []
@@ -24664,17 +24664,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: e254caec535bd3c303869283977944fa05b2f513
       updated_at: 2026-06-14T20:15:49.264Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV3TKJFJKSS93ZAZJHK4951K
     task_ref: "@01KV3TKJFJKSS93ZAZJHK4951K"
     task_slug: task-supersede-legacy-revamp-umbrella
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-14T20:19:26.134Z
       last_active_at: 2026-06-14T19:59:18.552Z
       last_reconciled_at: 2026-06-14T20:18:53.205Z
       created_at: 2026-06-14T19:55:35.946Z
-      updated_at: 2026-06-14T20:18:53.205Z
+      updated_at: 2026-06-14T20:19:26.134Z
     workspace_id: dispatch-workspace-01KV3TKJFJKSS93ZAZJHK4951K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
