@@ -343,15 +343,15 @@
     canonical identities. Classification resolves recognizable
     variants of agent identifiers and of the human identity to their
     canonical form; strings that resolve to neither classify as
-    unknown without failing. Records written through the daemon
-    resolve their author through the standard author-resolution
-    precedence rather than an anonymous placeholder, and actor values
-    persisted by daemon record writes are canonical wherever
-    classification can resolve them: a value — caller-supplied or
-    precedence-resolved — that classifies as a recognizable variant
-    of a canonical identity is stored in canonical form, and a value
-    that classifies to no canonical identity is stored as supplied
-    and classifies as unknown when read.
+    unknown without failing. Records written through the daemon resolve
+    their author through the configured author pool rather than an
+    anonymous placeholder, and actor values persisted by daemon record
+    writes are canonical: caller-supplied or precedence-resolved values
+    that classify as a configured human or agent identity are stored in
+    canonical form, while values that classify to no configured identity
+    are rejected on new writes. Unknown classification remains a
+    read-side result for historical or externally edited records, not a
+    way to persist arbitrary new authors.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -403,11 +403,8 @@
       when: |
         the record is written
       then: |
-        the recorded author resolves through the standard
-        author-resolution precedence — explicit value, then
-        environment, then configured author, then version-control or
-        system identity — and is never recorded as an anonymous
-        placeholder
+        the recorded author resolves through the configured author
+        precedence and is never recorded as an anonymous placeholder
     - id: ac-7
       given: |
         an actor value about to be persisted by a daemon record
@@ -423,12 +420,12 @@
     - id: ac-8
       given: |
         an actor value about to be persisted by a daemon record write
-        that classifies to no canonical identity
+        that classifies to no configured human or agent identity
       when: |
         the record is written
       then: |
-        the write succeeds, the value is stored as supplied, and
-        reading the record classifies the actor as unknown
+        the write is rejected with validation feedback, and no new
+        free-form actor value is persisted
 
 - title: Actor Display and Next-Actor Derivation
   slug: actor-display
@@ -492,11 +489,13 @@
     - "@actor-identity-model"
   description: |
     A one-time step of the project data upgrade path rewrites
-    historical actor fields to canonical identities. A declared
-    variant map resolves recognizable historical actor strings; values
-    no rule resolves are replaced with the declared default for their
-    record kind. The step reports every rewrite, supports a preview
-    mode that modifies nothing, and is idempotent.
+    historical actor fields to canonical identities. A declared variant
+    map resolves recognizable historical actor strings; operator-
+    supplied mappings can resolve additional historical values, and
+    values no rule resolves are replaced with the declared unknown or
+    default actor for their record kind. The step reports every rewrite
+    and every unresolved original, supports a preview mode that modifies
+    nothing, and is idempotent.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -509,12 +508,14 @@
         canonical identities according to the declared variant map
     - id: ac-2
       given: |
-        an actor value that no variant rule resolves
+        an actor value that no variant rule or operator-supplied mapping
+        resolves
       when: |
         the upgrade step runs
       then: |
-        the value is replaced with the declared default for its record
-        kind, and the original value appears in the step's report
+        the value is replaced with the declared unknown or default actor
+        for its record kind, and the original value appears in the
+        step's report
     - id: ac-3
       given: |
         the upgrade step has already run to completion on a project
@@ -628,7 +629,7 @@ derive_from_specs: false
     verdicts, checks, lifecycle changes) — they are why 287 review
     records carry "@claude" and singleton variants as authors. But
     fixing the fallbacks alone is not enough: no daemon write path
-    canonicalizes, the author chain ends in free-form git/OS-derived
+    canonicalizes, the author chain can end in free-form git/OS-derived
     names, and caller-supplied values persist verbatim — which is how
     the same codex agent accumulated at least 7 recorded spellings.
     @actor-identity-model ac-1 requires newly written actor fields to
@@ -637,45 +638,31 @@ derive_from_specs: false
 
     What:
     - Replace every anonymous fallback in the review routes with the
-      same author resolution used by the other record-writing routes
-      (explicit body value wins, then environment, then configured
-      author, then git/OS identity).
+      same configured author resolution used by the other
+      record-writing routes, then validate the resolved value against
+      the configured human/agent author pool before persistence.
     - Add a write-path canonicalization step shared by the daemon's
       record-writing routes (reviews, tasks, triage, inbox, plan
       notes): after resolution — explicit caller value or chain
       result — classify the value through the shared classifier from
       @task-identity-endpoint-classifier and persist the canonical
       identity whenever classification resolves it. A value that
-      classifies to no canonical identity persists as supplied and
-      surfaces as unknown on read — out-of-roster actors stay
-      honestly attributed, and no recognizable variant is ever
-      persisted by a daemon write.
+      classifies to no configured identity rejects the write with
+      validation feedback instead of being persisted as a new
+      free-form author.
     - Reconcile @config-author with @actor-identity-model's
       transition boundary: update that spec's fallback-chain wording
       (kspec item set at execution time) to state that chain-resolved
       values pass through write-time classification before
-      persistence, so the git/OS-name tail no longer persists
-      free-form variants of configured identities and the two specs
-      stop sitting in the corpus as an unexplained contradiction.
-    - Reconcile @actor-identity-model ac-1 with the canonical-write
-      boundary the same way: update that criterion's wording (kspec
-      item set at execution time — the item exists by then, since
-      P0a derives before this plan) to scope the canonical guarantee
-      to values classification can resolve — a value that classifies
-      to a canonical identity is stored in canonical form, never a
-      variant; a value that classifies to no canonical identity is
-      stored as supplied and classifies as unknown on read. Without
-      this rewording, ac-1's literal "never a free-form variant"
-      text is unmeetable against @actor-identity-resolution ac-8's
-      deliberate preserve-as-supplied behavior for out-of-roster
-      actors, and this task's Covers claim on ac-1 could not be
-      verified as written.
+      persistence, and any tail value outside the configured pool is
+      rejected on new writes, so the two specs stop sitting in the
+      corpus as an unexplained contradiction.
     - Behavioral tests: a review mutation without an actor in the
       body records the resolved configured author in canonical form;
       one with an explicit variant actor (e.g. codex@openai.com)
-      records the canonical agent id; one with an unrecognizable
-      actor records the supplied value and classifies unknown on
-      read; no path records "anonymous".
+      records the canonical agent id; one with an unrecognizable actor
+      is rejected with validation feedback; no path records
+      "anonymous".
 
     How: Reuse the existing getAuthor() chain (the one task/triage/
     inbox routes call) inside the review route handlers, then wrap
@@ -761,10 +748,11 @@ derive_from_specs: false
       added_by, triage actors, plan note authors) and rewrites
       recognizable variants to canonical identities using the shared
       variant map from the classifier task.
-    - Declared defaults for unresolvable values per record kind
-      (e.g. unresolvable agent-like strings vs. unattributed human
-      records), applied when no rule matches; originals listed in the
-      step's report.
+    - An optional operator-provided mapping file/input for ambiguous
+      values, applied after the built-in variant map and before the
+      fallback. Declared unknown/default actors per record kind cover
+      values that neither the built-in rules nor the operator mapping
+      resolve; originals are listed in the step's report.
     - A rewrite report (original → canonical, record ref, field) for
       every change; kspec upgrade --dry-run prints the report without
       modifying records.
@@ -775,8 +763,8 @@ derive_from_specs: false
 
     How: Hook into the existing kspec upgrade step framework (the
     same path that performed the folder-backed entity migration).
-    Reuse the classifier's variant table as the rewrite map; the
-    declared defaults live alongside it as data. Test against
+    Reuse the classifier's variant table as the built-in rewrite map;
+    declared unknown/default actors live alongside it as data. Test against
     fixtures seeded with the measured variants from
     plans/ui-redesign/analysis.md section 4.6.
 
@@ -1065,16 +1053,13 @@ The "data upgrade plan" named in P0a's table row for
 data-upgrade plan exists or is needed. These Covers lines resolve
 once P0a derives (see the approval-ordering gate above).
 
-@actor-identity-model ac-1's literal wording ("never a free-form
-variant") predates the canonical-write boundary adopted here and
-would be unmeetable against @actor-identity-resolution ac-8's
-preserve-as-supplied behavior for out-of-roster actors.
-@task-review-author-resolution therefore reconciles that
-criterion's wording at execution time — scoping the canonical
-guarantee to values classification can resolve, with unclassifiable
-values preserved and surfaced as unknown — exactly the way it
-already reconciles @config-author, so its Covers claim on ac-1 is
-verifiable as written.
+@actor-identity-model ac-1 requires newly written actor fields to come
+from the configured human/agent author pool. @task-review-author-
+resolution therefore reconciles @config-author at execution time so
+chain-resolved values are canonicalized when recognizable and rejected
+when outside the configured pool. Unknown classification remains for
+historical or externally edited records and for upgrade reporting; it
+is not a daemon-write persistence path for new arbitrary authors.
 
 ### Relationship to existing specs (verified read-only)
 
@@ -1085,13 +1070,11 @@ verifiable as written.
 - `@web-dashboard` ac-23..25 — the existing Cmd/Ctrl+K palette
   behavior is preserved; the shortcut-registry task migrates only the
   binding mechanism. No AC rewrite needed in this plan.
-- `@config-author` — defines the author-resolution precedence (env >
-  config > git/OS) that the identity surface's human identity builds
-  on and that the canonical-write task adopts. That task also amends
-  the spec's fallback-chain wording to layer write-time
-  classification on top — the reconciliation @actor-identity-model's
-  transition boundary assigns to this plan. The precedence order
-  itself is unchanged.
+- `@config-author` — defines the author-resolution precedence that the
+  identity surface's human identity builds on and that the canonical-
+  write task adopts. That task amends the fallback-chain wording to
+  layer write-time classification and author-pool validation on top —
+  the reconciliation @actor-identity-model assigns to this plan.
 - `@ui-api-aggregation` — establishes the server-resolved-data
   conventions (no client list fetches for derived data) that the
   breadcrumb ancestry payload and header counts follow. Extended, not
@@ -1139,16 +1122,11 @@ skipped silently after derive.
   classifier, the write path, and the upgrade step.
 - **Canonical-write boundary**: the daemon write path guarantees
   that no recognizable variant of a canonical identity is ever
-  persisted; values that classify to no canonical identity persist
-  as supplied and render as unknown. This is deliberate: rewriting
-  out-of-roster actors to a default at write time would fabricate
-  attribution, while the honest unknown classification keeps
-  identity-derived views truthful.
-  @task-review-author-resolution reconciles
-  @actor-identity-model ac-1's wording with this boundary at
-  execution time (see the upstream decision AC claims note) so the
-  decision criterion and this behavior agree literally, not just in
-  intent.
+  persisted and that values outside the configured human/agent author
+  pool are rejected on new writes. Historical and externally edited
+  records can still classify as unknown on read; the one-time upgrade
+  maps unresolved historical values to the declared unknown/default
+  actor while reporting originals.
 - **Next-actor mapping** is intentionally minimal and role-based:
   the rule derives the awaited role (reviewer role / work-author
   role / no role) from lifecycle + disposition, and surfaces resolve
@@ -1186,10 +1164,10 @@ skipped silently after derive.
   shadow branch records the change set.
 - The canonical-write authorship change is write-path only; it does
   not rewrite history (the upgrade step owns that). Explicit actor
-  values from CLI/dispatch callers keep winning the resolution
-  precedence, but a value that classifies as a recognizable variant
-  persists in canonical form; only out-of-roster values persist as
-  supplied.
+  values outside the configured author pool are rejected on new writes;
+  values that classify as a recognizable variant persist in canonical
+  form; unknown rendering remains for historical or externally edited
+  data.
 - The preference utility migrates the existing project-selection
   localStorage value by reading the legacy key once; no other
   persisted client state exists today.

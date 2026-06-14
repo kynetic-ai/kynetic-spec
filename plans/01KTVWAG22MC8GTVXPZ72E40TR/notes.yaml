@@ -23,3 +23,7 @@ notes:
       @plan-ui-redesign-global-decisions is approved and derived."
     author: "@claude"
     created_at: 2026-06-11T21:37:26.346Z
+  - _ulid: 01KV3RFSTE2WV2ZYXBMA3E8GMZ
+    content: Align actor identity write and migration semantics with updated global decisions
+    author: Jacob Chapel
+    created_at: 2026-06-14T19:07:13.102Z
