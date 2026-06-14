@@ -37,3 +37,7 @@ notes:
     content: Align global decisions with Jacob's contradiction resolutions
     author: Jacob Chapel
     created_at: 2026-06-14T19:07:08.534Z
+  - _ulid: 01KV3RQT97TJB4T7GTE0QD476V
+    content: Add multi-directory daemon roster persistence respec task from review
+    author: Jacob Chapel
+    created_at: 2026-06-14T19:11:35.719Z

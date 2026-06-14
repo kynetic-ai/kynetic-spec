@@ -460,6 +460,45 @@ derive_from_specs: false
     @actor-identity-model --relates-to @config-author; verify the notes
     render on each plan via plan get and the relates_to reference via
     item get @actor-identity-model.
+
+- title: Respec multi-project daemon roster persistence
+  slug: task-respec-daemon-project-roster-persistence
+  priority: 1
+  tags: [specs, daemon, cross-project]
+  spec_ref: "@client-preference-persistence"
+  description: |
+    Update the existing multi-directory daemon spec so registered-project
+    roster persistence agrees with @client-preference-persistence ac-2.
+
+    Why: @multi-directory-daemon ac-15 currently says the registered
+    project list is empty after daemon restart. The global redesign
+    decision intentionally supersedes that behavior: daemon-level state
+    such as the registered-project roster is server-side state recovered
+    from the daemon configuration directory, not browser-local UI
+    preference state. Leaving ac-15 unchanged would make the derived
+    decision contradict an existing UI/UX-touching spec.
+
+    What:
+    - Change @multi-directory-daemon ac-15 so a daemon restart restores
+      the registered project list from daemon-side configuration state.
+    - Update @multi-directory-daemon description/key architecture notes
+      if needed so project-context caching distinguishes persisted
+      registration metadata from runtime watcher/cache state.
+    - Preserve @multi-directory-daemon ac-14's auto-registration behavior
+      for a first request naming a project that is not in the persisted
+      roster; persistence adds a restart restore path, it does not remove
+      request-time registration.
+    - Preserve unregister/delete behavior for invalid or deleted projects:
+      restored entries whose project metadata is no longer valid must be
+      surfaced and removed through the existing invalid-project handling
+      rather than silently poisoning the roster.
+
+    How: kspec item ac set @multi-directory-daemon ac-15 via a batch
+    (and item set for description text if needed). Verify with kspec item
+    get @multi-directory-daemon that ac-15 no longer promises an empty
+    roster after restart and still coexists with ac-14/ac-20/ac-34.
+
+    Covers: @client-preference-persistence ac-2.
 ```
 
 ## Implementation Notes
@@ -504,10 +543,12 @@ a one-off decisions-only module for this program.
 
 ### AC coverage handoff
 
-`derive_from_specs: false` is deliberate: the three tasks in this plan
-are program-hygiene work that implements no decision behavior, so they
-carry no spec_ref or Covers lines. After derivation the decision items
-enter the corpus as not_started with no implementing tasks, and
+`derive_from_specs: false` is deliberate: most tasks in this plan are
+program-hygiene work that implements no decision behavior. The one
+exception, @task-respec-daemon-project-roster-persistence, is a
+spec-alignment task for an existing contradictory daemon AC and carries
+the relevant `Covers:` line. After derivation the remaining decision
+items enter the corpus as not_started with no implementing tasks, and
 completeness validation will flag their criteria until track plans land.
 That is the intended interim posture; the table below converts the
 ambient coverage debt into a tracked claim list.
@@ -535,7 +576,7 @@ not close while any row below is unclaimed.
 | @coverage-state-presentation ac-1 | validate view + spec workspace plans |
 | @coverage-state-presentation ac-2 | UI foundations plan (shared state tokens) |
 | @client-preference-persistence ac-1 | UI foundations plan (preference utility) |
-| @client-preference-persistence ac-2 | cross-project registry plan |
+| @client-preference-persistence ac-2 | @task-respec-daemon-project-roster-persistence, then cross-project registry implementation plan |
 | @actor-identity-model ac-1 | UI foundations plan (canonical-write identity layer) |
 | @actor-identity-model ac-2 | data upgrade plan (one-time migration) |
 | @actor-identity-model ac-3 | aggregation plan (awaiting-you, ownership filters) |
