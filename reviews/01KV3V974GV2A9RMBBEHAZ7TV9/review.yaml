@@ -164,6 +164,13 @@ events:
       status: skipped
       name: focused-lint
     timestamp: 2026-06-14T20:11:45.029Z
+  - _ulid: 01KV3W6FX2VKT1EP3GCXY4232F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV3W6FNC5FT0B3ET5SWE3S2Y
+    timestamp: 2026-06-14T20:12:02.338Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: open
@@ -173,8 +180,31 @@ subject:
   content_hash: ""
   ref: "@01KV3TKKGFPS4FT2Z0SCG6Q1JM"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV3W6FNC5FT0B3ET5SWE3S2Y
+    anchor:
+      type: code
+      commit: e254caec535bd3c303869283977944fa05b2f513
+      line_end: 448
+      line_start: 420
+      path: tests/daemon-context-manager.test.ts
+      side: head
+    entries:
+      - _ulid: 01KV3W6FNCAV68SBDY7YX19C7X
+        author: Jacob Chapel
+        body: "MUST-FIX: @multi-directory-daemon ac-15 was changed to require restoring the
+          registered-project roster from the daemon configuration directory after restart, but the
+          existing AC-15 coverage still asserts the old behavior. These tests create a fresh
+          ProjectContextManager after restart and expect listProjects() to be empty,
+          hasProject(projectA/projectB) to be false, and getProject() to throw before
+          re-registration. The full suite passed with these assertions, so the annotated tests prove
+          the superseded contract and cannot cover the new AC. Please make the
+          spec/status/implementation/tests coherent: either implement and behaviorally test roster
+          restore from daemon config, or, if this is intentionally future work, stop marking the
+          changed AC as implemented/covered by tests that assert the opposite."
+        created_at: 2026-06-14T20:12:02.092Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-14T19:56:03.088Z
-updated_at: 2026-06-14T20:11:44.791Z
+updated_at: 2026-06-14T20:12:02.092Z
 notes: []
