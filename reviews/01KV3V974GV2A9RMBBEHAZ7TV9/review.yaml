@@ -194,6 +194,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-14T20:12:30.396Z
+  - _ulid: 01KV3XKY1PZR1YZVK6HMX23KZC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV3W6FNC5FT0B3ET5SWE3S2Y
+    timestamp: 2026-06-14T20:36:51.382Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: closed
@@ -226,6 +232,48 @@ threads:
           restore from daemon config, or, if this is intentionally future work, stop marking the
           changed AC as implemented/covered by tests that assert the opposite."
         created_at: 2026-06-14T20:12:02.092Z
+      - _ulid: 01KV3XKXTAQJ5ZDG0KANG39H0J
+        author: "@claude"
+        body: >-
+          Fixed. Took the "intentionally future work" path the review offered.
+
+
+          Root cause: the respec changed ac-15 to require restoring the roster from the daemon
+          config dir on restart, but two tests in this file (the "empty project list after restart"
+          and "require re-registration of all projects after restart" cases) still asserted the OLD
+          no-persistence contract while annotated as ac-15 coverage — so they proved the superseded
+          behavior and falsely marked ac-15 as covered/implemented.
+
+
+          Changes to restore coherence:
+
+          1. Removed both superseded-contract tests (was lines 420-453). The valid behaviors they
+          touched remain covered: getProject() throwing "Project not registered"/"No default project
+          configured" is covered by the ac-3 tests (lines ~563/616/676); empty-on-construction +
+          re-register-on-first-request is covered by the ac-14 restart test (lines 398-418).
+
+          2. Removed the false ac-15 annotations: file header AC list, the "should list all
+          registered projects" unit test (re-labeled as supporting listProjects coverage, explicitly
+          not ac-15), and the listProjects() doc comment in packages/daemon/src/project-context.ts
+          (which now states restore-from-config is a separate, not-yet-implemented startup concern).
+
+          3. ProjectContextManager holds per-process runtime state only; ac-15 restore is a
+          daemon-startup layer that does not yet exist. No test now claims ac-15 coverage.
+
+          4. Tracked the actual implementation as follow-up task
+          @task-implement-daemon-roster-persistence (spec_ref @multi-directory-daemon, plan_ref
+          @plan-ui-redesign-global-decisions) so the work is not lost.
+
+
+          Note on feature implementation status: I did NOT downgrade @multi-directory-daemon from
+          "implemented" to "in_progress" because item set cascades to its 21 child items, which
+          would mislabel the bulk of already-implemented behavior. The single outstanding AC is
+          instead tracked via the explicit follow-up task, which is the granular and honest signal.
+
+
+          Gates: format:check, oxlint (changed files), typecheck, full suite (10565 passed / 3
+          skipped / 0 failed), and kspec validate --refs/--alignment/--completeness all green.
+        created_at: 2026-06-14T20:36:51.145Z
     kind: blocker
   - _ulid: 01KV3W709SDR31XA0Z58GQHWM3
     entries:
@@ -268,5 +316,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-14T20:12:30.395Z
 created_at: 2026-06-14T19:56:03.088Z
-updated_at: 2026-06-14T20:12:30.396Z
+updated_at: 2026-06-14T20:36:51.145Z
 notes: []
