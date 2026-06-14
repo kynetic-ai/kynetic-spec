@@ -49,5 +49,14 @@ tags:
   - daemon
   - cross-project
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-14T19:45:12.473Z
 created_at: 2026-06-14T19:44:14.863Z
 todos: []
+automation: eligible
