@@ -39,8 +39,11 @@ description: |
 spec_ref: "@client-preference-persistence"
 plan_ref: "@plan-ui-redesign-global-decisions"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to feat/ui-redesign at cecb52ae149bebc2d7646644fc762ef12906443c. Reviewed
+  cycle 3 approved: removed false ac-15 coverage claims, left @multi-directory-daemon in_progress,
+  and tracked roster persistence implementation in @task-implement-daemon-roster-persistence."
 depends_on: []
 context: []
 priority: 1
@@ -221,8 +224,25 @@ history:
         previous: "@01KV3XX1SP6EPXNB8PD6Y3Q9TK"
     command: review-link
     timestamp: 2026-06-14T21:06:30.099Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to feat/ui-redesign at cecb52ae149bebc2d7646644fc762ef12906443c. Reviewed cycle 3
+          approved: removed false ac-15 coverage claims, left @multi-directory-daemon in_progress,
+          and tracked roster persistence implementation in
+          @task-implement-daemon-roster-persistence."
+        previous: null
+      completed_at:
+        new: 2026-06-14T21:21:15.569Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-14T21:21:15.579Z
 created_at: 2026-06-14T19:44:14.863Z
 started_at: 2026-06-14T21:01:58.429Z
 submitted_at: 2026-06-14T21:03:30.274Z
+completed_at: 2026-06-14T21:21:15.569Z
 todos: []
 automation: eligible
