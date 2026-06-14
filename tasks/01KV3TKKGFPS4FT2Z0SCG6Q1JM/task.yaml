@@ -39,7 +39,7 @@ description: |
 spec_ref: "@client-preference-persistence"
 plan_ref: "@plan-ui-redesign-global-decisions"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -53,11 +53,11 @@ review_ref: "@01KV3V974GV2A9RMBBEHAZ7TV9"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-respec-daemon-project-roster-persistence/01kv3tkk
-  captured_at: 2026-06-14T19:52:35.502Z
-  commit: e254caec535bd3c303869283977944fa05b2f513
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-06-14T20:37:29.313Z
+  commit: f9e6d7b5d4757dbd93c361fcf7b37ad0793f4255
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-respec-daemon-project-roster-persistence/01kv3tkk
 session_id: 01KV3WEN3ZREX1WCWY88DWWV8K
 history:
   - author: Jacob Chapel
@@ -130,8 +130,35 @@ history:
         previous: 2026-06-14T19:50:22.845Z
     command: task-start
     timestamp: 2026-06-14T20:20:02.735Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-respec-daemon-project-roster-persistence/01kv3tkk
+          captured_at: 2026-06-14T20:37:29.313Z
+          commit: f9e6d7b5d4757dbd93c361fcf7b37ad0793f4255
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-respec-daemon-project-roster-persistence/01kv3tkk
+        previous:
+          review_url: null
+          branch: dispatch/task/task-respec-daemon-project-roster-persistence/01kv3tkk
+          captured_at: 2026-06-14T19:52:35.502Z
+          commit: e254caec535bd3c303869283977944fa05b2f513
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-06-14T20:37:29.317Z
+        previous: 2026-06-14T19:52:35.506Z
+    command: task-submit
+    timestamp: 2026-06-14T20:37:29.318Z
 created_at: 2026-06-14T19:44:14.863Z
 started_at: 2026-06-14T20:20:02.735Z
-submitted_at: 2026-06-14T19:52:35.506Z
+submitted_at: 2026-06-14T20:37:29.317Z
 todos: []
 automation: eligible
