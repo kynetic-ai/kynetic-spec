@@ -41,3 +41,196 @@ notes:
     content: Add multi-directory daemon roster persistence respec task from review
     author: Jacob Chapel
     created_at: 2026-06-14T19:11:35.719Z
+  - _ulid: 01KV3TKKV8CM170MG9X8E07MB6
+    content: >-
+      ### What this plan is
+
+
+      The durable, reviewable home for the redesign program's global decisions —
+
+      the choices that more than one track consumes. Track-scoped decisions
+
+      (drift granularity, plan revision mechanics, anchor addressing, gating
+
+      enforcement mode, notification semantics, cross-project delivery shape,
+
+      session-trace derivation, triage commit model) ride in the Specs section
+
+      of their owning track plans, alongside the features they gate, per the
+
+      distributed model.
+
+
+      ### Module placement and derive sequencing
+
+
+      The global decision items are decision-type specs, not a separate module.
+
+      Each decision item declares `parent: "@web-ui"`, placing the durable
+
+      interface decisions under the existing Web UI System module. This keeps
+
+      "redesign" as the program/branch context while the derived corpus items
+
+      remain timeless.
+
+
+      The plan record's stored module may remain @main from import-time storage;
+
+      it is not load-bearing for these decision items because every item declares
+
+      an explicit parent. If an @ux module later materializes, @web-ui can be
+
+      reparented under it through that architecture plan rather than by creating
+
+      a one-off decisions-only module for this program.
+
+
+      ### Consumers
+
+
+      | Decision | Consumed by (planned) |
+
+      |---|---|
+
+      | web-shell-platform-target | shell/palette plans, keyboard registry, view-header pattern |
+
+      | test-result-acquisition | coverage state engine, results ingestion, validate view |
+
+      | ac-coverage-applicability | coverage schema + engine, spec workspace, validate |
+
+      | annotation-freshness-provenance | coverage schema + engine, per-AC revision diffs |
+
+      | coverage-state-presentation | coverage engine, spec workspace, validate, sidebar badges |
+
+      | client-preference-persistence | UI foundations utility; sidebar/palette/dashboard/spec-tree
+      persistence; cross-project registry storage |
+
+      | actor-identity-model | UI foundations identity layer; aggregation (awaiting-you), reviews
+      surfaces, board "mine" |
+
+      | agent-question-mediation | session view, dashboard urgency feed, board blocked flow |
+
+      | integration-merge-authority | reviews gating surface, dashboard resolving actions |
+
+
+      ### AC coverage handoff
+
+
+      `derive_from_specs: false` is deliberate: most tasks in this plan are
+
+      program-hygiene work that implements no decision behavior. The one
+
+      exception, @task-respec-daemon-project-roster-persistence, is a
+
+      spec-alignment task for an existing contradictory daemon AC and carries
+
+      the relevant `Covers:` line. After derivation the remaining decision
+
+      items enter the corpus as not_started with no implementing tasks, and
+
+      completeness validation will flag their criteria until track plans land.
+
+      That is the intended interim posture; the table below converts the
+
+      ambient coverage debt into a tracked claim list.
+
+
+      The claiming mechanism is binding on the program's track plans: a track
+
+      plan that implements a decision's behavior claims the relevant criteria
+
+      with task `Covers:` lines referencing the decision item directly (for
+
+      example `Covers: @web-shell-platform-target ac-2`). A decision criterion
+
+      is claimed when a track task carries its Covers line; the program does
+
+      not close while any row below is unclaimed.
+
+
+      | Decision AC | Claiming track work |
+
+      |---|---|
+
+      | @web-shell-platform-target ac-1 | shell top-bar / view-header plan (browser-only
+      operability) |
+
+      | @web-shell-platform-target ac-2 | shell top-bar plan (leading-zone reservation) |
+
+      | @web-shell-platform-target ac-3 | keyboard registry plan |
+
+      | @test-result-acquisition ac-1 | results-ingestion plan (ingest endpoint, run attribution) |
+
+      | @test-result-acquisition ac-2 | results-ingestion plan (AC mapping convention) |
+
+      | @test-result-acquisition ac-3 | validate view plan (freshness presentation) |
+
+      | @ac-coverage-applicability ac-1 | coverage state engine plan |
+
+      | @ac-coverage-applicability ac-2 | coverage state engine plan |
+
+      | @annotation-freshness-provenance ac-1 | coverage state engine plan (bootstrap freshness) |
+
+      | @annotation-freshness-provenance ac-2 | coverage state engine plan (recorded stamps) |
+
+      | @annotation-freshness-provenance ac-3 | coverage state engine plan (freshness interface) |
+
+      | @coverage-state-presentation ac-1 | validate view + spec workspace plans |
+
+      | @coverage-state-presentation ac-2 | UI foundations plan (shared state tokens) |
+
+      | @client-preference-persistence ac-1 | UI foundations plan (preference utility) |
+
+      | @client-preference-persistence ac-2 | @task-respec-daemon-project-roster-persistence, then
+      cross-project registry implementation plan |
+
+      | @actor-identity-model ac-1 | UI foundations plan (canonical-write identity layer) |
+
+      | @actor-identity-model ac-2 | data upgrade plan (one-time migration) |
+
+      | @actor-identity-model ac-3 | aggregation plan (awaiting-you, ownership filters) |
+
+      | @agent-question-mediation ac-1 | sessions track plans (blocked-state surfacing) |
+
+      | @agent-question-mediation ac-2 | dashboard plan (deep-link resolution, no inline prompts) |
+
+      | @agent-question-mediation ac-3 | future interactive-session planning (scope boundary only;
+      no implementation in this program) |
+
+      | @integration-merge-authority ac-1 | reviews gating plan (daemon surface boundary) |
+
+
+      ### Boundaries and follow-ons deliberately not specced here
+
+
+      - The future "push-up" notification mechanism for agent questions
+        (note-like, reliable) is deferred and unspecified by design.
+      - A post-plan-implementation validate/review step that could trigger
+        final merges (with plan-level branching) is a named future evaluation,
+        not part of this decision set. The current decision binds only the
+        daemon/API boundary: the daemon does not execute merges.
+      - Task coverage metadata (a covers/covers_ac field superseding the
+        in-code not-applicable convention) is out of program scope. The
+        coverage storage plan still fixes the existing scanner and
+        trait-validation semantics so in-code not-applicable markers no
+        longer count as coverage; retiring or replacing the marker as a
+        task-scoped communication convention is future work.
+      - @actor-identity-model supersedes the implemented author-resolution
+        free-form fallback behavior for new writes. The UI foundations plan's
+        canonical-write identity layer owns reconciling @config-author so the
+        chain resolves to configured human or agent identities, rejects
+        invalid/out-of-pool author values on new writes, and leaves unknown
+        classification available for historical/external records and upgrade
+        reporting rather than as a way to persist new arbitrary authors.
+      - Routing all preference access through the shared utility
+        (@client-preference-persistence) is the decided mechanism, but its
+        enforcement is a lint-rule concern, not a behavioral test — the
+        decision's criteria assert only the observable persistence contract
+        (restore-on-reload, namespaced versioned key format, server-side
+        daemon state).
+      - Internal diagnostic names for re-verification causes must not become
+        user-facing presentation states; the four-bucket vocabulary is the
+        durable UI contract.
+    author: Jacob Chapel
+    created_at: 2026-06-14T19:44:15.208Z

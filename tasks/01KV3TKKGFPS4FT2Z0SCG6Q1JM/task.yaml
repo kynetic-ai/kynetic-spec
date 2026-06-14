@@ -1,0 +1,53 @@
+_ulid: 01KV3TKKGFPS4FT2Z0SCG6Q1JM
+slugs:
+  - task-respec-daemon-project-roster-persistence
+title: Respec multi-project daemon roster persistence
+type: task
+description: |
+  Update the existing multi-directory daemon spec so registered-project
+  roster persistence agrees with @client-preference-persistence ac-2.
+
+  Why: @multi-directory-daemon ac-15 currently says the registered
+  project list is empty after daemon restart. The global redesign
+  decision intentionally supersedes that behavior: daemon-level state
+  such as the registered-project roster is server-side state recovered
+  from the daemon configuration directory, not browser-local UI
+  preference state. Leaving ac-15 unchanged would make the derived
+  decision contradict an existing UI/UX-touching spec.
+
+  What:
+  - Change @multi-directory-daemon ac-15 so a daemon restart restores
+    the registered project list from daemon-side configuration state.
+  - Update @multi-directory-daemon description/key architecture notes
+    if needed so project-context caching distinguishes persisted
+    registration metadata from runtime watcher/cache state.
+  - Preserve @multi-directory-daemon ac-14's auto-registration behavior
+    for a first request naming a project that is not in the persisted
+    roster; persistence adds a restart restore path, it does not remove
+    request-time registration.
+  - Preserve unregister/delete behavior for invalid or deleted projects:
+    restored entries whose project metadata is no longer valid must be
+    surfaced and removed through the existing invalid-project handling
+    rather than silently poisoning the roster.
+
+  How: kspec item ac set @multi-directory-daemon ac-15 via a batch
+  (and item set for description text if needed). Verify with kspec item
+  get @multi-directory-daemon that ac-15 no longer promises an empty
+  roster after restart and still coexists with ac-14/ac-20/ac-34.
+
+  Covers: @client-preference-persistence ac-2.
+spec_ref: "@client-preference-persistence"
+plan_ref: "@plan-ui-redesign-global-decisions"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - specs
+  - daemon
+  - cross-project
+vcs_refs: []
+created_at: 2026-06-14T19:44:14.863Z
+todos: []

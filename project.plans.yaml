@@ -1892,13 +1892,26 @@ plans:
     slugs:
       - plan-ui-redesign-global-decisions
     title: UI Redesign Global Decisions
-    status: approved
+    status: active
     approved_at: 2026-06-14T19:43:55.265Z
     branch: feat/ui-redesign
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@web-shell-platform-target"
+      - "@test-result-acquisition"
+      - "@ac-coverage-applicability"
+      - "@annotation-freshness-provenance"
+      - "@coverage-state-presentation"
+      - "@client-preference-persistence"
+      - "@actor-identity-model"
+      - "@agent-question-mediation"
+      - "@integration-merge-authority"
+    derived_tasks:
+      - "@task-supersede-legacy-revamp-umbrella"
+      - "@task-fold-agent-dashboard-design-task"
+      - "@task-record-overlapping-plan-dispositions"
+      - "@task-respec-daemon-project-roster-persistence"
     module_ref: "@main"
-    notes_count: 9
+    notes_count: 10
     source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-global-decisions.md
     created_at: 2026-06-11T06:32:37.936Z
   - _ulid: 01KTTTHGETQS59VB6V4NXX6RKZ

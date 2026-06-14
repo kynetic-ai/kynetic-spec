@@ -46,6 +46,423 @@ tags:
   - daemon
   - elysia
   - bun
+decisions:
+  - _ulid: 01KV3TKJ08TYRG1WH8MR3QAB4A
+    slugs:
+      - web-shell-platform-target
+    title: Web Shell Platform Target
+    type: decision
+    description: |
+      The kspec web interface targets the web browser as its sole runtime
+      platform. The application shell is a browser application served by the
+      daemon, with a static export fallback, and adopts no native desktop
+      chrome. The shell's top chrome reserves its leading zone — the
+      contiguous region at the inline-start edge of the top chrome, whose
+      extent is a single named reservation value defined by the shell
+      layout, sized to hold platform window controls — and no shell element
+      occupies it, so a native wrapper could later add window controls
+      without relocating existing shell elements. Keyboard chords resolve
+      through a central platform mapping that avoids browser-reserved
+      combinations on each platform.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          the application shell renders in a supported browser with no
+          native wrapper present
+        id: ac-1
+        then: |
+          the action is operable through browser-standard pointer and
+          keyboard input, and no shell affordance requires a native
+          window-manager facility — window controls, native application
+          menus, or OS-level global shortcuts
+        when: |
+          any shell action is invoked
+      - given: |
+          the shell's top chrome layout
+        id: ac-2
+        then: |
+          the leading chrome zone contains no shell element — every
+          top-chrome element clears the named reservation value at the
+          inline-start edge
+        when: |
+          its elements are laid out at any viewport width
+      - given: |
+          a keyboard chord is registered for a shell action
+        id: ac-3
+        then: |
+          the chord comes from the central platform mapping and does not
+          collide with combinations the browser reserves on that platform
+        when: |
+          the binding is resolved on a given platform
+    tags: []
+    created: 2026-06-14T19:44:13.320Z
+    notes: []
+  - _ulid: 01KV3TKJ28AGRFDWPCEHGT3A8F
+    slugs:
+      - test-result-acquisition
+    title: Test Result Acquisition
+    type: decision
+    description: |
+      Future coverage behavior is ingestion-oriented: completed runs from
+      local tools, CI, or agents can submit structured result records to
+      the daemon. Submitted results use a standardized result format and
+      carry a deterministic mapping between tests and the acceptance
+      criteria they cover, expressed through test naming or result
+      metadata. Static annotation scanning remains the mapping and
+      integrity source until the coverage-track plans define the complete
+      ingestion schema and engine behavior. Freshness presentation names
+      ingested-run evidence as such and reflects the latest ingested run
+      when that evidence is the source being presented.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          a completed test run in any execution environment
+        id: ac-1
+        then: |
+          per-acceptance-criterion outcomes are recorded and attributed to
+          that run
+        when: |
+          its results are submitted through the ingestion interface
+      - given: |
+          submitted results whose tests reference acceptance criteria
+          through the mapping convention
+        id: ac-2
+        then: |
+          each mappable result is attributed to its acceptance criteria,
+          and results that cannot be mapped are surfaced as unmapped rather
+          than silently dropped
+        when: |
+          the results are ingested
+      - given: |
+          a project with more than one ingested test run
+        id: ac-3
+        then: |
+          the presentation reflects the most recently ingested run and
+          labels it as the latest ingested run
+        when: |
+          ingested-run freshness is presented on any surface
+    tags: []
+    created: 2026-06-14T19:44:13.384Z
+    notes: []
+  - _ulid: 01KV3TKJ3W5FM2F8WP23R8SK3J
+    slugs:
+      - ac-coverage-applicability
+    title: Acceptance Criterion Applicability
+    type: decision
+    description: |
+      Corpus-level coverage recognizes no not-applicable state. Every
+      acceptance criterion on a spec item is expected to be coverable; a
+      criterion that cannot apply to its item indicates a spec-composition
+      defect to repair, not a state to record. Not-applicable marking is a
+      task-scoped concern — identifying which inherited criteria fall
+      outside one task's work — and lives in task coverage metadata, not in
+      the spec corpus. In-code not-applicable annotations are not coverage
+      signals: they neither cover a criterion nor exempt it. The existing
+      scanner and trait-validation specs that count those annotations as
+      coverage are incorrect under this decision and must be respecced and
+      fixed by the coverage storage plan before the new coverage engine
+      treats corpus coverage as authoritative.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          coverage states computed across the spec corpus
+        id: ac-1
+        then: |
+          the result is one of the recognized coverage states and never a
+          not-applicable state
+        when: |
+          any acceptance criterion's state is derived
+      - given: |
+          a test annotation that marks a criterion not-applicable
+        id: ac-2
+        then: |
+          the annotation neither counts as coverage for that criterion nor
+          exempts it from the corpus coverage states
+        when: |
+          corpus coverage is computed
+    tags: []
+    created: 2026-06-14T19:44:13.436Z
+    notes: []
+  - _ulid: 01KV3TKJ5HY1EX8RVGQ5FZTX6S
+    slugs:
+      - annotation-freshness-provenance
+    title: Annotation Freshness Provenance
+    type: decision
+    description: |
+      Every acceptance-criterion test annotation carries a freshness
+      timestamp with two provenance classes. A bootstrap value is derived
+      from version-control history of the annotation's location, so
+      existing annotations have freshness without prior bookkeeping. A
+      recorded verification stamp — written when a validation pass, an
+      ingested test run, or an explicit re-verification confirms the
+      mapping — supersedes the bootstrap value from then on. Interfaces
+      that consume freshness accept either a timestamp or a commit
+      reference, keeping the provenance source evolvable.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          an annotation with no recorded verification stamp
+        id: ac-1
+        then: |
+          a bootstrap value derived from the annotation's version-control
+          history is returned
+        when: |
+          its freshness is requested
+      - given: |
+          an ingested passing run or explicit re-verification that confirms
+          an annotation
+        id: ac-2
+        then: |
+          the recorded verification stamp is returned in place of the
+          bootstrap value
+        when: |
+          freshness is subsequently requested
+      - given: |
+          an interface that consumes annotation freshness
+        id: ac-3
+        then: |
+          the value is accepted and resolves to a comparable freshness
+          ordering without requiring one canonical form
+        when: |
+          it receives a provenance value expressed as either a timestamp or
+          a commit reference
+    tags: []
+    created: 2026-06-14T19:44:13.489Z
+    notes: []
+  - _ulid: 01KV3TKJ725AYTDHRPZ6CHH8VV
+    slugs:
+      - coverage-state-presentation
+    title: Coverage State Presentation
+    type: decision
+    description: |
+      Coverage state is presented as four user-facing buckets: covered,
+      failing, not yet, and re-verify. The re-verify bucket covers any
+      condition where existing evidence must be checked again, including
+      spec-text changes after verification and covering-code changes after
+      verification; those causes are exposed only as secondary detail such
+      as row captions, detail views, and filter facets, not as separate
+      presentation states. Each presentation state is represented by
+      exactly one visual token wherever it appears.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          any surface presenting coverage state
+        id: ac-1
+        then: |
+          every rendered coverage state is one of the four presentation
+          buckets — covered, failing, not yet, re-verify — and any
+          re-verification cause is available only as secondary detail
+        when: |
+          states are rendered
+      - given: |
+          the same coverage state appearing on two different surfaces
+        id: ac-2
+        then: |
+          the same visual token represents the state on both
+        when: |
+          each surface renders it
+    tags: []
+    created: 2026-06-14T19:44:13.539Z
+    notes: []
+  - _ulid: 01KV3TKJ8SH88TX8KBTSBDAEWH
+    slugs:
+      - client-preference-persistence
+    title: Client Preference Persistence
+    type: decision
+    description: |
+      Interface preferences — focus selection, collapse states, recents,
+      view toggles, and similar per-user interface state — persist in
+      browser-local storage through one shared, namespaced, versioned
+      utility whose interface is storage-agnostic. Daemon-level state —
+      configuration describing the daemon's own world, such as the roster
+      of registered projects — persists server-side in the daemon's
+      configuration directory and never depends on browser storage.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          a surface that persists an interface preference
+        id: ac-1
+        then: |
+          the preference is restored, and its stored value is recorded
+          under the shared namespaced, versioned key format
+        when: |
+          the preference is changed and the browser session is later
+          reloaded
+      - given: |
+          daemon-level state such as the registered-project roster
+        id: ac-2
+        then: |
+          the state is recovered from the daemon configuration directory
+          without any client involvement
+        when: |
+          the daemon restarts
+    tags: []
+    created: 2026-06-14T19:44:13.593Z
+    notes: []
+  - _ulid: 01KV3TKJAAH1X7HPGE8PQ4Y65X
+    slugs:
+      - actor-identity-model
+    title: Actor Identity Model
+    type: decision
+    description: |
+      Actor identity is a configured attribution vocabulary, not an
+      authentication boundary. Direct human changes are attributed to a
+      configured human author identity, and automated work is attributed to
+      canonical agent identifiers drawn from the configured runner/agent
+      roster. New actor-bearing writes validate against that author pool
+      and persist canonical identifiers; invalid or out-of-pool write
+      values are rejected by validation rather than being accepted as new
+      free-form authors. Historical records are normalized once through the
+      data upgrade path: recognizable variants map to their canonical
+      identity, ambiguous values may be resolved through assisted review or
+      operator-provided mapping, and values still unresolved when the
+      upgrade completes map to a declared unknown/default actor while the
+      original value remains reportable for audit. Identity powers
+      filtering and display such as ownership and awaiting-action views,
+      and carries no authentication or access-control semantics.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          a new record carrying an actor field
+        id: ac-1
+        then: |
+          the actor value is a canonical configured human author or a
+          canonical configured agent/runner identifier, and an invalid or
+          out-of-pool value is rejected by validation
+        when: |
+          it is written through any interface
+      - given: |
+          a project's historical records containing actor variants
+        id: ac-2
+        then: |
+          every actor field resolves to a canonical configured human or
+          agent identity, an operator-provided mapping, or the declared
+          unknown/default actor, and unresolved originals appear in the
+          upgrade report
+        when: |
+          the data upgrade completes
+      - given: |
+          an identity-derived view such as awaiting-action or ownership
+          filtering
+        id: ac-3
+        then: |
+          it derives from the canonical actor vocabulary and treats the
+          declared unknown/default actor distinctly from configured humans
+          and agents
+        when: |
+          it is computed
+    tags: []
+    created: 2026-06-14T19:44:13.642Z
+    notes: []
+  - _ulid: 01KV3TKJBW3XF408Y0MPTE555H
+    slugs:
+      - agent-question-mediation
+    title: Agent Question Mediation
+    type: decision
+    description: |
+      Dispatched automated task agents do not wait on user-facing
+      interactive question prompts. When a dispatched automation agent
+      requires human input, it records durable work state — task blocking
+      with a stated reason and task notes — and the human resumes the work
+      through the ordinary task lifecycle. This decision is scoped to
+      automated dispatch sessions only: it does not forbid future
+      deliberately interactive planning/chat sessions, including structured
+      ask/answer protocols, when those are planned as a separate user-facing
+      session mode.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          a dispatched automation agent requires human input to proceed
+        id: ac-1
+        then: |
+          the signal is recorded as durable task state — blocked with a
+          reason — and task notes, reviewable after the fact
+        when: |
+          it signals the need
+      - given: |
+          a surface presenting dispatched automation work that awaits human
+          input
+        id: ac-2
+        then: |
+          the action navigates to the owning task or session record, and no
+          surface offers inline structured-choice resolution into that
+          dispatched automation session
+        when: |
+          the user acts on the item
+      - given: |
+          a future interactive planning or chat session mode is designed
+        id: ac-3
+        then: |
+          that behavior is specified as user-facing interactive-session
+          behavior, not as dispatched automation waiting for inline user
+          resolution
+        when: |
+          it defines prompt/response or structured ask/answer behavior
+    tags: []
+    created: 2026-06-14T19:44:13.692Z
+    notes: []
+  - _ulid: 01KV3TKJDM1VYFZE03GNXPZH10
+    slugs:
+      - integration-merge-authority
+    title: Integration Merge Authority
+    type: decision
+    description: |
+      Integration merges are performed by the acting agent or human through
+      the merge procedure in their own execution environment. The daemon's
+      request handlers expose no merge-execution capability. Merges that
+      dispatched agents perform in their own execution environments are the
+      merge procedure working as intended, not a daemon capability. UI
+      surfaces may guide users to the appropriate workflow, but merge
+      execution itself remains outside the daemon API.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          any endpoint the daemon API exposes
+        id: ac-1
+        then: |
+          the handler performs no version-control merge on a consumer code
+          repository
+        when: |
+          its request handler processes a request
+    tags: []
+    created: 2026-06-14T19:44:13.748Z
+    notes: []
 features:
   - _ulid: 01KFHMFGD2563NGHJWPPXGN9CB
     slugs:

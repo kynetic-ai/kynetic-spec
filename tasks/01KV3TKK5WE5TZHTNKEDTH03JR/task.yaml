@@ -1,0 +1,63 @@
+_ulid: 01KV3TKK5WE5TZHTNKEDTH03JR
+slugs:
+  - task-record-overlapping-plan-dispositions
+title: Record dispositions on overlapping draft plans
+type: task
+description: |
+  Add disposition notes to the four existing draft plans the redesign
+  program absorbs, promotes, or reconciles, so no one picks them up
+  independently while the program runs. All four plan refs exist today;
+  each note anchors on @plan-ui-redesign-global-decisions (an existing
+  record) as the program's authoritative successor pointer, naming
+  future tracks in prose only as forward context.
+
+  Why: Open drafts without dispositions are invitations for duplicate
+  work; the program's relationship to each is decided and should be
+  visible on the records themselves.
+
+  What — add one note per plan with this content:
+  - @plan-interactive-agent-sessions: "Absorbed by the kspec interface
+    redesign program: the sessions track's controls work (context
+    injection surface) supersedes this plan's scope. Program anchor:
+    @plan-ui-redesign-global-decisions. Until the sessions track plan
+    is imported, that anchor is the authoritative successor pointer."
+  - @plan-activity-timeline-diff-summaries: "Absorbed by the kspec
+    interface redesign program: the sessions track's session entity
+    work absorbs this plan's diff-summary scope. Program anchor:
+    @plan-ui-redesign-global-decisions. Until the sessions track plan
+    is imported, that anchor is the authoritative successor pointer."
+  - @plan-dispatch-mutation-service: "Promoted: this plan is the
+    redesign program's shared mutation-service foundation (Phase 0).
+    Program anchor: @plan-ui-redesign-global-decisions."
+  - @plan-ux-module-and-design-decision-architecture: "Decision
+    architecture adopted: the decision items derived from
+    @plan-ui-redesign-global-decisions are its first full use, parented
+    under the @web-ui module. The sidebar/pulse feature
+    sketches are superseded by the program's shell track. If the @ux
+    module later materializes, @web-ui reparents under
+    it."
+
+  What — also make the identity transition boundary machine-traversable:
+  - Add a relates_to reference from the derived @actor-identity-model
+    item to @config-author, so the reconciliation obligation documented
+    in both records' prose is traversable in the corpus rather than
+    description-only.
+
+  How: kspec batch with one plan note per record, plus kspec item set
+  @actor-identity-model --relates-to @config-author; verify the notes
+  render on each plan via plan get and the relates_to reference via
+  item get @actor-identity-model.
+spec_ref: null
+plan_ref: "@plan-ui-redesign-global-decisions"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - meta
+  - planning
+vcs_refs: []
+created_at: 2026-06-14T19:44:14.524Z
+todos: []
