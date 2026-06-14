@@ -39,7 +39,7 @@ description: |
 spec_ref: "@client-preference-persistence"
 plan_ref: "@plan-ui-redesign-global-decisions"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -58,7 +58,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-respec-daemon-project-roster-persistence/01kv3tkk
-session_id: null
+session_id: 01KV3YZDJ5NXNMCX6SYY90X0WC
 history:
   - author: Jacob Chapel
     changes:
@@ -174,8 +174,21 @@ history:
         previous: 01KV3WEN3ZREX1WCWY88DWWV8K
     command: review-verdict-needs-work
     timestamp: 2026-06-14T20:56:34.462Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KV3YZDJ5NXNMCX6SYY90X0WC
+        previous: null
+      started_at:
+        new: 2026-06-14T21:01:58.429Z
+        previous: 2026-06-14T20:20:02.735Z
+    command: task-start
+    timestamp: 2026-06-14T21:01:58.430Z
 created_at: 2026-06-14T19:44:14.863Z
-started_at: 2026-06-14T20:20:02.735Z
+started_at: 2026-06-14T21:01:58.429Z
 submitted_at: 2026-06-14T20:37:29.317Z
 todos: []
 automation: eligible
