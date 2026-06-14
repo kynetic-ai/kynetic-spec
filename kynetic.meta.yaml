@@ -21938,6 +21938,26 @@ observations:
     resolved: false
     workflow_ref: "@01KV3XMD"
     created_at: 2026-06-14T20:39:00.706Z
+  - _ulid: 01KV3XS85VYFD978JXZ5R34X2Z
+    type: friction
+    content: "Respec tasks that reword a single AC within a multi-AC feature have no granular way to
+      mark just that one AC as not-yet-implemented. When @multi-directory-daemon ac-15 was reworded
+      from a no-persistence contract to a restart-restore contract (now future work), the honest
+      signal would be to flag ac-15 as not_started while the other ~40 ACs stay implemented. But
+      implementation status is feature-level only, and `kspec item set <feature> --status
+      in_progress` cascades to all 21 child items (interactive prompt), which would mislabel the
+      bulk of genuinely-implemented behavior. Workaround used: leave the feature at implemented and
+      track the outstanding AC via an explicit follow-up task with spec_ref to the feature. This
+      works but is implicit — nothing on the spec itself signals ac-15 is unimplemented. Candidate
+      improvements: per-AC implementation status, or a documented convention that outstanding ACs in
+      an otherwise-implemented feature are tracked by an open task with spec_ref so
+      reviewers/auditors can find them. Related: a respec that changes an AC's meaning silently
+      invalidates existing AC test annotations pointing at it, with no automated detection — the
+      worker must manually re-check coverage of the reworded AC."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-14T20:39:45.596Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
