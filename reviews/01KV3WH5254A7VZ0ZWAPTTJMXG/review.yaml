@@ -46,6 +46,17 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-14T20:32:21.692Z
     completed_at: 2026-06-14T20:32:21.692Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok exited 0. Schema and references OK; warning
+      baseline contains deprecated-reference warnings unrelated to this task."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-14T20:32:39.876Z
+    completed_at: 2026-06-14T20:32:39.876Z
 events:
   - _ulid: 01KV3WH525SN8Q2F2HM8QZZK8B
     actor: Jacob Chapel
@@ -88,6 +99,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-14T20:32:21.928Z
+  - _ulid: 01KV3XC8NA9A315Z53JXR4H06E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-14T20:32:40.106Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: open
@@ -100,5 +118,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-14T20:17:51.685Z
-updated_at: 2026-06-14T20:32:21.692Z
+updated_at: 2026-06-14T20:32:39.876Z
 notes: []
