@@ -66097,7 +66097,7 @@ runs:
     completed_at: 2026-06-14T20:59:31.127Z
   - _ulid: 01KV406P69NCAYW311SMQBWXA4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66112,7 +66112,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-14T21:22:49.694Z
-        completed_at: 2026-06-14T21:22:49.694Z
+        completed_at: 2026-06-14T21:23:01.186Z
+        notes: "Friction points: Completing this spec-only/cross-spec task emitted an automatic sync of the
+          linked decision spec @client-preference-persistence from in_progress to implemented, even
+          though the task also deliberately left @multi-directory-daemon ac-15 implementation to a
+          follow-up. The command did warn to verify AC coverage, but the automatic status change can
+          be easy to miss during review completion. Secondary low-grade friction: npm test had to
+          rebuild missing dist readiness before running, adding latency but recovering correctly."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-14T21:23:01.186Z
+        completed_at: 2026-06-14T21:23:01.186Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-14T21:22:03.081Z
