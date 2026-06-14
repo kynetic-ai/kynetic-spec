@@ -58,18 +58,16 @@
   type: decision
   parent: "@web-ui"
   description: |
-    Test results enter the system exclusively by ingestion: runs executed
-    outside the daemon — locally, in CI, or by an agent — submit
-    structured results to the daemon. The daemon's request handlers never
-    execute test suites, and the web interface offers no test-execution
-    controls. Agent processes that the daemon's dispatch engine spawns run
-    in their own execution context and are outside this boundary: work
-    they perform, including running tests, is not daemon execution.
-    Submitted results use a standardized result format and carry a
-    deterministic mapping between tests and the acceptance criteria they
-    cover, expressed through test naming or result metadata. Freshness
-    presentation always reflects the most recently ingested run, named as
-    such.
+    Future coverage behavior is ingestion-oriented: completed runs from
+    local tools, CI, or agents can submit structured result records to
+    the daemon. Submitted results use a standardized result format and
+    carry a deterministic mapping between tests and the acceptance
+    criteria they cover, expressed through test naming or result
+    metadata. Static annotation scanning remains the mapping and
+    integrity source until the coverage-track plans define the complete
+    ingestion schema and engine behavior. Freshness presentation names
+    ingested-run evidence as such and reflects the latest ingested run
+    when that evidence is the source being presented.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -81,13 +79,6 @@
         that run
     - id: ac-2
       given: |
-        any endpoint the daemon API exposes
-      when: |
-        its request handler processes a request
-      then: |
-        the handler executes no test suite or project-defined command
-    - id: ac-3
-      given: |
         submitted results whose tests reference acceptance criteria
         through the mapping convention
       when: |
@@ -96,11 +87,11 @@
         each mappable result is attributed to its acceptance criteria,
         and results that cannot be mapped are surfaced as unmapped rather
         than silently dropped
-    - id: ac-4
+    - id: ac-3
       given: |
         a project with more than one ingested test run
       when: |
-        result freshness is presented on any surface
+        ingested-run freshness is presented on any surface
       then: |
         the presentation reflects the most recently ingested run and
         labels it as the latest ingested run
@@ -116,13 +107,12 @@
     defect to repair, not a state to record. Not-applicable marking is a
     task-scoped concern — identifying which inherited criteria fall
     outside one task's work — and lives in task coverage metadata, not in
-    the spec corpus. For the corpus coverage this program introduces,
-    in-code not-applicable annotations are not coverage signals: they
-    neither cover a criterion nor exempt it. This is a transition
-    boundary, not a retroactive change: the pre-existing completeness
-    validation path that honors in-code not-applicable annotations for
-    trait criteria remains in force until corpus coverage computation
-    adopts these semantics.
+    the spec corpus. In-code not-applicable annotations are not coverage
+    signals: they neither cover a criterion nor exempt it. The existing
+    scanner and trait-validation specs that count those annotations as
+    coverage are incorrect under this decision and must be respecced and
+    fixed by the coverage storage plan before the new coverage engine
+    treats corpus coverage as authoritative.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -188,14 +178,13 @@
   type: decision
   parent: "@web-ui"
   description: |
-    Coverage computation distinguishes five states: covered, failing,
-    not-yet-covered, stale (the spec text changed after the annotation's
-    freshness), and drifted (the covering code changed after the
-    annotation's freshness). Presentation collapses stale and drifted
-    into a single re-verification bucket: user-facing vocabulary is four
-    buckets — covered, failing, not yet, re-verify — with the underlying
-    cause exposed as secondary detail such as row captions, detail
-    views, and filter facets. Each presentation state is represented by
+    Coverage state is presented as four user-facing buckets: covered,
+    failing, not yet, and re-verify. The re-verify bucket covers any
+    condition where existing evidence must be checked again, including
+    spec-text changes after verification and covering-code changes after
+    verification; those causes are exposed only as secondary detail such
+    as row captions, detail views, and filter facets, not as separate
+    presentation states. Each presentation state is represented by
     exactly one visual token wherever it appears.
   acceptance_criteria:
     - id: ac-1
@@ -205,9 +194,8 @@
         states are rendered
       then: |
         every rendered coverage state is one of the four presentation
-        buckets — covered, failing, not yet, re-verify — and the
-        stale-versus-drifted distinction is available only as cause
-        detail
+        buckets — covered, failing, not yet, re-verify — and any
+        re-verification cause is available only as secondary detail
     - id: ac-2
       given: |
         the same coverage state appearing on two different surfaces
@@ -254,24 +242,21 @@
   type: decision
   parent: "@web-ui"
   description: |
-    Every recorded actor is canonical at write time: agent actors use the
-    canonical identifier of their agent definition; the human operator is
-    identified by a configured profile identity. Historical records are
-    normalized once through the data upgrade path — recognizable variants
-    map to their canonical identity, ambiguous values may be resolved
-    through assisted review during the upgrade, and any value still
-    unresolved when the upgrade completes maps to a declared default. The
-    upgrade's observable contract is its end state: every actor field
-    canonical. Identity is attribution: it powers filtering and display
-    such as ownership and awaiting-action views, and carries no
-    authentication or access-control semantics. This is a transition
-    boundary, not a silent contradiction: the implemented
-    author-resolution fallback chain (@config-author ac-3), which derives
-    an author from version-control or operating-system user names when no
-    explicit identity is configured, produces free-form variants by this
-    decision's definition and remains in force until the canonical-write
-    identity layer supersedes it and reconciles that spec with this
-    contract.
+    Actor identity is a configured attribution vocabulary, not an
+    authentication boundary. Direct human changes are attributed to a
+    configured human author identity, and automated work is attributed to
+    canonical agent identifiers drawn from the configured runner/agent
+    roster. New actor-bearing writes validate against that author pool
+    and persist canonical identifiers; invalid or out-of-pool write
+    values are rejected by validation rather than being accepted as new
+    free-form authors. Historical records are normalized once through the
+    data upgrade path: recognizable variants map to their canonical
+    identity, ambiguous values may be resolved through assisted review or
+    operator-provided mapping, and values still unresolved when the
+    upgrade completes map to a declared unknown/default actor while the
+    original value remains reportable for audit. Identity powers
+    filtering and display such as ownership and awaiting-action views,
+    and carries no authentication or access-control semantics.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -279,17 +264,19 @@
       when: |
         it is written through any interface
       then: |
-        the actor value is a canonical agent identifier or the configured
-        human identity, never a free-form variant
+        the actor value is a canonical configured human author or a
+        canonical configured agent/runner identifier, and an invalid or
+        out-of-pool value is rejected by validation
     - id: ac-2
       given: |
         a project's historical records containing actor variants
       when: |
         the data upgrade completes
       then: |
-        every actor field resolves to a canonical identity — directly
-        mapped, confirmed through assisted review, or assigned the
-        declared default — and no free-form variant remains
+        every actor field resolves to a canonical configured human or
+        agent identity, an operator-provided mapping, or the declared
+        unknown/default actor, and unresolved originals appear in the
+        upgrade report
     - id: ac-3
       given: |
         an identity-derived view such as awaiting-action or ownership
@@ -297,7 +284,9 @@
       when: |
         it is computed
       then: |
-        it derives from canonical identities
+        it derives from the canonical actor vocabulary and treats the
+        declared unknown/default actor distinctly from configured humans
+        and agents
 
 # ─── Mediation & Authority Boundaries ───
 
@@ -306,17 +295,19 @@
   type: decision
   parent: "@web-ui"
   description: |
-    Agents surface questions and blockers to humans through durable work
-    records: task blocking with a stated reason, and task notes. The
-    system defines no interactive decision protocol between running
-    agents and humans — no structured choice prompts and no in-session
-    resolution feedback loop. Surfaces that present work awaiting human
-    input resolve by navigation to the owning task and session records,
-    where the human acts through the ordinary work lifecycle.
+    Dispatched automated task agents do not wait on user-facing
+    interactive question prompts. When a dispatched automation agent
+    requires human input, it records durable work state — task blocking
+    with a stated reason and task notes — and the human resumes the work
+    through the ordinary task lifecycle. This decision is scoped to
+    automated dispatch sessions only: it does not forbid future
+    deliberately interactive planning/chat sessions, including structured
+    ask/answer protocols, when those are planned as a separate user-facing
+    session mode.
   acceptance_criteria:
     - id: ac-1
       given: |
-        an agent that requires human input to proceed
+        a dispatched automation agent requires human input to proceed
       when: |
         it signals the need
       then: |
@@ -324,13 +315,23 @@
         reason — and task notes, reviewable after the fact
     - id: ac-2
       given: |
-        a surface presenting work that awaits human input
+        a surface presenting dispatched automation work that awaits human
+        input
       when: |
         the user acts on the item
       then: |
         the action navigates to the owning task or session record, and no
-        surface offers inline structured-choice resolution into a running
-        session
+        surface offers inline structured-choice resolution into that
+        dispatched automation session
+    - id: ac-3
+      given: |
+        a future interactive planning or chat session mode is designed
+      when: |
+        it defines prompt/response or structured ask/answer behavior
+      then: |
+        that behavior is specified as user-facing interactive-session
+        behavior, not as dispatched automation waiting for inline user
+        resolution
 
 - title: Integration Merge Authority
   slug: integration-merge-authority
@@ -339,13 +340,11 @@
   description: |
     Integration merges are performed by the acting agent or human through
     the merge procedure in their own execution environment. The daemon's
-    request handlers expose no merge-execution capability, and no surface
-    offers one-click merge execution. Merges that dispatched agents
-    perform in their own execution environments are the merge procedure
-    working as intended, not a daemon capability. Review approval and
-    merge remain separate acts; approval emphasis concentrates at plan
-    boundaries — planning and post-plan validation — rather than per-task
-    merge automation.
+    request handlers expose no merge-execution capability. Merges that
+    dispatched agents perform in their own execution environments are the
+    merge procedure working as intended, not a daemon capability. UI
+    surfaces may guide users to the appropriate workflow, but merge
+    execution itself remains outside the daemon API.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -355,14 +354,6 @@
       then: |
         the handler performs no version-control merge on a consumer code
         repository
-    - id: ac-2
-      given: |
-        a surface presenting an approved review
-      when: |
-        its resolving actions render
-      then: |
-        merge execution is not among them, and the merge procedure
-        remains the path to integration
 ```
 
 ## Tasks
@@ -534,9 +525,8 @@ not close while any row below is unclaimed.
 | @web-shell-platform-target ac-2 | shell top-bar plan (leading-zone reservation) |
 | @web-shell-platform-target ac-3 | keyboard registry plan |
 | @test-result-acquisition ac-1 | results-ingestion plan (ingest endpoint, run attribution) |
-| @test-result-acquisition ac-2 | results-ingestion plan (daemon surface boundary) |
-| @test-result-acquisition ac-3 | results-ingestion plan (AC mapping convention) |
-| @test-result-acquisition ac-4 | validate view plan (freshness presentation) |
+| @test-result-acquisition ac-2 | results-ingestion plan (AC mapping convention) |
+| @test-result-acquisition ac-3 | validate view plan (freshness presentation) |
 | @ac-coverage-applicability ac-1 | coverage state engine plan |
 | @ac-coverage-applicability ac-2 | coverage state engine plan |
 | @annotation-freshness-provenance ac-1 | coverage state engine plan (bootstrap freshness) |
@@ -551,8 +541,8 @@ not close while any row below is unclaimed.
 | @actor-identity-model ac-3 | aggregation plan (awaiting-you, ownership filters) |
 | @agent-question-mediation ac-1 | sessions track plans (blocked-state surfacing) |
 | @agent-question-mediation ac-2 | dashboard plan (deep-link resolution, no inline prompts) |
+| @agent-question-mediation ac-3 | future interactive-session planning (scope boundary only; no implementation in this program) |
 | @integration-merge-authority ac-1 | reviews gating plan (daemon surface boundary) |
-| @integration-merge-authority ac-2 | reviews gating plan (approved-review actions) |
 
 ### Boundaries and follow-ons deliberately not specced here
 
@@ -560,34 +550,27 @@ not close while any row below is unclaimed.
   (note-like, reliable) is deferred and unspecified by design.
 - A post-plan-implementation validate/review step that could trigger
   final merges (with plan-level branching) is a named future evaluation,
-  not part of this decision set.
+  not part of this decision set. The current decision binds only the
+  daemon/API boundary: the daemon does not execute merges.
 - Task coverage metadata (a covers/covers_ac field superseding the
-  in-code not-applicable convention) is out of program scope; the
-  convention's retirement follows that future work, not this plan.
-  Until then two semantics coexist by design: the implemented
-  completeness validation path continues to honor in-code N/A
-  annotations for trait criteria, while the corpus coverage introduced
-  by this program treats them as neither covering nor exempting
-  (@ac-coverage-applicability ac-2 is scoped to the corpus coverage
-  this program introduces for this reason). The legacy completeness
-  path remains in force until corpus coverage computation adopts these
-  semantics; the coverage track plans own reconciling the validate
-  exemption behavior with corpus coverage.
-- @actor-identity-model coexists with the implemented author-resolution
-  spec (@config-author) during the transition: @config-author ac-3 falls
-  back to git user.name then OS user when no env var or configured
-  author exists — a free-form variant under @actor-identity-model ac-1.
-  That implemented fallback remains in force until the UI foundations
-  plan's canonical-write identity layer (per the Consumers table)
-  supersedes it; that work owns reconciling @config-author — updating or
-  superseding its fallback chain — so the two specs do not sit in the
-  corpus as an unexplained contradiction.
+  in-code not-applicable convention) is out of program scope. The
+  coverage storage plan still fixes the existing scanner and
+  trait-validation semantics so in-code not-applicable markers no
+  longer count as coverage; retiring or replacing the marker as a
+  task-scoped communication convention is future work.
+- @actor-identity-model supersedes the implemented author-resolution
+  free-form fallback behavior for new writes. The UI foundations plan's
+  canonical-write identity layer owns reconciling @config-author so the
+  chain resolves to configured human or agent identities, rejects
+  invalid/out-of-pool author values on new writes, and leaves unknown
+  classification available for historical/external records and upgrade
+  reporting rather than as a way to persist new arbitrary authors.
 - Routing all preference access through the shared utility
   (@client-preference-persistence) is the decided mechanism, but its
   enforcement is a lint-rule concern, not a behavioral test — the
   decision's criteria assert only the observable persistence contract
   (restore-on-reload, namespaced versioned key format, server-side
   daemon state).
-- Internal naming for the stale/drifted computation must not collide
-  with the existing validate staleness/drift flag vocabulary (different
-  semantics); the coverage engine plan owns the disambiguation.
+- Internal diagnostic names for re-verification causes must not become
+  user-facing presentation states; the four-bucket vocabulary is the
+  durable UI contract.
