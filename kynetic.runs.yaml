@@ -65923,7 +65923,7 @@ runs:
     started_at: 2026-06-14T20:15:53.358Z
     completed_at: 2026-06-14T20:18:19.504Z
   - _ulid: 01KV3XFX0P2N9P7F4CMMWEJWCR
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -65980,13 +65980,17 @@ runs:
         notes: "Skipped interactive approval: no new inbox item, task, or observation is proposed. All
           high-confidence friction points already map to existing tracking; only a future triage
           refinement for @01KS9FFH was noted."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-14T20:37:11.213Z
-        completed_at: 2026-06-14T20:37:11.213Z
+        completed_at: 2026-06-14T20:37:20.487Z
+        notes: "No captures created. Existing coverage: @01KR2JD1 for review evidence log storage; @01KTYSZ3
+          for intentional spec-exempt tasks; @01KS9FFH for review gate/full-suite cost, with a noted
+          possible triage refinement for metadata-only reviews."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-14T20:34:39.255Z
+    completed_at: 2026-06-14T20:37:20.488Z
   - _ulid: 01KV3XMDBJZFE2K4Y891ESN4K9
     status: active
     current_step: 0
