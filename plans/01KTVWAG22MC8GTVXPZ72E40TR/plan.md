@@ -343,15 +343,16 @@
     canonical identities. Classification resolves recognizable
     variants of agent identifiers and of the human identity to their
     canonical form; strings that resolve to neither classify as
-    unknown without failing. Records written through the daemon resolve
-    their author through the configured author pool rather than an
-    anonymous placeholder, and actor values persisted by daemon record
-    writes are canonical: caller-supplied or precedence-resolved values
-    that classify as a configured human or agent identity are stored in
-    canonical form, while values that classify to no configured identity
-    are rejected on new writes. Unknown classification remains a
-    read-side result for historical or externally edited records, not a
-    way to persist arbitrary new authors.
+    unknown without failing. Records written through any first-party
+    write interface resolve their actor fields through one shared
+    author/actor utility rather than route-local fallbacks or anonymous
+    placeholders, and persisted actor values are canonical:
+    caller-supplied or precedence-resolved values that classify as a
+    configured human or agent identity are stored in canonical form,
+    while values that classify to no configured identity are rejected
+    on new writes. Unknown classification remains a read-side result
+    for historical or externally edited records, not a way to persist
+    arbitrary new authors.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -407,7 +408,7 @@
         precedence and is never recorded as an anonymous placeholder
     - id: ac-7
       given: |
-        an actor value about to be persisted by a daemon record
+        an actor value about to be persisted by any first-party record
         write — supplied explicitly by the caller or resolved through
         the author-resolution precedence — that classifies as a
         recognizable variant of a canonical agent identity or of the
@@ -419,8 +420,8 @@
         variant form
     - id: ac-8
       given: |
-        an actor value about to be persisted by a daemon record write
-        that classifies to no configured human or agent identity
+        an actor value about to be persisted by any first-party record
+        write that classifies to no configured human or agent identity
       when: |
         the record is written
       then: |
@@ -489,13 +490,16 @@
     - "@actor-identity-model"
   description: |
     A one-time step of the project data upgrade path rewrites
-    historical actor fields to canonical identities. A declared variant
-    map resolves recognizable historical actor strings; operator-
-    supplied mappings can resolve additional historical values, and
-    values no rule resolves are replaced with the declared unknown or
-    default actor for their record kind. The step reports every rewrite
-    and every unresolved original, supports a preview mode that modifies
-    nothing, and is idempotent.
+    historical actor fields to canonical identities. The step is driven
+    by an exhaustive actor-field inventory so every actor-bearing
+    storage path is either normalized or explicitly documented as
+    non-actor/out of scope. A declared variant map resolves recognizable
+    historical actor strings; operator-supplied mappings can resolve
+    additional historical values, and values no rule resolves are
+    replaced with the declared unknown or default actor for their
+    record kind. The step reports every rewrite and every unresolved
+    original, supports a preview mode that modifies nothing, and is
+    idempotent.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -537,8 +541,19 @@
       when: |
         actor fields across the project's record kinds are inspected
       then: |
-        every actor field value is a canonical identity or a declared
-        default
+        every inventoried actor field value is a canonical identity or
+        a declared default
+    - id: ac-6
+      given: |
+        the upgrade implementation is checked against the project's
+        actor-bearing schemas, API types, and stored record shapes
+      when: |
+        an actor/author/reviewer/resolver/addition-source field exists
+      then: |
+        the field appears in the migration inventory with its record
+        kind, storage path, owning schema/type, and normalization
+        disposition, or it is explicitly documented as not representing
+        a human or agent actor identity
 ```
 
 ## Tasks
@@ -611,45 +626,68 @@ derive_from_specs: false
     annotated N/A — no entity-ref parameter, no request body, not a
     list endpoint, read-only).
 
-- title: Canonicalize daemon-write authorship and remove anonymous fallbacks
+- title: Canonicalize all actor-bearing writes through one shared author utility
   slug: task-review-author-resolution
   priority: 1
-  tags: [daemon, reviews, identity]
+  tags: [daemon, cli, identity]
   spec_ref: "@actor-identity-resolution"
   depends_on:
     - "@task-identity-endpoint-classifier"
   description: |
-    Make daemon record writes persist canonical actor identities:
-    remove the anonymous review-route fallbacks, resolve missing
-    actor values through the standard author-resolution chain, and
-    classify every actor value to canonical form before persistence.
+    Make every actor-bearing write path persist canonical actor
+    identities through one shared author/actor utility: remove the
+    anonymous review-route fallbacks, resolve missing actor values
+    through the standard author-resolution chain, classify every actor
+    value to canonical form before persistence, and reject values that
+    are not in the configured human/agent author pool. No daemon route,
+    CLI command, import helper, parser/updater helper, or future writer
+    may implement its own author fallback or canonicalization logic.
 
     Why: packages/daemon/src/routes/reviews.ts contains ten
     `|| "anonymous"` fallbacks (threads, replies, resolve/reopen,
     verdicts, checks, lifecycle changes) — they are why 287 review
     records carry "@claude" and singleton variants as authors. But
-    fixing the fallbacks alone is not enough: no daemon write path
-    canonicalizes, the author chain can end in free-form git/OS-derived
-    names, and caller-supplied values persist verbatim — which is how
-    the same codex agent accumulated at least 7 recorded spellings.
-    @actor-identity-model ac-1 requires newly written actor fields to
-    be canonical, and the upstream claim table assigns this plan the
-    canonical-write identity layer.
+    fixing the fallbacks alone is not enough: writer code across the
+    daemon, CLI, and lower-level mutation helpers can canonicalize
+    differently, the author chain can end in free-form git/OS-derived
+    names, and caller-supplied values can persist verbatim — which is
+    how the same codex agent accumulated at least 7 recorded spellings.
+    @actor-identity-model ac-1 requires every new actor-bearing record
+    written through any interface to be canonical, and the upstream
+    claim table assigns this plan the canonical-write identity layer.
 
     What:
+    - Create a single shared actor-write utility/library function used
+      by all record-writing interfaces. Its contract is the only
+      sanctioned path for actor-bearing writes: input is the optional
+      explicit actor value plus write context; it resolves absent
+      values through @config-author, classifies values through the
+      shared classifier from @task-identity-endpoint-classifier,
+      persists only canonical configured human/agent identities, and
+      returns structured validation feedback for invalid/out-of-pool
+      values. The utility lives in shared non-route code so daemon
+      routes, CLI commands, import/update helpers, and tests all call
+      the same implementation.
+    - Inventory every code path that creates or mutates an actor field
+      before changing behavior. The inventory must include, at minimum,
+      review records, review threads/replies/checks/verdicts/lifecycle
+      events/resolution actors/notes, task notes and todos, plan notes,
+      spec/module notes, inbox and triage records, meta observations,
+      session/dispatch attribution fields that are human/agent actor
+      fields, and any CLI or importer path that can write those records.
+      For each inventoried path, either adopt the shared utility or
+      document why the field is not an actor-bearing author field.
     - Replace every anonymous fallback in the review routes with the
-      same configured author resolution used by the other
-      record-writing routes, then validate the resolved value against
-      the configured human/agent author pool before persistence.
-    - Add a write-path canonicalization step shared by the daemon's
-      record-writing routes (reviews, tasks, triage, inbox, plan
-      notes): after resolution — explicit caller value or chain
-      result — classify the value through the shared classifier from
-      @task-identity-endpoint-classifier and persist the canonical
-      identity whenever classification resolves it. A value that
-      classifies to no configured identity rejects the write with
-      validation feedback instead of being persisted as a new
-      free-form author.
+      shared utility, then validate the resolved value against the
+      configured human/agent author pool before persistence.
+    - Replace all other local author-resolution, fallback, and direct
+      string-persistence behavior in actor-bearing writers with the
+      shared utility. After resolution — explicit caller value or chain
+      result — the shared utility classifies the value and persists the
+      canonical identity whenever classification resolves it. A value
+      that classifies to no configured identity rejects the write with
+      validation feedback instead of being persisted as a new free-form
+      author.
     - Reconcile @config-author with @actor-identity-model's
       transition boundary: update that spec's fallback-chain wording
       (kspec item set at execution time) to state that chain-resolved
@@ -657,19 +695,23 @@ derive_from_specs: false
       persistence, and any tail value outside the configured pool is
       rejected on new writes, so the two specs stop sitting in the
       corpus as an unexplained contradiction.
-    - Behavioral tests: a review mutation without an actor in the
-      body records the resolved configured author in canonical form;
-      one with an explicit variant actor (e.g. codex@openai.com)
-      records the canonical agent id; one with an unrecognizable actor
-      is rejected with validation feedback; no path records
-      "anonymous".
+    - Add regression tests that prove callers cannot diverge from the
+      shared utility: representative daemon writes, CLI writes, and
+      import/update helper writes all persist the same canonical value
+      for the same actor input; explicit variants such as
+      codex@openai.com persist the canonical agent id; unrecognizable
+      actor values reject with validation feedback; no path records
+      "anonymous"; and a focused guard fails if known writer modules
+      reintroduce ad-hoc author fallbacks or bypass the utility for an
+      actor-bearing field.
 
-    How: Reuse the existing getAuthor() chain (the one task/triage/
-    inbox routes call) inside the review route handlers, then wrap
-    resolution + classification into one shared helper adopted by
-    all record-writing routes. This is a write-path-only change —
-    historical values are handled by
-    @task-actor-normalization-upgrade, not here.
+    How: Treat the existing getAuthor() chain as an input to the new
+    shared utility, not as a persistence boundary. Route handlers,
+    CLI commands, and lower-level record mutation helpers pass their
+    write context through the utility before data reaches storage.
+    Keep the helper independent of HTTP so non-daemon writes use the
+    same code. This is a write-path-only change — historical values
+    are handled by @task-actor-normalization-upgrade, not here.
 
     Covers: @actor-identity-resolution ac-6, ac-7, ac-8;
     @actor-identity-model ac-1.
@@ -729,47 +771,74 @@ derive_from_specs: false
   depends_on:
     - "@task-identity-endpoint-classifier"
   description: |
-    Add a one-time data-upgrade step that rewrites historical actor
-    fields to canonical identities.
+    Add an exhaustive actor-field inventory plus a one-time
+    data-upgrade/migration step that rewrites historical actor fields
+    to canonical identities, with operator/agent guidance for kspec
+    users upgrading existing projects.
 
     Why: The actor-string spread is measured, not hypothetical: 1,323
     review records split author across Jacob Chapel / "@claude" /
     Test User / codex variants, and verdict reviewer strings name the
     same agents many different ways. Identity-derived views computed
     over un-normalized history would misattribute most of the corpus.
-    The decision (@actor-identity-model ac-2) requires the upgrade
-    path to resolve this once, and this plan is the data-upgrade
+    The decision (@actor-identity-model ac-2) requires every historical
+    actor field to resolve once, and this plan is the data-upgrade
     claimant for that criterion.
 
     What:
-    - A kspec upgrade step that scans actor-bearing fields across
-      record kinds (review authors, thread/reply authors, verdict
-      reviewers, check/lifecycle actors, task note authors, inbox
-      added_by, triage actors, plan note authors) and rewrites
-      recognizable variants to canonical identities using the shared
-      variant map from the classifier task.
+    - First build and commit an exhaustive actor-field inventory from
+      the current schemas, serializers, API types, and stored corpus.
+      The inventory must list every field that represents a human or
+      agent actor/author/reviewer/resolver/addition source, its record
+      kind, storage file/path shape, owning schema/type, and whether it
+      is normalized by the migration or explicitly out of scope because
+      it is not an actor identity. The inventory must cover, at
+      minimum, review authors, thread/reply authors, verdict reviewers,
+      check/lifecycle actors, review notes, review thread resolved_by,
+      task note authors, task todo added_by, inbox added_by, triage
+      actors, plan note authors, spec/module note authors, meta
+      observation author/resolved_by values, and any session/dispatch
+      attribution field classified as a human/agent actor field.
+    - A kspec upgrade/migration script that consumes the inventory and
+      scans every in-scope actor-bearing field across record kinds,
+      rewriting recognizable variants to canonical identities using
+      the shared variant map from the classifier task. The script must
+      fail closed if a schema/record field that looks actor-bearing is
+      not represented in the inventory, so future fields cannot be
+      silently skipped.
     - An optional operator-provided mapping file/input for ambiguous
       values, applied after the built-in variant map and before the
       fallback. Declared unknown/default actors per record kind cover
       values that neither the built-in rules nor the operator mapping
       resolve; originals are listed in the step's report.
-    - A rewrite report (original → canonical, record ref, field) for
-      every change; kspec upgrade --dry-run prints the report without
-      modifying records.
+    - A rewrite report (original → canonical/default, record ref,
+      record kind, field path, resolution source) for every change;
+      kspec upgrade --dry-run prints the report without modifying
+      records, and the real migration writes the report to a durable
+      project-local artifact for audit.
+    - Upgrade documentation and agent-led operating instructions for
+      kspec users: how to run the dry-run, review unknown/ambiguous
+      originals, prepare an operator mapping file, let an agent assist
+      with classifying ambiguous historical values without inventing
+      identities, run the real migration, inspect the report, and
+      recover/re-run safely if validation fails.
     - Idempotency: running the step on an already-normalized project
       changes nothing; cover with a run-twice test.
     - All writes go through the standard upgrade/mutation machinery
       so shadow commits record the change set.
 
     How: Hook into the existing kspec upgrade step framework (the
-    same path that performed the folder-backed entity migration).
-    Reuse the classifier's variant table as the built-in rewrite map;
-    declared unknown/default actors live alongside it as data. Test against
+    same path that performed the folder-backed entity migration) and
+    add a migration-owned actor-field inventory file/test fixture so
+    the script, tests, and docs share the same field list. Reuse the
+    classifier's variant table as the built-in rewrite map; declared
+    unknown/default actors live alongside it as data. Test against
     fixtures seeded with the measured variants from
-    plans/ui-redesign/analysis.md section 4.6.
+    plans/ui-redesign/analysis.md section 4.6 and with at least one
+    fixture per inventoried actor-field path.
 
     Covers: @actor-history-normalization ac-1, ac-2, ac-3, ac-4,
-    ac-5; @actor-identity-model ac-2.
+    ac-5, ac-6; @actor-identity-model ac-2.
 
 - title: Serve server-resolved breadcrumb ancestor chains
   slug: task-breadcrumb-ancestry-api
@@ -786,12 +855,17 @@ derive_from_specs: false
     server-resolvable through the cached ref index.
 
     What:
-    - Expose the ancestor chain for an entity in one bounded
-      response: either as a resolved `ancestors` field on the item
-      detail payload or as a dedicated chain lookup — pick one shape
-      and document it; the client must get the full chain (ref,
-      title, item kind per segment, in root-to-current order) in a
-      single request.
+    - Expose the ancestor chain through the existing detail APIs as a
+      resolved `ancestors` field on each supported detail payload; do
+      not create a separate breadcrumb lookup endpoint in this plan.
+      The client must get the full chain (ref, title, item kind per
+      segment, in root-to-current order) in the same bounded detail
+      response it already needs for the page.
+    - Implement one shared breadcrumb ancestry resolver as the single
+      source of truth for every detail API that includes `ancestors`.
+      Item, task, plan, review, session, and static-export providers
+      must call this resolver or its static equivalent rather than
+      duplicating chain construction logic per route.
     - Build the chain from the daemon entity cache / reference index
       (parent path is already computed for items); no per-request
       disk walks.
@@ -806,9 +880,12 @@ derive_from_specs: false
       the static provider to serve the same chain shape read-only.
 
     How: Extend the items route detail handler (and the task, plan,
-    review, and session detail payloads) using the existing
-    ref-resolution helpers in the daemon. Follow the standard
-    response envelope.
+    review, and session detail payloads) using one shared resolver
+    built on the existing ref-resolution helpers in the daemon. Follow
+    the standard response envelope for those existing detail APIs;
+    because this plan does not add a standalone breadcrumb endpoint,
+    there is no additional @trait-api-endpoint application for the
+    breadcrumb behavior.
 
     Covers: @ui-breadcrumb ac-10.
 
@@ -1054,12 +1131,15 @@ data-upgrade plan exists or is needed. These Covers lines resolve
 once P0a derives (see the approval-ordering gate above).
 
 @actor-identity-model ac-1 requires newly written actor fields to come
-from the configured human/agent author pool. @task-review-author-
-resolution therefore reconciles @config-author at execution time so
-chain-resolved values are canonicalized when recognizable and rejected
-when outside the configured pool. Unknown classification remains for
-historical or externally edited records and for upgrade reporting; it
-is not a daemon-write persistence path for new arbitrary authors.
+from the configured human/agent author pool through every first-party
+write interface. @task-review-author-resolution therefore reconciles
+@config-author at execution time by introducing one shared actor-write
+utility used by daemon routes, CLI commands, import/update helpers, and
+lower-level mutation helpers, so chain-resolved or caller-supplied
+values are canonicalized when recognizable and rejected when outside
+the configured pool. Unknown classification remains for historical or
+externally edited records and for upgrade reporting; it is not a
+write-time persistence path for new arbitrary authors.
 
 ### Relationship to existing specs (verified read-only)
 
@@ -1077,7 +1157,9 @@ is not a daemon-write persistence path for new arbitrary authors.
   the reconciliation @actor-identity-model assigns to this plan.
 - `@ui-api-aggregation` — establishes the server-resolved-data
   conventions (no client list fetches for derived data) that the
-  breadcrumb ancestry payload and header counts follow. Extended, not
+  breadcrumb ancestry field and header counts follow. Breadcrumb
+  ancestry is added to existing detail APIs from one shared resolver,
+  not through a new standalone list/lookup endpoint. Extended, not
   modified.
 
 `@trait-api-endpoint` is applied to `@actor-identity-resolution`
@@ -1087,7 +1169,10 @@ owns the application via `kspec item set --add-trait`). That task's
 Covers line claims the applicable inherited trait criteria, and
 non-applicable trait criteria are annotated N/A with reasons per
 the N/A annotation convention — the endpoint contract cannot be
-skipped silently after derive.
+skipped silently after derive. Breadcrumb ancestry does not add a new
+endpoint in this plan; it extends existing detail API payloads through
+one shared resolver, so no separate breadcrumb-specific trait
+application is needed.
 
 ### Design detail
 
