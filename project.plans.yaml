@@ -1905,6 +1905,7 @@ plans:
       - plan-ac-coverage-verification-schema-and-storage
     title: AC Coverage Verification Schema and Storage
     status: draft
+    branch: feat/ui-redesign
     derived_specs: []
     derived_tasks: []
     module_ref: "@core"
