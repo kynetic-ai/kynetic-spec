@@ -29,7 +29,7 @@ description: |
 spec_ref: null
 plan_ref: "@plan-ui-redesign-global-decisions"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -38,6 +38,14 @@ tags:
   - meta
   - ui
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-fold-agent-dashboard-design-task/01kv3tkj
+  captured_at: 2026-06-14T20:02:20.433Z
+  commit: e254caec535bd3c303869283977944fa05b2f513
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KV3VGF69V6M9HWJ3HH8ZTVEB
 history:
   - author: Jacob Chapel
@@ -60,7 +68,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-14T20:00:59.062Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-fold-agent-dashboard-design-task/01kv3tkj
+          captured_at: 2026-06-14T20:02:20.433Z
+          commit: e254caec535bd3c303869283977944fa05b2f513
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-14T20:02:20.440Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-14T20:02:20.440Z
 created_at: 2026-06-14T19:44:14.144Z
 started_at: 2026-06-14T20:00:59.062Z
+submitted_at: 2026-06-14T20:02:20.440Z
 todos: []
 automation: eligible

@@ -32005,7 +32005,7 @@
   title: Fold the multi-project agent dashboard design task into the redesign program
   type: task
   plan_ref: "@plan-ui-redesign-global-decisions"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -32016,6 +32016,7 @@
   todos_count: 0
   created_at: 2026-06-14T19:44:14.144Z
   started_at: 2026-06-14T20:00:59.062Z
+  submitted_at: 2026-06-14T20:02:20.440Z
   automation: eligible
 - _ulid: 01KV3TKK5WE5TZHTNKEDTH03JR
   slugs:
