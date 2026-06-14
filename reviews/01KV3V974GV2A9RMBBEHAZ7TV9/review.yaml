@@ -35,6 +35,19 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-14T20:10:51.144Z
     completed_at: 2026-06-14T20:10:51.144Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2787/2787 test suites, 10567/10570 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KV3V7Z7797A7JNFRCKCS6WGZ/1fdbaf8d0af42e0b.log. Note:
+      tests/daemon-context-manager.test.ts passed while still asserting old AC-15 restart-empty
+      behavior, recorded separately as a review blocker."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-14T20:11:01.582Z
+    completed_at: 2026-06-14T20:11:01.582Z
 events:
   - _ulid: 01KV3V974G05GWQKWG0S72YB8W
     actor: Jacob Chapel
@@ -70,6 +83,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-14T20:10:51.372Z
+  - _ulid: 01KV3W4MTWBAPHKX0XV1A3F4PM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-14T20:11:01.852Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: open
@@ -82,5 +102,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-14T19:56:03.088Z
-updated_at: 2026-06-14T20:10:51.144Z
+updated_at: 2026-06-14T20:11:01.582Z
 notes: []
