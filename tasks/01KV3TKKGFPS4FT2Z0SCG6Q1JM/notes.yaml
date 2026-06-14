@@ -41,3 +41,38 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-14T20:12:32.402Z
+  - _ulid: 01KV3XMWW962QSDSHEX4WRMCGX
+    content: >-
+      Fix cycle 1: addressed the MUST-FIX blocker (false ac-15 coverage).
+
+
+      The respec reworded @multi-directory-daemon ac-15 to require restoring the registered-project
+      roster from the daemon config dir on restart, but two tests in
+      tests/daemon-context-manager.test.ts still asserted the OLD no-persistence contract while
+      annotated as ac-15 — proving the superseded behavior and falsely marking ac-15
+      covered/implemented.
+
+
+      Took the review-offered future-work path:
+
+      - Removed the two superseded-contract tests (empty-roster-after-restart,
+      require-re-registration). Their valid behaviors remain covered: getProject-throws by the ac-3
+      tests; empty-on-construction + re-register-on-first-request by the ac-14 restart test.
+
+      - Removed false ac-15 annotations: file header, the listProjects unit test, and the
+      listProjects() doc comment in project-context.ts (now states restore-from-config is a
+      separate, not-yet-implemented startup concern). No test now claims ac-15 coverage.
+
+      - Created follow-up task @task-implement-daemon-roster-persistence to track the actual
+      persistence/restore implementation.
+
+      - Did NOT downgrade feature implementation status: item set cascades to 21 child items and
+      would mislabel already-implemented behavior. The single outstanding AC is tracked via the
+      follow-up task instead.
+
+
+      Gates: format:check, oxlint(changed), typecheck, full suite (10565 passed/3 skipped/0 failed),
+      kspec validate refs/alignment/completeness all green.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-14T20:37:22.953Z
