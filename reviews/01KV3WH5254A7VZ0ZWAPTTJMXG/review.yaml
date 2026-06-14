@@ -2,7 +2,17 @@ _ulid: 01KV3WH5254A7VZ0ZWAPTTJMXG
 slugs: []
 title: Review task-fold-agent-dashboard-design-task
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1038 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-14T20:32:12.526Z
+    completed_at: 2026-06-14T20:32:12.526Z
 events:
   - _ulid: 01KV3WH525SN8Q2F2HM8QZZK8B
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-14T20:18:08.567Z
+  - _ulid: 01KV3XBDYKEKHCKK2XQBN40Y0K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-14T20:32:12.755Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-14T20:17:51.685Z
-updated_at: 2026-06-14T20:18:08.292Z
+updated_at: 2026-06-14T20:32:12.526Z
 notes: []
