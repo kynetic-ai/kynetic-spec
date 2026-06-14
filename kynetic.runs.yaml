@@ -66052,7 +66052,7 @@ runs:
     completed_at: 2026-06-14T20:39:01.592Z
   - _ulid: 01KV3YS6MNKRS2GDPJQZWPBDGH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66067,7 +66067,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-14T20:58:45.937Z
-        completed_at: 2026-06-14T20:58:45.937Z
+        completed_at: 2026-06-14T20:59:09.857Z
+        notes: "High-confidence friction identified: respec reviews that change one AC inside a broad
+          implemented feature can invalidate implementation status and AC coverage without an
+          obvious per-AC status mechanism. Existing coverage found, so no duplicate capture:
+          @01KV3XS8 tracks granular AC implementation/status friction for this exact respec pattern;
+          @01KQBRFN tracks item set --status cascade/noninteractive --no-cascade friction. Success
+          pattern: using kspec validate alignment plus CLI help verification caught a real fix-cycle
+          gap after false AC coverage had been removed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-14T20:59:09.857Z
+        completed_at: 2026-06-14T20:59:09.857Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-14T20:57:12.598Z
