@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KV3VMFSNWJM42Z9GEW0MC9SD
+    content: "Folded @01KKBD66 (multi-project agent dashboard design) into the redesign program via a
+      single atomic kspec batch (task note + task cancel). Verified via task get: @01KKBD66 now
+      shows status=cancelled, with the supersession pointer note (\"...the cross-project track's
+      all-projects dashboard and live-agent rail absorb this task's scope. Program anchor:
+      @plan-ui-redesign-global-decisions...\") and the cancel reason (\"Superseded by the redesign
+      program's cross-project track (see @plan-ui-redesign-global-decisions)\") in its timeline.
+      Confirmed @plan-ui-redesign-global-decisions exists (status=active, approved). Matches the
+      sibling supersession (@task-supersede-legacy-revamp-umbrella). Pure kspec meta operation — no
+      source/spec/code changes, so code quality gates are N/A; kspec ref validation clean aside from
+      pre-existing unrelated deprecation warnings."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-14T20:02:12.406Z
