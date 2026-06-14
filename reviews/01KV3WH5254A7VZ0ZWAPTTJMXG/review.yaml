@@ -24,6 +24,16 @@ checks:
     runner: npm test
     created_at: 2026-06-14T20:32:15.566Z
     completed_at: 2026-06-14T20:32:15.566Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit completed with exit code 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-14T20:32:18.671Z
+    completed_at: 2026-06-14T20:32:18.671Z
 events:
   - _ulid: 01KV3WH525SN8Q2F2HM8QZZK8B
     actor: Jacob Chapel
@@ -52,6 +62,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-14T20:32:15.826Z
+  - _ulid: 01KV3XBKYRNMCG4B5HCCB339X4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-14T20:32:18.904Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: open
@@ -64,5 +81,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-14T20:17:51.685Z
-updated_at: 2026-06-14T20:32:15.566Z
+updated_at: 2026-06-14T20:32:18.671Z
 notes: []
