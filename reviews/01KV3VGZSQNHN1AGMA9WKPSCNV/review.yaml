@@ -2,7 +2,107 @@ _ulid: 01KV3VGZSQNHN1AGMA9WKPSCNV
 slugs: []
 title: Review task-supersede-legacy-revamp-umbrella
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check . reported all 1038 matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-14T20:13:36.732Z
+    completed_at: 2026-06-14T20:13:36.732Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed hard gate: oxlint src/ tests/ packages/ --quiet reported 0 errors; existing
+      warning baseline remains 736 warnings. Focused changed-file lint not applicable because git
+      diff --name-only feat/ui-redesign...HEAD returned no files."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-14T20:13:39.482Z
+    completed_at: 2026-06-14T20:13:39.482Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped: no changed files in git diff --name-only feat/ui-redesign...HEAD, so there are
+      no changed TypeScript/test files to lint."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed-ts-or-test-files>
+    created_at: 2026-06-14T20:13:42.295Z
+    completed_at: 2026-06-14T20:13:42.295Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-14T20:13:45.203Z
+    completed_at: 2026-06-14T20:13:45.203Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2787/2787 test suites passed; 10567 tests passed and 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KV3VEYCK42RGTQWJSERDZM24/013b0955e025f7a3.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-14T20:13:47.910Z
+    completed_at: 2026-06-14T20:13:47.910Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok: schema OK, references OK; existing reference warning baseline
+      reported 6 deprecated-item reference warnings."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-14T20:13:50.693Z
+    completed_at: 2026-06-14T20:13:50.693Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok: schema/references OK; existing alignment warning baseline
+      reported 54 warnings (44 orphaned specs, 10 status mismatches)."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-14T20:13:53.432Z
+    completed_at: 2026-06-14T20:13:53.432Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok: schema/references OK; existing completeness warning baseline
+      reported 277 warnings. Includes expected plan-hygiene warning that this automation-eligible
+      task has no spec_ref; task is derived from approved plan with derive_from_specs:false and
+      performs no implementation behavior."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-14T20:13:56.143Z
+    completed_at: 2026-06-14T20:13:56.143Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped as not applicable: reviewed task has no spec_ref and only performs a metadata
+      cancellation/note operation from @plan-ui-redesign-global-decisions."
+    name: AC coverage
+    required: false
+    runner: kspec task get / plan review
+    created_at: 2026-06-14T20:13:58.848Z
+    completed_at: 2026-06-14T20:13:58.848Z
 events:
   - _ulid: 01KV3VGZSQFE4YKCKVB93N6QZN
     actor: Jacob Chapel
@@ -17,6 +117,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-14T20:00:41.740Z
+  - _ulid: 01KV3W9CA8RW0PCS0JDD95YH73
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-14T20:13:36.968Z
+  - _ulid: 01KV3W9F0D92HTKXMK554CS2Z6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-14T20:13:39.725Z
+  - _ulid: 01KV3W9HQHZRMQ8X6AF38VW209
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: focused-lint
+    timestamp: 2026-06-14T20:13:42.513Z
+  - _ulid: 01KV3W9MJD1J5FHVC8Q13JDA0H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-14T20:13:45.421Z
+  - _ulid: 01KV3W9Q7EFKKHSSKKTX90PTDA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-14T20:13:48.142Z
+  - _ulid: 01KV3W9SXPPA6TH6BYQ4ZZ9DPC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-14T20:13:50.902Z
+  - _ulid: 01KV3W9WKRXC8QQAW2RVD923JS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-14T20:13:53.656Z
+  - _ulid: 01KV3W9Z9J8D27DZ3JH7WPN4CG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-14T20:13:56.402Z
+  - _ulid: 01KV3WA1X5TTTVQV3VVSQT29SQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: AC coverage
+    timestamp: 2026-06-14T20:13:59.077Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: open
@@ -29,5 +192,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-14T20:00:17.719Z
-updated_at: 2026-06-14T20:00:41.476Z
+updated_at: 2026-06-14T20:13:58.848Z
 notes: []
