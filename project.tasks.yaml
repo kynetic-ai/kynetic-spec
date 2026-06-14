@@ -31995,6 +31995,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-14T19:44:13.810Z
+  automation: eligible
 - _ulid: 01KV3TKJT0TPVFFG58H6YRXWD0
   slugs:
     - task-fold-agent-dashboard-design-task
