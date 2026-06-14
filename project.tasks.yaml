@@ -32012,6 +32012,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-14T19:44:14.144Z
+  automation: eligible
 - _ulid: 01KV3TKK5WE5TZHTNKEDTH03JR
   slugs:
     - task-record-overlapping-plan-dispositions
