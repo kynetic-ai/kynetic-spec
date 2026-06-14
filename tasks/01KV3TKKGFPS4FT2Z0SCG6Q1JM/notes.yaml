@@ -81,3 +81,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-14T20:56:34.462Z
+  - _ulid: 01KV3Z4G1R88PETSDVPGRAE1YX
+    content: "Fix cycle 2: addressed the MUST-FIX alignment blocker. The cycle-1 respec added an
+      unimplemented ac-15 restore-from-config requirement (owned by follow-up
+      @task-implement-daemon-roster-persistence), but @multi-directory-daemon still claimed
+      Implementation: implemented, which kspec validate --alignment flagged. Fix: kspec item set
+      @multi-directory-daemon --status in_progress --no-cascade — parent now in_progress, all 21
+      children untouched (avoiding the cascade mislabel concern). Re-verified: alignment validation
+      no longer flags the daemon spec; refs/alignment/completeness all exit 0. No worker-branch
+      source/test changes this cycle (shadow-branch spec edit only); cycle-1 code gates at f9e6d7b
+      remain valid."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-14T21:03:22.680Z
