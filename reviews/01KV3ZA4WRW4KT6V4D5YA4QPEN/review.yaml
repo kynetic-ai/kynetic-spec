@@ -68,6 +68,18 @@ checks:
     runner: kspec
     created_at: 2026-06-14T21:19:53.832Z
     completed_at: 2026-06-14T21:19:53.832Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed. @multi-directory-daemon is now
+      in_progress and no longer appears in the status-mismatch warnings; remaining alignment
+      warnings are existing unrelated baselines.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-14T21:20:02.795Z
+    completed_at: 2026-06-14T21:20:02.795Z
 events:
   - _ulid: 01KV3ZA4WRP12REXQAPJZEQVWW
     actor: Jacob Chapel
@@ -124,6 +136,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-14T21:19:54.058Z
+  - _ulid: 01KV4030ZBBM0FSVXRRDTV3NNZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-14T21:20:03.051Z
 examined_commit: f9e6d7b5d4757dbd93c361fcf7b37ad0793f4255
 external_links: []
 lifecycle_state: open
@@ -136,5 +155,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-14T21:06:27.864Z
-updated_at: 2026-06-14T21:19:53.832Z
+updated_at: 2026-06-14T21:20:02.795Z
 notes: []
