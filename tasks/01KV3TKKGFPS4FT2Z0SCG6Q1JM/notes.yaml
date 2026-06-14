@@ -11,3 +11,28 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-14T19:50:43.770Z
+  - _ulid: 01KV3V2QY49DFXKKXPBPW6VTHV
+    content: >-
+      Done (spec-only). Changes committed to shadow branch via kspec batch:
+
+      1. @multi-directory-daemon ac-15 rewritten: a daemon restart now RESTORES the
+      registered-project roster from the daemon configuration directory without client involvement
+      (was: 'registered project list is empty / no persistence'). Restored entries with now-invalid
+      project metadata are surfaced/removed via existing invalid-project handling (ac-20, ac-34)
+      rather than poisoning the roster. This resolves the contradiction with
+      @client-preference-persistence ac-2.
+
+      2. @multi-directory-daemon description key-architecture notes updated to distinguish persisted
+      registration metadata (daemon-level state in the config dir, restored on restart) from runtime
+      watcher/cache state (per-process, rebuilt after restart).
+
+      Preserved: ac-14 (request-time auto-registration still adds a project not in the persisted
+      roster), ac-20 and ac-34 (invalid/deleted-project unregistration).
+
+      Verified: ac-14/15/20/34 coexist via kspec item get; kspec validate
+      --refs/--alignment/--completeness all exit 0 (only pre-existing unrelated warnings). No
+      code/test changes required — this task's deliverable is the spec edit; downstream persistence
+      implementation is separate.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-14T19:52:30.916Z

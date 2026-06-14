@@ -32037,7 +32037,7 @@
   type: task
   spec_ref: "@client-preference-persistence"
   plan_ref: "@plan-ui-redesign-global-decisions"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -32045,8 +32045,9 @@
     - specs
     - daemon
     - cross-project
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-06-14T19:44:14.863Z
   started_at: 2026-06-14T19:50:22.845Z
+  submitted_at: 2026-06-14T19:52:35.506Z
   automation: eligible
