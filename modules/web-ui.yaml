@@ -349,7 +349,8 @@ decisions:
       and carries no authentication or access-control semantics.
     depends_on: []
     implements: []
-    relates_to: []
+    relates_to:
+      - "@config-author"
     tests: []
     traits: []
     acceptance_criteria:

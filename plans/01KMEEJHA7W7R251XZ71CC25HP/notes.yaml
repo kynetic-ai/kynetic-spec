@@ -7,3 +7,10 @@ notes:
     content: Added design exploration log from sidebar design session
     author: "@claude"
     created_at: 2026-03-24T20:17:10.590Z
+  - _ulid: 01KV3VW20KVH0W2RHH9YXQETDT
+    content: "Decision architecture adopted: the decision items derived from
+      @plan-ui-redesign-global-decisions are its first full use, parented under the @web-ui module.
+      The sidebar/pulse feature sketches are superseded by the program's shell track. If the @ux
+      module later materializes, @web-ui reparents under it."
+    author: "@claude"
+    created_at: 2026-06-14T20:06:20.435Z

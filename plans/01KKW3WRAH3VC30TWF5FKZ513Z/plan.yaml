@@ -7,6 +7,9 @@ approved_at: null
 derived_specs: []
 derived_tasks: []
 module_ref: "@tasks"
+resource_summary:
+  count: 0
+  total_bytes: 0
 source_path: /home/chapel/Projects/kynetic-spec/plans/activity-diff-summaries.md
 created_at: 2026-03-16T20:02:43.665Z
 completed_at: null

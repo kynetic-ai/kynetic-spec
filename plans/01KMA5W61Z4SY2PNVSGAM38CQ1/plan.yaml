@@ -7,6 +7,9 @@ approved_at: null
 derived_specs: []
 derived_tasks: []
 module_ref: "@agent-integration"
+resource_summary:
+  count: 0
+  total_bytes: 0
 source_path: /home/chapel/Projects/kynetic-spec/plans/interactive-agent-sessions.md
 created_at: 2026-03-22T07:06:44.158Z
 completed_at: null
