@@ -23671,7 +23671,7 @@ workspaces:
         head: f25c25ea5a7bfa955e44779822eed2b1e3b3aee3
         last_seen_at: 2026-06-12T17:17:35.421Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-websocket-duplicate-event-e2e-response-count-flake-01ktyb6m
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: e254caec535bd3c303869283977944fa05b2f513
     bootstrap:
       status: succeeded
@@ -24154,7 +24154,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-14T21:05:06.154Z
+      updated_at: 2026-06-14T21:05:14.380Z
     integration:
       status: pending
       detail: null
@@ -24170,10 +24170,10 @@ workspaces:
     task_slug: task-respec-daemon-project-roster-persistence
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-14T21:00:38.506Z
-      last_reconciled_at: 2026-06-14T21:05:06.154Z
+      last_active_at: 2026-06-14T21:05:14.380Z
+      last_reconciled_at: 2026-06-14T21:05:14.380Z
       created_at: 2026-06-14T19:49:08.744Z
-      updated_at: 2026-06-14T21:05:06.801Z
+      updated_at: 2026-06-14T21:05:14.380Z
     workspace_id: dispatch-workspace-01KV3TKKGFPS4FT2Z0SCG6Q1JM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
