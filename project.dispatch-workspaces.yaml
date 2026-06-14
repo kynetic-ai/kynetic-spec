@@ -25058,7 +25058,7 @@ workspaces:
         head: e254caec535bd3c303869283977944fa05b2f513
         last_seen_at: 2026-06-14T19:59:27.145Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fold-agent-dashboard-design-task-01kv3tkj
-  - active_role: worker
+  - active_role: null
     base_branch_point: e254caec535bd3c303869283977944fa05b2f513
     bootstrap:
       status: succeeded
@@ -25389,12 +25389,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-14T20:03:53.040Z
+      updated_at: 2026-06-14T20:09:34.956Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-14T20:04:29.598Z
+      updated_at: 2026-06-14T20:09:34.956Z
     integration:
       status: pending
       detail: null
@@ -25402,8 +25402,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: e254caec535bd3c303869283977944fa05b2f513
-      updated_at: 2026-06-14T20:03:53.040Z
-    lifecycle_state: active
+      updated_at: 2026-06-14T20:09:34.956Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV3TKK5WE5TZHTNKEDTH03JR
     task_ref: "@01KV3TKK5WE5TZHTNKEDTH03JR"
@@ -25411,9 +25411,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-14T20:04:29.598Z
-      last_reconciled_at: 2026-06-14T20:04:29.598Z
+      last_reconciled_at: 2026-06-14T20:09:34.956Z
       created_at: 2026-06-14T20:03:53.040Z
-      updated_at: 2026-06-14T20:04:29.598Z
+      updated_at: 2026-06-14T20:09:34.956Z
     workspace_id: dispatch-workspace-01KV3TKK5WE5TZHTNKEDTH03JR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
