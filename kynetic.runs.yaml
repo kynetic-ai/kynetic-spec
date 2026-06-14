@@ -65783,9 +65783,17 @@ runs:
     completed_at: 2026-06-14T19:54:16.038Z
   - _ulid: 01KV3VZA31H9W2JQCYH7X6FEAD
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-14T20:08:07.009Z
+        completed_at: 2026-06-14T20:08:20.302Z
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-14T20:08:20.302Z
+        completed_at: 2026-06-14T20:08:20.302Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-14T20:08:07.009Z
