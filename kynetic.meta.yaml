@@ -21958,6 +21958,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-14T20:39:45.596Z
+  - _ulid: 01KV3Z6PJ7XSBQCTTF9KS82DE0
+    type: friction
+    content: "Respec tasks that add an unimplemented AC requirement to an already-'implemented' spec
+      must downgrade the parent spec's implementation status to in_progress, or kspec validate
+      --alignment fails. Use 'kspec item set @spec --status in_progress --no-cascade' to update only
+      the parent without mislabeling already-implemented child items. Observed: this
+      respec/spec-alignment step was missed in the initial work AND in fix cycle 1 (which explicitly
+      declined to change status, unaware of --no-cascade), causing two extra review cycles on task
+      @01KV3TKKGFPS4FT2Z0SCG6Q1JM before it was resolved."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-14T21:04:34.888Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
