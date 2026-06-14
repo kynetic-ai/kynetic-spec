@@ -559,14 +559,12 @@ derive_from_specs: false
     reason discarded. @ac-coverage-applicability supersedes that
     behavior: in-code not-applicable annotations are not coverage
     signals — they neither cover a criterion nor exempt it.
-    @ac-coverage-applicability's description draws a transition
-    boundary — the pre-existing completeness path that honors N/A for
-    trait criteria stays in force "until the coverage state engine
-    work reconciles the two semantics." Per the decision register,
-    this respec (with @task-na-annotation-coverage-exclusion) IS that
-    reconciliation: the N/A-stop is assigned to this plan, not to the
-    later engine plan, so this task also amends the boundary sentence
-    so the live decision text and the implemented behavior agree.
+    @ac-coverage-applicability declares the existing N/A-counts-as-
+    coverage behavior incorrect for corpus coverage. Per the decision
+    register, this respec (with @task-na-annotation-coverage-exclusion)
+    is the compatibility repair: the N/A-stop is assigned to this plan,
+    not to the later engine plan, so this task also updates existing
+    specs whose wording still grants coverage credit to N/A markers.
 
     What:
     - Update the item description to state that coverage credit
@@ -606,16 +604,13 @@ derive_from_specs: false
       coverage-claiming annotations (those without a not-applicable
       marker) so a trait AC whose only annotations carry N/A markers
       may warn without contradicting a live AC.
-    - Amend @ac-coverage-applicability's transition boundary (the item
-      is live by the time this task runs — this plan derives only
-      after P0a): replace the deferral to "the coverage state engine
-      work" with this plan's respec, stating that the pre-existing
-      completeness path honors in-code not-applicable annotations for
-      trait criteria only until the respecced @test-annotation-sweep
-      semantics are implemented (@task-na-annotation-coverage-exclusion),
-      which completes the reconciliation. Leave its ac-1/ac-2
-      untouched — they remain engine-scoped and are claimed by the
-      engine plan per P0a's AC coverage handoff table.
+    - Verify @ac-coverage-applicability's derived wording already names
+      this behavior as incorrect and assigns the repair to this plan;
+      if the derived item still carries older transition-boundary prose,
+      amend it in the same spec batch so the live decision text and the
+      implemented behavior agree. Leave its ac-1/ac-2 untouched — they
+      remain engine-scoped and are claimed by the engine plan per P0a's
+      AC coverage handoff table.
 
     How: kspec item set / item ac add / item ac set via a single kspec
     batch; verify the result with kspec item get on all five mutated
@@ -842,9 +837,9 @@ value, so the mixed case (some locations with history, some without)
 resolves to the most recent of the values that exist; only when no
 location has history does the criterion fall to ac-no-history-absence.
 This is deterministic and optimistic (any fresh annotation refreshes
-the AC). The engine plan may revisit this rule when it computes
-stale/drifted; choosing it here keeps the resolver deterministic
-without blocking on engine design.
+the AC). The engine plan may classify re-verification causes using this value;
+choosing it here keeps the resolver deterministic without blocking on
+engine design.
 
 ### Storage reads do not assess staleness
 
@@ -866,16 +861,15 @@ completeness output — including in this repository, which uses the
 convention heavily for trait ACs. That is the decided intent: trait-AC
 misfits surface as spec-composition fixes, not as an N/A escape hatch.
 
-This plan is the transition boundary. @ac-coverage-applicability's
-description defers reconciliation of the two semantics to "the
-coverage state engine work"; per the decision register, the N/A-stop
-is assigned to this plan (the storage foundation of that engine work),
-so the respec here IS the reconciliation —
-@task-respec-test-annotation-sweep-na amends the live decision's
-boundary sentence accordingly, ending the pre-existing N/A-honoring
-completeness path with this plan rather than leaving it in force until
-the engine plan. The decision's engine-scoped ACs are untouched and
-stay claimed by the engine plan.
+This plan is the transition boundary. @ac-coverage-applicability names
+the existing N/A-counts-as-coverage behavior as incorrect for corpus
+coverage, and the N/A-stop is assigned to this plan (the storage
+foundation of the coverage engine work), so the respec here is the
+reconciliation: @task-respec-test-annotation-sweep-na amends existing
+specs that still grant coverage credit to N/A markers, and
+@task-na-annotation-coverage-exclusion changes the scanner. The
+decision's engine-scoped ACs are untouched and stay claimed by the
+engine plan.
 
 The interim documentation window is an explicit, accepted decision:
 shipped consumer guidance continues to document the in-code N/A
