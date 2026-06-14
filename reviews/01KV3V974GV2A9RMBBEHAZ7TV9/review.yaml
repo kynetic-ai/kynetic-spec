@@ -1,0 +1,26 @@
+_ulid: 01KV3V974GV2A9RMBBEHAZ7TV9
+slugs: []
+title: Review respec multi-project daemon roster persistence
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KV3V974G05GWQKWG0S72YB8W
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-14T19:56:03.088Z
+examined_commit: e254caec535bd3c303869283977944fa05b2f513
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KV3TKKGFPS4FT2Z0SCG6Q1JM"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-14T19:56:03.088Z
+updated_at: null
+notes: []

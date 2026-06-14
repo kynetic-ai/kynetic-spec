@@ -49,6 +49,7 @@ tags:
   - daemon
   - cross-project
 vcs_refs: []
+review_ref: "@01KV3V974GV2A9RMBBEHAZ7TV9"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-respec-daemon-project-roster-persistence/01kv3tkk
@@ -99,6 +100,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-14T19:52:35.506Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KV3V974GV2A9RMBBEHAZ7TV9"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-14T19:56:05.360Z
 created_at: 2026-06-14T19:44:14.863Z
 started_at: 2026-06-14T19:50:22.845Z
 submitted_at: 2026-06-14T19:52:35.506Z
