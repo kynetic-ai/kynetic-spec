@@ -1929,6 +1929,7 @@ plans:
       - plan-review-anchors-and-plan-revisions-schema
     title: Review Anchors and Plan Revisions Schema
     status: draft
+    branch: feat/ui-redesign
     derived_specs: []
     derived_tasks: []
     module_ref: "@core"
