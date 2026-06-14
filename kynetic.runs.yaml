@@ -65738,7 +65738,7 @@ runs:
     completed_at: 2026-06-12T17:39:22.150Z
   - _ulid: 01KV3V3N94JQXYX10EDJTKCGEN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -65755,7 +65755,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-14T19:53:33.290Z
-        completed_at: 2026-06-14T19:53:33.290Z
+        completed_at: 2026-06-14T19:53:58.849Z
+        notes: "Step 2 (friction): No systemic, repeatable friction surfaced this session. This was a
+          single, well-scoped spec-only respec edit that executed exactly as the task described. The
+          only minor incidental hiccup was 'kspec workflow show' requiring an explicit run-ref
+          argument (the skill examples show it argless), but that is one-off operator unfamiliarity,
+          not a systemic pattern — not capture-worthy under loop-mode's high-confidence bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-14T19:53:58.849Z
+        completed_at: 2026-06-14T19:53:58.849Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-14T19:53:00.964Z
