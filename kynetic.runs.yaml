@@ -65861,9 +65861,21 @@ runs:
     completed_at: 2026-06-14T20:15:40.741Z
   - _ulid: 01KV3WDHGD1EJVEF5C0ZWHZ9V4
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-14T20:15:53.358Z
+        completed_at: 2026-06-14T20:16:53.854Z
+        notes: "What worked well: the detached review workflow gave enough context to verify a metadata-only
+          task without guessing. The exact task text, task JSON, plan lookup, review record checks,
+          and detached merge helper made the final state auditable. The merge helper's no-op
+          detection cleanly handled an already-integrated branch without manual git work."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-14T20:16:53.854Z
+        completed_at: 2026-06-14T20:16:53.854Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-14T20:15:53.358Z
