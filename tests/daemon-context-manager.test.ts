@@ -4,7 +4,7 @@
  * Tests the project registration, caching, path validation, and context management
  * for the multi-directory daemon architecture.
  *
- * AC: @multi-directory-daemon ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8c, ac-14, ac-15, ac-16, ac-20, ac-20b
+ * AC: @multi-directory-daemon ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8c, ac-14, ac-16, ac-20, ac-20b
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
@@ -75,7 +75,8 @@ describe("ProjectContextManager", () => {
       expect(contextB.path).toBe(projectB);
     });
 
-    // AC: @multi-directory-daemon ac-15
+    // Supporting unit test for listProjects() (underpins serve status / GET /api/projects).
+    // Not ac-15 coverage: ac-15 is restart roster restore, which this in-memory test does not exercise.
     it("should list all registered projects", () => {
       manager.registerProject(projectA);
       manager.registerProject(projectB);
@@ -417,40 +418,12 @@ describe("ProjectContextManager", () => {
       expect(managerAfterRestart.hasProject(projectB)).toBe(false);
     });
 
-    // AC: @multi-directory-daemon ac-15
-    it("should have empty project list after daemon restart", () => {
-      // Register projects before restart
-      manager.registerProject(projectA);
-      manager.registerProject(projectB);
-      expect(manager.listProjects()).toHaveLength(2);
-
-      // Simulate daemon restart (new instance = fresh state)
-      const managerAfterRestart = new ProjectContextManager();
-
-      // AC-15: No persistence across restarts
-      expect(managerAfterRestart.listProjects()).toHaveLength(0);
-      expect(managerAfterRestart.hasProject(projectA)).toBe(false);
-      expect(managerAfterRestart.hasProject(projectB)).toBe(false);
-    });
-
-    // AC: @multi-directory-daemon ac-15
-    it("should require re-registration of all projects after restart", () => {
-      // Register with default before restart
-      manager.registerProject(projectA, true);
-      manager.registerProject(projectB);
-
-      // Simulate daemon restart
-      const managerAfterRestart = new ProjectContextManager();
-
-      // All projects must be re-registered
-      expect(() => managerAfterRestart.getProject(projectA)).toThrow("Project not registered");
-      expect(() => managerAfterRestart.getProject(projectB)).toThrow("Project not registered");
-      expect(() => managerAfterRestart.getProject()).toThrow("No default project configured");
-
-      // Re-register on first request after restart
-      managerAfterRestart.registerProject(projectA, true);
-      expect(managerAfterRestart.getProject()).toBeDefined();
-    });
+    // ac-15 (roster restore from daemon config on restart) is intentionally future
+    // work — ProjectContextManager holds per-process runtime state only and starts
+    // empty on construction (see the ac-14 test above). Restore-from-config is a
+    // separate daemon-startup layer that does not yet exist, so there is no
+    // behavioral test claiming ac-15 coverage here. See follow-up task
+    // @task-implement-daemon-roster-persistence.
   });
 
   describe("Path validation", () => {
