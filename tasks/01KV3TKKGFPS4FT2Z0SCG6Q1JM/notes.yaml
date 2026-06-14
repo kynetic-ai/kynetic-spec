@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KV3TZF9TA5X4MGXST2Q32ZB4
+    content: "Approach: pure respec task. Rewrite @multi-directory-daemon ac-15 so a daemon restart
+      RESTORES the registered-project roster from the daemon configuration directory (agreeing with
+      @client-preference-persistence ac-2), instead of promising an empty roster. Restored entries
+      with now-invalid project metadata are surfaced/removed via existing invalid-project handling
+      (ac-20/ac-34) rather than poisoning the roster. Preserve ac-14 (request-time
+      auto-registration). Also update the feature description's key-architecture notes to
+      distinguish persisted registration metadata from runtime watcher/cache state. No code/test
+      changes — spec-only edit via kspec batch (item ac set + item set)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-14T19:50:43.770Z
