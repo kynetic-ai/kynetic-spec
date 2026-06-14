@@ -23671,7 +23671,7 @@ workspaces:
         head: f25c25ea5a7bfa955e44779822eed2b1e3b3aee3
         last_seen_at: 2026-06-12T17:17:35.421Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-websocket-duplicate-event-e2e-response-count-flake-01ktyb6m
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: e254caec535bd3c303869283977944fa05b2f513
     bootstrap:
       status: succeeded
@@ -24145,25 +24145,25 @@ workspaces:
     canonical_branch: dispatch/task/task-respec-daemon-project-roster-persistence/01kv3tkk
     canonical_branch_head: f9e6d7b5d4757dbd93c361fcf7b37ad0793f4255
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-06-14T21:05:06.154Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-06-14T21:21:24.328Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-14T21:05:14.380Z
+      updated_at: 2026-06-14T21:21:24.328Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: e254caec535bd3c303869283977944fa05b2f513
-      updated_at: 2026-06-14T21:05:06.154Z
-    lifecycle_state: integrating
+      updated_at: 2026-06-14T21:21:24.328Z
+    lifecycle_state: closing
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV3TKKGFPS4FT2Z0SCG6Q1JM
     task_ref: "@01KV3TKKGFPS4FT2Z0SCG6Q1JM"
@@ -24171,9 +24171,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-14T21:05:14.380Z
-      last_reconciled_at: 2026-06-14T21:05:14.380Z
+      last_reconciled_at: 2026-06-14T21:21:24.328Z
       created_at: 2026-06-14T19:49:08.744Z
-      updated_at: 2026-06-14T21:05:14.380Z
+      updated_at: 2026-06-14T21:21:24.328Z
     workspace_id: dispatch-workspace-01KV3TKKGFPS4FT2Z0SCG6Q1JM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
