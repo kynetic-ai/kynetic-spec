@@ -2,7 +2,92 @@ _ulid: 01KV3WPVGBTHWM412VZSWZD9AF
 slugs: []
 title: Review record overlapping plan dispositions
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 0. oxfmt checked 1038 files; all matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-14T20:35:30.977Z
+    completed_at: 2026-06-14T20:35:30.977Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0. oxlint reported 0 errors; existing repo warning baseline remains warnings only.
+      Focused changed-file lint: no changed JS/TS/Svelte files relative to feat/ui-redesign."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-14T20:35:33.854Z
+    completed_at: 2026-06-14T20:35:33.854Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped: git diff feat/ui-redesign...HEAD has no changed JS/TS/Svelte files."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-14T20:35:36.974Z
+    completed_at: 2026-06-14T20:35:36.974Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 0. tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-14T20:35:39.940Z
+    completed_at: 2026-06-14T20:35:39.940Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0. Test Suites: 2787 passed of 2787. Tests: 10567 passed, 3 skipped of 10570.
+      Duration: 2889.4s. Full log:
+      /tmp/kspec-test-cache/01KV3WMWAACEMZFZ81R49ZM8VK/a852eb7d76a648f0.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-14T20:35:42.717Z
+    completed_at: 2026-06-14T20:35:42.717Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 0. Schema OK; references OK. 6 pre-existing reference warnings allowed by --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-14T20:35:45.520Z
+    completed_at: 2026-06-14T20:35:45.520Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exited 0. Alignment validation passed with existing warning baseline: 44 orphaned specs
+      and 10 status mismatches."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-14T20:35:48.345Z
+    completed_at: 2026-06-14T20:35:48.345Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 0. Completeness validation passed with existing warning baseline. The reviewed task
+      is shadow-state planning maintenance and has no spec_ref/AC implementation surface.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-14T20:35:51.185Z
+    completed_at: 2026-06-14T20:35:51.185Z
 events:
   - _ulid: 01KV3WPVGBNFZ0GFCWFSNWZ3XK
     actor: Jacob Chapel
@@ -17,17 +102,130 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-14T20:21:14.005Z
+  - _ulid: 01KV3XHFRXZX93R575RT992DNF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-14T20:35:31.229Z
+  - _ulid: 01KV3XHJKGC74T8S3AQTNNFR2G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-14T20:35:34.128Z
+  - _ulid: 01KV3XHNKZV5KR8B67QFEDFGG4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: focused-lint
+    timestamp: 2026-06-14T20:35:37.215Z
+  - _ulid: 01KV3XHRG63AH521RPKH5MXT8Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-14T20:35:40.166Z
+  - _ulid: 01KV3XHV6Q2XFCQ61KNM9QHYN5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-14T20:35:42.935Z
+  - _ulid: 01KV3XHXYMJ2VW4PHVWFB35HRE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-14T20:35:45.748Z
+  - _ulid: 01KV3XJ0QP6WR029SB9QYW0XKG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-14T20:35:48.598Z
+  - _ulid: 01KV3XJ3GBBKEB530F54FD4EN4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-14T20:35:51.435Z
+  - _ulid: 01KV3XJ6GX7QEFCCCKHWRZ6M9J
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV3XJ68S3461JEMM59QM95Z4
+    timestamp: 2026-06-14T20:35:54.526Z
+  - _ulid: 01KV3XJ9GRPX86WRB6NC2BAHP9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-14T20:35:57.592Z
+  - _ulid: 01KV3XJ9GR16Q529KYRHRYC7P8
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-14T20:35:57.592Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KV3TKK5WE5TZHTNKEDTH03JR"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KV3XJ68S3461JEMM59QM95Z4
+    entries:
+      - _ulid: 01KV3XJ68SJCH66P5RS34N40P4
+        author: codex
+        body: >-
+          Evidence log:
+
+          Files read: kspec-agents.md; task @01KV3TKK5WE5TZHTNKEDTH03JR; plan records
+          @plan-interactive-agent-sessions, @plan-activity-timeline-diff-summaries,
+          @plan-dispatch-mutation-service, @plan-ux-module-and-design-decision-architecture; item
+          @actor-identity-model; git branch/diff state.
+
+          Commands run: git status/diff/rev-parse/branch/show; kspec task get; kspec review
+          for-task; kspec review add/open; kspec plan get for all four plans; kspec item get
+          @actor-identity-model; kspec validate refs/alignment/completeness with --warnings-ok; npm
+          run format:check; npm run lint -- --quiet; focused changed-file lint target discovery; npm
+          run typecheck; npm test.
+
+          Claims verified: all four requested disposition notes render on their plan records;
+          @actor-identity-model relates_to includes @config-author; task branch, target branch, and
+          snapshot all point at e254caec535b with no code diff.
+
+          Categories searched: correctness of recorded dispositions and successor pointer wording,
+          relationship metadata traversal, validation/reference integrity, test/tooling gates, merge
+          readiness/no-op branch state. No blocker findings.
+        created_at: 2026-06-14T20:35:54.265Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-14T20:35:57.592Z
 created_at: 2026-06-14T20:20:58.507Z
-updated_at: 2026-06-14T20:21:13.728Z
+updated_at: 2026-06-14T20:35:57.592Z
 notes: []

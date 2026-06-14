@@ -26411,19 +26411,19 @@ reviews:
   - _ulid: 01KV3WPVGBTHWM412VZSWZD9AF
     slugs: []
     title: Review record overlapping plan dispositions
-    disposition: pending
+    disposition: approved
     author: Jacob Chapel
-    check_count: 0
+    check_count: 8
     examined_commit: e254caec535bd3c303869283977944fa05b2f513
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KV3TKK5WE5TZHTNKEDTH03JR"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-06-14T20:20:58.507Z
-    updated_at: 2026-06-14T20:21:13.728Z
+    updated_at: 2026-06-14T20:35:57.592Z
