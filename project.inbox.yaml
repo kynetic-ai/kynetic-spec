@@ -4944,3 +4944,16 @@ inbox:
       - dx
     added_by: Jacob Chapel
     created_at: 2026-06-13T06:29:52.557Z
+  - _ulid: 01KV2B043G0C0RCV9WPSWJ6EFG
+    text: "Add an agent command for safely attaching existing work to a task: given an existing
+      branch/commit/worktree and task ref, record recoverable lineage/submission linkage, mark the
+      task in_progress, and protect/register the workspace so dispatch can pick it up without
+      orphan-cleaning or freshly provisioning over the work. This covers the recent case where prior
+      manual/Hermes work on a dispatch-like branch was not visible to the next dispatched agent."
+    tags:
+      - dispatch
+      - agent-workflow
+      - workspace-recovery
+      - task-lineage
+    added_by: Jacob Chapel
+    created_at: 2026-06-14T05:52:13.424Z
