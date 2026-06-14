@@ -24143,12 +24143,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-14T20:40:07.757Z
+      updated_at: 2026-06-14T20:40:17.236Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-14T20:40:07.757Z
+      updated_at: 2026-06-14T20:40:17.236Z
     integration:
       status: pending
       detail: null
@@ -24156,8 +24156,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: e254caec535bd3c303869283977944fa05b2f513
-      updated_at: 2026-06-14T20:40:07.757Z
-    lifecycle_state: ready
+      updated_at: 2026-06-14T20:40:17.236Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV3TKKGFPS4FT2Z0SCG6Q1JM
     task_ref: "@01KV3TKKGFPS4FT2Z0SCG6Q1JM"
@@ -24165,18 +24165,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-14T20:16:33.787Z
-      last_reconciled_at: 2026-06-14T20:40:07.757Z
+      last_reconciled_at: 2026-06-14T20:40:17.236Z
       created_at: 2026-06-14T19:49:08.744Z
-      updated_at: 2026-06-14T20:40:07.757Z
+      updated_at: 2026-06-14T20:40:17.236Z
     workspace_id: dispatch-workspace-01KV3TKKGFPS4FT2Z0SCG6Q1JM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f9e6d7b5d4757dbd93c361fcf7b37ad0793f4255
+        last_seen_at: 2026-06-14T20:40:17.236Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-respec-daemon-project-roster-persistence-01kv3tkk-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-respec-daemon-project-roster-persistence/01kv3tkk
-        head: e254caec535bd3c303869283977944fa05b2f513
-        last_seen_at: 2026-06-14T20:16:26.846Z
+        head: f9e6d7b5d4757dbd93c361fcf7b37ad0793f4255
+        last_seen_at: 2026-06-14T20:40:17.236Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-respec-daemon-project-roster-persistence-01kv3tkk
   - active_role: null
     base_branch_point: e254caec535bd3c303869283977944fa05b2f513
