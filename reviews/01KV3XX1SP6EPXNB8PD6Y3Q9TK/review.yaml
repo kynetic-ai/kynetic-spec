@@ -2,7 +2,91 @@ _ulid: 01KV3XX1SP6EPXNB8PD6Y3Q9TK
 slugs: []
 title: Review respec multi-project daemon roster persistence (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. oxfmt checked 1038 files; all matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-14T20:56:05.024Z
+    completed_at: 2026-06-14T20:56:05.024Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. Repo lint reported 0 errors with existing warning baseline (736 warnings). Focused
+      changed-file lint also run separately with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-14T20:56:07.825Z
+    completed_at: 2026-06-14T20:56:07.825Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. Found 0 warnings and 0 errors on the two changed TypeScript/test files.
+    name: focused-lint
+    required: false
+    runner: npx oxlint packages/daemon/src/project-context.ts tests/daemon-context-manager.test.ts
+    created_at: 2026-06-14T20:56:10.567Z
+    completed_at: 2026-06-14T20:56:10.567Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-14T20:56:13.318Z
+    completed_at: 2026-06-14T20:56:13.318Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0. 2787 test suites passed; 10565 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KV3XV0A5F7K7TW0MT3GKV65X/82c0859ae02c030d.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-14T20:56:16.063Z
+    completed_at: 2026-06-14T20:56:16.063Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. Schema and references OK; warning baseline remains (deprecated reference warnings).
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-14T20:56:18.796Z
+    completed_at: 2026-06-14T20:56:18.796Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with --warnings-ok. Alignment warnings present; task-relevant
+      @multi-directory-daemon status mismatch recorded as blocker thread.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-14T20:56:21.551Z
+    completed_at: 2026-06-14T20:56:21.551Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0 with --warnings-ok. Existing completeness warning baseline remains. Verified no
+      AC: @multi-directory-daemon ac-15 annotations remain in changed files."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-14T20:56:24.263Z
+    completed_at: 2026-06-14T20:56:24.263Z
 events:
   - _ulid: 01KV3XX1SNEQXE7BJXXBSMMSPQ
     actor: Jacob Chapel
@@ -17,17 +101,164 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-14T20:42:02.319Z
+  - _ulid: 01KV3YQ4WBYVAY69HRYGJCHE8T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-14T20:56:05.260Z
+  - _ulid: 01KV3YQ7M9HX7KBHAZXVDGPNYT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-14T20:56:08.074Z
+  - _ulid: 01KV3YQA96KDFVX0RF531K0HFF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-14T20:56:10.790Z
+  - _ulid: 01KV3YQCZD75CY5A7SSZ4S10P8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-14T20:56:13.550Z
+  - _ulid: 01KV3YQFN5515R1F5EYYKPV1J8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-14T20:56:16.293Z
+  - _ulid: 01KV3YQJAT6WKJ3X831RZG8QQZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-14T20:56:19.034Z
+  - _ulid: 01KV3YQN1F7P1KCQ2C4Z4WDAF5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-14T20:56:21.807Z
+  - _ulid: 01KV3YQQMX07KRB9SZB6GPKRBS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-14T20:56:24.477Z
+  - _ulid: 01KV3YQTA0B251CGYEZ7RM1BPF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV3YQT2TCKDBD9MWGEKSZ27B
+    timestamp: 2026-06-14T20:56:27.200Z
+  - _ulid: 01KV3YQWXNMJW4Q6B54FC7QG6J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV3YQWP54ANAEP7XYF68JFJ4
+    timestamp: 2026-06-14T20:56:29.877Z
+  - _ulid: 01KV3YQZKN9ZQY2YVY25TDPQ04
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-14T20:56:32.629Z
+  - _ulid: 01KV3YQZKNBHDZX6XSZGYJFAGE
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-14T20:56:32.629Z
 examined_commit: f9e6d7b5d4757dbd93c361fcf7b37ad0793f4255
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KV3TKKGFPS4FT2Z0SCG6Q1JM"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KV3YQT2TCKDBD9MWGEKSZ27B
+    anchor:
+      type: structured
+      field: status
+      ref: "@multi-directory-daemon"
+      section: implementation
+    entries:
+      - _ulid: 01KV3YQT2TWC5N09HS53MT7052
+        author: Jacob Chapel
+        body: "MUST-FIX: @multi-directory-daemon now contains an unimplemented ac-15 restore-from-config
+          requirement and the fix cycle created @task-implement-daemon-roster-persistence to
+          implement it, but the spec still says Implementation: implemented. `kspec validate
+          --alignment --warnings-ok` reports `Multi-Directory Daemon Architecture` is `implemented`
+          but should be `in_progress` based on task progress. That leaves the source of truth
+          claiming full implementation while a pending follow-up owns the missing behavior. The
+          stated cascade concern is avoidable: `kspec item set` supports `--no-cascade`, so the
+          parent can be updated without changing child statuses. Please update the spec status
+          accordingly (for example `kspec item set @multi-directory-daemon --status in_progress
+          --no-cascade`) and resubmit."
+        created_at: 2026-06-14T20:56:26.970Z
+    kind: blocker
+  - _ulid: 01KV3YQWP54ANAEP7XYF68JFJ4
+    entries:
+      - _ulid: 01KV3YQWP549WYRQQWFG2H251E
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; task @01KV3TKKGFPS4FT2Z0SCG6Q1JM; prior review
+          @01KV3V974GV2A9RMBBEHAZ7TV9; @client-preference-persistence; @multi-directory-daemon;
+          @task-implement-daemon-roster-persistence; packages/daemon/src/project-context.ts;
+          tests/daemon-context-manager.test.ts.
+
+
+          Commands run: git status --short --branch; git diff --stat and full changed-file diff
+          against e254cae...f9e6d7; git log; rg for stale @multi-directory-daemon ac-15 annotations;
+          kspec validate refs/alignment/completeness with --warnings-ok; npm run format:check; npm
+          run lint -- --quiet; npx oxlint changed files; npm run typecheck; npm test; kspec item set
+          --help.
+
+
+          Claims verified: prior false ac-15 tests and annotations were removed; no stale `AC:
+          @multi-directory-daemon ac-15` annotation remains in changed files; follow-up task
+          @task-implement-daemon-roster-persistence exists; item status cascade can be avoided with
+          --no-cascade.
+
+
+          Categories searched: correctness/spec alignment (blocker found), test quality (false
+          coverage removed), edge cases/error handling (restart and invalid restored entries tracked
+          by follow-up), integration (validation and full suite), security (no security-sensitive
+          behavior changed).
+        created_at: 2026-06-14T20:56:29.637Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-14T20:56:32.629Z
 created_at: 2026-06-14T20:41:50.134Z
-updated_at: 2026-06-14T20:42:02.087Z
+updated_at: 2026-06-14T20:56:32.629Z
 notes: []
