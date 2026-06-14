@@ -548,7 +548,11 @@ export class ProjectContextManager {
   /**
    * List all registered projects.
    *
-   * AC: @multi-directory-daemon ac-14, ac-15
+   * AC: @multi-directory-daemon ac-14
+   *
+   * Returns the in-memory runtime roster only. Restoring the roster from the
+   * daemon configuration directory on restart (ac-15) is a separate, not-yet-
+   * implemented daemon-startup concern; this method does not provide it.
    *
    * @returns Array of registered project contexts
    */
