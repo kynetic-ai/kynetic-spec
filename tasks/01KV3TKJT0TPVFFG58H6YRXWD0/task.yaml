@@ -29,8 +29,12 @@ description: |
 spec_ref: null
 plan_ref: "@plan-ui-redesign-global-decisions"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Review approved. Merge helper reported no-op:
+  dispatch/task/task-fold-agent-dashboard-design-task/01kv3tkj at
+  e254caec535bd3c303869283977944fa05b2f513 is already integrated at feat/ui-redesign. Verified
+  @01KKBD66 cancellation note and closed_reason point to @plan-ui-redesign-global-decisions."
 depends_on: []
 context: []
 priority: 2
@@ -96,8 +100,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-14T20:17:53.918Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Review approved. Merge helper reported no-op:
+          dispatch/task/task-fold-agent-dashboard-design-task/01kv3tkj at
+          e254caec535bd3c303869283977944fa05b2f513 is already integrated at feat/ui-redesign.
+          Verified @01KKBD66 cancellation note and closed_reason point to
+          @plan-ui-redesign-global-decisions."
+        previous: null
+      completed_at:
+        new: 2026-06-14T20:33:54.361Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-14T20:33:54.369Z
 created_at: 2026-06-14T19:44:14.144Z
 started_at: 2026-06-14T20:00:59.062Z
 submitted_at: 2026-06-14T20:02:20.440Z
+completed_at: 2026-06-14T20:33:54.361Z
 todos: []
 automation: eligible
