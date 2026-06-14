@@ -29,3 +29,7 @@ notes:
       review thread that raised the cross-document tension."
     author: "@claude"
     created_at: 2026-06-11T21:23:40.949Z
+  - _ulid: 01KV3DY3BD2D7TV593ZFHK84G1
+    content: Parent global UI decisions under existing web UI module
+    author: Jacob Chapel
+    created_at: 2026-06-14T16:02:47.277Z

@@ -3,22 +3,12 @@
 ## Specs
 
 ```yaml
-# ─── Decisions Home ───
-
-- title: UI Redesign Decisions
-  slug: ui-redesign-decisions
-  type: module
-  description: |
-    Durable home for the interface redesign program's global decision
-    records. Each child is a decision-type spec item: a behavioral
-    contract that more than one redesign track consumes.
-
 # ─── Platform & Shell ───
 
 - title: Web Shell Platform Target
   slug: web-shell-platform-target
   type: decision
-  parent: "@ui-redesign-decisions"
+  parent: "@web-ui"
   description: |
     The kspec web interface targets the web browser as its sole runtime
     platform. The application shell is a browser application served by the
@@ -66,7 +56,7 @@
 - title: Test Result Acquisition
   slug: test-result-acquisition
   type: decision
-  parent: "@ui-redesign-decisions"
+  parent: "@web-ui"
   description: |
     Test results enter the system exclusively by ingestion: runs executed
     outside the daemon — locally, in CI, or by an agent — submit
@@ -118,7 +108,7 @@
 - title: Acceptance Criterion Applicability
   slug: ac-coverage-applicability
   type: decision
-  parent: "@ui-redesign-decisions"
+  parent: "@web-ui"
   description: |
     Corpus-level coverage recognizes no not-applicable state. Every
     acceptance criterion on a spec item is expected to be coverable; a
@@ -154,7 +144,7 @@
 - title: Annotation Freshness Provenance
   slug: annotation-freshness-provenance
   type: decision
-  parent: "@ui-redesign-decisions"
+  parent: "@web-ui"
   description: |
     Every acceptance-criterion test annotation carries a freshness
     timestamp with two provenance classes. A bootstrap value is derived
@@ -196,7 +186,7 @@
 - title: Coverage State Presentation
   slug: coverage-state-presentation
   type: decision
-  parent: "@ui-redesign-decisions"
+  parent: "@web-ui"
   description: |
     Coverage computation distinguishes five states: covered, failing,
     not-yet-covered, stale (the spec text changed after the annotation's
@@ -231,7 +221,7 @@
 - title: Client Preference Persistence
   slug: client-preference-persistence
   type: decision
-  parent: "@ui-redesign-decisions"
+  parent: "@web-ui"
   description: |
     Interface preferences — focus selection, collapse states, recents,
     view toggles, and similar per-user interface state — persist in
@@ -262,7 +252,7 @@
 - title: Actor Identity Model
   slug: actor-identity-model
   type: decision
-  parent: "@ui-redesign-decisions"
+  parent: "@web-ui"
   description: |
     Every recorded actor is canonical at write time: agent actors use the
     canonical identifier of their agent definition; the human operator is
@@ -314,7 +304,7 @@
 - title: Agent Question Mediation
   slug: agent-question-mediation
   type: decision
-  parent: "@ui-redesign-decisions"
+  parent: "@web-ui"
   description: |
     Agents surface questions and blockers to humans through durable work
     records: task blocking with a stated reason, and task notes. The
@@ -345,7 +335,7 @@
 - title: Integration Merge Authority
   slug: integration-merge-authority
   type: decision
-  parent: "@ui-redesign-decisions"
+  parent: "@web-ui"
   description: |
     Integration merges are performed by the acting agent or human through
     the merge procedure in their own execution environment. The daemon's
@@ -396,7 +386,7 @@ derive_from_specs: false
     - Add a note to @01KJXQK4 with this content: "Superseded by the kspec
       interface redesign program. The program's global decision set lives
       at @plan-ui-redesign-global-decisions and its decision items under
-      the @ui-redesign-decisions module; track plans follow from there."
+      the @web-ui module; track plans follow from there."
     - Cancel the task with reason: "Superseded by the interface redesign
       program (see @plan-ui-redesign-global-decisions)."
 
@@ -464,9 +454,9 @@ derive_from_specs: false
     - @plan-ux-module-and-design-decision-architecture: "Decision
       architecture adopted: the decision items derived from
       @plan-ui-redesign-global-decisions are its first full use, parented
-      under the @ui-redesign-decisions module. The sidebar/pulse feature
+      under the @web-ui module. The sidebar/pulse feature
       sketches are superseded by the program's shell track. If the @ux
-      module later materializes, @ui-redesign-decisions reparents under
+      module later materializes, @web-ui reparents under
       it."
 
     What — also make the identity transition boundary machine-traversable:
@@ -495,21 +485,17 @@ distributed model.
 
 ### Module placement and derive sequencing
 
-The plan record's stored module is @main (the import-time default), and
-it is load-bearing for exactly one record: derive parents parentless
-non-trait specs under the stored module, so the @ui-redesign-decisions
-module itself is created as a child of @main. Every decision item
-declares `parent: "@ui-redesign-decisions"`, so a single derive creates
-the module and its nine children together — no out-of-band module setup
-precedes derivation, and no decision item is parented under @main
-directly.
+The global decision items are decision-type specs, not a separate module.
+Each decision item declares `parent: "@web-ui"`, placing the durable
+interface decisions under the existing Web UI System module. This keeps
+"redesign" as the program/branch context while the derived corpus items
+remain timeless.
 
-@main is the interim home for @ui-redesign-decisions, not the intended
-final one. The adopted decision architecture's @ux module (from
-@plan-ux-module-and-design-decision-architecture, an underived draft)
-does not exist yet; if it materializes, @ui-redesign-decisions reparents
-under it. That contingency is recorded on the ux plan by the disposition
-task, not left implicit.
+The plan record's stored module may remain @main from import-time storage;
+it is not load-bearing for these decision items because every item declares
+an explicit parent. If an @ux module later materializes, @web-ui can be
+reparented under it through that architecture plan rather than by creating
+a one-off decisions-only module for this program.
 
 ### Consumers
 
