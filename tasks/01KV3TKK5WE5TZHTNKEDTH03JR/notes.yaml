@@ -1,1 +1,26 @@
-notes: []
+notes:
+  - _ulid: 01KV3VYEFC24D3BHDX67W1SZ1Q
+    content: >-
+      Recorded dispositions via atomic kspec batch (5/5 succeeded):
+
+      - @plan-interactive-agent-sessions: absorbed (sessions track controls work supersedes),
+      anchored on @plan-ui-redesign-global-decisions
+
+      - @plan-activity-timeline-diff-summaries: absorbed (sessions track session-entity work),
+      anchored on @plan-ui-redesign-global-decisions
+
+      - @plan-dispatch-mutation-service: promoted as Phase 0 shared mutation-service foundation,
+      anchored on @plan-ui-redesign-global-decisions
+
+      - @plan-ux-module-and-design-decision-architecture: decision architecture adopted, @web-ui
+      parenting noted, shell-track supersession recorded
+
+      - Added relates_to from @actor-identity-model to @config-author to make the
+      identity-reconciliation boundary corpus-traversable.
+
+      Verified: all four disposition notes render via plan get --json; relates_to renders via item
+      get @actor-identity-model. No code changes (shadow-branch state only); kspec
+      refs/alignment/completeness validation pass (warnings pre-existing and unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-14T20:07:38.732Z
