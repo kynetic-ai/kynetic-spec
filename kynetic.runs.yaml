@@ -65738,9 +65738,24 @@ runs:
     completed_at: 2026-06-12T17:39:22.150Z
   - _ulid: 01KV3V3N94JQXYX10EDJTKCGEN
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-14T19:53:00.964Z
+        completed_at: 2026-06-14T19:53:33.290Z
+        notes: "Step 1 (what worked well): The task description was exceptionally precise — it named the
+          exact ACs (ac-15 to change; ac-14/ac-20/ac-34 to preserve), the resolution intent (restore
+          roster from daemon config dir to agree with @client-preference-persistence ac-2), and the
+          exact CLI path (item ac set + item set via batch). This made execution fast and
+          unambiguous. Using batch --dry-run before the real apply, and a file-based JSON payload
+          for the multi-line description, both worked cleanly for a spec-only edit with embedded
+          newlines."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-14T19:53:33.290Z
+        completed_at: 2026-06-14T19:53:33.290Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-14T19:53:00.964Z
