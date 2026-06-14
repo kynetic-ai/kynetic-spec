@@ -24685,7 +24685,7 @@ workspaces:
         head: e254caec535bd3c303869283977944fa05b2f513
         last_seen_at: 2026-06-14T19:58:39.018Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-supersede-legacy-revamp-umbrella-01kv3tkj
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: e254caec535bd3c303869283977944fa05b2f513
     bootstrap:
       status: succeeded
@@ -25182,9 +25182,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-14T20:17:13.874Z
-      last_reconciled_at: 2026-06-14T20:34:52.019Z
+      last_reconciled_at: 2026-06-14T20:37:44.152Z
       created_at: 2026-06-14T19:59:27.145Z
-      updated_at: 2026-06-14T20:34:52.019Z
+      updated_at: 2026-06-14T20:37:44.152Z
     workspace_id: dispatch-workspace-01KV3TKJT0TPVFFG58H6YRXWD0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
