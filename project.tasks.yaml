@@ -32024,7 +32024,7 @@
   title: Record dispositions on overlapping draft plans
   type: task
   plan_ref: "@plan-ui-redesign-global-decisions"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -32034,6 +32034,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-14T19:44:14.524Z
+  started_at: 2026-06-14T20:05:39.499Z
   automation: eligible
 - _ulid: 01KV3TKKGFPS4FT2Z0SCG6Q1JM
   slugs:
