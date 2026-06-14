@@ -21925,6 +21925,19 @@ observations:
     resolved: false
     workflow_ref: "@01KV3W92"
     created_at: 2026-06-14T20:15:22.162Z
+  - _ulid: 01KV3XQWB2K5X94S0YJDRSV27M
+    type: friction
+    content: Metadata-only/no-code-diff reviews currently pay the full required code gate cost. In
+      @01KV3TKK5WE5TZHTNKEDTH03JR, the reviewed surface was four plan notes plus one relates_to
+      edge, with git diff feat/ui-redesign...HEAD empty and branch tips already equal, yet npm test
+      still ran 2787 suites and took 2889.4s. Consider a reviewed, explicit gate policy for
+      shadow-state-only tasks that preserves auditability with kspec validation and targeted record
+      verification while avoiding unnecessary full-suite runs when no code changed.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KV3XMD"
+    created_at: 2026-06-14T20:39:00.706Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

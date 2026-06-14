@@ -65992,10 +65992,61 @@ runs:
     started_at: 2026-06-14T20:34:39.255Z
     completed_at: 2026-06-14T20:37:20.488Z
   - _ulid: 01KV3XMDBJZFE2K4Y891ESN4K9
-    status: active
-    current_step: 0
+    status: completed
+    current_step: 5
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-14T20:37:07.058Z
+        completed_at: 2026-06-14T20:38:54.633Z
+        notes: "What worked well: the detached reviewer merge helper handled the already-integrated branch
+          as a clean no-op; recording review checks and the evidence log through kspec batch
+          produced an auditable approved review; direct plan/item lookups made the shadow-state-only
+          task easy to verify without manual YAML reads. Existing success coverage: @01KT5ZGF
+          already tracks the no-diff/no-op review pattern."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-14T20:38:54.633Z
+        completed_at: 2026-06-14T20:38:56.021Z
+        notes: "Friction: the required review gate set still ran the full npm test suite for a
+          shadow-state-only/no-code-diff review. It passed, but took 2889.4s for 2787 suites, which
+          is high cost for a metadata-only task after plan/item verification and kspec validation
+          already proved the changed surface. Existing friction coverage for evidence logs exists at
+          @01KR2JD1, so that was not duplicated."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-14T20:38:56.021Z
+        completed_at: 2026-06-14T20:38:57.383Z
+        notes: "Coverage search completed before capture. Searches: 'full test suite shadow-only review',
+          'review gates no code changes', 'no-op merge helper', 'review evidence log', 'selective
+          test gates', 'shadow state only', 'review required gates'. Existing coverage found
+          @01KR2JD1 for evidence-log comment noise and @01KT5ZGF for no-op review success; no
+          coverage found for selective/reduced gates on metadata-only reviews."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-14T20:38:57.383Z
+        completed_at: 2026-06-14T20:38:58.776Z
+        notes: "Proposed improvement: define an explicit metadata-only review gate policy for tasks with no
+          code diff, likely allowing full toolchain tests to be replaced by kspec validation plus
+          targeted plan/item verification when the reviewed surface is only shadow-state records.
+          Scope: medium, because it needs review-gates/work-gates policy and possibly workflow
+          support, not product code."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-14T20:38:58.776Z
+        completed_at: 2026-06-14T20:39:00.101Z
+        notes: "Discussion resolved autonomously for this requested reflection run: capture only the
+          high-confidence untracked friction as an observation, not a task. The scope and policy
+          implications need later triage before implementation."
+      - status: completed
+        step_index: 5
+        started_at: 2026-06-14T20:39:00.101Z
+        completed_at: 2026-06-14T20:39:01.592Z
+        notes: Captured one friction observation for metadata-only review gate cost. No success observation
+          captured because @01KT5ZGF already covers the no-op merge helper/evidence-log success
+          pattern. No evidence-log friction captured because @01KR2JD1 already covers it.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-14T20:37:07.058Z
+    completed_at: 2026-06-14T20:39:01.592Z
