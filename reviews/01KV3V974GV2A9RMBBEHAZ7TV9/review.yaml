@@ -171,6 +171,13 @@ events:
       kind: blocker
       thread_ulid: 01KV3W6FNC5FT0B3ET5SWE3S2Y
     timestamp: 2026-06-14T20:12:02.338Z
+  - _ulid: 01KV3W70JF0PM5R6Q0MNQ2Z7SW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV3W709SDR31XA0Z58GQHWM3
+    timestamp: 2026-06-14T20:12:19.407Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: open
@@ -204,7 +211,39 @@ threads:
           changed AC as implemented/covered by tests that assert the opposite."
         created_at: 2026-06-14T20:12:02.092Z
     kind: blocker
+  - _ulid: 01KV3W709SDR31XA0Z58GQHWM3
+    entries:
+      - _ulid: 01KV3W709SGZETF5Y0WDV7F9MT
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; task @01KV3TKKGFPS4FT2Z0SCG6Q1JM;
+          @client-preference-persistence; @multi-directory-daemon; @trait-localhost-security;
+          @trait-websocket-protocol; tests/daemon-context-manager.test.ts;
+          packages/daemon/src/project-context.ts.
+
+
+          Commands run: git status/rev-parse/diff; kspec task get; kspec item get; kspec review
+          for-task/get; rg AC annotation searches; npm run format:check; npm run lint -- --quiet;
+          npm run typecheck; npm test; kspec validate --refs/--alignment/--completeness
+          --warnings-ok.
+
+
+          Claims verified: verified the worker changed @multi-directory-daemon ac-15 to restore
+          daemon-level roster state and that validation gates pass with warning baselines; disproved
+          the claim that no test/code coherence work is needed because AC-15 tests still assert
+          empty/no-persistence restart behavior and passed in the full suite.
+
+
+          Categories searched: correctness/spec alignment, test quality/AC coverage, restart edge
+          cases, invalid-project handling interaction with ac-20/ac-34, integration with ac-14 and
+          @client-preference-persistence ac-2, and required quality gates. Shared/package guidance
+          surfaces were not touched.
+        created_at: 2026-06-14T20:12:19.129Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-14T19:56:03.088Z
-updated_at: 2026-06-14T20:12:02.092Z
+updated_at: 2026-06-14T20:12:19.129Z
 notes: []

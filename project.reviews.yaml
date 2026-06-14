@@ -26365,11 +26365,11 @@ reviews:
       content_hash: ""
       ref: "@01KV3TKKGFPS4FT2Z0SCG6Q1JM"
       shadow_commit: ""
-    thread_count: 1
+    thread_count: 2
     unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-14T19:56:03.088Z
-    updated_at: 2026-06-14T20:12:02.092Z
+    updated_at: 2026-06-14T20:12:19.129Z
   - _ulid: 01KV3VGZSQNHN1AGMA9WKPSCNV
     slugs: []
     title: Review task-supersede-legacy-revamp-umbrella
