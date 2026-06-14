@@ -34,6 +34,18 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-14T20:32:18.671Z
     completed_at: 2026-06-14T20:32:18.671Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed hard gate: oxlint reported 0 errors. Existing repo warning baseline remains (736
+      warnings). Focused changed-file lint N/A: git diff --name-status feat/ui-redesign...HEAD
+      returned no files."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-14T20:32:21.692Z
+    completed_at: 2026-06-14T20:32:21.692Z
 events:
   - _ulid: 01KV3WH525SN8Q2F2HM8QZZK8B
     actor: Jacob Chapel
@@ -69,6 +81,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-14T20:32:18.904Z
+  - _ulid: 01KV3XBPX8NYPA5HXQ9PXW5QK9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-14T20:32:21.928Z
 examined_commit: e254caec535bd3c303869283977944fa05b2f513
 external_links: []
 lifecycle_state: open
@@ -81,5 +100,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-14T20:17:51.685Z
-updated_at: 2026-06-14T20:32:18.671Z
+updated_at: 2026-06-14T20:32:21.692Z
 notes: []
