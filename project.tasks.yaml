@@ -13666,7 +13666,7 @@
   title: UI/UX revamp - comprehensive web UI redesign
   type: task
   plan_ref: "@plan-ui-ux-revamp"
-  status: pending
+  status: cancelled
   blocked_by: []
   depends_on: []
   priority: 3
@@ -13674,7 +13674,7 @@
     - ui
     - web-ui
     - design
-  notes_count: 5
+  notes_count: 6
   todos_count: 0
   created_at: 2026-03-05T00:50:32.895Z
   automation: manual_only

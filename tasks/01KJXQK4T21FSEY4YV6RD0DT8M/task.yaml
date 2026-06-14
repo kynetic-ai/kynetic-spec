@@ -5,8 +5,9 @@ type: task
 spec_ref: null
 meta_ref: null
 plan_ref: "@plan-ui-ux-revamp"
-status: pending
+status: cancelled
 blocked_by: []
+closed_reason: Superseded by the interface redesign program (see @plan-ui-redesign-global-decisions).
 depends_on: []
 context: []
 priority: 3
@@ -15,6 +16,17 @@ tags:
   - web-ui
   - design
 vcs_refs: []
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: cancelled
+        previous: pending
+      closed_reason:
+        new: Superseded by the interface redesign program (see @plan-ui-redesign-global-decisions).
+        previous: null
+    command: task-cancel
+    timestamp: 2026-06-14T19:56:56.493Z
 created_at: 2026-03-05T00:50:32.895Z
 todos: []
 automation: manual_only

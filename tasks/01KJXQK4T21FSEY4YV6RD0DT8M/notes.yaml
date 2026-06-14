@@ -71,3 +71,10 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-08T03:27:46.742Z
+  - _ulid: 01KV3VATEDFYATW4AG3Y2KWYBD
+    content: Superseded by the kspec interface redesign program. The program's global decision set lives
+      at @plan-ui-redesign-global-decisions and its decision items under the @web-ui module; track
+      plans follow from there.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-14T19:56:55.629Z
