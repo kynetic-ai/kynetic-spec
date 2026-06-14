@@ -32068,7 +32068,7 @@
 - _ulid: 01KV3WTEDHZN5KSG3CZ7SHAMC2
   slugs:
     - task-implement-daemon-roster-persistence
-  title: Implement daemon roster persistence (multi-directory-daemon ac-15)
+  title: Plan daemon roster persistence implementation
   type: task
   spec_ref: "@multi-directory-daemon"
   plan_ref: "@plan-ui-redesign-global-decisions"
@@ -32080,7 +32080,8 @@
     - daemon
     - persistence
     - post-mvp
+    - planning
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-14T20:22:56.177Z
-  automation: needs_review
+  automation: manual_only
