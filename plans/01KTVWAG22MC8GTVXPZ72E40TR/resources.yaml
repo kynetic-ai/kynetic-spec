@@ -93,3 +93,12 @@ resources:
     label: Sidebar focus state A
     path: handoff/shots/r3-sidebar-focus-a.png
     sha256: 245a925bcfdd531a01958f1ca6f7b0f74780e4f03547a83534253422d16dbb48
+  - description: R3 sidebar with another project focused; reference for one-expanded-project behavior.
+    bytes: 14186
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-sidebar-focus-b
+    label: Sidebar focus state B
+    path: handoff/shots/r3-sidebar-focus-b.png
+    sha256: eb09e0a73c2f5824f588abf8844e80c0a6eaa59b2b0177e5508f664e1bb5e7e0
