@@ -2,7 +2,81 @@ _ulid: 01KV4S54S78315Q5H2RYST8GQ0
 slugs: []
 title: Review task-preference-utility fix cycle 1
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1047 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-15T04:51:54.208Z
+    completed_at: 2026-06-15T04:51:54.208Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors; repo warning baseline reported 736 warnings. Focused oxlint on
+      changed files also passed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-15T04:51:57.031Z
+    completed_at: 2026-06-15T04:51:57.031Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-15T04:51:59.828Z
+    completed_at: 2026-06-15T04:51:59.828Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2799 test suites passed; 10617 tests passed, 3 skipped; full log
+      /tmp/kspec-test-cache/01KV4S2Z2AW4Z4A9HHZRF9CNMV/bb7e71eb0b8b26ef.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-15T04:52:02.593Z
+    completed_at: 2026-06-15T04:52:02.593Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with existing deprecated-reference warnings baseline; no reference errors.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-15T04:52:05.325Z
+    completed_at: 2026-06-15T04:52:05.325Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing alignment warnings baseline: orphaned specs and status mismatches;
+      no errors."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-15T04:52:08.182Z
+    completed_at: 2026-06-15T04:52:08.182Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with existing completeness warning baseline. Changed tests include behavioral AC
+      annotations for @ui-preference-store ac-1..ac-6 and @client-preference-persistence ac-1.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-15T04:52:10.875Z
+    completed_at: 2026-06-15T04:52:10.875Z
 events:
   - _ulid: 01KV4S54S7P7HWA96WJR368MVV
     actor: Jacob Chapel
@@ -17,17 +91,132 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T04:38:24.075Z
+  - _ulid: 01KV4SYCXYPVB6XMYRZA07DZ43
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-15T04:51:54.430Z
+  - _ulid: 01KV4SYFQBHFA85GTVWW25CWW4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-15T04:51:57.291Z
+  - _ulid: 01KV4SYJDRCE9FV8EQGJTNBSEX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-15T04:52:00.056Z
+  - _ulid: 01KV4SYN41PH4XDY28PR1YW10T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-15T04:52:02.817Z
+  - _ulid: 01KV4SYQSSS9JG0DJZQQ6TYFF5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-15T04:52:05.561Z
+  - _ulid: 01KV4SYTJNNPWSHJVP1J38X1TE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-15T04:52:08.405Z
+  - _ulid: 01KV4SYX6S3R7W3G85PY432N87
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-15T04:52:11.097Z
+  - _ulid: 01KV4SYZXH82YHTCF3BK9EK4TW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV4SYZPC80T1QEZHAGWE62FT
+    timestamp: 2026-06-15T04:52:13.873Z
+  - _ulid: 01KV4SZ2JM2KMXNSQN57N82K3G
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-15T04:52:16.596Z
+  - _ulid: 01KV4SZ2JM0ZXQ3YNB5SE3HKDX
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-15T04:52:16.596Z
 examined_commit: b85672dd5e06f7294583b6c4fd02a70c44c81a4e
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KV4CDBWM83RRBNH7RX33E5YK"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KV4SYZPC80T1QEZHAGWE62FT
+    entries:
+      - _ulid: 01KV4SYZPC467XXM2GEZG1MM45
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; packages/web-ui/src/lib/preferences/backend.ts;
+          packages/web-ui/src/lib/preferences/define-preference.ts;
+          packages/web-ui/src/lib/preferences/index.ts;
+          packages/web-ui/src/lib/stores/project.svelte.ts; tests/web-ui/preferences.test.ts;
+          @ui-preference-store; @client-preference-persistence; @plan-web-ui-foundations preference
+          section; prior review @01KV4PCV5KKFEFPTRAHTV7NY6G.
+
+
+          Commands run: git status; git diff/stat/name-only; git show b85672dd; kspec task get
+          @01KV4CDBWM83RRBNH7RX33E5YK; kspec review for-task/get/add/open; kspec item get
+          @ui-preference-store; kspec item get @client-preference-persistence; kspec search
+          "versioned key format"; rg for AC annotations/localStorage usages; npm run format:check;
+          npm run lint -- --quiet; npx oxlint changed files; npm run typecheck; npm test; kspec
+          validate --refs/--alignment/--completeness --warnings-ok.
+
+
+          Claims verified: prior blocker is fixed by LocalStorageBackend.remove() clearing
+          persistent storage after write-time degradation; the new regression test reproduces
+          persist A, quota-degrade on B, remove A, read A returns default; tests are behavioral and
+          not source-scanning; project selection now persists through definePreference with one-time
+          legacy key migration.
+
+
+          Categories searched: correctness, edge cases, error handling/degradation, test quality,
+          spec alignment, AC coverage, project-store integration, localStorage migration/backcompat.
+          No remaining blocker or SHOULD-FIX findings.
+        created_at: 2026-06-15T04:52:13.644Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-15T04:52:16.596Z
 created_at: 2026-06-15T04:38:06.887Z
-updated_at: 2026-06-15T04:38:23.855Z
+updated_at: 2026-06-15T04:52:16.596Z
 notes: []
