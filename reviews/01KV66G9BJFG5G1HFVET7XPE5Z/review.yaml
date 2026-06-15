@@ -162,6 +162,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T18:06:03.545Z
+  - _ulid: 01KV67D746Q6VD3VM7PWDTWVQT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV67D6WV5SBBE5DXSVGQHCGS
+    timestamp: 2026-06-15T18:06:25.926Z
 examined_commit: 9d2c03c338cb5b01aa65aee8292b456cd9090949
 external_links: []
 lifecycle_state: open
@@ -196,7 +203,41 @@ threads:
           to their canonical IDs before writing."
         created_at: 2026-06-15T17:54:29.263Z
     kind: blocker
+  - _ulid: 01KV67D6WV5SBBE5DXSVGQHCGS
+    entries:
+      - _ulid: 01KV67D6WVD7DTRZKB95RAJH0Q
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: kspec-agents.md; task @01KV4CDA7DT4GY1ZYKXA86XX50; specs
+          @actor-history-normalization and @actor-identity-model; prior review
+          @01KV5WM6KQG77TAGXKQY71K82M; diff against feat/ui-redesign; src/cli/commands/upgrade.ts;
+          src/parser/actor-normalization-migration.ts; src/parser/actor-field-inventory.ts;
+          src/parser/actor-classifier.ts; src/parser/identity-config.ts;
+          packages/daemon/src/routes/identity.ts; docs/guides/upgrading-kspec.md;
+          tests/actor-normalization-upgrade.test.ts; tests/actor-classifier-parity.test.ts;
+          session/dispatch schema search results.
+
+          Commands run: kspec task get; kspec item get for both specs; kspec review
+          add/open/get/for-task; git diff/log/status; AC annotation search; focused
+          actor-normalization tests; ad hoc temp-project operator-map reproduction via node --import
+          tsx; npm run format:check; npm run lint -- --quiet; focused npx oxlint on changed files;
+          npm run typecheck; npm test; kspec validate --refs/--alignment/--completeness
+          --warnings-ok.
+
+          Claims verified: prior dry-run legacy fix is covered by a behavioral test and focused
+          suite passed; AC annotations exist for claimed actor-normalization criteria; full test
+          suite passed; operator mapping canonicality claim was disproved by a temp-project run that
+          persisted a non-canonical mapped value.
+
+          Categories searched: correctness, edge cases/idempotency, error handling, test quality,
+          integration with upgrade pipeline and identity config, inventory coverage including
+          session/dispatch attribution. Finding recorded: operator mapping bypasses
+          canonical/default postcondition.
+        created_at: 2026-06-15T18:06:25.691Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-15T17:50:37.938Z
-updated_at: 2026-06-15T18:06:03.312Z
+updated_at: 2026-06-15T18:06:25.691Z
 notes: []
