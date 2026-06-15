@@ -22320,6 +22320,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T16:30:45.092Z
+  - _ulid: 01KV67E0FVRJ9ZNMNJB51V9FMV
+    type: friction
+    content: "Fix-cycle worker path has no step forcing re-sync against the integration target before
+      resubmit when a task was kicked back for a reviewer-side merge conflict. A reviewer-approved
+      task (01KV4CD9, cycle 2) returned to needs_work solely because the detached merge helper
+      aborted on a content conflict in packages/daemon/src/routes/tasks.ts against an advanced
+      feat/ui-redesign. The worker could resubmit the SAME approved commit that still conflicts —
+      Jacob had to add a manual note 'specifically to prevent resubmitting the same approved commit
+      that still conflicts.' kspec task-work fix-cycle guidance covers addressing review threads but
+      does not say: when the kickback reason is a merge conflict, merge/rebase the current
+      integration target into the branch and resolve before resubmit. Consider making this explicit
+      in fix-cycle guidance, or having submit warn when the branch does not contain the integration
+      target head. Reviewer-side counterpart already tracked in inbox @01KRD2RV (richer helper
+      conflict output)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T18:06:51.899Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
