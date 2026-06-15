@@ -99,10 +99,22 @@ export function createIdentityRoutes(options: IdentityRouteOptions = {}) {
 
         // AC: @actor-identity-resolution ac-1 — canonical agent roster: each
         // agent's canonical id and display information, no entity-list fan-out.
-        const agents: AgentIdentity[] = meta.agents.map((agent) => ({
-          canonicalId: agent.id,
-          displayName: agent.name,
-        }));
+        // AC: @actor-identity-resolution ac-2 — attach the configured
+        // non-derivable spellings so the payload the classifier consumes can
+        // resolve measured variants (e.g. `@dispatch` → `pr-reviewer`) that
+        // the algorithmic normalization rules cannot derive from the id alone.
+        const agentAliases = ctx.config?.identity?.agent_aliases ?? {};
+        const agents: AgentIdentity[] = meta.agents.map((agent) => {
+          const aliases = agentAliases[agent.id];
+          const identity: AgentIdentity = {
+            canonicalId: agent.id,
+            displayName: agent.name,
+          };
+          if (aliases && aliases.length > 0) {
+            identity.aliases = aliases;
+          }
+          return identity;
+        });
 
         const payload: ActorIdentityConfig = { human, agents };
         return wrapResponse(payload, { cacheDomainState: metaDomainState });

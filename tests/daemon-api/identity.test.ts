@@ -6,8 +6,11 @@
 // AC: @trait-api-endpoint ac-5 — N/A: read-only endpoint, performs no state mutation
 //     and therefore no shadow commit.
 
+import { writeFileSync } from "node:fs";
+import * as path from "node:path";
 import type { Elysia } from "elysia";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { classifyActor } from "@kynetic-ai/shared";
 import {
   cleanupTempDir,
   createTempDir,
@@ -108,5 +111,57 @@ describe("GET /api/identity", () => {
     const requestId = response.headers.get("X-Request-Id");
     expect(requestId).toBeTruthy();
     expect((requestId ?? "").length).toBeGreaterThan(0);
+  });
+});
+
+describe("GET /api/identity — configured agent aliases", () => {
+  // AC: @actor-identity-resolution ac-2 — the endpoint payload must carry the
+  // configured non-derivable agent spellings so the classifier fed by the REAL
+  // endpoint payload (not a hand-built config) resolves the measured variants.
+  beforeEach(() => {
+    writeFileSync(
+      path.join(tempDir, "kspec.config.yaml"),
+      [
+        "identity:",
+        "  agent_aliases:",
+        '    pr-reviewer: ["@dispatch", "@kspec", "@kspec-dispatch"]',
+        "",
+      ].join("\n"),
+    );
+  });
+
+  it("emits each agent's configured aliases in the roster payload", async () => {
+    // AC: @actor-identity-resolution ac-2 — production alias source surfaced
+    const response = await request("/api/identity");
+    const body = await response.json();
+    const prReviewer = body.data.agents.find(
+      (a: { canonicalId: string }) => a.canonicalId === "pr-reviewer",
+    );
+    expect(prReviewer).toBeDefined();
+    expect(prReviewer.aliases).toEqual(["@dispatch", "@kspec", "@kspec-dispatch"]);
+
+    // Agents without configured aliases omit the field rather than emitting [].
+    const taskWorker = body.data.agents.find(
+      (a: { canonicalId: string }) => a.canonicalId === "task-worker",
+    );
+    expect(taskWorker).toBeDefined();
+    expect(taskWorker.aliases).toBeUndefined();
+  });
+
+  it("classifies non-derivable variants through the real endpoint payload", async () => {
+    // AC: @actor-identity-resolution ac-2 — feeding the endpoint payload (as the
+    // web UI does via fetchIdentity) to the shared classifier resolves the
+    // measured spellings that algorithmic normalization cannot derive.
+    const response = await request("/api/identity");
+    const config = (await response.json()).data;
+
+    for (const variant of ["@dispatch", "@kspec", "@kspec-dispatch", "dispatch"]) {
+      const result = classifyActor(variant, config);
+      expect(result.kind).toBe("agent");
+      expect(result.canonicalId).toBe("pr-reviewer");
+    }
+
+    // Sanity: an unconfigured string still resolves to unknown, not misattributed.
+    expect(classifyActor("Hermes", config).kind).toBe("unknown");
   });
 });

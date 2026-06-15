@@ -780,6 +780,10 @@ export async function generateJsonSnapshot(
     session: sessionContext,
     observations: metaContext.observations,
     agents: metaContext.agents,
+    // AC: @actor-identity-resolution ac-2 — carry the configured non-derivable
+    // agent spellings so static-mode classification resolves the same variants
+    // the live identity endpoint serves.
+    agent_aliases: ctx.config.identity.agent_aliases,
     workflows: metaContext.workflows,
     conventions: metaContext.conventions,
   };

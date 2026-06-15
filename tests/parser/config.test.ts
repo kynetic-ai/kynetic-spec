@@ -444,6 +444,35 @@ daemon:
       expect(config.identity.aliases).toEqual([]);
     });
 
+    it("resolves configured non-derivable agent aliases keyed by canonical id", () => {
+      // AC: @actor-identity-resolution ac-2 — configured agent variant source
+      const config = resolveConfig({
+        identity: {
+          author: "Jacob Chapel",
+          agent_aliases: {
+            "pr-reviewer": ["@dispatch", "@kspec", "@kspec-dispatch"],
+          },
+        },
+      });
+
+      expect(config.identity.agent_aliases).toEqual({
+        "pr-reviewer": ["@dispatch", "@kspec", "@kspec-dispatch"],
+      });
+    });
+
+    it("defaults agent aliases to an empty map and drops empty alias lists", () => {
+      // AC: @actor-identity-resolution ac-2 — agent aliases optional
+      expect(
+        resolveConfig({ identity: { author: "Jacob Chapel" } }).identity.agent_aliases,
+      ).toEqual({});
+      // An agent with an empty alias list is dropped so a present key always
+      // means "has at least one alias".
+      const withEmpty = resolveConfig({
+        identity: { author: "Jacob Chapel", agent_aliases: { "pr-reviewer": [] } },
+      });
+      expect(withEmpty.identity.agent_aliases).toEqual({});
+    });
+
     it("handles invalid KSPEC_DAEMON_PORT gracefully", () => {
       process.env.KSPEC_DAEMON_PORT = "not-a-number";
 

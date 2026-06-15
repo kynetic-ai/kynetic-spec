@@ -711,6 +711,9 @@ describe("static identity surface + classifier consumption", () => {
       { id: "codex", name: "Codex" },
       { id: "pr-reviewer", name: "PR Reviewer" },
     ];
+    // Exported non-derivable spellings — the static analogue of the live
+    // endpoint's configured agent_aliases.
+    snapshot.agent_aliases = { "pr-reviewer": ["@dispatch", "@kspec", "@kspec-dispatch"] };
     modeState.snapshot = snapshot;
     modeState.staticMode = true;
   });
@@ -727,6 +730,28 @@ describe("static identity surface + classifier consumption", () => {
     const ids = result.data.agents.map((a) => a.canonicalId);
     expect(ids).toContain("codex");
     expect(ids).toContain("pr-reviewer");
+  });
+
+  it("attaches exported agent_aliases to the static roster payload", () => {
+    // AC: @actor-identity-resolution ac-2 — static payload carries the
+    // non-derivable spellings (parity with the live endpoint payload).
+    const result = fetchIdentityStatic();
+    const prReviewer = result.data.agents.find((a) => a.canonicalId === "pr-reviewer");
+    expect(prReviewer?.aliases).toEqual(["@dispatch", "@kspec", "@kspec-dispatch"]);
+    // codex has no configured aliases — the field is omitted, not [].
+    const codex = result.data.agents.find((a) => a.canonicalId === "codex");
+    expect(codex?.aliases).toBeUndefined();
+  });
+
+  it("classifies non-derivable variants through the static identity payload", async () => {
+    // AC: @actor-identity-resolution ac-2 — the static payload fed to the
+    // shared classifier resolves measured spellings, not just a synthetic config.
+    const config = await fetchIdentity();
+    for (const variant of ["@dispatch", "@kspec", "@kspec-dispatch"]) {
+      const result = classifyActor(variant, config);
+      expect(result.kind).toBe("agent");
+      expect(result.canonicalId).toBe("pr-reviewer");
+    }
   });
 
   it("fetchIdentity routes through the static provider in static mode", async () => {
