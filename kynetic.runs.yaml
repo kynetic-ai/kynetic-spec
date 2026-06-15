@@ -66714,7 +66714,7 @@ runs:
     completed_at: 2026-06-15T08:35:39.023Z
   - _ulid: 01KV57R0RFMA8DTSKZXSTKV6HM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66729,7 +66729,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T08:54:47.341Z
-        completed_at: 2026-06-15T08:54:47.341Z
+        completed_at: 2026-06-15T08:54:58.575Z
+        notes: "Friction points: full npm test was required and passed but took 2427s, which is already
+          covered by inbox @01KNTB8Z4. Review check recording had to be serialized one command at a
+          time to avoid shadow write contention; existing observation @01KQ0FGC tracks the
+          serialization/batching friction and @01KSS63E records a prior success pattern around
+          batch-recording checks. The task declared [OK] handoff resources that were not present in
+          this detached snapshot; this is already captured as friction observation @01KV56QT8."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T08:54:58.575Z
+        completed_at: 2026-06-15T08:54:58.575Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T08:53:05.423Z
