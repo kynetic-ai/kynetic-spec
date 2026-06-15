@@ -201,3 +201,12 @@ resources:
     label: Spec state requirement page
     path: handoff/shots/r3-spec-states-1-requirement.png
     sha256: 9ef6b5a3f22a847abb9f5ff832b6e9132706ab0e38298bbc91aa3c394d649e71
+  - description: Tree rollup state presentation reference.
+    bytes: 86524
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-state-rollups
+    label: Spec state tree rollups
+    path: handoff/shots/r3-spec-states-2-tree-rollups.png
+    sha256: 168b0cc754d2622f560b813ca886152d7843511412790a4d8327ae04127fbe65
