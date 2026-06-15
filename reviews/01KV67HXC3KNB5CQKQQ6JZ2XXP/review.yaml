@@ -79,6 +79,17 @@ checks:
     runner: kspec
     created_at: 2026-06-15T18:26:45.773Z
     completed_at: 2026-06-15T18:26:45.773Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build completed shared build, root tsc, daemon build, web UI build, docs
+      search, and plugin build. Svelte build emitted existing warnings only."
+    name: build
+    required: false
+    runner: npm run build
+    created_at: 2026-06-15T18:26:56.618Z
+    completed_at: 2026-06-15T18:26:56.618Z
 events:
   - _ulid: 01KV67HXC3H5DSECAACG8ATRC4
     actor: Jacob Chapel
@@ -142,6 +153,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T18:26:46.042Z
+  - _ulid: 01KV68JS792QF2VFW9VVS4WM08
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-06-15T18:26:56.873Z
 examined_commit: c1b31604d4e14afed52573563c66bb52b64a284f
 external_links: []
 lifecycle_state: open
@@ -154,5 +172,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T18:08:59.779Z
-updated_at: 2026-06-15T18:26:45.773Z
+updated_at: 2026-06-15T18:26:56.618Z
 notes: []
