@@ -102,3 +102,12 @@ resources:
     label: Sidebar focus state B
     path: handoff/shots/r3-sidebar-focus-b.png
     sha256: eb09e0a73c2f5824f588abf8844e80c0a6eaa59b2b0177e5508f664e1bb5e7e0
+  - description: R2 app shell with command palette open; reference for shortcut registry and palette behavior.
+    bytes: 42400
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-command-palette
+    label: Command palette overlay
+    path: handoff/shots/r2-app-shell-palette.png
+    sha256: 9ad1f51125974201d078447062d18a09b9062a5a80c6f0035df75e44838f3a99
