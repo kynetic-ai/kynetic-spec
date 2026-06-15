@@ -1,1 +1,37 @@
-notes: []
+notes:
+  - _ulid: 01KV67V9QCYN7VH69EG6QXV2FG
+    content: >-
+      Approach for @ui-breadcrumb:
+
+
+      Architecture:
+
+      - Pure trail-computation module (src/lib/utils/breadcrumb-trail.ts): computeTrail(ancestors,
+      overflowLevel)
+        derives tier from segment count (<=4 all; 5-6 root+collapse+last2+current; 7+ root+collapse+last1+current)
+        and progressively collapses visible ancestors (root first, then oldest trailing) as overflowLevel rises;
+        current segment is always separate and never collapsed. Fully unit-testable for ac-1..ac-4 boundaries.
+      - BreadcrumbNav.svelte: consumes BreadcrumbAncestor[] (server-resolved, no client list fetch);
+      ResizeObserver
+        drives overflowLevel for ac-4 overflow collapse; renders trail with bits-ui Popover for the collapse indicator.
+      - Popover (ac-5,6,7): bits-ui Popover (click/tap/keyboard open, never hover-only, overlay =>
+      no layout shift ac-8);
+        collapsed segments listed in hierarchy order as links with up/down+Enter selection and Escape close. Keyboard
+        selection movement extracted as pure reducer (nextIndex) for behavioral test.
+      - Kind indicators (ac-9): kind->meta map
+      (module/feature/requirement/decision/trait/task/plan/review/session)
+        rendering a labeled pill per segment in trail AND popover; current segment emphasized. kind->RefType map routes
+        via shared refHref/normalizeRef.
+
+      Adoption: replace ad-hoc back links on reviews/[id] and sessions/[id] with <BreadcrumbNav
+      ancestors={detail.ancestors}/>.
+
+
+      Tests: pure trail unit tests (tiers 4/5/6/7 + overflow); SSR render tests
+      (segment/kind/current emphasis, indicator
+
+      presence, no hover dependency); jsdom keyboard-interaction test for popover nav; reducer unit
+      test for ac-6.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T18:14:07.340Z
