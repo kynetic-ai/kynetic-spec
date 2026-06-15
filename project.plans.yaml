@@ -1927,7 +1927,8 @@ plans:
     slugs:
       - plan-ac-coverage-verification-schema-and-storage
     title: AC Coverage Verification Schema and Storage
-    status: draft
+    status: approved
+    approved_at: 2026-06-15T23:37:07.730Z
     branch: feat/ui-redesign
     derived_specs: []
     derived_tasks: []
