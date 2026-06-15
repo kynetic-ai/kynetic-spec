@@ -275,3 +275,13 @@ resources:
     label: Spec workspace wireframe source
     path: handoff/reference-src/wf3-spec-unified.jsx
     sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
+  - description: React wireframe source for review tokens, queue, and per-subject surfaces; target
+      remains Svelte.
+    bytes: 50514
+    content_type: application/octet-stream
+    git_commit: null
+    git_path: null
+    id: src-reviews
+    label: Reviews wireframe source
+    path: handoff/reference-src/wf3-reviews.jsx
+    sha256: 2928bd83bb9e9f84ddab3fb99d89e94213dfe194d27a7e6183ecf6113314e3f2
