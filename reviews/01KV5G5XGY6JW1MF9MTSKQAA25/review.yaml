@@ -90,6 +90,25 @@ checks:
     runner: kspec
     created_at: 2026-06-15T11:35:21.670Z
     completed_at: 2026-06-15T11:35:21.670Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; task/spec context; previous review @01KV58TJ;
+      packages/shared/src/next-actor.ts,index.ts; ActorDisplay.svelte; identity.svelte.ts; actor
+      utils; reviews list/detail routes; diff/content inline thread viewer chain;
+      tests/next-actor.test.ts, web-ui-actor-display.test.ts, web-ui-inline-thread-actors.test.ts.
+      Claims verified: prior blockers fixed by rendering DiffInlineThread and ContentInlineThread
+      authors through ActorDisplay with classifier threaded from the review detail surface; ac-3
+      fixed mapping covered across lifecycle/disposition table; ac-1/ac-2 behavioral SSR component
+      tests; no source-scanning tests in changed coverage. Categories searched: correctness, AC
+      alignment, edge cases for missing participants/unknown classifier, test quality,
+      integration/plumbing, lint/type/test gates. Findings: none."
+    name: review evidence log
+    required: false
+    runner: pr-reviewer
+    created_at: 2026-06-15T11:35:36.247Z
+    completed_at: 2026-06-15T11:35:36.247Z
 events:
   - _ulid: 01KV5G5XGYQS8R375TYZ4Z9ACY
     actor: Jacob Chapel
@@ -160,6 +179,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T11:35:21.895Z
+  - _ulid: 01KV5H1K99F4BERG6E1XPWPF4T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-15T11:35:36.490Z
 examined_commit: f7eb4ef8c37fed3b75a78c0355afe055be82d1d9
 external_links: []
 lifecycle_state: open
@@ -172,5 +198,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T11:20:29.470Z
-updated_at: 2026-06-15T11:35:21.670Z
+updated_at: 2026-06-15T11:35:36.247Z
 notes: []
