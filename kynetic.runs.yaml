@@ -66597,7 +66597,7 @@ runs:
     completed_at: 2026-06-15T04:55:36.715Z
   - _ulid: 01KV54KTKRBP4MY1XB2B8R3XY6
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -66612,7 +66612,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T07:59:35.604Z
-        completed_at: 2026-06-15T07:59:35.604Z
+        completed_at: 2026-06-15T07:59:44.712Z
+        notes: "Candidates identified: (1) Architectural: runtime values shared between daemon and
+          CLI/export must live in src/lib, not @kynetic-ai/shared, because daemon only type-imports
+          shared — navigated by placing the resolver in src/lib and type-importing only
+          BreadcrumbAncestor. (2) Friction: a resumed timed-out task's tests were authored against
+          fixture data that did not exist (an assertion that could never pass), only surfaced by
+          running the suite. (3) Process: prior cycle left an unexplained tsconfig lib bump
+          (ES2022->ES2023) as scope creep; reverted. (4) Success: setupInlineFixtures cleanly seeds
+          folder-backed plans/reviews, making endpoint coverage easy."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T07:59:44.712Z
+        completed_at: 2026-06-15T07:59:44.712Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T07:58:22.328Z
