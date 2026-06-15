@@ -91,8 +91,11 @@ description: >-
 spec_ref: "@detached-reviewer-merge-helper"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev via detached reviewer merge helper. Hardened merge helper path handling
+  for primary target checkouts; verified marker path resolution, conflict abort cleanup, in-progress
+  merge refusal, rendered helper outputs, and full quality gates.
 depends_on: []
 context: []
 priority: 1
@@ -152,8 +155,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-15T20:19:07.946Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev via detached reviewer merge helper. Hardened merge helper path handling for
+          primary target checkouts; verified marker path resolution, conflict abort cleanup,
+          in-progress merge refusal, rendered helper outputs, and full quality gates.
+        previous: null
+      completed_at:
+        new: 2026-06-15T20:37:52.641Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-15T20:37:52.648Z
 created_at: 2026-06-15T18:38:54.329Z
 started_at: 2026-06-15T19:44:16.451Z
 submitted_at: 2026-06-15T20:13:49.430Z
+completed_at: 2026-06-15T20:37:52.641Z
 todos: []
 automation: eligible
