@@ -21992,6 +21992,34 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-14T21:23:54.561Z
+  - _ulid: 01KV4EQ2XDK09CGHZ06RJNKQVE
+    type: friction
+    content: "[from task @task-identity-endpoint-classifier dispatch run] Dispatch task workspace did
+      not materialize plan-owned resource_refs. The task prompt listed handoff resources as [OK] at
+      relative paths (./resources/handoff/docs/00-product-context.md, etc.) and warned to read them,
+      but ./resources/ was empty in the worker worktree. The files only existed under the plan
+      shadow storage (.kspec/plans/<ulid>/resources/handoff/) and the separate source repo; I had to
+      locate them via `find /`. Either materialize declared resource_refs into the worktree (or a
+      known path) at bootstrap, or have the prompt cite the resolvable path so workers don't have to
+      hunt."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T01:35:40.462Z
+  - _ulid: 01KV4EQ362QY0TT0ZMH7MEQRKT
+    type: friction
+    content: "[from task @task-identity-endpoint-classifier dispatch run] Daemon package TypeScript
+      types are not covered by any quality gate. `npm run typecheck` is `tsc --noEmit` over src/
+      only; the daemon (packages/daemon) is bundled by esbuild (build:daemon) which is
+      transpile-only, and standalone `tsc` in packages/daemon fails structurally
+      (rootDir/module-resolution errors from cross-package src imports). Net effect: a type error in
+      a daemon route is caught only if a test happens to exercise it, never by typecheck/lint/build.
+      Consider a daemon-specific tsc --noEmit config (composite/project references) wired into the
+      typecheck gate."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T01:35:40.738Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

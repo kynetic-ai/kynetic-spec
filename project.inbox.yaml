@@ -4969,3 +4969,17 @@ inbox:
       - review-gates
     added_by: Jacob Chapel
     created_at: 2026-06-14T20:18:09.041Z
+  - _ulid: 01KV4EQ2RZ30WT63VXH50HAVE3
+    text: "Fix stale `Agent` type in @kynetic-ai/shared (packages/shared/src/api.ts). It declares `{
+      _ulid, slugs, role, status, capabilities, constraints }`, but the actual exported
+      snapshot/meta agent shape (from src/schema/meta.ts AgentSchema, used by `agents:
+      metaContext.agents` in src/export/json.ts and KspecSnapshot.agents) is `{ _ulid, id, name, ...
+      }`. The web snapshot types agents with this wrong interface, so consumers cannot read
+      agent.id/agent.name without a cast (hit while building static-mode identity in
+      fetchIdentityStatic). Align the shared Agent type with the real schema and drop the cast."
+    tags:
+      - bug
+      - schema
+      - web
+    added_by: "@claude"
+    created_at: 2026-06-15T01:35:40.320Z
