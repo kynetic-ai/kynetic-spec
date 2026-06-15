@@ -66,6 +66,14 @@ tags:
   - web-ui
   - identity
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-15T00:55:42.042Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -109,3 +117,4 @@ resource_refs:
     sha256: 2928bd83bb9e9f84ddab3fb99d89e94213dfe194d27a7e6183ecf6113314e3f2
 created_at: 2026-06-15T00:55:22.761Z
 todos: []
+automation: eligible
