@@ -32291,7 +32291,7 @@
   type: task
   spec_ref: "@ui-shortcut-registry"
   plan_ref: "@plan-web-ui-foundations"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -32304,6 +32304,7 @@
   created_at: 2026-06-15T00:55:24.481Z
   started_at: 2026-06-15T08:09:22.599Z
   submitted_at: 2026-06-15T08:32:17.910Z
+  completed_at: 2026-06-15T08:52:21.351Z
   automation: eligible
 - _ulid: 01KV4CDBWM83RRBNH7RX33E5YK
   slugs:

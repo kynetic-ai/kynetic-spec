@@ -59,8 +59,12 @@ description: |
 spec_ref: "@ui-shortcut-registry"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review @01KV56VT and merged dispatch/task/task-shortcut-registry/01kv4cdb
+  into feat/ui-redesign at 3248d1a4dc66. Implemented central keyboard shortcut registry, platform
+  resolution/reserved fallbacks/collision handling/enumeration, migrated palette/sidebar/triage
+  handlers, and verified required gates.
 depends_on: []
 context: []
 priority: 2
@@ -126,6 +130,22 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-15T08:37:44.283Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review @01KV56VT and merged dispatch/task/task-shortcut-registry/01kv4cdb into
+          feat/ui-redesign at 3248d1a4dc66. Implemented central keyboard shortcut registry, platform
+          resolution/reserved fallbacks/collision handling/enumeration, migrated
+          palette/sidebar/triage handlers, and verified required gates.
+        previous: null
+      completed_at:
+        new: 2026-06-15T08:52:21.351Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-15T08:52:21.358Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -146,5 +166,6 @@ resource_refs:
 created_at: 2026-06-15T00:55:24.481Z
 started_at: 2026-06-15T08:09:22.599Z
 submitted_at: 2026-06-15T08:32:17.910Z
+completed_at: 2026-06-15T08:52:21.351Z
 todos: []
 automation: eligible
