@@ -30,3 +30,29 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-15T08:46:16.516Z
+  - _ulid: 01KV58GGFVJ0TBCC8WWE2DNK5T
+    content: >-
+      Implemented and verified. Shared: packages/shared/src/next-actor.ts (deriveAwaitedRole +
+      resolveAwaitedParty + ReviewParticipants/AwaitedParty types), exported via index.ts and
+      re-exported through web-ui $lib/utils/actor.ts. Component:
+      $lib/components/ds/ActorDisplay.svelte (props actor + optional classifier; data-actor-kind
+      glyph + sr-only kind label; unknown shows original string with muted/italic + title, degrades
+      to unknown when classifier absent). Identity hook: $lib/query/identity.svelte.ts
+      createActorClassifier() (deduped identity query -> reactive classifier). Adopted on
+      reviews/[id] (review.author, both thread entry-author sites, verdict-reviewer) and
+      reviews/+page (review-author).
+
+      Coverage: ac-1/ac-2 via tests/web-ui-actor-display.test.ts (SSR render + jsdom,
+      same-actor-identical + human/agent distinction + unknown treatment + no-classifier
+      degradation); ac-3 via tests/next-actor.test.ts table over all 12 lifecycle x disposition
+      combos; ac-4 via resolveAwaitedParty two-call-site identical-results test.
+
+      Gates: root typecheck pass; oxlint 0 errors (736 pre-existing warnings baseline); oxfmt clean;
+      kspec refs/alignment/completeness pass (pre-existing warnings only); full suite 10739 passed /
+      3 skipped / 0 fail. svelte-check: no NEW errors (62->61, the reviews/[id] errors are the
+      pre-existing $page.params.id baseline). E2E (Playwright) not run here (separate runner);
+      existing review e2e use toContainText and remain compatible since unknown actors still render
+      the original string.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T09:06:27.963Z
