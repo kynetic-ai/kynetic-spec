@@ -66714,9 +66714,22 @@ runs:
     completed_at: 2026-06-15T08:35:39.023Z
   - _ulid: 01KV57R0RFMA8DTSKZXSTKV6HM
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-15T08:53:05.423Z
+        completed_at: 2026-06-15T08:54:47.341Z
+        notes: "What worked well: the detached-reviewer workflow was clean end-to-end: kspec review record +
+          required checks + approval + supported merge helper + task complete. The worker's
+          plain-TypeScript shortcut core with behavioral tests made AC verification direct and fast
+          at the focused-test level; this success pattern is already captured as observation
+          @01KV56QTJ. The review evidence log as a review thread made the approval auditable."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-15T08:54:47.341Z
+        completed_at: 2026-06-15T08:54:47.341Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T08:53:05.423Z
