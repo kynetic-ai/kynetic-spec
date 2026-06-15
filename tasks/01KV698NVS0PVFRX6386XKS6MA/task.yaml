@@ -91,7 +91,7 @@ description: >-
 spec_ref: "@detached-reviewer-merge-helper"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -101,6 +101,22 @@ tags:
   - merge
   - reviewer
 vcs_refs: []
+session_id: 01KV6CWG50KA0EDKM3NM2J21TW
+history:
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KV6CWG50KA0EDKM3NM2J21TW
+        previous: null
+      started_at:
+        new: 2026-06-15T19:44:16.451Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-15T19:44:16.451Z
 created_at: 2026-06-15T18:38:54.329Z
+started_at: 2026-06-15T19:44:16.451Z
 todos: []
 automation: eligible
