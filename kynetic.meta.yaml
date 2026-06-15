@@ -22338,6 +22338,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T18:06:51.899Z
+  - _ulid: 01KV67H9R6DM6FQZE8KKTNA3EY
+    type: success
+    content: "During review, a small temp-project behavioral reproduction of the suspected operator-map
+      edge case found a real spec violation that green unit tests and gates missed: non-canonical
+      actor-map targets were persisted verbatim. This is a useful reviewer pattern for data
+      migrations: when a finding depends on user-provided inputs, run the smallest end-to-end
+      mutation that proves the persisted state, not just the resolver unit path."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-15T18:08:39.686Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
