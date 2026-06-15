@@ -26189,11 +26189,11 @@ workspaces:
     canonical_branch: dispatch/task/task-identity-endpoint-classifier/01kv4cd9
     canonical_branch_head: 2b09076ac69cf4bd00cc17e62fafd4263aee5d36
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-15T03:15:51.984Z
+      updated_at: 2026-06-15T03:18:58.321Z
     health:
       status: healthy
       issues: []
@@ -26207,17 +26207,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: cecb52ae149bebc2d7646644fc762ef12906443c
       updated_at: 2026-06-15T03:15:51.984Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV4CD95BNGJ9YG3PYYZ4S6E0
     task_ref: "@01KV4CD95BNGJ9YG3PYYZ4S6E0"
     task_slug: task-identity-endpoint-classifier
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-15T03:18:58.321Z
       last_active_at: 2026-06-15T02:57:41.847Z
       last_reconciled_at: 2026-06-15T03:18:17.600Z
       created_at: 2026-06-15T00:58:10.250Z
-      updated_at: 2026-06-15T03:18:17.600Z
+      updated_at: 2026-06-15T03:18:58.321Z
     workspace_id: dispatch-workspace-01KV4CD95BNGJ9YG3PYYZ4S6E0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
