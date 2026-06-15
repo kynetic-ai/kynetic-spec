@@ -29788,12 +29788,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-15T20:46:29.900Z
+      updated_at: 2026-06-15T20:46:40.396Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-15T20:46:29.900Z
+      updated_at: 2026-06-15T20:46:40.396Z
     integration:
       status: pending
       detail: null
@@ -29801,8 +29801,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 3248d1a4dc66f4dc00ae88bd0d1d27574e6fd946
-      updated_at: 2026-06-15T20:46:29.900Z
-    lifecycle_state: ready
+      updated_at: 2026-06-15T20:46:40.396Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV4CDA7DT4GY1ZYKXA86XX50
     task_ref: "@01KV4CDA7DT4GY1ZYKXA86XX50"
@@ -29810,18 +29810,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-15T20:16:56.094Z
-      last_reconciled_at: 2026-06-15T20:46:29.900Z
+      last_reconciled_at: 2026-06-15T20:46:40.396Z
       created_at: 2026-06-15T09:11:13.018Z
-      updated_at: 2026-06-15T20:46:29.900Z
+      updated_at: 2026-06-15T20:46:40.396Z
     workspace_id: dispatch-workspace-01KV4CDA7DT4GY1ZYKXA86XX50
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: ac63701ae81fc4525f4252cf66adb3dfd5c08d29
+        last_seen_at: 2026-06-15T20:46:40.396Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-actor-normalization-upgrade-01kv4cda-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-actor-normalization-upgrade/01kv4cda
-        head: d952c374bfe320c2c11f780c343625e08691fa5d
-        last_seen_at: 2026-06-15T20:16:22.440Z
+        head: ac63701ae81fc4525f4252cf66adb3dfd5c08d29
+        last_seen_at: 2026-06-15T20:46:40.396Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-actor-normalization-upgrade-01kv4cda
   - active_role: null
     base_branch_point: 775219419ed91b2d981e268c7a052b890c05c3eb
