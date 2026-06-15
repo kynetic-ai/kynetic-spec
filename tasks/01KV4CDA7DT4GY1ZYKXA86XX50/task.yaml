@@ -84,7 +84,7 @@ description: |
 spec_ref: "@actor-history-normalization"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-identity-endpoint-classifier"
@@ -99,8 +99,8 @@ review_ref: "@01KV6GMQRTA0AE0TB6Y413NTW8"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-actor-normalization-upgrade/01kv4cda
-  captured_at: 2026-06-15T20:43:44.792Z
-  commit: ac63701ae81fc4525f4252cf66adb3dfd5c08d29
+  captured_at: 2026-06-15T21:29:27.295Z
+  commit: 451b9a0012de86190a969fb3a9a43e0186576c7a
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-actor-normalization-upgrade/01kv4cda
@@ -577,6 +577,33 @@ history:
         previous: 2026-06-15T20:43:41.236Z
     command: task-start
     timestamp: 2026-06-15T21:29:23.713Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-actor-normalization-upgrade/01kv4cda
+          captured_at: 2026-06-15T21:29:27.295Z
+          commit: 451b9a0012de86190a969fb3a9a43e0186576c7a
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-actor-normalization-upgrade/01kv4cda
+        previous:
+          review_url: null
+          branch: dispatch/task/task-actor-normalization-upgrade/01kv4cda
+          captured_at: 2026-06-15T20:43:44.792Z
+          commit: ac63701ae81fc4525f4252cf66adb3dfd5c08d29
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-actor-normalization-upgrade/01kv4cda
+      submitted_at:
+        new: 2026-06-15T21:29:27.304Z
+        previous: 2026-06-15T20:43:44.801Z
+    command: task-submit
+    timestamp: 2026-06-15T21:29:27.304Z
 prior_status: null
 resource_refs:
   - git_commit: null
@@ -605,6 +632,6 @@ resource_refs:
     sha256: 3a43077a9aac8ddb47ec7fa7d32f40c61bc8bf2af7b3b3a31a8cc46b260aa046
 created_at: 2026-06-15T00:55:23.117Z
 started_at: 2026-06-15T21:29:23.713Z
-submitted_at: 2026-06-15T20:43:44.801Z
+submitted_at: 2026-06-15T21:29:27.304Z
 todos: []
 automation: eligible
