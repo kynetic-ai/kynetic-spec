@@ -151,3 +151,45 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-15T05:45:56.838Z
+  - _ulid: 01KV4ZMMG673ZS9JT3GGB8QFJQ
+    content: >-
+      Resume complete — all gates green. Full suite: 10734 passed / 0 failed / 3 skipped.
+      format:check, lint (0 errors), typecheck, and kspec validate --refs/--alignment/--completeness
+      all pass.
+
+
+      Summary of what this resume added on top of the prior in-flight work:
+
+      1. Corrected a real bug: review CHECK 'runner' was wrongly classified as actor-bearing. Runner
+      is the tool/command that executed the check (per review-gates: 'npm test', 'kspec', 'vitest',
+      etc.), so it is now persisted verbatim in both the daemon checks route and CLI 'review check';
+      only the check_added EVENT actor resolves through the shared utility (daemon: via the author
+      chain since the endpoint has no actor body field; CLI: via the existing --author option).
+
+      2. Packaging fix (blocking): core dist/identity/actor-write.js is the first runtime (non-type)
+      importer of @kynetic-ai/shared from the main @kynetic-ai/spec package. Pre-existing shared
+      imports in core/daemon were all type-only (erased). Without shipping shared, an installed
+      package fails at daemon start / any CLI actor write with ERR_MODULE_NOT_FOUND. Fixed by
+      bundling the private @kynetic-ai/shared workspace package into the published tarball
+      (bundleDependencies + files:['dist'] on shared); verified the tarball now contains
+      node_modules/@kynetic-ai/shared/dist and the cli-serve installed-package test passes.
+
+      3. Updated tests that previously passed arbitrary out-of-pool actor values
+      (alice/bob/@reviewer/@claude/reviewer@test.com/test-agent where not configured) to configured
+      human/agent identities, since ac-8 now rejects out-of-pool writes. Where useful these now
+      demonstrate ac-7 canonicalization (email/@-variant -> canonical id). daemon-review-websocket
+      gained an inline agent roster so its email actors canonicalize.
+
+
+      Guard-for-divergence decision: the task asked for a guard that fails if writers reintroduce
+      ad-hoc fallbacks/bypass the utility. Per project testing convention (no-source-scanning oxlint
+      rule; 'prefer behavioral/integration tests over static source analysis'; 'enforcement belongs
+      in convention and reviewer judgment, not string-denylist tests'), a grep/source-scanning guard
+      would violate the lint rule. Instead the guard is behavioral and per-writer:
+      actor-write-cli.test.ts exercises real task-note/item-note/todo writes and asserts out-of-pool
+      + literal 'anonymous' are REJECTED and that surfaces agree on the canonical value; daemon
+      triage/inbox/verdicts/websocket tests assert the same at the route layer. A writer that
+      bypassed the utility would make its corresponding rejection/canonicalization assertion fail.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T06:31:25.959Z
