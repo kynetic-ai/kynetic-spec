@@ -66,5 +66,14 @@ tags:
   - schema
   - storage
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-15T23:38:56.783Z
 created_at: 2026-06-15T23:37:18.148Z
 todos: []
+automation: eligible
