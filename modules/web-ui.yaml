@@ -6074,6 +6074,9 @@ features:
       is browser-local storage, and the utility degrades to
       session-scoped in-memory behavior when persistent storage is
       unavailable.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on:
       - "@client-preference-persistence"
     implements: []
