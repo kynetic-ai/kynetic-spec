@@ -26536,8 +26536,8 @@ reviews:
       content_hash: ""
       ref: "@01KV4CDB72KM6NRMXXS1EB6SDB"
       shadow_commit: ""
-    thread_count: 3
-    unresolved_blocker_count: 3
+    thread_count: 4
+    unresolved_blocker_count: 4
     verdict_count: 0
     created_at: 2026-06-15T03:27:48.330Z
-    updated_at: 2026-06-15T03:31:30.281Z
+    updated_at: 2026-06-15T03:31:34.084Z
