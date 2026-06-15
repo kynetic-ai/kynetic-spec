@@ -67,6 +67,19 @@ checks:
     runner: kspec
     created_at: 2026-06-15T03:13:48.129Z
     completed_at: 2026-06-15T03:13:48.129Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok. Completeness warnings baseline: 249
+      missing own AC coverage and 32 invalid AC annotations; accepted by warnings-ok. In-scope
+      @actor-identity-resolution ac-1..ac-5 and @trait-api-endpoint ac-1/ac-6 have behavioral
+      annotations; trait ac-2..ac-5 annotated N/A."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T03:13:58.867Z
+    completed_at: 2026-06-15T03:13:58.867Z
 events:
   - _ulid: 01KV4KEVA7TMKFEZPJE7Y1RY1R
     actor: Jacob Chapel
@@ -123,6 +136,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-15T03:13:48.372Z
+  - _ulid: 01KV4MB39YBG98JMZ6081TV2A2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-15T03:13:59.102Z
 examined_commit: 2b09076ac69cf4bd00cc17e62fafd4263aee5d36
 external_links: []
 lifecycle_state: open
@@ -135,5 +155,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T02:58:33.415Z
-updated_at: 2026-06-15T03:13:48.129Z
+updated_at: 2026-06-15T03:13:58.867Z
 notes: []
