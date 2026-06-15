@@ -22446,6 +22446,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T19:41:58.568Z
+  - _ulid: 01KV6E3HHWV1V3V5R68GH7W63W
+    type: friction
+    content: "Detached reviewer prompts can present a stale comparison base when dependency status is
+      canonical-branch-head-changed: in @task-breadcrumb-component, the prompt base SHA (7752194)
+      made the first diff include unrelated actor-resolution work, while the task branch had already
+      incorporated current feat/ui-redesign (c803347) and the actual task delta was the focused
+      breadcrumb diff. Reviewers can recover by manually comparing against the current target tip,
+      but the prompt should surface a branch-coherent diff base or explicitly tell reviewers how to
+      compute the current review delta."
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-15T20:03:28.957Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
