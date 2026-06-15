@@ -36,3 +36,47 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-15T01:06:49.450Z
+  - _ulid: 01KV4EJDHSD1XNYWJ9NZQBE5A6
+    content: |-
+      Implemented and verified. Summary of changes:
+
+      - packages/shared/src/actor.ts — pure actor classifier classifyActor(string,
+        config) + buildActorClassifier(config) returning { kind, canonicalId,
+        displayName, original }. Recognition: case/whitespace-insensitive, leading-@
+        strip, email-suffix strip, role-suffix strip, plus explicit per-identity
+        aliases for non-derivable spellings. Exact matches win before suffix
+        stripping (pr-reviewer/task-worker not truncated). Never throws; unknown
+        preserves original. Zod schemas for the wire payload.
+      - packages/daemon/src/routes/identity.ts — GET /api/identity: bounded payload
+        { human, agents } from getAuthor() chain + meta agent roster. wrapResponse
+        envelope; X-Request-Id via onTransform. Registered in server.ts + test app.
+      - src/parser/config.ts — optional identity.display_name + identity.aliases on
+        the resolved config (defaults null / []).
+      - web UI — fetchIdentity (daemon + static fetchIdentityStatic) and
+        $lib/utils/actor re-export so the same classifier runs client-side fed by
+        the identity payload. Static mode builds the roster from the snapshot
+        (human null; documented limitation — no author in static export).
+
+      Applied @trait-api-endpoint to @actor-identity-resolution.
+
+      AC coverage:
+      - ac-1: tests/daemon-api/identity.test.ts (endpoint shape) +
+        tests/web-ui/api-static.test.ts (static payload) + config resolution test.
+      - ac-2/3/4/5: tests/actor-classifier.test.ts, corpus seeded from analysis.md
+        §4.6 (codex >=7 spellings, pr-reviewer aliases, @claude, human, Test User).
+      - trait ac-1, ac-6: identity.test.ts (200 JSON, X-Request-Id).
+      - trait ac-2/3/4/5: N/A annotations in identity.test.ts (no entity-ref param,
+        no body, not a list, read-only).
+
+      Gates: typecheck (src), build:shared, build:daemon, format:check, lint
+      (0 errors), full suite (10595 passed / 0 failed), kspec validate
+      refs/alignment/completeness all green.
+
+      Scope note: spec ac-6/ac-7/ac-8 (write-time author resolution + canonical
+      persistence/rejection) are owned by @task-review-author-resolution and
+      @task-actor-normalization-upgrade, which reuse this shared classifier. The
+      non-derivable agent aliases (e.g. pr-reviewer recorded as @dispatch/@kspec)
+      are supported via config aliases and seeded by the upgrade task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T01:33:07.513Z
