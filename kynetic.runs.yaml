@@ -67632,7 +67632,7 @@ runs:
     completed_at: 2026-06-15T20:46:08.253Z
   - _ulid: 01KV6HNVMQMQNXHA7M94F2EXZH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -67646,7 +67646,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T21:08:28.517Z
-        completed_at: 2026-06-15T21:08:28.517Z
+        completed_at: 2026-06-15T21:08:37.490Z
+        notes: "Friction: full npm test remains expensive for review work (2708s this run), and the dispatch
+          prompt carried older target-head context than the rebased branch state. Neither blocked
+          the review; the current process required manual merge-base verification and waiting for
+          the full gate."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T21:08:37.490Z
+        completed_at: 2026-06-15T21:08:37.490Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T21:05:54.847Z
