@@ -71,7 +71,7 @@ tags:
   - daemon
   - api
 vcs_refs: []
-review_ref: "@01KV5VBT230TGV47T20YB2STYA"
+review_ref: "@01KV5XY6NB72WA5FFT79WP65H7"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
@@ -349,6 +349,13 @@ history:
         previous: 2026-06-15T07:57:30.276Z
     command: task-submit
     timestamp: 2026-06-15T15:15:59.704Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KV5XY6NB72WA5FFT79WP65H7"
+        previous: "@01KV5VBT230TGV47T20YB2STYA"
+    command: review-link
+    timestamp: 2026-06-15T15:20:59.164Z
 prior_status: null
 resource_refs:
   - git_commit: null
