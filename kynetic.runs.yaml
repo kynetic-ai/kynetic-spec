@@ -66646,7 +66646,7 @@ runs:
     completed_at: 2026-06-15T08:00:01.600Z
   - _ulid: 01KV56K3V3EVWZ0Y8C7460A0VV
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -66673,7 +66673,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-15T08:34:33.691Z
-        completed_at: 2026-06-15T08:34:33.691Z
+        completed_at: 2026-06-15T08:34:42.964Z
+        notes: "Searched: 'handoff resource worktree', 'handoff', 'resource missing', 'task resources not
+          available', 'svelte component unit test vitest'. The
+          missing-handoff-resources-in-worker-worktree friction is UNTRACKED (no matching
+          spec/task/inbox/observation). The no-Svelte-plugin vitest constraint is a documented
+          architectural fact, not new friction. The background-output and lock-wait items are
+          incidental/already-documented."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-15T08:34:42.964Z
+        completed_at: 2026-06-15T08:34:42.964Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T08:32:56.164Z
