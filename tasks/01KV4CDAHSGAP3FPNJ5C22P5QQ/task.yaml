@@ -62,7 +62,7 @@ description: |
 spec_ref: "@ui-breadcrumb"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -302,6 +302,13 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-15T14:35:59.166Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+    command: review-verdict-needs-work
+    timestamp: 2026-06-15T14:51:44.788Z
 prior_status: null
 resource_refs:
   - git_commit: null

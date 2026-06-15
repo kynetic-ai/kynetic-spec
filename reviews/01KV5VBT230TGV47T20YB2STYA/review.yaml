@@ -2,7 +2,96 @@ _ulid: 01KV5VBT230TGV47T20YB2STYA
 slugs: []
 title: Review task-breadcrumb-ancestry-api
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. oxfmt checked 1054 files; all matched files use correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-15T14:51:14.335Z
+    completed_at: 2026-06-15T14:51:14.335Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. Repo-wide oxlint --quiet reported 0 errors (736 warning baseline). Focused oxlint
+      on changed TypeScript/test files also exited 0; it reported 10 no-shadow warnings on
+      pre-existing unchanged lines in changed route files, verified against the submitted diff.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-15T14:51:17.181Z
+    completed_at: 2026-06-15T14:51:17.181Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. Focused changed-file lint reported 0 errors. The 10 warnings were existing
+      no-shadow warnings on unchanged lines in items/tasks/reviews routes, not introduced by this
+      diff.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed ts/test files>
+    created_at: 2026-06-15T14:51:20.020Z
+    completed_at: 2026-06-15T14:51:20.020Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0. build:shared completed, then root tsc --noEmit completed. This verifies the
+      build-order fix for BreadcrumbAncestor export resolution.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-15T14:51:22.798Z
+    completed_at: 2026-06-15T14:51:22.798Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0. Test Suites: 2823 passed of 2823. Tests: 10743 passed, 3 skipped of 10746. Full
+      log: /tmp/kspec-test-cache/01KV5V9H9GWK9TMPMNPHT6KMPG/41564cec70dadd8b.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-15T14:51:25.580Z
+    completed_at: 2026-06-15T14:51:25.580Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0. Schema OK, References OK. Existing warning baseline: 6 deprecated-reference warnings."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-15T14:51:28.378Z
+    completed_at: 2026-06-15T14:51:28.378Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0. Alignment stats: 484/662 specs have tasks, 474 aligned. Existing warning
+      baseline: 54 alignment warnings."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-15T14:51:31.149Z
+    completed_at: 2026-06-15T14:51:31.149Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 0 with warnings-ok. Existing completeness warning baseline: 280 warnings. Reviewed
+      task covers @ui-breadcrumb ac-10 and added behavioral AC annotations in resolver, daemon API,
+      and export tests."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-15T14:51:34.138Z
+    completed_at: 2026-06-15T14:51:34.138Z
 events:
   - _ulid: 01KV5VBT22CZ4GWBSPZ7EQMZAA
     actor: Jacob Chapel
@@ -17,17 +106,164 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T14:36:17.298Z
+  - _ulid: 01KV5W7T89XX324CF0NQR30BKV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-15T14:51:14.569Z
+  - _ulid: 01KV5W7X1BEC27PK2P7HYTEKP5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-15T14:51:17.419Z
+  - _ulid: 01KV5W7ZSP6PZR68FE6DVB6VZB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-15T14:51:20.246Z
+  - _ulid: 01KV5W82GA7KYQQ51NPZTME288
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-15T14:51:23.018Z
+  - _ulid: 01KV5W857842BM4VFPM5GRF6G5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-15T14:51:25.800Z
+  - _ulid: 01KV5W87YC8BF08M97K8W0P40A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-15T14:51:28.588Z
+  - _ulid: 01KV5W8ANJH3NK3VWJPP57N0CQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-15T14:51:31.378Z
+  - _ulid: 01KV5W8DN80E47G7P0NT67W595
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-15T14:51:34.440Z
+  - _ulid: 01KV5W8GDQ93JVDMQ9NXQAFJ54
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV5W8G6KF8VQWQ0TQN55RRTF
+    timestamp: 2026-06-15T14:51:37.271Z
+  - _ulid: 01KV5W8K7QZA8Z53MV8X8PQYVH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV5W8K0BRDH66KS21JYRRCEM
+    timestamp: 2026-06-15T14:51:40.151Z
+  - _ulid: 01KV5W8NWCHK0888WYEY89173E
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-15T14:51:42.860Z
+  - _ulid: 01KV5W8NWCTEZ1JQRXQKQ4S6JY
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-15T14:51:42.860Z
 examined_commit: 92b8a099090c49d9d4682952d7a1279577ef743b
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KV4CDAHSGAP3FPNJ5C22P5QQ"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KV5W8G6KF8VQWQ0TQN55RRTF
+    anchor:
+      type: code
+      commit: 92b8a099090c49d9d4682952d7a1279577ef743b
+      line_end: 711
+      line_start: 696
+      path: packages/daemon/src/routes/sessions.ts
+      side: head
+    entries:
+      - _ulid: 01KV5W8G6KA277SRN1HY5S8ZXJ
+        author: Jacob Chapel
+        body: "MUST-FIX: task-scoped session detail can return an incomplete breadcrumb chain. The task
+          explicitly requires a task-scoped session's chain to be the owning task's chain plus the
+          session, but this branch only includes the task chain when both task and item cache
+          domains are ready. In the else branch, even when metadata.task_id exists, the code calls
+          forSession({ id: resolution.id }) without task_ref, so the resolver can only emit the
+          session segment. Evidence: tests/daemon-api/breadcrumb-ancestry.test.ts lines 278-283
+          codify this degraded single-segment response for the no-cache in-process route, despite
+          seeding a task_id. Impact: clients can receive an incomplete trail for a task-scoped
+          session detail response, violating @ui-breadcrumb ac-10 and the task's session-leaf
+          requirement. Fix by either resolving the owning task/spec chain through an appropriate
+          bounded/disk fallback when cache is unavailable, or returning a warming response until the
+          cache can provide the full chain; update the daemon API test to assert module -> feature
+          -> requirement -> task -> session for a task-scoped session."
+        created_at: 2026-06-15T14:51:37.043Z
+    kind: blocker
+  - _ulid: 01KV5W8K0BRDH66KS21JYRRCEM
+    entries:
+      - _ulid: 01KV5W8K0CMJN35N9BBF0571YA
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; package.json; packages/daemon/src/routes/items.ts, tasks.ts,
+          plans.ts, reviews.ts, sessions.ts; packages/shared/src/api.ts, index.ts;
+          packages/web-ui/src/lib/api.ts, api-static.ts; src/lib/breadcrumb-ancestry.ts;
+          src/export/json.ts, types.ts; tests/breadcrumb-ancestry.test.ts;
+          tests/daemon-api/breadcrumb-ancestry.test.ts; tests/export/json.test.ts.
+
+          Commands run: git diff/log/status; kspec task get; kspec item get @ui-breadcrumb; kspec
+          review add/open; rg AC/source-scan checks; npm run format:check; npm run lint -- --quiet;
+          npx oxlint changed files; npm run typecheck; npm test; kspec validate
+          refs/alignment/completeness.
+
+          Claims verified: build-order fix verified by npm run typecheck; AC coverage verified by
+          annotation search and behavioral test review; session leaf behavior checked against route
+          code and daemon API test.
+
+          Categories searched: correctness, edge cases/cache warming, error handling, test quality,
+          integration/static export. Finding recorded for session detail correctness/test quality.
+          Shared/package guidance neutrality not applicable; no shared guidance surfaces were
+          changed.
+        created_at: 2026-06-15T14:51:39.916Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: automated-reviewer
+    created_at: 2026-06-15T14:51:42.859Z
 created_at: 2026-06-15T14:35:56.867Z
-updated_at: 2026-06-15T14:36:17.077Z
+updated_at: 2026-06-15T14:51:42.860Z
 notes: []
