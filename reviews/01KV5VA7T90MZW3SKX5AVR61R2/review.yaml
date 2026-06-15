@@ -174,6 +174,13 @@ events:
       kind: blocker
       thread_ulid: 01KV5W7NMRS1Q6BHZQ56J3AWF1
     timestamp: 2026-06-15T14:51:10.077Z
+  - _ulid: 01KV5W8CMAQ44XMEXPTR85VGWC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV5W8CD38F7B4K95HE0TQ6FD
+    timestamp: 2026-06-15T14:51:33.386Z
 examined_commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
 external_links: []
 lifecycle_state: open
@@ -219,7 +226,26 @@ threads:
           session/dispatch-style attribution fields."
         created_at: 2026-06-15T14:51:09.848Z
     kind: blocker
+  - _ulid: 01KV5W8CD38F7B4K95HE0TQ6FD
+    anchor:
+      type: code
+      commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
+      line_end: 2334
+      line_start: 2305
+      path: packages/web-ui/src/lib/api.ts
+      side: head
+    entries:
+      - _ulid: 01KV5W8CD3ESBSMQBJXVC84M9K
+        author: Jacob Chapel
+        body: "MUST-FIX: the web UI still injects the literal anonymous actor for resolve/reopen when the
+          caller does not pass an actor. The review detail, structured content, and diff viewers
+          call these helpers without an actor, so the new daemon validation rejects the UI operation
+          instead of receiving an absent actor and resolving it through the author precedence chain.
+          Remove this client fallback and let the daemon shared utility resolve absence, or pass a
+          canonical actor resolved through the same utility contract."
+        created_at: 2026-06-15T14:51:33.155Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T14:35:05.417Z
-updated_at: 2026-06-15T14:51:09.848Z
+updated_at: 2026-06-15T14:51:33.155Z
 notes: []
