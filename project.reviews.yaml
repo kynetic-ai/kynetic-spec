@@ -26845,3 +26845,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-15T19:42:03.501Z
     updated_at: 2026-06-15T19:59:43.882Z
+  - _ulid: 01KV6F03CRHGTCZ492RAHWPSES
+    slugs: []
+    title: Review task-harden-detached-reviewer-merge-helper-paths
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 7189e99b302665e18253618951180dac91bc6e20
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KV698NVS0PVFRX6386XKS6MA"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-15T20:19:04.728Z
