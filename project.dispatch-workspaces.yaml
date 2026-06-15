@@ -26228,7 +26228,7 @@ workspaces:
         head: 2b09076ac69cf4bd00cc17e62fafd4263aee5d36
         last_seen_at: 2026-06-15T02:57:10.617Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-identity-endpoint-classifier-01kv4cd9
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: cecb52ae149bebc2d7646644fc762ef12906443c
     bootstrap:
       status: succeeded
@@ -26730,9 +26730,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-15T04:19:30.137Z
-      last_reconciled_at: 2026-06-15T04:39:50.809Z
+      last_reconciled_at: 2026-06-15T04:42:59.486Z
       created_at: 2026-06-15T01:37:02.765Z
-      updated_at: 2026-06-15T04:39:50.809Z
+      updated_at: 2026-06-15T04:42:59.486Z
     workspace_id: dispatch-workspace-01KV4CDB72KM6NRMXXS1EB6SDB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
