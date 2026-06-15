@@ -1,1 +1,38 @@
-notes: []
+notes:
+  - _ulid: 01KV4D28FAE06NJ84QM0WSPRE7
+    content: |-
+      Approach for @actor-identity-resolution ac-1..ac-5 + trait-api-endpoint ac-1, ac-6:
+
+      Architecture:
+      - Shared classifier in packages/shared/src/actor.ts (pure, no daemon deps) so the
+        daemon endpoint, the write-time upgrade step (@task-actor-normalization-upgrade),
+        and the web UI all consume one implementation.
+        - classifyActor(actorString, config): { kind: human|agent|unknown, canonicalId,
+          displayName, original }. Pure function of (string, config) -> deterministic (ac-5).
+        - Recognition is data-driven + algorithmic: lowercase/trim, strip leading @,
+          strip email domain (codex@openai.com -> codex), strip role suffix (codex-reviewer
+          -> codex). Exact canonical/alias matches win before suffix stripping so canonical
+          ids that end in -reviewer/-worker (pr-reviewer, task-worker) are not mangled.
+        - Non-derivable aliases (e.g. pr-reviewer recorded as @dispatch/@kspec) are carried
+          as per-identity `aliases` in the config so shared code stays project-neutral
+          (no Kynetic agent names baked into shipped src).
+        - Unknown strings preserve the original and never throw (ac-4).
+      - Identity endpoint GET /api/identity (daemon route) returns the ActorIdentityConfig:
+        human identity (author via getAuthor() chain per @config-author + optional
+        display_name) and the canonical agent roster from meta agent definitions
+        (id + display name). Single bounded response, no entity-list fan-out (ac-1).
+        Envelope via wrapResponse; X-Request-Id via onTransform (trait ac-6).
+      - Web UI: fetch /api/identity + re-export classifyActor as a shared lib utility fed
+        by the payload (static-mode/web consumption).
+
+      Variant table seeded from analysis.md section 4.6 measured inventory (codex >=7
+      spellings, pr-reviewer 4 ways, @claude, Jacob Chapel human, Test User unknown) -
+      used as the behavioral test corpus.
+
+      Test plan: shared unit tests (ac-2..ac-5) over the measured strings; daemon-api
+      integration test for /api/identity (ac-1, trait ac-1, trait ac-6 X-Request-Id).
+      Trait ac-2/3/4/5 are N/A (no entity-ref param, no request body, not a list endpoint,
+      read-only) - annotated with reasons.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T01:06:49.450Z
