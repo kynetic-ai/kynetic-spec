@@ -111,3 +111,12 @@ resources:
     label: Command palette overlay
     path: handoff/shots/r2-app-shell-palette.png
     sha256: 9ad1f51125974201d078447062d18a09b9062a5a80c6f0035df75e44838f3a99
+  - description: R3 breadcrumb truncation alternatives; use for behavior/hierarchy, not pixel-perfect styling.
+    bytes: 95350
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-breadcrumb-a
+    label: Breadcrumb variants A/B
+    path: handoff/shots/r3-breadcrumb-variants-a.png
+    sha256: 60ee2196156683d853804fa4c2487f55afa5106e3a035317b2d478af562f49b2
