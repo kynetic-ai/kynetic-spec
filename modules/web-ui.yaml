@@ -5803,7 +5803,7 @@ features:
       kinds are resolved server-side in one bounded request.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
