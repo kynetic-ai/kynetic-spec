@@ -615,6 +615,432 @@ Likely best fit:
 - implementation tests for integration and fail-closed behavior;
 - Lean/TLA+/Alloy only if surrounding lifecycle or semantic invariants exceed Cedar's policy-decision scope.
 
+## Wider research: how others use formal specs with code
+
+This section captures public examples and patterns worth considering before choosing a kspec-specific approach. The examples span proof assistants, model checkers, SMT-backed policy analysis, differential testing, trace validation, and verified implementation.
+
+### AWS TLA+: formal specs as design-debugging artifacts
+
+Sources:
+
+- https://cacm.acm.org/research/how-amazon-web-services-uses-formal-methods/
+- https://www.infoq.com/presentations/aws-testing-tla/
+- https://www.youtube.com/watch?v=HxP4wi4DhA0
+
+AWS has used TLA+ and PlusCal for distributed-system design checking across systems such as S3 and DynamoDB. The useful framing is not “academic proof” but “debugging designs” or “exhaustively testable pseudo-code.” TLA+ is used to model high-level behavior, define safety/liveness properties, and use TLC to search possible executions for counterexamples.
+
+Notable lessons:
+
+- Formal specs are valuable even when they do not generate production code.
+- They can find multi-step design failures that tests and reviews miss.
+- They are especially good for concurrency, replication, migration, and protocol transitions.
+- The model-code gap remains: AWS explicitly notes that TLA+ does not prove the code implements the design.
+- Strong invariants discovered in TLA+ can become runtime assertions, tests, or review gates.
+
+kspec takeaway:
+
+> Present formal sidecars as “debuggable architecture/spec models,” not as a demand that every product spec become a theorem. For lifecycle-heavy kspec behavior, TLA+ or a TLA+-like layer may be more ergonomic than Lean.
+
+### Cedar: executable formal model plus production implementation plus differential testing
+
+Sources:
+
+- https://lean-lang.org/use-cases/cedar/
+- https://github.com/cedar-policy/cedar-spec/tree/main/cedar-lean
+- https://github.com/cedar-policy/cedar-spec/tree/main/cedar-lean-cli
+- https://www.amazon.science/blog/how-we-built-cedar-with-automated-reasoning-and-differential-testing
+- https://aws.amazon.com/blogs/opensource/introducing-cedar-analysis-open-source-tools-for-verifying-authorization-policies/
+
+Cedar is one of the cleanest examples of the sidecar pattern. It keeps production Rust code and executable Lean models side by side. The Lean models describe components such as evaluation, authorization, validation, and symbolic compilation. Proofs establish important correctness/security properties, while differential testing generates many inputs and compares Lean behavior against Rust behavior.
+
+Important pattern:
+
+```text
+production implementation
+  <-> executable formal model
+  <-> proofs over the model
+  <-> differential/random testing between model and implementation
+  <-> release gate requiring model/proofs/tests to stay current
+```
+
+kspec takeaway:
+
+> For narrow domains, a formal sidecar should ideally be executable enough to act as a test oracle. The model should not just prove abstract theorems; it should support differential or property testing against real code where practical.
+
+### Microsoft CCF: TLA+ specs bound to C++ implementation through trace validation
+
+Sources:
+
+- https://www.microsoft.com/en-us/research/publication/smart-casual-verification-of-ccfs-distributed-consensus-and-consistency-protocols/
+- https://www.usenix.org/conference/nsdi25/presentation/howard
+- http://ccf.dev/main/architecture/raft_tla.html
+- https://github.com/microsoft/CCF/blob/main/.github/workflows/ci-verification.yml
+
+Microsoft CCF uses a hybrid “smart casual verification” approach: formal TLA+ specs plus pragmatic automated testing. The notable integration point is that the formal specification is bound to the C++ implementation through traces and CI. The project uses model checking and trace validation to keep the spec and implementation aligned as contributors evolve the system.
+
+Reported pattern:
+
+- keep TLA+ models in the repository;
+- run model checking in CI;
+- instrument implementation behavior;
+- validate implementation traces against a TLA+ trace spec;
+- upload traces/counterexamples as failure artifacts.
+
+kspec takeaway:
+
+> A kspec sidecar should not stop at `model-check passes`. For stateful implementation areas, it should support implementation trace validation: emit semantically meaningful events, translate them into formal states/transitions, and check that observed runs are allowed by the model.
+
+### etcd/raft: TLA+ model plus trace validation for a Go implementation
+
+Sources:
+
+- https://github.com/etcd-io/raft/tree/main/tla
+- https://github.com/etcd-io/raft/pull/113
+
+The etcd/raft repository includes TLA+ specifications and trace-validation machinery. The model accounts for implementation-specific behavior such as membership reconfiguration. The trace-validation flow uses build tags/logging to emit state-transition events, then validates NDJSON traces against the TLA+ model.
+
+Notable implementation details:
+
+- separate model-checking files from trace-validation files;
+- explicit scripts for model checking and trace checking;
+- trace events are logged from meaningful state transitions;
+- sampled/incomplete logs are unsafe for validation;
+- large traces may need batching.
+
+kspec takeaway:
+
+> kspec could eventually define a trace schema for formalized lifecycle areas. For example, task/review/dispatch transitions could emit compact events that are checked against a formal lifecycle sidecar.
+
+### MongoDB replication: observed implementation traces checked against a TLA+ spec
+
+Sources:
+
+- https://github.com/mongodb/mongo/blob/master/src/mongo/tla_plus/Replication/RaftMongo/RaftMongo.tla
+- https://github.com/mongodb-labs/repl-trace-checker
+
+MongoDB has public TLA+ modeling around replication behavior and a trace-checking workflow. The important pattern is not only the design model, but conversion of actual execution logs into a form that can be checked against the model.
+
+kspec takeaway:
+
+> For an existing implementation, conformance may be best added by observing real runs rather than attempting to prove all code. This is useful for dispatch/review/session behavior where real events already exist.
+
+### Alloy and relational counterexample finding
+
+Sources:
+
+- https://github.com/dgpv/miniscript-alloy-spec
+- https://github.com/AlloyTools/models/blob/master/models/webattack/webattack.md
+- https://github.com/hyperpolymath/alloyiser/blob/main/README.adoc
+
+Alloy is widely useful when the core issue is relational structure: entity relationships, graph constraints, aliases, reachability, and impossible combinations. Examples include Bitcoin Miniscript modeling, web attack models, and tools that extract interface/entity relationships into Alloy.
+
+Observed pattern:
+
+- define a compact relational model;
+- state assertions such as “there do not exist two active entities for the same canonical ID”;
+- run bounded searches;
+- inspect counterexample instances;
+- use counterexamples as design review artifacts or generated tests.
+
+kspec takeaway:
+
+> Alloy is a strong candidate for kspec ref graphs, canonical identity, aliases, dependency relationships, coverage relationships, and resource ownership. It may produce useful counterexamples faster than a full theorem-prover workflow.
+
+### Dafny / IronFleet: verified implementations through refinement
+
+Sources:
+
+- https://github.com/microsoft/Ironclad/tree/main/ironfleet
+- https://cacm.acm.org/research/ironfleet/
+
+IronFleet used Dafny to verify distributed systems such as a Paxos-based replicated state machine and a sharded key-value store. Its methodology combines high-level state-machine specs, refinement, Hoare-style reasoning, and executable verified code.
+
+Lessons:
+
+- this is a strong high-assurance path;
+- it can prove much deeper implementation correspondence than sidecar-only modeling;
+- the annotation/proof burden is high;
+- it is probably too heavy as the default path for kspec behavior.
+
+kspec takeaway:
+
+> Keep verified implementation as an escalation path, not the initial target. Start with sidecars, model checking, trace validation, and conformance tests before attempting full refinement proofs.
+
+### F* / HACL* / EverCrypt: verified libraries and generated production code
+
+Sources:
+
+- https://hacl-star.github.io/
+- https://github.com/hacl-star/hacl-star
+- https://project-everest.github.io/
+- https://blog.mozilla.org/security/2020/07/06/performance-improvements-via-formally-verified-cryptography-in-firefox/
+
+HACL* and EverCrypt use F*, Low*, and Vale to verify cryptographic code and extract/generate production C/assembly used by real downstream projects. The lesson is less “kspec should use F*” and more that formally verified components can be consumed as trusted libraries rather than reproved locally.
+
+kspec takeaway:
+
+> For security-critical primitives, kspec should prefer depending on existing verified libraries where possible. Formal sidecars can record assumptions and integration checks around those libraries rather than redoing the verification.
+
+### Coq/Rocq: CompCert, Fiat-Crypto, Verdi
+
+Sources:
+
+- https://compcert.org/doc/
+- https://github.com/mit-plv/fiat-crypto
+- https://boringssl.googlesource.com/boringssl/+/HEAD/third_party/fiat/README.md
+- https://github.com/uwplse/verdi
+- https://github.com/uwplse/verdi-Raft
+
+Coq/Rocq projects show several mature patterns:
+
+- CompCert proves semantic preservation for a C compiler and extracts executable compiler code.
+- Fiat-Crypto synthesizes correct-by-construction cryptographic arithmetic used by downstream production libraries.
+- Verdi verifies distributed systems and fault-model transformations.
+
+kspec takeaway:
+
+> These are useful north-star examples for layered specs, extraction, generated code, and fault-model libraries, but they are likely too proof-heavy for ordinary kspec sidecars. Their biggest near-term value is architectural: separate abstract spec, executable/generated artifact, proof, and integration assumptions.
+
+### Isabelle/HOL and seL4: layered high-assurance proof stacks
+
+Sources:
+
+- https://github.com/seL4/l4v
+- https://sel4.systems/Verification/proofs.html
+- https://trustworthy.systems/publications/nicta_full_text/1852.pdf
+
+seL4 demonstrates a layered proof stack: abstract specification, executable/design specification, refinement to C, and additional security properties. It is one of the strongest real-world examples of high-assurance formal verification.
+
+kspec takeaway:
+
+> Do not make seL4-style proof the default expectation. But borrow the layering idea: prose/product spec, abstract formal model, implementation conformance layer, and explicit assumptions/limits.
+
+### Lean extraction / source-to-proof pipelines
+
+Sources:
+
+- https://lean-lang.org/use-cases/aeneas/
+- https://github.com/cryspen/hax
+- https://github.com/runtimeverification/aeneas_fri_fold_arity_verification
+- https://github.com/reilabs/lampe
+
+Aeneas, Hax, and related tools extract code from languages such as Rust or Noir into Lean/F*/Rocq-style proof targets. These approaches are useful when the implementation already exists and the goal is to reason about extracted pure representations rather than rewrite code in the proof assistant.
+
+Observed pattern:
+
+- generate proof-side code from implementation;
+- keep generated files separate from hand-written proof/spec files;
+- prove properties externally over extracted definitions;
+- track unsupported language features and extraction gaps explicitly.
+
+kspec takeaway:
+
+> If kspec later wants stronger code correspondence, generated formal sidecars from source may be better than forcing humans/agents to maintain duplicate models manually. The sidecar layout should distinguish generated files from human-owned proof/spec files.
+
+### Lean embedded verifiers and DSLs: Veil, Velvet, `mvcgen`, `grind`
+
+Sources:
+
+- https://github.com/verse-lab/veil
+- https://github.com/verse-lab/velvet
+- https://lean-lang.org/doc/reference/latest/The--mvcgen--tactic/Overview/
+- https://lean-lang.org/doc/reference/latest/The--grind--tactic/Bigger-Examples/
+
+Lean is developing a broader software-verification ecosystem, including state-machine frameworks, Dafny-like embedded contract systems, weakest-precondition generation, and stronger automation tactics.
+
+kspec takeaway:
+
+> A useful kspec integration should not assume every formal artifact is a hand-written theorem from scratch. There may be value in templates or embedded DSLs that generate the proof obligations agents must satisfy.
+
+### AI-assisted proof/spec generation
+
+Sources:
+
+- https://github.com/lean-dojo/BRIDGE
+- https://arxiv.org/pdf/2306.15626
+- https://proceedings.mlr.press/v288/song25a.html
+
+Projects such as LeanDojo/ReProver, Lean Copilot, and BRIDGE explore AI-assisted theorem proving and code/spec/proof decomposition. The important trust boundary is that AI can propose proof steps or specs, but the Lean kernel or backend checker must validate accepted artifacts.
+
+kspec takeaway:
+
+> Agents can help write formal sidecars, but the artifact that matters is the checked proof/model output. Reviews should treat AI-generated proofs as normal code: inspect model adequacy, reject vacuity, and rely on the checker as the trust boundary.
+
+### Code-level bounded verification: CBMC and Kani
+
+Sources:
+
+- https://github.com/aws/s2n-tls/blob/main/tests/cbmc/README.md
+- https://github.com/model-checking/kani
+- https://github.com/model-checking/kani-github-action
+
+AWS s2n-tls uses CBMC proof harnesses for memory-safety checks over selected C entry points, with proofs run locally and in CI. Kani provides a similar bounded model-checking style for Rust, with GitHub Action support.
+
+kspec takeaway:
+
+> Formal sidecars do not need to be only “spec language” artifacts. Some invariants may be best represented as code-level proof harnesses that look like tests but quantify over all bounded inputs. kspec could record these as a formal backend/gate type.
+
+### Quint, Apalache, and developer-friendly model checking
+
+Sources:
+
+- https://github.com/informalsystems/quint/
+- https://quint-lang.org/
+- https://github.com/apalache-mc/apalache/
+
+Quint provides TLA-style semantics with a more developer-friendly syntax, type/effect checking, simulation, and integration with Apalache. Apalache provides bounded symbolic model checking via SMT.
+
+kspec takeaway:
+
+> Developer experience matters. If TLA+ is too alien for agents/reviewers, a Quint-style frontend or model-checking backend may be a better initial fit for lifecycle specs than raw TLA+.
+
+### Deterministic simulation as a complement, not a proof
+
+Sources:
+
+- https://www.youtube.com/watch?v=4fFDFbi3toc
+- https://www.youtube.com/watch?v=IaB8jvjW0kk
+
+FoundationDB-style deterministic simulation is not formal proof, but it is highly relevant to closing the model-code gap. It can replay failures, inject faults, and exercise real implementation code under controlled schedules.
+
+kspec takeaway:
+
+> Formal sidecars should be paired with deterministic replay, property tests, fuzzing, or simulation where the implementation is too complex to verify directly. Formal models can generate scenarios; simulation can validate real behavior.
+
+## Cross-cutting patterns worth incorporating
+
+### 1. Sidecar, not replacement
+
+Most practical systems keep formal artifacts beside normal engineering artifacts. They do not replace all prose, docs, tests, or code with proofs.
+
+kspec implication:
+
+```text
+kspec spec/plan/task/review remains the workflow source of truth
+formal sidecar captures selected invariants
+implementation tests/traces close the model-code gap
+```
+
+### 2. Separate abstract model from implementation linkage
+
+Repeated pattern:
+
+```text
+abstract model/proof
+  + implementation trace adapter or differential test
+  + code-level harness where useful
+```
+
+kspec should explicitly distinguish:
+
+- model check/proof passes;
+- implementation conformance evidence exists;
+- trace/differential/code harness evidence exists.
+
+### 3. Make counterexamples first-class review artifacts
+
+TLA+/Alloy/Apalache produce counterexamples. These should not be hidden in CI logs.
+
+kspec could store or link:
+
+- counterexample trace;
+- minimized scenario;
+- generated reproduction test;
+- reviewer note explaining product impact.
+
+### 4. Track assumptions and bounds
+
+Bounded checks are only meaningful with visible bounds. Trace validation is only meaningful if logs are complete enough. Proofs with axioms or generated assumptions must expose those assumptions.
+
+kspec formal metadata should eventually include:
+
+```yaml
+formal:
+  assumptions:
+    - traces include every task status transition
+    - model bounds: at most 3 agents, 4 tasks, 2 reviews
+  limits:
+    - bounded counterexample search, not universal proof
+    - UI display behavior not modeled
+```
+
+### 5. Prefer reusable templates
+
+Projects with repeatable proof shapes scale better. Examples include per-component `spec / impl / correct` templates, trace-validation templates, and code-level proof harness templates.
+
+kspec should provide templates for:
+
+- lifecycle state machine sidecar;
+- relational identity/alias sidecar;
+- policy sidecar;
+- implementation conformance test;
+- final-report mapping;
+- formal review checklist.
+
+### 6. Expose one command per gate
+
+Practical projects wrap formal tools in scripts or CI jobs. Agents should not need to remember whether a given sidecar uses `lake build`, `tlc2.TLC`, Alloy, Kani, CBMC, or Apalache.
+
+kspec implication:
+
+```yaml
+formal:
+  gate: scripts/check-formal-review-snapshot.sh
+```
+
+or eventually:
+
+```bash
+kspec formal check @review-snapshot-binding
+```
+
+### 7. Use formal methods where they beat tests
+
+The best candidates are not ordinary CRUD behavior. They are places where tests under-sample the state space or reviewers lose track of global semantics:
+
+- concurrency;
+- state transitions;
+- stale snapshot binding;
+- canonical identity;
+- authorization/security policy;
+- graph/relationship invariants;
+- preservation under refactor;
+- fail-closed behavior;
+- bounded input safety.
+
+### 8. Avoid proof theater
+
+Common failure modes:
+
+- theorem restates a definition but proves no useful product property;
+- model omits the bug-prone part of the system;
+- implementation is never checked against the model;
+- bounded check is described as a universal proof;
+- proof relies on unchecked axioms or `sorry`;
+- model is so implementation-specific that it becomes unreviewable and state-space explodes.
+
+kspec reviews should explicitly reject these.
+
+## Updated recommended sidecar architecture
+
+The wider research suggests broadening the earlier sidecar model from only `formal artifact + proof` to a four-part contract:
+
+```text
+1. Intent layer
+   kspec prose/spec/ACs identify the product invariant.
+
+2. Model layer
+   Lean/TLA+/Alloy/Cedar/etc. defines the formal semantics and checks/proofs.
+
+3. Linkage layer
+   property tests, differential tests, trace validation, generated tests, or code-level proof harnesses connect implementation behavior to the model.
+
+4. Review/evidence layer
+   CI output, counterexamples, assumptions, bounds, and model-code mappings are stored or referenced in kspec review artifacts.
+```
+
+This matters because the strongest public examples do not rely on a formal model alone. They combine formal models with implementation linkage and reviewable evidence.
+
 ## Cost and risk breakdown
 
 ### Sidecar-only spike
