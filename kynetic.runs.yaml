@@ -67688,7 +67688,7 @@ runs:
     completed_at: 2026-06-15T21:09:16.972Z
   - _ulid: 01KV6MA7819CM5HVB1H6K1E2FV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -67703,7 +67703,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T21:54:14.479Z
-        completed_at: 2026-06-15T21:54:14.479Z
+        completed_at: 2026-06-15T21:54:37.916Z
+        notes: "Identified one high-confidence friction point: this code-heavy review required the full npm
+          test gate, which passed but took 2998.0s (~50 minutes) after the review was otherwise
+          ready. This is concrete and repeatable as a cold/full review-gate duration issue.
+          Successes found: detached merge helper and evidence log worked well, but existing
+          observations @01KQ1273 and @01KT5ZGF already cover that success pattern. Focused lint
+          changed-line friction is already covered by @01KTEDDE."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T21:54:37.916Z
+        completed_at: 2026-06-15T21:54:37.916Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T21:51:59.233Z
