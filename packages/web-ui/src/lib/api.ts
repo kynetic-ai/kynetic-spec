@@ -38,6 +38,7 @@ import type {
   AgentUpdatePayload,
   ValidationAggregation,
   TaskStatusSummary,
+  ActorIdentityConfig,
 } from "@kynetic-ai/shared";
 import type { TriageRecord } from "./types/triage";
 import {
@@ -51,6 +52,7 @@ import {
   fetchTasksStatic,
   fetchTaskStatic,
   fetchTaskStatusSummaryStatic,
+  fetchIdentityStatic,
   fetchItemsStatic,
   fetchItemStatic,
   fetchItemTasksStatic,
@@ -297,6 +299,31 @@ export async function fetchTaskStatusSummary(): Promise<TaskStatusSummary> {
   }
 
   const response = await fetch(`${API_BASE}/api/aggregation/tasks/summary`, {
+    headers: getProjectHeaders(),
+  });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return unwrapEnvelope(await response.json());
+}
+
+/**
+ * Fetch the project's identity configuration — the configured human identity
+ * and the canonical agent roster — as a single bounded payload. The result
+ * feeds the shared actor classifier (`$lib/utils/actor`) so recorded actor
+ * strings can be resolved to canonical identities in the UI.
+ *
+ * Live mode hits the daemon identity endpoint; static mode derives the same
+ * shape from the build-time snapshot.
+ *
+ * AC: @actor-identity-resolution ac-1 — identity surface payload
+ */
+export async function fetchIdentity(): Promise<ActorIdentityConfig> {
+  if (isStaticMode()) {
+    return unwrapEnvelope(fetchIdentityStatic());
+  }
+
+  const response = await fetch(`${API_BASE}/api/identity`, {
     headers: getProjectHeaders(),
   });
   if (!response.ok) {

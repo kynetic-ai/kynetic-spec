@@ -36,6 +36,7 @@ import { createTaskResourcesRoutes } from "./routes/task-resources.js";
 import { createItemsRoutes } from "./routes/items.js";
 import { createInboxRoutes } from "./routes/inbox.js";
 import { createMetaRoutes } from "./routes/meta.js";
+import { createIdentityRoutes } from "./routes/identity.js";
 import { createValidationRoutes } from "./routes/validation.js";
 import { createProjectsRoutes } from "./routes/projects.js";
 import { createTriageRoutes } from "./routes/triage.js";
@@ -795,6 +796,9 @@ export async function createServer(options: ServerOptions) {
     // AC: @api-contract ac-15 through ac-18 - Meta API endpoints
     // AC: @daemon-entity-cache ac-write-through — pass cache accessor for meta write-through
     .use(createMetaRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
+
+    // AC: @actor-identity-resolution ac-1 - Identity surface (human + agent roster)
+    .use(createIdentityRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
 
     // AC: @triage-daemon-api ac-1 through ac-9 - Triage API endpoints
     // AC: @daemon-entity-cache ac-serve-from-memory, ac-write-through — pass cache accessor

@@ -33,6 +33,8 @@ import type {
   ApiResponse,
   ApiResponseMeta,
   TaskStatusSummary,
+  ActorIdentityConfig,
+  AgentIdentity,
 } from "@kynetic-ai/shared";
 import type { ValidationResponse } from "$lib/api";
 import type {
@@ -483,6 +485,47 @@ export function fetchTaskStatusSummaryStatic(): ApiResponse<TaskStatusSummary> {
     blocked_by_dependencies: blockedByDependencies,
     total: tasks.length,
   });
+}
+
+/**
+ * Build the identity configuration from the static snapshot.
+ *
+ * The canonical agent roster comes from the snapshot's agent definitions, with
+ * each entry's non-derivable spellings attached from the snapshot's exported
+ * `agent_aliases` map so the classifier resolves the same measured variants the
+ * live daemon endpoint serves (e.g. `@dispatch` → `pr-reviewer`). The static
+ * export carries no configured human identity, so `human` is null in static
+ * mode — historical agent strings still classify, and human strings degrade to
+ * unknown rather than being misattributed.
+ *
+ * AC: @actor-identity-resolution ac-1 — bounded identity payload (static mode)
+ * AC: @actor-identity-resolution ac-2 — agent variant resolution (static mode)
+ */
+export function fetchIdentityStatic(): ApiResponse<ActorIdentityConfig> {
+  const snapshot = getSnapshot();
+  // Snapshot agents carry id + name at runtime; read tolerantly so older or
+  // loosely typed snapshots do not break roster construction.
+  const rawAgents = (snapshot?.agents ?? []) as ReadonlyArray<{
+    id?: string;
+    name?: string;
+  }>;
+  // Snapshots predating the field omit agent_aliases; treat missing as empty.
+  const aliasMap = snapshot?.agent_aliases ?? {};
+  const agents: AgentIdentity[] = rawAgents
+    .filter((agent): agent is { id: string; name?: string } => typeof agent.id === "string")
+    .map((agent) => {
+      const aliases = aliasMap[agent.id];
+      const identity: AgentIdentity = {
+        canonicalId: agent.id,
+        displayName: agent.name ?? agent.id,
+      };
+      if (aliases && aliases.length > 0) {
+        identity.aliases = aliases;
+      }
+      return identity;
+    });
+
+  return wrapEnvelope<ActorIdentityConfig>({ human: null, agents });
 }
 
 /**

@@ -8,6 +8,9 @@
 // API types
 export * from "./api.js";
 
+// Actor identity classification
+export * from "./actor.js";
+
 // WebSocket types
 export * from "./websocket.js";
 

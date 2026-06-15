@@ -57,6 +57,32 @@ const IdentityConfigSchema = z
   .object({
     /** Default author for notes/tasks (overridden by KSPEC_AUTHOR env var) */
     author: z.string().optional(),
+    /**
+     * Human-facing display name for the configured human identity, surfaced
+     * by the identity endpoint. Falls back to the resolved author when unset.
+     * AC: @actor-identity-resolution ac-1 — human identity carries a display name
+     */
+    display_name: z.string().optional(),
+    /**
+     * Explicit recorded spellings of the human identity that are not derivable
+     * from the author value by the classifier's algorithmic normalization
+     * (case, `@`-prefix, email/role suffixes). Used to resolve historical
+     * free-form actor strings to the canonical human identity.
+     * AC: @actor-identity-resolution ac-3 — human variant resolution
+     */
+    aliases: z.array(z.string()).optional(),
+    /**
+     * Explicit recorded spellings of canonical agents that are not derivable
+     * from the agent id by the classifier's algorithmic normalization. Keyed
+     * by canonical agent id; each value lists the non-derivable recorded
+     * spellings (for example `pr-reviewer` recorded as `@dispatch`/`@kspec`).
+     * The identity endpoint merges these into each roster entry's `aliases`
+     * so the payload it serves to the shared classifier can resolve the
+     * measured variants. Derivable spellings (case, `@`-prefix, email/role
+     * suffixes) do not need to be listed.
+     * AC: @actor-identity-resolution ac-2 — agent variant resolution
+     */
+    agent_aliases: z.record(z.string(), z.array(z.string())).optional(),
   })
   .strict()
   .optional();
@@ -382,6 +408,16 @@ export interface ResolvedKspecConfig {
   };
   identity: {
     author: string | null;
+    /** Configured human display name, or null to fall back to the author. */
+    display_name: string | null;
+    /** Explicit human-identity aliases for classification (never null). */
+    aliases: string[];
+    /**
+     * Explicit non-derivable agent spellings keyed by canonical agent id,
+     * merged into the identity endpoint's roster (never null; empty when
+     * unconfigured).
+     */
+    agent_aliases: Record<string, string[]>;
   };
   validation: {
     /**
@@ -537,6 +573,9 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
   },
   identity: {
     author: null,
+    display_name: null,
+    aliases: [],
+    agent_aliases: {},
   },
   validation: {
     // AC: @config-validation — defaults preserve existing behavior
@@ -718,6 +757,26 @@ export async function loadProjectConfig(
 }
 
 /**
+ * Resolve the configured per-agent alias map into a normalized, defensively
+ * copied `Record<string, string[]>`. Entries with an empty alias list are
+ * dropped so callers can treat a present key as "has at least one alias".
+ *
+ * AC: @actor-identity-resolution ac-2 — non-derivable agent aliases
+ */
+function resolveAgentAliases(raw: Record<string, string[]> | undefined): Record<string, string[]> {
+  if (!raw) {
+    return {};
+  }
+  const resolved: Record<string, string[]> = {};
+  for (const [id, aliases] of Object.entries(raw)) {
+    if (Array.isArray(aliases) && aliases.length > 0) {
+      resolved[id] = [...aliases];
+    }
+  }
+  return resolved;
+}
+
+/**
  * Resolve configuration by merging file config with env vars and defaults.
  *
  * Priority: env vars > config file > defaults
@@ -752,6 +811,12 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
     identity: {
       // AC: ac-5 — env var takes precedence
       author: envAuthor ?? file.identity?.author ?? DEFAULT_CONFIG.identity.author,
+      // AC: @actor-identity-resolution ac-1 — configured profile display name
+      display_name: file.identity?.display_name ?? DEFAULT_CONFIG.identity.display_name,
+      // AC: @actor-identity-resolution ac-3 — configured human aliases
+      aliases: file.identity?.aliases ?? [...DEFAULT_CONFIG.identity.aliases],
+      // AC: @actor-identity-resolution ac-2 — configured non-derivable agent aliases
+      agent_aliases: resolveAgentAliases(file.identity?.agent_aliases),
     },
     validation: {
       // AC: @config-validation ac-2 ac-3 — strict_refs from config
@@ -869,7 +934,12 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       remote: DEFAULT_CONFIG.shadow.remote,
       sync_interval: DEFAULT_CONFIG.shadow.sync_interval,
     },
-    identity: { ...DEFAULT_CONFIG.identity },
+    identity: {
+      author: DEFAULT_CONFIG.identity.author,
+      display_name: DEFAULT_CONFIG.identity.display_name,
+      aliases: [...DEFAULT_CONFIG.identity.aliases],
+      agent_aliases: resolveAgentAliases(DEFAULT_CONFIG.identity.agent_aliases),
+    },
     validation: {
       strict_refs: DEFAULT_CONFIG.validation.strict_refs,
       require_acceptance: DEFAULT_CONFIG.validation.require_acceptance,

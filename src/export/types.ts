@@ -274,6 +274,17 @@ export interface KspecSnapshot {
   observations: Observation[];
   /** Agents */
   agents: Agent[];
+  /**
+   * Configured non-derivable agent spellings keyed by canonical agent id,
+   * carried so static-mode identity classification resolves the same measured
+   * variants the live daemon endpoint serves. Absent on snapshots exported
+   * before this field existed; consumers treat a missing value as "no
+   * configured aliases".
+   *
+   * AC: @actor-identity-resolution ac-1 — static identity payload
+   * AC: @actor-identity-resolution ac-2 — agent variant resolution (static)
+   */
+  agent_aliases?: Record<string, string[]>;
   /** Workflows */
   workflows: Workflow[];
   /** Conventions */
