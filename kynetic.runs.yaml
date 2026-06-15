@@ -66921,7 +66921,7 @@ runs:
     started_at: 2026-06-15T11:16:59.606Z
     completed_at: 2026-06-15T11:18:39.249Z
   - _ulid: 01KV5H46RH9S6QHAQF4FVN0W3R
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -66974,10 +66974,16 @@ runs:
         started_at: 2026-06-15T11:39:09.382Z
         completed_at: 2026-06-15T11:39:20.456Z
         notes: No improvements proposed, so no user approval questions are needed.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-15T11:39:20.456Z
-        completed_at: 2026-06-15T11:39:20.456Z
+        completed_at: 2026-06-15T11:39:33.862Z
+        notes: No capture performed. Friction was already tracked by unresolved observations @01KN48VM and
+          @01KN8W8H plus existing review-check batching items. Success pattern (detached review flow
+          plus durable kspec checks and helper merge) is already represented by prior
+          detached-review success observations found during search, so adding another observation
+          would be duplicate noise.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T11:37:01.970Z
+    completed_at: 2026-06-15T11:39:33.862Z
