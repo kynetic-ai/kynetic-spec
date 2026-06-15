@@ -29031,12 +29031,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-15T11:18:58.839Z
+      updated_at: 2026-06-15T11:19:13.150Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-15T11:18:58.839Z
+      updated_at: 2026-06-15T11:19:13.150Z
     integration:
       status: pending
       detail: null
@@ -29044,8 +29044,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 9d497f7309c419a69458394e19c2e71263bdb544
-      updated_at: 2026-06-15T11:18:58.839Z
-    lifecycle_state: ready
+      updated_at: 2026-06-15T11:19:13.150Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV4CD9W9AJRNJQCEZ0NWF09W
     task_ref: "@01KV4CD9W9AJRNJQCEZ0NWF09W"
@@ -29053,18 +29053,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-15T10:58:01.199Z
-      last_reconciled_at: 2026-06-15T11:18:58.839Z
+      last_reconciled_at: 2026-06-15T11:19:13.150Z
       created_at: 2026-06-15T08:37:02.989Z
-      updated_at: 2026-06-15T11:18:58.839Z
+      updated_at: 2026-06-15T11:19:13.150Z
     workspace_id: dispatch-workspace-01KV4CD9W9AJRNJQCEZ0NWF09W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f7eb4ef8c37fed3b75a78c0355afe055be82d1d9
+        last_seen_at: 2026-06-15T11:19:13.150Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-actor-display-next-actor-01kv4cd9-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-actor-display-next-actor/01kv4cd9
-        head: 7aa8f5e1b19cbc7bdf1210123f068c16c50a5975
-        last_seen_at: 2026-06-15T10:57:27.382Z
+        head: f7eb4ef8c37fed3b75a78c0355afe055be82d1d9
+        last_seen_at: 2026-06-15T11:19:13.150Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-actor-display-next-actor-01kv4cd9
   - active_role: null
     base_branch_point: 3248d1a4dc66f4dc00ae88bd0d1d27574e6fd946
