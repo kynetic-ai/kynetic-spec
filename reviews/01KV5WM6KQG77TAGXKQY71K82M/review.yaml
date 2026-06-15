@@ -212,6 +212,12 @@ events:
     payload:
       thread_ulid: 01KV5XJSV23K9ZB1CEFWYFSBE1
     timestamp: 2026-06-15T16:28:35.680Z
+  - _ulid: 01KV61T7FFR2GFDXAV9E4V734M
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KV5XJSV23K9ZB1CEFWYFSBE1
+    timestamp: 2026-06-15T16:28:40.815Z
 examined_commit: 36aa75a711c4df71b95a524288c470865258e9da
 external_links: []
 lifecycle_state: closed
@@ -314,6 +320,8 @@ threads:
           flagged is the blocker now fixed in the sibling thread.
         created_at: 2026-06-15T16:28:35.441Z
     kind: nit
+    resolved_at: 2026-06-15T16:28:40.583Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -323,5 +331,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T15:14:46.126Z
 created_at: 2026-06-15T14:58:00.439Z
-updated_at: 2026-06-15T16:28:35.441Z
+updated_at: 2026-06-15T16:28:40.583Z
 notes: []
