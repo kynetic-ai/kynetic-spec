@@ -32207,7 +32207,7 @@
   type: task
   spec_ref: "@ui-breadcrumb"
   plan_ref: "@plan-web-ui-foundations"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-breadcrumb-ancestry-api"
@@ -32216,7 +32216,7 @@
     - web-ui
     - navigation
   review_ref: "@01KV69JT2XZQK9Z0PQTZGBSPX5"
-  notes_count: 2
+  notes_count: 3
   todos_count: 0
   created_at: 2026-06-15T00:55:23.786Z
   started_at: 2026-06-15T18:13:39.296Z

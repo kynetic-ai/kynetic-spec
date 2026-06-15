@@ -2,7 +2,107 @@ _ulid: 01KV69JT2XZQK9Z0PQTZGBSPX5
 slugs: []
 title: Review task-breadcrumb-component
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check . reported all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-15T19:01:48.163Z
+    completed_at: 2026-06-15T19:01:48.163Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint --quiet found 0 errors (736 warning baseline). Focused
+      changed-file oxlint on 6 changed TS/test files found 0 warnings and 0 errors. Separate blocker
+      records the new Svelte build accessibility warning in BreadcrumbNav.svelte."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-15T19:01:51.386Z
+    completed_at: 2026-06-15T19:01:51.386Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: packages/web-ui/src/lib/utils/breadcrumb-kind.ts, breadcrumb-trail.ts,
+      tests/e2e/review-detail-page.spec.ts, reviews-detail.spec.ts, sessions.spec.ts, and
+      tests/web-ui-breadcrumb.test.ts reported 0 warnings and 0 errors."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed-ts-and-test-files>
+    created_at: 2026-06-15T19:01:54.554Z
+    completed_at: 2026-06-15T19:01:54.554Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared completed and tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-15T19:01:57.778Z
+    completed_at: 2026-06-15T19:01:57.778Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2847/2847 test suites, 10819/10822 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KV69H5CGF9WTX6SEZ592JQAT/319e8926eaab4976.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-15T19:02:00.959Z
+    completed_at: 2026-06-15T19:02:00.959Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok exited 0 with known reference warning baseline."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T19:02:04.072Z
+    completed_at: 2026-06-15T19:02:04.072Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0 with known orphan/status
+      warning baseline."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T19:02:07.161Z
+    completed_at: 2026-06-15T19:02:07.161Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0 with known AC
+      coverage/annotation warning baseline. @ui-breadcrumb ac-1 through ac-10 annotations present in
+      changed tests and existing ancestry tests."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T19:02:10.273Z
+    completed_at: 2026-06-15T19:02:10.273Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:e2e completed and Playwright reported 76 passed. Build emitted a new Svelte
+      a11y warning in BreadcrumbNav.svelte, recorded as a blocker thread."
+    name: targeted e2e browser specs
+    required: false
+    runner: npm run test:e2e -- tests/e2e/reviews-detail.spec.ts tests/e2e/sessions.spec.ts
+      tests/e2e/review-detail-page.spec.ts
+    created_at: 2026-06-15T19:02:13.400Z
+    completed_at: 2026-06-15T19:02:13.400Z
 events:
   - _ulid: 01KV69JT2W6BEYT5WHSAK08HPJ
     actor: Jacob Chapel
@@ -17,17 +117,160 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T18:44:50.331Z
+  - _ulid: 01KV6AJKR7K87YJ6RP27CYGQYY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-15T19:01:48.423Z
+  - _ulid: 01KV6AJPWRJMWT5GRV42Y0322V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-15T19:01:51.641Z
+  - _ulid: 01KV6AJSZW3MMWNTTT3VXPGG0N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-15T19:01:54.812Z
+  - _ulid: 01KV6AJX54YZ199985SRCTYC0Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-15T19:01:58.052Z
+  - _ulid: 01KV6AK07YXX6NXQ8Z0BDPMVKE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-15T19:02:01.214Z
+  - _ulid: 01KV6AK39HXMB1N710T4YBBNKF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-15T19:02:04.337Z
+  - _ulid: 01KV6AK69ED1MJ9X2TESD2TGDF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-15T19:02:07.406Z
+  - _ulid: 01KV6AK9ASMXRCT1K6VWYCH6AA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-15T19:02:10.521Z
+  - _ulid: 01KV6AKCCPQARRZG153S19RYDD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted e2e browser specs
+    timestamp: 2026-06-15T19:02:13.654Z
+  - _ulid: 01KV6AKFBJEASSZQ5S3TSA26K2
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV6AKF3XJYVEVWRTS3AXVJV8
+    timestamp: 2026-06-15T19:02:16.690Z
+  - _ulid: 01KV6AKJF9RAGB51F73CZ4DZF2
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV6AKJ7817QX4B1X3ATBXRMM
+    timestamp: 2026-06-15T19:02:19.881Z
+  - _ulid: 01KV6AKNM8NRCMFXRXB34AQ099
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-15T19:02:23.112Z
+  - _ulid: 01KV6AKNM8A55YSKFVQQQDTJZP
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-15T19:02:23.112Z
 examined_commit: 888392cd32e99b77c18c9285056453670079e372
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KV4CDAWAG1XHQVHAVABN2VMD"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KV6AKF3XJYVEVWRTS3AXVJV8
+    anchor:
+      type: code
+      commit: 888392cd32e99b77c18c9285056453670079e372
+      line_end: 180
+      line_start: 176
+      path: packages/web-ui/src/lib/components/BreadcrumbNav.svelte
+      side: head
+    entries:
+      - _ulid: 01KV6AKF3Y28HC46H78DHK22XN
+        author: codex
+        body: "MUST-FIX: the production Svelte build now warns that this non-interactive `<ul>` has a
+          keyboard event listener (`a11y_no_noninteractive_element_interactions`). This is
+          introduced by the new component and weakens the accessibility semantics for the collapsed
+          breadcrumb popover even though the Playwright keyboard path currently passes. Move the key
+          handling onto an appropriate interactive/focusable element or add correct listbox/menu
+          semantics so the build warning is gone while preserving the click, tap, ArrowUp/ArrowDown,
+          Enter, and Escape behavior. Evidence: `npm run test:e2e --
+          tests/e2e/reviews-detail.spec.ts tests/e2e/sessions.spec.ts
+          tests/e2e/review-detail-page.spec.ts` passed 76 tests, but the build step reported the
+          warning at this line."
+        created_at: 2026-06-15T19:02:16.446Z
+    kind: blocker
+  - _ulid: 01KV6AKJ7817QX4B1X3ATBXRMM
+    entries:
+      - _ulid: 01KV6AKJ78ZWM6J2AGV9RW1GVX
+        author: codex
+        body: "Evidence log: Files read: kspec-agents.md; task @01KV4CDAWAG1XHQVHAVABN2VMD; spec
+          @ui-breadcrumb; BreadcrumbNav.svelte; breadcrumb-kind.ts; breadcrumb-trail.ts;
+          reviews/[id]/+page.svelte; sessions/[id]/+page.svelte; tests/web-ui-breadcrumb.test.ts;
+          tests/e2e/reviews-detail.spec.ts; tests/e2e/sessions.spec.ts;
+          tests/e2e/review-detail-page.spec.ts; reference utilities and shared
+          BreadcrumbAncestor/API ancestry types. Commands run: git diff/stat/log/status; kspec item
+          get; kspec validate refs/alignment/completeness; npm run format:check; npm run lint --
+          --quiet; focused npx oxlint; npm run typecheck; npm test; targeted npm run test:e2e.
+          Claims verified: worker's full-suite claim verified by npm test; browser popover/keyboard
+          claim verified by targeted Playwright run; server-resolved ancestry/no client list fetch
+          checked through prop-based component and shared/API ancestry surfaces. Categories
+          searched: correctness, overflow/edge cases, keyboard/accessibility, test quality, route
+          integration, validation/lint/type/test gates. Finding: one introduced Svelte accessibility
+          warning in BreadcrumbNav.svelte."
+        created_at: 2026-06-15T19:02:19.624Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-15T19:02:23.112Z
 created_at: 2026-06-15T18:44:26.333Z
-updated_at: 2026-06-15T18:44:50.053Z
+updated_at: 2026-06-15T19:02:23.112Z
 notes: []
