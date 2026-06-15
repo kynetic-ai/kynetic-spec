@@ -1,1 +1,39 @@
-notes: []
+notes:
+  - _ulid: 01KV50BQVESA44R0J5QGSZBYEX
+    content: >-
+      Approach: Add a single shared breadcrumb ancestry resolver in packages/shared
+      (@kynetic-ai/shared) — a pure, dependency-light module mirroring the actor.ts precedent so
+      daemon detail routes AND the web-ui static provider both consume one implementation.
+
+
+      Design:
+
+      - New packages/shared/src/breadcrumb-ancestry.ts: BreadcrumbAncestor { ref, title, kind },
+      computeItemParentMap (moved from daemon items.ts to dedupe), and BreadcrumbAncestryResolver
+      class with forItem/forTask/forPlan/forReview/forSession. Item parent chain is the only deep
+      hierarchy (walk _path/_sourceFile parent map root->leaf). Leaf entities anchor to a typed
+      parent: task->spec_ref(item), plan->module_ref(item), review->subject.ref (task|plan|spec by
+      subject.type; code/external => single segment), session->owning task (task-scoped) else single
+      segment. Chains are root-to-current; last segment is the entity itself. ref = entity _ulid
+      (matches existing parent field + web UI nav by _ulid).
+
+      - Add ancestors?: BreadcrumbAncestor[] to TaskDetail/ItemDetail/PlanDetail/ReviewDetail
+      (shared api.ts) and SessionDetail (web-ui api.ts).
+
+      - Wire daemon routes items/tasks/plans/reviews/sessions to populate ancestors from
+      cache/ref-index data (no disk walks; reuse cached item/task/plan indexes).
+
+      - Wire web-ui api-static.ts to build one resolver over the snapshot (items/tasks/plans) and
+      populate ancestors for item/task/plan/review static detail. Sessions are not exported
+      statically.
+
+      - Static export already carries _path/_sourceFile/type (items), spec_ref (tasks), subject
+      (reviews); add explicit module_ref to ExportedPlan type for clarity.
+
+
+      Covers @ui-breadcrumb ac-10. Test plan: shared resolver unit tests (each leaf kind + collapse
+      depths/single-segment/cycle guard) plus daemon API E2E asserting ancestors on each detail
+      endpoint and that no unbounded list fetch is needed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T06:44:03.054Z
