@@ -67505,9 +67505,21 @@ runs:
     completed_at: 2026-06-15T20:04:28.067Z
   - _ulid: 01KV6G453AEYRPBFZM2P156C7N
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-15T20:38:46.123Z
+        completed_at: 2026-06-15T20:39:22.287Z
+        notes: "What worked well: the detached reviewer merge workflow was clear and executable end to end.
+          The supported helper merged to dev without manual checkout, the kspec review record
+          captured checks/verdict/evidence, and direct source-vs-render comparisons made
+          package-skill output verification concrete."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-15T20:39:22.287Z
+        completed_at: 2026-06-15T20:39:22.287Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T20:38:46.123Z
