@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KV6TT1WMBCZPF9H4HEH3MAF0
+    content: "Approach: Schema in src/schema/verification-records.ts (VerificationStampSchema
+      {verified_at, actor, provenance enum validation|ingestion|re_verification, commit?, session?};
+      VerificationRecordSchema {format:int, acs: record<acId, stamp>}); incomplete stamps rejected
+      via schema. Storage manager src/parser/verification-record-store.ts: one file per item ULID at
+      <specDir>/coverage/verifications/<ULID>.yaml; writeVerificationStamp does runWithBuffer write
+      + commitIfShadow (shadow auto-commit per write), replace-on-write keeps one current stamp/AC
+      (prior recoverable from shadow git history). Keying by item ULID (filename) survives slug
+      rename/file move. partitionVerificationReads(records, validCriteria) splits resolved vs
+      orphans. Validation: new completeness warning orphaned_verification_record using item own ACs
+      + inherited trait ACs. Tests: round-trip, incomplete rejection, rename/move resolvability,
+      spec bytes byte-identical, current-stamp replacement, orphan tolerance+finding, shadow
+      versioned-persistence (git show kspec-meta:path) + replacement history via git log."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T23:45:29.492Z
