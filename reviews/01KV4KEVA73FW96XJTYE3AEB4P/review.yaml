@@ -1,0 +1,26 @@
+_ulid: 01KV4KEVA73FW96XJTYE3AEB4P
+slugs: []
+title: Review identity endpoint and actor classifier (cycle 2)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KV4KEVA7TMKFEZPJE7Y1RY1R
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-15T02:58:33.415Z
+examined_commit: 2b09076ac69cf4bd00cc17e62fafd4263aee5d36
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KV4CD95BNGJ9YG3PYYZ4S6E0"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-15T02:58:33.415Z
+updated_at: null
+notes: []

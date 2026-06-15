@@ -84,7 +84,7 @@ tags:
   - api
   - identity
 vcs_refs: []
-review_ref: "@01KV4ETGG3R2CKM52TN07G6HGJ"
+review_ref: "@01KV4KEVA73FW96XJTYE3AEB4P"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-identity-endpoint-classifier/01kv4cd9
@@ -192,6 +192,13 @@ history:
         previous: 2026-06-15T01:33:14.857Z
     command: task-submit
     timestamp: 2026-06-15T02:54:28.314Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KV4KEVA73FW96XJTYE3AEB4P"
+        previous: "@01KV4ETGG3R2CKM52TN07G6HGJ"
+    command: review-link
+    timestamp: 2026-06-15T02:58:35.841Z
 resource_refs:
   - git_commit: null
     git_path: null
