@@ -143,6 +143,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T08:51:08.197Z
+  - _ulid: 01KV57NBTR49BNW71PYZJTT4ZK
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV57NBKXBS6Q4P44RKDAC9E5
+    timestamp: 2026-06-15T08:51:38.456Z
 examined_commit: 4417519b6e31bfc7bc465337c92181137381f8a9
 external_links: []
 lifecycle_state: open
@@ -152,8 +159,41 @@ subject:
   content_hash: ""
   ref: "@01KV4CDBJ1P97HBCQHVPG61VXG"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV57NBKXBS6Q4P44RKDAC9E5
+    entries:
+      - _ulid: 01KV57NBKX3SG7DDJDBC02JYGD
+        author: codex
+        body: >-
+          Evidence log
+
+
+          Files read: kspec-agents.md; task @01KV4CDBJ1P97HBCQHVPG61VXG; specs
+          @ui-shortcut-registry, @web-shell-platform-target, @web-dashboard; changed files under
+          packages/web-ui/src/lib/shortcuts, CommandPalette.svelte, sidebar-provider.svelte,
+          triage/+page.svelte, +layout.svelte, tests/web-ui/shortcuts.test.ts,
+          tests/e2e/search.spec.ts; base versions of CommandPalette.svelte and search.spec.ts.
+
+
+          Commands run: git diff/name-status/log/show; rg for keydown handlers and AC annotations;
+          kspec validate refs/alignment/completeness with --warnings-ok; npm run format:check; npm
+          run lint -- --quiet; npx oxlint on changed TS/test files; npm run typecheck; npm test; npx
+          tsx probe for platform-strict mac Ctrl+K behavior.
+
+
+          Claims verified: central dispatcher is installed once in root layout; migrated
+          palette/sidebar/triage handlers register through shortcutRegistry and unregister on
+          teardown; platform mod resolves to Cmd on macOS and Ctrl elsewhere; reserved preferred
+          chords fall back or report unbound; text-entry suppression leaves modifier-less keys
+          untouched; tests are behavioral and AC-annotated, not source-scanning.
+
+
+          Categories searched: correctness, platform mapping, collision/fallback edge cases,
+          text-entry error paths, test quality, integration with existing key handlers. No blocking
+          or nonblocking code findings found.
+        created_at: 2026-06-15T08:51:38.237Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-15T08:37:41.844Z
-updated_at: 2026-06-15T08:51:07.938Z
+updated_at: 2026-06-15T08:51:38.237Z
 notes: []
