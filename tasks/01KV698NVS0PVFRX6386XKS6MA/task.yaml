@@ -1,0 +1,106 @@
+_ulid: 01KV698NVS0PVFRX6386XKS6MA
+slugs:
+  - task-harden-detached-reviewer-merge-helper-paths
+title: Harden detached reviewer merge helper path handling for primary target checkouts
+type: bug
+description: >-
+  Fix the detached reviewer merge helper so conflict cleanup and preflight in-progress operation
+  detection work when the selected existing integration-target checkout is the primary repository
+  worktree and Git reports operation marker paths relative to that checkout.
+
+
+  Covers:
+
+  - @detached-reviewer-merge-helper ac-helper-safe-conflict-exit
+
+  - @detached-reviewer-merge-helper ac-helper-refuses-dirty-target
+
+  - @detached-reviewer-merge-helper ac-helper-merges-in-clean-occupied-target-checkout
+
+  - @detached-reviewer-merge-helper ac-helper-does-not-break-checked-out-target
+
+  - @detached-reviewer-merge-helper ac-helper-leaves-no-new-target-branch-lock
+
+
+  Required implementation changes:
+
+  1. Add a shell helper in `templates/skills/merge/scripts/detached-reviewer-merge.sh` that resolves
+  `git -C "$wt" rev-parse --git-path <marker>` results to an absolute or worktree-relative
+  filesystem path before tests such as `[ -e ... ]`.
+     - Absolute paths must be preserved.
+     - Relative paths such as `.git/MERGE_HEAD` must be resolved under the target worktree path, not the helper process cwd.
+     - Reuse the helper for both preflight operation marker detection and post-merge-failure `MERGE_HEAD` detection.
+  2. On any nonzero merge attempt after a merge has started, attempt `git -C "$MERGE_SURFACE" merge
+  --abort` before returning failure, even if conflict classification later changes.
+
+  3. After aborting a failed merge in an existing target checkout, verify and report distinctly if
+  cleanup did not restore the pre-merge state:
+     - `git -C "$MERGE_SURFACE" rev-parse HEAD` equals `PRE_MERGE_TARGET_HEAD` when that value was captured.
+     - `git -C "$MERGE_SURFACE" status --porcelain --untracked-files=no` is empty.
+     - `MERGE_HEAD` is absent using the corrected marker-path helper.
+     - If any cleanup verification fails, print a severe cleanup-failed error that names the target checkout and leaves no ambiguity that dispatch may need manual repair.
+  4. Keep the task limited to the detached merge helper and its tests/guidance render outputs; do
+  not alter dispatch scheduling, task status transitions, review semantics, or automatic conflict
+  resolution.
+
+
+  Required tests:
+
+  1. Add a regression test where the integration target branch is checked out in the primary
+  repository worktree, the task branch conflicts, and the helper is run from a detached reviewer
+  worktree. Assert nonzero exit, `merge conflict detected` guidance, target `HEAD` unchanged, no
+  `MERGE_HEAD`, clean tracked status, and no conflict markers left in the primary checkout.
+
+  2. Add a regression test where the primary target checkout already has an in-progress merge before
+  the helper runs from a different cwd. Assert the helper refuses before attempting another merge,
+  reports in-progress merge guidance, and leaves the existing in-progress operation untouched for
+  the operator.
+
+  3. Keep the existing linked-worktree occupied-target conflict tests passing so linked worktree
+  absolute/common-git-dir path behavior remains covered.
+
+  4. Keep the existing temporary-target conflict path covered: helper-owned temp worktree is removed
+  and the target ref remains unchanged.
+
+
+  Regeneration/gates:
+
+  - Because the changed helper is a package core skill source under `templates/skills/`, run `kspec
+  skill render` and commit the rendered tracked outputs under `.agents/skills/` and
+  `.factory/skills/` as applicable.
+
+  - Run `kspec skill verify` after rendering to catch package skill/render drift.
+
+  - Run `npm run build:plugin` to verify/regenerate plugin skill output.
+
+  - Run `npm test -- --fresh tests/detached-reviewer-merge.test.ts`.
+
+  - Run `KSPEC_NO_DAEMON=1 kspec validate --refs --warnings-ok`.
+
+
+  Out of scope:
+
+  - Do not resolve the conflicting task branch merge contents in the helper.
+
+  - Do not change task `needs_work` behavior or dispatch queueing.
+
+  - Do not restart or repair the live dispatch daemon/checkouts as part of this task.
+
+  - Do not broaden helper behavior to use auxiliary/dispatch-created target checkouts as merge
+  surfaces.
+spec_ref: "@detached-reviewer-merge-helper"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - merge
+  - reviewer
+vcs_refs: []
+created_at: 2026-06-15T18:38:54.329Z
+todos: []
+automation: eligible

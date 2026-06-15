@@ -32286,3 +32286,21 @@
   submitted_at: 2026-06-15T04:34:00.049Z
   completed_at: 2026-06-15T04:52:53.980Z
   automation: eligible
+- _ulid: 01KV698NVS0PVFRX6386XKS6MA
+  slugs:
+    - task-harden-detached-reviewer-merge-helper-paths
+  title: Harden detached reviewer merge helper path handling for primary target checkouts
+  type: bug
+  spec_ref: "@detached-reviewer-merge-helper"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - merge
+    - reviewer
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T18:38:54.329Z
+  automation: eligible
