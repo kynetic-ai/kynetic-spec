@@ -35,3 +35,54 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-15T18:14:07.340Z
+  - _ulid: 01KV69903WFG5HYMEC0CA9HBDJ
+    content: >-
+      Implemented the adaptive breadcrumb and adopted it on the review and session detail routes.
+
+
+      Components/logic:
+
+      - BreadcrumbNav.svelte — consumes server-resolved BreadcrumbAncestor[]; ResizeObserver-driven
+        overflowLevel; bits-ui Popover for the collapse indicator (click/tap/keyboard, overlay = no shift).
+      - breadcrumb-trail.ts — pure computeTrail/canCollapseFurther/nextPopoverIndex (tier + overflow
+      + keyboard logic).
+
+      - breadcrumb-kind.ts — kind -> {label, refType, pillClass} for indicators + routing via
+      refHref.
+
+
+      Tests:
+
+      - tests/web-ui-breadcrumb.test.ts — pure tier/overflow/reducer/kind tests + SSR render tests
+      (tiers 4/5/6/7,
+        kind pills, current emphasis, routing, no-fetch). 16 cases, all green; full suite green.
+      - e2e (reviews-detail.spec.ts, sessions.spec.ts, review-detail-page.spec.ts) — real popover
+      open (click +
+        keyboard), arrow nav + Enter navigation, Escape close, overlay no-layout-shift, session/review adoption.
+        E2e runs under Playwright (npm run test:e2e), excluded from npm test; needs a browser run to verify.
+
+      Cross-spec decision (reviewer note): on the SESSION route I kept the ViewHeader actions-zone
+      "Back" link
+
+      because @ui-view-header ac-5 mandates back navigation in the actions zone (covered by
+      sessions.spec.ts:423).
+
+      The breadcrumb is added as leading hierarchy chrome and coexists with it. On the REVIEW route
+      the back link
+
+      was a bespoke ad-hoc div (not tied to @ui-view-header), so it was fully replaced by the
+      breadcrumb; the two
+
+      review e2e specs that asserted "back to reviews list" were updated to assert the breadcrumb
+      and navigate via
+
+      goto for the downstream list-parity checks.
+
+
+      Pre-existing svelte-check baseline ($page.params.id typed string|undefined across many routes)
+      is unchanged;
+
+      my new files introduce no svelte-check errors.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T18:39:04.828Z
