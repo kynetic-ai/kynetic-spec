@@ -67,6 +67,7 @@ tags:
   - web-ui
   - persistence
 vcs_refs: []
+review_ref: "@01KV4PCV5KKFEFPTRAHTV7NY6G"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-preference-utility/01kv4cdb
@@ -117,6 +118,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-15T03:46:17.083Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KV4PCV5KKFEFPTRAHTV7NY6G"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-15T03:49:55.794Z
 resource_refs:
   - git_commit: null
     git_path: null
