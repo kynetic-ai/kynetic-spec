@@ -30,6 +30,7 @@
 		reviewSectionResourceGuidance,
 	} from '$lib/utils/review-content-resources';
 	import { Badge } from '$lib/components/ui/badge';
+	import type { ActorClassifier } from '$lib/utils/actor';
 	import ContentCommentForm from './ContentCommentForm.svelte';
 	import ContentInlineThread from './ContentInlineThread.svelte';
 
@@ -37,9 +38,11 @@
 		review: ReviewDetail;
 		threads: ReviewThread[];
 		isInteractive: boolean;
+		/** Shared actor classifier threaded to inline thread authors. */
+		classifier?: ActorClassifier;
 	}
 
-	let { review, threads, isInteractive }: Props = $props();
+	let { review, threads, isInteractive, classifier }: Props = $props();
 
 	const queryClient = useQueryClient();
 
@@ -354,6 +357,7 @@
 											<ContentInlineThread
 												{thread}
 												{isInteractive}
+												{classifier}
 												onReply={handleReply}
 												onResolve={handleResolve}
 												onReopen={handleReopen}
@@ -426,6 +430,7 @@
 							<ContentInlineThread
 								{thread}
 								{isInteractive}
+								{classifier}
 								onReply={handleReply}
 								onResolve={handleResolve}
 								onReopen={handleReopen}
@@ -451,6 +456,7 @@
 							<ContentInlineThread
 								{thread}
 								{isInteractive}
+								{classifier}
 								onReply={handleReply}
 								onResolve={handleResolve}
 								onReopen={handleReopen}

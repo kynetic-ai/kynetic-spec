@@ -575,6 +575,7 @@
 					{review}
 					threads={review.threads}
 					{isInteractive}
+					classifier={actorClassifier.classifier}
 				/>
 			</section>
 		{/if}
@@ -589,6 +590,7 @@
 					headCommit={headCommitValue}
 					threads={review.threads}
 					{isInteractive}
+					classifier={actorClassifier.classifier}
 				/>
 			</section>
 		{/if}
