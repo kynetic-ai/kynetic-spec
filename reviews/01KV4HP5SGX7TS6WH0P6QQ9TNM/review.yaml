@@ -66,6 +66,17 @@ checks:
     runner: npx oxlint <changed-ts-or-test-files>
     created_at: 2026-06-15T02:40:24.778Z
     completed_at: 2026-06-15T02:40:24.778Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0. Existing alignment warnings
+      allowed by gate."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T02:40:45.554Z
+    completed_at: 2026-06-15T02:40:45.554Z
 events:
   - _ulid: 01KV4HP5SGM4CGC3KBSBX5QBEE
     actor: Jacob Chapel
@@ -143,6 +154,13 @@ events:
       status: pass
       name: focused-lint
     timestamp: 2026-06-15T02:40:25.049Z
+  - _ulid: 01KV4JE8R47XF72ZVQS57YY7V2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-15T02:40:45.829Z
 examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
 external_links: []
 lifecycle_state: open
@@ -214,5 +232,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-15T02:27:36.368Z
-updated_at: 2026-06-15T02:40:24.778Z
+updated_at: 2026-06-15T02:40:45.554Z
 notes: []
