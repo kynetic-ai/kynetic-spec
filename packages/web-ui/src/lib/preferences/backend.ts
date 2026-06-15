@@ -138,7 +138,12 @@ export class LocalStorageBackend implements PreferenceBackend {
 
   remove(key: string): void {
     this.memory.remove(key);
-    if (this.degraded || !this.storage) return;
+    // Stay symmetric with get(): it still reads persistent storage once
+    // degraded, so remove() must still clear it — otherwise a value persisted
+    // before a write-time (quota) degradation would survive removal and remain
+    // readable. removeItem frees quota rather than consuming it, so it is safe
+    // to attempt regardless of the degraded flag (which only gates writes).
+    if (!this.storage) return;
     try {
       this.storage.removeItem(key);
     } catch {

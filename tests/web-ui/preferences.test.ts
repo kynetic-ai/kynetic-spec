@@ -419,4 +419,39 @@ describe("LocalStorageBackend degradation", () => {
     expect(a.get()).toBe("persisted");
     expect(b.get()).toBe("memory-only");
   });
+
+  // AC: @ui-preference-store ac-6
+  it("removes a value persisted before a write-time degradation", () => {
+    // Limit of 1 successful write: A persists to real storage, then a second
+    // write degrades the backend per-write.
+    const backend = new LocalStorageBackend(new QuotaStorage(1));
+    const a = definePreference<string>({
+      namespace: "quota-remove",
+      key: "a",
+      version: 1,
+      default: "default-a",
+      validate: (v) => typeof v === "string",
+      backend,
+    });
+    const b = definePreference<string>({
+      namespace: "quota-remove",
+      key: "b",
+      version: 1,
+      default: "",
+      validate: (v) => typeof v === "string",
+      backend,
+    });
+
+    a.set("persisted");
+    expect(backend.isDegraded).toBe(false);
+
+    // Degrade the backend per-write with a quota-exceeding write.
+    b.set("memory-only");
+    expect(backend.isDegraded).toBe(true);
+
+    // Removing A must clear the value that was persisted before degradation,
+    // not just the (absent) in-memory copy. A subsequent read returns default.
+    a.remove();
+    expect(a.get()).toBe("default-a");
+  });
 });
