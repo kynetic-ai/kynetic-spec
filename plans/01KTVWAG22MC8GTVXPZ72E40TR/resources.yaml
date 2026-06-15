@@ -74,3 +74,12 @@ resources:
     label: Reviews hub and review surfaces
     path: handoff/docs/11-reviews.md
     sha256: c8372f313c3d5f0080f713325059165bdaa7d997d80a961bef282d3a2e5ee5a6
+  - description: Consolidated net-new capabilities and suggested plan seams from the wireframe handoff.
+    bytes: 5691
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-implementation-backlog
+    label: Implementation backlog
+    path: handoff/docs/12-implementation-backlog.md
+    sha256: 3a43077a9aac8ddb47ec7fa7d32f40c61bc8bf2af7b3b3a31a8cc46b260aa046
