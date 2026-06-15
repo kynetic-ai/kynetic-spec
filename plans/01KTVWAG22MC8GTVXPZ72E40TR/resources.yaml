@@ -192,3 +192,12 @@ resources:
     label: Coverage five-state recommendation
     path: handoff/shots/r3-coverage-4-five-state-alt.png
     sha256: a514d69630262ec638f66900b27fc8ceccd6b52d5cf8b50b3be72cf0b9450e63
+  - description: Coverage/rollup integration on a requirement page.
+    bytes: 88486
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-state-requirement
+    label: Spec state requirement page
+    path: handoff/shots/r3-spec-states-1-requirement.png
+    sha256: 9ef6b5a3f22a847abb9f5ff832b6e9132706ab0e38298bbc91aa3c394d649e71
