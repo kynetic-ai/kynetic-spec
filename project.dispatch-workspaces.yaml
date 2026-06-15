@@ -27298,9 +27298,10 @@ workspaces:
 
         src/identity/actor-write.ts(96,34): error TS7006: Parameter 'agent' implicitly has an 'any'
         type.
-      invalidationReasons: []
+      invalidationReasons:
+        - prior-bootstrap-failed
       lastRole: reviewer
-      lastRunAt: 2026-06-15T06:34:22.258Z
+      lastRunAt: 2026-06-15T14:27:07.889Z
       roleStates:
         reviewer:
           status: failed
@@ -27340,8 +27341,9 @@ workspaces:
 
             src/identity/actor-write.ts(96,34): error TS7006: Parameter 'agent' implicitly has an
             'any' type.
-          invalidationReasons: []
-          lastRunAt: 2026-06-15T06:34:22.258Z
+          invalidationReasons:
+            - prior-bootstrap-failed
+          lastRunAt: 2026-06-15T14:27:07.889Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
@@ -27664,7 +27666,7 @@ workspaces:
       last_active_at: 2026-06-15T05:38:34.396Z
       last_reconciled_at: 2026-06-15T14:26:58.836Z
       created_at: 2026-06-15T04:37:22.647Z
-      updated_at: 2026-06-15T14:26:58.836Z
+      updated_at: 2026-06-15T14:27:07.889Z
     workspace_id: dispatch-workspace-01KV4CD9G0DMTTRQJMM3S84BJX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
