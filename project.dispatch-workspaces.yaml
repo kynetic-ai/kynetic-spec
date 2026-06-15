@@ -28552,7 +28552,7 @@ workspaces:
         head: 4417519b6e31bfc7bc465337c92181137381f8a9
         last_seen_at: 2026-06-15T08:36:17.835Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shortcut-registry-01kv4cdb
-  - active_role: worker
+  - active_role: null
     base_branch_point: 9d497f7309c419a69458394e19c2e71263bdb544
     bootstrap:
       status: succeeded
@@ -29031,12 +29031,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-15T11:03:52.645Z
+      updated_at: 2026-06-15T11:18:58.839Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-15T11:03:52.645Z
+      updated_at: 2026-06-15T11:18:58.839Z
     integration:
       status: pending
       detail: null
@@ -29044,8 +29044,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 9d497f7309c419a69458394e19c2e71263bdb544
-      updated_at: 2026-06-15T11:03:52.645Z
-    lifecycle_state: active
+      updated_at: 2026-06-15T11:18:58.839Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV4CD9W9AJRNJQCEZ0NWF09W
     task_ref: "@01KV4CD9W9AJRNJQCEZ0NWF09W"
@@ -29053,9 +29053,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-15T10:58:01.199Z
-      last_reconciled_at: 2026-06-15T11:03:52.645Z
+      last_reconciled_at: 2026-06-15T11:18:58.839Z
       created_at: 2026-06-15T08:37:02.989Z
-      updated_at: 2026-06-15T11:03:52.645Z
+      updated_at: 2026-06-15T11:18:58.839Z
     workspace_id: dispatch-workspace-01KV4CD9W9AJRNJQCEZ0NWF09W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
