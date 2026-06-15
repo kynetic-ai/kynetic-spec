@@ -51,3 +51,82 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-15T04:50:36.742Z
+  - _ulid: 01KV4VYKDFFJNXVQQF2V013PW6
+    content: >-
+      Actor-bearing write inventory (adopt shared utility / N-A). Every path below now resolves
+      through the single shared actor-write utility (resolveActorForWrite / resolveActorForContext /
+      daemon resolveWriteActor), which resolves absent values via the @config-author chain,
+      classifies via @kynetic-ai/shared, persists canonical configured human/agent ids, and rejects
+      out-of-pool values with validation feedback.
+
+
+      DAEMON ROUTES (all wired; reject -> 400 validation_error):
+
+      - reviews.ts: add thread (author), add reply (author), resolve thread (actor), reopen thread
+      (actor), add check (runner field + check_added event actor), record verdict (reviewer),
+      lifecycle transition (actor). All 10 prior `|| "anonymous"` fallbacks removed.
+
+      - triage.ts: create record (decided_by), override (override_by).
+
+      - tasks.ts: add note (author), block note (author).
+
+      - inbox.ts: create item (added_by).
+
+      - identity.ts: refactored to build the classifier config via the shared
+      buildActorIdentityConfig (same config the write path uses).
+
+
+      CLI COMMANDS (all wired via resolveCliActor; reject -> exit VALIDATION_FAILED with feedback):
+
+      - review.ts: thread/reply author, resolve/reopen/lifecycle actor (via author), check runner,
+      verdict reviewer (10 `|| getAuthor || "unknown"` sites + reviewer + runner).
+
+      - task.ts: note --author, todo --author (added_by), and system-generated notes (clear-deps,
+      automation-set, complete skip/force, needs-work fix-cycle, cancel-dep cleanup, reset) hoisted
+      to resolve before their synchronous mutation callbacks.
+
+      - meta.ts: observe author (from-inbox + standard).
+
+      - triage.ts: decided_by, override_by, interactive decided_by.
+
+      - inbox.ts: promote note author.
+
+      - item.ts: note --author.
+
+      - plan.ts: note author (two commands).
+
+      - derive.ts: derived-task implementation note author.
+
+      - plan-import.ts: imported plan note author (import/update helper).
+
+
+      PARSER / UPDATER HELPERS:
+
+      - review-task-integration.ts handleVerdictTaskTransition: system fix-cycle note now resolves
+      the author through the shared utility (resolved once before the loop; degrades to the leaf
+      chain default only when no author resolves at all, so a verdict transition is never blocked by
+      attribution).
+
+      - yaml.ts createNote/createTodo/createInboxItem and parser/meta.ts createObservation,
+      parser/reviews.ts/review-threads.ts/review-operations.ts createEvent/createThread/etc.: LEAF
+      persistence helpers. They persist the value their caller passes; all callers now pass a
+      utility-resolved canonical value. They retain getAuthor only as the chain endpoint used by the
+      utility, not as an independent persistence boundary.
+
+
+      NOT ACTOR-BEARING (no canonicalization needed):
+
+      - Read/display sites: note.author/verdict.reviewer when filtering or rendering existing
+      records (e.g. review.ts reviewer filter, `note.author || "unknown"` display fallbacks in
+      task.ts/item.ts), triage decided_by display. These read historical values; normalization of
+      historical data is @task-actor-normalization-upgrade, not this write-path task.
+
+      - review-folder-migration.ts author fallback: migration of historical records (read/upgrade
+      side), not a new write.
+
+      - Timestamps (created_at, resolved_at, completed_at), entity refs, session_id/invocation_id
+      (invocation identity, not human/agent actor), git commit author (VCS metadata), OS user (only
+      an input to the getAuthor chain).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T05:26:58.223Z
