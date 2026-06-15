@@ -99,6 +99,33 @@ checks:
     runner: kspec
     created_at: 2026-06-15T03:42:48.932Z
     completed_at: 2026-06-15T03:42:48.932Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+      .agents/skills/kspec-merge/SKILL.md; .agents/skills/review-gates/SKILL.md;
+      .agents/skills/work-gates/SKILL.md; packages/web-ui/src/lib/components/ds/ViewHeader.svelte;
+      StatusBadge.svelte; packages/web-ui/src/lib/ds/status-tokens.ts;
+      packages/web-ui/src/lib/ds/tokens.css; ds/index.ts; reviews and sessions route changes;
+      ItemDetail; TaskList; DiffFileList; DiffFileView; tests/web-ui-status-tokens.test.ts;
+      tests/web-ui-view-header.test.ts; modified E2E tests; RelatedSessionsSection;
+      SessionContextPanel; board-utils; TaskDetailContent. Commands run: git
+      diff/stat/name-status/log; kspec task get; kspec review for-task/get/add/open/comment/check;
+      kspec item get @ui-view-header and @coverage-state-presentation; rg status/AC searches; npm
+      run format:check; npm run lint -- --quiet; npx oxlint focused tests; npm run typecheck; npm
+      test; kspec validate refs/alignment/completeness; npm run test:e2e focused specs. Claims
+      verified: prior blockers for reviews list, sessions list, and session back action were fixed;
+      worker test claims were verified by full npm test and focused Playwright passing. Categories
+      searched: correctness/spec alignment, AC annotation coverage, source-scanning tests,
+      status-token integration consistency, count derivation, action-zone placement, CSS token
+      generation, test quality, and build/test gates. Findings: 4 blockers recorded for remaining
+      local status renderers that violate @ui-view-header ac-2."
+    name: review evidence log
+    required: false
+    runner: pr-reviewer
+    created_at: 2026-06-15T03:43:14.239Z
+    completed_at: 2026-06-15T03:43:14.239Z
 events:
   - _ulid: 01KV4N4D3AAXF70GWTN4C539A3
     actor: Jacob Chapel
@@ -204,6 +231,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T03:42:49.181Z
+  - _ulid: 01KV4P0NHMYH8PRJ97FHZPM696
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-15T03:43:14.485Z
 examined_commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
 external_links: []
 lifecycle_state: open
@@ -293,5 +327,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-15T03:27:48.330Z
-updated_at: 2026-06-15T03:42:48.932Z
+updated_at: 2026-06-15T03:43:14.239Z
 notes: []
