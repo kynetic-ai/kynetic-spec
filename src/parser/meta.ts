@@ -43,7 +43,6 @@ import { withFileLock } from "./file-lock.js";
 import { getEntityCacheContext, type KspecContext } from "./yaml.js";
 import {
   expandIncludePattern,
-  getAuthor,
   readFileBufferAware,
   readYamlFile,
   writeYamlFilePreserveFormat,
@@ -689,10 +688,15 @@ export function createObservation(
   content: string,
   options: {
     workflow_ref?: string;
-    author?: string;
-    /** Config author from kspec.config.yaml identity.author */
-    configAuthor?: string | null;
-  } = {},
+    /**
+     * Required, caller-resolved canonical actor. This leaf constructor does
+     * not fall back to `getAuthor()`: the calling command/action resolves and
+     * canonicalizes the author through the shared actor-write utility before
+     * reaching here, so no sanctioned path can persist a non-canonical or
+     * out-of-pool observation author.
+     */
+    author: string;
+  },
 ): Observation {
   return {
     _ulid: ulid(),
@@ -700,7 +704,7 @@ export function createObservation(
     content,
     workflow_ref: options.workflow_ref,
     created_at: new Date().toISOString(),
-    author: options.author ?? getAuthor(options.configAuthor),
+    author: options.author,
     resolved: false,
     resolution: null,
   };

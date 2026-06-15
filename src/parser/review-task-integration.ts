@@ -123,7 +123,7 @@ export async function handleVerdictTaskTransition(
   review: ReviewRecord,
   decision: ReviewVerdictDecision,
   allTasks: LoadedTask[],
-  reviewer?: string,
+  reviewer: string,
 ): Promise<Array<{ ulid: string; slug?: string; transitioned: boolean }>> {
   if (decision !== "request_changes") {
     return [];
@@ -151,12 +151,15 @@ export async function handleVerdictTaskTransition(
     }
   }
 
-  // AC: @actor-identity-resolution ac-7 — canonicalize the system-note author
+  // AC: @actor-identity-resolution ac-7 ac-8 — canonicalize the system-note author
   // through the shared utility (same path as all other writers). Resolve once
-  // for all transitioned tasks; on the unresolvable-author edge the note falls
-  // back to the leaf creator's chain default rather than blocking the verdict.
+  // for all transitioned tasks. On the rare unresolvable-author edge (no
+  // configured identity at all) the note falls back to the canonical `reviewer`
+  // that requested the changes — itself resolved through the shared utility at
+  // verdict time — so the author is always canonical and the verdict is never
+  // blocked on attribution.
   const transitionAuthorResult = await resolveActorForContext(ctx, { field: "author" });
-  const transitionAuthor = transitionAuthorResult.ok ? transitionAuthorResult.actor : undefined;
+  const transitionAuthor = transitionAuthorResult.ok ? transitionAuthorResult.actor : reviewer;
 
   for (const taskRef of taskRefsToCheck) {
     const cleanRef = taskRef.startsWith("@") ? taskRef.slice(1) : taskRef;

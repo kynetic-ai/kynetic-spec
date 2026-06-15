@@ -100,7 +100,8 @@ Examples:
           tags: parseTagsArray(options.tag),
         };
 
-        const item = createInboxItem(input, ctx.config?.identity?.author);
+        // AC: @actor-identity-resolution ac-7 ac-8 — canonical added_by or rejection.
+        const item = createInboxItem(input, await resolveCliActor(ctx, undefined, "added_by"));
         await saveInboxItem(ctx, item);
         await commitIfShadow(ctx.shadow, "inbox-add", item._ulid, text);
         const inboxItems = await loadInboxItems(ctx);

@@ -2302,7 +2302,10 @@ export async function resolveReviewThread(
         "Content-Type": "application/json",
         ...getProjectHeaders(),
       },
-      body: JSON.stringify({ actor: actor || "anonymous" }),
+      // AC: @actor-identity-resolution ac-6 — omit the actor when absent so the
+      // daemon resolves it through the author precedence chain. Never inject a
+      // literal "anonymous", which the daemon now rejects as out-of-pool.
+      body: JSON.stringify(actor ? { actor } : {}),
     },
   );
   if (!response.ok) {
@@ -2331,7 +2334,10 @@ export async function reopenReviewThread(
         "Content-Type": "application/json",
         ...getProjectHeaders(),
       },
-      body: JSON.stringify({ actor: actor || "anonymous" }),
+      // AC: @actor-identity-resolution ac-6 — omit the actor when absent so the
+      // daemon resolves it through the author precedence chain. Never inject a
+      // literal "anonymous", which the daemon now rejects as out-of-pool.
+      body: JSON.stringify(actor ? { actor } : {}),
     },
   );
   if (!response.ok) {

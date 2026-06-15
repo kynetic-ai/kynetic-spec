@@ -815,7 +815,6 @@ export function registerMetaCommands(program: Command): void {
           const observation = createObservation(observationType, observationContent, {
             workflow_ref: options.workflow,
             author: await resolveCliActor(ctx, options.author, "author"),
-            configAuthor: ctx.config?.identity?.author,
           });
 
           // Save observation
@@ -861,7 +860,6 @@ export function registerMetaCommands(program: Command): void {
         const observation = createObservation(type as ObservationType, content, {
           workflow_ref: options.workflow,
           author: await resolveCliActor(ctx, options.author, "author"),
-          configAuthor: ctx.config?.identity?.author,
         });
 
         // Save to manifest

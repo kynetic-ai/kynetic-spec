@@ -110,7 +110,9 @@ export function createInboxRoutes(options: InboxRouteOptions) {
           };
 
           // AC: @api-contract ac-13 - Generate ULID and create item
-          const item = createInboxItem(input, ctx.config?.identity?.author);
+          // AC: @actor-identity-resolution ac-6 ac-8 — canonical added_by (already
+          // resolved through the shared utility into input.added_by above).
+          const item = createInboxItem(input, addedByResult.actor);
 
           // Save and commit
           await saveInboxItem(ctx, item);

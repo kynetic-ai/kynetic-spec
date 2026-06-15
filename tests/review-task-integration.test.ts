@@ -459,7 +459,13 @@ describe("Review-Task Integration", () => {
 
     const manager = resolveTaskDataManager(ctx);
     const tasks = await manager.loadAllTasks(ctx);
-    const results = await handleVerdictTaskTransition(ctx, review, "request_changes", tasks);
+    const results = await handleVerdictTaskTransition(
+      ctx,
+      review,
+      "request_changes",
+      tasks,
+      "test-reviewer",
+    );
 
     expect(results).toHaveLength(1);
     expect(results[0].transitioned).toBe(false);
@@ -494,7 +500,13 @@ describe("Review-Task Integration", () => {
 
     const manager = resolveTaskDataManager(ctx);
     const tasks = await manager.loadAllTasks(ctx);
-    const results = await handleVerdictTaskTransition(ctx, review, "approve", tasks);
+    const results = await handleVerdictTaskTransition(
+      ctx,
+      review,
+      "approve",
+      tasks,
+      "test-reviewer",
+    );
 
     // approve should not trigger any transitions
     expect(results).toHaveLength(0);
@@ -530,7 +542,13 @@ describe("Review-Task Integration", () => {
 
     const manager = resolveTaskDataManager(ctx);
     const tasks = await manager.loadAllTasks(ctx);
-    const results = await handleVerdictTaskTransition(ctx, review, "request_changes", tasks);
+    const results = await handleVerdictTaskTransition(
+      ctx,
+      review,
+      "request_changes",
+      tasks,
+      "test-reviewer",
+    );
 
     expect(results).toHaveLength(1);
     expect(results[0].transitioned).toBe(true);
@@ -778,7 +796,7 @@ describe("Review-Task Integration", () => {
     // Simulate changes_requested verdict transition
     const manager = resolveTaskDataManager(ctx);
     let tasks = await manager.loadAllTasks(ctx);
-    await handleVerdictTaskTransition(ctx, review, "request_changes", tasks);
+    await handleVerdictTaskTransition(ctx, review, "request_changes", tasks, "test-reviewer");
 
     // Verify task is now needs_work
     tasks = await manager.loadAllTasks(ctx);
@@ -830,7 +848,7 @@ describe("Review-Task Integration", () => {
 
     const manager = resolveTaskDataManager(ctx);
     const tasks = await manager.loadAllTasks(ctx);
-    await handleVerdictTaskTransition(ctx, review, "request_changes", tasks);
+    await handleVerdictTaskTransition(ctx, review, "request_changes", tasks, "test-reviewer");
 
     const updatedTasks = await manager.loadAllTasks(ctx);
     const updatedTask = updatedTasks.find((t) => t._ulid === taskUlid);

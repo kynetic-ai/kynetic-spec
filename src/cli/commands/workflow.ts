@@ -18,7 +18,6 @@ import {
   deleteWorkflowRuns,
   findActiveRuns,
   findWorkflowRunByRef,
-  getAuthor,
   initContext,
   loadMetaContext,
   loadWorkflowRuns,
@@ -27,6 +26,7 @@ import {
   updateWorkflowRun,
   type Workflow,
 } from "../../parser/index.js";
+import { resolveCliActor } from "../actor.js";
 import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type { WorkflowRun, WorkflowRunResult } from "../../schema/index.js";
@@ -115,7 +115,8 @@ async function workflowStart(workflowRef: string, options: { task?: string; json
     total_steps: workflow.steps.length,
     started_at: new Date().toISOString(),
     step_results: [],
-    initiated_by: getAuthor(ctx.config?.identity?.author),
+    // AC: @actor-identity-resolution ac-7 ac-8 — canonical initiator or rejection.
+    initiated_by: await resolveCliActor(ctx, undefined, "initiated_by"),
     task_ref: taskRef,
   };
 

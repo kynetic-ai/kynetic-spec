@@ -49,7 +49,7 @@ describe("resolveActorForWrite", () => {
     }
   });
 
-  // AC: @actor-identity-resolution ac-7 — @-prefixed agent variant → canonical id
+  // AC: @actor-identity-resolution ac-7 — at-prefixed agent variant resolves to canonical id
   it("canonicalizes an @-prefixed agent variant to the agent id", () => {
     const result = resolveActorForWrite({ explicit: "@codex", identity: POOL });
     expect(result.ok).toBe(true);
