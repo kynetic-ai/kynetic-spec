@@ -26622,7 +26622,7 @@ reviews:
     title: Review task-actor-display-next-actor
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 2
+    check_count: 3
     examined_commit: 7aa8f5e1b19cbc7bdf1210123f068c16c50a5975
     lifecycle_state: open
     related_refs: []
@@ -26635,4 +26635,4 @@ reviews:
     unresolved_blocker_count: 2
     verdict_count: 0
     created_at: 2026-06-15T09:11:57.978Z
-    updated_at: 2026-06-15T09:25:37.206Z
+    updated_at: 2026-06-15T09:25:42.355Z
