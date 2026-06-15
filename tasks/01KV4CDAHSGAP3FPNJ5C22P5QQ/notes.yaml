@@ -42,3 +42,35 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T07:35:46.979Z
+  - _ulid: 01KV54HPQWGHZTHCNX0P0927WC
+    content: >-
+      Resumed after prior invocation timeout. Implementation (shared resolver in
+      src/lib/breadcrumb-ancestry.ts + daemon route wiring for item/task/plan/review/session detail
+      + static-export baking) was already in place and correct. Work this cycle:
+
+
+      - Fixed failing export test: tests/export/json.test.ts asserted a task with a multi-segment
+      chain, but the base fixture has no task linked to a spec item. Seeded a task with spec_ref
+      @test-feature in beforeAll so the export bakes a real module->feature->task chain.
+
+      - Extended daemon-API coverage: tests/daemon-api/breadcrumb-ancestry.test.ts now also
+      exercises the plan, review, and session detail endpoints (previously only items + tasks). Plan
+      = module_ref chain + plan; review = subject-task chain + review; session = single-segment
+      degradation (no entity cache in the in-process app), proving the route resolves server-side
+      and ends in the session segment.
+
+      - Reverted an unnecessary packages/shared/tsconfig.json lib bump (ES2022->ES2023) from the
+      prior cycle; nothing in shared/src uses ES2023 and it builds clean on ES2022. Keeps the diff
+      focused.
+
+
+      Gates: typecheck, format:check, lint (0 errors), focused oxlint (0 warnings on changed files),
+      full suite (10743 passed / 3 skipped), kspec validate refs/alignment/completeness all green.
+
+
+      Covers @ui-breadcrumb ac-10 with resolver unit tests (all leaf kinds + cycle guard +
+      degradation), daemon-API endpoint tests (item/task/plan/review/session), and export-baking
+      tests (item/task/plan).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T07:57:12.829Z
