@@ -4,6 +4,7 @@
 	import { base } from '$app/paths';
 	import * as Command from '$lib/components/ui/command';
 	import { search } from '$lib/api';
+	import { shortcutRegistry } from '$lib/shortcuts';
 	import type { SearchResult } from '@kynetic-ai/shared';
 
 	// AC: @web-dashboard ac-23
@@ -24,18 +25,19 @@
 	}
 
 	// AC: @web-dashboard ac-23 - Open command palette on Cmd+K / Ctrl+K
+	// Registered through the central shortcut registry; the root layout owns the
+	// single document-level dispatcher.
+	// AC: @ui-shortcut-registry ac-1, ac-3
 	onMount(() => {
-		function handleKeydown(e: KeyboardEvent) {
-			if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-				e.preventDefault();
+		const registration = shortcutRegistry.register({
+			id: 'command-palette.toggle',
+			label: 'Open command palette',
+			chord: { mod: true, key: 'k' },
+			handler: () => {
 				open = !open;
 			}
-		}
-
-		document.addEventListener('keydown', handleKeydown);
-		return () => {
-			document.removeEventListener('keydown', handleKeydown);
-		};
+		});
+		return registration.unregister;
 	});
 
 	// AC: @web-dashboard ac-24 - Debounced search (300ms)

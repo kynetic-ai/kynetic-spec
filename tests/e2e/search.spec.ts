@@ -33,7 +33,21 @@ test.describe("Command Palette / Search", () => {
 
   test.describe("Keyboard Shortcuts", () => {
     // AC: @web-dashboard ac-23
+    // AC: @ui-shortcut-registry ac-3 — the platform's conventional primary modifier resolves the chord
     test("opens with Cmd+K on Mac", async ({ page }) => {
+      // The central registry resolves the palette's primary modifier per
+      // platform (Cmd on macOS, Ctrl elsewhere), so this test must actually
+      // emulate macOS for Meta+K to resolve. Override navigator.platform before
+      // the bundle loads, then reload so the registry detects "mac".
+      await page.addInitScript(() => {
+        Object.defineProperty(navigator, "platform", {
+          configurable: true,
+          get: () => "MacIntel",
+        });
+      });
+      await page.reload();
+      await expect(page.getByTestId("nav-link-tasks")).toBeVisible({ timeout: 10000 });
+
       await page.keyboard.press("Meta+k");
 
       const palette = page.getByTestId("command-palette");

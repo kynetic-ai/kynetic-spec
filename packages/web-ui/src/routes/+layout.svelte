@@ -14,6 +14,7 @@
 	import { initMode, isStaticMode, isLoading as isModeLoading } from '$lib/stores/mode.svelte';
 	import { createQueryClientInstance, setQueryClient } from '$lib/query';
 	import { setupWsInvalidation } from '$lib/query/ws-invalidation.js';
+	import { shortcutRegistry } from '$lib/shortcuts';
 
 	let { children } = $props();
 
@@ -56,6 +57,9 @@
 	// SSR is disabled globally via +layout.ts — ready tracks appReady directly
 	let ready = $derived(appReady);
 </script>
+
+<!-- Single document-level keyboard shortcut dispatcher (AC: @ui-shortcut-registry ac-1, ac-6) -->
+<svelte:window onkeydown={(e) => shortcutRegistry.handleKeydown(e)} />
 
 <svelte:head>
 	<link rel="icon" type="image/x-icon" href="{base}/favicon.ico" />

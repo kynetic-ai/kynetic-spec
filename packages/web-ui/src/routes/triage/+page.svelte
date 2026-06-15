@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 	// AC: @interactive-triage-ui ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { page } from '$app/state';
@@ -25,6 +26,7 @@
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { renderMarkdown } from '$lib/utils/markdown';
+	import { shortcutRegistry } from '$lib/shortcuts';
 	import { queryKeys } from '$lib/query/keys.js';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
@@ -224,18 +226,36 @@
 		writeError = '';
 	}
 
-	// Keyboard navigation - skip when focus is on input/textarea elements
-	function handleKeydown(e: KeyboardEvent) {
-		const target = e.target as HTMLElement;
-		if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
-			return;
-		}
-		if (e.key === 'ArrowLeft') {
-			goPrevious();
-		} else if (e.key === 'ArrowRight') {
-			goNext();
-		}
-	}
+	// Keyboard navigation through the central shortcut registry, scoped to the
+	// triage surface. The registry's central text-entry suppression keeps the
+	// arrow keys from hijacking input/textarea/contenteditable focus.
+	// AC: @interactive-triage-ui ac-5
+	// AC: @ui-shortcut-registry ac-1, ac-6
+	onMount(() => {
+		const context = 'triage';
+		shortcutRegistry.activateContext(context);
+		const prev = shortcutRegistry.register({
+			id: 'triage.previous',
+			label: 'Previous triage item',
+			context,
+			chord: { key: 'ArrowLeft' },
+			preventDefault: false,
+			handler: () => goPrevious()
+		});
+		const next = shortcutRegistry.register({
+			id: 'triage.next',
+			label: 'Next triage item',
+			context,
+			chord: { key: 'ArrowRight' },
+			preventDefault: false,
+			handler: () => goNext()
+		});
+		return () => {
+			prev.unregister();
+			next.unregister();
+			shortcutRegistry.deactivateContext(context);
+		};
+	});
 
 	// AC: @interactive-triage-ui ac-3 - Submit triage decision
 	// AC: @ui-data-freshness ac-8 — Write operation invalidates related cache
@@ -356,8 +376,6 @@
 		resetForm();
 	});
 </script>
-
-<svelte:window onkeydown={handleKeydown} />
 
 <!-- AC: @interactive-triage-ui ac-1, ac-5, ac-7 -->
 <div class="flex flex-col gap-4 p-6">
