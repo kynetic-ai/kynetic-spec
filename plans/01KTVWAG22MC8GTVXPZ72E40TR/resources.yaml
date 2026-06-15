@@ -46,3 +46,12 @@ resources:
     label: Coverage state model
     path: handoff/docs/07-coverage-states.md
     sha256: 2663975b866d23cddc915a7ce73f4ac32ffbe495e4a6b77e124726537d40255c
+  - description: How coverage states integrate into spec pages, rollups, and stale/re-verify surfaces.
+    bytes: 3986
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-spec-states-integration
+    label: Spec states integration
+    path: handoff/docs/08-spec-states-integration.md
+    sha256: 1a280d3c6246e561c0d04400a6bfb1567ffd1cc7181ef2b9173acb9184e15493
