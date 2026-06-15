@@ -1,0 +1,26 @@
+_ulid: 01KV4N4D3APQ1VBBJJB3251BC9
+slugs: []
+title: Review task-view-header-status-tokens (cycle 2)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KV4N4D3AAXF70GWTN4C539A3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-15T03:27:48.330Z
+examined_commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KV4CDB72KM6NRMXXS1EB6SDB"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-15T03:27:48.330Z
+updated_at: null
+notes: []
