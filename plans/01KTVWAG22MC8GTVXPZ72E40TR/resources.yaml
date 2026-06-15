@@ -28,3 +28,12 @@ resources:
     label: App shell, navigation, shortcuts, breadcrumbs
     path: handoff/docs/01-app-shell-and-navigation.md
     sha256: c907189c175662c9fffb489a95c654a1c25bf7a3970ba02567152f44320ae827
+  - description: Unified page/tree spec workspace behavior that informs breadcrumbs and view-header context.
+    bytes: 5642
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-spec-workspace
+    label: Spec workspace
+    path: handoff/docs/06-spec-workspace.md
+    sha256: 9859180adb431b75189f3a8d5d89bcecec614ced1c8b0cd242e1d333552fb52e
