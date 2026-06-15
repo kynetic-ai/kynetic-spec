@@ -183,3 +183,12 @@ resources:
     label: Coverage state legend
     path: handoff/shots/r3-coverage-1-legend.png
     sha256: b7ff31fad2ac5827c31fbb5b2079aec08701668b5ff75fde2fc4e6056204c7b3
+  - description: Recommended five-state UI collapsing stale/drifted into re-verify.
+    bytes: 85159
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-coverage-five-state
+    label: Coverage five-state recommendation
+    path: handoff/shots/r3-coverage-4-five-state-alt.png
+    sha256: a514d69630262ec638f66900b27fc8ceccd6b52d5cf8b50b3be72cf0b9450e63
