@@ -119,3 +119,35 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T03:43:35.790Z
+  - _ulid: 01KV4QS98WYR5DZDXN0KQ29DSF
+    content: >-
+      Fix cycle 3: addressed all 4 cycle-2 review blockers (same-token-on-every-surface adoption
+      gaps), all under @ui-view-header ac-2.
+
+
+      1. RelatedSessionsSection — replaced local statusColor() map + plain Badge with StatusBadge
+      domain=session (fixes abandoned mis-map and missing glyph).
+
+      2. SessionContextPanel — replaced local statusColor/statusLabel chains with StatusBadge
+      domain=session (fixes timed_out/stalled fall-through and missing glyph).
+
+      3. TaskDetailContent linked reviews — replaced dispositionClasses()/dispositionLabel() with
+      StatusBadge domain=review-disposition, and routed lifecycle pills through StatusBadge
+      domain=review-lifecycle (current + closed rows).
+
+      4. board-utils getStatusClasses removed — TaskCard and TaskDetailContent now use StatusBadge
+      domain=task; pending_review now shows canonical 'Pending Review' label + glyph.
+
+
+      Coverage: removed the obsolete getStatusClasses unit test (its mapping coverage is a strict
+      subset of web-ui-status-tokens.test.ts, which asserts every TaskStatusSchema state resolves to
+      a defined token + family, plus uniqueness/determinism/fallback). Updated 5 task-board e2e
+      assertions from exact toHaveText to glyph-safe toContainText and 'Review'->'Pending Review'.
+
+
+      Gates: format:check, typecheck, lint (0 errors), full vitest (10662 passed), kspec validate
+      refs/alignment/completeness all green. E2E: task-board (21), sessions/tasks/items (96) pass.
+      svelte-check shows only pre-existing baseline errors in unrelated files.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T04:14:09.692Z
