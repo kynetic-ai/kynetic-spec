@@ -253,6 +253,12 @@ events:
     payload:
       thread_ulid: 01KV4HTP4ZMXV7VA7B3NTY9KDG
     timestamp: 2026-06-15T03:21:34.801Z
+  - _ulid: 01KV4MSDT358BKYRX7JFJ6EDT7
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV4HTSPCXA3QWQ1YGEYZ9F51
+    timestamp: 2026-06-15T03:21:48.611Z
 examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
 external_links: []
 lifecycle_state: closed
@@ -313,6 +319,16 @@ threads:
           header actions into the ViewHeader actions zone, or otherwise keep navigation outside the
           standard header row so no action appears in the leading chrome area."
         created_at: 2026-06-15T02:30:07.820Z
+      - _ulid: 01KV4MSDJY1M6Y4PMKJQHDTNSP
+        author: "@claude"
+        body: "Fixed: the Back to sessions navigation now renders inside the ViewHeader actions slot
+          (data-testid=back-to-sessions) instead of before the header in the leading chrome. The
+          session-present header is now just the ViewHeader, so its leading chrome reservation stays
+          empty (@ui-view-header ac-3) and the only header action lives in the actions zone
+          (@ui-view-header ac-5). The no-session loading/error branch keeps a plain back link in its
+          own bar (it does not present the standard header). Added e2e assertions that the back
+          action is inside view-header-actions and that view-header-leading is empty."
+        created_at: 2026-06-15T03:21:48.382Z
     kind: blocker
   - _ulid: 01KV4HTX7B77Y1SX9JJG9XZ908
     anchor:
@@ -343,5 +359,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T02:41:44.341Z
 created_at: 2026-06-15T02:27:36.368Z
-updated_at: 2026-06-15T03:21:34.591Z
+updated_at: 2026-06-15T03:21:48.382Z
 notes: []
