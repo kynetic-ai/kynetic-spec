@@ -39,3 +39,42 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-15T01:45:32.825Z
+  - _ulid: 01KV4HCWNRX7JJQE07AEWC5BA6
+    content: |-
+      Implemented the shared status-token source + standard ViewHeader and adopted them.
+
+      Delivered:
+      - packages/web-ui/src/lib/ds/status-tokens.ts — single source mapping every entity
+        lifecycle/state (task, review lifecycle+disposition, spec maturity+implementation,
+        session) plus the four coverage buckets (covered/failing/not_yet/re_verify) and diff
+        file statuses to exactly one {label, glyph, family} token. family references the
+        existing --design-* status/severity Tailwind families. Helpers: resolveStatusToken,
+        statusBadgeClass, statusTextClass.
+      - components/ds/StatusBadge.svelte + ViewHeader.svelte (new shared DS component lib).
+        ViewHeader zones: empty leading-chrome reservation (--ds-chrome-leading-reservation,
+        added to tokens.css), copyable entity ref (native button), token state indicator,
+        server-resolved child counts (props only — no fetch path), keyboard-operable actions
+        slot. Optional badges (compound state) + meta snippets.
+      - Replaced all four duplicated getStatusColor() impls: TaskList + ItemDetail (StatusBadge),
+        DiffFileList + DiffFileView (resolveStatusToken/statusTextClass; glyphs unchanged A/D/M/R).
+      - Adopted ViewHeader on review detail (disposition primary + lifecycle badge + thread/
+        check/verdict counts; subject info/author/created-at in meta) and session detail
+        (status + event/iteration/completed counts; agent_type in meta; live dot). All existing
+        E2E testids preserved.
+
+      Tests (behavioral, no source-scanning):
+      - tests/web-ui-status-tokens.test.ts — table-driven uniqueness over the FULL vocabulary
+        cross-checked against the canonical Zod enums (one token per state, no state unmapped,
+        deterministic same-token-on-every-surface). Covers @ui-view-header ac-2 +
+        @coverage-state-presentation ac-2.
+      - tests/web-ui-view-header.test.ts — SSR-renders ViewHeader/StatusBadge via the web-ui
+        Vite pipeline; asserts zones (ac-1), empty leading zone (ac-3), counts-from-props (ac-4),
+        actions confined + native buttons (ac-5), shared token determinism (ac-2).
+      - E2E ac-6 assertions added to review-detail-page + sessions specs.
+
+      Gates: format:check, lint (0 errors), typecheck, all three kspec validations, and the
+      full vitest suite (10664 passed, 3 pre-existing CI skips) all green. svelte-check adds
+      zero new errors over the 61-error pre-existing baseline.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T02:22:32.120Z
