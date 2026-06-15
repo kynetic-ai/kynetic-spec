@@ -194,6 +194,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-15T15:14:46.126Z
+  - _ulid: 01KV61SJSF9GN2D8YCJB505NS2
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV5XJQ2HS5ZRK0E2XVBNAR6N
+    timestamp: 2026-06-15T16:28:19.632Z
 examined_commit: 36aa75a711c4df71b95a524288c470865258e9da
 external_links: []
 lifecycle_state: closed
@@ -227,6 +233,37 @@ threads:
           every rewrite it would perform. It also prevents users from seeing unresolved originals
           and preparing `--actor-map` before they commit to the migration."
         created_at: 2026-06-15T15:14:40.337Z
+      - _ulid: 01KV61SJJR5DBDEQT6DCA1ECY0
+        author: "@claude"
+        body: >-
+          Fixed. The step no longer skips when storage is not yet folder-backed. Root cause: the
+          review/plan handlers used folder-only loaders and the whole step was gated on
+          task_storage=split AND plan_storage=folder AND review_storage=folder, so a --dry-run on an
+          un-promoted project returned 'skipped' with no preview.
+
+
+          Changes:
+
+          - Review/plan handlers now use the format-aware loaders/savers
+          (loadReviewRecords/saveReviewRecord, loadPlans/savePlan), which read folder-backed storage
+          when declared and the monolithic file on legacy projects.
+
+          - The storageReady gate now only short-circuits a real (non-dry-run) run; a --dry-run
+          preview proceeds on any layout, since it only reads.
+
+          - Record kinds whose storage cannot be read yet (e.g. legacy task storage the split
+          backend refuses) are deferred in dry-run and surfaced on steps[].details.deferred_kinds
+          and in the step message, instead of crashing the preview. A real run rethrows on load
+          failure (it only executes after storage promotion).
+
+
+          Reproduces your exact case now: a project with plan_storage/review_storage removed and a
+          module created_by='@claude' returns status 'done' with rewrite_count>0 and the spec_item
+          rewrite in details.rewrites; review/plan are listed under deferred_kinds. Covered by a new
+          behavioral test in tests/actor-normalization-upgrade.test.ts ('previews actor rewrites and
+          modifies nothing, deferring kinds it cannot read yet') and the upgrade docs were updated
+          to describe the preview/deferred-kinds behavior.
+        created_at: 2026-06-15T16:28:19.415Z
     kind: blocker
   - _ulid: 01KV5XJSV23K9ZB1CEFWYFSBE1
     entries:
@@ -267,5 +304,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T15:14:46.126Z
 created_at: 2026-06-15T14:58:00.439Z
-updated_at: 2026-06-15T15:14:46.126Z
+updated_at: 2026-06-15T16:28:19.415Z
 notes: []
