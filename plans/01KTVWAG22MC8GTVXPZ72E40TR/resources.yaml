@@ -246,3 +246,13 @@ resources:
     label: Spec review surface
     path: handoff/shots/r3-review-spec.png
     sha256: fbda06305f9355a62c2ce7055c7bd444c16dd8a0970a1bd220089c8fe95d4d71
+  - description: React wireframe source for breadcrumb variants and exact sample copy/logic; target
+      remains Svelte.
+    bytes: 11138
+    content_type: application/octet-stream
+    git_commit: null
+    git_path: null
+    id: src-breadcrumb-variants
+    label: Breadcrumb wireframe source
+    path: handoff/reference-src/wf3-breadcrumb-variants.jsx
+    sha256: e79ac43863bf22ac6fb2ab7105113dc4e081fb81b1a24afa982987cc500f67cf
