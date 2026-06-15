@@ -6169,7 +6169,7 @@ features:
       arbitrary new authors.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on:
       - "@actor-identity-model"
     implements: []
