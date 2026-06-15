@@ -29832,3 +29832,80 @@ workspaces:
         head: 9d2c03c338cb5b01aa65aee8292b456cd9090949
         last_seen_at: 2026-06-15T17:48:52.023Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-actor-normalization-upgrade-01kv4cda
+  - active_role: null
+    base_branch_point: 775219419ed91b2d981e268c7a052b890c05c3eb
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-breadcrumb-component/01kv4cda
+    canonical_branch_head: 775219419ed91b2d981e268c7a052b890c05c3eb
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-15T18:08:19.501Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-15T18:08:19.501Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: feat/ui-redesign
+      target_commit: 775219419ed91b2d981e268c7a052b890c05c3eb
+      updated_at: 2026-06-15T18:08:19.501Z
+    lifecycle_state: ready
+    resolved_base_branch: feat/ui-redesign
+    task_id: 01KV4CDAWAG1XHQVHAVABN2VMD
+    task_ref: "@01KV4CDAWAG1XHQVHAVABN2VMD"
+    task_slug: task-breadcrumb-component
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-15T18:08:19.501Z
+      created_at: 2026-06-15T18:08:19.501Z
+      updated_at: 2026-06-15T18:08:19.501Z
+    workspace_id: dispatch-workspace-01KV4CDAWAG1XHQVHAVABN2VMD
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-breadcrumb-component/01kv4cda
+        head: 775219419ed91b2d981e268c7a052b890c05c3eb
+        last_seen_at: 2026-06-15T18:08:19.501Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-breadcrumb-component-01kv4cda
