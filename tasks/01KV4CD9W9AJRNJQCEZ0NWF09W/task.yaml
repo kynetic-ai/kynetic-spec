@@ -56,7 +56,7 @@ description: |
 spec_ref: "@actor-display"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-identity-endpoint-classifier"
@@ -66,6 +66,7 @@ tags:
   - web-ui
   - identity
 vcs_refs: []
+session_id: 01KV56VEWK48YH44ZJ28NV1TA0
 history:
   - author: Jacob Chapel
     changes:
@@ -74,6 +75,19 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-15T00:55:42.042Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KV56VEWK48YH44ZJ28NV1TA0
+        previous: null
+      started_at:
+        new: 2026-06-15T08:37:53.379Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-15T08:37:53.380Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -116,5 +130,6 @@ resource_refs:
     recorded_at: 2026-06-15T00:55:22.026Z
     sha256: 2928bd83bb9e9f84ddab3fb99d89e94213dfe194d27a7e6183ecf6113314e3f2
 created_at: 2026-06-15T00:55:22.761Z
+started_at: 2026-06-15T08:37:53.379Z
 todos: []
 automation: eligible
