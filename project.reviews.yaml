@@ -26755,7 +26755,7 @@ reviews:
     title: Review actor normalization upgrade cycle 2
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 2
+    check_count: 3
     examined_commit: 9d2c03c338cb5b01aa65aee8292b456cd9090949
     lifecycle_state: open
     related_refs: []
@@ -26768,4 +26768,4 @@ reviews:
     unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-15T17:50:37.938Z
-    updated_at: 2026-06-15T18:05:31.783Z
+    updated_at: 2026-06-15T18:05:37.074Z
