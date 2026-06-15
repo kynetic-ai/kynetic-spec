@@ -96,42 +96,8 @@ description: |
 spec_ref: "@actor-identity-resolution"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: blocked
-blocked_by:
-  - >-
-    Dispatch bootstrap failed: Bootstrap step "build-workspace-artifacts" failed with exit code 2.
-    Output: > @kynetic-ai/spec@0.14.0 build
-
-    > node scripts/build.cjs build:unlocked
-
-
-
-    > @kynetic-ai/spec@0.14.0 build:unlocked
-
-    > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run
-    build:web-ui && npm run build:plugin
-
-
-    src/identity/actor-identity-config.ts(21,15): error TS2305: Module '"@kynetic-ai/shared"' has no
-    exported member 'ActorIdentityConfig'.
-
-    src/identity/actor-identity-config.ts(21,36): error TS2305: Module '"@kynetic-ai/shared"' has no
-    exported member 'AgentIdentity'.
-
-    src/identity/actor-identity-config.ts(21,51): error TS2305: Module '"@kynetic-ai/shared"' has no
-    exported member 'HumanIdentity'.
-
-    src/identity/actor-write.ts(32,10): error TS2305: Module '"@kynetic-ai/shared"' has no exported
-    member 'classifyActor'.
-
-    src/identity/actor-write.ts(32,30): error TS2305: Module '"@kynetic-ai/shared"' has no exported
-    member 'ActorIdentityConfig'.
-
-    src/identity/actor-write.ts(32,56): error TS2305: Module '"@kynetic-ai/shared"' has no exported
-    member 'ClassifiedActor'.
-
-    src/identity/actor-write.ts(96,34): error TS7006: Parameter 'agent' implicitly has an 'any'
-    type.
+status: pending_review
+blocked_by: []
 depends_on:
   - "@task-identity-endpoint-classifier"
 context: []
@@ -377,7 +343,54 @@ history:
           upstream_ref: refs/heads/feat/ui-redesign
     command: task-set
     timestamp: 2026-06-15T14:32:25.577Z
-prior_status: pending_review
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - >-
+            Dispatch bootstrap failed: Bootstrap step "build-workspace-artifacts" failed with exit
+            code 2. Output: > @kynetic-ai/spec@0.14.0 build
+
+            > node scripts/build.cjs build:unlocked
+
+
+
+            > @kynetic-ai/spec@0.14.0 build:unlocked
+
+            > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon &&
+            npm run build:web-ui && npm run build:plugin
+
+
+            src/identity/actor-identity-config.ts(21,15): error TS2305: Module
+            '"@kynetic-ai/shared"' has no exported member 'ActorIdentityConfig'.
+
+            src/identity/actor-identity-config.ts(21,36): error TS2305: Module
+            '"@kynetic-ai/shared"' has no exported member 'AgentIdentity'.
+
+            src/identity/actor-identity-config.ts(21,51): error TS2305: Module
+            '"@kynetic-ai/shared"' has no exported member 'HumanIdentity'.
+
+            src/identity/actor-write.ts(32,10): error TS2305: Module '"@kynetic-ai/shared"' has no
+            exported member 'classifyActor'.
+
+            src/identity/actor-write.ts(32,30): error TS2305: Module '"@kynetic-ai/shared"' has no
+            exported member 'ActorIdentityConfig'.
+
+            src/identity/actor-write.ts(32,56): error TS2305: Module '"@kynetic-ai/shared"' has no
+            exported member 'ClassifiedActor'.
+
+            src/identity/actor-write.ts(96,34): error TS7006: Parameter 'agent' implicitly has an
+            'any' type.
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-06-15T14:32:43.020Z
+prior_status: null
 resource_refs:
   - git_commit: null
     git_path: null
