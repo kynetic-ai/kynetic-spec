@@ -96,7 +96,7 @@ description: |
 spec_ref: "@actor-identity-resolution"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-identity-endpoint-classifier"
@@ -116,7 +116,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-review-author-resolution/01kv4cd9
-session_id: null
+session_id: 01KV5XVPB4ZA75P1TXYNB6309P
 history:
   - author: Jacob Chapel
     changes:
@@ -405,6 +405,19 @@ history:
         previous: pending_review
     command: review-verdict-needs-work
     timestamp: 2026-06-15T14:52:53.950Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KV5XVPB4ZA75P1TXYNB6309P
+        previous: null
+      started_at:
+        new: 2026-06-15T15:52:25.027Z
+        previous: 2026-06-15T04:38:28.435Z
+    command: task-start
+    timestamp: 2026-06-15T15:52:25.027Z
 prior_status: null
 resource_refs:
   - git_commit: null
@@ -432,7 +445,7 @@ resource_refs:
     recorded_at: 2026-06-15T00:55:22.026Z
     sha256: 3a43077a9aac8ddb47ec7fa7d32f40c61bc8bf2af7b3b3a31a8cc46b260aa046
 created_at: 2026-06-15T00:55:22.368Z
-started_at: 2026-06-15T04:38:28.435Z
+started_at: 2026-06-15T15:52:25.027Z
 submitted_at: 2026-06-15T06:31:39.755Z
 todos: []
 automation: eligible
