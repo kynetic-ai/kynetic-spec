@@ -67566,7 +67566,7 @@ runs:
     completed_at: 2026-06-15T20:40:33.280Z
   - _ulid: 01KV6GEB360N3GHK5A6TV10YQ7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -67582,7 +67582,30 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T20:45:35.175Z
-        completed_at: 2026-06-15T20:45:35.175Z
+        completed_at: 2026-06-15T20:45:48.420Z
+        notes: >-
+          Candidate high-confidence items from this fix-cycle session:
+
+          1. (friction) Schema-reflection inventory guard misses loader-stripped sidecar fields
+          (history[].author). -> DUPLICATE of @01KV6CW5, which already states the exact case and the
+          forward direction (inventory raw stored shapes/sidecars, not only loader-visible schemas).
+
+          2. (friction) Task mutateTask() re-reads history from disk and only appends, so it
+          structurally cannot rewrite existing history-entry authors; bulk rewrites need a dedicated
+          save path. -> Narrow implementation detail of one migration; same root fix as @01KV6CW5;
+          not a repeatable cross-cutting friction. Below loop-mode systemic bar.
+
+          3. (success) Fix cycle resolved in one pass: clean rebase, root-cause (loader strip +
+          append-only mutate), dedicated backend save path, behavioral test of reviewer's exact
+          repro, all gates green. -> Normal good execution, not a novel documentable systemic
+          pattern.
+
+          Conclusion: central learning already tracked; remaining candidates are duplicates or below
+          the high-confidence/systemic bar.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T20:45:48.420Z
+        completed_at: 2026-06-15T20:45:48.420Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T20:44:19.942Z
