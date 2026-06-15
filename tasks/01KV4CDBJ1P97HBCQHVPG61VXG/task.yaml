@@ -59,7 +59,7 @@ description: |
 spec_ref: "@ui-shortcut-registry"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -68,6 +68,7 @@ tags:
   - web-ui
   - keyboard
 vcs_refs: []
+session_id: 01KV54TNWGNS12NPQ2Z97QPJXE
 history:
   - author: Jacob Chapel
     changes:
@@ -76,6 +77,19 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-15T00:55:44.240Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KV54TNWGNS12NPQ2Z97QPJXE
+        previous: null
+      started_at:
+        new: 2026-06-15T08:09:22.599Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-15T08:09:22.600Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -94,5 +108,6 @@ resource_refs:
     recorded_at: 2026-06-15T00:55:22.026Z
     sha256: 9ad1f51125974201d078447062d18a09b9062a5a80c6f0035df75e44838f3a99
 created_at: 2026-06-15T00:55:24.481Z
+started_at: 2026-06-15T08:09:22.599Z
 todos: []
 automation: eligible
