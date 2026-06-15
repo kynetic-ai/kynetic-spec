@@ -276,3 +276,54 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T14:52:53.950Z
+  - _ulid: 01KV5ZQDVEAYGCW6425YHVG9ER
+    content: >-
+      Fix cycle 1: addressed all 6 review threads on review 01KV5VA7 (each replied + resolved).
+
+
+      Blockers fixed:
+
+      1. inbox.ts:103 — CLI inbox add resolves added_by via resolveCliActor before createInboxItem.
+
+      2. workflow.ts:118 — workflow start initiated_by resolves via resolveCliActor (was raw
+      getAuthor).
+
+      3. web-ui api.ts:2305/2334 — resolve/reopen thread stop injecting literal anonymous; omit
+      actor when absent so the daemon resolves via the chain.
+
+      4. actor-write.test.ts:52 — reworded AC annotation prose to drop the at-token (completeness
+      warning gone).
+
+      5. yaml.ts createNote/createTodo (and createInboxItem; meta.ts createObservation) now require
+      a caller-resolved canonical author; removed the independent getAuthor fallback. Propagated
+      required-author through TaskDataManager.addNote and the verdict-transition system note
+      (canonical reviewer fallback on the no-identity edge; never blocks the verdict).
+
+      6. triage/actions.ts:142 — spec-gap action resolves the observation author through the shared
+      utility (resolveActorForContext) and rejects out-of-pool.
+
+
+      Architecture: leaf parser constructors no longer hold any author-resolution logic. Every
+      first-party actor-bearing write resolves+classifies at its route/command boundary through the
+      one shared utility, then passes the canonical value into the now fallback-free leaf
+      constructor.
+
+
+      Inventory clarifications for paths intentionally NOT canonicalized (mutation-provenance /
+      system markers, consistent with the prior inventory exclusion of git commit author as VCS
+      metadata):
+
+      - task history-entry author (split-backend createHistoryEntry; task-data-manager mutation
+      metadata) is field-change audit provenance, the in-record analogue of the shadow-commit author
+      — not a user-facing actor field and not in the task actor-field inventory list.
+
+      - tasks.ts:468 createNote(..., @automation-assess) persists a reserved system-process marker
+      for an automated assessment, not a chain-resolved human/agent identity; classifying it would
+      reject the marker and break the feature.
+
+
+      Gates: format:check, lint (0 errors), typecheck, full build (daemon+web-ui+plugin), full suite
+      10734 passed/0 failed/3 skipped, kspec validate refs/alignment/completeness all green.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T15:52:11.886Z
