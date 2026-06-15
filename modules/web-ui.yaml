@@ -6076,7 +6076,7 @@ features:
       unavailable.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on:
       - "@client-preference-persistence"
     implements: []
