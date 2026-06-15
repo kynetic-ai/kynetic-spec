@@ -30804,25 +30804,25 @@ workspaces:
     canonical_branch: dispatch/task/task-harden-detached-reviewer-merge-helper-paths/01kv698n
     canonical_branch_head: 7189e99b302665e18253618951180dac91bc6e20
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-06-15T20:17:09.342Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-06-15T20:37:59.064Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-15T20:18:05.502Z
+      updated_at: 2026-06-15T20:37:59.064Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 99ce5a4b7b0d03894b1ec8cb899b394fc916d03f
-      updated_at: 2026-06-15T20:17:09.342Z
-    lifecycle_state: integrating
+      updated_at: 2026-06-15T20:37:59.064Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_id: 01KV698NVS0PVFRX6386XKS6MA
     task_ref: "@01KV698NVS0PVFRX6386XKS6MA"
@@ -30830,9 +30830,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-15T20:18:05.502Z
-      last_reconciled_at: 2026-06-15T20:18:05.502Z
+      last_reconciled_at: 2026-06-15T20:37:59.064Z
       created_at: 2026-06-15T19:41:31.833Z
-      updated_at: 2026-06-15T20:18:05.502Z
+      updated_at: 2026-06-15T20:37:59.064Z
     workspace_id: dispatch-workspace-01KV698NVS0PVFRX6386XKS6MA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
