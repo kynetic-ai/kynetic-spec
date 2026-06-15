@@ -5,6 +5,9 @@
 export * from "../identity/actor-identity-config.js";
 export * from "../identity/actor-write.js";
 export * from "../identity/actor-write-context.js";
+// Historical actor normalization (upgrade path) builds on the same identity config.
+export * from "./actor-field-inventory.js";
+export * from "./actor-normalization-migration.js";
 export * from "./agent-data-sections.js";
 export * from "./alignment.js";
 export * from "./config.js";

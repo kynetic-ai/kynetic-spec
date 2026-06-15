@@ -355,10 +355,11 @@ function compareSemver(a: string, b: string): number {
  */
 export async function runUpgradePipeline(
   projectDir: string,
-  options: { dryRun?: boolean; force?: boolean },
+  options: { dryRun?: boolean; force?: boolean; actorMapPath?: string | null },
 ): Promise<UpgradeResult> {
   const dryRun = options.dryRun ?? false;
   const force = options.force ?? false;
+  const actorMapPath = options.actorMapPath ?? null;
   const steps: UpgradeStepResult[] = [];
   const followUps: string[] = [];
 
@@ -439,6 +440,7 @@ export async function runUpgradePipeline(
         { name: "Plan storage folder migration", status: "skipped", message: skipMessage },
         { name: "Review storage folder migration", status: "skipped", message: skipMessage },
         { name: "Storage manifest (kynetic 1.2)", status: "skipped", message: skipMessage },
+        { name: "Historical actor normalization", status: "skipped", message: skipMessage },
         { name: "Backfill core skills", status: "skipped", message: skipMessage },
         { name: "Re-render skills", status: "skipped", message: skipMessage },
         { name: "Regenerate agent instructions", status: "skipped", message: skipMessage },
@@ -530,6 +532,37 @@ export async function runUpgradePipeline(
         }
       }
     }
+  }
+
+  // ─── Step 1b: Historical actor normalization ────────────────────────
+  // Runs AFTER the storage migration block so reviews, plans, and tasks are
+  // folder/split-backed before the migration scans and rewrites their actor
+  // fields. Driven by the exhaustive actor-field inventory (fails closed on an
+  // unclassified actor field). Rewrites recognizable historical actor variants
+  // to canonical identities, falls back to operator mapping then a declared
+  // default, and writes a durable report artifact for audit.
+  //
+  // AC: @actor-history-normalization ac-1, ac-2, ac-3, ac-4, ac-5, ac-6
+  // AC: @actor-identity-model ac-2 — historical records resolve once here
+  try {
+    const actorResult = await runActorNormalizationStep(dryRun, actorMapPath);
+    steps.push(actorResult);
+    if (actorResult.status === "done") {
+      const rewrites = (actorResult.details?.rewrite_count as number) || 0;
+      if (rewrites > 0) {
+        const verb = dryRun ? "would rewrite" : "rewrote";
+        followUps.push(
+          `Actor normalization: ${verb} ${rewrites} historical actor field value(s) — ` +
+            `review ${(actorResult.details?.report_path as string) ?? "the upgrade report"}`,
+        );
+      }
+    }
+  } catch (err) {
+    steps.push({
+      name: "Historical actor normalization",
+      status: "failed",
+      message: err instanceof Error ? err.message : String(err),
+    });
   }
 
   // ─── Step 2: Backfill missing core skills ────────────────────────────
@@ -1532,6 +1565,108 @@ async function runTaskStorageMigrationStep(
 }
 
 /**
+ * Step 1b: Historical actor normalization.
+ *
+ * Scans every in-scope actor-bearing field (per the exhaustive actor-field
+ * inventory) across all record kinds and rewrites recognizable historical
+ * variants to canonical identities, falling back to operator mapping then a
+ * declared default. Dry-run reports the rewrites without modifying records; a
+ * real run applies them, writes a durable report artifact, and records a shadow
+ * commit. The step is idempotent — an already-normalized project changes
+ * nothing.
+ *
+ * AC: @actor-history-normalization ac-1, ac-2, ac-3, ac-4, ac-5, ac-6
+ * AC: @actor-identity-model ac-2 — historical records resolve once through this path
+ */
+async function runActorNormalizationStep(
+  dryRun: boolean,
+  actorMapPath: string | null,
+): Promise<UpgradeStepResult> {
+  const { runActorNormalization, writeActorReportArtifact } =
+    await import("../../parser/actor-normalization-migration.js");
+  const { initContext } = await import("../../parser/index.js");
+
+  // The pipeline captured its context before the storage-migration block
+  // promoted the manifest. Re-initialize so this step's loaders see the
+  // current (post-migration) storage formats rather than the stale pre-upgrade
+  // manifest, which would make folder-backed loaders reject as incompatible.
+  const ctx = await initContext(undefined, { syncMode: "skip" });
+
+  // Actor normalization operates on the current folder/split storage layout. On
+  // a legacy project previewed with --dry-run, the storage migration has not
+  // written the promoted manifest yet, so the actor sweep cannot run. Skip with
+  // a clear message rather than failing the upgrade — the real (non-dry-run)
+  // upgrade promotes storage first, then this step runs against it.
+  const manifest = ctx.manifest as Record<string, unknown> | null;
+  const storageReady =
+    (manifest?.task_storage as { format?: string } | undefined)?.format === "split" &&
+    (manifest?.plan_storage as { format?: string } | undefined)?.format === "folder" &&
+    (manifest?.review_storage as { format?: string } | undefined)?.format === "folder";
+  if (!storageReady) {
+    return {
+      name: "Historical actor normalization",
+      status: "skipped",
+      message: dryRun
+        ? "storage migration must run first — re-run without --dry-run to normalize actor fields"
+        : "skipped — project is not on folder/split storage",
+    };
+  }
+
+  const now = new Date().toISOString();
+  const report = await runActorNormalization(ctx, {
+    dryRun,
+    operatorMapPath: actorMapPath,
+    now,
+  });
+
+  const details: Record<string, unknown> = {
+    records_scanned: report.recordsScanned,
+    records_modified: report.recordsModified,
+    rewrite_count: report.rewriteCount,
+    unresolved_originals: report.unresolvedOriginals,
+    record_kinds_covered: report.recordKindsCovered,
+    // Surface the full rewrite list so --json consumers and the dry-run preview
+    // see every original → canonical/default mapping with provenance.
+    rewrites: report.rewrites,
+  };
+
+  if (report.rewriteCount === 0) {
+    return {
+      name: "Historical actor normalization",
+      status: "skipped",
+      message: dryRun
+        ? "no historical actor fields need normalization"
+        : "all actor fields already canonical — nothing to rewrite",
+      details,
+    };
+  }
+
+  if (dryRun) {
+    return {
+      name: "Historical actor normalization",
+      status: "done",
+      message: `would rewrite ${report.rewriteCount} actor field value(s) across ${report.recordsScanned} record(s)`,
+      details,
+    };
+  }
+
+  // Live run made changes — persist the durable report artifact and record a
+  // shadow commit so the change set (record rewrites + report) is captured.
+  const reportPath = await writeActorReportArtifact(ctx, report);
+  details.report_path = reportPath;
+
+  const { commitIfShadow } = await import("../../parser/shadow.js");
+  await commitIfShadow(ctx.shadow, "upgrade", undefined, "normalize historical actor fields");
+
+  return {
+    name: "Historical actor normalization",
+    status: "done",
+    message: `rewrote ${report.rewriteCount} actor field value(s) across ${report.recordsModified} record(s); report at ${reportPath}`,
+    details,
+  };
+}
+
+/**
  * Step 2: Backfill missing core skills.
  * Reuses installCoreSkillsForSetup from setup.ts to ensure all core
  * skills shipped with the current kspec version exist in project meta
@@ -2269,6 +2404,10 @@ export function registerUpgradeCommand(program: Command): void {
     .description("Upgrade project to the currently installed kspec version")
     .option("--dry-run", "Preview changes without applying them")
     .option("--force", "Re-run all upgrade steps even when project appears current")
+    .option(
+      "--actor-map <path>",
+      "Operator-provided actor mapping file (YAML/JSON) for resolving ambiguous historical actor values",
+    )
     .action(async (options) => {
       try {
         const projectDir = process.cwd();
@@ -2313,10 +2452,12 @@ export function registerUpgradeCommand(program: Command): void {
 
         const dryRun = options.dryRun ?? false;
         const force = options.force ?? false;
+        const actorMapPath = (options.actorMap as string | undefined) ?? null;
 
         const result = await runUpgradePipeline(projectDir, {
           dryRun,
           force,
+          actorMapPath,
         });
 
         // AC: @trait-json-output ac-1, ac-2, ac-5, ac-6
