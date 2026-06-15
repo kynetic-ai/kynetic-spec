@@ -31,6 +31,13 @@ events:
       kind: blocker
       thread_ulid: 01KV4NB25CE1ESSJGAPT55QKJK
     timestamp: 2026-06-15T03:31:26.802Z
+  - _ulid: 01KV4NB646DKFEE05PE8R6RHPJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV4NB5V9TSTE44R3ATQKY0G1
+    timestamp: 2026-06-15T03:31:30.566Z
 examined_commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
 external_links: []
 lifecycle_state: open
@@ -80,7 +87,26 @@ threads:
           @ui-view-header ac-2."
         created_at: 2026-06-15T03:31:26.508Z
     kind: blocker
+  - _ulid: 01KV4NB5V9TSTE44R3ATQKY0G1
+    anchor:
+      type: code
+      commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
+      line_end: 289
+      line_start: 277
+      path: packages/web-ui/src/lib/components/board/TaskDetailContent.svelte
+      side: head
+    entries:
+      - _ulid: 01KV4NB5V9QAXD19GXFNH3BE4D
+        author: Jacob Chapel
+        body: "MUST-FIX: linked review dispositions in task detail still use local dispositionClasses()
+          rather than the shared review-disposition token. Review list/detail now render
+          changes_requested with StatusBadge as status-blocked plus a glyph, but this task detail
+          section maps the same disposition to status-needs-work and renders no glyph. That leaves
+          the same review disposition with different visual tokens across views, violating
+          @ui-view-header ac-2."
+        created_at: 2026-06-15T03:31:30.281Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T03:27:48.330Z
-updated_at: 2026-06-15T03:31:26.508Z
+updated_at: 2026-06-15T03:31:30.281Z
 notes: []
