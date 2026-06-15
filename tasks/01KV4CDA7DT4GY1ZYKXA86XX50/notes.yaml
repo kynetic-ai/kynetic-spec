@@ -259,3 +259,50 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T19:39:55.006Z
+  - _ulid: 01KV6GCRF61Z35KV31Q6TMF4QF
+    content: >-
+      Fix cycle 4: addressed the cycle-3 blocker — split-task history[].author was omitted from the
+      actor inventory and migration.
+
+
+      Root cause: the task inventory listed only notes[].author, todos[].added_by, and assignee; the
+      migration loaded tasks via loadAllTasks(), which strips task.yaml's per-task history array, so
+      historical task author records (e.g. {author: '@codex'}) were never rewritten — violating
+      @actor-history-normalization ac-5/ac-6.
+
+
+      Fix:
+
+      - Inventory: added history[].author as a task normalize field, documented as a
+      stored-record-shape field outside TaskSchema (the schema-reflection guard cannot discover it,
+      so it is inventoried by hand).
+
+      - Storage: added TaskDataManager.saveActorNormalizedTask() + split-backend implementation that
+      round-trips task.yaml (core + rewritten history) and notes.yaml preserving raw shape and
+      refreshes the index, appending NO synthetic history entry. The normal mutate path cannot
+      rewrite existing history authors (it re-reads history from disk and only appends).
+
+      - Migration: task handler now loads tasks with history, attaches the history array to the
+      walked record so the engine rewrites history[].author in place alongside the schema-backed
+      actor fields, and persists via the new path.
+
+      - Tests: seeded a task.yaml history entry; assert the report records the history[0].author
+      rewrite (@codex->codex), the on-disk author is canonicalized, and the field is a fixed point
+      on re-run (idempotency). Verified the reviewer's exact repro.
+
+      - Docs: list task field-change history authors in the normalized fields.
+
+
+      Also rebased cleanly onto the current integration head (origin/feat/ui-redesign @054c301898).
+
+
+      Re-verified all of @actor-history-normalization ac-1..ac-6 + @actor-identity-model ac-2.
+      Blocker + nit threads both replied to and resolved.
+
+
+      Gates: format:check clean; lint 0 errors (736 baseline); focused oxlint 0 warnings on changed
+      files; typecheck clean; full npm test 10859 passed / 0 failed / 3 skipped; kspec validate
+      refs/alignment/completeness warnings-ok exit 0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T20:43:28.102Z
