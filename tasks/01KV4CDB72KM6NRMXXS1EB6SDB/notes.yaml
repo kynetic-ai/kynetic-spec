@@ -83,3 +83,34 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T02:41:46.958Z
+  - _ulid: 01KV4MTTNGSBZZBDS25NGCY5YX
+    content: >-
+      Fix cycle 1: addressed all three review blockers (same-token-on-every-surface adoption gaps).
+
+
+      1. Reviews list (@ui-view-header ac-2): replaced bespoke disposition/lifecycle Badge helpers
+      with shared StatusBadge for both columns; removed
+      getDispositionColor/getLifecycleColor/formatDisposition/formatLifecycle and the Badge import.
+
+      2. Session detail (ac-3/ac-5): moved 'Back to sessions' from leading chrome into the
+      ViewHeader actions slot; leading chrome reservation now stays empty. No-session branch keeps a
+      plain back link (does not present the standard header).
+
+      3. Sessions list (ac-2): replaced local statusColor() + Badge with shared StatusBadge
+      (domain=session); fixes the abandoned mismatch (was status-needs-work locally, canonical token
+      is status-cancelled).
+
+
+      Re-verified @ui-view-header ac-1..ac-6 against the implementation. Extended sessions.spec.ts
+      and review-detail-page.spec.ts e2e to prove list surfaces draw from the shared token
+      (data-status-domain/state attrs + capitalized labels) and that the session back action sits in
+      view-header-actions with an empty view-header-leading. Updated two existing infinite-scroll
+      assertions that checked raw lowercase status text to assert the shared token state attribute.
+
+
+      Gates green: typecheck, format:check, lint (0 errors), focused oxlint (0), full vitest (10664
+      passed), kspec validate refs/alignment/completeness. Modified e2e specs (sessions +
+      review-detail): 53 passed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T03:22:34.544Z
