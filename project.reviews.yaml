@@ -26480,10 +26480,10 @@ reviews:
       ref: "@01KV4CD95BNGJ9YG3PYYZ4S6E0"
       shadow_commit: ""
     thread_count: 2
-    unresolved_blocker_count: 1
+    unresolved_blocker_count: 0
     verdict_count: 1
     created_at: 2026-06-15T01:37:32.675Z
-    updated_at: 2026-06-15T02:53:20.217Z
+    updated_at: 2026-06-15T02:53:25.189Z
   - _ulid: 01KV4HP5SGX7TS6WH0P6QQ9TNM
     slugs: []
     title: Review task-view-header-status-tokens
