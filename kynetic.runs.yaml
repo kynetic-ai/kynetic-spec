@@ -66646,9 +66646,23 @@ runs:
     completed_at: 2026-06-15T08:00:01.600Z
   - _ulid: 01KV56K3V3EVWZ0Y8C7460A0VV
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-15T08:32:56.164Z
+        completed_at: 2026-06-15T08:34:22.914Z
+        notes: "Worked well: (1) Recognized early that the vitest config runs in node with no Svelte plugin,
+          so I kept the registry's testable core as plain TS (mirroring src/lib/preferences/) and
+          confined runes/listeners to the .svelte layer — gave full AC coverage in unit tests. (2)
+          Reading the three existing handlers AND their e2e tests before designing surfaced the
+          platform-leniency (meta||ctrl) vs spec-strict-resolution tension early, so the e2e fix was
+          planned, not reactive."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-15T08:34:22.914Z
+        completed_at: 2026-06-15T08:34:22.914Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T08:32:56.164Z
