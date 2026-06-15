@@ -1018,6 +1018,181 @@ describe("detached-reviewer-merge helper", () => {
     });
   });
 
+  // Regression: the integration target is checked out in the PRIMARY repository
+  // worktree (not a linked worktree). Git reports operation marker paths
+  // relative to that checkout (e.g. ".git/MERGE_HEAD"), so a helper that tests
+  // the raw marker path from its own cwd (the detached reviewer snapshot)
+  // probes the wrong filesystem location and misses both an in-progress
+  // operation (preflight) and a conflicted-merge MERGE_HEAD (post-merge).
+  describe("primary repository worktree as integration target checkout", () => {
+    // AC: @detached-reviewer-merge-helper ac-helper-safe-conflict-exit
+    // AC: @detached-reviewer-merge-helper ac-helper-does-not-break-checked-out-target
+    // AC: @detached-reviewer-merge-helper ac-helper-leaves-no-new-target-branch-lock
+    it("aborts cleanly and reports conflict guidance when the primary target checkout conflicts", async () => {
+      const env = await setupMergeTestEnv();
+
+      // Check the integration target out in the PRIMARY repo worktree.
+      execSync(`git checkout ${env.mergeTarget}`, { cwd: env.projectDir, stdio: "pipe" });
+
+      // Conflicting commit on the target: canonical added feature.txt, so a
+      // diverging feature.txt on the target forces a true merge conflict.
+      await fs.writeFile(path.join(env.projectDir, "feature.txt"), "conflicting content on dev\n");
+      execSync("git add feature.txt", { cwd: env.projectDir, stdio: "pipe" });
+      execSync('git commit -m "add conflicting feature on dev"', {
+        cwd: env.projectDir,
+        stdio: "pipe",
+      });
+
+      const targetHeadBefore = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+      const primaryHeadBefore = revParse(env.projectDir, "HEAD");
+      expect(primaryHeadBefore).toBe(targetHeadBefore);
+
+      const result = runMergeHelper(env.reviewerWorktreeDir, {
+        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
+        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
+      });
+
+      expect(result.exitCode).toBe(1);
+      // Recognized as a conflict in a pre-existing checkout — not a generic
+      // "merge failed" misclassification and not a severe cleanup failure.
+      expect(result.stderr).toContain("merge conflict detected");
+      expect(result.stderr).toContain("NOT been advanced");
+      expect(result.stderr).toContain(env.projectDir);
+      expect(result.stderr).not.toContain("error: merge failed");
+      expect(result.stderr).not.toContain("SEVERE");
+      expect(result.stderr).not.toContain("temporary target worktree");
+
+      // Target ref unchanged and primary checkout HEAD unchanged.
+      expect(revParse(env.projectDir, `refs/heads/${env.mergeTarget}`)).toBe(targetHeadBefore);
+      expect(revParse(env.projectDir, "HEAD")).toBe(primaryHeadBefore);
+
+      // No MERGE_HEAD lingering in the primary checkout.
+      const mergeHeadPath = execSync("git rev-parse --git-path MERGE_HEAD", {
+        cwd: env.projectDir,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      }).trim();
+      const mergeHeadFullPath = path.isAbsolute(mergeHeadPath)
+        ? mergeHeadPath
+        : path.join(env.projectDir, mergeHeadPath);
+      const mergeHeadStillThere = await fs
+        .stat(mergeHeadFullPath)
+        .then(() => true)
+        .catch(() => false);
+      expect(mergeHeadStillThere).toBe(false);
+
+      // Clean tracked status (the abort fully restored the checkout).
+      const status = execSync("git status --porcelain --untracked-files=no", {
+        cwd: env.projectDir,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      }).trim();
+      expect(status).toBe("");
+
+      // No unmerged paths in the index.
+      const unmerged = execSync("git diff --name-only --diff-filter=U", {
+        cwd: env.projectDir,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+      expect(unmerged).toBe("");
+      // No leftover conflict markers in the working tree. `git diff --check`
+      // exits nonzero if any tracked file contains conflict markers; a clean
+      // exit proves the abort removed them (behavioral, not content-scanning).
+      const conflictMarkerCheck = spawnSync("git", ["diff", "--check"], {
+        cwd: env.projectDir,
+        encoding: "utf-8",
+      });
+      expect(conflictMarkerCheck.status).toBe(0);
+    });
+
+    // AC: @detached-reviewer-merge-helper ac-helper-refuses-dirty-target
+    // AC: @detached-reviewer-merge-helper ac-helper-does-not-break-checked-out-target
+    it("refuses before merging when the primary target checkout already has an in-progress merge", async () => {
+      const env = await setupMergeTestEnv();
+
+      // Check the integration target out in the PRIMARY repo worktree.
+      execSync(`git checkout ${env.mergeTarget}`, { cwd: env.projectDir, stdio: "pipe" });
+
+      // Manufacture a genuine in-progress (conflicted) merge in the primary
+      // worktree that the operator must be able to finish or abort themselves.
+      await fs.writeFile(path.join(env.projectDir, "trunk.txt"), "trunk\n");
+      execSync("git add trunk.txt", { cwd: env.projectDir, stdio: "pipe" });
+      execSync('git commit -m "trunk commit"', { cwd: env.projectDir, stdio: "pipe" });
+
+      execSync("git checkout -b inflight-branch", { cwd: env.projectDir, stdio: "pipe" });
+      await fs.writeFile(path.join(env.projectDir, "trunk.txt"), "side\n");
+      execSync("git add trunk.txt", { cwd: env.projectDir, stdio: "pipe" });
+      execSync('git commit -m "side commit"', { cwd: env.projectDir, stdio: "pipe" });
+
+      execSync(`git checkout ${env.mergeTarget}`, { cwd: env.projectDir, stdio: "pipe" });
+      await fs.writeFile(path.join(env.projectDir, "trunk.txt"), "trunk2\n");
+      execSync("git add trunk.txt", { cwd: env.projectDir, stdio: "pipe" });
+      execSync('git commit -m "trunk2 commit"', { cwd: env.projectDir, stdio: "pipe" });
+
+      const mergeProbe = spawnSync("git", ["merge", "--no-ff", "inflight-branch"], {
+        cwd: env.projectDir,
+        encoding: "utf-8",
+      });
+      expect(mergeProbe.status).not.toBe(0);
+
+      const mergeHeadPath = execSync("git rev-parse --git-path MERGE_HEAD", {
+        cwd: env.projectDir,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "pipe"],
+      }).trim();
+      const mergeHeadFullPath = path.isAbsolute(mergeHeadPath)
+        ? mergeHeadPath
+        : path.join(env.projectDir, mergeHeadPath);
+      const inProgressBefore = await fs
+        .stat(mergeHeadFullPath)
+        .then(() => true)
+        .catch(() => false);
+      expect(inProgressBefore).toBe(true);
+      // Record the in-progress merge's recorded other-side commit via git
+      // (behavioral) so we can prove the helper left it byte-for-byte intact.
+      const mergeHeadRefBefore = revParse(env.projectDir, "MERGE_HEAD");
+
+      const targetHeadBefore = revParse(env.projectDir, `refs/heads/${env.mergeTarget}`);
+      const primaryHeadBefore = revParse(env.projectDir, "HEAD");
+
+      // The helper runs from the detached reviewer snapshot — a DIFFERENT cwd
+      // than the primary checkout that holds the in-progress merge.
+      const result = runMergeHelper(env.reviewerWorktreeDir, {
+        KSPEC_DISPATCH_CANONICAL_BRANCH: env.canonicalBranch,
+        KSPEC_DISPATCH_CANONICAL_HEAD: env.canonicalHead,
+        KSPEC_DISPATCH_MERGE_TARGET: env.mergeTarget,
+      });
+
+      expect(result.exitCode).toBe(1);
+      // Refused at preflight with the specific in-progress-operation message —
+      // not the generic recovery hint (which also mentions "in-progress
+      // merge"), and not a misclassification as a dirty/tracked-modification
+      // checkout, which is exactly how the pre-fix helper mis-handled a primary
+      // checkout whose relative MERGE_HEAD path it failed to resolve.
+      expect(result.stderr).toContain("with an in-progress merge operation");
+      expect(result.stderr).not.toContain("uncommitted changes");
+      expect(result.stderr).toContain(env.projectDir);
+      expect(result.stderr).toContain("NOT been moved");
+      expect(result.stderr).not.toContain("merge conflict detected");
+      expect(result.stderr).not.toContain("error: merge failed");
+
+      // Target ref and primary checkout HEAD unchanged.
+      expect(revParse(env.projectDir, `refs/heads/${env.mergeTarget}`)).toBe(targetHeadBefore);
+      expect(revParse(env.projectDir, "HEAD")).toBe(primaryHeadBefore);
+
+      // The operator's in-progress merge is left fully intact.
+      const inProgressAfter = await fs
+        .stat(mergeHeadFullPath)
+        .then(() => true)
+        .catch(() => false);
+      expect(inProgressAfter).toBe(true);
+      const mergeHeadRefAfter = revParse(env.projectDir, "MERGE_HEAD");
+      expect(mergeHeadRefAfter).toBe(mergeHeadRefBefore);
+    });
+  });
+
   // AC: @detached-reviewer-merge-helper ac-helper-leaves-no-new-target-branch-lock
   describe("post-error worktree state", () => {
     it("leaves no auxiliary worktree on the target branch after a missing-canonical error", async () => {
