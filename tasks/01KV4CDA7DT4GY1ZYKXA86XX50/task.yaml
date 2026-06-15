@@ -95,7 +95,7 @@ tags:
   - upgrade
   - identity
 vcs_refs: []
-review_ref: "@01KV6BG0VQE0268TNN28KH47JY"
+review_ref: "@01KV6GMQRTA0AE0TB6Y413NTW8"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-actor-normalization-upgrade/01kv4cda
@@ -547,6 +547,13 @@ history:
         previous: 2026-06-15T19:11:35.785Z
     command: task-submit
     timestamp: 2026-06-15T20:43:44.802Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KV6GMQRTA0AE0TB6Y413NTW8"
+        previous: "@01KV6BG0VQE0268TNN28KH47JY"
+    command: review-link
+    timestamp: 2026-06-15T20:47:52.055Z
 prior_status: null
 resource_refs:
   - git_commit: null
