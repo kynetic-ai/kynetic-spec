@@ -92,12 +92,12 @@ tags:
 vcs_refs: []
 submission_linkage:
   review_url: null
-  branch: dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
-  captured_at: 2026-06-15T07:57:30.273Z
-  commit: c9f5c49d4bddd8e09533136849051c1fbf7249c9
+  branch: feat/ui-redesign
+  captured_at: 2026-06-15T14:32:13.240Z
+  commit: 29d85a7670795a33f1bb0b3e8d7bf874e4ae1e78
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
-  upstream_ref: refs/heads/dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
+  upstream_ref: refs/heads/feat/ui-redesign
 session_id: null
 history:
   - author: Jacob Chapel
@@ -239,6 +239,27 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-06-15T14:29:11.454Z
+  - author: Jacob Chapel
+    changes:
+      submission_linkage:
+        new:
+          review_url: null
+          branch: feat/ui-redesign
+          captured_at: 2026-06-15T14:32:13.240Z
+          commit: 29d85a7670795a33f1bb0b3e8d7bf874e4ae1e78
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/feat/ui-redesign
+        previous:
+          review_url: null
+          branch: dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
+          captured_at: 2026-06-15T07:57:30.273Z
+          commit: c9f5c49d4bddd8e09533136849051c1fbf7249c9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
+    command: task-set
+    timestamp: 2026-06-15T14:32:13.240Z
 prior_status: pending_review
 resource_refs:
   - git_commit: null
