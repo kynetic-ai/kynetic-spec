@@ -22407,6 +22407,32 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T19:05:17.768Z
+  - _ulid: 01KV6BA63TM11PE26YFBCEMP2G
+    type: friction
+    content: "Parallel dispatch of tasks that each build into the SAME emerging subsystem produces
+      duplicate implementations that the later-merging task must reconcile during its rebase — well
+      beyond its own review-feedback scope. Concrete: @task-actor-normalization-upgrade (01KV4CDA)
+      branched when @kynetic-ai/shared could not be value-imported from the installed CLI, so it
+      shipped CLI-safe copies (src/parser/identity-config.ts, src/parser/actor-classifier.ts + a
+      parity test). While it was in review cycles, sibling actor-identity tasks
+      (task-review-author-resolution, task-actor-display-next-actor) landed on feat/ui-redesign a
+      consolidated src/identity/ module (its own buildActorIdentityConfig) AND moved
+      @kynetic-ai/shared into bundleDependencies, removing the value-import constraint. The
+      fix-cycle rebase then hit not a textual clash but two competing buildActorIdentityConfig
+      definitions + a now-redundant classifier copy; resolving it meant deleting this task's
+      parallel files and rewiring onto the merged module — a large consolidation triggered by a
+      small operator-map blocker fix. Nothing warned either task it was duplicating the other's
+      infrastructure, and no dedup checkpoint exists. Distinct from @01KV67E0 (re-sync timing before
+      resubmit) and the existing task-work rebase step (which worked — it surfaced the conflict).
+      Consider: a lightweight \"is another in-flight task touching these files/this subsystem?\"
+      signal at task start, or a reviewer prompt to flag overlapping emerging modules across sibling
+      dispatch branches before they diverge. Verified safe to consolidate by the installed-package
+      guard test (cli-serve \"start daemon from npm-installed package with all deps available\"),
+      which empirically de-risks shared value-imports — a good existing safety net."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T19:14:40.891Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
