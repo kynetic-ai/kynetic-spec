@@ -66645,7 +66645,7 @@ runs:
     started_at: 2026-06-15T07:58:22.328Z
     completed_at: 2026-06-15T08:00:01.600Z
   - _ulid: 01KV56K3V3EVWZ0Y8C7460A0VV
-    status: active
+    status: completed
     current_step: 5
     initiated_by: "@claude"
     step_results:
@@ -66703,7 +66703,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-15T08:35:07.587Z
-        completed_at: 2026-06-15T08:35:07.587Z
+        completed_at: 2026-06-15T08:35:39.023Z
+        notes: "Captured 2 high-confidence observations via batch: 1 friction (handoff resources marked [OK]
+          not materialized in worker worktree) and 1 success (plain-TS-core + thin-Svelte-layer
+          pattern for testable web-ui logic). No tasks created (autonomous run, observations feed
+          triage)."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T08:32:56.164Z
+    completed_at: 2026-06-15T08:35:39.023Z
