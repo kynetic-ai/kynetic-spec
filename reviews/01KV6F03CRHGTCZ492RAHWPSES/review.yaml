@@ -198,6 +198,13 @@ events:
       status: fail
       name: kspec skill verify
     timestamp: 2026-06-15T20:36:35.262Z
+  - _ulid: 01KV6G14GEP6S0ASMNN9JWKFDG
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV6G148P3GEDQ48T2NTH90T5
+    timestamp: 2026-06-15T20:37:07.214Z
 examined_commit: 7189e99b302665e18253618951180dac91bc6e20
 external_links: []
 lifecycle_state: open
@@ -207,8 +214,56 @@ subject:
   content_hash: ""
   ref: "@01KV698NVS0PVFRX6386XKS6MA"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV6G148P3GEDQ48T2NTH90T5
+    entries:
+      - _ulid: 01KV6G148PYVGBN8V9F772YBG3
+        author: codex
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; task/spec context for @01KV698NVS0PVFRX6386XKS6MA and
+          @detached-reviewer-merge-helper;
+          templates/skills/merge/scripts/detached-reviewer-merge.sh;
+          .agents/skills/kspec-merge/scripts/detached-reviewer-merge.sh;
+          .factory/skills/kspec-merge/scripts/detached-reviewer-merge.sh;
+          tests/detached-reviewer-merge.test.ts; base/render comparisons for merge SKILL.md and
+          helper scripts.
+
+
+          Commands run: git diff/stat/name-only; cmp rendered helper scripts; rg AC annotations and
+          source-read checks; npm run format:check; npm run lint -- --quiet; npx oxlint
+          tests/detached-reviewer-merge.test.ts; npm run typecheck; KSPEC_NO_DAEMON=1 kspec validate
+          --refs/--alignment/--completeness --warnings-ok; kspec skill verify/status/diff; npm run
+          build:plugin; npm test -- --fresh tests/detached-reviewer-merge.test.ts; npm test.
+
+
+          Claims verified: relative git marker paths are resolved under the selected worktree and
+          reused for preflight and MERGE_HEAD checks; merge failure aborts after MERGE_HEAD
+          detection before returning; existing-checkout conflict cleanup verifies HEAD, tracked
+          status, and MERGE_HEAD; primary-checkout conflict and in-progress merge tests exercise
+          real Git behavior and fail the old misclassification path; changed helper render outputs
+          are byte-identical. Full kspec skill verify failure was checked against base 99ce5a4b7b0d
+          and is pre-existing SKILL.md placeholder/frontmatter drift, not introduced by this branch.
+
+
+          Categories searched: correctness, primary-vs-linked worktree edge cases, merge failure
+          cleanup, dirty/in-progress refusal paths, untracked overwrite behavior, test quality,
+          generated-output consistency, and integration with existing helper behavior. No blocking
+          findings.
+
+
+          Shared/package guidance surfaces touched:
+          templates/skills/merge/scripts/detached-reviewer-merge.sh plus rendered .agents/.factory
+          helper copies. Direction 1/2 neutrality checks applied: the changed shell helper/comments
+          do not hard-code Kynetic-only branch/review/toolchain policy as consumer workflow, and no
+          Kynetic-only instruction was removed from shared prose. Generated artifacts for the
+          touched helper script are refreshed for the tracked render outputs; plugin build was
+          verified locally.
+        created_at: 2026-06-15T20:37:06.966Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-15T20:19:04.728Z
-updated_at: 2026-06-15T20:36:35.003Z
+updated_at: 2026-06-15T20:37:06.966Z
 notes: []
