@@ -30148,12 +30148,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-15T18:42:59.042Z
+      updated_at: 2026-06-15T18:43:01.705Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-15T18:42:59.042Z
+      updated_at: 2026-06-15T18:43:01.705Z
     integration:
       status: pending
       detail: null
@@ -30161,7 +30161,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 775219419ed91b2d981e268c7a052b890c05c3eb
-      updated_at: 2026-06-15T18:42:59.042Z
+      updated_at: 2026-06-15T18:43:01.705Z
     lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV4CDAWAG1XHQVHAVABN2VMD
@@ -30170,16 +30170,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-15T18:08:52.014Z
-      last_reconciled_at: 2026-06-15T18:42:59.042Z
+      last_reconciled_at: 2026-06-15T18:43:01.705Z
       created_at: 2026-06-15T18:08:19.501Z
-      updated_at: 2026-06-15T18:42:59.042Z
+      updated_at: 2026-06-15T18:43:01.705Z
     workspace_id: dispatch-workspace-01KV4CDAWAG1XHQVHAVABN2VMD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 888392cd32e99b77c18c9285056453670079e372
+        last_seen_at: 2026-06-15T18:43:01.705Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-breadcrumb-component-01kv4cda-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-breadcrumb-component/01kv4cda
-        head: 775219419ed91b2d981e268c7a052b890c05c3eb
-        last_seen_at: 2026-06-15T18:08:19.501Z
+        head: 888392cd32e99b77c18c9285056453670079e372
+        last_seen_at: 2026-06-15T18:43:01.705Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-breadcrumb-component-01kv4cda
