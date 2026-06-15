@@ -15,8 +15,46 @@
 import { browser } from "$app/environment";
 import { DAEMON_API_BASE } from "$lib/constants";
 import { clearQueryCache } from "$lib/query/context.js";
+import { definePreference } from "$lib/preferences/index.js";
 
-const STORAGE_KEY = "kspec-selected-project";
+/** Legacy localStorage key that stored the raw selected-project path. */
+const LEGACY_STORAGE_KEY = "kspec-selected-project";
+
+/**
+ * Selected project, persisted through the shared preference utility. First
+ * consumer of definePreference — see @ui-preference-store. The stored value is
+ * a project path, or null when no project is selected.
+ */
+const selectedProjectPref = definePreference<string | null>({
+  namespace: "project",
+  key: "selected",
+  version: 1,
+  default: null,
+  validate: (value) => value === null || typeof value === "string",
+});
+
+let legacyMigrated = false;
+
+/**
+ * One-time migration of the pre-utility `kspec-selected-project` localStorage
+ * value onto the preference utility. Reads the legacy key once; if it holds a
+ * value and the utility has none yet, seeds it through the utility. The legacy
+ * key is then removed so the migration runs at most once per browser.
+ */
+function migrateLegacySelection(): void {
+  if (legacyMigrated || !browser) return;
+  legacyMigrated = true;
+  try {
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (legacy === null) return;
+    if (selectedProjectPref.get() === null) {
+      selectedProjectPref.set(legacy);
+    }
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+  } catch {
+    // localStorage may be unavailable (e.g., private browsing) — nothing to migrate.
+  }
+}
 
 export interface Project {
   path: string;
@@ -33,31 +71,20 @@ let error = $state<string | null>(null);
 let initialized = $state(false);
 
 /**
- * Load selected project from localStorage
+ * Load selected project via the shared preference utility.
  */
 function loadPersistedSelection(): string | null {
   if (!browser) return null;
-  try {
-    return localStorage.getItem(STORAGE_KEY);
-  } catch {
-    return null;
-  }
+  migrateLegacySelection();
+  return selectedProjectPref.get();
 }
 
 /**
- * Persist selected project to localStorage
+ * Persist selected project via the shared preference utility.
  */
 function persistSelection(path: string | null): void {
   if (!browser) return;
-  try {
-    if (path) {
-      localStorage.setItem(STORAGE_KEY, path);
-    } else {
-      localStorage.removeItem(STORAGE_KEY);
-    }
-  } catch {
-    // localStorage may be unavailable (e.g., private browsing)
-  }
+  selectedProjectPref.set(path);
 }
 
 /**
