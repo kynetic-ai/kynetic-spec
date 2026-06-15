@@ -32162,7 +32162,7 @@
   type: task
   spec_ref: "@actor-history-normalization"
   plan_ref: "@plan-web-ui-foundations"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-identity-endpoint-classifier"
@@ -32172,7 +32172,7 @@
     - upgrade
     - identity
   review_ref: "@01KV6GMQRTA0AE0TB6Y413NTW8"
-  notes_count: 11
+  notes_count: 12
   todos_count: 0
   created_at: 2026-06-15T00:55:23.117Z
   started_at: 2026-06-15T20:43:41.236Z

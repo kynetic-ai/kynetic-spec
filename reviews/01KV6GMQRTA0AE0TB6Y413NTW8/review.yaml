@@ -2,7 +2,80 @@ _ulid: 01KV6GMQRTA0AE0TB6Y413NTW8
 slugs: []
 title: Review actor normalization upgrade
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format. Finished in 501ms on 1079 files.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-15T21:04:42.241Z
+    completed_at: 2026-06-15T21:04:42.241Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint reported 0 errors and the existing 736-warning baseline. Focused oxlint on
+      changed TS/test files reported 0 errors plus 7 pre-existing upgrade.ts warnings outside the
+      actor-normalization diff.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-15T21:04:45.255Z
+    completed_at: 2026-06-15T21:04:45.255Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: build:shared and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-15T21:04:48.256Z
+    completed_at: 2026-06-15T21:04:48.256Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2858 suites passed; 10859 tests passed, 3 skipped; duration 2708.2s. Full log:
+      /tmp/kspec-test-cache/01KV6GKHJMK23D3MMQEFVXQGPH/a551471fc25b257b.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-15T21:04:51.229Z
+    completed_at: 2026-06-15T21:04:51.229Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with baseline reference warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T21:04:54.325Z
+    completed_at: 2026-06-15T21:04:54.325Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with baseline alignment warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T21:04:57.356Z
+    completed_at: 2026-06-15T21:04:57.356Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with baseline completeness warnings.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T21:05:00.370Z
+    completed_at: 2026-06-15T21:05:00.370Z
 events:
   - _ulid: 01KV6GMQRTHX9MET9M8R81WVC3
     actor: Jacob Chapel
@@ -17,17 +90,158 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T20:48:08.821Z
+  - _ulid: 01KV6HKMZPB3D26HKRQKM3BPED
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-15T21:04:42.486Z
+  - _ulid: 01KV6HKQYJJ14NAMAVYS7PHWV4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-15T21:04:45.522Z
+  - _ulid: 01KV6HKTVQKWRVY36Z8DTSMCBK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-15T21:04:48.503Z
+  - _ulid: 01KV6HKXRHWFRAAPX4RFD19JPB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-15T21:04:51.473Z
+  - _ulid: 01KV6HM0SCGVJ8K36DFBT5DNSB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-15T21:04:54.572Z
+  - _ulid: 01KV6HM3R0YFNP5K8DXBK0VV26
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-15T21:04:57.600Z
+  - _ulid: 01KV6HM6NNMGNNB4RA8BHYN71P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-15T21:05:00.597Z
+  - _ulid: 01KV6HM9MEYHZS10A487TMCXE8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV6HM9BTQW9VY0QMK23KM7R7
+    timestamp: 2026-06-15T21:05:03.630Z
+  - _ulid: 01KV6HMCF8D93QHNK2GTVAAB9P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV6HMC7VDN8CCMSNHAWKCBCS
+    timestamp: 2026-06-15T21:05:06.536Z
+  - _ulid: 01KV6HMFEC5C3AG7776BG8FA8B
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-15T21:05:09.580Z
+  - _ulid: 01KV6HMFECAY1HQYE9X7EYR34Y
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-15T21:05:09.580Z
 examined_commit: ac63701ae81fc4525f4252cf66adb3dfd5c08d29
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KV4CDA7DT4GY1ZYKXA86XX50"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KV6HM9BTQW9VY0QMK23KM7R7
+    anchor:
+      type: code
+      commit: ac63701ae81fc4525f4252cf66adb3dfd5c08d29
+      line_end: 188
+      line_start: 183
+      path: src/parser/actor-normalization-migration.ts
+      side: head
+    entries:
+      - _ulid: 01KV6HM9BTRR3H73PK7V3F99NE
+        author: Jacob Chapel
+        body: 'MUST-FIX: operator `defaults` values are accepted with only an object-shape check and then
+          cast to `Partial<Record<ActorRecordKind, string>>`. I reproduced this with a temp project
+          containing `project.inbox.yaml` `added_by: Hermes` and an actor map `defaults: { inbox:
+          123 }`: `runActorNormalization` reported an inbox rewrite with `resolved: 123` and
+          persisted `added_by: 123` (number) into YAML. Reload then warns that the inbox item is
+          invalid (`added_by="number"`). This violates @actor-history-normalization ac-5 and
+          @actor-identity-model ac-2: the upgrade can leave an inventoried actor field neither
+          canonical nor a declared string default, and it corrupts schema-valid storage instead of
+          failing closed before writes. Validate `defaults` keys and values (known record kind,
+          non-empty string, and whatever canonical/default rules are intended) before constructing
+          the resolver, and add a behavioral regression test.'
+        created_at: 2026-06-15T21:05:03.354Z
+    kind: blocker
+  - _ulid: 01KV6HMC7VDN8CCMSNHAWKCBCS
+    entries:
+      - _ulid: 01KV6HMC7VBCF5GC041VDNZBMN
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; task/spec context; prior cycle-3 review;
+          src/parser/actor-field-inventory.ts; src/parser/actor-normalization-migration.ts;
+          src/cli/commands/upgrade.ts; src/parser/task-data-manager.ts; src/parser/split-backend.ts;
+          tests/actor-normalization-upgrade.test.ts; docs/guides/upgrading-kspec.md;
+          session/dispatch schemas for scope check.
+
+
+          Commands run: git diff/stat/name-only against origin/feat/ui-redesign; rg for AC
+          annotations and actor-like fields; npm run format:check; npm run lint -- --quiet; npx
+          oxlint on changed TS/test files; npm run typecheck; npm test; kspec validate
+          refs/alignment/completeness; targeted tsx temp-project repro for invalid operator default.
+
+
+          Claims verified: cycle-3 split-task history fix is covered by inventory/tests and
+          task-specific tests pass; dry-run and idempotency are behaviorally tested; operator-map
+          target validation works for mappings but default override values are not validated.
+
+
+          Categories searched: correctness, edge cases, error handling, test
+          quality/source-scanning, schema/inventory coverage, session/dispatch attribution scope,
+          persistence/idempotency, integration gates.
+        created_at: 2026-06-15T21:05:06.299Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-15T21:05:09.580Z
 created_at: 2026-06-15T20:47:49.530Z
-updated_at: 2026-06-15T20:48:08.564Z
+updated_at: 2026-06-15T21:05:09.580Z
 notes: []
