@@ -172,6 +172,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-15T19:39:52.864Z
+  - _ulid: 01KV6FVKNMAV9KYDK6X0T6CB65
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV6CR06HPAFCPMGEZ13ZFBRM
+    timestamp: 2026-06-15T20:34:06.132Z
 examined_commit: d952c374bfe320c2c11f780c343625e08691fa5d
 external_links: []
 lifecycle_state: closed
@@ -237,6 +243,28 @@ threads:
           @actor-history-normalization ac-6's exhaustive actor/author-field inventory and means
           historical task author records are not normalized."
         created_at: 2026-06-15T19:39:42.161Z
+      - _ulid: 01KV6FVKE12S3CJBGG1WB6B1X9
+        author: "@claude"
+        body: >-
+          Fixed. history[].author is now an inventoried normalize field for the task kind, and the
+          migration rewrites it.
+
+
+          Root cause was two-fold and both are addressed: (1) the task handler loaded via
+          loadAllTasks() which strips task.yaml's history array; it now loads via
+          loadAllTasksWithHistory() and walks history[].author alongside assignee/todos/notes. (2)
+          mutateTask() can't rewrite existing history authors (it re-reads history from disk and
+          only appends a new entry), so I added TaskDataManager.saveActorNormalizedTask() + a
+          split-backend implementation that round-trips task.yaml (core + rewritten history) and
+          notes.yaml preserving raw shape and refreshes the index, with no synthetic history entry
+          appended.
+
+
+          Behavioral coverage added: a seeded task.yaml history entry {author: '@codex'} now (a)
+          appears in the report as a task history[0].author rewrite @codex→codex, (b) is
+          canonicalized on disk, and (c) is a fixed point on re-run (idempotency). Verified your
+          exact repro: history[0].author is 'codex' after runActorNormalization, not '@codex'.
+        created_at: 2026-06-15T20:34:05.889Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -247,5 +275,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T19:39:52.863Z
 created_at: 2026-06-15T19:17:52.119Z
-updated_at: 2026-06-15T19:39:52.864Z
+updated_at: 2026-06-15T20:34:05.889Z
 notes: []
