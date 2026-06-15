@@ -24,6 +24,18 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-15T15:35:37.682Z
     completed_at: 2026-06-15T15:35:37.682Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fix-cycle files packages/daemon/src/routes/sessions.ts and
+      tests/daemon-api/breadcrumb-ancestry.test.ts: 0 warnings, 0 errors. Wider target-to-head scan
+      found no-shadow warnings only on pre-existing/unmodified lines outside the breadcrumb delta."
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed-ts-or-test-files>
+    created_at: 2026-06-15T15:35:48.761Z
+    completed_at: 2026-06-15T15:35:48.761Z
 events:
   - _ulid: 01KV5XY6NAD2NRXADKRF69HVFP
     actor: Jacob Chapel
@@ -52,6 +64,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-15T15:35:37.916Z
+  - _ulid: 01KV5YSE0DHWNMGDHBJMB5A6B9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-15T15:35:49.006Z
 examined_commit: 4bf2359c66c92cf88d37e42deb18af434403faf9
 external_links: []
 lifecycle_state: open
@@ -64,5 +83,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T15:20:56.747Z
-updated_at: 2026-06-15T15:35:37.682Z
+updated_at: 2026-06-15T15:35:48.761Z
 notes: []
