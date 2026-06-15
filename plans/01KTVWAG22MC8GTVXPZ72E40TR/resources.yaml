@@ -219,3 +219,12 @@ resources:
     label: Stale AC detail
     path: handoff/shots/r3-spec-states-3-stale-ac.png
     sha256: 164f12153268332a70fb6e26efd50d2f17df4dd13e00b15c1ccbf0310f50ee36
+  - description: Reviews hub queue reference for actor/reviewer display and awaiting-action cues.
+    bytes: 86747
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-reviews-queue
+    label: Reviews queue
+    path: handoff/shots/r3-reviews-queue.png
+    sha256: 8e72c87948ee75108f2e469688064c9e47af984edf532fd1d8a7e02a71d2b7ee
