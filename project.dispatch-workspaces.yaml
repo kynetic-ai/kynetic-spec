@@ -25713,7 +25713,7 @@ workspaces:
         head: e254caec535bd3c303869283977944fa05b2f513
         last_seen_at: 2026-06-14T20:19:18.941Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-record-overlapping-plan-dispositions-01kv3tkk
-  - active_role: worker
+  - active_role: null
     base_branch_point: cecb52ae149bebc2d7646644fc762ef12906443c
     bootstrap:
       status: succeeded
@@ -26044,12 +26044,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-15T01:32:50.815Z
+      updated_at: 2026-06-15T01:36:01.773Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-15T01:32:50.815Z
+      updated_at: 2026-06-15T01:36:01.773Z
     integration:
       status: pending
       detail: null
@@ -26057,8 +26057,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: cecb52ae149bebc2d7646644fc762ef12906443c
-      updated_at: 2026-06-15T01:32:50.815Z
-    lifecycle_state: active
+      updated_at: 2026-06-15T01:36:01.773Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV4CD95BNGJ9YG3PYYZ4S6E0
     task_ref: "@01KV4CD95BNGJ9YG3PYYZ4S6E0"
@@ -26066,9 +26066,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-15T00:58:39.806Z
-      last_reconciled_at: 2026-06-15T01:32:50.815Z
+      last_reconciled_at: 2026-06-15T01:36:01.773Z
       created_at: 2026-06-15T00:58:10.250Z
-      updated_at: 2026-06-15T01:32:50.815Z
+      updated_at: 2026-06-15T01:36:01.773Z
     workspace_id: dispatch-workspace-01KV4CD95BNGJ9YG3PYYZ4S6E0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
