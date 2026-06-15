@@ -66308,7 +66308,7 @@ runs:
     completed_at: 2026-06-15T03:17:56.475Z
   - _ulid: 01KV4P3WT8T4NG92G6ZTCMT5QS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66322,7 +66322,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T03:45:40.097Z
-        completed_at: 2026-06-15T03:45:40.097Z
+        completed_at: 2026-06-15T03:47:36.334Z
+        notes: High-confidence reflection candidates were checked against existing tracking. Status-token
+          adoption needs real cross-surface consumer checks; this is already covered by observation
+          @01KV4JM3 and the active review findings on @01KV4N4D. Reflection command guidance
+          mismatch is already tracked by inbox @01KTWCCAS. Build/test lock timing friction is
+          already tracked by inbox @01KTWBE2 and @01KTWGM5. No new capture candidates.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T03:47:36.334Z
+        completed_at: 2026-06-15T03:47:36.334Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T03:45:00.232Z
