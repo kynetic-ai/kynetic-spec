@@ -29785,12 +29785,17 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-15T18:42:19.450Z
+      updated_at: 2026-06-15T18:45:59.616Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-15T18:42:54.276Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-actor-normalization-upgrade-01kv4cda"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-06-15T18:45:59.616Z
     integration:
       status: pending
       detail: null
@@ -29798,8 +29803,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 3248d1a4dc66f4dc00ae88bd0d1d27574e6fd946
-      updated_at: 2026-06-15T18:42:19.450Z
-    lifecycle_state: active
+      updated_at: 2026-06-15T18:45:59.616Z
+    lifecycle_state: stale
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV4CDA7DT4GY1ZYKXA86XX50
     task_ref: "@01KV4CDA7DT4GY1ZYKXA86XX50"
@@ -29807,9 +29812,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-15T18:42:54.276Z
-      last_reconciled_at: 2026-06-15T18:42:54.276Z
+      last_reconciled_at: 2026-06-15T18:45:59.616Z
       created_at: 2026-06-15T09:11:13.018Z
-      updated_at: 2026-06-15T18:42:54.276Z
+      updated_at: 2026-06-15T18:45:59.616Z
     workspace_id: dispatch-workspace-01KV4CDA7DT4GY1ZYKXA86XX50
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
