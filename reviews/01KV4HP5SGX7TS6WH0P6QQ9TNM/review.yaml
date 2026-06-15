@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KV4HTP4ZMXV7VA7B3NTY9KDG
     timestamp: 2026-06-15T02:30:04.458Z
+  - _ulid: 01KV4HTSYSJPYYQJ6676S3T0MJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV4HTSPCXA3QWQ1YGEYZ9F51
+    timestamp: 2026-06-15T02:30:08.089Z
 examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
 external_links: []
 lifecycle_state: open
@@ -54,7 +61,26 @@ threads:
           through the shared status token source as part of the adoption."
         created_at: 2026-06-15T02:30:04.191Z
     kind: blocker
+  - _ulid: 01KV4HTSPCXA3QWQ1YGEYZ9F51
+    anchor:
+      type: code
+      commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
+      line_end: 224
+      line_start: 218
+      path: packages/web-ui/src/routes/sessions/[id]/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KV4HTSPCEEEBFF3J9J4YTSKN
+        author: Jacob Chapel
+        body: "MUST-FIX: the session detail page still contributes a header action outside the ViewHeader
+          actions zone. The Back to sessions anchor is rendered before the ViewHeader instead of
+          through the component's actions slot, so this adopting detail view keeps bespoke leading
+          header chrome and does not satisfy @ui-view-header ac-5/ac-6's fixed-zone contract. Move
+          header actions into the ViewHeader actions zone, or otherwise keep navigation outside the
+          standard header row so no action appears in the leading chrome area."
+        created_at: 2026-06-15T02:30:07.820Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T02:27:36.368Z
-updated_at: 2026-06-15T02:30:04.191Z
+updated_at: 2026-06-15T02:30:07.820Z
 notes: []
