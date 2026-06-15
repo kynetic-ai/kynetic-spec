@@ -57,7 +57,7 @@ description: |
 spec_ref: "@ui-breadcrumb"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-breadcrumb-ancestry-api"
@@ -71,11 +71,11 @@ review_ref: "@01KV69JT2XZQK9Z0PQTZGBSPX5"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-breadcrumb-component/01kv4cda
-  captured_at: 2026-06-15T18:39:32.675Z
-  commit: 888392cd32e99b77c18c9285056453670079e372
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-06-15T19:36:55.138Z
+  commit: c6ffc4775f269c4ec0f5c9cba49a535df6026e02
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-breadcrumb-component/01kv4cda
 session_id: 01KV6BCJB37FG0V77701Q8VVGP
 history:
   - author: Jacob Chapel
@@ -148,6 +148,33 @@ history:
         previous: 2026-06-15T18:13:39.296Z
     command: task-start
     timestamp: 2026-06-15T19:36:51.572Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-breadcrumb-component/01kv4cda
+          captured_at: 2026-06-15T19:36:55.138Z
+          commit: c6ffc4775f269c4ec0f5c9cba49a535df6026e02
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-breadcrumb-component/01kv4cda
+        previous:
+          review_url: null
+          branch: dispatch/task/task-breadcrumb-component/01kv4cda
+          captured_at: 2026-06-15T18:39:32.675Z
+          commit: 888392cd32e99b77c18c9285056453670079e372
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-06-15T19:36:55.145Z
+        previous: 2026-06-15T18:39:32.679Z
+    command: task-submit
+    timestamp: 2026-06-15T19:36:55.145Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -239,6 +266,6 @@ resource_refs:
     sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
 created_at: 2026-06-15T00:55:23.786Z
 started_at: 2026-06-15T19:36:51.572Z
-submitted_at: 2026-06-15T18:39:32.679Z
+submitted_at: 2026-06-15T19:36:55.145Z
 todos: []
 automation: eligible
