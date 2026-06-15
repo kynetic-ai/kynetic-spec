@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KV594V3DFCPNNFZCYNF9Z0NC
     timestamp: 2026-06-15T09:17:34.476Z
+  - _ulid: 01KV594YYZ8V34H8SCK6Q7Y3G9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV594YNQ768E1A0JTFJ9F3WQ
+    timestamp: 2026-06-15T09:17:38.143Z
 examined_commit: 7aa8f5e1b19cbc7bdf1210123f068c16c50a5975
 external_links: []
 lifecycle_state: open
@@ -54,7 +61,28 @@ threads:
           render these authors through the actor display primitive."
         created_at: 2026-06-15T09:17:34.190Z
     kind: blocker
+  - _ulid: 01KV594YNQ768E1A0JTFJ9F3WQ
+    anchor:
+      type: code
+      commit: 7aa8f5e1b19cbc7bdf1210123f068c16c50a5975
+      line_end: 105
+      line_start: 89
+      path: packages/web-ui/src/lib/components/content/ContentInlineThread.svelte
+      side: head
+    entries:
+      - _ulid: 01KV594YNQCS1KNB81FBTWH8D3
+        author: Jacob Chapel
+        body: "MUST-FIX: Inline structured-content review threads still render recorded authors as raw
+          strings instead of using ActorDisplay. This component is mounted by
+          StructuredContentViewer on the review detail page for anchored review threads, so the same
+          thread author can render canonically in the main Threads section but as the original
+          string here. That violates @actor-display ac-1's same-actor consistency across surfaces
+          and misses the task's thread-author adoption scope. Thread header and entry rows should
+          receive/use the shared actor classifier and render these authors through the actor display
+          primitive."
+        created_at: 2026-06-15T09:17:37.848Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T09:11:57.978Z
-updated_at: 2026-06-15T09:17:34.190Z
+updated_at: 2026-06-15T09:17:37.848Z
 notes: []
