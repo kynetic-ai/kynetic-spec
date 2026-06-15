@@ -38,3 +38,62 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-15T08:09:59.688Z
+  - _ulid: 01KV56HM82X4AG0CH5GWEFAA8Z
+    content: >-
+      Implemented and migrated. Summary of work delivered:
+
+
+      New module src/lib/shortcuts/ (plain TS core, unit-testable in node vitest):
+
+      - types.ts, platform.ts (detectPlatform), chord.ts
+      (resolve/label/chordKey/eventToResolvedChord/hasPrimaryModifier), reserved.ts (per-platform
+      browser-reserved data + isReserved), registry.ts (ShortcutRegistry), index.ts (singleton +
+      exports).
+
+
+      Behavior:
+
+      - ac-1: single document-level dispatcher (root layout <svelte:window>), exactly-once firing;
+      surface contexts shadow global; inactive-context bindings not dispatched; unregister stops
+      dispatch.
+
+      - ac-2: list() enumerates active-context bindings with action label + resolved chord +
+      rendered chordLabel; subscribe() notifies reactive consumers.
+
+      - ac-3: mod resolves to Cmd on mac / Ctrl on other; labelForChord renders ⌘K vs Ctrl+K; key
+      normalization case-insensitive.
+
+      - ac-4: collision within a context rejects and keeps existing binding; same chord in different
+      context is not a collision.
+
+      - ac-5 + @web-shell-platform-target ac-3: reserved lists (mod+w/t/n both, Cmd+Q mac-only,
+      Ctrl+Tab both); preferred reserved falls through to first non-reserved/non-colliding fallback;
+      no resolvable chord → reported unbound via console.warn, retained in unbound(), never silently
+      dropped.
+
+      - ac-6: modifier-less chords suppressed while focus in input/textarea/contenteditable (no
+      action, no preventDefault); primary-modifier chords still fire inside text entry.
+
+
+      Migration (unchanged user-visible behavior):
+
+      - CommandPalette Cmd/Ctrl+K (global), sidebar toggle Cmd/Ctrl+B (global, reuses
+      SIDEBAR_KEYBOARD_SHORTCUT), triage Arrow Left/Right (surface-scoped 'triage' context,
+      preventDefault:false). Removed the three ad-hoc keydown listeners and
+      SidebarState.handleShortcutKeydown.
+
+      - Updated the mislabeled e2e 'opens with Cmd+K on Mac' test to actually emulate macOS
+      (override navigator.platform + reload) since dispatch is now platform-strict.
+
+
+      Tests: tests/web-ui/shortcuts.test.ts — 29 table-driven behavioral tests, all AC-annotated.
+
+
+      Gates: format:check clean, repo lint 0 errors (0 new warnings in changed files), typecheck
+      clean, svelte-check clean for touched files (pre-existing baseline errors in unrelated files
+      untouched), full npm test suite 10743 passed / 3 skipped, kspec validate
+      refs/alignment/completeness pass. Completeness confirms @ui-shortcut-registry ac-1..6 and
+      @web-shell-platform-target ac-3 are covered.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T08:32:07.426Z
