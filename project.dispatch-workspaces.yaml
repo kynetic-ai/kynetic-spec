@@ -30652,18 +30652,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-harden-detached-reviewer-merge-helper-paths/01kv698n
-    canonical_branch_head: 99ce5a4b7b0d03894b1ec8cb899b394fc916d03f
+    canonical_branch_head: 7189e99b302665e18253618951180dac91bc6e20
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-15T19:41:31.833Z
+      updated_at: 2026-06-15T20:13:54.835Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-15T19:42:22.172Z
+      updated_at: 2026-06-15T20:13:54.835Z
     integration:
       status: pending
       detail: null
@@ -30671,7 +30671,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 99ce5a4b7b0d03894b1ec8cb899b394fc916d03f
-      updated_at: 2026-06-15T19:41:31.833Z
+      updated_at: 2026-06-15T20:13:54.835Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KV698NVS0PVFRX6386XKS6MA
@@ -30680,9 +30680,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-15T19:42:22.172Z
-      last_reconciled_at: 2026-06-15T19:42:22.172Z
+      last_reconciled_at: 2026-06-15T20:13:54.835Z
       created_at: 2026-06-15T19:41:31.833Z
-      updated_at: 2026-06-15T19:42:22.172Z
+      updated_at: 2026-06-15T20:13:54.835Z
     workspace_id: dispatch-workspace-01KV698NVS0PVFRX6386XKS6MA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
