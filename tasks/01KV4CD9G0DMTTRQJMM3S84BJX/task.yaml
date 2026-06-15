@@ -143,12 +143,12 @@ tags:
 vcs_refs: []
 submission_linkage:
   review_url: null
-  branch: dispatch/task/task-review-author-resolution/01kv4cd9
-  captured_at: 2026-06-15T06:31:39.752Z
-  commit: b7bd93f666666700c1cd052b5dd135f0f2d942eb
+  branch: feat/ui-redesign
+  captured_at: 2026-06-15T14:32:06.425Z
+  commit: 29d85a7670795a33f1bb0b3e8d7bf874e4ae1e78
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
-  upstream_ref: refs/heads/dispatch/task/task-review-author-resolution/01kv4cd9
+  upstream_ref: refs/heads/feat/ui-redesign
 session_id: null
 history:
   - author: Jacob Chapel
@@ -335,6 +335,27 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-06-15T14:27:24.489Z
+  - author: Jacob Chapel
+    changes:
+      submission_linkage:
+        new:
+          review_url: null
+          branch: feat/ui-redesign
+          captured_at: 2026-06-15T14:32:06.425Z
+          commit: 29d85a7670795a33f1bb0b3e8d7bf874e4ae1e78
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/feat/ui-redesign
+        previous:
+          review_url: null
+          branch: dispatch/task/task-review-author-resolution/01kv4cd9
+          captured_at: 2026-06-15T06:31:39.752Z
+          commit: b7bd93f666666700c1cd052b5dd135f0f2d942eb
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-review-author-resolution/01kv4cd9
+    command: task-set
+    timestamp: 2026-06-15T14:32:06.425Z
 prior_status: pending_review
 resource_refs:
   - git_commit: null
