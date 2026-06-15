@@ -59,7 +59,7 @@ description: |
 spec_ref: "@ui-shortcut-registry"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -68,6 +68,14 @@ tags:
   - web-ui
   - keyboard
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-shortcut-registry/01kv4cdb
+  captured_at: 2026-06-15T08:32:17.908Z
+  commit: 4417519b6e31bfc7bc465337c92181137381f8a9
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KV54TNWGNS12NPQ2Z97QPJXE
 history:
   - author: Jacob Chapel
@@ -90,6 +98,26 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-15T08:09:22.600Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-shortcut-registry/01kv4cdb
+          captured_at: 2026-06-15T08:32:17.908Z
+          commit: 4417519b6e31bfc7bc465337c92181137381f8a9
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-15T08:32:17.910Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-15T08:32:17.911Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -109,5 +137,6 @@ resource_refs:
     sha256: 9ad1f51125974201d078447062d18a09b9062a5a80c6f0035df75e44838f3a99
 created_at: 2026-06-15T00:55:24.481Z
 started_at: 2026-06-15T08:09:22.599Z
+submitted_at: 2026-06-15T08:32:17.910Z
 todos: []
 automation: eligible
