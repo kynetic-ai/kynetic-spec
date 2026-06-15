@@ -22120,6 +22120,32 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T06:33:22.683Z
+  - _ulid: 01KV56QT8V8PWGNE91MEQN13NA
+    type: friction
+    content: "Dispatched task @task-shortcut-registry declared two handoff resources marked [OK]
+      (handoff-app-shell-navigation -> ./resources/handoff/docs/01-app-shell-and-navigation.md;
+      shot-command-palette -> ./resources/handoff/shots/r2-app-shell-palette.png), but the
+      resources/ directory did not exist in the mutable worker worktree. The worker had to implement
+      without the intended design/handoff context. Investigate whether worker-worktree bootstrap
+      should materialize declared resources (or surface a resolvable path/command), or whether [OK]
+      should be clarified to mean 'declared' rather than 'present-in-workspace'. Scope: medium
+      (dispatch worktree bootstrap + resource resolution)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T08:35:30.204Z
+  - _ulid: 01KV56QTJ6S0Z4KVYDSY3JNPDP
+    type: success
+    content: "Replicable web-ui pattern: keep behavioral logic as a plain-TS core (no Svelte runes) with
+      a thin .svelte/runes layer on top, mirroring src/lib/preferences/. Because the vitest config
+      runs in node with no Svelte plugin, this gives full acceptance-criteria coverage via fast node
+      unit tests while components/listeners stay e2e-covered. Used for the keyboard shortcut
+      registry (registry/chord/reserved/platform as plain TS; root layout owns the single window
+      listener)."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T08:35:30.502Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
