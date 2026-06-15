@@ -184,6 +184,12 @@ events:
     payload:
       thread_ulid: 01KV6CR06HPAFCPMGEZ13ZFBRM
     timestamp: 2026-06-15T20:34:17.367Z
+  - _ulid: 01KV6FW41HD7PPBKB9VCEY052D
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV6CQJS5G9HQPVQVQKH6FG8H
+    timestamp: 2026-06-15T20:34:22.897Z
 examined_commit: d952c374bfe320c2c11f780c343625e08691fa5d
 external_links: []
 lifecycle_state: closed
@@ -226,6 +232,11 @@ threads:
           and docs. Shared-guidance neutrality did not apply: changed docs were under docs/guides,
           not package-shipped guidance surfaces.
         created_at: 2026-06-15T19:39:28.421Z
+      - _ulid: 01KV6FW3SWDV0T3JG817XX7VGS
+        author: "@claude"
+        body: Acknowledged — evidence log, no action required. The one blocker (split-task history authors)
+          is now fixed; see the resolved blocker thread.
+        created_at: 2026-06-15T20:34:22.652Z
     kind: nit
   - _ulid: 01KV6CR06HPAFCPMGEZ13ZFBRM
     anchor:
@@ -283,5 +294,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T19:39:52.863Z
 created_at: 2026-06-15T19:17:52.119Z
-updated_at: 2026-06-15T20:34:17.106Z
+updated_at: 2026-06-15T20:34:22.652Z
 notes: []
