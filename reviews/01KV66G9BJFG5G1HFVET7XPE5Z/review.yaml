@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T17:50:54.768Z
+  - _ulid: 01KV66QBM96B2F6AXAVG03GDJJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV66QB8FZPQWP74PQJ5GXK7Q
+    timestamp: 2026-06-15T17:54:29.641Z
 examined_commit: 9d2c03c338cb5b01aa65aee8292b456cd9090949
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,32 @@ subject:
   content_hash: ""
   ref: "@01KV4CDA7DT4GY1ZYKXA86XX50"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV66QB8FZPQWP74PQJ5GXK7Q
+    anchor:
+      type: code
+      commit: 9d2c03c338cb5b01aa65aee8292b456cd9090949
+      line_end: 224
+      line_start: 218
+      path: src/parser/actor-normalization-migration.ts
+      side: head
+    entries:
+      - _ulid: 01KV66QB8F0F48HDAZ46WVV9GK
+        author: Jacob Chapel
+        body: "MUST-FIX: operator actor-map values are returned and persisted verbatim instead of being
+          validated or normalized to a canonical identity/default. `loadOperatorActorMap` accepts
+          any non-empty string, and this resolver returns `opExact`/`opNormalized` directly, so a
+          map like `Hermes: not-a-real-actor` rewrites an actor field to `not-a-real-actor`. I
+          verified this with an ad hoc temp-project run of `runActorNormalization`: the report
+          recorded `resolutionSource: operator_mapping` and the inbox `added_by` field persisted
+          `not-a-real-actor`. That violates @actor-history-normalization ac-5 (post-run inventoried
+          fields are canonical or declared default) and breaks ac-3/idempotency exactly as the new
+          upgrade guide warns on docs/guides/upgrading-kspec.md:135. Please either reject
+          non-canonical operator mapping targets or classify/normalize recognizable target aliases
+          to their canonical IDs before writing."
+        created_at: 2026-06-15T17:54:29.263Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T17:50:37.938Z
-updated_at: 2026-06-15T17:50:54.485Z
+updated_at: 2026-06-15T17:54:29.263Z
 notes: []
