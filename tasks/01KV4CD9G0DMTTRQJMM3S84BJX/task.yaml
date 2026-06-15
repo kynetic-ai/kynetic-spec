@@ -96,7 +96,7 @@ description: |
 spec_ref: "@actor-identity-resolution"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-identity-endpoint-classifier"
@@ -111,8 +111,8 @@ review_ref: "@01KV5VA7T90MZW3SKX5AVR61R2"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-review-author-resolution/01kv4cd9
-  captured_at: 2026-06-15T14:32:25.576Z
-  commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
+  captured_at: 2026-06-15T15:52:28.389Z
+  commit: 08132e0e0d81beb23c04abcf2b4f66ef86eafc78
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-review-author-resolution/01kv4cd9
@@ -418,6 +418,33 @@ history:
         previous: 2026-06-15T04:38:28.435Z
     command: task-start
     timestamp: 2026-06-15T15:52:25.027Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-review-author-resolution/01kv4cd9
+          captured_at: 2026-06-15T15:52:28.389Z
+          commit: 08132e0e0d81beb23c04abcf2b4f66ef86eafc78
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-review-author-resolution/01kv4cd9
+        previous:
+          review_url: null
+          branch: dispatch/task/task-review-author-resolution/01kv4cd9
+          captured_at: 2026-06-15T14:32:25.576Z
+          commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-review-author-resolution/01kv4cd9
+      submitted_at:
+        new: 2026-06-15T15:52:28.399Z
+        previous: 2026-06-15T06:31:39.755Z
+    command: task-submit
+    timestamp: 2026-06-15T15:52:28.399Z
 prior_status: null
 resource_refs:
   - git_commit: null
@@ -446,6 +473,6 @@ resource_refs:
     sha256: 3a43077a9aac8ddb47ec7fa7d32f40c61bc8bf2af7b3b3a31a8cc46b260aa046
 created_at: 2026-06-15T00:55:22.368Z
 started_at: 2026-06-15T15:52:25.027Z
-submitted_at: 2026-06-15T06:31:39.755Z
+submitted_at: 2026-06-15T15:52:28.399Z
 todos: []
 automation: eligible
