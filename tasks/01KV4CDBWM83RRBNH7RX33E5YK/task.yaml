@@ -58,7 +58,7 @@ description: |
 spec_ref: "@ui-preference-store"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -76,7 +76,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KV4N218YG8ATKPQYMN8W4CFF
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -125,6 +125,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-15T03:49:55.794Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KV4N218YG8ATKPQYMN8W4CFF
+    command: review-verdict-needs-work
+    timestamp: 2026-06-15T04:04:25.993Z
 resource_refs:
   - git_commit: null
     git_path: null

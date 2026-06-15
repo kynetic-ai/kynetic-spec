@@ -157,9 +157,25 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T04:04:14.348Z
+  - _ulid: 01KV4Q7DAY3P4AZTYCF5ZSNVK5
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-15T04:04:24.031Z
+  - _ulid: 01KV4Q7DAZ0YS9FKE1TX02Y4QX
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-15T04:04:24.031Z
 examined_commit: 6cfa985740c19c4d2afd2992b6e0c121cf13a82b
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -212,7 +228,14 @@ threads:
           persistent values readable."
         created_at: 2026-06-15T04:04:11.081Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-15T04:04:24.030Z
 created_at: 2026-06-15T03:49:53.459Z
-updated_at: 2026-06-15T04:04:14.118Z
+updated_at: 2026-06-15T04:04:24.031Z
 notes: []
