@@ -45,6 +45,17 @@ checks:
     runner: npm test -- --fresh tests/detached-reviewer-merge.test.ts
     created_at: 2026-06-15T20:35:27.109Z
     completed_at: 2026-06-15T20:35:27.109Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2788/2788 suites, 10569 passed and 3 skipped of 10572 tests; duration 2753.5s;
+      full log /tmp/kspec-test-cache/01KV6EXR19KTWGB8TX6N92QAQ0/774e380d79890623.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-15T20:35:37.284Z
+    completed_at: 2026-06-15T20:35:37.284Z
 events:
   - _ulid: 01KV6F03CRK3DE6EJ69V79KSWQ
     actor: Jacob Chapel
@@ -87,6 +98,13 @@ events:
       status: pass
       name: focused detached merge tests
     timestamp: 2026-06-15T20:35:27.355Z
+  - _ulid: 01KV6FYCXY875ZZ67SZF8AHBAB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-15T20:35:37.534Z
 examined_commit: 7189e99b302665e18253618951180dac91bc6e20
 external_links: []
 lifecycle_state: open
@@ -99,5 +117,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T20:19:04.728Z
-updated_at: 2026-06-15T20:35:27.109Z
+updated_at: 2026-06-15T20:35:37.284Z
 notes: []
