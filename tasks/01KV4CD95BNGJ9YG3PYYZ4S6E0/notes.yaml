@@ -85,3 +85,35 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T01:50:55.767Z
+  - _ulid: 01KV4J0MYSV5YPVEGHX857NSXW
+    content: >-
+      Fix cycle 1: addressing the review blocker (identity.ts:102) — the daemon/static identity
+      payload only carried each agent's canonicalId + displayName, so the production endpoint
+      payload (which fetchIdentity feeds to the shared classifier) could not resolve non-derivable
+      measured agent aliases like @dispatch/@kspec/@kspec-dispatch -> pr-reviewer. The pure
+      classifier supported per-agent aliases, but the endpoint never sourced them.
+
+
+      Approach (faithful to the original "config aliases" design, symmetric with the already-wired
+      human identity.aliases):
+
+      - Add identity.agent_aliases (record: canonical agent id -> recorded spellings) to the config
+      schema + resolved config.
+
+      - Daemon GET /api/identity merges config agent_aliases into each roster entry's aliases.
+
+      - Static path: export the resolved agent_aliases into the snapshot (snapshot.agent_aliases);
+      fetchIdentityStatic merges them onto the roster so static payload classifies the same
+      variants. human stays null in static (unchanged).
+
+      - Behavioral coverage through the REAL payload path (not a synthetic ActorIdentityConfig):
+      daemon endpoint test writes a kspec.config.yaml with agent_aliases, asserts the endpoint
+      payload carries them AND classifyActor(alias, endpointPayload) -> canonical agent; static test
+      sets snapshot.agent_aliases and asserts the same through fetchIdentity/fetchIdentityStatic.
+
+      - Seed the live kspec.config.yaml with the reviewer's named pr-reviewer spellings so the
+      running daemon resolves them; the exhaustive measured inventory remains owned by
+      @task-actor-normalization-upgrade.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T02:33:19.577Z
