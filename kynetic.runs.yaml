@@ -66490,7 +66490,7 @@ runs:
     completed_at: 2026-06-15T04:17:02.544Z
   - _ulid: 01KV4S9CP10CSTR2KXKPWKX5PN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66505,7 +66505,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T04:41:08.012Z
-        completed_at: 2026-06-15T04:41:08.012Z
+        completed_at: 2026-06-15T04:41:20.976Z
+        notes: "Friction points: npm test took 2771.2s in this detached review despite the worker having
+          already run the same full suite on the submitted snapshot, so review latency was dominated
+          by waiting on deterministic gates. Recording review checks required many sequential kspec
+          review check calls because each check is a separate shadow-branch write; this is reliable
+          but repetitive and slow for standard gate sets."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T04:41:20.976Z
+        completed_at: 2026-06-15T04:41:20.976Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T04:40:26.049Z
