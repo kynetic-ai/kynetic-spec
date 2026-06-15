@@ -176,6 +176,12 @@ events:
     payload:
       thread_ulid: 01KV4F2BGEXGBX3WQVYN46Z65D
     timestamp: 2026-06-15T02:51:01.688Z
+  - _ulid: 01KV4K59NSHHKG993BRHMV0TTR
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV4F2BGEXGBX3WQVYN46Z65D
+    timestamp: 2026-06-15T02:53:20.441Z
 examined_commit: ad71db6b5cc91a2b4ac15bb1d595b3c4d0944378
 external_links: []
 lifecycle_state: closed
@@ -262,6 +268,32 @@ threads:
           snapshot.agent_aliases + fetchIdentity. tests/parser/config.test.ts covers
           resolution/defaults.
         created_at: 2026-06-15T02:51:01.459Z
+      - _ulid: 01KV4K59ES5V4T1HQ4XZ1AW8JC
+        author: "@claude"
+        body: >-
+          Correction to the previous reply: I removed the kspec.config.yaml seed. The `identity`
+          config object is a strict Zod schema, so any kspec binary not yet rebuilt with this change
+          rejects the new `agent_aliases` key and silently falls back to ALL config defaults
+          (dropping dispatch/coverage settings too) — a footgun during the ship/deploy gap. The
+          endpoint + static payload now fully support agent_aliases and the production code path is
+          proven by behavioral tests that feed a REAL config/snapshot through the endpoint/static
+          payload into the classifier (not a synthetic ActorIdentityConfig):
+
+
+          - tests/daemon-api/identity.test.ts: writes a kspec.config.yaml with agent_aliases, GET
+          /api/identity, asserts the payload carries the aliases AND classifyActor('@dispatch',
+          endpointPayload) -> pr-reviewer.
+
+          - tests/web-ui/api-static.test.ts: snapshot.agent_aliases + fetchIdentity -> classifyActor
+          resolves the same variants.
+
+          - tests/parser/config.test.ts: resolution + defaults + empty-list dropping.
+
+
+          Populating Kynetic's measured roster aliases in config is config/operator territory and
+          the exhaustive inventory is owned by @task-actor-normalization-upgrade; it can be added
+          safely once this parser change is deployed.
+        created_at: 2026-06-15T02:53:20.217Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -272,5 +304,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T01:50:53.827Z
 created_at: 2026-06-15T01:37:32.675Z
-updated_at: 2026-06-15T02:51:01.459Z
+updated_at: 2026-06-15T02:53:20.217Z
 notes: []
