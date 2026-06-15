@@ -207,6 +207,13 @@ events:
     payload:
       thread_ulid: 01KV5W7NMRS1Q6BHZQ56J3AWF1
     timestamp: 2026-06-15T14:52:21.141Z
+  - _ulid: 01KV5WAJAJMNB5B3Y5SB6Z5NWH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV5WAJ36G50KZ84DZSV0PPWN
+    timestamp: 2026-06-15T14:52:44.754Z
 examined_commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
 external_links: []
 lifecycle_state: open
@@ -326,7 +333,25 @@ threads:
           through one shared utility, not retain independent fallbacks."
         created_at: 2026-06-15T14:52:17.704Z
     kind: blocker
+  - _ulid: 01KV5WAJ36G50KZ84DZSV0PPWN
+    anchor:
+      type: code
+      commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
+      line_end: 144
+      line_start: 142
+      path: src/triage/actions.ts
+      side: head
+    entries:
+      - _ulid: 01KV5WAJ36Y665W7ZRRDXQ9196
+        author: Jacob Chapel
+        body: "MUST-FIX: the spec-gap triage action still creates an observation without resolving an author
+          through the shared actor utility. It passes only configAuthor into createObservation,
+          which means the observation author is produced by the helper fallback rather than
+          canonicalized/rejected. A triage action is a first-party write interface, so this path
+          must resolve through the shared actor-write utility before persistence."
+        created_at: 2026-06-15T14:52:44.518Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T14:35:05.417Z
-updated_at: 2026-06-15T14:52:20.900Z
+updated_at: 2026-06-15T14:52:44.518Z
 notes: []
