@@ -66922,7 +66922,7 @@ runs:
     completed_at: 2026-06-15T11:18:39.249Z
   - _ulid: 01KV5H46RH9S6QHAQF4FVN0W3R
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66961,10 +66961,18 @@ runs:
           tracked by unresolved observations @01KN48VM and @01KN8W8H, which specifically describe
           stale integration-base/head snapshots and reviewer orientation problems. No duplicate
           capture needed."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-06-15T11:38:57.072Z
-        completed_at: 2026-06-15T11:38:57.072Z
+        completed_at: 2026-06-15T11:39:09.382Z
+        notes: No untracked friction found after search. Existing unresolved observations @01KN48VM and
+          @01KN8W8H cover stale detached-reviewer base/orientation issues; existing review-check
+          batching inbox/observations cover repetitive gate check recording. No new improvement
+          proposal to avoid duplicate tracking.
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-15T11:39:09.382Z
+        completed_at: 2026-06-15T11:39:09.382Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T11:37:01.970Z
