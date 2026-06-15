@@ -29,7 +29,6 @@ import {
   loadPlans,
   ReferenceIndex,
   createNote,
-  getAuthor,
   syncSpecImplementationStatus,
   resolveTaskDataManager,
   TaskDataManagerError,
@@ -45,6 +44,7 @@ import type { PubSubManager } from "../websocket/pubsub.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import { getRelatedSessionsForTask } from "./session-related.js";
 import { resolveRefTitle, resolveRefEntries } from "./ref-resolution.js";
+import { resolveWriteActor, toValidationErrorBody } from "./actor-resolution.js";
 
 import type { EntityCacheAccessor, WriteThroughHint } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
@@ -678,7 +678,18 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             });
           }
 
-          const author = getAuthor(ctx.config?.identity?.author);
+          // AC: @actor-identity-resolution ac-6 ac-8 — canonical note author or rejection.
+          const noteAuthorResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            undefined,
+            "author",
+          );
+          if (!noteAuthorResult.ok) {
+            return errorResponse(400, toValidationErrorBody(noteAuthorResult));
+          }
+          const author = noteAuthorResult.actor;
 
           // AC: @task-data-manager ac-4, ac-6 - Atomic note addition via manager
           let result: { task: LoadedTask; note: { _ulid: string } };
@@ -946,8 +957,18 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           }
 
           const oldStatus = task.status;
-          const author = getAuthor(ctx.config?.identity?.author);
-          const note = createNote(`Blocked: ${body.reason}`, author);
+          // AC: @actor-identity-resolution ac-6 ac-8 — canonical note author or rejection.
+          const blockAuthorResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            undefined,
+            "author",
+          );
+          if (!blockAuthorResult.ok) {
+            return errorResponse(400, toValidationErrorBody(blockAuthorResult));
+          }
+          const note = createNote(`Blocked: ${body.reason}`, blockAuthorResult.actor);
 
           // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
           // skipCommit: task mutation + spec sync committed as one shadow commit

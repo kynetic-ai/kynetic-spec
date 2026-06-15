@@ -15,7 +15,8 @@
 
 import type { ReviewRecord, ReviewVerdictDecision } from "../schema/index.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
-import { createNote, getAuthor } from "./yaml.js";
+import { createNote } from "./yaml.js";
+import { resolveActorForContext } from "../identity/actor-write-context.js";
 import { resolveTaskDataManager } from "./task-data-manager.js";
 import { findReviewByRef, type LoadedReviewRecord } from "./reviews.js";
 
@@ -150,6 +151,13 @@ export async function handleVerdictTaskTransition(
     }
   }
 
+  // AC: @actor-identity-resolution ac-7 — canonicalize the system-note author
+  // through the shared utility (same path as all other writers). Resolve once
+  // for all transitioned tasks; on the unresolvable-author edge the note falls
+  // back to the leaf creator's chain default rather than blocking the verdict.
+  const transitionAuthorResult = await resolveActorForContext(ctx, { field: "author" });
+  const transitionAuthor = transitionAuthorResult.ok ? transitionAuthorResult.actor : undefined;
+
   for (const taskRef of taskRefsToCheck) {
     const cleanRef = taskRef.startsWith("@") ? taskRef.slice(1) : taskRef;
     const task = allTasks.find(
@@ -181,7 +189,7 @@ export async function handleVerdictTaskTransition(
 
         const note = createNote(
           `[FIX_CYCLE: ${cycleNumber}] Review verdict: changes_requested${reviewer ? ` by ${reviewer}` : ""}`,
-          getAuthor(ctx.config?.identity?.author),
+          transitionAuthor,
         );
 
         return {

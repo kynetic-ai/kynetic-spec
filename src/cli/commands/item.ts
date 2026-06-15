@@ -48,6 +48,7 @@ import { fieldLabels, sectionHeaders } from "../../strings/labels.js";
 import { formatMatchedFields, grepItem } from "../../utils/grep.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, showChangeDiff, success, warn } from "../output.js";
+import { resolveCliActor } from "../actor.js";
 import { parseTagsArray } from "../parse-utils.js";
 import { validateEnumOption } from "../validators.js";
 
@@ -1852,7 +1853,9 @@ Examples:
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const note = createNote(message, options.author, options.supersedes);
+        // AC: @actor-identity-resolution ac-7 ac-8 — canonical author or rejection.
+        const noteAuthor = await resolveCliActor(ctx, options.author, "author");
+        const note = createNote(message, noteAuthor, options.supersedes);
 
         const updatedNotes = [...(foundItem.notes || []), note];
         await updateSpecItem(ctx, foundItem, { notes: updatedNotes });

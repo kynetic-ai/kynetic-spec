@@ -33,13 +33,13 @@ import {
   findTriageRecordByInboxRef,
   loadInboxItems,
   findInboxItemByRef,
-  getAuthor,
   resolveTaskDataManager,
   type LoadedTriageRecord,
   type LoadedTask,
   type LoadedSpecItem,
 } from "../../parser/index.js";
 import { resolveRefEntries } from "./ref-resolution.js";
+import { resolveWriteActor, toValidationErrorBody } from "./actor-resolution.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { normalizeRefInput, TriageActionSchema, TriageStatusSchema } from "../../schema/index.js";
 import type { TriageAction } from "../../schema/index.js";
@@ -246,7 +246,18 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             });
           }
 
-          const author = body.decided_by || getAuthor(ctx.config?.identity?.author);
+          // AC: @actor-identity-resolution ac-7 ac-8 — canonical decided_by or rejection.
+          const decidedByResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            body.decided_by,
+            "decided_by",
+          );
+          if (!decidedByResult.ok) {
+            return errorResponse(400, toValidationErrorBody(decidedByResult));
+          }
+          const author = decidedByResult.actor;
           const evidenceRefs = body.evidence_refs ? body.evidence_refs.map(normalizeRefInput) : [];
 
           // Check if a record already exists for this inbox item (upsert case)
@@ -442,7 +453,18 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             });
           }
 
-          const overrideBy = body.override_by || getAuthor(ctx.config?.identity?.author);
+          // AC: @actor-identity-resolution ac-7 ac-8 — canonical override_by or rejection.
+          const overrideByResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            body.override_by,
+            "override_by",
+          );
+          if (!overrideByResult.ok) {
+            return errorResponse(400, toValidationErrorBody(overrideByResult));
+          }
+          const overrideBy = overrideByResult.actor;
 
           // AC: @triage-daemon-api ac-4 - Set override fields and update action
           record.override_reasoning = body.reasoning;

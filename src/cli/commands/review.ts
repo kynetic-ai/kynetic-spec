@@ -17,7 +17,6 @@ import {
   computeDisposition,
   createReviewRecord,
   findReviewByRef,
-  getAuthor,
   handleVerdictTaskTransition,
   initContext,
   linkReviewToTasks,
@@ -30,6 +29,7 @@ import {
   transitionLifecycle,
 } from "../../parser/index.js";
 import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
+import { resolveCliActor } from "../actor.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { evaluateGates } from "../../review/checks.js";
 import { extractSubjectVersion } from "../../review/subject-bindings.js";
@@ -493,7 +493,7 @@ export function registerReviewCommands(program: Command): void {
       .action(async (options) => {
         try {
           const ctx = await initContext();
-          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const author = await resolveCliActor(ctx, options.author, "author");
           const subject = parseSubjectFromOptions(options);
 
           // AC: @review-fix-cycle-diff ac-1 — capture examined commit
@@ -761,7 +761,7 @@ export function registerReviewCommands(program: Command): void {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
-          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const author = await resolveCliActor(ctx, options.author, "author");
 
           // Validate thread kind
           // AC: @trait-error-guidance ac-5
@@ -857,7 +857,7 @@ export function registerReviewCommands(program: Command): void {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
-          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const author = await resolveCliActor(ctx, options.author, "author");
           const now = new Date().toISOString();
 
           const threadRef = options.thread.startsWith("@")
@@ -943,7 +943,7 @@ export function registerReviewCommands(program: Command): void {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
-          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const author = await resolveCliActor(ctx, options.author, "author");
           const now = new Date().toISOString();
 
           // Validate check status
@@ -965,6 +965,10 @@ export function registerReviewCommands(program: Command): void {
           // AC: @review-cli-mutation-commands ac-2 — auto-derive version from review subject
           const version = extractSubjectVersion(found.subject);
 
+          // `runner` is the tool/command that executed the check (e.g.
+          // "npm test", "kspec"), not a human/agent actor — it is persisted
+          // verbatim. The event actor (who recorded the check) is the canonical
+          // `author` resolved above.
           const newCheck: ReviewCheck = {
             name: options.name,
             status: statusResult.value as ReviewCheck["status"],
@@ -1026,7 +1030,7 @@ export function registerReviewCommands(program: Command): void {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
-          const reviewer = options.reviewer || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const reviewer = await resolveCliActor(ctx, options.reviewer, "reviewer");
 
           // Validate decision
           // AC: @trait-error-guidance ac-5
@@ -1119,7 +1123,7 @@ export function registerReviewCommands(program: Command): void {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
-          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const author = await resolveCliActor(ctx, options.author, "author");
           const now = new Date().toISOString();
 
           const threadRef = options.thread.startsWith("@")
@@ -1200,7 +1204,7 @@ export function registerReviewCommands(program: Command): void {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
-          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const author = await resolveCliActor(ctx, options.author, "author");
           const now = new Date().toISOString();
 
           const threadRef = options.thread.startsWith("@")
@@ -1280,7 +1284,7 @@ export function registerReviewCommands(program: Command): void {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
-          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const author = await resolveCliActor(ctx, options.author, "author");
           const now = new Date().toISOString();
 
           // AC: @trait-error-guidance ac-4
@@ -1338,7 +1342,7 @@ export function registerReviewCommands(program: Command): void {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
-          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const author = await resolveCliActor(ctx, options.author, "author");
           const now = new Date().toISOString();
 
           // AC: @trait-error-guidance ac-4
@@ -1404,7 +1408,7 @@ export function registerReviewCommands(program: Command): void {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
-          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const author = await resolveCliActor(ctx, options.author, "author");
           const now = new Date().toISOString();
 
           // AC: @trait-error-guidance ac-4
@@ -1461,7 +1465,7 @@ export function registerReviewCommands(program: Command): void {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
-          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const author = await resolveCliActor(ctx, options.author, "author");
           const now = new Date().toISOString();
 
           if (found.subject.type !== "code") {

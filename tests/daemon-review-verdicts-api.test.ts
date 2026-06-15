@@ -44,6 +44,23 @@ const TASK_ULID = testUlid("TASK", 6);
 let tempDir: string;
 let app: Elysia;
 
+// Pin the configured human identity so the reviewer/actor values these tests
+// send (`test@example.com`) resolve in-pool through the shared actor-write
+// utility rather than being rejected as out-of-pool free-form authors.
+// AC: @actor-identity-resolution ac-6 ac-7 — writes resolve against the configured pool
+let savedVerdictAuthor: string | undefined;
+beforeEach(() => {
+  savedVerdictAuthor = process.env.KSPEC_AUTHOR;
+  process.env.KSPEC_AUTHOR = "test@example.com";
+});
+afterEach(() => {
+  if (savedVerdictAuthor === undefined) {
+    delete process.env.KSPEC_AUTHOR;
+  } else {
+    process.env.KSPEC_AUTHOR = savedVerdictAuthor;
+  }
+});
+
 // AC: @entity-folder-migration-and-compatibility-1 ac-new-projects-declare-folder-storage
 // AC: @entity-folder-migration-and-compatibility-1 ac-unmigrated-projects-are-blocked-with-guidance
 //   — kynetic 1.2 fixture with folder-backed plan/review/resource storage so

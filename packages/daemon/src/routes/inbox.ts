@@ -25,6 +25,7 @@ import {
 import { commitIfShadow } from "../../parser/shadow.js";
 import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { resolveWriteActor, toValidationErrorBody } from "./actor-resolution.js";
 import { wrapResponse } from "./response-envelope.js";
 
 interface InboxRouteOptions {
@@ -89,11 +90,23 @@ export function createInboxRoutes(options: InboxRouteOptions) {
             });
           }
 
+          // AC: @actor-identity-resolution ac-7 ac-8 — canonical added_by or rejection.
+          const addedByResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            body.added_by,
+            "added_by",
+          );
+          if (!addedByResult.ok) {
+            return errorResponse(400, toValidationErrorBody(addedByResult));
+          }
+
           // Create inbox item input
           const input: InboxItemInput = {
             text: body.text,
             tags: body.tags,
-            added_by: body.added_by,
+            added_by: addedByResult.actor,
           };
 
           // AC: @api-contract ac-13 - Generate ULID and create item

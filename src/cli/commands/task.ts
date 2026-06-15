@@ -6,7 +6,6 @@ import {
   createNote,
   createTodo,
   findReviewByRef,
-  getAuthor,
   initContext,
   type LoadedSpecItem,
   type LoadedTask,
@@ -52,6 +51,7 @@ import {
   success,
 } from "../output.js";
 import { parsePriority, validateEnumOption, validateSpecRef } from "../validators.js";
+import { resolveCliActor } from "../actor.js";
 import { describeEnumValues } from "../enum-help.js";
 import { addListOptions, listTasksAction } from "./tasks.js";
 import { findClosestCommand } from "../suggest.js";
@@ -344,6 +344,9 @@ async function setTaskFields(
       operation: "task-set",
       ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
     };
+    // AC: @actor-identity-resolution ac-7 ac-8 — resolve the note author through
+    // the shared utility before the (synchronous) mutation callback runs.
+    const setNoteAuthor = await resolveCliActor(ctx, undefined, "author");
     const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
       ctx,
       foundTask._ulid,
@@ -493,7 +496,7 @@ async function setTaskFields(
           // AC: @task-set ac-author
           const note = createNote(
             `Dependencies cleared (was: ${latestTask.depends_on.join(", ")})`,
-            getAuthor(ctx.config?.identity?.author),
+            setNoteAuthor,
           );
           nextTask.notes = [...nextTask.notes, note];
         }
@@ -518,7 +521,7 @@ async function setTaskFields(
           if (options.reason) {
             const note = createNote(
               `Automation status set to ${validatedAutomation}: ${options.reason}`,
-              getAuthor(ctx.config?.identity?.author),
+              setNoteAuthor,
             );
             nextTask.notes = [...nextTask.notes, note];
           }
@@ -1570,6 +1573,9 @@ Examples:
               let transitionFromStatus: Task["status"] = foundTask.status as Task["status"];
               let forcedFromNonStandard = false;
               let forceStateDetail: string | undefined;
+              // AC: @actor-identity-resolution ac-7 ac-8 — resolve the note author
+              // through the shared utility before the synchronous mutation callback.
+              const completeNoteAuthor = await resolveCliActor(ctx, undefined, "author");
               // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
               const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
                 ctx,
@@ -1616,7 +1622,7 @@ Examples:
                   if (options.skipReview && options.reason) {
                     const skipNote = createNote(
                       `Completed with --skip-review: ${options.reason}`,
-                      getAuthor(ctx.config?.identity?.author),
+                      completeNoteAuthor,
                     );
                     taskNotes = [...taskNotes, skipNote];
                   }
@@ -1634,10 +1640,7 @@ Examples:
                     if (options.reason) {
                       forceMessage += `. Reason: ${options.reason}`;
                     }
-                    const forceNote = createNote(
-                      forceMessage,
-                      getAuthor(ctx.config?.identity?.author),
-                    );
+                    const forceNote = createNote(forceMessage, completeNoteAuthor);
                     taskNotes = [...taskNotes, forceNote];
                   }
 
@@ -1863,6 +1866,9 @@ Examples:
           operation: "task-needs-work",
           ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         };
+        // AC: @actor-identity-resolution ac-7 ac-8 — resolve the note author
+        // through the shared utility before the synchronous mutation callback.
+        const needsWorkNoteAuthor = await resolveCliActor(ctx, undefined, "author");
         const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
@@ -1880,7 +1886,7 @@ Examples:
 
             const note = createNote(
               `[FIX_CYCLE: ${cycleNumber}] Review findings: ${options.reason}`,
-              getAuthor(ctx.config?.identity?.author),
+              needsWorkNoteAuthor,
             );
 
             // Set detail on commitOpts so TaskDataManager's shadow commit includes cycle info
@@ -2092,6 +2098,9 @@ Examples:
 
               // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
               const allRefs = [foundTask, ...downstreamTasks].map((t) => t._ulid);
+              // AC: @actor-identity-resolution ac-7 ac-8 — resolve the cleanup-note
+              // author through the shared utility before the synchronous callback.
+              const cancelCleanupAuthor = await resolveCliActor(ctx, undefined, "author");
               const [updatedTask] = await resolveTaskDataManager(ctx).mutateTasks(
                 ctx,
                 allRefs,
@@ -2122,7 +2131,7 @@ Examples:
 
                     const cleanupNote = createNote(
                       `Cancelled dependency cleanup: removed ${cancelledTaskRef} from depends_on because the upstream task was cancelled.${cancellationReason}`,
-                      getAuthor(ctx.config?.identity?.author),
+                      cancelCleanupAuthor,
                     );
 
                     return {
@@ -2182,6 +2191,9 @@ Examples:
           operation: "task-reset",
           ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
         };
+        // AC: @actor-identity-resolution ac-7 ac-8 — resolve the reset-note author
+        // through the shared utility before the synchronous mutation callback.
+        const resetNoteAuthor = await resolveCliActor(ctx, undefined, "author");
         const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
@@ -2237,7 +2249,7 @@ Examples:
               ? ` (was cancelled: ${latestTask.closed_reason})`
               : "";
             const noteContent = `Reset from ${latestTask.status} to pending${cancelReasonText}`;
-            const note = createNote(noteContent, getAuthor(ctx.config?.identity?.author));
+            const note = createNote(noteContent, resetNoteAuthor);
             nextTask.notes = [...nextTask.notes, note];
 
             return nextTask;
@@ -2384,7 +2396,9 @@ Examples:
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
-        const note = createNote(message, options.author, options.supersedes);
+        // AC: @actor-identity-resolution ac-7 ac-8 — canonical author or rejection.
+        const noteAuthor = await resolveCliActor(ctx, options.author, "author");
+        const note = createNote(message, noteAuthor, options.supersedes);
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
@@ -2669,8 +2683,11 @@ Examples:
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
+        // AC: @actor-identity-resolution ac-7 ac-8 — canonical added_by or rejection.
+        const todoAuthor = await resolveCliActor(ctx, options.author, "added_by");
+
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
-        let todo = createTodo(1, text, options.author);
+        let todo = createTodo(1, text, todoAuthor);
         const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
@@ -2681,7 +2698,7 @@ Examples:
                 ? Math.max(...latestTask.todos.map((entry) => entry.id)) + 1
                 : 1;
 
-            todo = createTodo(nextId, text, options.author);
+            todo = createTodo(nextId, text, todoAuthor);
 
             return {
               ...latestTask,

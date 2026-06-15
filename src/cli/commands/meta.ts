@@ -54,6 +54,7 @@ import { executeBatchOperation, formatBatchOutput } from "../batch.js";
 import { markMutating } from "../command-annotations.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, success } from "../output.js";
+import { resolveCliActor } from "../actor.js";
 import { parseTagsArray } from "../parse-utils.js";
 import { parseIntOption } from "../validators.js";
 
@@ -810,9 +811,10 @@ export function registerMetaCommands(program: Command): void {
           }
 
           // Create observation
+          // AC: @actor-identity-resolution ac-7 ac-8 — canonical author or rejection.
           const observation = createObservation(observationType, observationContent, {
             workflow_ref: options.workflow,
-            author: options.author,
+            author: await resolveCliActor(ctx, options.author, "author"),
             configAuthor: ctx.config?.identity?.author,
           });
 
@@ -855,9 +857,10 @@ export function registerMetaCommands(program: Command): void {
         }
 
         // Create observation
+        // AC: @actor-identity-resolution ac-7 ac-8 — canonical author or rejection.
         const observation = createObservation(type as ObservationType, content, {
           workflow_ref: options.workflow,
-          author: options.author,
+          author: await resolveCliActor(ctx, options.author, "author"),
           configAuthor: ctx.config?.identity?.author,
         });
 
