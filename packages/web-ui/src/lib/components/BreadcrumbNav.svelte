@@ -160,6 +160,7 @@
 					<Popover.Trigger
 						class="flex items-center gap-0.5 rounded border border-border bg-muted px-1.5 py-0.5 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 						data-testid="breadcrumb-collapse"
+						aria-haspopup="menu"
 						aria-label="Show {trail.collapsed.length} collapsed breadcrumb segments"
 					>
 						<span aria-hidden="true">…</span>
@@ -172,17 +173,23 @@
 							sideOffset={6}
 							align="start"
 						>
-							<!-- AC: @ui-breadcrumb ac-5, ac-6 — collapsed segments in hierarchy order; keyboard-navigable -->
+							<!-- AC: @ui-breadcrumb ac-5, ac-6 — collapsed segments in hierarchy order; keyboard-navigable.
+							     role="menu" makes the list an interactive element, so the keydown handler carries
+							     correct menu semantics rather than living on a bare non-interactive <ul>. -->
 							<ul
 								class="flex flex-col gap-0.5"
 								data-testid="breadcrumb-popover"
+								role="menu"
+								tabindex={-1}
+								aria-label="Collapsed breadcrumb segments"
 								onkeydown={onPopoverKeydown}
 							>
 								{#each trail.collapsed as seg, i (seg.ref)}
-									<li>
+									<li role="none">
 										<a
 											bind:this={rowEls[i]}
 											href={segmentHref(seg)}
+											role="menuitem"
 											class={cn(
 												'flex items-center gap-1.5 rounded px-2 py-1 text-sm text-foreground hover:bg-accent focus-visible:bg-accent focus-visible:outline-none',
 												selectedIndex === i && 'bg-accent'
