@@ -266,3 +266,12 @@ resources:
     label: Coverage state wireframe source
     path: handoff/reference-src/wf3-coverage-states.jsx
     sha256: 906f3d6b60776618d102a6fb49e7e3f18fcee7eb5dfbd1d75537fd07ffc6dbad
+  - description: React wireframe source for unified spec workspace page/tree behavior; target remains Svelte.
+    bytes: 22921
+    content_type: application/octet-stream
+    git_commit: null
+    git_path: null
+    id: src-spec-unified
+    label: Spec workspace wireframe source
+    path: handoff/reference-src/wf3-spec-unified.jsx
+    sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
