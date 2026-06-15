@@ -347,3 +347,29 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T17:47:03.784Z
+  - _ulid: 01KV679X36DFRNQEVP3423GF9A
+    content: >-
+      Fix cycle 2: resolved the merge conflict that aborted the approved cycle-2 review merge into
+      feat/ui-redesign. No behavior change to the actor-write work itself.
+
+
+      What changed:
+
+      - feat/ui-redesign had advanced (now origin head 775219419, past the df1c0a69 in the prior
+      merge attempt). Merged current origin/feat/ui-redesign into this task branch (merge commit
+      c1b31604d4) so the review merge helper sees a clean lineage.
+
+      - Sole conflict was packages/daemon/src/routes/tasks.ts imports (per the integration note):
+      kept BOTH the breadcrumb-ancestry imports from feat/ui-redesign (BreadcrumbAncestryResolver,
+      AncestryItemInput) AND this task's actor-resolution import (resolveWriteActor,
+      toValidationErrorBody). Verified all four symbols are used (ancestry resolver ~line 441, actor
+      resolution at note/block handlers ~694/973). The other three auto-merged files (package.json,
+      reviews.ts, web-ui api.ts) had no content conflicts.
+
+
+      Gates (all green on the merged tree): build (tsc+shared+daemon+web-ui+plugin), format:check,
+      lint --quiet 0 errors, typecheck, npm test 10823 passed/0 failed/3 skipped, kspec validate
+      refs/alignment/completeness warnings-only baseline exit 0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T18:04:37.350Z
