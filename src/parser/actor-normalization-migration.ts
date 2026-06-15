@@ -475,16 +475,31 @@ async function buildHandlers(): Promise<RecordKindHandler[]> {
         const splitBackend = await import("./split-backend.js");
         splitBackend.ensureSplitBackendRegistered();
         const manager = taskMgr.resolveTaskDataManager(ctx);
-        const tasks = await manager.loadAllTasks(ctx);
-        return tasks.map((task) => ({
-          ref: task._ulid,
-          data: task as unknown as Record<string, unknown>,
-          // Persist without commit metadata so no synthetic history entry is
-          // appended — the mutation is the actor rewrite only.
-          persist: async (c: KspecContext) => {
-            await manager.mutateTask(c, task._ulid, () => task);
-          },
-        }));
+        // Load each task WITH its per-task history. The history array lives in
+        // task.yaml but is not part of TaskSchema, so the normal load/mutate
+        // path strips it; the migration must also rewrite history[].author
+        // (inventoried as a normalize field) per @actor-history-normalization
+        // ac-5/ac-6.
+        const loaded = await manager.loadAllTasksWithHistory(ctx);
+        return loaded.map(({ task, history }) => {
+          // Attach the history array onto the walked record so the engine
+          // rewrites history[].author in place alongside the schema-backed
+          // actor fields (assignee, todos[].added_by, notes[].author). The
+          // array is mutated by reference, so `history` reflects the rewrites
+          // when persist runs.
+          const data = task as unknown as Record<string, unknown>;
+          data.history = history;
+          return {
+            ref: task._ulid,
+            data,
+            // Persist the rewritten core fields AND the rewritten history via
+            // the history-aware save path; no synthetic history entry is
+            // appended — the only change is the actor rewrite.
+            persist: async (c: KspecContext) => {
+              await manager.saveActorNormalizedTask(c, task, history);
+            },
+          };
+        });
       },
     },
     {

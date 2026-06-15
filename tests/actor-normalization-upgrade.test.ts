@@ -180,7 +180,7 @@ async function seedVariants(tempDir: string): Promise<void> {
   };
   await saveReviewRecordToFolder(seedCtx, review as Parameters<typeof saveReviewRecordToFolder>[1]);
 
-  // ── Task (covers notes[].author, todos[].added_by, assignee) ──
+  // ── Task (covers notes[].author, todos[].added_by, assignee, history[].author) ──
   const taskDir = path.join(specDir, "tasks", taskU);
   await fs.mkdir(taskDir, { recursive: true });
   const taskCore = {
@@ -192,6 +192,16 @@ async function seedVariants(tempDir: string): Promise<void> {
     priority: 3,
     assignee: "Test User",
     todos: [{ id: 1, text: "do", done: false, added_at: TS, added_by: "@codex" }],
+    // The per-task field-change history lives in task.yaml outside TaskSchema;
+    // its author is an in-scope actor field the migration must normalize.
+    history: [
+      {
+        timestamp: TS,
+        author: "@codex",
+        command: "task-set",
+        changes: { status: { previous: "pending", new: "in_progress" } },
+      },
+    ],
     created_at: TS,
   };
   await fs.writeFile(path.join(taskDir, "task.yaml"), yaml.stringify(taskCore));
@@ -386,6 +396,12 @@ describe("actor normalization migration over a real project", () => {
     expect(task.assignee).toBe("Jacob Chapel"); // Test User → human
     expect(task.todos[0].added_by).toBe("codex"); // @codex → codex
     expect(task.notes[0].author).toBe("codex"); // codex@gpt-5 → codex
+
+    // history[].author lives in task.yaml outside TaskSchema — assert the
+    // history-aware load shows it was normalized too.
+    const withHistory = await manager.loadAllTasksWithHistory(fresh);
+    const seededHistory = withHistory.find((t) => t.task.slugs.includes("seeded-task"))!;
+    expect(seededHistory.history[0].author).toBe("codex"); // @codex → codex
 
     const inbox = await loadInboxItems(fresh);
     expect(inbox[0].added_by).toBe("Jacob Chapel"); // @claude → human
@@ -596,6 +612,37 @@ describe("actor normalization migration over a real project", () => {
 
     const afterSecond = await snapshotDir(path.join(tempDir, ".kspec"));
     expect(afterSecond).toEqual(afterFirst);
+  });
+
+  // AC: @actor-history-normalization ac-5 — split-task history authors are normalized
+  // AC: @actor-history-normalization ac-6 — history[].author is an inventoried actor field
+  it("rewrites split-task history[].author in task.yaml and reports it", async () => {
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const report = await runActorNormalization(ctx, { config: CONFIG, now: TS });
+
+    // The report records the history rewrite with a concrete, indexed field path.
+    const historyRewrite = report.rewrites.find(
+      (r) => r.recordKind === "task" && r.fieldPath === "history[0].author",
+    );
+    expect(historyRewrite).toBeDefined();
+    expect(historyRewrite!.original).toBe("@codex");
+    expect(historyRewrite!.resolved).toBe("codex");
+
+    // The on-disk task.yaml history author is canonicalized — the bug the
+    // reviewer found (history left as @codex after a run) is fixed.
+    const taskU = testUlids("seed", 14)[5];
+    const taskYamlPath = path.join(tempDir, ".kspec", "tasks", taskU, "task.yaml");
+    const rawTask = yaml.parse(await fs.readFile(taskYamlPath, "utf-8")) as {
+      history: Array<{ author: string }>;
+    };
+    expect(rawTask.history[0].author).toBe("codex");
+
+    // ac-3 — the history field is a fixed point on re-run.
+    const fresh = await initContext(tempDir, { syncMode: "skip" });
+    const second = await runActorNormalization(fresh, { config: CONFIG, dryRun: true, now: TS });
+    expect(
+      second.rewrites.some((r) => r.recordKind === "task" && r.fieldPath.startsWith("history")),
+    ).toBe(false);
   });
 
   it("covers at least one fixture for every inventoried normalize field path", async () => {

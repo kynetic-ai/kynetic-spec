@@ -102,7 +102,7 @@ The pre-upgrade commit is the rollback ref by design — kspec does not create p
 
 #### Historical Actor Normalization
 
-The upgrade also normalizes historical **actor fields** — the author, reviewer, resolver, and addition-source values recorded across your project's records (review authors and verdict reviewers, thread/reply authors, thread `resolved_by`, task note authors, task todo `added_by`, task `assignee`, inbox `added_by`, triage `decided_by`/`override_by`, meta observation `author`/`resolved_by`, workflow-run `initiated_by`, spec/module `created_by`, and spec/plan note authors).
+The upgrade also normalizes historical **actor fields** — the author, reviewer, resolver, and addition-source values recorded across your project's records (review authors and verdict reviewers, thread/reply authors, thread `resolved_by`, task note authors, task todo `added_by`, task `assignee`, task field-change history authors, inbox `added_by`, triage `decided_by`/`override_by`, meta observation `author`/`resolved_by`, workflow-run `initiated_by`, spec/module `created_by`, and spec/plan note authors).
 
 Over a project's life the same person or agent often ends up recorded many different ways (`codex`, `codex@openai.com`, `@codex`, `codex-reviewer`, …). Identity-derived views — "mine", "awaiting you", ownership filtering — only work if those variants resolve to one canonical identity. This step rewrites recognizable variants once, using the same identity vocabulary as the `GET /api/identity` surface: your configured human author (and any aliases) plus the canonical agent roster.
 

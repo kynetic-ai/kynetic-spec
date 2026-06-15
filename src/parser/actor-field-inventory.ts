@@ -162,6 +162,20 @@ export const ACTOR_FIELD_INVENTORY: readonly ActorFieldInventoryEntry[] = [
     disposition: "normalize",
   },
   {
+    // The per-task field-change history lives in the `history` array inside
+    // task.yaml but is NOT part of TaskSchema — it is an internal stored-record
+    // shape the split backend manages directly (see HistoryEntry in
+    // task-data-manager.ts), so the schema-reflection guard cannot discover it.
+    // Each entry's `author` is an explicit actor/author identity, so it is an
+    // in-scope normalize field and is inventoried here by hand. The migration's
+    // task handler loads and rewrites it via the history-aware save path.
+    recordKind: "task",
+    schemaType: "HistoryEntry",
+    storagePath: "tasks/<ulid>/task.yaml",
+    fieldPath: "history[].author",
+    disposition: "normalize",
+  },
+  {
     recordKind: "task",
     schemaType: "TaskSchema",
     storagePath: "tasks/<ulid>/task.yaml",
