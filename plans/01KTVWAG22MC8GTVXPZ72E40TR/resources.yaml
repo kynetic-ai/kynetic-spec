@@ -256,3 +256,13 @@ resources:
     label: Breadcrumb wireframe source
     path: handoff/reference-src/wf3-breadcrumb-variants.jsx
     sha256: e79ac43863bf22ac6fb2ab7105113dc4e081fb81b1a24afa982987cc500f67cf
+  - description: React wireframe source for coverage token names, glyphs, and edge-case comments; target
+      remains Svelte.
+    bytes: 22407
+    content_type: application/octet-stream
+    git_commit: null
+    git_path: null
+    id: src-coverage-states
+    label: Coverage state wireframe source
+    path: handoff/reference-src/wf3-coverage-states.jsx
+    sha256: 906f3d6b60776618d102a6fb49e7e3f18fcee7eb5dfbd1d75537fd07ffc6dbad
