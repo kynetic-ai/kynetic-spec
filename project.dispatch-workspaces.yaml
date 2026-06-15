@@ -29822,7 +29822,7 @@ workspaces:
         head: 9d2c03c338cb5b01aa65aee8292b456cd9090949
         last_seen_at: 2026-06-15T17:48:52.023Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-actor-normalization-upgrade-01kv4cda
-  - active_role: worker
+  - active_role: null
     base_branch_point: 775219419ed91b2d981e268c7a052b890c05c3eb
     bootstrap:
       status: succeeded
@@ -30150,12 +30150,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-15T18:39:54.345Z
+      updated_at: 2026-06-15T18:41:56.155Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-15T18:39:54.345Z
+      updated_at: 2026-06-15T18:41:56.155Z
     integration:
       status: pending
       detail: null
@@ -30163,8 +30163,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 775219419ed91b2d981e268c7a052b890c05c3eb
-      updated_at: 2026-06-15T18:39:54.345Z
-    lifecycle_state: active
+      updated_at: 2026-06-15T18:41:56.155Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV4CDAWAG1XHQVHAVABN2VMD
     task_ref: "@01KV4CDAWAG1XHQVHAVABN2VMD"
@@ -30172,9 +30172,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-15T18:08:52.014Z
-      last_reconciled_at: 2026-06-15T18:39:54.345Z
+      last_reconciled_at: 2026-06-15T18:41:56.155Z
       created_at: 2026-06-15T18:08:19.501Z
-      updated_at: 2026-06-15T18:39:54.345Z
+      updated_at: 2026-06-15T18:41:56.155Z
     workspace_id: dispatch-workspace-01KV4CDAWAG1XHQVHAVABN2VMD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
