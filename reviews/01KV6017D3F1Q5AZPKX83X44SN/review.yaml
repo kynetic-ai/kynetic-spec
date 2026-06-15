@@ -79,6 +79,17 @@ checks:
     runner: kspec
     created_at: 2026-06-15T16:15:28.978Z
     completed_at: 2026-06-15T16:15:28.978Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared, root tsc, daemon build, web-ui build, docs search build, and plugin
+      build completed with exit 0. Svelte warnings were non-fatal existing diagnostics."
+    name: build
+    required: false
+    runner: npm run build
+    created_at: 2026-06-15T16:15:40.632Z
+    completed_at: 2026-06-15T16:15:40.632Z
 events:
   - _ulid: 01KV6017D25RANN47ZZVW89341
     actor: Jacob Chapel
@@ -142,6 +153,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-15T16:15:29.199Z
+  - _ulid: 01KV612DSYNCQA18NNGK283VCW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-06-15T16:15:40.862Z
 examined_commit: 08132e0e0d81beb23c04abcf2b4f66ef86eafc78
 external_links: []
 lifecycle_state: open
@@ -154,5 +172,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T15:57:32.963Z
-updated_at: 2026-06-15T16:15:28.978Z
+updated_at: 2026-06-15T16:15:40.632Z
 notes: []
