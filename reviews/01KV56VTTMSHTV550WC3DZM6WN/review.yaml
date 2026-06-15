@@ -67,6 +67,19 @@ checks:
     runner: kspec
     created_at: 2026-06-15T08:50:56.318Z
     completed_at: 2026-06-15T08:50:56.318Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0. AC annotations for
+      @ui-shortcut-registry ac-1..6 and @web-shell-platform-target ac-3 were verified in
+      tests/web-ui/shortcuts.test.ts and tests/e2e/search.spec.ts; remaining completeness warnings
+      are repo baseline."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T08:51:07.938Z
+    completed_at: 2026-06-15T08:51:07.938Z
 events:
   - _ulid: 01KV56VTTMDYK3ZJ4TF5VZEJRV
     actor: Jacob Chapel
@@ -123,6 +136,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-15T08:50:56.568Z
+  - _ulid: 01KV57ME956CKYYMH0CAWK9VPF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-15T08:51:08.197Z
 examined_commit: 4417519b6e31bfc7bc465337c92181137381f8a9
 external_links: []
 lifecycle_state: open
@@ -135,5 +155,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T08:37:41.844Z
-updated_at: 2026-06-15T08:50:56.318Z
+updated_at: 2026-06-15T08:51:07.938Z
 notes: []
