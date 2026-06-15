@@ -271,6 +271,12 @@ events:
     payload:
       thread_ulid: 01KV4HTX7B77Y1SX9JJG9XZ908
     timestamp: 2026-06-15T03:22:05.825Z
+  - _ulid: 01KV4MT3TECC2T91ZM5V95ZP0B
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KV4HTX7B77Y1SX9JJG9XZ908
+    timestamp: 2026-06-15T03:22:11.150Z
 examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
 external_links: []
 lifecycle_state: closed
@@ -375,6 +381,8 @@ threads:
           (Completed/Active/Failed) rather than the old raw lowercase status text."
         created_at: 2026-06-15T03:22:05.613Z
     kind: blocker
+    resolved_at: 2026-06-15T03:22:10.934Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -384,5 +392,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T02:41:44.341Z
 created_at: 2026-06-15T02:27:36.368Z
-updated_at: 2026-06-15T03:22:05.613Z
+updated_at: 2026-06-15T03:22:10.934Z
 notes: []
