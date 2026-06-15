@@ -57,6 +57,20 @@ const IdentityConfigSchema = z
   .object({
     /** Default author for notes/tasks (overridden by KSPEC_AUTHOR env var) */
     author: z.string().optional(),
+    /**
+     * Human-facing display name for the configured human identity, surfaced
+     * by the identity endpoint. Falls back to the resolved author when unset.
+     * AC: @actor-identity-resolution ac-1 — human identity carries a display name
+     */
+    display_name: z.string().optional(),
+    /**
+     * Explicit recorded spellings of the human identity that are not derivable
+     * from the author value by the classifier's algorithmic normalization
+     * (case, `@`-prefix, email/role suffixes). Used to resolve historical
+     * free-form actor strings to the canonical human identity.
+     * AC: @actor-identity-resolution ac-3 — human variant resolution
+     */
+    aliases: z.array(z.string()).optional(),
   })
   .strict()
   .optional();
@@ -382,6 +396,10 @@ export interface ResolvedKspecConfig {
   };
   identity: {
     author: string | null;
+    /** Configured human display name, or null to fall back to the author. */
+    display_name: string | null;
+    /** Explicit human-identity aliases for classification (never null). */
+    aliases: string[];
   };
   validation: {
     /**
@@ -537,6 +555,8 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
   },
   identity: {
     author: null,
+    display_name: null,
+    aliases: [],
   },
   validation: {
     // AC: @config-validation — defaults preserve existing behavior
@@ -752,6 +772,10 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
     identity: {
       // AC: ac-5 — env var takes precedence
       author: envAuthor ?? file.identity?.author ?? DEFAULT_CONFIG.identity.author,
+      // AC: @actor-identity-resolution ac-1 — configured profile display name
+      display_name: file.identity?.display_name ?? DEFAULT_CONFIG.identity.display_name,
+      // AC: @actor-identity-resolution ac-3 — configured human aliases
+      aliases: file.identity?.aliases ?? [...DEFAULT_CONFIG.identity.aliases],
     },
     validation: {
       // AC: @config-validation ac-2 ac-3 — strict_refs from config
@@ -869,7 +893,11 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       remote: DEFAULT_CONFIG.shadow.remote,
       sync_interval: DEFAULT_CONFIG.shadow.sync_interval,
     },
-    identity: { ...DEFAULT_CONFIG.identity },
+    identity: {
+      author: DEFAULT_CONFIG.identity.author,
+      display_name: DEFAULT_CONFIG.identity.display_name,
+      aliases: [...DEFAULT_CONFIG.identity.aliases],
+    },
     validation: {
       strict_refs: DEFAULT_CONFIG.validation.strict_refs,
       require_acceptance: DEFAULT_CONFIG.validation.require_acceptance,

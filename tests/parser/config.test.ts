@@ -418,6 +418,32 @@ daemon:
       expect(config.identity.author).toBe("@test-author");
     });
 
+    it("resolves the configured human display name and aliases", () => {
+      // AC: @actor-identity-resolution ac-1 — configured profile display name
+      // AC: @actor-identity-resolution ac-3 — configured human aliases
+      const config = resolveConfig({
+        identity: {
+          author: "Jacob Chapel",
+          display_name: "Jake",
+          aliases: ["@jchapel", "jacob"],
+        },
+      });
+
+      expect(config.identity.author).toBe("Jacob Chapel");
+      expect(config.identity.display_name).toBe("Jake");
+      expect(config.identity.aliases).toEqual(["@jchapel", "jacob"]);
+    });
+
+    it("defaults display name to null and aliases to an empty array", () => {
+      // AC: @actor-identity-resolution ac-1 — display name optional
+      const config = resolveConfig({
+        identity: { author: "Jacob Chapel" },
+      });
+
+      expect(config.identity.display_name).toBeNull();
+      expect(config.identity.aliases).toEqual([]);
+    });
+
     it("handles invalid KSPEC_DAEMON_PORT gracefully", () => {
       process.env.KSPEC_DAEMON_PORT = "not-a-number";
 

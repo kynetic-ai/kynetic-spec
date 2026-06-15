@@ -72,6 +72,7 @@ import { createPlanResourcesRoutes } from "../../dist/daemon/routes/plan-resourc
 import { createSessionRoutes } from "../../dist/daemon/routes/sessions.js";
 import { createValidationRoutes } from "../../dist/daemon/routes/validation.js";
 import { createMetaRoutes } from "../../dist/daemon/routes/meta.js";
+import { createIdentityRoutes } from "../../dist/daemon/routes/identity.js";
 import { createInboxRoutes } from "../../dist/daemon/routes/inbox.js";
 import { createAggregationRoutes } from "../../dist/daemon/routes/aggregation.js";
 import { createAgentDispatchRoutes } from "../../dist/daemon/routes/agent-dispatch.js";
@@ -504,6 +505,7 @@ export interface CreateTestAppOptions {
  *   - createSessionRoutes      → /api/sessions/*
  *   - createValidationRoutes   → /api/validate, /api/search (prefix /api)
  *   - createMetaRoutes         → /api/meta/*
+ *   - createIdentityRoutes     → /api/identity
  *   - createInboxRoutes        → /api/inbox/*
  *   - createAggregationRoutes  → /api/aggregation/*
  *   - createAgentDispatchRoutes → /api/agent/*
@@ -590,6 +592,7 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
     .use(createSessionRoutes())
     .use(createValidationRoutes())
     .use(createMetaRoutes())
+    .use(createIdentityRoutes())
     .use(createInboxRoutes({ pubsub }))
     .use(createAggregationRoutes())
     .use(createAgentDispatchRoutes());
