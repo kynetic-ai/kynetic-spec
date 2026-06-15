@@ -185,6 +185,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-15T18:06:35.975Z
+  - _ulid: 01KV6B2NQWM0C8PD32YVHRNEKY
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV66QB8FZPQWP74PQJ5GXK7Q
+    timestamp: 2026-06-15T19:10:34.748Z
 examined_commit: 9d2c03c338cb5b01aa65aee8292b456cd9090949
 external_links: []
 lifecycle_state: closed
@@ -218,6 +224,55 @@ threads:
           non-canonical operator mapping targets or classify/normalize recognizable target aliases
           to their canonical IDs before writing."
         created_at: 2026-06-15T17:54:29.263Z
+      - _ulid: 01KV6B2NF99ACEFMPVH85K8ZJX
+        author: "@claude"
+        body: >-
+          Fixed. Operator actor-map mapping targets are now validated and normalized before any
+          write, in `ActorResolver`:
+
+
+          - Each mapping target is run through the classifier. A recognizable alias is normalized to
+          its canonical id (e.g. `@codex` -> `codex`), so the rewrite persists a canonical identity,
+          not the operator's spelling.
+
+          - A target that resolves to neither a canonical identity nor a declared default sentinel
+          (e.g. `@unknown`) is rejected: the run throws the new `OperatorActorMapError` (fails
+          closed) listing the offending `original -> target` entries, before a single record is
+          modified. So a map like `Hermes: not-a-real-actor` now aborts the run instead of
+          persisting `not-a-real-actor`.
+
+
+          This restores @actor-history-normalization ac-5 (every inventoried field ends
+          canonical-or-default) and ac-3 idempotency (every written target is now a fixed point of
+          the resolver).
+
+
+          Behavioral coverage added in tests/actor-normalization-upgrade.test.ts:
+
+          - "fails closed when an operator mapping target is not a canonical identity, modifying
+          nothing" — asserts the run rejects with `OperatorActorMapError` and a full spec-dir
+          snapshot is unchanged (the inbox `added_by` stays `Hermes`).
+
+          - "normalizes a recognizable operator mapping target alias to its canonical id" — `Hermes:
+          @codex` persists `codex`.
+
+          - "allows an operator mapping target that is a declared default sentinel" — `Hermes:
+          @unknown` persists the default.
+
+
+          docs/guides/upgrading-kspec.md updated: the operator-mapping section now documents that
+          non-canonical targets are rejected before any write (fail closed), rather than only
+          warning about idempotency.
+
+
+          Note: the examined commit (9d2c03c3) was rebased onto the current feat/ui-redesign head.
+          The integration branch had since landed the consolidated actor-identity infrastructure
+          (`src/identity/actor-identity-config.ts`, shared classifier value-imported via
+          `bundleDependencies`). I removed this task's now-redundant parallel copies
+          (`src/parser/identity-config.ts`, `src/parser/actor-classifier.ts`, and the parity test)
+          and rewired the migration to consume the shared classifier and `src/identity` config
+          builder. See the task note for details.
+        created_at: 2026-06-15T19:10:34.473Z
     kind: blocker
   - _ulid: 01KV67D6WV5SBBE5DXSVGQHCGS
     entries:
@@ -262,5 +317,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T18:06:35.975Z
 created_at: 2026-06-15T17:50:37.938Z
-updated_at: 2026-06-15T18:06:35.975Z
+updated_at: 2026-06-15T19:10:34.473Z
 notes: []
