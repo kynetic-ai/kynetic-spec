@@ -5801,6 +5801,9 @@ features:
       Each segment carries an indicator of its item kind, the current
       segment is visually emphasized, and the full path's titles and
       kinds are resolved server-side in one bounded request.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
