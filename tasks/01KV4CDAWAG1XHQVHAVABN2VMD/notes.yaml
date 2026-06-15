@@ -91,3 +91,30 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T19:02:25.324Z
+  - _ulid: 01KV6CJF7NJ3WVVMEWPXDZCQBR
+    content: >-
+      Fix cycle 1: addressed the single blocker — the Svelte build warning
+      a11y_no_noninteractive_element_interactions on the collapsed-segment <ul>
+      (BreadcrumbNav.svelte:176).
+
+
+      Fix: promoted the popover list to proper menu semantics rather than leaving a keydown handler
+      on a bare non-interactive element. <ul role=menu tabindex=-1 aria-label>, <li role=none>, <a
+      role=menuitem>, and aria-haspopup=menu on the trigger. The keydown handler, link hrefs,
+      onclick, and the nextPopoverIndex reducer are all unchanged, so
+      click/tap/ArrowUp/ArrowDown/Enter/Escape behavior is preserved.
+
+
+      Verification: vite build no longer reports the warning for BreadcrumbNav.svelte (other a11y
+      warnings in the output are pre-existing in unrelated session-filter files). Re-ran gates:
+      format:check clean, lint 0 errors (736 baseline warnings), typecheck clean, svelte-check clean
+      for this file, full suite 10839 passed/3 skipped, targeted e2e 76 passed, kspec validate
+      refs/alignment/completeness pass.
+
+
+      Re-verified all ACs 1-10 still hold: ac-5/6/7 popover (now with menu roles) still opens by
+      click/tap/keyboard and navigates; ac-8 overlay unchanged; ac-9 kind pills + emphasis
+      unchanged.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T19:36:40.949Z
