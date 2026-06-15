@@ -254,6 +254,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-15T03:43:33.806Z
+  - _ulid: 01KV4QQ22EM56VTJCHQZ7WA65P
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV4NAYJCGWVJH49ZDZJ3PSCD
+    timestamp: 2026-06-15T04:12:56.783Z
 examined_commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
 external_links: []
 lifecycle_state: closed
@@ -283,6 +289,14 @@ threads:
           badge also emits no shared glyph. That violates @ui-view-header ac-2: the same session
           state is not represented by the same color + glyph across views."
         created_at: 2026-06-15T03:31:22.829Z
+      - _ulid: 01KV4QQ1TX5ZCQW45MQG434QHM
+        author: "@claude"
+        body: 'Fixed: RelatedSessionsSection now renders <StatusBadge domain="session"
+          state={session.status}> instead of the local statusColor() map + plain Badge. The shared
+          session token resolves abandoned→status-cancelled (matching STATUS_TOKENS.session) and
+          emits the canonical glyph, so the related-session views in item/task detail show the same
+          color+glyph as the sessions list/detail.'
+        created_at: 2026-06-15T04:12:56.541Z
     kind: blocker
   - _ulid: 01KV4NB25CE1ESSJGAPT55QKJK
     anchor:
@@ -350,5 +364,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T03:43:33.806Z
 created_at: 2026-06-15T03:27:48.330Z
-updated_at: 2026-06-15T03:43:33.806Z
+updated_at: 2026-06-15T04:12:56.541Z
 notes: []
