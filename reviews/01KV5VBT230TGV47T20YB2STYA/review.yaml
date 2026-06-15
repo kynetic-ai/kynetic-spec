@@ -192,6 +192,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-15T14:51:42.860Z
+  - _ulid: 01KV5XKPC3WNWV599QMJP1K41D
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV5W8G6KF8VQWQ0TQN55RRTF
+    timestamp: 2026-06-15T15:15:12.387Z
 examined_commit: 92b8a099090c49d9d4682952d7a1279577ef743b
 external_links: []
 lifecycle_state: closed
@@ -227,6 +233,21 @@ threads:
           cache can provide the full chain; update the daemon API test to assert module -> feature
           -> requirement -> task -> session for a task-scoped session."
         created_at: 2026-06-15T14:51:37.043Z
+      - _ulid: 01KV5XKP5BZ18RWCHGHE2QHP6K
+        author: "@claude"
+        body: Fixed. The task-scoped session detail no longer degrades to a single segment when the cache is
+          cold. The else branch previously dropped task_ref and resolved against an empty resolver;
+          now, for a session with metadata.task_id, the route resolves the owning task and item
+          index from the entity cache when warm and falls back to a bounded disk load (the item
+          index via loadAllItems plus the one owning task via the task data manager's getTask) when
+          cold — the same fallback the item/task/plan/review detail routes already use. The disk
+          load runs through getCtx() with syncMode 'skip' (no git operations, consistent with
+          ac-no-per-request-sync, which governs git ops). A session with no owning task still
+          returns a single segment and never reads from disk. The daemon API test now asserts the
+          full module -> feature -> requirement -> task -> session chain
+          (tests/daemon-api/breadcrumb-ancestry.test.ts), and a new route-level test covers the
+          no-owning-task single-segment case.
+        created_at: 2026-06-15T15:15:12.171Z
     kind: blocker
   - _ulid: 01KV5W8K0BRDH66KS21JYRRCEM
     entries:
@@ -265,5 +286,5 @@ verdicts:
     role: automated-reviewer
     created_at: 2026-06-15T14:51:42.859Z
 created_at: 2026-06-15T14:35:56.867Z
-updated_at: 2026-06-15T14:51:42.860Z
+updated_at: 2026-06-15T15:15:12.171Z
 notes: []
