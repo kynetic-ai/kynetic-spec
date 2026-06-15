@@ -188,6 +188,12 @@ events:
       kind: blocker
       thread_ulid: 01KV5W8FFEAGHRT7DSWGJ3ZQFC
     timestamp: 2026-06-15T14:51:36.556Z
+  - _ulid: 01KV5W9N7BGYB56KNDFMCGX73T
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV5W7JJRMZY36GVS1SSZ7P13
+    timestamp: 2026-06-15T14:52:14.955Z
 examined_commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
 external_links: []
 lifecycle_state: open
@@ -214,6 +220,14 @@ threads:
           canonicalizing/rejecting it. This is an existing first-party write path missed by the
           rollout."
         created_at: 2026-06-15T14:51:06.712Z
+      - _ulid: 01KV5W9MZRWBEPJY1HKC8W7DV8
+        author: Jacob Chapel
+        body: "Correction for the mangled shell-expanded body above: MUST-FIX: kspec inbox add still calls
+          createInboxItem(input, ctx.config?.identity?.author) without resolving added_by through
+          the shared utility first. The helper then falls back to getAuthor(configAuthor), so this
+          CLI write can persist a variant or out-of-pool author instead of canonicalizing/rejecting
+          it. This is an existing first-party write path missed by the rollout."
+        created_at: 2026-06-15T14:52:14.712Z
     kind: blocker
   - _ulid: 01KV5W7NMRS1Q6BHZQ56J3AWF1
     anchor:
@@ -272,5 +286,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-15T14:35:05.417Z
-updated_at: 2026-06-15T14:51:36.302Z
+updated_at: 2026-06-15T14:52:14.712Z
 notes: []
