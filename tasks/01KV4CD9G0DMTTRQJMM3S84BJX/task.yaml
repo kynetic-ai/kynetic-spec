@@ -96,8 +96,12 @@ description: |
 spec_ref: "@actor-identity-resolution"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign via detached reviewer merge helper. Review cycle 3
+  approved after verifying the conflict-resolution merge kept both breadcrumb ancestry and
+  actor-resolution imports, all required gates passed, build passed, and npm test passed (10823
+  passed, 3 skipped).
 depends_on:
   - "@task-identity-endpoint-classifier"
 context: []
@@ -509,6 +513,22 @@ history:
         previous: "@01KV6017D3F1Q5AZPKX83X44SN"
     command: review-link
     timestamp: 2026-06-15T18:09:02.354Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign via detached reviewer merge helper. Review cycle 3 approved after
+          verifying the conflict-resolution merge kept both breadcrumb ancestry and actor-resolution
+          imports, all required gates passed, build passed, and npm test passed (10823 passed, 3
+          skipped).
+        previous: null
+      completed_at:
+        new: 2026-06-15T18:28:07.845Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-15T18:28:07.863Z
 prior_status: null
 resource_refs:
   - git_commit: null
@@ -538,5 +558,6 @@ resource_refs:
 created_at: 2026-06-15T00:55:22.368Z
 started_at: 2026-06-15T18:04:59.542Z
 submitted_at: 2026-06-15T18:05:02.963Z
+completed_at: 2026-06-15T18:28:07.845Z
 todos: []
 automation: eligible
