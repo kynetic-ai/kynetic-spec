@@ -66876,7 +66876,7 @@ runs:
     completed_at: 2026-06-15T09:31:04.254Z
   - _ulid: 01KV5FZGJP2FA9GCD8D8SGPF81
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -66891,7 +66891,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T11:18:13.404Z
-        completed_at: 2026-06-15T11:18:13.404Z
+        completed_at: 2026-06-15T11:18:22.040Z
+        notes: "High-confidence candidates from this fix-cycle session: (A) Worker adopting a shared display
+          primitive across 'all surfaces that render X' missed nested/inline variant components
+          (DiffInlineThread, ContentInlineThread) that render the same recorded field — caused a fix
+          cycle. (B) Threading the classifier required 4 levels of prop-drilling
+          (CodeDiffViewer→DiffFileView→DiffHunkView→DiffInlineThread) — but this is one-off
+          component design, not systemic kspec-process friction. (C) svelte-check baseline
+          non-binary — already tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T11:18:22.040Z
+        completed_at: 2026-06-15T11:18:22.040Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T11:16:59.606Z
