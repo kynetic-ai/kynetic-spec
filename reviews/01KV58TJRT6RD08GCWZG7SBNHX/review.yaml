@@ -87,6 +87,24 @@ checks:
     runner: kspec
     created_at: 2026-06-15T09:26:08.160Z
     completed_at: 2026-06-15T09:26:08.160Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, task/spec metadata, changed diff, next-actor.ts,
+      ActorDisplay.svelte, identity query, review list/detail pages, tests,
+      ContentInlineThread.svelte, DiffInlineThread.svelte, StructuredContentViewer/CodeDiffViewer
+      context. Commands run: git status/diff/log, kspec task/item/review, focused tests, format,
+      lint, focused lint, typecheck, full npm test, kspec validations, actor surface searches.
+      Claims verified: AC3 full lifecycle/disposition table passes; ActorDisplay unknown/canonical
+      behavior is behavior-tested; adoption gap confirmed by raw entry.author in inline thread
+      components. Categories searched: correctness, AC alignment, edge cases, test quality,
+      integration/adoption."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-06-15T09:26:13.529Z
+    completed_at: 2026-06-15T09:26:13.529Z
 events:
   - _ulid: 01KV58TJRTFP60Z279478PYQ9W
     actor: Jacob Chapel
@@ -171,6 +189,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T09:26:08.409Z
+  - _ulid: 01KV59MPFV8GZYRVHV5JWFZ7EJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-15T09:26:13.755Z
 examined_commit: 7aa8f5e1b19cbc7bdf1210123f068c16c50a5975
 external_links: []
 lifecycle_state: open
@@ -224,5 +249,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-15T09:11:57.978Z
-updated_at: 2026-06-15T09:26:08.160Z
+updated_at: 2026-06-15T09:26:13.529Z
 notes: []
