@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T03:50:37.540Z
+  - _ulid: 01KV4PKWSBTYPZT79M7SFBVETX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV4PKWGW9J9QAZMV5KDT5AK6
+    timestamp: 2026-06-15T03:53:44.491Z
 examined_commit: 6cfa985740c19c4d2afd2992b6e0c121cf13a82b
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,29 @@ subject:
   content_hash: ""
   ref: "@01KV4CDBWM83RRBNH7RX33E5YK"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV4PKWGW9J9QAZMV5KDT5AK6
+    anchor:
+      type: code
+      commit: 6cfa985740c19c4d2afd2992b6e0c121cf13a82b
+      line_end: 142
+      line_start: 139
+      path: packages/web-ui/src/lib/preferences/backend.ts
+      side: head
+    entries:
+      - _ulid: 01KV4PKWGXTWY1TAEJ0EAA7T77
+        author: Jacob Chapel
+        body: "MUST-FIX: After a write-time degradation, remove() no longer removes values that were
+          successfully persisted before degradation. LocalStorageBackend.get() still consults
+          persistent storage even when degraded, but remove() returns before calling
+          storage.removeItem() once degraded is true. Repro: persist preference A, trigger quota
+          degradation with preference B, call A.remove(), then A.get() still returns the old
+          persisted value. This violates the backend remove contract and the public
+          Preference.remove() contract that subsequent reads return the default, so degraded mode is
+          not functionally equivalent for the accessor surface."
+        created_at: 2026-06-15T03:53:44.221Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T03:49:53.459Z
-updated_at: 2026-06-15T03:50:37.298Z
+updated_at: 2026-06-15T03:53:44.221Z
 notes: []

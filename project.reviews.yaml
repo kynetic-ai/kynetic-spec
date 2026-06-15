@@ -26544,7 +26544,7 @@ reviews:
   - _ulid: 01KV4PCV5KKFEFPTRAHTV7NY6G
     slugs: []
     title: Review task-preference-utility
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 0
     examined_commit: 6cfa985740c19c4d2afd2992b6e0c121cf13a82b
@@ -26555,8 +26555,8 @@ reviews:
       content_hash: ""
       ref: "@01KV4CDBWM83RRBNH7RX33E5YK"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-15T03:49:53.459Z
-    updated_at: 2026-06-15T03:50:37.298Z
+    updated_at: 2026-06-15T03:53:44.221Z
