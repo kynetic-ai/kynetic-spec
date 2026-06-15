@@ -26489,7 +26489,7 @@ reviews:
     title: Review task-view-header-status-tokens
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 1
+    check_count: 2
     examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
     lifecycle_state: open
     related_refs: []
@@ -26502,4 +26502,4 @@ reviews:
     unresolved_blocker_count: 3
     verdict_count: 0
     created_at: 2026-06-15T02:27:36.368Z
-    updated_at: 2026-06-15T02:40:06.326Z
+    updated_at: 2026-06-15T02:40:09.886Z

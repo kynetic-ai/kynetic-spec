@@ -13,6 +13,16 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-15T02:40:06.326Z
     completed_at: 2026-06-15T02:40:06.326Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: git diff --check base...head produced no whitespace errors."
+    name: diff whitespace
+    required: false
+    runner: git diff --check
+    created_at: 2026-06-15T02:40:09.886Z
+    completed_at: 2026-06-15T02:40:09.886Z
 events:
   - _ulid: 01KV4HP5SGM4CGC3KBSBX5QBEE
     actor: Jacob Chapel
@@ -55,6 +65,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-15T02:40:06.580Z
+  - _ulid: 01KV4JD5YS8ST5NNA8C1W57M05
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-06-15T02:40:10.202Z
 examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
 external_links: []
 lifecycle_state: open
@@ -126,5 +143,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-15T02:27:36.368Z
-updated_at: 2026-06-15T02:40:06.326Z
+updated_at: 2026-06-15T02:40:09.886Z
 notes: []
