@@ -66163,7 +66163,7 @@ runs:
     started_at: 2026-06-14T21:22:03.081Z
     completed_at: 2026-06-14T21:24:06.676Z
   - _ulid: 01KV4FM90X21MDP3JA51JZ51MV
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -66210,7 +66210,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-15T01:54:11.709Z
-        completed_at: 2026-06-15T01:54:11.709Z
+        completed_at: 2026-06-15T01:54:20.812Z
+        notes: "Capture result: no new inbox items, observations, tasks, or questions created. Existing
+          observation @01KV4EQ2 covers the only systemic friction found; no high-confidence new item
+          remained after search."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T01:51:36.989Z
+    completed_at: 2026-06-15T01:54:20.812Z
