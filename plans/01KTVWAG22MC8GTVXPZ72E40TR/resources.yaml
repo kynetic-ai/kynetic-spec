@@ -18,3 +18,13 @@ resources:
     label: Product context
     path: handoff/docs/00-product-context.md
     sha256: acf72703d28c755e7925ed10cd8604814d4b640d609bdd9c4b93823f53701719
+  - description: Sidebar focus-collapse, command palette, status chrome, breadcrumb behavior, and
+      navigation implementation notes.
+    bytes: 11586
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-app-shell-navigation
+    label: App shell, navigation, shortcuts, breadcrumbs
+    path: handoff/docs/01-app-shell-and-navigation.md
+    sha256: c907189c175662c9fffb489a95c654a1c25bf7a3970ba02567152f44320ae827
