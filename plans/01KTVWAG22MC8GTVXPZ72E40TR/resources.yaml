@@ -138,3 +138,12 @@ resources:
     label: Breadcrumb variant F recommendation
     path: handoff/shots/r3-breadcrumb-variants-c.png
     sha256: cee589812c9835b3916329cc37c95fb1a0b916f1647204fae2b6d4e6b0ec23e5
+  - description: Unified spec page/tree module view reference for headers, breadcrumbs, and linked work.
+    bytes: 85305
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-unified-module
+    label: Spec workspace module page
+    path: handoff/shots/r3-spec-unified-2-module.png
+    sha256: 24178a66e6c07925ced6acdd8f537184b1c44bac0707a2452f3ebc66db71b6f9
