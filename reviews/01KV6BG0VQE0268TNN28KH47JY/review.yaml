@@ -2,7 +2,17 @@ _ulid: 01KV6BG0VQE0268TNN28KH47JY
 slugs: []
 title: Review actor normalization upgrade cycle 3
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: oxfmt checked 1076 files; all matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-15T19:38:28.718Z
+    completed_at: 2026-06-15T19:38:28.718Z
 events:
   - _ulid: 01KV6BG0VP5QK0MSDAMY82NQN2
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T19:18:12.999Z
+  - _ulid: 01KV6CNRQ7NMF0KF6T9QQWC2QR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-15T19:38:28.967Z
 examined_commit: d952c374bfe320c2c11f780c343625e08691fa5d
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T19:17:52.119Z
-updated_at: 2026-06-15T19:18:12.687Z
+updated_at: 2026-06-15T19:38:28.718Z
 notes: []
