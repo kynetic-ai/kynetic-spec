@@ -32199,6 +32199,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-15T00:55:23.786Z
+  automation: eligible
 - _ulid: 01KV4CDB72KM6NRMXXS1EB6SDB
   slugs:
     - task-view-header-status-tokens
