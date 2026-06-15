@@ -2,7 +2,98 @@ _ulid: 01KV5WM6KQG77TAGXKQY71K82M
 slugs: []
 title: Review actor normalization upgrade
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1064 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-15T15:14:18.035Z
+    completed_at: 2026-06-15T15:14:18.035Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide hard lint passed with 0 errors (736 warning baseline). Focused changed-file lint
+      via npx oxlint on changed TS/test files returned 0 errors and 7 warnings in
+      src/cli/commands/upgrade.ts; checked the diff and those warning sites are outside the added
+      actor-normalization hunks/pre-existing upgrade.ts warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-15T15:14:20.834Z
+    completed_at: 2026-06-15T15:14:20.834Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors. 7 warnings all in src/cli/commands/upgrade.ts at pre-existing/non-added warning
+      sites; no new warning in the actor-normalization diff hunks.
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed ts/test files>
+    created_at: 2026-06-15T15:14:23.597Z
+    completed_at: 2026-06-15T15:14:23.597Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared && tsc --noEmit completed successfully. This verified the
+      earlier bootstrap note about missing @kynetic-ai/shared type exports is stale for the prepared
+      snapshot."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-15T15:14:26.435Z
+    completed_at: 2026-06-15T15:14:26.435Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2825/2825 test suites, 10761 passed, 3 skipped, duration 2746.2s. Full log:
+      /tmp/kspec-test-cache/01KV5WJW45RNP6RENBADG3GCDV/05e48d7da4385578.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-15T15:14:29.212Z
+    completed_at: 2026-06-15T15:14:29.212Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; schema/references OK, 6 existing reference warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-15T15:14:31.960Z
+    completed_at: 2026-06-15T15:14:31.960Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; schema/references OK, existing alignment warning baseline (54
+      warnings).
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-15T15:14:34.711Z
+    completed_at: 2026-06-15T15:14:34.711Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; schema/references OK, existing completeness warning baseline (277
+      warnings). New actor-history-normalization AC annotations found in
+      tests/actor-normalization-upgrade.test.ts for ac-1 through ac-6 and @actor-identity-model
+      ac-2.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-15T15:14:37.553Z
+    completed_at: 2026-06-15T15:14:37.553Z
 events:
   - _ulid: 01KV5WM6KPTSJMDNZ9AY7KX5M0
     actor: Jacob Chapel
@@ -17,17 +108,164 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T14:58:17.827Z
+  - _ulid: 01KV5XJ1GZ3ZTFZ687QQT7PN5Y
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-15T15:14:18.271Z
+  - _ulid: 01KV5XJ48TVDZQSKB79GNWAP3F
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-15T15:14:21.082Z
+  - _ulid: 01KV5XJ6YQ9HP4ZPCBEVZCC6JG
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-15T15:14:23.831Z
+  - _ulid: 01KV5XJ9QHQQE7Y3X60V0DERJ8
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-15T15:14:26.673Z
+  - _ulid: 01KV5XJCDNV5VJ8TYMGZKHW7TV
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-15T15:14:29.429Z
+  - _ulid: 01KV5XJF3G2AAKZ4BA8CV70BZ5
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-15T15:14:32.176Z
+  - _ulid: 01KV5XJHSZQT4QYF6FYACQFWCC
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-15T15:14:34.943Z
+  - _ulid: 01KV5XJMJASPH1HKG19Q7YACER
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-15T15:14:37.770Z
+  - _ulid: 01KV5XJQ9R7PS0FYFTK4A7TK3Y
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV5XJQ2HS5ZRK0E2XVBNAR6N
+    timestamp: 2026-06-15T15:14:40.568Z
+  - _ulid: 01KV5XJT2163ZHYFCSCB9TYSJZ
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV5XJSV23K9ZB1CEFWYFSBE1
+    timestamp: 2026-06-15T15:14:43.393Z
+  - _ulid: 01KV5XJWQENGVVS68EKPSR7BWN
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-15T15:14:46.126Z
+  - _ulid: 01KV5XJWQEE4DM8FPQ88AWRWWC
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-15T15:14:46.126Z
 examined_commit: 36aa75a711c4df71b95a524288c470865258e9da
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KV4CDA7DT4GY1ZYKXA86XX50"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KV5XJQ2HS5ZRK0E2XVBNAR6N
+    anchor:
+      type: code
+      commit: 36aa75a711c4df71b95a524288c470865258e9da
+      line_end: 1611
+      line_start: 1605
+      path: src/cli/commands/upgrade.ts
+      side: head
+    entries:
+      - _ulid: 01KV5XJQ2HGXK458GVD1VG142Q
+        author: pr-reviewer
+        body: "MUST-FIX: `kspec upgrade --dry-run` skips historical actor normalization for projects that
+          still need storage promotion, so operators cannot preview the actor rewrites before the
+          real upgrade. The implementation returns `skipped` whenever
+          `plan_storage`/`review_storage` are not already folder-backed. I reproduced this with a
+          temp initialized project whose manifest had `plan_storage` and `review_storage` removed
+          and whose module had `created_by: '@claude'`: `kspec upgrade --dry-run --force --json`
+          returned success true and `Historical actor normalization` status `skipped` with `storage
+          migration must run first`, with no `details.rewrites`. That violates
+          @actor-history-normalization ac-4 and the new upgrade docs promise that dry-run reports
+          every rewrite it would perform. It also prevents users from seeing unresolved originals
+          and preparing `--actor-map` before they commit to the migration."
+        created_at: 2026-06-15T15:14:40.337Z
+    kind: blocker
+  - _ulid: 01KV5XJSV23K9ZB1CEFWYFSBE1
+    entries:
+      - _ulid: 01KV5XJSV25WGBS7W50E98C7X1
+        author: pr-reviewer
+        body: >-
+          Evidence log:
+
+          Files read: kspec-agents.md; task @01KV4CDA7DT4GY1ZYKXA86XX50; specs
+          @actor-history-normalization and @actor-identity-model; docs/guides/upgrading-kspec.md;
+          package.json; packages/daemon/src/routes/identity.ts; src/cli/commands/upgrade.ts;
+          src/parser/actor-classifier.ts; src/parser/actor-field-inventory.ts;
+          src/parser/actor-normalization-migration.ts; src/parser/identity-config.ts;
+          src/parser/index.ts; tests/actor-normalization-upgrade.test.ts;
+          tests/actor-classifier-parity.test.ts; packages/shared/src/index.ts and actor.ts.
+
+          Commands run: git diff/status; kspec review add/open/for-task; kspec item get; npm run
+          format:check; npm run lint -- --quiet; npx oxlint changed files; npm run typecheck; npm
+          test; kspec validate --refs/--alignment/--completeness --warnings-ok; targeted
+          temp-project dry-run probe for legacy storage preview.
+
+          Claims verified: typecheck/build-shared is clean in this snapshot despite stale bootstrap
+          notes; actor AC annotations exist and behavioral tests cover current-storage migration;
+          dry-run legacy upgrade preview skips actor normalization despite a recognizable actor
+          value.
+
+          Categories searched: correctness, upgrade edge cases, error handling, test
+          quality/source-scanning, AC coverage, integration with identity route/shared classifier,
+          docs/operator guidance. Finding recorded: dry-run preview gap for legacy storage projects.
+        created_at: 2026-06-15T15:14:43.170Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-15T15:14:46.126Z
 created_at: 2026-06-15T14:58:00.439Z
-updated_at: 2026-06-15T14:58:17.592Z
+updated_at: 2026-06-15T15:14:46.126Z
 notes: []

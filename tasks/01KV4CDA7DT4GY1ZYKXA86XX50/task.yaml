@@ -84,7 +84,7 @@ description: |
 spec_ref: "@actor-history-normalization"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-identity-endpoint-classifier"
@@ -386,6 +386,13 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-15T14:58:02.826Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+    command: review-verdict-needs-work
+    timestamp: 2026-06-15T15:14:48.130Z
 prior_status: null
 resource_refs:
   - git_commit: null
