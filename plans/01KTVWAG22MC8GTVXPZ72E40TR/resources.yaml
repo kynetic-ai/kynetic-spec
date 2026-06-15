@@ -9,3 +9,12 @@ resources:
     label: Wireframe export README
     path: handoff/docs/README.md
     sha256: df9cb368a535357f7a137ebc94524c52b021e35e49bf643f4579ce213cf8570b
+  - description: Overall redesign context, decision history, and caveats for interpreting the wireframes.
+    bytes: 5916
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-product-context
+    label: Product context
+    path: handoff/docs/00-product-context.md
+    sha256: acf72703d28c755e7925ed10cd8604814d4b640d609bdd9c4b93823f53701719
