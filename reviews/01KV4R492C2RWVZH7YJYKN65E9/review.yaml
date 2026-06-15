@@ -67,6 +67,17 @@ checks:
     runner: npm run test:e2e
     created_at: 2026-06-15T04:38:00.644Z
     completed_at: 2026-06-15T04:38:00.644Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok. Schema OK, references OK; 6 existing
+      reference warnings allowed by --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T04:38:14.683Z
+    completed_at: 2026-06-15T04:38:14.683Z
 events:
   - _ulid: 01KV4R492CKR7YC1Z5V9Q2F2VV
     actor: Jacob Chapel
@@ -123,6 +134,13 @@ events:
       status: pass
       name: focused e2e
     timestamp: 2026-06-15T04:38:00.879Z
+  - _ulid: 01KV4S5CMS7C1W2T69XF0W2P8Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-15T04:38:14.937Z
 examined_commit: fb758ac88ebd763448a44a12a91e374fbcac6a1f
 external_links: []
 lifecycle_state: open
@@ -135,5 +153,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T04:20:09.932Z
-updated_at: 2026-06-15T04:38:00.644Z
+updated_at: 2026-06-15T04:38:14.683Z
 notes: []
