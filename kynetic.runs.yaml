@@ -66774,7 +66774,7 @@ runs:
     completed_at: 2026-06-15T08:55:41.464Z
   - _ulid: 01KV58HD35QRYFAVBXYQ2DDKDN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -66789,7 +66789,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T09:09:06.909Z
-        completed_at: 2026-06-15T09:09:06.909Z
+        completed_at: 2026-06-15T09:09:17.903Z
+        notes: "Friction 1 (systemic): dispatched workers cannot resolve plan-owned resource CONTENT from
+          the task/CLI surface. Task body references ./resources/handoff/... which does not exist in
+          the worktree; kspec task get shows resources [OK] with no resolvable path; kspec plan
+          resource get shows metadata + a relative path but no content and no absolute path. I had
+          to find / to locate them under .kspec/plans/<ulid>/resources/. Friction 2 (systemic):
+          web-ui 'npm run check' (svelte-check) carries a large pre-existing error baseline (62
+          errors), so it is not usable as a binary pass/fail gate — I had to git stash + re-run to
+          prove my change added no new errors."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T09:09:17.903Z
+        completed_at: 2026-06-15T09:09:17.903Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T09:06:57.253Z
