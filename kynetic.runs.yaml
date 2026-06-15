@@ -66822,7 +66822,7 @@ runs:
     completed_at: 2026-06-15T09:09:51.646Z
   - _ulid: 01KV59Q7YSP7GXG8JVKFFM2V3R
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66851,7 +66851,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-15T09:29:45.682Z
-        completed_at: 2026-06-15T09:29:45.682Z
+        completed_at: 2026-06-15T09:30:16.249Z
+        notes: "Proposals: (1) small/medium: make detached review resource preparation verify that
+          advertised task resource paths are materialized in the snapshot, or expose a CLI retrieval
+          path in task output; this would let reviewers inspect handoff screenshots/source reliably.
+          (2) small: document or checklist the raw-field search pattern for shared display primitive
+          adoption reviews, so nested components are checked alongside top-level route diffs."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-15T09:30:16.249Z
+        completed_at: 2026-06-15T09:30:16.249Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T09:27:37.177Z
