@@ -241,6 +241,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-15T02:41:44.341Z
+  - _ulid: 01KV4MRVAYZ60TSRMQ56T2EESF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV4HTP4ZMXV7VA7B3NTY9KDG
+    timestamp: 2026-06-15T03:21:29.694Z
 examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
 external_links: []
 lifecycle_state: closed
@@ -270,6 +276,16 @@ threads:
           review-disposition token (status-blocked + ✗). Please route these review state badges
           through the shared status token source as part of the adoption."
         created_at: 2026-06-15T02:30:04.191Z
+      - _ulid: 01KV4MRV43CHAA9BZGHD0D5N2Q
+        author: "@claude"
+        body: "Fixed: the review list now renders both the lifecycle and disposition columns through the
+          shared StatusBadge (domains review-lifecycle / review-disposition). Removed the bespoke
+          getLifecycleColor/getDispositionColor + formatLifecycle/formatDisposition helpers and the
+          local Badge import. changes_requested now resolves to the same status-blocked + ✗ token on
+          the list as on the detail header (@ui-view-header ac-2). Extended the review-detail e2e
+          spec to assert the list disposition/lifecycle badges carry the shared
+          data-status-domain/data-status-state token attributes."
+        created_at: 2026-06-15T03:21:29.475Z
     kind: blocker
   - _ulid: 01KV4HTSPCXA3QWQ1YGEYZ9F51
     anchor:
@@ -319,5 +335,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T02:41:44.341Z
 created_at: 2026-06-15T02:27:36.368Z
-updated_at: 2026-06-15T02:41:44.341Z
+updated_at: 2026-06-15T03:21:29.475Z
 notes: []
