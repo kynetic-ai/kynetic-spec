@@ -66308,7 +66308,7 @@ runs:
     completed_at: 2026-06-15T03:17:56.475Z
   - _ulid: 01KV4P3WT8T4NG92G6ZTCMT5QS
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66331,7 +66331,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-15T03:47:36.334Z
-        completed_at: 2026-06-15T03:47:36.334Z
+        completed_at: 2026-06-15T03:47:46.771Z
+        notes: "Decision results: duplicate/covered items only. Cross-surface StatusBadge/status-token
+          verification maps to existing observation @01KV4JM3 plus current review @01KV4N4D, so skip
+          new capture. Reflect workflow run-ref mismatch maps to inbox @01KTWCCAS, so skip.
+          Build/test lock timing maps to @01KTWBE2/@01KTWGM5, so skip. No unique high-confidence
+          item remains."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-15T03:47:46.771Z
+        completed_at: 2026-06-15T03:47:46.771Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T03:45:00.232Z
