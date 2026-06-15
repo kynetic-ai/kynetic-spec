@@ -1,1 +1,36 @@
-notes: []
+notes:
+  - _ulid: 01KV4N7YG1JPETS6NE11F1AB5X
+    content: >-
+      Approach: New module packages/web-ui/src/lib/preferences/ with three files — backend.ts
+      (PreferenceBackend interface, InMemoryBackend, LocalStorageBackend with detect-on-first-use +
+      per-write quota degradation), define-preference.ts (definePreference accessor:
+      get/set/subscribe + read pipeline parse→version-check→migrate→validate→default), index.ts
+      (re-exports).
+
+
+      Key decisions:
+
+      - Storage key = APP_PREFIX(kspec):namespace:key (stable across versions). Schema version
+      stored INSIDE a JSON envelope {v,value}, NOT in the key — required so AC-3 migration can find
+      older-versioned values. Namespace+key in the key gives AC-2 isolation.
+
+      - Browser detection via typeof guards (not $app/environment) so the module is testable in node
+      vitest. LocalStorageBackend probes localStorage at construction; degrades to in-memory
+      wholesale when unavailable and per-write on quota/security throw.
+
+      - Validation supports a Zod-like schema (safeParse) OR a validate predicate.
+      Invalid/foreign/newer-version values never propagate — return default.
+
+      - First consumer: project store selected-project migrated to
+      definePreference({namespace:project,key:selected,version:1}). One-time legacy read of
+      kspec-selected-project seeds the pref then removes the legacy key.
+
+
+      Test plan: tests/web-ui/preferences.test.ts — round-trip (ac-1), namespace isolation (ac-2),
+      version migration + no-rule default (ac-3), validation fallback (ac-4), backend-agnostic
+      semantics via injected backend (ac-5), unavailable-storage degradation (ac-6), plus
+      client-preference-persistence ac-1 key-format assertion. Node env, in-memory backend + a
+      throwing fake storage for degradation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T03:29:44.450Z
