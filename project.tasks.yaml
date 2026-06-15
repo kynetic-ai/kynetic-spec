@@ -32210,7 +32210,7 @@
   type: task
   spec_ref: "@ui-view-header"
   plan_ref: "@plan-web-ui-foundations"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -32221,6 +32221,7 @@
   todos_count: 0
   created_at: 2026-06-15T00:55:24.130Z
   started_at: 2026-06-15T01:45:04.432Z
+  submitted_at: 2026-06-15T02:23:02.165Z
   automation: eligible
 - _ulid: 01KV4CDBJ1P97HBCQHVPG61VXG
   slugs:
