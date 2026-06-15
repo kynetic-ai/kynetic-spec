@@ -576,6 +576,60 @@ describe("actor normalization migration over a real project", () => {
     expect(reloaded[0].added_by).toBe(DEFAULT_UNKNOWN_ACTOR);
   });
 
+  // AC: @actor-history-normalization ac-5 — an inventoried field must end canonical-or-default (a declared STRING default)
+  // AC: @actor-identity-model ac-2 — a non-string operator default must not be written into an actor field
+  it("fails closed on a non-string operator default, corrupting no record", async () => {
+    const specDir = path.join(tempDir, ".kspec");
+    const inboxPath = path.join(specDir, "project.inbox.yaml");
+    const inbox = yaml.parse(await fs.readFile(inboxPath, "utf-8")) as {
+      inbox: Record<string, unknown>[];
+    };
+    inbox.inbox[0].added_by = "Hermes";
+    await fs.writeFile(inboxPath, yaml.stringify(inbox));
+
+    // The exact reviewer repro: a numeric default for the inbox kind. Before the
+    // fix this was cast through unchecked and persisted as `added_by: 123`
+    // (a number), corrupting schema-valid storage.
+    const mapPath = path.join(tempDir, "actor-map.yaml");
+    await fs.writeFile(mapPath, yaml.stringify({ mappings: {}, defaults: { inbox: 123 } }));
+
+    const before = await snapshotDir(specDir);
+
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    await expect(
+      runActorNormalization(ctx, { config: CONFIG, operatorMapPath: mapPath, now: TS }),
+    ).rejects.toThrow(/non-empty string/);
+
+    // Nothing was rewritten — the bad default never reached storage, and the
+    // inbox item is still a schema-valid string.
+    const after = await snapshotDir(specDir);
+    expect(after).toEqual(before);
+    const fresh = await initContext(tempDir, { syncMode: "skip" });
+    const reloaded = await loadInboxItems(fresh);
+    expect(reloaded[0].added_by).toBe("Hermes");
+    expect(typeof reloaded[0].added_by).toBe("string");
+  });
+
+  // AC: @actor-history-normalization ac-5 — an unknown default key would silently never apply; reject it
+  it("fails closed on an unknown operator default record kind, corrupting no record", async () => {
+    const specDir = path.join(tempDir, ".kspec");
+    const before = await snapshotDir(specDir);
+
+    const mapPath = path.join(tempDir, "actor-map.yaml");
+    await fs.writeFile(
+      mapPath,
+      yaml.stringify({ mappings: {}, defaults: { not_a_kind: "@anon" } }),
+    );
+
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    await expect(
+      runActorNormalization(ctx, { config: CONFIG, operatorMapPath: mapPath, now: TS }),
+    ).rejects.toThrow(/not a known.*record kind/i);
+
+    const after = await snapshotDir(specDir);
+    expect(after).toEqual(before);
+  });
+
   // AC: @actor-history-normalization ac-4 — preview mode reports rewrites and modifies nothing
   it("dry-run reports the rewrites it would perform without modifying any record", async () => {
     const ctx = await initContext(tempDir, { syncMode: "skip" });
@@ -690,6 +744,27 @@ describe("operator actor-map loading", () => {
     const loaded = await loadOperatorActorMap(mapPath);
     expect(loaded.mappings.Hermes).toBe("codex");
     expect(loaded.defaults?.review).toBe("@anon");
+  });
+
+  it("rejects a non-string defaults value", async () => {
+    const mapPath = path.join(tempDir, "bad-default-value.yaml");
+    await fs.writeFile(mapPath, yaml.stringify({ mappings: {}, defaults: { inbox: 123 } }));
+    await expect(loadOperatorActorMap(mapPath)).rejects.toThrow(/non-empty string/);
+  });
+
+  it("rejects a blank defaults value", async () => {
+    const mapPath = path.join(tempDir, "blank-default-value.yaml");
+    await fs.writeFile(mapPath, yaml.stringify({ mappings: {}, defaults: { inbox: "   " } }));
+    await expect(loadOperatorActorMap(mapPath)).rejects.toThrow(/non-empty string/);
+  });
+
+  it("rejects an unknown defaults record kind", async () => {
+    const mapPath = path.join(tempDir, "bad-default-key.yaml");
+    await fs.writeFile(
+      mapPath,
+      yaml.stringify({ mappings: {}, defaults: { not_a_kind: "@anon" } }),
+    );
+    await expect(loadOperatorActorMap(mapPath)).rejects.toThrow(/not a known.*record kind/i);
   });
 });
 

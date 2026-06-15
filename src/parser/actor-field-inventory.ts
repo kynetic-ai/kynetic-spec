@@ -80,6 +80,28 @@ export type ActorRecordKind =
   | "plan";
 
 /**
+ * Runtime roster of every known actor record kind. Single source of truth for
+ * code that must validate a record-kind string at runtime (e.g. operator-map
+ * `defaults` keys). Kept in lockstep with {@link ActorRecordKind}; the
+ * `satisfies` clause makes a missing entry a compile error.
+ */
+export const ACTOR_RECORD_KINDS = [
+  "review",
+  "task",
+  "inbox",
+  "triage",
+  "observation",
+  "workflow_run",
+  "spec_item",
+  "plan",
+] as const satisfies readonly ActorRecordKind[];
+
+/** True if `value` is a known actor record kind. */
+export function isActorRecordKind(value: string): value is ActorRecordKind {
+  return (ACTOR_RECORD_KINDS as readonly string[]).includes(value);
+}
+
+/**
  * The exhaustive inventory. Grouped by record kind for readability; order does
  * not matter to consumers.
  *

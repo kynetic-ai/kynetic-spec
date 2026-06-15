@@ -45,7 +45,9 @@ import type { ActorIdentityConfig, ClassifiedActor } from "@kynetic-ai/shared";
 
 import {
   type ActorRecordKind,
+  ACTOR_RECORD_KINDS,
   assertInventoryCoversSchemas,
+  isActorRecordKind,
   normalizeFieldPathsFor,
 } from "./actor-field-inventory.js";
 import { buildActorIdentityConfig } from "../identity/actor-identity-config.js";
@@ -185,7 +187,31 @@ export async function loadOperatorActorMap(filePath: string): Promise<OperatorAc
     if (!defaultsRaw || typeof defaultsRaw !== "object" || Array.isArray(defaultsRaw)) {
       throw new Error(`Operator actor-mapping file ${filePath}: "defaults" must be an object.`);
     }
-    result.defaults = defaultsRaw as Partial<Record<ActorRecordKind, string>>;
+    const defaults: Partial<Record<ActorRecordKind, string>> = {};
+    for (const [key, value] of Object.entries(defaultsRaw as Record<string, unknown>)) {
+      // Validate the KEY is a known record kind. An unknown key (typo or a kind
+      // that does not exist) would silently never apply, masking the operator's
+      // intent — fail closed instead.
+      if (!isActorRecordKind(key)) {
+        throw new Error(
+          `Operator actor-mapping file ${filePath}: "defaults" key "${key}" is not a known ` +
+            `record kind. Valid record kinds: ${ACTOR_RECORD_KINDS.join(", ")}.`,
+        );
+      }
+      // Validate the VALUE is a non-empty string. A non-string default (e.g. a
+      // number) would otherwise be written verbatim into an actor field,
+      // corrupting schema-valid storage and violating @actor-history-normalization
+      // ac-5 / @actor-identity-model ac-2 (an inventoried field left neither
+      // canonical nor a declared string default).
+      if (typeof value !== "string" || value.trim() === "") {
+        throw new Error(
+          `Operator actor-mapping file ${filePath}: "defaults" value for "${key}" must be a ` +
+            `non-empty string.`,
+        );
+      }
+      defaults[key] = value;
+    }
+    result.defaults = defaults;
   }
   return result;
 }
