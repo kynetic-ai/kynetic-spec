@@ -100,6 +100,25 @@ checks:
     runner: kspec
     created_at: 2026-06-15T04:38:36.905Z
     completed_at: 2026-06-15T04:38:36.905Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; @ui-view-header and @coverage-state-presentation specs;
+      prior reviews @01KV4HP5/@01KV4N4D; full diff for status-tokens, ViewHeader, StatusBadge,
+      review/session detail/list pages, task board/detail, related session/context panels, diff file
+      views, and new/updated tests. Commands run: git diff/status/log/rev-parse, rg sweeps for
+      status helpers, git diff --check, kspec validations, format/lint/focused lint/typecheck/npm
+      test/focused e2e. Claims verified: all prior blocker helper/adoption gaps now route through
+      shared StatusBadge/status-tokens; token vocabulary covers schema states and coverage buckets;
+      review/session detail render ViewHeader; focused E2E/build confirms changed Svelte routes.
+      Categories searched: correctness, AC coverage, status-token consistency, action/leading-zone
+      layout, server-count data flow, test quality/source-scanning, integration/build."
+    name: review evidence log
+    required: false
+    runner: pr-reviewer
+    created_at: 2026-06-15T04:38:53.516Z
+    completed_at: 2026-06-15T04:38:53.516Z
 events:
   - _ulid: 01KV4R492CKR7YC1Z5V9Q2F2VV
     actor: Jacob Chapel
@@ -177,6 +196,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T04:38:37.151Z
+  - _ulid: 01KV4S6JHX9JRT8H6BF29D9FYF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-15T04:38:53.757Z
 examined_commit: fb758ac88ebd763448a44a12a91e374fbcac6a1f
 external_links: []
 lifecycle_state: open
@@ -189,5 +215,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T04:20:09.932Z
-updated_at: 2026-06-15T04:38:36.905Z
+updated_at: 2026-06-15T04:38:53.516Z
 notes: []
