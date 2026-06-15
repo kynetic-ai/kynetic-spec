@@ -66821,7 +66821,7 @@ runs:
     started_at: 2026-06-15T09:06:57.253Z
     completed_at: 2026-06-15T09:09:51.646Z
   - _ulid: 01KV59Q7YSP7GXG8JVKFFM2V3R
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -66866,7 +66866,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-15T09:30:39.176Z
-        completed_at: 2026-06-15T09:30:39.176Z
+        completed_at: 2026-06-15T09:31:04.254Z
+        notes: "Captured via kspec batch: friction observation for detached review resources reported OK but
+          missing from snapshot paths; success observation for broad raw actor field searches
+          catching missed shared primitive adoption in nested review components."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T09:27:37.177Z
+    completed_at: 2026-06-15T09:31:04.254Z
