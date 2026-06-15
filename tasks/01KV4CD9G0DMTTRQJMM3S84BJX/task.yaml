@@ -107,7 +107,7 @@ tags:
   - cli
   - identity
 vcs_refs: []
-review_ref: "@01KV5VA7T90MZW3SKX5AVR61R2"
+review_ref: "@01KV6017D3F1Q5AZPKX83X44SN"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-review-author-resolution/01kv4cd9
@@ -445,6 +445,13 @@ history:
         previous: 2026-06-15T06:31:39.755Z
     command: task-submit
     timestamp: 2026-06-15T15:52:28.399Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KV6017D3F1Q5AZPKX83X44SN"
+        previous: "@01KV5VA7T90MZW3SKX5AVR61R2"
+    command: review-link
+    timestamp: 2026-06-15T15:57:35.285Z
 prior_status: null
 resource_refs:
   - git_commit: null
