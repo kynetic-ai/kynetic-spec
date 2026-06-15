@@ -66989,7 +66989,7 @@ runs:
     completed_at: 2026-06-15T11:39:33.862Z
   - _ulid: 01KV5WAAR2NZ7GST4T6EGW6W3T
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -67004,7 +67004,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T14:53:20.527Z
-        completed_at: 2026-06-15T14:53:20.527Z
+        completed_at: 2026-06-15T14:53:31.616Z
+        notes: "Friction points: the in-process daemon API helper can run routes without the production
+          entity cache, which is useful for isolated tests but can also make a test accept
+          cache-degraded behavior that violates a task's required detail contract. In this review,
+          the session breadcrumb test asserted only that the final segment was the session and
+          explicitly accepted a single-segment degradation, even though the task required
+          task-scoped sessions to return owning task/spec ancestors plus the session. The full npm
+          test gate also took 2777s; that is expected by review-gates and not itself a new issue,
+          but it reinforces the value of finding all blockers in one review pass."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T14:53:31.616Z
+        completed_at: 2026-06-15T14:53:31.616Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T14:52:36.994Z
