@@ -14,10 +14,15 @@ import { Elysia, t } from "elysia";
 import {
   initContext,
   loadPlans,
+  loadAllItems,
   findPlanByRef,
   resolveTaskDataManager,
   type LoadedPlan,
 } from "../../parser/index.js";
+import {
+  BreadcrumbAncestryResolver,
+  type AncestryItemInput,
+} from "../../lib/breadcrumb-ancestry.js";
 import { requirePlanFolderStorage } from "../../parser/entity-storage-compatibility.js";
 import { loadResourceManifest } from "../../parser/entity-local-resources.js";
 import { getPlanDir } from "../../parser/plan-storage-manager.js";
@@ -358,11 +363,23 @@ export function createPlansRoutes(_options: PlansRouteOptions = {}) {
         //     outside the metadata object so all consumers (API, CLI, static
         //     export, agent contexts) see an identical resource shape.
         const resources = await loadPlanResourcesForApi(await getCtx(), plan._ulid);
+
+        // AC: @ui-breadcrumb ac-10 — resolve the breadcrumb ancestor chain
+        // (module_ref chain plus the plan). Prefer the cached item index; fall
+        // back to a disk read only when the items domain is not warm.
+        const itemsDomainReady = cache?.getDomainState("items") === "ready";
+        const items =
+          (itemsDomainReady ? cache!.getItemIndex() : null) ?? (await loadAllItems(await getCtx()));
+        const ancestors = new BreadcrumbAncestryResolver({
+          items: items as AncestryItemInput[],
+        }).forPlan({ _ulid: plan._ulid, title: plan.title, module_ref: plan.module_ref });
+
         const detail: PlanDetail = {
           ...toPlanSummary(plan, tasks),
           content: plan.content,
           resources,
           resources_base_url: buildResourcesBaseUrl(plan._ulid),
+          ancestors,
         };
 
         return wrapResponse(detail, { cacheDomainState: plansDomainState });

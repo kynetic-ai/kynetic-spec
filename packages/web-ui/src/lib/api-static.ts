@@ -437,7 +437,9 @@ export function fetchTaskStatic(ref: string): ApiResponse<TaskDetail> | null {
   const task = findTaskByRef(snapshot.tasks, ref);
   if (!task) return null;
 
-  // ExportedTask extends TaskDetail, so we can return it directly
+  // ExportedTask extends TaskDetail and carries the breadcrumb ancestor chain
+  // precomputed at export time, so we can return it directly.
+  // AC: @ui-breadcrumb ac-10
   return wrapEnvelope<TaskDetail>(task);
 }
 
@@ -563,6 +565,8 @@ export function fetchItemStatic(ref: string): ApiResponse<ItemDetail> | null {
   const item = findItemByRef(snapshot.items, ref);
   if (!item) return null;
 
+  // ExportedItem carries the breadcrumb ancestor chain precomputed at export
+  // time, so we can return it directly. AC: @ui-breadcrumb ac-10
   return wrapEnvelope<ItemDetail>(item);
 }
 
@@ -839,6 +843,8 @@ export function fetchPlanContentStatic(ref: string): ApiResponse<PlanDetail> {
     throw new Error(`Plan not found: ${ref}`);
   }
 
+  // toStaticPlanDetail preserves the breadcrumb ancestor chain precomputed at
+  // export time, so we can return it directly. AC: @ui-breadcrumb ac-10
   return wrapEnvelope(plan);
 }
 
@@ -955,6 +961,9 @@ function toReviewDetail(review: ExportedReview): ReviewDetail {
     created_at: review.created_at,
     updated_at: review.updated_at,
     resources: review.resources.map((resource) => ({ ...resource })),
+    // Breadcrumb ancestor chain precomputed at export time.
+    // AC: @ui-breadcrumb ac-10
+    ancestors: review.ancestors,
   };
 }
 
@@ -1019,6 +1028,8 @@ export function fetchReviewStatic(ref: string): ApiResponse<ReviewDetail> | null
   if (!snapshot) return null;
   const review = findReviewByRef(snapshot, ref);
   if (!review) return null;
+  // toReviewDetail carries the breadcrumb ancestor chain precomputed at export
+  // time. AC: @ui-breadcrumb ac-10
   return wrapEnvelope(toReviewDetail(review));
 }
 

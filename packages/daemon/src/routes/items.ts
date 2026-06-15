@@ -36,77 +36,27 @@ import type { ItemSummary } from "../../daemon/entity-cache.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
+import {
+  computeItemParentMap,
+  buildItemAncestors,
+  indexItemsByUlid,
+  type AncestryItemInput,
+} from "../../lib/breadcrumb-ancestry.js";
 
 interface ItemsRouteOptions {
   getEntityCache?: EntityCacheAccessor;
 }
 
-/** Minimal fields needed for parent map computation. */
-interface ParentMapItem {
-  _ulid: string;
-  _sourceFile?: string;
-  _path?: string;
-}
-
 /**
  * Compute parent ULIDs for items based on _path and _sourceFile.
- * Items are nested when they share the same source file and
- * one item's path is a prefix of another's path.
+ *
+ * Thin alias over the shared `computeItemParentMap` so the items list `parent`
+ * field and the breadcrumb `ancestors` chain stay derived from one
+ * implementation. Items are nested when they share a source file and one
+ * item's path is the dotted prefix of another's.
  */
-function computeParentMap(items: ParentMapItem[]): Map<string, string | undefined> {
-  const parentMap = new Map<string, string | undefined>();
-
-  // Group items by source file
-  const byFile = new Map<string, ParentMapItem[]>();
-  for (const item of items) {
-    const file = item._sourceFile || "";
-    if (!byFile.has(file)) {
-      byFile.set(file, []);
-    }
-    byFile.get(file)!.push(item);
-  }
-
-  // For each file, determine parent relationships based on path
-  for (const [, fileItems] of byFile) {
-    // Sort by path length (shorter paths are potential parents)
-    const sorted = [...fileItems].toSorted((a, b) => {
-      const aLen = a._path?.length || 0;
-      const bLen = b._path?.length || 0;
-      return aLen - bLen;
-    });
-
-    for (const item of sorted) {
-      const itemPath = item._path;
-
-      if (!itemPath) {
-        // Root item in file - no parent
-        parentMap.set(item._ulid, undefined);
-        continue;
-      }
-
-      // Find the closest parent by matching path prefix
-      // Path format: "features[0].requirements[0]"
-      // Parent path: "features[0]" or undefined (root item)
-      const lastDot = itemPath.lastIndexOf(".");
-      const parentPath = lastDot > -1 ? itemPath.substring(0, lastDot) : undefined;
-
-      // Find parent item
-      let parentUlid: string | undefined;
-      if (parentPath === undefined) {
-        // Direct child of the root item (the item with no path)
-        const rootItem = fileItems.find((i) => !i._path);
-        parentUlid = rootItem?._ulid;
-      } else {
-        // Find item with matching parent path
-        const parentItem = fileItems.find((i) => i._path === parentPath);
-        parentUlid = parentItem?._ulid;
-      }
-
-      parentMap.set(item._ulid, parentUlid);
-    }
-  }
-
-  return parentMap;
+function computeParentMap(items: AncestryItemInput[]): Map<string, string | undefined> {
+  return computeItemParentMap(items);
 }
 
 function getItemImplementationStatus(item: LoadedSpecItem | ItemSummary): string | undefined {
@@ -485,6 +435,13 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
                 cachedDetail,
               ];
               const parentMap = computeParentMap(parentMapSource);
+              // AC: @ui-breadcrumb ac-10 — resolve the full ancestor chain from
+              // the in-memory item index (no disk walk, no list fetch).
+              const ancestors = buildItemAncestors(
+                indexItemsByUlid(parentMapSource),
+                parentMap,
+                cachedDetail._ulid,
+              );
               let acceptanceCriteriaWithCoverage = cachedDetail.acceptance_criteria;
               if (cachedDetail.acceptance_criteria && cachedDetail.acceptance_criteria.length > 0) {
                 try {
@@ -509,6 +466,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
                   status: cachedDetail.status,
                   tags: cachedDetail.tags,
                   parent: parentMap.get(cachedDetail._ulid),
+                  ancestors,
                   description: cachedDetail.description,
                   acceptance_criteria: acceptanceCriteriaWithCoverage,
                   traits: cachedDetail.traits,
@@ -588,6 +546,10 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
             }
           }
 
+          // AC: @ui-breadcrumb ac-10 — resolve the full ancestor chain from the
+          // disk-loaded item set (parent map already computed above).
+          const ancestors = buildItemAncestors(indexItemsByUlid(items), parentMap, item._ulid);
+
           // AC: @api-contract ac-10 - Return full item with acceptance_criteria, traits, relationships
           // AC: @api-contract ac-envelope - Unified envelope response
           return wrapResponse(
@@ -599,6 +561,7 @@ export function createItemsRoutes(_options: ItemsRouteOptions = {}) {
               status: item.status,
               tags: item.tags,
               parent: parentMap.get(item._ulid),
+              ancestors,
               description: item.description,
               acceptance_criteria: acceptanceCriteriaWithCoverage,
               traits: item.traits,

@@ -112,6 +112,11 @@ export const queryKeys = {
     all: ["workflows"] as const,
   },
 
+  identity: {
+    all: ["identity"] as const,
+    config: () => [...queryKeys.identity.all, "config"] as const,
+  },
+
   settings: {
     all: ["settings"] as const,
     health: () => [...queryKeys.settings.all, "health"] as const,

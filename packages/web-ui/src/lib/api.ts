@@ -39,6 +39,7 @@ import type {
   ValidationAggregation,
   TaskStatusSummary,
   ActorIdentityConfig,
+  BreadcrumbAncestor,
 } from "@kynetic-ai/shared";
 import type { TriageRecord } from "./types/triage";
 import {
@@ -1799,6 +1800,16 @@ export interface SessionDetail extends SessionSummary {
   trigger?: string;
   spec_context?: SessionSpecContext | null;
   budget?: SessionBudget | null;
+  /**
+   * Server-resolved breadcrumb ancestor chain (root → this session), one
+   * segment per ancestor with its ref, title, and kind. A task-scoped
+   * session's chain is its owning task's chain plus the session; a session
+   * with no owning task carries a single-segment chain. Present on detail
+   * responses so the breadcrumb never reconstructs the path client-side.
+   *
+   * AC: @ui-breadcrumb ac-10
+   */
+  ancestors?: BreadcrumbAncestor[];
 }
 
 /**

@@ -75,6 +75,14 @@ import {
 import { resolveRefTitle } from "./ref-resolution.js";
 import { resolveWriteActor, toValidationErrorBody } from "./actor-resolution.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
+import {
+  BreadcrumbAncestryResolver,
+  type AncestryItemInput,
+  type AncestryTaskInput,
+  type AncestryPlanInput,
+} from "../../lib/breadcrumb-ancestry.js";
+import type { BreadcrumbAncestor } from "@kynetic-ai/shared";
+import { loadPlans } from "../../parser/index.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import type { ReviewIndexSummary } from "../../daemon/entity-cache.js";
 import { wrapResponse } from "./response-envelope.js";
@@ -83,10 +91,59 @@ import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js"
 import { requireReviewFolderStorage } from "../../parser/entity-storage-compatibility.js";
 import { loadResourceManifest as loadReviewResourceManifest } from "../../parser/entity-local-resources.js";
 import { getReviewDir as getReviewDirForResources } from "../../parser/review-storage-manager.js";
+import type { RouteEntityCache } from "./entity-cache-types.js";
+import type { KspecContext } from "../../parser/index.js";
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
   getEntityCache?: EntityCacheAccessor;
+}
+
+/**
+ * Resolve a review's breadcrumb ancestor chain: the subject entity's chain
+ * plus the review itself.
+ *
+ * AC: @ui-breadcrumb ac-10 — server-resolved chain in the bounded detail
+ * response. Only the entity collections the subject type actually needs are
+ * loaded (a task subject needs tasks + items for the spec chain; a plan
+ * subject needs plans + items; a spec subject needs items; code/external
+ * subjects need nothing and yield a single-segment chain). Cached indexes are
+ * used when warm; the shared, already-initialized context backs the disk
+ * fallback so no extra context is created.
+ */
+async function resolveReviewAncestors(
+  review: { _ulid: string; title?: string | null; subject: { type: string; ref?: string } },
+  cache: RouteEntityCache | null | undefined,
+  ctx: KspecContext,
+): Promise<BreadcrumbAncestor[]> {
+  const subjectType = review.subject.type;
+  const needsItems = subjectType === "task" || subjectType === "plan" || subjectType === "spec";
+  if (!needsItems) {
+    // code/external subjects have no entity parent — single-segment chain.
+    return new BreadcrumbAncestryResolver({ items: [] }).forReview(review);
+  }
+
+  const items =
+    (cache?.getDomainState("items") === "ready" ? cache.getItemIndex() : null) ??
+    (await loadAllItems(ctx));
+
+  let tasks: AncestryTaskInput[] | undefined;
+  if (subjectType === "task") {
+    tasks = ((cache?.getDomainState("tasks") === "ready" ? cache.getTaskIndex() : null) ??
+      (await resolveTaskDataManager(ctx).loadAllTasks(ctx))) as unknown as AncestryTaskInput[];
+  }
+
+  let plans: AncestryPlanInput[] | undefined;
+  if (subjectType === "plan") {
+    plans = ((cache?.getDomainState("plans") === "ready" ? cache.getPlansIndex() : null) ??
+      (await loadPlans(ctx))) as unknown as AncestryPlanInput[];
+  }
+
+  return new BreadcrumbAncestryResolver({
+    items: items as AncestryItemInput[],
+    tasks,
+    plans,
+  }).forReview(review);
 }
 
 const VALID_DECISIONS: readonly ReviewVerdictDecision[] = ReviewVerdictDecisionSchema.options;
@@ -518,11 +575,16 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             resourceManifest = { resources: [] };
           }
 
+          // AC: @ui-breadcrumb ac-10 — server-resolved ancestor chain (subject
+          // entity's chain plus the review) in the same bounded detail response.
+          const ancestors = await resolveReviewAncestors(review, cache, ctxForResources);
+
           return wrapResponse(
             {
               ...review,
               disposition: computeDisposition(review),
               resources: resourceManifest.resources,
+              ancestors,
             },
             { cacheDomainState: reviewsDomainState },
           );

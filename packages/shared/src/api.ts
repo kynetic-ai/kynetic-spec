@@ -7,6 +7,28 @@
 
 import { z } from "zod";
 
+/**
+ * One segment of a breadcrumb ancestor chain.
+ *
+ * `ref` is the entity's canonical reference (its ULID, or session id for
+ * sessions) so consumers can navigate directly. `title` is the resolved
+ * display title (null when the entity carries no title). `kind` is the item
+ * kind — a spec item's `type` (module/feature/requirement/trait/…) or the
+ * entity kind literal for non-item leaves (`task`/`plan`/`review`/`session`).
+ *
+ * This is the API contract shape consumed by the breadcrumb. The resolver that
+ * produces it lives in the kspec core (`src/lib/breadcrumb-ancestry.ts`),
+ * because the daemon ships unbundled and only type-imports this package — a
+ * runtime value import here would not resolve in the published daemon.
+ *
+ * AC: @ui-breadcrumb ac-10
+ */
+export interface BreadcrumbAncestor {
+  ref: string;
+  title: string | null;
+  kind: string;
+}
+
 // ─── Unified Response Envelope ──────────────────────────────────────────────
 // AC: @api-contract ac-envelope
 // AC: @api-contract ac-cache-status-field
@@ -258,6 +280,16 @@ export interface TaskDetail extends TaskSummary {
    * AC: @task-resource-resolution-api-contract ac-task-detail-exposes-resource-base-url
    */
   resources_base_url?: string;
+  /**
+   * Server-resolved breadcrumb ancestor chain (root → this task), one segment
+   * per ancestor with its ref, title, and kind. A task's chain is its
+   * `spec_ref` chain plus the task itself; tasks without a resolvable spec_ref
+   * carry a single-segment chain. Always present on detail responses so the
+   * breadcrumb never reconstructs the path from an unbounded entity-list fetch.
+   *
+   * AC: @ui-breadcrumb ac-10
+   */
+  ancestors?: BreadcrumbAncestor[];
 }
 
 /**
@@ -312,6 +344,16 @@ export interface ItemDetail extends ItemSummary {
   traits: string[];
   depends_on: string[];
   priority?: number;
+  /**
+   * Server-resolved breadcrumb ancestor chain (root → this item), one segment
+   * per ancestor with its ref, title, and kind. Built by walking the spec
+   * item parent hierarchy; a root item carries a single-segment chain. Always
+   * present on detail responses so the breadcrumb never reconstructs the path
+   * from an unbounded entity-list fetch.
+   *
+   * AC: @ui-breadcrumb ac-10
+   */
+  ancestors?: BreadcrumbAncestor[];
 }
 
 /**
@@ -484,6 +526,17 @@ export interface PlanDetail extends PlanSummary {
   /** Declared plan-owned resources. Always populated for detail responses. */
   resources: PlanResourceMetadata[];
   /**
+   * Server-resolved breadcrumb ancestor chain (root → this plan), one segment
+   * per ancestor with its ref, title, and kind. A plan's chain is its
+   * `module_ref` chain plus the plan itself; a plan without a resolvable
+   * module carries a single-segment chain. Always present on detail responses
+   * so the breadcrumb never reconstructs the path from an unbounded
+   * entity-list fetch.
+   *
+   * AC: @ui-breadcrumb ac-10
+   */
+  ancestors?: BreadcrumbAncestor[];
+  /**
    * Base URL prefix for per-resource fetches. Clients construct
    * `${resources_base_url}/${encodeURIComponent(id)}/bytes` to retrieve a
    * specific resource. Always populated for detail responses; static
@@ -493,6 +546,16 @@ export interface PlanDetail extends PlanSummary {
    * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
    */
   resources_base_url: string;
+  /**
+   * Owning module reference. Carried on static-export snapshots so the static
+   * breadcrumb provider can resolve a plan's ancestor chain (module chain plus
+   * the plan) without a live daemon; null when the plan has no module anchor.
+   * The live daemon resolves the chain server-side into `ancestors`, so this
+   * field may be absent on live responses.
+   *
+   * AC: @ui-breadcrumb ac-10
+   */
+  module_ref?: string | null;
 }
 
 /**
@@ -759,6 +822,18 @@ export interface ReviewDetail {
    * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
    */
   resources?: ReviewResource[];
+  /**
+   * Server-resolved breadcrumb ancestor chain (root → this review), one
+   * segment per ancestor with its ref, title, and kind. A review's chain is
+   * its subject entity's chain plus the review; task/plan/spec subjects extend
+   * the subject's own chain, while code/external subjects (and unresolvable
+   * subject refs) yield a single-segment chain. Always present on detail
+   * responses so the breadcrumb never reconstructs the path from an unbounded
+   * entity-list fetch.
+   *
+   * AC: @ui-breadcrumb ac-10
+   */
+  ancestors?: BreadcrumbAncestor[];
 }
 
 export interface BatchSpecItemSummary {
@@ -1081,6 +1156,12 @@ export interface ExportedReview {
   examined_commit: string | null;
   disposition: string;
   resources: ReviewResource[];
+  /**
+   * Server-resolved breadcrumb ancestor chain (root → this review), precomputed
+   * at export time so the static provider serves the same chain shape as the
+   * live daemon read-only. AC: @ui-breadcrumb ac-10
+   */
+  ancestors?: BreadcrumbAncestor[];
 }
 
 /**

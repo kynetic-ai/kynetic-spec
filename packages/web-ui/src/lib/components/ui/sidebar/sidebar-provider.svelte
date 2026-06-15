@@ -1,10 +1,13 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 	import { cn, type WithElementRef } from "$lib/utils.js";
 	import type { HTMLAttributes } from "svelte/elements";
+	import { shortcutRegistry } from "$lib/shortcuts";
 	import {
 		SIDEBAR_COOKIE_MAX_AGE,
 		SIDEBAR_COOKIE_NAME,
+		SIDEBAR_KEYBOARD_SHORTCUT,
 		SIDEBAR_WIDTH,
 		SIDEBAR_WIDTH_ICON,
 	} from "./constants.js";
@@ -33,9 +36,20 @@
 			document.cookie = `${SIDEBAR_COOKIE_NAME}=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
 		},
 	});
-</script>
 
-<svelte:window onkeydown={sidebar.handleShortcutKeydown} />
+	// Toggle the sidebar via the central shortcut registry (Cmd/Ctrl+B).
+	// The root layout owns the single document-level dispatcher.
+	// AC: @ui-shortcut-registry ac-1, ac-3
+	onMount(() => {
+		const registration = shortcutRegistry.register({
+			id: "sidebar.toggle",
+			label: "Toggle sidebar",
+			chord: { mod: true, key: SIDEBAR_KEYBOARD_SHORTCUT },
+			handler: () => sidebar.toggle(),
+		});
+		return registration.unregister;
+	});
+</script>
 
 <Tooltip.Provider delayDuration={0}>
 	<div

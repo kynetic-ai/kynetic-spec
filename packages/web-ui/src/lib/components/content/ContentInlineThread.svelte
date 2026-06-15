@@ -4,6 +4,8 @@
 <script lang="ts">
 	import type { ReviewThread } from '@kynetic-ai/shared';
 	import { Badge } from '$lib/components/ui/badge';
+	import { ActorDisplay } from '$lib/components/ds';
+	import type { ActorClassifier } from '$lib/utils/actor';
 	import { renderMarkdown } from '$lib/utils/markdown';
 
 	interface Props {
@@ -12,9 +14,16 @@
 		onReply: (threadId: string, body: string) => void;
 		onResolve: (threadId: string) => void;
 		onReopen: (threadId: string) => void;
+		/**
+		 * Shared actor classifier (identity payload) so thread authors render
+		 * through the same actor primitive — and therefore identically — as every
+		 * other actor on the review surface. Omitted in static mode, where
+		 * ActorDisplay degrades to the unknown treatment.
+		 */
+		classifier?: ActorClassifier;
 	}
 
-	let { thread, isInteractive, onReply, onResolve, onReopen }: Props = $props();
+	let { thread, isInteractive, onReply, onResolve, onReopen, classifier }: Props = $props();
 
 	let showReplyForm = $state(false);
 	let replyBody = $state('');
@@ -86,8 +95,13 @@
 		<Badge class={getKindColor(thread.kind)}>
 			{formatKind(thread.kind)}
 		</Badge>
-		<span class="text-xs text-muted-foreground flex-1">
-			{thread.entries[0]?.author ?? 'anonymous'} &middot; {thread.entries.length} {thread.entries.length === 1 ? 'comment' : 'comments'}
+		<span class="text-xs text-muted-foreground flex-1 inline-flex items-center gap-1">
+			{#if thread.entries[0]}
+				<ActorDisplay actor={thread.entries[0].author} {classifier} class="text-xs" />
+			{:else}
+				anonymous
+			{/if}
+			&middot; {thread.entries.length} {thread.entries.length === 1 ? 'comment' : 'comments'}
 		</span>
 		{#if thread.resolved_at}
 			<span class="text-xs text-emerald-600 dark:text-emerald-400">Resolved</span>
@@ -102,7 +116,12 @@
 			{#each thread.entries as entry (entry._ulid)}
 				<div class="px-3 py-2" data-testid="content-thread-entry">
 					<div class="flex items-center gap-2 mb-1">
-						<span class="text-xs font-medium">{entry.author}</span>
+						<ActorDisplay
+							actor={entry.author}
+							{classifier}
+							class="text-xs"
+							testid="content-thread-entry-author"
+						/>
 						<span class="text-xs text-muted-foreground" title={entry.created_at}>
 							{formatRelativeTime(entry.created_at)}
 						</span>

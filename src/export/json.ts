@@ -46,6 +46,12 @@ import {
   isCountedInPlanSummary,
 } from "../lib/plan-summary.js";
 import { getPlanDir } from "../parser/plan-storage-manager.js";
+import {
+  BreadcrumbAncestryResolver,
+  type AncestryItemInput,
+  type AncestryTaskInput,
+  type AncestryPlanInput,
+} from "../lib/breadcrumb-ancestry.js";
 import type {
   ExportedItem,
   ExportedPlan,
@@ -656,12 +662,11 @@ async function expandPlans(
       content,
       resources,
       // Forward-compatible: keep emitting module_ref/source_path so existing
-      // consumers continue to see the same fields.
-      ...({ module_ref: plan.module_ref ?? null, source_path: plan.source_path ?? null } as Record<
-        string,
-        unknown
-      >),
-    } as ExportedPlan);
+      // consumers continue to see the same fields. module_ref also backs the
+      // static breadcrumb provider's plan ancestor chain (@ui-breadcrumb ac-10).
+      module_ref: plan.module_ref ?? null,
+      source_path: plan.source_path ?? null,
+    });
   }
   return out;
 }
@@ -763,6 +768,43 @@ export async function generateJsonSnapshot(
   // Expand items with inherited ACs and test coverage
   const exportedItems = expandItems(items, traitIndex, coveredACs);
 
+  // AC: @ui-breadcrumb ac-10 — precompute each entity's server-resolved
+  // breadcrumb ancestor chain into the snapshot so the static provider serves
+  // the same chain shape read-only, without reconstructing the path or fetching
+  // entity lists in the browser. One resolver over the whole project backs
+  // every leaf kind.
+  const ancestryResolver = new BreadcrumbAncestryResolver({
+    items: items as AncestryItemInput[],
+    tasks: tasks as AncestryTaskInput[],
+    plans: plans as AncestryPlanInput[],
+  });
+  for (const item of exportedItems) {
+    item.ancestors = ancestryResolver.itemChainByUlid(item._ulid);
+  }
+  for (const task of exportedTasks) {
+    task.ancestors = ancestryResolver.forTask({
+      _ulid: task._ulid,
+      title: task.title,
+      spec_ref: task.spec_ref,
+    });
+  }
+  const exportedPlans = await expandPlans(ctx, plans, tasks, assetsOutputDir);
+  for (const plan of exportedPlans) {
+    plan.ancestors = ancestryResolver.forPlan({
+      _ulid: plan._ulid,
+      title: plan.title,
+      module_ref: plan.module_ref,
+    });
+  }
+  const exportedReviews = await expandReviews(ctx, reviews);
+  for (const review of exportedReviews) {
+    review.ancestors = ancestryResolver.forReview({
+      _ulid: review._ulid,
+      title: review.title,
+      subject: review.subject,
+    });
+  }
+
   // Build the snapshot
   const snapshot: KspecSnapshot = {
     version: await getKspecVersion(),
@@ -774,8 +816,8 @@ export async function generateJsonSnapshot(
     tasks: exportedTasks,
     items: exportedItems,
     inbox: inboxItems,
-    plans: await expandPlans(ctx, plans, tasks, assetsOutputDir),
-    reviews: await expandReviews(ctx, reviews),
+    plans: exportedPlans,
+    reviews: exportedReviews,
     triage: triageRecords,
     session: sessionContext,
     observations: metaContext.observations,
