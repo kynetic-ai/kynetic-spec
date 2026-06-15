@@ -22304,6 +22304,22 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-15T16:19:34.071Z
+  - _ulid: 01KV61Y0V4BYG18W9JMGHZ7KY8
+    type: friction
+    content: "Upgrade-pipeline steps that READ records run during 'kspec upgrade --dry-run' BEFORE the
+      storage-migration block promotes the layout. A step that uses folder-only loaders
+      (loadReviewRecordsFromFolders/loadPlansFromFolders/split-only task manager) and gates itself
+      on a 'fully promoted' manifest check (task=split AND plan=folder AND review=folder) will
+      silently return 'skipped' on any not-yet-promoted project, disabling dry-run preview — caught
+      as a review blocker on @task-actor-normalization-upgrade (violated
+      @actor-history-normalization ac-4). Design rule for future upgrade steps: use the format-aware
+      loaders (loadReviewRecords/loadPlans, which read both legacy monolithic and folder layouts),
+      gate only WRITES (real runs) on promotion, let dry-run preview run on any layout, and defer
+      (surface, don't drop/crash) record kinds whose storage genuinely cannot be read yet."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T16:30:45.092Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
