@@ -4,9 +4,9 @@
 
 The exported Kynetic Spec web UI handoff at
 `/home/chapel/Downloads/Kynetic Spec/export` is attached to this plan
-as plan-owned resources under `./resources/handoff/...` so derived task
-workers can access the same design context without relying on the
-Downloads path. The handoff is behavioral/reference material: use it
+as plan-owned resources under the plan's `resources/handoff/` directory
+so derived task workers can access the same design context without relying
+on the Downloads path. The handoff is behavioral/reference material: use it
 for information architecture, interaction states, hierarchy, token
 intent, and verification examples; do **not** treat screenshots or the
 React reference source as pixel-perfect styling or production code to
