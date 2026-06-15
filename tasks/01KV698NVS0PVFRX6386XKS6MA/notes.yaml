@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KV6D10M8JRGMKYHK32D0SS53
+    content: "Approach: The detached-reviewer-merge.sh helper tests git-operation marker paths from 'git
+      -C $wt rev-parse --git-path <marker>'. For the PRIMARY repo worktree git returns a
+      worktree-relative path (.git/MERGE_HEAD); the helper then evaluates [ -e .git/MERGE_HEAD ]
+      from the helper process cwd (detached reviewer snapshot), checking the wrong location. Linked
+      worktrees return absolute paths and work today. Fix: add
+      resolve_worktree_git_path()/worktree_marker_path() helpers that preserve absolute paths and
+      anchor relative paths under $wt; reuse for preflight in-progress detection and post-merge
+      MERGE_HEAD detection. Also (2) always 'git -C MERGE_SURFACE merge --abort' once a merge has
+      started before any failure return, and (3) after aborting in an existing checkout, verify
+      HEAD==PRE_MERGE_TARGET_HEAD, clean tracked status, and MERGE_HEAD absent; emit a SEVERE
+      cleanup-failed error naming the checkout if not. Tests: primary-target conflict regression +
+      primary-target preexisting-in-progress-merge refusal regression; keep linked/temp coverage.
+      Then kspec skill render + verify, build:plugin, focused test, validate --refs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T19:44:37.512Z
