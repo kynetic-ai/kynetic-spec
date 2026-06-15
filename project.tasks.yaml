@@ -32180,6 +32180,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-15T00:55:23.449Z
+  automation: eligible
 - _ulid: 01KV4CDAWAG1XHQVHAVABN2VMD
   slugs:
     - task-breadcrumb-component
