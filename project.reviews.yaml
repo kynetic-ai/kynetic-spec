@@ -26660,7 +26660,7 @@ reviews:
     title: Review task-review-author-resolution
     disposition: pending
     author: Jacob Chapel
-    check_count: 2
+    check_count: 3
     examined_commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
     lifecycle_state: open
     related_refs: []
@@ -26673,7 +26673,7 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-15T14:35:05.417Z
-    updated_at: 2026-06-15T14:50:11.213Z
+    updated_at: 2026-06-15T14:50:22.016Z
   - _ulid: 01KV5VBT230TGV47T20YB2STYA
     slugs: []
     title: Review task-breadcrumb-ancestry-api
