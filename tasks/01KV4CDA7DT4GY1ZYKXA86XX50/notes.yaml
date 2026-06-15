@@ -161,3 +161,44 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T15:14:48.129Z
+  - _ulid: 01KV61TQ58F3V87GDC66KPEW1G
+    content: >-
+      Fix cycle 1: addressed the review blocker (dry-run preview skipped on un-promoted projects,
+      violating @actor-history-normalization ac-4).
+
+
+      Root cause: the actor normalization step gated the whole sweep on task=split AND plan=folder
+      AND review=folder, and the review/plan handlers used folder-only loaders. A --dry-run on a
+      legacy/partially-promoted project returned 'skipped' with no preview.
+
+
+      Fix:
+
+      - Review/plan handlers switched to format-aware loaders/savers
+      (loadReviewRecords/saveReviewRecord, loadPlans/savePlan) so the sweep reads whichever layout
+      the project is on.
+
+      - storageReady gate now only short-circuits real (non-dry-run) runs; dry-run previews on any
+      layout.
+
+      - Per-kind dry-run resilience: kinds whose storage can't be read yet (e.g. legacy task
+      storage) are deferred and surfaced on details.deferred_kinds + the step message, not silently
+      dropped or crashing. Real runs rethrow on load failure (they run after storage promotion).
+
+
+      Also rebased onto the updated integration target (feat/ui-redesign @775219419e); my redundant
+      build-ordering commit was absorbed by the target's equivalent (99ce5a4b7b), so the stale
+      bootstrap TS2305 'no exported member' failure is resolved (build:shared now runs before tsc).
+
+
+      Re-verified all ACs 1-6 + @actor-identity-model ac-2 against the implementation; added a
+      behavioral test for the legacy dry-run preview; updated docs/guides/upgrading-kspec.md.
+
+
+      Gates: format:check clean; lint 0 errors (736 baseline); focused oxlint 0 warnings in changed
+      migration/test files (7 pre-existing upgrade.ts warnings unrelated); typecheck clean; full npm
+      test 10822 passed / 0 failed / 3 skipped; kspec refs/alignment/completeness warnings-ok exit
+      0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T16:28:56.872Z
