@@ -8,6 +8,7 @@
 	import type { DiffHunk, DiffChangeLine } from '$lib/api';
 	import type { ReviewThread } from '@kynetic-ai/shared';
 	import { highlightCode } from '$lib/utils/highlight';
+	import type { ActorClassifier } from '$lib/utils/actor';
 	import DiffInlineThread from './DiffInlineThread.svelte';
 	import DiffCommentForm from './DiffCommentForm.svelte';
 
@@ -18,6 +19,8 @@
 		threads: ReviewThread[];
 		headCommit: string;
 		isInteractive: boolean;
+		/** Shared actor classifier threaded to inline diff thread authors. */
+		classifier?: ActorClassifier;
 		onAddComment: (data: {
 			body: string;
 			kind: 'blocker' | 'question' | 'nit';
@@ -39,6 +42,7 @@
 		threads,
 		headCommit,
 		isInteractive,
+		classifier,
 		onAddComment,
 		onReply,
 		onResolve,
@@ -222,6 +226,7 @@
 			<DiffInlineThread
 				{thread}
 				{isInteractive}
+				{classifier}
 				{onReply}
 				{onResolve}
 				{onReopen}

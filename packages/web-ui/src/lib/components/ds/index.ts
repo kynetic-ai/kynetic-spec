@@ -7,3 +7,4 @@
  */
 export { default as ViewHeader, type ViewHeaderCount } from "./ViewHeader.svelte";
 export { default as StatusBadge } from "./StatusBadge.svelte";
+export { default as ActorDisplay } from "./ActorDisplay.svelte";

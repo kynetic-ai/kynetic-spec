@@ -9,6 +9,7 @@
 	import type { ReviewThread } from '@kynetic-ai/shared';
 	import { getFilePath as getFilePathUtil } from '$lib/utils/diff';
 	import { resolveStatusToken, statusTextClass } from '$lib/ds/status-tokens';
+	import type { ActorClassifier } from '$lib/utils/actor';
 	import DiffHunkView from './DiffHunkView.svelte';
 
 	interface Props {
@@ -16,6 +17,8 @@
 		threads: ReviewThread[];
 		headCommit: string;
 		isInteractive: boolean;
+		/** Shared actor classifier threaded to inline diff thread authors. */
+		classifier?: ActorClassifier;
 		expanded: boolean;
 		onToggleExpand: () => void;
 		onAddComment: (data: {
@@ -37,6 +40,7 @@
 		threads,
 		headCommit,
 		isInteractive,
+		classifier,
 		expanded,
 		onToggleExpand,
 		onAddComment,
@@ -210,6 +214,7 @@
 						threads={fileThreads}
 						{headCommit}
 						{isInteractive}
+						{classifier}
 						onAddComment={handleAddComment}
 						{onReply}
 						{onResolve}

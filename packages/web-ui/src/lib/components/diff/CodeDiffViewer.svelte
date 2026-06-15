@@ -26,6 +26,7 @@
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { queryKeys } from '$lib/query/keys.js';
 	import { getFilePath } from '$lib/utils/diff';
+	import type { ActorClassifier } from '$lib/utils/actor';
 	import DiffFileList from './DiffFileList.svelte';
 	import DiffFileView from './DiffFileView.svelte';
 
@@ -35,9 +36,11 @@
 		headCommit: string;
 		threads: ReviewThread[];
 		isInteractive: boolean;
+		/** Shared actor classifier threaded to inline diff thread authors. */
+		classifier?: ActorClassifier;
 	}
 
-	let { review, baseCommit, headCommit, threads, isInteractive }: Props = $props();
+	let { review, baseCommit, headCommit, threads, isInteractive, classifier }: Props = $props();
 
 	const queryClient = useQueryClient();
 	const LAZY_LOAD_THRESHOLD = 20;
@@ -329,6 +332,7 @@
 						threads={codeThreads}
 						{headCommit}
 						{isInteractive}
+						{classifier}
 						{expanded}
 						onToggleExpand={() => toggleFile(filePath)}
 						onAddComment={handleAddComment}

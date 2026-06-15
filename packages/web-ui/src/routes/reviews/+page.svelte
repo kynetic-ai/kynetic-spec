@@ -9,7 +9,8 @@
 	import { onMount, onDestroy } from 'svelte';
 	import type { ReviewSummary, BroadcastEvent } from '@kynetic-ai/shared';
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
-	import { StatusBadge } from '$lib/components/ds';
+	import { StatusBadge, ActorDisplay } from '$lib/components/ds';
+	import { createActorClassifier } from '$lib/query/identity.svelte.js';
 	import {
 		Table,
 		TableBody,
@@ -52,6 +53,9 @@
 		queryFn: () => fetchReviews(filterParams),
 		enabled: isProjectInitialized(),
 	}));
+
+	// Shared actor classifier (identity payload) for review authors in the queue.
+	const actorClassifier = createActorClassifier();
 
 	let reviews = $derived(reviewsQuery.data?.items ?? []);
 	let total = $derived(reviewsQuery.data?.total ?? 0);
@@ -303,7 +307,12 @@
 									<span class="text-sm" data-testid="review-subject-type">{formatSubjectType(review.subject_type)}</span>
 								</TableCell>
 								<TableCell class="truncate">
-									<span class="text-sm" data-testid="review-author">{review.author}</span>
+									<ActorDisplay
+										actor={review.author}
+										classifier={actorClassifier.classifier}
+										class="text-sm"
+										testid="review-author"
+									/>
 								</TableCell>
 								<TableCell class="truncate">
 									{#if review.task_ref}

@@ -12,6 +12,7 @@
  */
 
 export { classifyActor, buildActorClassifier } from "@kynetic-ai/shared";
+export { deriveAwaitedRole, resolveAwaitedParty } from "@kynetic-ai/shared";
 export type {
   ActorKind,
   ClassifiedActor,
@@ -19,4 +20,11 @@ export type {
   AgentIdentity,
   ActorIdentityConfig,
   ActorClassifier,
+} from "@kynetic-ai/shared";
+export type {
+  ReviewLifecycleState,
+  ReviewDisposition,
+  AwaitedRole,
+  ReviewParticipants,
+  AwaitedParty,
 } from "@kynetic-ai/shared";

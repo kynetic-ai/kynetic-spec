@@ -11,6 +11,9 @@ export * from "./api.js";
 // Actor identity classification
 export * from "./actor.js";
 
+// Next-actor derivation (review awaited-role rule)
+export * from "./next-actor.js";
+
 // WebSocket types
 export * from "./websocket.js";
 
