@@ -4983,3 +4983,16 @@ inbox:
       - web
     added_by: "@claude"
     created_at: 2026-06-15T01:35:40.320Z
+  - _ulid: 01KV4HH9D88YJ4R530S08P39T9
+    text: "Add a Svelte 5 gotcha to the svelte-5 skill: a component prop named `state` collides with the
+      `$state` rune — the compiler interprets `$state(...)` as store auto-subscription on the
+      in-scope `state` identifier and throws `store_invalid_shape` at runtime. Fix: rename the prop
+      (e.g. statusState) or avoid the $state rune when a `state` binding is in scope. Hit while
+      building ViewHeader (@ui-view-header). The skill currently documents $-prefix misuse but not
+      this name collision."
+    tags:
+      - reflection
+      - web-ui
+      - svelte
+    added_by: "@claude"
+    created_at: 2026-06-15T02:24:56.232Z

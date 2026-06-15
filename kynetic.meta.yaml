@@ -22020,6 +22020,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T01:35:40.738Z
+  - _ulid: 01KV4HH9GXRC07PS761CW0DNZN
+    type: friction
+    content: "No shared vitest helper for SSR-rendering Svelte 5 components — web-ui component behavior
+      was previously only covered by Playwright E2E (the old static-analysis component tests were
+      deleted). For @ui-view-header I built an ad hoc harness: create a web-ui vite server,
+      ssrLoadModule(svelte/server).render + ssrLoadModule(svelte).createRawSnippet for snippet
+      props, parse the body with jsdom, assert on rendered DOM. This is fully behavioral and fast
+      (in the default vitest pool). A reusable tests/helpers component-render helper would let
+      future web-ui component tests assert rendered output without standing up E2E."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T02:24:56.349Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
