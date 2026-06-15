@@ -22460,6 +22460,21 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-15T20:03:28.957Z
+  - _ulid: 01KV6ES3KGDRBT2XSGQQRKXW34
+    type: friction
+    content: "When a dispatch worker edits a package core skill source under templates/skills/ from
+      inside its dispatch worktree (.kspec-worktrees/...), 'kspec skill render' / 'kspec skill
+      verify' cannot regenerate that worktree's tracked .agents/skills/ and .factory/skills/
+      outputs: kspec resolves the project root upward to the main repo, so render reads the main
+      shadow .kspec/skills/ source and writes to the main checkout, never the worktree. The worker
+      must regenerate the worktree's tracked rendered supporting files manually (non-markdown files
+      like scripts/*.sh are copied verbatim — confirmed byte-identical at HEAD), and 'kspec skill
+      verify' drift it reports reflects the main project, not the worktree. A render mode or doc
+      note for dispatch-worktree core-skill edits would remove this guesswork."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T20:15:15.568Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
