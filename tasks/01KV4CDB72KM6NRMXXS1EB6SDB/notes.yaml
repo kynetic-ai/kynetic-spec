@@ -1,1 +1,41 @@
-notes: []
+notes:
+  - _ulid: 01KV4F95CSTNSMDGY43399XQMM
+    content: >-
+      Approach for @ui-view-header + @coverage-state-presentation ac-2:
+
+
+      1. Status-token module (packages/web-ui/src/lib/ds/status-tokens.ts) — single source mapping
+         every entity lifecycle/state value to exactly one {label, glyph, family} token, family
+         referencing existing --design-* token-backed Tailwind families. Domains: task (7),
+         review-lifecycle (4), review-disposition (3), spec-maturity (5), spec-implementation (4),
+         session (6), coverage (4: covered/failing/not_yet/re_verify), diff-file (4: A/D/M/R glyphs).
+         Helpers: statusBadgeClass(family) -> "bg-<f> text-<f>-fg"; statusTextClass(family) -> "text-<f>".
+         resolveStatusToken(domain, state). Drives uniqueness contract by construction.
+
+      2. StatusBadge.svelte (ds) — renders glyph+label with token color. Replaces the 4 duplicated
+         getStatusColor() impls: TaskList, ItemDetail (task badges), DiffFileList, DiffFileView
+         (colored letter glyphs) all draw from the module.
+
+      3. ViewHeader.svelte (ds) — fixed zones: empty leading-chrome reservation
+         (inline-size: var(--ds-chrome-leading-reservation,0)) per @web-shell-platform-target;
+         entity ref (slug/ULID, copyable native button); state indicator via StatusBadge; child
+         counts (server-resolved values only, no fetch); actions snippet slot (native buttons,
+         keyboard-operable). Adopted on review detail + session detail pages.
+
+      Tests:
+
+      - tests/web-ui-status-tokens.test.ts — table-driven uniqueness over FULL vocabulary
+        (one token per state, no state unmapped; deterministic same-token-on-every-surface),
+        covers @ui-view-header ac-2 + @coverage-state-presentation ac-2. Pure TS, behavioral.
+      - tests/web-ui-view-header.test.ts — SSR-render ViewHeader via web-ui vite ssrLoadModule +
+        svelte/server render; assert zones (ac-1), empty leading zone (ac-3), counts from props
+        (ac-4), actions confined to actions zone as native buttons (ac-5).
+      - E2E review-detail + session-detail header assertions (ac-6) incl keyboard focus/activate.
+
+
+      Counts are server-resolved: review threads/checks/verdicts arrays already in payload;
+
+      session event_count/iteration_count/tasks_completed already server-resolved fields.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T01:45:32.825Z
