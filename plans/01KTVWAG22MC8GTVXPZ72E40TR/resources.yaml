@@ -228,3 +228,12 @@ resources:
     label: Reviews queue
     path: handoff/shots/r3-reviews-queue.png
     sha256: 8e72c87948ee75108f2e469688064c9e47af984edf532fd1d8a7e02a71d2b7ee
+  - description: Task/code review surface reference for review header, actor display, and thread context.
+    bytes: 112000
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-review-task
+    label: Task review surface
+    path: handoff/shots/r3-review-task.png
+    sha256: d14e3686c5982b51b291dc30b4449d435de083451eab1d267b5477c666d5b68e

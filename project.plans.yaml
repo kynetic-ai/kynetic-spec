@@ -1946,8 +1946,8 @@ plans:
     module_ref: "@web-ui"
     notes_count: 5
     resource_summary:
-      count: 25
-      total_bytes: 1203411
+      count: 26
+      total_bytes: 1315411
     source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-ui-foundations.md
     created_at: 2026-06-11T17:40:18.114Z
   - _ulid: 01KTVX07ZQ1A8HR3MKQXBXT99A
