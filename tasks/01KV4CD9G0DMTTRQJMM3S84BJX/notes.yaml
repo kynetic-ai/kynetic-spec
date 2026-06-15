@@ -193,3 +193,42 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-15T06:31:25.959Z
+  - _ulid: 01KV4ZT2WSN90TQQH9CSFKSVHP
+    content: >-
+      [DISPATCH-BOOTSTRAP] Bootstrap step "build-workspace-artifacts" failed with exit code 2.
+      Output: > @kynetic-ai/spec@0.14.0 build
+
+      > node scripts/build.cjs build:unlocked
+
+
+
+      > @kynetic-ai/spec@0.14.0 build:unlocked
+
+      > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run
+      build:web-ui && npm run build:plugin
+
+
+      src/identity/actor-identity-config.ts(21,15): error TS2305: Module '"@kynetic-ai/shared"' has
+      no exported member 'ActorIdentityConfig'.
+
+      src/identity/actor-identity-config.ts(21,36): error TS2305: Module '"@kynetic-ai/shared"' has
+      no exported member 'AgentIdentity'.
+
+      src/identity/actor-identity-config.ts(21,51): error TS2305: Module '"@kynetic-ai/shared"' has
+      no exported member 'HumanIdentity'.
+
+      src/identity/actor-write.ts(32,10): error TS2305: Module '"@kynetic-ai/shared"' has no
+      exported member 'classifyActor'.
+
+      src/identity/actor-write.ts(32,30): error TS2305: Module '"@kynetic-ai/shared"' has no
+      exported member 'ActorIdentityConfig'.
+
+      src/identity/actor-write.ts(32,56): error TS2305: Module '"@kynetic-ai/shared"' has no
+      exported member 'ClassifiedActor'.
+
+      src/identity/actor-write.ts(96,34): error TS7006: Parameter 'agent' implicitly has an 'any'
+      type. Suggested action: Inspect the failing bootstrap command, dependency prerequisites, and
+      workspace health before retrying dispatch.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-15T06:34:24.538Z
