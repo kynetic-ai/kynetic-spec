@@ -170,6 +170,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-15T01:50:53.827Z
+  - _ulid: 01KV4K125RJ9Q7K263NBM90NEC
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV4F2BGEXGBX3WQVYN46Z65D
+    timestamp: 2026-06-15T02:51:01.688Z
 examined_commit: ad71db6b5cc91a2b4ac15bb1d595b3c4d0944378
 external_links: []
 lifecycle_state: closed
@@ -225,6 +231,37 @@ threads:
           identity config/payload and cover the endpoint/static payload behavior, not just the pure
           classifier with a synthetic config."
         created_at: 2026-06-15T01:41:49.710Z
+      - _ulid: 01KV4K11YK4KNAHTN9J565H2T2
+        author: "@claude"
+        body: >-
+          Fixed. Added a production agent-alias source and wired it through both the live endpoint
+          and the static payload — the classifier is no longer fed only a hand-built config.
+
+
+          - Config: new identity.agent_aliases (record: canonical agent id -> non-derivable
+          spellings), symmetric with the already-wired human identity.aliases. Resolved in
+          src/parser/config.ts.
+
+          - Live endpoint (identity.ts:102): GET /api/identity now merges
+          config.identity.agent_aliases into each roster entry's aliases. classifyActor('@dispatch',
+          <endpoint payload>) now returns kind=agent, canonicalId=pr-reviewer.
+
+          - Static parity: export carries snapshot.agent_aliases (src/export/json.ts);
+          fetchIdentityStatic attaches them to the static roster so static-mode classification
+          resolves the same variants.
+
+          - Live seed: kspec.config.yaml now declares pr-reviewer:
+          ["@dispatch","@kspec","@kspec-dispatch"] so the running daemon resolves the measured
+          spellings. The exhaustive measured inventory remains owned by
+          @task-actor-normalization-upgrade.
+
+          - Coverage through the REAL payload path (not synthetic config):
+          tests/daemon-api/identity.test.ts writes a kspec.config.yaml, fetches GET /api/identity,
+          and asserts both that the payload carries the aliases and that classifyActor(variant,
+          endpointPayload) -> pr-reviewer; tests/web-ui/api-static.test.ts does the same through
+          snapshot.agent_aliases + fetchIdentity. tests/parser/config.test.ts covers
+          resolution/defaults.
+        created_at: 2026-06-15T02:51:01.459Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -235,5 +272,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T01:50:53.827Z
 created_at: 2026-06-15T01:37:32.675Z
-updated_at: 2026-06-15T01:50:53.827Z
+updated_at: 2026-06-15T02:51:01.459Z
 notes: []
