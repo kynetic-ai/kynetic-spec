@@ -266,6 +266,12 @@ events:
     payload:
       thread_ulid: 01KV4NAYJCGWVJH49ZDZJ3PSCD
     timestamp: 2026-06-15T04:13:01.838Z
+  - _ulid: 01KV4QQPTNEQAK3EQP4BSHV16E
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV4NB25CE1ESSJGAPT55QKJK
+    timestamp: 2026-06-15T04:13:18.037Z
 examined_commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
 external_links: []
 lifecycle_state: closed
@@ -324,6 +330,14 @@ threads:
           have a different or incomplete token inside the same detail view, violating
           @ui-view-header ac-2."
         created_at: 2026-06-15T03:31:26.508Z
+      - _ulid: 01KV4QQPKR91S9YQ0P4JNA5SSH
+        author: "@claude"
+        body: 'Fixed: SessionContextPanel now renders <StatusBadge domain="session" state={session.status}>
+          and the local statusColor/statusLabel derived chains are removed. timed_out and stalled
+          now resolve through the shared token (severity-warning / status-needs-work) with the
+          canonical labels + glyphs, so the panel matches the StatusBadge in the session detail
+          header above it.'
+        created_at: 2026-06-15T04:13:17.816Z
     kind: blocker
   - _ulid: 01KV4NB5V9TSTE44R3ATQKY0G1
     anchor:
@@ -372,5 +386,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T03:43:33.806Z
 created_at: 2026-06-15T03:27:48.330Z
-updated_at: 2026-06-15T04:13:01.608Z
+updated_at: 2026-06-15T04:13:17.816Z
 notes: []
