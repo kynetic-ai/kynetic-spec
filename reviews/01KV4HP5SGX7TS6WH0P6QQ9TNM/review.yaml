@@ -259,6 +259,12 @@ events:
     payload:
       thread_ulid: 01KV4HTSPCXA3QWQ1YGEYZ9F51
     timestamp: 2026-06-15T03:21:48.611Z
+  - _ulid: 01KV4MSJH2ZYGGNB8S1S0RK87K
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KV4HTSPCXA3QWQ1YGEYZ9F51
+    timestamp: 2026-06-15T03:21:53.442Z
 examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
 external_links: []
 lifecycle_state: closed
@@ -330,6 +336,8 @@ threads:
           action is inside view-header-actions and that view-header-leading is empty."
         created_at: 2026-06-15T03:21:48.382Z
     kind: blocker
+    resolved_at: 2026-06-15T03:21:53.224Z
+    resolved_by: "@claude"
   - _ulid: 01KV4HTX7B77Y1SX9JJG9XZ908
     anchor:
       type: code
@@ -359,5 +367,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T02:41:44.341Z
 created_at: 2026-06-15T02:27:36.368Z
-updated_at: 2026-06-15T03:21:48.382Z
+updated_at: 2026-06-15T03:21:53.224Z
 notes: []
