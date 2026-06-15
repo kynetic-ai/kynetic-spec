@@ -32235,6 +32235,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-15T00:55:24.481Z
+  automation: eligible
 - _ulid: 01KV4CDBWM83RRBNH7RX33E5YK
   slugs:
     - task-preference-utility

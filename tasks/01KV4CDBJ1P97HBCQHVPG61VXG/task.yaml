@@ -68,6 +68,14 @@ tags:
   - web-ui
   - keyboard
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-15T00:55:44.240Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -87,3 +95,4 @@ resource_refs:
     sha256: 9ad1f51125974201d078447062d18a09b9062a5a80c6f0035df75e44838f3a99
 created_at: 2026-06-15T00:55:24.481Z
 todos: []
+automation: eligible
