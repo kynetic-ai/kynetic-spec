@@ -84,8 +84,42 @@ description: |
 spec_ref: "@actor-history-normalization"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending_review
-blocked_by: []
+status: blocked
+blocked_by:
+  - >-
+    Dispatch bootstrap failed: Bootstrap step "build-workspace-artifacts" failed with exit code 2.
+    Output: > @kynetic-ai/spec@0.14.0 build
+
+    > node scripts/build.cjs build:unlocked
+
+
+
+    > @kynetic-ai/spec@0.14.0 build:unlocked
+
+    > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run
+    build:web-ui && npm run build:plugin
+
+
+    src/parser/actor-classifier.ts(33,15): error TS2305: Module '"@kynetic-ai/shared"' has no
+    exported member 'ActorIdentityConfig'.
+
+    src/parser/actor-classifier.ts(33,36): error TS2305: Module '"@kynetic-ai/shared"' has no
+    exported member 'ClassifiedActor'.
+
+    src/parser/actor-normalization-migration.ts(39,15): error TS2305: Module '"@kynetic-ai/shared"'
+    has no exported member 'ActorIdentityConfig'.
+
+    src/parser/actor-normalization-migration.ts(39,36): error TS2305: Module '"@kynetic-ai/shared"'
+    has no exported member 'ClassifiedActor'.
+
+    src/parser/identity-config.ts(16,15): error TS2305: Module '"@kynetic-ai/shared"' has no
+    exported member 'ActorIdentityConfig'.
+
+    src/parser/identity-config.ts(16,36): error TS2305: Module '"@kynetic-ai/shared"' has no
+    exported member 'AgentIdentity'.
+
+    src/parser/identity-config.ts(16,51): error TS2305: Module '"@kynetic-ai/shared"' has no
+    exported member 'HumanIdentity'.
 depends_on:
   - "@task-identity-endpoint-classifier"
 context: []
@@ -145,6 +179,54 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-15T10:54:45.917Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: pending_review
+      blocked_by:
+        new:
+          - >-
+            Dispatch bootstrap failed: Bootstrap step "build-workspace-artifacts" failed with exit
+            code 2. Output: > @kynetic-ai/spec@0.14.0 build
+
+            > node scripts/build.cjs build:unlocked
+
+
+
+            > @kynetic-ai/spec@0.14.0 build:unlocked
+
+            > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon &&
+            npm run build:web-ui && npm run build:plugin
+
+
+            src/parser/actor-classifier.ts(33,15): error TS2305: Module '"@kynetic-ai/shared"' has
+            no exported member 'ActorIdentityConfig'.
+
+            src/parser/actor-classifier.ts(33,36): error TS2305: Module '"@kynetic-ai/shared"' has
+            no exported member 'ClassifiedActor'.
+
+            src/parser/actor-normalization-migration.ts(39,15): error TS2305: Module
+            '"@kynetic-ai/shared"' has no exported member 'ActorIdentityConfig'.
+
+            src/parser/actor-normalization-migration.ts(39,36): error TS2305: Module
+            '"@kynetic-ai/shared"' has no exported member 'ClassifiedActor'.
+
+            src/parser/identity-config.ts(16,15): error TS2305: Module '"@kynetic-ai/shared"' has no
+            exported member 'ActorIdentityConfig'.
+
+            src/parser/identity-config.ts(16,36): error TS2305: Module '"@kynetic-ai/shared"' has no
+            exported member 'AgentIdentity'.
+
+            src/parser/identity-config.ts(16,51): error TS2305: Module '"@kynetic-ai/shared"' has no
+            exported member 'HumanIdentity'.
+        previous: []
+      prior_status:
+        new: pending_review
+        previous: null
+    command: task-block
+    timestamp: 2026-06-15T10:58:31.213Z
+prior_status: pending_review
 resource_refs:
   - git_commit: null
     git_path: null
