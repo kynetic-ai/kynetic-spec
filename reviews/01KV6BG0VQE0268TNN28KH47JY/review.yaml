@@ -1,0 +1,26 @@
+_ulid: 01KV6BG0VQE0268TNN28KH47JY
+slugs: []
+title: Review actor normalization upgrade cycle 3
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KV6BG0VP5QK0MSDAMY82NQN2
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-15T19:17:52.118Z
+examined_commit: d952c374bfe320c2c11f780c343625e08691fa5d
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KV4CDA7DT4GY1ZYKXA86XX50"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-15T19:17:52.119Z
+updated_at: null
+notes: []
