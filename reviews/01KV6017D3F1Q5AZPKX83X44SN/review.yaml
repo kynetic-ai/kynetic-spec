@@ -167,9 +167,25 @@ events:
       kind: nit
       thread_ulid: 01KV6132FHME939915WN69J8S9
     timestamp: 2026-06-15T16:16:02.274Z
+  - _ulid: 01KV613CYMTMBFY3C0T9B5XYFS
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-15T16:16:12.756Z
+  - _ulid: 01KV613CYMDGKCYBJ5G3VWYJG5
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-15T16:16:12.756Z
 examined_commit: 08132e0e0d81beb23c04abcf2b4f66ef86eafc78
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -193,7 +209,14 @@ threads:
           Categories searched: correctness, edge cases, error handling, security/input validation, test quality, AC annotation coverage, prior-finding regression, and integration across CLI, daemon, parser, triage, shared package, and web UI surfaces. No blocker, should-fix, or nit findings found.
         created_at: 2026-06-15T16:16:02.033Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-15T16:16:12.756Z
 created_at: 2026-06-15T15:57:32.963Z
-updated_at: 2026-06-15T16:16:02.033Z
+updated_at: 2026-06-15T16:16:12.756Z
 notes: []
