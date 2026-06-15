@@ -214,17 +214,9 @@
 
 <div class="flex flex-col h-full">
 	<!-- Header — AC: @ui-view-header ac-1, ac-3, ac-4, ac-5, ac-6 -->
-	<div class="flex items-center gap-3 px-4 py-3 border-b flex-shrink-0">
-		<a
-			href="{base}/sessions"
-			class="text-muted-foreground hover:text-foreground transition-colors"
-			title="Back to sessions"
-		>
-			<ArrowLeft class="size-4" />
-		</a>
-		{#if session}
+	{#if session}
+		<div class="px-4 py-3 border-b flex-shrink-0">
 			<ViewHeader
-				class="flex-1"
 				title="Session"
 				reference={session.id}
 				statusDomain="session"
@@ -241,14 +233,36 @@
 						></span>
 					{/if}
 				{/snippet}
+				{#snippet actions()}
+					<!-- AC: @ui-view-header ac-5 — back navigation lives in the actions zone, not leading chrome -->
+					<a
+						href="{base}/sessions"
+						class="inline-flex items-center gap-1 rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+						data-testid="back-to-sessions"
+						title="Back to sessions"
+					>
+						<ArrowLeft class="size-4" />
+						<span>Back</span>
+					</a>
+				{/snippet}
 				{#snippet meta()}
 					<span data-testid="session-agent-type">{session.agent_type}</span>
 				{/snippet}
 			</ViewHeader>
-		{:else}
+		</div>
+	{:else}
+		<div class="flex items-center gap-3 px-4 py-3 border-b flex-shrink-0">
+			<a
+				href="{base}/sessions"
+				class="text-muted-foreground hover:text-foreground transition-colors"
+				data-testid="back-to-sessions"
+				title="Back to sessions"
+			>
+				<ArrowLeft class="size-4" />
+			</a>
 			<h1 class="text-lg font-semibold">Session</h1>
-		{/if}
-	</div>
+		</div>
+	{/if}
 
 	<!-- Error -->
 	{#if error || sessionQuery.error}

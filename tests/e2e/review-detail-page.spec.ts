@@ -62,6 +62,19 @@ test.describe("Review Detail Page", () => {
     await page.keyboard.press("Enter");
     await page.waitForURL("**/reviews");
     await expect(page.getByRole("heading", { name: "Reviews" })).toBeVisible();
+
+    // AC: @ui-view-header ac-2 — the list disposition/lifecycle badges draw from the
+    // same shared status-token source as the detail header (one token per state on
+    // every surface), not bespoke list-only Badge helpers.
+    const listRow = page.locator('[data-review-ref="test-review-open"]');
+    const listDisposition = listRow.getByTestId("review-disposition-badge");
+    await expect(listDisposition).toHaveAttribute("data-status-domain", "review-disposition");
+    await expect(listDisposition).toHaveAttribute("data-status-state", "changes_requested");
+    await expect(listDisposition).toContainText("Changes Requested");
+    await expect(listRow.getByTestId("review-lifecycle-badge")).toHaveAttribute(
+      "data-status-domain",
+      "review-lifecycle",
+    );
   });
 
   // AC: @review-records-web-ui ac-10

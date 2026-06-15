@@ -288,15 +288,21 @@ test.describe("Session History View", () => {
     });
 
     // AC: @ui-session-history ac-1 — Status badge visible
+    // AC: @ui-view-header ac-2 — session state on the list is the shared status token
     test("shows status badge for each session", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
       await page.goto("/sessions");
       await expect(page.getByTestId("sessions-list")).toBeVisible();
 
       const rows = page.getByTestId("session-row");
-      await expect(rows.nth(0)).toContainText("completed");
-      await expect(rows.nth(1)).toContainText("active");
-      await expect(rows.nth(2)).toContainText("failed");
+      // The list renders the shared StatusBadge (capitalized label + token attributes),
+      // not a bespoke lowercase status helper — same token the detail header uses.
+      const completedBadge = rows.nth(0).getByTestId("session-status-badge");
+      await expect(completedBadge).toContainText("Completed");
+      await expect(completedBadge).toHaveAttribute("data-status-domain", "session");
+      await expect(completedBadge).toHaveAttribute("data-status-state", "completed");
+      await expect(rows.nth(1).getByTestId("session-status-badge")).toContainText("Active");
+      await expect(rows.nth(2).getByTestId("session-status-badge")).toContainText("Failed");
     });
 
     // AC: @ui-session-history ac-1 — Session ID displayed
@@ -413,6 +419,15 @@ test.describe("Session History View", () => {
       await expect(page.getByTestId("view-header")).toBeVisible();
       await expect(page.getByTestId("session-status-badge")).toBeVisible();
       await expect(page.getByTestId("view-header-count-events")).toBeVisible();
+
+      // AC: @ui-view-header ac-5 — back navigation is a header action inside the
+      // actions zone, never in the empty leading chrome reservation.
+      const backLink = page.getByTestId("back-to-sessions");
+      await expect(backLink).toBeVisible();
+      await expect(
+        page.getByTestId("view-header-actions").getByTestId("back-to-sessions"),
+      ).toBeVisible();
+      await expect(page.getByTestId("view-header-leading")).toBeEmpty();
     });
 
     // AC: @ui-session-history ac-2
@@ -1325,7 +1340,9 @@ test.describe("Session History View", () => {
         "data-session-id",
         secondSessionId,
       );
-      await expect(page.getByTestId("session-row").first()).toContainText("active");
+      await expect(
+        page.getByTestId("session-row").first().getByTestId("session-status-badge"),
+      ).toHaveAttribute("data-status-state", "active");
 
       await writeSessionFixture(daemon.tempDir, {
         id: thirdSessionId,
@@ -1376,7 +1393,9 @@ test.describe("Session History View", () => {
         "data-session-id",
         thirdSessionId,
       );
-      await expect(page.getByTestId("session-row").first()).toContainText("active");
+      await expect(
+        page.getByTestId("session-row").first().getByTestId("session-status-badge"),
+      ).toHaveAttribute("data-status-state", "active");
     });
 
     // AC: @session-list-infinite-scroll ac-live-update — Total count updates on new session
