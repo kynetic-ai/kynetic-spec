@@ -66989,7 +66989,7 @@ runs:
     completed_at: 2026-06-15T11:39:33.862Z
   - _ulid: 01KV5WAAR2NZ7GST4T6EGW6W3T
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -67025,7 +67025,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-15T14:53:41.345Z
-        completed_at: 2026-06-15T14:53:41.345Z
+        completed_at: 2026-06-15T14:53:58.855Z
+        notes: "Proposed improvement (small/medium): add a daemon API test pattern or helper for routes
+          whose contract depends on entity-cache-backed detail enrichment. It should make tests
+          either provide a ready entity cache fixture or explicitly assert the production
+          fallback/warming behavior, so tests do not unintentionally encode a weaker no-cache
+          response as satisfying the route contract. This would have caught the session breadcrumb
+          test accepting only the session segment for a task-scoped session."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-15T14:53:58.855Z
+        completed_at: 2026-06-15T14:53:58.855Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T14:52:36.994Z
