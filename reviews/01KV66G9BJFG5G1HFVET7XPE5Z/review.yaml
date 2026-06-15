@@ -203,6 +203,12 @@ events:
     payload:
       thread_ulid: 01KV67D6WV5SBBE5DXSVGQHCGS
     timestamp: 2026-06-15T19:10:52.623Z
+  - _ulid: 01KV6B3D8W87529RC616MH5DK6
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KV67D6WV5SBBE5DXSVGQHCGS
+    timestamp: 2026-06-15T19:10:58.844Z
 examined_commit: 9d2c03c338cb5b01aa65aee8292b456cd9090949
 external_links: []
 lifecycle_state: closed
@@ -328,6 +334,8 @@ threads:
           reply); the non-canonical mapped value can no longer reach storage.
         created_at: 2026-06-15T19:10:52.357Z
     kind: nit
+    resolved_at: 2026-06-15T19:10:58.570Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -337,5 +345,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T18:06:35.975Z
 created_at: 2026-06-15T17:50:37.938Z
-updated_at: 2026-06-15T19:10:52.357Z
+updated_at: 2026-06-15T19:10:58.570Z
 notes: []
