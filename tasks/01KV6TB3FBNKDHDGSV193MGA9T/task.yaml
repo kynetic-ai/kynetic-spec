@@ -1,0 +1,69 @@
+_ulid: 01KV6TB3FBNKDHDGSV193MGA9T
+slugs:
+  - task-na-annotation-coverage-exclusion
+title: Stop counting not-applicable annotations as coverage in the scanner
+type: task
+description: |
+  Implement the respecced annotation semantics: the scanner parses
+  the not-applicable marker into structured annotation records
+  instead of stripping it, and N/A-marked annotations contribute
+  nothing to the coverage set.
+
+  Why: Today parseACAnnotationLine strips the N/A suffix and discards
+  the reason before tokenizing, so the AC ids land in the coverage
+  set and the annotation counts as covered everywhere downstream.
+  That behavior is explicitly superseded by
+  @ac-coverage-applicability and the respecced
+  @test-annotation-sweep: corpus coverage must not treat
+  not-applicable markers as coverage signals.
+
+  What:
+  - Parse the not-applicable marker and its reason into the
+    structured annotation record (extend the parsed-group and
+    structured-annotation shapes with a not-applicable flag and
+    reason text) instead of stripping them from the line.
+  - Exclude AC ids named by not-applicable-marked annotations from
+    the flat coverage set, so they earn no coverage credit in
+    completeness validation, item APIs, task review context, or
+    static export.
+  - Keep integrity validation applying to N/A-marked annotations
+    (unresolved targets, missing AC ids, and malformed tokens still
+    produce findings) while a well-formed N/A annotation itself
+    produces no invalid-annotation finding.
+  - Accept the intended consequence: an AC whose only annotations are
+    not-applicable becomes uncovered in completeness warnings. Do not
+    add compensating behavior; surfacing those as spec-composition
+    work is the decision's intent. Update this repo's affected tests
+    and AC annotations where they assert the old semantics — but
+    fixing newly-uncovered ACs across the corpus is follow-up
+    spec-composition work, not part of this task.
+  - Tests: N/A-marked line parses with flag and reason preserved;
+    coverage set excludes its AC ids; mixed lines (coverage claim for
+    one spec ref, N/A for another) credit only the claim; well-formed
+    N/A annotation yields no integrity finding; N/A annotation with a
+    bad target still yields the existing integrity findings.
+
+  How: Changes concentrate in the annotation parsing and scanning
+  layer of src/parser/validate.ts and its consumers
+  (computeACCoverage call sites, structured scan consumers). Keep the
+  structured shapes backward-compatible extensions so existing
+  consumers compile unchanged.
+
+  Covers: @test-annotation-sweep ac-na-no-coverage-credit,
+  ac-na-no-invalid-finding, ac-na-marker-preserved (added by
+  @task-respec-test-annotation-sweep-na).
+spec_ref: "@test-annotation-sweep"
+plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-respec-test-annotation-sweep-na"
+context: []
+priority: 2
+tags:
+  - coverage
+  - parser
+vcs_refs: []
+created_at: 2026-06-15T23:37:19.595Z
+todos: []

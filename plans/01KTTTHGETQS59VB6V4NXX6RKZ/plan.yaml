@@ -2,11 +2,21 @@ _ulid: 01KTTTHGETQS59VB6V4NXX6RKZ
 slugs:
   - plan-ac-coverage-verification-schema-and-storage
 title: AC Coverage Verification Schema and Storage
-status: approved
+status: active
 approved_at: 2026-06-15T23:37:07.730Z
 branch: feat/ui-redesign
-derived_specs: []
-derived_tasks: []
+derived_specs:
+  - "@ac-verification-record-store"
+  - "@ac-freshness-resolution"
+  - "@verification-session-evidence"
+  - "@coverage-record-compatibility"
+derived_tasks:
+  - "@task-ac-verification-record-store"
+  - "@task-freshness-resolution-read-path"
+  - "@task-session-verification-evidence"
+  - "@task-respec-test-annotation-sweep-na"
+  - "@task-na-annotation-coverage-exclusion"
+  - "@task-coverage-record-compatibility"
 module_ref: "@core"
 source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-coverage-schema.md
 created_at: 2026-06-11T07:49:56.314Z

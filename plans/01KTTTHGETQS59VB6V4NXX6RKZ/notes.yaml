@@ -46,3 +46,333 @@ notes:
     content: Align N/A respec with updated global decision wording
     author: Jacob Chapel
     created_at: 2026-06-14T19:07:10.824Z
+  - _ulid: 01KV6TB453BYVH0PBM6387C4R0
+    content: >-
+      ### What this plan is
+
+
+      P1a of the web-UI redesign program: the storage foundation of the
+
+      coverage-state engine. It defines and implements the records — the
+
+      verification stamp store, the freshness read contract, session
+
+      evidence linkage, and the compatibility guarantees — plus the
+
+      N/A-annotation respec. The engine that computes coverage states,
+
+      test-result ingestion, per-AC revision diff APIs, rollups, caching
+
+      domains, and every UI surface are later plans and explicitly out of
+
+      scope here.
+
+
+      ### Storage home decision
+
+
+      Spec source must not carry operational stamps, so four candidate homes
+
+      were weighed:
+
+
+      | Candidate | Verdict |
+
+      |---|---|
+
+      | Spec source (AC fields in module files) | Rejected — operational churn in reviewed spec
+      content; every verification would dirty spec diffs and reviews, and stamps would be lost or
+      mangled by spec-file editing flows |
+
+      | Local filesystem / daemon config dir | Rejected — verification evidence is project state: it
+      must travel with the project across clones, machines, and agents, and benefits from history.
+      The daemon config dir is for daemon-level state (per @client-preference-persistence), not
+      project data |
+
+      | Code branch | Rejected — stamps describe spec-corpus state and would tangle with feature
+      branches and merges |
+
+      | Shadow-branch sidecar (chosen) | Versioned by the existing auto-commit machinery, syncs
+      through the shadow remote, keeps spec source byte-stable, and the shadow YAML merge driver
+      already handles concurrent writes from parallel agents |
+
+
+      Suggested layout: a `coverage/verifications/` directory in the shadow
+
+      state, one file per spec item named by its ULID, following the
+
+      folder-storage precedent set by reviews and sessions. File-per-item
+
+      bounds write churn and the merge surface. Suggested record shape:
+
+
+      ```yaml
+
+      format: 1
+
+      acs:
+        ac-some-criterion:
+          verified_at: 2026-06-10T12:00:00Z
+          actor: pr-reviewer
+          provenance: ingestion        # validation | ingestion | re_verification
+          commit: abc1234              # optional — code commit verified against
+          session: 01KT...             # optional — producing session id
+      ```
+
+
+      These paths and shapes are implementation suggestions; the specs bind
+
+      behavior (keying, replacement, tolerance, gating), not layout.
+
+
+      ### Provenance vocabulary
+
+
+      Freshness has two provenance **sources**; recorded stamps additionally
+
+      carry a provenance **class**:
+
+
+      - **bootstrap** (source) — derived on read from version-control
+        history of the annotation's location in the code repository. Never
+        stored; the store starts empty in every project, so there is no
+        backfill migration anywhere.
+      - **recorded** (source) — a stored verification stamp, carrying a
+        provenance class: `validation` | `ingestion` | `re_verification`.
+        The flows that write them — validation-pass wiring, result
+        ingestion, explicit re-verify commands and UI — arrive in later
+        plans. This plan ships the storage layer and its programmatic
+        read/write contract only; no new CLI commands or daemon endpoints
+        beyond validation's orphaned-record finding.
+
+      ### Current-stamp-only design
+
+
+      The live store keeps one stamp per AC; supersession history is the
+
+      shadow commit history — free, append-only, and auditable — mirroring
+
+      how note supersession relies on append-only records. This keeps the
+
+      store bounded (no unbounded per-AC growth) while losing nothing: the
+
+      "last verified by" question reads the live record, and forensics read
+
+      shadow history.
+
+
+      ### Multi-annotation bootstrap rule
+
+
+      When an AC has several annotation locations and no recorded stamp, the
+
+      bootstrap value is the most recent of the history values of the
+
+      locations that have version-control history — bound by
+
+      @ac-freshness-resolution ac-multi-annotation-most-recent, since
+
+      consumers can observe the difference between most-recent-wins,
+
+      oldest-wins, and undefined. Locations without history contribute no
+
+      value, so the mixed case (some locations with history, some without)
+
+      resolves to the most recent of the values that exist; only when no
+
+      location has history does the criterion fall to ac-no-history-absence.
+
+      This is deterministic and optimistic (any fresh annotation refreshes
+
+      the AC). The engine plan may classify re-verification causes using this value;
+
+      choosing it here keeps the resolver deterministic without blocking on
+
+      engine design.
+
+
+      ### Storage reads do not assess staleness
+
+
+      The resolver returns recorded stamps verbatim and keeps the
+
+      bootstrap-derived value retrievable alongside them
+
+      (ac-both-provenances-retrievable); it deliberately performs no
+
+      recorded-vs-annotation-history comparison. A stale recorded stamp
+
+      masking a newer annotation edit is therefore visible to consumers —
+
+      both values are in hand — but classifying that situation into
+
+      coverage states is the coverage-state engine's responsibility in a
+
+      later plan, not the storage read contract's. The storage layer stays a
+
+      pure, deterministic read surface.
+
+
+      ### N/A respec consequences
+
+
+      After @task-na-annotation-coverage-exclusion lands, ACs whose only
+
+      annotations carry not-applicable markers become uncovered in
+
+      completeness output — including in this repository, which uses the
+
+      convention heavily for trait ACs. That is the decided intent: trait-AC
+
+      misfits surface as spec-composition fixes, not as an N/A escape hatch.
+
+
+      This plan is the transition boundary. @ac-coverage-applicability names
+
+      the existing N/A-counts-as-coverage behavior as incorrect for corpus
+
+      coverage, and the N/A-stop is assigned to this plan (the storage
+
+      foundation of the coverage engine work), so the respec here is the
+
+      reconciliation: @task-respec-test-annotation-sweep-na amends existing
+
+      specs that still grant coverage credit to N/A markers, and
+
+      @task-na-annotation-coverage-exclusion changes the scanner. The
+
+      decision's engine-scoped ACs are untouched and stay claimed by the
+
+      engine plan.
+
+
+      The interim documentation window is an explicit, accepted decision:
+
+      shipped consumer guidance continues to document the in-code N/A
+
+      convention while its coverage-credit effect ends, so consumer projects
+
+      using the convention will see previously-suppressed completeness
+
+      warnings while the docs still teach it. This is accepted because (1)
+
+      the annotation remains a valid task-scoped marker
+
+      (ac-na-no-invalid-finding) — the documented convention stays
+
+      well-formed and produces no findings; (2) the new warnings are correct
+
+      under the decided semantics: they surface real trait-AC misfits the
+
+      N/A escape hatch was hiding; and (3) retiring the in-code N/A
+
+      convention itself (and the future task-level covers/covers_ac metadata
+
+      that would replace it) is out of program scope per the deferred
+
+      register — the consumer-facing documentation in shared package
+
+      guidance is untouched by this plan, and when it is later changed, that
+
+      touches shared guidance surfaces and takes the neutrality review
+
+      chain.
+
+
+      ### Migration / backcompat summary
+
+
+      - Every new record and field is optional; a project with none is fully
+        valid and behaves exactly as today.
+      - No manifest format-version bump: the store is additive, created only
+        on first write, and ignored by older tools. The store's own
+        `format` field applies the @data-format-forward-compatibility
+        precedent scoped to the store: newer-than-supported record data is
+        refused with both versions named, without affecting unrelated
+        operations.
+      - Bootstrap-only freshness (empty store) is the universal upgrade
+        state, so existing projects get freshness with zero migration.
+
+      ### Approval gate and ordering
+
+
+      **Gate: this plan must not be approved or derived until
+
+      @plan-ui-redesign-global-decisions (P0a) is approved and derived.**
+
+
+      @annotation-freshness-provenance, @ac-coverage-applicability, and
+
+      @actor-identity-model are authored in the P0a global-decisions plan
+
+      and are pending materialization — verified absent from the live corpus
+
+      at authoring time. The pending refs are intentional: the depends_on
+
+      links are the durable, machine-visible ordering once P0a derives, and
+
+      removing them would lose that linkage. Once P0a derives, every pending
+
+      ref above resolves against the live corpus.
+
+
+      Plan records carry no machine-readable dependency field (verified
+
+      against the plan schema), so this gate cannot be expressed as
+
+      plan-level metadata. It is enforced by: (1) this plan remaining in
+
+      draft status until P0a materializes — review and re-review happen
+
+      against the draft; (2) the gate banner at the head of this document
+
+      and this section; and (3) a machine-visible failure mode — deriving
+
+      this plan before P0a leaves every binding depends_on ref above
+
+      dangling, which kspec validate --refs reports against the derived
+
+      items. Approvers must confirm P0a is approved and derived before
+
+      approving this plan.
+
+
+      Other P0a decision slugs mentioned in these notes
+
+      (@client-preference-persistence, @test-result-acquisition,
+
+      @coverage-state-presentation) are likewise pending materialization but
+
+      appear only as prose context, not as binding references. All other
+
+      external references were mechanically verified against the live
+
+      corpus: @test-annotation-sweep (ac-explicit-mapping,
+
+      ac-annotation-format, ac-no-blanket-credit),
+
+      @ac-annotation-integrity-reporting (including
+
+      ac-valid-annotation-covers-target), @ac-annotation-identifier-format
+
+      (ac-valid-token-covers-ac), @trait-validation (ac-2),
+
+      @coverage-scan-config, and @data-format-forward-compatibility.
+
+
+      ### Naming caution
+
+
+      The engine vocabulary "stale" and "drifted" collides with the existing
+
+      `kspec validate --staleness` / `--drift` flags, which mean different
+
+      things (status mismatches and AC-prose-vs-schema drift). This plan
+
+      deliberately introduces neither term in storage — stamps carry
+
+      provenance and time, not states. The engine plan owns the
+
+      disambiguation.
+    author: Jacob Chapel
+    created_at: 2026-06-15T23:37:20.291Z

@@ -1,0 +1,83 @@
+_ulid: 01KV6TB3T0QW16F5HKB8P3BT3J
+slugs:
+  - task-coverage-record-compatibility
+title: Implement coverage record compatibility and format gating
+type: task
+description: |
+  Make the verification record store provably additive: optional
+  everywhere, materialized only on first write, gated by a declared
+  record-format version, and tolerant of unknown fields.
+
+  Why: kspec is deployed across ~20 real projects that must upgrade
+  without rewrite or migration. The store must be invisible until
+  used, and its future evolution needs the same forward-compatibility
+  discipline @data-format-forward-compatibility established for the
+  project manifest — refuse newer-than-supported data rather than
+  misreading it.
+
+  What:
+  - Optionality: a project with no verification record store loads,
+    validates, and serves coverage/freshness reads exactly as before
+    the store existed; freshness resolves through the bootstrap
+    provenance source alone (via the resolver from
+    @task-freshness-resolution-read-path — hence the dependency),
+    and reads never create the store as a side effect.
+  - First-write materialization: the first stamp write creates the
+    sidecar (directory and record file) as part of that write, with
+    no prior setup or migration step.
+  - Record-format gating: every record file declares a record-format
+    version; reading or writing a store declaring a newer version
+    than the running tool supports refuses with an error naming both
+    versions, leaves the store unmodified, and does not affect
+    operations that do not involve the store. The project manifest's
+    declared format version is not bumped by this feature.
+  - Unknown-field tolerance: record fields the running tool does not
+    recognize survive read-modify-write cycles unchanged (write a
+    stamp for a different criterion; assert the unknown fields
+    persist).
+  - Upgrade verification: fixture project created without the store
+    (temp-project E2E) — run upgrade and ordinary commands; assert no
+    project file is rewritten, no migration prompt appears, and the
+    manifest format version is unchanged.
+  - Older-tool tolerance (ac-unrecognized-sidecar-untouched,
+    ac-store-creation-additive): the spec keeps the older-tool
+    guarantee in its description as the purpose; the ACs bind the
+    two properties the current system can verify directly.
+    Shadow-state loading enumerates only the paths it knows, so
+    assert that an unrecognized sidecar directory in shadow state is
+    ignored by readers — loads, validation, and writes elsewhere
+    succeed, and its files are neither read nor rewritten
+    (ac-unrecognized-sidecar-untouched) — and that creating the
+    verification sidecar on first stamp write modifies no
+    pre-existing metadata file (ac-store-creation-additive).
+  - Tests annotate the relevant @data-format-forward-compatibility
+    precedent only where this store's gating intersects it; the
+    manifest-level contract keeps its own coverage.
+
+  How: Gating and tolerance live in the store's load/save layer from
+  @task-ac-verification-record-store; upgrade verification uses the
+  existing temp-project fixture helpers. Follow the
+  storage-compatibility gate precedent for older-format leniency.
+
+  Covers: @coverage-record-compatibility
+  ac-absent-store-no-behavior-change, ac-upgrade-without-rewrite,
+  ac-first-write-materializes, ac-newer-record-format-refused,
+  ac-unknown-fields-roundtrip, ac-unrecognized-sidecar-untouched,
+  ac-store-creation-additive.
+spec_ref: "@coverage-record-compatibility"
+plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ac-verification-record-store"
+  - "@task-freshness-resolution-read-path"
+context: []
+priority: 2
+tags:
+  - coverage
+  - schema
+  - migration
+vcs_refs: []
+created_at: 2026-06-15T23:37:19.936Z
+todos: []

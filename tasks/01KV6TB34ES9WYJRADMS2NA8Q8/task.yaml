@@ -1,0 +1,101 @@
+_ulid: 01KV6TB34ES9WYJRADMS2NA8Q8
+slugs:
+  - task-respec-test-annotation-sweep-na
+title: Respec test-annotation-sweep so not-applicable annotations are not coverage signals
+type: task
+description: |
+  Update @test-annotation-sweep (AC Annotation Coverage Semantics) so
+  not-applicable-marked annotations no longer count as coverage, per
+  @ac-coverage-applicability.
+
+  Why: @test-annotation-sweep currently defines annotation coverage
+  semantics through ac-explicit-mapping, ac-annotation-format, and
+  ac-no-blanket-credit — under which an annotation that names AC ids
+  earns coverage credit. Because the parser strips the N/A suffix
+  before tokenizing, an in-code N/A annotation is indistinguishable
+  from a coverage claim and silently counts as covered, with its
+  reason discarded. @ac-coverage-applicability supersedes that
+  behavior: in-code not-applicable annotations are not coverage
+  signals — they neither cover a criterion nor exempt it.
+  @ac-coverage-applicability declares the existing N/A-counts-as-
+  coverage behavior incorrect for corpus coverage. Per the decision
+  register, this respec (with @task-na-annotation-coverage-exclusion)
+  is the compatibility repair: the N/A-stop is assigned to this plan,
+  not to the later engine plan, so this task also updates existing
+  specs whose wording still grants coverage credit to N/A markers.
+
+  What:
+  - Update the item description to state that coverage credit
+    accrues only to annotations that claim coverage; an annotation
+    carrying a not-applicable marker claims none.
+  - Add three ACs to @test-annotation-sweep, with these stable ids:
+    ac-na-no-coverage-credit — a well-formed annotation carrying a
+    not-applicable marker grants no coverage credit for the AC ids
+    it names;
+    ac-na-no-invalid-finding — such an annotation produces no
+    invalid-annotation finding — it remains a valid task-scoped
+    marker while the in-code convention exists (integrity checks on
+    its target reference and AC ids still apply);
+    ac-na-marker-preserved — structured scan output preserves the
+    not-applicable marker and its reason text rather than discarding
+    them.
+  - Add depends_on @ac-coverage-applicability to the item so the
+    decision linkage is durable.
+  - Reconcile @ac-annotation-integrity-reporting
+    ac-valid-annotation-covers-target: narrow its given clause to
+    coverage-claiming annotations (those without a not-applicable
+    marker) so the two items do not contradict once N/A annotations
+    stop covering.
+  - Reconcile @ac-annotation-identifier-format
+    ac-valid-token-covers-ac the same way: its given ("A coverage
+    annotation names an existing acceptance criterion using the
+    required token format") currently grants coverage credit to any
+    valid token, which an N/A-marked annotation still carries.
+    Narrow the given to coverage-claiming annotations (those without
+    a not-applicable marker) so no live AC grants coverage credit to
+    an N/A-marked annotation.
+  - Reconcile @trait-validation ac-2 the same way: its when clause
+    ("trait AC has test annotation '// AC: @trait-ref ac-N'") is
+    satisfied today by an N/A-marked annotation because the parser
+    strips the marker before matching, so the AC currently promises
+    warning suppression that this respec removes. Narrow it to
+    coverage-claiming annotations (those without a not-applicable
+    marker) so a trait AC whose only annotations carry N/A markers
+    may warn without contradicting a live AC.
+  - Verify @ac-coverage-applicability's derived wording already names
+    this behavior as incorrect and assigns the repair to this plan;
+    if the derived item still carries older transition-boundary prose,
+    amend it in the same spec batch so the live decision text and the
+    implemented behavior agree. Leave its ac-1/ac-2 untouched — they
+    remain engine-scoped and are claimed by the engine plan per P0a's
+    AC coverage handoff table.
+
+  How: kspec item set / item ac add / item ac set via a single kspec
+  batch; verify the result with kspec item get on all five mutated
+  items (@test-annotation-sweep, @ac-annotation-integrity-reporting,
+  @ac-annotation-identifier-format, @trait-validation,
+  @ac-coverage-applicability). Spec mutation only — the parser
+  behavior change is @task-na-annotation-coverage-exclusion, which
+  depends on this task.
+
+  Covers: @test-annotation-sweep ac-na-no-coverage-credit,
+  ac-na-no-invalid-finding, ac-na-marker-preserved (the new ACs this
+  task adds, plus the description update);
+  @ac-annotation-integrity-reporting ac-valid-annotation-covers-target,
+  @ac-annotation-identifier-format ac-valid-token-covers-ac, and
+  @trait-validation ac-2 (given/when-clause reconciliation only).
+spec_ref: "@test-annotation-sweep"
+plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - specs
+  - maintenance
+  - coverage
+vcs_refs: []
+created_at: 2026-06-15T23:37:19.246Z
+todos: []

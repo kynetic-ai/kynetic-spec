@@ -32312,3 +32312,115 @@
   submitted_at: 2026-06-15T20:13:49.430Z
   completed_at: 2026-06-15T20:37:52.641Z
   automation: eligible
+- _ulid: 01KV6TB224D6ZQS7QSJ6W3YTQ4
+  slugs:
+    - task-ac-verification-record-store
+  title: Implement the per-AC verification record store
+  type: task
+  spec_ref: "@ac-verification-record-store"
+  plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - coverage
+    - schema
+    - storage
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T23:37:18.148Z
+- _ulid: 01KV6TB2D4HS7V122C2FRSWT2A
+  slugs:
+    - task-freshness-resolution-read-path
+  title: Implement freshness resolution with bootstrap and recorded provenance
+  type: task
+  spec_ref: "@ac-freshness-resolution"
+  plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-ac-verification-record-store"
+  priority: 1
+  tags:
+    - coverage
+    - parser
+    - storage
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T23:37:18.500Z
+- _ulid: 01KV6TB2SGTYQ6C292HS2VY5HJ
+  slugs:
+    - task-session-verification-evidence
+  title: Add session evidence linkage to verification stamps
+  type: task
+  spec_ref: "@verification-session-evidence"
+  plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-ac-verification-record-store"
+  priority: 2
+  tags:
+    - coverage
+    - schema
+    - sessions
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T23:37:18.896Z
+- _ulid: 01KV6TB34ES9WYJRADMS2NA8Q8
+  slugs:
+    - task-respec-test-annotation-sweep-na
+  title: Respec test-annotation-sweep so not-applicable annotations are not coverage signals
+  type: task
+  spec_ref: "@test-annotation-sweep"
+  plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - specs
+    - maintenance
+    - coverage
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T23:37:19.246Z
+- _ulid: 01KV6TB3FBNKDHDGSV193MGA9T
+  slugs:
+    - task-na-annotation-coverage-exclusion
+  title: Stop counting not-applicable annotations as coverage in the scanner
+  type: task
+  spec_ref: "@test-annotation-sweep"
+  plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-respec-test-annotation-sweep-na"
+  priority: 2
+  tags:
+    - coverage
+    - parser
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T23:37:19.595Z
+- _ulid: 01KV6TB3T0QW16F5HKB8P3BT3J
+  slugs:
+    - task-coverage-record-compatibility
+  title: Implement coverage record compatibility and format gating
+  type: task
+  spec_ref: "@coverage-record-compatibility"
+  plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-ac-verification-record-store"
+    - "@task-freshness-resolution-read-path"
+  priority: 2
+  tags:
+    - coverage
+    - schema
+    - migration
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T23:37:19.936Z

@@ -1,0 +1,56 @@
+_ulid: 01KV6TB2SGTYQ6C292HS2VY5HJ
+slugs:
+  - task-session-verification-evidence
+title: Add session evidence linkage to verification stamps
+type: task
+description: |
+  Wire the optional session reference on verification stamps:
+  write-side acceptance, read-side exposure, and tolerant resolution
+  when the referenced session is gone.
+
+  Why: "Last verified by session X" is a named provenance surface for
+  the redesign's spec workspace and validate views. The UI and the
+  write flows arrive in later plans, but the record shape must exist
+  now so stamps written by any future flow carry session evidence
+  from the start instead of needing a second migration.
+
+  What:
+  - Accept an optional session reference on stamp writes; validate
+    its shape (a session identifier as recorded by the session
+    store); accept stamps without one unchanged.
+  - Reads return the session reference with the stamp, from the
+    stored record alone — no lookup against session logs or other
+    records is needed to answer which session produced the
+    verification.
+  - Tolerant resolution: a stamp whose session reference names a
+    session that no longer exists (sessions can be pruned) reads
+    successfully, remains a valid verification, and reports the
+    linkage as unresolvable rather than dropping it or failing.
+  - Tests: write/read round-trip with and without session reference;
+    malformed session identifier rejected at write; pruned-session
+    read tolerance.
+
+  How: Extends the stamp schema and storage manager from
+  @task-ac-verification-record-store (the field shape lands there;
+  this task implements its validation, read exposure, and tolerance
+  semantics plus their tests).
+
+  Covers: @verification-session-evidence ac-session-reference-stored,
+  ac-sessionless-stamps-valid, ac-malformed-session-ref-rejected,
+  ac-evidence-readable-from-record, ac-pruned-session-tolerated.
+spec_ref: "@verification-session-evidence"
+plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ac-verification-record-store"
+context: []
+priority: 2
+tags:
+  - coverage
+  - schema
+  - sessions
+vcs_refs: []
+created_at: 2026-06-15T23:37:18.896Z
+todos: []

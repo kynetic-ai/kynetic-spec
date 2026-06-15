@@ -1,0 +1,70 @@
+_ulid: 01KV6TB224D6ZQS7QSJ6W3YTQ4
+slugs:
+  - task-ac-verification-record-store
+title: Implement the per-AC verification record store
+type: task
+description: |
+  Build the shadow-branch sidecar store for per-AC verification
+  stamps: record schema, canonical keying, replace-on-write
+  semantics, versioned persistence, and tolerant loading.
+
+  Why: Coverage freshness needs durable per-AC verification state,
+  but the AC schema is bare {id, given, when, then} and spec source
+  must not carry operational stamps. A sidecar in shadow-branch
+  metadata keyed by item ULID + AC id gives stamps a versioned home
+  that travels with project metadata, keeps spec source byte-stable,
+  and gets history and sync for free.
+
+  What:
+  - Define the record schema (Zod): one record per spec item keyed by
+    item ULID, holding a map of AC id → current stamp. Stamp fields:
+    verified_at (timestamp), actor (string; canonical identity per
+    @actor-identity-model), provenance (enum: validation | ingestion
+    | re_verification), optional commit reference, optional session
+    reference (semantics wired in @task-session-verification-evidence
+    — include the field shape here so the schema lands once).
+  - Reject stamps missing verified_at, actor, or provenance at write
+    time via schema validation.
+  - Storage layout: a new sidecar directory under the shadow-branch
+    state, one file per item ULID (suggested layout in Implementation
+    Notes). Writes go through the standard save + shadow auto-commit
+    machinery so every stamp write is a shadow commit.
+  - Replace-on-write: writing a stamp for an AC replaces the current
+    stamp for that AC; supersession history is the shadow commit
+    history, not live records.
+  - Tolerant loads: a record whose item ULID or AC id no longer
+    resolves loads without error, is excluded from resolved
+    verification reads, and surfaces as an orphaned-verification
+    completeness finding in validation.
+  - Tests: stamp write/read round-trip; rejection of incomplete
+    stamps; slug rename and item file move keep stamps resolvable
+    (ULID keying); spec module files byte-identical across stamp
+    writes; fresh shadow checkout reproduces stamps; orphan record
+    load tolerance and validation finding.
+
+  How: Schema in src/schema/ alongside the other record schemas;
+  a storage manager in src/parser/ following the existing
+  folder-storage manager precedent (reviews, sessions); writes commit
+  through the same commitIfShadow path as other metadata mutations.
+  The store exposes a programmatic read/write API — no CLI or daemon
+  endpoint changes in this task beyond the validation orphan finding.
+
+  Covers: @ac-verification-record-store ac-keyed-by-canonical-identity,
+  ac-stamp-read-back, ac-incomplete-stamp-rejected,
+  ac-spec-source-untouched, ac-current-stamp-replacement,
+  ac-versioned-persistence, ac-unresolvable-keys-tolerated.
+spec_ref: "@ac-verification-record-store"
+plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - coverage
+  - schema
+  - storage
+vcs_refs: []
+created_at: 2026-06-15T23:37:18.148Z
+todos: []

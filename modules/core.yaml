@@ -2561,6 +2561,386 @@ features:
         notes: []
     created: 2026-04-08T07:14:02.061Z
     notes: []
+  - _ulid: 01KV6TB1XV3RWVD5W9G4PCKWZN
+    slugs:
+      - ac-verification-record-store
+    title: AC Verification Record Store
+    type: feature
+    description: |
+      Durable storage for per-acceptance-criterion verification stamps. A
+      stamp records that a criterion's test mapping was confirmed,
+      capturing when the verification happened, which actor performed it,
+      and which provenance class produced it — a validation pass, an
+      ingested test run, or an explicit re-verification. Stamps live in an
+      operational sidecar within the project's shadow-branch metadata,
+      keyed by the owning item's canonical identifier and the criterion
+      id; spec source files never carry verification state. The store
+      holds one current stamp per criterion, and superseded stamps remain
+      recoverable through the metadata's version history. Stamp writes
+      commit to the shadow-branch history like other metadata mutations,
+      so a fresh checkout of the metadata reproduces the store.
+    depends_on:
+      - "@annotation-freshness-provenance"
+      - "@actor-identity-model"
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          a verification stamp stored for an acceptance criterion
+        id: ac-keyed-by-canonical-identity
+        then: |
+          the stamp still resolves to the same acceptance criterion
+        when: |
+          the owning spec item is later renamed or moved to a different
+          spec source file
+      - given: |
+          a verification stamp written with a verification time, an
+          actor, and a provenance class drawn from the recorded classes
+          — validation pass, ingested run, or explicit re-verification
+        id: ac-stamp-read-back
+        then: |
+          it carries the same verification time, actor, and provenance
+          class
+        when: |
+          the stamp is accepted and read back
+      - given: |
+          a verification stamp write missing its verification time, its
+          actor, or its provenance class
+        id: ac-incomplete-stamp-rejected
+        then: |
+          the write is rejected and the stored verification state is
+          unchanged
+        when: |
+          the write is attempted
+      - given: |
+          a project's spec source files
+        id: ac-spec-source-untouched
+        then: |
+          the content of every spec source file is byte-identical to its
+          content before the write
+        when: |
+          any verification stamp is written or replaced
+      - given: |
+          an acceptance criterion that already has a stored verification
+          stamp
+        id: ac-current-stamp-replacement
+        then: |
+          reads return only the new stamp as the current verification,
+          and the prior stamp is recoverable from the metadata's version
+          history rather than from the live store
+        when: |
+          a new stamp is written for that criterion
+      - given: |
+          a verification stamp write that completes
+        id: ac-versioned-persistence
+        then: |
+          the same current stamps are reproduced in the fresh checkout
+        when: |
+          the project's shadow-branch metadata is checked out fresh
+          elsewhere
+      - given: |
+          a stored stamp whose item identifier or criterion id no longer
+          resolves to an existing acceptance criterion
+        id: ac-unresolvable-keys-tolerated
+        then: |
+          loading succeeds, the unresolvable stamp is excluded from
+          resolved verification reads, and validation reports it as an
+          orphaned verification record rather than silently dropping it
+          or failing
+        when: |
+          the store is loaded
+    tags: []
+    requirements:
+      - _ulid: 01KV6TB1Z5KJGWBCWXQMZQNAB7
+        slugs:
+          - ac-freshness-resolution
+        title: AC Freshness Resolution
+        type: requirement
+        description: |
+          The read contract resolving an acceptance criterion's annotation
+          freshness from two provenance sources — bootstrap-derived and
+          recorded. When no recorded verification stamp exists, freshness
+          derives from version-control history of the annotation's location
+          — a bootstrap value that requires no prior bookkeeping, so every
+          annotation whose location has version-control history has
+          freshness from day one. When a criterion has annotations at
+          several locations and no recorded stamp, the bootstrap value is
+          the most recent of the history values of the locations that have
+          version-control history; locations without history contribute no
+          value. A location with
+          no version-control history — an uncommitted file, or a line that
+          exists only in the working tree — yields no bootstrap value;
+          until such a location gains history or a recorded stamp is
+          written, the criterion's freshness is absent, and absent
+          freshness is a distinct, observable outcome — not a present-time
+          value, not an error. Once a recorded stamp exists for a
+          criterion, resolution returns the stamp verbatim as the resolved
+          freshness; resolution never compares a recorded stamp against
+          annotation history, and the bootstrap-derived value remains
+          separately retrievable alongside it, so a consumer assessing
+          whether a stamp predates later annotation edits performs that
+          comparison itself. Resolved freshness always names its provenance
+          source, recorded values also carry the stamp's provenance class,
+          and a freshness value is expressed as a timestamp, a commit
+          reference, or both.
+        depends_on:
+          - "@annotation-freshness-provenance"
+          - "@coverage-scan-config"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              an acceptance criterion with at least one annotation in a
+              configured scan path whose location has version-control
+              history, and no recorded verification stamp
+            id: ac-bootstrap-when-unstamped
+            then: |
+              the result is a bootstrap value derived from the
+              version-control history of the annotation's location, labeled
+              with the bootstrap provenance source
+            when: |
+              its freshness is resolved
+          - given: |
+              an acceptance criterion with a recorded verification stamp
+            id: ac-recorded-supersedes-bootstrap
+            then: |
+              the recorded stamp is returned verbatim — carrying its
+              provenance class — as the resolved freshness, and the
+              bootstrap value is not used as the resolved freshness,
+              including when the version-control history at the
+              annotation's location is more recent than the stamp
+            when: |
+              its freshness is resolved
+          - given: |
+              an acceptance criterion with a recorded verification stamp and
+              at least one annotation in a configured scan path whose
+              location has version-control history
+            id: ac-both-provenances-retrievable
+            then: |
+              both the recorded stamp and the bootstrap-derived value are
+              returned, each labeled with its provenance source, and the
+              resolution neither alters nor compares them
+            when: |
+              a consumer requests the bootstrap-derived value alongside the
+              resolved freshness
+          - given: |
+              an acceptance criterion with annotations at several locations
+              in configured scan paths, at least one location having
+              version-control history, and no recorded verification stamp
+            id: ac-multi-annotation-most-recent
+            then: |
+              the bootstrap value is the most recent of the history values
+              of the locations that have version-control history, locations
+              without history contribute no value, and the result is
+              labeled with the bootstrap provenance source
+            when: |
+              its freshness is resolved
+          - given: |
+              an acceptance criterion with no recorded verification stamp
+              whose annotations are all at locations with no version-control
+              history
+            id: ac-no-history-absence
+            then: |
+              no freshness value is produced for that criterion, the absence
+              is reported as a distinct observable outcome, and no
+              present-time or fabricated value is substituted and no error
+              is raised
+            when: |
+              its freshness is resolved
+          - given: |
+              a resolved freshness value
+            id: ac-timestamp-or-commit
+            then: |
+              it carries a timestamp, a commit reference, or both, and it
+              names its provenance source
+            when: |
+              it is delivered to a consumer
+          - given: |
+              an acceptance criterion with no annotation in any configured
+              scan path and no recorded verification stamp
+            id: ac-absence-reported
+            then: |
+              no freshness value is produced for that criterion — absence is
+              reported as absence, not as a default or fabricated value
+            when: |
+              freshness resolution runs
+        tags: []
+        created: 2026-06-15T23:37:18.053Z
+        notes: []
+      - _ulid: 01KV6TB205Q4T1ZGEQQSM1GNXC
+        slugs:
+          - verification-session-evidence
+        title: Session Verification Evidence
+        type: requirement
+        description: |
+          Verification stamps can attribute a verification to the work
+          session that produced it. The session linkage is part of the stored
+          record: reading a stamp yields the producing session's identity
+          from the record alone, so a consumer can answer "when was this
+          criterion last verified, and by which session" without correlating
+          other data sources. Session linkage is optional — verifications
+          produced outside any session omit it. When a session reference is
+          supplied, it must be a well-formed session identifier; a malformed
+          reference rejects the write rather than storing an unusable
+          linkage.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a verification stamp written with the identity of the session
+              that produced the verification
+            id: ac-session-reference-stored
+            then: |
+              the record carries the session reference alongside the
+              verification time, actor, and provenance class
+            when: |
+              the stamp is stored
+          - given: |
+              a verification stamp produced outside any recorded session
+            id: ac-sessionless-stamps-valid
+            then: |
+              the stamp is accepted, and reads return it with no session
+              linkage
+            when: |
+              it is written without a session reference
+          - given: |
+              a verification stamp write carrying a session reference that
+              is not a well-formed session identifier
+            id: ac-malformed-session-ref-rejected
+            then: |
+              the write is rejected and the stored verification state is
+              unchanged
+            when: |
+              the write is attempted
+          - given: |
+              a stored stamp carrying a session reference
+            id: ac-evidence-readable-from-record
+            then: |
+              the producing session's identity is returned with the stamp,
+              from the stored record alone, without consulting session logs
+              or any other records
+            when: |
+              the stamp is read
+          - given: |
+              a stored stamp whose session reference names a session that no
+              longer exists
+            id: ac-pruned-session-tolerated
+            then: |
+              the read succeeds, the stamp remains a valid verification, and
+              the session linkage is reported as unresolvable rather than
+              being dropped or failing the read
+            when: |
+              the stamp is read
+        tags: []
+        created: 2026-06-15T23:37:18.085Z
+        notes: []
+      - _ulid: 01KV6TB216XRJT652E6BVE838V
+        slugs:
+          - coverage-record-compatibility
+        title: Coverage Record Compatibility
+        type: requirement
+        description: |
+          The verification record store is additive and optional. A project
+          containing no verification records is fully valid, behaves exactly
+          as it did before the store existed, and is never rewritten by tool
+          upgrade. The store materializes only when the first stamp is
+          written. Because the store is purely additive, a project that
+          contains one remains fully operable by tool versions predating the
+          store — such tools neither read nor modify it. That older-tool
+          guarantee is the purpose served by two verifiable properties:
+          metadata readers leave sidecar directories they do not recognize
+          unread and unmodified, and creating the store modifies no
+          pre-existing metadata file an older reader depends on. Stored records
+          declare a record-format version: data declaring a newer record
+          format than the running tool supports is refused rather than
+          misread, and records carrying unrecognized fields survive
+          read-modify-write cycles intact.
+        depends_on:
+          - "@data-format-forward-compatibility"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a project containing no verification record store
+            id: ac-absent-store-no-behavior-change
+            then: |
+              the operation succeeds, freshness resolves through the
+              bootstrap provenance source alone, and no store is created as
+              a side effect of the read
+            when: |
+              any command or daemon request reads coverage or freshness data
+          - given: |
+              an existing project created before the verification record
+              store existed
+            id: ac-upgrade-without-rewrite
+            then: |
+              no project data is rewritten, no migration step is required,
+              and the project manifest's declared format version is
+              unchanged
+            when: |
+              the tool is upgraded and ordinary commands run
+          - given: |
+              a project with no verification record store
+            id: ac-first-write-materializes
+            then: |
+              the store is created as part of that write and the write
+              succeeds without any prior setup or migration step
+            when: |
+              the first verification stamp is written
+          - given: |
+              a verification record store declaring a record-format version
+              greater than the running tool's maximum supported record
+              format
+            id: ac-newer-record-format-refused
+            then: |
+              the operation on the store refuses with an error naming both
+              the declared version and the maximum supported version, the
+              store is not modified, and operations not involving the store
+              remain unaffected
+            when: |
+              the store is read or written
+          - given: |
+              stored verification records containing fields the running tool
+              does not recognize, within a supported record-format version
+            id: ac-unknown-fields-roundtrip
+            then: |
+              the unrecognized fields persist unchanged in the stored
+              records
+            when: |
+              the tool reads the store and writes a stamp for a different
+              criterion
+          - given: |
+              a project's shadow-branch metadata containing a sidecar
+              directory the running tool does not recognize
+            id: ac-unrecognized-sidecar-untouched
+            then: |
+              the operations succeed and the unrecognized directory's files
+              are neither read nor modified
+            when: |
+              the metadata is loaded, validated, and written elsewhere
+          - given: |
+              a project's shadow-branch metadata without a verification
+              record store
+            id: ac-store-creation-additive
+            then: |
+              no metadata file that existed before the write is modified by
+              the store's creation
+            when: |
+              the store is created by the first stamp write
+        tags: []
+        created: 2026-06-15T23:37:18.118Z
+        notes: []
+    created: 2026-06-15T23:37:18.011Z
+    notes: []
 modules:
   - _ulid: 01KPPN4244R4AH3WQGW4F8M1CF
     slugs:

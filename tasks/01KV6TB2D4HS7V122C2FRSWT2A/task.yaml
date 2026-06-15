@@ -1,0 +1,87 @@
+_ulid: 01KV6TB2D4HS7V122C2FRSWT2A
+slugs:
+  - task-freshness-resolution-read-path
+title: Implement freshness resolution with bootstrap and recorded provenance
+type: task
+description: |
+  Build the freshness resolver: per-AC freshness values resolved from
+  recorded verification stamps when present, otherwise bootstrapped
+  from version-control history of the annotation's location.
+
+  Why: The coverage-state engine (a later plan) consumes per-AC
+  freshness; the resolution rule — recorded supersedes bootstrap —
+  is the storage layer's read contract per
+  @annotation-freshness-provenance, and the bootstrap source is what
+  makes the system useful on day one for ~20 existing projects with
+  thousands of annotations and an empty store.
+
+  What:
+  - A resolver that takes an acceptance criterion plus its annotation
+    locations (from the existing structured scan, which already
+    yields file and line per annotation) and returns a freshness
+    value: { timestamp?, commit?, provenance }.
+  - Bootstrap derivation: query the code repository's history for the
+    annotation's location (last commit touching the annotation line —
+    blame-style lookup, batched per file for performance) and label
+    the result with bootstrap provenance. Nothing is written to the
+    store; bootstrap is always derived on read.
+  - Multi-annotation rule: when an AC has several annotation
+    locations and no recorded stamp, the bootstrap value is the most
+    recent of the history values of the locations that have
+    version-control history; locations without history contribute no
+    value, so the mixed case (some locations with history, some
+    without) resolves to the most recent of the values that exist,
+    per ac-multi-annotation-most-recent (see Implementation Notes).
+  - No-history locations: an annotation location without
+    version-control history (uncommitted file, or a line that exists
+    only in the working tree) yields no bootstrap value; an AC whose
+    only annotations sit at such locations and which has no recorded
+    stamp resolves to absent freshness — a distinct observable
+    outcome, not a present-time value and not an error.
+  - Recorded lookup: when the store holds a stamp for the AC, return
+    it verbatim — with its provenance class — as the resolved
+    freshness and do not use the bootstrap value as the resolved
+    freshness, even if the annotation location's history is newer
+    than the stamp. The bootstrap-derived value stays separately
+    retrievable alongside the stamp on request; the resolver
+    performs no staleness comparison between them (that is the
+    coverage-state engine's job, in a later plan).
+  - Absence: an AC with neither an annotation in configured scan
+    paths nor a recorded stamp yields no freshness value.
+  - Tests: bootstrap-only resolution in a fixture repo with committed
+    annotations; recorded-wins including the bootstrap-newer case;
+    both-provenances read returning the stamp and the bootstrap
+    value side by side, unaltered; most-recent-wins across multiple
+    annotated locations; the mixed case — some annotated locations
+    with version-control history, some without — resolving to the
+    most recent of the existing history values; absent freshness
+    for an annotated-but-uncommitted location;
+    timestamp/commit/provenance shape on every resolved value;
+    absence for unannotated, unstamped ACs.
+
+  How: New module alongside the existing coverage cache in
+  src/parser/; reuse the structured annotation scan for locations and
+  the existing git utilities for code-repo history queries. The
+  resolver is a pure read API — the engine plan, not this one, turns
+  freshness into coverage states.
+
+  Covers: @ac-freshness-resolution ac-bootstrap-when-unstamped,
+  ac-recorded-supersedes-bootstrap, ac-both-provenances-retrievable,
+  ac-multi-annotation-most-recent, ac-no-history-absence,
+  ac-timestamp-or-commit, ac-absence-reported.
+spec_ref: "@ac-freshness-resolution"
+plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ac-verification-record-store"
+context: []
+priority: 1
+tags:
+  - coverage
+  - parser
+  - storage
+vcs_refs: []
+created_at: 2026-06-15T23:37:18.500Z
+todos: []
