@@ -26669,11 +26669,11 @@ reviews:
       content_hash: ""
       ref: "@01KV4CD9G0DMTTRQJMM3S84BJX"
       shadow_commit: ""
-    thread_count: 1
-    unresolved_blocker_count: 1
+    thread_count: 2
+    unresolved_blocker_count: 2
     verdict_count: 0
     created_at: 2026-06-15T14:35:05.417Z
-    updated_at: 2026-06-15T14:51:06.712Z
+    updated_at: 2026-06-15T14:51:09.848Z
   - _ulid: 01KV5VBT230TGV47T20YB2STYA
     slugs: []
     title: Review task-breadcrumb-ancestry-api
