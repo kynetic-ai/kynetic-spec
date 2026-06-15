@@ -67504,7 +67504,7 @@ runs:
     started_at: 2026-06-15T20:01:25.541Z
     completed_at: 2026-06-15T20:04:28.067Z
   - _ulid: 01KV6G453AEYRPBFZM2P156C7N
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -67556,7 +67556,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-15T20:40:16.574Z
-        completed_at: 2026-06-15T20:40:16.574Z
+        completed_at: 2026-06-15T20:40:33.280Z
+        notes: "Capture: no new items captured. Existing records already cover the actionable friction:
+          @01KT5VY7 for scoped skill status/verify and @01KR2JD1/@01KT5ZGF for review evidence log
+          handling. Success pattern noted in workflow notes only; no new observation needed."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T20:38:46.123Z
+    completed_at: 2026-06-15T20:40:33.280Z
