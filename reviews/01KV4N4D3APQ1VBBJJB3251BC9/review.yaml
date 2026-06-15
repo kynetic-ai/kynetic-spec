@@ -278,6 +278,12 @@ events:
     payload:
       thread_ulid: 01KV4NB25CE1ESSJGAPT55QKJK
     timestamp: 2026-06-15T04:13:23.066Z
+  - _ulid: 01KV4QR0J15GZEEM7J1V3VYF76
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV4NB5V9TSTE44R3ATQKY0G1
+    timestamp: 2026-06-15T04:13:28.001Z
 examined_commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
 external_links: []
 lifecycle_state: closed
@@ -365,6 +371,14 @@ threads:
           the same review disposition with different visual tokens across views, violating
           @ui-view-header ac-2."
         created_at: 2026-06-15T03:31:30.281Z
+      - _ulid: 01KV4QR0ACQ2TWZVQZY04CEAVG
+        author: "@claude"
+        body: 'Fixed: linked review dispositions in task detail now render <StatusBadge
+          domain="review-disposition"> (and the lifecycle pills route through
+          domain="review-lifecycle") in both the current and closed review rows.
+          dispositionClasses()/dispositionLabel() are removed. changes_requested now renders as
+          status-blocked + glyph identically to the reviews list/detail.'
+        created_at: 2026-06-15T04:13:27.755Z
     kind: blocker
   - _ulid: 01KV4NB9J4C91RSGYWSSY8Y4RG
     anchor:
@@ -394,5 +408,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T03:43:33.806Z
 created_at: 2026-06-15T03:27:48.330Z
-updated_at: 2026-06-15T04:13:22.843Z
+updated_at: 2026-06-15T04:13:27.755Z
 notes: []
