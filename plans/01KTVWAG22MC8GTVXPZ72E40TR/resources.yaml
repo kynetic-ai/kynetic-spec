@@ -174,3 +174,12 @@ resources:
     label: Spec workspace AC page
     path: handoff/shots/r3-spec-unified-5-ac.png
     sha256: ee9a4739f54fd1f65695fd99e5924287a205635f1b57e9b9303ce2573620a622
+  - description: Six-state coverage token legend and open questions; use with five-state recommendation.
+    bytes: 70698
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-coverage-legend
+    label: Coverage state legend
+    path: handoff/shots/r3-coverage-1-legend.png
+    sha256: b7ff31fad2ac5827c31fbb5b2079aec08701668b5ff75fde2fc4e6056204c7b3
