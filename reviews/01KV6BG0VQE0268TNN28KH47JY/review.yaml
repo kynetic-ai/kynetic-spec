@@ -13,6 +13,20 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-15T19:38:28.718Z
     completed_at: 2026-06-15T19:38:28.718Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint completed with 736 warnings and 0 errors. Focused changed-file lint over
+      src/cli/commands/upgrade.ts, src/parser/actor-field-inventory.ts,
+      src/parser/actor-normalization-migration.ts, src/parser/index.ts, and
+      tests/actor-normalization-upgrade.test.ts completed with 0 errors; reported upgrade.ts
+      warnings are outside this task's edited hunks.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-15T19:38:34.225Z
+    completed_at: 2026-06-15T19:38:34.225Z
 events:
   - _ulid: 01KV6BG0VP5QK0MSDAMY82NQN2
     actor: Jacob Chapel
@@ -34,6 +48,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-15T19:38:28.967Z
+  - _ulid: 01KV6CNY3JWGQNTXWZK0DEF8M8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-15T19:38:34.483Z
 examined_commit: d952c374bfe320c2c11f780c343625e08691fa5d
 external_links: []
 lifecycle_state: open
@@ -46,5 +67,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T19:17:52.119Z
-updated_at: 2026-06-15T19:38:28.718Z
+updated_at: 2026-06-15T19:38:34.225Z
 notes: []
