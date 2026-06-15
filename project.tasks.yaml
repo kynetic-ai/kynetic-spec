@@ -32207,7 +32207,7 @@
   type: task
   spec_ref: "@ui-breadcrumb"
   plan_ref: "@plan-web-ui-foundations"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-breadcrumb-ancestry-api"
@@ -32219,7 +32219,7 @@
   notes_count: 4
   todos_count: 0
   created_at: 2026-06-15T00:55:23.786Z
-  started_at: 2026-06-15T18:13:39.296Z
+  started_at: 2026-06-15T19:36:51.572Z
   submitted_at: 2026-06-15T18:39:32.679Z
   automation: eligible
 - _ulid: 01KV4CDB72KM6NRMXXS1EB6SDB
