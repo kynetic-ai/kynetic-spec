@@ -39,6 +39,7 @@
 	import SessionStreamSkeleton from '$lib/components/session/SessionStreamSkeleton.svelte';
 	import ArrowLeft from 'lucide-svelte/icons/arrow-left';
 	import { base } from '$app/paths';
+	import { ViewHeader, type ViewHeaderCount } from '$lib/components/ds';
 
 	let sessionId = $derived($page.params.id);
 
@@ -63,6 +64,29 @@
 	// Server-resolved task_title eliminates need for separate task title lookup
 	let taskTitle = $derived<string | null>(sessionQuery.data?.task_title ?? null);
 	let session = $derived<SessionDetail | null>(sessionQuery.data ?? null);
+
+	// AC: @ui-view-header ac-1, ac-4 — server-resolved child counts (no client enumeration).
+	let sessionCounts = $derived<ViewHeaderCount[]>(
+		session
+			? [
+					{
+						label: 'events',
+						value: session.event_count,
+						testid: 'view-header-count-events'
+					},
+					{
+						label: 'iterations',
+						value: session.iteration_count,
+						testid: 'view-header-count-iterations'
+					},
+					{
+						label: 'completed',
+						value: session.tasks_completed ?? 0,
+						testid: 'view-header-count-completed'
+					}
+				]
+			: []
+	);
 
 	let loading = $derived(isStaticMode() ? false : sessionQuery.isLoading || eventsLoading);
 
@@ -189,7 +213,7 @@
 </script>
 
 <div class="flex flex-col h-full">
-	<!-- Header -->
+	<!-- Header — AC: @ui-view-header ac-1, ac-3, ac-4, ac-5, ac-6 -->
 	<div class="flex items-center gap-3 px-4 py-3 border-b flex-shrink-0">
 		<a
 			href="{base}/sessions"
@@ -198,23 +222,32 @@
 		>
 			<ArrowLeft class="size-4" />
 		</a>
-		<div>
-			<h1 class="text-lg font-semibold">
-				Session
-				{#if session}
-					<span class="font-mono text-sm text-muted-foreground ml-1">{session.id.slice(0, 8)}</span>
-				{/if}
-			</h1>
-			{#if session}
-				<p class="text-xs text-muted-foreground">
-					{session.agent_type}
+		{#if session}
+			<ViewHeader
+				class="flex-1"
+				title="Session"
+				reference={session.id}
+				statusDomain="session"
+				statusState={session.status}
+				statusTestid="session-status-badge"
+				counts={sessionCounts}
+			>
+				{#snippet badges()}
 					{#if isLive}
-						<span class="ds-session-active-dot size-1.5 rounded-full bg-status-completed inline-block ml-1"></span>
-						<span class="text-status-completed">Live</span>
+						<span
+							class="ds-session-active-dot size-1.5 rounded-full bg-status-in-progress inline-block"
+							data-testid="session-live-dot"
+							aria-label="Live"
+						></span>
 					{/if}
-				</p>
-			{/if}
-		</div>
+				{/snippet}
+				{#snippet meta()}
+					<span data-testid="session-agent-type">{session.agent_type}</span>
+				{/snippet}
+			</ViewHeader>
+		{:else}
+			<h1 class="text-lg font-semibold">Session</h1>
+		{/if}
 	</div>
 
 	<!-- Error -->

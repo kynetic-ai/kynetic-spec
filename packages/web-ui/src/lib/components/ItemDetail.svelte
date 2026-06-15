@@ -4,6 +4,7 @@
 	import { base } from '$app/paths';
 	import type { SessionSummary } from '$lib/api';
 	import { Badge } from '$lib/components/ui/badge';
+	import { StatusBadge } from '$lib/components/ds';
 	import {
 		Sheet,
 		SheetContent,
@@ -73,31 +74,6 @@
 		}
 	});
 
-	function getStatusColor(status: string): string {
-		const colors: Record<string, string> = {
-			pending: 'bg-status-pending text-status-pending-fg',
-			in_progress: 'bg-status-in-progress text-status-in-progress-fg',
-			pending_review: 'bg-status-pending-review text-status-pending-review-fg',
-			needs_work: 'bg-status-needs-work text-status-needs-work-fg',
-			blocked: 'bg-status-blocked text-status-blocked-fg',
-			completed: 'bg-status-completed text-status-completed-fg',
-			cancelled: 'bg-status-cancelled text-status-cancelled-fg'
-		};
-		return colors[status] || 'bg-status-cancelled text-status-cancelled-fg';
-	}
-
-	function formatStatus(status: string): string {
-		const labels: Record<string, string> = {
-			pending: 'Pending',
-			in_progress: 'In Progress',
-			pending_review: 'Pending Review',
-			needs_work: 'Needs Work',
-			blocked: 'Blocked',
-			completed: 'Completed',
-			cancelled: 'Cancelled'
-		};
-		return labels[status] || status;
-	}
 </script>
 
 <Sheet bind:open>
@@ -235,9 +211,7 @@
 									class="flex items-center gap-2 p-2 rounded border hover:bg-muted/50 transition-colors"
 									data-testid="linked-task"
 								>
-									<Badge class={getStatusColor(task.status)} data-testid="task-status-badge"
-										>{formatStatus(task.status)}</Badge
-									>
+									<StatusBadge domain="task" state={task.status} testid="task-status-badge" />
 									<span class="text-sm flex-1" data-testid="task-title">{task.title}</span>
 									{#if task.notes_count > 0}
 										<Badge variant="secondary" class="text-xs">{task.notes_count} notes</Badge>

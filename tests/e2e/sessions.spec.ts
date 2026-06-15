@@ -374,6 +374,7 @@ test.describe("Session History View", () => {
 
   test.describe("Session Navigation (AC-2)", () => {
     // AC: @ui-session-history ac-2
+    // AC: @ui-view-header ac-6 — session detail presents the standard view header
     test("clicking a session navigates to /sessions/:id and shows stream view", async ({
       page,
       daemon: _daemon,
@@ -406,6 +407,12 @@ test.describe("Session History View", () => {
 
       await expect(page).toHaveURL(/\/sessions\/01JTEST0000000000000000001/);
       await expect(page.getByTestId("session-stream")).toBeVisible({ timeout: 5000 });
+
+      // AC: @ui-view-header ac-6 — the detail header is the standard ViewHeader,
+      // with a token-driven status badge and server-resolved child counts.
+      await expect(page.getByTestId("view-header")).toBeVisible();
+      await expect(page.getByTestId("session-status-badge")).toBeVisible();
+      await expect(page.getByTestId("view-header-count-events")).toBeVisible();
     });
 
     // AC: @ui-session-history ac-2
