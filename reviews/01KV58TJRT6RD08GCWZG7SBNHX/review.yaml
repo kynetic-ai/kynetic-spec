@@ -230,6 +230,12 @@ events:
     payload:
       thread_ulid: 01KV594V3DFCPNNFZCYNF9Z0NC
     timestamp: 2026-06-15T11:15:49.980Z
+  - _ulid: 01KV5FXHDJKFCXQG98RRFQ7NXM
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KV594YNQ768E1A0JTFJ9F3WQ
+    timestamp: 2026-06-15T11:15:54.930Z
 examined_commit: 7aa8f5e1b19cbc7bdf1210123f068c16c50a5975
 external_links: []
 lifecycle_state: closed
@@ -301,6 +307,8 @@ threads:
           (ac-2). Behavioral SSR test added in tests/web-ui-inline-thread-actors.test.ts."
         created_at: 2026-06-15T11:15:44.446Z
     kind: blocker
+    resolved_at: 2026-06-15T11:15:54.704Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -310,5 +318,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T09:26:19.157Z
 created_at: 2026-06-15T09:11:57.978Z
-updated_at: 2026-06-15T11:15:49.747Z
+updated_at: 2026-06-15T11:15:54.704Z
 notes: []
