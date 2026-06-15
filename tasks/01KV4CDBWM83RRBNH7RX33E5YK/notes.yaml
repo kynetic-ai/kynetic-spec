@@ -76,3 +76,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T04:04:25.993Z
+  - _ulid: 01KV4RXBMB4C9JTNVW51YWGZXH
+    content: "Fix cycle 1: addressed the sole blocker — LocalStorageBackend.remove() left values
+      persisted before a write-time degradation readable because it returned early once degraded
+      while get() still consults persistent storage. Made remove() symmetric with get(): it now
+      clears persistent storage whenever storage exists, regardless of the degraded flag (degraded
+      only gates writes; removeItem frees quota). Added regression test reproducing the reviewer's
+      exact repro. Re-verified all six @ui-preference-store ACs plus @client-preference-persistence
+      ac-1 against the implementation — no other gaps. Gates green: typecheck, format:check,
+      focused+repo lint (0 errors), full test suite (exit 0), kspec validate
+      refs/alignment/completeness (warnings baseline only)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T04:33:51.755Z
