@@ -46,3 +46,35 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T10:11:43.376Z
+  - _ulid: 01KV5ENZPNJAJ4SPA5HJMVTHRS
+    content: >-
+      Resumed in-flight work after prior 60-min timeout. Implementation (inventory + fail-closed
+      schema guard, resolution engine, CLI upgrade step, operator-map, durable report, docs) was
+      complete and behaviorally tested (14 ACs across the actor suite, all passing).
+
+
+      Found and fixed a packaging regression the full suite surfaced: the migration value-imported
+      buildActorClassifier from @kynetic-ai/shared, and parser/index.ts re-exports the migration.
+      @kynetic-ai/shared is a PRIVATE workspace package, not a runtime dependency of the published
+      @kynetic-ai/spec — the daemon/web-UI only consume it via type-only (erased) imports or by
+      bundling. The unbundled tsc-built CLI cannot resolve it at runtime, so loading the daemon from
+      an installed package failed with ERR_MODULE_NOT_FOUND (tests/cli-serve.test.ts 'start daemon
+      from npm-installed package').
+
+
+      Fix: ship the pure classifier logic in core (src/parser/actor-classifier.ts) and import it
+      there; @kynetic-ai/shared is now imported ONLY as erased types across src/. Considered and
+      rejected: bundleDependencies (npm will not bundle a symlinked workspace package — verified
+      empirically, bundled files: 0), and relocating the classifier out of shared + repointing
+      web-UI (would invert the web-UI->shared dependency and risk identity infra other in-flight
+      branch tasks depend on). The core copy is pinned to shared behavior by
+      tests/actor-classifier-parity.test.ts, which runs the measured 4.6 variant corpus through BOTH
+      implementations and asserts identical results, so they cannot drift.
+
+
+      Gates: format:check clean; lint 0 errors; focused oxlint 0 warnings on new files; typecheck
+      clean; full npm test 10761 passed / 0 failed (cli-serve now green); kspec
+      refs/alignment/completeness warnings-ok exit 0.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T10:54:18.837Z
