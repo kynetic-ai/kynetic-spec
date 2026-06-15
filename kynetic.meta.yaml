@@ -22175,6 +22175,29 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T09:09:42.631Z
+  - _ulid: 01KV59V4SN7PHX6FREC6RKY7FD
+    type: friction
+    content: Detached review task resources can be reported as OK in task context while the advertised
+      handoff files are not materialized at their paths in the review snapshot. During
+      @task-actor-display-next-actor review, resources/handoff/docs and
+      resources/handoff/reference-src paths were absent, so the reviewer could not inspect the
+      provided screenshots/source handoff directly.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KV59Q7"
+    created_at: 2026-06-15T09:29:45.013Z
+  - _ulid: 01KV59V53R268BPFSBSPAAVGM5
+    type: success
+    content: For shared display primitive reviews, searching for the raw recorded field across nested
+      components after reading the changed diff can catch missed adoption points. In
+      @task-actor-display-next-actor, rg for entry.author/review.author/verdict.reviewer exposed
+      inline structured-content and diff thread renderers that still bypassed ActorDisplay.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KV59Q7"
+    created_at: 2026-06-15T09:29:45.336Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
