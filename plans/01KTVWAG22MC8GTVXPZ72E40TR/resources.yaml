@@ -83,3 +83,13 @@ resources:
     label: Implementation backlog
     path: handoff/docs/12-implementation-backlog.md
     sha256: 3a43077a9aac8ddb47ec7fa7d32f40c61bc8bf2af7b3b3a31a8cc46b260aa046
+  - description: R3 sidebar with kynetic-spec focused; reference for focus-collapse and persisted
+      navigation state.
+    bytes: 22222
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-sidebar-focus-a
+    label: Sidebar focus state A
+    path: handoff/shots/r3-sidebar-focus-a.png
+    sha256: 245a925bcfdd531a01958f1ca6f7b0f74780e4f03547a83534253422d16dbb48
