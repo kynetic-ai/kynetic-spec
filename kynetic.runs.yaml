@@ -66922,9 +66922,24 @@ runs:
     completed_at: 2026-06-15T11:18:39.249Z
   - _ulid: 01KV5H46RH9S6QHAQF4FVN0W3R
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-15T11:37:01.970Z
+        completed_at: 2026-06-15T11:37:30.125Z
+        notes: "What worked well: The per-cycle review model gave a clean fix-cycle boundary: prior review
+          @01KV58TJ captured two concrete blockers, and cycle 2 could verify only the new snapshot
+          while preserving history. The detached-reviewer merge helper worked cleanly after approval
+          and avoided touching the integration branch in this snapshot. Review checks were
+          straightforward to record because the gates map cleanly to kspec review checks. Behavioral
+          SSR tests for ActorDisplay and inline thread adoption made the fix verifiable without
+          source scanning."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-15T11:37:30.125Z
+        completed_at: 2026-06-15T11:37:30.125Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T11:37:01.970Z
