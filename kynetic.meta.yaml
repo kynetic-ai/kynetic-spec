@@ -22062,6 +22062,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T02:55:59.846Z
+  - _ulid: 01KV4MXQK7VF8VW1FSRX5P01MP
+    type: friction
+    content: "Adopting the shared StatusBadge/status-token source on a surface changes its rendered
+      status text from the raw lowercase value (e.g. 'active', 'completed') to the token's
+      capitalized label (e.g. 'Active', 'Completed'). Existing tests that assert the old raw text
+      (toContainText('active'), getByText('completed'), etc.) break silently and are easy to miss in
+      the diff — during @task-view-header-status-tokens this bit twice (a mock-data list test plus
+      two infinite-scroll assertions far from the edited lines). Mitigation for the @ui-view-header
+      redesign track: when a future adoption task replaces a bespoke status helper with StatusBadge,
+      grep the surface's e2e/unit specs for the raw lowercase state strings and re-point them at the
+      shared token (assert data-status-domain/data-status-state attributes or the capitalized label)
+      in the same change, and always run the modified surface's e2e specs before resubmitting."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T03:24:09.703Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
