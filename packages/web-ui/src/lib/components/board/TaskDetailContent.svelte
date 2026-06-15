@@ -35,7 +35,8 @@
 		findUnmatchedTaskResourceReferences
 	} from '$lib/utils/task-resource-links';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { getStatusClasses, formatVcsRef } from './board-utils';
+	import { formatVcsRef } from './board-utils';
+	import { StatusBadge } from '$lib/components/ds';
 	import GitBranch from 'lucide-svelte/icons/git-branch';
 	import ExternalLink from 'lucide-svelte/icons/external-link';
 	import RelatedSessionsSection from '$lib/components/session/RelatedSessionsSection.svelte';
@@ -215,7 +216,6 @@
 		}).format(new Date(dateStr));
 	}
 
-	let statusInfo = $derived(task ? getStatusClasses(task.status) : null);
 	let slug = $derived(task?.slugs?.[0] ?? task?._ulid?.slice(0, 8) ?? '');
 	let readOnly = $derived(isStaticMode());
 
@@ -274,27 +274,6 @@
 		linkedReviews.filter((r) => r.lifecycle_state === 'closed' || r.lifecycle_state === 'archived')
 	);
 
-	function dispositionClasses(disposition: string): string {
-		switch (disposition) {
-			case 'approved':
-				return 'bg-status-completed text-status-completed-fg';
-			case 'changes_requested':
-				return 'bg-status-needs-work text-status-needs-work-fg';
-			default:
-				return 'bg-status-pending text-status-pending-fg';
-		}
-	}
-
-	function dispositionLabel(disposition: string): string {
-		switch (disposition) {
-			case 'approved':
-				return 'Approved';
-			case 'changes_requested':
-				return 'Changes Requested';
-			default:
-				return 'Pending';
-		}
-	}
 </script>
 
 {#if loading}
@@ -323,7 +302,7 @@
 	<div class="bg-destructive/10 text-destructive p-4 rounded-lg" role="alert">
 		{error}
 	</div>
-{:else if task && statusInfo}
+{:else if task}
 	<div class="flex flex-col gap-4">
 		<!-- Description -->
 		<!-- AC: @live-task-resource-markdown-rendering ac-plan-owned-task-image-renders -->
@@ -385,9 +364,8 @@
 
 		<!-- Status, priority, type -->
 		<div class="flex flex-wrap gap-2 items-center">
-			<Badge class="{statusInfo.bg} {statusInfo.fg}" data-testid="task-status-badge">
-				{statusInfo.label}
-			</Badge>
+			<!-- AC: @ui-view-header ac-2 — task state drawn from the shared status-token source -->
+			<StatusBadge domain="task" state={task.status} testid="task-status-badge" />
 			<Badge variant="outline" data-testid="task-priority">Priority {task.priority}</Badge>
 			<Badge variant="outline" data-testid="task-type">{task.type}</Badge>
 			{#if task.automation}
@@ -534,16 +512,15 @@
 								class="flex items-center gap-3 rounded-md border p-3 transition-colors hover:bg-muted/40"
 								data-testid="task-review-row"
 							>
-								<Badge class={dispositionClasses(review.disposition)}>
-									{dispositionLabel(review.disposition)}
-								</Badge>
+								<!-- AC: @ui-view-header ac-2 — disposition + lifecycle from the shared status-token source -->
+								<StatusBadge domain="review-disposition" state={review.disposition} testid="task-review-disposition-badge" />
 								<div class="min-w-0 flex-1">
 									<div class="text-sm font-medium truncate">{review.title}</div>
 									<div class="text-xs text-muted-foreground">
 										{review.thread_count} {review.thread_count === 1 ? 'thread' : 'threads'}{#if review.unresolved_blocker_count > 0}, <span class="text-destructive">{review.unresolved_blocker_count} blocker{review.unresolved_blocker_count === 1 ? '' : 's'} unresolved</span>{/if}
 									</div>
 								</div>
-								<Badge variant="outline" class="text-xs">{review.lifecycle_state}</Badge>
+								<StatusBadge domain="review-lifecycle" state={review.lifecycle_state} testid="task-review-lifecycle-badge" />
 							</a>
 						{/each}
 					</div>
@@ -567,16 +544,15 @@
 										class="flex items-center gap-3 rounded-md border border-dashed p-3 opacity-70 transition-colors hover:bg-muted/40 hover:opacity-100"
 										data-testid="task-review-row-closed"
 									>
-										<Badge class={dispositionClasses(review.disposition)}>
-											{dispositionLabel(review.disposition)}
-										</Badge>
+										<!-- AC: @ui-view-header ac-2 — disposition + lifecycle from the shared status-token source -->
+										<StatusBadge domain="review-disposition" state={review.disposition} testid="task-review-disposition-badge-closed" />
 										<div class="min-w-0 flex-1">
 											<div class="text-sm font-medium truncate">{review.title}</div>
 											<div class="text-xs text-muted-foreground">
 												{review.thread_count} {review.thread_count === 1 ? 'thread' : 'threads'}
 											</div>
 										</div>
-										<Badge variant="outline" class="text-xs">{review.lifecycle_state}</Badge>
+										<StatusBadge domain="review-lifecycle" state={review.lifecycle_state} testid="task-review-lifecycle-badge-closed" />
 									</a>
 								{/each}
 							</div>

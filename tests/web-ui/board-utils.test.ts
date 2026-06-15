@@ -8,7 +8,6 @@
 import { describe, it, expect } from "vitest";
 import {
   distributeToColumns,
-  getStatusClasses,
   formatAge,
   formatElapsed,
   formatVcsRef,
@@ -196,33 +195,12 @@ describe("distributeToColumns", () => {
   });
 });
 
-describe("getStatusClasses", () => {
-  // AC: @ui-task-board ac-2
-  it("returns correct classes for all known statuses", () => {
-    const statuses = [
-      "pending",
-      "in_progress",
-      "pending_review",
-      "needs_work",
-      "completed",
-      "blocked",
-      "cancelled",
-    ];
-    for (const status of statuses) {
-      const result = getStatusClasses(status);
-      expect(result.bg).toBeTruthy();
-      expect(result.fg).toBeTruthy();
-      expect(result.label).toBeTruthy();
-    }
-  });
-
-  // AC: @ui-task-board ac-2
-  it("returns fallback for unknown status", () => {
-    const result = getStatusClasses("unknown");
-    expect(result.bg).toBe("bg-muted");
-    expect(result.label).toBe("unknown");
-  });
-});
+// Task-status → visual-token mapping (formerly board-utils `getStatusClasses`)
+// is now owned by the shared status-token vocabulary; its coverage lives in
+// tests/web-ui-status-tokens.test.ts, which asserts every TaskStatusSchema state
+// resolves to a defined token (label + design-token family) plus uniqueness,
+// determinism, and the unknown-state fallback. TaskCard/TaskDetailContent render
+// that token via StatusBadge (see tests/e2e/task-board.spec.ts).
 
 describe("formatAge", () => {
   // AC: @ui-task-board ac-2

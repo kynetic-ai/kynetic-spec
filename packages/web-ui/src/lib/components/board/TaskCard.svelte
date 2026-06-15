@@ -5,8 +5,9 @@
 <script lang="ts">
 	import type { TaskSummary } from '@kynetic-ai/shared';
 	import { Badge } from '$lib/components/ui/badge';
+	import { StatusBadge } from '$lib/components/ds';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
-	import { getStatusClasses, formatAge } from './board-utils';
+	import { formatAge } from './board-utils';
 	import MessageSquare from 'lucide-svelte/icons/message-square';
 	import GitBranch from 'lucide-svelte/icons/git-branch';
 	import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
@@ -14,7 +15,6 @@
 
 	let { task, onclick }: { task: TaskSummary; onclick: (task: TaskSummary) => void } = $props();
 
-	let statusInfo = $derived(getStatusClasses(task.status));
 	let isBlocked = $derived(task.status === 'blocked');
 	let isCancelled = $derived(task.status === 'cancelled');
 	let slug = $derived(task.slugs?.[0] ?? task._ulid.slice(0, 8));
@@ -45,11 +45,9 @@
 			P{task.priority}
 		</span>
 
-		<!-- Status dot with label -->
-		<span class="flex items-center gap-1 text-[10px] text-muted-foreground">
-			<span class="size-2 rounded-full {statusInfo.bg}" aria-hidden="true"></span>
-			{statusInfo.label}
-		</span>
+		<!-- Status indicator drawn from the shared status-token source -->
+		<!-- AC: @ui-view-header ac-2 — same task state = same color + glyph across views -->
+		<StatusBadge domain="task" state={task.status} class="px-1.5 py-0 text-[10px]" testid="task-card-status-badge" />
 
 		<!-- Blocked indicator -->
 		{#if isBlocked}

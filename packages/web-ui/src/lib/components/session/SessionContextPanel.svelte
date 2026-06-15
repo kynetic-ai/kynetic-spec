@@ -6,7 +6,7 @@
 	import type { SessionDetail } from '$lib/api';
 	import type { DisplayBlock } from './session-utils';
 	import { extractFilesChanged, formatElapsed, formatTimeline, getTriggerLabel, isDispatchedSession } from './session-utils';
-	import { Badge } from '$lib/components/ui/badge';
+	import { StatusBadge } from '$lib/components/ds';
 	import { Separator } from '$lib/components/ui/separator';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import Clock from 'lucide-svelte/icons/clock';
@@ -29,30 +29,6 @@
 		taskTitle?: string | null;
 	} = $props();
 
-	let statusColor = $derived(
-		session.status === 'active'
-			? 'bg-status-in-progress text-status-in-progress-fg'
-			: session.status === 'completed'
-				? 'bg-status-completed text-status-completed-fg'
-				: session.status === 'failed'
-					? 'bg-status-blocked text-status-blocked-fg'
-					: 'bg-status-cancelled text-status-cancelled-fg'
-	);
-
-	let statusLabel = $derived(
-		session.status === 'active'
-			? 'Active'
-			: session.status === 'completed'
-				? 'Completed'
-				: session.status === 'abandoned'
-					? 'Abandoned'
-					: session.status === 'timed_out'
-						? 'Timed Out'
-						: session.status === 'failed'
-							? 'Failed'
-							: session.status
-	);
-
 	let triggerLabel = $derived(getTriggerLabel(session.trigger));
 
 	// AC: @ui-session-stream ac-4 — Files changed during session
@@ -73,7 +49,8 @@
 
 			<div class="space-y-2">
 				<div class="flex items-center justify-between">
-					<Badge class={statusColor}>{statusLabel}</Badge>
+					<!-- AC: @ui-view-header ac-2 — session state drawn from the shared status-token source -->
+					<StatusBadge domain="session" state={session.status} testid="session-context-status-badge" />
 					<span class="text-[10px] font-mono text-muted-foreground">
 						{session.id.slice(0, 8)}
 					</span>
