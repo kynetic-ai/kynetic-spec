@@ -200,6 +200,12 @@ events:
     payload:
       thread_ulid: 01KV5XJQ2HS5ZRK0E2XVBNAR6N
     timestamp: 2026-06-15T16:28:19.632Z
+  - _ulid: 01KV61SXEQ5339NK3HN9AQN694
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KV5XJQ2HS5ZRK0E2XVBNAR6N
+    timestamp: 2026-06-15T16:28:30.551Z
 examined_commit: 36aa75a711c4df71b95a524288c470865258e9da
 external_links: []
 lifecycle_state: closed
@@ -265,6 +271,8 @@ threads:
           to describe the preview/deferred-kinds behavior.
         created_at: 2026-06-15T16:28:19.415Z
     kind: blocker
+    resolved_at: 2026-06-15T16:28:30.338Z
+    resolved_by: "@claude"
   - _ulid: 01KV5XJSV23K9ZB1CEFWYFSBE1
     entries:
       - _ulid: 01KV5XJSV25WGBS7W50E98C7X1
@@ -304,5 +312,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T15:14:46.126Z
 created_at: 2026-06-15T14:58:00.439Z
-updated_at: 2026-06-15T16:28:19.415Z
+updated_at: 2026-06-15T16:28:30.338Z
 notes: []
