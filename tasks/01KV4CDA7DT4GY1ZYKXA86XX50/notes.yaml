@@ -311,3 +311,30 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T21:05:11.619Z
+  - _ulid: 01KV6K0FGK1DHMFAYXJYXFJ47H
+    content: >-
+      Fix cycle 5: addressed the cycle-4 blocker — operator-map `defaults` values were accepted with
+      only an object-shape check and cast to Partial<Record<ActorRecordKind,string>>, so a
+      non-string default (e.g. defaults:{inbox:123}) was written verbatim into an actor field,
+      persisting a number into YAML and corrupting schema-valid storage (violating
+      @actor-history-normalization ac-5 / @actor-identity-model ac-2). Root cause:
+      loadOperatorActorMap validated mapping VALUES (non-empty string) and the resolver validated
+      mapping TARGETS, but the `defaults` block was passed through unchecked.
+
+
+      Fix (451b9a0012): loadOperatorActorMap now validates each `defaults` entry before the resolver
+      is built — key must be a known record kind, value must be a non-empty string — failing closed
+      otherwise. Added ACTOR_RECORD_KINDS + isActorRecordKind to actor-field-inventory.ts as the
+      runtime source of truth (satisfies clause keeps it in lockstep with the ActorRecordKind
+      union). Replied to + resolved the blocker thread.
+
+
+      Tests: end-to-end fail-closed regression (reviewer's exact repro: inbox added_by=Hermes +
+      defaults:{inbox:123}) asserting the run rejects, the spec dir is byte-identical before/after,
+      and added_by stays the string 'Hermes'; an unknown-key end-to-end variant; plus loader unit
+      tests for non-string value, blank value, and unknown key. Re-verified all ACs. Gates: format,
+      lint (0 errors), typecheck, full suite (10864 passed/0 failed), kspec validate
+      refs/alignment/completeness all green.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T21:29:11.443Z
