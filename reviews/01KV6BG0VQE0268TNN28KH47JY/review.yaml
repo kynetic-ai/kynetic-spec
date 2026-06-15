@@ -142,6 +142,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T19:39:08.259Z
+  - _ulid: 01KV6CQK1BM94A01AV0EMV6HK0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV6CQJS5G9HQPVQVQKH6FG8H
+    timestamp: 2026-06-15T19:39:28.683Z
 examined_commit: d952c374bfe320c2c11f780c343625e08691fa5d
 external_links: []
 lifecycle_state: open
@@ -151,8 +158,41 @@ subject:
   content_hash: ""
   ref: "@01KV4CDA7DT4GY1ZYKXA86XX50"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV6CQJS5G9HQPVQVQKH6FG8H
+    entries:
+      - _ulid: 01KV6CQJS5HVEC821N7Z66S4G6
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; src/parser/actor-normalization-migration.ts;
+          src/parser/actor-field-inventory.ts; src/cli/commands/upgrade.ts; src/parser/index.ts;
+          docs/guides/upgrading-kspec.md; tests/actor-normalization-upgrade.test.ts;
+          src/parser/task-data-manager.ts; src/parser/split-backend.ts.
+
+
+          Commands run: kspec task get; kspec review for-task/get; kspec item get
+          @actor-history-normalization and @actor-identity-model; git diff/log/merge-base; rg
+          searches for actor fields and AC annotations; two focused npx tsx behavioral probes for
+          task history; kspec validate refs/alignment/completeness with --warnings-ok; npm run
+          format:check; npm run lint -- --quiet; npx oxlint on changed TS/test files; npm run
+          typecheck; npm test.
+
+
+          Claims verified: prior dry-run blocker is fixed by running actor preview before storage
+          readiness skips; prior operator-map target blocker is fixed by canonicalizing/rejecting
+          targets before writes; AC annotations exist for @actor-history-normalization ac-1..ac-6
+          and @actor-identity-model ac-2; tests are behavioral rather than source-scanning.
+
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration,
+          and docs. Shared-guidance neutrality did not apply: changed docs were under docs/guides,
+          not package-shipped guidance surfaces.
+        created_at: 2026-06-15T19:39:28.421Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-15T19:17:52.119Z
-updated_at: 2026-06-15T19:39:07.991Z
+updated_at: 2026-06-15T19:39:28.421Z
 notes: []
