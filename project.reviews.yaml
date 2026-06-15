@@ -26603,7 +26603,7 @@ reviews:
     title: Review task-shortcut-registry
     disposition: pending
     author: Jacob Chapel
-    check_count: 1
+    check_count: 2
     examined_commit: 4417519b6e31bfc7bc465337c92181137381f8a9
     lifecycle_state: open
     related_refs: []
@@ -26616,4 +26616,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-15T08:37:41.844Z
-    updated_at: 2026-06-15T08:50:06.733Z
+    updated_at: 2026-06-15T08:50:16.736Z
