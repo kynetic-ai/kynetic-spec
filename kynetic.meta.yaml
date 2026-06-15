@@ -22433,6 +22433,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T19:14:40.891Z
+  - _ulid: 01KV6CW5D7T5HA1Z0RY2M571ZN
+    type: friction
+    content: "Review of @task-actor-normalization-upgrade found that schema-reflection inventory guards
+      can miss persisted sidecar metadata fields that loaders strip before migration logic inspects
+      records. Concrete case: split-task task.yaml history[].author is documented author identity
+      data, but it is not part of TaskSchema/loadAllTasks output, so the actor-normalization
+      inventory/test suite passed while existing history authors remained unnormalized. Future
+      exhaustive-inventory work should include raw stored shapes/sidecars, not only loader-visible
+      schemas."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T19:41:58.568Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
