@@ -1,0 +1,26 @@
+_ulid: 01KV5VA7T90MZW3SKX5AVR61R2
+slugs: []
+title: Review task-review-author-resolution
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KV5VA7T9R9P4K2MRBQW4X7RC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-15T14:35:05.417Z
+examined_commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KV4CD9G0DMTTRQJMM3S84BJX"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-15T14:35:05.417Z
+updated_at: null
+notes: []
