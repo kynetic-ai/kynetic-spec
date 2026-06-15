@@ -28552,7 +28552,7 @@ workspaces:
         head: 4417519b6e31bfc7bc465337c92181137381f8a9
         last_seen_at: 2026-06-15T08:36:17.835Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shortcut-registry-01kv4cdb
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 9d497f7309c419a69458394e19c2e71263bdb544
     bootstrap:
       status: succeeded
@@ -29037,7 +29037,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-15T11:19:13.150Z
+      updated_at: 2026-06-15T11:19:44.146Z
     integration:
       status: pending
       detail: null
@@ -29053,10 +29053,10 @@ workspaces:
     task_slug: task-actor-display-next-actor
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-15T10:58:01.199Z
-      last_reconciled_at: 2026-06-15T11:19:13.150Z
+      last_active_at: 2026-06-15T11:19:44.146Z
+      last_reconciled_at: 2026-06-15T11:19:44.146Z
       created_at: 2026-06-15T08:37:02.989Z
-      updated_at: 2026-06-15T11:19:36.809Z
+      updated_at: 2026-06-15T11:19:44.146Z
     workspace_id: dispatch-workspace-01KV4CD9W9AJRNJQCEZ0NWF09W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
