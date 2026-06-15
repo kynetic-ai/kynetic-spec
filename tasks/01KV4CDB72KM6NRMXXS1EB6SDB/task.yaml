@@ -63,7 +63,7 @@ description: |
 spec_ref: "@ui-view-header"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -81,7 +81,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-view-header-status-tokens/01kv4cdb
-session_id: null
+session_id: 01KV4PC9ZH9F6XHXYE2BMJP398
 history:
   - author: Jacob Chapel
     changes:
@@ -197,6 +197,19 @@ history:
         previous: 01KV4KC41FD6HBDRBDRNSV1DT2
     command: review-verdict-needs-work
     timestamp: 2026-06-15T03:43:35.791Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KV4PC9ZH9F6XHXYE2BMJP398
+        previous: null
+      started_at:
+        new: 2026-06-15T04:14:17.052Z
+        previous: 2026-06-15T03:01:29.479Z
+    command: task-start
+    timestamp: 2026-06-15T04:14:17.052Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -295,7 +308,7 @@ resource_refs:
     recorded_at: 2026-06-15T00:55:22.026Z
     sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
 created_at: 2026-06-15T00:55:24.130Z
-started_at: 2026-06-15T03:01:29.479Z
+started_at: 2026-06-15T04:14:17.052Z
 submitted_at: 2026-06-15T03:22:41.867Z
 todos: []
 automation: eligible
