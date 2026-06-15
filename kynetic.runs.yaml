@@ -67142,7 +67142,7 @@ runs:
     completed_at: 2026-06-15T15:17:53.656Z
   - _ulid: 01KV5XPC3VYYXB8GAYMX09C8CJ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -67154,7 +67154,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T15:17:55.546Z
-        completed_at: 2026-06-15T15:17:55.546Z
+        completed_at: 2026-06-15T15:17:59.483Z
+        notes: "High-confidence candidate: shared BreadcrumbAncestryResolver degrades to a shorter chain
+          both when an ancestor is genuinely absent AND when a route under-provisions inputs (empty
+          items[] on cold cache) — indistinguishable, so the sessions route silently truncated the
+          chain. Lower-confidence/noise (skipped): task note positional-arg surprise, 45min
+          concurrent test suite, generic 'precise review helped'."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T15:17:59.483Z
+        completed_at: 2026-06-15T15:17:59.483Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T15:16:40.187Z
