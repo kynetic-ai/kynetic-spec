@@ -194,6 +194,13 @@ events:
     payload:
       thread_ulid: 01KV5W7JJRMZY36GVS1SSZ7P13
     timestamp: 2026-06-15T14:52:14.955Z
+  - _ulid: 01KV5W9R566SCZ8BBM82JNS9QJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV5W9QX8K0GXHJ8FVGHDSQAH
+    timestamp: 2026-06-15T14:52:17.959Z
 examined_commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
 external_links: []
 lifecycle_state: open
@@ -284,7 +291,26 @@ threads:
           @ token, or split the explanation out of the annotation line."
         created_at: 2026-06-15T14:51:36.302Z
     kind: blocker
+  - _ulid: 01KV5W9QX8K0GXHJ8FVGHDSQAH
+    anchor:
+      type: code
+      commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
+      line_end: 1388
+      line_start: 1364
+      path: src/parser/yaml.ts
+      side: head
+    entries:
+      - _ulid: 01KV5W9QX8S0QMZ4FX6KS17PEE
+        author: Jacob Chapel
+        body: "MUST-FIX: the lower-level note/todo constructors still implement their own author fallback
+          instead of requiring a caller-resolved canonical actor. createNote and createTodo fall
+          back to getAuthor when the caller omits author/addedBy, which leaves a sanctioned parser
+          helper path that future writers can call to persist non-canonical or out-of-pool actors.
+          The task explicitly requires parser/updater helpers and future writers to canonicalize
+          through one shared utility, not retain independent fallbacks."
+        created_at: 2026-06-15T14:52:17.704Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T14:35:05.417Z
-updated_at: 2026-06-15T14:52:14.712Z
+updated_at: 2026-06-15T14:52:17.704Z
 notes: []
