@@ -67688,9 +67688,22 @@ runs:
     completed_at: 2026-06-15T21:09:16.972Z
   - _ulid: 01KV6MA7819CM5HVB1H6K1E2FV
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-15T21:51:59.233Z
+        completed_at: 2026-06-15T21:54:14.479Z
+        notes: "What worked well: the detached reviewer merge helper completed the approved manual_merge
+          safely from the review snapshot, including an occupied target checkout; the review record
+          evidence log plus required checks made the approval auditable. Existing success
+          observations @01KQ1273 and @01KT5ZGF already cover this pattern, so no new success capture
+          needed."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-15T21:54:14.479Z
+        completed_at: 2026-06-15T21:54:14.479Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T21:51:59.233Z
