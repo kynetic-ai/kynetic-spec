@@ -55,6 +55,17 @@ checks:
     runner: npm test
     created_at: 2026-06-15T02:40:20.916Z
     completed_at: 2026-06-15T02:40:20.916Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 warnings and 0 errors on status-tokens.ts, ds/index.ts,
+      web-ui-status-tokens.test.ts, web-ui-view-header.test.ts, and changed e2e specs.
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed-ts-or-test-files>
+    created_at: 2026-06-15T02:40:24.778Z
+    completed_at: 2026-06-15T02:40:24.778Z
 events:
   - _ulid: 01KV4HP5SGM4CGC3KBSBX5QBEE
     actor: Jacob Chapel
@@ -125,6 +136,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-15T02:40:21.240Z
+  - _ulid: 01KV4JDMES5RWA0EQFKDVV9C23
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-15T02:40:25.049Z
 examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
 external_links: []
 lifecycle_state: open
@@ -196,5 +214,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-15T02:27:36.368Z
-updated_at: 2026-06-15T02:40:20.916Z
+updated_at: 2026-06-15T02:40:24.778Z
 notes: []
