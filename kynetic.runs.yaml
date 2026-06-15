@@ -67142,9 +67142,19 @@ runs:
     completed_at: 2026-06-15T15:17:53.656Z
   - _ulid: 01KV5XPC3VYYXB8GAYMX09C8CJ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-15T15:16:40.187Z
+        completed_at: 2026-06-15T15:17:55.546Z
+        notes: Searched observations (13), inbox (~14), and kspec search ancestor/cache-fallback. Baseline
+          established; no existing item covers the breadcrumb resolver silent-degradation pattern.
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-15T15:17:55.546Z
+        completed_at: 2026-06-15T15:17:55.546Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T15:16:40.187Z
