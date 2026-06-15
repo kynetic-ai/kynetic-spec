@@ -66988,7 +66988,7 @@ runs:
     started_at: 2026-06-15T11:37:01.970Z
     completed_at: 2026-06-15T11:39:33.862Z
   - _ulid: 01KV5WAAR2NZ7GST4T6EGW6W3T
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -67042,10 +67042,15 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-15T14:54:09.696Z
-        completed_at: 2026-06-15T14:54:09.696Z
+        completed_at: 2026-06-15T14:54:31.579Z
+        notes: "Captured one friction observation: @01KV5WDF. No inbox items or tasks created. The
+          observation records the cacheless daemon API test pattern found during review @01KV5VBT,
+          where a test accepted degraded session breadcrumb ancestry despite the task requiring the
+          full task/spec chain plus session."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T14:52:36.994Z
+    completed_at: 2026-06-15T14:54:31.580Z
   - _ulid: 01KV5WDHPK0C8BNCZVNSN91SYK
     status: active
     current_step: 0
