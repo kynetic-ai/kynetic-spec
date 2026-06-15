@@ -169,6 +169,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-15T21:05:09.580Z
+  - _ulid: 01KV6JYWWJBJ0E3NJRQCT9280C
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV6HM9BTQW9VY0QMK23KM7R7
+    timestamp: 2026-06-15T21:28:19.602Z
 examined_commit: ac63701ae81fc4525f4252cf66adb3dfd5c08d29
 external_links: []
 lifecycle_state: closed
@@ -202,6 +208,19 @@ threads:
           non-empty string, and whatever canonical/default rules are intended) before constructing
           the resolver, and add a behavioral regression test.'
         created_at: 2026-06-15T21:05:03.354Z
+      - _ulid: 01KV6JYWNJAMSK334Y1PPZ3G5B
+        author: "@claude"
+        body: "Fixed in 451b9a0012. loadOperatorActorMap now validates every `defaults` entry before the
+          resolver is constructed: the key must be a known record kind (new ACTOR_RECORD_KINDS /
+          isActorRecordKind runtime roster) and the value must be a non-empty string. A non-string
+          default (your exact repro, defaults: { inbox: 123 }) now throws 'must be a non-empty
+          string' and an unknown key throws 'not a known record kind', so the run fails closed
+          before any record is touched. Added behavioral regression tests: an end-to-end test seeds
+          inbox added_by=Hermes with defaults:{inbox:123}, asserts runActorNormalization rejects,
+          the spec dir is byte-identical before/after, and the reloaded added_by is still the string
+          'Hermes' (never the number). Plus loader unit tests for non-string value, blank value, and
+          unknown record-kind key."
+        created_at: 2026-06-15T21:28:19.378Z
     kind: blocker
   - _ulid: 01KV6HMC7VDN8CCMSNHAWKCBCS
     entries:
@@ -243,5 +262,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T21:05:09.580Z
 created_at: 2026-06-15T20:47:49.530Z
-updated_at: 2026-06-15T21:05:09.580Z
+updated_at: 2026-06-15T21:28:19.378Z
 notes: []
