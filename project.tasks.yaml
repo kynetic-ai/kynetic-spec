@@ -32408,6 +32408,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-15T23:37:19.595Z
+  automation: eligible
 - _ulid: 01KV6TB3T0QW16F5HKB8P3BT3J
   slugs:
     - task-coverage-record-compatibility
