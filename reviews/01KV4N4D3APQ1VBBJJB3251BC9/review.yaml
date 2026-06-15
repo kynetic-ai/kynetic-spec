@@ -55,6 +55,17 @@ checks:
     runner: npm test
     created_at: 2026-06-15T03:42:00.268Z
     completed_at: 2026-06-15T03:42:00.268Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:e2e succeeded and Playwright ran 53 focused tests for sessions/review
+      detail; 53 passed. Build emitted existing Svelte warnings in unrelated files."
+    name: focused e2e
+    required: false
+    runner: npm run test:e2e -- tests/e2e/sessions.spec.ts tests/e2e/review-detail-page.spec.ts
+    created_at: 2026-06-15T03:42:13.764Z
+    completed_at: 2026-06-15T03:42:13.764Z
 events:
   - _ulid: 01KV4N4D3AAXF70GWTN4C539A3
     actor: Jacob Chapel
@@ -132,6 +143,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-15T03:42:00.499Z
+  - _ulid: 01KV4NYTG1CF9VX9N6SF53XBMS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e
+    timestamp: 2026-06-15T03:42:14.017Z
 examined_commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
 external_links: []
 lifecycle_state: open
@@ -221,5 +239,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-15T03:27:48.330Z
-updated_at: 2026-06-15T03:42:00.268Z
+updated_at: 2026-06-15T03:42:13.764Z
 notes: []
