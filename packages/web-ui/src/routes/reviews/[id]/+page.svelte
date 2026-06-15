@@ -28,7 +28,8 @@
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { Badge } from '$lib/components/ui/badge';
-	import { ViewHeader, StatusBadge, type ViewHeaderCount } from '$lib/components/ds';
+	import { ViewHeader, StatusBadge, ActorDisplay, type ViewHeaderCount } from '$lib/components/ds';
+	import { createActorClassifier } from '$lib/query/identity.svelte.js';
 	import {
 		fetchReview,
 		fetchReviewSiblings,
@@ -63,6 +64,10 @@
 	let review = $derived<ReviewDetail | null>(reviewQuery.data ?? null);
 	let loading = $derived(reviewQuery.isLoading);
 	let error = $derived(reviewQuery.error?.message ?? '');
+
+	// Shared actor classifier (identity payload) for every recorded actor on
+	// this surface — review author, thread authors, verdict reviewers.
+	const actorClassifier = createActorClassifier();
 
 	// AC: @review-records-web-ui ac-11 — Fetch sibling reviews for revision selector
 	let subjectRef = $derived(review?.subject && 'ref' in review.subject ? review.subject.ref : undefined);
@@ -532,8 +537,8 @@
 						{/if}
 					</span>
 
-					<span data-testid="review-author">
-						by <span class="font-medium">{review.author}</span>
+					<span data-testid="review-author" class="inline-flex items-center gap-1">
+						by <ActorDisplay actor={review.author} classifier={actorClassifier.classifier} />
 					</span>
 
 					<span data-testid="review-created-at" title={review.created_at}>
@@ -717,9 +722,12 @@
 								{#each thread.entries as entry (entry._ulid)}
 									<div class="px-4 py-3" data-testid="thread-entry">
 										<div class="flex items-center gap-2 mb-2">
-											<span class="text-sm font-medium" data-testid="entry-author">
-												{entry.author}
-											</span>
+											<ActorDisplay
+												actor={entry.author}
+												classifier={actorClassifier.classifier}
+												class="text-sm"
+												testid="entry-author"
+											/>
 											<span
 												class="text-xs text-muted-foreground"
 												data-testid="entry-timestamp"
@@ -850,9 +858,12 @@
 											{#each thread.entries as entry (entry._ulid)}
 												<div class="px-4 py-3" data-testid="thread-entry">
 													<div class="flex items-center gap-2 mb-2">
-														<span class="text-sm font-medium" data-testid="entry-author">
-															{entry.author}
-														</span>
+														<ActorDisplay
+															actor={entry.author}
+															classifier={actorClassifier.classifier}
+															class="text-sm"
+															testid="entry-author"
+														/>
 														<span
 															class="text-xs text-muted-foreground"
 															data-testid="entry-timestamp"
@@ -1005,9 +1016,12 @@
 								<Badge data-testid="verdict-decision-badge" class={getVerdictColor(verdict.decision)}>
 									{formatVerdict(verdict.decision)}
 								</Badge>
-								<span class="text-sm font-medium" data-testid="verdict-reviewer">
-									{verdict.reviewer}
-								</span>
+								<ActorDisplay
+									actor={verdict.reviewer}
+									classifier={actorClassifier.classifier}
+									class="text-sm"
+									testid="verdict-reviewer"
+								/>
 								{#if verdict.role && verdict.role !== 'reviewer'}
 									<span class="text-xs text-muted-foreground">({verdict.role})</span>
 								{/if}
