@@ -1,0 +1,173 @@
+_ulid: 01KV4CDB72KM6NRMXXS1EB6SDB
+slugs:
+  - task-view-header-status-tokens
+title: Implement the standard view header and shared status tokens
+type: task
+description: |
+  Build the shared view-header component and the single
+  status-token source it draws from, and adopt them on existing
+  entity views.
+
+  Why: The codebase has four independent getStatusColor()
+  implementations (ItemDetail, TaskList, DiffFileList,
+  DiffFileView) — the canonical example of what happens when
+  surfaces are built without a shared substrate. Every redesigned
+  surface consumes this header; without it each surface plan
+  re-forks header layout and status rendering.
+
+  What:
+  - One status-token module mapping every entity lifecycle/state
+    value (task statuses, review lifecycle/disposition, spec
+    maturity/implementation, session statuses) to exactly one
+    color + glyph token, built on the existing design-token CSS
+    (--design-* status variables). Replace all four duplicated
+    getStatusColor() implementations with it.
+  - Include the four coverage presentation buckets (covered,
+    failing, not yet, re-verify) in the same token vocabulary as
+    data, so the coverage surfaces that later track plans build
+    draw their tokens from this single source; the
+    one-token-per-state uniqueness test covers them like every
+    other state, satisfying @coverage-state-presentation ac-2's
+    same-token-on-every-surface contract by construction.
+  - A view-header component with fixed zones: entity reference
+    (slug/ULID, copyable), state indicator from the token module,
+    child counts, and a view-actions slot. The leading chrome zone
+    renders empty per @web-shell-platform-target.
+  - Child counts accept server-resolved values only (counts come
+    from detail payloads or aggregation endpoints — the component
+    offers no fetch-and-count path).
+  - Header actions render in the actions slot and are
+    keyboard-operable (focusable, Enter/Space activation).
+  - Adopt on the review detail and session detail pages as the
+    first consumers, replacing their bespoke headers (per
+    @ui-view-header, every other entity detail view adopts the
+    header through the track plan that redesigns that surface).
+
+  How: Token module lives in the web-ui lib next to the design
+  tokens; header component in the shared component library. Assert
+  token uniqueness with a table-driven test over the full state
+  vocabulary (one token per state, no state unmapped).
+
+
+  Handoff resources: Use the app shell/navigation, spec workspace,
+  coverage-state, spec-state-integration, and validate handoff docs
+  declared in resource_refs, plus the coverage and spec-state
+  screenshots, to derive the shared token vocabulary and header
+  information zones. The coverage source
+  (./resources/handoff/reference-src/wf3-coverage-states.jsx) contains
+  exact token/glyph examples; target code still belongs in the Svelte
+  design-system utilities.
+
+  Covers: @ui-view-header ac-1, ac-2, ac-3, ac-4, ac-5, ac-6;
+  @coverage-state-presentation ac-2.
+spec_ref: "@ui-view-header"
+plan_ref: "@plan-web-ui-foundations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - web-ui
+  - design-system
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-app-shell-navigation
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/01-app-shell-and-navigation.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: c907189c175662c9fffb489a95c654a1c25bf7a3970ba02567152f44320ae827
+  - git_commit: null
+    git_path: null
+    id: handoff-spec-workspace
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/06-spec-workspace.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 9859180adb431b75189f3a8d5d89bcecec614ced1c8b0cd242e1d333552fb52e
+  - git_commit: null
+    git_path: null
+    id: handoff-coverage-states
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/07-coverage-states.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 2663975b866d23cddc915a7ce73f4ac32ffbe495e4a6b77e124726537d40255c
+  - git_commit: null
+    git_path: null
+    id: handoff-spec-states-integration
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/08-spec-states-integration.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 1a280d3c6246e561c0d04400a6bfb1567ffd1cc7181ef2b9173acb9184e15493
+  - git_commit: null
+    git_path: null
+    id: handoff-validate
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/09-validate.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 2830449d6fddf9a71b6b08b50519ec9efa3fe9ddeac831d04ca5157bf743fa64
+  - git_commit: null
+    git_path: null
+    id: shot-coverage-legend
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-coverage-1-legend.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: b7ff31fad2ac5827c31fbb5b2079aec08701668b5ff75fde2fc4e6056204c7b3
+  - git_commit: null
+    git_path: null
+    id: shot-coverage-five-state
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-coverage-4-five-state-alt.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: a514d69630262ec638f66900b27fc8ceccd6b52d5cf8b50b3be72cf0b9450e63
+  - git_commit: null
+    git_path: null
+    id: shot-spec-state-requirement
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-spec-states-1-requirement.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 9ef6b5a3f22a847abb9f5ff832b6e9132706ab0e38298bbc91aa3c394d649e71
+  - git_commit: null
+    git_path: null
+    id: shot-spec-state-rollups
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-spec-states-2-tree-rollups.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 168b0cc754d2622f560b813ca886152d7843511412790a4d8327ae04127fbe65
+  - git_commit: null
+    git_path: null
+    id: shot-spec-state-stale-ac
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-spec-states-3-stale-ac.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 164f12153268332a70fb6e26efd50d2f17df4dd13e00b15c1ccbf0310f50ee36
+  - git_commit: null
+    git_path: null
+    id: src-coverage-states
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/reference-src/wf3-coverage-states.jsx
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 906f3d6b60776618d102a6fb49e7e3f18fcee7eb5dfbd1d75537fd07ffc6dbad
+  - git_commit: null
+    git_path: null
+    id: src-spec-unified
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/reference-src/wf3-spec-unified.jsx
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
+created_at: 2026-06-15T00:55:24.130Z
+todos: []

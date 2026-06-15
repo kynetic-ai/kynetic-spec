@@ -5787,6 +5787,600 @@ features:
         notes: []
     created: 2026-04-05T05:25:52.805Z
     notes: []
+  - _ulid: 01KV4CD8RD0FJVFYQMNJCV2VHY
+    slugs:
+      - ui-breadcrumb
+    title: Breadcrumb Navigation
+    type: feature
+    description: |
+      Entity views present a breadcrumb trail showing the hierarchy path
+      from the root to the current entity. The trail adapts to the number
+      of path segments and the available width by collapsing middle
+      segments into a single collapse indicator; collapsed segments stay
+      reachable through a popover that lists them in hierarchy order.
+      Each segment carries an indicator of its item kind, the current
+      segment is visually emphasized, and the full path's titles and
+      kinds are resolved server-side in one bounded request.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          an entity whose breadcrumb path — root through current entity —
+          contains 4 or fewer segments
+        id: ac-1
+        then: |
+          every segment renders in hierarchy order and no collapse
+          indicator appears
+        when: |
+          the breadcrumb renders with sufficient width for all segments
+      - given: |
+          a breadcrumb path containing 5 or 6 segments
+        id: ac-2
+        then: |
+          exactly the root segment, one collapse indicator, the two
+          ancestor segments nearest the current entity, and the current
+          segment render in hierarchy order, with the remaining segments
+          collapsed into the indicator
+        when: |
+          the breadcrumb renders
+      - given: |
+          a breadcrumb path containing 7 or more segments
+        id: ac-3
+        then: |
+          exactly the root segment, one collapse indicator, the single
+          ancestor segment nearest the current entity, and the current
+          segment render in hierarchy order, with the remaining segments
+          collapsed into the indicator
+        when: |
+          the breadcrumb renders
+      - given: |
+          a breadcrumb whose truncated form still exceeds the available
+          width
+        id: ac-4
+        then: |
+          visible ancestor segments, including the root, collapse into
+          the indicator until the trail fits, and the current segment
+          always remains visible
+        when: |
+          the breadcrumb renders
+      - given: |
+          a breadcrumb showing a collapse indicator
+        id: ac-5
+        then: |
+          a popover lists every collapsed segment in hierarchy order,
+          and activating a listed segment navigates to that entity
+        when: |
+          the indicator is activated
+      - given: |
+          the collapsed-segment popover is open
+        id: ac-6
+        then: |
+          arrow keys move the selection through the listed segments,
+          Enter navigates to the selected segment, and Escape closes the
+          popover without navigating
+        when: |
+          the user presses the up or down arrow key, Enter, or Escape
+      - given: |
+          a pointing device without hover capability or keyboard-only
+          input
+        id: ac-7
+        then: |
+          the popover opens; opening never requires hover
+        when: |
+          the collapse indicator is activated by tap, click, or keyboard
+      - given: |
+          a breadcrumb with a collapse indicator
+        id: ac-8
+        then: |
+          the breadcrumb's visible segments and the surrounding page
+          content do not shift position
+        when: |
+          the popover opens or closes
+      - given: |
+          a breadcrumb path whose segments reference spec items of
+          differing kinds
+        id: ac-9
+        then: |
+          each segment, including segments listed inside the popover,
+          carries the indicator for its item kind, and the current
+          segment is visually emphasized relative to ancestor segments
+        when: |
+          the breadcrumb renders
+      - given: |
+          a breadcrumb is built for any entity
+        id: ac-10
+        then: |
+          the titles and kinds for the entire chain come from
+          server-resolved data in a single bounded request, and the
+          client issues no unbounded entity-list request to construct
+          the trail
+        when: |
+          the ancestor chain is resolved
+    tags: []
+    created: 2026-06-15T00:55:21.613Z
+    notes: []
+  - _ulid: 01KV4CD8TR24VR4ZVVJRX7F6S5
+    slugs:
+      - ui-view-header
+    title: Standard View Header
+    type: feature
+    description: |
+      Entity views share a single header pattern: the entity reference,
+      a lifecycle or state indicator drawn from a shared status-token
+      vocabulary, counts of the entity's children where applicable, and
+      a zone for view-specific actions, arranged identically across
+      views. The header's leading chrome zone stays empty. Each entity
+      state is represented by exactly one visual token wherever it
+      appears. Detail views adopt the header as their surfaces are
+      redesigned: the review detail and session detail views are the
+      first adopters, and every other entity detail view adopts it
+      through the track plan that redesigns that surface.
+    depends_on:
+      - "@web-shell-platform-target"
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          an entity detail view that presents the standard header
+        id: ac-1
+        then: |
+          the header presents the entity reference, a lifecycle or state
+          indicator, child counts where the entity has countable
+          children, and a view-actions zone, in the arrangement shared
+          by all adopting views
+        when: |
+          its header renders
+      - given: |
+          the same entity state presented in two different views
+        id: ac-2
+        then: |
+          one shared status token — the same color and glyph —
+          represents that state in both places
+        when: |
+          each view renders its state indicator
+      - given: |
+          a view header laid out at any viewport width
+        id: ac-3
+        then: |
+          the leading chrome zone contains no header element
+        when: |
+          its elements are positioned
+      - given: |
+          an entity with countable children
+        id: ac-4
+        then: |
+          the counts derive from server-resolved fields or server-side
+          aggregation, not from client-side enumeration of full entity
+          lists
+        when: |
+          the header presents child counts
+      - given: |
+          a view that contributes actions to its header
+        id: ac-5
+        then: |
+          the actions appear only within the designated actions zone and
+          each action is operable by keyboard
+        when: |
+          the header renders
+      - given: |
+          the review detail and session detail views
+        id: ac-6
+        then: |
+          each presents the standard view header in place of a bespoke
+          header
+        when: |
+          each view renders
+    tags: []
+    created: 2026-06-15T00:55:21.688Z
+    notes: []
+  - _ulid: 01KV4CD8WFVR60KXGE2EJVFTWK
+    slugs:
+      - ui-shortcut-registry
+    title: Keyboard Shortcut Registry
+    type: feature
+    description: |
+      All interface keyboard shortcuts are declared through one central
+      registry that resolves each shortcut's chord per platform,
+      detects binding collisions at registration, refuses
+      browser-reserved combinations, and falls back to a shortcut's
+      declared alternate chords when the preferred chord cannot be
+      bound. Each shortcut is declared with an activation context — a
+      global context or a surface-scoped context that is active only
+      while its owning surface is active — a binding is active only
+      while its context is active, and collision detection applies
+      among the bindings of the same context. The registry's inventory
+      of active bindings is enumerable with display labels matching the
+      active platform.
+    depends_on:
+      - "@web-shell-platform-target"
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          a shortcut registered through the registry and active in the
+          current context
+        id: ac-1
+        then: |
+          the bound action fires exactly once
+        when: |
+          its resolved chord is pressed
+      - given: |
+          the set of registered shortcuts active in the current context
+        id: ac-2
+        then: |
+          every active binding is enumerated with its display label and
+          the chord resolved for the active platform
+        when: |
+          the shortcut inventory is requested
+      - given: |
+          a shortcut declared with a platform-abstract primary modifier
+        id: ac-3
+        then: |
+          the platform's conventional primary modifier is used, and the
+          displayed label matches the binding that is actually active
+        when: |
+          its binding resolves on each supported platform
+      - given: |
+          a registration that resolves to a chord already bound in the
+          same context
+        id: ac-4
+        then: |
+          the registration is rejected with a reported collision and the
+          existing binding remains the only binding for that chord
+        when: |
+          the registration is attempted
+      - given: |
+          a registration whose preferred chord is on the active
+          platform's browser-reserved combination list
+        id: ac-5
+        then: |
+          the preferred chord is not bound; the shortcut's first
+          declared fallback chord that is neither reserved nor colliding
+          is bound instead, and a shortcut with no resolvable fallback
+          is reported as unbound rather than silently dropped
+        when: |
+          the binding resolves
+      - given: |
+          keyboard focus inside a text-entry control
+        id: ac-6
+        then: |
+          no registry action fires and the keystroke reaches the
+          text-entry control
+        when: |
+          a chord without the platform's primary modifier is pressed
+    tags: []
+    created: 2026-06-15T00:55:21.743Z
+    notes: []
+  - _ulid: 01KV4CD8Y8Y95VP2S35KE71SNP
+    slugs:
+      - ui-preference-store
+    title: Persisted Preference Utility
+    type: feature
+    description: |
+      Interface preferences persist through one shared utility. Each
+      preference is declared with a namespace, a key, a value type with
+      validation, a schema version with an upgrade rule, and a default.
+      The utility's interface is storage-agnostic; the default backend
+      is browser-local storage, and the utility degrades to
+      session-scoped in-memory behavior when persistent storage is
+      unavailable.
+    depends_on:
+      - "@client-preference-persistence"
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          a preference value written through the utility
+        id: ac-1
+        then: |
+          reading the preference returns the stored value
+        when: |
+          the interface reloads in the same browser
+      - given: |
+          two preferences registered under different namespaces with the
+          same key name
+        id: ac-2
+        then: |
+          each returns its own value and neither overwrites the other
+        when: |
+          both are written and read back
+      - given: |
+          a stored preference value whose schema version is older than
+          the preference's current declared version
+        id: ac-3
+        then: |
+          the result is the value produced by the preference's declared
+          upgrade rule, or the declared default when no rule applies —
+          never the unmigrated stored shape
+        when: |
+          the preference is read
+      - given: |
+          a stored value that fails the preference's declared type
+          validation
+        id: ac-4
+        then: |
+          the declared default is returned and the invalid value does
+          not propagate to the consumer
+        when: |
+          the preference is read
+      - given: |
+          an alternative storage backend provided behind the utility's
+          interface
+        id: ac-5
+        then: |
+          the observable read and write semantics are unchanged and
+          consumers never access the backing store directly
+        when: |
+          consumers read and write preferences
+      - given: |
+          persistent browser storage is unavailable or a write to it
+          fails
+        id: ac-6
+        then: |
+          the utility operates in session-scoped in-memory mode and the
+          interface remains functional
+        when: |
+          preferences are written and read
+    tags: []
+    created: 2026-06-15T00:55:21.800Z
+    notes: []
+  - _ulid: 01KV4CD8ZYB79DWC8VASFFECBH
+    slugs:
+      - actor-identity-resolution
+    title: Actor Identity Resolution
+    type: feature
+    description: |
+      The system exposes its identity configuration — the configured
+      human identity and the canonical agent roster — through a single
+      identity surface, and classifies recorded actor strings to
+      canonical identities. Classification resolves recognizable
+      variants of agent identifiers and of the human identity to their
+      canonical form; strings that resolve to neither classify as
+      unknown without failing. Records written through any first-party
+      write interface resolve their actor fields through one shared
+      author/actor utility rather than route-local fallbacks or anonymous
+      placeholders, and persisted actor values are canonical:
+      caller-supplied or precedence-resolved values that classify as a
+      configured human or agent identity are stored in canonical form,
+      while values that classify to no configured identity are rejected
+      on new writes. Unknown classification remains a read-side result
+      for historical or externally edited records, not a way to persist
+      arbitrary new authors.
+    depends_on:
+      - "@actor-identity-model"
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          a running daemon with a configured project
+        id: ac-1
+        then: |
+          the response contains the configured human identity with its
+          display name and the canonical agent roster — each agent's
+          canonical identifier and display information — in a single
+          bounded response
+        when: |
+          the identity surface is requested
+      - given: |
+          a recorded actor string that is a recognizable variant of a
+          canonical agent identifier
+        id: ac-2
+        then: |
+          it resolves to that agent's canonical identity with actor
+          kind agent
+        when: |
+          the string is classified
+      - given: |
+          a recorded actor string matching the configured human identity
+          or a recognizable variant of it
+        id: ac-3
+        then: |
+          it resolves to the human identity with actor kind human
+        when: |
+          the string is classified
+      - given: |
+          a recorded actor string that resolves to no canonical agent
+          and not to the human identity
+        id: ac-4
+        then: |
+          classification yields an unknown-kind result that preserves
+          the original string, and no operation fails because of it
+        when: |
+          the string is classified
+      - given: |
+          the same actor string and the same identity configuration
+        id: ac-5
+        then: |
+          the result is identical
+        when: |
+          classification runs at different times
+      - given: |
+          a review mutation arriving through the daemon without an
+          explicit actor value
+        id: ac-6
+        then: |
+          the recorded author resolves through the configured author
+          precedence and is never recorded as an anonymous placeholder
+        when: |
+          the record is written
+      - given: |
+          an actor value about to be persisted by any first-party record
+          write — supplied explicitly by the caller or resolved through
+          the author-resolution precedence — that classifies as a
+          recognizable variant of a canonical agent identity or of the
+          configured human identity
+        id: ac-7
+        then: |
+          the stored actor value is the canonical identity, never the
+          variant form
+        when: |
+          the record is written
+      - given: |
+          an actor value about to be persisted by any first-party record
+          write that classifies to no configured human or agent identity
+        id: ac-8
+        then: |
+          the write is rejected with validation feedback, and no new
+          free-form actor value is persisted
+        when: |
+          the record is written
+    tags: []
+    requirements:
+      - _ulid: 01KV4CD91MNM20NVAEDZSRCH7Q
+        slugs:
+          - actor-display
+        title: Actor Display and Next-Actor Derivation
+        type: requirement
+        description: |
+          A single display primitive renders any recorded actor: the
+          canonical display name with a visual distinction between human and
+          agent kinds, and an honest distinct treatment for unknown actors.
+          A deterministic next-actor rule derives, from a review's lifecycle
+          state and disposition, which role the review awaits — the
+          reviewing party, the author of the work under review, or no one —
+          and every surface presenting whom a review awaits resolves the
+          awaited party by applying that one rule to the review's recorded
+          participants.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              any surface presenting a recorded actor
+            id: ac-1
+            then: |
+              the actor's canonical display name renders with a visual
+              distinction between human and agent kinds, and the same actor
+              renders identically across surfaces
+            when: |
+              the actor renders
+          - given: |
+              an actor classified as unknown
+            id: ac-2
+            then: |
+              the original recorded string is displayed with a distinct
+              unknown treatment and is never presented as a canonical
+              identity
+            when: |
+              it renders
+          - given: |
+              a review's lifecycle state and disposition
+            id: ac-3
+            then: |
+              the result follows the fixed mapping — an open review with
+              pending disposition awaits the reviewer role; an open review
+              with changes-requested disposition awaits the work-author
+              role; an open review with approved disposition awaits the
+              work-author role for post-approval action; a closed or
+              archived review awaits no role
+            when: |
+              the review's awaited role is derived
+          - given: |
+              two surfaces presenting whom the same review awaits
+            id: ac-4
+            then: |
+              both surfaces present the same result
+            when: |
+              each derives the awaited party from that review's lifecycle
+              state, disposition, and recorded participants
+        tags: []
+        created: 2026-06-15T00:55:21.908Z
+        notes: []
+      - _ulid: 01KV4CD93HF9R08MZ26Q03JSAE
+        slugs:
+          - actor-history-normalization
+        title: Historical Actor Normalization
+        type: requirement
+        description: |
+          A one-time step of the project data upgrade path rewrites
+          historical actor fields to canonical identities. The step is driven
+          by an exhaustive actor-field inventory so every actor-bearing
+          storage path is either normalized or explicitly documented as
+          non-actor/out of scope. A declared variant map resolves recognizable
+          historical actor strings; operator-supplied mappings can resolve
+          additional historical values, and values no rule resolves are
+          replaced with the declared unknown or default actor for their
+          record kind. The step reports every rewrite and every unresolved
+          original, supports a preview mode that modifies nothing, and is
+          idempotent.
+        depends_on:
+          - "@actor-identity-model"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a project whose historical records contain recognizable actor
+              variants
+            id: ac-1
+            then: |
+              those actor fields are rewritten to the corresponding
+              canonical identities according to the declared variant map
+            when: |
+              the upgrade step runs
+          - given: |
+              an actor value that no variant rule or operator-supplied mapping
+              resolves
+            id: ac-2
+            then: |
+              the value is replaced with the declared unknown or default actor
+              for its record kind, and the original value appears in the
+              step's report
+            when: |
+              the upgrade step runs
+          - given: |
+              the upgrade step has already run to completion on a project
+            id: ac-3
+            then: |
+              no record changes
+            when: |
+              it runs again
+          - given: |
+              the upgrade is invoked in preview mode
+            id: ac-4
+            then: |
+              it reports the rewrites it would perform and modifies no
+              record
+            when: |
+              the step evaluates the project's records
+          - given: |
+              the upgrade step completes
+            id: ac-5
+            then: |
+              every inventoried actor field value is a canonical identity or
+              a declared default
+            when: |
+              actor fields across the project's record kinds are inspected
+          - given: |
+              the upgrade implementation is checked against the project's
+              actor-bearing schemas, API types, and stored record shapes
+            id: ac-6
+            then: |
+              the field appears in the migration inventory with its record
+              kind, storage path, owning schema/type, and normalization
+              disposition, or it is explicitly documented as not representing
+              a human or agent actor identity
+            when: |
+              an actor/author/reviewer/resolver/addition-source field exists
+        tags: []
+        created: 2026-06-15T00:55:21.970Z
+        notes: []
+    created: 2026-06-15T00:55:21.854Z
+    notes: []
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:

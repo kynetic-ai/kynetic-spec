@@ -32085,3 +32085,163 @@
   todos_count: 0
   created_at: 2026-06-14T20:22:56.177Z
   automation: manual_only
+- _ulid: 01KV4CD95BNGJ9YG3PYYZ4S6E0
+  slugs:
+    - task-identity-endpoint-classifier
+  title: Implement identity endpoint and actor classifier
+  type: task
+  spec_ref: "@actor-identity-resolution"
+  plan_ref: "@plan-web-ui-foundations"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - daemon
+    - api
+    - identity
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T00:55:22.027Z
+- _ulid: 01KV4CD9G0DMTTRQJMM3S84BJX
+  slugs:
+    - task-review-author-resolution
+  title: Canonicalize all actor-bearing writes through one shared author utility
+  type: task
+  spec_ref: "@actor-identity-resolution"
+  plan_ref: "@plan-web-ui-foundations"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-identity-endpoint-classifier"
+  priority: 1
+  tags:
+    - daemon
+    - cli
+    - identity
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T00:55:22.368Z
+- _ulid: 01KV4CD9W9AJRNJQCEZ0NWF09W
+  slugs:
+    - task-actor-display-next-actor
+  title: Build actor display primitive and next-actor derivation
+  type: task
+  spec_ref: "@actor-display"
+  plan_ref: "@plan-web-ui-foundations"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-identity-endpoint-classifier"
+  priority: 2
+  tags:
+    - web-ui
+    - identity
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T00:55:22.761Z
+- _ulid: 01KV4CDA7DT4GY1ZYKXA86XX50
+  slugs:
+    - task-actor-normalization-upgrade
+  title: Add historical actor normalization to the upgrade path
+  type: task
+  spec_ref: "@actor-history-normalization"
+  plan_ref: "@plan-web-ui-foundations"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-identity-endpoint-classifier"
+  priority: 2
+  tags:
+    - cli
+    - upgrade
+    - identity
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T00:55:23.117Z
+- _ulid: 01KV4CDAHSGAP3FPNJ5C22P5QQ
+  slugs:
+    - task-breadcrumb-ancestry-api
+  title: Serve server-resolved breadcrumb ancestor chains
+  type: task
+  spec_ref: "@ui-breadcrumb"
+  plan_ref: "@plan-web-ui-foundations"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - daemon
+    - api
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T00:55:23.449Z
+- _ulid: 01KV4CDAWAG1XHQVHAVABN2VMD
+  slugs:
+    - task-breadcrumb-component
+  title: Build the adaptive breadcrumb component
+  type: task
+  spec_ref: "@ui-breadcrumb"
+  plan_ref: "@plan-web-ui-foundations"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-breadcrumb-ancestry-api"
+  priority: 2
+  tags:
+    - web-ui
+    - navigation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T00:55:23.786Z
+- _ulid: 01KV4CDB72KM6NRMXXS1EB6SDB
+  slugs:
+    - task-view-header-status-tokens
+  title: Implement the standard view header and shared status tokens
+  type: task
+  spec_ref: "@ui-view-header"
+  plan_ref: "@plan-web-ui-foundations"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - web-ui
+    - design-system
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T00:55:24.130Z
+- _ulid: 01KV4CDBJ1P97HBCQHVPG61VXG
+  slugs:
+    - task-shortcut-registry
+  title: Implement the keyboard shortcut registry
+  type: task
+  spec_ref: "@ui-shortcut-registry"
+  plan_ref: "@plan-web-ui-foundations"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - web-ui
+    - keyboard
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T00:55:24.481Z
+- _ulid: 01KV4CDBWM83RRBNH7RX33E5YK
+  slugs:
+    - task-preference-utility
+  title: Implement the persisted preference utility
+  type: task
+  spec_ref: "@ui-preference-store"
+  plan_ref: "@plan-web-ui-foundations"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - web-ui
+    - persistence
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-15T00:55:24.820Z

@@ -1,0 +1,136 @@
+_ulid: 01KV4CD9G0DMTTRQJMM3S84BJX
+slugs:
+  - task-review-author-resolution
+title: Canonicalize all actor-bearing writes through one shared author utility
+type: task
+description: |
+  Make every actor-bearing write path persist canonical actor
+  identities through one shared author/actor utility: remove the
+  anonymous review-route fallbacks, resolve missing actor values
+  through the standard author-resolution chain, classify every actor
+  value to canonical form before persistence, and reject values that
+  are not in the configured human/agent author pool. No daemon route,
+  CLI command, import helper, parser/updater helper, or future writer
+  may implement its own author fallback or canonicalization logic.
+
+  Why: packages/daemon/src/routes/reviews.ts contains ten
+  `|| "anonymous"` fallbacks (threads, replies, resolve/reopen,
+  verdicts, checks, lifecycle changes) — they are why 287 review
+  records carry "@claude" and singleton variants as authors. But
+  fixing the fallbacks alone is not enough: writer code across the
+  daemon, CLI, and lower-level mutation helpers can canonicalize
+  differently, the author chain can end in free-form git/OS-derived
+  names, and caller-supplied values can persist verbatim — which is
+  how the same codex agent accumulated at least 7 recorded spellings.
+  @actor-identity-model ac-1 requires every new actor-bearing record
+  written through any interface to be canonical, and the upstream
+  claim table assigns this plan the canonical-write identity layer.
+
+  What:
+  - Create a single shared actor-write utility/library function used
+    by all record-writing interfaces. Its contract is the only
+    sanctioned path for actor-bearing writes: input is the optional
+    explicit actor value plus write context; it resolves absent
+    values through @config-author, classifies values through the
+    shared classifier from @task-identity-endpoint-classifier,
+    persists only canonical configured human/agent identities, and
+    returns structured validation feedback for invalid/out-of-pool
+    values. The utility lives in shared non-route code so daemon
+    routes, CLI commands, import/update helpers, and tests all call
+    the same implementation.
+  - Inventory every code path that creates or mutates an actor field
+    before changing behavior. The inventory must include, at minimum,
+    review records, review threads/replies/checks/verdicts/lifecycle
+    events/resolution actors/notes, task notes and todos, plan notes,
+    spec/module notes, inbox and triage records, meta observations,
+    session/dispatch attribution fields that are human/agent actor
+    fields, and any CLI or importer path that can write those records.
+    For each inventoried path, either adopt the shared utility or
+    document why the field is not an actor-bearing author field.
+  - Replace every anonymous fallback in the review routes with the
+    shared utility, then validate the resolved value against the
+    configured human/agent author pool before persistence.
+  - Replace all other local author-resolution, fallback, and direct
+    string-persistence behavior in actor-bearing writers with the
+    shared utility. After resolution — explicit caller value or chain
+    result — the shared utility classifies the value and persists the
+    canonical identity whenever classification resolves it. A value
+    that classifies to no configured identity rejects the write with
+    validation feedback instead of being persisted as a new free-form
+    author.
+  - Reconcile @config-author with @actor-identity-model's
+    transition boundary: update that spec's fallback-chain wording
+    (kspec item set at execution time) to state that chain-resolved
+    values pass through write-time classification before
+    persistence, and any tail value outside the configured pool is
+    rejected on new writes, so the two specs stop sitting in the
+    corpus as an unexplained contradiction.
+  - Add regression tests that prove callers cannot diverge from the
+    shared utility: representative daemon writes, CLI writes, and
+    import/update helper writes all persist the same canonical value
+    for the same actor input; explicit variants such as
+    codex@openai.com persist the canonical agent id; unrecognizable
+    actor values reject with validation feedback; no path records
+    "anonymous"; and a focused guard fails if known writer modules
+    reintroduce ad-hoc author fallbacks or bypass the utility for an
+    actor-bearing field.
+
+  How: Treat the existing getAuthor() chain as an input to the new
+  shared utility, not as a persistence boundary. Route handlers,
+  CLI commands, and lower-level record mutation helpers pass their
+  write context through the utility before data reaches storage.
+  Keep the helper independent of HTTP so non-daemon writes use the
+  same code. This is a write-path-only change — historical values
+  are handled by @task-actor-normalization-upgrade, not here.
+
+
+  Handoff resources: Use the product context
+  (./resources/handoff/docs/00-product-context.md), reviews handoff
+  (./resources/handoff/docs/11-reviews.md), and implementation backlog
+  (./resources/handoff/docs/12-implementation-backlog.md) to understand
+  why reviewer/author attribution must be consistent before later
+  review, dashboard, and awaiting-action surfaces consume it.
+
+  Covers: @actor-identity-resolution ac-6, ac-7, ac-8;
+  @actor-identity-model ac-1.
+spec_ref: "@actor-identity-resolution"
+plan_ref: "@plan-web-ui-foundations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-identity-endpoint-classifier"
+context: []
+priority: 1
+tags:
+  - daemon
+  - cli
+  - identity
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-product-context
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/00-product-context.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: acf72703d28c755e7925ed10cd8604814d4b640d609bdd9c4b93823f53701719
+  - git_commit: null
+    git_path: null
+    id: handoff-reviews
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/11-reviews.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: c8372f313c3d5f0080f713325059165bdaa7d997d80a961bef282d3a2e5ee5a6
+  - git_commit: null
+    git_path: null
+    id: handoff-implementation-backlog
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/12-implementation-backlog.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 3a43077a9aac8ddb47ec7fa7d32f40c61bc8bf2af7b3b3a31a8cc46b260aa046
+created_at: 2026-06-15T00:55:22.368Z
+todos: []

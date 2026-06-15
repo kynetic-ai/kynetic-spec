@@ -1,0 +1,96 @@
+_ulid: 01KV4CDBWM83RRBNH7RX33E5YK
+slugs:
+  - task-preference-utility
+title: Implement the persisted preference utility
+type: task
+description: |
+  Build the namespaced, versioned, typed preference utility with a
+  storage-agnostic interface and a browser-local-storage backend,
+  and migrate existing ad-hoc persistence onto it.
+
+  Why: @client-preference-persistence requires all surface
+  preferences to flow through one shared utility. Today the only
+  persisted preference (project selection) talks to localStorage
+  directly, and the redesign program adds many more (sidebar
+  collapse, palette recents, view toggles, tree expansion) — each
+  surface plan needs the utility to already exist.
+
+  What:
+  - definePreference({ namespace, key, version, schema/validate,
+    default, migrate? }) returning a typed accessor (get/set/
+    subscribe) usable from Svelte runes contexts.
+  - Storage keys derived from namespace + key + version scheme so
+    namespaces cannot collide; one reserved top-level prefix for
+    the application — the shared namespaced, versioned key format
+    under which every stored preference value is recorded.
+  - Read path: parse → version check → migrate (declared rule) or
+    fall back to default → validate → return; invalid or foreign
+    values never propagate (return default).
+  - Backend interface (get/set/remove string) with two
+    implementations: browser-local storage and in-memory. The
+    in-memory backend doubles as the degradation mode when
+    localStorage is unavailable (private browsing, quota) — detect
+    on first use, fall back per-write on quota errors, keep the
+    interface functional.
+  - Migrate the project-selection persistence in the project store
+    to the utility as the first consumer, preserving the existing
+    stored value (read the legacy key once as a migration).
+  - Unit tests against the in-memory backend for round-trip,
+    namespace isolation, version migration, validation fallback,
+    and unavailable-storage degradation.
+
+  How: Lives in the web-ui lib (src/lib/preferences/). SSR is
+  disabled globally so window access is safe at module init, but
+  guard for test environments. Keep serialization JSON-based with
+  schema validation at the edge.
+
+
+  Handoff resources: Use the app shell/navigation handoff
+  (./resources/handoff/docs/01-app-shell-and-navigation.md) and the two
+  R3 sidebar focus screenshots
+  (./resources/handoff/shots/r3-sidebar-focus-a.png and
+  ./resources/handoff/shots/r3-sidebar-focus-b.png) for the persisted
+  focus-collapse and per-project section-collapse preferences that
+  this utility must be able to support later.
+
+  Covers: @ui-preference-store ac-1, ac-2, ac-3, ac-4, ac-5, ac-6;
+  @client-preference-persistence ac-1.
+spec_ref: "@ui-preference-store"
+plan_ref: "@plan-web-ui-foundations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - web-ui
+  - persistence
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-app-shell-navigation
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/01-app-shell-and-navigation.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: c907189c175662c9fffb489a95c654a1c25bf7a3970ba02567152f44320ae827
+  - git_commit: null
+    git_path: null
+    id: shot-sidebar-focus-a
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-sidebar-focus-a.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 245a925bcfdd531a01958f1ca6f7b0f74780e4f03547a83534253422d16dbb48
+  - git_commit: null
+    git_path: null
+    id: shot-sidebar-focus-b
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-sidebar-focus-b.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: eb09e0a73c2f5824f588abf8844e80c0a6eaa59b2b0177e5508f664e1bb5e7e0
+created_at: 2026-06-15T00:55:24.820Z
+todos: []

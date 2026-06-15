@@ -2,11 +2,27 @@ _ulid: 01KTVWAG22MC8GTVXPZ72E40TR
 slugs:
   - plan-web-ui-foundations
 title: Web UI Foundations
-status: approved
+status: active
 approved_at: 2026-06-15T00:55:03.074Z
 branch: feat/ui-redesign
-derived_specs: []
-derived_tasks: []
+derived_specs:
+  - "@ui-breadcrumb"
+  - "@ui-view-header"
+  - "@ui-shortcut-registry"
+  - "@ui-preference-store"
+  - "@actor-identity-resolution"
+  - "@actor-display"
+  - "@actor-history-normalization"
+derived_tasks:
+  - "@task-identity-endpoint-classifier"
+  - "@task-review-author-resolution"
+  - "@task-actor-display-next-actor"
+  - "@task-actor-normalization-upgrade"
+  - "@task-breadcrumb-ancestry-api"
+  - "@task-breadcrumb-component"
+  - "@task-view-header-status-tokens"
+  - "@task-shortcut-registry"
+  - "@task-preference-utility"
 module_ref: "@web-ui"
 resource_summary:
   count: 31

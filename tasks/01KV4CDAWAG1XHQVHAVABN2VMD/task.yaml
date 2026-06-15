@@ -1,0 +1,160 @@
+_ulid: 01KV4CDAWAG1XHQVHAVABN2VMD
+slugs:
+  - task-breadcrumb-component
+title: Build the adaptive breadcrumb component
+type: task
+description: |
+  Build the breadcrumb component with adaptive truncation and the
+  collapsed-segment popover, and adopt it on existing detail
+  routes.
+
+  Why: No breadcrumb exists anywhere in the web UI today (detail
+  pages use ad-hoc "Back to X" links). Every redesigned surface
+  needs hierarchy orientation; building it per-surface would fork
+  the truncation and accessibility logic immediately.
+
+  What:
+  - Truncation tiers driven by segment count: full path at <= 4
+    segments; root + collapse indicator + last two ancestors +
+    current at 5-6; root + indicator + last ancestor + current at
+    7+; further ancestor-stack collapse (root included) when the
+    rendered trail still overflows its container, with the current
+    segment always visible.
+  - The collapse indicator opens a popover (overlay — zero layout
+    shift) listing collapsed segments in hierarchy order; segments
+    are clickable links; up/down + Enter keyboard navigation;
+    Escape closes; activation works by click, tap, and keyboard —
+    never hover-only.
+  - Per-segment item-kind indicators (module/feature/requirement/
+    decision/trait, task, plan, review, session) and emphasized
+    current segment, in the popover as well as the trail.
+  - Data from the ancestor-chain payload of
+    @task-breadcrumb-ancestry-api (which serves item, task, plan,
+    review, and session chains); no client-side list fetches.
+  - Adopt on the review detail and session detail routes (the two
+    existing full-page detail surfaces), replacing their ad-hoc
+    back links.
+  - Component tests for each truncation tier boundary (4, 5, 6, 7
+    segments), overflow collapse, and keyboard interaction.
+
+  How: Build on the existing bits-ui popover/command primitives in
+  the component library; use a container-width observer for the
+  overflow tier. Route URLs via the shared reference utility
+  (normalizeRef/refHref).
+
+
+  Handoff resources: Use the app shell/navigation handoff
+  (./resources/handoff/docs/01-app-shell-and-navigation.md), spec
+  workspace handoff (./resources/handoff/docs/06-spec-workspace.md), all
+  three breadcrumb variant screenshots, the module/feature/requirement/AC
+  spec workspace screenshots, and the breadcrumb/spec reference sources
+  declared in resource_refs. Screenshots are for truncation behavior,
+  popover hierarchy, segment-kind cues, and page integration; do not
+  copy pixel styling directly.
+
+  Covers: @ui-breadcrumb ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7,
+  ac-8, ac-9.
+spec_ref: "@ui-breadcrumb"
+plan_ref: "@plan-web-ui-foundations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-breadcrumb-ancestry-api"
+context: []
+priority: 2
+tags:
+  - web-ui
+  - navigation
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-app-shell-navigation
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/01-app-shell-and-navigation.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: c907189c175662c9fffb489a95c654a1c25bf7a3970ba02567152f44320ae827
+  - git_commit: null
+    git_path: null
+    id: handoff-spec-workspace
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/06-spec-workspace.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 9859180adb431b75189f3a8d5d89bcecec614ced1c8b0cd242e1d333552fb52e
+  - git_commit: null
+    git_path: null
+    id: shot-breadcrumb-a
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-breadcrumb-variants-a.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 60ee2196156683d853804fa4c2487f55afa5106e3a035317b2d478af562f49b2
+  - git_commit: null
+    git_path: null
+    id: shot-breadcrumb-b
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-breadcrumb-variants-b.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: da05630d1dca65b8d853bdb9c707a8b3226fa72fc34855fc81da9d8fd6b025e3
+  - git_commit: null
+    git_path: null
+    id: shot-breadcrumb-c
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-breadcrumb-variants-c.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: cee589812c9835b3916329cc37c95fb1a0b916f1647204fae2b6d4e6b0ec23e5
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-module
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-2-module.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 24178a66e6c07925ced6acdd8f537184b1c44bac0707a2452f3ebc66db71b6f9
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-feature
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-3-feature.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 3a05d1f3fd5c4b50dac693f864913dd1f5240ea43147511b1d6dfb2b3c91fbc6
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-requirement
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-4-requirement.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 1ef96bf177177d55cf0bd0f395598712439e2786f54244b0d01b35b2422ef2bd
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-ac
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-5-ac.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: ee9a4739f54fd1f65695fd99e5924287a205635f1b57e9b9303ce2573620a622
+  - git_commit: null
+    git_path: null
+    id: src-breadcrumb-variants
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/reference-src/wf3-breadcrumb-variants.jsx
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: e79ac43863bf22ac6fb2ab7105113dc4e081fb81b1a24afa982987cc500f67cf
+  - git_commit: null
+    git_path: null
+    id: src-spec-unified
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/reference-src/wf3-spec-unified.jsx
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
+created_at: 2026-06-15T00:55:23.786Z
+todos: []

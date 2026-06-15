@@ -31,3 +31,171 @@ notes:
     content: Content updated from file
     author: Jacob Chapel
     created_at: 2026-06-14T23:48:21.048Z
+  - _ulid: 01KV4CDC7R97FYM9RAFY9460FD
+    content: |-
+      ### Approval ordering (binding gate)
+
+      The spec items here reference three decision items by `depends_on`
+      (`@web-shell-platform-target`, `@client-preference-persistence`,
+      `@actor-identity-model`); task Covers lines additionally claim
+      decision criteria on those items and on
+      `@coverage-state-presentation`. All four decision items live in the
+      P0a plan (`@plan-ui-redesign-global-decisions`, source
+      `plans/ui-redesign-global-decisions.md`) and enter the catalog only
+      when that plan derives. **Gate: this plan must not be approved or
+      derived until P0a has been approved and derived** — approving or
+      deriving it earlier produces broken references by construction.
+      This is the only cross-plan ordering constraint; everything else
+      here depends on nothing outside the existing implemented
+      foundation.
+
+      ### Upstream decision AC claims
+
+      P0a's claim table binds track plans to claim the decision criteria
+      they implement with task Covers lines. This plan claims:
+
+      | Decision AC | Claiming task |
+      |---|---|
+      | @web-shell-platform-target ac-3 | @task-shortcut-registry |
+      | @client-preference-persistence ac-1 | @task-preference-utility |
+      | @actor-identity-model ac-1 | @task-review-author-resolution (canonical-write layer) |
+      | @actor-identity-model ac-2 | @task-actor-normalization-upgrade |
+      | @coverage-state-presentation ac-2 | @task-view-header-status-tokens (shared token source) |
+
+      The "data upgrade plan" named in P0a's table row for
+      @actor-identity-model ac-2 is this plan: the one-time migration is
+      @task-actor-normalization-upgrade's upgrade-path step; no separate
+      data-upgrade plan exists or is needed. These Covers lines resolve
+      once P0a derives (see the approval-ordering gate above).
+
+      @actor-identity-model ac-1 requires newly written actor fields to come
+      from the configured human/agent author pool through every first-party
+      write interface. @task-review-author-resolution therefore reconciles
+      @config-author at execution time by introducing one shared actor-write
+      utility used by daemon routes, CLI commands, import/update helpers, and
+      lower-level mutation helpers, so chain-resolved or caller-supplied
+      values are canonicalized when recognizable and rejected when outside
+      the configured pool. Unknown classification remains for historical or
+      externally edited records and for upgrade reporting; it is not a
+      write-time persistence path for new arbitrary authors.
+
+      ### Relationship to existing specs (verified read-only)
+
+      - `@ui-app-shell` — owns sidebar/navigation chrome; untouched here.
+        The view header is a per-entity-view pattern, not shell chrome. Any
+        supersession of shell specs belongs to the shell-track plan, not
+        this one.
+      - `@web-dashboard` ac-23..25 — the existing Cmd/Ctrl+K palette
+        behavior is preserved; the shortcut-registry task migrates only the
+        binding mechanism. No AC rewrite needed in this plan.
+      - `@config-author` — defines the author-resolution precedence that the
+        identity surface's human identity builds on and that the canonical-
+        write task adopts. That task amends the fallback-chain wording to
+        layer write-time classification and author-pool validation on top —
+        the reconciliation @actor-identity-model assigns to this plan.
+      - `@ui-api-aggregation` — establishes the server-resolved-data
+        conventions (no client list fetches for derived data) that the
+        breadcrumb ancestry field and header counts follow. Breadcrumb
+        ancestry is added to existing detail APIs from one shared resolver,
+        not through a new standalone list/lookup endpoint. Extended, not
+        modified.
+
+      `@trait-api-endpoint` is applied to `@actor-identity-resolution`
+      inside `@task-identity-endpoint-classifier` (plan derivation does
+      not materialize traits declared in plan YAML reliably, so the task
+      owns the application via `kspec item set --add-trait`). That task's
+      Covers line claims the applicable inherited trait criteria, and
+      non-applicable trait criteria are annotated N/A with reasons per
+      the N/A annotation convention — the endpoint contract cannot be
+      skipped silently after derive. Breadcrumb ancestry does not add a new
+      endpoint in this plan; it extends existing detail API payloads through
+      one shared resolver, so no separate breadcrumb-specific trait
+      application is needed.
+
+      ### Design detail
+
+      - **Breadcrumb segment math**: "segments" counts root through current
+        entity inclusive. The three tiers are by segment count; the fourth
+        (ancestor-stack) tier is by measured width and may collapse the
+        root itself. The current segment is never collapsed.
+      - **Breadcrumb leaves beyond items**: reviews and sessions are
+        first-class breadcrumb leaves — a review chains through its
+        subject entity, a session through its owning task — so the two
+        existing full-page detail surfaces (review detail, session detail)
+        can adopt the breadcrumb with the same server-resolved payload.
+      - **Status tokens**: the four duplicated `getStatusColor()`
+        implementations live in ItemDetail, TaskList, DiffFileList, and
+        DiffFileView; the token module replaces all four. The module is
+        the single token source for both vocabularies: entity
+        lifecycle/state values (whose one-token-per-state contract is
+        `@ui-view-header`'s) and the four coverage presentation buckets
+        (registered as data here so later coverage surfaces draw from the
+        same source — claiming `@coverage-state-presentation` ac-2).
+      - **Shortcut fallbacks**: this plan resolves open question #28
+        (keyboard fallbacks) from the decision register: shortcuts declare
+        ordered fallback chords; resolution binds the first chord that is
+        neither browser-reserved on the active platform nor colliding; a
+        shortcut with no resolvable chord is reported unbound, never
+        silently dropped.
+      - **Identity classification is read-side and permanent**: even after
+        write-time canonicalization (the canonical-write layer) and the
+        one-time normalization, classification stays in the read path —
+        external writers and older shadow history can always reintroduce
+        variants. The variant map is one data table shared by the
+        classifier, the write path, and the upgrade step.
+      - **Canonical-write boundary**: the daemon write path guarantees
+        that no recognizable variant of a canonical identity is ever
+        persisted and that values outside the configured human/agent author
+        pool are rejected on new writes. Historical and externally edited
+        records can still classify as unknown on read; the one-time upgrade
+        maps unresolved historical values to the declared unknown/default
+        actor while reporting originals.
+      - **Next-actor mapping** is intentionally minimal and role-based:
+        the rule derives the awaited role (reviewer role / work-author
+        role / no role) from lifecycle + disposition, and surfaces resolve
+        the role to a concrete party via the review's recorded
+        participants. Richer assignment semantics (explicit reviewer
+        assignment, reassignment) are deferred with the A5 cluster per the
+        decision register and can extend the rule without breaking its
+        consumers.
+
+      ### Scope exclusions
+
+      - No authentication or access control — identity is attribution only,
+        per `@actor-identity-model` ac-3.
+      - No awaiting-you / needs-you aggregate views or endpoints — later
+        track plans (aggregation, cross-project, dashboard) consume the
+        classifier and next-actor rule built here.
+      - No sidebar/palette/shell rebuild — the shell-track plan consumes
+        the registry and preference utility.
+      - No server-synced preferences — browser-local storage only, per the
+        decision register's deferred list; the storage-agnostic interface
+        is the future seam.
+      - No header adoption beyond the review and session detail views —
+        per `@ui-view-header`, every other entity detail view adopts the
+        standard header through the track plan that redesigns that
+        surface.
+      - Assisted review of ambiguous historical actors is an operator
+        activity at upgrade time (agent-assisted cleanup); the upgrade step
+        itself applies only the declared variant map and declared defaults.
+
+      ### Migration and backcompat
+
+      - The actor normalization runs as a step of `kspec upgrade` with
+        `--dry-run` preview, a full rewrite report, and idempotent
+        re-runs. It writes through the standard mutation machinery so the
+        shadow branch records the change set.
+      - The canonical-write authorship change is write-path only; it does
+        not rewrite history (the upgrade step owns that). Explicit actor
+        values outside the configured author pool are rejected on new writes;
+        values that classify as a recognizable variant persist in canonical
+        form; unknown rendering remains for historical or externally edited
+        data.
+      - The preference utility migrates the existing project-selection
+        localStorage value by reading the legacy key once; no other
+        persisted client state exists today.
+      - Breadcrumb adoption on existing routes (reviews, sessions) replaces
+        ad-hoc back links without changing route URLs; static export serves
+        the same ancestor-chain shape read-only.
+    author: Jacob Chapel
+    created_at: 2026-06-15T00:55:25.176Z

@@ -1,0 +1,111 @@
+_ulid: 01KV4CD9W9AJRNJQCEZ0NWF09W
+slugs:
+  - task-actor-display-next-actor
+title: Build actor display primitive and next-actor derivation
+type: task
+description: |
+  Build the shared actor display primitive and the next-actor
+  derivation rule for reviews, and adopt them on the surfaces that
+  render actors today.
+
+  Why: Without one primitive, every redesigned surface re-invents
+  actor rendering the way getStatusColor was re-invented four
+  times. Without one next-actor rule, "awaiting your action" views
+  in later plans (aggregation, dashboard, reviews hub) would each
+  derive who a review awaits differently.
+
+  What:
+  - An actor display component that takes a recorded actor string,
+    classifies it via the shared classifier (fed by the identity
+    endpoint payload), and renders canonical display name with a
+    human/agent kind distinction; unknown actors render the
+    original string with a distinct unknown treatment. Same actor
+    renders identically wherever the component is used.
+  - A next-actor derivation helper implementing the fixed role
+    mapping from @actor-display ac-3 (open+pending → reviewer
+    role, open+changes_requested → work-author role,
+    open+approved → work-author role, closed/archived → no role).
+    Surfaces resolve the awaited role to a concrete party using
+    the review record's recorded participants (verdict reviewers,
+    work submitter). Implement the rule once in shared code so
+    server payload enrichment and client surfaces consume the same
+    rule; assert with a table-driven test over every
+    lifecycle/disposition combination.
+  - Adopt the primitive on the existing review detail and review
+    list surfaces (thread authors, verdict reviewers) as first
+    consumers, replacing raw string rendering.
+
+  How: Component lives with the shared web-ui component library;
+  derivation helper lives next to the classifier so the daemon can
+  enrich review payloads with it later. Static mode: classifier
+  degrades to unknown-kind rendering when no identity payload is
+  available (snapshot has no daemon identity surface).
+
+
+  Handoff resources: Use the reviews handoff
+  (./resources/handoff/docs/11-reviews.md), reviews queue screenshot
+  (./resources/handoff/shots/r3-reviews-queue.png), task/spec review
+  screenshots (./resources/handoff/shots/r3-review-task.png and
+  ./resources/handoff/shots/r3-review-spec.png), and reviews source
+  (./resources/handoff/reference-src/wf3-reviews.jsx) for actor,
+  reviewer, lifecycle, verdict, and awaiting-action display intent.
+  These resources define shared display behavior and information
+  hierarchy, not pixel-perfect styling.
+
+  Covers: @actor-display ac-1, ac-2, ac-3, ac-4.
+spec_ref: "@actor-display"
+plan_ref: "@plan-web-ui-foundations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-identity-endpoint-classifier"
+context: []
+priority: 2
+tags:
+  - web-ui
+  - identity
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-reviews
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/11-reviews.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: c8372f313c3d5f0080f713325059165bdaa7d997d80a961bef282d3a2e5ee5a6
+  - git_commit: null
+    git_path: null
+    id: shot-reviews-queue
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-reviews-queue.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 8e72c87948ee75108f2e469688064c9e47af984edf532fd1d8a7e02a71d2b7ee
+  - git_commit: null
+    git_path: null
+    id: shot-review-task
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-review-task.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: d14e3686c5982b51b291dc30b4449d435de083451eab1d267b5477c666d5b68e
+  - git_commit: null
+    git_path: null
+    id: shot-review-spec
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r3-review-spec.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: fbda06305f9355a62c2ce7055c7bd444c16dd8a0970a1bd220089c8fe95d4d71
+  - git_commit: null
+    git_path: null
+    id: src-reviews
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/reference-src/wf3-reviews.jsx
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 2928bd83bb9e9f84ddab3fb99d89e94213dfe194d27a7e6183ecf6113314e3f2
+created_at: 2026-06-15T00:55:22.761Z
+todos: []

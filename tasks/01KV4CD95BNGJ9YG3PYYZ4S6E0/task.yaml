@@ -1,0 +1,121 @@
+_ulid: 01KV4CD95BNGJ9YG3PYYZ4S6E0
+slugs:
+  - task-identity-endpoint-classifier
+title: Implement identity endpoint and actor classifier
+type: task
+description: |
+  Build the identity surface (configured human identity + canonical
+  agent roster) and the actor classification logic that resolves
+  recorded actor strings to canonical identities.
+
+  Why: No current-user concept exists anywhere in the system. Every
+  "mine" / "awaiting you" / "needs you" feature in the redesign
+  program is undefined without it, and the measured actor-string
+  spread (the same codex agent recorded at least 7 different ways,
+  pr-reviewer at least 4, across 1,323 review records) makes
+  read-time classification mandatory regardless of write-time
+  normalization.
+
+  What:
+  - Add a daemon identity endpoint (e.g. GET /api/identity) that
+    returns the configured human identity (from the author config
+    chain — see @config-author — plus any configured profile
+    display name) and the canonical agent roster built from the
+    project's agent definitions: canonical id and display info per
+    agent. One bounded response; no entity-list fan-out. Follow the
+    standard response envelope and project-scoping middleware.
+  - Apply @trait-api-endpoint to @actor-identity-resolution as part
+    of this task (kspec item set @actor-identity-resolution
+    --add-trait trait-api-endpoint) — plan derivation does not
+    materialize plan-declared traits reliably, so the task owns the
+    application — and implement the endpoint to the trait contract:
+    success response shape and request-id tracing per the trait;
+    trait criteria that cannot apply to a bodyless, read-only,
+    non-list endpoint with no entity-ref parameter are annotated
+    N/A with reasons per the N/A annotation convention.
+  - Implement an actor classifier in shared (non-daemon-only) code
+    so the upgrade path can reuse it: input is a recorded actor
+    string plus the identity configuration; output is
+    { kind: human | agent | unknown, canonical id, display name,
+    original string }. Recognizable variants include the canonical
+    id itself, @-prefixed forms, email-suffixed forms
+    (codex@openai.com, codex@openai, codex@local, codex@gpt-5),
+    role-suffixed forms (codex-reviewer), and the configured human
+    name variants. Unknown strings classify as unknown and never
+    throw.
+  - Classification must be a pure function of (string, config):
+    same input, same output.
+  - Static-mode/web consumption: expose the classifier to the web
+    UI as a shared utility fed by the identity endpoint payload.
+
+  How: Roster source is the agent definitions in project meta
+  (kspec agent list data); human identity source is the
+  author-resolution config (KSPEC_AUTHOR env, kspec.config.yaml
+  author, git/OS fallback) per @config-author. Seed the variant
+  table from the measured inventory in
+  plans/ui-redesign/analysis.md section 4.6. Keep the variant map
+  data-driven (one table consumed by both the classifier and the
+  upgrade step in @task-actor-normalization-upgrade).
+
+
+  Handoff resources: Read the product context
+  (./resources/handoff/docs/00-product-context.md) and reviews handoff
+  (./resources/handoff/docs/11-reviews.md) for the human/agent actor
+  roles the web UI needs to render. The reviews source
+  (./resources/handoff/reference-src/wf3-reviews.jsx) is reference
+  material for actor/reviewer labels and token names only; keep the
+  implementation in shared kspec/Svelte code.
+
+  Covers: @actor-identity-resolution ac-1, ac-2, ac-3, ac-4, ac-5;
+  @trait-api-endpoint ac-1, ac-6 (inherited via
+  @actor-identity-resolution; trait ac-2, ac-3, ac-4, ac-5 are
+  annotated N/A — no entity-ref parameter, no request body, not a
+  list endpoint, read-only).
+spec_ref: "@actor-identity-resolution"
+plan_ref: "@plan-web-ui-foundations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+  - api
+  - identity
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-product-context
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/00-product-context.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: acf72703d28c755e7925ed10cd8604814d4b640d609bdd9c4b93823f53701719
+  - git_commit: null
+    git_path: null
+    id: handoff-reviews
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/11-reviews.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: c8372f313c3d5f0080f713325059165bdaa7d997d80a961bef282d3a2e5ee5a6
+  - git_commit: null
+    git_path: null
+    id: handoff-implementation-backlog
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/12-implementation-backlog.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 3a43077a9aac8ddb47ec7fa7d32f40c61bc8bf2af7b3b3a31a8cc46b260aa046
+  - git_commit: null
+    git_path: null
+    id: src-reviews
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/reference-src/wf3-reviews.jsx
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 2928bd83bb9e9f84ddab3fb99d89e94213dfe194d27a7e6183ecf6113314e3f2
+created_at: 2026-06-15T00:55:22.027Z
+todos: []

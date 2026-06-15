@@ -1,0 +1,124 @@
+_ulid: 01KV4CDA7DT4GY1ZYKXA86XX50
+slugs:
+  - task-actor-normalization-upgrade
+title: Add historical actor normalization to the upgrade path
+type: task
+description: |
+  Add an exhaustive actor-field inventory plus a one-time
+  data-upgrade/migration step that rewrites historical actor fields
+  to canonical identities, with operator/agent guidance for kspec
+  users upgrading existing projects.
+
+  Why: The actor-string spread is measured, not hypothetical: 1,323
+  review records split author across Jacob Chapel / "@claude" /
+  Test User / codex variants, and verdict reviewer strings name the
+  same agents many different ways. Identity-derived views computed
+  over un-normalized history would misattribute most of the corpus.
+  The decision (@actor-identity-model ac-2) requires every historical
+  actor field to resolve once, and this plan is the data-upgrade
+  claimant for that criterion.
+
+  What:
+  - First build and commit an exhaustive actor-field inventory from
+    the current schemas, serializers, API types, and stored corpus.
+    The inventory must list every field that represents a human or
+    agent actor/author/reviewer/resolver/addition source, its record
+    kind, storage file/path shape, owning schema/type, and whether it
+    is normalized by the migration or explicitly out of scope because
+    it is not an actor identity. The inventory must cover, at
+    minimum, review authors, thread/reply authors, verdict reviewers,
+    check/lifecycle actors, review notes, review thread resolved_by,
+    task note authors, task todo added_by, inbox added_by, triage
+    actors, plan note authors, spec/module note authors, meta
+    observation author/resolved_by values, and any session/dispatch
+    attribution field classified as a human/agent actor field.
+  - A kspec upgrade/migration script that consumes the inventory and
+    scans every in-scope actor-bearing field across record kinds,
+    rewriting recognizable variants to canonical identities using
+    the shared variant map from the classifier task. The script must
+    fail closed if a schema/record field that looks actor-bearing is
+    not represented in the inventory, so future fields cannot be
+    silently skipped.
+  - An optional operator-provided mapping file/input for ambiguous
+    values, applied after the built-in variant map and before the
+    fallback. Declared unknown/default actors per record kind cover
+    values that neither the built-in rules nor the operator mapping
+    resolve; originals are listed in the step's report.
+  - A rewrite report (original → canonical/default, record ref,
+    record kind, field path, resolution source) for every change;
+    kspec upgrade --dry-run prints the report without modifying
+    records, and the real migration writes the report to a durable
+    project-local artifact for audit.
+  - Upgrade documentation and agent-led operating instructions for
+    kspec users: how to run the dry-run, review unknown/ambiguous
+    originals, prepare an operator mapping file, let an agent assist
+    with classifying ambiguous historical values without inventing
+    identities, run the real migration, inspect the report, and
+    recover/re-run safely if validation fails.
+  - Idempotency: running the step on an already-normalized project
+    changes nothing; cover with a run-twice test.
+  - All writes go through the standard upgrade/mutation machinery
+    so shadow commits record the change set.
+
+  How: Hook into the existing kspec upgrade step framework (the
+  same path that performed the folder-backed entity migration) and
+  add a migration-owned actor-field inventory file/test fixture so
+  the script, tests, and docs share the same field list. Reuse the
+  classifier's variant table as the built-in rewrite map; declared
+  unknown/default actors live alongside it as data. Test against
+  fixtures seeded with the measured variants from
+  plans/ui-redesign/analysis.md section 4.6 and with at least one
+  fixture per inventoried actor-field path.
+
+
+  Handoff resources: Use the product context
+  (./resources/handoff/docs/00-product-context.md), reviews handoff
+  (./resources/handoff/docs/11-reviews.md), and implementation backlog
+  (./resources/handoff/docs/12-implementation-backlog.md) while building
+  the inventory and operator/agent-led upgrade guidance. They explain
+  the downstream review and awaiting-action features that depend on
+  complete historical attribution.
+
+  Covers: @actor-history-normalization ac-1, ac-2, ac-3, ac-4,
+  ac-5, ac-6; @actor-identity-model ac-2.
+spec_ref: "@actor-history-normalization"
+plan_ref: "@plan-web-ui-foundations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-identity-endpoint-classifier"
+context: []
+priority: 2
+tags:
+  - cli
+  - upgrade
+  - identity
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-product-context
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/00-product-context.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: acf72703d28c755e7925ed10cd8604814d4b640d609bdd9c4b93823f53701719
+  - git_commit: null
+    git_path: null
+    id: handoff-reviews
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/11-reviews.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: c8372f313c3d5f0080f713325059165bdaa7d997d80a961bef282d3a2e5ee5a6
+  - git_commit: null
+    git_path: null
+    id: handoff-implementation-backlog
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/12-implementation-backlog.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 3a43077a9aac8ddb47ec7fa7d32f40c61bc8bf2af7b3b3a31a8cc46b260aa046
+created_at: 2026-06-15T00:55:23.117Z
+todos: []

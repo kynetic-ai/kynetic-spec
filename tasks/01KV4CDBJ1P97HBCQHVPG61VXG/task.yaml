@@ -1,0 +1,89 @@
+_ulid: 01KV4CDBJ1P97HBCQHVPG61VXG
+slugs:
+  - task-shortcut-registry
+title: Implement the keyboard shortcut registry
+type: task
+description: |
+  Build the central shortcut registry and migrate the existing
+  uncoordinated key handlers onto it.
+
+  Why: Three uncoordinated global key handlers exist today (the
+  command palette's Cmd/Ctrl+K window listener, the sidebar
+  provider's toggle chord, and the triage queue's navigation keys),
+  with no collision detection and no platform mapping. The shell
+  and palette plans both register many more shortcuts; without a
+  registry they will collide silently.
+
+  What:
+  - Registry module: register(shortcut) with id, display label,
+    platform-abstract chord (primary modifier abstraction),
+    optional ordered fallback chords, activation context (global
+    or surface-scoped, active only while the owning surface is
+    active), and handler; unregister on component teardown.
+  - Platform resolution: primary modifier maps to the platform
+    convention (Cmd on macOS, Ctrl elsewhere); display labels
+    render the resolved chord (⌘K vs Ctrl+K).
+  - Per-platform browser-reserved combination lists maintained as
+    data (e.g. Cmd/Ctrl+W, Cmd/Ctrl+T, Cmd/Ctrl+N, Cmd+Q,
+    Ctrl+Tab); registration of a reserved chord falls through to
+    declared fallbacks; no resolvable chord → shortcut reported
+    unbound (console/diagnostic surface), never silently dropped.
+  - Collision detection at registration within a context: reject
+    with a reported collision, keep the existing binding.
+  - Single document-level dispatcher: exactly-once action firing;
+    modifier-less chords suppressed while focus is in text-entry
+    controls (input, textarea, contenteditable).
+  - Enumeration API returning active bindings with labels and
+    resolved chords — the future shortcut-help and palette
+    surfaces consume this.
+  - Migrate the three existing handlers to the registry with
+    unchanged user-visible behavior (the palette chord behavior of
+    @web-dashboard ac-23 is preserved).
+  - Table-driven tests: platform resolution, collision rejection,
+    reserved fallback, text-entry suppression, enumeration.
+
+  How: Svelte-runes store + one window keydown listener installed
+  by the root layout; context activation tied to component
+  lifecycle. Reserved lists and chord normalization live as plain
+  data/functions for direct unit testing.
+
+
+  Handoff resources: Use the app shell/navigation handoff
+  (./resources/handoff/docs/01-app-shell-and-navigation.md) and command
+  palette screenshot (./resources/handoff/shots/r2-app-shell-palette.png)
+  for intended Cmd/Ctrl+K behavior, platform-label expectations,
+  palette action context, and future shortcut-help consumers.
+
+  Covers: @ui-shortcut-registry ac-1, ac-2, ac-3, ac-4, ac-5,
+  ac-6; @web-shell-platform-target ac-3.
+spec_ref: "@ui-shortcut-registry"
+plan_ref: "@plan-web-ui-foundations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - web-ui
+  - keyboard
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-app-shell-navigation
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/docs/01-app-shell-and-navigation.md
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: c907189c175662c9fffb489a95c654a1c25bf7a3970ba02567152f44320ae827
+  - git_commit: null
+    git_path: null
+    id: shot-command-palette
+    owner_ref: "@plan-web-ui-foundations"
+    owner_type: plan
+    path: handoff/shots/r2-app-shell-palette.png
+    recorded_at: 2026-06-15T00:55:22.026Z
+    sha256: 9ad1f51125974201d078447062d18a09b9062a5a80c6f0035df75e44838f3a99
+created_at: 2026-06-15T00:55:24.481Z
+todos: []
