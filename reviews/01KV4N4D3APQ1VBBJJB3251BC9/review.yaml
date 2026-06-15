@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KV4NAYJCGWVJH49ZDZJ3PSCD
     timestamp: 2026-06-15T03:31:23.102Z
+  - _ulid: 01KV4NB2EJGWXPAQ97RD3KH8PE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV4NB25CE1ESSJGAPT55QKJK
+    timestamp: 2026-06-15T03:31:26.802Z
 examined_commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
 external_links: []
 lifecycle_state: open
@@ -54,7 +61,26 @@ threads:
           state is not represented by the same color + glyph across views."
         created_at: 2026-06-15T03:31:22.829Z
     kind: blocker
+  - _ulid: 01KV4NB25CE1ESSJGAPT55QKJK
+    anchor:
+      type: code
+      commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
+      line_end: 54
+      line_start: 32
+      path: packages/web-ui/src/lib/components/session/SessionContextPanel.svelte
+      side: head
+    entries:
+      - _ulid: 01KV4NB25C10FG0CHDZARVWPSC
+        author: Jacob Chapel
+        body: "MUST-FIX: SessionContextPanel still renders the same session.status with local
+          Badge/color/label logic while the session detail header above it uses StatusBadge.
+          timed_out and stalled fall through to status-cancelled here, stalled keeps the raw
+          lowercase label, and no shared glyph is rendered. The same session state can therefore
+          have a different or incomplete token inside the same detail view, violating
+          @ui-view-header ac-2."
+        created_at: 2026-06-15T03:31:26.508Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T03:27:48.330Z
-updated_at: 2026-06-15T03:31:22.829Z
+updated_at: 2026-06-15T03:31:26.508Z
 notes: []
