@@ -1781,7 +1781,12 @@ describe("TaskDataManager", () => {
       const ctx = await initContext(tempDir);
       manager = resolveTaskDataManager(ctx);
 
-      const { note } = await manager.addNote(ctx, "@test-task-pending", "Auto-generated note test");
+      const { note } = await manager.addNote(
+        ctx,
+        "@test-task-pending",
+        "Auto-generated note test",
+        "@tester",
+      );
 
       expect(note._ulid).toBeDefined();
       expect(note._ulid.length).toBe(26);
@@ -1884,7 +1889,7 @@ describe("TaskDataManager", () => {
       await fs.writeFile(taskFile, lines.join("\n"));
 
       // Mutate via addNote (should not strip the custom field)
-      await manager.addNote(ctx, "@test-task-pending", "Note after custom field");
+      await manager.addNote(ctx, "@test-task-pending", "Note after custom field", "@tester");
 
       // Re-read raw file to verify custom field survived
       const afterContent = await readTestOutput(taskFile);
@@ -1948,7 +1953,7 @@ describe("TaskDataManager", () => {
       expect(task.title).toBe("Single task");
 
       // addNote should succeed (the mutation write path handles split format)
-      await manager.addNote(ctx, "@single-task", "Note on single-task file");
+      await manager.addNote(ctx, "@single-task", "Note on single-task file", "@tester");
 
       // Verify persisted
       const reloaded = await manager.getTask(ctx, "@single-task");

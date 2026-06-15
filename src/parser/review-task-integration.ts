@@ -15,7 +15,8 @@
 
 import type { ReviewRecord, ReviewVerdictDecision } from "../schema/index.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
-import { createNote, getAuthor } from "./yaml.js";
+import { createNote } from "./yaml.js";
+import { resolveActorForContext } from "../identity/actor-write-context.js";
 import { resolveTaskDataManager } from "./task-data-manager.js";
 import { findReviewByRef, type LoadedReviewRecord } from "./reviews.js";
 
@@ -122,7 +123,7 @@ export async function handleVerdictTaskTransition(
   review: ReviewRecord,
   decision: ReviewVerdictDecision,
   allTasks: LoadedTask[],
-  reviewer?: string,
+  reviewer: string,
 ): Promise<Array<{ ulid: string; slug?: string; transitioned: boolean }>> {
   if (decision !== "request_changes") {
     return [];
@@ -149,6 +150,16 @@ export async function handleVerdictTaskTransition(
       taskRefsToCheck.add(ref);
     }
   }
+
+  // AC: @actor-identity-resolution ac-7 ac-8 — canonicalize the system-note author
+  // through the shared utility (same path as all other writers). Resolve once
+  // for all transitioned tasks. On the rare unresolvable-author edge (no
+  // configured identity at all) the note falls back to the canonical `reviewer`
+  // that requested the changes — itself resolved through the shared utility at
+  // verdict time — so the author is always canonical and the verdict is never
+  // blocked on attribution.
+  const transitionAuthorResult = await resolveActorForContext(ctx, { field: "author" });
+  const transitionAuthor = transitionAuthorResult.ok ? transitionAuthorResult.actor : reviewer;
 
   for (const taskRef of taskRefsToCheck) {
     const cleanRef = taskRef.startsWith("@") ? taskRef.slice(1) : taskRef;
@@ -181,7 +192,7 @@ export async function handleVerdictTaskTransition(
 
         const note = createNote(
           `[FIX_CYCLE: ${cycleNumber}] Review verdict: changes_requested${reviewer ? ` by ${reviewer}` : ""}`,
-          getAuthor(ctx.config?.identity?.author),
+          transitionAuthor,
         );
 
         return {

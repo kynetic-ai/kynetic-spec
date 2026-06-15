@@ -1034,7 +1034,7 @@ export class TaskDataManager {
     ctx: KspecContext,
     ref: string,
     content: string,
-    author?: string,
+    author: string,
     commitOpts?: ShadowCommitOptions,
   ): Promise<{ task: LoadedTask; note: Note }> {
     const note = createNote(content, author);

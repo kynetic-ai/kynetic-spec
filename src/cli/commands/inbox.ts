@@ -6,7 +6,6 @@ import {
   createNote,
   deleteInboxItem,
   findInboxItemByRef,
-  getAuthor,
   initContext,
   type LoadedInboxItem,
   type LoadedTask,
@@ -26,6 +25,7 @@ import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.j
 import { describeEnumValues } from "../enum-help.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
+import { resolveCliActor } from "../actor.js";
 import { parseTagsArray } from "../parse-utils.js";
 import { parseIntOption, validateEnumOption, validateSpecRef } from "../validators.js";
 
@@ -100,7 +100,8 @@ Examples:
           tags: parseTagsArray(options.tag),
         };
 
-        const item = createInboxItem(input, ctx.config?.identity?.author);
+        // AC: @actor-identity-resolution ac-7 ac-8 — canonical added_by or rejection.
+        const item = createInboxItem(input, await resolveCliActor(ctx, undefined, "added_by"));
         await saveInboxItem(ctx, item);
         await commitIfShadow(ctx.shadow, "inbox-add", item._ulid, text);
         const inboxItems = await loadInboxItems(ctx);
@@ -265,7 +266,8 @@ Examples:
 
         // AC: @cmd-inbox-promote ac-2
         if (options.note) {
-          const note = createNote(options.note, getAuthor(ctx.config?.identity?.author));
+          // AC: @actor-identity-resolution ac-7 ac-8 — canonical author or rejection.
+          const note = createNote(options.note, await resolveCliActor(ctx, undefined, "author"));
           taskInput.notes = [note];
         }
 

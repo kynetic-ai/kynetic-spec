@@ -4,7 +4,6 @@ import {
   AlignmentIndex,
   createNote,
   createTask,
-  getAuthor,
   initContext,
   type KspecContext,
   type LoadedSpecItem,
@@ -18,6 +17,7 @@ import type { TaskInput } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isJsonMode, output, warn } from "../output.js";
+import { resolveCliActor } from "../actor.js";
 import { parseIntOption } from "../validators.js";
 
 /**
@@ -295,11 +295,12 @@ async function deriveTaskFromSpec(
   // Generate implementation notes from spec
   // AC: @cmd-derive ac-author
   const noteContent = generateImplementationNotes(specItem);
+  // AC: @actor-identity-resolution ac-7 ac-8 — canonical author or rejection.
   const initialNotes = noteContent
     ? [
         createNote(
           `Implementation notes (auto-generated from spec):\n\n${noteContent}`,
-          getAuthor(ctx.config?.identity?.author),
+          await resolveCliActor(ctx, undefined, "author"),
         ),
       ]
     : [];

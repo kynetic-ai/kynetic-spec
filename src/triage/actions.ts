@@ -8,6 +8,7 @@ import {
   loadInboxItems,
   loadMetaContext,
   ReferenceIndex,
+  resolveActorForContext,
   saveObservation,
   shortestUniqueUlid,
   type LoadedTask,
@@ -139,8 +140,15 @@ export async function executeTriageAction(
         return {};
       }
       const content = `[spec-gap] ${record.item_snapshot}\n\nReasoning: ${record.reasoning || ""}`;
+      // AC: @actor-identity-resolution ac-7 ac-8 — resolve and canonicalize the
+      // observation author through the shared actor-write utility (shared by CLI
+      // and daemon), rejecting out-of-pool values instead of persisting them.
+      const authorResolution = await resolveActorForContext(ctx, { field: "author" });
+      if (!authorResolution.ok) {
+        throw new Error(authorResolution.error.message);
+      }
       const observation = createObservation("question", content, {
-        configAuthor: ctx.config?.identity?.author,
+        author: authorResolution.actor,
       });
       await saveObservation(ctx, observation);
       const meta = await loadMetaContext(ctx);

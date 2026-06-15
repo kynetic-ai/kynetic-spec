@@ -73,6 +73,7 @@ import {
   ReviewVerdictDecisionSchema,
 } from "../../schema/index.js";
 import { resolveRefTitle } from "./ref-resolution.js";
+import { resolveWriteActor, toValidationErrorBody } from "./actor-resolution.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import {
   BreadcrumbAncestryResolver,
@@ -796,8 +797,23 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             }
           }
 
+          // AC: @actor-identity-resolution ac-6 ac-8 — resolve through the shared
+          // author precedence + classifier; never persist an anonymous placeholder
+          // or an out-of-pool free-form author.
+          const authorResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            body.author,
+            "author",
+          );
+          if (!authorResult.ok) {
+            return errorResponse(400, toValidationErrorBody(authorResult));
+          }
+          const author = authorResult.actor;
+
           const { review: updatedReview, thread } = await addThreadAtomic(ctx, review, {
-            author: body.author || "anonymous",
+            author,
             body: body.body,
             kind: (body.kind as "blocker" | "question" | "nit") || undefined,
             anchor,
@@ -819,7 +835,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
               review_ulid: updatedReview._ulid,
               thread_ulid: thread._ulid,
               kind: thread.kind,
-              author: body.author || "anonymous",
+              author,
             },
             projectContext.path,
           );
@@ -899,10 +915,23 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             });
           }
 
+          // AC: @actor-identity-resolution ac-6 ac-8 — canonical author or rejection.
+          const replyAuthorResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            body.author,
+            "author",
+          );
+          if (!replyAuthorResult.ok) {
+            return errorResponse(400, toValidationErrorBody(replyAuthorResult));
+          }
+          const replyAuthor = replyAuthorResult.actor;
+
           try {
             const { review: updatedReview, entry } = await addReplyAtomic(ctx, review, {
               threadUlid: params.threadId,
-              author: body.author || "anonymous",
+              author: replyAuthor,
               body: body.body,
             });
 
@@ -925,7 +954,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
                 review_ulid: updatedReview._ulid,
                 thread_ulid: params.threadId,
                 entry_ulid: entry._ulid,
-                author: body.author || "anonymous",
+                author: replyAuthor,
               },
               projectContext.path,
             );
@@ -995,10 +1024,23 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             });
           }
 
+          // AC: @actor-identity-resolution ac-6 ac-8 — canonical actor or rejection.
+          const resolveActorResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            body?.actor,
+            "actor",
+          );
+          if (!resolveActorResult.ok) {
+            return errorResponse(400, toValidationErrorBody(resolveActorResult));
+          }
+          const resolveActor = resolveActorResult.actor;
+
           try {
             const updatedReview = await resolveThreadAtomic(ctx, review, {
               threadUlid: params.threadId,
-              actor: body?.actor || "anonymous",
+              actor: resolveActor,
             });
 
             await commitIfShadow(
@@ -1019,7 +1061,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
               {
                 review_ulid: updatedReview._ulid,
                 thread_ulid: params.threadId,
-                actor: body?.actor || "anonymous",
+                actor: resolveActor,
               },
               projectContext.path,
             );
@@ -1089,10 +1131,23 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             });
           }
 
+          // AC: @actor-identity-resolution ac-6 ac-8 — canonical actor or rejection.
+          const reopenActorResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            body?.actor,
+            "actor",
+          );
+          if (!reopenActorResult.ok) {
+            return errorResponse(400, toValidationErrorBody(reopenActorResult));
+          }
+          const reopenActor = reopenActorResult.actor;
+
           try {
             const updatedReview = await reopenThreadAtomic(ctx, review, {
               threadUlid: params.threadId,
-              actor: body?.actor || "anonymous",
+              actor: reopenActor,
             });
 
             await commitIfShadow(
@@ -1113,7 +1168,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
               {
                 review_ulid: updatedReview._ulid,
                 thread_ulid: params.threadId,
-                actor: body?.actor || "anonymous",
+                actor: reopenActor,
               },
               projectContext.path,
             );
@@ -1223,7 +1278,21 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           const decision = body.decision as ReviewVerdictDecision;
-          const reviewer = body.reviewer;
+
+          // AC: @actor-identity-resolution ac-7 ac-8 — persist the canonical
+          // reviewer identity; reject an out-of-pool free-form reviewer.
+          const reviewerResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            body.reviewer,
+            "reviewer",
+          );
+          if (!reviewerResult.ok) {
+            set.status = 400;
+            return toValidationErrorBody(reviewerResult);
+          }
+          const reviewer = reviewerResult.actor;
 
           // AC: @review-record-per-cycle-lifecycle ac-1 — auto-close on approve/request_changes
           const shouldAutoClose = decision === "approve" || decision === "request_changes";
@@ -1422,6 +1491,24 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           // Derive applies_to_version from the current review subject
           const appliesTo = extractSubjectVersion(review.subject);
 
+          // AC: @actor-identity-resolution ac-6 ac-8 — resolve the event actor
+          // (who recorded the check) through the shared author precedence +
+          // classifier; never persist an anonymous placeholder. `runner` is the
+          // tool/command that executed the check (e.g. "npm test", "kspec"), not
+          // a human/agent actor, so it is persisted verbatim and not classified.
+          const checkActorResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            undefined,
+            "actor",
+          );
+          if (!checkActorResult.ok) {
+            set.status = 400;
+            return toValidationErrorBody(checkActorResult);
+          }
+          const checkActor = checkActorResult.actor;
+
           const check = createCheck({
             name: body.name,
             status: body.status as ReviewCheckStatus,
@@ -1435,7 +1522,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           const checkEvent: ReviewEvent = {
             _ulid: ulid(),
             event_type: "check_added",
-            actor: body.runner || "anonymous",
+            actor: checkActor,
             timestamp: now,
             payload: {
               name: body.name,
@@ -1556,7 +1643,20 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           const lifecycleTarget = target as ReviewLifecycleState;
-          const actor = body?.actor || "anonymous";
+
+          // AC: @actor-identity-resolution ac-6 ac-8 — canonical actor or rejection.
+          const lifecycleActorResult = await resolveWriteActor(
+            ctx,
+            getEntityCache,
+            projectContext.path,
+            body?.actor,
+            "actor",
+          );
+          if (!lifecycleActorResult.ok) {
+            set.status = 400;
+            return toValidationErrorBody(lifecycleActorResult);
+          }
+          const actor = lifecycleActorResult.actor;
           const allowed = VALID_TRANSITIONS[review.lifecycle_state];
 
           // AC: @review-records-daemon-api ac-8, ac-10 - invalid transition returns 400

@@ -16,40 +16,13 @@
 
 import { Elysia } from "elysia";
 import { ulid } from "ulidx";
-import { getAuthor, initContext, loadMetaContext } from "../../parser/index.js";
-import type { ActorIdentityConfig, AgentIdentity, HumanIdentity } from "@kynetic-ai/shared";
+import { buildActorIdentityConfig, initContext, loadMetaContext } from "../../parser/index.js";
+import type { ActorIdentityConfig } from "@kynetic-ai/shared";
 import { wrapResponse } from "./response-envelope.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 
 interface IdentityRouteOptions {
   getEntityCache?: EntityCacheAccessor;
-}
-
-/**
- * Build the human identity from resolved config. Returns null when no author
- * can be resolved (no env var, no config author, no git/OS fallback) — the
- * identity surface then reports an empty human identity rather than inventing
- * one.
- *
- * AC: @actor-identity-resolution ac-1 — human identity with display name
- */
-function buildHumanIdentity(
-  configAuthor: string | null | undefined,
-  displayName: string | null | undefined,
-  aliases: string[] | undefined,
-): HumanIdentity | null {
-  const author = getAuthor(configAuthor ?? undefined);
-  if (!author) {
-    return null;
-  }
-  const identity: HumanIdentity = {
-    canonicalId: author,
-    displayName: displayName ?? author,
-  };
-  if (aliases && aliases.length > 0) {
-    identity.aliases = aliases;
-  }
-  return identity;
 }
 
 export function createIdentityRoutes(options: IdentityRouteOptions = {}) {
@@ -91,32 +64,20 @@ export function createIdentityRoutes(options: IdentityRouteOptions = {}) {
           meta = await loadMetaContext(ctx);
         }
 
-        const human = buildHumanIdentity(
-          ctx.config?.identity?.author,
-          ctx.config?.identity?.display_name,
-          ctx.config?.identity?.aliases,
-        );
-
-        // AC: @actor-identity-resolution ac-1 — canonical agent roster: each
-        // agent's canonical id and display information, no entity-list fan-out.
-        // AC: @actor-identity-resolution ac-2 — attach the configured
-        // non-derivable spellings so the payload the classifier consumes can
-        // resolve measured variants (e.g. `@dispatch` → `pr-reviewer`) that
-        // the algorithmic normalization rules cannot derive from the id alone.
-        const agentAliases = ctx.config?.identity?.agent_aliases ?? {};
-        const agents: AgentIdentity[] = meta.agents.map((agent) => {
-          const aliases = agentAliases[agent.id];
-          const identity: AgentIdentity = {
-            canonicalId: agent.id,
-            displayName: agent.name,
-          };
-          if (aliases && aliases.length > 0) {
-            identity.aliases = aliases;
-          }
-          return identity;
+        // AC: @actor-identity-resolution ac-1 — single bounded identity payload:
+        // configured human identity (with display name) + canonical agent roster.
+        // AC: @actor-identity-resolution ac-2 — non-derivable agent spellings and
+        // ac-3 — human spellings are attached as aliases so the classifier can
+        // resolve measured variants the algorithmic rules cannot derive.
+        // Built through the shared constructor so the identity surface and the
+        // actor-write path resolve identities against the same configuration.
+        const payload: ActorIdentityConfig = buildActorIdentityConfig({
+          configAuthor: ctx.config?.identity?.author,
+          displayName: ctx.config?.identity?.display_name,
+          humanAliases: ctx.config?.identity?.aliases,
+          agentAliases: ctx.config?.identity?.agent_aliases,
+          agents: meta.agents,
         });
-
-        const payload: ActorIdentityConfig = { human, agents };
         return wrapResponse(payload, { cacheDomainState: metaDomainState });
       })
   );

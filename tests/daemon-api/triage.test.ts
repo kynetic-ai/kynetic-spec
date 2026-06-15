@@ -381,19 +381,39 @@ describe("POST /api/triage", () => {
   });
 
   // AC: @triage-daemon-api ac-3 — supports optional decided_by
-  it("creates record with optional decided_by field", async () => {
+  // AC: @actor-identity-resolution ac-7 — a configured-agent variant persists canonically
+  it("creates record with optional decided_by field (canonicalized)", async () => {
     const newInboxUlid = await createInboxItem(`Decided by test ${Date.now()}`);
 
     const response = await postJson("/api/triage", {
       inbox_ref: `@${newInboxUlid}`,
       action: "delete",
       reasoning: "Duplicate item",
-      decided_by: "@custom-author",
+      // `@task-worker` is a recognizable variant of the configured `task-worker`
+      // roster id; the write persists the canonical id, not the variant form.
+      decided_by: "@task-worker",
     });
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.record.decided_by).toBe("@custom-author");
+    expect(body.record.decided_by).toBe("task-worker");
+  });
+
+  // AC: @actor-identity-resolution ac-8 — an out-of-pool decided_by is rejected
+  it("rejects an out-of-pool decided_by with validation feedback", async () => {
+    const newInboxUlid = await createInboxItem(`Out of pool decided_by ${Date.now()}`);
+
+    const response = await postJson("/api/triage", {
+      inbox_ref: `@${newInboxUlid}`,
+      action: "delete",
+      reasoning: "Duplicate item",
+      decided_by: "@nobody-configured",
+    });
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.error).toBe("validation_error");
+    expect(body.details?.[0]?.field).toBe("decided_by");
   });
 
   // AC: @triage-daemon-api ac-3 — broadcasts triage:updates
@@ -509,17 +529,19 @@ describe("POST /api/triage/:ref/override", () => {
   });
 
   // AC: @triage-daemon-api ac-4 — override with custom override_by
-  it("accepts optional override_by field", async () => {
+  // AC: @actor-identity-resolution ac-7 — a configured-agent variant persists canonically
+  it("accepts optional override_by field (canonicalized)", async () => {
     const response = await postJson(`/api/triage/@${FIXTURE_TRIAGE_TRIAGED_ULID}/override`, {
       action: "delete",
       reasoning: "Override by specific author",
-      override_by: "@specific-reviewer",
+      // `@pr-reviewer` is a recognizable variant of the configured roster id.
+      override_by: "@pr-reviewer",
     });
 
     expect(response.status).toBe(200);
 
     const body = await response.json();
-    expect(body.record.override_by).toBe("@specific-reviewer");
+    expect(body.record.override_by).toBe("pr-reviewer");
   });
 
   // AC: @triage-daemon-api ac-4 — broadcasts triage:updates

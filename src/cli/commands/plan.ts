@@ -25,7 +25,6 @@ import {
   deletePlan,
   findPlanByRef,
   filterPlansByStatus,
-  getAuthor,
   initContext,
   type LoadedPlan,
   type LoadedSpecItem,
@@ -51,6 +50,7 @@ import { getCurrentBranch, isGitRepo } from "../../utils/git.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
+import { resolveCliActor } from "../actor.js";
 import { validateEnumOption } from "../validators.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
@@ -1538,7 +1538,8 @@ Examples:
     .action(async (ref: string, text: string) => {
       try {
         const ctx = await initContext();
-        const author = getAuthor(ctx.config?.identity?.author);
+        // AC: @actor-identity-resolution ac-7 ac-8 — canonical author or rejection.
+        const author = await resolveCliActor(ctx, undefined, "author");
         const plans = await loadPlans(ctx);
         const foundPlan = resolvePlanRef(ref, plans);
         const foundPlanRef = shortPlanRef(foundPlan, plans);
@@ -1786,7 +1787,8 @@ Examples:
         const plans = await loadPlans(ctx);
         const foundPlan = resolvePlanRef(ref, plans);
         const planRef = canonicalRef(foundPlan);
-        const author = getAuthor(ctx.config?.identity?.author);
+        // AC: @actor-identity-resolution ac-7 ac-8 — canonical author or rejection.
+        const author = await resolveCliActor(ctx, undefined, "author");
 
         if (foundPlan.status === "active") {
           exitDeriveWithGuidance(

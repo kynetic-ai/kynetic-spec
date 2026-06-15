@@ -1359,13 +1359,21 @@ export function getAuthor(configAuthor?: string | null): string | undefined {
 
 /**
  * Create a new note entry.
- * If author is not provided, attempts to auto-detect from environment.
+ *
+ * `author` is a required, caller-resolved canonical actor. This leaf
+ * constructor intentionally does NOT auto-detect or fall back to `getAuthor()`:
+ * actor resolution and canonicalization are the sole responsibility of the
+ * shared actor-write utility, which the calling route/command runs before
+ * reaching this helper. Keeping the fallback here would leave a sanctioned
+ * parser path that writes non-canonical or out-of-pool authors.
+ *
+ * AC: @actor-identity-resolution ac-7 — caller resolves the canonical actor before persistence
  */
-export function createNote(content: string, author?: string, supersedes?: string): Note {
+export function createNote(content: string, author: string, supersedes?: string): Note {
   return {
     _ulid: ulid(),
     created_at: new Date().toISOString(),
-    author: author ?? getAuthor(),
+    author,
     // Trim content to prevent whitespace-only lines from accumulating
     // in block scalars during YAML parse-stringify cycles
     content: content.trim(),
@@ -1376,8 +1384,13 @@ export function createNote(content: string, author?: string, supersedes?: string
 /**
  * Create a new todo item.
  * The id should be the next available id for the task's todos array.
+ *
+ * `addedBy` is a required, caller-resolved canonical actor — see
+ * {@link createNote} for why this leaf constructor does not auto-resolve it.
+ *
+ * AC: @actor-identity-resolution ac-7 — caller resolves the canonical actor before persistence
  */
-export function createTodo(id: number, text: string, addedBy?: string): Todo {
+export function createTodo(id: number, text: string, addedBy: string): Todo {
   return {
     id,
     // Trim text to prevent whitespace-only lines from accumulating
@@ -1385,7 +1398,7 @@ export function createTodo(id: number, text: string, addedBy?: string): Todo {
     text: text.trim(),
     done: false,
     added_at: new Date().toISOString(),
-    added_by: addedBy ?? getAuthor(),
+    added_by: addedBy,
   };
 }
 
@@ -2438,13 +2451,18 @@ export async function loadInboxItems(ctx: KspecContext): Promise<LoadedInboxItem
  * @param input Inbox item input
  * @param configAuthor Optional author from kspec.config.yaml identity.author
  */
-export function createInboxItem(input: InboxItemInput, configAuthor?: string | null): InboxItem {
+export function createInboxItem(input: InboxItemInput, addedBy: string): InboxItem {
   return {
     _ulid: input._ulid || ulid(),
     text: input.text,
     created_at: input.created_at || new Date().toISOString(),
     tags: input.tags || [],
-    added_by: input.added_by ?? getAuthor(configAuthor),
+    // `addedBy` is a required, caller-resolved canonical actor. Like
+    // createNote/createTodo, this constructor does not fall back to
+    // getAuthor() — the caller resolves through the shared actor-write
+    // utility first. An import-supplied `input.added_by` (already resolved by
+    // its caller) still takes precedence.
+    added_by: input.added_by ?? addedBy,
   };
 }
 

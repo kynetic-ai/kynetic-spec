@@ -17,7 +17,6 @@ import {
   buildIndexes,
   createPlan,
   findPlanByRef,
-  getAuthor,
   initContext,
   mutatePlanAtomically,
   type LoadedPlan,
@@ -38,6 +37,7 @@ import { type Note, type PlanInput, PlanStatusSchema } from "../../schema/index.
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, success, warn } from "../output.js";
+import { resolveCliActor } from "../actor.js";
 import { ulid } from "ulid";
 
 interface ImportOptions {
@@ -399,7 +399,9 @@ async function importIntoExistingPlan(
     return;
   }
 
-  const author = getAuthor(ctx.config?.identity?.author);
+  // AC: @actor-identity-resolution ac-7 ac-8 — import writes canonicalize the
+  // author through the same shared utility as daemon and CLI writes.
+  const author = await resolveCliActor(ctx, undefined, "author");
   const note = createPlanNote(noteMessage, author);
   const updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => {
     assertImportIntoAllowed(latestPlan);

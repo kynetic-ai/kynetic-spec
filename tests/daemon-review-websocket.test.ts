@@ -134,6 +134,51 @@ const REVIEW_FIXTURE_MODULES = {
 `,
 };
 
+// Agent roster so the actor values these broadcast tests send (email-suffix
+// variants like `reviewer@test.com`) classify to a configured agent identity
+// and persist in canonical form (`reviewer`) rather than being rejected as
+// out-of-pool free-form authors by the shared actor-write utility.
+// AC: @actor-identity-resolution ac-7 — recognized variant persists as canonical id
+const REVIEW_FIXTURE_META = `kynetic_meta: "1.0"
+agents:
+  - _ulid: ${testUlid("AGNT", 6)}
+    id: reviewer
+    name: Reviewer Agent
+    description: Review agent
+    adapter: claude-agent-acp
+    dispatch: []
+    capabilities: []
+    tools: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
+  - _ulid: ${testUlid("AGNT", 7)}
+    id: worker
+    name: Worker Agent
+    description: Worker agent
+    adapter: claude-agent-acp
+    dispatch: []
+    capabilities: []
+    tools: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
+  - _ulid: ${testUlid("AGNT", 8)}
+    id: lead
+    name: Lead Agent
+    description: Lead agent
+    adapter: claude-agent-acp
+    dispatch: []
+    capabilities: []
+    tools: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
+`;
+
 // AC: @review-records-daemon-api ac-9
 describe("Review WebSocket Broadcasts", () => {
   beforeEach(async () => {
@@ -144,6 +189,7 @@ describe("Review WebSocket Broadcasts", () => {
       modules: REVIEW_FIXTURE_MODULES,
       splitTasks: [REVIEW_FIXTURES_SPLIT_TASK],
       reviews: reviewFixturesYaml(),
+      meta: REVIEW_FIXTURE_META,
     });
 
     ({ app, pubsub } = createTestApp());
@@ -177,7 +223,7 @@ describe("Review WebSocket Broadcasts", () => {
       expect.objectContaining({
         review_ulid: REVIEW_OPEN_ULID,
         kind: "blocker",
-        author: "reviewer@test.com",
+        author: "reviewer",
       }),
       expect.any(String),
     );
@@ -209,7 +255,7 @@ describe("Review WebSocket Broadcasts", () => {
       expect.objectContaining({
         review_ulid: REVIEW_OPEN_ULID,
         thread_ulid: THREAD_ULID,
-        author: "worker@test.com",
+        author: "worker",
       }),
       expect.any(String),
     );
@@ -240,7 +286,7 @@ describe("Review WebSocket Broadcasts", () => {
       expect.objectContaining({
         review_ulid: REVIEW_OPEN_ULID,
         thread_ulid: THREAD_ULID,
-        actor: "reviewer@test.com",
+        actor: "reviewer",
       }),
       expect.any(String),
     );
@@ -275,7 +321,7 @@ describe("Review WebSocket Broadcasts", () => {
       expect.objectContaining({
         review_ulid: REVIEW_OPEN_ULID,
         thread_ulid: THREAD_ULID,
-        actor: "reviewer@test.com",
+        actor: "reviewer",
       }),
       expect.any(String),
     );
@@ -302,7 +348,7 @@ describe("Review WebSocket Broadcasts", () => {
       expect.objectContaining({
         review_ulid: REVIEW_OPEN_ULID,
         decision: "approve",
-        reviewer: "lead@test.com",
+        reviewer: "lead",
         disposition: expect.any(String),
         lifecycle_state: expect.any(String),
       }),
@@ -362,7 +408,7 @@ describe("Review WebSocket Broadcasts", () => {
         review_ulid: REVIEW_DRAFT_ULID,
         from: "draft",
         to: "open",
-        actor: "reviewer@test.com",
+        actor: "reviewer",
       }),
       expect.any(String),
     );
@@ -451,6 +497,7 @@ reviews:
     created_at: "2026-01-01T00:00:00Z"
     updated_at: "2026-01-01T00:00:00Z"
 `,
+      meta: REVIEW_FIXTURE_META,
     });
 
     ({ app: localApp, pubsub: localPubsub } = createTestApp());
@@ -468,7 +515,7 @@ reviews:
       localTempDir,
       "POST",
       "/api/reviews/review-shape-test/comments",
-      { body: "Test", kind: "nit", author: "tester" },
+      { body: "Test", kind: "nit", author: "reviewer" },
     );
 
     expect(response.status).toBe(200);

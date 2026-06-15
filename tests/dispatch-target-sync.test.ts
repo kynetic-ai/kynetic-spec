@@ -809,7 +809,7 @@ describe("dispatch target branch sync", () => {
 
       vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
         kspec(
-          "review verdict @concurrent-merge-review --decision request_changes --reviewer stale-reviewer",
+          "review verdict @concurrent-merge-review --decision request_changes --reviewer @test",
           projectDir,
         );
         return {

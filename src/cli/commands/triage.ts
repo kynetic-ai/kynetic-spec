@@ -3,7 +3,6 @@ import { ulid } from "ulid";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
-  getAuthor,
   initContext,
   type LoadedTriageRecord,
   loadInboxItems,
@@ -22,6 +21,7 @@ import { errors } from "../../strings/index.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
+import { resolveCliActor } from "../actor.js";
 import { validateEnumOption } from "../validators.js";
 import { executeTriageAction, VALID_ACTIONS } from "../../triage/index.js";
 
@@ -129,7 +129,8 @@ Examples:
           return;
         }
 
-        const author = options.decidedBy || getAuthor(ctx.config?.identity?.author);
+        // AC: @actor-identity-resolution ac-7 ac-8 — canonical decided_by or rejection.
+        const author = await resolveCliActor(ctx, options.decidedBy, "decided_by");
         const evidenceRefs = options.evidence ? options.evidence.map(normalizeRefInput) : [];
 
         const record: LoadedTriageRecord = {
@@ -366,7 +367,8 @@ Examples:
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
-        const overrideBy = options.overrideBy || getAuthor(ctx.config?.identity?.author);
+        // AC: @actor-identity-resolution ac-7 ac-8 — canonical override_by or rejection.
+        const overrideBy = await resolveCliActor(ctx, options.overrideBy, "override_by");
 
         // AC: @triage-cli-commands ac-12
         record.override_reasoning = options.reasoning;
@@ -554,7 +556,8 @@ Examples:
             continue;
           }
 
-          const author = getAuthor(ctx.config?.identity?.author);
+          // AC: @actor-identity-resolution ac-7 ac-8 — canonical decided_by or rejection.
+          const author = await resolveCliActor(ctx, undefined, "decided_by");
 
           const record: LoadedTriageRecord = {
             _ulid: ulid(),

@@ -573,7 +573,9 @@ describe("Integration: review CLI commands", () => {
 
     // AC: @review-cli-mutation-commands ac-3
     it("should set an approve verdict with auto-derived version", () => {
-      kspec(`review verdict @${reviewSlug} --decision approve --reviewer alice`, tempDir);
+      // `review-agent` is a configured roster identity; an out-of-pool reviewer
+      // is rejected (see actor-write tests). AC: @actor-identity-resolution ac-7
+      kspec(`review verdict @${reviewSlug} --decision approve --reviewer review-agent`, tempDir);
 
       const review = kspecJson<{
         verdicts: Array<{
@@ -586,7 +588,7 @@ describe("Integration: review CLI commands", () => {
       }>(`review get @${reviewSlug}`, tempDir);
 
       expect(review.verdicts).toHaveLength(1);
-      expect(review.verdicts[0].reviewer).toBe("alice");
+      expect(review.verdicts[0].reviewer).toBe("review-agent");
       expect(review.verdicts[0].decision).toBe("approve");
       // Version auto-derived from code subject (--base a1 --head b1 on review add)
       expect(review.verdicts[0].applies_to_version.type).toBe("code_compare");
@@ -605,7 +607,7 @@ describe("Integration: review CLI commands", () => {
 
     // AC: @review-record-per-cycle-lifecycle ac-1
     it("should auto-close review on approve verdict", () => {
-      kspec(`review verdict @${reviewSlug} --decision approve --reviewer alice`, tempDir);
+      kspec(`review verdict @${reviewSlug} --decision approve --reviewer review-agent`, tempDir);
 
       const review = kspecJson<{
         lifecycle_state: string;
@@ -622,7 +624,10 @@ describe("Integration: review CLI commands", () => {
 
     // AC: @review-record-per-cycle-lifecycle ac-1
     it("should auto-close review on request_changes verdict", () => {
-      kspec(`review verdict @${reviewSlug} --decision request_changes --reviewer bob`, tempDir);
+      kspec(
+        `review verdict @${reviewSlug} --decision request_changes --reviewer review-agent`,
+        tempDir,
+      );
 
       const review = kspecJson<{
         lifecycle_state: string;
@@ -636,7 +641,7 @@ describe("Integration: review CLI commands", () => {
       // Open the review first (review add creates in draft state)
       kspec(`review open @${reviewSlug}`, tempDir);
 
-      kspec(`review verdict @${reviewSlug} --decision comment --reviewer carol`, tempDir);
+      kspec(`review verdict @${reviewSlug} --decision comment --reviewer review-agent`, tempDir);
 
       const review = kspecJson<{
         lifecycle_state: string;
