@@ -135,3 +135,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T05:38:04.136Z
+  - _ulid: 01KV4X1BB6M7D22SJMY5X8D68V
+    content: "Resume/correction: the prior inventory wrongly classified the review CHECK 'runner' field
+      as actor-bearing. A check's runner is the tool/command that executed the check (e.g. 'npm
+      test', 'kspec', 'vitest', 'eslint') per the review-gates gate→runner mapping — NOT a
+      human/agent author. Fixed both writers: daemon checks route
+      (packages/daemon/src/routes/reviews.ts) and CLI 'review check' (src/cli/commands/review.ts)
+      now persist runner verbatim and resolve only the check_added EVENT actor through the shared
+      utility (daemon: via the author precedence chain since the endpoint has no actor body field;
+      CLI: via the existing --author option). Corrected daemon-review-verdicts-api check tests
+      (runner 'vitest'/'eslint' now 200) and re-pointed triage decided_by/override_by tests to
+      agents that actually exist in the e2e fixture roster (task-worker, pr-reviewer) instead of the
+      non-existent test-agent/review-agent. INVENTORY CORRECTION: review check 'runner' is NOT an
+      actor-bearing field — it is a tool identifier persisted verbatim."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T05:45:56.838Z
