@@ -31,6 +31,7 @@ const [MODULE_ULID, FEATURE_ULID, REQUIREMENT_ULID, TASK_ULID, PLAN_ULID, REVIEW
   6,
 );
 const SESSION_ID = testUlid("ancs");
+const ORPHAN_SESSION_ID = testUlid("anco");
 
 // Split task storage manifest with folder-backed plan/review storage so the
 // plan and review detail endpoints serve real records. Includes the auth
@@ -100,8 +101,9 @@ reviews:
 `;
 }
 
-// Write a minimal task-scoped session into .kspec-sessions/<id>/.
-function writeSession(dir: string, sessionId: string, taskId: string): void {
+// Write a minimal session into .kspec-sessions/<id>/. Omit taskId for a session
+// with no owning task (single-segment chain).
+function writeSession(dir: string, sessionId: string, taskId?: string): void {
   const sessionDir = join(dir, ".kspec-sessions", sessionId);
   mkdirSync(sessionDir, { recursive: true });
   writeFileSync(
@@ -112,7 +114,7 @@ function writeSession(dir: string, sessionId: string, taskId: string): void {
       agent_id: "worker",
       status: "completed",
       trigger: "task.ready",
-      task_id: taskId,
+      ...(taskId ? { task_id: taskId } : {}),
       started_at: "2026-06-01T10:00:00.000Z",
     }),
   );
@@ -191,6 +193,8 @@ beforeEach(async () => {
   });
   // Seed a task-scoped session whose owning task is the seeded task.
   writeSession(tempDir, SESSION_ID, "@task-password-login");
+  // Seed a session with no owning task — single-segment chain.
+  writeSession(tempDir, ORPHAN_SESSION_ID);
   execSync('git add -A && git commit -m "seed"', { cwd: tempDir, stdio: "pipe" });
   ({ app } = createTestApp());
 });
@@ -271,15 +275,29 @@ describe("GET /api/reviews/:ref ancestors", () => {
 
 describe("GET /api/sessions/:id ancestors", () => {
   // AC: @ui-breadcrumb ac-10
-  it("returns an ancestor chain ending in the session segment", async () => {
+  it("returns the owning task's chain plus the session for a task-scoped session", async () => {
     const response = await request(`/api/sessions/${SESSION_ID}`);
     expect(response.status).toBe(200);
     const { data } = await response.json();
     // The in-process test app registers no entity cache, so the session route
-    // degrades to the single-segment chain (the same warm-up degradation
-    // task_title/spec_context use). The route still resolves the chain
-    // server-side — the client never reconstructs it from a list fetch.
-    expect(Array.isArray(data.ancestors)).toBe(true);
-    expect(data.ancestors.at(-1)).toEqual({ ref: SESSION_ID, title: null, kind: "session" });
+    // resolves the owning task and item index through its bounded disk fallback
+    // (no git operations) — the trail is the full module -> feature ->
+    // requirement -> task -> session chain, never the session segment alone.
+    // The client never reconstructs it from a list fetch.
+    expect(data.ancestors).toEqual([
+      { ref: MODULE_ULID, title: "Auth Module", kind: "module" },
+      { ref: FEATURE_ULID, title: "Login Feature", kind: "feature" },
+      { ref: REQUIREMENT_ULID, title: "Password Login", kind: "requirement" },
+      { ref: TASK_ULID, title: "Implement password login", kind: "task" },
+      { ref: SESSION_ID, title: null, kind: "session" },
+    ]);
+  });
+
+  // AC: @ui-breadcrumb ac-10
+  it("returns a single-segment chain for a session with no owning task", async () => {
+    const response = await request(`/api/sessions/${ORPHAN_SESSION_ID}`);
+    expect(response.status).toBe(200);
+    const { data } = await response.json();
+    expect(data.ancestors).toEqual([{ ref: ORPHAN_SESSION_ID, title: null, kind: "session" }]);
   });
 });
