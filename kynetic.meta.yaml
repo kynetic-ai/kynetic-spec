@@ -22089,6 +22089,19 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-15T04:06:16.003Z
+  - _ulid: 01KV4QXYF7Y58442NV4ZQC58PH
+    type: friction
+    content: "web-ui UNIT tests live in the ROOT tests/ tree, not beside their source:
+      tests/web-ui/<name>.test.ts and flat tests/web-ui-*.test.ts (e2e in tests/e2e/). When removing
+      or renaming an exported symbol in packages/web-ui/src, a reference grep scoped to
+      packages/web-ui/ misses these and the breakage only surfaces as a full-suite failure (~40min).
+      When refactoring web-ui exports, grep the whole repo (root tests/ included) for references
+      first. Encountered while removing board-utils getStatusClasses for
+      @task-view-header-status-tokens."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T04:16:42.471Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
