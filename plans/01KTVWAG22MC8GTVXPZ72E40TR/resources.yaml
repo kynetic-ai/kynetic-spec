@@ -129,3 +129,12 @@ resources:
     label: Breadcrumb variants C/D/E
     path: handoff/shots/r3-breadcrumb-variants-b.png
     sha256: da05630d1dca65b8d853bdb9c707a8b3226fa72fc34855fc81da9d8fd6b025e3
+  - description: R3 recommended default breadcrumb truncation rule.
+    bytes: 28639
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-breadcrumb-c
+    label: Breadcrumb variant F recommendation
+    path: handoff/shots/r3-breadcrumb-variants-c.png
+    sha256: cee589812c9835b3916329cc37c95fb1a0b916f1647204fae2b6d4e6b0ec23e5
