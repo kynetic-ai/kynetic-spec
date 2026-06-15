@@ -92,6 +92,17 @@ checks:
     runner: kspec
     created_at: 2026-06-15T15:36:43.139Z
     completed_at: 2026-06-15T15:36:43.139Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed. Verified prior bootstrap failure mode: build now runs build:shared before root
+      tsc, then builds daemon, web UI, docs search, and plugin successfully."
+    name: build
+    required: false
+    runner: npm run build
+    created_at: 2026-06-15T15:36:56.193Z
+    completed_at: 2026-06-15T15:36:56.193Z
 events:
   - _ulid: 01KV5XY6NAD2NRXADKRF69HVFP
     actor: Jacob Chapel
@@ -162,6 +173,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T15:36:43.392Z
+  - _ulid: 01KV5YVFWN9YK0VVH9XYXDTQ4R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-06-15T15:36:56.469Z
 examined_commit: 4bf2359c66c92cf88d37e42deb18af434403faf9
 external_links: []
 lifecycle_state: open
@@ -174,5 +192,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T15:20:56.747Z
-updated_at: 2026-06-15T15:36:43.139Z
+updated_at: 2026-06-15T15:36:56.193Z
 notes: []
