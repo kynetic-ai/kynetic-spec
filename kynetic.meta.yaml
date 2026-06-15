@@ -22045,6 +22045,23 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-15T02:43:57.178Z
+  - _ulid: 01KV4KA5B69JP301DJXFD0JSGJ
+    type: friction
+    content: "Additive config-schema changes are silently breaking for not-yet-rebuilt kspec binaries.
+      When a strict sub-schema (e.g. IdentityConfigSchema in src/parser/config.ts) rejects an
+      unknown key, loadProjectConfig treats the WHOLE config as invalid and falls back to ALL
+      defaults (dropping unrelated dispatch/coverage/daemon settings) with only a warning. Hit this
+      when adding identity.agent_aliases: a kspec binary built from an older checkout dropped
+      coverage.scan_paths, which silently made a `kspec validate --completeness` run scan nothing
+      and report a misleadingly clean result. Impact: any additive config key is effectively a
+      breaking change during the ship/deploy gap, and the failure is silent + total rather than
+      scoped. Worth considering per-section fallback (or preserving recognized keys) so an
+      unknown/newer key degrades only its own section, plus a louder signal than a single warning
+      line."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T02:55:59.846Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
