@@ -22244,6 +22244,25 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-15T15:16:45.410Z
+  - _ulid: 01KV5XS8NCW191JF9FCJS9JD7Y
+    type: friction
+    content: "The shared BreadcrumbAncestryResolver (src/lib/breadcrumb-ancestry.ts) degrades to a
+      shorter/single-segment chain in two indistinguishable cases: (a) an ancestor genuinely does
+      not exist, and (b) a route under-provisions inputs — e.g. constructing the resolver with
+      items:[] on a cold cache. Because both produce a valid-looking shorter chain, a route that
+      fails to supply the parent collection silently truncates the breadcrumb instead of erroring.
+      The sessions detail route hit exactly this: its cold-cache branch dropped task_ref and built a
+      resolver with items:[], returning a session-only chain for a task-scoped session (caught in
+      review as a @ui-breadcrumb ac-10 violation). Sibling routes (item/task/plan/review) avoided it
+      only because they already disk-fallback to load items for other fields. Direction: either give
+      all breadcrumb-serving routes a shared 'build ancestry inputs from cache-or-disk' helper so
+      input provisioning can't diverge per route, or have the resolver distinguish 'no parent' from
+      'parent inputs absent' so under-provisioning surfaces in tests/review rather than as a quiet
+      degraded chain."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T15:18:14.956Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
