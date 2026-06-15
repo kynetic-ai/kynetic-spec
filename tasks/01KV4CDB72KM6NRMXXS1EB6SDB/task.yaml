@@ -72,7 +72,7 @@ tags:
   - web-ui
   - design-system
 vcs_refs: []
-review_ref: "@01KV4N4D3APQ1VBBJJB3251BC9"
+review_ref: "@01KV4R492C2RWVZH7YJYKN65E9"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-view-header-status-tokens/01kv4cdb
@@ -237,6 +237,13 @@ history:
         previous: 2026-06-15T03:22:41.867Z
     command: task-submit
     timestamp: 2026-06-15T04:14:20.495Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KV4R492C2RWVZH7YJYKN65E9"
+        previous: "@01KV4N4D3APQ1VBBJJB3251BC9"
+    command: review-link
+    timestamp: 2026-06-15T04:20:12.358Z
 resource_refs:
   - git_commit: null
     git_path: null
