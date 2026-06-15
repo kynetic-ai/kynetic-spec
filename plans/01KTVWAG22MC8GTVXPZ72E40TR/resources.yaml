@@ -237,3 +237,12 @@ resources:
     label: Task review surface
     path: handoff/shots/r3-review-task.png
     sha256: d14e3686c5982b51b291dc30b4449d435de083451eab1d267b5477c666d5b68e
+  - description: Spec review surface reference for AC-anchored review body and actor/reviewer display.
+    bytes: 107131
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-review-spec
+    label: Spec review surface
+    path: handoff/shots/r3-review-spec.png
+    sha256: fbda06305f9355a62c2ce7055c7bd444c16dd8a0970a1bd220089c8fe95d4d71
