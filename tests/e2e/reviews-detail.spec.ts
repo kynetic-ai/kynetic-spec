@@ -133,6 +133,17 @@ function mockReviewDetail() {
     notes: [],
     external_links: [],
     examined_commit: null,
+    // Server-resolved breadcrumb ancestor chain (root → current review). Seven
+    // segments exercises the 7+ tier: root + collapse(4) + one ancestor + current.
+    ancestors: [
+      { ref: "@web-ui-system", title: "Web UI System", kind: "module" },
+      { ref: "@web-dashboard", title: "Web Dashboard", kind: "feature" },
+      { ref: "@plans-view", title: "Plans View", kind: "feature" },
+      { ref: "@embedded-views", title: "Plan Content Embedded Views", kind: "requirement" },
+      { ref: "@ac-1", title: "AC-1", kind: "requirement" },
+      { ref: "@test-task-pending-review", title: "Test task", kind: "task" },
+      { ref: `@${REVIEW_ULID}`, title: "Review of test task", kind: "review" },
+    ],
     created_at: "2026-03-15T09:00:00Z",
     updated_at: "2026-03-15T11:00:00Z",
   };
@@ -279,15 +290,87 @@ test.describe("Review Detail Page", () => {
       await expect(page.getByTestId("review-created-at")).toBeVisible();
     });
 
-    test("has back navigation to reviews list", async ({ page, daemon: _daemon }) => {
+    // AC: @ui-breadcrumb ac-1, ac-3, ac-9 — the adaptive breadcrumb replaces the
+    // ad-hoc back link, showing the server-resolved hierarchy with the current
+    // review emphasized and the deep middle collapsed behind one indicator.
+    test("shows the adaptive breadcrumb with collapsed ancestors and emphasized current", async ({
+      page,
+      daemon: _daemon,
+    }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
       await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
       await page.goto(`/reviews/${REVIEW_ULID}`);
 
-      const backLink = page.getByTestId("back-to-reviews");
-      await expect(backLink).toBeVisible();
-      await expect(backLink).toHaveAttribute("href", /\/reviews$/);
+      const crumb = page.getByTestId("breadcrumb");
+      await expect(crumb).toBeVisible();
+      // 7 segments → root + collapse indicator + one ancestor + current.
+      await expect(crumb.getByTestId("breadcrumb-current")).toContainText("Review of test task");
+      const collapse = crumb.getByTestId("breadcrumb-collapse");
+      await expect(collapse).toBeVisible();
+      await expect(collapse).toContainText("4"); // four middle segments collapsed
+      // Root and the single nearest ancestor stay visible as links.
+      await expect(crumb.getByTestId("breadcrumb-segment")).toHaveCount(2);
+    });
+
+    // AC: @ui-breadcrumb ac-5, ac-7, ac-8 — clicking the indicator opens an overlay
+    // popover listing collapsed segments as links, shifting no surrounding content.
+    test("opens the collapsed-segment popover on click without layout shift", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      const detail = mockReviewDetail();
+      await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
+      await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
+      await page.goto(`/reviews/${REVIEW_ULID}`);
+
+      const title = page.getByTestId("review-title");
+      const before = await title.boundingBox();
+
+      await page.getByTestId("breadcrumb-collapse").click();
+      const popover = page.getByTestId("breadcrumb-popover");
+      await expect(popover).toBeVisible();
+      // Collapsed segments listed in hierarchy order as links.
+      const items = popover.getByTestId("breadcrumb-popover-item");
+      await expect(items).toHaveCount(4);
+      await expect(items.first()).toContainText("Web Dashboard");
+      await expect(items.last()).toContainText("AC-1");
+
+      // AC: @ui-breadcrumb ac-8 — overlay popover does not move page content.
+      const after = await title.boundingBox();
+      expect(after?.x).toBeCloseTo(before?.x ?? 0, 0);
+      expect(after?.y).toBeCloseTo(before?.y ?? 0, 0);
+    });
+
+    // AC: @ui-breadcrumb ac-6 — keyboard: open, arrow to move, Enter to navigate, Escape to close.
+    test("navigates the popover by keyboard and closes on Escape", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      const detail = mockReviewDetail();
+      await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
+      await page.route("**/api/reviews?*", routeSiblingsMock(mockSiblingReviews()));
+      await page.goto(`/reviews/${REVIEW_ULID}`);
+
+      const collapse = page.getByTestId("breadcrumb-collapse");
+      await collapse.focus();
+      await page.keyboard.press("Enter"); // open by keyboard, never hover (ac-7)
+      const popover = page.getByTestId("breadcrumb-popover");
+      await expect(popover).toBeVisible();
+
+      // Escape closes without navigating away from the review.
+      await page.keyboard.press("Escape");
+      await expect(popover).toBeHidden();
+      await expect(page).toHaveURL(new RegExp(`/reviews/${REVIEW_ULID}`));
+
+      // Re-open and arrow-navigate to the first collapsed segment, then Enter.
+      await collapse.focus();
+      await page.keyboard.press("Enter");
+      await expect(popover).toBeVisible();
+      await page.keyboard.press("ArrowDown");
+      await page.keyboard.press("Enter");
+      // The first collapsed segment is a feature → routes to the specs surface.
+      await page.waitForURL(/\/specs\?ref=/);
     });
   });
 

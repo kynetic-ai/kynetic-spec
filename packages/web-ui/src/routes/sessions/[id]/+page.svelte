@@ -40,6 +40,7 @@
 	import ArrowLeft from 'lucide-svelte/icons/arrow-left';
 	import { base } from '$app/paths';
 	import { ViewHeader, type ViewHeaderCount } from '$lib/components/ds';
+	import BreadcrumbNav from '$lib/components/BreadcrumbNav.svelte';
 
 	let sessionId = $derived($page.params.id);
 
@@ -215,7 +216,16 @@
 <div class="flex flex-col h-full">
 	<!-- Header — AC: @ui-view-header ac-1, ac-3, ac-4, ac-5, ac-6 -->
 	{#if session}
-		<div class="px-4 py-3 border-b flex-shrink-0">
+		<div class="flex flex-col gap-2 px-4 py-3 border-b flex-shrink-0">
+			<!--
+				Hierarchy orientation. AC: @ui-breadcrumb ac-5..ac-10 — adaptive
+				breadcrumb over the server-resolved ancestor chain (owning task →
+				session). The list-level "Back" affordance stays in the ViewHeader
+				actions zone per @ui-view-header ac-5.
+			-->
+			{#if session.ancestors?.length}
+				<BreadcrumbNav ancestors={session.ancestors} />
+			{/if}
 			<ViewHeader
 				title="Session"
 				reference={session.id}
