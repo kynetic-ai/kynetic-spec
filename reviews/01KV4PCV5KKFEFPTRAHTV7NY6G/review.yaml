@@ -130,6 +130,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-15T04:04:08.239Z
+  - _ulid: 01KV4Q70XN7VKKRAPS3VV9X22A
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV4Q70P833VJC5BXFGP9Y2XK
+    timestamp: 2026-06-15T04:04:11.317Z
 examined_commit: 6cfa985740c19c4d2afd2992b6e0c121cf13a82b
 external_links: []
 lifecycle_state: open
@@ -161,7 +168,31 @@ threads:
           not functionally equivalent for the accessor surface."
         created_at: 2026-06-15T03:53:44.221Z
     kind: blocker
+  - _ulid: 01KV4Q70P833VJC5BXFGP9Y2XK
+    entries:
+      - _ulid: 01KV4Q70P9Y428Z072V6R923AV
+        author: Jacob Chapel
+        body: "Review evidence log:\\n\\nFiles read: packages/web-ui/src/lib/preferences/backend.ts;
+          packages/web-ui/src/lib/preferences/define-preference.ts;
+          packages/web-ui/src/lib/preferences/index.ts;
+          packages/web-ui/src/lib/stores/project.svelte.ts; tests/web-ui/preferences.test.ts;
+          relevant localStorage setup in tests/e2e/project-selector.spec.ts and
+          tests/e2e/resource-lifecycle.spec.ts.\\n\\nCommands run: kspec task get
+          @01KV4CDBWM83RRBNH7RX33E5YK; kspec item get @ui-preference-store; kspec item get
+          @client-preference-persistence; git diff/stat/name-only; rg AC annotations and
+          localStorage usages; npm run format:check; npm run lint -- --quiet; npx oxlint changed
+          files; npm run typecheck; npm test; kspec validate --refs/--alignment/--completeness
+          --warnings-ok; a node --import tsx reproduction for degraded remove behavior.\\n\\nClaims
+          verified: AC annotations are behavioral and cover @ui-preference-store ac-1..ac-6 plus
+          @client-preference-persistence ac-1; legacy project selection migration still reads
+          kspec-selected-project before removal; localStorage degradation read/write tests pass, but
+          remove after quota degradation fails.\\n\\nCategories searched: correctness, edge cases,
+          error handling/degradation, test quality, integration with project store, and existing E2E
+          localStorage setup. Finding recorded: degraded LocalStorageBackend.remove() leaves old
+          persistent values readable."
+        created_at: 2026-06-15T04:04:11.081Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-15T03:49:53.459Z
-updated_at: 2026-06-15T04:04:08.004Z
+updated_at: 2026-06-15T04:04:11.081Z
 notes: []
