@@ -1,1 +1,40 @@
-notes: []
+notes:
+  - _ulid: 01KV5593M8ERPR8AMK8FKAK3ZX
+    content: >-
+      Approach: New plain-TS core under src/lib/shortcuts/ (no Svelte runes, so it is unit-testable
+      in the node vitest env, mirroring src/lib/preferences/). Modules: types.ts, platform.ts
+      (detectPlatform via navigator.platform + UA fallback), chord.ts
+      (normalize/resolve/label/chordKey), reserved.ts (per-platform browser-reserved data +
+      isReserved), registry.ts (ShortcutRegistry class), index.ts (singleton + exports).
+
+
+      Resolution: chord declares platform-abstract primary modifier `mod` → meta on mac, ctrl on
+      other. labelFor renders ⌘K (mac symbols) vs Ctrl+K. Reserved lists: mod+w/t/n (both), meta+q
+      (mac), ctrl+tab (both). Registration: preferred reserved → walk fallbacks for first
+      non-reserved/non-colliding; preferred colliding (non-reserved) → reject keeping existing
+      (ac-4); no resolvable chord → unbound + diagnostic, never silently dropped (ac-5). Single
+      document-level dispatcher in root layout via <svelte:window>; exactly-once firing;
+      modifier-less chords (no platform primary modifier) suppressed while focus in
+      input/textarea/contenteditable (ac-6). Enumeration list() returns active bindings (active
+      contexts) with action label + resolved chord + rendered chordLabel (ac-2). Context activation
+      tied to component lifecycle.
+
+
+      Migration (unchanged user-visible behavior): CommandPalette Cmd/Ctrl+K (global), sidebar
+      toggle Cmd/Ctrl+B (global), triage Arrow Left/Right under surface-scoped 'triage' context
+      (preventDefault:false to preserve no-preventDefault behavior; central suppression replaces the
+      local input guard). Remove the three ad-hoc listeners.
+
+
+      Dispatch is platform-strict (resolved chord matched exactly), which is spec-correct (ac-3).
+      The existing e2e 'opens with Cmd+K on Mac' test pressed Meta+k while running on Linux relying
+      on the old lenient (meta||ctrl) handler; updated it to actually emulate macOS (override
+      navigator.platform + reload) so it stays correct coverage.
+
+
+      Tests: table-driven unit tests in tests/web-ui/shortcuts.test.ts for platform resolution,
+      collision rejection, reserved fallback, text-entry suppression, enumeration, exactly-once
+      dispatch.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T08:09:59.688Z
