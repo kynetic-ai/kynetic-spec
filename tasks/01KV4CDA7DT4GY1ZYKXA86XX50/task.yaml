@@ -84,8 +84,10 @@ description: |
 spec_ref: "@actor-history-normalization"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign at 319e0b15be3462e7bb6d95b1f214bdf22711be7e after approved
+  review @01KV6K8C. Historical actor normalization upgrade path reviewed and integrated.
 depends_on:
   - "@task-identity-endpoint-classifier"
 context: []
@@ -611,6 +613,20 @@ history:
         previous: "@01KV6GMQRTA0AE0TB6Y413NTW8"
     command: review-link
     timestamp: 2026-06-15T21:33:32.885Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign at 319e0b15be3462e7bb6d95b1f214bdf22711be7e after approved review
+          @01KV6K8C. Historical actor normalization upgrade path reviewed and integrated.
+        previous: null
+      completed_at:
+        new: 2026-06-15T21:51:17.571Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-15T21:51:17.586Z
 prior_status: null
 resource_refs:
   - git_commit: null
@@ -640,5 +656,6 @@ resource_refs:
 created_at: 2026-06-15T00:55:23.117Z
 started_at: 2026-06-15T21:29:23.713Z
 submitted_at: 2026-06-15T21:29:27.304Z
+completed_at: 2026-06-15T21:51:17.571Z
 todos: []
 automation: eligible
