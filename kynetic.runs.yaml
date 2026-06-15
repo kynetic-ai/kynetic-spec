@@ -66444,9 +66444,23 @@ runs:
     completed_at: 2026-06-15T04:06:23.712Z
   - _ulid: 01KV4QTVY72BDG6794QKBV0QFH
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-15T04:15:01.575Z
+        completed_at: 2026-06-15T04:15:35.042Z
+        notes: "What worked well: (1) The shared status-tokens module + StatusBadge component made the fix
+          mechanical — every blocker was 'replace local map with <StatusBadge domain=X>'. (2)
+          Reading the already-migrated surfaces (reviews list, sessions list, TaskList) first
+          established the canonical pattern (domain names, glyph-safe toContainText e2e assertions)
+          so the fixes matched conventions exactly. (3) Running targeted e2e specs per changed
+          surface (task-board, sessions, tasks, items) gave fast confirmation."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-15T04:15:35.042Z
+        completed_at: 2026-06-15T04:15:35.042Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T04:15:01.575Z
