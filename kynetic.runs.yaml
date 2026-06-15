@@ -66164,7 +66164,7 @@ runs:
     completed_at: 2026-06-14T21:24:06.676Z
   - _ulid: 01KV4FM90X21MDP3JA51JZ51MV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66179,7 +66179,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T01:53:34.022Z
-        completed_at: 2026-06-15T01:53:34.022Z
+        completed_at: 2026-06-15T01:53:43.716Z
+        notes: "Friction: handoff resources in the dispatch prompt were listed as OK with relative paths,
+          but those files were not present as regular workspace files and kspec task resources was
+          not an available lookup. The workaround was to search the repo and kspec records, then
+          proceed using task/spec/diff context."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T01:53:43.716Z
+        completed_at: 2026-06-15T01:53:43.716Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T01:51:36.989Z
