@@ -29034,7 +29034,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-15T09:32:07.294Z
+      updated_at: 2026-06-15T09:32:13.672Z
     integration:
       status: pending
       detail: null
@@ -29043,7 +29043,7 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: 9d497f7309c419a69458394e19c2e71263bdb544
       updated_at: 2026-06-15T09:32:07.294Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV4CD9W9AJRNJQCEZ0NWF09W
     task_ref: "@01KV4CD9W9AJRNJQCEZ0NWF09W"
@@ -29051,18 +29051,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-15T09:11:00.580Z
-      last_reconciled_at: 2026-06-15T09:32:07.294Z
+      last_reconciled_at: 2026-06-15T09:32:13.672Z
       created_at: 2026-06-15T08:37:02.989Z
-      updated_at: 2026-06-15T09:32:07.294Z
+      updated_at: 2026-06-15T09:32:13.672Z
     workspace_id: dispatch-workspace-01KV4CD9W9AJRNJQCEZ0NWF09W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 7aa8f5e1b19cbc7bdf1210123f068c16c50a5975
-        last_seen_at: 2026-06-15T09:10:24.496Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-actor-display-next-actor-01kv4cd9-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-actor-display-next-actor/01kv4cd9
