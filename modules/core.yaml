@@ -2579,6 +2579,9 @@ features:
       recoverable through the metadata's version history. Stamp writes
       commit to the shadow-branch history like other metadata mutations,
       so a fresh checkout of the metadata reproduces the store.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on:
       - "@annotation-freshness-provenance"
       - "@actor-identity-model"
