@@ -254,6 +254,12 @@ events:
     payload:
       thread_ulid: 01KV5W7NMRS1Q6BHZQ56J3AWF1
     timestamp: 2026-06-15T15:50:26.763Z
+  - _ulid: 01KV5ZMC1ZXRB54MFQY0D8YY9F
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV5W8CD38F7B4K95HE0TQ6FD
+    timestamp: 2026-06-15T15:50:31.744Z
 examined_commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
 external_links: []
 lifecycle_state: closed
@@ -354,6 +360,15 @@ threads:
           Remove this client fallback and let the daemon shared utility resolve absence, or pass a
           canonical actor resolved through the same utility contract."
         created_at: 2026-06-15T14:51:33.155Z
+      - _ulid: 01KV5ZMBT56T5NW0CD7P9SB30G
+        author: "@claude"
+        body: "Fixed: resolveReviewThread and reopenReviewThread no longer inject a literal \"anonymous\".
+          The body now sends the actor only when present (JSON.stringify(actor ? { actor } : {}));
+          when absent, the daemon's resolveWriteActor resolves it through the author precedence
+          chain (it already accepts body?.actor undefined). The review detail / structured-content /
+          diff viewers that call these without an actor now succeed instead of being rejected as
+          out-of-pool."
+        created_at: 2026-06-15T15:50:31.492Z
     kind: blocker
   - _ulid: 01KV5W8FFEAGHRT7DSWGJ3ZQFC
     anchor:
@@ -419,5 +434,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T14:52:51.963Z
 created_at: 2026-06-15T14:35:05.417Z
-updated_at: 2026-06-15T15:50:26.544Z
+updated_at: 2026-06-15T15:50:31.492Z
 notes: []
