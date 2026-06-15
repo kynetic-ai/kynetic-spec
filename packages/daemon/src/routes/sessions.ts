@@ -42,6 +42,12 @@ import {
   type LoadedTask,
   type LoadedSpecItem,
 } from "../../parser/index.js";
+import {
+  BreadcrumbAncestryResolver,
+  type AncestryItemInput,
+  type AncestryTaskInput,
+} from "../../lib/breadcrumb-ancestry.js";
+import type { BreadcrumbAncestor } from "@kynetic-ai/shared";
 import { resolveRefTitle } from "./ref-resolution.js";
 import { SessionStatusSchema, SessionTriggerSchema } from "../../sessions/types.js";
 import { parseTimeSpec } from "../../utils/time.js";
@@ -681,6 +687,28 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           }
         }
 
+        // AC: @ui-breadcrumb ac-10 — server-resolved breadcrumb ancestor chain.
+        // A task-scoped session's chain is its owning task's chain (spec chain
+        // plus the task) plus the session; a session with no owning task is a
+        // single-segment chain. Built from the cached task/item indexes when
+        // warm (no per-request disk read, per ac-no-per-request-sync); when the
+        // cache is cold the chain degrades to the session segment alone, the
+        // same warm-up degradation task_title/spec_context already use.
+        let ancestors: BreadcrumbAncestor[];
+        const ancestryTasksReady = entityCache?.getDomainState("tasks") === "ready";
+        const ancestryItemsReady = entityCache?.getDomainState("items") === "ready";
+        if (metadata?.task_id && ancestryTasksReady && ancestryItemsReady) {
+          const resolver = new BreadcrumbAncestryResolver({
+            items: (entityCache!.getItemIndex() ?? []) as AncestryItemInput[],
+            tasks: (entityCache!.getTaskIndex() ?? []) as unknown as AncestryTaskInput[],
+          });
+          ancestors = resolver.forSession({ id: resolution.id, task_ref: metadata.task_id });
+        } else {
+          ancestors = new BreadcrumbAncestryResolver({ items: [] }).forSession({
+            id: resolution.id,
+          });
+        }
+
         // AC: @ui-session-stream ac-4 — Include budget info
         let budget: { max_per_cycle: number; started_this_cycle: number } | null = null;
         try {
@@ -710,6 +738,7 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
             trigger: metadata?.trigger ?? "legacy",
             spec_context,
             budget,
+            ancestors,
             ...(legacyCount > 0
               ? {
                   warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,

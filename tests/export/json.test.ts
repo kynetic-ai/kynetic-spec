@@ -8,10 +8,15 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { beforeAll, afterAll, describe, expect, it } from "vitest";
 import { calculateExportStats, formatBytes, generateJsonSnapshot } from "../../src/export/index.js";
-import { setupTempFixtures, cleanupTempDir, seedSplitTask } from "../helpers/cli.js";
+import { setupTempFixtures, cleanupTempDir, seedSplitTask, testUlid } from "../helpers/cli.js";
 import { ensureSplitBackendRegistered } from "../../src/parser/split-backend.js";
 
 ensureSplitBackendRegistered();
+
+// A task linked to the nested `@test-feature` spec item so the breadcrumb
+// ancestor chain has a real multi-segment path (module → feature → task) to
+// assert against. The base fixture's tasks carry no spec_ref.
+const BREADCRUMB_TASK_ULID = testUlid("bcb");
 
 describe("JSON Export", () => {
   let tempDir: string;
@@ -29,6 +34,19 @@ describe("JSON Export", () => {
       path.join(e2eFixtureDir, "project.triage.yaml"),
       path.join(tempDir, "project.triage.yaml"),
     );
+    // Seed a task whose spec_ref points at the nested feature so the export
+    // bakes a multi-segment breadcrumb chain (@ui-breadcrumb ac-10).
+    seedSplitTask(tempDir, {
+      _ulid: BREADCRUMB_TASK_ULID,
+      slugs: ["task-breadcrumb-fixture"],
+      title: "Breadcrumb fixture task",
+      type: "task",
+      status: "pending",
+      priority: 2,
+      spec_ref: "@test-feature",
+      depends_on: [],
+      created_at: "2026-01-01T00:00:00Z",
+    });
     process.chdir(tempDir);
   });
 
@@ -94,6 +112,62 @@ describe("JSON Export", () => {
         if (task.spec_ref_title) {
           expect(typeof task.spec_ref_title).toBe("string");
         }
+      }
+    });
+
+    // AC: @ui-breadcrumb ac-10
+    it("bakes a server-resolved breadcrumb ancestor chain into every item", async () => {
+      const snapshot = await generateJsonSnapshot();
+      expect(snapshot.items.length).toBeGreaterThan(0);
+
+      for (const item of snapshot.items) {
+        expect(Array.isArray(item.ancestors)).toBe(true);
+        // The chain is root-to-self: the last segment is the item itself.
+        const last = item.ancestors!.at(-1)!;
+        expect(last.ref).toBe(item._ulid);
+        expect(last.kind).toBe(item.type);
+        for (const segment of item.ancestors!) {
+          expect(typeof segment.ref).toBe("string");
+          expect("title" in segment).toBe(true);
+          expect(typeof segment.kind).toBe("string");
+        }
+      }
+
+      // The fixture nests features/requirements under a module, so at least one
+      // item must carry a multi-segment chain (proving the parent walk runs).
+      const nested = snapshot.items.find((i) => (i.ancestors?.length ?? 0) > 1);
+      expect(nested).toBeDefined();
+    });
+
+    // AC: @ui-breadcrumb ac-10
+    it("bakes a task's chain as its spec_ref chain plus the task", async () => {
+      const snapshot = await generateJsonSnapshot();
+      const task = snapshot.tasks.find((t) => t.spec_ref && (t.ancestors?.length ?? 0) > 1);
+      expect(task).toBeDefined();
+      const chain = task!.ancestors!;
+      // Last segment is the task itself.
+      expect(chain.at(-1)).toEqual({
+        ref: task!._ulid,
+        title: task!.title ?? null,
+        kind: "task",
+      });
+      // The segment before the task resolves the linked spec item.
+      expect(chain.length).toBeGreaterThanOrEqual(2);
+      expect(chain.at(-2)!.kind).not.toBe("task");
+    });
+
+    // AC: @ui-breadcrumb ac-10
+    it("bakes a plan's chain ending in the plan segment", async () => {
+      const snapshot = await generateJsonSnapshot();
+      expect((snapshot.plans ?? []).length).toBeGreaterThan(0);
+      for (const plan of snapshot.plans ?? []) {
+        const chain = plan.ancestors!;
+        expect(Array.isArray(chain)).toBe(true);
+        expect(chain.at(-1)).toEqual({
+          ref: plan._ulid,
+          title: plan.title ?? null,
+          kind: "plan",
+        });
       }
     });
 
