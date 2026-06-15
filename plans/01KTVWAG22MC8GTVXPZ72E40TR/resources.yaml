@@ -147,3 +147,12 @@ resources:
     label: Spec workspace module page
     path: handoff/shots/r3-spec-unified-2-module.png
     sha256: 24178a66e6c07925ced6acdd8f537184b1c44bac0707a2452f3ebc66db71b6f9
+  - description: Unified spec page/tree feature view reference for nested pages and header context.
+    bytes: 87303
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-unified-feature
+    label: Spec workspace feature page
+    path: handoff/shots/r3-spec-unified-3-feature.png
+    sha256: 3a05d1f3fd5c4b50dac693f864913dd1f5240ea43147511b1d6dfb2b3c91fbc6
