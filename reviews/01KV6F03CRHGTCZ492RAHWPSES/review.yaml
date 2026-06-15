@@ -78,6 +78,17 @@ checks:
     runner: kspec
     created_at: 2026-06-15T20:35:57.150Z
     completed_at: 2026-06-15T20:35:57.150Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "KSPEC_NO_DAEMON=1 kspec validate --completeness --warnings-ok passed; warning baseline:
+      249 missing own AC coverage and 32 invalid AC annotations outside this task."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T20:36:08.064Z
+    completed_at: 2026-06-15T20:36:08.064Z
 events:
   - _ulid: 01KV6F03CRK3DE6EJ69V79KSWQ
     actor: Jacob Chapel
@@ -141,6 +152,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-15T20:35:57.393Z
+  - _ulid: 01KV6FZB0HD1V63XKRTY0GER9K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-15T20:36:08.337Z
 examined_commit: 7189e99b302665e18253618951180dac91bc6e20
 external_links: []
 lifecycle_state: open
@@ -153,5 +171,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T20:19:04.728Z
-updated_at: 2026-06-15T20:35:57.150Z
+updated_at: 2026-06-15T20:36:08.064Z
 notes: []
