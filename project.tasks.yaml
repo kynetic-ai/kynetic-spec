@@ -32252,7 +32252,7 @@
   type: task
   spec_ref: "@ui-preference-store"
   plan_ref: "@plan-web-ui-foundations"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -32265,4 +32265,5 @@
   created_at: 2026-06-15T00:55:24.820Z
   started_at: 2026-06-15T04:20:24.149Z
   submitted_at: 2026-06-15T04:34:00.049Z
+  completed_at: 2026-06-15T04:52:53.980Z
   automation: eligible

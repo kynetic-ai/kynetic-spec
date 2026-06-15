@@ -58,8 +58,12 @@ description: |
 spec_ref: "@ui-preference-store"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged dispatch/task/task-preference-utility/01kv4cdb into feat/ui-redesign at
+  9d497f7309c419a69458394e19c2e71263bdb544. Implemented the shared persisted preference utility,
+  migrated project selection persistence, and verified the write-time degradation remove fix with
+  full review gates passing.
 depends_on: []
 context: []
 priority: 1
@@ -182,6 +186,22 @@ history:
         previous: "@01KV4PCV5KKFEFPTRAHTV7NY6G"
     command: review-link
     timestamp: 2026-06-15T04:38:09.332Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged dispatch/task/task-preference-utility/01kv4cdb into feat/ui-redesign at
+          9d497f7309c419a69458394e19c2e71263bdb544. Implemented the shared persisted preference
+          utility, migrated project selection persistence, and verified the write-time degradation
+          remove fix with full review gates passing.
+        previous: null
+      completed_at:
+        new: 2026-06-15T04:52:53.980Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-15T04:52:53.988Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -210,5 +230,6 @@ resource_refs:
 created_at: 2026-06-15T00:55:24.820Z
 started_at: 2026-06-15T04:20:24.149Z
 submitted_at: 2026-06-15T04:34:00.049Z
+completed_at: 2026-06-15T04:52:53.980Z
 todos: []
 automation: eligible
