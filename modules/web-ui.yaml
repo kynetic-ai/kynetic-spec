@@ -6004,7 +6004,7 @@ features:
       active platform.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on:
       - "@web-shell-platform-target"
     implements: []
