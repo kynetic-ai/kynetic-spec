@@ -1,1 +1,53 @@
-notes: []
+notes:
+  - _ulid: 01KV4SW1252XM51HTWV47GDJDC
+    content: >-
+      Approach: Single shared actor-write utility in core (src/identity/) reusing the existing
+      @kynetic-ai/shared classifier (classifyActor) — verified core can import shared at both
+      typecheck and runtime, matching the daemon's existing shared dependency.
+
+
+      Architecture:
+
+      - src/identity/actor-identity-config.ts: buildActorIdentityConfig(ctx-derived input) ->
+      ActorIdentityConfig (human via getAuthor chain + agent roster + aliases). Extracted from the
+      daemon identity route's inline logic so the route AND all writers build the SAME config.
+
+      - src/identity/actor-write.ts: resolveActorForWrite({explicit, identity, configAuthor, field})
+      -> {ok, actor|error}. Resolves absent values through getAuthor (@config-author chain),
+      classifies via shared classifier, returns canonical id when classification resolves (ac-7),
+      rejects out-of-pool/unknown with structured validation feedback (ac-8). Never yields
+      'anonymous'.
+
+      - Re-exported from src/parser/index.ts so daemon routes (import ../../parser/index.js) and CLI
+      commands share one implementation.
+
+
+      Wiring points (resolve at command/route boundary where ctx is available, pass canonical into
+      existing leaf creators):
+
+      - packages/daemon/src/routes/reviews.ts: replace all 10 || 'anonymous' fallbacks;
+      resolve+classify+reject with 400 validation feedback (ac-6, ac-8). Also triage.ts/tasks.ts
+      daemon actor writes.
+
+      - CLI: review.ts, task.ts, meta.ts, triage.ts, inbox.ts, item.ts, plan.ts, derive.ts
+      resolution expressions (options.author||getAuthor||'unknown' etc.) -> resolveActorForWrite.
+
+
+      Blast radius: tests default KSPEC_AUTHOR=@test so getAuthor->@test; human pool = @test ->
+      in-pool, most writes unchanged. Only 2 explicit out-of-pool --author values in tests (@claude,
+      @myauthor) to update; daemon review tests asserting 'anonymous' must change (that is the point
+      of ac-6).
+
+
+      Spec reconciliation: kspec item set @config-author to state chain-resolved values pass through
+      write-time classification and out-of-pool tails reject on new writes.
+
+
+      Guard test: focused test fails if known writer modules reintroduce || 'anonymous' or bypass
+      the utility for actor fields.
+
+
+      This is write-path only; historical normalization is @task-actor-normalization-upgrade.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T04:50:36.742Z
