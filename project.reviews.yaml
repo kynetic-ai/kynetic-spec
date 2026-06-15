@@ -26565,7 +26565,7 @@ reviews:
     title: Review task-view-header-status-tokens (cycle 3)
     disposition: pending
     author: Jacob Chapel
-    check_count: 2
+    check_count: 3
     examined_commit: fb758ac88ebd763448a44a12a91e374fbcac6a1f
     lifecycle_state: open
     related_refs: []
@@ -26578,4 +26578,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-15T04:20:09.932Z
-    updated_at: 2026-06-15T04:37:11.876Z
+    updated_at: 2026-06-15T04:37:26.376Z
