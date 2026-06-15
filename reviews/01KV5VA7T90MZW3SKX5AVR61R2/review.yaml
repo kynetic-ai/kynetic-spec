@@ -67,6 +67,17 @@ checks:
     runner: kspec
     created_at: 2026-06-15T14:50:41.949Z
     completed_at: 2026-06-15T14:50:41.949Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok. Existing completeness warning
+      baseline remains; changed-file invalid AC annotation is recorded separately as a blocker."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T14:50:47.201Z
+    completed_at: 2026-06-15T14:50:47.201Z
 events:
   - _ulid: 01KV5VA7T9R9P4K2MRBQW4X7RC
     actor: Jacob Chapel
@@ -123,6 +134,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-15T14:50:42.178Z
+  - _ulid: 01KV5W6ZRZ57PNXHXVBNDEBBNP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-15T14:50:47.455Z
 examined_commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
 external_links: []
 lifecycle_state: open
@@ -135,5 +153,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T14:35:05.417Z
-updated_at: 2026-06-15T14:50:41.949Z
+updated_at: 2026-06-15T14:50:47.201Z
 notes: []
