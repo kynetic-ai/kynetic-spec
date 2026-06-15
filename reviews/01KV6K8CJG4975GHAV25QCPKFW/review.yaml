@@ -139,6 +139,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T21:50:18.688Z
+  - _ulid: 01KV6M7WDNYE8MD73DQW3EFFR8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV6M7W58GVFJ4TETV2C7YK16
+    timestamp: 2026-06-15T21:50:42.613Z
 examined_commit: 451b9a0012de86190a969fb3a9a43e0186576c7a
 external_links: []
 lifecycle_state: open
@@ -148,8 +155,61 @@ subject:
   content_hash: ""
   ref: "@01KV4CDA7DT4GY1ZYKXA86XX50"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV6M7W58GVFJ4TETV2C7YK16
+    entries:
+      - _ulid: 01KV6M7W58NYH8YD07N93QJ2AP
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; task/spec/prior review context;
+          src/parser/actor-normalization-migration.ts; src/parser/actor-field-inventory.ts;
+          src/cli/commands/upgrade.ts; tests/actor-normalization-upgrade.test.ts;
+          src/parser/task-data-manager.ts; src/parser/split-backend.ts;
+          src/identity/actor-identity-config.ts; src/identity/actor-write.ts;
+          src/identity/actor-write-context.ts; src/cli/actor.ts; actor-write command integrations
+          across src/cli/commands/*.ts; packages/daemon/src/routes/actor-resolution.ts;
+          packages/daemon/src/routes/identity.ts; packages/daemon/src/routes/reviews.ts;
+          packages/shared/src/actor.ts; packages/shared/src/next-actor.ts;
+          packages/shared/src/api.ts; packages/web-ui ActorDisplay/identity/review pages;
+          src/export/json.ts; src/export/types.ts; docs/guides/upgrading-kspec.md; selected related
+          tests.
+
+
+          Commands run: git status --short --branch; kspec task get @01KV4CDA7DT4GY1ZYKXA86XX50;
+          kspec item get @actor-history-normalization; kspec item get @actor-identity-model; kspec
+          review for-task @01KV4CDA7DT4GY1ZYKXA86XX50; git diff --check
+          3248d1a4dc66f4dc00ae88bd0d1d27574e6fd946...451b9a0012de86190a969fb3a9a43e0186576c7a; npm
+          run format:check; npm run lint -- --quiet; focused npx oxlint on changed TS/Svelte/test
+          files plus JSON added-line diagnostic intersection; npm run typecheck; npm test; kspec
+          validate --refs --warnings-ok; kspec validate --alignment --warnings-ok; kspec validate
+          --completeness --warnings-ok.
+
+
+          Claims verified: the prior blocker is fixed by validating operator-map defaults as known
+          actor record kinds with non-empty string values before writes; regression tests cover
+          non-string defaults, blank defaults, unknown default keys, and no-write snapshots. ACs 1-6
+          are covered behaviorally by the migration/upgrade tests, including variant normalization,
+          default fallback with original actor reporting, dry-run no-write behavior, idempotency,
+          inventory coverage, and history[].author handling. @actor-identity-model ac-2 is covered
+          by the historical upgrade path. Focused lint warnings were verified not to land on added
+          lines.
+
+
+          Categories searched: correctness, prior regression coverage, edge cases, operator-map
+          validation, dry-run/no-write behavior, idempotency, report/audit behavior, test
+          quality/source-scanning, CLI integration, daemon integration, UI/shared identity
+          rendering, packaging/build behavior, and upgrade documentation.
+
+
+          Residual risk noted: actor normalization is not wrapped in one outer all-or-nothing
+          storage buffer across all record writes and final report writing. I did not find a
+          required-path failure or AC requiring migration-wide rollback semantics.
+        created_at: 2026-06-15T21:50:42.345Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-15T21:33:30.576Z
-updated_at: 2026-06-15T21:50:18.399Z
+updated_at: 2026-06-15T21:50:42.345Z
 notes: []
