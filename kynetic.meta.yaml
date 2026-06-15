@@ -22033,6 +22033,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T02:24:56.349Z
+  - _ulid: 01KV4JM3KSMCG3SCT6P51EH3F9
+    type: friction
+    content: Review of @task-view-header-status-tokens found that shared status-token tests verified
+      resolver determinism but did not exercise actual list/detail surfaces, allowing bespoke status
+      rendering to remain in sibling views. For future shared UI substrate work, include at least
+      one cross-surface behavioral assertion against real consumers, not only the shared utility
+      table.
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-15T02:43:57.178Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
