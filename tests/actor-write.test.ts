@@ -96,7 +96,11 @@ describe("resolveActorForWrite", () => {
 
   // AC: @actor-identity-resolution ac-8 — an unrecognizable value is rejected with feedback
   it("rejects an unrecognizable actor value with structured feedback", () => {
-    const result = resolveActorForWrite({ explicit: "randomdude", identity: POOL, field: "reviewer" });
+    const result = resolveActorForWrite({
+      explicit: "randomdude",
+      identity: POOL,
+      field: "reviewer",
+    });
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.error.reason).toBe("out_of_pool");
@@ -130,7 +134,11 @@ describe("resolveActorForWrite", () => {
   it("rejects when no actor can be resolved at all", () => {
     delete process.env.KSPEC_AUTHOR;
     const emptyPool: ActorIdentityConfig = { human: null, agents: [] };
-    const result = resolveActorForWrite({ explicit: undefined, identity: emptyPool, configAuthor: null });
+    const result = resolveActorForWrite({
+      explicit: undefined,
+      identity: emptyPool,
+      configAuthor: null,
+    });
     // Either unresolved (no chain value) or out_of_pool (chain value not configured) —
     // never a silent anonymous placeholder.
     expect(result.ok).toBe(false);

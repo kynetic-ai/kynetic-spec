@@ -89,7 +89,19 @@ plans: []
 records: []
 `,
     meta: `kynetic_meta: "1.0"
-agents: []
+agents:
+  - _ulid: ${testUlid("AGNT", 4)}
+    id: reviewer
+    name: Reviewer Agent
+    description: Review agent
+    adapter: claude-agent-acp
+    dispatch: []
+    capabilities: []
+    tools: []
+    skills: []
+    concurrency:
+      max_concurrent: 1
+    auto_approve: false
 observations: []
 workflows: []
 conventions: []
@@ -155,7 +167,9 @@ describe("Daemon API input validation", () => {
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.decision).toBe("approve");
-    expect(body.reviewer).toBe("reviewer@example.com");
+    // `reviewer@example.com` is an email-suffix variant of the configured
+    // `reviewer` agent; the shared actor-write utility persists the canonical id.
+    expect(body.reviewer).toBe("reviewer");
   });
 
   // AC: @api-input-type-safety ac-3

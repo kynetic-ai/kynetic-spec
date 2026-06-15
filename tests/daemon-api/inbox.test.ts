@@ -158,13 +158,15 @@ describe("POST /api/inbox", () => {
   });
 
   it("accepts optional added_by", async () => {
+    // `@task-worker` is a configured-agent variant; the shared actor-write
+    // utility persists the canonical roster id (`task-worker`).
     const response = await request("/api/inbox", {
       method: "POST",
-      body: JSON.stringify({ text: "Item with author", added_by: "test-agent" }),
+      body: JSON.stringify({ text: "Item with author", added_by: "@task-worker" }),
     });
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.item.added_by).toBe("test-agent");
+    expect(body.item.added_by).toBe("task-worker");
   });
 
   it("sets created_at timestamp", async () => {

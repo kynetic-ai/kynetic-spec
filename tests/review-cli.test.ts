@@ -624,7 +624,10 @@ describe("Integration: review CLI commands", () => {
 
     // AC: @review-record-per-cycle-lifecycle ac-1
     it("should auto-close review on request_changes verdict", () => {
-      kspec(`review verdict @${reviewSlug} --decision request_changes --reviewer review-agent`, tempDir);
+      kspec(
+        `review verdict @${reviewSlug} --decision request_changes --reviewer review-agent`,
+        tempDir,
+      );
 
       const review = kspecJson<{
         lifecycle_state: string;

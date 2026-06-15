@@ -455,7 +455,7 @@ describe.runIf(canRunInit)("Integration: review rebuild-index post-mutation cons
   // AC: @trait-folder-backed-entity-1 ac-indexed-mutation-updates-index
   it("review verdict: setting a verdict refreshes verdict_count/disposition/lifecycle_state without leaving the index stale", () => {
     const result = kspec(
-      `review verdict ${reviewRef} --decision approve --reviewer @reviewer`,
+      `review verdict ${reviewRef} --decision approve --reviewer @test`,
       projectDir,
     );
     expect(result.exitCode).toBe(0);

@@ -148,15 +148,14 @@ export function resolveActorForWrite(options: ResolveActorOptions): ActorWriteRe
   const classification = classifyActor(value, options.identity);
 
   if (classification.kind === "unknown" || classification.canonicalId === null) {
+    const agentHint =
+      pool.agents.length > 0 ? ` or one of the configured agents: ${pool.agents.join(", ")}.` : `.`;
     return {
       ok: false,
       error: {
         field,
         reason: "out_of_pool",
-        message:
-          `"${value}" is not a configured human or agent identity and cannot be persisted ` +
-          `as ${field}. Use the configured human identity` +
-          (pool.agents.length > 0 ? ` or one of the configured agents: ${pool.agents.join(", ")}.` : `.`),
+        message: `"${value}" is not a configured human or agent identity and cannot be persisted as ${field}. Use the configured human identity${agentHint}`,
         original: value,
         pool,
       },

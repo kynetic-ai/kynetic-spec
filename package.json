@@ -69,6 +69,7 @@
     "@elysiajs/cors": "^1.4.1",
     "@elysiajs/node": "^1.4.5",
     "@elysiajs/static": "^1.4.7",
+    "@kynetic-ai/shared": "*",
     "chalk": "^5.3.0",
     "chokidar": "^4.0.3",
     "cli-table3": "^0.6.5",
@@ -98,6 +99,9 @@
     "typescript": "^5.3.3",
     "vitest": "^4.0.17"
   },
+  "bundleDependencies": [
+    "@kynetic-ai/shared"
+  ],
   "overrides": {
     "file-type": "^21.3.2"
   },

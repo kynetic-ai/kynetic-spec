@@ -2036,12 +2036,14 @@ describe("Integration: item notes", () => {
   });
 
   it("should add a note with author", () => {
-    const output = kspec('item note @test-core "Note with author" --author "@claude"', tempDir);
+    // `@test-agent` is a configured-agent variant; the shared actor-write
+    // utility persists the canonical id (`test-agent`).
+    const output = kspec('item note @test-core "Note with author" --author "@test-agent"', tempDir);
     expect(output).toContain("Added note");
 
-    // Verify note has author
+    // Verify note has the canonical author
     const notesOutput = kspec("item notes @test-core", tempDir);
-    expect(notesOutput).toContain("@claude");
+    expect(notesOutput).toContain("test-agent");
     expect(notesOutput).toContain("Note with author");
   });
 
