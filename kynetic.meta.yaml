@@ -22353,6 +22353,46 @@ observations:
     resolved_by: Jacob Chapel
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-15T18:08:39.686Z
+  - _ulid: 01KV69DJ55FR8DCD5TWXF30HKM
+    type: friction
+    content: Interactive web-ui components have no client-mount unit-test harness. The repo's component
+      tests only SSR-render via svelte/server (static markup), so popover open/close, keyboard
+      navigation, and ResizeObserver-driven overflow can't be asserted in vitest. Real interaction
+      coverage must go to Playwright e2e, which is excluded from npm test and can't run under
+      dispatch. For the breadcrumb task this forced splitting interaction logic (truncation tiers,
+      overflow collapse, keyboard selection) into pure functions to get behavioral unit coverage,
+      with live DOM behavior deferred to unverifiable e2e. A client-mount harness (e.g.
+      @testing-library/svelte or vitest browser mode) would let interactive ACs be covered and
+      verified in the gated suite.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T18:41:34.373Z
+  - _ulid: 01KV69DJFFWZPMFJVFP00T5D8Z
+    type: friction
+    content: No CLI path to resolve a task's declared resource_refs to files in the worker worktree. The
+      breadcrumb task listed handoff resources as ./resources/handoff/... but those live on the
+      shadow branch under .kspec/plans/<plan-ulid>/resources/handoff/ and are absent from the worker
+      worktree. 'kspec task resource list' is not a command, so I had to find / -name across the
+      filesystem to locate the reference sources and screenshots. A 'kspec task resources <ref>' (or
+      resolved absolute paths in 'kspec task get') would remove the filesystem hunt for dispatched
+      workers.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T18:41:34.704Z
+  - _ulid: 01KV69DJR4HER4HK29CE7KBKBX
+    type: success
+    content: Splitting an interactive component's decision logic into pure, dependency-free functions
+      (computeTrail for truncation tiers + overflow, nextPopoverIndex for keyboard selection) made
+      the spec's count/overflow/keyboard ACs behaviorally testable in vitest without a DOM, while
+      the Svelte component stayed a thin renderer driving those functions from a ResizeObserver and
+      event handlers. Worth replicating for future interactive web-ui components given the lack of a
+      client-mount test harness.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T18:41:34.980Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
