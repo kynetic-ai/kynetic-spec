@@ -265,6 +265,12 @@ events:
     payload:
       thread_ulid: 01KV4HTSPCXA3QWQ1YGEYZ9F51
     timestamp: 2026-06-15T03:21:53.442Z
+  - _ulid: 01KV4MSYM1M1PNKTR2KEMS1X64
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV4HTX7B77Y1SX9JJG9XZ908
+    timestamp: 2026-06-15T03:22:05.825Z
 examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
 external_links: []
 lifecycle_state: closed
@@ -357,6 +363,17 @@ threads:
           status-token component/helper so each session state has one color + glyph everywhere it
           appears."
         created_at: 2026-06-15T02:30:11.435Z
+      - _ulid: 01KV4MSYDD3JPS1WF1VV5CKVSN
+        author: "@claude"
+        body: "Fixed: the session list now renders status through the shared StatusBadge (domain=session)
+          instead of the local statusColor() helper, which has been removed along with the Badge
+          import. This resolves the abandoned disagreement — the local helper mapped abandoned to
+          status-needs-work while the shared token maps it to status-cancelled; the list now uses
+          the canonical shared token, so every session state reads identically on the list and the
+          detail header (@ui-view-header ac-2). Updated the e2e specs: the list status assertions
+          now check the shared token's data-status-state attribute and capitalized labels
+          (Completed/Active/Failed) rather than the old raw lowercase status text."
+        created_at: 2026-06-15T03:22:05.613Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -367,5 +384,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T02:41:44.341Z
 created_at: 2026-06-15T02:27:36.368Z
-updated_at: 2026-06-15T03:21:53.224Z
+updated_at: 2026-06-15T03:22:05.613Z
 notes: []
