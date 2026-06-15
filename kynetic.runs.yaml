@@ -66220,7 +66220,7 @@ runs:
     completed_at: 2026-06-15T01:54:20.812Z
   - _ulid: 01KV4JHWJ8EZGNTDJKDRG6BHCY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66235,7 +66235,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T02:43:50.867Z
-        completed_at: 2026-06-15T02:43:50.867Z
+        completed_at: 2026-06-15T02:44:06.972Z
+        notes: "High-confidence friction captured as observation @01KV4JM3: shared UI substrate tests can
+          pass while real sibling/list-detail consumers still use bespoke rendering. Existing search
+          found the current needs-work task covers the immediate fix, so this was captured as
+          process friction rather than a new task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T02:44:06.972Z
+        completed_at: 2026-06-15T02:44:06.972Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T02:42:44.424Z
