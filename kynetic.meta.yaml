@@ -22198,6 +22198,28 @@ observations:
     resolved: false
     workflow_ref: "@01KV59Q7"
     created_at: 2026-06-15T09:29:45.336Z
+  - _ulid: 01KV5ESQAQQ9SJGJZFFGJTC626
+    type: friction
+    content: "Hidden packaging invariant: src/ (the unbundled tsc-built CLI) may import
+      @kynetic-ai/shared ONLY as erased types (import type), never as a runtime value.
+      @kynetic-ai/shared is a private workspace package, not a runtime dependency of the published
+      @kynetic-ai/spec; the daemon/web-UI consume it via type-only imports or by bundling
+      (esbuild/vite). A VALUE import from anything reachable through src/parser/index.ts (which the
+      daemon eagerly loads) compiles cleanly, passes typecheck, and passes dev/test via the
+      node_modules workspace symlink — then fails ONLY in the installed standalone package as a late
+      ERR_MODULE_NOT_FOUND, surfaced solely by tests/cli-serve.test.ts ('start daemon from
+      npm-installed package'). Hit during @task-actor-normalization-upgrade: the actor migration
+      value-imported buildActorClassifier from shared; fix was to ship the pure classifier in core
+      (src/parser/actor-classifier.ts) pinned to shared by a parity test. There is no lint rule,
+      type error, or documented convention enforcing this at authoring time — only a single late
+      installed-package test. Distinct from observation @01KNMF4A (which is the inverse: daemon->src
+      type imports being blocked). Potential guardrail: an oxlint rule (or convention) forbidding
+      non-type imports of @kynetic-ai/shared from src/, catching it at lint time instead of a late
+      E2E-style failure."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T10:56:21.335Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
