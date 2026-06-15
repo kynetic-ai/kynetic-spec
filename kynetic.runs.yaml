@@ -66164,7 +66164,7 @@ runs:
     completed_at: 2026-06-14T21:24:06.676Z
   - _ulid: 01KV4FM90X21MDP3JA51JZ51MV
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66187,7 +66187,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-15T01:53:43.716Z
-        completed_at: 2026-06-15T01:53:43.716Z
+        completed_at: 2026-06-15T01:53:53.993Z
+        notes: "Coverage checked with kspec search: 'task resources', 'handoff resources', 'resource
+          resolution', 'reviewer resource', and 'detached review resource'. Existing observation
+          @01KV4EQ2 already captures the exact issue: dispatch task workspaces report plan-owned
+          resources as OK but do not materialize them in the worker/reviewer workspace; related
+          broader tracking also exists at @01KTPVJEG and @task-resource-resolution-api-contract."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-15T01:53:53.993Z
+        completed_at: 2026-06-15T01:53:53.993Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T01:51:36.989Z
