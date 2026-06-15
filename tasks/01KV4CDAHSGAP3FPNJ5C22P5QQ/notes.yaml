@@ -98,3 +98,27 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T08:00:51.526Z
+  - _ulid: 01KV5TYXN8QM1983KAW7ABVWGG
+    content: >-
+      [DISPATCH-BOOTSTRAP] Bootstrap step "build-workspace-artifacts" failed with exit code 2.
+      Output: > @kynetic-ai/spec@0.14.0 build
+
+      > node scripts/build.cjs build:unlocked
+
+
+
+      > @kynetic-ai/spec@0.14.0 build:unlocked
+
+      > tsc && chmod +x dist/cli/index.js && npm run build:shared && npm run build:daemon && npm run
+      build:web-ui && npm run build:plugin
+
+
+      src/export/types.ts(23,15): error TS2305: Module '"@kynetic-ai/shared"' has no exported member
+      'BreadcrumbAncestor'.
+
+      src/lib/breadcrumb-ancestry.ts(37,15): error TS2305: Module '"@kynetic-ai/shared"' has no
+      exported member 'BreadcrumbAncestor'. Suggested action: Inspect the failing bootstrap command,
+      dependency prerequisites, and workspace health before retrying dispatch.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-15T14:28:54.568Z
