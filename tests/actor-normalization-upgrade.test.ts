@@ -543,10 +543,7 @@ describe("actor normalization migration over a real project", () => {
     await fs.writeFile(inboxPath, yaml.stringify(inbox));
 
     const mapPath = path.join(tempDir, "actor-map.yaml");
-    await fs.writeFile(
-      mapPath,
-      yaml.stringify({ mappings: { Hermes: DEFAULT_UNKNOWN_ACTOR } }),
-    );
+    await fs.writeFile(mapPath, yaml.stringify({ mappings: { Hermes: DEFAULT_UNKNOWN_ACTOR } }));
 
     const ctx = await initContext(tempDir, { syncMode: "skip" });
     const report = await runActorNormalization(ctx, {
@@ -724,6 +721,88 @@ describe("kspec upgrade integration", () => {
     const secondStep = second.steps.find((s) => s.name === "Historical actor normalization")!;
     expect(secondStep.status).toBe("skipped");
     expect(secondStep.details?.rewrite_count as number).toBe(0);
+  });
+});
+
+describe("kspec upgrade dry-run on a not-yet-promoted (legacy) project", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-actor-legacy-");
+    await initProject(tempDir);
+    // Identity so the default-roster classifier recognizes `@claude` as the
+    // human author without hand-injected per-record config.
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      yaml.stringify({ identity: { author: "Jacob Chapel", aliases: ["@claude"] } }),
+    );
+
+    // Seed a recognizable variant on the default module — a spec_item, whose
+    // loader is storage-format-agnostic and so readable even before promotion.
+    const modulePath = path.join(tempDir, ".kspec", "modules", "main.yaml");
+    const moduleRaw = yaml.parse(await fs.readFile(modulePath, "utf-8")) as Record<string, unknown>;
+    moduleRaw.created_by = "@claude";
+    await fs.writeFile(modulePath, yaml.stringify(moduleRaw));
+
+    // Reproduce the reviewer's legacy layout: strip the folder-backed plan and
+    // review storage declarations so the project is no longer fully promoted.
+    // This is exactly the state where the prior implementation skipped the
+    // actor preview entirely.
+    const specDir = path.join(tempDir, ".kspec");
+    const base = await manifestBase(specDir);
+    const manifestPath = path.join(specDir, `${base}.yaml`);
+    const manifest = yaml.parse(await fs.readFile(manifestPath, "utf-8")) as Record<
+      string,
+      unknown
+    >;
+    delete manifest.plan_storage;
+    delete manifest.review_storage;
+    await fs.writeFile(manifestPath, yaml.stringify(manifest));
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @actor-history-normalization ac-4 — preview reports rewrites even before
+  //   storage promotion, instead of skipping the whole step
+  it("previews actor rewrites and modifies nothing, deferring kinds it cannot read yet", async () => {
+    const modulePath = path.join(tempDir, ".kspec", "modules", "main.yaml");
+    const before = await fs.readFile(modulePath, "utf-8");
+
+    const result = kspecJson<{
+      steps: Array<{ name: string; status: string; details?: Record<string, unknown> }>;
+    }>("upgrade --dry-run --force", tempDir);
+
+    const step = result.steps.find((s) => s.name === "Historical actor normalization")!;
+    expect(step).toBeDefined();
+    // Previously this returned `skipped` on a not-yet-promoted project.
+    expect(step.status).toBe("done");
+    expect(step.details?.rewrite_count as number).toBeGreaterThan(0);
+
+    // The spec-item variant is previewed: original recorded, rewritten away from
+    // the raw historical string.
+    const rewrites = step.details?.rewrites as Array<{
+      recordKind: string;
+      original: string;
+      resolved: string;
+    }>;
+    const specRewrite = rewrites.find(
+      (r) => r.recordKind === "spec_item" && r.original === "@claude",
+    );
+    expect(specRewrite).toBeDefined();
+    expect(specRewrite!.resolved).not.toBe("@claude");
+
+    // Reviews and plans cannot be read on the un-promoted manifest, so they are
+    // deferred (surfaced) rather than silently dropped or crashing the preview.
+    const deferred = (step.details?.deferred_kinds as Array<{ recordKind: string }>) ?? [];
+    const deferredKinds = new Set(deferred.map((d) => d.recordKind));
+    expect(deferredKinds.has("review")).toBe(true);
+    expect(deferredKinds.has("plan")).toBe(true);
+
+    // Dry-run wrote nothing.
+    const after = await fs.readFile(modulePath, "utf-8");
+    expect(after).toBe(before);
   });
 });
 

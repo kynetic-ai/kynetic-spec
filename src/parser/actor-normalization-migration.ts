@@ -88,6 +88,16 @@ export interface ActorRewrite {
   resolutionSource: ActorResolutionSource;
 }
 
+/**
+ * A record kind whose storage could not be read during a preview, deferred
+ * rather than aborting the whole run.
+ */
+export interface ActorDeferredKind {
+  recordKind: ActorRecordKind;
+  /** Why the kind could not be loaded (e.g. its storage is not yet promoted). */
+  reason: string;
+}
+
 /** Full report of a normalization run. */
 export interface ActorNormalizationReport {
   /** True when the run was a preview (no records modified). */
@@ -106,6 +116,13 @@ export interface ActorNormalizationReport {
   unresolvedOriginals: string[];
   /** Record kinds the run scanned. */
   recordKindsCovered: ActorRecordKind[];
+  /**
+   * Record kinds skipped during a preview because their storage could not be
+   * read yet (e.g. a legacy project previewed with --dry-run before the
+   * upgrade's storage migration has promoted that kind's layout). Always empty
+   * for a real run, which only executes after storage promotion succeeds.
+   */
+  deferredKinds: ActorDeferredKind[];
 }
 
 /** Operator-provided mapping for ambiguous historical actor values. */
@@ -426,21 +443,25 @@ interface RecordKindHandler {
  * the upgrade-only code paths.
  */
 async function buildHandlers(): Promise<RecordKindHandler[]> {
-  const reviewMgr = await import("./review-storage-manager.js");
+  const reviews = await import("./reviews.js");
   const taskMgr = await import("./task-data-manager.js");
   const yaml = await import("./yaml.js");
   const meta = await import("./meta.js");
-  const planMgr = await import("./plan-storage-manager.js");
+  const plans = await import("./plans.js");
 
   return [
     {
       recordKind: "review",
+      // Format-aware loader/save: reads folder-backed storage when the manifest
+      // declares it and the monolithic file on legacy projects. This lets a
+      // --dry-run preview run on a not-yet-promoted project; a real run only
+      // executes after storage promotion, so it sees the folder layout.
       load: async (ctx) => {
-        const reviews = await reviewMgr.loadReviewRecordsFromFolders(ctx);
-        return reviews.map((review) => ({
+        const records = await reviews.loadReviewRecords(ctx);
+        return records.map((review) => ({
           ref: review._ulid,
           data: review as unknown as Record<string, unknown>,
-          persist: (c: KspecContext) => reviewMgr.saveReviewRecordToFolder(c, review),
+          persist: (c: KspecContext) => reviews.saveReviewRecord(c, review),
         }));
       },
     },
@@ -535,12 +556,13 @@ async function buildHandlers(): Promise<RecordKindHandler[]> {
     },
     {
       recordKind: "plan",
+      // Format-aware loader/save — see the review handler note above.
       load: async (ctx) => {
-        const plans = await planMgr.loadPlansFromFolders(ctx);
-        return plans.map((plan) => ({
+        const loadedPlans = await plans.loadPlans(ctx);
+        return loadedPlans.map((plan) => ({
           ref: plan._ulid,
           data: plan as unknown as Record<string, unknown>,
-          persist: (c: KspecContext) => planMgr.savePlanToFolder(c, plan),
+          persist: (c: KspecContext) => plans.savePlan(c, plan),
         }));
       },
     },
@@ -587,16 +609,38 @@ export async function runActorNormalization(
   const handlers = await buildHandlers();
   const rewrites: ActorRewrite[] = [];
   const recordKindsCovered: ActorRecordKind[] = [];
+  const deferredKinds: ActorDeferredKind[] = [];
   let recordsScanned = 0;
   let recordsModified = 0;
 
   for (const handler of handlers) {
-    recordKindsCovered.push(handler.recordKind);
     const fieldPaths = normalizeFieldPathsFor(handler.recordKind);
     if (fieldPaths.length === 0) {
+      recordKindsCovered.push(handler.recordKind);
       continue;
     }
-    const records = await handler.load(ctx);
+
+    let records: LoadedActorRecord[];
+    try {
+      records = await handler.load(ctx);
+    } catch (err) {
+      // A preview may run before the upgrade's storage migration has promoted
+      // this kind's layout (e.g. legacy task storage that the split backend
+      // refuses to read). Defer the kind so the preview still reports every
+      // rewrite it can compute, rather than aborting the whole dry-run. A real
+      // run only executes after storage promotion, so a load failure there is a
+      // genuine error and must surface.
+      if (dryRun) {
+        deferredKinds.push({
+          recordKind: handler.recordKind,
+          reason: err instanceof Error ? err.message : String(err),
+        });
+        continue;
+      }
+      throw err;
+    }
+
+    recordKindsCovered.push(handler.recordKind);
     for (const record of records) {
       recordsScanned += 1;
       const changed = rewriteRecord(
@@ -630,6 +674,7 @@ export async function runActorNormalization(
     rewrites,
     unresolvedOriginals,
     recordKindsCovered,
+    deferredKinds,
   };
 }
 

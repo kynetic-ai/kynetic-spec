@@ -1592,23 +1592,28 @@ async function runActorNormalizationStep(
   // manifest, which would make folder-backed loaders reject as incompatible.
   const ctx = await initContext(undefined, { syncMode: "skip" });
 
-  // Actor normalization operates on the current folder/split storage layout. On
-  // a legacy project previewed with --dry-run, the storage migration has not
-  // written the promoted manifest yet, so the actor sweep cannot run. Skip with
-  // a clear message rather than failing the upgrade — the real (non-dry-run)
-  // upgrade promotes storage first, then this step runs against it.
+  // A real (non-dry-run) run rewrites records in place, so it must operate on
+  // the promoted folder/split layout — the storage migration block above runs
+  // first to guarantee that. If the manifest is still un-promoted on a real run
+  // (e.g. the task migration step failed and blocked manifest promotion), skip
+  // rather than rewrite a half-migrated project.
+  //
+  // A --dry-run preview only reads. The format-aware loaders read whichever
+  // layout the project is currently on, so the preview reports the rewrites it
+  // would perform even before storage promotion — satisfying
+  // @actor-history-normalization ac-4. Record kinds whose storage cannot be
+  // read yet (e.g. legacy task storage the split backend refuses) are deferred
+  // and surfaced, not silently dropped: the real upgrade promotes them first.
   const manifest = ctx.manifest as Record<string, unknown> | null;
   const storageReady =
     (manifest?.task_storage as { format?: string } | undefined)?.format === "split" &&
     (manifest?.plan_storage as { format?: string } | undefined)?.format === "folder" &&
     (manifest?.review_storage as { format?: string } | undefined)?.format === "folder";
-  if (!storageReady) {
+  if (!storageReady && !dryRun) {
     return {
       name: "Historical actor normalization",
       status: "skipped",
-      message: dryRun
-        ? "storage migration must run first — re-run without --dry-run to normalize actor fields"
-        : "skipped — project is not on folder/split storage",
+      message: "skipped — project is not on folder/split storage",
     };
   }
 
@@ -1630,12 +1635,23 @@ async function runActorNormalizationStep(
     rewrites: report.rewrites,
   };
 
+  // Surface record kinds a preview could not read yet so operators know the
+  // preview is partial and which kinds the real upgrade normalizes after
+  // promoting their storage.
+  const deferredSuffix =
+    report.deferredKinds.length > 0
+      ? ` (deferred until storage migration: ${report.deferredKinds.map((d) => d.recordKind).join(", ")})`
+      : "";
+  if (report.deferredKinds.length > 0) {
+    details.deferred_kinds = report.deferredKinds;
+  }
+
   if (report.rewriteCount === 0) {
     return {
       name: "Historical actor normalization",
       status: "skipped",
       message: dryRun
-        ? "no historical actor fields need normalization"
+        ? `no historical actor fields need normalization${deferredSuffix}`
         : "all actor fields already canonical — nothing to rewrite",
       details,
     };
@@ -1645,7 +1661,7 @@ async function runActorNormalizationStep(
     return {
       name: "Historical actor normalization",
       status: "done",
-      message: `would rewrite ${report.rewriteCount} actor field value(s) across ${report.recordsScanned} record(s)`,
+      message: `would rewrite ${report.rewriteCount} actor field value(s) across ${report.recordsScanned} record(s)${deferredSuffix}`,
       details,
     };
   }

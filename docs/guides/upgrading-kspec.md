@@ -114,7 +114,9 @@ The migration is driven by an **exhaustive actor-field inventory** and fails clo
 kspec upgrade --dry-run
 ```
 
-The `Historical actor normalization` step reports every rewrite it _would_ perform as `original → canonical/default`, with the record reference, record kind, field path, and resolution source (`variant_map`, `operator_mapping`, or `default`). With `--json`, the full rewrite list is on `steps[].details.rewrites` and the originals that no rule resolved are on `steps[].details.unresolved_originals`.
+The `Historical actor normalization` step reports every rewrite it _would_ perform as `original → canonical/default`, with the record reference, record kind, field path, and resolution source (`variant_map`, `operator_mapping`, or `default`). With `--json`, the full rewrite list is on `steps[].details.rewrites` and the originals that no rule resolved are on `steps[].details.unresolved_originals`. The preview runs even on a project whose storage layout the same upgrade still has to migrate, so you can review the rewrites before committing to any writes.
+
+If a record kind's storage cannot be read until that migration runs (for example, legacy task storage that the current backend no longer reads), the preview **defers** that kind rather than skipping the whole step: deferred kinds are listed on `steps[].details.deferred_kinds` and called out in the step message. The real upgrade promotes their storage first and then normalizes them, so re-running `--dry-run` after a real upgrade — or inspecting the post-run report — shows the complete set.
 
 **2. Review the unresolved originals.** Any value the built-in variant map cannot recognize is reported under `unresolved_originals` and, in a real run, is rewritten to the **declared default actor** for its record kind (`@unknown` unless your project declares otherwise). Inspect that list: anything in it that is actually a known person or agent should be mapped explicitly so it resolves to a canonical identity instead of the default.
 
