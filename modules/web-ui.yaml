@@ -6002,6 +6002,9 @@ features:
       among the bindings of the same context. The registry's inventory
       of active bindings is enumerable with display labels matching the
       active platform.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on:
       - "@web-shell-platform-target"
     implements: []
