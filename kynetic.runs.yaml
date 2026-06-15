@@ -66444,7 +66444,7 @@ runs:
     completed_at: 2026-06-15T04:06:23.712Z
   - _ulid: 01KV4QTVY72BDG6794QKBV0QFH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -66460,7 +66460,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T04:15:35.042Z
-        completed_at: 2026-06-15T04:15:35.042Z
+        completed_at: 2026-06-15T04:16:27.017Z
+        notes: "Friction (high confidence): when removing the exported getStatusClasses from
+          packages/web-ui/src/.../board-utils.ts, my initial test-reference grep scoped to
+          packages/web-ui/tests and packages/web-ui/src and missed tests/web-ui/board-utils.test.ts.
+          web-ui UNIT tests do NOT live next to the source — they live in the ROOT tests/web-ui/
+          subdir and root tests/web-ui-*.test.ts (e2e in tests/e2e/). The missed reference only
+          surfaced as a full-suite failure (~40min). Searched: no existing inbox/spec/convention
+          covers web-ui test layout. Capturing one friction observation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T04:16:27.017Z
+        completed_at: 2026-06-15T04:16:27.017Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T04:15:01.575Z
