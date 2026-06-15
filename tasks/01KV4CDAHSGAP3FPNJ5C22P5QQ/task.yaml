@@ -62,7 +62,7 @@ description: |
 spec_ref: "@ui-breadcrumb"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -71,6 +71,14 @@ tags:
   - daemon
   - api
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
+  captured_at: 2026-06-15T07:57:30.273Z
+  commit: c9f5c49d4bddd8e09533136849051c1fbf7249c9
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
 session_id: 01KV4ZWFE4BAG526P0CMSATVAF
 history:
   - author: Jacob Chapel
@@ -93,6 +101,26 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-15T06:36:12.945Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
+          captured_at: 2026-06-15T07:57:30.273Z
+          commit: c9f5c49d4bddd8e09533136849051c1fbf7249c9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
+        previous: null
+      submitted_at:
+        new: 2026-06-15T07:57:30.276Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-15T07:57:30.277Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -152,5 +180,6 @@ resource_refs:
     sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
 created_at: 2026-06-15T00:55:23.449Z
 started_at: 2026-06-15T06:36:12.944Z
+submitted_at: 2026-06-15T07:57:30.276Z
 todos: []
 automation: eligible
