@@ -2,7 +2,7 @@ _ulid: 01KTVWAG22MC8GTVXPZ72E40TR
 slugs:
   - plan-web-ui-foundations
 title: Web UI Foundations
-status: active
+status: completed
 approved_at: 2026-06-15T00:55:03.074Z
 branch: feat/ui-redesign
 derived_specs:
