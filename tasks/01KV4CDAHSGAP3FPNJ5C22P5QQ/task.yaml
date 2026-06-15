@@ -62,7 +62,7 @@ description: |
 spec_ref: "@ui-breadcrumb"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -71,6 +71,7 @@ tags:
   - daemon
   - api
 vcs_refs: []
+session_id: 01KV4ZWFE4BAG526P0CMSATVAF
 history:
   - author: Jacob Chapel
     changes:
@@ -79,6 +80,19 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-15T00:55:42.911Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KV4ZWFE4BAG526P0CMSATVAF
+        previous: null
+      started_at:
+        new: 2026-06-15T06:36:12.944Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-15T06:36:12.945Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -137,5 +151,6 @@ resource_refs:
     recorded_at: 2026-06-15T00:55:22.026Z
     sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
 created_at: 2026-06-15T00:55:23.449Z
+started_at: 2026-06-15T06:36:12.944Z
 todos: []
 automation: eligible
