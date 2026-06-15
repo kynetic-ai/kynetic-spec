@@ -76,6 +76,17 @@ checks:
     runner: kspec
     created_at: 2026-06-15T09:26:02.957Z
     completed_at: 2026-06-15T09:26:02.957Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; known missing/invalid AC annotation
+      warning baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-15T09:26:08.160Z
+    completed_at: 2026-06-15T09:26:08.160Z
 events:
   - _ulid: 01KV58TJRTFP60Z279478PYQ9W
     actor: Jacob Chapel
@@ -153,6 +164,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-15T09:26:03.216Z
+  - _ulid: 01KV59MH8SCVKH5372BX2DDQ3Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-15T09:26:08.409Z
 examined_commit: 7aa8f5e1b19cbc7bdf1210123f068c16c50a5975
 external_links: []
 lifecycle_state: open
@@ -206,5 +224,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-15T09:11:57.978Z
-updated_at: 2026-06-15T09:26:02.957Z
+updated_at: 2026-06-15T09:26:08.160Z
 notes: []
