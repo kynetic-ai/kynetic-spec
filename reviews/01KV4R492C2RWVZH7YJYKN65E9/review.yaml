@@ -55,6 +55,18 @@ checks:
     runner: npm test
     created_at: 2026-06-15T04:37:50.666Z
     completed_at: 2026-06-15T04:37:50.666Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run test:e2e -- tests/e2e/review-detail-page.spec.ts
+      tests/e2e/sessions.spec.ts tests/e2e/task-board.spec.ts; build:e2e and web UI production build
+      completed; 74/74 Playwright tests passed."
+    name: focused e2e
+    required: false
+    runner: npm run test:e2e
+    created_at: 2026-06-15T04:38:00.644Z
+    completed_at: 2026-06-15T04:38:00.644Z
 events:
   - _ulid: 01KV4R492CKR7YC1Z5V9Q2F2VV
     actor: Jacob Chapel
@@ -104,6 +116,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-15T04:37:50.906Z
+  - _ulid: 01KV4S4YXFQ2GFBK7RN4QR617M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e
+    timestamp: 2026-06-15T04:38:00.879Z
 examined_commit: fb758ac88ebd763448a44a12a91e374fbcac6a1f
 external_links: []
 lifecycle_state: open
@@ -116,5 +135,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T04:20:09.932Z
-updated_at: 2026-06-15T04:37:50.666Z
+updated_at: 2026-06-15T04:38:00.644Z
 notes: []
