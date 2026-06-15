@@ -99,6 +99,27 @@ checks:
     runner: kspec
     created_at: 2026-06-15T02:40:52.846Z
     completed_at: 2026-06-15T02:40:52.846Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md; task/spec context for @01KV4CDB72KM6NRMXXS1EB6SDB,
+      @ui-view-header, @coverage-state-presentation; changed files in
+      packages/web-ui/src/lib/components/ds, packages/web-ui/src/lib/ds/status-tokens.ts,
+      review/session detail pages, review/session list surfaces, diff components, TaskList,
+      ItemDetail, and new/changed tests. Commands run: git diff/stat/name-status, rg status usage,
+      npm run format:check, npm run lint -- --quiet, npx oxlint focused changed files, npm run
+      typecheck, npm test, git diff --check, kspec validate refs/alignment/completeness. Claims
+      verified: shared token table is schema-backed and focused tests pass, but actual
+      review/session list surfaces still bypass shared tokens; session detail retains a header
+      action outside ViewHeader. Categories searched: correctness/spec alignment, AC coverage
+      annotations, test quality/source scanning, integration with existing views, keyboard/actions
+      placement, design-token CSS."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-06-15T02:41:36.411Z
+    completed_at: 2026-06-15T02:41:36.411Z
 events:
   - _ulid: 01KV4HP5SGM4CGC3KBSBX5QBEE
     actor: Jacob Chapel
@@ -197,6 +218,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-15T02:40:53.112Z
+  - _ulid: 01KV4JFTDPDW7QZTPHG2KQF0J4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-15T02:41:36.694Z
 examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
 external_links: []
 lifecycle_state: open
@@ -268,5 +296,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-15T02:27:36.368Z
-updated_at: 2026-06-15T02:40:52.846Z
+updated_at: 2026-06-15T02:41:36.411Z
 notes: []
