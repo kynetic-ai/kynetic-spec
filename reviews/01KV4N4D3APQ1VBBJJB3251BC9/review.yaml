@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T03:28:02.520Z
+  - _ulid: 01KV4NAYTYCGB5PZQKHTDH4YCV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV4NAYJCGWVJH49ZDZJ3PSCD
+    timestamp: 2026-06-15T03:31:23.102Z
 examined_commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,28 @@ subject:
   content_hash: ""
   ref: "@01KV4CDB72KM6NRMXXS1EB6SDB"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV4NAYJCGWVJH49ZDZJ3PSCD
+    anchor:
+      type: code
+      commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
+      line_end: 36
+      line_start: 20
+      path: packages/web-ui/src/lib/components/session/RelatedSessionsSection.svelte
+      side: head
+    entries:
+      - _ulid: 01KV4NAYJC5THXAWAQ1KZVQCTZ
+        author: Jacob Chapel
+        body: "MUST-FIX: RelatedSessionsSection still renders session statuses with a local statusColor()
+          mapping and a plain Badge instead of the shared StatusBadge/status-token resolver. This is
+          observable in existing item/task detail related-session views while the sessions
+          list/detail now use the canonical session token. For example, abandoned maps here to
+          status-needs-work, but STATUS_TOKENS.session.abandoned maps to status-cancelled, and this
+          badge also emits no shared glyph. That violates @ui-view-header ac-2: the same session
+          state is not represented by the same color + glyph across views."
+        created_at: 2026-06-15T03:31:22.829Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T03:27:48.330Z
-updated_at: 2026-06-15T03:28:02.289Z
+updated_at: 2026-06-15T03:31:22.829Z
 notes: []
