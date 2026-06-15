@@ -26641,7 +26641,7 @@ reviews:
     title: Review task-actor-display-next-actor cycle 2
     disposition: pending
     author: Jacob Chapel
-    check_count: 5
+    check_count: 6
     examined_commit: f7eb4ef8c37fed3b75a78c0355afe055be82d1d9
     lifecycle_state: open
     related_refs: []
@@ -26654,4 +26654,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-15T11:20:29.470Z
-    updated_at: 2026-06-15T11:34:51.901Z
+    updated_at: 2026-06-15T11:35:01.103Z
