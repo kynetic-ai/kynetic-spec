@@ -22233,6 +22233,17 @@ observations:
     resolved: false
     workflow_ref: "@01KV5WAA"
     created_at: 2026-06-15T14:54:20.037Z
+  - _ulid: 01KV5XPH71BY0CT5QF2XT16FW3
+    type: success
+    content: "Reviewer-created temp-project probes are effective for upgrade-path review: synthesizing
+      the pre-upgrade layout caught a dry-run actor-normalization gap that storage-ready fixtures
+      and the full test suite missed. Future upgrade reviewers should probe both the pre-upgrade and
+      post-migration states when a dry-run step depends on earlier migration output."
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-15T15:16:45.410Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
