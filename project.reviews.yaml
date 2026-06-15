@@ -26850,7 +26850,7 @@ reviews:
     title: Review task-harden-detached-reviewer-merge-helper-paths
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 1
     examined_commit: 7189e99b302665e18253618951180dac91bc6e20
     lifecycle_state: open
     related_refs: []
@@ -26863,4 +26863,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-15T20:19:04.728Z
-    updated_at: 2026-06-15T20:19:17.374Z
+    updated_at: 2026-06-15T20:34:56.313Z
