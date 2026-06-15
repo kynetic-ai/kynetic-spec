@@ -210,3 +210,12 @@ resources:
     label: Spec state tree rollups
     path: handoff/shots/r3-spec-states-2-tree-rollups.png
     sha256: 168b0cc754d2622f560b813ca886152d7843511412790a4d8327ae04127fbe65
+  - description: Stale/re-verify AC detail reference.
+    bytes: 82671
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-state-stale-ac
+    label: Stale AC detail
+    path: handoff/shots/r3-spec-states-3-stale-ac.png
+    sha256: 164f12153268332a70fb6e26efd50d2f17df4dd13e00b15c1ccbf0310f50ee36
