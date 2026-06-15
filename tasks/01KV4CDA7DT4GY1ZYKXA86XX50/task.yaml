@@ -84,7 +84,7 @@ description: |
 spec_ref: "@actor-history-normalization"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-identity-endpoint-classifier"
@@ -104,7 +104,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-actor-normalization-upgrade/01kv4cda
-session_id: null
+session_id: 01KV6HXXYZTSQQD3547CENW5Q1
 history:
   - author: Jacob Chapel
     changes:
@@ -564,6 +564,19 @@ history:
         previous: 01KV6EW0P80N3TPYNWTVQFBQHA
     command: review-verdict-needs-work
     timestamp: 2026-06-15T21:05:11.620Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KV6HXXYZTSQQD3547CENW5Q1
+        previous: null
+      started_at:
+        new: 2026-06-15T21:29:23.713Z
+        previous: 2026-06-15T20:43:41.236Z
+    command: task-start
+    timestamp: 2026-06-15T21:29:23.713Z
 prior_status: null
 resource_refs:
   - git_commit: null
@@ -591,7 +604,7 @@ resource_refs:
     recorded_at: 2026-06-15T00:55:22.026Z
     sha256: 3a43077a9aac8ddb47ec7fa7d32f40c61bc8bf2af7b3b3a31a8cc46b260aa046
 created_at: 2026-06-15T00:55:23.117Z
-started_at: 2026-06-15T20:43:41.236Z
+started_at: 2026-06-15T21:29:23.713Z
 submitted_at: 2026-06-15T20:43:44.801Z
 todos: []
 automation: eligible
