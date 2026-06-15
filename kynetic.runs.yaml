@@ -67221,7 +67221,7 @@ runs:
     completed_at: 2026-06-15T15:41:24.584Z
   - _ulid: 01KV616HZ5N67YB2QP42PSWVJJ
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -67250,7 +67250,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-15T16:19:10.124Z
-        completed_at: 2026-06-15T16:19:10.124Z
+        completed_at: 2026-06-15T16:19:23.308Z
+        notes: "Decision: skip detached-review merge conflict/drift friction as already covered by prior
+          detached-review observations and inbox coverage, including @01KTYSZ5 for post-approval
+          integration drift and several detached-review merge-helper observations surfaced by the
+          baseline search. Skip workflow show/next run-ref mismatch as already covered by inbox item
+          @01KTWCCAS. Capture one unique high-confidence success: fix-cycle re-review was effective
+          when anchored on prior review blocker threads, checked against the fix-cycle delta and
+          targeted call-site searches, then recorded as a concise evidence log on the new review."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-15T16:19:23.308Z
+        completed_at: 2026-06-15T16:19:23.308Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T16:17:56.197Z
