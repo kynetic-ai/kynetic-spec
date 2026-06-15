@@ -120,3 +120,12 @@ resources:
     label: Breadcrumb variants A/B
     path: handoff/shots/r3-breadcrumb-variants-a.png
     sha256: 60ee2196156683d853804fa4c2487f55afa5106e3a035317b2d478af562f49b2
+  - description: R3 breadcrumb truncation alternatives; use for behavior/hierarchy, not pixel-perfect styling.
+    bytes: 96453
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-breadcrumb-b
+    label: Breadcrumb variants C/D/E
+    path: handoff/shots/r3-breadcrumb-variants-b.png
+    sha256: da05630d1dca65b8d853bdb9c707a8b3226fa72fc34855fc81da9d8fd6b025e3
