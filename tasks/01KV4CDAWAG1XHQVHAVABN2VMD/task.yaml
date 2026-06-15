@@ -67,6 +67,7 @@ tags:
   - web-ui
   - navigation
 vcs_refs: []
+review_ref: "@01KV69JT2XZQK9Z0PQTZGBSPX5"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-breadcrumb-component/01kv4cda
@@ -117,6 +118,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-15T18:39:32.679Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KV69JT2XZQK9Z0PQTZGBSPX5"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-15T18:44:28.822Z
 resource_refs:
   - git_commit: null
     git_path: null
