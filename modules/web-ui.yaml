@@ -6335,6 +6335,9 @@ features:
           record kind. The step reports every rewrite and every unresolved
           original, supports a preview mode that modifies nothing, and is
           idempotent.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@actor-identity-model"
         implements: []
