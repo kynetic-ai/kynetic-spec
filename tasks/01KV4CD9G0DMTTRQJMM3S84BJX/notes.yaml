@@ -337,3 +337,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T16:16:54.516Z
+  - _ulid: 01KV669R78JA6DGR0N56R9BNJC
+    content: "Before resubmitting this fix cycle, update the task branch against the current
+      feat/ui-redesign integration target and resolve the merge conflict from the approved review
+      merge attempt. The known conflict is packages/daemon/src/routes/tasks.ts: keep both the
+      breadcrumb ancestry imports already on feat/ui-redesign and the actor-resolution import from
+      this task, then rerun the normal gates before task submit. This note is specifically to
+      prevent resubmitting the same approved commit that still conflicts with feat/ui-redesign."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-15T17:47:03.784Z
