@@ -26487,7 +26487,7 @@ reviews:
   - _ulid: 01KV4HP5SGX7TS6WH0P6QQ9TNM
     slugs: []
     title: Review task-view-header-status-tokens
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 0
     examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
@@ -26498,8 +26498,8 @@ reviews:
       content_hash: ""
       ref: "@01KV4CDB72KM6NRMXXS1EB6SDB"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-15T02:27:36.368Z
-    updated_at: 2026-06-15T02:28:04.673Z
+    updated_at: 2026-06-15T02:30:04.191Z

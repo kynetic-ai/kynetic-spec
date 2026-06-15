@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T02:28:04.934Z
+  - _ulid: 01KV4HTPDAX8PA5MZ643KW847B
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV4HTP4ZMXV7VA7B3NTY9KDG
+    timestamp: 2026-06-15T02:30:04.458Z
 examined_commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,28 @@ subject:
   content_hash: ""
   ref: "@01KV4CDB72KM6NRMXXS1EB6SDB"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV4HTP4ZMXV7VA7B3NTY9KDG
+    anchor:
+      type: code
+      commit: 56936fc625e4f0bb1d23fd5911733152bc9c4625
+      line_end: 335
+      line_start: 333
+      path: packages/web-ui/src/routes/reviews/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KV4HTP4ZK176F7HKK8MQ19HG
+        author: Jacob Chapel
+        body: "MUST-FIX: review disposition/lifecycle states are still rendered with bespoke Badge helpers
+          on the review list, while the review detail page now renders the same states through
+          StatusBadge/ViewHeader. That violates @ui-view-header ac-2: the same review state in two
+          views does not share one color + glyph token. For example, changes_requested on the list
+          uses bg-red/text-red classes and no glyph, but the detail header uses the shared
+          review-disposition token (status-blocked + ✗). Please route these review state badges
+          through the shared status token source as part of the adoption."
+        created_at: 2026-06-15T02:30:04.191Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T02:27:36.368Z
-updated_at: 2026-06-15T02:28:04.673Z
+updated_at: 2026-06-15T02:30:04.191Z
 notes: []
