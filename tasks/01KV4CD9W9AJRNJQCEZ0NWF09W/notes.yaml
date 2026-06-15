@@ -1,1 +1,32 @@
-notes: []
+notes:
+  - _ulid: 01KV57BHE489DX6PKSKQ2SWHZZ
+    content: >-
+      Approach:
+
+      - next-actor derivation: new shared module packages/shared/src/next-actor.ts (next to the
+      actor classifier) so daemon enrichment + web surfaces consume ONE rule.
+      deriveAwaitedRole(lifecycle, disposition): AwaitedRole implements the fixed map from
+      @actor-display ac-3 (open+pending->reviewer, open+changes_requested->work-author,
+      open+approved->work-author, else null). Only lifecycle 'open' yields a role;
+      draft/closed/archived -> null (draft isn't open for review yet). resolveAwaitedParty() maps
+      the role to a concrete recorded participant (reviewer party / workAuthor party) so both
+      surfaces resolve identically (ac-4). Re-export via index.ts and web-ui $lib/utils/actor.ts.
+
+      - Actor display primitive: ActorDisplay.svelte in $lib/components/ds (alongside
+      StatusBadge/ViewHeader). Pure presentational: props { actor, classifier?, testid?, class? }.
+      Classifies via the shared classifier fed by the identity endpoint payload; renders canonical
+      displayName with a human/agent kind distinction (data-actor-kind + glyph + sr-only kind
+      label). Unknown actors render the original recorded string with a distinct unknown treatment,
+      never as canonical. No classifier (static/no identity) -> unknown-kind degradation.
+      createActorClassifier() identity-query hook supplies the reactive classifier at page level.
+
+      - Adopt on review detail (review.author, thread entry authors, verdict reviewers) and reviews
+      list (review.author), replacing raw string rendering.
+
+      Test plan: table-driven vitest over all 12 lifecycle x disposition combos (ac-3);
+      two-call-site identical-result test (ac-4); SSR-render ActorDisplay (svelte/server + jsdom,
+      matching web-ui-view-header.test.ts) for ac-1 (same actor identical + human/agent distinction)
+      and ac-2 (unknown treatment + degradation).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T08:46:16.516Z
