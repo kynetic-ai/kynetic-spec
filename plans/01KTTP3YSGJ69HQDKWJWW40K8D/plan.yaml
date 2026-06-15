@@ -2,7 +2,7 @@ _ulid: 01KTTP3YSGJ69HQDKWJWW40K8D
 slugs:
   - plan-ui-redesign-global-decisions
 title: UI Redesign Global Decisions
-status: active
+status: completed
 approved_at: 2026-06-14T19:43:55.265Z
 branch: feat/ui-redesign
 derived_specs:
