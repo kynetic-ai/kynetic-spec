@@ -34,6 +34,16 @@ checks:
     runner: npx oxlint tests/web-ui-status-tokens.test.ts tests/web-ui-view-header.test.ts
     created_at: 2026-06-15T03:41:40.138Z
     completed_at: 2026-06-15T03:41:40.138Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tsc --noEmit completed with exit code 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-15T03:41:49.384Z
+    completed_at: 2026-06-15T03:41:49.384Z
 events:
   - _ulid: 01KV4N4D3AAXF70GWTN4C539A3
     actor: Jacob Chapel
@@ -97,6 +107,13 @@ events:
       status: pass
       name: focused-lint
     timestamp: 2026-06-15T03:41:40.400Z
+  - _ulid: 01KV4NY2NJJ32GH4HMN1Q4KC38
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-15T03:41:49.618Z
 examined_commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
 external_links: []
 lifecycle_state: open
@@ -186,5 +203,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-15T03:27:48.330Z
-updated_at: 2026-06-15T03:41:40.138Z
+updated_at: 2026-06-15T03:41:49.384Z
 notes: []
