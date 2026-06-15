@@ -66876,9 +66876,22 @@ runs:
     completed_at: 2026-06-15T09:31:04.254Z
   - _ulid: 01KV5FZGJP2FA9GCD8D8SGPF81
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-15T11:16:59.606Z
+        completed_at: 2026-06-15T11:18:13.404Z
+        notes: "Step 1 search baseline complete. Reviewed meta observations list + search('actor display
+          surface'/'primitive adoption surfaces'). Relevant existing items: 01KV59V5 (success, this
+          exact task — grep raw recorded field across nested components catches missed ActorDisplay
+          adoption), 01KV4MXQ (friction, same class — shared StatusBadge adoption misses surfaces),
+          01KV58PE (web-ui type-gate/svelte-check baseline not binary-pass)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-15T11:18:13.404Z
+        completed_at: 2026-06-15T11:18:13.404Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T11:16:59.606Z
