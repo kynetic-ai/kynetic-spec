@@ -173,6 +173,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-15T04:04:24.031Z
+  - _ulid: 01KV4RWT2MAW1615YXR1QBM43Q
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV4PKWGW9J9QAZMV5KDT5AK6
+    timestamp: 2026-06-15T04:33:33.780Z
 examined_commit: 6cfa985740c19c4d2afd2992b6e0c121cf13a82b
 external_links: []
 lifecycle_state: closed
@@ -203,6 +209,15 @@ threads:
           Preference.remove() contract that subsequent reads return the default, so degraded mode is
           not functionally equivalent for the accessor surface."
         created_at: 2026-06-15T03:53:44.221Z
+      - _ulid: 01KV4RWSVQVVFM2D3Z54J9ASQ8
+        author: "@claude"
+        body: 'Fixed in b85672dd5e. remove() is now symmetric with get(): it clears persistent storage
+          whenever this.storage exists, regardless of the degraded flag. The degraded flag only
+          gates set() (writes can hit quota); removeItem frees quota rather than consuming it, so it
+          is always safe to attempt. Added a regression test ("removes a value persisted before a
+          write-time degradation") that reproduces the exact repro — persist A, quota-degrade on B,
+          A.remove(), then A.get() returns the default. Full suite green.'
+        created_at: 2026-06-15T04:33:33.559Z
     kind: blocker
   - _ulid: 01KV4Q70P833VJC5BXFGP9Y2XK
     entries:
@@ -237,5 +252,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T04:04:24.030Z
 created_at: 2026-06-15T03:49:53.459Z
-updated_at: 2026-06-15T04:04:24.031Z
+updated_at: 2026-06-15T04:33:33.559Z
 notes: []
