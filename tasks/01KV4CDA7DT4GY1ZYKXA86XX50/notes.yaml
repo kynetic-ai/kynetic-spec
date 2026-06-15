@@ -207,3 +207,50 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T18:06:37.972Z
+  - _ulid: 01KV6B44EK8Z9QA6ZGR93W1F6M
+    content: >-
+      Fix cycle 3: addressed the cycle-2 blocker (operator actor-map targets persisted verbatim) and
+      resolved a substantial rebase against the current integration head.
+
+
+      Blocker fix (@actor-history-normalization ac-5 / ac-3):
+
+      - `ActorResolver` now validates and normalizes operator mapping TARGETS at construction.
+      Recognizable aliases are normalized to their canonical id (e.g. `@codex` -> `codex`); a target
+      that is neither a canonical identity nor a declared default sentinel fails the run closed via
+      the new `OperatorActorMapError`, listing the offending entries before any record is touched. A
+      map like `Hermes: not-a-real-actor` now aborts instead of writing `not-a-real-actor`.
+
+      - Added 3 behavioral tests (reject-and-no-write with full snapshot equality, alias
+      normalization, default-sentinel allowed). Updated docs/guides/upgrading-kspec.md to document
+      the fail-closed behavior.
+
+
+      Rebase / integration consolidation:
+
+      - The integration target (feat/ui-redesign) had since landed the consolidated actor-identity
+      infrastructure: `src/identity/actor-identity-config.ts` (object-arg
+      `buildActorIdentityConfig`), the shared classifier in `@kynetic-ai/shared` now
+      value-importable because shared was added to `bundleDependencies`, and
+      `src/identity/actor-write*.ts` re-exported from `src/parser/index.ts`.
+
+      - My task had independently created `src/parser/identity-config.ts` and a CLI-safe classifier
+      copy `src/parser/actor-classifier.ts` precisely because, at branch time, shared could NOT be
+      value-imported from the installed CLI. That constraint is now resolved by bundleDependencies.
+
+      - Resolved the conflict by removing the now-redundant duplicates
+      (`src/parser/identity-config.ts`, `src/parser/actor-classifier.ts`, and
+      `tests/actor-classifier-parity.test.ts`) and rewiring the migration to consume
+      `buildActorClassifier` from `@kynetic-ai/shared` and `buildActorIdentityConfig` from
+      `src/identity/actor-identity-config.ts`. The daemon identity route conflict was resolved to
+      the integration target's version. Behavior is preserved (the parity test had guaranteed the
+      two classifiers were identical).
+
+
+      Re-verified all 6 ACs of @actor-history-normalization against the implementation. Gates:
+      format clean, lint 0 errors, focused oxlint 0 warnings on changed files, typecheck pass, full
+      suite 10842 passed / 0 failed / 3 skipped, kspec validate refs/alignment/completeness pass
+      (baseline warnings only).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T19:11:22.580Z
