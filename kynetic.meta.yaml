@@ -22146,6 +22146,35 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T08:35:30.502Z
+  - _ulid: 01KV58PE9BYQK4FQR63G2WD58Q
+    type: friction
+    content: "Dispatched task workers cannot resolve plan-owned resource CONTENT from the task/CLI
+      surface. A task body referenced resources via ./resources/handoff/... (relative paths that do
+      not exist in the dispatch worktree); kspec task get lists the resources as [OK] but exposes no
+      resolvable path; kspec plan resource get returns metadata plus a manifest-relative path but no
+      content and no absolute/worktree path. The worker had to fall back to find / to locate the
+      files under .kspec/plans/<ulid>/resources/. Consider: a CLI affordance that prints resource
+      content or an absolute worktree-resolvable path (e.g. kspec task resource get/cat, or
+      --content / --path on kspec plan resource get), so dispatched workers consuming resource_refs
+      do not have to spelunk the shadow-branch plan directory."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T09:09:42.315Z
+  - _ulid: 01KV58PEK78AWEVQFQ4QTQ8KDW
+    type: friction
+    content: The web-ui type gate is not a usable binary pass/fail check for workers. npm run check
+      (svelte-kit sync + svelte-check) carries a large pre-existing error baseline (~62 errors,
+      dominated by the $page.params.id string|undefined pattern), so a worker cannot tell whether
+      their change introduced new type errors without git stash + re-run to diff the counts. Root
+      npm run typecheck (tsc) skips .svelte files entirely, so component/route type regressions are
+      invisible to the documented quality gate. Consider a baseline-aware svelte-check wrapper (fail
+      only on NEW errors) or recording an accepted-error baseline, so web-ui tasks have a real type
+      gate.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T09:09:42.631Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
