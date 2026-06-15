@@ -67415,7 +67415,7 @@ runs:
     completed_at: 2026-06-15T19:07:01.555Z
   - _ulid: 01KV6CSQM0CCJK26Q40ZST6644
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -67430,7 +67430,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T19:41:04.138Z
-        completed_at: 2026-06-15T19:41:04.138Z
+        completed_at: 2026-06-15T19:41:33.688Z
+        notes: "High-confidence reflection items: (1) Success already tracked: reviewer-created temp-project
+          probes were effective again for disproving/confirming a suspected review finding, but
+          existing observation @01KV5XPH covers this pattern, so do not duplicate. (2) Friction not
+          tracked by targeted searches: schema-reflection inventory checks can miss persisted
+          non-schema sidecar fields such as split-task task.yaml history[].author, because loaders
+          strip them before migration logic inspects records. This produced a passing inventory/test
+          suite while a historical actor field remained unnormalized."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T19:41:33.688Z
+        completed_at: 2026-06-15T19:41:33.688Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T19:40:38.912Z
