@@ -35,7 +35,7 @@
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { formatElapsed, formatAge, getTriggerLabel, isDispatchedSession } from '$lib/components/session/session-utils';
 	import SessionFilters from '$lib/components/session/SessionFilters.svelte';
-	import { Badge } from '$lib/components/ui/badge';
+	import { StatusBadge } from '$lib/components/ds';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import { createInfiniteQuery, createQuery } from '$lib/query/createQuery.svelte.js';
 	import { queryKeys } from '$lib/query/keys.js';
@@ -207,25 +207,6 @@
 		if (filterAgentType) agentTypeSet.add(filterAgentType);
 		return [...agentTypeSet].sort();
 	});
-
-	function statusColor(status: string): string {
-		switch (status) {
-			case 'active':
-				return 'bg-status-in-progress text-status-in-progress-fg';
-			case 'completed':
-				return 'bg-status-completed text-status-completed-fg';
-			case 'failed':
-				return 'bg-status-blocked text-status-blocked-fg';
-			case 'abandoned':
-				return 'bg-status-needs-work text-status-needs-work-fg';
-			case 'timed_out':
-				return 'bg-status-pending text-status-pending-fg';
-			case 'stalled':
-				return 'bg-status-needs-work text-status-needs-work-fg';
-			default:
-				return 'bg-status-cancelled text-status-cancelled-fg';
-		}
-	}
 
 	function applySearch(value: string) {
 		const params = new URLSearchParams($page.url.searchParams);
@@ -595,7 +576,8 @@
 					data-testid="session-row"
 					data-session-id={s.id}
 				>
-					<Badge class={statusColor(s.status)}>{s.status}</Badge>
+					<!-- AC: @ui-view-header ac-2 — session state drawn from the shared status-token source -->
+					<StatusBadge domain="session" state={s.status} testid="session-status-badge" />
 
 					<!-- Session origin indicator -->
 					<span

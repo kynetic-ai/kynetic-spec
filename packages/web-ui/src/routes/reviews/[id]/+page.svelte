@@ -28,6 +28,7 @@
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { Badge } from '$lib/components/ui/badge';
+	import { ViewHeader, StatusBadge, type ViewHeaderCount } from '$lib/components/ds';
 	import {
 		fetchReview,
 		fetchReviewSiblings,
@@ -84,44 +85,19 @@
 	let siblings = $derived<ReviewSummary[]>(siblingsQuery.data ?? []);
 	let hasMultipleRevisions = $derived(siblings.length > 1);
 
-	// --- Badge helpers (reused from list page) ---
-	function getDispositionColor(disposition: string): string {
-		const colors: Record<string, string> = {
-			pending: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-			approved: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
-			changes_requested: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-		};
-		return colors[disposition] || 'bg-gray-100 text-gray-800';
-	}
-
-	function formatDisposition(disposition: string): string {
-		const labels: Record<string, string> = {
-			pending: 'Pending',
-			approved: 'Approved',
-			changes_requested: 'Changes Requested',
-		};
-		return labels[disposition] || disposition;
-	}
-
-	function getLifecycleColor(state: string): string {
-		const colors: Record<string, string> = {
-			draft: 'bg-status-pending text-status-pending-fg',
-			open: 'bg-status-in-progress text-status-in-progress-fg',
-			closed: 'bg-status-completed text-status-completed-fg',
-			archived: 'bg-status-cancelled text-status-cancelled-fg',
-		};
-		return colors[state] || 'bg-status-cancelled text-status-cancelled-fg';
-	}
-
-	function formatLifecycle(state: string): string {
-		const labels: Record<string, string> = {
-			draft: 'Draft',
-			open: 'Open',
-			closed: 'Closed',
-			archived: 'Archived',
-		};
-		return labels[state] || state;
-	}
+	// AC: @ui-view-header ac-1 — Standard header reference + server-resolved child counts.
+	// Counts come from the review detail payload's embedded child collections — the
+	// header receives them as values and never enumerates a separate entity list.
+	let reviewRef = $derived(review?.slugs?.[0] ?? review?._ulid ?? reviewId ?? '');
+	let reviewCounts = $derived<ViewHeaderCount[]>(
+		review
+			? [
+					{ label: 'threads', value: review.threads.length, testid: 'view-header-count-threads' },
+					{ label: 'checks', value: review.checks.length, testid: 'view-header-count-checks' },
+					{ label: 'verdicts', value: review.verdicts.length, testid: 'view-header-count-verdicts' }
+				]
+			: []
+	);
 
 	// AC: @review-records-web-ui ac-2 — Thread kind badges with appropriate colors
 	function getKindColor(kind: string): string {
@@ -511,53 +487,60 @@
 			<p class="text-muted-foreground">Loading review...</p>
 		</div>
 	{:else if review}
-		<!-- Header -->
+		<!--
+			Standard view header. AC: @ui-view-header ac-1, ac-2, ac-4, ac-5, ac-6
+			Disposition is the primary state indicator; lifecycle is a compound-state
+			chip in the badges zone. Both draw from the shared status-token vocabulary.
+		-->
 		<div class="flex flex-col gap-4" data-testid="review-header">
-			<div class="flex flex-wrap items-center gap-3">
-				<h1 class="text-2xl font-bold" data-testid="review-title">{review.title}</h1>
-				<!-- AC: @review-records-web-ui ac-2 — Prominent computed disposition -->
-				<Badge data-testid="review-disposition-badge" class={getDispositionColor(review.disposition)}>
-					{formatDisposition(review.disposition)}
-				</Badge>
-				<Badge data-testid="review-lifecycle-badge" class={getLifecycleColor(review.lifecycle_state)}>
-					{formatLifecycle(review.lifecycle_state)}
-				</Badge>
-			</div>
+			<ViewHeader
+				title={review.title}
+				titleTestid="review-title"
+				reference={reviewRef}
+				statusDomain="review-disposition"
+				statusState={review.disposition}
+				statusTestid="review-disposition-badge"
+				counts={reviewCounts}
+			>
+				{#snippet badges()}
+					<!-- AC: @review-records-web-ui ac-2 — lifecycle chip alongside disposition -->
+					<StatusBadge
+						domain="review-lifecycle"
+						state={review.lifecycle_state}
+						testid="review-lifecycle-badge"
+					/>
+				{/snippet}
 
-			<!-- Subject info and metadata -->
-			<div class="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-				<span data-testid="review-subject-info">
-					<span class="font-medium">{formatSubjectType(review.subject.type)}</span>
-					{#if getSubjectRef()}
-						{@const ref = getSubjectRef()}
-						{@const refType = getSubjectRefType()}
-						{#if ref && refType}
-							<a
-								href={refHref(refType, ref, base)}
-								class="text-primary hover:underline ml-1"
-								data-testid="review-subject-link"
-							>@{shortRef(ref)}</a>
+				{#snippet meta()}
+					<span data-testid="review-subject-info">
+						<span class="font-medium">{formatSubjectType(review.subject.type)}</span>
+						{#if getSubjectRef()}
+							{@const ref = getSubjectRef()}
+							{@const refType = getSubjectRefType()}
+							{#if ref && refType}
+								<a
+									href={refHref(refType, ref, base)}
+									class="text-primary hover:underline ml-1"
+									data-testid="review-subject-link">@{shortRef(ref)}</a
+								>
+							{/if}
 						{/if}
-					{/if}
-					{#if getSubjectVersionDisplay()}
-						<span class="ml-1 font-mono text-xs" data-testid="review-subject-version">
-							({getSubjectVersionDisplay()})
-						</span>
-					{/if}
-				</span>
+						{#if getSubjectVersionDisplay()}
+							<span class="ml-1 font-mono text-xs" data-testid="review-subject-version">
+								({getSubjectVersionDisplay()})
+							</span>
+						{/if}
+					</span>
 
-				<span data-testid="review-author">
-					by <span class="font-medium">{review.author}</span>
-				</span>
+					<span data-testid="review-author">
+						by <span class="font-medium">{review.author}</span>
+					</span>
 
-				<span data-testid="review-created-at" title={review.created_at}>
-					{formatRelativeTime(review.created_at)}
-				</span>
-
-				<span class="font-mono text-xs" data-testid="review-ref">
-					@{review.slugs?.[0] || review._ulid.slice(0, 8)}
-				</span>
-			</div>
+					<span data-testid="review-created-at" title={review.created_at}>
+						{formatRelativeTime(review.created_at)}
+					</span>
+				{/snippet}
+			</ViewHeader>
 
 			<!-- AC: @review-records-web-ui ac-11 — Revision selector dropdown -->
 			{#if hasMultipleRevisions}

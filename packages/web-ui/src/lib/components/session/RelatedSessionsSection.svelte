@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { base } from '$app/paths';
 	import type { SessionSummary } from '$lib/api';
-	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
+	import { StatusBadge } from '$lib/components/ds';
 	import { formatAge, formatElapsed } from './session-utils';
 
 	interface Props {
@@ -16,25 +16,6 @@
 	}
 
 	let { title, sessions, loading, error, filterHref, emptyMessage, dataTestId }: Props = $props();
-
-	function statusColor(status: string): string {
-		switch (status) {
-			case 'active':
-				return 'bg-status-in-progress text-status-in-progress-fg';
-			case 'completed':
-				return 'bg-status-completed text-status-completed-fg';
-			case 'failed':
-				return 'bg-status-blocked text-status-blocked-fg';
-			case 'abandoned':
-				return 'bg-status-needs-work text-status-needs-work-fg';
-			case 'timed_out':
-				return 'bg-status-pending text-status-pending-fg';
-			case 'stalled':
-				return 'bg-status-needs-work text-status-needs-work-fg';
-			default:
-				return 'bg-status-cancelled text-status-cancelled-fg';
-		}
-	}
 </script>
 
 <div data-testid={dataTestId}>
@@ -71,7 +52,8 @@
 					class="flex items-center gap-3 rounded-md border p-3 transition-colors hover:bg-muted/40"
 					data-testid={`${dataTestId}-row`}
 				>
-					<Badge class={statusColor(session.status)}>{session.status}</Badge>
+					<!-- AC: @ui-view-header ac-2 — session state drawn from the shared status-token source -->
+					<StatusBadge domain="session" state={session.status} testid={`${dataTestId}-status-badge`} />
 					<div class="min-w-0 flex-1">
 						<div class="flex items-center gap-2">
 							<span class="text-sm font-medium">{session.id.slice(0, 8)}</span>

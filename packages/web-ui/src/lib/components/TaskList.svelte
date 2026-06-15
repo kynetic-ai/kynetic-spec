@@ -2,6 +2,7 @@
 	// AC: @web-dashboard ac-4, ac-5, ac-33
 	import type { TaskSummary } from '@kynetic-ai/shared';
 	import { Badge } from '$lib/components/ui/badge';
+	import { StatusBadge } from '$lib/components/ds';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import {
 		Table,
@@ -27,32 +28,6 @@
 			onSelectTask(task._ulid);
 		}
 		dispatch('select', task._ulid);
-	}
-
-	function getStatusColor(status: string): string {
-		const colors: Record<string, string> = {
-			pending: 'bg-status-pending text-status-pending-fg',
-			in_progress: 'bg-status-in-progress text-status-in-progress-fg',
-			pending_review: 'bg-status-pending-review text-status-pending-review-fg',
-			needs_work: 'bg-status-needs-work text-status-needs-work-fg',
-			blocked: 'bg-status-blocked text-status-blocked-fg',
-			completed: 'bg-status-completed text-status-completed-fg',
-			cancelled: 'bg-status-cancelled text-status-cancelled-fg'
-		};
-		return colors[status] || 'bg-status-cancelled text-status-cancelled-fg';
-	}
-
-	function formatStatus(status: string): string {
-		const labels: Record<string, string> = {
-			pending: 'Pending',
-			in_progress: 'In Progress',
-			pending_review: 'Pending Review',
-			needs_work: 'Needs Work',
-			blocked: 'Blocked',
-			completed: 'Completed',
-			cancelled: 'Cancelled'
-		};
-		return labels[status] || status;
 	}
 
 	function getPriorityColor(priority: number): string {
@@ -100,7 +75,7 @@
 							<span data-testid="task-title" class="truncate">{task.title}</span>
 						</TableCell>
 						<TableCell>
-							<Badge data-testid="task-status-badge" class={getStatusColor(task.status)}>{formatStatus(task.status)}</Badge>
+							<StatusBadge domain="task" state={task.status} testid="task-status-badge" />
 						</TableCell>
 						<TableCell class={getPriorityColor(task.priority)}>
 							<span data-testid="task-priority">P{task.priority}</span>

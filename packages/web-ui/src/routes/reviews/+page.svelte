@@ -9,7 +9,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import type { ReviewSummary, BroadcastEvent } from '@kynetic-ai/shared';
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
-	import { Badge } from '$lib/components/ui/badge';
+	import { StatusBadge } from '$lib/components/ds';
 	import {
 		Table,
 		TableBody,
@@ -90,47 +90,6 @@
 	function getSortIndicator(field: string): string {
 		if (currentSort !== field) return '';
 		return currentSortDir === 'asc' ? ' \u2191' : ' \u2193';
-	}
-
-	// --- Disposition badge colors ---
-	// AC: @review-records-web-ui ac-1 — color-coded disposition badges
-	function getDispositionColor(disposition: string): string {
-		const colors: Record<string, string> = {
-			pending: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-			approved: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
-			changes_requested: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-		};
-		return colors[disposition] || 'bg-gray-100 text-gray-800';
-	}
-
-	function formatDisposition(disposition: string): string {
-		const labels: Record<string, string> = {
-			pending: 'Pending',
-			approved: 'Approved',
-			changes_requested: 'Changes Requested'
-		};
-		return labels[disposition] || disposition;
-	}
-
-	// --- Lifecycle state badge colors ---
-	function getLifecycleColor(state: string): string {
-		const colors: Record<string, string> = {
-			draft: 'bg-status-pending text-status-pending-fg',
-			open: 'bg-status-in-progress text-status-in-progress-fg',
-			closed: 'bg-status-completed text-status-completed-fg',
-			archived: 'bg-status-cancelled text-status-cancelled-fg'
-		};
-		return colors[state] || 'bg-status-cancelled text-status-cancelled-fg';
-	}
-
-	function formatLifecycle(state: string): string {
-		const labels: Record<string, string> = {
-			draft: 'Draft',
-			open: 'Open',
-			closed: 'Closed',
-			archived: 'Archived'
-		};
-		return labels[state] || state;
 	}
 
 	// --- Subject type formatting ---
@@ -325,14 +284,20 @@
 									</div>
 								</TableCell>
 								<TableCell>
-									<Badge data-testid="review-lifecycle-badge" class={getLifecycleColor(review.lifecycle_state)}>
-										{formatLifecycle(review.lifecycle_state)}
-									</Badge>
+									<!-- AC: @ui-view-header ac-2 — lifecycle state drawn from the shared status-token source -->
+									<StatusBadge
+										domain="review-lifecycle"
+										state={review.lifecycle_state}
+										testid="review-lifecycle-badge"
+									/>
 								</TableCell>
 								<TableCell>
-									<Badge data-testid="review-disposition-badge" class={getDispositionColor(review.disposition)}>
-										{formatDisposition(review.disposition)}
-									</Badge>
+									<!-- AC: @ui-view-header ac-2 / @review-records-web-ui ac-1 — disposition badge from the shared status-token source -->
+									<StatusBadge
+										domain="review-disposition"
+										state={review.disposition}
+										testid="review-disposition-badge"
+									/>
 								</TableCell>
 								<TableCell>
 									<span class="text-sm" data-testid="review-subject-type">{formatSubjectType(review.subject_type)}</span>

@@ -126,8 +126,8 @@ test.describe("Task Board (Kanban)", () => {
     // Description
     await expect(modal.getByTestId("task-description")).toBeVisible();
 
-    // Status badge
-    await expect(modal.getByTestId("task-status-badge")).toHaveText("In Progress");
+    // Status badge — shared StatusBadge renders a glyph + canonical label
+    await expect(modal.getByTestId("task-status-badge")).toContainText("In Progress");
 
     // Priority
     await expect(modal.getByTestId("task-priority")).toContainText("Priority");
@@ -277,7 +277,7 @@ test.describe("Task Board (Kanban)", () => {
     await startBtn.click();
 
     // Status badge should update to In Progress
-    await expect(page.getByTestId("task-status-badge")).toHaveText("In Progress", {
+    await expect(page.getByTestId("task-status-badge")).toContainText("In Progress", {
       timeout: 5000,
     });
   });
@@ -307,8 +307,10 @@ test.describe("Task Board (Kanban)", () => {
     await expect(submitBtn).toBeVisible();
     await submitBtn.click();
 
-    // Status badge should update to Review
-    await expect(page.getByTestId("task-status-badge")).toHaveText("Review", { timeout: 5000 });
+    // Status badge should update to Pending Review (shared token's canonical label)
+    await expect(page.getByTestId("task-status-badge")).toContainText("Pending Review", {
+      timeout: 5000,
+    });
   });
 
   // AC: @ui-task-board ac-6
@@ -378,7 +380,7 @@ test.describe("Task Board (Kanban)", () => {
     await reasonInput.getByRole("button", { name: "Confirm" }).click();
 
     // Status badge should update to Completed
-    await expect(page.getByTestId("task-status-badge")).toHaveText("Completed", {
+    await expect(page.getByTestId("task-status-badge")).toContainText("Completed", {
       timeout: 5000,
     });
   });
@@ -417,7 +419,7 @@ test.describe("Task Board (Kanban)", () => {
     await reasonInput.getByRole("button", { name: "Confirm" }).click();
 
     // Status badge should update to Blocked
-    await expect(page.getByTestId("task-status-badge")).toHaveText("Blocked", {
+    await expect(page.getByTestId("task-status-badge")).toContainText("Blocked", {
       timeout: 5000,
     });
   });

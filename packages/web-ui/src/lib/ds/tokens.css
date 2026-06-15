@@ -48,6 +48,14 @@
   --design-spacing-2xl: 3rem;
   --design-spacing-3xl: 4rem;
 
+  /* ── Layout Reservations (1) ──
+   * The single named reservation value for the shell's leading (inline-start)
+   * chrome zone. The web target has no native window controls, so the default
+   * is 0; a native desktop wrapper overrides this to reserve room for window
+   * controls without relocating any shell or view-header element.
+   * See @web-shell-platform-target and @ui-view-header. */
+  --ds-chrome-leading-reservation: 0px;
+
   /* ── Z-Index Layers (7) ── */
   --design-z-base: 0;
   --design-z-dropdown: 10;

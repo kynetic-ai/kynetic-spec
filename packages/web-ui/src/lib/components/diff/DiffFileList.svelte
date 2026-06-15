@@ -5,6 +5,7 @@
 <script lang="ts">
 	import type { DiffFile } from '$lib/api';
 	import { getFilePath } from '$lib/utils/diff';
+	import { resolveStatusToken, statusTextClass } from '$lib/ds/status-tokens';
 
 	interface Props {
 		files: Array<{ oldPath: string; newPath: string; status: DiffFile['status']; stats: DiffFile['stats'] }>;
@@ -15,23 +16,11 @@
 	let { files, selectedFile, onSelectFile }: Props = $props();
 
 	function getStatusIcon(status: DiffFile['status']): string {
-		switch (status) {
-			case 'added': return 'A';
-			case 'deleted': return 'D';
-			case 'modified': return 'M';
-			case 'renamed': return 'R';
-			default: return '?';
-		}
+		return resolveStatusToken('diff', status).glyph;
 	}
 
 	function getStatusColor(status: DiffFile['status']): string {
-		switch (status) {
-			case 'added': return 'text-emerald-600 dark:text-emerald-400';
-			case 'deleted': return 'text-red-600 dark:text-red-400';
-			case 'modified': return 'text-amber-600 dark:text-amber-400';
-			case 'renamed': return 'text-blue-600 dark:text-blue-400';
-			default: return 'text-muted-foreground';
-		}
+		return statusTextClass(resolveStatusToken('diff', status).family);
 	}
 
 	function getDisplayPath(file: { oldPath: string; newPath: string; status: DiffFile['status'] }): string {

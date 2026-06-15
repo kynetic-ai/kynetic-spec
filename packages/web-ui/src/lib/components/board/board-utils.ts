@@ -15,51 +15,6 @@ export interface BoardColumn {
 }
 
 /**
- * Status color mapping using design system tokens.
- * Returns both bg and fg CSS variable references.
- */
-export function getStatusClasses(status: string): { bg: string; fg: string; label: string } {
-  const map: Record<string, { bg: string; fg: string; label: string }> = {
-    pending: {
-      bg: "bg-status-pending",
-      fg: "text-status-pending-fg",
-      label: "Pending",
-    },
-    in_progress: {
-      bg: "bg-status-in-progress",
-      fg: "text-status-in-progress-fg",
-      label: "In Progress",
-    },
-    pending_review: {
-      bg: "bg-status-pending-review",
-      fg: "text-status-pending-review-fg",
-      label: "Review",
-    },
-    needs_work: {
-      bg: "bg-status-needs-work",
-      fg: "text-status-needs-work-fg",
-      label: "Needs Work",
-    },
-    completed: {
-      bg: "bg-status-completed",
-      fg: "text-status-completed-fg",
-      label: "Completed",
-    },
-    blocked: {
-      bg: "bg-status-blocked",
-      fg: "text-status-blocked-fg",
-      label: "Blocked",
-    },
-    cancelled: {
-      bg: "bg-status-cancelled",
-      fg: "text-status-cancelled-fg",
-      label: "Cancelled",
-    },
-  };
-  return map[status] || { bg: "bg-muted", fg: "text-muted-foreground", label: status };
-}
-
-/**
  * Distribute tasks into Kanban columns.
  *
  * AC: @ui-task-board ac-1

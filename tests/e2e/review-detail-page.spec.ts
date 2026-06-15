@@ -9,6 +9,7 @@ test.describe("Review Detail Page", () => {
   // AC: @review-records-web-ui ac-8
   // AC: @review-records-web-ui ac-9
   // AC: @review-records-web-ui ac-11
+  // AC: @ui-view-header ac-6 — review detail presents the standard view header
   test("renders review details, markdown thread bodies, and revision selector", async ({
     page,
     daemon: _daemon,
@@ -16,8 +17,13 @@ test.describe("Review Detail Page", () => {
     await page.goto(`/reviews/${OPEN_REVIEW_ULID}`);
 
     await expect(page.getByTestId("review-header")).toBeVisible();
+    // AC: @ui-view-header ac-6 — the standard ViewHeader is the review header's chrome
+    await expect(page.getByTestId("review-header").getByTestId("view-header")).toBeVisible();
     await expect(page.getByTestId("review-title")).toHaveText("Review of test task");
     await expect(page.getByTestId("review-disposition-badge")).toContainText("Changes Requested");
+    await expect(page.getByTestId("review-lifecycle-badge")).toBeVisible();
+    // Child counts (threads/checks/verdicts) come from the server-resolved detail payload.
+    await expect(page.getByTestId("view-header-count-threads")).toBeVisible();
 
     await expect(page.getByTestId("revision-selector")).toBeVisible();
     const revisionSelect = page.locator("#revision-select");
@@ -56,6 +62,19 @@ test.describe("Review Detail Page", () => {
     await page.keyboard.press("Enter");
     await page.waitForURL("**/reviews");
     await expect(page.getByRole("heading", { name: "Reviews" })).toBeVisible();
+
+    // AC: @ui-view-header ac-2 — the list disposition/lifecycle badges draw from the
+    // same shared status-token source as the detail header (one token per state on
+    // every surface), not bespoke list-only Badge helpers.
+    const listRow = page.locator('[data-review-ref="test-review-open"]');
+    const listDisposition = listRow.getByTestId("review-disposition-badge");
+    await expect(listDisposition).toHaveAttribute("data-status-domain", "review-disposition");
+    await expect(listDisposition).toHaveAttribute("data-status-state", "changes_requested");
+    await expect(listDisposition).toContainText("Changes Requested");
+    await expect(listRow.getByTestId("review-lifecycle-badge")).toHaveAttribute(
+      "data-status-domain",
+      "review-lifecycle",
+    );
   });
 
   // AC: @review-records-web-ui ac-10
