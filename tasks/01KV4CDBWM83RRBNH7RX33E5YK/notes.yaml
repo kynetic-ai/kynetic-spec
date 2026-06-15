@@ -34,3 +34,40 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-15T03:29:44.450Z
+  - _ulid: 01KV4P61GXQARCC8CVVFG9HKKS
+    content: >-
+      Implemented in packages/web-ui/src/lib/preferences/ (backend.ts, define-preference.ts,
+      index.ts) and migrated the project store as first consumer. AC coverage in
+      tests/web-ui/preferences.test.ts (15 tests, all behavioral against in-memory +
+      fake-throwing/quota storage):
+
+      - ac-1 round-trip + default-when-empty
+
+      - ac-2 namespace isolation (same key name, different namespace)
+
+      - ac-3 version migration via declared rule, default when no rule, default for newer/foreign
+      version
+
+      - ac-4 validation fallback (predicate + zod schema + non-JSON), invalid value never propagates
+
+      - ac-5 backend-agnostic identical semantics + subscribe/unsubscribe
+
+      - ac-6 unavailable-storage degradation, all-writes-throw degradation, per-write quota fallback
+
+      - @client-preference-persistence ac-1 shared key format kspec:namespace:key with versioned
+      envelope {v,value}
+
+
+      Gates: format:check, lint --quiet (0 errors), oxlint on changed files (0/0), root typecheck,
+      full npm test (10616 passed / 3 skipped / 0 fail). web-ui svelte-check has 61 pre-existing
+      errors in unrelated files; none in preferences/ or project.svelte.ts.
+
+
+      Note for reviewer: e2e tests/e2e/project-selector.spec.ts:316 removes the legacy key
+      kspec-selected-project to simulate 'no selection'. After migration the value lives under the
+      new key; that test still asserts the first-registered-project default, which remains correct,
+      so behavior is preserved. Not modified to avoid unverifiable Playwright changes in this
+      dispatch.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T03:46:10.589Z
