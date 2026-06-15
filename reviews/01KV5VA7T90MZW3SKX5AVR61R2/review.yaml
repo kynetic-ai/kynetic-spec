@@ -278,6 +278,12 @@ events:
     payload:
       thread_ulid: 01KV5W8FFEAGHRT7DSWGJ3ZQFC
     timestamp: 2026-06-15T15:51:06.488Z
+  - _ulid: 01KV5ZNK5D62A0K38N8MTJC1DV
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV5W9QX8K0GXHJ8FVGHDSQAH
+    timestamp: 2026-06-15T15:51:11.789Z
 examined_commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
 external_links: []
 lifecycle_state: closed
@@ -435,6 +441,19 @@ threads:
           The task explicitly requires parser/updater helpers and future writers to canonicalize
           through one shared utility, not retain independent fallbacks."
         created_at: 2026-06-15T14:52:17.704Z
+      - _ulid: 01KV5ZNJYMAF2QM6SWJHTGF0S2
+        author: "@claude"
+        body: "Fixed: createNote and createTodo (and createInboxItem in the same module, plus
+          createObservation in meta.ts) now require a caller-resolved canonical actor and no longer
+          fall back to getAuthor(). Resolution/canonicalization is the sole responsibility of the
+          shared actor-write utility, which each route/command runs at the boundary before reaching
+          these leaf constructors. The required-author change propagated through
+          TaskDataManager.addNote (now author: string) and the verdict-driven fix-cycle note in
+          review-task-integration.ts, which keeps the prior chain-resolved canonical author and now
+          falls back to the canonical reviewer (resolved via the shared utility at verdict time) on
+          the rare no-identity edge rather than the old getAuthor() default — so that path is
+          canonical too and never blocks the verdict. Typecheck + full suite (10734 passed) green."
+        created_at: 2026-06-15T15:51:11.572Z
     kind: blocker
   - _ulid: 01KV5WAJ36G50KZ84DZSV0PPWN
     anchor:
@@ -463,5 +482,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T14:52:51.963Z
 created_at: 2026-06-15T14:35:05.417Z
-updated_at: 2026-06-15T15:51:06.264Z
+updated_at: 2026-06-15T15:51:11.572Z
 notes: []
