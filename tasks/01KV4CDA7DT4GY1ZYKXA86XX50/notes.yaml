@@ -1,1 +1,43 @@
-notes: []
+notes:
+  - _ulid: 01KV59CB5M97JN22PVGSWK0RNX
+    content: >-
+      Approach: Add an actor-normalization step to the `kspec upgrade` pipeline.
+
+
+      Architecture:
+
+      - src/parser/actor-field-inventory.ts: exhaustive ACTOR_FIELD_INVENTORY (record kind,
+      schema/type, storage path shape, field path, disposition normalize|out_of_scope+reason) + a
+      fail-closed guard (findUncoveredActorFields) that recursively walks the actual Zod
+      stored-record schemas at runtime and asserts every field whose name matches the actor-name
+      heuristic (author/reviewer/actor/assignee/owner/*_by) is represented in the inventory. Runtime
+      schema reflection, not source text scanning.
+
+      - src/parser/identity-config.ts: extract buildActorIdentityConfig(ctx, meta) shared builder
+      (currently inlined in daemon identity route); reuse classifier from @kynetic-ai/shared.
+      Refactor daemon route to use it (avoid duplication).
+
+      - src/parser/actor-normalization-migration.ts: resolution engine. Order per value: built-in
+      variant map (classifier) -> operator mapping file -> declared default/unknown actor per record
+      kind. Per-record-kind load/mutate/save handlers using existing save fns (round-trip
+      preserving). compute report (dry-run) + apply.
+
+      - Wire runActorNormalizationStep into runUpgradePipeline; add --actor-map <path> and reuse
+      --dry-run on `kspec upgrade`. Writes via buffer-aware machinery + shadow commit; report
+      written to durable .kspec/upgrade-reports artifact (only when changes occur, preserving
+      idempotency).
+
+
+      ACs: ac-1 variant map rewrite; ac-2 unresolved->default + original in report; ac-3 idempotent
+      (run-twice test, canonical values are fixed points); ac-4 dry-run modifies nothing; ac-5 every
+      inventoried field canonical-or-default after run; ac-6 exhaustive inventory + fail-closed
+      schema guard.
+
+
+      Test plan: fixtures seeded with measured variants from analysis.md 4.6 (codex 7 ways,
+      pr-reviewer 4 ways, @claude/Test User/Hermes), one fixture per inventoried field path;
+      idempotency; dry-run no-write; fail-closed guard (inject schema field absent from inventory ->
+      throws); operator mapping; default fallback + report contents.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T09:21:40.020Z
