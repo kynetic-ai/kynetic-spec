@@ -66646,7 +66646,7 @@ runs:
     completed_at: 2026-06-15T08:00:01.600Z
   - _ulid: 01KV56K3V3EVWZ0Y8C7460A0VV
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -66683,7 +66683,20 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-15T08:34:42.964Z
-        completed_at: 2026-06-15T08:34:42.964Z
+        completed_at: 2026-06-15T08:34:53.561Z
+        notes: "Propose: capture a friction observation that dispatched task resources reported [OK] are not
+          materialized at their referenced paths in the mutable worker worktree, so workers lose
+          intended design handoff context. Investigation should determine whether worktree bootstrap
+          should materialize declared resources (or expose a resolvable path/command), or whether
+          [OK] only means 'declared' not 'present'. Scope: medium (touches dispatch worktree
+          bootstrap + resource resolution). Also capture a brief success observation about the
+          plain-TS-core + thin-Svelte-layer pattern for testable web-ui logic. Both routed to
+          observations (systemic), not tasks — no user confirmation available in this autonomous
+          run."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-15T08:34:53.561Z
+        completed_at: 2026-06-15T08:34:53.561Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T08:32:56.164Z
