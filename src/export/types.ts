@@ -20,6 +20,7 @@ import type {
 import type { ResourceMetadata } from "../schema/resources.js";
 import type { ProjectedTaskResource } from "../parser/task-resource-resolver.js";
 import type { LoadedSpecItem, LoadedTask } from "../parser/yaml.js";
+import type { BreadcrumbAncestor } from "@kynetic-ai/shared";
 import type { AlignmentWarning } from "../parser/alignment.js";
 import type {
   CompletenessWarning,
@@ -83,6 +84,12 @@ export interface ExportedTask extends LoadedTask {
    * AC: @static-export-resource-assets-complete ac-static-task-drift-is-visible-not-rewritten
    */
   resolved_resources?: ExportedTaskResource[];
+  /**
+   * Server-resolved breadcrumb ancestor chain (root → this task), precomputed
+   * at export time so the static provider serves the same chain shape as the
+   * live daemon read-only. AC: @ui-breadcrumb ac-10
+   */
+  ancestors?: BreadcrumbAncestor[];
 }
 
 /**
@@ -105,6 +112,12 @@ export interface ExportedItem extends Omit<LoadedSpecItem, "acceptance_criteria"
   children?: ExportedItem[];
   /** Acceptance criteria inherited from traits */
   inherited_acs?: InheritedAC[];
+  /**
+   * Server-resolved breadcrumb ancestor chain (root → this item), precomputed
+   * at export time so the static provider serves the same chain shape as the
+   * live daemon read-only. AC: @ui-breadcrumb ac-10
+   */
+  ancestors?: BreadcrumbAncestor[];
 }
 
 /**
@@ -170,6 +183,22 @@ export interface ExportedPlan {
    * AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
    */
   resources: ExportedPlanResource[];
+  /**
+   * Owning module reference, carried so the static breadcrumb provider can
+   * resolve a plan's ancestor chain (module chain plus the plan) without a
+   * live daemon. Null when the plan is not anchored to a module.
+   *
+   * AC: @ui-breadcrumb ac-10
+   */
+  module_ref?: string | null;
+  /** Source document path, retained for forward-compatible consumers. */
+  source_path?: string | null;
+  /**
+   * Server-resolved breadcrumb ancestor chain (root → this plan), precomputed
+   * at export time so the static provider serves the same chain shape as the
+   * live daemon read-only. AC: @ui-breadcrumb ac-10
+   */
+  ancestors?: BreadcrumbAncestor[];
 }
 
 /**
@@ -212,6 +241,12 @@ export interface ExportedReview {
   examined_commit: string | null;
   disposition: string;
   resources: ExportedReviewResource[];
+  /**
+   * Server-resolved breadcrumb ancestor chain (root → this review), precomputed
+   * at export time so the static provider serves the same chain shape as the
+   * live daemon read-only. AC: @ui-breadcrumb ac-10
+   */
+  ancestors?: BreadcrumbAncestor[];
 }
 
 /**

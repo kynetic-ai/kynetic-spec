@@ -45,6 +45,10 @@ import type { PubSubManager } from "../websocket/pubsub.js";
 import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import { getRelatedSessionsForTask } from "./session-related.js";
 import { resolveRefTitle, resolveRefEntries } from "./ref-resolution.js";
+import {
+  BreadcrumbAncestryResolver,
+  type AncestryItemInput,
+} from "../../lib/breadcrumb-ancestry.js";
 
 import type { EntityCacheAccessor, WriteThroughHint } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
@@ -431,6 +435,13 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             resourcesBaseUrl = buildTaskResourcesBaseUrl(task._ulid);
           }
 
+          // AC: @ui-breadcrumb ac-10 — resolve the breadcrumb ancestor chain
+          // (spec_ref chain plus the task) from the in-memory item index that
+          // already backs spec_title resolution; no extra disk read or list fetch.
+          const ancestors = new BreadcrumbAncestryResolver({
+            items: items as AncestryItemInput[],
+          }).forTask({ _ulid: task._ulid, title: task.title, spec_ref: task.spec_ref });
+
           // AC: @api-contract ac-5 - Return full task with notes, todos, dependencies
           // AC: @ui-task-board ac-3 - Include type, description, blocked_by, vcs_refs, plan_ref, session_ref
           // AC: @ui-api-ref-resolution ac-1, ac-2 - Include resolved titles for refs
@@ -446,6 +457,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
               priority: task.priority,
               spec_ref: task.spec_ref,
               spec_title: resolveRefTitle(index, task.spec_ref),
+              ancestors,
               meta_ref: task.meta_ref,
               tags: task.tags,
               description: task.description,

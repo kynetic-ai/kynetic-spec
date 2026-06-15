@@ -42,6 +42,12 @@ import {
   type LoadedTask,
   type LoadedSpecItem,
 } from "../../parser/index.js";
+import {
+  BreadcrumbAncestryResolver,
+  type AncestryItemInput,
+  type AncestryTaskInput,
+} from "../../lib/breadcrumb-ancestry.js";
+import type { BreadcrumbAncestor } from "@kynetic-ai/shared";
 import { resolveRefTitle } from "./ref-resolution.js";
 import { SessionStatusSchema, SessionTriggerSchema } from "../../sessions/types.js";
 import { parseTimeSpec } from "../../utils/time.js";
@@ -681,6 +687,58 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
           }
         }
 
+        // AC: @ui-breadcrumb ac-10 — server-resolved breadcrumb ancestor chain.
+        // A task-scoped session's chain is its owning task's chain (spec chain
+        // plus the task) plus the session; a session with no owning task is a
+        // single-segment chain. The owning task and item index come from the
+        // entity cache when their domains are warm; for a task-scoped session
+        // whose domains are cold we fall back to a bounded disk load (the item
+        // index plus the one owning task) — the same fallback the item/task/
+        // plan/review detail routes already use — so the trail is never
+        // truncated to the session segment alone. Unlike task_title/spec_context
+        // (best-effort enrichment), the full chain is a hard requirement of this
+        // endpoint, so it is resolved even when the cache is cold. The disk load
+        // uses syncMode "skip" (no git operations, per ac-no-per-request-sync),
+        // and a session with no owning task never reads from disk.
+        let ancestors: BreadcrumbAncestor[];
+        if (!metadata?.task_id) {
+          ancestors = new BreadcrumbAncestryResolver({ items: [] }).forSession({
+            id: resolution.id,
+          });
+        } else {
+          const ancestryItemsReady = entityCache?.getDomainState("items") === "ready";
+          const ancestryTasksReady = entityCache?.getDomainState("tasks") === "ready";
+
+          const ancestryItems = (
+            ancestryItemsReady
+              ? (entityCache!.getItemIndex() ?? [])
+              : await loadAllItems(await getCtx())
+          ) as AncestryItemInput[];
+
+          let ancestryTasks: AncestryTaskInput[];
+          if (ancestryTasksReady) {
+            ancestryTasks = (entityCache!.getTaskIndex() ?? []) as unknown as AncestryTaskInput[];
+          } else {
+            // Bounded: load only the owning task, not the whole task set.
+            let ownerTask: AncestryTaskInput | undefined;
+            try {
+              const ctx = await getCtx();
+              ownerTask = (await resolveTaskDataManager(ctx).getTask(
+                ctx,
+                metadata.task_id,
+              )) as unknown as AncestryTaskInput;
+            } catch {
+              // Owning task unresolvable — chain degrades to the session segment.
+            }
+            ancestryTasks = ownerTask ? [ownerTask] : [];
+          }
+
+          ancestors = new BreadcrumbAncestryResolver({
+            items: ancestryItems,
+            tasks: ancestryTasks,
+          }).forSession({ id: resolution.id, task_ref: metadata.task_id });
+        }
+
         // AC: @ui-session-stream ac-4 — Include budget info
         let budget: { max_per_cycle: number; started_this_cycle: number } | null = null;
         try {
@@ -710,6 +768,7 @@ export function createSessionRoutes(_options: SessionRouteOptions = {}) {
             trigger: metadata?.trigger ?? "legacy",
             spec_context,
             budget,
+            ancestors,
             ...(legacyCount > 0
               ? {
                   warning: `${legacyCount} legacy session(s) found in .kspec/sessions/. Run \`kspec session migrate\` to move them to .kspec-sessions/.`,

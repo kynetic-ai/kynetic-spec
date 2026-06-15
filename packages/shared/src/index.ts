@@ -5,7 +5,7 @@
  * Used by both daemon and web-ui for type safety and validation.
  */
 
-// API types
+// API types (includes the BreadcrumbAncestor contract type)
 export * from "./api.js";
 
 // Actor identity classification
