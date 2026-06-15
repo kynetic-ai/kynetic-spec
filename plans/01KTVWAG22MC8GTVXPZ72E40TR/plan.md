@@ -1,5 +1,44 @@
 # Web UI Foundations
 
+## Handoff Resources
+
+The exported Kynetic Spec web UI handoff at
+`/home/chapel/Downloads/Kynetic Spec/export` is attached to this plan
+as plan-owned resources under `./resources/handoff/...` so derived task
+workers can access the same design context without relying on the
+Downloads path. The handoff is behavioral/reference material: use it
+for information architecture, interaction states, hierarchy, token
+intent, and verification examples; do **not** treat screenshots or the
+React reference source as pixel-perfect styling or production code to
+port directly into the SvelteKit web UI.
+
+Primary plan-level resources:
+
+- [export README](./resources/handoff/docs/README.md) — index and
+  fidelity caveats for the full handoff package.
+- [product context](./resources/handoff/docs/00-product-context.md) —
+  redesign intent, source inventory, decision history, and caveats.
+- [app shell/navigation](./resources/handoff/docs/01-app-shell-and-navigation.md) —
+  sidebar, command palette, status chrome, breadcrumb behavior, and
+  persisted navigation-state notes.
+- [spec workspace](./resources/handoff/docs/06-spec-workspace.md) —
+  unified page/tree model that motivates breadcrumbs, view headers, and
+  server-resolved linked-work/header data.
+- [coverage states](./resources/handoff/docs/07-coverage-states.md),
+  [spec-state integration](./resources/handoff/docs/08-spec-states-integration.md),
+  and [validate workspace](./resources/handoff/docs/09-validate.md) —
+  coverage/status token semantics and downstream consumers of the shared
+  token source.
+- [reviews](./resources/handoff/docs/11-reviews.md) — review queue,
+  per-subject review surfaces, reviewer/actor display, and awaiting
+  action cues.
+- [implementation backlog](./resources/handoff/docs/12-implementation-backlog.md) —
+  consolidated capability gaps and plan seams from the wireframes.
+
+Attached screenshots and reference sources are cited again inside the
+individual task bodies below. Use the `resource_refs` on each task as
+the authoritative task-worker handoff list.
+
 ## Specs
 
 ```yaml
@@ -566,6 +605,11 @@ derive_from_specs: false
   priority: 1
   tags: [daemon, api, identity]
   spec_ref: "@actor-identity-resolution"
+  resource_refs:
+    - "./resources/handoff/docs/00-product-context.md"
+    - "./resources/handoff/docs/11-reviews.md"
+    - "./resources/handoff/docs/12-implementation-backlog.md"
+    - "./resources/handoff/reference-src/wf3-reviews.jsx"
   description: |
     Build the identity surface (configured human identity + canonical
     agent roster) and the actor classification logic that resolves
@@ -620,6 +664,15 @@ derive_from_specs: false
     data-driven (one table consumed by both the classifier and the
     upgrade step in @task-actor-normalization-upgrade).
 
+
+    Handoff resources: Read the product context
+    (./resources/handoff/docs/00-product-context.md) and reviews handoff
+    (./resources/handoff/docs/11-reviews.md) for the human/agent actor
+    roles the web UI needs to render. The reviews source
+    (./resources/handoff/reference-src/wf3-reviews.jsx) is reference
+    material for actor/reviewer labels and token names only; keep the
+    implementation in shared kspec/Svelte code.
+
     Covers: @actor-identity-resolution ac-1, ac-2, ac-3, ac-4, ac-5;
     @trait-api-endpoint ac-1, ac-6 (inherited via
     @actor-identity-resolution; trait ac-2, ac-3, ac-4, ac-5 are
@@ -633,6 +686,10 @@ derive_from_specs: false
   spec_ref: "@actor-identity-resolution"
   depends_on:
     - "@task-identity-endpoint-classifier"
+  resource_refs:
+    - "./resources/handoff/docs/00-product-context.md"
+    - "./resources/handoff/docs/11-reviews.md"
+    - "./resources/handoff/docs/12-implementation-backlog.md"
   description: |
     Make every actor-bearing write path persist canonical actor
     identities through one shared author/actor utility: remove the
@@ -713,6 +770,14 @@ derive_from_specs: false
     same code. This is a write-path-only change — historical values
     are handled by @task-actor-normalization-upgrade, not here.
 
+
+    Handoff resources: Use the product context
+    (./resources/handoff/docs/00-product-context.md), reviews handoff
+    (./resources/handoff/docs/11-reviews.md), and implementation backlog
+    (./resources/handoff/docs/12-implementation-backlog.md) to understand
+    why reviewer/author attribution must be consistent before later
+    review, dashboard, and awaiting-action surfaces consume it.
+
     Covers: @actor-identity-resolution ac-6, ac-7, ac-8;
     @actor-identity-model ac-1.
 
@@ -723,6 +788,12 @@ derive_from_specs: false
   spec_ref: "@actor-display"
   depends_on:
     - "@task-identity-endpoint-classifier"
+  resource_refs:
+    - "./resources/handoff/docs/11-reviews.md"
+    - "./resources/handoff/shots/r3-reviews-queue.png"
+    - "./resources/handoff/shots/r3-review-task.png"
+    - "./resources/handoff/shots/r3-review-spec.png"
+    - "./resources/handoff/reference-src/wf3-reviews.jsx"
   description: |
     Build the shared actor display primitive and the next-actor
     derivation rule for reviews, and adopt them on the surfaces that
@@ -761,6 +832,17 @@ derive_from_specs: false
     degrades to unknown-kind rendering when no identity payload is
     available (snapshot has no daemon identity surface).
 
+
+    Handoff resources: Use the reviews handoff
+    (./resources/handoff/docs/11-reviews.md), reviews queue screenshot
+    (./resources/handoff/shots/r3-reviews-queue.png), task/spec review
+    screenshots (./resources/handoff/shots/r3-review-task.png and
+    ./resources/handoff/shots/r3-review-spec.png), and reviews source
+    (./resources/handoff/reference-src/wf3-reviews.jsx) for actor,
+    reviewer, lifecycle, verdict, and awaiting-action display intent.
+    These resources define shared display behavior and information
+    hierarchy, not pixel-perfect styling.
+
     Covers: @actor-display ac-1, ac-2, ac-3, ac-4.
 
 - title: Add historical actor normalization to the upgrade path
@@ -770,6 +852,10 @@ derive_from_specs: false
   spec_ref: "@actor-history-normalization"
   depends_on:
     - "@task-identity-endpoint-classifier"
+  resource_refs:
+    - "./resources/handoff/docs/00-product-context.md"
+    - "./resources/handoff/docs/11-reviews.md"
+    - "./resources/handoff/docs/12-implementation-backlog.md"
   description: |
     Add an exhaustive actor-field inventory plus a one-time
     data-upgrade/migration step that rewrites historical actor fields
@@ -837,6 +923,15 @@ derive_from_specs: false
     plans/ui-redesign/analysis.md section 4.6 and with at least one
     fixture per inventoried actor-field path.
 
+
+    Handoff resources: Use the product context
+    (./resources/handoff/docs/00-product-context.md), reviews handoff
+    (./resources/handoff/docs/11-reviews.md), and implementation backlog
+    (./resources/handoff/docs/12-implementation-backlog.md) while building
+    the inventory and operator/agent-led upgrade guidance. They explain
+    the downstream review and awaiting-action features that depend on
+    complete historical attribution.
+
     Covers: @actor-history-normalization ac-1, ac-2, ac-3, ac-4,
     ac-5, ac-6; @actor-identity-model ac-2.
 
@@ -845,6 +940,14 @@ derive_from_specs: false
   priority: 2
   tags: [daemon, api]
   spec_ref: "@ui-breadcrumb"
+  resource_refs:
+    - "./resources/handoff/docs/01-app-shell-and-navigation.md"
+    - "./resources/handoff/docs/06-spec-workspace.md"
+    - "./resources/handoff/shots/r3-breadcrumb-variants-a.png"
+    - "./resources/handoff/shots/r3-breadcrumb-variants-b.png"
+    - "./resources/handoff/shots/r3-breadcrumb-variants-c.png"
+    - "./resources/handoff/reference-src/wf3-breadcrumb-variants.jsx"
+    - "./resources/handoff/reference-src/wf3-spec-unified.jsx"
   description: |
     Provide the server-resolved ancestor chain (refs, titles, item
     kinds, root through current entity) that the breadcrumb consumes.
@@ -887,6 +990,19 @@ derive_from_specs: false
     there is no additional @trait-api-endpoint application for the
     breadcrumb behavior.
 
+
+    Handoff resources: Use the app shell/navigation handoff
+    (./resources/handoff/docs/01-app-shell-and-navigation.md), spec
+    workspace handoff (./resources/handoff/docs/06-spec-workspace.md),
+    breadcrumb screenshots (./resources/handoff/shots/r3-breadcrumb-variants-a.png,
+    ./resources/handoff/shots/r3-breadcrumb-variants-b.png, and
+    ./resources/handoff/shots/r3-breadcrumb-variants-c.png), and the
+    breadcrumb/spec reference sources
+    (./resources/handoff/reference-src/wf3-breadcrumb-variants.jsx and
+    ./resources/handoff/reference-src/wf3-spec-unified.jsx) to confirm the
+    ancestor payload shape supports the chosen UI without client-side
+    list reconstruction.
+
     Covers: @ui-breadcrumb ac-10.
 
 - title: Build the adaptive breadcrumb component
@@ -896,6 +1012,18 @@ derive_from_specs: false
   spec_ref: "@ui-breadcrumb"
   depends_on:
     - "@task-breadcrumb-ancestry-api"
+  resource_refs:
+    - "./resources/handoff/docs/01-app-shell-and-navigation.md"
+    - "./resources/handoff/docs/06-spec-workspace.md"
+    - "./resources/handoff/shots/r3-breadcrumb-variants-a.png"
+    - "./resources/handoff/shots/r3-breadcrumb-variants-b.png"
+    - "./resources/handoff/shots/r3-breadcrumb-variants-c.png"
+    - "./resources/handoff/shots/r3-spec-unified-2-module.png"
+    - "./resources/handoff/shots/r3-spec-unified-3-feature.png"
+    - "./resources/handoff/shots/r3-spec-unified-4-requirement.png"
+    - "./resources/handoff/shots/r3-spec-unified-5-ac.png"
+    - "./resources/handoff/reference-src/wf3-breadcrumb-variants.jsx"
+    - "./resources/handoff/reference-src/wf3-spec-unified.jsx"
   description: |
     Build the breadcrumb component with adaptive truncation and the
     collapsed-segment popover, and adopt it on existing detail
@@ -935,6 +1063,16 @@ derive_from_specs: false
     overflow tier. Route URLs via the shared reference utility
     (normalizeRef/refHref).
 
+
+    Handoff resources: Use the app shell/navigation handoff
+    (./resources/handoff/docs/01-app-shell-and-navigation.md), spec
+    workspace handoff (./resources/handoff/docs/06-spec-workspace.md), all
+    three breadcrumb variant screenshots, the module/feature/requirement/AC
+    spec workspace screenshots, and the breadcrumb/spec reference sources
+    declared in resource_refs. Screenshots are for truncation behavior,
+    popover hierarchy, segment-kind cues, and page integration; do not
+    copy pixel styling directly.
+
     Covers: @ui-breadcrumb ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7,
     ac-8, ac-9.
 
@@ -943,6 +1081,19 @@ derive_from_specs: false
   priority: 1
   tags: [web-ui, design-system]
   spec_ref: "@ui-view-header"
+  resource_refs:
+    - "./resources/handoff/docs/01-app-shell-and-navigation.md"
+    - "./resources/handoff/docs/06-spec-workspace.md"
+    - "./resources/handoff/docs/07-coverage-states.md"
+    - "./resources/handoff/docs/08-spec-states-integration.md"
+    - "./resources/handoff/docs/09-validate.md"
+    - "./resources/handoff/shots/r3-coverage-1-legend.png"
+    - "./resources/handoff/shots/r3-coverage-4-five-state-alt.png"
+    - "./resources/handoff/shots/r3-spec-states-1-requirement.png"
+    - "./resources/handoff/shots/r3-spec-states-2-tree-rollups.png"
+    - "./resources/handoff/shots/r3-spec-states-3-stale-ac.png"
+    - "./resources/handoff/reference-src/wf3-coverage-states.jsx"
+    - "./resources/handoff/reference-src/wf3-spec-unified.jsx"
   description: |
     Build the shared view-header component and the single
     status-token source it draws from, and adopt them on existing
@@ -988,6 +1139,16 @@ derive_from_specs: false
     token uniqueness with a table-driven test over the full state
     vocabulary (one token per state, no state unmapped).
 
+
+    Handoff resources: Use the app shell/navigation, spec workspace,
+    coverage-state, spec-state-integration, and validate handoff docs
+    declared in resource_refs, plus the coverage and spec-state
+    screenshots, to derive the shared token vocabulary and header
+    information zones. The coverage source
+    (./resources/handoff/reference-src/wf3-coverage-states.jsx) contains
+    exact token/glyph examples; target code still belongs in the Svelte
+    design-system utilities.
+
     Covers: @ui-view-header ac-1, ac-2, ac-3, ac-4, ac-5, ac-6;
     @coverage-state-presentation ac-2.
 
@@ -996,6 +1157,9 @@ derive_from_specs: false
   priority: 2
   tags: [web-ui, keyboard]
   spec_ref: "@ui-shortcut-registry"
+  resource_refs:
+    - "./resources/handoff/docs/01-app-shell-and-navigation.md"
+    - "./resources/handoff/shots/r2-app-shell-palette.png"
   description: |
     Build the central shortcut registry and migrate the existing
     uncoordinated key handlers onto it.
@@ -1040,6 +1204,13 @@ derive_from_specs: false
     lifecycle. Reserved lists and chord normalization live as plain
     data/functions for direct unit testing.
 
+
+    Handoff resources: Use the app shell/navigation handoff
+    (./resources/handoff/docs/01-app-shell-and-navigation.md) and command
+    palette screenshot (./resources/handoff/shots/r2-app-shell-palette.png)
+    for intended Cmd/Ctrl+K behavior, platform-label expectations,
+    palette action context, and future shortcut-help consumers.
+
     Covers: @ui-shortcut-registry ac-1, ac-2, ac-3, ac-4, ac-5,
     ac-6; @web-shell-platform-target ac-3.
 
@@ -1048,6 +1219,10 @@ derive_from_specs: false
   priority: 1
   tags: [web-ui, persistence]
   spec_ref: "@ui-preference-store"
+  resource_refs:
+    - "./resources/handoff/docs/01-app-shell-and-navigation.md"
+    - "./resources/handoff/shots/r3-sidebar-focus-a.png"
+    - "./resources/handoff/shots/r3-sidebar-focus-b.png"
   description: |
     Build the namespaced, versioned, typed preference utility with a
     storage-agnostic interface and a browser-local-storage backend,
@@ -1088,6 +1263,15 @@ derive_from_specs: false
     disabled globally so window access is safe at module init, but
     guard for test environments. Keep serialization JSON-based with
     schema validation at the edge.
+
+
+    Handoff resources: Use the app shell/navigation handoff
+    (./resources/handoff/docs/01-app-shell-and-navigation.md) and the two
+    R3 sidebar focus screenshots
+    (./resources/handoff/shots/r3-sidebar-focus-a.png and
+    ./resources/handoff/shots/r3-sidebar-focus-b.png) for the persisted
+    focus-collapse and per-project section-collapse preferences that
+    this utility must be able to support later.
 
     Covers: @ui-preference-store ac-1, ac-2, ac-3, ac-4, ac-5, ac-6;
     @client-preference-persistence ac-1.
