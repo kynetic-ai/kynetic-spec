@@ -201,6 +201,12 @@ events:
       kind: blocker
       thread_ulid: 01KV5W9QX8K0GXHJ8FVGHDSQAH
     timestamp: 2026-06-15T14:52:17.959Z
+  - _ulid: 01KV5W9V8NGY9RSPVGSK3A3KGG
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV5W7NMRS1Q6BHZQ56J3AWF1
+    timestamp: 2026-06-15T14:52:21.141Z
 examined_commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
 external_links: []
 lifecycle_state: open
@@ -253,6 +259,16 @@ threads:
           @actor-identity-resolution ac-7/ac-8 and the task inventory requirement for
           session/dispatch-style attribution fields."
         created_at: 2026-06-15T14:51:09.848Z
+      - _ulid: 01KV5W9V14WPCXENMZACQW4ADF
+        author: Jacob Chapel
+        body: "Correction for the mangled shell-expanded body above: MUST-FIX: workflow start is still a
+          first-party actor-bearing write that bypasses the shared actor utility. It writes
+          initiated_by directly from getAuthor(ctx.config?.identity?.author), so a configured
+          variant such as codex@openai.com can persist verbatim and an out-of-pool git/OS tail is
+          not rejected. That violates @actor-identity-model ac-1 / @actor-identity-resolution
+          ac-7/ac-8 and the task inventory requirement for session/dispatch-style attribution
+          fields."
+        created_at: 2026-06-15T14:52:20.900Z
     kind: blocker
   - _ulid: 01KV5W8CD38F7B4K95HE0TQ6FD
     anchor:
@@ -312,5 +328,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-15T14:35:05.417Z
-updated_at: 2026-06-15T14:52:17.704Z
+updated_at: 2026-06-15T14:52:20.900Z
 notes: []
