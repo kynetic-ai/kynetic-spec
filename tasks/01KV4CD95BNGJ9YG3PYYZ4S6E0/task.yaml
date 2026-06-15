@@ -74,7 +74,7 @@ description: |
 spec_ref: "@actor-identity-resolution"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -88,11 +88,11 @@ review_ref: "@01KV4ETGG3R2CKM52TN07G6HGJ"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-identity-endpoint-classifier/01kv4cd9
-  captured_at: 2026-06-15T01:33:14.854Z
-  commit: ad71db6b5cc91a2b4ac15bb1d595b3c4d0944378
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-06-15T02:54:28.310Z
+  commit: 2b09076ac69cf4bd00cc17e62fafd4263aee5d36
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-identity-endpoint-classifier/01kv4cd9
 session_id: 01KV4HK7AWR1TYVQ6YJ3EF6YQY
 history:
   - author: Jacob Chapel
@@ -165,6 +165,33 @@ history:
         previous: 2026-06-15T01:06:14.645Z
     command: task-start
     timestamp: 2026-06-15T02:32:57.175Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-identity-endpoint-classifier/01kv4cd9
+          captured_at: 2026-06-15T02:54:28.310Z
+          commit: 2b09076ac69cf4bd00cc17e62fafd4263aee5d36
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-identity-endpoint-classifier/01kv4cd9
+        previous:
+          review_url: null
+          branch: dispatch/task/task-identity-endpoint-classifier/01kv4cd9
+          captured_at: 2026-06-15T01:33:14.854Z
+          commit: ad71db6b5cc91a2b4ac15bb1d595b3c4d0944378
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-06-15T02:54:28.314Z
+        previous: 2026-06-15T01:33:14.857Z
+    command: task-submit
+    timestamp: 2026-06-15T02:54:28.314Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -200,6 +227,6 @@ resource_refs:
     sha256: 2928bd83bb9e9f84ddab3fb99d89e94213dfe194d27a7e6183ecf6113314e3f2
 created_at: 2026-06-15T00:55:22.027Z
 started_at: 2026-06-15T02:32:57.175Z
-submitted_at: 2026-06-15T01:33:14.857Z
+submitted_at: 2026-06-15T02:54:28.314Z
 todos: []
 automation: eligible
