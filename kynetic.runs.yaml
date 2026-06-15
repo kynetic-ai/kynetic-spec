@@ -66328,7 +66328,7 @@ runs:
     started_at: 2026-06-15T03:45:00.232Z
   - _ulid: 01KV4P7038JBG4V3WMBA2RJRFX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -66341,7 +66341,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T03:47:19.917Z
-        completed_at: 2026-06-15T03:47:19.917Z
+        completed_at: 2026-06-15T03:47:27.271Z
+        notes: "Friction: web-ui svelte-check has a 61-error pre-existing baseline in unrelated files, so it
+          cannot serve as a regression gate for changed files (had to grep output to confirm none
+          were mine). Already fully tracked in inbox 01KT0AEV and 01KT0GT9S — no novel friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T03:47:27.271Z
+        completed_at: 2026-06-15T03:47:27.271Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-15T03:46:41.896Z
