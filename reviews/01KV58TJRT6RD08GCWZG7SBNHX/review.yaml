@@ -212,6 +212,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-15T09:26:19.157Z
+  - _ulid: 01KV5FWW9DM47T4NQEG4CXCDTN
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV594V3DFCPNNFZCYNF9Z0NC
+    timestamp: 2026-06-15T11:15:33.293Z
 examined_commit: 7aa8f5e1b19cbc7bdf1210123f068c16c50a5975
 external_links: []
 lifecycle_state: closed
@@ -241,6 +247,15 @@ threads:
           scope. Thread header and entry rows should receive/use the shared actor classifier and
           render these authors through the actor display primitive."
         created_at: 2026-06-15T09:17:34.190Z
+      - _ulid: 01KV5FWW2GFT4A9BTW82NFECQJ
+        author: "@claude"
+        body: "Fixed: threaded the shared actor classifier from the review detail page through
+          CodeDiffViewer → DiffFileView → DiffHunkView into DiffInlineThread. Thread header author
+          and each entry author now render via the ActorDisplay primitive, so code-diff thread
+          authors match the canonical actor rendering used elsewhere on the same review (ac-1).
+          Without a classifier (static mode) they degrade to the unknown treatment (ac-2).
+          Behavioral SSR test added in tests/web-ui-inline-thread-actors.test.ts."
+        created_at: 2026-06-15T11:15:33.072Z
     kind: blocker
   - _ulid: 01KV594YNQ768E1A0JTFJ9F3WQ
     anchor:
@@ -272,5 +287,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T09:26:19.157Z
 created_at: 2026-06-15T09:11:57.978Z
-updated_at: 2026-06-15T09:26:19.157Z
+updated_at: 2026-06-15T11:15:33.072Z
 notes: []
