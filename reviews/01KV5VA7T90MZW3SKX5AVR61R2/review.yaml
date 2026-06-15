@@ -181,6 +181,13 @@ events:
       kind: blocker
       thread_ulid: 01KV5W8CD38F7B4K95HE0TQ6FD
     timestamp: 2026-06-15T14:51:33.386Z
+  - _ulid: 01KV5W8FQBGF7RZ046MQZ2HSJ8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV5W8FFEAGHRT7DSWGJ3ZQFC
+    timestamp: 2026-06-15T14:51:36.556Z
 examined_commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
 external_links: []
 lifecycle_state: open
@@ -245,7 +252,25 @@ threads:
           canonical actor resolved through the same utility contract."
         created_at: 2026-06-15T14:51:33.155Z
     kind: blocker
+  - _ulid: 01KV5W8FFEAGHRT7DSWGJ3ZQFC
+    anchor:
+      type: code
+      commit: 24e61bb2b6fccad18bc6acbf30f0c0e07508a5bf
+      line_end: 52
+      line_start: 52
+      path: tests/actor-write.test.ts
+      side: head
+    entries:
+      - _ulid: 01KV5W8FFEC9Z2A9EHSH43DD2B
+        author: Jacob Chapel
+        body: "SHOULD-FIX: this changed AC annotation text introduces a new completeness warning. The
+          annotation parser treats the prose token @-prefixed as a reference, so kspec validate
+          --completeness --warnings-ok now reports unresolved target @-prefixed in
+          tests/actor-write.test.ts:52. Reword the prose after the AC tag so it does not contain an
+          @ token, or split the explanation out of the annotation line."
+        created_at: 2026-06-15T14:51:36.302Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-15T14:35:05.417Z
-updated_at: 2026-06-15T14:51:33.155Z
+updated_at: 2026-06-15T14:51:36.302Z
 notes: []
