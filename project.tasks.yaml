@@ -32103,6 +32103,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-15T00:55:22.027Z
+  automation: eligible
 - _ulid: 01KV4CD9G0DMTTRQJMM3S84BJX
   slugs:
     - task-review-author-resolution
