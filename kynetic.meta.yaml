@@ -22263,6 +22263,35 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T15:18:14.956Z
+  - _ulid: 01KV5ZWX8HP0SE9D13CA8T94G6
+    type: friction
+    content: "Review thread/reply bodies containing shell metacharacters (the literal codex@openai.com
+      at-sign, dollar signs, backticks) get mangled by shell expansion when posted via kspec review
+      reply/thread --body. Evidence: all 6 threads on review 01KV5VA7 (task
+      task-review-author-resolution) had a mangled first entry where identifiers/code vanished, each
+      requiring a manually re-typed Correction for the mangled shell-expanded body above follow-up.
+      The development convention already says to use file-based or quoted-heredoc payloads for
+      special-character/multiline content, but the reviewer agent (codex-acp) keeps tripping it on
+      review prose. Candidate: add a --body-file/stdin payload to review reply/thread and remind
+      reviewer agents to use it for any body containing code or at/dollar tokens."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T15:55:11.505Z
+  - _ulid: 01KV5ZWXHWEJFQDE8D29R4EE95
+    type: success
+    content: For a centralize-resolution-at-the-boundary refactor, making the centralized value a
+      REQUIRED parameter on the leaf constructors (not an optional with a fallback) converts the
+      architectural rule into a compile-time invariant. After removing the in-constructor getAuthor
+      fallback and typing author as required, tsc enumerated every remaining caller that still
+      bypassed the shared actor-write utility (addNote, the verdict-transition system note, several
+      tests) - turning the reviewer-flagged no-independent-fallback rule into a
+      mechanically-checkable contract and surfacing bypasses the prior cycle missed. Reusable for
+      the sibling actor-identity tasks (e.g. normalization-upgrade).
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-15T15:55:11.804Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
