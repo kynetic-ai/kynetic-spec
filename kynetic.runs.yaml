@@ -66922,7 +66922,7 @@ runs:
     completed_at: 2026-06-15T11:18:39.249Z
   - _ulid: 01KV5H46RH9S6QHAQF4FVN0W3R
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66939,7 +66939,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T11:37:30.125Z
-        completed_at: 2026-06-15T11:37:30.125Z
+        completed_at: 2026-06-15T11:37:44.340Z
+        notes: "Friction points: (1) Detached review context had a stale recorded integration commit (prompt
+          said feat/ui-redesign @ 9d497f7, while local feat/ui-redesign was already 3248d1a after
+          another task merge). A naive prompt-base diff included unrelated shortcut-registry files,
+          so I had to manually compute the current merge base to isolate this task's two
+          actor-display commits. (2) Recording required review checks was repetitive: each check was
+          a separate kspec review check command, even though the gate set is standardized. This is
+          lower confidence as a problem because batch support may already cover it."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T11:37:44.340Z
+        completed_at: 2026-06-15T11:37:44.340Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T11:37:01.970Z
