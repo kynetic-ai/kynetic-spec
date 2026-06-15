@@ -6163,7 +6163,8 @@ features:
     implements: []
     relates_to: []
     tests: []
-    traits: []
+    traits:
+      - "@trait-api-endpoint"
     acceptance_criteria:
       - given: |
           a running daemon with a configured project
