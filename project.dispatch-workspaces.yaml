@@ -26230,3 +26230,80 @@ workspaces:
         head: ad71db6b5cc91a2b4ac15bb1d595b3c4d0944378
         last_seen_at: 2026-06-15T01:36:18.085Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-identity-endpoint-classifier-01kv4cd9
+  - active_role: null
+    base_branch_point: cecb52ae149bebc2d7646644fc762ef12906443c
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-view-header-status-tokens/01kv4cdb
+    canonical_branch_head: cecb52ae149bebc2d7646644fc762ef12906443c
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-15T01:37:02.765Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-15T01:37:02.765Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: feat/ui-redesign
+      target_commit: cecb52ae149bebc2d7646644fc762ef12906443c
+      updated_at: 2026-06-15T01:37:02.765Z
+    lifecycle_state: ready
+    resolved_base_branch: feat/ui-redesign
+    task_id: 01KV4CDB72KM6NRMXXS1EB6SDB
+    task_ref: "@01KV4CDB72KM6NRMXXS1EB6SDB"
+    task_slug: task-view-header-status-tokens
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-15T01:37:02.765Z
+      created_at: 2026-06-15T01:37:02.765Z
+      updated_at: 2026-06-15T01:37:02.765Z
+    workspace_id: dispatch-workspace-01KV4CDB72KM6NRMXXS1EB6SDB
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-view-header-status-tokens/01kv4cdb
+        head: cecb52ae149bebc2d7646644fc762ef12906443c
+        last_seen_at: 2026-06-15T01:37:02.765Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-view-header-status-tokens-01kv4cdb
