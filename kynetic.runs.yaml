@@ -66646,7 +66646,7 @@ runs:
     completed_at: 2026-06-15T08:00:01.600Z
   - _ulid: 01KV56K3V3EVWZ0Y8C7460A0VV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -66662,7 +66662,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T08:34:22.914Z
-        completed_at: 2026-06-15T08:34:22.914Z
+        completed_at: 2026-06-15T08:34:33.691Z
+        notes: "Friction: (1) Systemic — the task declared two handoff resources marked [OK]
+          (handoff-app-shell-navigation, shot-command-palette) referencing
+          ./resources/handoff/docs/01-app-shell-and-navigation.md and a screenshot, but the
+          resources/ directory did not exist in the mutable worker worktree. Had to proceed without
+          the intended design context. (2) Minor/one-off — background npm test output file stayed 0
+          bytes (runner condenses/buffers), and build/test advisory lock added a ~226s wait
+          (documented as expected)."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T08:34:33.691Z
+        completed_at: 2026-06-15T08:34:33.691Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T08:32:56.164Z
