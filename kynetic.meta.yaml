@@ -22220,6 +22220,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T10:56:21.335Z
+  - _ulid: 01KV5WDFC59RQ30CXYAK5DNYYS
+    type: friction
+    content: Daemon API tests that run without the production entity cache can unintentionally codify
+      degraded detail-enrichment behavior as acceptable. In review @01KV5VBT, a session breadcrumb
+      test accepted a single-session-segment response for a task-scoped session because
+      createTestApp had no entity cache, even though the task required the owning task/spec chain
+      plus the session. Consider a test helper or review/testing guidance that makes cache-dependent
+      detail routes provide a ready cache fixture or explicitly assert warming/fallback semantics.
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KV5WAA"
+    created_at: 2026-06-15T14:54:20.037Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
