@@ -127,3 +127,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-15T14:51:44.788Z
+  - _ulid: 01KV5XMYE04ERZ2GEH8X577R6Y
+    content: "Fix cycle 1: addressed the review blocker on task-scoped session breadcrumb chains. The
+      sessions detail route previously degraded to a single session segment when the tasks/items
+      cache domains were cold (the else branch dropped task_ref), violating @ui-breadcrumb ac-10.
+      Now the route resolves the owning task + item index from cache when warm and from a bounded
+      disk fallback (item index + the one owning task, syncMode skip = no git ops) when cold —
+      matching the item/task/plan/review detail routes — so a task-scoped session always yields the
+      full module->...->task->session chain. Sessions with no owning task remain single-segment and
+      never read disk. Updated the daemon API test to assert the full chain and added route-level
+      coverage for the no-owning-task case. Re-verified all sibling routes still return correct
+      chains. Gates: format, lint (0 errors), focused-lint (0 warnings on changed files), typecheck,
+      full suite (2841 suites / 10803 passed / 0 fail), kspec validate refs+alignment+completeness
+      all green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T15:15:53.408Z
