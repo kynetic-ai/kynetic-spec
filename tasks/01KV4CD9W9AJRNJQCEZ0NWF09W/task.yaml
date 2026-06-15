@@ -66,6 +66,7 @@ tags:
   - web-ui
   - identity
 vcs_refs: []
+review_ref: "@01KV58TJRT6RD08GCWZG7SBNHX"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-actor-display-next-actor/01kv4cd9
@@ -116,6 +117,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-15T09:06:31.327Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KV58TJRT6RD08GCWZG7SBNHX"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-15T09:12:00.308Z
 resource_refs:
   - git_commit: null
     git_path: null
