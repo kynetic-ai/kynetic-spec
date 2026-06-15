@@ -35,6 +35,16 @@ checks:
     runner: npx oxlint <changed-ts-or-test-files>
     created_at: 2026-06-15T11:34:32.354Z
     completed_at: 2026-06-15T11:34:32.354Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: tsc --noEmit exited 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-15T11:34:41.892Z
+    completed_at: 2026-06-15T11:34:41.892Z
 events:
   - _ulid: 01KV5G5XGYQS8R375TYZ4Z9ACY
     actor: Jacob Chapel
@@ -70,6 +80,13 @@ events:
       status: pass
       name: focused-lint
     timestamp: 2026-06-15T11:34:32.593Z
+  - _ulid: 01KV5GZY6NNWQ0CECDRB36B9GA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-15T11:34:42.133Z
 examined_commit: f7eb4ef8c37fed3b75a78c0355afe055be82d1d9
 external_links: []
 lifecycle_state: open
@@ -82,5 +99,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T11:20:29.470Z
-updated_at: 2026-06-15T11:34:32.354Z
+updated_at: 2026-06-15T11:34:41.892Z
 notes: []
