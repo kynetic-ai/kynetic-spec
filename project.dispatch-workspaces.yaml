@@ -29028,11 +29028,11 @@ workspaces:
     canonical_branch: dispatch/task/task-actor-display-next-actor/01kv4cd9
     canonical_branch_head: f7eb4ef8c37fed3b75a78c0355afe055be82d1d9
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-15T11:36:51.023Z
+      updated_at: 2026-06-15T11:40:58.923Z
     health:
       status: healthy
       issues: []
@@ -29046,17 +29046,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: 9d497f7309c419a69458394e19c2e71263bdb544
       updated_at: 2026-06-15T11:36:51.023Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV4CD9W9AJRNJQCEZ0NWF09W
     task_ref: "@01KV4CD9W9AJRNJQCEZ0NWF09W"
     task_slug: task-actor-display-next-actor
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-15T11:40:58.923Z
       last_active_at: 2026-06-15T11:19:44.146Z
       last_reconciled_at: 2026-06-15T11:40:07.212Z
       created_at: 2026-06-15T08:37:02.989Z
-      updated_at: 2026-06-15T11:40:07.212Z
+      updated_at: 2026-06-15T11:40:58.923Z
     workspace_id: dispatch-workspace-01KV4CD9W9AJRNJQCEZ0NWF09W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
