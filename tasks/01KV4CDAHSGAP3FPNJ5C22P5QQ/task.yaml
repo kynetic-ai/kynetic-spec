@@ -62,7 +62,7 @@ description: |
 spec_ref: "@ui-breadcrumb"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -75,8 +75,8 @@ review_ref: "@01KV5VBT230TGV47T20YB2STYA"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
-  captured_at: 2026-06-15T14:32:32.291Z
-  commit: 92b8a099090c49d9d4682952d7a1279577ef743b
+  captured_at: 2026-06-15T15:15:59.697Z
+  commit: 4bf2359c66c92cf88d37e42deb18af434403faf9
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
@@ -322,6 +322,33 @@ history:
         previous: 2026-06-15T06:36:12.944Z
     command: task-start
     timestamp: 2026-06-15T15:00:46.805Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
+          captured_at: 2026-06-15T15:15:59.697Z
+          commit: 4bf2359c66c92cf88d37e42deb18af434403faf9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
+        previous:
+          review_url: null
+          branch: dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
+          captured_at: 2026-06-15T14:32:32.291Z
+          commit: 92b8a099090c49d9d4682952d7a1279577ef743b
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-breadcrumb-ancestry-api/01kv4cda
+      submitted_at:
+        new: 2026-06-15T15:15:59.704Z
+        previous: 2026-06-15T07:57:30.276Z
+    command: task-submit
+    timestamp: 2026-06-15T15:15:59.704Z
 prior_status: null
 resource_refs:
   - git_commit: null
@@ -382,6 +409,6 @@ resource_refs:
     sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
 created_at: 2026-06-15T00:55:23.449Z
 started_at: 2026-06-15T15:00:46.805Z
-submitted_at: 2026-06-15T07:57:30.276Z
+submitted_at: 2026-06-15T15:15:59.704Z
 todos: []
 automation: eligible
