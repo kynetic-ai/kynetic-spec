@@ -2,7 +2,17 @@ _ulid: 01KV4KEVA73FW96XJTYE3AEB4P
 slugs: []
 title: Review identity endpoint and actor classifier (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1043 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-15T03:12:52.567Z
+    completed_at: 2026-06-15T03:12:52.567Z
 events:
   - _ulid: 01KV4KEVA7TMKFEZPJE7Y1RY1R
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T02:58:54.274Z
+  - _ulid: 01KV4M92JJ52KBX2SQ42KF1VFK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-15T03:12:52.818Z
 examined_commit: 2b09076ac69cf4bd00cc17e62fafd4263aee5d36
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-15T02:58:33.415Z
-updated_at: 2026-06-15T02:58:54.032Z
+updated_at: 2026-06-15T03:12:52.567Z
 notes: []
