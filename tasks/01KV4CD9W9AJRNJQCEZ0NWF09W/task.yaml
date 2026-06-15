@@ -56,7 +56,7 @@ description: |
 spec_ref: "@actor-display"
 plan_ref: "@plan-web-ui-foundations"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-identity-endpoint-classifier"
@@ -75,7 +75,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: 01KV56VEWK48YH44ZJ28NV1TA0
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -124,6 +124,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-15T09:12:00.308Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KV56VEWK48YH44ZJ28NV1TA0
+    command: review-verdict-needs-work
+    timestamp: 2026-06-15T09:26:21.061Z
 resource_refs:
   - git_commit: null
     git_path: null
