@@ -5918,6 +5918,9 @@ features:
       redesigned: the review detail and session detail views are the
       first adopters, and every other entity detail view adopts it
       through the track plan that redesigns that surface.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on:
       - "@web-shell-platform-target"
     implements: []
