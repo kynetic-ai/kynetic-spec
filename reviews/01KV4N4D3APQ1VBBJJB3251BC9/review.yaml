@@ -290,6 +290,12 @@ events:
     payload:
       thread_ulid: 01KV4NB5V9TSTE44R3ATQKY0G1
     timestamp: 2026-06-15T04:13:32.905Z
+  - _ulid: 01KV4QRABS7G2CS125CQ9K3MG6
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV4NB9J4C91RSGYWSSY8Y4RG
+    timestamp: 2026-06-15T04:13:38.041Z
 examined_commit: 6ae08a8b4f0b8b0c72d04abf94f0bcbe561a37dd
 external_links: []
 lifecycle_state: closed
@@ -406,6 +412,15 @@ threads:
           token. The same task state is not represented by the same color + glyph across task views,
           violating @ui-view-header ac-2."
         created_at: 2026-06-15T03:31:34.084Z
+      - _ulid: 01KV4QRA4NPVG39H7FJVDYM2VJ
+        author: "@claude"
+        body: "Fixed: getStatusClasses is removed from board-utils. TaskCard and TaskDetailContent now
+          render <StatusBadge domain=\"task\" state={task.status}>, so the task board/detail consume
+          the shared task token (color + glyph) and pending_review now shows the canonical 'Pending
+          Review' label instead of 'Review'. Obsolete getStatusClasses unit test removed (coverage
+          now in web-ui-status-tokens.test.ts over the full TaskStatusSchema vocabulary); task-board
+          e2e assertions updated to glyph-safe substring checks."
+        created_at: 2026-06-15T04:13:37.812Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -416,5 +431,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-15T03:43:33.806Z
 created_at: 2026-06-15T03:27:48.330Z
-updated_at: 2026-06-15T04:13:32.658Z
+updated_at: 2026-06-15T04:13:37.812Z
 notes: []
