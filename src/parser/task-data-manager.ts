@@ -365,6 +365,21 @@ export interface TaskStorageBackend {
    * AC: @task-core-data-file ac-2 — history provides complete audit trail
    */
   getTaskHistory?(ctx: KspecContext, ulid: string): Promise<HistoryEntry[]>;
+
+  /**
+   * Persist actor-field rewrites the historical actor-normalization migration
+   * applied to a task, including the per-task `history` array (history[].author)
+   * that the normal mutate path neither exposes nor rewrites. Optional — only
+   * the split backend, which owns the on-disk history shape, provides this.
+   *
+   * AC: @actor-history-normalization ac-5 — every inventoried task actor field
+   *     ends canonical-or-default, including history[].author
+   */
+  saveActorNormalizedTask?(
+    ctx: KspecContext,
+    task: LoadedTask,
+    history: HistoryEntry[],
+  ): Promise<void>;
 }
 
 interface TaskReadCache {
@@ -668,6 +683,32 @@ export class TaskDataManager {
     // Fallback: load tasks without history
     const tasks = await this.backend.loadAllTasks(ctx);
     return tasks.map((task) => ({ task, history: [] }));
+  }
+
+  /**
+   * Persist actor-field rewrites the historical actor-normalization migration
+   * applied to a task, including the per-task history array (history[].author)
+   * that the normal mutate path does not expose for rewriting.
+   *
+   * Delegates to the backend's history-aware save path when available. Backends
+   * without per-task history (no split storage) fall back to a core-field-only
+   * rewrite through mutateTask — there is no history to normalize there.
+   *
+   * AC: @actor-history-normalization ac-5 — every inventoried task actor field
+   *     ends canonical-or-default, including history[].author
+   */
+  async saveActorNormalizedTask(
+    ctx: KspecContext,
+    task: LoadedTask,
+    history: HistoryEntry[],
+  ): Promise<void> {
+    if (this.backend.saveActorNormalizedTask) {
+      await this.backend.saveActorNormalizedTask(ctx, task, history);
+      return;
+    }
+    // No history-aware backend: rewrite the schema-backed core actor fields
+    // only (assignee, todos[].added_by, notes[].author) via the standard path.
+    await this.mutateTask(ctx, task._ulid, () => task);
   }
 
   /**

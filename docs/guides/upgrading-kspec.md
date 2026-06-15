@@ -100,6 +100,54 @@ kspec shadow status
 
 The pre-upgrade commit is the rollback ref by design — kspec does not create parallel backup files, because the shadow branch's git history is the backup.
 
+#### Historical Actor Normalization
+
+The upgrade also normalizes historical **actor fields** — the author, reviewer, resolver, and addition-source values recorded across your project's records (review authors and verdict reviewers, thread/reply authors, thread `resolved_by`, task note authors, task todo `added_by`, task `assignee`, task field-change history authors, inbox `added_by`, triage `decided_by`/`override_by`, meta observation `author`/`resolved_by`, workflow-run `initiated_by`, spec/module `created_by`, and spec/plan note authors).
+
+Over a project's life the same person or agent often ends up recorded many different ways (`codex`, `codex@openai.com`, `@codex`, `codex-reviewer`, …). Identity-derived views — "mine", "awaiting you", ownership filtering — only work if those variants resolve to one canonical identity. This step rewrites recognizable variants once, using the same identity vocabulary as the `GET /api/identity` surface: your configured human author (and any aliases) plus the canonical agent roster.
+
+The migration is driven by an **exhaustive actor-field inventory** and fails closed: if a future schema adds an actor-bearing field that is not classified in the inventory, the step refuses to run rather than silently skipping it.
+
+**1. Preview with a dry run.** Always preview first:
+
+```bash
+kspec upgrade --dry-run
+```
+
+The `Historical actor normalization` step reports every rewrite it _would_ perform as `original → canonical/default`, with the record reference, record kind, field path, and resolution source (`variant_map`, `operator_mapping`, or `default`). With `--json`, the full rewrite list is on `steps[].details.rewrites` and the originals that no rule resolved are on `steps[].details.unresolved_originals`. The preview runs even on a project whose storage layout the same upgrade still has to migrate, so you can review the rewrites before committing to any writes.
+
+If a record kind's storage cannot be read until that migration runs (for example, legacy task storage that the current backend no longer reads), the preview **defers** that kind rather than skipping the whole step: deferred kinds are listed on `steps[].details.deferred_kinds` and called out in the step message. The real upgrade promotes their storage first and then normalizes them, so re-running `--dry-run` after a real upgrade — or inspecting the post-run report — shows the complete set.
+
+**2. Review the unresolved originals.** Any value the built-in variant map cannot recognize is reported under `unresolved_originals` and, in a real run, is rewritten to the **declared default actor** for its record kind (`@unknown` unless your project declares otherwise). Inspect that list: anything in it that is actually a known person or agent should be mapped explicitly so it resolves to a canonical identity instead of the default.
+
+**3. Prepare an operator mapping file (optional).** For ambiguous historical values the variant map cannot resolve, provide a mapping file (YAML or JSON). It is applied _after_ the built-in variant map and _before_ the default fallback:
+
+```yaml
+# actor-map.yaml
+mappings:
+  Hermes: codex # historical free-form value → canonical identity
+  "old-handle": Jacob Chapel
+# Optional: override the default actor for a specific record kind.
+defaults:
+  review: "@unknown"
+```
+
+Map each value to a **canonical** identity (a configured human author id or a canonical agent id from your roster). Recognizable aliases are accepted and normalized to their canonical id (e.g. `@codex` → `codex`). A target that is neither a recognizable canonical identity nor a declared default actor (e.g. `@unknown`) is **rejected before any record is modified** — the upgrade fails closed with the offending entries listed, so a typo cannot persist a non-canonical actor string or break idempotency. To deliberately route a value to the default, either omit it (it falls to the declared default) or map it explicitly to the default sentinel.
+
+**4. Let an agent assist — without inventing identities.** When triaging a long `unresolved_originals` list, an agent can help by proposing mappings, but it must only map a value to an identity that **already exists** in your configured human author or agent roster (run `kspec agent list` and check your configured human author). If a value cannot be matched to an existing identity with confidence, leave it unmapped so it falls to the declared default — do **not** invent a new identity to "resolve" it. The default actor exists precisely so genuinely unknown history is preserved distinctly rather than mis-attributed.
+
+**5. Run the real migration.** Once the dry-run preview looks right:
+
+```bash
+kspec upgrade --actor-map actor-map.yaml
+```
+
+(Omit `--actor-map` if you have no operator mappings.) Every rewrite goes through the standard mutation machinery, so the change set is recorded as a shadow-branch commit.
+
+**6. Inspect the report.** A real run that changes anything writes a durable report artifact under `.kspec/upgrade-reports/actor-normalization-<timestamp>.json` (the path is printed in the step output and on `steps[].details.report_path`). The report lists every rewrite with its resolution source and every unresolved original, for audit.
+
+**7. Re-run safely.** The step is **idempotent**: canonical identities and the declared default are fixed points, so running the upgrade again changes nothing and writes no new report. If validation fails after a run, you can safely re-run `kspec upgrade` (optionally with an updated `--actor-map`) — already-canonical values are left untouched and only newly resolvable values change. To undo entirely, use the pre-upgrade shadow rollback ref described above.
+
 ### 5. Check project health
 
 Run the health check to verify nothing broke:

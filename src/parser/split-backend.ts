@@ -840,6 +840,69 @@ class SplitBackend implements TaskStorageBackend {
   }
 
   /**
+   * Persist actor-field rewrites the historical actor-normalization migration
+   * applied to a task, INCLUDING the per-task `history` array.
+   *
+   * The normal {@link mutateTask} path cannot serve this: it re-reads the
+   * existing history from disk and only ever appends a new entry, so it can
+   * neither expose nor rewrite the `author` of existing history entries. The
+   * migration needs to rewrite `history[].author` in place, so it hands the
+   * rewritten core task (assignee, todos, notes) plus the rewritten history
+   * array straight back here.
+   *
+   * Round-trips task.yaml (core + history) and notes.yaml preserving on-disk
+   * shape via the same raw-merge the mutate path uses, and refreshes the index
+   * entry so indexed actor fields (assignee) do not drift from the per-task
+   * file. No synthetic history entry is appended — the only change is the
+   * actor rewrite the caller already made.
+   *
+   * AC: @actor-history-normalization ac-5 — every inventoried task actor field
+   *     ends canonical-or-default, including history[].author
+   */
+  async saveActorNormalizedTask(
+    ctx: KspecContext,
+    task: LoadedTask,
+    history: HistoryEntry[],
+  ): Promise<void> {
+    await this.ensureMigrated(ctx);
+
+    // Reload the raw core so unknown fields round-trip; discard its history —
+    // the caller supplies the rewritten history array.
+    const { rawCore } = await this.loadTaskFromDirWithHistory(ctx, task._ulid);
+
+    const clean = stripRuntimeMetadata(task) as Record<string, unknown>;
+    // `history` is persisted separately (and re-attached by writeTaskFile); make
+    // sure it never leaks into the core merge, even if the caller left it on the
+    // task object it walked.
+    delete clean.history;
+    const { notes, ...coreDataAfter } = clean as { notes?: unknown[] } & Record<string, unknown>;
+
+    const taskFilePath = getTaskFilePath(ctx, task._ulid);
+    const notesFilePath = getNotesFilePath(ctx, task._ulid);
+
+    await runWithBuffer(ctx.specDir, async () => {
+      // AC: @task-core-data-file ac-4 — preserve unknown fields through the write
+      const mergedCore = mergeTaskPreservingRawShape(rawCore, coreDataAfter);
+      await writeTaskFile(taskFilePath, mergedCore, history);
+
+      if (notes !== undefined) {
+        await writeNotesFile(notesFilePath, notes);
+      }
+
+      // Keep the index in step with the rewritten per-task file (assignee is an
+      // indexed actor field) — serialized by indexMutex like the mutate path.
+      // Use `clean` (still carries notes/todos) so the index keeps accurate
+      // notes_count/todos_count; coreDataAfter has notes stripped for the file.
+      const releaseIndex = await this.indexMutex.acquire();
+      try {
+        await this.updateIndexEntry(ctx, clean as unknown as Task);
+      } finally {
+        releaseIndex();
+      }
+    });
+  }
+
+  /**
    * Mutate multiple tasks atomically with history tracking.
    *
    * Per-task locking is handled by TaskDataManager.mutateTasks, which
