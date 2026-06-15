@@ -55,3 +55,12 @@ resources:
     label: Spec states integration
     path: handoff/docs/08-spec-states-integration.md
     sha256: 1a280d3c6246e561c0d04400a6bfb1567ffd1cc7181ef2b9173acb9184e15493
+  - description: Validate queue/matrix/AC-detail behavior that consumes the shared coverage token model.
+    bytes: 4970
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-validate
+    label: Validate workspace
+    path: handoff/docs/09-validate.md
+    sha256: 2830449d6fddf9a71b6b08b50519ec9efa3fe9ddeac831d04ca5157bf743fa64
