@@ -117,3 +117,56 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-15T02:33:19.577Z
+  - _ulid: 01KV4K6W3PPDEJAADXQJHKMGMS
+    content: >-
+      Fix cycle 1 complete — addressed both review threads (blocker + evidence-log question), both
+      resolved.
+
+
+      Root cause: the identity payload only carried each agent's canonicalId + displayName. The
+      shared classifier already supported per-agent `aliases`, but neither the daemon endpoint nor
+      the static path sourced them, so the production payload fetchIdentity() feeds the classifier
+      could not resolve non-derivable measured spellings (e.g. @dispatch/@kspec/@kspec-dispatch ->
+      pr-reviewer).
+
+
+      Fix (production alias source + payload wiring, symmetric with the already-wired human
+      identity.aliases):
+
+      - src/parser/config.ts: new identity.agent_aliases (record: canonical agent id ->
+      non-derivable spellings); resolved/defaulted/empty-list-dropped.
+
+      - packages/daemon/src/routes/identity.ts: GET /api/identity merges
+      config.identity.agent_aliases into each roster entry's aliases.
+
+      - src/export/{json,types}.ts + packages/shared/src/api.ts: export snapshot.agent_aliases
+      (optional, back-compat).
+
+      - packages/web-ui/src/lib/api-static.ts: fetchIdentityStatic attaches snapshot.agent_aliases
+      to the static roster for parity.
+
+
+      Coverage through the REAL payload path (not synthetic config):
+
+      - tests/daemon-api/identity.test.ts: writes kspec.config.yaml with agent_aliases, GET
+      /api/identity, asserts payload carries aliases AND classifyActor('@dispatch', endpointPayload)
+      -> pr-reviewer; unconfigured agents omit the field.
+
+      - tests/web-ui/api-static.test.ts: snapshot.agent_aliases + fetchIdentity -> classifier
+      resolves same variants.
+
+      - tests/parser/config.test.ts: resolution, default {}, empty-list dropping.
+
+
+      Deliberately did NOT seed Kynetic's roster into kspec.config.yaml: the strict identity schema
+      makes any not-yet-rebuilt kspec binary reject the new key and fall back to ALL config defaults
+      — a ship-gap footgun. Roster population is config/operator territory and the exhaustive
+      measured inventory is owned by @task-actor-normalization-upgrade.
+
+
+      Re-verified all 8 spec ACs hold (ac-1..ac-5 in scope; ac-6/7/8 remain owned by the
+      write-path/upgrade follow-ups). Gates: format, lint (0 errors), typecheck, full suite (10601
+      passed / 0 failed), kspec validate refs/alignment/completeness all green.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-15T02:54:12.086Z
