@@ -66822,7 +66822,7 @@ runs:
     completed_at: 2026-06-15T09:09:51.646Z
   - _ulid: 01KV59Q7YSP7GXG8JVKFFM2V3R
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -66835,7 +66835,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-15T09:28:41.225Z
-        completed_at: 2026-06-15T09:28:41.225Z
+        completed_at: 2026-06-15T09:29:10.503Z
+        notes: "Friction: task resources were listed as OK in task context and kspec task output, but the
+          advertised handoff paths were absent in this detached review snapshot. That made the
+          reviewer rely on code and task text instead of the intended screenshots/source handoff."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-15T09:29:10.503Z
+        completed_at: 2026-06-15T09:29:10.503Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-15T09:27:37.177Z
