@@ -64,3 +64,13 @@ resources:
     label: Validate workspace
     path: handoff/docs/09-validate.md
     sha256: 2830449d6fddf9a71b6b08b50519ec9efa3fe9ddeac831d04ca5157bf743fa64
+  - description: Reviews queue, per-subject review surfaces, shared review header, actor/reviewer
+      display, and next-actor cues.
+    bytes: 9583
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-reviews
+    label: Reviews hub and review surfaces
+    path: handoff/docs/11-reviews.md
+    sha256: c8372f313c3d5f0080f713325059165bdaa7d997d80a961bef282d3a2e5ee5a6
