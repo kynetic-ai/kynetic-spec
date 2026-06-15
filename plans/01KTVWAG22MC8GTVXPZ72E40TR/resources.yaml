@@ -1,0 +1,11 @@
+resources:
+  - description: Index for the exported Kynetic Spec Web UI wireframe handoff; explains docs,
+      screenshots, and fidelity caveats.
+    bytes: 4108
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-readme
+    label: Wireframe export README
+    path: handoff/docs/README.md
+    sha256: df9cb368a535357f7a137ebc94524c52b021e35e49bf643f4579ce213cf8570b
