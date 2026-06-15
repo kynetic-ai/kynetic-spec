@@ -68,6 +68,7 @@ tags:
   - web-ui
   - keyboard
 vcs_refs: []
+review_ref: "@01KV56VTTMSHTV550WC3DZM6WN"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-shortcut-registry/01kv4cdb
@@ -118,6 +119,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-15T08:32:17.911Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KV56VTTMSHTV550WC3DZM6WN"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-15T08:37:44.283Z
 resource_refs:
   - git_commit: null
     git_path: null
