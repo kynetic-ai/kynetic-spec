@@ -49,6 +49,7 @@
 	import { shortRef, normalizeRef, refHref } from '$lib/utils/reference';
 	import { StructuredContentViewer } from '$lib/components/content';
 	import { CodeDiffViewer } from '$lib/components/diff';
+	import BreadcrumbNav from '$lib/components/BreadcrumbNav.svelte';
 
 	let reviewId = $derived($page.params.id);
 
@@ -461,19 +462,14 @@
 </script>
 
 <div class="flex flex-col gap-6 p-6 min-w-0">
-	<!-- Back navigation -->
-	<div>
-		<a
-			href={`${base}/reviews`}
-			class="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-			data-testid="back-to-reviews"
-		>
-			<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M19 12H5M12 19l-7-7 7-7"/>
-			</svg>
-			Back to Reviews
-		</a>
-	</div>
+	<!--
+		Hierarchy orientation. AC: @ui-breadcrumb ac-5..ac-10 — the adaptive
+		breadcrumb replaces the ad-hoc "Back to Reviews" link, navigating up the
+		server-resolved ancestor chain (subject → review).
+	-->
+	{#if review?.ancestors?.length}
+		<BreadcrumbNav ancestors={review.ancestors} />
+	{/if}
 
 	{#if error}
 		<div class="bg-destructive/10 text-destructive p-4 rounded-lg" data-testid="error-message" role="alert">

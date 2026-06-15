@@ -57,10 +57,13 @@ test.describe("Review Detail Page", () => {
     await expect(page.getByTestId("check-stale-badge")).toContainText("Stale");
     await expect(page.getByTestId("verdict-item")).toHaveCount(1);
 
-    const backLink = page.getByTestId("back-to-reviews");
-    await backLink.focus();
-    await page.keyboard.press("Enter");
-    await page.waitForURL("**/reviews");
+    // AC: @ui-breadcrumb ac-9 — the detail page leads with the adaptive breadcrumb
+    // (the ad-hoc "Back to Reviews" link was replaced); the current segment is the review.
+    await expect(page.getByTestId("breadcrumb")).toBeVisible();
+    await expect(page.getByTestId("breadcrumb-current")).toContainText("Review of test task");
+
+    // Compare list/detail status-token parity by navigating to the reviews list.
+    await page.goto("/reviews");
     await expect(page.getByRole("heading", { name: "Reviews" })).toBeVisible();
 
     // AC: @ui-view-header ac-2 — the list disposition/lifecycle badges draw from the

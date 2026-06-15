@@ -430,6 +430,51 @@ test.describe("Session History View", () => {
       await expect(page.getByTestId("view-header-leading")).toBeEmpty();
     });
 
+    // AC: @ui-breadcrumb ac-9 — the session detail leads with the adaptive
+    // breadcrumb over the server-resolved chain (owning task → session). It
+    // coexists with the ViewHeader list-back action (@ui-view-header ac-5).
+    test("session detail shows the adaptive breadcrumb from server-resolved ancestors", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      const sessionDetail = {
+        ...mockSessions().items[0],
+        ancestors: [
+          { ref: "@test-task", title: "The owning task", kind: "task" },
+          { ref: "@01JTEST0000000000000000001", title: "Session", kind: "session" },
+        ],
+      };
+
+      await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
+      await page.route("**/api/sessions/01JTEST0000000000000000001", (route) => {
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(envelope(sessionDetail)),
+        });
+      });
+      await page.route("**/api/sessions/01JTEST0000000000000000001/events", (route) => {
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ data: { events: [] }, meta: { total: 0, cache_status: "ready" } }),
+        });
+      });
+
+      await page.goto("/sessions/01JTEST0000000000000000001");
+      await expect(page.getByTestId("session-stream")).toBeVisible({ timeout: 5000 });
+
+      const crumb = page.getByTestId("breadcrumb");
+      await expect(crumb).toBeVisible();
+      // Owning task is a clickable ancestor; session is the emphasized current.
+      await expect(crumb.getByTestId("breadcrumb-segment")).toContainText("The owning task");
+      await expect(crumb.getByTestId("breadcrumb-current")).toContainText("Session");
+      // The list-back action still lives in the ViewHeader actions zone.
+      await expect(
+        page.getByTestId("view-header-actions").getByTestId("back-to-sessions"),
+      ).toBeVisible();
+    });
+
     // AC: @ui-session-history ac-2
     test("session row links point to correct detail URL", async ({ page, daemon: _daemon }) => {
       await page.route("**/api/sessions*", mockSessionsRoute(mockSessions()));
