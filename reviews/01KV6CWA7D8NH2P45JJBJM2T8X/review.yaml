@@ -2,7 +2,116 @@ _ulid: 01KV6CWA7D8NH2P45JJBJM2T8X
 slugs: []
 title: Review task-breadcrumb-component cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use correct format; checked 1076 files.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-15T19:59:03.771Z
+    completed_at: 2026-06-15T19:59:03.771Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo lint exited 0: 736 existing warnings, 0 errors. Focused lint on changed TS/test
+      files was clean; see focused-lint check."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-15T19:59:07.435Z
+    completed_at: 2026-06-15T19:59:07.435Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Checked breadcrumb-kind.ts, breadcrumb-trail.ts, web-ui-breadcrumb.test.ts, and changed
+      Playwright specs: 0 warnings, 0 errors."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed ts/test files>
+    created_at: 2026-06-15T19:59:10.988Z
+    completed_at: 2026-06-15T19:59:10.988Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 0 after build:shared and tsc --noEmit.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-15T19:59:14.430Z
+    completed_at: 2026-06-15T19:59:14.430Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2852 suites passed; 10839 tests passed, 3 skipped; duration 2713.0s; log
+      /tmp/kspec-test-cache/01KV6CTA1RCQFV1E3ENY353WBB/fb2215d9d9b0c7db.log.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-15T19:59:18.169Z
+    completed_at: 2026-06-15T19:59:18.169Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed: schema OK, references OK; existing reference warnings allowed by
+      --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-15T19:59:21.865Z
+    completed_at: 2026-06-15T19:59:21.865Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; existing orphan/status alignment warnings allowed by --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-15T19:59:25.680Z
+    completed_at: 2026-06-15T19:59:25.680Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed; existing AC coverage/annotation warning baseline allowed by
+      --warnings-ok. @ui-breadcrumb AC annotations present in changed unit/e2e tests.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-15T19:59:29.185Z
+    completed_at: 2026-06-15T19:59:29.185Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 76 Playwright tests passed in 30.5s after the e2e build. Covers breadcrumb click, keyboard
+      navigation, no-layout-shift, and review/session route adoption.
+    name: targeted e2e browser specs
+    required: false
+    runner: npm run test:e2e -- tests/e2e/reviews-detail.spec.ts tests/e2e/sessions.spec.ts
+      tests/e2e/review-detail-page.spec.ts
+    created_at: 2026-06-15T19:59:32.705Z
+    completed_at: 2026-06-15T19:59:32.705Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 0. Build still reports known pre-existing Svelte warnings in observations,
+      DispatchTriggersSection, SessionFilters, and StructuredContentViewer; no BreadcrumbNav.svelte
+      warning, so the prior blocker is fixed.
+    name: web-ui production build
+    required: false
+    runner: npm run build:web-ui
+    created_at: 2026-06-15T19:59:36.290Z
+    completed_at: 2026-06-15T19:59:36.290Z
 events:
   - _ulid: 01KV6CWA7DEJFCW0TF4P3MGZ65
     actor: Jacob Chapel
@@ -17,17 +126,156 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-15T19:42:23.808Z
+  - _ulid: 01KV6DVEWNX14Q1YA59EYE8DKM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-15T19:59:04.085Z
+  - _ulid: 01KV6DVJEMV0PY4N1NWTEFZ42S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-15T19:59:07.732Z
+  - _ulid: 01KV6DVNXRBJMJYVSWSKTTQ0BW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-15T19:59:11.288Z
+  - _ulid: 01KV6DVS8VRG1HEXDH2K8T3PKC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-15T19:59:14.716Z
+  - _ulid: 01KV6DVWYFGVGJH6A7GHMGH90R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-15T19:59:18.479Z
+  - _ulid: 01KV6DW0HCCBTRWGCN4DNQG2SC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-15T19:59:22.156Z
+  - _ulid: 01KV6DW48JGHD0QTWGY83Q3MV8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-15T19:59:25.970Z
+  - _ulid: 01KV6DW7NB57SCEA3XRSSN6BS8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-15T19:59:29.451Z
+  - _ulid: 01KV6DWB35NFV7XW3C08YSS26X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: targeted e2e browser specs
+    timestamp: 2026-06-15T19:59:32.965Z
+  - _ulid: 01KV6DWEMVXG9BCX776NYEJVP8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: web-ui production build
+    timestamp: 2026-06-15T19:59:36.603Z
+  - _ulid: 01KV6DWJ7KYAX8T8BBM9J3QNDC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV6DWHYZZ8MTYRPYG0NAMPH7
+    timestamp: 2026-06-15T19:59:40.275Z
+  - _ulid: 01KV6DWNRAGETN3YS7YE8A66PX
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-15T19:59:43.882Z
+  - _ulid: 01KV6DWNRA3845CV5WC4B98S15
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-15T19:59:43.882Z
 examined_commit: c6ffc4775f269c4ec0f5c9cba49a535df6026e02
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KV4CDAWAG1XHQVHAVABN2VMD"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KV6DWHYZZ8MTYRPYG0NAMPH7
+    entries:
+      - _ulid: 01KV6DWHYZJH567GYE8417FJFR
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+
+          Files read: kspec-agents.md; task @01KV4CDAWAG1XHQVHAVABN2VMD; spec @ui-breadcrumb; prior
+          review @01KV69JT2XZQK9Z0PQTZGBSPX5;
+          packages/web-ui/src/lib/components/BreadcrumbNav.svelte;
+          packages/web-ui/src/lib/utils/breadcrumb-trail.ts;
+          packages/web-ui/src/lib/utils/breadcrumb-kind.ts;
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte;
+          packages/web-ui/src/routes/sessions/[id]/+page.svelte;
+          packages/web-ui/src/lib/utils/reference.ts; shared/API and daemon/static-export ancestry
+          contract locations; tests/web-ui-breadcrumb.test.ts; tests/e2e/reviews-detail.spec.ts;
+          tests/e2e/sessions.spec.ts; tests/e2e/review-detail-page.spec.ts.
+
+
+          Commands run: git diff/status/log; kspec task get; kspec item get @ui-breadcrumb; kspec
+          review for-task/get/add/open; rg AC/source-scanning checks; git diff --check; npm run
+          format:check; npm run lint -- --quiet; npx oxlint on changed TS/test files; kspec validate
+          refs/alignment/completeness with --warnings-ok; npm run typecheck; npm test; npm run
+          build:web-ui; targeted npm run test:e2e.
+
+
+          Claims verified: the previous a11y blocker is fixed by menu semantics and production build
+          no longer reports any BreadcrumbNav.svelte warning; count tiers, overflow folding,
+          current-segment preservation, popover click/keyboard behavior, kind indicators, and route
+          adoption are covered by changed unit and Playwright tests; the component consumes
+          server/static-export-resolved ancestors and does not fetch unbounded lists.
+
+
+          Categories searched: correctness, overflow edge cases, keyboard/accessibility behavior,
+          no-layout-shift behavior, API/static data integration, AC annotation/test quality,
+          source-scanning shortcuts, build warnings, and repo-wide regressions. No blockers found.
+        created_at: 2026-06-15T19:59:39.999Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-15T19:59:43.882Z
 created_at: 2026-06-15T19:42:03.501Z
-updated_at: 2026-06-15T19:42:23.541Z
+updated_at: 2026-06-15T19:59:43.882Z
 notes: []
