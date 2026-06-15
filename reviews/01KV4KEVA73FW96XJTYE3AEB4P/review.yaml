@@ -143,6 +143,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-15T03:13:59.102Z
+  - _ulid: 01KV4MBM0M91S1GCGCBJJPX68J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV4MBKSXMC3XP342MJRJSPGR
+    timestamp: 2026-06-15T03:14:16.212Z
 examined_commit: 2b09076ac69cf4bd00cc17e62fafd4263aee5d36
 external_links: []
 lifecycle_state: open
@@ -152,8 +159,31 @@ subject:
   content_hash: ""
   ref: "@01KV4CD95BNGJ9YG3PYYZ4S6E0"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV4MBKSXMC3XP342MJRJSPGR
+    entries:
+      - _ulid: 01KV4MBKSXXES4RH50CZ8DG7V0
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task/spec context for @01KV4CD95BNGJ9YG3PYYZ4S6E0
+          and @actor-identity-resolution; prior review @01KV4ETGG3R2CKM52TN07G6HGJ; diff and
+          surrounding code for packages/shared/src/actor.ts, packages/daemon/src/routes/identity.ts,
+          packages/daemon/src/server.ts, src/parser/config.ts, packages/web-ui/src/lib/api.ts,
+          packages/web-ui/src/lib/api-static.ts, packages/web-ui/src/lib/utils/actor.ts,
+          packages/shared/src/api.ts, packages/shared/src/index.ts, src/export/json.ts,
+          src/export/types.ts, tests/actor-classifier.test.ts, tests/daemon-api/identity.test.ts,
+          tests/parser/config.test.ts, tests/web-ui/api-static.test.ts, tests/daemon-api/helpers.ts.
+          Commands run: git diff/stat/name-only/log; rg AC/source-scan searches; npm run
+          format:check; npm run lint -- --quiet; npx oxlint on 16 changed TS/test files; npm run
+          typecheck; npm test; kspec validate --refs/--alignment/--completeness --warnings-ok.
+          Claims verified: prior alias-payload blocker fixed by identity.agent_aliases flowing
+          through daemon GET /api/identity and static snapshot fetchIdentityStatic/fetchIdentity
+          before classifyActor; endpoint returns envelope + X-Request-Id; classifier resolves
+          measured variants and preserves unknowns; static mode carries agent_aliases. Categories
+          searched: correctness, edge cases, error handling, security/data exposure, test quality,
+          AC coverage, integration. No blocker findings."
+        created_at: 2026-06-15T03:14:15.997Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-15T02:58:33.415Z
-updated_at: 2026-06-15T03:13:58.867Z
+updated_at: 2026-06-15T03:14:15.997Z
 notes: []
