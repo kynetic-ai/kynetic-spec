@@ -6155,6 +6155,9 @@ features:
       on new writes. Unknown classification remains a read-side result
       for historical or externally edited records, not a way to persist
       arbitrary new authors.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on:
       - "@actor-identity-model"
     implements: []
