@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-16T00:51:06.857Z
+  - _ulid: 01KV6YRBPXC4QGJ249NFS8QSAA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV6YRBD81VNZWDCFNEHNESK7
+    timestamp: 2026-06-16T00:54:28.317Z
 examined_commit: 19b7dcb3b6134c2f1467d6cc066f75286dc90060
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,66 @@ subject:
   content_hash: ""
   ref: "@01KV6TB224D6ZQS7QSJ6W3YTQ4"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV6YRBD81VNZWDCFNEHNESK7
+    anchor:
+      type: code
+      commit: 19b7dcb3b6134c2f1467d6cc066f75286dc90060
+      line_end: 400
+      line_start: 389
+      path: src/cli/commands/validate.ts
+      side: head
+    entries:
+      - _ulid: 01KV6YRBD9SJ8B2YHG4M8V7K36
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX:  is emitted by validation but not surfaced by the human ✓ Validation passed
+
+          ────────────────────────────────────────
+
+          Files checked: 1644
+
+          Items checked: 666
+
+          Tasks checked: 1636
+
+          Meta: 13 agents, 11 workflows, 12 conventions
+
+
+          Schema: OK
+
+          References: OK
+
+
+          Completeness warnings: 277
+            Missing own AC coverage: 245
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 242 more
+            Invalid AC annotations: 32
+              Unresolved targets: 26
+                ! Unresolved target: '@session-start-activity-timeline' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-verification-record-store-01kv6tb2-review/tests/cli/session-start-activity-timeline.test.ts:41
+                ! Unresolved target: '@session-start-activity-timeline' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-verification-record-store-01kv6tb2-review/tests/cli/session-start-activity-timeline.test.ts:115
+                ! Unresolved target: '@session-start-activity-timeline' cannot be resolved
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-verification-record-store-01kv6tb2-review/tests/cli/session-start-activity-timeline.test.ts:168
+                ... and 23 more
+              malformed_ac_token: 6
+                ! Malformed AC token: 'ac-1:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-verification-record-store-01kv6tb2-review/tests/cli-agent-commands.test.ts:1951
+                ! Malformed AC token: 'ac-2/3/4/5/7:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-verification-record-store-01kv6tb2-review/tests/cli-agent-commands.test.ts:1952
+                ! Malformed AC token: 'ac-2/3/4/5/7:' in annotation targeting '@trait-filterable-list' is not a valid ac-prefixed identifier
+                  /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-verification-record-store-01kv6tb2-review/tests/cli-agent-commands.test.ts:1953
+                ... and 3 more formatter.  partitions warnings into explicit known groups and has no branch or fallback for the new type, so an orphan-only result would show a warning count without the item/AC/message details. That falls short of AC , which requires validation to report orphaned verification records rather than effectively hiding them from the CLI report. The added test at  checks the programmatic  result, but it does not exercise CLI formatting. Add formatter coverage/output for this warning type (and a behavioral CLI test or equivalent) so orphaned verification records are visible to users.
+        created_at: 2026-06-16T00:54:28.009Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-16T00:50:25.553Z
-updated_at: 2026-06-16T00:51:06.624Z
+updated_at: 2026-06-16T00:54:28.009Z
 notes: []
