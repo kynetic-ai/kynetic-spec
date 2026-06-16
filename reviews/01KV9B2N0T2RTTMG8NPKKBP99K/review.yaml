@@ -2,7 +2,85 @@ _ulid: 01KV9B2N0T2RTTMG8NPKKBP99K
 slugs: []
 title: Review freshness resolution read path (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1084 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-16T23:23:07.920Z
+    completed_at: 2026-06-16T23:23:07.920Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo lint reported 0 errors (736 existing warnings under quiet gate). Focused
+      changed-file lint passed via npx oxlint src/parser/freshness-resolver.ts
+      tests/freshness-resolver.test.ts with 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-16T23:23:10.902Z
+    completed_at: 2026-06-16T23:23:10.902Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared completed and tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-16T23:23:13.775Z
+    completed_at: 2026-06-16T23:23:13.775Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2865/2865 test suites, 10893 passed, 3 skipped, 0 failed.
+      tests/freshness-resolver.test.ts passed 15 tests; tests/verification-record-store.test.ts also
+      passed. Full log: /tmp/kspec-test-cache/01KV9B162FE82P7R5Y8EJ6CH6D/590159debb6d4ff5.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-16T23:23:16.644Z
+    completed_at: 2026-06-16T23:23:16.644Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok exited 0 with 6 existing reference warnings
+      accepted under warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-16T23:23:19.458Z
+    completed_at: 2026-06-16T23:23:19.458Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0 with 54 existing alignment
+      warnings accepted under warnings-ok."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-16T23:23:22.296Z
+    completed_at: 2026-06-16T23:23:22.296Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0 with existing completeness
+      warnings accepted. @ac-freshness-resolution has annotated tests for all 7 ACs in
+      tests/freshness-resolver.test.ts."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-16T23:23:25.085Z
+    completed_at: 2026-06-16T23:23:25.085Z
 events:
   - _ulid: 01KV9B2N0S4R0M1RW1PMY4E7SX
     actor: Jacob Chapel
@@ -17,17 +95,122 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-16T23:08:41.540Z
+  - _ulid: 01KV9BXV0FR8YGNM53ABHA2ZD3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-16T23:23:08.175Z
+  - _ulid: 01KV9BXXXSR9AK7BRR6KMR4E77
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-16T23:23:11.161Z
+  - _ulid: 01KV9BY0PSRDKSDNP1TWWF907X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-16T23:23:14.009Z
+  - _ulid: 01KV9BY3G9CRJRYNF6HMM8F7DH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-16T23:23:16.873Z
+  - _ulid: 01KV9BY685CV2VNKW47NA7PNAP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-16T23:23:19.685Z
+  - _ulid: 01KV9BY9174T51GTYN0DPKN3E8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-16T23:23:22.535Z
+  - _ulid: 01KV9BYBREJT0TB5ZNG6A1VFFH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-16T23:23:25.326Z
+  - _ulid: 01KV9BYEKJBAZ3DHBG479ENPEH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV9BYEBP9280EXHCHSV7G1RR
+    timestamp: 2026-06-16T23:23:28.242Z
+  - _ulid: 01KV9BYHCRF0AKBRFSVG2NQ4MS
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-16T23:23:31.096Z
+  - _ulid: 01KV9BYHCRM7KXSTBZ1K65QT44
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-16T23:23:31.096Z
 examined_commit: 5849c6b9aa0048b3dee7bd4b7d57739e8a420256
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KV6TB2D4HS7V122C2FRSWT2A"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KV9BYEBP9280EXHCHSV7G1RR
+    entries:
+      - _ulid: 01KV9BYEBPRP4MG4DD9ZF0GJXJ
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; task/spec context via kspec task get and
+          kspec item get; prior review @01KV7KG85ZZM10K4NYMGMG033T;
+          src/parser/freshness-resolver.ts; src/parser/index.ts; tests/freshness-resolver.test.ts;
+          src/parser/validate.ts structured annotation scan;
+          src/parser/verification-record-store.ts; src/schema/verification-records.ts. Commands run:
+          git status; git diff/stat/name-only against
+          9e228050796ef40b3d4a8700082259591d1b8667..5849c6b9aa0048b3dee7bd4b7d57739e8a420256; rg for
+          AC annotations and scan/store usage; temp-repo git blame --line-porcelain -L 1,1 -L 2,2
+          reproducer; npm run format:check; npm run lint -- --quiet; npx oxlint
+          src/parser/freshness-resolver.ts tests/freshness-resolver.test.ts; npm run typecheck; npm
+          test; kspec validate --refs/--alignment/--completeness --warnings-ok. Claims verified:
+          prior blocker fix by reading header-based parseBlamePorcelain, added same-file
+          multi-annotation tests, and reproducing contiguous blame output; recorded-wins and
+          both-provenance behavior by reading implementation and behavioral tests; AC coverage by
+          comparing @ac-freshness-resolution ACs to standalone test annotations. Categories
+          searched: correctness, edge cases/no-history and same-file mixed cases, error handling for
+          missing git/untracked paths, security/path traversal handling as no-history, test
+          quality/no source-scanning tests, integration with structured annotation scan and
+          verification record store. Shared guidance neutrality: not applicable; no shared/package
+          guidance surfaces changed. Findings: no blockers or should-fix issues found."
+        created_at: 2026-06-16T23:23:27.990Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-16T23:23:31.096Z
 created_at: 2026-06-16T23:08:17.306Z
-updated_at: 2026-06-16T23:08:41.304Z
+updated_at: 2026-06-16T23:23:31.096Z
 notes: []
