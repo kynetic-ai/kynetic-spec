@@ -166,9 +166,25 @@ events:
       kind: nit
       thread_ulid: 01KV7K3RFF31M5VM2QZJKX783T
     timestamp: 2026-06-16T06:50:13.635Z
+  - _ulid: 01KV7K43V18A3DF8PHS60WY5H5
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-16T06:50:24.994Z
+  - _ulid: 01KV7K43V2SZM648X6RRQ2S3V3
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-16T06:50:24.994Z
 examined_commit: 0cb9414fe10b56061c1ad2c30d3598be8be3a410
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -199,7 +215,14 @@ threads:
           consumers, and formatting/lint/type/test gates. No blockers found."
         created_at: 2026-06-16T06:50:13.359Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-16T06:50:24.993Z
 created_at: 2026-06-16T06:32:48.485Z
-updated_at: 2026-06-16T06:50:13.359Z
+updated_at: 2026-06-16T06:50:24.994Z
 notes: []
