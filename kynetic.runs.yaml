@@ -68233,7 +68233,7 @@ runs:
     completed_at: 2026-06-16T07:29:31.968Z
   - _ulid: 01KV8PTRB2T43FMSN5VFX574X8
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -68301,7 +68301,30 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-16T17:15:15.130Z
-        completed_at: 2026-06-16T17:15:15.130Z
+        completed_at: 2026-06-16T17:16:28.977Z
+        notes: >-
+          COVERAGE CHECK:
+
+
+          1. Resume-after-failure visibility: inbox 01KV2B04 covers attaching manual/Hermes work to
+          a task. Different angle (cross-branch lineage) but adjacent. The 'show me what last agent
+          left in working tree' angle is untracked.
+
+
+          2. Branch status reporting (inherited vs local commits): untracked. Could be a friction
+          observation rather than a task.
+
+
+          3. Format pass + oxlint integration: untracked. This is a toolchain gap, not a kspec
+          behavioral change. Friction observation candidate.
+
+
+          4. Stale workflow runs cluttering 'active runs' error: untracked. Likely a kspec CLI bug
+          or feature gap. Inbox candidate.
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-16T17:16:28.977Z
+        completed_at: 2026-06-16T17:16:28.977Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-16T17:14:27.043Z
