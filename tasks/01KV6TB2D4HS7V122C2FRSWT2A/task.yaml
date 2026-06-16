@@ -72,7 +72,7 @@ description: |
 spec_ref: "@ac-freshness-resolution"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-ac-verification-record-store"
@@ -83,6 +83,7 @@ tags:
   - parser
   - storage
 vcs_refs: []
+session_id: 01KV7J1EK4ABSM2Q8W1JKTGPS2
 history:
   - author: Jacob Chapel
     changes:
@@ -126,7 +127,21 @@ history:
         previous: pending
     command: task-unblock
     timestamp: 2026-06-16T06:29:18.233Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KV7J1EK4ABSM2Q8W1JKTGPS2
+        previous: null
+      started_at:
+        new: 2026-06-16T06:34:58.311Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-16T06:34:58.312Z
 prior_status: null
 created_at: 2026-06-15T23:37:18.500Z
+started_at: 2026-06-16T06:34:58.311Z
 todos: []
 automation: eligible
