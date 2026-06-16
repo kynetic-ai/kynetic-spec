@@ -2,7 +2,82 @@ _ulid: 01KV6YGYMHFED9512CQJ4E0W0E
 slugs: []
 title: Review task-ac-verification-record-store cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. oxfmt checked 1082 files; all matched files use correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-16T01:04:59.630Z
+    completed_at: 2026-06-16T01:04:59.630Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repo warning baseline: 736 warnings, 0 errors. Focused npx oxlint on changed
+      files reported 0 errors and 3 warnings at pre-existing unchanged src/parser/validate.ts lines
+      841, 961, and 968; no new changed-line warnings found."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-16T01:05:02.596Z
+    completed_at: 2026-06-16T01:05:02.596Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. build:shared and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-16T01:05:05.455Z
+    completed_at: 2026-06-16T01:05:05.455Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed. 2862 suites passed; 10877 tests passed; 3 skipped.
+      tests/verification-record-store.test.ts ran and passed 11 tests. Full log:
+      /tmp/kspec-test-cache/01KV6YERZ2T6Q8J64W8M21XQA9/24dac4aa388f7f67.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-16T01:05:08.355Z
+    completed_at: 2026-06-16T01:05:08.355Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; existing reference warnings only.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-16T01:05:11.145Z
+    completed_at: 2026-06-16T01:05:11.145Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; existing alignment warnings only.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-16T01:05:14.002Z
+    completed_at: 2026-06-16T01:05:14.002Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warning baseline
+      only. No orphaned verification records reported in this repo state.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-16T01:05:16.820Z
+    completed_at: 2026-06-16T01:05:16.820Z
 events:
   - _ulid: 01KV6YGYMGY2SFHAA8CE8MA1TF
     actor: Jacob Chapel
@@ -30,9 +105,81 @@ events:
     payload:
       thread_ulid: 01KV6YRBD81VNZWDCFNEHNESK7
     timestamp: 2026-06-16T00:55:06.030Z
+  - _ulid: 01KV6ZBMEVV9DRCQ4TYECSZVFH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-16T01:04:59.868Z
+  - _ulid: 01KV6ZBQC4C5BJF1HZ2MCC9C01
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-16T01:05:02.852Z
+  - _ulid: 01KV6ZBT5AGFMVQYDH6WVGFDNJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-16T01:05:05.707Z
+  - _ulid: 01KV6ZBWZ3XVNBHXC73WMTRSX2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-16T01:05:08.579Z
+  - _ulid: 01KV6ZBZPG7NGJ08TN2DNA7F70
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-16T01:05:11.376Z
+  - _ulid: 01KV6ZC2FGXCG6T00A10ZGF27B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-16T01:05:14.224Z
+  - _ulid: 01KV6ZC58MC1TP3A52YT2GMN7S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-16T01:05:17.076Z
+  - _ulid: 01KV6ZC83D369KEFND4B0KDQV4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV6ZC7VR2SVQ8QSNJXA4NMJY
+    timestamp: 2026-06-16T01:05:19.981Z
+  - _ulid: 01KV6ZCAWV5SGYK4929W0CFY8P
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-16T01:05:22.843Z
+  - _ulid: 01KV6ZCAWVHKVS5K22PJ627TNP
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-16T01:05:22.843Z
 examined_commit: 19b7dcb3b6134c2f1467d6cc066f75286dc90060
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -112,7 +259,49 @@ threads:
           are visible to users."
         created_at: 2026-06-16T00:55:05.743Z
     kind: blocker
-verdicts: []
+  - _ulid: 01KV6ZC7VR2SVQ8QSNJXA4NMJY
+    entries:
+      - _ulid: 01KV6ZC7VR5V3QQHN3SVDK36CQ
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md;
+          .agents/skills/review-gates/SKILL.md; .agents/skills/kspec-merge/SKILL.md;
+          src/parser/verification-record-store.ts; src/schema/verification-records.ts;
+          src/parser/validate.ts; src/parser/index.ts; src/schema/index.ts;
+          tests/verification-record-store.test.ts; src/cli/commands/validate.ts;
+          src/cli/batch-write-buffer.ts; src/parser/shadow.ts; packages/shared/src/api.ts;
+          packages/web-ui/src/lib/api.ts.
+
+
+          Commands run: kspec task get; kspec item get; kspec review
+          for-task/get/add/open/comment/reply; git diff/stat/name-only/log; rg AC annotation and
+          integration searches; npm run format:check; npm run lint -- --quiet; npx oxlint changed
+          files; npm run typecheck; npm test; kspec validate refs/alignment/completeness with
+          warnings-ok.
+
+
+          Claims verified: previous blocker fix was verified by reading writeVerificationStamp and
+          the regression test; keys are parsed before path construction. AC coverage verified by
+          annotated behavioral tests for all seven ACs, including shadow persistence.
+
+
+          Categories searched: correctness, edge cases, path traversal, shadow commit persistence,
+          tolerant orphan handling, test quality, validation CLI integration, API/UI typing surface,
+          and gate regressions. Finding recorded: CLI completeness formatter does not surface
+          orphaned_verification_record details.
+        created_at: 2026-06-16T01:05:19.736Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-16T01:05:22.843Z
 created_at: 2026-06-16T00:50:25.553Z
-updated_at: 2026-06-16T00:55:05.743Z
+updated_at: 2026-06-16T01:05:22.843Z
 notes: []
