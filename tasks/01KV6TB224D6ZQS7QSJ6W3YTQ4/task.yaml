@@ -56,9 +56,8 @@ description: |
 spec_ref: "@ac-verification-record-store"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: blocked
-blocked_by:
-  - "Agent task-worker failed 3 consecutive times: Headed runtime API error"
+status: needs_work
+blocked_by: []
 depends_on: []
 context: []
 priority: 1
@@ -206,7 +205,21 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-06-16T01:26:43.225Z
-prior_status: needs_work
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Agent task-worker failed 3 consecutive times: Headed runtime API error"
+      prior_status:
+        new: null
+        previous: needs_work
+    command: task-unblock
+    timestamp: 2026-06-16T03:30:17.363Z
+prior_status: null
 created_at: 2026-06-15T23:37:18.148Z
 started_at: 2026-06-16T00:47:27.727Z
 submitted_at: 2026-06-16T00:47:31.157Z
