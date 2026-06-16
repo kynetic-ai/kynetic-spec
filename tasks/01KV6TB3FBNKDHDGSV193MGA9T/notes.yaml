@@ -37,3 +37,45 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-16T00:53:06.384Z
+  - _ulid: 01KV6ZZ919DDN295SV5GH7HR8P
+    content: |-
+      Implemented N/A annotation coverage exclusion.
+
+      Changes (src/parser/validate.ts):
+      - parseACAnnotationLine no longer strips the N/A suffix; it captures the marker
+        + reason and attaches notApplicable/naReason to the LAST @ref group on the line.
+        Mixed lines (claim for one ref, N/A for another) therefore credit only the
+        earlier claim.
+      - ParsedACGroup and ACAnnotation gained optional notApplicable?:boolean and
+        naReason?:string (absent for ordinary claims -> backward-compatible; existing
+        toEqual assertions and consumers unchanged).
+      - scanDirForACAnnotations skips notApplicable groups when building the flat
+        coverage set. Single chokepoint: all four downstream consumers (completeness
+        validation, daemon item APIs, task review context, static JSON export) read
+        this set via scanTestCoverage/computeACCoverage, so no consumer-side edits were
+        needed.
+      - scanDirForACAnnotationsStructured passes notApplicable+naReason through
+        (ac-na-marker-preserved).
+      - validateACAnnotations needed NO change: N/A groups keep specRef/acIds/
+        malformedTokens populated, so unresolved-target / missing-ac-id / malformed-
+        token integrity checks still fire, while a well-formed N/A with resolvable
+        target + existing ac ids already produces no invalid finding.
+
+      Tests:
+      - Behavioral coverage for the 3 new ACs added to tests/ac-annotation-identifier-
+        format.test.ts (NOT excluded from scanning, so annotations count): marker
+        preserved on parse; coverage set excludes N/A ac ids; mixed line credits only
+        the claim; only-N/A AC left uncovered; well-formed N/A yields no finding; N/A
+        with bad target / unknown ac id still yields integrity findings. Fixtures use
+        the file's acPrefix concatenation convention + temp-dir scans to avoid scanner
+        self-pollution.
+      - Updated the stale "should strip N/A suffix" unit test in ac-annotation-
+        validation.test.ts to assert the new preserve-and-mark semantics, and added
+        fs-based regression tests there.
+
+      Gates: typecheck OK; full suite 10883 passed / 3 skipped / 0 fail; lint 0 errors;
+      format clean; kspec refs/alignment/completeness pass (warnings-ok). Newly-uncovered
+      corpus ACs from N/A exclusion are the accepted, intended consequence per task scope.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-16T01:15:43.530Z
