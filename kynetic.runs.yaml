@@ -67854,7 +67854,7 @@ runs:
     started_at: 2026-06-16T00:33:55.139Z
     completed_at: 2026-06-16T00:36:20.038Z
   - _ulid: 01KV6ZEB6A1RZYAYQWZF61F23E
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -67901,10 +67901,15 @@ runs:
         notes: "Skipped discussion: no new improvement proposals survived the search-first gate. Existing
           tracking covers the systemic friction, and the task-specific issue is already in the
           review record."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-16T01:08:31.485Z
-        completed_at: 2026-06-16T01:08:31.485Z
+        completed_at: 2026-06-16T01:08:53.543Z
+        notes: "Capture: no new inbox items or observations created. Shell-safe review body friction is
+          already covered by @01KNPC03. Long full-suite/runtime concerns are covered by existing
+          test cache and sharding work. The validation formatter problem remains captured as the
+          blocker on review @01KV6YGYMHFED9512CQJ4E0W0E."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-16T01:06:28.682Z
+    completed_at: 2026-06-16T01:08:53.543Z
