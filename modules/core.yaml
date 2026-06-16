@@ -2688,6 +2688,9 @@ features:
           source, recorded values also carry the stamp's provenance class,
           and a freshness value is expressed as a timestamp, a commit
           reference, or both.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@annotation-freshness-provenance"
           - "@coverage-scan-config"
