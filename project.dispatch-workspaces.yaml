@@ -26956,7 +26956,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-16T06:51:36.227Z
+      updated_at: 2026-06-16T06:55:30.865Z
     integration:
       status: merged
       detail: integration:merged
@@ -26973,18 +26973,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-16T06:31:20.119Z
-      last_reconciled_at: 2026-06-16T06:55:20.306Z
+      last_reconciled_at: 2026-06-16T06:55:30.865Z
       created_at: 2026-06-16T00:49:26.948Z
-      updated_at: 2026-06-16T06:55:20.306Z
+      updated_at: 2026-06-16T06:55:30.865Z
     workspace_id: dispatch-workspace-01KV6TB3FBNKDHDGSV193MGA9T
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 0cb9414fe10b56061c1ad2c30d3598be8be3a410
-        last_seen_at: 2026-06-16T06:30:43.125Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-na-annotation-coverage-exclusion-01kv6tb3-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-na-annotation-coverage-exclusion/01kv6tb3
