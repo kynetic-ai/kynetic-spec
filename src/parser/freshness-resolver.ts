@@ -257,39 +257,50 @@ async function blameLines(
 /**
  * Parse `git blame --line-porcelain` output into per-line records.
  *
- * Records are separated by a blank line. The first line of each record is
- * `<sha> <orig-line> <final-line> [<count>]`; subsequent `key value` lines
- * carry commit metadata; the last line is the source line content. The
- * `committer-time` line gives the unix timestamp the line was last touched
- * by a commit. The all-zero SHA marks uncommitted lines.
+ * Each record begins with a header `<sha> <orig-line> <final-line> [<count>]`,
+ * followed by `key value` metadata lines, and ends with a tab-prefixed source
+ * line. When multiple `-L` ranges are batched into a single invocation, git
+ * emits the records contiguously — there is no blank-line separator between
+ * them, so splitting on `\n\n` only ever yields the first record. Instead we
+ * walk the output line by line and detect record boundaries by the header
+ * pattern (a 40-char hex SHA followed by two integers). Source lines start
+ * with a tab and never match that pattern, so they cannot be mistaken for a
+ * new header. The `committer-time` field gives the unix timestamp the line
+ * was last touched by a commit; the all-zero SHA marks uncommitted lines.
  */
 function parseBlamePorcelain(stdout: string, lines: readonly number[]): LineBlame[] {
   const results: LineBlame[] = [];
-  for (const record of stdout.split("\n\n")) {
-    if (!record) continue;
-    const firstNewline = record.indexOf("\n");
-    const header = firstNewline === -1 ? record : record.slice(0, firstNewline);
-    const rest = firstNewline === -1 ? "" : record.slice(firstNewline + 1);
-    const fields = header.split(" ");
-    const sha = fields[0];
-    if (!sha) continue;
-    if (sha === UNCOMMITTED_SHA) {
-      results.push(null);
+  const headerRe = /^([0-9a-f]{40}) \d+ \d+/;
+  let currentSha: string | null = null;
+  let currentTime: number | null = null;
+
+  for (const ln of stdout.split("\n")) {
+    const m = ln.match(headerRe);
+    if (m) {
+      if (currentSha !== null) pushBlameRecord(results, currentSha, currentTime);
+      currentSha = m[1]!;
+      currentTime = null;
       continue;
     }
-    let committerTime: number | null = null;
-    for (const ln of rest.split("\n")) {
-      if (ln.startsWith("committer-time ")) {
-        const n = Number(ln.slice("committer-time ".length));
-        if (Number.isFinite(n)) committerTime = n;
-        break;
-      }
+    if (currentSha === null) continue;
+    if (ln.startsWith("committer-time ")) {
+      const n = Number(ln.slice("committer-time ".length));
+      if (Number.isFinite(n)) currentTime = n;
     }
-    const timestamp = committerTime !== null ? new Date(committerTime * 1000).toISOString() : null;
-    results.push({ source: "bootstrap", commit: sha, timestamp });
   }
+  if (currentSha !== null) pushBlameRecord(results, currentSha, currentTime);
+
   while (results.length < lines.length) results.push(null);
   return results;
+}
+
+function pushBlameRecord(results: LineBlame[], sha: string, time: number | null): void {
+  if (sha === UNCOMMITTED_SHA) {
+    results.push(null);
+    return;
+  }
+  const timestamp = time !== null ? new Date(time * 1000).toISOString() : null;
+  results.push({ source: "bootstrap", commit: sha, timestamp });
 }
 
 function pickMostRecent(values: BootstrapFreshnessValue[]): BootstrapFreshnessValue {

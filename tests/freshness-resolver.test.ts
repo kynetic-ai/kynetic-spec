@@ -88,24 +88,34 @@ async function commitTestFile(
   const absPath = path.join(env.tempDir, relPath);
   await fs.mkdir(path.dirname(absPath), { recursive: true });
   await fs.writeFile(absPath, body);
-  // Use GIT_AUTHOR_DATE / GIT_COMMITTER_DATE so the commit timestamp is
-  // deterministic and matches the value the resolver will read back.
+  await commitWithDate(env.tempDir, relPath, isoTimestamp);
+  return absPath;
+}
+
+/**
+ * Stage and commit `relPath` with deterministic author/committer dates so
+ * the timestamp the resolver reads back matches the value the test expects.
+ */
+async function commitWithDate(
+  repoDir: string,
+  relPath: string,
+  isoTimestamp: string,
+): Promise<void> {
   const envVars = {
     ...process.env,
     GIT_AUTHOR_DATE: isoTimestamp,
     GIT_COMMITTER_DATE: isoTimestamp,
   };
   execSync(`git add ${JSON.stringify(relPath)}`, {
-    cwd: env.tempDir,
+    cwd: repoDir,
     stdio: "pipe",
     env: envVars,
   });
-  execSync(`git commit -m "add ${relPath}"`, {
-    cwd: env.tempDir,
+  execSync(`git commit -m "update ${relPath}"`, {
+    cwd: repoDir,
     stdio: "pipe",
     env: envVars,
   });
-  return absPath;
 }
 
 describe("freshness-resolver (bootstrap + recorded)", () => {
@@ -294,6 +304,92 @@ describe("freshness-resolver (bootstrap + recorded)", () => {
     expect(result.value.source).toBe("bootstrap");
     if (result.value.source !== "bootstrap") throw new Error("expected bootstrap");
     expect(result.value.timestamp).toBe("2026-05-10T12:00:00.000Z");
+    expect(result.value.commit).toMatch(/^[0-9a-f]{40}$/);
+  });
+
+  // AC: @ac-freshness-resolution ac-multi-annotation-most-recent
+  //
+  // Same-file batched blame: git emits the records contiguously in a single
+  // invocation, so the parser must split records by header pattern, not by
+  // blank-line separators. The most recent of the same-file history values
+  // must win regardless of which line was committed first.
+  it("picks the most recent history value across multiple annotation lines in the same file", async () => {
+    const relPath = "tests/same-file-multi.test.ts";
+    const absPath = path.join(env.tempDir, relPath);
+    await fs.mkdir(path.dirname(absPath), { recursive: true });
+
+    // Commit 1: only the first annotation block exists. Line 1's blame will
+    // stay anchored at this commit even after later commits append lines.
+    await fs.writeFile(absPath, `// AC: @${slug} ${acId}\nit("first coverage", () => {});\n`);
+    commitWithDate(env.tempDir, relPath, "2026-05-01T08:00:00.000Z");
+
+    // Commit 2 (later timestamp): append a second annotation block. Line 1's
+    // text is unchanged, so its blame remains commit 1; the new annotation
+    // line's blame is commit 2.
+    await fs.writeFile(
+      absPath,
+      `// AC: @${slug} ${acId}\nit("first coverage", () => {});\n// AC: @${slug} ${acId}\nit("second coverage", () => {});\n`,
+    );
+    commitWithDate(env.tempDir, relPath, "2026-05-20T08:00:00.000Z");
+
+    const ctx = await initContext(env.tempDir, { syncMode: "skip" });
+
+    const result = await resolveAcFreshness(ctx, ulid, acId, [
+      { file: absPath, line: 1 },
+      { file: absPath, line: 3 },
+    ]);
+    expect(result.kind).toBe("freshness");
+    if (result.kind !== "freshness") throw new Error("expected freshness");
+    if (result.value.source !== "bootstrap") throw new Error("expected bootstrap");
+    expect(result.value.timestamp).toBe("2026-05-20T08:00:00.000Z");
+
+    // Order-independent: reversing the input lines yields the same answer.
+    const reversed = await resolveAcFreshness(ctx, ulid, acId, [
+      { file: absPath, line: 3 },
+      { file: absPath, line: 1 },
+    ]);
+    expect(reversed.kind).toBe("freshness");
+    if (reversed.kind !== "freshness") throw new Error("expected freshness");
+    if (reversed.value.source !== "bootstrap") throw new Error("expected bootstrap");
+    expect(reversed.value.timestamp).toBe("2026-05-20T08:00:00.000Z");
+  });
+
+  // AC: @ac-freshness-resolution ac-multi-annotation-most-recent
+  // AC: @ac-freshness-resolution ac-no-history-absence (same-file mixed case)
+  //
+  // When one of several same-file annotation lines is uncommitted (working-tree
+  // edit, blame returns the all-zero SHA) and another line in the same file
+  // has real history, the resolver must still surface the committed value
+  // rather than treating the whole file as no-history.
+  it("surfaces the committed history value when a sibling annotation line in the same file is uncommitted", async () => {
+    const relPath = "tests/same-file-mixed.test.ts";
+    const absPath = path.join(env.tempDir, relPath);
+    await fs.mkdir(path.dirname(absPath), { recursive: true });
+
+    // Commit: both annotation lines exist with the same blame.
+    await fs.writeFile(
+      absPath,
+      `// AC: @${slug} ${acId}\nit("first coverage", () => {});\n// AC: @${slug} ${acId}\nit("second coverage", () => {});\n`,
+    );
+    commitWithDate(env.tempDir, relPath, "2026-05-12T09:00:00.000Z");
+
+    // Working-tree edit on line 1 only: git blame reports line 1 as the
+    // all-zero (uncommitted) SHA while line 3 keeps the committed blame.
+    await fs.writeFile(
+      absPath,
+      `// AC: @${slug} ${acId} (edited)\nit("first coverage", () => {});\n// AC: @${slug} ${acId}\nit("second coverage", () => {});\n`,
+    );
+
+    const ctx = await initContext(env.tempDir, { syncMode: "skip" });
+
+    const result = await resolveAcFreshness(ctx, ulid, acId, [
+      { file: absPath, line: 1 },
+      { file: absPath, line: 3 },
+    ]);
+    expect(result.kind).toBe("freshness");
+    if (result.kind !== "freshness") throw new Error("expected freshness");
+    if (result.value.source !== "bootstrap") throw new Error("expected bootstrap");
+    expect(result.value.timestamp).toBe("2026-05-12T09:00:00.000Z");
     expect(result.value.commit).toMatch(/^[0-9a-f]{40}$/);
   });
 
