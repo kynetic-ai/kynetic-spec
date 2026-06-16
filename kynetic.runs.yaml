@@ -68038,7 +68038,7 @@ runs:
     started_at: 2026-06-16T04:56:26.528Z
   - _ulid: 01KV7K71X701F6V1ZT1EM35SXP
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -68073,7 +68073,34 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-16T06:53:15.142Z
-        completed_at: 2026-06-16T06:53:15.142Z
+        completed_at: 2026-06-16T06:53:57.549Z
+        notes: >-
+          Searched observations, inbox, tasks. No unique high-confidence friction or success
+          surfaced in this session:
+
+
+          - The 'absence as a distinct observable outcome' pattern is encoded in the resolver's
+          tagged union ({ kind: 'absent' } vs { kind: 'freshness'; value }) — this is a design
+          choice the spec called for, not a fresh observation worth a meta note.
+
+          - The 'batch git blame per file' approach is an implementation detail of the resolver
+          itself; a future consumer of the same library would discover the pattern from the code.
+
+          - Hand-rolling commitTestFile with GIT_AUTHOR_DATE/GIT_COMMITTER_DATE is friction, but
+          it's widespread across the existing test suite and a project-wide helper extraction is a
+          separate refactor (would belong in a future 'extract git commit test helper' task if a
+          second consumer appears).
+
+          - Spec status didn't flip to 'implemented' on submit — but that's a known merge-vs-submit
+          boundary, not new friction.
+
+
+          Per @session-reflect-loop-workflow ac-2 / ac-4: nothing here clears the high-confidence
+          bar. Capturing nothing is the right loop-mode answer.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-16T06:53:57.549Z
+        completed_at: 2026-06-16T06:53:57.549Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-16T06:52:01.321Z
