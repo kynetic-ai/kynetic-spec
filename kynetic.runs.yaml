@@ -68233,9 +68233,45 @@ runs:
     completed_at: 2026-06-16T07:29:31.968Z
   - _ulid: 01KV8PTRB2T43FMSN5VFX574X8
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-16T17:14:27.043Z
+        completed_at: 2026-06-16T17:14:59.732Z
+        notes: >-
+          WORKED WELL:
+
+
+          1. Pre-existing in-flight changes were intact: prior attempt left the schema, store, and
+          test imports uncommitted but well-structured. Saved significant ramp-up time and let me
+          focus on the gap (no AC test coverage) rather than rebuilding from scratch.
+
+
+          2. Refactor-first: delegating isSessionResolvable to canonical sessionExists in
+          src/sessions/store.ts eliminated a duplicate fs.access probe and kept the layout/metadata
+          filename in one place. The delegation is a one-liner; the win is structural.
+
+
+          3. AC-driven test design: walked the 5 ACs (session-reference-stored,
+          sessionless-stamps-valid, malformed-session-ref-rejected, evidence-readable-from-record,
+          pruned-session-tolerated) and wrote one test per AC plus 2 supporting tests for
+          resolveSessionLinkage. Coverage annotation in the test file header made scan-targets
+          obvious.
+
+
+          4. Targeted then broad test run: ran the focused file (19/19 pass) first, then npm run
+          test:shard1 to catch regressions. shard1 alone (3245 tests in 795s) was enough signal
+          without a second long shard run.
+
+
+          5. Present-tense task notes: 'Implementation: tightened...' carried the right amount of
+          context for the reviewer to start without re-reading the diff.
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-16T17:14:59.732Z
+        completed_at: 2026-06-16T17:14:59.732Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-16T17:14:27.043Z
