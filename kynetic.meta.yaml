@@ -22516,6 +22516,17 @@ observations:
     resolved: false
     workflow_ref: "@01KV6X6H"
     created_at: 2026-06-16T00:28:35.947Z
+  - _ulid: 01KV6XMC2RGETFK4CXY5STBGHB
+    type: friction
+    content: Spec-only detached reviews with an empty code diff still require the full npm test gate
+      under current review guidance. In @01KV6TB34ES9WYJRADMS2NA8Q8, the code diff against
+      feat/ui-redesign was empty and verification was spec/kspec-validation focused, but npm test
+      still ran for 2681.7s. Consider a documented reviewer gate path or helper for
+      no-code/spec-only reviews that preserves safety while avoiding unnecessary full-suite cost.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-16T00:34:49.048Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
