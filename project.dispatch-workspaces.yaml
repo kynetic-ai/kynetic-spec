@@ -26987,7 +26987,7 @@ workspaces:
         head: e88c2550106368643dadf40878a8d27b0f5409a3
         last_seen_at: 2026-06-16T04:35:48.186Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-na-annotation-coverage-exclusion-01kv6tb3
-  - active_role: worker
+  - active_role: null
     base_branch_point: 9e228050796ef40b3d4a8700082259591d1b8667
     bootstrap:
       status: succeeded
@@ -27315,12 +27315,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-16T05:00:34.802Z
+      updated_at: 2026-06-16T05:01:29.034Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-16T05:01:16.297Z
+      updated_at: 2026-06-16T05:01:29.034Z
     integration:
       status: pending
       detail: null
@@ -27328,8 +27328,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 9e228050796ef40b3d4a8700082259591d1b8667
-      updated_at: 2026-06-16T05:00:34.802Z
-    lifecycle_state: active
+      updated_at: 2026-06-16T05:01:29.034Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV6TB2D4HS7V122C2FRSWT2A
     task_ref: "@01KV6TB2D4HS7V122C2FRSWT2A"
@@ -27337,9 +27337,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-16T05:01:16.297Z
-      last_reconciled_at: 2026-06-16T05:01:16.297Z
+      last_reconciled_at: 2026-06-16T05:01:29.034Z
       created_at: 2026-06-16T05:00:34.802Z
-      updated_at: 2026-06-16T05:01:16.297Z
+      updated_at: 2026-06-16T05:01:29.034Z
     workspace_id: dispatch-workspace-01KV6TB2D4HS7V122C2FRSWT2A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
