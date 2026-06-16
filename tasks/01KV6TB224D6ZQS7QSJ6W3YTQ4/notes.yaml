@@ -20,3 +20,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-16T00:26:19.117Z
+  - _ulid: 01KV6YB4Z0GXC05Q5HY0Q22DTM
+    content: "Fix cycle 1: addressed the blocker (path-traversal in writeVerificationStamp). Now
+      validates itemUlid (UlidSchema) and acId (AcIdSchema) before any path construction, so
+      malformed keys like '../../modules/specs' are rejected before getVerificationRecordPath and
+      can never write outside coverage/verifications/. Added regression test: malformed item/AC keys
+      rejected with spec module byte-identical, modules/ dir unchanged, seeded stamp intact.
+      Re-verified all 7 ACs against the implementation — no other gaps. Gates green: typecheck,
+      oxlint (0/0 on changed files), format, full suite (10877 passed/3 skipped), kspec validate
+      refs/alignment/completeness (pre-existing warnings only)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-16T00:47:15.424Z
