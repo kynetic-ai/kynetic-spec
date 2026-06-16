@@ -40,6 +40,7 @@ import {
   type VerificationStamp,
   type VerificationStampInput,
 } from "../schema/verification-records.js";
+import { sessionExists } from "../sessions/store.js";
 import { commitIfShadow } from "./shadow.js";
 import { withFileLock } from "./file-lock.js";
 import type { KspecContext } from "./yaml.js";
@@ -299,4 +300,103 @@ export function partitionVerificationReads(
   }
 
   return { resolved, orphans };
+}
+
+// ── Session Linkage Resolution ───────────────────────────────────────────────
+
+/**
+ * The verification stamp's session-linkage state — a tri-state report of
+ * whether the stored record names a session, and whether that session still
+ * exists in the project's session store.
+ *
+ * - `none`         — the stamp was written without a session reference.
+ * - `recorded`     — the stamp names a session, and that session exists in
+ *                    the session store. The session id is the canonical
+ *                    identity of the producing session.
+ * - `unresolvable` — the stamp names a session, but the session can no
+ *                    longer be found in the session store (pruned or
+ *                    otherwise gone). The session id is still reported so
+ *                    consumers know which session the stamp referenced;
+ *                    the record remains a valid verification.
+ *
+ * AC: @verification-session-evidence ac-sessionless-stamps-valid
+ * AC: @verification-session-evidence ac-pruned-session-tolerated
+ */
+export type SessionLinkageState =
+  | { kind: "none" }
+  | { kind: "recorded"; sessionId: string }
+  | { kind: "unresolvable"; sessionId: string };
+
+/** A verification stamp plus the resolved state of its session linkage. */
+export interface VerificationStampWithLinkage extends VerificationStamp {
+  sessionLinkage: SessionLinkageState;
+}
+
+/**
+ * Returns true if the named session exists in the project's session store
+ * (a `session.yaml` file under `ctx.sessionsDir/{sessionId}/`). The check is
+ * a tolerant directory probe — a missing sessions root, missing session
+ * directory, or missing metadata file all resolve to `false`. The session
+ * store can be local (`.kspec-sessions/`) or a git worktree; both are
+ * accessed through `ctx.sessionsDir` so this check is layout-agnostic.
+ *
+ * Delegates to the canonical session-store probe so the layout / metadata
+ * filename lives in exactly one place.
+ *
+ * AC: @verification-session-evidence ac-pruned-session-tolerated
+ */
+export async function isSessionResolvable(ctx: KspecContext, sessionId: string): Promise<boolean> {
+  return sessionExists(ctx.sessionsDir, sessionId);
+}
+
+/**
+ * Resolve the session linkage for a stored session reference.
+ *
+ * The store keeps a session id, not a session record, so resolution is a
+ * tolerant existence check against the session store: a missing session
+ * reports `unresolvable` (preserving the id), a present session reports
+ * `recorded`, and a session id of `undefined` reports `none`. The function
+ * never throws on a missing session — pruning is an expected lifecycle
+ * event and must not break stamp reads.
+ *
+ * AC: @verification-session-evidence ac-pruned-session-tolerated
+ */
+export async function resolveSessionLinkage(
+  ctx: KspecContext,
+  sessionId: string | undefined,
+): Promise<SessionLinkageState> {
+  if (sessionId === undefined) {
+    return { kind: "none" };
+  }
+  const resolvable = await isSessionResolvable(ctx, sessionId);
+  return resolvable ? { kind: "recorded", sessionId } : { kind: "unresolvable", sessionId };
+}
+
+/**
+ * Read the current verification stamp for one acceptance criterion, with
+ * its session linkage resolved against the session store.
+ *
+ * The basic `readVerificationStamp` returns the stamp as recorded — the
+ * stored session id is the producing session's identity, readable from
+ * the record alone without consulting session logs or other records
+ * (ac-evidence-readable-from-record). This variant adds the linkage
+ * resolution status (`recorded` if the session is still present,
+ * `unresolvable` if it has been pruned) so consumers can answer
+ * "does this stamp still link to a live session" without rebuilding
+ * the lookup themselves. A pruned session does not fail the read —
+ * the stamp remains a valid verification; only the linkage is
+ * reported as unresolvable.
+ *
+ * AC: @verification-session-evidence ac-evidence-readable-from-record
+ * AC: @verification-session-evidence ac-pruned-session-tolerated
+ */
+export async function readVerificationStampWithLinkage(
+  ctx: KspecContext,
+  itemUlid: string,
+  acId: string,
+): Promise<VerificationStampWithLinkage | undefined> {
+  const stamp = await readVerificationStamp(ctx, itemUlid, acId);
+  if (!stamp) return undefined;
+  const sessionLinkage = await resolveSessionLinkage(ctx, stamp.session);
+  return { ...stamp, sessionLinkage };
 }
