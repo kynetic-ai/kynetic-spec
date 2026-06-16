@@ -32404,8 +32404,11 @@
   type: task
   spec_ref: "@test-annotation-sweep"
   plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
-  status: needs_work
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - 'Agent task-worker failed 4 consecutive times: Internal error: Failed to authenticate. API
+      Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid
+      authentication credentials"},"request_id":"req_011Cc6K3kVnKf5eu7Nzx6fjD"}'
   depends_on:
     - "@task-respec-test-annotation-sweep-na"
   priority: 2
