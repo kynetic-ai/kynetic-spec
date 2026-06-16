@@ -63,6 +63,17 @@ checks:
     runner: npm test
     created_at: 2026-06-16T23:03:35.096Z
     completed_at: 2026-06-16T23:03:35.096Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0. Existing alignment warnings
+      remain in unrelated specs/statuses."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-16T23:03:38.234Z
+    completed_at: 2026-06-16T23:03:38.234Z
 events:
   - _ulid: 01KV99N677AF2KS27JAY14PMMN
     actor: Jacob Chapel
@@ -112,6 +123,13 @@ events:
       status: fail
       name: full test suite
     timestamp: 2026-06-16T23:03:35.354Z
+  - _ulid: 01KV9AT4RV5KA2ECPX2425MK6Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-16T23:03:38.523Z
 examined_commit: 132e68ad5f3e1db4485faedf5a824580d6977da6
 external_links: []
 lifecycle_state: open
@@ -124,5 +142,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-16T22:43:27.591Z
-updated_at: 2026-06-16T23:03:35.096Z
+updated_at: 2026-06-16T23:03:38.234Z
 notes: []
