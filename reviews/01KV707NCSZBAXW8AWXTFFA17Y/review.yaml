@@ -23,6 +23,19 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-16T01:33:22.615Z
     completed_at: 2026-06-16T01:33:22.615Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused changed-file lint exited 0: 35 warnings, 0 errors. Warnings are
+      prefer-template/no-useless-concat/no-shadow style warnings in existing changed files; no
+      focused lint errors."
+    name: focused-lint
+    required: false
+    runner: npx oxlint src/parser/validate.ts tests/ac-annotation-identifier-format.test.ts
+      tests/ac-annotation-validation.test.ts
+    created_at: 2026-06-16T01:33:33.587Z
+    completed_at: 2026-06-16T01:33:33.587Z
 events:
   - _ulid: 01KV707NCS2YB7E32HJ0M8PHGS
     actor: Jacob Chapel
@@ -51,6 +64,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-16T01:33:22.858Z
+  - _ulid: 01KV70ZY7Z7A0QT6AMFYT4H6C8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-16T01:33:33.823Z
 examined_commit: e88c2550106368643dadf40878a8d27b0f5409a3
 external_links: []
 lifecycle_state: open
@@ -63,5 +83,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-16T01:20:18.329Z
-updated_at: 2026-06-16T01:33:22.615Z
+updated_at: 2026-06-16T01:33:33.587Z
 notes: []
