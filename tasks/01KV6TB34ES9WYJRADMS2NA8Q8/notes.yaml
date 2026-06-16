@@ -13,3 +13,18 @@ notes:
     supersedes: null
     author: "@claude"
     created_at: 2026-06-16T00:10:25.368Z
+  - _ulid: 01KV6WC47RQTR6AP2PG17F075D
+    content: "Completed spec mutations via single atomic batch (7/7 OK). Verified via kspec item get on
+      all five items: @test-annotation-sweep now has updated description + depends_on
+      @ac-coverage-applicability + 3 new ACs (ac-na-no-coverage-credit, ac-na-no-invalid-finding,
+      ac-na-marker-preserved); @ac-annotation-integrity-reporting ac-valid-annotation-covers-target,
+      @ac-annotation-identifier-format ac-valid-token-covers-ac, and @trait-validation ac-2 narrowed
+      to coverage-claiming annotations (without a not-applicable marker). @ac-coverage-applicability
+      description already names N/A-counts-as-coverage incorrect and assigns repair to the coverage
+      storage plan (this plan), ac-1/ac-2 left untouched — no amendment needed. kspec validate
+      --refs/--alignment/--completeness all pass (only pre-existing baseline warnings, none on the
+      mutated items). No worker-branch code changes — spec-only task; parser behavior change is the
+      dependent @task-na-annotation-coverage-exclusion."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-16T00:12:50.296Z
