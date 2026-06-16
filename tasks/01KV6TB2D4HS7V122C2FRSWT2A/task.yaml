@@ -72,8 +72,11 @@ description: |
 spec_ref: "@ac-freshness-resolution"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: pending
-blocked_by: []
+status: blocked
+blocked_by:
+  - 'Agent task-worker failed 3 consecutive times: Internal error: Failed to authenticate. API
+    Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid
+    authentication credentials"},"request_id":"req_011Cc6MQKaef2P8VKTzyu4ih"}'
 depends_on:
   - "@task-ac-verification-record-store"
 context: []
@@ -91,6 +94,23 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-15T23:38:57.314Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: pending
+      blocked_by:
+        new:
+          - 'Agent task-worker failed 3 consecutive times: Internal error: Failed to authenticate.
+            API Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid
+            authentication credentials"},"request_id":"req_011Cc6MQKaef2P8VKTzyu4ih"}'
+        previous: []
+      prior_status:
+        new: pending
+        previous: null
+    command: task-block
+    timestamp: 2026-06-16T05:02:39.919Z
+prior_status: pending
 created_at: 2026-06-15T23:37:18.500Z
 todos: []
 automation: eligible
