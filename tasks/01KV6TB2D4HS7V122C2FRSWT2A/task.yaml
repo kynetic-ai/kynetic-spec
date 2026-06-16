@@ -72,8 +72,12 @@ description: |
 spec_ref: "@ac-freshness-resolution"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign at 35eab962fc1c600cfb86204594062254db67e00e. Implemented
+  the AC freshness resolver read path with recorded-over-bootstrap precedence, side-by-side
+  provenance reads, git-blame bootstrap derivation, no-history absence handling, and behavioral AC
+  coverage.
 depends_on:
   - "@task-ac-verification-record-store"
 context: []
@@ -279,9 +283,26 @@ history:
         previous: "@01KV7KG85ZZM10K4NYMGMG033T"
     command: review-link
     timestamp: 2026-06-16T23:08:19.781Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign at 35eab962fc1c600cfb86204594062254db67e00e. Implemented the AC
+          freshness resolver read path with recorded-over-bootstrap precedence, side-by-side
+          provenance reads, git-blame bootstrap derivation, no-history absence handling, and
+          behavioral AC coverage.
+        previous: null
+      completed_at:
+        new: 2026-06-16T23:23:58.930Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-16T23:23:58.939Z
 prior_status: null
 created_at: 2026-06-15T23:37:18.500Z
 started_at: 2026-06-16T23:02:49.300Z
 submitted_at: 2026-06-16T23:03:13.750Z
+completed_at: 2026-06-16T23:23:58.930Z
 todos: []
 automation: eligible
