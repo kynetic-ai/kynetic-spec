@@ -22503,6 +22503,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-16T00:06:44.394Z
+  - _ulid: 01KV6X8ZQBERS3AX8RKZPV9QHP
+    type: friction
+    content: Sidecar storage write APIs need explicit key-validation regression coverage before path
+      construction. In review @01KV6W47 for @task-ac-verification-record-store, the stamp payload
+      was schema-validated but itemUlid/acId were not; a temp-project probe showed
+      '../../modules/specs' escaped coverage/verifications and overwrote a spec module file. Future
+      sidecar stores should validate filename/key inputs with the canonical schemas before computing
+      paths, and tests should include malformed-key rejection with source files unchanged.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KV6X6H"
+    created_at: 2026-06-16T00:28:35.947Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
