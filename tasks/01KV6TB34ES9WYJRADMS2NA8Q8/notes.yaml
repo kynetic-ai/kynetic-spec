@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KV6W7PPRBH29RKBGFJ8ZK83G
+    content: "Approach: spec-mutation-only via single kspec batch. (1) Update @test-annotation-sweep
+      description to state coverage credit accrues only to coverage-claiming annotations; add three
+      ACs with stable ids (ac-na-no-coverage-credit, ac-na-no-invalid-finding,
+      ac-na-marker-preserved); add depends_on @ac-coverage-applicability. (2-4) Reconcile
+      @ac-annotation-integrity-reporting ac-valid-annotation-covers-target,
+      @ac-annotation-identifier-format ac-valid-token-covers-ac, and @trait-validation ac-2 by
+      narrowing given/when to coverage-claiming annotations (those without a not-applicable marker).
+      (5) Verified @ac-coverage-applicability description already names N/A-counts-as-coverage
+      incorrect and assigns repair to the coverage storage plan (this plan); no transition-boundary
+      prose to amend, ac-1/ac-2 left untouched. Verify all five with kspec item get."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-16T00:10:25.368Z
