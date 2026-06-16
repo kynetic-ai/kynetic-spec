@@ -7701,11 +7701,14 @@ requirements:
     description: Coverage annotations map behavior tests to specific acceptance criteria so completeness
       validation reflects real behavior coverage. For specs and traits that define acceptance
       criteria, completeness accounting uses explicit AC-level mappings rather than bare spec-level
-      references.
+      references. Coverage credit accrues only to annotations that claim coverage; an annotation
+      carrying a not-applicable marker claims no coverage — it neither covers a criterion nor
+      exempts it.
     status:
       maturity: draft
       implementation: in_progress
-    depends_on: []
+    depends_on:
+      - "@ac-coverage-applicability"
     implements: []
     relates_to: []
     tests: []
@@ -7727,6 +7730,23 @@ requirements:
         then: The annotation is reported as an invalid AC annotation warning and grants no
           acceptance-criteria coverage credit
         when: kspec validate evaluates completeness coverage
+      - given: A well-formed coverage annotation in a scanned test file carries a not-applicable marker and
+          names one or more acceptance-criterion ids
+        id: ac-na-no-coverage-credit
+        then: The annotation grants no coverage credit for any of the AC ids it names
+        when: completeness validation computes acceptance-criterion coverage
+      - given: A well-formed coverage annotation carrying a not-applicable marker names a resolvable target
+          and acceptance-criterion ids that exist on that target
+        id: ac-na-no-invalid-finding
+        then: The annotation produces no invalid-annotation finding, remaining a valid task-scoped marker
+          while the in-code convention exists, though integrity checks on its target reference and
+          AC ids still apply
+        when: completeness validation runs its annotation integrity checks
+      - given: A coverage annotation carrying a not-applicable marker and reason text appears in a scanned
+          test file
+        id: ac-na-marker-preserved
+        then: The output preserves the not-applicable marker and its reason text rather than discarding them
+        when: structured scan output is produced for that annotation
     tags: []
     requirements:
       - _ulid: 01KQ93NEBFF14YMVCMKPGGARA6
@@ -7757,9 +7777,8 @@ requirements:
               the required ac-prefixed format
             when: |
               completeness validation parses the annotation
-          - given: |
-              A coverage annotation names an existing acceptance criterion using
-              the required token format
+          - given: A coverage-claiming annotation (one without a not-applicable marker) names an existing
+              acceptance criterion using the required token format
             id: ac-valid-token-covers-ac
             then: |
               The named acceptance criterion receives coverage credit from the

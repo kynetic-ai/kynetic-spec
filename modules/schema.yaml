@@ -833,9 +833,8 @@ features:
                   The annotation does not count as coverage for that target
                 when: |
                   completeness validation computes coverage
-              - given: |
-                  A configured coverage scan path contains an AC annotation that
-                  names an existing spec or trait AC
+              - given: A configured coverage scan path contains a coverage-claiming AC annotation (one without a
+                  not-applicable marker) that names an existing spec or trait AC
                 id: ac-valid-annotation-covers-target
                 then: |
                   The named AC is treated as covered by that annotation
@@ -1432,7 +1431,8 @@ features:
           - given: spec implementing trait
             id: ac-2
             then: no warning for that AC
-            when: "trait AC has test annotation '// AC: @trait-ref ac-N'"
+            when: "trait AC has a coverage-claiming test annotation '// AC: @trait-ref ac-N' (one without a
+              not-applicable marker)"
           - given: kspec validate run
             id: ac-3
             then: trait AC coverage included in completeness check (no special flag needed)
