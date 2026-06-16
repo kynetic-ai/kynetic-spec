@@ -473,6 +473,24 @@ function formatCompletenessWarnings(warnings: CompletenessWarning[], verbose: bo
     }
   }
 
+  // AC: @ac-verification-record-store ac-unresolvable-keys-tolerated
+  // Orphaned verification records must be visible in the human report, not just counted.
+  const orphanedVerifications = warnings.filter((w) => w.type === "orphaned_verification_record");
+  if (orphanedVerifications.length > 0) {
+    console.log(chalk.yellow(`  Orphaned verification records: ${orphanedVerifications.length}`));
+    const shown = verbose ? orphanedVerifications : orphanedVerifications.slice(0, 3);
+    for (const w of shown) {
+      console.log(chalk.yellow(`    ! ${w.itemRef} - ${w.itemTitle}`));
+      console.log(chalk.gray(`      ${w.message}`));
+      if (w.details) {
+        console.log(chalk.gray(`      ${w.details}`));
+      }
+    }
+    if (!verbose && orphanedVerifications.length > 3) {
+      console.log(chalk.gray(`    ... and ${orphanedVerifications.length - 3} more`));
+    }
+  }
+
   // Invalid AC annotations in test files — grouped by subtype for actionable repair
   const invalidAnnotations = warnings.filter((w) => w.type === "invalid_ac_annotation");
   if (invalidAnnotations.length > 0) {
