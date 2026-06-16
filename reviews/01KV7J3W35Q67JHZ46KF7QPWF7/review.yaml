@@ -159,6 +159,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-16T06:49:53.604Z
+  - _ulid: 01KV7K3RR3Q2HK7ZZ5RR6AW5JQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV7K3RFF31M5VM2QZJKX783T
+    timestamp: 2026-06-16T06:50:13.635Z
 examined_commit: 0cb9414fe10b56061c1ad2c30d3598be8be3a410
 external_links: []
 lifecycle_state: open
@@ -168,8 +175,31 @@ subject:
   content_hash: ""
   ref: "@01KV6TB3FBNKDHDGSV193MGA9T"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV7K3RFF31M5VM2QZJKX783T
+    entries:
+      - _ulid: 01KV7K3RFFGDEJRKW3G6ABM1M5
+        author: Jacob Chapel
+        body: "Review evidence log\\n\\nFiles read: kspec-agents.md; src/parser/validate.ts;
+          tests/ac-annotation-validation.test.ts; tests/ac-annotation-identifier-format.test.ts;
+          kspec.config.yaml; prior review @01KV707N.\\n\\nCommands run: git diff/stat/name-only/log
+          against 3bb253f5754f88c145d237228525a69f80a6bd09; kspec task get
+          @01KV6TB3FBNKDHDGSV193MGA9T; kspec item get @test-annotation-sweep; kspec validate --refs
+          --warnings-ok; kspec validate --alignment --warnings-ok; kspec validate --completeness
+          --warnings-ok; npm run format:check; npx oxlint src/parser/validate.ts
+          tests/ac-annotation-validation.test.ts tests/ac-annotation-identifier-format.test.ts; npm
+          run lint -- --quiet; npm run typecheck; npm test; git diff --check.\\n\\nClaims verified:
+          N/A groups are preserved in structured scan output, skipped by scanTestCoverage, still
+          passed to validateACAnnotations for integrity warnings, and HTML/Svelte closers are
+          stripped from naReason. Verified by code read and tests passing in
+          ac-annotation-validation.test.ts and
+          ac-annotation-identifier-format.test.ts.\\n\\nCategories searched: correctness, edge cases
+          for no-reason and mixed annotations, HTML/Svelte comment handling, integrity validation,
+          test quality/source-scanner pollution, downstream integration through computeACCoverage
+          consumers, and formatting/lint/type/test gates. No blockers found."
+        created_at: 2026-06-16T06:50:13.359Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-16T06:32:48.485Z
-updated_at: 2026-06-16T06:49:53.327Z
+updated_at: 2026-06-16T06:50:13.359Z
 notes: []
