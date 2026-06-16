@@ -26905,7 +26905,7 @@ reviews:
   - _ulid: 01KV6W47PT2B6DDGC116X37JHF
     slugs: []
     title: Review task-ac-verification-record-store
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 7
     examined_commit: ecb7744927a4eacfd1184463e1e84dff328aca72
@@ -26916,11 +26916,11 @@ reviews:
       content_hash: ""
       ref: "@01KV6TB224D6ZQS7QSJ6W3YTQ4"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-16T00:08:31.706Z
-    updated_at: 2026-06-16T00:25:35.128Z
+    updated_at: 2026-06-16T00:25:49.635Z
   - _ulid: 01KV6WKAHKFQR313FG3FS4QE0H
     slugs: []
     title: Review task-respec-test-annotation-sweep-na

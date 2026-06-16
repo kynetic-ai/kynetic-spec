@@ -141,6 +141,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-16T00:25:35.385Z
+  - _ulid: 01KV6X3XJ82ZV2T34K0QW353K3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV6X3XA24EEQZHT442TZ57K8
+    timestamp: 2026-06-16T00:25:49.896Z
 examined_commit: ecb7744927a4eacfd1184463e1e84dff328aca72
 external_links: []
 lifecycle_state: open
@@ -150,8 +157,33 @@ subject:
   content_hash: ""
   ref: "@01KV6TB224D6ZQS7QSJ6W3YTQ4"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV6X3XA24EEQZHT442TZ57K8
+    anchor:
+      type: code
+      commit: ecb7744927a4eacfd1184463e1e84dff328aca72
+      line_end: 159
+      line_start: 124
+      path: src/parser/verification-record-store.ts
+      side: head
+    entries:
+      - _ulid: 01KV6X3XA2NX9HCA4P9ZCCTYAJ
+        author: Jacob Chapel
+        body: "MUST-FIX: `writeVerificationStamp` must validate the key inputs before constructing
+          filesystem paths or record keys. Right now only the stamp payload is parsed, while
+          `itemUlid` is interpolated directly into `getVerificationRecordPath`; a malformed id such
+          as `../../modules/specs` resolves to `<specDir>/modules/specs.yaml` and overwrites the
+          spec source file. I reproduced this with a temp project: `getVerificationRecordPath(ctx,
+          '../../modules/specs')` returned the module YAML path, and after
+          `writeVerificationStamp(...)` the module file began with the verification record (`acs:
+          ac-one...`). That violates `ac-spec-source-untouched`, breaks the one-file-per-item-ULID
+          storage contract, and leaves the exported programmatic API able to write outside
+          `coverage/verifications`. Validate `itemUlid` with the ULID schema and `acId` with the AC
+          id schema before any path construction/write, and add a regression test proving invalid
+          keys are rejected with stored spec and verification state unchanged."
+        created_at: 2026-06-16T00:25:49.635Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-16T00:08:31.706Z
-updated_at: 2026-06-16T00:25:35.128Z
+updated_at: 2026-06-16T00:25:49.635Z
 notes: []
