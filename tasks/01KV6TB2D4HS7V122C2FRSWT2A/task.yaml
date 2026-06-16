@@ -72,7 +72,7 @@ description: |
 spec_ref: "@ac-freshness-resolution"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-ac-verification-record-store"
@@ -92,7 +92,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-freshness-resolution-read-path/01kv6tb2
-session_id: null
+session_id: 01KV99KB52KMJEMR0BWNTVNPKM
 history:
   - author: Jacob Chapel
     changes:
@@ -232,9 +232,22 @@ history:
         previous: needs_work
     command: task-unblock
     timestamp: 2026-06-16T16:41:24.281Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KV99KB52KMJEMR0BWNTVNPKM
+        previous: null
+      started_at:
+        new: 2026-06-16T23:02:49.300Z
+        previous: 2026-06-16T06:34:58.311Z
+    command: task-start
+    timestamp: 2026-06-16T23:02:49.300Z
 prior_status: null
 created_at: 2026-06-15T23:37:18.500Z
-started_at: 2026-06-16T06:34:58.311Z
+started_at: 2026-06-16T23:02:49.300Z
 submitted_at: 2026-06-16T06:50:58.777Z
 todos: []
 automation: eligible
