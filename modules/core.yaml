@@ -2581,7 +2581,7 @@ features:
       so a fresh checkout of the metadata reproduces the store.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on:
       - "@annotation-freshness-provenance"
       - "@actor-identity-model"
