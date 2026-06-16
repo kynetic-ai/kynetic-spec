@@ -55,7 +55,7 @@ description: |
 spec_ref: "@test-annotation-sweep"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-respec-test-annotation-sweep-na"
@@ -65,6 +65,7 @@ tags:
   - coverage
   - parser
 vcs_refs: []
+session_id: 01KV6YG0WNR5WVMQNNDYWX655J
 history:
   - author: Jacob Chapel
     changes:
@@ -73,6 +74,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-15T23:38:58.635Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KV6YG0WNR5WVMQNNDYWX655J
+        previous: null
+      started_at:
+        new: 2026-06-16T00:50:18.861Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-16T00:50:18.861Z
 created_at: 2026-06-15T23:37:19.595Z
+started_at: 2026-06-16T00:50:18.861Z
 todos: []
 automation: eligible
