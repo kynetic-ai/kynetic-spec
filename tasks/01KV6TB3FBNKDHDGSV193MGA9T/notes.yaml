@@ -106,3 +106,37 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-16T04:31:43.459Z
+  - _ulid: 01KV7CJA49F0H284K1Q0DVVJ3D
+    content: >-
+      Fix cycle 1: addressed both review threads.
+
+
+      Blocker (src/parser/validate.ts:1075 — HTML/Svelte closer contamination):
+      parseACAnnotationLine now strips a trailing block-comment closer ('-->' covers the only block
+      syntax in COMMENT_PREFIX_MAP — .html and .svelte) from the captured naReason before returning
+      the structured group. Added behavioral coverage in
+      tests/ac-annotation-identifier-format.test.ts: two parse-level tests for the HTML reason (with
+      body, and with empty body that is only the closer), plus an end-to-end scanACAnnotations test
+      that writes a .svelte fixture and asserts naReason === 'svelte reason' on the structured
+      annotation. The non-N/A HTML case ('<!-- AC: @x ac-1 -->') was already safe because '-->' is
+      tokenized and ignored as a non-@ref / non-ac- token.
+
+
+      Nit (focused-lint prefer-template warnings on new fixtures): converted acPrefix itself and
+      every 'acPrefix + "..."' fixture in the file to template literals while preserving scanner
+      self-pollution avoidance (the literal '// AC:' still never appears in source). Focused oxlint
+      on this file now reports 0 warnings, 0 errors. Updated the file header comment to describe the
+      new construction.
+
+
+      Nit (review evidence log): acknowledged, no action.
+
+
+      Gates after fix: format clean; repo-wide lint 712 warnings (baseline, no new), 0 errors;
+      focused-lint on changed files 3 pre-existing warnings in src/parser/validate.ts (lines
+      8/836/956/963 — outside my diff), 0 errors, 0 warnings in changed test file; typecheck OK;
+      full suite 10886 passed / 3 skipped / 0 failed (2738.5s; +3 tests for the new HTML/Svelte
+      coverage); kspec refs/alignment/completeness pass with --warnings-ok.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-16T04:55:50.154Z
