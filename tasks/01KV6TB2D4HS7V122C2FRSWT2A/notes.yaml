@@ -50,3 +50,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-16T07:26:19.970Z
+  - _ulid: 01KV7V8CNTTGS0JXZF6P7N4KJN
+    content: >-
+      [DISPATCH-BOOTSTRAP] Bootstrap step "install-workspace-dependencies" failed with exit code 1.
+      Output: npm error Exit handler never called!
+
+      npm error This is an error with npm itself. Please report this error at:
+
+      npm error   <https://github.com/npm/cli/issues>
+
+      npm error A complete log of this run can be found in:
+      /home/chapel/.npm/_logs/2026-06-16T08_37_25_839Z-debug-0.log Suggested action: Inspect the
+      failing bootstrap command, dependency prerequisites, and workspace health before retrying
+      dispatch.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-16T09:12:33.722Z
