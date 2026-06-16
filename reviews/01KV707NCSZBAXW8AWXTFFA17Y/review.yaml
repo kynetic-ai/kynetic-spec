@@ -198,6 +198,42 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-16T01:35:57.640Z
+  - _ulid: 01KV7CGX0Q06GQW3JMGZKBCF47
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV712P6AQFY1C02PR0JHT69H
+    timestamp: 2026-06-16T04:55:03.959Z
+  - _ulid: 01KV7CH03XEK243W3W0BNQC3HT
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KV712P6AQFY1C02PR0JHT69H
+    timestamp: 2026-06-16T04:55:07.133Z
+  - _ulid: 01KV7CH33KM9BK8E3FQZEEMX9S
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV713P25G25F05Q0JF8D1GBK
+    timestamp: 2026-06-16T04:55:10.196Z
+  - _ulid: 01KV7CH5YN09JTCJCBR500FXVQ
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KV713P25G25F05Q0JF8D1GBK
+    timestamp: 2026-06-16T04:55:13.109Z
+  - _ulid: 01KV7CH8Z5RNQCP8ABVYDMX2XF
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV7123Z3F1P3AG93TS56E0V1
+    timestamp: 2026-06-16T04:55:16.197Z
+  - _ulid: 01KV7CHBT17K8RJPVF8ZWK1N6K
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KV7123Z3F1P3AG93TS56E0V1
+    timestamp: 2026-06-16T04:55:19.105Z
 examined_commit: e88c2550106368643dadf40878a8d27b0f5409a3
 external_links: []
 lifecycle_state: closed
@@ -238,7 +274,13 @@ threads:
           Categories searched: correctness, edge cases across supported comment syntaxes,
           integrity/error handling, test quality, AC annotations, and integration consumers.
         created_at: 2026-06-16T01:34:45.219Z
+      - _ulid: 01KV7CH8QJ2MX9WMBG755E40R0
+        author: "@claude"
+        body: Acknowledged — evidence log noted; no action required.
+        created_at: 2026-06-16T04:55:15.954Z
     kind: nit
+    resolved_at: 2026-06-16T04:55:18.857Z
+    resolved_by: "@claude"
   - _ulid: 01KV712P6AQFY1C02PR0JHT69H
     anchor:
       type: code
@@ -259,7 +301,17 @@ threads:
           for an HTML or Svelte N/A annotation and strip the closing delimiter from the captured
           reason while keeping coverage exclusion and integrity validation unchanged."
         created_at: 2026-06-16T01:35:03.882Z
+      - _ulid: 01KV7CGWS00XA1CA07BWD556VN
+        author: "@claude"
+        body: Fixed. parseACAnnotationLine now strips a trailing block-comment closer ('-->' covers the
+          .html and .svelte entries in COMMENT_PREFIX_MAP) from the captured naReason. Added
+          parse-level tests for the HTML reason and the reason-only-closer case, plus an end-to-end
+          scanACAnnotations test over a fixture .svelte file that verifies the structured annotation
+          surfaces 'svelte reason' rather than 'svelte reason -->'. See commit 0cb9414fe1.
+        created_at: 2026-06-16T04:55:03.712Z
     kind: blocker
+    resolved_at: 2026-06-16T04:55:06.881Z
+    resolved_by: "@claude"
   - _ulid: 01KV713P25G25F05Q0JF8D1GBK
     anchor:
       type: code
@@ -278,7 +330,18 @@ threads:
           new fixtures to template literals like , which should preserve the scanner avoidance
           without adding new warnings."
         created_at: 2026-06-16T01:35:36.517Z
+      - _ulid: 01KV7CH2WE8FM0Y1VFPYSN80Z7
+        author: "@claude"
+        body: "Addressed while touching the file for the blocker. Converted acPrefix itself and every
+          'acPrefix + \"...\"' fixture in this file to template literals (\\`${acPrefix}...\\` and
+          \\`//${\" \"}AC: \\` for the constant), so the literal '// AC:' prefix still never appears
+          in source. Focused oxlint on tests/ac-annotation-identifier-format.test.ts now reports 0
+          warnings, 0 errors. Also updated the file header comment to describe the new
+          construction."
+        created_at: 2026-06-16T04:55:09.966Z
     kind: nit
+    resolved_at: 2026-06-16T04:55:12.867Z
+    resolved_by: "@claude"
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -288,5 +351,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-16T01:35:57.639Z
 created_at: 2026-06-16T01:20:18.329Z
-updated_at: 2026-06-16T01:35:57.640Z
+updated_at: 2026-06-16T04:55:18.857Z
 notes: []
