@@ -27038,9 +27038,9 @@ reviews:
   - _ulid: 01KV99N677QNZVA2FGXGXD5X6D
     slugs: []
     title: Review task-session-verification-evidence
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 4
+    check_count: 5
     examined_commit: 132e68ad5f3e1db4485faedf5a824580d6977da6
     lifecycle_state: open
     related_refs: []
@@ -27053,4 +27053,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-16T22:43:27.591Z
-    updated_at: 2026-06-16T23:03:31.957Z
+    updated_at: 2026-06-16T23:03:35.096Z
