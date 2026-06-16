@@ -67732,9 +67732,23 @@ runs:
     completed_at: 2026-06-15T21:55:05.957Z
   - _ulid: 01KV6WD1DWYNVPYFSQRXWZ87F9
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-16T00:13:20.188Z
+        completed_at: 2026-06-16T00:13:45.734Z
+        notes: "Gate check passed: meaningful session work occurred — completed and submitted spec-mutation
+          task @01KV6TB34ES9WYJRADMS2NA8Q8 (respec test-annotation-sweep + 4 reconciliations). Step
+          1 (what worked): single atomic kspec batch with item set (--description, --depends-on) +
+          item ac add (--id for stable ac ids) + item ac set narrowing given/when clauses; dry-run
+          before execute caught nothing but confirmed shape; kspec item get verification on all five
+          mutated items. Clean, no friction."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-16T00:13:45.734Z
+        completed_at: 2026-06-16T00:13:45.734Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-16T00:13:20.188Z
