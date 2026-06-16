@@ -2690,7 +2690,7 @@ features:
           reference, or both.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@annotation-freshness-provenance"
           - "@coverage-scan-config"
