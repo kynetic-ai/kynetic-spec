@@ -32381,7 +32381,7 @@
   type: task
   spec_ref: "@test-annotation-sweep"
   plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -32395,6 +32395,7 @@
   created_at: 2026-06-15T23:37:19.246Z
   started_at: 2026-06-16T00:09:07.902Z
   submitted_at: 2026-06-16T00:12:53.844Z
+  completed_at: 2026-06-16T00:33:07.986Z
   automation: eligible
 - _ulid: 01KV6TB3FBNKDHDGSV193MGA9T
   slugs:
