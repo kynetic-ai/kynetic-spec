@@ -27467,7 +27467,7 @@ workspaces:
         head: 7189e99b302665e18253618951180dac91bc6e20
         last_seen_at: 2026-06-15T20:17:09.342Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-harden-detached-reviewer-merge-helper-paths-01kv698n
-  - active_role: worker
+  - active_role: null
     base_branch_point: 3bb253f5754f88c145d237228525a69f80a6bd09
     bootstrap:
       status: succeeded
@@ -27946,12 +27946,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-16T00:46:54.420Z
+      updated_at: 2026-06-16T00:48:32.472Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-16T00:46:54.420Z
+      updated_at: 2026-06-16T00:48:32.472Z
     integration:
       status: pending
       detail: null
@@ -27959,8 +27959,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 3bb253f5754f88c145d237228525a69f80a6bd09
-      updated_at: 2026-06-16T00:46:54.420Z
-    lifecycle_state: active
+      updated_at: 2026-06-16T00:48:32.472Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV6TB224D6ZQS7QSJ6W3YTQ4
     task_ref: "@01KV6TB224D6ZQS7QSJ6W3YTQ4"
@@ -27968,9 +27968,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-16T00:30:53.119Z
-      last_reconciled_at: 2026-06-16T00:46:54.420Z
+      last_reconciled_at: 2026-06-16T00:48:32.472Z
       created_at: 2026-06-15T23:39:19.823Z
-      updated_at: 2026-06-16T00:46:54.420Z
+      updated_at: 2026-06-16T00:48:32.472Z
     workspace_id: dispatch-workspace-01KV6TB224D6ZQS7QSJ6W3YTQ4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
