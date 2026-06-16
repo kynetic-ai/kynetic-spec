@@ -32362,11 +32362,8 @@
   type: task
   spec_ref: "@verification-session-evidence"
   plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
-  status: blocked
-  blocked_by:
-    - 'Agent task-worker failed 3 consecutive times: Internal error: Failed to authenticate. API
-      Error: 401 {"type":"error","error":{"type":"authentication_error","message":"Invalid
-      authentication credentials"},"request_id":"req_011Cc6McKK7KYCab7Mi3ZVNX"}'
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-ac-verification-record-store"
   priority: 2
