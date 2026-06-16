@@ -26987,3 +26987,80 @@ workspaces:
         head: e88c2550106368643dadf40878a8d27b0f5409a3
         last_seen_at: 2026-06-16T04:35:48.186Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-na-annotation-coverage-exclusion-01kv6tb3
+  - active_role: null
+    base_branch_point: 9e228050796ef40b3d4a8700082259591d1b8667
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-freshness-resolution-read-path/01kv6tb2
+    canonical_branch_head: 9e228050796ef40b3d4a8700082259591d1b8667
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-16T05:00:34.802Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-16T05:00:34.802Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: feat/ui-redesign
+      target_commit: 9e228050796ef40b3d4a8700082259591d1b8667
+      updated_at: 2026-06-16T05:00:34.802Z
+    lifecycle_state: ready
+    resolved_base_branch: feat/ui-redesign
+    task_id: 01KV6TB2D4HS7V122C2FRSWT2A
+    task_ref: "@01KV6TB2D4HS7V122C2FRSWT2A"
+    task_slug: task-freshness-resolution-read-path
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-16T05:00:34.802Z
+      created_at: 2026-06-16T05:00:34.802Z
+      updated_at: 2026-06-16T05:00:34.802Z
+    workspace_id: dispatch-workspace-01KV6TB2D4HS7V122C2FRSWT2A
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-freshness-resolution-read-path/01kv6tb2
+        head: 9e228050796ef40b3d4a8700082259591d1b8667
+        last_seen_at: 2026-06-16T05:00:34.802Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-freshness-resolution-read-path-01kv6tb2
