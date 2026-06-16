@@ -67997,7 +67997,7 @@ runs:
     completed_at: 2026-06-16T04:53:41.305Z
   - _ulid: 01KV7CKDMZA88EG3XAB56E9N7D
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -68010,7 +68010,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-16T04:57:07.754Z
-        completed_at: 2026-06-16T04:57:07.754Z
+        completed_at: 2026-06-16T04:59:24.725Z
+        notes: "Searched: meta observations list (50+ recent), kspec search for 'N/A annotation', 'HTML
+          comment closer', 'comment terminator', 'parseACAnnotationLine', 'scanACAnnotations',
+          'COMMENT_PREFIX_MAP', 'block comment', 'prefer-template', 'scanner self-pollution',
+          'template literal'. No existing tracking for either: (a) language-aware comment opener vs
+          missing closer asymmetry in parseACAnnotationLine, or (b) end-to-end fixture-file test
+          pattern as the right level for parser/scanner integration bugs."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-16T04:59:24.725Z
+        completed_at: 2026-06-16T04:59:24.725Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-16T04:56:26.528Z
