@@ -32319,8 +32319,9 @@
   type: task
   spec_ref: "@ac-verification-record-store"
   plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
-  status: needs_work
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Agent task-worker failed 3 consecutive times: Headed runtime API error"
   depends_on: []
   priority: 1
   tags:
