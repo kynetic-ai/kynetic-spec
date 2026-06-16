@@ -183,6 +183,12 @@ events:
     payload:
       thread_ulid: 01KV6YRBD81VNZWDCFNEHNESK7
     timestamp: 2026-06-16T03:55:18.212Z
+  - _ulid: 01KV793QWQEPHCK8KHZDGFFVHW
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KV6YRBD81VNZWDCFNEHNESK7
+    timestamp: 2026-06-16T03:55:26.999Z
 examined_commit: 19b7dcb3b6134c2f1467d6cc066f75286dc90060
 external_links: []
 lifecycle_state: closed
@@ -279,6 +285,8 @@ threads:
           pre-existing baseline warnings only and no new orphaned_verification_record entries."
         created_at: 2026-06-16T03:55:17.938Z
     kind: blocker
+    resolved_at: 2026-06-16T03:55:26.721Z
+    resolved_by: "@claude"
   - _ulid: 01KV6ZC7VR2SVQ8QSNJXA4NMJY
     entries:
       - _ulid: 01KV6ZC7VR5V3QQHN3SVDK36CQ
@@ -323,5 +331,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-16T01:05:22.843Z
 created_at: 2026-06-16T00:50:25.553Z
-updated_at: 2026-06-16T03:55:17.938Z
+updated_at: 2026-06-16T03:55:26.721Z
 notes: []
