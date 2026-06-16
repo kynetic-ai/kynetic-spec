@@ -58,6 +58,10 @@ import {
 } from "./yaml.js";
 import { resolveTaskDataManager, TaskDataManagerError } from "./task-data-manager.js";
 import { listTaskDirs, getTaskFilePath } from "./split-backend.js";
+import {
+  loadVerificationRecords,
+  partitionVerificationReads,
+} from "./verification-record-store.js";
 
 // ============================================================
 // TYPES
@@ -95,7 +99,8 @@ export type CompletenessWarningType =
   | "ac_schema_field_mismatch"
   | "invalid_ac_annotation"
   | "inconsistent_review_linkage"
-  | "coverage_not_configured";
+  | "coverage_not_configured"
+  | "orphaned_verification_record";
 
 /**
  * Trait cycle error
@@ -1832,6 +1837,68 @@ export function checkACSchemaReferences(items: LoadedSpecItem[]): CompletenessWa
   return warnings;
 }
 
+/**
+ * Check the verification record store for orphaned stamps — stored stamps
+ * whose owning item ULID or acceptance-criterion id no longer resolves to a
+ * live criterion. Loading the store never fails on these; instead each
+ * orphan surfaces as a completeness finding so it is neither silently
+ * dropped nor able to fail an otherwise-valid project.
+ *
+ * The set of live criteria for an item is its own acceptance criteria plus
+ * the acceptance criteria inherited from any traits it implements, since a
+ * stamp may be keyed by an inherited trait AC id under the implementing
+ * item's ULID.
+ *
+ * AC: @ac-verification-record-store ac-unresolvable-keys-tolerated
+ */
+async function checkOrphanedVerifications(
+  ctx: KspecContext,
+  items: LoadedSpecItem[],
+  index: ReferenceIndex,
+  traitIndex: TraitIndex,
+): Promise<CompletenessWarning[]> {
+  const records = await loadVerificationRecords(ctx);
+  if (records.length === 0) {
+    return [];
+  }
+
+  const itemUlids = items.map((item) => item._ulid);
+  const itemsByUlid = new Map(items.map((item) => [item._ulid, item]));
+
+  // Live criteria per item: own AC ids ∪ inherited trait AC ids.
+  const validCriteria = new Map<string, Set<string>>();
+  for (const item of items) {
+    const acIds = new Set<string>();
+    for (const ac of item.acceptance_criteria ?? []) {
+      acIds.add(ac.id);
+    }
+    for (const { ac } of traitIndex.getInheritedAC(item._ulid)) {
+      acIds.add(ac.id);
+    }
+    validCriteria.set(item._ulid, acIds);
+  }
+
+  const { orphans } = partitionVerificationReads(records, validCriteria);
+
+  return orphans.map((orphan) => {
+    const owningItem = itemsByUlid.get(orphan.itemUlid);
+    const itemRef = owningItem?.slugs?.[0]
+      ? `@${owningItem.slugs[0]}`
+      : `@${shortestUniqueUlid(orphan.itemUlid, itemUlids)}`;
+    const message =
+      orphan.reason === "unknown_item"
+        ? `Verification stamp for ${orphan.acId} references item ${orphan.itemUlid}, which no longer exists`
+        : `Verification stamp references ${orphan.acId}, which no longer exists on ${itemRef}`;
+    return {
+      type: "orphaned_verification_record" as const,
+      itemRef,
+      itemTitle: owningItem?.title ?? orphan.itemUlid,
+      message,
+      details: `Orphaned verification record (${orphan.reason}).`,
+    };
+  });
+}
+
 // ============================================================
 // SKILL CONTENT VALIDATION
 // ============================================================
@@ -2645,6 +2712,17 @@ export async function validate(
       );
       const annotationWarnings = validateACAnnotations(annotations, allItems, index);
       completenessWarnings.push(...annotationWarnings);
+
+      // AC: @ac-verification-record-store ac-unresolvable-keys-tolerated
+      // Surface stored verification stamps whose item ULID or AC id no longer
+      // resolves as orphaned-verification findings rather than dropping them.
+      const orphanedVerifications = await checkOrphanedVerifications(
+        ctx,
+        allItems,
+        index,
+        traitIndex,
+      );
+      completenessWarnings.push(...orphanedVerifications);
 
       // AC: @config-validation ac-1 — require_acceptance promotes missing AC to errors
       if (options.requireAcceptance) {

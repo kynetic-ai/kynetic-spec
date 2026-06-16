@@ -37,4 +37,5 @@ export * from "./task-data-manager.js";
 export * from "./task-resource-resolver.js";
 export * from "./traits.js";
 export * from "./validate.js";
+export * from "./verification-record-store.js";
 export * from "./yaml.js";
