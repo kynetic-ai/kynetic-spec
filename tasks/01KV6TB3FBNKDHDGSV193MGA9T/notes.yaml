@@ -89,3 +89,8 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-16T01:40:17.597Z
+  - _ulid: 01KV71D2QS6JY25GKQF4Q1MTWN
+    content: "[AGENT-FAIL] Invocation failed: Headed runtime API error"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-16T01:40:44.410Z
