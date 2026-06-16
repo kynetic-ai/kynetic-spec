@@ -1,0 +1,27 @@
+_ulid: 01KV7N12FRCKZPBHH9040QX02V
+slugs:
+  - task-stabilize-git-prompt-suppression-tests
+title: Stabilize git prompt suppression HTTPS failure tests
+type: bug
+description: "The review run for @01KV6TB2D4HS7V122C2FRSWT2A saw npm test fail only in
+  tests/git-terminal-prompt-suppression.test.ts: three live GitHub HTTPS checks timed out after 10s
+  with spawnSync git ETIMEDOUT. A targeted rerun through npm test --
+  tests/git-terminal-prompt-suppression.test.ts --fresh passed immediately (7/7 in 430ms), so
+  classify this as flaky/environment-dependent. Stabilize these tests so they do not depend on live
+  external GitHub HTTPS behavior or transient network response timing while still verifying
+  GIT_TERMINAL_PROMPT=0 prompt suppression."
+spec_ref: "@dispatch-remote-branch-sync"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - test
+  - flake
+vcs_refs: []
+created_at: 2026-06-16T07:23:42.456Z
+todos: []
+automation: eligible
