@@ -67915,9 +67915,20 @@ runs:
     completed_at: 2026-06-16T01:08:53.543Z
   - _ulid: 01KV71611C19JBW44BEZ4J5891
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-16T01:36:53.292Z
+        completed_at: 2026-06-16T01:38:24.155Z
+        notes: "Meaningful session confirmed: completed a full review cycle for
+          task-na-annotation-coverage-exclusion, recorded review checks, found one blocker, and
+          transitioned the task to needs_work."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-16T01:38:24.155Z
+        completed_at: 2026-06-16T01:38:24.155Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-16T01:36:53.292Z
