@@ -32365,18 +32365,8 @@
   type: task
   spec_ref: "@verification-session-evidence"
   plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
-  status: blocked
-  blocked_by:
-    - >-
-      Dispatch bootstrap failed: Bootstrap step "install-workspace-dependencies" failed with exit
-      code 1. Output: npm error Exit handler never called!
-
-      npm error This is an error with npm itself. Please report this error at:
-
-      npm error   <https://github.com/npm/cli/issues>
-
-      npm error A complete log of this run can be found in:
-      /home/chapel/.npm/_logs/2026-06-16T07_59_03_803Z-debug-0.log
+  status: in_progress
+  blocked_by: []
   depends_on:
     - "@task-ac-verification-record-store"
   priority: 2
