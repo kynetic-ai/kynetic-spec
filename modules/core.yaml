@@ -2793,6 +2793,9 @@ features:
           supplied, it must be a well-formed session identifier; a malformed
           reference rejects the write rather than storing an unusable
           linkage.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
