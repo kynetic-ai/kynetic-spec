@@ -68232,7 +68232,7 @@ runs:
     started_at: 2026-06-16T07:27:12.754Z
     completed_at: 2026-06-16T07:29:31.968Z
   - _ulid: 01KV8PTRB2T43FMSN5VFX574X8
-    status: active
+    status: completed
     current_step: 5
     initiated_by: "@claude"
     step_results:
@@ -68368,7 +68368,29 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-16T17:16:54.103Z
-        completed_at: 2026-06-16T17:16:54.103Z
+        completed_at: 2026-06-16T17:18:18.722Z
+        notes: >-
+          Captured:
+
+
+          - Inbox 01KV8Q0S — dispatch resume helper (extends inbox 01KV2B04 with the agent-failure
+          angle)
+
+          - Inbox 01KV8Q0W — workflow run TTL / auto-close (stale runs clutter 'active runs' error)
+
+          - Meta observation 01KV8Q0F (friction) — format pass and lint pass are separate;
+          work-gates should not assume one implies the other. Also saved to long-term memory as
+          format-and-oxlint-separate.
+
+          - Meta observation 01KV8Q11 (success) — pre-existing in-flight changes being intact across
+          AGENT-FAIL/AGENT-TIMEOUT enabled quick resume; agents that fail partway should still leave
+          the working tree in a resumable state.
+
+
+          Skipped proposals: branch status clarity (inherited vs local commits) — too small for
+          inbox, will re-encounter if it bites again. Dispatch failure engine state at fail time
+          (proposal 5) — overlaps with the dispatch resume helper inbox.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-16T17:14:27.043Z
+    completed_at: 2026-06-16T17:18:18.722Z
