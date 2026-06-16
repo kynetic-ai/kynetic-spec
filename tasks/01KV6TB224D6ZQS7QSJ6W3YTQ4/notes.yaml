@@ -52,3 +52,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-16T01:26:39.366Z
+  - _ulid: 01KV794HKN7Z2YVYY35HK69KJY
+    content: "Fix cycle 2: addressed the cycle-2 blocker. Extended formatCompletenessWarnings
+      (src/cli/commands/validate.ts) with an orphaned_verification_record branch so the human 'kspec
+      validate --completeness' report surfaces the group heading, count, owning item ref/title,
+      message (which carries the offending item ULID or AC id), and details — matching the
+      surrounding warning groups for truncation/verbose. Added behavioral CLI regression test
+      (tests/verification-record-store.test.ts) that runs validate through the subprocess and
+      asserts both the orphan group heading and the offending ULID appear in stdout. Re-verified all
+      7 ACs against the implementation — no other gaps. Gates green: typecheck, format, lint, full
+      test suite (10850 passed/31 skipped), kspec validate refs/alignment/completeness with only
+      pre-existing baseline warnings."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-16T03:55:53.333Z
