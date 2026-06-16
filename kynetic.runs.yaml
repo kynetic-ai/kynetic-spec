@@ -68233,7 +68233,7 @@ runs:
     completed_at: 2026-06-16T07:29:31.968Z
   - _ulid: 01KV8PTRB2T43FMSN5VFX574X8
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -68324,7 +68324,45 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-16T17:16:28.977Z
-        completed_at: 2026-06-16T17:16:28.977Z
+        completed_at: 2026-06-16T17:16:45.238Z
+        notes: >-
+          PROPOSALS (loop-mode auto-capture is too aggressive for these; will write each to inbox as
+          discrete idea):
+
+
+          1. dispatch resume helper: a single command that surfaces 'what the last dispatched agent
+          left in the worktree' — uncommitted diff, AC coverage state, last commit. Could be a flag
+          on kspec task get or a new kspec dispatch inspect. Scope: small (CLI surface change).
+          Helps: cuts the 2-3 'git status/diff/log' round-trips at the start of every resumed
+          dispatch.
+
+
+          2. workflow run TTL / auto-close: a run that has been active >7 days with no progress
+          should auto-transition to closed/abandoned so the 'active runs' list is meaningful. Scope:
+          small (state-machine change). Helps: makes the 'active runs' error message useful.
+
+
+          3. format and lint integration: a single 'npm run tidy' that runs oxfmt --write and oxlint
+          --fix, or a doc note in the work-gates skill that the two are separate passes. Scope:
+          small (skill text + optional command). Helps: stops agents from running format and
+          stopping when oxlint still has a fix to apply.
+
+
+          4. branch state clarity: 'git status' style output for kspec branches distinguishing
+          local-only commits from inherited merge commits from siblings. Scope: small (CLI report).
+          Helps: avoids the 'wait, am I really current with the integration target?' moment.
+
+
+          5. (Related to proposal 1) tool output of dispatch failure reason at the time of failure.
+          AGENT-FAIL entries just say 'Failed to authenticate' but the dispatch engine's last-known
+          workspace state would help recovery. Scope: medium (requires engine state changes).
+
+
+          Routing: 1, 2, 4, 5 → inbox (vague scope, want triage). 3 → skill text or skill add.
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-16T17:16:45.238Z
+        completed_at: 2026-06-16T17:16:45.238Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-16T17:14:27.043Z
