@@ -20,6 +20,7 @@ export * from "./convention-validation.js";
 export * from "./coverage-cache.js";
 export * from "./file-lock.js";
 export * from "./fix.js";
+export * from "./freshness-resolver.js";
 export * from "./items.js";
 export * from "./meta.js";
 export * from "./plans.js";
