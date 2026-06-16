@@ -26962,7 +26962,7 @@ reviews:
   - _ulid: 01KV707NCSZBAXW8AWXTFFA17Y
     slugs: []
     title: Review task-na-annotation-coverage-exclusion
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 8
     examined_commit: e88c2550106368643dadf40878a8d27b0f5409a3
@@ -26973,8 +26973,8 @@ reviews:
       content_hash: ""
       ref: "@01KV6TB3FBNKDHDGSV193MGA9T"
       shadow_commit: ""
-    thread_count: 1
-    unresolved_blocker_count: 0
+    thread_count: 2
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-16T01:20:18.329Z
-    updated_at: 2026-06-16T01:34:45.219Z
+    updated_at: 2026-06-16T01:35:03.882Z

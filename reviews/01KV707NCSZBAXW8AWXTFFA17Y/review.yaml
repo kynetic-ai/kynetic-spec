@@ -168,6 +168,13 @@ events:
       kind: nit
       thread_ulid: 01KV7123Z3F1P3AG93TS56E0V1
     timestamp: 2026-06-16T01:34:45.447Z
+  - _ulid: 01KV712PDNDAQW7QBC1BNH08TK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV712P6AQFY1C02PR0JHT69H
+    timestamp: 2026-06-16T01:35:04.117Z
 examined_commit: e88c2550106368643dadf40878a8d27b0f5409a3
 external_links: []
 lifecycle_state: open
@@ -209,7 +216,28 @@ threads:
           integrity/error handling, test quality, AC annotations, and integration consumers.
         created_at: 2026-06-16T01:34:45.219Z
     kind: nit
+  - _ulid: 01KV712P6AQFY1C02PR0JHT69H
+    anchor:
+      type: code
+      commit: e88c2550106368643dadf40878a8d27b0f5409a3
+      line_end: 1080
+      line_start: 1075
+      path: src/parser/validate.ts
+      side: head
+    entries:
+      - _ulid: 01KV712P6A765JSK0VS8CB0YY3
+        author: Jacob Chapel
+        body: "MUST-FIX: N/A reason capture includes HTML/Svelte closing comment delimiters. The scanner
+          declares .html/.svelte as supported AC annotation syntaxes, so ac-na-marker-preserved
+          should preserve the reason text from those scanned files. With the current regex,
+          parseACAnnotationLine('<!-- AC: @spec-a ac-1 — N/A: html reason -->', /<!--\\s*AC:\\s*/)
+          returns naReason: 'html reason -->'. That means structured output does not preserve the
+          actual reason text; it contaminates it with the source comment terminator. Add coverage
+          for an HTML or Svelte N/A annotation and strip the closing delimiter from the captured
+          reason while keeping coverage exclusion and integrity validation unchanged."
+        created_at: 2026-06-16T01:35:03.882Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-16T01:20:18.329Z
-updated_at: 2026-06-16T01:34:45.219Z
+updated_at: 2026-06-16T01:35:03.882Z
 notes: []
