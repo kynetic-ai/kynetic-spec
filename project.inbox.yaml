@@ -5025,3 +5025,18 @@ inbox:
       - workflow
     added_by: "@claude"
     created_at: 2026-06-16T17:17:47.406Z
+  - _ulid: 01KV9D9WX0D9DNKMBSWY0YKCXJ
+    text: "Regression: kspec review for-task resolves a task slug differently than the canonical task
+      ULID. In Hyphoria, `kspec review for-task
+      @task-implement-civitai-imagegen-compiler-for-smart-image-families` returned only latest
+      review 01KV9B27, while `kspec review for-task @01KV6Q00WAEQ63HJWXRJDGSRMC` returned all three
+      review cycles 01KV90X9, 01KV92VR, and 01KV9B27. Investigate ref normalization/canonical ULID
+      handling for review lookup so slug aliases and canonical refs enumerate the same linked
+      reviews."
+    tags:
+      - regression
+      - refs
+      - reviews
+      - canonicalization
+    added_by: Jacob Chapel
+    created_at: 2026-06-16T23:47:11.904Z
