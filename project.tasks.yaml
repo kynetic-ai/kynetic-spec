@@ -32342,7 +32342,7 @@
   type: task
   spec_ref: "@ac-freshness-resolution"
   plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-ac-verification-record-store"
@@ -32352,7 +32352,7 @@
     - parser
     - storage
   review_ref: "@01KV7KG85ZZM10K4NYMGMG033T"
-  notes_count: 5
+  notes_count: 6
   todos_count: 0
   created_at: 2026-06-15T23:37:18.500Z
   started_at: 2026-06-16T06:34:58.311Z
