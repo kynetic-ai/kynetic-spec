@@ -175,6 +175,13 @@ events:
       kind: blocker
       thread_ulid: 01KV712P6AQFY1C02PR0JHT69H
     timestamp: 2026-06-16T01:35:04.117Z
+  - _ulid: 01KV713P9JXF0SKK1HBXRDXVWH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV713P25G25F05Q0JF8D1GBK
+    timestamp: 2026-06-16T01:35:36.754Z
 examined_commit: e88c2550106368643dadf40878a8d27b0f5409a3
 external_links: []
 lifecycle_state: open
@@ -237,7 +244,26 @@ threads:
           reason while keeping coverage exclusion and integrity validation unchanged."
         created_at: 2026-06-16T01:35:03.882Z
     kind: blocker
+  - _ulid: 01KV713P25G25F05Q0JF8D1GBK
+    anchor:
+      type: code
+      commit: e88c2550106368643dadf40878a8d27b0f5409a3
+      line_end: 595
+      line_start: 526
+      path: tests/ac-annotation-identifier-format.test.ts
+      side: head
+    entries:
+      - _ulid: 01KV713P25FERHSEJR0KVTTE53
+        author: Jacob Chapel
+        body: "Focused lint note: npx oxlint on the changed files exits 0 but reports new prefer-template
+          warnings on added acPrefix concatenations in this section, plus related warnings elsewhere
+          in this file. The existing file uses this pattern to avoid scanner self-pollution, so I am
+          not blocking on it here; when touching these lines for the blocker, consider switching the
+          new fixtures to template literals like , which should preserve the scanner avoidance
+          without adding new warnings."
+        created_at: 2026-06-16T01:35:36.517Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-16T01:20:18.329Z
-updated_at: 2026-06-16T01:35:03.882Z
+updated_at: 2026-06-16T01:35:36.517Z
 notes: []
