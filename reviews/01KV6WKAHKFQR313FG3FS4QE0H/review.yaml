@@ -68,6 +68,20 @@ checks:
     runner: kspec
     created_at: 2026-06-16T00:31:47.547Z
     completed_at: 2026-06-16T00:31:47.547Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0. Completeness warning
+      baseline reported 278 warnings. Touched warning detail is expected for spec-first/future
+      behavior: @test-annotation-sweep remains in_progress with newly added uncovered N/A ACs, and
+      @ac-coverage-applicability is a decision item already assigning implementation to the coverage
+      storage plan."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-16T00:31:57.482Z
+    completed_at: 2026-06-16T00:31:57.482Z
 events:
   - _ulid: 01KV6WKAHJBJAR7RTWBBAEW46B
     actor: Jacob Chapel
@@ -124,6 +138,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-16T00:31:47.793Z
+  - _ulid: 01KV6XF4SMY10EE2Y7ZN37KE0J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-16T00:31:57.748Z
 examined_commit: 3bb253f5754f88c145d237228525a69f80a6bd09
 external_links: []
 lifecycle_state: open
@@ -136,5 +157,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-16T00:16:46.131Z
-updated_at: 2026-06-16T00:31:47.547Z
+updated_at: 2026-06-16T00:31:57.482Z
 notes: []
