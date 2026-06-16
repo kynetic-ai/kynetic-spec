@@ -27592,12 +27592,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-16T17:18:42.904Z
+      updated_at: 2026-06-16T17:19:23.728Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-16T17:18:42.904Z
+      updated_at: 2026-06-16T17:19:23.728Z
     integration:
       status: pending
       detail: null
@@ -27605,8 +27605,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 9e228050796ef40b3d4a8700082259591d1b8667
-      updated_at: 2026-06-16T17:18:42.904Z
-    lifecycle_state: ready
+      updated_at: 2026-06-16T17:19:23.728Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV6TB2SGTYQ6C292HS2VY5HJ
     task_ref: "@01KV6TB2SGTYQ6C292HS2VY5HJ"
@@ -27614,9 +27614,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-16T17:01:24.705Z
-      last_reconciled_at: 2026-06-16T17:18:42.904Z
+      last_reconciled_at: 2026-06-16T17:19:23.728Z
       created_at: 2026-06-16T05:03:14.380Z
-      updated_at: 2026-06-16T17:18:42.904Z
+      updated_at: 2026-06-16T17:19:23.728Z
     workspace_id: dispatch-workspace-01KV6TB2SGTYQ6C292HS2VY5HJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
