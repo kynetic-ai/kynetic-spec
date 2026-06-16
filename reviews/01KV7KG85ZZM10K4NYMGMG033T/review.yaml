@@ -146,6 +146,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-16T07:25:27.455Z
+  - _ulid: 01KV7N4W178BF2P1EQ3VT3AX1W
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV7N4VSNG7AYQDB0NEE6CC80
+    timestamp: 2026-06-16T07:25:46.919Z
 examined_commit: 3a2bb4935ee7b39b5564902c7efe69c936ff8f2b
 external_links: []
 lifecycle_state: open
@@ -155,8 +162,33 @@ subject:
   content_hash: ""
   ref: "@01KV6TB2D4HS7V122C2FRSWT2A"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV7N4VSNG7AYQDB0NEE6CC80
+    anchor:
+      type: code
+      commit: 3a2bb4935ee7b39b5564902c7efe69c936ff8f2b
+      line_end: 291
+      line_start: 268
+      path: src/parser/freshness-resolver.ts
+      side: head
+    entries:
+      - _ulid: 01KV7N4VSPX4RMN8XPMMRGGV1B
+        author: Jacob Chapel
+        body: "MUST-FIX: parseBlamePorcelain assumes git blame --line-porcelain records are separated by
+          blank lines, but actual batched blame output for multiple -L ranges is contiguous: one
+          header/metadata/source-line block is immediately followed by the next header. I verified
+          this with a temp git repo using git blame --line-porcelain -L 1,1 -L 2,2; there was no
+          blank separator between the first line's source content and the next commit header.
+          Because this loop splits only on \"\\n\\n\", a same-file batch returns only the first
+          blamed line and pads the rest with null. That violates @ac-freshness-resolution
+          ac-multi-annotation-most-recent for multiple annotations in the same file: if line 2 was
+          touched more recently than line 1, the resolver still picks line 1; if the first requested
+          line is uncommitted, later committed annotations in the same file can be ignored as
+          no-history. The new tests cover multi-annotation cases across separate files, but not
+          several annotation lines in one file."
+        created_at: 2026-06-16T07:25:46.678Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-16T06:57:02.655Z
-updated_at: 2026-06-16T07:25:27.228Z
+updated_at: 2026-06-16T07:25:46.678Z
 notes: []
