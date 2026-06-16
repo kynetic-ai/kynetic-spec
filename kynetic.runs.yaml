@@ -68233,7 +68233,7 @@ runs:
     completed_at: 2026-06-16T07:29:31.968Z
   - _ulid: 01KV8PTRB2T43FMSN5VFX574X8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -68271,7 +68271,37 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-16T17:14:59.732Z
-        completed_at: 2026-06-16T17:14:59.732Z
+        completed_at: 2026-06-16T17:15:15.130Z
+        notes: >-
+          FRICTION:
+
+
+          1. Resuming mid-flight was awkward: I had to read the diff against origin to see what the
+          prior attempt had done. There's no 'show me what was last uncommitted on this branch'
+          shortcut. For dispatch retries after AGENT-FAIL/AGENT-TIMEOUT, a single command that says
+          'here's what the last agent left in working tree' would speed resume.
+
+
+          2. The '3 unpushed commits' was misleading: I was at the same commit as
+          origin/feat/ui-redesign, but the 'ahead of origin/dispatch/task/...' counter showed 3 —
+          those were merge commits from a sibling task that the local branch happened to carry. I
+          had to diff against both refs to be sure I was current. Branch status reporting should
+          distinguish local commits from inherited merge commits.
+
+
+          3. npx oxlint output for format-check and lint: format-check said '2 files have issues'
+          and the formatter rewrote them, but it did not fix the string-concat warning that oxlint
+          flagged. Two separate tool runs needed — would be nice if format pass also resolved
+          oxfmt-prefer-template violations.
+
+
+          4. kspec workflow next without @ref errors with a wall of 'active runs found' because
+          every past session left a workflow run dangling. Workflows should auto-close or have a
+          TTL. The signal-to-noise ratio of that error was poor.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-16T17:15:15.130Z
+        completed_at: 2026-06-16T17:15:15.130Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-16T17:14:27.043Z
