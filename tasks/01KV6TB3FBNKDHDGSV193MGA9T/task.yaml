@@ -55,11 +55,8 @@ description: |
 spec_ref: "@test-annotation-sweep"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: blocked
-blocked_by:
-  - 'Agent task-worker failed 5 consecutive times: Internal error: API Error: 400
-    {"type":"error","error":{"type":"invalid_request_error","message":"This organization has been
-    disabled."},"request_id":"req_011Cc6MBSJMMs5RvpjTi5y5x"}'
+status: pending_review
+blocked_by: []
 depends_on:
   - "@task-respec-test-annotation-sweep-na"
 context: []
@@ -77,7 +74,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-na-annotation-coverage-exclusion/01kv6tb3
-session_id: 01KV7BDSR09CTGHCCM50RZN63J
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -252,7 +249,26 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-06-16T04:59:43.904Z
-prior_status: pending_review
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - 'Agent task-worker failed 5 consecutive times: Internal error: API Error: 400
+            {"type":"error","error":{"type":"invalid_request_error","message":"This organization has
+            been disabled."},"request_id":"req_011Cc6MBSJMMs5RvpjTi5y5x"}'
+      session_id:
+        new: null
+        previous: 01KV7BDSR09CTGHCCM50RZN63J
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-06-16T06:29:25.429Z
+prior_status: null
 created_at: 2026-06-15T23:37:19.595Z
 started_at: 2026-06-16T04:36:51.471Z
 submitted_at: 2026-06-16T04:55:51.100Z
