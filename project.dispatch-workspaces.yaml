@@ -27395,13 +27395,22 @@ workspaces:
   - active_role: null
     base_branch_point: e9ae4ba5867eeb3232b0d8444b27e11ff9e4409d
     bootstrap:
-      status: not_run
-      canonicalBranchHead: null
-      configHash: null
-      failureMessage: null
+      status: failed
+      canonicalBranchHead: e9ae4ba5867eeb3232b0d8444b27e11ff9e4409d
+      configHash: 726d8dab5f5ed6733d984381b40e07b53bf3966b5a6239aefc441d36d5f23631
+      failureMessage: >-
+        Bootstrap step "install-workspace-dependencies" failed with exit code 1. Output: npm error
+        Exit handler never called!
+
+        npm error This is an error with npm itself. Please report this error at:
+
+        npm error   <https://github.com/npm/cli/issues>
+
+        npm error A complete log of this run can be found in:
+        /home/chapel/.npm/_logs/2026-06-16T09_13_45_652Z-debug-0.log
       invalidationReasons: []
-      lastRole: null
-      lastRunAt: null
+      lastRole: worker
+      lastRunAt: 2026-06-16T09:51:19.443Z
       roleStates:
         reviewer:
           status: not_run
@@ -27412,14 +27421,57 @@ workspaces:
           lastRunAt: null
           steps: []
         worker:
-          status: not_run
-          canonicalBranchHead: null
-          configHash: null
-          failureMessage: null
+          status: failed
+          canonicalBranchHead: e9ae4ba5867eeb3232b0d8444b27e11ff9e4409d
+          configHash: 726d8dab5f5ed6733d984381b40e07b53bf3966b5a6239aefc441d36d5f23631
+          failureMessage: >-
+            Bootstrap step "install-workspace-dependencies" failed with exit code 1. Output: npm
+            error Exit handler never called!
+
+            npm error This is an error with npm itself. Please report this error at:
+
+            npm error   <https://github.com/npm/cli/issues>
+
+            npm error A complete log of this run can be found in:
+            /home/chapel/.npm/_logs/2026-06-16T09_13_45_652Z-debug-0.log
           invalidationReasons: []
-          lastRunAt: null
-          steps: []
-      steps: []
+          lastRunAt: 2026-06-16T09:51:19.443Z
+          steps:
+            - status: failed
+              allowTrackedChanges: false
+              idempotent: true
+              name: install-workspace-dependencies
+              output: >-
+                npm error Exit handler never called!
+
+                npm error This is an error with npm itself. Please report this error at:
+
+                npm error   <https://github.com/npm/cli/issues>
+
+                npm error A complete log of this run can be found in:
+                /home/chapel/.npm/_logs/2026-06-16T09_13_45_652Z-debug-0.log
+              reviewerRerunAllowed: true
+              role: worker
+              run: npm ci --ignore-scripts=false
+              source: dispatch
+      steps:
+        - status: failed
+          allowTrackedChanges: false
+          idempotent: true
+          name: install-workspace-dependencies
+          output: >-
+            npm error Exit handler never called!
+
+            npm error This is an error with npm itself. Please report this error at:
+
+            npm error   <https://github.com/npm/cli/issues>
+
+            npm error A complete log of this run can be found in:
+            /home/chapel/.npm/_logs/2026-06-16T09_13_45_652Z-debug-0.log
+          reviewerRerunAllowed: true
+          role: worker
+          run: npm ci --ignore-scripts=false
+          source: dispatch
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -27458,7 +27510,7 @@ workspaces:
       last_active_at: null
       last_reconciled_at: 2026-06-16T09:13:44.959Z
       created_at: 2026-06-16T09:13:44.959Z
-      updated_at: 2026-06-16T09:13:44.959Z
+      updated_at: 2026-06-16T09:51:19.443Z
     workspace_id: dispatch-workspace-01KV7N12FRCKZPBHH9040QX02V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
