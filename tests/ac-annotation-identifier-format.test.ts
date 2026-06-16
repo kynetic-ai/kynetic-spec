@@ -11,11 +11,15 @@
  * are constructed via string concatenation to prevent the coverage scanner
  * from misinterpreting them as real AC annotations.
  */
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
+import * as fs from "node:fs/promises";
+import * as os from "node:os";
+import * as path from "node:path";
 import {
   parseACAnnotationLine,
   validateACAnnotations,
   computeACCoverage,
+  scanTestCoverage,
 } from "../src/parser/validate.js";
 import { ReferenceIndex } from "../src/parser/refs.js";
 
@@ -503,5 +507,191 @@ describe("ac-valid-delimiters-preserved: whitespace and comma delimiters produce
       expect.objectContaining({ id: "ac-2", covered: true }),
       expect.objectContaining({ id: "ac-3", covered: true }),
     ]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// @test-annotation-sweep ac-na-marker-preserved
+//
+// "structured scan output preserves the not-applicable marker and its reason
+//  text rather than discarding them."
+//
+// Fixtures use acPrefix concatenation so the scanner never reads a literal
+// "// AC:" line from this source file.
+// ---------------------------------------------------------------------------
+
+// AC: @test-annotation-sweep ac-na-marker-preserved
+describe("ac-na-marker-preserved: N/A marker and reason survive parsing", () => {
+  it("captures the not-applicable flag and reason instead of stripping them", () => {
+    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1 — N/A: does not apply here");
+    expect(groups).toEqual([
+      {
+        specRef: "@my-spec",
+        acIds: ["ac-1"],
+        malformedTokens: [],
+        notApplicable: true,
+        naReason: "does not apply here",
+      },
+    ]);
+  });
+
+  it("records the marker even when no reason text is supplied", () => {
+    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1 -- N/A");
+    expect(groups).toEqual([
+      { specRef: "@my-spec", acIds: ["ac-1"], malformedTokens: [], notApplicable: true },
+    ]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// @test-annotation-sweep ac-na-no-coverage-credit
+//
+// "A well-formed N/A annotation grants no coverage credit for any of the AC
+//  ids it names." Verified through the real file scanner (scanTestCoverage),
+//  which builds the flat coverage set every downstream consumer reads.
+// ---------------------------------------------------------------------------
+
+// AC: @test-annotation-sweep ac-na-no-coverage-credit
+describe("ac-na-no-coverage-credit: N/A annotations are not coverage signals", () => {
+  let scanDir: string;
+
+  afterEach(async () => {
+    if (scanDir) await fs.rm(scanDir, { recursive: true, force: true });
+  });
+
+  async function writeScanFixture(filename: string, line: string): Promise<string> {
+    scanDir = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-na-cov-"));
+    const testsDir = path.join(scanDir, "tests");
+    await fs.mkdir(testsDir, { recursive: true });
+    // Build the annotation line at runtime so this source file contains no
+    // literal "// AC:" fixture that the real coverage scanner would pick up.
+    await fs.writeFile(path.join(testsDir, filename), `${line}\nit('t', () => {});\n`);
+    return scanDir;
+  }
+
+  it("excludes every AC id named by an N/A annotation from the coverage set", async () => {
+    const root = await writeScanFixture(
+      "na.test.ts",
+      acPrefix + "@some-spec ac-1, ac-2 — N/A: not applicable",
+    );
+    const covered = await scanTestCoverage(root, ["tests/"]);
+    expect(covered.has("@some-spec ac-1")).toBe(false);
+    expect(covered.has("@some-spec ac-2")).toBe(false);
+  });
+
+  it("credits only the coverage claim on a mixed claim/N/A line", async () => {
+    const root = await writeScanFixture(
+      "mixed.test.ts",
+      acPrefix + "@spec-a ac-1, @spec-b ac-2 — N/A: only b is N/A",
+    );
+    const covered = await scanTestCoverage(root, ["tests/"]);
+    expect(covered.has("@spec-a ac-1")).toBe(true);
+    expect(covered.has("@spec-b ac-2")).toBe(false);
+  });
+
+  it("leaves an AC uncovered when its only annotation is N/A (no compensating credit)", async () => {
+    const root = await writeScanFixture(
+      "only-na.test.ts",
+      acPrefix + "@some-spec ac-1 — N/A: skip",
+    );
+    const covered = await scanTestCoverage(root, ["tests/"]);
+    const coverage = computeACCoverage(
+      {
+        _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+        slugs: ["some-spec"],
+        acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
+      },
+      covered,
+    );
+    expect(coverage).toEqual([expect.objectContaining({ id: "ac-1", covered: false })]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// @test-annotation-sweep ac-na-no-invalid-finding
+//
+// "A well-formed N/A annotation naming a resolvable target and existing AC ids
+//  produces no invalid-annotation finding, while integrity checks on its target
+//  reference and AC ids still apply."
+// ---------------------------------------------------------------------------
+
+// AC: @test-annotation-sweep ac-na-no-invalid-finding
+describe("ac-na-no-invalid-finding: integrity checks still apply to N/A annotations", () => {
+  const items = [
+    {
+      _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+      slugs: ["my-spec"],
+      title: "My Spec",
+      type: "requirement" as const,
+      description: "Spec with ACs",
+      status: { maturity: "draft" as const, implementation: "not_started" as const },
+      acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
+      _sourceFile: "modules/spec.yaml",
+    },
+  ];
+  const index = new ReferenceIndex([], items);
+
+  it("produces no finding for a well-formed N/A annotation on a resolvable target", () => {
+    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1 — N/A: covered elsewhere");
+    expect(groups[0].notApplicable).toBe(true);
+
+    const warnings = validateACAnnotations(
+      [
+        {
+          specRef: groups[0].specRef,
+          acIds: groups[0].acIds,
+          malformedTokens: groups[0].malformedTokens,
+          notApplicable: groups[0].notApplicable,
+          naReason: groups[0].naReason,
+          file: "/tmp/tests/spec.test.ts",
+          line: 5,
+        },
+      ],
+      items,
+      index,
+    );
+    expect(warnings).toHaveLength(0);
+  });
+
+  it("still reports an unresolved target for an N/A annotation", () => {
+    const groups = parseACAnnotationLine(acPrefix + "@nonexistent ac-1 — N/A: nowhere");
+    const warnings = validateACAnnotations(
+      [
+        {
+          specRef: groups[0].specRef,
+          acIds: groups[0].acIds,
+          malformedTokens: groups[0].malformedTokens,
+          notApplicable: groups[0].notApplicable,
+          naReason: groups[0].naReason,
+          file: "/tmp/tests/spec.test.ts",
+          line: 5,
+        },
+      ],
+      items,
+      index,
+    );
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0].subtype).toBe("unresolved_target");
+  });
+
+  it("still reports a missing AC id for an N/A annotation naming an unknown criterion", () => {
+    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-99 — N/A: no such ac");
+    const warnings = validateACAnnotations(
+      [
+        {
+          specRef: groups[0].specRef,
+          acIds: groups[0].acIds,
+          malformedTokens: groups[0].malformedTokens,
+          notApplicable: groups[0].notApplicable,
+          naReason: groups[0].naReason,
+          file: "/tmp/tests/spec.test.ts",
+          line: 5,
+        },
+      ],
+      items,
+      index,
+    );
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0].subtype).toBe("missing_ac_id");
   });
 });

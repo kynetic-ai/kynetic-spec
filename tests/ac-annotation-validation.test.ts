@@ -19,6 +19,7 @@ import {
   computeACCoverage,
   validate,
   scanACAnnotations,
+  scanTestCoverage,
   validateACAnnotations,
   parseACAnnotationLine,
 } from "../src/parser/validate.js";
@@ -807,9 +808,41 @@ it('invalid trait AC ref', () => {});
       expect(groups).toEqual([{ specRef: "@some-spec", acIds: [], malformedTokens: [] }]);
     });
 
-    it("should strip N/A suffix", () => {
+    // AC: @test-annotation-sweep ac-na-marker-preserved
+    it("should preserve the N/A marker and reason instead of stripping them", () => {
       const groups = parseACAnnotationLine("// AC: @spec-a ac-1 — N/A: reason why");
-      expect(groups).toEqual([{ specRef: "@spec-a", acIds: ["ac-1"], malformedTokens: [] }]);
+      expect(groups).toEqual([
+        {
+          specRef: "@spec-a",
+          acIds: ["ac-1"],
+          malformedTokens: [],
+          notApplicable: true,
+          naReason: "reason why",
+        },
+      ]);
+    });
+
+    // AC: @test-annotation-sweep ac-na-marker-preserved
+    it("should preserve an N/A marker with no reason text", () => {
+      const groups = parseACAnnotationLine("// AC: @spec-a ac-1 -- N/A");
+      expect(groups).toEqual([
+        { specRef: "@spec-a", acIds: ["ac-1"], malformedTokens: [], notApplicable: true },
+      ]);
+    });
+
+    // AC: @test-annotation-sweep ac-na-no-coverage-credit
+    it("should attach an N/A marker only to the last group on a mixed line", () => {
+      const groups = parseACAnnotationLine("// AC: @spec-a ac-1, @spec-b ac-2 — N/A: only b");
+      expect(groups).toEqual([
+        { specRef: "@spec-a", acIds: ["ac-1"], malformedTokens: [] },
+        {
+          specRef: "@spec-b",
+          acIds: ["ac-2"],
+          malformedTokens: [],
+          notApplicable: true,
+          naReason: "only b",
+        },
+      ]);
     });
 
     it("should strip parenthetical comments", () => {
@@ -966,6 +999,172 @@ it('test', () => {});
       expect(invalidAnnotations).toHaveLength(1);
       expect(invalidAnnotations[0].message).toContain("@nonexistent");
       expect(invalidAnnotations[0].message).toContain("cannot be resolved");
+    });
+  });
+
+  describe("not-applicable annotations are not coverage signals", () => {
+    // AC: @test-annotation-sweep ac-na-marker-preserved
+    it("preserves the N/A marker and reason in structured scan output", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+      await fs.writeFile(
+        path.join(testsDir, "na.test.ts"),
+        "// AC: @some-spec ac-1 — N/A: does not apply here\nit('test', () => {});",
+      );
+
+      const annotations = await scanACAnnotations(tempDir, ["tests/"]);
+      expect(annotations).toHaveLength(1);
+      expect(annotations[0]).toMatchObject({
+        specRef: "@some-spec",
+        acIds: ["ac-1"],
+        notApplicable: true,
+        naReason: "does not apply here",
+      });
+    });
+
+    // AC: @test-annotation-sweep ac-na-no-coverage-credit
+    it("excludes AC ids named by an N/A annotation from the coverage set", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+      await fs.writeFile(
+        path.join(testsDir, "na.test.ts"),
+        "// AC: @some-spec ac-1, ac-2 — N/A: not applicable\nit('test', () => {});",
+      );
+
+      const covered = await scanTestCoverage(tempDir, ["tests/"]);
+      expect(covered.has("@some-spec ac-1")).toBe(false);
+      expect(covered.has("@some-spec ac-2")).toBe(false);
+    });
+
+    // AC: @test-annotation-sweep ac-na-no-coverage-credit
+    it("credits only the coverage claim on a mixed claim/N/A line", async () => {
+      const testsDir = path.join(tempDir, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+      await fs.writeFile(
+        path.join(testsDir, "mixed.test.ts"),
+        "// AC: @spec-a ac-1, @spec-b ac-2 — N/A: only b is N/A\nit('test', () => {});",
+      );
+
+      const covered = await scanTestCoverage(tempDir, ["tests/"]);
+      expect(covered.has("@spec-a ac-1")).toBe(true);
+      expect(covered.has("@spec-b ac-2")).toBe(false);
+    });
+
+    // AC: @test-annotation-sweep ac-na-no-coverage-credit
+    it("leaves an AC uncovered when its only annotation is N/A", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["my-feature"],
+            title: "My Feature",
+            type: "requirement",
+            description: "A feature",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
+          },
+        ],
+        testFiles: {
+          "feature.test.ts":
+            '// AC: @my-feature ac-1 — N/A: not implemented yet\nit("t", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      // The N/A annotation grants no credit, so ac-1 is reported uncovered.
+      const missingCoverage = result.completenessWarnings.filter(
+        (w) =>
+          w.type === "missing_test_coverage" &&
+          w.subtype === "own_ac" &&
+          w.itemRef === "@my-feature",
+      );
+      expect(missingCoverage.length).toBeGreaterThan(0);
+    });
+
+    // AC: @test-annotation-sweep ac-na-no-invalid-finding
+    it("produces no invalid-annotation finding for a well-formed N/A annotation", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["my-feature"],
+            title: "My Feature",
+            type: "requirement",
+            description: "A feature",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
+          },
+        ],
+        testFiles: {
+          "feature.test.ts": '// AC: @my-feature ac-1 — N/A: covered elsewhere\nit("t", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      expect(invalidAnnotations).toHaveLength(0);
+    });
+
+    // AC: @test-annotation-sweep ac-na-no-invalid-finding
+    it("still reports integrity findings for an N/A annotation with a bad target", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["my-feature"],
+            title: "My Feature",
+            type: "requirement",
+            description: "A feature",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
+          },
+        ],
+        testFiles: {
+          "bad.test.ts":
+            '// AC: @nonexistent ac-1 — N/A: still resolves nowhere\nit("t", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].message).toContain("@nonexistent");
+      expect(invalidAnnotations[0].message).toContain("cannot be resolved");
+    });
+
+    // AC: @test-annotation-sweep ac-na-no-invalid-finding
+    it("still reports a missing AC id for an N/A annotation naming an unknown criterion", async () => {
+      const ctx = await setupProject({
+        specItems: [
+          {
+            _ulid: "01KFCRVY8ERZEE2MNHEQXSG90T",
+            slugs: ["my-feature"],
+            title: "My Feature",
+            type: "requirement",
+            description: "A feature",
+            status: { maturity: "draft", implementation: "not_started" },
+            acceptance_criteria: [{ id: "ac-1", given: "g", when: "w", then: "t" }],
+          },
+        ],
+        testFiles: {
+          "missing.test.ts": '// AC: @my-feature ac-99 — N/A: no such ac\nit("t", () => {});',
+        },
+      });
+
+      const result = await validate(ctx, { completeness: true });
+
+      const invalidAnnotations = result.completenessWarnings.filter(
+        (w) => w.type === "invalid_ac_annotation",
+      );
+      expect(invalidAnnotations).toHaveLength(1);
+      expect(invalidAnnotations[0].message).toContain("ac-99");
     });
   });
 
