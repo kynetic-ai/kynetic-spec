@@ -26475,7 +26475,7 @@ workspaces:
         head: 3bb253f5754f88c145d237228525a69f80a6bd09
         last_seen_at: 2026-06-16T00:15:23.420Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-respec-test-annotation-sweep-na-01kv6tb3
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 3bb253f5754f88c145d237228525a69f80a6bd09
     bootstrap:
       status: succeeded
@@ -26956,7 +26956,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-16T06:30:43.125Z
+      updated_at: 2026-06-16T06:31:20.119Z
     integration:
       status: pending
       detail: null
@@ -26972,10 +26972,10 @@ workspaces:
     task_slug: task-na-annotation-coverage-exclusion
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-16T04:35:58.394Z
-      last_reconciled_at: 2026-06-16T06:30:43.125Z
+      last_active_at: 2026-06-16T06:31:20.119Z
+      last_reconciled_at: 2026-06-16T06:31:20.119Z
       created_at: 2026-06-16T00:49:26.948Z
-      updated_at: 2026-06-16T06:31:11.261Z
+      updated_at: 2026-06-16T06:31:20.119Z
     workspace_id: dispatch-workspace-01KV6TB3FBNKDHDGSV193MGA9T
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
