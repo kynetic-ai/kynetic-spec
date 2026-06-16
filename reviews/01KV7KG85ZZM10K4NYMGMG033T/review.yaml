@@ -13,6 +13,18 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-16T07:24:03.092Z
     completed_at: 2026-06-16T07:24:03.092Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo lint reported 0 errors (736 existing warnings under quiet gate). Focused
+      changed-file lint also passed via npx oxlint src/parser/freshness-resolver.ts
+      tests/freshness-resolver.test.ts with 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-16T07:24:15.965Z
+    completed_at: 2026-06-16T07:24:15.965Z
 events:
   - _ulid: 01KV7KG85ZFF41NYYWD7311MJQ
     actor: Jacob Chapel
@@ -34,6 +46,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-16T07:24:03.328Z
+  - _ulid: 01KV7N23E3MWGW64MG22VGEETY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-16T07:24:16.195Z
 examined_commit: 3a2bb4935ee7b39b5564902c7efe69c936ff8f2b
 external_links: []
 lifecycle_state: open
@@ -46,5 +65,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-16T06:57:02.655Z
-updated_at: 2026-06-16T07:24:03.092Z
+updated_at: 2026-06-16T07:24:15.965Z
 notes: []
