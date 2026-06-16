@@ -68116,7 +68116,7 @@ runs:
     started_at: 2026-06-16T06:52:01.321Z
     completed_at: 2026-06-16T06:54:15.278Z
   - _ulid: 01KV7K737X9CC0P6GECX3ES9GP
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -68155,10 +68155,15 @@ runs:
           duration/quiet-output concern is not unique enough from existing testing-duration and
           metadata-only gate backlog, including @01KTW9G9 and @01KV3WHP. Decision: no unique
           high-confidence capture items."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-06-16T06:54:37.796Z
-        completed_at: 2026-06-16T06:54:37.796Z
+        completed_at: 2026-06-16T06:54:52.741Z
+        notes: "No capture performed. All high-confidence friction/success candidates were already tracked:
+          @01KKBD55 for workflow step introspection, existing detached-review/merge-helper coverage
+          for merge success, and existing testing-duration/gate-profile backlog for full-suite cost.
+          Loop-mode bar favors no new item over duplicate/noisy capture."
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-16T06:52:02.685Z
+    completed_at: 2026-06-16T06:54:52.741Z
