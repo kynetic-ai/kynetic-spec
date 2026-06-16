@@ -32404,7 +32404,7 @@
   type: task
   spec_ref: "@test-annotation-sweep"
   plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-respec-test-annotation-sweep-na"
@@ -32416,7 +32416,7 @@
   notes_count: 7
   todos_count: 0
   created_at: 2026-06-15T23:37:19.595Z
-  started_at: 2026-06-16T00:50:18.861Z
+  started_at: 2026-06-16T04:36:51.471Z
   submitted_at: 2026-06-16T01:15:49.559Z
   automation: eligible
 - _ulid: 01KV6TB3T0QW16F5HKB8P3BT3J
