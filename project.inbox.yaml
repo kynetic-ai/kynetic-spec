@@ -4996,3 +4996,17 @@ inbox:
       - svelte
     added_by: "@claude"
     created_at: 2026-06-15T02:24:56.232Z
+  - _ulid: 01KV8Q0SF9Z323AP4XSKC23HBP
+    text: "Add a dispatch resume helper (or extend kspec task get) that surfaces the last dispatched
+      agents in-flight worktree state in one command: uncommitted diff, AC coverage state at submit
+      time, last commit hash, and dispatch failure reason. This is the agent-failure angle of inbox
+      01KV2B04 (which covers the manual/Hermes attach case). Resuming after AGENT-FAIL/AGENT-TIMEOUT
+      currently requires 2-3 git round-trips (status, diff, log) plus a search through task notes
+      for the failure reason. A single command would shorten resume time and reduce the risk of an
+      agent re-doing work that was already in the worktree. Scope: small CLI surface change."
+    tags:
+      - reflection
+      - dispatch
+      - workspace-recovery
+    added_by: "@claude"
+    created_at: 2026-06-16T17:17:44.809Z
