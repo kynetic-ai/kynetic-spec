@@ -155,9 +155,25 @@ events:
       kind: nit
       thread_ulid: 01KV6X4D2WYKFSDBWYKQCGHT6N
     timestamp: 2026-06-16T00:26:06.040Z
+  - _ulid: 01KV6X4R07JXDZZHR74NX7M09E
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-16T00:26:16.967Z
+  - _ulid: 01KV6X4R07G56G57YG9J778RK0
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-16T00:26:16.967Z
 examined_commit: ecb7744927a4eacfd1184463e1e84dff328aca72
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -224,7 +240,14 @@ threads:
           integration, shadow commit/write-buffer integration, and repo quality gates.
         created_at: 2026-06-16T00:26:05.789Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-16T00:26:16.967Z
 created_at: 2026-06-16T00:08:31.706Z
-updated_at: 2026-06-16T00:26:05.789Z
+updated_at: 2026-06-16T00:26:16.967Z
 notes: []
