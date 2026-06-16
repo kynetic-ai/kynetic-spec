@@ -24,6 +24,12 @@ events:
       kind: blocker
       thread_ulid: 01KV6YRBD81VNZWDCFNEHNESK7
     timestamp: 2026-06-16T00:54:28.317Z
+  - _ulid: 01KV6YSGHEVGJVVQ7V0DZA1PZD
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV6YRBD81VNZWDCFNEHNESK7
+    timestamp: 2026-06-16T00:55:06.030Z
 examined_commit: 19b7dcb3b6134c2f1467d6cc066f75286dc90060
 external_links: []
 lifecycle_state: open
@@ -91,8 +97,22 @@ threads:
                   /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-verification-record-store-01kv6tb2-review/tests/cli-agent-commands.test.ts:1953
                 ... and 3 more formatter.  partitions warnings into explicit known groups and has no branch or fallback for the new type, so an orphan-only result would show a warning count without the item/AC/message details. That falls short of AC , which requires validation to report orphaned verification records rather than effectively hiding them from the CLI report. The added test at  checks the programmatic  result, but it does not exercise CLI formatting. Add formatter coverage/output for this warning type (and a behavioral CLI test or equivalent) so orphaned verification records are visible to users.
         created_at: 2026-06-16T00:54:28.009Z
+      - _ulid: 01KV6YSG8FP9VDDNCZY15F3YG5
+        author: Jacob Chapel
+        body: "Corrected blocker text: MUST-FIX: orphaned_verification_record is emitted by validation but
+          is not surfaced by the human kspec validate --completeness formatter.
+          formatCompletenessWarnings partitions warnings into explicit known groups and has no
+          branch or fallback for the new type, so an orphan-only result would show a warning count
+          without the item, AC, or message details. That falls short of AC
+          ac-unresolvable-keys-tolerated, which requires validation to report orphaned verification
+          records rather than effectively hiding them from the CLI report. The added test at
+          tests/verification-record-store.test.ts line 343 checks the programmatic validate result,
+          but it does not exercise CLI formatting. Add formatter output for this warning type and
+          behavioral CLI coverage or an equivalent regression test so orphaned verification records
+          are visible to users."
+        created_at: 2026-06-16T00:55:05.743Z
     kind: blocker
 verdicts: []
 created_at: 2026-06-16T00:50:25.553Z
-updated_at: 2026-06-16T00:54:28.009Z
+updated_at: 2026-06-16T00:55:05.743Z
 notes: []
