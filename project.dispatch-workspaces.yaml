@@ -25933,7 +25933,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-16T04:51:54.324Z
+      updated_at: 2026-06-16T04:54:14.649Z
     integration:
       status: merged
       detail: integration:merged
@@ -25950,18 +25950,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-16T04:32:29.193Z
-      last_reconciled_at: 2026-06-16T04:53:59.168Z
+      last_reconciled_at: 2026-06-16T04:54:14.649Z
       created_at: 2026-06-15T23:39:19.823Z
-      updated_at: 2026-06-16T04:53:59.168Z
+      updated_at: 2026-06-16T04:54:14.649Z
     workspace_id: dispatch-workspace-01KV6TB224D6ZQS7QSJ6W3YTQ4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 43d60d696970f1250c59a63782d1b46c9641a858
-        last_seen_at: 2026-06-16T04:31:41.356Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ac-verification-record-store-01kv6tb2-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ac-verification-record-store/01kv6tb2
