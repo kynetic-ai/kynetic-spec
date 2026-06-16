@@ -5010,3 +5010,18 @@ inbox:
       - workspace-recovery
     added_by: "@claude"
     created_at: 2026-06-16T17:17:44.809Z
+  - _ulid: 01KV8Q0W0ECQXG3W3EZ4R5NR1Z
+    text: 'Workflow runs have no TTL or auto-close. After ~3 weeks of work, `kspec workflow next` errors
+      with a 100+ line "Multiple active runs found" list that the user has to scroll through to find
+      the right one. The error message is high-noise / low-signal. Options: (a) auto-close workflow
+      runs that have been active for >7 days with no progress, (b) add a `kspec workflow runs`
+      subcommand to list/manage active runs, (c) sort active runs by most-recent-activity so the
+      current one is at the top. Affects every session that uses workflow start. Scope: small
+      CLI/state-machine change.'
+    tags:
+      - reflection
+      - cli
+      - dx
+      - workflow
+    added_by: "@claude"
+    created_at: 2026-06-16T17:17:47.406Z
