@@ -2,7 +2,94 @@ _ulid: 01KV7B93WCQ5720HJD2M4RPJBM
 slugs: []
 title: Review task-ac-verification-record-store cycle 3
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: All matched files use the correct format (1082 files)."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-16T04:50:06.464Z
+    completed_at: 2026-06-16T04:50:06.464Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors. Repo warning baseline remains; focused oxlint on changed files
+      reported 4 warnings, all on pre-existing lines outside this diff and no new changed-line
+      warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-16T04:50:09.438Z
+    completed_at: 2026-06-16T04:50:09.438Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared and tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-16T04:50:12.449Z
+    completed_at: 2026-06-16T04:50:12.449Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed fresh run: 2862/2862 suites passed; 10878 passed, 3 skipped, 10881 total; duration
+      2768.3s; log /tmp/kspec-test-cache/01KV7B7540V07NWXMC9FQMW6G2/50c05d241782a380.log."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-06-16T04:50:15.386Z
+    completed_at: 2026-06-16T04:50:15.386Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; only existing deprecated-reference warnings reported.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-16T04:50:18.400Z
+    completed_at: 2026-06-16T04:50:18.400Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; existing orphan/status-alignment warning baseline reported.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-16T04:50:21.430Z
+    completed_at: 2026-06-16T04:50:21.430Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; existing missing-coverage/invalid-annotation warning baseline
+      reported.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-16T04:50:24.424Z
+    completed_at: 2026-06-16T04:50:24.424Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Focused lint on src/cli/commands/validate.ts, src/parser/index.ts, src/parser/validate.ts,
+      src/parser/verification-record-store.ts, src/schema/index.ts,
+      src/schema/verification-records.ts, tests/verification-record-store.test.ts completed with 0
+      errors; 4 warnings are pre-existing outside changed lines.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed TS/test files>
+    created_at: 2026-06-16T04:50:27.585Z
+    completed_at: 2026-06-16T04:50:27.585Z
 events:
   - _ulid: 01KV7B93WBY1BE0R9TNX0CC4VR
     actor: Jacob Chapel
@@ -17,17 +104,146 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-16T04:33:37.791Z
+  - _ulid: 01KV7C7TQ9MWPJ7BJG2KTK0THB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-16T04:50:06.697Z
+  - _ulid: 01KV7C7XMF8W9FKB139J8BMFJW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-16T04:50:09.679Z
+  - _ulid: 01KV7C80JK1TDAD8VW4N5PAAPM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-16T04:50:12.691Z
+  - _ulid: 01KV7C83E7ZVGPBTTBSCST7MFF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-16T04:50:15.623Z
+  - _ulid: 01KV7C86CVWBH37WTHJV0VEAR6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-16T04:50:18.651Z
+  - _ulid: 01KV7C89BWP1JBTYYSZ8QK4P3P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-16T04:50:21.692Z
+  - _ulid: 01KV7C8C926V7Y36YVN1QT1REY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-16T04:50:24.674Z
+  - _ulid: 01KV7C8FBDEQJHFGNFF6X4MQMT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-16T04:50:27.821Z
+  - _ulid: 01KV7C8J75SRR6DZ6FZXP9X8TQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV7C8HZ63ZY3414XBW9MCJZT
+    timestamp: 2026-06-16T04:50:30.757Z
+  - _ulid: 01KV7C8N1AZTTZCNY0JRQFKST7
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-16T04:50:33.642Z
+  - _ulid: 01KV7C8N1AJW4W5J57A7AQZZH0
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-16T04:50:33.642Z
 examined_commit: 43d60d696970f1250c59a63782d1b46c9641a858
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KV6TB224D6ZQS7QSJ6W3YTQ4"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KV7C8HZ63ZY3414XBW9MCJZT
+    entries:
+      - _ulid: 01KV7C8HZ7C6RD75T15CGF19QD
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; .agents/skills/kspec-review/SKILL.md via prompt;
+          .agents/skills/kspec-merge/SKILL.md via prompt; review-gates/work-gates/shared guidance in
+          prompt; task @01KV6TB224D6ZQS7QSJ6W3YTQ4; prior reviews @01KV6W47 and @01KV6YGY; plan
+          @plan-ac-coverage-verification-schema-and-storage; spec @ac-verification-record-store;
+          related actor specs @annotation-freshness-provenance, @actor-identity-model,
+          @actor-identity-resolution; changed files src/schema/verification-records.ts,
+          src/parser/verification-record-store.ts, src/parser/validate.ts,
+          src/cli/commands/validate.ts, src/parser/index.ts, src/schema/index.ts,
+          tests/verification-record-store.test.ts; surrounding storage/locking/actor helpers
+          src/parser/review-storage-manager.ts, src/parser/reviews.ts, src/parser/shadow.ts,
+          src/parser/file-lock.ts, src/cli/batch-write-buffer.ts, src/identity/actor-write.ts,
+          src/identity/actor-write-context.ts, src/parser/yaml.ts.
+
+
+          Commands run: git status/rev-parse/diff/log; kspec task get; kspec review
+          for-task/get/add/open; kspec item get; kspec plan get; kspec validate --refs
+          --warnings-ok; kspec validate --alignment --warnings-ok; kspec validate --completeness
+          --warnings-ok; npm run format:check; npm run lint -- --quiet; npx oxlint on changed
+          TS/test files; npm run typecheck; npm test -- --fresh.
+
+
+          Claims verified: cycle-1 path traversal fix is real because writeVerificationStamp
+          validates itemUlid/acId before path construction and tests reject traversal while
+          preserving spec bytes/state; cycle-2 human CLI orphan report is real because
+          formatCompletenessWarnings now prints orphaned_verification_record details and
+          tests/verification-record-store.test.ts ran 12 tests including the CLI regression; AC
+          coverage annotations exist for all 7 @ac-verification-record-store criteria and the tests
+          exercise behavior rather than source scanning.
+
+
+          Categories searched: correctness, edge cases, malformed keys/path traversal, orphan
+          handling, shadow persistence/history, error handling, test quality, integration with
+          validation/CLI formatting, and actor identity boundary. No blockers found.
+        created_at: 2026-06-16T04:50:30.503Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-16T04:50:33.642Z
 created_at: 2026-06-16T04:33:20.268Z
-updated_at: 2026-06-16T04:33:37.549Z
+updated_at: 2026-06-16T04:50:33.642Z
 notes: []
