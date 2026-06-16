@@ -177,6 +177,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-16T01:05:22.843Z
+  - _ulid: 01KV793FA4NZMFAS61MWVXE28P
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV6YRBD81VNZWDCFNEHNESK7
+    timestamp: 2026-06-16T03:55:18.212Z
 examined_commit: 19b7dcb3b6134c2f1467d6cc066f75286dc90060
 external_links: []
 lifecycle_state: closed
@@ -258,6 +264,20 @@ threads:
           behavioral CLI coverage or an equivalent regression test so orphaned verification records
           are visible to users."
         created_at: 2026-06-16T00:55:05.743Z
+      - _ulid: 01KV793F1K30EAJ98WKF7NFP4H
+        author: "@claude"
+        body: "Fixed: extended formatCompletenessWarnings (src/cli/commands/validate.ts:476-492) with an
+          orphaned_verification_record branch. The new group prints a heading 'Orphaned verification
+          records: N', followed by the owning item ref/title, the message (which carries the
+          offending item ULID for unknown_item orphans and the AC id for unknown_ac orphans), and
+          details. Truncation/verbose handling matches the surrounding groups. Added behavioral CLI
+          test tests/verification-record-store.test.ts:367-386 that seeds an orphan, runs the human
+          'kspec validate --completeness' through the CLI subprocess, and asserts both the group
+          heading 'Orphaned verification records: 1' and the offending item ULID appear in stdout.
+          Verified: focused suite passes (12/12), full suite 10850 passed/31 skipped,
+          typecheck/format/lint all clean, kspec validate refs/alignment/completeness pass with
+          pre-existing baseline warnings only and no new orphaned_verification_record entries."
+        created_at: 2026-06-16T03:55:17.938Z
     kind: blocker
   - _ulid: 01KV6ZC7VR2SVQ8QSNJXA4NMJY
     entries:
@@ -303,5 +323,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-16T01:05:22.843Z
 created_at: 2026-06-16T00:50:25.553Z
-updated_at: 2026-06-16T01:05:22.843Z
+updated_at: 2026-06-16T03:55:17.938Z
 notes: []
