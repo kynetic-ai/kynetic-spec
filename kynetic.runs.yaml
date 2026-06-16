@@ -67855,7 +67855,7 @@ runs:
     completed_at: 2026-06-16T00:36:20.038Z
   - _ulid: 01KV6ZEB6A1RZYAYQWZF61F23E
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -67869,7 +67869,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-16T01:07:46.538Z
-        completed_at: 2026-06-16T01:07:46.538Z
+        completed_at: 2026-06-16T01:07:57.447Z
+        notes: "Friction points: A review comment body with markdown-style command text was accidentally
+          shell-interpreted when passed inline to kspec review comment, requiring a corrective
+          reply. Full npm test remained very long for a review gate, but it did progress normally
+          and passed. The validation formatter gap itself is task-specific and already recorded as a
+          blocker on the review."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-16T01:07:57.447Z
+        completed_at: 2026-06-16T01:07:57.447Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-16T01:06:28.682Z
