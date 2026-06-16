@@ -22542,6 +22542,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-16T17:17:18.217Z
+  - _ulid: 01KV8Q0FAGNGTNPPB4KTWT6T9R
+    type: friction
+    content: "Format pass and lint pass are separate. After `npm run format` reports success, oxlint can
+      still flag issues like prefer-template that oxfmt did not fix. Agents in this session
+      repeatedly run format, see green, then hit oxlint warnings on the next step. Workaround:
+      always run `npx oxlint <files>` after `npm run format` to catch the remainder. Consider a
+      single tidy command or an oxfmt config that covers oxlint prefer-template, or a work-gates
+      skill note that format != lint clean."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-16T17:17:34.416Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
