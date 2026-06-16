@@ -41,7 +41,7 @@ description: |
 spec_ref: "@verification-session-evidence"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-ac-verification-record-store"
@@ -52,6 +52,7 @@ tags:
   - schema
   - sessions
 vcs_refs: []
+session_id: 01KV7KEQBBS2BPV3ZYE13AG5ZQ
 history:
   - author: Jacob Chapel
     changes:
@@ -95,7 +96,21 @@ history:
         previous: pending
     command: task-unblock
     timestamp: 2026-06-16T06:29:21.692Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KV7KEQBBS2BPV3ZYE13AG5ZQ
+        previous: null
+      started_at:
+        new: 2026-06-16T06:58:41.731Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-16T06:58:41.732Z
 prior_status: null
 created_at: 2026-06-15T23:37:18.896Z
+started_at: 2026-06-16T06:58:41.731Z
 todos: []
 automation: eligible
