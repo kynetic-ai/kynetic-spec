@@ -22489,6 +22489,20 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-15T21:31:23.821Z
+  - _ulid: 01KV6W0YXA5EA4KQHFQAYDE8Y0
+    type: success
+    content: "Testing shadow-committed sidecar stores: drive the store's programmatic write API against
+      a real shadow project (kspec init --setup + initContext), then assert versioned persistence
+      with 'git show kspec-meta:<relpath>' and supersession history with 'git log --oneline --
+      <relpath>'. This is deterministic (no fresh-checkout clone, no Date.now/random) and proves the
+      commitIfShadow path. Established in tests/verification-record-store.test.ts for
+      @ac-verification-record-store; directly reusable by the sibling store tasks
+      @task-coverage-record-compatibility (unknown-field round-trip, format gating),
+      @task-session-verification-evidence, and @task-freshness-resolution-read-path."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-16T00:06:44.394Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
