@@ -56,7 +56,7 @@ description: |
 spec_ref: "@ac-verification-record-store"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -70,11 +70,11 @@ review_ref: "@01KV6W47PT2B6DDGC116X37JHF"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-ac-verification-record-store/01kv6tb2
-  captured_at: 2026-06-16T00:05:34.838Z
-  commit: ecb7744927a4eacfd1184463e1e84dff328aca72
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-06-16T00:47:31.154Z
+  commit: 19b7dcb3b6134c2f1467d6cc066f75286dc90060
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-ac-verification-record-store/01kv6tb2
 session_id: 01KV6XD03YVWEDJM5T05M7W3SV
 history:
   - author: Jacob Chapel
@@ -147,8 +147,35 @@ history:
         previous: 2026-06-15T23:44:52.723Z
     command: task-start
     timestamp: 2026-06-16T00:47:27.728Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-ac-verification-record-store/01kv6tb2
+          captured_at: 2026-06-16T00:47:31.154Z
+          commit: 19b7dcb3b6134c2f1467d6cc066f75286dc90060
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-ac-verification-record-store/01kv6tb2
+        previous:
+          review_url: null
+          branch: dispatch/task/task-ac-verification-record-store/01kv6tb2
+          captured_at: 2026-06-16T00:05:34.838Z
+          commit: ecb7744927a4eacfd1184463e1e84dff328aca72
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-06-16T00:47:31.157Z
+        previous: 2026-06-16T00:05:34.840Z
+    command: task-submit
+    timestamp: 2026-06-16T00:47:31.158Z
 created_at: 2026-06-15T23:37:18.148Z
 started_at: 2026-06-16T00:47:27.727Z
-submitted_at: 2026-06-16T00:05:34.840Z
+submitted_at: 2026-06-16T00:47:31.157Z
 todos: []
 automation: eligible
