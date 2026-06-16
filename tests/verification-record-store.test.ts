@@ -359,6 +359,31 @@ describe("verification record store (non-shadow)", () => {
     // Validation as a whole does not throw on the orphan.
     expect(Array.isArray(result.completenessWarnings)).toBe(true);
   });
+
+  // AC: @ac-verification-record-store ac-unresolvable-keys-tolerated
+  // Behavioral CLI coverage: the human `validate --completeness` formatter must
+  // surface orphaned verification records (group, count, and offending item),
+  // not just fold them into the total warning count.
+  it.skipIf(!existsSync(CLI_PATH))(
+    "surfaces orphaned verification records in the human validate --completeness report",
+    async () => {
+      const liveUlid = testUlid("ITEM", 20);
+      const goneUlid = testUlid("GONE", 21);
+      await writeModule("specs.yaml", [makeItem(liveUlid, "feature-cli", ["ac-live"])]);
+      const ctx = await initContext(tempDir, { syncMode: "skip" });
+
+      // One resolvable stamp and one orphan whose item ULID no longer exists.
+      await writeVerificationStamp(ctx, liveUlid, "ac-live", validStamp());
+      await writeVerificationStamp(ctx, goneUlid, "ac-live", validStamp());
+
+      const result = kspec("validate --completeness", tempDir, { expectFail: true });
+
+      // The orphan group, its count, and the offending item ULID must be visible
+      // to a human running the CLI — not hidden behind the aggregate count.
+      expect(result.stdout).toContain("Orphaned verification records: 1");
+      expect(result.stdout).toContain(goneUlid);
+    },
+  );
 });
 
 describe("verification record store (shadow versioned persistence)", () => {
