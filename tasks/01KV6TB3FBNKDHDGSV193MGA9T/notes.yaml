@@ -1,1 +1,39 @@
-notes: []
+notes:
+  - _ulid: 01KV6YNVPFG708MJ8XZ7Z70ZV0
+    content: >-
+      Approach: extend ParsedACGroup and ACAnnotation with notApplicable:boolean + naReason?:string.
+
+      parseACAnnotationLine: instead of stripping the N/A suffix, capture the marker+reason and
+      attach
+
+      it to the LAST @ref group on the line (so mixed lines credit only the earlier claim).
+
+      Coverage Set builder (scanDirForACAnnotations) skips notApplicable groups -> single chokepoint
+
+      that flows to completeness validation, item APIs, task review context, and static export (all
+
+      read the flat coveredACs set via scanTestCoverage/computeACCoverage). Structured scan
+
+      (scanDirForACAnnotationsStructured) passes notApplicable+naReason through
+      (ac-na-marker-preserved).
+
+      validateACAnnotations needs NO change: it still runs all integrity checks
+      (unresolved/missing/malformed)
+
+      on N/A groups since specRef/acIds/malformedTokens stay populated; a well-formed N/A with
+      resolvable
+
+      target + existing ac ids already produces no finding (ac-na-no-invalid-finding).
+
+      Test plan: parse preserves flag+reason; coverage set excludes N/A ac ids; mixed line credits
+      only
+
+      claim; well-formed N/A no integrity finding; N/A with bad target still yields findings.
+
+      Not chasing the ~91 corpus N/A annotations that become uncovered -- that is follow-up
+      spec-composition
+
+      per task scope; only updating tests that assert the old strip-N/A semantics.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-16T00:53:06.384Z
