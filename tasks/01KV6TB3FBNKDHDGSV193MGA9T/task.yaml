@@ -55,8 +55,11 @@ description: |
 spec_ref: "@test-annotation-sweep"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged to feat/ui-redesign via detached reviewer helper. Review @01KV7J3W approved
+  with all required gates passing. Summary: N/A AC annotations are preserved in structured scan
+  output but excluded from coverage credit, with integrity validation still applied."
 depends_on:
   - "@task-respec-test-annotation-sweep-na"
 context: []
@@ -275,9 +278,25 @@ history:
         previous: "@01KV707NCSZBAXW8AWXTFFA17Y"
     command: review-link
     timestamp: 2026-06-16T06:32:51.395Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged to feat/ui-redesign via detached reviewer helper. Review @01KV7J3W approved with all
+          required gates passing. Summary: N/A AC annotations are preserved in structured scan
+          output but excluded from coverage credit, with integrity validation still applied."
+        previous: null
+      completed_at:
+        new: 2026-06-16T06:50:57.035Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-16T06:50:57.044Z
 prior_status: null
 created_at: 2026-06-15T23:37:19.595Z
 started_at: 2026-06-16T04:36:51.471Z
 submitted_at: 2026-06-16T04:55:51.100Z
+completed_at: 2026-06-16T06:50:57.035Z
 todos: []
 automation: eligible
