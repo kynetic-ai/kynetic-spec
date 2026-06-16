@@ -1030,6 +1030,15 @@ export interface ParsedACGroup {
   specRef: string;
   acIds: string[];
   malformedTokens: string[];
+  /**
+   * Present and true when this group carries a not-applicable marker
+   * (" — N/A: ..."). A not-applicable group claims no coverage credit for the
+   * AC ids it names. Absent for ordinary coverage claims so existing consumers
+   * and equality assertions are unaffected.
+   */
+  notApplicable?: boolean;
+  /** Reason text following the not-applicable marker, if any was provided. */
+  naReason?: string;
 }
 
 /**
@@ -1045,7 +1054,8 @@ export interface ParsedACGroup {
  *   "// AC: @spec-a ac-1"                        → [{specRef:"@spec-a", acIds:["ac-1"], malformedTokens:[]}]
  *   "// AC: @spec-a ac-create, ac-update"        → [{specRef:"@spec-a", acIds:["ac-create","ac-update"], malformedTokens:[]}]
  *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"], ...}, {specRef:"@spec-b", acIds:["ac-2"], ...}]
- *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"], malformedTokens:[]}]
+ *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"], malformedTokens:[], notApplicable:true, naReason:"reason"}]
+ *   "// AC: @spec-a ac-1, @spec-b ac-2 — N/A: r" → [{specRef:"@spec-a", ...}, {specRef:"@spec-b", ..., notApplicable:true, naReason:"r"}]  (marker qualifies last group only)
  *   "// AC: @spec-a"                             → [{specRef:"@spec-a", acIds:[], malformedTokens:[]}]  (blanket ref, no AC credit)
  *   "// AC: @spec-a validate"                    → [{specRef:"@spec-a", acIds:[], malformedTokens:[]}]  (non-prefixed token ignored)
  *   "// AC: @spec-a ac-good.extra"               → [{specRef:"@spec-a", acIds:[], malformedTokens:["ac-good.extra"]}]
@@ -1060,8 +1070,26 @@ export function parseACAnnotationLine(
   // Get everything after "// AC: "
   let remainder = lineText.slice(prefixMatch.index + prefixMatch[0].length);
 
-  // Strip N/A suffix: " — N/A: ..." or " -- N/A: ..."
-  remainder = remainder.replace(/\s*[—–-]{1,3}\s*N\/A\b.*$/, "");
+  // Detect a not-applicable marker (" — N/A: reason" or " -- N/A reason").
+  // Rather than discarding it (which would let the named AC ids land in the
+  // coverage set), capture the reason and the marker position so the marker can
+  // be attached to the @ref group it qualifies. The marked group claims no
+  // coverage credit downstream.
+  let markerNotApplicable = false;
+  let markerReason: string | undefined;
+  const naMatch = /\s*[—–-]{1,3}\s*N\/A\b\s*:?\s*(.*)$/.exec(remainder);
+  if (naMatch) {
+    markerNotApplicable = true;
+    let reason = naMatch[1]?.trim();
+    // Strip a trailing block-comment closer so the captured reason is not
+    // contaminated by the source comment terminator. The supported block
+    // syntax in COMMENT_PREFIX_MAP is HTML/Svelte ("<!-- ... -->").
+    if (reason !== undefined) {
+      reason = reason.replace(/\s*-->\s*$/, "").trim();
+    }
+    markerReason = reason && reason.length > 0 ? reason : undefined;
+    remainder = remainder.slice(0, naMatch.index);
+  }
 
   // Strip parenthetical comments: " (some comment)"
   remainder = remainder.replace(/\s*\(.*$/, "");
@@ -1088,6 +1116,17 @@ export function parseACAnnotationLine(
       }
     }
     // Non-ac-prefixed, non-@ref tokens are silently ignored (e.g. bare words)
+  }
+
+  // A not-applicable marker qualifies the last @ref group on the line. Mixed
+  // lines (a coverage claim for one ref, N/A for another) therefore credit only
+  // the earlier claim — the trailing N/A group earns no coverage credit.
+  if (markerNotApplicable && groups.length > 0) {
+    const lastGroup = groups[groups.length - 1];
+    lastGroup.notApplicable = true;
+    if (markerReason !== undefined) {
+      lastGroup.naReason = markerReason;
+    }
   }
 
   return groups;
@@ -1132,7 +1171,11 @@ async function scanDirForACAnnotations(
       if (!prefix.test(lineText)) continue;
 
       const groups = parseACAnnotationLine(lineText, prefix);
-      for (const { specRef, acIds } of groups) {
+      for (const { specRef, acIds, notApplicable } of groups) {
+        // A not-applicable annotation claims no coverage — its AC ids must not
+        // land in the flat coverage set, so they earn no credit in completeness
+        // validation, item APIs, task review context, or static export.
+        if (notApplicable) continue;
         for (const ac of acIds) {
           coveredACs.add(`${specRef} ${ac}`);
         }
@@ -1189,6 +1232,14 @@ export interface ACAnnotation {
   acIds: string[];
   /** Malformed ac-prefixed tokens that failed strict validation */
   malformedTokens: string[];
+  /**
+   * Present and true when the annotation carries a not-applicable marker
+   * (" — N/A: ..."). A not-applicable annotation claims no coverage credit for
+   * the AC ids it names. Absent for ordinary coverage claims.
+   */
+  notApplicable?: boolean;
+  /** Reason text following the not-applicable marker, if any was provided. */
+  naReason?: string;
   /** Source file where annotation was found */
   file: string;
   /** Line number in the source file (1-based) */
@@ -1235,11 +1286,15 @@ async function scanDirForACAnnotationsStructured(
       if (!prefix.test(lineText)) continue;
 
       const groups = parseACAnnotationLine(lineText, prefix);
-      for (const { specRef, acIds, malformedTokens } of groups) {
+      for (const { specRef, acIds, malformedTokens, notApplicable, naReason } of groups) {
+        // AC: @test-annotation-sweep ac-na-marker-preserved — structured output
+        // preserves the not-applicable marker and its reason text.
         annotations.push({
           specRef,
           acIds,
           malformedTokens,
+          ...(notApplicable ? { notApplicable } : {}),
+          ...(naReason !== undefined ? { naReason } : {}),
           file: filePath,
           line: i + 1,
         });
