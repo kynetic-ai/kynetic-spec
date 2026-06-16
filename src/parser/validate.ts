@@ -1075,7 +1075,13 @@ export function parseACAnnotationLine(
   const naMatch = /\s*[—–-]{1,3}\s*N\/A\b\s*:?\s*(.*)$/.exec(remainder);
   if (naMatch) {
     markerNotApplicable = true;
-    const reason = naMatch[1]?.trim();
+    let reason = naMatch[1]?.trim();
+    // Strip a trailing block-comment closer so the captured reason is not
+    // contaminated by the source comment terminator. The supported block
+    // syntax in COMMENT_PREFIX_MAP is HTML/Svelte ("<!-- ... -->").
+    if (reason !== undefined) {
+      reason = reason.replace(/\s*-->\s*$/, "").trim();
+    }
     markerReason = reason && reason.length > 0 ? reason : undefined;
     remainder = remainder.slice(0, naMatch.index);
   }

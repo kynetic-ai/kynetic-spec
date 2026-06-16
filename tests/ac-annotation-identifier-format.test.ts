@@ -8,8 +8,9 @@
  * computeACCoverage() directly with programmatic data.
  *
  * IMPORTANT: Annotation fixture strings passed to parseACAnnotationLine()
- * are constructed via string concatenation to prevent the coverage scanner
- * from misinterpreting them as real AC annotations.
+ * splice the acPrefix variable into a template literal so the literal
+ * "// AC:" prefix never appears in this source file, preventing the coverage
+ * scanner from misinterpreting these fixtures as real AC annotations.
  */
 import { describe, it, expect, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
@@ -20,13 +21,14 @@ import {
   validateACAnnotations,
   computeACCoverage,
   scanTestCoverage,
+  scanACAnnotations,
 } from "../src/parser/validate.js";
 import { ReferenceIndex } from "../src/parser/refs.js";
 
 // Helper to build annotation lines without triggering the coverage scanner.
 // The scanner matches lines containing "// AC:" literally, so we construct
 // the prefix at runtime to avoid false positives in this source file.
-const acPrefix = "//" + " AC: ";
+const acPrefix = `//${" "}AC: `;
 
 // ---------------------------------------------------------------------------
 // @ac-annotation-identifier-format ac-explicit-token-format
@@ -38,18 +40,18 @@ const acPrefix = "//" + " AC: ";
 // AC: @ac-annotation-identifier-format ac-explicit-token-format
 describe("ac-explicit-token-format: only ac-prefixed tokens are parsed as AC ids", () => {
   it("ignores a bare word after a @ref", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec validate");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec validate`);
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: [] }]);
   });
 
   it("ignores a bare numeric token after a @ref", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec 1");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec 1`);
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: [] }]);
   });
 
   it("parses ac-prefixed named ids as explicit AC references", () => {
     const groups = parseACAnnotationLine(
-      acPrefix + "@my-spec ac-validate-input, ac-reject-invalid",
+      `${acPrefix}@my-spec ac-validate-input, ac-reject-invalid`,
     );
     expect(groups).toEqual([
       {
@@ -61,37 +63,37 @@ describe("ac-explicit-token-format: only ac-prefixed tokens are parsed as AC ids
   });
 
   it("parses ac-prefixed numeric ids as explicit AC references", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1, ac-2");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-1, ac-2`);
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1", "ac-2"], malformedTokens: [] }]);
   });
 
   it("captures only ac-prefixed tokens when mixed with non-prefixed tokens", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1 some-word");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-1 some-word`);
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: ["ac-1"], malformedTokens: [] }]);
   });
 
   it("rejects ac-* tokens containing underscores", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-bad_id");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-bad_id`);
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: ["ac-bad_id"] }]);
   });
 
   it("rejects ac-* tokens with doubled hyphens", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac--double");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac--double`);
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: ["ac--double"] }]);
   });
 
   it("rejects ac-* tokens with trailing hyphens", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-trailing-");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-trailing-`);
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: ["ac-trailing-"] }]);
   });
 
   it("rejects ac-* tokens with uppercase characters", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-Bad");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-Bad`);
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: ["ac-Bad"] }]);
   });
 
   it("filters out malformed ac-* tokens while keeping valid ones", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-valid, ac-bad_id, ac-also-valid");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-valid, ac-bad_id, ac-also-valid`);
     expect(groups).toEqual([
       { specRef: "@my-spec", acIds: ["ac-valid", "ac-also-valid"], malformedTokens: ["ac-bad_id"] },
     ]);
@@ -236,7 +238,7 @@ describe("ac-bare-ref-no-token-credit: annotations without valid AC tokens earn 
 
   it("non-ac-prefixed tokens after @ref are ignored and earn no coverage", () => {
     // Parser should treat a non-prefixed word like "validate" as noise, yielding a blanket ref
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec validate");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec validate`);
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: [] }]);
 
     // Because acIds is empty, this annotation earns zero coverage
@@ -279,14 +281,14 @@ describe("ac-bare-ref-no-token-credit: annotations without valid AC tokens earn 
 // AC: @test-annotation-sweep ac-annotation-format
 describe("ac-annotation-format: annotation tokens use ac-prefixed format", () => {
   it("parses mixed numeric and named ac-prefixed ids correctly", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1, ac-validate-input");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-1, ac-validate-input`);
     expect(groups).toEqual([
       { specRef: "@my-spec", acIds: ["ac-1", "ac-validate-input"], malformedTokens: [] },
     ]);
   });
 
   it("accepts ac-prefixed kebab-case ids of varying length", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-a, ac-very-long-descriptive-name");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-a, ac-very-long-descriptive-name`);
     expect(groups).toEqual([
       {
         specRef: "@my-spec",
@@ -378,35 +380,35 @@ describe("ac-no-blanket-credit: blanket annotations earn no coverage credit", ()
 // AC: @ac-annotation-identifier-format ac-malformed-token-not-truncated
 describe("ac-malformed-token-not-truncated: malformed ac-* tokens are not truncated to valid prefixes", () => {
   it("ac-good.extra is not truncated to ac-good", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-good.extra");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-good.extra`);
     expect(groups).toEqual([
       { specRef: "@my-spec", acIds: [], malformedTokens: ["ac-good.extra"] },
     ]);
   });
 
   it("ac-good/path is not truncated to ac-good", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-good/path");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-good/path`);
     // "/" splits into two tokens: "ac-good/path" is one token since we split on whitespace/comma
     // Actually "/" is not whitespace or comma, so "ac-good/path" stays as one token
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: ["ac-good/path"] }]);
   });
 
   it("ac-good#anchor is not truncated to ac-good", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-good#anchor");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-good#anchor`);
     expect(groups).toEqual([
       { specRef: "@my-spec", acIds: [], malformedTokens: ["ac-good#anchor"] },
     ]);
   });
 
   it("ac-good?query is not truncated to ac-good", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-good?query");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-good?query`);
     expect(groups).toEqual([
       { specRef: "@my-spec", acIds: [], malformedTokens: ["ac-good?query"] },
     ]);
   });
 
   it("ac-good: (with trailing colon) is not truncated to ac-good", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-good:");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-good:`);
     expect(groups).toEqual([{ specRef: "@my-spec", acIds: [], malformedTokens: ["ac-good:"] }]);
   });
 
@@ -433,7 +435,7 @@ describe("ac-malformed-token-not-truncated: malformed ac-* tokens are not trunca
 
   it("mixed valid and malformed tokens: only valid tokens grant coverage", () => {
     const groups = parseACAnnotationLine(
-      acPrefix + "@my-spec ac-valid, ac-good.extra, ac-also-valid",
+      `${acPrefix}@my-spec ac-valid, ac-good.extra, ac-also-valid`,
     );
     expect(groups).toEqual([
       {
@@ -455,28 +457,28 @@ describe("ac-malformed-token-not-truncated: malformed ac-* tokens are not trunca
 // AC: @ac-annotation-identifier-format ac-valid-delimiters-preserved
 describe("ac-valid-delimiters-preserved: whitespace and comma delimiters produce separate AC tokens", () => {
   it("whitespace-separated tokens are recognized individually", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1 ac-2 ac-3");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-1 ac-2 ac-3`);
     expect(groups).toEqual([
       { specRef: "@my-spec", acIds: ["ac-1", "ac-2", "ac-3"], malformedTokens: [] },
     ]);
   });
 
   it("comma-separated tokens are recognized individually", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1,ac-2,ac-3");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-1,ac-2,ac-3`);
     expect(groups).toEqual([
       { specRef: "@my-spec", acIds: ["ac-1", "ac-2", "ac-3"], malformedTokens: [] },
     ]);
   });
 
   it("comma-then-whitespace-separated tokens are recognized individually", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1, ac-2, ac-3");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-1, ac-2, ac-3`);
     expect(groups).toEqual([
       { specRef: "@my-spec", acIds: ["ac-1", "ac-2", "ac-3"], malformedTokens: [] },
     ]);
   });
 
   it("mixed delimiters produce the correct individual tokens", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1 ac-2, ac-3");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-1 ac-2, ac-3`);
     expect(groups).toEqual([
       { specRef: "@my-spec", acIds: ["ac-1", "ac-2", "ac-3"], malformedTokens: [] },
     ]);
@@ -523,7 +525,7 @@ describe("ac-valid-delimiters-preserved: whitespace and comma delimiters produce
 // AC: @test-annotation-sweep ac-na-marker-preserved
 describe("ac-na-marker-preserved: N/A marker and reason survive parsing", () => {
   it("captures the not-applicable flag and reason instead of stripping them", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1 — N/A: does not apply here");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-1 — N/A: does not apply here`);
     expect(groups).toEqual([
       {
         specRef: "@my-spec",
@@ -536,10 +538,60 @@ describe("ac-na-marker-preserved: N/A marker and reason survive parsing", () => 
   });
 
   it("records the marker even when no reason text is supplied", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1 -- N/A");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-1 -- N/A`);
     expect(groups).toEqual([
       { specRef: "@my-spec", acIds: ["ac-1"], malformedTokens: [], notApplicable: true },
     ]);
+  });
+
+  it("strips the HTML/Svelte closing comment delimiter from the captured reason", () => {
+    // The supported COMMENT_PREFIX_MAP entries for .html/.svelte use the
+    // <!-- ... --> block syntax. The captured reason must not include the
+    // trailing "-->" terminator from the source comment.
+    const htmlPrefix = /<!--\s*AC:\s*/;
+    const groups = parseACAnnotationLine(
+      "<!-- AC: @my-spec ac-1 — N/A: html reason -->",
+      htmlPrefix,
+    );
+    expect(groups).toEqual([
+      {
+        specRef: "@my-spec",
+        acIds: ["ac-1"],
+        malformedTokens: [],
+        notApplicable: true,
+        naReason: "html reason",
+      },
+    ]);
+  });
+
+  it("handles an HTML N/A annotation with no reason and only the closer", () => {
+    const htmlPrefix = /<!--\s*AC:\s*/;
+    const groups = parseACAnnotationLine("<!-- AC: @my-spec ac-1 — N/A: -->", htmlPrefix);
+    expect(groups).toEqual([
+      { specRef: "@my-spec", acIds: ["ac-1"], malformedTokens: [], notApplicable: true },
+    ]);
+  });
+
+  it("preserves a clean N/A reason in structured scan output for .svelte files", async () => {
+    // End-to-end verification through scanACAnnotations: the structured
+    // annotation surfaced to consumers (item APIs, task review context, static
+    // export) must carry the reason text without the source closing delimiter.
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "kspec-na-html-"));
+    try {
+      const testsDir = path.join(root, "tests");
+      await fs.mkdir(testsDir, { recursive: true });
+      await fs.writeFile(
+        path.join(testsDir, "fixture.svelte"),
+        "<!-- AC: @some-spec ac-1 — N/A: svelte reason -->\n",
+      );
+      const annotations = await scanACAnnotations(root, ["tests/"]);
+      const naAnnotation = annotations.find((a) => a.specRef === "@some-spec");
+      expect(naAnnotation).toBeDefined();
+      expect(naAnnotation?.notApplicable).toBe(true);
+      expect(naAnnotation?.naReason).toBe("svelte reason");
+    } finally {
+      await fs.rm(root, { recursive: true, force: true });
+    }
   });
 });
 
@@ -572,7 +624,7 @@ describe("ac-na-no-coverage-credit: N/A annotations are not coverage signals", (
   it("excludes every AC id named by an N/A annotation from the coverage set", async () => {
     const root = await writeScanFixture(
       "na.test.ts",
-      acPrefix + "@some-spec ac-1, ac-2 — N/A: not applicable",
+      `${acPrefix}@some-spec ac-1, ac-2 — N/A: not applicable`,
     );
     const covered = await scanTestCoverage(root, ["tests/"]);
     expect(covered.has("@some-spec ac-1")).toBe(false);
@@ -582,7 +634,7 @@ describe("ac-na-no-coverage-credit: N/A annotations are not coverage signals", (
   it("credits only the coverage claim on a mixed claim/N/A line", async () => {
     const root = await writeScanFixture(
       "mixed.test.ts",
-      acPrefix + "@spec-a ac-1, @spec-b ac-2 — N/A: only b is N/A",
+      `${acPrefix}@spec-a ac-1, @spec-b ac-2 — N/A: only b is N/A`,
     );
     const covered = await scanTestCoverage(root, ["tests/"]);
     expect(covered.has("@spec-a ac-1")).toBe(true);
@@ -592,7 +644,7 @@ describe("ac-na-no-coverage-credit: N/A annotations are not coverage signals", (
   it("leaves an AC uncovered when its only annotation is N/A (no compensating credit)", async () => {
     const root = await writeScanFixture(
       "only-na.test.ts",
-      acPrefix + "@some-spec ac-1 — N/A: skip",
+      `${acPrefix}@some-spec ac-1 — N/A: skip`,
     );
     const covered = await scanTestCoverage(root, ["tests/"]);
     const coverage = computeACCoverage(
@@ -632,7 +684,7 @@ describe("ac-na-no-invalid-finding: integrity checks still apply to N/A annotati
   const index = new ReferenceIndex([], items);
 
   it("produces no finding for a well-formed N/A annotation on a resolvable target", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-1 — N/A: covered elsewhere");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-1 — N/A: covered elsewhere`);
     expect(groups[0].notApplicable).toBe(true);
 
     const warnings = validateACAnnotations(
@@ -654,7 +706,7 @@ describe("ac-na-no-invalid-finding: integrity checks still apply to N/A annotati
   });
 
   it("still reports an unresolved target for an N/A annotation", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@nonexistent ac-1 — N/A: nowhere");
+    const groups = parseACAnnotationLine(`${acPrefix}@nonexistent ac-1 — N/A: nowhere`);
     const warnings = validateACAnnotations(
       [
         {
@@ -675,7 +727,7 @@ describe("ac-na-no-invalid-finding: integrity checks still apply to N/A annotati
   });
 
   it("still reports a missing AC id for an N/A annotation naming an unknown criterion", () => {
-    const groups = parseACAnnotationLine(acPrefix + "@my-spec ac-99 — N/A: no such ac");
+    const groups = parseACAnnotationLine(`${acPrefix}@my-spec ac-99 — N/A: no such ac`);
     const warnings = validateACAnnotations(
       [
         {
