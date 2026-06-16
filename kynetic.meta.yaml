@@ -22524,8 +22524,11 @@ observations:
       still ran for 2681.7s. Consider a documented reviewer gate path or helper for
       no-code/spec-only reviews that preserves safety while avoiding unnecessary full-suite cost.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing reflection @01KV3WHP, which already tracks defining a
+      metadata-only/no-code-diff review gate profile after a nearly identical full-suite cost.
+    resolved: true
+    resolved_at: 2026-06-16T00:35:43.099Z
+    resolved_by: Jacob Chapel
     created_at: 2026-06-16T00:34:49.048Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
