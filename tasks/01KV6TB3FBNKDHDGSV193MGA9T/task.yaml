@@ -55,7 +55,7 @@ description: |
 spec_ref: "@test-annotation-sweep"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-respec-test-annotation-sweep-na"
@@ -65,6 +65,14 @@ tags:
   - coverage
   - parser
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-na-annotation-coverage-exclusion/01kv6tb3
+  captured_at: 2026-06-16T01:15:49.557Z
+  commit: e88c2550106368643dadf40878a8d27b0f5409a3
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KV6YG0WNR5WVMQNNDYWX655J
 history:
   - author: Jacob Chapel
@@ -87,7 +95,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-16T00:50:18.861Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-na-annotation-coverage-exclusion/01kv6tb3
+          captured_at: 2026-06-16T01:15:49.557Z
+          commit: e88c2550106368643dadf40878a8d27b0f5409a3
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-16T01:15:49.559Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-16T01:15:49.559Z
 created_at: 2026-06-15T23:37:19.595Z
 started_at: 2026-06-16T00:50:18.861Z
+submitted_at: 2026-06-16T01:15:49.559Z
 todos: []
 automation: eligible
