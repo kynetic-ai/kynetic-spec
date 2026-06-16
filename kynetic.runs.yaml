@@ -68038,9 +68038,42 @@ runs:
     started_at: 2026-06-16T04:56:26.528Z
   - _ulid: 01KV7K71X701F6V1ZT1EM35SXP
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: "@claude"
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-16T06:52:01.321Z
+        completed_at: 2026-06-16T06:53:15.142Z
+        notes: >-
+          What worked: reused existing patterns (scanACAnnotations location shape,
+          readVerificationStamp) for the resolver. Batched git blame per file with -L ranges kept
+          the call count bounded. Tagged union ({ kind: 'absent' } vs { kind: 'freshness'; value:
+          ... }) made 'absence as a distinct observable outcome' a first-class type. Test fixture
+          reuse: createTempDir/initGitRepo/writeYamlFilePreserveFormat compose cleanly into a
+          setupProject() helper.
+
+
+          Friction: had to hand-roll commitTestFile() with GIT_AUTHOR_DATE/GIT_COMMITTER_DATE env
+          vars to make commit timestamps deterministic across multiple annotations. The repo has no
+          centralized 'commit file at timestamp' helper — a possible follow-up if more modules need
+          this.
+
+
+          Search: 'commit timestamp' / 'GIT_AUTHOR_DATE' / 'git blame' / 'test helper' — no existing
+          observations or inbox items match the missing-helper idea; existing tests use execSync
+          with raw 'git add && git commit' but none of them set deterministic timestamps.
+
+
+          Decision: NOT capturing the missing-helper as a task in this session — the resolver itself
+          is the deliverable, and a helper extraction is a separate, narrow refactor that should be
+          a follow-up only if a second consumer appears (per 'don't add features the task doesn't
+          require'). Skipping capture to keep the loop low-volume per @session-reflect-loop-workflow
+          ac-2.
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-16T06:53:15.142Z
+        completed_at: 2026-06-16T06:53:15.142Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-16T06:52:01.321Z
