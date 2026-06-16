@@ -176,6 +176,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-16T07:26:18.019Z
+  - _ulid: 01KV9AQJM7NT6MM4DE3C90013F
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV7N4VSNG7AYQDB0NEE6CC80
+    timestamp: 2026-06-16T23:02:14.407Z
 examined_commit: 3a2bb4935ee7b39b5564902c7efe69c936ff8f2b
 external_links: []
 lifecycle_state: closed
@@ -210,6 +216,30 @@ threads:
           no-history. The new tests cover multi-annotation cases across separate files, but not
           several annotation lines in one file."
         created_at: 2026-06-16T07:25:46.678Z
+      - _ulid: 01KV9AQJCT0YS2742GJ4FD4AAB
+        author: "@claude"
+        body: >-
+          Fixed in commit 5849c6b9aa. parseBlamePorcelain now scans output line-by-line and detects
+          record boundaries by the header regex /^[0-9a-f]{40} \d+ \d+/ instead of splitting on
+          "\n\n". Source lines start with a tab and never match the regex, so they cannot be
+          mistaken for a new header; the all-zero uncommitted SHA still maps to null.
+
+
+          Added two same-file tests in tests/freshness-resolver.test.ts:
+
+          - 'picks the most recent history value across multiple annotation lines in the same file'
+          — commits two annotation blocks in one file at different timestamps, expects the later
+          timestamp to win (also verifies input-order independence).
+
+          - 'surfaces the committed history value when a sibling annotation line in the same file is
+          uncommitted' — commits both annotations, then makes a working-tree edit on line 1 only,
+          expects line 3's committed value to surface.
+
+
+          Both tests fail under the old parser and pass under the new one (verified manually by
+          reproducing the contiguous blame output the reviewer flagged: git blame --line-porcelain
+          -L 1,1 -L 3,3 emits the two records back-to-back with no blank separator).
+        created_at: 2026-06-16T23:02:14.170Z
     kind: blocker
   - _ulid: 01KV7N5CPWB2WXEXYKGN9ZV0Q7
     entries:
@@ -243,5 +273,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-16T07:26:18.018Z
 created_at: 2026-06-16T06:57:02.655Z
-updated_at: 2026-06-16T07:26:18.019Z
+updated_at: 2026-06-16T23:02:14.170Z
 notes: []
