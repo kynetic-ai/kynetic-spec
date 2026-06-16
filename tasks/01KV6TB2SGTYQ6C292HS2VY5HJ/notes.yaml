@@ -1,1 +1,8 @@
-notes: []
+notes:
+  - _ulid: 01KV7D108483NA365YV6VXWVWP
+    content: '[AGENT-FAIL] Invocation failed: Internal error: Failed to authenticate. API Error: 401
+      {"type":"error","error":{"type":"authentication_error","message":"Invalid authentication
+      credentials"},"request_id":"req_011Cc6MVtrXTWP7xiMQrRs1W"}'
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-16T05:03:51.556Z
