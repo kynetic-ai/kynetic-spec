@@ -35,6 +35,20 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-16T07:24:28.086Z
     completed_at: 2026-06-16T07:24:28.086Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test ran full suite: 10888 passed, 3 skipped, 3 failed in
+      tests/git-terminal-prompt-suppression.test.ts due spawnSync git ETIMEDOUT on live GitHub HTTPS
+      checks. Targeted rerun with npm test -- tests/git-terminal-prompt-suppression.test.ts --fresh
+      passed 7/7 in 430ms. Classified as flaky/environmental per review-gates and captured follow-up
+      @01KV7N12; proceeding as non-regression for this freshness resolver task."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-16T07:24:44.497Z
+    completed_at: 2026-06-16T07:24:44.497Z
 events:
   - _ulid: 01KV7KG85ZFF41NYYWD7311MJQ
     actor: Jacob Chapel
@@ -70,6 +84,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-16T07:24:28.308Z
+  - _ulid: 01KV7N2ZADS8GYMA91FMX57DYA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-16T07:24:44.749Z
 examined_commit: 3a2bb4935ee7b39b5564902c7efe69c936ff8f2b
 external_links: []
 lifecycle_state: open
@@ -82,5 +103,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-16T06:57:02.655Z
-updated_at: 2026-06-16T07:24:28.086Z
+updated_at: 2026-06-16T07:24:44.497Z
 notes: []
