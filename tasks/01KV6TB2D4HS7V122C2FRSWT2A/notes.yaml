@@ -20,3 +20,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-16T05:02:35.903Z
+  - _ulid: 01KV7J84G5A6WXYEMGZ2P7X50N
+    content: "Approach: New module src/parser/freshness-resolver.ts alongside coverage-cache.ts. Public
+      API: resolveAcFreshness (default) returns recorded-or-bootstrap-or-absent;
+      resolveAcFreshnessWithBoth (explicit both-provenances request) returns both labeled, never
+      compares them. Bootstrap uses git blame per file (batched -L ranges when multiple annotations
+      per file). Most-recent picks by committer-time ISO timestamp. No-history is detected when git
+      blame reports the 00000000... SHA (uncommitted or not-yet-committed lines). Reuses
+      scanACAnnotations-shaped locations (file+line) and readVerificationStamp from the store
+      module. Spec: @ac-freshness-resolution."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-16T06:35:08.165Z
