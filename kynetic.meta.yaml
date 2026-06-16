@@ -22554,6 +22554,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-16T17:17:34.416Z
+  - _ulid: 01KV8Q11D0AKGJ4SBGWWXBKVZA
+    type: success
+    content: "Resuming in-flight work: a prior attempt on this task left the schema, store
+      implementation, and test imports uncommitted but well-structured. Reading the diff against
+      origin showed the prior agent plan, and the only gap was missing test coverage. Resuming in
+      1-2 commands (instead of starting from scratch) is a real win. Success pattern: agents that
+      fail partway through should still commit their work-in-progress or at minimum leave the
+      working tree in a resumable state - not just abort and lose context."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-06-16T17:17:52.929Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
