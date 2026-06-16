@@ -249,6 +249,40 @@ describe("verification record store (non-shadow)", () => {
     expect(await fs.readFile(manifestPath)).toEqual(manifestBefore);
   });
 
+  // AC: @ac-verification-record-store ac-spec-source-untouched
+  // AC: @ac-verification-record-store ac-keyed-by-canonical-identity
+  it("rejects malformed item/AC keys before any path construction and leaves spec + verification state untouched", async () => {
+    const ulid = testUlid("ITEM", 20);
+    await writeModule("specs.yaml", [makeItem(ulid, "feature-keys", ["ac-one"])]);
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+
+    // Seed a valid current stamp so we can prove it survives rejected writes.
+    await writeVerificationStamp(ctx, ulid, "ac-one", validStamp({ actor: "human-author" }));
+
+    const modulePath = path.join(modulesDir, "specs.yaml");
+    const moduleBefore = await fs.readFile(modulePath);
+
+    // A traversal item id would otherwise resolve to <specDir>/modules/specs.yaml
+    // and overwrite the spec source — it must be rejected before path building.
+    await expect(
+      writeVerificationStamp(ctx, "../../modules/specs", "ac-one", validStamp()),
+    ).rejects.toThrow();
+    // Other malformed item ids are rejected too.
+    await expect(
+      writeVerificationStamp(ctx, "not-a-ulid", "ac-one", validStamp()),
+    ).rejects.toThrow();
+    // A malformed AC id is rejected before path building as well.
+    await expect(writeVerificationStamp(ctx, ulid, "../escape", validStamp())).rejects.toThrow();
+
+    // Spec source is byte-identical — no traversal write reached it.
+    expect(await fs.readFile(modulePath)).toEqual(moduleBefore);
+    // No stray file leaked outside the store root into the modules directory.
+    expect(await fs.readdir(modulesDir)).toEqual(["specs.yaml"]);
+    // The seeded verification state is unchanged.
+    const read = await readVerificationStamp(ctx, ulid, "ac-one");
+    expect(read?.actor).toBe("human-author");
+  });
+
   // AC: @ac-verification-record-store ac-current-stamp-replacement
   it("returns only the most recent stamp as the current verification", async () => {
     const ulid = testUlid("ITEM", 6);

@@ -31,6 +31,7 @@ import {
   runWithBuffer,
   writeFileBufferAware,
 } from "../cli/batch-write-buffer.js";
+import { AcIdSchema, UlidSchema } from "../schema/common.js";
 import {
   CURRENT_VERIFICATION_RECORD_FORMAT,
   VerificationRecordSchema,
@@ -127,7 +128,15 @@ export async function writeVerificationStamp(
   acId: string,
   stamp: VerificationStampInput,
 ): Promise<VerificationStamp> {
-  // Validate the stamp first — rejection must not touch stored state.
+  // Validate the keys BEFORE constructing any filesystem path. An unvalidated
+  // itemUlid is interpolated into the record path, so a traversal value like
+  // `../../modules/specs` would otherwise resolve outside the store and could
+  // overwrite spec source. Rejecting malformed keys here keeps writes confined
+  // to `coverage/verifications/<ulid>.yaml` and leaves stored state untouched.
+  UlidSchema.parse(itemUlid);
+  AcIdSchema.parse(acId);
+
+  // Validate the stamp — rejection must not touch stored state.
   const parsed = VerificationStampSchema.parse(stamp);
 
   const recordPath = getVerificationRecordPath(ctx, itemUlid);
