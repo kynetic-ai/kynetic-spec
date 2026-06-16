@@ -72,18 +72,8 @@ description: |
 spec_ref: "@ac-freshness-resolution"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: blocked
-blocked_by:
-  - >-
-    Dispatch bootstrap failed: Bootstrap step "install-workspace-dependencies" failed with exit code
-    1. Output: npm error Exit handler never called!
-
-    npm error This is an error with npm itself. Please report this error at:
-
-    npm error   <https://github.com/npm/cli/issues>
-
-    npm error A complete log of this run can be found in:
-    /home/chapel/.npm/_logs/2026-06-16T08_37_25_839Z-debug-0.log
+status: needs_work
+blocked_by: []
 depends_on:
   - "@task-ac-verification-record-store"
 context: []
@@ -219,7 +209,30 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-06-16T09:12:47.699Z
-prior_status: needs_work
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - >-
+            Dispatch bootstrap failed: Bootstrap step "install-workspace-dependencies" failed with
+            exit code 1. Output: npm error Exit handler never called!
+
+            npm error This is an error with npm itself. Please report this error at:
+
+            npm error   <https://github.com/npm/cli/issues>
+
+            npm error A complete log of this run can be found in:
+            /home/chapel/.npm/_logs/2026-06-16T08_37_25_839Z-debug-0.log
+      prior_status:
+        new: null
+        previous: needs_work
+    command: task-unblock
+    timestamp: 2026-06-16T16:41:24.281Z
+prior_status: null
 created_at: 2026-06-15T23:37:18.500Z
 started_at: 2026-06-16T06:34:58.311Z
 submitted_at: 2026-06-16T06:50:58.777Z
