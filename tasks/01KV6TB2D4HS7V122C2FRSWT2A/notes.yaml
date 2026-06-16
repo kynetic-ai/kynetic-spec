@@ -66,3 +66,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-16T09:12:33.722Z
+  - _ulid: 01KV9AR46HSY0F3MBCTS0MC4CY
+    content: "Fix cycle 1: addressed blocker on parseBlamePorcelain. The original parser split git blame
+      --line-porcelain output on \"\\n\\n\", but batched multi-L blame output is contiguous (no
+      blank-line separator between records), so a same-file batch only ever returned the first
+      line's blame. Replaced the blank-line split with a stateful line scan that detects record
+      boundaries by the header regex /^[0-9a-f]{40} \\d+ \\d+/. Source lines start with a tab and
+      never match, so they cannot be mistaken for a new header. Added two same-file multi-annotation
+      tests: most-recent-across-multiple-lines and uncommitted-sibling-line-does-not-poison. The nit
+      thread was the reviewer's evidence log; no action needed. All quality gates green: format,
+      lint (0 errors), typecheck, full test suite (10893 passed, 3 skipped, 0 failures), kspec
+      validate refs/alignment/completeness --warnings-ok."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-16T23:02:32.401Z
