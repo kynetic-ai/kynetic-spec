@@ -68,3 +68,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-17T00:10:06.267Z
+  - _ulid: 01KV9FKJEFKHFDZ5DFNVNY26SK
+    content: "Fix cycle 1: addressed the blocker from review @01KV99N6. Root cause: importing
+      sessionExists from ../sessions/store.js transitively pulled the agent-runtime/identity module
+      graph (including @kynetic-ai/shared, which the installed CLI does not bundle) into the
+      verification-record read path, breaking the installed-package daemon-start smoke test. Fix:
+      inlined the probe as fs.access on path.join(ctx.sessionsDir, sessionId, \"session.yaml\"),
+      matching the session store's getSessionMetadataPath layout exactly — same behavior, no
+      dependency edge. Re-verified all 5 ACs against the implementation; behavioral tests for
+      write/read round-trip, sessionless stamps, malformed-ref rejection, record-only reads, and
+      pruned-session tolerance all pass. Quality gates: format:check pass, oxlint changed files 0
+      warnings, repo-wide lint 0 errors (712 warning baseline unchanged), typecheck pass, full suite
+      10905/10908 (3 skipped, 0 failures), kspec validate refs/alignment/completeness pass with
+      --warnings-ok. Blocker thread resolved with reply; nit thread (evidence log) acknowledged and
+      resolved."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-17T00:27:26.031Z
