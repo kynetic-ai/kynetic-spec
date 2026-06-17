@@ -80,6 +80,17 @@ checks:
     runner: kspec
     created_at: 2026-06-17T01:21:44.411Z
     completed_at: 2026-06-17T01:21:44.411Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2879 test suites passed; 10927 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KV9J9Y88WFJK7RD141KST16E/6cd41792ca1df1bc.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-17T01:28:17.497Z
+    completed_at: 2026-06-17T01:28:17.497Z
 events:
   - _ulid: 01KV9JBCBRSBD0DN5JPAMF63SQ
     actor: Jacob Chapel
@@ -164,9 +175,32 @@ events:
       kind: nit
       thread_ulid: 01KV9JQ94NG7R7BFEJT52HE4FD
     timestamp: 2026-06-17T01:21:53.535Z
+  - _ulid: 01KV9K30KKBS44483W4TT8T3PK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-17T01:28:17.779Z
+  - _ulid: 01KV9K33KDA64AMZ181FJDPT4H
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-17T01:28:20.846Z
+  - _ulid: 01KV9K33KEK54B4VFZJYE0BG9T
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-17T01:28:20.846Z
 examined_commit: 2755ceda200d4ae94822794a7605a1a7a9e97f79
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -245,7 +279,14 @@ threads:
           applicable; no shared/package guidance surfaces changed.
         created_at: 2026-06-17T01:21:53.302Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-17T01:28:20.845Z
 created_at: 2026-06-17T01:15:23.384Z
-updated_at: 2026-06-17T01:21:53.302Z
+updated_at: 2026-06-17T01:28:20.846Z
 notes: []
