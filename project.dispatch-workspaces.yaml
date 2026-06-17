@@ -26495,7 +26495,7 @@ workspaces:
         head: 5849c6b9aa0048b3dee7bd4b7d57739e8a420256
         last_seen_at: 2026-06-16T23:07:02.665Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-freshness-resolution-read-path-01kv6tb2
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 9e228050796ef40b3d4a8700082259591d1b8667
     bootstrap:
       status: succeeded
@@ -26979,7 +26979,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-17T00:32:27.139Z
+      updated_at: 2026-06-17T00:33:05.574Z
     integration:
       status: pending
       detail: null
@@ -26995,10 +26995,10 @@ workspaces:
     task_slug: task-session-verification-evidence
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-17T00:10:31.200Z
-      last_reconciled_at: 2026-06-17T00:32:27.139Z
+      last_active_at: 2026-06-17T00:33:05.574Z
+      last_reconciled_at: 2026-06-17T00:33:05.574Z
       created_at: 2026-06-16T05:03:14.380Z
-      updated_at: 2026-06-17T00:32:51.478Z
+      updated_at: 2026-06-17T00:33:05.574Z
     workspace_id: dispatch-workspace-01KV6TB2SGTYQ6C292HS2VY5HJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
