@@ -68,6 +68,18 @@ checks:
     runner: kspec
     created_at: 2026-06-17T04:45:10.615Z
     completed_at: 2026-06-17T04:45:10.615Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warning baseline
+      remains. All @coverage-record-compatibility ACs have behavioral annotations in
+      tests/verification-record-compatibility.test.ts.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-17T04:45:21.107Z
+    completed_at: 2026-06-17T04:45:21.107Z
 events:
   - _ulid: 01KV9XH4VZ55KJ2SK3HB23AV4Y
     actor: Jacob Chapel
@@ -124,6 +136,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-17T04:45:10.895Z
+  - _ulid: 01KV9YBV2ESAZEB9V1065M0NE0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-17T04:45:21.359Z
 examined_commit: af30d713036b6b4848fcb626e2f4f83a436d17ac
 external_links: []
 lifecycle_state: open
@@ -136,5 +155,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-17T04:30:46.656Z
-updated_at: 2026-06-17T04:45:10.615Z
+updated_at: 2026-06-17T04:45:21.107Z
 notes: []
