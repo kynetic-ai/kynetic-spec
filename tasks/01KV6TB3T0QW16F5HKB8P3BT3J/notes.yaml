@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KV9GMBWKV2FCA23MRZGTCJ8W
+    content: "Approach: extend the existing verification-record store's load/save layer
+      (src/parser/verification-record-store.ts) with format-version gating, modeled on
+      src/parser/format-version.ts precedent. New exports:
+      VerificationRecordFormatCompatibilityError class +
+      describeVerificationRecordFormatIncompatibility(declared) +
+      assertRawRecordFormatSupported(raw) + VERIFICATION_RECORD_FORMAT_NEWER_THAN_SUPPORTED_CODE
+      constant. The check gates both load paths (loadVerificationRecord, used directly and by
+      loadVerificationRecords/bulk) and the write path (writeVerificationStamp, before any disk
+      write inside the buffered transaction). For ac-newer-record-format-refused: direct API access
+      refuses; the bulk loadVerificationRecords scan absorbs the refusal per-file (silently skipping
+      newer-format records) so unrelated operations like kspec validate continue unaffected —
+      'operations not involving the store remain unaffected' means commands that don't touch
+      verification records (kspec task list, item get) are unimpacted. Unknown-field tolerance
+      already works via the readRawRecord + spread-on-write pattern; the schema stays non-strict.
+      Will add tests in tests/verification-record-compatibility.test.ts covering all 7 ACs. For
+      ac-upgrade-without-rewrite + ac-store-creation-additive + ac-unrecognized-sidecar-untouched:
+      reuse the snapshotProjectFiles/expectSnapshotsEqual pattern from
+      tests/format-version-ceiling.test.ts. For ac-absent-store-no-behavior-change: use the existing
+      setupShadowProject pattern + resolveAcFreshness. No manifest version bump — record format is a
+      separate, store-scoped version field."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-17T00:45:20.659Z
