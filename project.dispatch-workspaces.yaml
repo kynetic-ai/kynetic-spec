@@ -27138,7 +27138,7 @@ workspaces:
         head: e9ae4ba5867eeb3232b0d8444b27e11ff9e4409d
         last_seen_at: 2026-06-16T09:13:44.959Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-git-prompt-suppression-tests-01kv7n12
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 35eab962fc1c600cfb86204594062254db67e00e
     bootstrap:
       status: succeeded
@@ -27639,9 +27639,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-17T04:29:43.609Z
-      last_reconciled_at: 2026-06-17T04:46:53.474Z
+      last_reconciled_at: 2026-06-17T04:49:12.192Z
       created_at: 2026-06-17T00:33:13.697Z
-      updated_at: 2026-06-17T04:46:53.474Z
+      updated_at: 2026-06-17T04:49:12.192Z
     workspace_id: dispatch-workspace-01KV6TB3T0QW16F5HKB8P3BT3J
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
