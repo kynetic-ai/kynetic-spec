@@ -26970,12 +26970,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-17T00:32:14.578Z
+      updated_at: 2026-06-17T00:32:27.139Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-17T00:32:14.578Z
+      updated_at: 2026-06-17T00:32:27.139Z
     integration:
       status: pending
       detail: null
@@ -26983,8 +26983,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 9e228050796ef40b3d4a8700082259591d1b8667
-      updated_at: 2026-06-17T00:32:14.578Z
-    lifecycle_state: ready
+      updated_at: 2026-06-17T00:32:27.139Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV6TB2SGTYQ6C292HS2VY5HJ
     task_ref: "@01KV6TB2SGTYQ6C292HS2VY5HJ"
@@ -26992,18 +26992,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-17T00:10:31.200Z
-      last_reconciled_at: 2026-06-17T00:32:14.578Z
+      last_reconciled_at: 2026-06-17T00:32:27.139Z
       created_at: 2026-06-16T05:03:14.380Z
-      updated_at: 2026-06-17T00:32:14.578Z
+      updated_at: 2026-06-17T00:32:27.139Z
     workspace_id: dispatch-workspace-01KV6TB2SGTYQ6C292HS2VY5HJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: a1bada71458bcb746a46955461351840bbe6e8e4
+        last_seen_at: 2026-06-17T00:32:27.139Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-verification-evidence-01kv6tb2-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-session-verification-evidence/01kv6tb2
-        head: 132e68ad5f3e1db4485faedf5a824580d6977da6
-        last_seen_at: 2026-06-17T00:10:25.293Z
+        head: a1bada71458bcb746a46955461351840bbe6e8e4
+        last_seen_at: 2026-06-17T00:32:27.139Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-verification-evidence-01kv6tb2
   - active_role: null
     base_branch_point: e9ae4ba5867eeb3232b0d8444b27e11ff9e4409d
