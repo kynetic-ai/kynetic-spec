@@ -24,6 +24,7 @@
  * Spec: @ac-verification-record-store
  */
 
+import { access } from "node:fs/promises";
 import * as path from "node:path";
 import {
   mkdirBufferAware,
@@ -40,7 +41,6 @@ import {
   type VerificationStamp,
   type VerificationStampInput,
 } from "../schema/verification-records.js";
-import { sessionExists } from "../sessions/store.js";
 import { commitIfShadow } from "./shadow.js";
 import { withFileLock } from "./file-lock.js";
 import type { KspecContext } from "./yaml.js";
@@ -340,13 +340,23 @@ export interface VerificationStampWithLinkage extends VerificationStamp {
  * store can be local (`.kspec-sessions/`) or a git worktree; both are
  * accessed through `ctx.sessionsDir` so this check is layout-agnostic.
  *
- * Delegates to the canonical session-store probe so the layout / metadata
- * filename lives in exactly one place.
+ * The probe is inlined here rather than delegated to `sessions/store.ts` so
+ * this module stays package-safe: importing from the session store would
+ * pull the broader session module graph (parser/session-branch, agent-
+ * runtime/session-event-fields) into the verification-record read path and
+ * the daemon's eager-load surface. The path layout mirrors the session
+ * store's `getSessionMetadataPath` (`<sessionsDir>/<sessionId>/session.yaml`).
  *
  * AC: @verification-session-evidence ac-pruned-session-tolerated
  */
 export async function isSessionResolvable(ctx: KspecContext, sessionId: string): Promise<boolean> {
-  return sessionExists(ctx.sessionsDir, sessionId);
+  const metadataPath = path.join(ctx.sessionsDir, sessionId, "session.yaml");
+  try {
+    await access(metadataPath);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
