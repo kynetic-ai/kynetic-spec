@@ -27617,12 +27617,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-17T01:47:30.014Z
+      updated_at: 2026-06-17T01:47:41.040Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-17T01:47:30.014Z
+      updated_at: 2026-06-17T01:47:41.040Z
     integration:
       status: pending
       detail: null
@@ -27630,7 +27630,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 35eab962fc1c600cfb86204594062254db67e00e
-      updated_at: 2026-06-17T01:47:30.014Z
+      updated_at: 2026-06-17T01:47:41.040Z
     lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV6TB3T0QW16F5HKB8P3BT3J
@@ -27639,9 +27639,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-17T01:32:48.538Z
-      last_reconciled_at: 2026-06-17T01:47:30.014Z
+      last_reconciled_at: 2026-06-17T01:47:41.040Z
       created_at: 2026-06-17T00:33:13.697Z
-      updated_at: 2026-06-17T01:47:30.014Z
+      updated_at: 2026-06-17T01:47:41.040Z
     workspace_id: dispatch-workspace-01KV6TB3T0QW16F5HKB8P3BT3J
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -27650,5 +27650,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-record-compatibility/01kv6tb3
         head: 2755ceda200d4ae94822794a7605a1a7a9e97f79
-        last_seen_at: 2026-06-17T01:32:17.905Z
+        last_seen_at: 2026-06-17T01:47:41.040Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-record-compatibility-01kv6tb3
