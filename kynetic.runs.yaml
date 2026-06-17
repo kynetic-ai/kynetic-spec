@@ -68506,7 +68506,7 @@ runs:
     completed_at: 2026-06-16T23:26:51.070Z
   - _ulid: 01KV9FNHWY7G5TK79WMDHB3WTC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -68529,7 +68529,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-17T00:31:03.744Z
-        completed_at: 2026-06-17T00:31:03.744Z
+        completed_at: 2026-06-17T00:31:31.331Z
+        notes: "Step 3 (search/capture check): searched 'package-safe' (no matches), 'installed package'
+          (10+ hits, prior observations @01KV4ZR6 @01KV5ESQ on direct-import case + completed
+          cli-serve stabilization tasks), 'sessionExists' (only this task), 'transitive' (no
+          matches), 'inline probe' (no matches). Conclusion: transitive-via-sessions/store.ts
+          variant is genuinely untracked. Captured as @01KV9FSW."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-17T00:31:31.331Z
+        completed_at: 2026-06-17T00:31:31.331Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-17T00:28:31.006Z
