@@ -32366,7 +32366,7 @@
   type: task
   spec_ref: "@verification-session-evidence"
   plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-ac-verification-record-store"
@@ -32381,6 +32381,7 @@
   created_at: 2026-06-15T23:37:18.896Z
   started_at: 2026-06-16T23:12:26.760Z
   submitted_at: 2026-06-17T00:27:36.420Z
+  completed_at: 2026-06-17T00:48:39.242Z
   automation: eligible
 - _ulid: 01KV6TB34ES9WYJRADMS2NA8Q8
   slugs:

@@ -41,8 +41,11 @@ description: |
 spec_ref: "@verification-session-evidence"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign at 72eb59b14a1b761bea283abb67ed8b4cc2745fa4. Review
+  @01KV9FZA approved session evidence linkage for verification stamps with all required gates
+  passing.
 depends_on:
   - "@task-ac-verification-record-store"
 context: []
@@ -248,9 +251,24 @@ history:
         previous: "@01KV99N677QNZVA2FGXGXD5X6D"
     command: review-link
     timestamp: 2026-06-17T00:33:53.704Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign at 72eb59b14a1b761bea283abb67ed8b4cc2745fa4. Review @01KV9FZA
+          approved session evidence linkage for verification stamps with all required gates passing.
+        previous: null
+      completed_at:
+        new: 2026-06-17T00:48:39.242Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-17T00:48:39.251Z
 prior_status: null
 created_at: 2026-06-15T23:37:18.896Z
 started_at: 2026-06-16T23:12:26.760Z
 submitted_at: 2026-06-17T00:27:36.420Z
+completed_at: 2026-06-17T00:48:39.242Z
 todos: []
 automation: eligible
