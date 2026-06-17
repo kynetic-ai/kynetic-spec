@@ -1,0 +1,26 @@
+_ulid: 01KV9XH4W05G6GDYAFVJ4JZCRV
+slugs: []
+title: Review task-coverage-record-compatibility (cycle 2)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KV9XH4VZ55KJ2SK3HB23AV4Y
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-17T04:30:46.656Z
+examined_commit: af30d713036b6b4848fcb626e2f4f83a436d17ac
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KV6TB3T0QW16F5HKB8P3BT3J"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-17T04:30:46.656Z
+updated_at: null
+notes: []
