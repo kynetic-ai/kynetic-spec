@@ -2,7 +2,84 @@ _ulid: 01KV9JBCBRV0B39EDVYQA75AEK
 slugs: []
 title: Review task-coverage-record-compatibility
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check reported all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-17T01:21:26.777Z
+    completed_at: 2026-06-17T01:21:26.777Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed hard gate: repo-wide oxlint completed with 0 errors; existing warning baseline
+      remains. Focused changed-file oxlint separately reported 0 warnings and 0 errors for
+      src/parser/verification-record-store.ts and tests/verification-record-compatibility.test.ts."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-17T01:21:29.656Z
+    completed_at: 2026-06-17T01:21:29.656Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: focused oxlint reported 0 warnings and 0 errors on both changed files."
+    name: focused-lint
+    required: false
+    runner: npx oxlint src/parser/verification-record-store.ts
+      tests/verification-record-compatibility.test.ts
+    created_at: 2026-06-17T01:21:32.493Z
+    completed_at: 2026-06-17T01:21:32.493Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared and tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-17T01:21:35.494Z
+    completed_at: 2026-06-17T01:21:35.494Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; reference warnings are the existing
+      deprecated-ref baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-17T01:21:38.430Z
+    completed_at: 2026-06-17T01:21:38.430Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; alignment warnings are the existing
+      project baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-17T01:21:41.458Z
+    completed_at: 2026-06-17T01:21:41.458Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warning baseline
+      remains. New @coverage-record-compatibility AC annotations are present in
+      tests/verification-record-compatibility.test.ts.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-17T01:21:44.411Z
+    completed_at: 2026-06-17T01:21:44.411Z
 events:
   - _ulid: 01KV9JBCBRSBD0DN5JPAMF63SQ
     actor: Jacob Chapel
@@ -17,6 +94,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-17T01:15:48.832Z
+  - _ulid: 01KV9JPFFF0SDCTZG6TAZW870V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-17T01:21:27.023Z
+  - _ulid: 01KV9JPJ9084G3Y55MKZYAYS45
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-17T01:21:29.888Z
+  - _ulid: 01KV9JPN1KP7S6YK9BDK98MXM3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-17T01:21:32.723Z
+  - _ulid: 01KV9JPQZE47MGV773N0W1WQS9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-17T01:21:35.726Z
+  - _ulid: 01KV9JPTVQ1YV66J0B7M3F64ES
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-17T01:21:38.679Z
+  - _ulid: 01KV9JPXSRBCARYK9X6PTJB1FT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-17T01:21:41.688Z
+  - _ulid: 01KV9JQ0P3VYSRCW7XHZT9EFXD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-17T01:21:44.643Z
+  - _ulid: 01KV9JQ3JCSNAQNW8FXBMR7QDN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV9JQ3ARQFEZSKM9J7JM2PEW
+    timestamp: 2026-06-17T01:21:47.596Z
+  - _ulid: 01KV9JQ6FXF1GX23MMAPGKHTCC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KV9JQ68T92VKAEV2FHEW0H19
+    timestamp: 2026-06-17T01:21:50.589Z
+  - _ulid: 01KV9JQ9BZXMFYSWH9DPF2EJDK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KV9JQ94NG7R7BFEJT52HE4FD
+    timestamp: 2026-06-17T01:21:53.535Z
 examined_commit: 2755ceda200d4ae94822794a7605a1a7a9e97f79
 external_links: []
 lifecycle_state: open
@@ -26,8 +173,79 @@ subject:
   content_hash: ""
   ref: "@01KV6TB3T0QW16F5HKB8P3BT3J"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KV9JQ3ARQFEZSKM9J7JM2PEW
+    anchor:
+      type: code
+      commit: 2755ceda200d4ae94822794a7605a1a7a9e97f79
+      line_end: 448
+      line_start: 443
+      path: src/parser/verification-record-store.ts
+      side: head
+    entries:
+      - _ulid: 01KV9JQ3ARHKH1SA27R9W74B6M
+        author: Jacob Chapel
+        body: "MUST-FIX: loadVerificationRecords is a public store read path, but it silently drops records
+          whose format is newer than supported. AC ac-newer-record-format-refused says that when a
+          verification record store declaring a newer record-format version is read or written, the
+          operation on the store refuses with an error naming both versions and leaves the store
+          unmodified. This path reads every record file in the store and is used by validation's
+          orphan scan; treating an incompatible record as absent loses the required format gate. The
+          new test at tests/verification-record-compatibility.test.ts:450-459 also encodes the wrong
+          behavior by expecting loadVerificationRecords(ctx) to return [] and validate() to hide the
+          newer-format record instead of refusing the store read."
+        created_at: 2026-06-17T01:21:47.352Z
+    kind: blocker
+  - _ulid: 01KV9JQ68T92VKAEV2FHEW0H19
+    anchor:
+      type: code
+      commit: 2755ceda200d4ae94822794a7605a1a7a9e97f79
+      line_end: 576
+      line_start: 551
+      path: tests/verification-record-compatibility.test.ts
+      side: head
+    entries:
+      - _ulid: 01KV9JQ68TBAECQC8R9262WETK
+        author: Jacob Chapel
+        body: "MUST-FIX: this test does not prove the 'unrecognized directory's files are neither read nor
+          modified' part of ac-unrecognized-sidecar-untouched. The sidecar file contains valid YAML
+          and the assertions only verify validate() returns a result and the bytes are unchanged
+          after a later stamp write. An implementation could still enumerate and parse this unknown
+          sidecar file and this test would pass, so the AC's unread guarantee is not behaviorally
+          covered. Seed a sidecar that would fail if read as metadata, or otherwise make the read
+          observable, while retaining the unchanged-file assertion."
+        created_at: 2026-06-17T01:21:50.362Z
+    kind: blocker
+  - _ulid: 01KV9JQ94NG7R7BFEJT52HE4FD
+    entries:
+      - _ulid: 01KV9JQ94PJWYK07Z3ZKJW8JDQ
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; task/spec context for @01KV6TB3T0QW16F5HKB8P3BT3J and
+          @coverage-record-compatibility; src/parser/verification-record-store.ts;
+          src/schema/verification-records.ts; src/parser/freshness-resolver.ts;
+          src/parser/validate.ts orphan-verification path;
+          tests/verification-record-compatibility.test.ts; related grep results for verification
+          record call sites.
+
+          Commands run: git status/rev-parse/diff; kspec task get; kspec item get; kspec review
+          add/open/get; rg AC annotations and call sites; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; npm run format:check; npm run lint --
+          --quiet; npx oxlint changed files; npm run typecheck; npm test; git diff --check.
+
+          Claims verified: verified the worker claim that direct load/write refuse newer formats,
+          but disproved the claim that bulk load can skip newer-format records under
+          ac-newer-record-format-refused. Verified all task ACs have annotations, with one
+          annotation not proving the unread part of its AC.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration
+          with freshness resolver and validation orphan scan. Shared guidance neutrality: not
+          applicable; no shared/package guidance surfaces changed.
+        created_at: 2026-06-17T01:21:53.302Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-17T01:15:23.384Z
-updated_at: 2026-06-17T01:15:48.569Z
+updated_at: 2026-06-17T01:21:53.302Z
 notes: []

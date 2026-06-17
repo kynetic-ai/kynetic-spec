@@ -27095,9 +27095,9 @@ reviews:
   - _ulid: 01KV9JBCBRV0B39EDVYQA75AEK
     slugs: []
     title: Review task-coverage-record-compatibility
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 0
+    check_count: 7
     examined_commit: 2755ceda200d4ae94822794a7605a1a7a9e97f79
     lifecycle_state: open
     related_refs: []
@@ -27106,8 +27106,8 @@ reviews:
       content_hash: ""
       ref: "@01KV6TB3T0QW16F5HKB8P3BT3J"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 3
+    unresolved_blocker_count: 2
     verdict_count: 0
     created_at: 2026-06-17T01:15:23.384Z
-    updated_at: 2026-06-17T01:15:48.569Z
+    updated_at: 2026-06-17T01:21:53.302Z
