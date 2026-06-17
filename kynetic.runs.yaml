@@ -68684,7 +68684,7 @@ runs:
     completed_at: 2026-06-17T01:31:30.832Z
   - _ulid: 01KV9X6GA6099ZB79XAJ8F0AVZ
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -68712,7 +68712,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-17T04:27:43.556Z
-        completed_at: 2026-06-17T04:27:43.556Z
+        completed_at: 2026-06-17T04:27:54.402Z
+        notes: "Searched: 'format gate', 'sidecar untouched', 'unrecognized sidecar', 'forward
+          compatibility', 'format ceiling', 'observable read'. Only matches were the task itself
+          (@task-coverage-record-compatibility) and the precedent decision
+          (@data-format-forward-compatibility). No existing inbox items, observations, or tasks
+          track the strict-carve-out reading pattern or the observable-read testing pattern. Both
+          friction points are untracked — but both are one-off interpretation issues, not systemic.
+          No duplication risk because there's nothing to duplicate."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-17T04:27:54.402Z
+        completed_at: 2026-06-17T04:27:54.402Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-17T04:24:57.926Z
