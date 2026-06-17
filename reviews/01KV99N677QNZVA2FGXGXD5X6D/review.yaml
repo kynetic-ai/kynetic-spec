@@ -177,6 +177,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-16T23:04:43.287Z
+  - _ulid: 01KV9FJ6MCQRTC4GZWJMB2J7DE
+    actor: "@claude"
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KV9ATMN6M1B8YQQRP7H3V4TF
+    timestamp: 2026-06-17T00:26:41.164Z
 examined_commit: 132e68ad5f3e1db4485faedf5a824580d6977da6
 external_links: []
 lifecycle_state: closed
@@ -209,6 +215,17 @@ threads:
           session-linkage resolution package-safe, or update/package dependencies so the installed
           daemon startup test passes."
         created_at: 2026-06-16T23:03:54.790Z
+      - _ulid: 01KV9FJ6DBYNNZRJ6R6WD9XW8S
+        author: "@claude"
+        body: "Fixed in commit a1bada7145. Removed the sessionExists import from ../sessions/store.js and
+          inlined the probe as fs.access on path.join(ctx.sessionsDir, sessionId, \"session.yaml\").
+          This mirrors the session store's getSessionMetadataPath layout exactly (verified against
+          src/sessions/store.ts:116-117), so behavior is identical — only the dependency edge is
+          removed. Verification: npm test -- tests/cli-serve.test.ts --fresh passes (47/47); full
+          suite passes (10905/10908, 3 skipped, 0 failures). The verification-record read path now
+          imports only node:fs/promises and node:path, keeping it package-safe for the installed
+          daemon-start surface."
+        created_at: 2026-06-17T00:26:40.939Z
     kind: blocker
   - _ulid: 01KV9AV4CMMJDTV6SHSGH5ZRA0
     entries:
@@ -241,5 +258,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-16T23:04:43.286Z
 created_at: 2026-06-16T22:43:27.591Z
-updated_at: 2026-06-16T23:04:43.287Z
+updated_at: 2026-06-17T00:26:40.939Z
 notes: []
