@@ -146,11 +146,11 @@
   parent: "@shared-mutation-pipeline"
   description: |
     Every entity domain that clients can subscribe to receives
-    entity-scoped typed events for all of its mutations. Task changes,
-    review creation, and spec item changes each broadcast on their
-    owning domain topic, through every interface a mutation can arrive
-    on, with payloads that identify the affected entity and the kind of
-    change.
+    entity-scoped typed events for all of its daemon-served mutations.
+    Task changes, review creation, spec item changes, and plan-local
+    resource changes each broadcast on their owning domain topic,
+    through every interface a mutation can arrive on, with payloads that
+    identify the affected entity and the kind of change.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -183,6 +183,17 @@
         without relying on file-change fallback events
     - id: ac-4
       given: |
+        a plan-local resource is added, replaced, or removed through a
+        daemon-served plan resource route
+      when: |
+        the mutation succeeds
+      then: |
+        a typed plan-resource event is broadcast on the plan domain
+        topic, identifying the owning plan, the resource, and the kind
+        of change, and a subscriber to that topic observes the resource
+        change without relying on file-change fallback events
+    - id: ac-5
+      given: |
         any entity-scoped mutation event payload
       when: |
         a subscriber processes it
@@ -199,13 +210,16 @@
     Broadcast vocabulary is organized by entity domain: each domain has
     one updates topic, and entity-scoped event types within it name the
     changed subject and the change in past-tense subject_change form.
-    New capabilities extend an existing domain topic with new event
-    types rather than adding a parallel topic for the same entities.
-    Two event families are reserved by name for later capabilities:
-    plan-revision events on the plan domain topic and coverage-state
-    events on the spec-item domain topic. The reserved names are part
-    of this vocabulary; their payloads and semantics are defined by the
-    capabilities that introduce them.
+    The task, spec-item, review, plan, inbox, and triage domains use
+    `tasks:updates`, `items:updates`, `reviews:updates`,
+    `plans:updates`, `inbox:updates`, and `triage:updates`,
+    respectively. New capabilities extend an existing domain topic with
+    new event types rather than adding a parallel topic for the same
+    entities. Two event families are reserved by name for later
+    capabilities: plan-revision events on the plan domain topic and
+    coverage-state events on the spec-item domain topic. The reserved
+    names are part of this vocabulary; their payloads and semantics are
+    defined by the capabilities that introduce them.
   acceptance_criteria:
     - id: ac-1
       given: |
@@ -336,8 +350,10 @@ derive_from_specs: false
       create/delete, triage record/override/act, review threads,
       replies, resolve/reopen, verdicts, checks, lifecycle, resources,
       plan resources) onto the service. Existing topics, event types,
-      and payload schemas must be preserved exactly — this task changes
-      the plumbing, not the vocabulary.
+      and payload schemas must be preserved where they already exist;
+      the plan-resource routes additionally adopt the plan-domain event
+      introduced by this plan. This task changes the plumbing, not the
+      vocabulary for domains that already had typed events.
     - Reuse the existing write-through skip flag so the watcher does not
       double-reload domains the pipeline already updated.
 
@@ -401,7 +417,7 @@ derive_from_specs: false
 
     Covers: @shared-mutation-pipeline ac-3, ac-5.
 
-- title: Emit the missing entity event types
+- title: Emit the missing entity and plan-resource event types
   slug: task-missing-event-types
   priority: 1
   tags: [daemon, events, implementation]
@@ -410,14 +426,17 @@ derive_from_specs: false
     - "@task-command-path-typed-events"
   description: |
     Fill the holes in the entity event vocabulary: review creation,
-    full task-mutation coverage, and emission on the spec-item topic
-    that clients already subscribe to.
+    full task-mutation coverage, plan-local resource changes, and
+    emission on the spec-item and plan topics that clients need for
+    resource/state freshness.
 
     Why: Today only five task transitions (start, note, submit,
     complete, block) emit task_updated; review creation emits nothing
-    (creation is CLI-only); and the items:updates topic is subscribed
-    by the web client but no daemon code ever broadcasts on it — spec
-    item changes reach clients only via file-change fallback.
+    (creation is CLI-only); the items:updates topic is subscribed by
+    the web client but no daemon code ever broadcasts on it; and
+    plan-resource upload/delete routes commit shadow state without a
+    plan-domain typed event, so plan resource freshness still relies on
+    file-change fallback.
 
     What:
     - review_created event on the reviews topic when a review record is
@@ -432,6 +451,14 @@ derive_from_specs: false
       removal (item add, item set, item ac mutations, trait changes,
       removal), with the canonical item identifier and change kind in
       the payload.
+    - plans:updates emission for plan-local resource add, replace, and
+      remove mutations, using a past-tense event type such as
+      plan_resource_changed and a payload that identifies the canonical
+      plan, resource id, and change kind (`added`, `replaced`, or
+      `removed`). Add the topic to the shared typed topic definitions
+      and the web client's subscription list; the file watcher remains
+      only a fallback, not the freshness path for these route-driven
+      mutations.
     - Conform the full vocabulary to the naming decision: every
       entity-scoped event type in past-tense subject_change form on its
       owning domain topic, and no second topic carrying entity events
@@ -443,13 +470,15 @@ derive_from_specs: false
       only, no payloads or semantics.
 
     How: With the pipeline in place from the prior tasks, these are
-    event-descriptor additions at the mutation-manager call sites plus
-    typed payload definitions in the shared package. Enumerate the
-    vocabulary in a test that asserts naming-form conformance and
-    topic ownership. Verify items:updates emission end-to-end with a
-    subscribed test client and a proxied item mutation.
+    event-descriptor additions at the mutation-manager and route call
+    sites plus typed payload definitions in the shared package.
+    Enumerate the vocabulary in a test that asserts naming-form
+    conformance and topic ownership. Verify items:updates emission
+    end-to-end with a subscribed test client and a proxied item
+    mutation; verify plans:updates emission with a plan-resource
+    upload/delete route fixture and a subscribed client.
 
-    Covers: @mutation-event-coverage ac-1, ac-2, ac-3, ac-4.
+    Covers: @mutation-event-coverage ac-1, ac-2, ac-3, ac-4, ac-5.
     @mutation-event-naming ac-1, ac-2, ac-3. @ui-api-aggregation ac-4
     (for the new event types).
 
@@ -535,8 +564,9 @@ derive_from_specs: false
       event invalidates tasks, validation, and session-context
       wholesale).
     - Consume the new event types: items:updates spec-item events
-      (subscription already exists), review_created, and the expanded
-      task event coverage.
+      (subscription already exists), plans:updates plan-resource
+      events (new subscription), review_created, and the expanded task
+      event coverage.
     - Remove the delayed double-invalidation: every event triggers
       exactly one immediate refresh pass; file-change fallback events
       trigger a single immediate refresh of their mapped domains.
@@ -548,12 +578,16 @@ derive_from_specs: false
       ac-10.
 
     How: Rework the handler map in ws-invalidation.ts from topic-level
-    wholesale invalidation to event-type + payload dispatch. Unit-test
-    the mapping (event in, exact query keys refreshed, nothing else).
-    E2E (Playwright, ephemeral-port daemon fixture): open the task
-    board, perform a CLI-proxied mutation, and assert the view updates
-    without reload; assert no fixed-delay re-invalidation timers are
-    scheduled.
+    wholesale invalidation to event-type + payload dispatch, and add
+    `plans:updates` subscription handling for plan-resource events that
+    refresh the affected plan detail/list/resource queries without
+    touching unrelated domains. Unit-test the mapping (event in, exact
+    query keys refreshed, nothing else). E2E (Playwright,
+    ephemeral-port daemon fixture): open the task board, perform a
+    CLI-proxied mutation, and assert the view updates without reload;
+    upload/delete a plan resource through the API and assert the plan
+    view updates from the typed event path; assert no fixed-delay
+    re-invalidation timers are scheduled.
 
     Covers: @ui-targeted-event-consumption ac-1, ac-2, ac-3, ac-4.
 
@@ -568,16 +602,19 @@ derive_from_specs: false
     navigable metadata rather than plan prose.
 
     Why: The pipeline generalizes behavior owned today by the command
-    API and entity cache specs, and the event coverage spec extends the
-    API contract and enriched-events specs. Without recorded links,
-    future readers cannot navigate from the foundation specs to the
-    layer that now owns cross-interface mutation behavior.
+    API and entity cache specs, the event coverage spec extends the
+    API contract and enriched-events specs, and plan-resource events
+    connect the mutation vocabulary to the entity-scoped resource
+    foundation. Without recorded links, future readers cannot navigate
+    from the foundation specs to the layer that now owns
+    cross-interface mutation behavior.
 
     What — create relates_to links for exactly these pairs:
     - @shared-mutation-pipeline ↔ @daemon-command-api
     - @shared-mutation-pipeline ↔ @daemon-entity-cache
     - @mutation-event-coverage ↔ @ui-api-aggregation
     - @mutation-event-coverage ↔ @api-contract
+    - @mutation-event-coverage ↔ @trait-entity-scoped-local-resources-1
     - @dispatch-mutation-transparency ↔ @agent-invocation-lifecycle
 
     How: kspec link create --type relates_to for each pair (or the
@@ -664,7 +701,14 @@ Verified at program research time (plans/ui-redesign/research/state-api.md
   mutations are command-path-only and emit nothing entity-scoped.
 - `items:updates` is subscribed by the client but never emitted by any
   daemon code.
+- The client does not subscribe to a plan-domain updates topic today;
+  plan-resource upload/delete routes directly commit shadow state and
+  currently refresh only through file-change fallback.
 - No event exists for review creation (creation is CLI-only).
+- The coverage verification record store writes
+  `coverage/verifications/<item-ulid>.yaml` as a programmatic sidecar
+  and directly commits the stamp; no daemon or CLI write interface for
+  re-verification/ingestion exists yet.
 - The dispatch invocation runner mutates tasks via CLI subprocess with
   the documented error-opacity, error-masking, and loop-back defects.
 
@@ -700,7 +744,17 @@ Verified at program research time (plans/ui-redesign/research/state-api.md
 - **Reserved event families only named, not built**: plan-revision and
   coverage-state events get reserved names and owning topics
   (`@mutation-event-naming` ac-3); payloads and semantics belong to the
-  plans that introduce those capabilities.
+  plans that introduce those capabilities. Plan-resource add/replace/
+  remove is not reserved future work: this plan defines that current
+  route-driven mutation as a concrete plan-domain event.
+- **Verification stamp sidecar writes are lower-level store operations
+  until write interfaces exist**: the storage primitive added by the AC
+  coverage plan remains a programmatic record-store API. Any future
+  daemon-served or CLI-served verification, ingestion, re-verification,
+  or coverage-state writer that calls it must do so through the shared
+  mutation pipeline and the reserved coverage-state/spec-item event
+  family once that later plan defines payload semantics. This plan does
+  not invent those coverage-state semantics early.
 - **No event replay or resume**: the existing reconnect contract
   (resubscribe + full refetch, no missed-event delivery) is unchanged.
 - **No SSE or new transport**; no change to per-connection project

@@ -17,3 +17,7 @@ notes:
       0). Program anchor: @plan-ui-redesign-global-decisions."
     author: "@claude"
     created_at: 2026-06-14T20:06:20.290Z
+  - _ulid: 01KVBY591J5E8KWM12XNM4V7GN
+    content: Clarify plan-domain resource events and verification sidecar pipeline boundary before approval
+    author: Jacob Chapel
+    created_at: 2026-06-17T23:20:15.154Z
