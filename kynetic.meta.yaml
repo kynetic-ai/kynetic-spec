@@ -22576,6 +22576,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-16T23:08:24.971Z
+  - _ulid: 01KV9FSW17D1YV3VVKD8W28P5A
+    type: friction
+    content: "Package-safety hazard via TRANSITIVE imports through sessions/store.ts: importing
+      sessionExists (a 6-line existence probe) from src/sessions/store.js transitively pulls the
+      agent-runtime/identity module graph (parser/session-branch, agent-runtime/session-event-fields
+      → identity/actor-write → @kynetic-ai/shared) into the importer's module graph. The function
+      name suggests an isolated cheap probe; the reality is it's part of a heavy module root.
+      Verified in fix cycle on @task-session-verification-evidence: importing sessionExists into
+      src/parser/verification-record-store.ts broke the installed-package daemon-start smoke test
+      (tests/cli-serve.test.ts) because @kynetic-ai/shared is not bundled in the published dist/.
+      Fix pattern: when a package-safe read path (verification records, coverage, anything reachable
+      from the unbundled CLI) only needs an existence check, inline the probe (fs.access on the
+      metadata path) rather than delegating to sessions/store.ts. Prior observations (@01KV4ZR6,
+      @01KV5ESQ) cover the DIRECT value-import case; this is the transitive variant. Consider
+      exporting a package-safe probe helper from a sessions/ submodule that has no
+      agent-runtime/identity imports, or adding a lint rule that flags imports from
+      sessions/store.js in package-safe paths."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KV9FNH"
+    created_at: 2026-06-17T00:30:52.455Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
