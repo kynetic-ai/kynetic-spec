@@ -68684,7 +68684,7 @@ runs:
     completed_at: 2026-06-17T01:31:30.832Z
   - _ulid: 01KV9X6GA6099ZB79XAJ8F0AVZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: "@claude"
     step_results:
       - status: completed
@@ -68698,7 +68698,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-17T04:27:32.353Z
-        completed_at: 2026-06-17T04:27:32.353Z
+        completed_at: 2026-06-17T04:27:43.556Z
+        notes: "Friction: first-cycle implementation rationalized a permissive reading of 'operations not
+          involving the store remain unaffected' — it treated bulk reads used internally by validate
+          as exempt from the format gate. The reviewer correctly read the carve-out strictly: only
+          operations that don't touch the store at all are exempt; bulk scans are themselves store
+          reads and must refuse. Searched @data-format-forward-compatibility (the precedent feature)
+          to check for recurrence — its task had one approved review with no changes_requested
+          cycle, so this interpretation issue is a one-off, not a recurring pattern. Per
+          loop-variant principles (better to capture nothing than noise), not capturing. Also noted
+          but not capturing: the first-cycle sidecar test only proved 'not modified', not 'not read'
+          — a one-off testing gap, not systemic."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-17T04:27:43.556Z
+        completed_at: 2026-06-17T04:27:43.556Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-17T04:24:57.926Z
