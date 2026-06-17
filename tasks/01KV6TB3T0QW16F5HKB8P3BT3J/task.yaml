@@ -67,7 +67,7 @@ description: |
 spec_ref: "@coverage-record-compatibility"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-ac-verification-record-store"
@@ -88,7 +88,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: dev
-session_id: null
+session_id: 01KV9VE9D84C11MMHS8HZ3KAXJ
 history:
   - author: Jacob Chapel
     changes:
@@ -147,8 +147,21 @@ history:
         previous: 01KV9FYZFMW2TRMGNT7K7RE0CJ
     command: review-verdict-needs-work
     timestamp: 2026-06-17T01:28:22.787Z
+  - author: "@claude"
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KV9VE9D84C11MMHS8HZ3KAXJ
+        previous: null
+      started_at:
+        new: 2026-06-17T04:23:40.395Z
+        previous: 2026-06-17T00:44:41.525Z
+    command: task-start
+    timestamp: 2026-06-17T04:23:40.395Z
 created_at: 2026-06-15T23:37:19.936Z
-started_at: 2026-06-17T00:44:41.525Z
+started_at: 2026-06-17T04:23:40.395Z
 submitted_at: 2026-06-17T01:08:55.362Z
 todos: []
 automation: eligible
