@@ -27475,12 +27475,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-17T00:10:12.325Z
+      updated_at: 2026-06-17T00:10:25.293Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-17T00:10:12.325Z
+      updated_at: 2026-06-17T00:10:25.293Z
     integration:
       status: pending
       detail: null
@@ -27488,7 +27488,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 9e228050796ef40b3d4a8700082259591d1b8667
-      updated_at: 2026-06-17T00:10:12.325Z
+      updated_at: 2026-06-17T00:10:25.293Z
     lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV6TB2SGTYQ6C292HS2VY5HJ
@@ -27497,9 +27497,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-16T23:10:03.049Z
-      last_reconciled_at: 2026-06-17T00:10:12.325Z
+      last_reconciled_at: 2026-06-17T00:10:25.293Z
       created_at: 2026-06-16T05:03:14.380Z
-      updated_at: 2026-06-17T00:10:12.325Z
+      updated_at: 2026-06-17T00:10:25.293Z
     workspace_id: dispatch-workspace-01KV6TB2SGTYQ6C292HS2VY5HJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -27508,7 +27508,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-session-verification-evidence/01kv6tb2
         head: 132e68ad5f3e1db4485faedf5a824580d6977da6
-        last_seen_at: 2026-06-16T23:09:26.942Z
+        last_seen_at: 2026-06-17T00:10:25.293Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-verification-evidence-01kv6tb2
   - active_role: null
     base_branch_point: e9ae4ba5867eeb3232b0d8444b27e11ff9e4409d
