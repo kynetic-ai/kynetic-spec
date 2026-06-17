@@ -21,3 +21,13 @@ notes:
     content: Clarify plan-domain resource events and verification sidecar pipeline boundary before approval
     author: Jacob Chapel
     created_at: 2026-06-17T23:20:15.154Z
+  - _ulid: 01KVBYG81T6GXKSN62R2R8Y0GW
+    content: "Hermes patch/review cycle: updated draft to make plan-local resource mutations first-class
+      via plans:updates / plan_resource_changed, add UI subscription/query refresh coverage, relate
+      event coverage to entity-scoped resource foundations, and clarify verification-stamp sidecar
+      writes as lower-level store operations whose future daemon/CLI writers must use the shared
+      pipeline. One-shot plan-reviewer session 01KVBY62WEXEMPKX8Y3SFQQXN6 returned PASS / approved
+      with no must-fix issues; caveat only that derive dry-run requires approval because the plan
+      remains draft."
+    author: Jacob Chapel
+    created_at: 2026-06-17T23:26:14.586Z

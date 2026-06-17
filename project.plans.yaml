@@ -1109,7 +1109,7 @@ plans:
     branch: feat/ui-redesign
     derived_specs: []
     derived_tasks: []
-    notes_count: 4
+    notes_count: 5
     resource_summary:
       count: 0
       total_bytes: 0
