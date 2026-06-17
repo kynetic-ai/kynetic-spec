@@ -67,7 +67,7 @@ description: |
 spec_ref: "@coverage-record-compatibility"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-ac-verification-record-store"
@@ -79,6 +79,14 @@ tags:
   - schema
   - migration
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-coverage-record-compatibility/01kv6tb3
+  captured_at: 2026-06-17T01:08:55.360Z
+  commit: 2755ceda200d4ae94822794a7605a1a7a9e97f79
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KV9FYZFMW2TRMGNT7K7RE0CJ
 history:
   - author: Jacob Chapel
@@ -101,7 +109,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-17T00:44:41.525Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-record-compatibility/01kv6tb3
+          captured_at: 2026-06-17T01:08:55.360Z
+          commit: 2755ceda200d4ae94822794a7605a1a7a9e97f79
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-17T01:08:55.362Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-17T01:08:55.363Z
 created_at: 2026-06-15T23:37:19.936Z
 started_at: 2026-06-17T00:44:41.525Z
+submitted_at: 2026-06-17T01:08:55.362Z
 todos: []
 automation: eligible
