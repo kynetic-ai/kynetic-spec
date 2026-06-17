@@ -442,23 +442,32 @@ describe("ac-newer-record-format-refused", () => {
   });
 
   // AC: @coverage-record-compatibility ac-newer-record-format-refused
-  it("operations not involving the store remain unaffected by a newer-format record", async () => {
+  it("bulk read refuses with both versions named, and operations not involving the store remain unaffected", async () => {
     const ctx = await initContext(project.tempDir, { syncMode: "skip" });
     const ulid = testUlid("ITEM", 1);
     await seedNewerFormatRecord(ctx as never, ulid);
 
-    // Bulk load (used by validation's orphan scan) tolerates the newer-format
-    // record — it skips that file without throwing.
-    const records = await loadVerificationRecords(ctx);
-    expect(records).toEqual([]);
+    // Bulk load (used by validation's orphan scan) is a public store read
+    // path — it refuses with both versions named rather than silently
+    // dropping the incompatible record.
+    await expect(loadVerificationRecords(ctx)).rejects.toThrow(
+      VerificationRecordFormatCompatibilityError,
+    );
+    await expect(loadVerificationRecords(ctx)).rejects.toMatchObject({
+      code: VERIFICATION_RECORD_FORMAT_NEWER_THAN_SUPPORTED_CODE,
+      declaredVersion: CURRENT_VERIFICATION_RECORD_FORMAT + 1,
+      maxSupportedVersion: CURRENT_VERIFICATION_RECORD_FORMAT,
+    });
 
-    // validate --completeness succeeds; the newer-format record is not
-    // surfaced as an orphan finding and the operation is not refused.
-    const result = await validate(ctx, { completeness: true });
-    const newFormatFindings = result.completenessWarnings.filter((w) => w.message.includes(ulid));
-    expect(newFormatFindings).toEqual([]);
+    // validate --completeness involves the store via the orphan scan, so it
+    // propagates the refusal rather than hiding the newer-format record.
+    await expect(validate(ctx, { completeness: true })).rejects.toThrow(
+      VerificationRecordFormatCompatibilityError,
+    );
 
-    // An unrelated write that does not involve the store succeeds.
+    // An unrelated operation that does not involve the store succeeds. The
+    // inbox write never reaches the verification store, so the format
+    // refusal does not affect it.
     const inboxResult = kspec('inbox add "compat-test idea"', project.tempDir);
     expect(inboxResult.exitCode).toBe(0);
 
@@ -556,15 +565,27 @@ describe("ac-unrecognized-sidecar-untouched", () => {
     // Drop an unrecognized sidecar directory alongside the known metadata.
     // Tools that predate the verification store (or any future feature) must
     // neither read nor rewrite files in directories they do not recognize.
+    //
+    // The sidecar's content is crafted to make any read observable: the
+    // unresolved YAML alias (`*no-such-anchor`) throws a ReferenceError at
+    // parse time in the yaml library that backs readYamlFile. A successful
+    // validate/stamp operation therefore proves no metadata reader walked
+    // this directory and parsed the file — if any had, the parse error would
+    // have surfaced (most readers do not swallow readYamlFile errors).
     const sidecarDir = path.join(project.specDir, "unknown-sidecar");
     const sidecarFile = path.join(sidecarDir, "data.yaml");
     await fs.mkdir(sidecarDir, { recursive: true });
-    const sidecarBytes = "unknown_field: preserved-by-all-readers\nnested:\n  data: [1, 2, 3]\n";
+    const sidecarBytes =
+      "unknown_field: *no-such-anchor-would-throw-if-parsed\n" +
+      "nested:\n" +
+      "  data: [1, 2, 3]\n";
     await fs.writeFile(sidecarFile, sidecarBytes, "utf-8");
 
     const ctx = await initContext(project.tempDir, { syncMode: "skip" });
 
-    // Load: the metadata scan must tolerate the unrecognized sidecar.
+    // Load: the metadata scan must leave the unrecognized sidecar unread.
+    // If any reader attempted to parse the sidecar file, the unresolved
+    // alias would throw and this call would reject.
     const validateResult = await validate(ctx, { completeness: true });
     expect(Array.isArray(validateResult.completenessWarnings)).toBe(true);
 
@@ -572,7 +593,8 @@ describe("ac-unrecognized-sidecar-untouched", () => {
     // store under coverage/verifications/ must not touch the sidecar.
     await writeVerificationStamp(ctx, ulid, "ac-one", validStamp());
 
-    // The unrecognized sidecar file is byte-identical.
+    // The unrecognized sidecar file is byte-identical — neither parsed nor
+    // rewritten.
     expect(await readTestOutput(sidecarFile)).toBe(sidecarBytes);
   });
 });

@@ -333,8 +333,8 @@ export async function writeVerificationStamp(
 
 /**
  * Outcome of a single-record load, reported with enough detail for the bulk
- * scan (`loadVerificationRecords`) to tolerate format-incompatible records
- * without losing the distinction for direct callers.
+ * scan (`loadVerificationRecords`) to propagate format-incompatible records
+ * rather than silently dropping them.
  */
 type LoadRecordOutcome =
   | { status: "ok"; record: VerificationRecord }
@@ -344,7 +344,7 @@ type LoadRecordOutcome =
 
 /**
  * Read one item's record file and apply the record-format ceiling, returning
- * a tagged outcome so direct and bulk callers can choose their policy.
+ * a tagged outcome so direct and bulk callers surface the same refusal.
  */
 async function loadVerificationRecordInternal(
   ctx: KspecContext,
@@ -376,11 +376,12 @@ async function loadVerificationRecordInternal(
  *
  * A record declaring a newer-than-supported record-format version refuses
  * with a {@link VerificationRecordFormatCompatibilityError} naming both the
- * declared version and the maximum supported version, leaving the caller to
- * surface the refusal. Direct API access refuses; the bulk scan
- * (`loadVerificationRecords`) tolerates the same condition per-file so
- * operations that incidentally touch the store (validation's orphan scan)
- * continue unaffected.
+ * declared version and the maximum supported version. Both read paths
+ * (this single-record load and the bulk `loadVerificationRecords` scan)
+ * refuse on the same condition — the store's read operation refuses as a
+ * whole, never silently dropping the incompatible record. Callers that do
+ * not involve the store (e.g., `kspec task list`) are unaffected because
+ * they never reach this path.
  *
  * AC: @coverage-record-compatibility ac-newer-record-format-refused
  */
@@ -411,15 +412,19 @@ export async function readVerificationStamp(
 }
 
 /**
- * Load every verification record in the store, tolerantly. Records whose
- * item ULID or AC ids no longer resolve still load here — they are filtered
- * out of resolved reads (and surfaced as orphans) by
- * `partitionVerificationReads`, never silently dropped. Files that are not
- * named by a full ULID, that fail schema validation, or that declare a
- * newer-than-supported record-format version are skipped. The format ceiling
- * is tolerated here so operations that incidentally touch the store
- * (validation's orphan scan) continue unaffected — direct API access via
- * `loadVerificationRecord` is where the refusal surfaces.
+ * Load every verification record in the store. Records whose item ULID or
+ * AC ids no longer resolve still load here — they are filtered out of
+ * resolved reads (and surfaced as orphans) by `partitionVerificationReads`,
+ * never silently dropped. Files that are not named by a full ULID or that
+ * fail schema validation are skipped.
+ *
+ * A record declaring a newer-than-supported record-format version refuses
+ * the whole scan with a {@link VerificationRecordFormatCompatibilityError}
+ * naming both versions. The bulk read is a public store read path, so the
+ * refusal surfaces here — it is not absorbed per-file. Operations that do
+ * not involve the store (e.g., `kspec task list`) never reach this path and
+ * are unaffected; operations that do involve the store (e.g.,
+ * `validate --completeness`'s orphan scan) propagate the refusal.
  *
  * AC: @ac-verification-record-store ac-unresolvable-keys-tolerated
  * AC: @coverage-record-compatibility ac-newer-record-format-refused
@@ -441,11 +446,17 @@ export async function loadVerificationRecords(
     if (!match) continue;
     const itemUlid = match[1];
     const outcome = await loadVerificationRecordInternal(ctx, itemUlid);
+    if (outcome.status === "format_error") {
+      // The store is declaring a newer-than-supported record format. The
+      // bulk read is a public store read path, so refuse with both versions
+      // named rather than silently dropping the incompatible record.
+      throw outcome.error;
+    }
     if (outcome.status === "ok") {
       loaded.push({ itemUlid, record: outcome.record, _sourceFile: path.join(storeRoot, entry) });
     }
-    // missing / invalid / format_error → skip silently; the bulk scan is
-    // tolerant by design so unrelated operations are unaffected.
+    // missing / invalid → skip silently; these are not format-gate refusals
+    // and unrelated records continue to load.
   }
   return loaded;
 }
