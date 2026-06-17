@@ -51,6 +51,148 @@ export const VERIFICATION_STORE_DIR = path.join("coverage", "verifications");
 /** Matches a verification record filename: `<full-ulid>.yaml`. */
 const VERIFICATION_FILE_PATTERN = /^([0-9A-HJKMNP-TV-Z]{26})\.yaml$/;
 
+// ── Record-Format Version Ceiling ────────────────────────────────────────────
+
+/**
+ * Deterministic error code reserved for a verification record declaring a
+ * record-format version newer than this installation supports. The condition
+ * will not resolve on retry — only upgrading kspec (or using the newer kspec
+ * that wrote the record) can clear it.
+ *
+ * AC: @coverage-record-compatibility ac-newer-record-format-refused
+ */
+export const VERIFICATION_RECORD_FORMAT_NEWER_THAN_SUPPORTED_CODE =
+  "verification_record_format_newer_than_supported";
+
+/**
+ * Deterministic error code for a declared record-format version that cannot be
+ * interpreted as a positive integer. Refused rather than silently treated as
+ * the oldest format.
+ *
+ * AC: @coverage-record-compatibility ac-newer-record-format-refused
+ */
+export const VERIFICATION_RECORD_FORMAT_UNRECOGNIZED_CODE =
+  "verification_record_format_unrecognized";
+
+export const DETERMINISTIC_VERIFICATION_RECORD_FORMAT_INCOMPATIBILITY_CODES: ReadonlySet<string> =
+  new Set([
+    VERIFICATION_RECORD_FORMAT_NEWER_THAN_SUPPORTED_CODE,
+    VERIFICATION_RECORD_FORMAT_UNRECOGNIZED_CODE,
+  ]);
+
+const VERIFICATION_RECORD_UPGRADE_SUGGESTION =
+  "Upgrade your kspec installation to a version that supports this record format, or use the newer kspec version that wrote this verification record.";
+
+/**
+ * Error thrown when a verification record declares a record-format version
+ * newer than this installation supports, or one that cannot be interpreted as
+ * a positive integer. Carries both version values and upgrade guidance. The
+ * deterministic code is embedded in the message so consumers that only surface
+ * `err.message` still present it.
+ *
+ * AC: @coverage-record-compatibility ac-newer-record-format-refused
+ */
+export class VerificationRecordFormatCompatibilityError extends Error {
+  readonly code: string;
+  readonly declaredVersion: string | number;
+  readonly maxSupportedVersion: number;
+  readonly suggestion: string;
+
+  constructor(
+    message: string,
+    options: {
+      code: string;
+      declaredVersion: string | number;
+      suggestion: string;
+    },
+  ) {
+    super(message);
+    this.name = "VerificationRecordFormatCompatibilityError";
+    this.code = options.code;
+    this.declaredVersion = options.declaredVersion;
+    this.maxSupportedVersion = CURRENT_VERIFICATION_RECORD_FORMAT;
+    this.suggestion = options.suggestion;
+  }
+}
+
+/**
+ * Build the record-format ceiling incompatibility for a RAW declared `format`
+ * value, or return null when the value is supported.
+ *
+ * Semantics, decided on the raw representation:
+ *  - `undefined` / `null` (field absent) → null; the missing-field case is
+ *    tolerated at the schema layer (the field defaults on write).
+ *  - finite positive integer ≤ {@link CURRENT_VERIFICATION_RECORD_FORMAT} →
+ *    null (supported).
+ *  - finite positive integer > {@link CURRENT_VERIFICATION_RECORD_FORMAT} →
+ *    refused as newer-than-supported, naming both versions.
+ *  - anything else (non-number, non-finite, non-positive, string) → refused
+ *    as unrecognized, naming the literal value.
+ *
+ * AC: @coverage-record-compatibility ac-newer-record-format-refused
+ */
+export function describeVerificationRecordFormatIncompatibility(
+  declared: unknown,
+): VerificationRecordFormatCompatibilityError | null {
+  if (declared === undefined || declared === null) return null;
+
+  if (typeof declared !== "number" || !Number.isInteger(declared) || declared <= 0) {
+    const literal = typeof declared === "string" ? declared : JSON.stringify(declared);
+    return new VerificationRecordFormatCompatibilityError(
+      `This verification record declares record-format version "${literal}", which cannot be ` +
+        `interpreted as a known verification record format (maximum supported: ` +
+        `${CURRENT_VERIFICATION_RECORD_FORMAT}) [${VERIFICATION_RECORD_FORMAT_UNRECOGNIZED_CODE}]. ` +
+        `${VERIFICATION_RECORD_UPGRADE_SUGGESTION}`,
+      {
+        code: VERIFICATION_RECORD_FORMAT_UNRECOGNIZED_CODE,
+        declaredVersion: literal,
+        suggestion: VERIFICATION_RECORD_UPGRADE_SUGGESTION,
+      },
+    );
+  }
+
+  if (declared > CURRENT_VERIFICATION_RECORD_FORMAT) {
+    return new VerificationRecordFormatCompatibilityError(
+      `This verification record declares record-format version ${declared}, which is newer than ` +
+        `the maximum record format supported by this kspec installation ` +
+        `(${CURRENT_VERIFICATION_RECORD_FORMAT}) ` +
+        `[${VERIFICATION_RECORD_FORMAT_NEWER_THAN_SUPPORTED_CODE}]. The store was not modified. ` +
+        `${VERIFICATION_RECORD_UPGRADE_SUGGESTION}`,
+      {
+        code: VERIFICATION_RECORD_FORMAT_NEWER_THAN_SUPPORTED_CODE,
+        declaredVersion: declared,
+        suggestion: VERIFICATION_RECORD_UPGRADE_SUGGESTION,
+      },
+    );
+  }
+
+  return null;
+}
+
+/**
+ * Extract the raw `format` field from a raw (non-schema-parsed) verification
+ * record. Returns undefined when the record is not an object or the field is
+ * absent.
+ */
+function getRawDeclaredRecordFormat(rawRecord: unknown): unknown {
+  if (!rawRecord || typeof rawRecord !== "object") return undefined;
+  return (rawRecord as Record<string, unknown>).format;
+}
+
+/**
+ * Throw the record-format ceiling incompatibility for a raw verification
+ * record object, if any. Callers pass the record as read from disk BEFORE
+ * schema parsing so the missing-field case is genuinely absent.
+ *
+ * AC: @coverage-record-compatibility ac-newer-record-format-refused
+ */
+export function assertRawRecordFormatSupported(rawRecord: unknown): void {
+  const err = describeVerificationRecordFormatIncompatibility(
+    getRawDeclaredRecordFormat(rawRecord),
+  );
+  if (err) throw err;
+}
+
 /**
  * A verification record as loaded from disk, with its owning item ULID
  * (derived from the filename) and source path attached.
@@ -142,11 +284,28 @@ export async function writeVerificationStamp(
   const recordPath = getVerificationRecordPath(ctx, itemUlid);
   const storeRoot = getVerificationStoreRoot(ctx);
 
+  // Read the existing record (if any) outside the buffered transaction so the
+  // record-format ceiling check refuses BEFORE any buffered or on-disk write.
+  // A newer-than-supported record refuses the write with both versions named
+  // and leaves stored state untouched.
+  //
+  // AC: @coverage-record-compatibility ac-newer-record-format-refused
+  const existingRaw = await readRawRecord(ctx, itemUlid);
+  if (existingRaw) {
+    assertRawRecordFormatSupported(existingRaw);
+  }
+
   await withFileLock(recordPath, async () => {
     await runWithBuffer(ctx.specDir, async () => {
       await mkdirBufferAware(storeRoot);
 
+      // Re-read inside the buffer in case a concurrent writer modified the
+      // record between the pre-check and the lock acquisition; the format
+      // ceiling is enforced again on this read for defense in depth.
       const raw = (await readRawRecord(ctx, itemUlid)) ?? {};
+      if (raw.format !== undefined && raw.format !== null) {
+        assertRawRecordFormatSupported(raw);
+      }
       const format =
         typeof raw.format === "number" && Number.isInteger(raw.format) && raw.format > 0
           ? raw.format
@@ -173,22 +332,66 @@ export async function writeVerificationStamp(
 // ── Read API ─────────────────────────────────────────────────────────────────
 
 /**
- * Read one item's verification record, schema-validated. Returns `undefined`
- * when no record file exists or the file does not parse against the schema.
+ * Outcome of a single-record load, reported with enough detail for the bulk
+ * scan (`loadVerificationRecords`) to tolerate format-incompatible records
+ * without losing the distinction for direct callers.
  */
-export async function loadVerificationRecord(
+type LoadRecordOutcome =
+  | { status: "ok"; record: VerificationRecord }
+  | { status: "missing" }
+  | { status: "invalid" }
+  | { status: "format_error"; error: VerificationRecordFormatCompatibilityError };
+
+/**
+ * Read one item's record file and apply the record-format ceiling, returning
+ * a tagged outcome so direct and bulk callers can choose their policy.
+ */
+async function loadVerificationRecordInternal(
   ctx: KspecContext,
   itemUlid: string,
-): Promise<VerificationRecord | undefined> {
+): Promise<LoadRecordOutcome> {
   const recordPath = getVerificationRecordPath(ctx, itemUlid);
   let raw: unknown;
   try {
     raw = await readYamlFile<unknown>(recordPath);
   } catch {
-    return undefined;
+    return { status: "missing" };
+  }
+  // Enforce the record-format ceiling BEFORE schema parsing so a
+  // newer-than-supported record is refused with both versions named rather
+  // than silently passing (the schema accepts any positive integer).
+  const formatError = describeVerificationRecordFormatIncompatibility(
+    getRawDeclaredRecordFormat(raw),
+  );
+  if (formatError) {
+    return { status: "format_error", error: formatError };
   }
   const result = VerificationRecordSchema.safeParse(raw);
-  return result.success ? result.data : undefined;
+  return result.success ? { status: "ok", record: result.data } : { status: "invalid" };
+}
+
+/**
+ * Read one item's verification record, schema-validated. Returns `undefined`
+ * when no record file exists or the file does not parse against the schema.
+ *
+ * A record declaring a newer-than-supported record-format version refuses
+ * with a {@link VerificationRecordFormatCompatibilityError} naming both the
+ * declared version and the maximum supported version, leaving the caller to
+ * surface the refusal. Direct API access refuses; the bulk scan
+ * (`loadVerificationRecords`) tolerates the same condition per-file so
+ * operations that incidentally touch the store (validation's orphan scan)
+ * continue unaffected.
+ *
+ * AC: @coverage-record-compatibility ac-newer-record-format-refused
+ */
+export async function loadVerificationRecord(
+  ctx: KspecContext,
+  itemUlid: string,
+): Promise<VerificationRecord | undefined> {
+  const outcome = await loadVerificationRecordInternal(ctx, itemUlid);
+  if (outcome.status === "format_error") throw outcome.error;
+  if (outcome.status === "ok") return outcome.record;
+  return undefined;
 }
 
 /**
@@ -212,9 +415,14 @@ export async function readVerificationStamp(
  * item ULID or AC ids no longer resolve still load here — they are filtered
  * out of resolved reads (and surfaced as orphans) by
  * `partitionVerificationReads`, never silently dropped. Files that are not
- * named by a full ULID, or that fail schema validation, are skipped.
+ * named by a full ULID, that fail schema validation, or that declare a
+ * newer-than-supported record-format version are skipped. The format ceiling
+ * is tolerated here so operations that incidentally touch the store
+ * (validation's orphan scan) continue unaffected — direct API access via
+ * `loadVerificationRecord` is where the refusal surfaces.
  *
  * AC: @ac-verification-record-store ac-unresolvable-keys-tolerated
+ * AC: @coverage-record-compatibility ac-newer-record-format-refused
  */
 export async function loadVerificationRecords(
   ctx: KspecContext,
@@ -232,10 +440,12 @@ export async function loadVerificationRecords(
     const match = VERIFICATION_FILE_PATTERN.exec(entry);
     if (!match) continue;
     const itemUlid = match[1];
-    const record = await loadVerificationRecord(ctx, itemUlid);
-    if (record) {
-      loaded.push({ itemUlid, record, _sourceFile: path.join(storeRoot, entry) });
+    const outcome = await loadVerificationRecordInternal(ctx, itemUlid);
+    if (outcome.status === "ok") {
+      loaded.push({ itemUlid, record: outcome.record, _sourceFile: path.join(storeRoot, entry) });
     }
+    // missing / invalid / format_error → skip silently; the bulk scan is
+    // tolerant by design so unrelated operations are unaffected.
   }
   return loaded;
 }
