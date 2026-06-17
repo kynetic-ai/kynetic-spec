@@ -79,6 +79,7 @@ tags:
   - schema
   - migration
 vcs_refs: []
+review_ref: "@01KV9JBCBRV0B39EDVYQA75AEK"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-coverage-record-compatibility/01kv6tb3
@@ -129,6 +130,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-17T01:08:55.363Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KV9JBCBRV0B39EDVYQA75AEK"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-17T01:15:25.770Z
 created_at: 2026-06-15T23:37:19.936Z
 started_at: 2026-06-17T00:44:41.525Z
 submitted_at: 2026-06-17T01:08:55.362Z
