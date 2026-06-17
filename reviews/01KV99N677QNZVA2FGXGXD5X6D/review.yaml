@@ -189,6 +189,12 @@ events:
     payload:
       thread_ulid: 01KV9AV4CMMJDTV6SHSGH5ZRA0
     timestamp: 2026-06-17T00:26:46.463Z
+  - _ulid: 01KV9FJRFS5JQTQVZ3Q33H8PRP
+    actor: "@claude"
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KV9ATMN6M1B8YQQRP7H3V4TF
+    timestamp: 2026-06-17T00:26:59.449Z
 examined_commit: 132e68ad5f3e1db4485faedf5a824580d6977da6
 external_links: []
 lifecycle_state: closed
@@ -233,6 +239,8 @@ threads:
           daemon-start surface."
         created_at: 2026-06-17T00:26:40.939Z
     kind: blocker
+    resolved_at: 2026-06-17T00:26:59.187Z
+    resolved_by: "@claude"
   - _ulid: 01KV9AV4CMMJDTV6SHSGH5ZRA0
     entries:
       - _ulid: 01KV9AV4CMJTQG3GNT2SX98TFX
@@ -268,5 +276,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-16T23:04:43.286Z
 created_at: 2026-06-16T22:43:27.591Z
-updated_at: 2026-06-17T00:26:46.235Z
+updated_at: 2026-06-17T00:26:59.187Z
 notes: []
