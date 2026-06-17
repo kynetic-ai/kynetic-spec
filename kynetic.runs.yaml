@@ -68749,7 +68749,7 @@ runs:
     completed_at: 2026-06-17T04:28:25.041Z
   - _ulid: 01KV9YFHCE0B88JE72XGKBBX05
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -68772,7 +68772,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-17T04:48:31.216Z
-        completed_at: 2026-06-17T04:48:31.216Z
+        completed_at: 2026-06-17T04:48:43.627Z
+        notes: "Duplicate/existing-state evaluation: skip all potential captures. Existing refs cover the
+          observed issues: @01KTWCCAS covers workflow show/skill docs mismatch requiring run-ref;
+          @01KV8Q0W covers stale active workflow runs and workflow run management noise; @01KTW9G9
+          covers stale full-suite timing guidance; @01KTZTRAV covers repetitive review-check
+          recording/bundles; @01KR2JD1 and @01KT5ZGF cover review evidence-log placement/value. No
+          unique high-confidence friction or success remains after search."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-17T04:48:43.627Z
+        completed_at: 2026-06-17T04:48:43.627Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-17T04:47:22.510Z
