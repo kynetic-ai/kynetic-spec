@@ -2871,6 +2871,9 @@ features:
           format than the running tool supports is refused rather than
           misread, and records carrying unrecognized fields survive
           read-modify-write cycles intact.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@data-format-forward-compatibility"
         implements: []
