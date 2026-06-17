@@ -80,6 +80,17 @@ checks:
     runner: kspec
     created_at: 2026-06-17T04:45:21.107Z
     completed_at: 2026-06-17T04:45:21.107Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2879 test suites passed; 10927 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KV9XF05XAX1H16PTAZ7DEDQB/71b016a77df74b6a.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-17T04:45:30.832Z
+    completed_at: 2026-06-17T04:45:30.832Z
 events:
   - _ulid: 01KV9XH4VZ55KJ2SK3HB23AV4Y
     actor: Jacob Chapel
@@ -143,6 +154,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-17T04:45:21.359Z
+  - _ulid: 01KV9YC4HT1T72ZGQXQ1ZN8SEP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-17T04:45:31.066Z
 examined_commit: af30d713036b6b4848fcb626e2f4f83a436d17ac
 external_links: []
 lifecycle_state: open
@@ -155,5 +173,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-17T04:30:46.656Z
-updated_at: 2026-06-17T04:45:21.107Z
+updated_at: 2026-06-17T04:45:30.832Z
 notes: []
