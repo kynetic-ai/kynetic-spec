@@ -27138,7 +27138,7 @@ workspaces:
         head: e9ae4ba5867eeb3232b0d8444b27e11ff9e4409d
         last_seen_at: 2026-06-16T09:13:44.959Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-git-prompt-suppression-tests-01kv7n12
-  - active_role: worker
+  - active_role: null
     base_branch_point: 35eab962fc1c600cfb86204594062254db67e00e
     bootstrap:
       status: succeeded
@@ -27615,12 +27615,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-17T03:39:48.141Z
+      updated_at: 2026-06-17T03:42:01.845Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-17T03:39:58.304Z
+      updated_at: 2026-06-17T03:42:01.845Z
     integration:
       status: pending
       detail: null
@@ -27628,8 +27628,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 35eab962fc1c600cfb86204594062254db67e00e
-      updated_at: 2026-06-17T03:39:48.141Z
-    lifecycle_state: active
+      updated_at: 2026-06-17T03:42:01.845Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV6TB3T0QW16F5HKB8P3BT3J
     task_ref: "@01KV6TB3T0QW16F5HKB8P3BT3J"
@@ -27637,9 +27637,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-17T03:39:58.304Z
-      last_reconciled_at: 2026-06-17T03:39:58.304Z
+      last_reconciled_at: 2026-06-17T03:42:01.845Z
       created_at: 2026-06-17T00:33:13.697Z
-      updated_at: 2026-06-17T03:39:58.304Z
+      updated_at: 2026-06-17T03:42:01.845Z
     workspace_id: dispatch-workspace-01KV6TB3T0QW16F5HKB8P3BT3J
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
