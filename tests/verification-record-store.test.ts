@@ -7,6 +7,11 @@
  *   ac-current-stamp-replacement, ac-versioned-persistence,
  *   ac-unresolvable-keys-tolerated.
  *
+ * Covers @verification-session-evidence:
+ *   ac-session-reference-stored, ac-sessionless-stamps-valid,
+ *   ac-malformed-session-ref-rejected, ac-evidence-readable-from-record,
+ *   ac-pruned-session-tolerated.
+ *
  * EXCLUDED from coverage scanning would not apply here — this file holds no
  * fixture `// AC:` annotation strings inside test bodies, only the real
  * annotations that map these tests to their criteria.
@@ -23,10 +28,13 @@ import { ReferenceIndex } from "../src/parser/refs.js";
 import { validate } from "../src/parser/validate.js";
 import {
   getVerificationRecordPath,
+  isSessionResolvable,
   loadVerificationRecord,
   loadVerificationRecords,
   partitionVerificationReads,
   readVerificationStamp,
+  readVerificationStampWithLinkage,
+  resolveSessionLinkage,
   writeVerificationStamp,
 } from "../src/parser/verification-record-store.js";
 import type { VerificationStampInput } from "../src/schema/verification-records.js";
@@ -384,6 +392,181 @@ describe("verification record store (non-shadow)", () => {
       expect(result.stdout).toContain(goneUlid);
     },
   );
+});
+
+describe("verification record store session evidence (non-shadow)", () => {
+  let tempDir: string;
+  let specDir: string;
+  let modulesDir: string;
+  let sessionsDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-verif-session-");
+    specDir = path.join(tempDir, "spec");
+    modulesDir = path.join(specDir, "modules");
+    sessionsDir = path.join(tempDir, ".kspec-sessions");
+    await fs.mkdir(modulesDir, { recursive: true });
+    initGitRepo(tempDir);
+    await writeYamlFilePreserveFormat(path.join(specDir, "kynetic.yaml"), {
+      project: { name: "verif-session-test" },
+      includes: ["modules/specs.yaml"],
+    });
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  async function writeModule(file: string, items: unknown[]) {
+    await writeYamlFilePreserveFormat(path.join(modulesDir, file), items);
+  }
+
+  /** Create a session directory with a session.yaml metadata file. */
+  async function createSessionDir(sessionId: string): Promise<void> {
+    const dir = path.join(sessionsDir, sessionId);
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(
+      path.join(dir, "session.yaml"),
+      [`id: ${sessionId}`, "status: active", "started_at: 2026-06-10T00:00:00.000Z"].join("\n"),
+      "utf-8",
+    );
+  }
+
+  // AC: @verification-session-evidence ac-session-reference-stored
+  it("stores a stamp with a session reference and reads the same reference back", async () => {
+    const ulid = testUlid("ITEM", 100);
+    const sessionId = testUlid("SESS", 1);
+    await writeModule("specs.yaml", [makeItem(ulid, "feature-ev", ["ac-ev"])]);
+
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const written = await writeVerificationStamp(
+      ctx,
+      ulid,
+      "ac-ev",
+      validStamp({ session: sessionId }),
+    );
+
+    // The session id is part of the stored record and round-trips.
+    const read = await readVerificationStamp(ctx, ulid, "ac-ev");
+    expect(read?.session).toBe(sessionId);
+    expect(read?.session).toBe(written?.session);
+    // The stamp still carries the other provenance fields — session is
+    // additional evidence, not a replacement for them.
+    expect(read?.verified_at).toBe("2026-06-10T12:00:00.000Z");
+    expect(read?.actor).toBe("pr-reviewer");
+    expect(read?.provenance).toBe("validation");
+  });
+
+  // AC: @verification-session-evidence ac-sessionless-stamps-valid
+  it("accepts a stamp without a session reference and reads it back with no linkage", async () => {
+    const ulid = testUlid("ITEM", 101);
+    await writeModule("specs.yaml", [makeItem(ulid, "feature-no-sess", ["ac-none"])]);
+
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    await writeVerificationStamp(ctx, ulid, "ac-none", validStamp());
+
+    const read = await readVerificationStamp(ctx, ulid, "ac-none");
+    expect(read).toBeDefined();
+    // No session reference at all — neither null nor empty string.
+    expect(read?.session).toBeUndefined();
+
+    // Linkage resolution is `none` for a sessionless stamp.
+    const withLinkage = await readVerificationStampWithLinkage(ctx, ulid, "ac-none");
+    expect(withLinkage?.sessionLinkage).toEqual({ kind: "none" });
+  });
+
+  // AC: @verification-session-evidence ac-malformed-session-ref-rejected
+  it("rejects a stamp with a malformed session reference and leaves stored state unchanged", async () => {
+    const ulid = testUlid("ITEM", 102);
+    await writeModule("specs.yaml", [makeItem(ulid, "feature-malformed", ["ac-mal"])]);
+
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    // Seed a valid, sessionless current stamp so we can prove it survives.
+    await writeVerificationStamp(ctx, ulid, "ac-mal", validStamp({ actor: "human-author" }));
+
+    // Each of these is not a well-formed session identifier (not a ULID).
+    const malformed = ["not-a-ulid", "abc", "../../escape", "01SESS-OUT-OF-RANGE"];
+
+    for (const bad of malformed) {
+      await expect(
+        writeVerificationStamp(ctx, ulid, "ac-mal", validStamp({ session: bad })),
+      ).rejects.toThrow();
+    }
+
+    // The seeded stamp survives — write was rejected, store is unchanged.
+    const read = await readVerificationStamp(ctx, ulid, "ac-mal");
+    expect(read?.actor).toBe("human-author");
+    expect(read?.session).toBeUndefined();
+  });
+
+  // AC: @verification-session-evidence ac-evidence-readable-from-record
+  it("returns the producing session's identity from the stored record alone, without consulting session logs", async () => {
+    const ulid = testUlid("ITEM", 103);
+    const sessionId = testUlid("SESS", 3);
+    await writeModule("specs.yaml", [makeItem(ulid, "feature-read", ["ac-read"])]);
+
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    // Note: we deliberately do NOT create a session directory. The
+    // session id is in the record and the read must yield it from the
+    // record alone — ac-evidence-readable-from-record says the linkage
+    // identity comes from the stored record, not from a session lookup.
+    await writeVerificationStamp(ctx, ulid, "ac-read", validStamp({ session: sessionId }));
+
+    const read = await readVerificationStamp(ctx, ulid, "ac-read");
+    expect(read?.session).toBe(sessionId);
+    // The session id was returned by the read — it is the stored evidence,
+    // not a derived field that depended on the session store being present.
+  });
+
+  // AC: @verification-session-evidence ac-pruned-session-tolerated
+  it("reads a stamp whose session reference no longer resolves, and reports the linkage as unresolvable", async () => {
+    const ulid = testUlid("ITEM", 104);
+    const sessionId = testUlid("SESS", 4);
+    await writeModule("specs.yaml", [makeItem(ulid, "feature-pruned", ["ac-pruned"])]);
+
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    // Write the stamp while the session exists, then prune the session.
+    await createSessionDir(sessionId);
+    await writeVerificationStamp(ctx, ulid, "ac-pruned", validStamp({ session: sessionId }));
+    await fs.rm(path.join(sessionsDir, sessionId), { recursive: true, force: true });
+
+    // Read must succeed — the stamp is still a valid verification.
+    const read = await readVerificationStamp(ctx, ulid, "ac-pruned");
+    expect(read).toBeDefined();
+    expect(read?.session).toBe(sessionId);
+    expect(read?.actor).toBe("pr-reviewer");
+    expect(read?.provenance).toBe("validation");
+
+    // Linkage resolution reports the session as unresolvable but preserves
+    // the recorded id so consumers know which session the stamp referenced.
+    const withLinkage = await readVerificationStampWithLinkage(ctx, ulid, "ac-pruned");
+    expect(withLinkage?.sessionLinkage).toEqual({
+      kind: "unresolvable",
+      sessionId,
+    });
+  });
+
+  // AC: @verification-session-evidence ac-pruned-session-tolerated
+  it("resolveSessionLinkage reports a present session as recorded", async () => {
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const sessionId = testUlid("SESS", 5);
+    await createSessionDir(sessionId);
+
+    const linkage = await resolveSessionLinkage(ctx, sessionId);
+    expect(linkage).toEqual({ kind: "recorded", sessionId });
+    expect(await isSessionResolvable(ctx, sessionId)).toBe(true);
+  });
+
+  // AC: @verification-session-evidence ac-pruned-session-tolerated
+  it("resolveSessionLinkage reports a missing session as unresolvable without throwing", async () => {
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const sessionId = testUlid("SESS", 6);
+
+    // No session directory exists — must not throw, must return unresolvable.
+    const linkage = await resolveSessionLinkage(ctx, sessionId);
+    expect(linkage).toEqual({ kind: "unresolvable", sessionId });
+    expect(await isSessionResolvable(ctx, sessionId)).toBe(false);
+  });
 });
 
 describe("verification record store (shadow versioned persistence)", () => {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AcIdSchema, DateTimeSchema } from "./common.js";
+import { AcIdSchema, DateTimeSchema, UlidSchema } from "./common.js";
 
 /**
  * Per-acceptance-criterion verification record schema.
@@ -40,20 +40,25 @@ export const VerificationProvenanceSchema = z.enum(["validation", "ingestion", "
  *
  * `verified_at`, `actor`, and `provenance` are required: a write missing any
  * of them is rejected by schema validation, leaving stored state unchanged.
- * `commit` and `session` are optional. The session reference's full
- * validation, read exposure, and tolerant resolution semantics ship in
- * @verification-session-evidence; the field shape lands here so the schema
- * is defined once.
+ * `commit` is an optional free-form commit reference. `session` is an
+ * optional session identifier; when present it must be a well-formed session
+ * identifier (the session store records sessions by ULID, so the same
+ * Crockford-base32 ULID shape gates session references here). A malformed
+ * session reference is rejected at write time so the store never carries an
+ * unusable linkage.
  *
  * AC: @ac-verification-record-store ac-stamp-read-back
  * AC: @ac-verification-record-store ac-incomplete-stamp-rejected
+ * AC: @verification-session-evidence ac-session-reference-stored
+ * AC: @verification-session-evidence ac-sessionless-stamps-valid
+ * AC: @verification-session-evidence ac-malformed-session-ref-rejected
  */
 export const VerificationStampSchema = z.object({
   verified_at: DateTimeSchema,
   actor: z.string().min(1, "actor is required"),
   provenance: VerificationProvenanceSchema,
   commit: z.string().min(1).optional(),
-  session: z.string().min(1).optional(),
+  session: UlidSchema.optional(),
 });
 
 /**
