@@ -2873,7 +2873,7 @@ features:
           read-modify-write cycles intact.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@data-format-forward-compatibility"
         implements: []
