@@ -32435,7 +32435,7 @@
   type: task
   spec_ref: "@coverage-record-compatibility"
   plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-ac-verification-record-store"
@@ -32448,6 +32448,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-15T23:37:19.936Z
+  started_at: 2026-06-17T00:44:41.525Z
   automation: eligible
 - _ulid: 01KV7N12FRCKZPBHH9040QX02V
   slugs:
