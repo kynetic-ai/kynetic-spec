@@ -26979,7 +26979,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-17T00:48:54.794Z
+      updated_at: 2026-06-17T00:52:06.380Z
     integration:
       status: merged
       detail: integration:merged
@@ -26996,18 +26996,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-17T00:33:05.574Z
-      last_reconciled_at: 2026-06-17T00:51:53.928Z
+      last_reconciled_at: 2026-06-17T00:52:06.380Z
       created_at: 2026-06-16T05:03:14.380Z
-      updated_at: 2026-06-17T00:51:53.928Z
+      updated_at: 2026-06-17T00:52:06.380Z
     workspace_id: dispatch-workspace-01KV6TB2SGTYQ6C292HS2VY5HJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: a1bada71458bcb746a46955461351840bbe6e8e4
-        last_seen_at: 2026-06-17T00:32:27.139Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-verification-evidence-01kv6tb2-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-session-verification-evidence/01kv6tb2
