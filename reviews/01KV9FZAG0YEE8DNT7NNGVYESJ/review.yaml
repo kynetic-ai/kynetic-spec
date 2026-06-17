@@ -68,6 +68,18 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-06-17T00:47:34.305Z
     completed_at: 2026-06-17T00:47:34.305Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok: schema/references OK; existing completeness warning baseline
+      remains (276 warnings). @verification-session-evidence AC annotations present in
+      tests/verification-record-store.test.ts for all five ACs."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-17T00:47:45.031Z
+    completed_at: 2026-06-17T00:47:45.031Z
 events:
   - _ulid: 01KV9FZAG0838VXEB1GYMTWP7C
     actor: Jacob Chapel
@@ -124,6 +136,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-17T00:47:34.552Z
+  - _ulid: 01KV9GRS5PWTV199E68V23PZTW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-17T00:47:45.334Z
 examined_commit: a1bada71458bcb746a46955461351840bbe6e8e4
 external_links: []
 lifecycle_state: open
@@ -136,5 +155,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-17T00:33:51.104Z
-updated_at: 2026-06-17T00:47:34.305Z
+updated_at: 2026-06-17T00:47:45.031Z
 notes: []
