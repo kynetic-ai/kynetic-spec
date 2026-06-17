@@ -36,3 +36,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-17T01:47:23.961Z
+  - _ulid: 01KV9X2Z1HM7AM6FK1CCM2EQX5
+    content: "Fix cycle 2: addressed both review blockers. (1) loadVerificationRecords was silently
+      dropping newer-format records — re-framed it as a public store read path that must refuse on
+      newer-than-supported format versions per ac-newer-record-format-refused. The bulk scan now
+      throws VerificationRecordFormatCompatibilityError; direct load and write paths already
+      refused. Operations involving the store (validate --completeness) propagate the refusal;
+      operations not involving it (kspec task list, inbox add) are unaffected. Test updated to
+      assert bulk read + validate refuse while unrelated inbox write succeeds. (2)
+      ac-unrecognized-sidecar-untouched test now seeds a sidecar with an unresolved YAML alias that
+      throws at parse time, making any read observable. Re-ran full test suite (2879 suites, 10927
+      tests, 3 skipped) and all quality gates; all green. Commit: af30d71303."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-06-17T04:23:01.937Z
