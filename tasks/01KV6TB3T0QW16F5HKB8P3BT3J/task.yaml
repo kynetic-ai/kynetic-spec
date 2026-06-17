@@ -67,7 +67,7 @@ description: |
 spec_ref: "@coverage-record-compatibility"
 plan_ref: "@plan-ac-coverage-verification-schema-and-storage"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-ac-verification-record-store"
@@ -83,11 +83,11 @@ review_ref: "@01KV9JBCBRV0B39EDVYQA75AEK"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-coverage-record-compatibility/01kv6tb3
-  captured_at: 2026-06-17T01:08:55.360Z
-  commit: 2755ceda200d4ae94822794a7605a1a7a9e97f79
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-06-17T04:23:48.730Z
+  commit: af30d713036b6b4848fcb626e2f4f83a436d17ac
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-coverage-record-compatibility/01kv6tb3
 session_id: 01KV9VE9D84C11MMHS8HZ3KAXJ
 history:
   - author: Jacob Chapel
@@ -160,8 +160,35 @@ history:
         previous: 2026-06-17T00:44:41.525Z
     command: task-start
     timestamp: 2026-06-17T04:23:40.395Z
+  - author: "@claude"
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-record-compatibility/01kv6tb3
+          captured_at: 2026-06-17T04:23:48.730Z
+          commit: af30d713036b6b4848fcb626e2f4f83a436d17ac
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-coverage-record-compatibility/01kv6tb3
+        previous:
+          review_url: null
+          branch: dispatch/task/task-coverage-record-compatibility/01kv6tb3
+          captured_at: 2026-06-17T01:08:55.360Z
+          commit: 2755ceda200d4ae94822794a7605a1a7a9e97f79
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-06-17T04:23:48.734Z
+        previous: 2026-06-17T01:08:55.362Z
+    command: task-submit
+    timestamp: 2026-06-17T04:23:48.734Z
 created_at: 2026-06-15T23:37:19.936Z
 started_at: 2026-06-17T04:23:40.395Z
-submitted_at: 2026-06-17T01:08:55.362Z
+submitted_at: 2026-06-17T04:23:48.734Z
 todos: []
 automation: eligible
