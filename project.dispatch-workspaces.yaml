@@ -26495,7 +26495,7 @@ workspaces:
         head: 5849c6b9aa0048b3dee7bd4b7d57739e8a420256
         last_seen_at: 2026-06-16T23:07:02.665Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-freshness-resolution-read-path-01kv6tb2
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 9e228050796ef40b3d4a8700082259591d1b8667
     bootstrap:
       status: succeeded
@@ -26974,12 +26974,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-17T00:48:50.935Z
+      updated_at: 2026-06-17T00:48:54.794Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-17T00:48:50.935Z
+      updated_at: 2026-06-17T00:48:54.794Z
     integration:
       status: merged
       detail: integration:merged
@@ -26987,7 +26987,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 9e228050796ef40b3d4a8700082259591d1b8667
-      updated_at: 2026-06-17T00:48:50.935Z
+      updated_at: 2026-06-17T00:48:54.794Z
     lifecycle_state: closing
     resolved_base_branch: feat/ui-redesign
     task_id: 01KV6TB2SGTYQ6C292HS2VY5HJ
@@ -26996,9 +26996,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-17T00:33:05.574Z
-      last_reconciled_at: 2026-06-17T00:48:50.935Z
+      last_reconciled_at: 2026-06-17T00:48:54.794Z
       created_at: 2026-06-16T05:03:14.380Z
-      updated_at: 2026-06-17T00:48:50.935Z
+      updated_at: 2026-06-17T00:48:54.794Z
     workspace_id: dispatch-workspace-01KV6TB2SGTYQ6C292HS2VY5HJ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
