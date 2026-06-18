@@ -60,6 +60,7 @@ import { computeDisposition } from "./review-operations.js";
 import { getUnresolvedBlockers } from "./review-threads.js";
 import type { KspecContext } from "./yaml.js";
 import { readYamlFile, toYaml } from "./yaml.js";
+import { recordMutationEvents } from "../mutation-pipeline.js";
 
 /**
  * Loaded review record with runtime metadata. Matches the shape exposed by
@@ -67,6 +68,26 @@ import { readYamlFile, toYaml } from "./yaml.js";
  */
 export interface LoadedReviewRecord extends ReviewRecord {
   _sourceFile?: string;
+}
+
+function reviewSubjectRef(review: ReviewRecord): string | null {
+  const maybeRef = (review.subject as { ref?: unknown }).ref;
+  return typeof maybeRef === "string" ? maybeRef : null;
+}
+
+function recordReviewCreatedEvent(review: ReviewRecord): void {
+  recordMutationEvents([
+    {
+      topic: "reviews:updates",
+      event: "review_created",
+      data: {
+        review_ulid: review._ulid,
+        title: review.title,
+        subject_type: review.subject.type,
+        subject_ref: reviewSubjectRef(review),
+      },
+    },
+  ]);
 }
 
 // ── Layout ────────────────────────────────────────────────────────────────────
@@ -451,12 +472,14 @@ export async function saveReviewRecordToFolder(
   const reviewDir = getReviewDir(ctx, review._ulid);
   const detailPath = getReviewDetailFilePath(ctx, review._ulid);
   const indexPath = getReviewIndexFilePath(ctx);
+  let created = false;
 
   await withFileLock(indexPath, async () => {
     await runWithBuffer(ctx.specDir, async () => {
       await mkdirBufferAware(reviewDir);
 
       const rawDetail = await readRawDetail(ctx, review._ulid);
+      created = rawDetail === null;
       const detail = toDetailRecord(review);
       await writeDetailFile(detailPath, detail, rawDetail);
 
@@ -465,6 +488,10 @@ export async function saveReviewRecordToFolder(
       await upsertIndexEntry(indexPath, entry);
     });
   });
+
+  if (created) {
+    recordReviewCreatedEvent(review);
+  }
 }
 
 /**

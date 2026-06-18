@@ -59,6 +59,7 @@ import { loadProjectConfig, type ResolvedKspecConfig } from "./config.js";
 import { assertRawManifestFormatVersionSupported } from "./format-version.js";
 import { consumeSyncMode, type ShadowSyncMode } from "../cli/sync-mode.js";
 import { TraitIndex } from "./traits.js";
+import { recordMutationEvents } from "../mutation-pipeline.js";
 
 /**
  * Async-context flag that tells initContext() to ignore the KSPEC_SPEC_DIR
@@ -261,17 +262,17 @@ function formatIssuePath(pathParts: PropertyKey[]): string {
     return "(root)";
   }
 
-  let path = "";
+  let formattedPath = "";
   for (const part of pathParts) {
     if (typeof part === "number") {
-      path = `${path}[${part}]`;
+      formattedPath = `${formattedPath}[${part}]`;
       continue;
     }
 
-    path = path ? `${path}.${String(part)}` : String(part);
+    formattedPath = formattedPath ? `${formattedPath}.${String(part)}` : String(part);
   }
 
-  return path;
+  return formattedPath;
 }
 
 function formatIssueValue(value: unknown): string {
@@ -1432,13 +1433,16 @@ export function isTaskReady(task: LoadedTask, allTasks: LoadedTask[]): boolean {
  * status (needs_work first), then priority, then creation time.
  * Within the same tier, older tasks come first (FIFO).
  */
+function readyStatusOrder(status: string): number {
+  return status === "needs_work" ? 0 : 1;
+}
+
 export function getReadyTasks(tasks: LoadedTask[]): LoadedTask[] {
   return tasks
     .filter((task) => isTaskReady(task, tasks))
     .toSorted((a, b) => {
       // Primary: needs_work before pending (fix cycles take priority)
-      const statusOrder = (s: string) => (s === "needs_work" ? 0 : 1);
-      const statusDiff = statusOrder(a.status) - statusOrder(b.status);
+      const statusDiff = readyStatusOrder(a.status) - readyStatusOrder(b.status);
       if (statusDiff !== 0) return statusDiff;
       // Secondary: priority (lower number = higher priority)
       if (a.priority !== b.priority) {
@@ -1848,7 +1852,7 @@ function assertSpecItemPatch(
  * against the full AcceptanceCriterionSchema (id, given, when, then).
  */
 function collectNestedAcErrors(data: Record<string, unknown>, parentPath: string = ""): string[] {
-  const errors: string[] = [];
+  const nestedErrors: string[] = [];
   // Catalog fields that can contain nested spec items with acceptance_criteria
   const catalogFields = [
     "modules",
@@ -1871,7 +1875,7 @@ function collectNestedAcErrors(data: Record<string, unknown>, parentPath: string
       // Validate acceptance_criteria field shape and entries
       if ("acceptance_criteria" in obj) {
         if (!Array.isArray(obj.acceptance_criteria)) {
-          errors.push(
+          nestedErrors.push(
             `${itemPath}.acceptance_criteria: Expected array, received ${typeof obj.acceptance_criteria}`,
           );
         } else {
@@ -1883,7 +1887,7 @@ function collectNestedAcErrors(data: Record<string, unknown>, parentPath: string
             if (!parseResult.success) {
               for (const issue of parseResult.error.issues) {
                 const fieldPath = issue.path.length > 0 ? `.${issue.path.join(".")}` : "";
-                errors.push(`${acPath}${fieldPath}: ${issue.message}`);
+                nestedErrors.push(`${acPath}${fieldPath}: ${issue.message}`);
               }
             }
           }
@@ -1891,10 +1895,10 @@ function collectNestedAcErrors(data: Record<string, unknown>, parentPath: string
       }
 
       // Recurse into deeper nesting (e.g. features[0].requirements[0].…)
-      errors.push(...collectNestedAcErrors(obj, itemPath));
+      nestedErrors.push(...collectNestedAcErrors(obj, itemPath));
     }
   }
-  return errors;
+  return nestedErrors;
 }
 
 /**
@@ -1987,7 +1991,7 @@ function navigateToPath(
  */
 function findItemInStructure(
   root: unknown,
-  ulid: string,
+  itemUlid: string,
   currentPath: string = "",
 ): { path: string; item: Record<string, unknown> } | null {
   if (!root || typeof root !== "object") return null;
@@ -1995,7 +1999,7 @@ function findItemInStructure(
   const obj = root as Record<string, unknown>;
 
   // Check if this is the item we're looking for
-  if (obj._ulid === ulid) {
+  if (obj._ulid === itemUlid) {
     return { path: currentPath, item: obj };
   }
 
@@ -2005,7 +2009,7 @@ function findItemInStructure(
       const arr = obj[field] as unknown[];
       for (let i = 0; i < arr.length; i++) {
         const nestedPath = currentPath ? `${currentPath}.${field}[${i}]` : `${field}[${i}]`;
-        const result = findItemInStructure(arr[i], ulid, nestedPath);
+        const result = findItemInStructure(arr[i], itemUlid, nestedPath);
         if (result) return result;
       }
     }
@@ -2056,6 +2060,23 @@ const TYPE_TO_CHILD_FIELD: Record<string, string> = {
   module: "modules",
   trait: "traits",
 };
+
+function recordSpecItemMutationEvent(
+  item: Pick<SpecItem, "_ulid" | "title">,
+  action: "created" | "changed" | "removed",
+): void {
+  recordMutationEvents([
+    {
+      topic: "items:updates",
+      event: "spec_item_changed",
+      data: {
+        item_ulid: item._ulid,
+        action,
+        title: item.title,
+      },
+    },
+  ]);
+}
 
 /**
  * Add a spec item as a child of a parent item.
@@ -2115,6 +2136,7 @@ export async function addChildItem(
 
     // Write back with format preservation
     await writeYamlFilePreserveFormat(parent._sourceFile!, raw);
+    recordSpecItemMutationEvent(cleanChild, "created");
 
     return { item: cleanChild, path: childPath };
   });
@@ -2148,6 +2170,7 @@ export async function addProjectLevelTraitItem(
     await writeYamlFilePreserveFormat(ctx.manifestPath!, manifest);
 
     const traitIndex = (manifest.traits as unknown[]).length - 1;
+    recordSpecItemMutationEvent(cleanItem, "created");
     return {
       item: cleanItem,
       path: `traits[${traitIndex}]`,
@@ -2223,8 +2246,10 @@ export async function updateSpecItem(
 
     // Write back with format preservation
     await writeYamlFilePreserveFormat(item._sourceFile!, raw);
+    const updatedItem = { ...item, ...updates, _ulid: item._ulid } as SpecItem;
+    recordSpecItemMutationEvent(updatedItem, "changed");
 
-    return { ...item, ...updates, _ulid: item._ulid } as SpecItem;
+    return updatedItem;
   });
 }
 
@@ -2272,6 +2297,7 @@ export async function deleteSpecItem(_ctx: KspecContext, item: LoadedSpecItem): 
         // Remove the item from the array
         nav.array.splice(nav.index, 1);
         await writeYamlFilePreserveFormat(item._sourceFile!, raw);
+        recordSpecItemMutationEvent(item, "removed");
         return true;
       }
 
@@ -2282,6 +2308,7 @@ export async function deleteSpecItem(_ctx: KspecContext, item: LoadedSpecItem): 
         if (nav) {
           nav.array.splice(nav.index, 1);
           await writeYamlFilePreserveFormat(item._sourceFile!, raw);
+          recordSpecItemMutationEvent(item, "removed");
           return true;
         }
       }
@@ -2297,6 +2324,7 @@ export async function deleteSpecItem(_ctx: KspecContext, item: LoadedSpecItem): 
         if (index >= 0) {
           raw.splice(index, 1);
           await writeYamlFilePreserveFormat(item._sourceFile!, raw);
+          recordSpecItemMutationEvent(item, "removed");
           return true;
         }
       }
@@ -2525,9 +2553,9 @@ async function writeRawInboxArray(
 /**
  * Find inbox item index in a raw array by ULID match.
  */
-function findRawInboxIndex(rawItems: unknown[], ulid: string): number {
+function findRawInboxIndex(rawItems: unknown[], inboxUlid: string): number {
   return rawItems.findIndex(
-    (i) => i && typeof i === "object" && (i as Record<string, unknown>)._ulid === ulid,
+    (i) => i && typeof i === "object" && (i as Record<string, unknown>)._ulid === inboxUlid,
   );
 }
 
@@ -2665,7 +2693,7 @@ export async function mutateInboxItemAtomically(
 /**
  * Delete an inbox item by ULID.
  */
-export async function deleteInboxItem(ctx: KspecContext, ulid: string): Promise<boolean> {
+export async function deleteInboxItem(ctx: KspecContext, inboxUlid: string): Promise<boolean> {
   const inboxPath = getInboxFilePath(ctx);
 
   // Lock the file to prevent concurrent read-modify-write races
@@ -2674,7 +2702,7 @@ export async function deleteInboxItem(ctx: KspecContext, ulid: string): Promise<
       // Load raw inbox data without schema normalization for round-trip stability
       const { rawItems, wrapperObj } = await extractRawInboxArray(inboxPath);
 
-      const index = findRawInboxIndex(rawItems, ulid);
+      const index = findRawInboxIndex(rawItems, inboxUlid);
       if (index < 0) {
         return false;
       }
@@ -2781,9 +2809,9 @@ async function writeRawTriageArray(
 /**
  * Find triage record index in a raw array by ULID match.
  */
-function findRawTriageIndex(rawRecords: unknown[], ulid: string): number {
+function findRawTriageIndex(rawRecords: unknown[], triageUlid: string): number {
   return rawRecords.findIndex(
-    (r) => r && typeof r === "object" && (r as Record<string, unknown>)._ulid === ulid,
+    (r) => r && typeof r === "object" && (r as Record<string, unknown>)._ulid === triageUlid,
   );
 }
 

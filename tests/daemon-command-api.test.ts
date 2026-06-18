@@ -48,6 +48,10 @@ import type { LoadedSpecItem } from "../src/parser/index.js";
 import type { LoadedPlan } from "../src/parser/plans.js";
 import type { LoadedReviewRecord } from "../src/parser/reviews.js";
 import type { MetaContext } from "../src/parser/meta.js";
+import {
+  ENTITY_EVENT_FAMILY_RESERVATIONS,
+  ENTITY_EVENT_VOCABULARY,
+} from "../packages/shared/src/websocket.js";
 
 ensureSplitBackendRegistered();
 
@@ -1054,6 +1058,226 @@ describe("Daemon Command API", () => {
 
     const commandStreamEvent = broadcastEvents.find((entry) => entry.event === "command_executed");
     expect(commandStreamEvent).toBeDefined();
+  });
+
+  // AC: @mutation-event-coverage ac-1
+  // AC: @mutation-event-coverage ac-5
+  // AC: @ui-api-aggregation ac-4
+  it("emits typed task events for creation, field changes, and notes through command mutations", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+
+    const createResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "task add",
+        args: {
+          title: "Created Event Task",
+          slug: "task-created-event",
+          specRef: "@test-feature",
+        },
+      }),
+    });
+    expect(createResponse.status).toBe(200);
+    expect((await createResponse.json()).exitCode).toBe(0);
+
+    const setResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "task set",
+        args: { ref: "@task-command", title: "Retitled Command Task" },
+      }),
+    });
+    expect(setResponse.status).toBe(200);
+    expect((await setResponse.json()).exitCode).toBe(0);
+
+    const noteResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "task note",
+        args: { ref: "@task-command", message: "event coverage note" },
+      }),
+    });
+    expect(noteResponse.status).toBe(200);
+    expect((await noteResponse.json()).exitCode).toBe(0);
+
+    const taskEvents = broadcastEvents.filter(
+      (entry) => entry.topic === "tasks:updates" && entry.event === "task_updated",
+    );
+    expect(taskEvents).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "created",
+            ref: "@task-created-event",
+            title: "Created Event Task",
+            old_status: null,
+            new_status: "pending",
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "set",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: null,
+            new_status: null,
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "note_added",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: null,
+            new_status: null,
+          }),
+        }),
+      ]),
+    );
+    const noteEvent = taskEvents.find((entry) => entry.data.action === "note_added");
+    expect(noteEvent?.data.note_ulid).toEqual(expect.any(String));
+  });
+
+  // AC: @mutation-event-coverage ac-2
+  // AC: @mutation-event-coverage ac-5
+  it("emits a review_created event when review add runs through the command route", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "review add",
+        args: {
+          title: "Event Review",
+          slug: "event-review",
+          subjectType: "task",
+          subjectRef: "@task-test",
+        },
+      }),
+    });
+
+    expect(response.status).toBe(200);
+    expect((await response.json()).exitCode).toBe(0);
+    expect(broadcastEvents).toContainEqual(
+      expect.objectContaining({
+        topic: "reviews:updates",
+        event: "review_created",
+        data: expect.objectContaining({
+          title: "Event Review",
+          subject_type: "task",
+          subject_ref: "@task-test",
+          review_ulid: expect.any(String),
+        }),
+      }),
+    );
+  });
+
+  // AC: @mutation-event-coverage ac-3
+  // AC: @mutation-event-coverage ac-5
+  it("emits spec item events for item create, change, and removal through the command route", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+
+    const createResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "item add",
+        args: {
+          json: true,
+          under: "@test-feature",
+          title: "Event Child Requirement",
+          type: "requirement",
+          slug: "event-child-requirement",
+        },
+      }),
+    });
+    expect(createResponse.status).toBe(200);
+    const createBody = await createResponse.json();
+    expect(createBody.exitCode).toBe(0);
+    const createOutput = JSON.parse(createBody.stdout) as {
+      item?: { _ulid: string };
+      data?: { item?: { _ulid: string } };
+    };
+    const createdItem = createOutput.item ?? createOutput.data?.item;
+    expect(createdItem?._ulid).toEqual(expect.any(String));
+    const createdItemRef = `@${createdItem!._ulid}`;
+    cacheSnapshot = await buildCacheSnapshot();
+
+    const setResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "item set",
+        args: { ref: createdItemRef, title: "Renamed Event Child" },
+      }),
+    });
+    const setBody = await setResponse.json();
+    expect(setResponse.status, JSON.stringify(setBody)).toBe(200);
+    expect(setBody.exitCode).toBe(0);
+    cacheSnapshot = await buildCacheSnapshot();
+
+    const deleteResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "item delete",
+        args: { ref: createdItemRef, force: true },
+      }),
+    });
+    expect(deleteResponse.status).toBe(200);
+    expect((await deleteResponse.json()).exitCode).toBe(0);
+
+    const itemEvents = broadcastEvents.filter(
+      (entry) => entry.topic === "items:updates" && entry.event === "spec_item_changed",
+    );
+    expect(itemEvents.map((entry) => entry.data.action)).toEqual(["created", "changed", "removed"]);
+    expect(itemEvents.map((entry) => entry.data.title)).toEqual([
+      "Event Child Requirement",
+      "Renamed Event Child",
+      "Renamed Event Child",
+    ]);
+    for (const event of itemEvents) {
+      expect(event.data.item_ulid).toEqual(expect.any(String));
+    }
+  });
+
+  // AC: @mutation-event-naming ac-1
+  // AC: @mutation-event-naming ac-2
+  // AC: @mutation-event-naming ac-3
+  it("enumerates entity event vocabulary with owning topics and reserved families", () => {
+    const allowedEndings = new Set([
+      "acted",
+      "added",
+      "changed",
+      "created",
+      "deleted",
+      "reopened",
+      "replied",
+      "resolved",
+      "submitted",
+      "updated",
+    ]);
+    const topicBySubject = new Map<string, string>();
+
+    for (const entry of ENTITY_EVENT_VOCABULARY) {
+      const segments = entry.event.split("_");
+      const ending = segments.at(-1);
+      const subject = segments.slice(0, -1).join("_");
+      expect(ending).toBeDefined();
+      expect(allowedEndings.has(ending!)).toBe(true);
+      expect(subject.length).toBeGreaterThan(0);
+
+      const priorTopic = topicBySubject.get(subject);
+      if (priorTopic) {
+        expect(entry.topic).toBe(priorTopic);
+      } else {
+        topicBySubject.set(subject, entry.topic);
+      }
+    }
+
+    expect(ENTITY_EVENT_FAMILY_RESERVATIONS).toEqual([
+      { family: "plan_revision", topic: "plans:updates" },
+      { family: "coverage_state", topic: "items:updates" },
+    ]);
   });
 
   // AC: @daemon-command-api ac-mutation-cache-update
