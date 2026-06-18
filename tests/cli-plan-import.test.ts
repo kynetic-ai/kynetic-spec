@@ -454,9 +454,10 @@ Edited content.
   });
 
   it.runIf(canRunShadowTests)(
-    "creates a single clean shadow-branch commit when --into succeeds",
+    "creates clean shadow-branch commits when --into succeeds and mints a revision",
     async () => {
       // AC: @plan-import-into ac-into-commit
+      // AC: @plan-revisions ac-import-mints-revision
       // AC: @trait-shadow-commit ac-1, ac-8
       const shadowDir = await createTempDir("kspec-plan-import-into-shadow-");
 
@@ -477,11 +478,19 @@ Updated body.
         kspecOutput(`plan import "${editedPath}" --into @plan-shadow-plan`, shadowDir);
         const commitsAfter = getShadowCommitCount(shadowDir);
 
-        expect(commitsAfter).toBe(commitsBefore + 1);
+        expect(commitsAfter).toBe(commitsBefore + 2);
         expect(getShadowStatus(shadowDir)).toBe("");
-        expect(getShadowHeadSubject(shadowDir)).toBe(
-          "Import Plan: @plan-shadow-plan - Shadow Plan Updated",
-        );
+        expect(getShadowHeadSubject(shadowDir)).toBe("Update Plan: @plan-shadow-plan - revision 1");
+
+        const plan = kspecJson<{
+          revisions: Array<{ ordinal: number; note: string; shadow_commit: string }>;
+        }>("plan get @plan-shadow-plan", shadowDir);
+        expect(plan.revisions).toHaveLength(1);
+        expect(plan.revisions[0]).toMatchObject({
+          ordinal: 1,
+          note: "Content updated from file",
+        });
+        expect(plan.revisions[0].shadow_commit).toMatch(/^[0-9a-f]{40}$/);
       } finally {
         await cleanupTempDir(shadowDir);
       }

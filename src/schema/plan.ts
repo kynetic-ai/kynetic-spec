@@ -13,6 +13,14 @@ import { NoteSchema } from "./task.js";
  */
 export const PlanStatusSchema = z.enum(["draft", "approved", "active", "completed", "rejected"]);
 
+export const PlanRevisionSchema = z.object({
+  ordinal: z.number().int().positive(),
+  author: z.string().min(1, "Revision author is required"),
+  note: z.string().min(1, "Revision note is required"),
+  created_at: DateTimeSchema,
+  shadow_commit: z.string().min(1, "Shadow commit is required"),
+});
+
 /**
  * Full plan schema
  * AC: @plan-crud ac-1, ac-8, ac-30
@@ -48,6 +56,10 @@ export const PlanSchema = z.object({
   // Notes (work log)
   // AC: @plan-crud ac-9
   notes: z.array(NoteSchema).default([]),
+
+  // Intentional publish history. The document body is never duplicated here;
+  // each revision points at the shadow commit that contains the published body.
+  revisions: z.array(PlanRevisionSchema).default([]),
 });
 
 /**
@@ -82,6 +94,9 @@ export const PlanInputSchema = z.object({
 
   // Notes
   notes: z.array(NoteSchema).optional(),
+
+  // Revisions
+  revisions: z.array(PlanRevisionSchema).optional(),
 });
 
 /**
@@ -94,6 +109,7 @@ export const PlansFileSchema = z.object({
 });
 
 export type PlanStatus = z.infer<typeof PlanStatusSchema>;
+export type PlanRevision = z.infer<typeof PlanRevisionSchema>;
 export type Plan = z.infer<typeof PlanSchema>;
 export type PlanInput = z.infer<typeof PlanInputSchema>;
 export type PlansFile = z.infer<typeof PlansFileSchema>;

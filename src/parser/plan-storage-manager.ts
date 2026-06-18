@@ -158,6 +158,7 @@ const INDEXED_FIELDS = [
   "approved_at",
   "completed_at",
   "notes_count",
+  "current_revision",
   "resource_summary",
 ] as const;
 
@@ -240,6 +241,9 @@ export function toIndexEntry(
   if (plan.completed_at) {
     entry.completed_at = plan.completed_at;
   }
+  if ((plan.revisions ?? []).length > 0) {
+    entry.current_revision = plan.revisions?.at(-1)?.ordinal;
+  }
   if (resourceSummary) {
     entry.resource_summary = { ...resourceSummary };
   }
@@ -300,7 +304,11 @@ const PLAN_SCHEMA_KEYS: ReadonlySet<string> = new Set(Object.keys(PlanSchema.sha
  * AC: @folder-backed-plan-storage-1 ac-plan-document-sidecar-is-authoritative
  */
 function toCoreData(plan: LoadedPlan): Record<string, unknown> {
-  const { _sourceFile: _sf, content: _content, notes: _notes, ...core } = plan;
+  const { _sourceFile: _sf, content: _content, notes: _notes, ...rest } = plan;
+  const core: Record<string, unknown> = { ...rest };
+  if (Array.isArray(core.revisions) && core.revisions.length === 0) {
+    delete core.revisions;
+  }
   return core as Record<string, unknown>;
 }
 
