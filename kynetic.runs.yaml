@@ -70169,9 +70169,22 @@ runs:
     completed_at: 2026-06-18T23:07:07.317Z
   - _ulid: 01KVEH3SYM99R9MN0RPDCJZD0N
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-18T23:29:58.740Z
+        completed_at: 2026-06-18T23:30:46.729Z
+        notes: "Worked well: the detached review flow was coherent end to end. The review record tied
+          together required checks, evidence, approval, and the merge helper gate; the helper merged
+          through the existing clean target checkout without manual branch switching. Focused
+          review-suite tests before the full suite gave fast signal while still preserving the
+          required npm test gate."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-18T23:30:46.729Z
+        completed_at: 2026-06-18T23:30:46.729Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T23:29:58.740Z
