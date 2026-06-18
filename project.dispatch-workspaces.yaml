@@ -27160,7 +27160,7 @@ workspaces:
         head: bfde105acd982fb9424afb538d18769e20e1d64e
         last_seen_at: 2026-06-18T05:17:50.625Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shared-mutation-pipeline-01kvc30t
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: dd0134dc2c3b7a7b5f268a909499ba91b36cb880
     bootstrap:
       status: succeeded
@@ -27634,12 +27634,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-18T05:34:47.974Z
+      updated_at: 2026-06-18T05:35:14.818Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T05:34:47.974Z
+      updated_at: 2026-06-18T05:35:14.818Z
     integration:
       status: merged
       detail: integration:merged
@@ -27647,7 +27647,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: dd0134dc2c3b7a7b5f268a909499ba91b36cb880
-      updated_at: 2026-06-18T05:34:47.974Z
+      updated_at: 2026-06-18T05:35:14.818Z
     lifecycle_state: closing
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVC30W630R5AJWKDGSHJCX6P
@@ -27656,9 +27656,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-18T05:19:01.421Z
-      last_reconciled_at: 2026-06-18T05:34:47.974Z
+      last_reconciled_at: 2026-06-18T05:35:14.818Z
       created_at: 2026-06-18T04:56:35.007Z
-      updated_at: 2026-06-18T05:34:47.974Z
+      updated_at: 2026-06-18T05:35:14.818Z
     workspace_id: dispatch-workspace-01KVC30W630R5AJWKDGSHJCX6P
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
