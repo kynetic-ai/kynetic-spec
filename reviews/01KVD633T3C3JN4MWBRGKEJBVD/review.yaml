@@ -214,6 +214,12 @@ events:
     payload:
       thread_ulid: 01KVD6ATWYYJYWS2W77RTEKENE
     timestamp: 2026-06-18T11:38:22.367Z
+  - _ulid: 01KVD8D5VDCPZ5JBG00CKQMJ35
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVD6ATWYYJYWS2W77RTEKENE
+    timestamp: 2026-06-18T11:38:34.221Z
 examined_commit: c072e12fc35be928c8814703abdfec203aa58f48
 external_links: []
 lifecycle_state: closed
@@ -267,6 +273,8 @@ threads:
           review add/link, and request_changes verdict transition events."
         created_at: 2026-06-18T11:38:22.060Z
     kind: blocker
+    resolved_at: 2026-06-18T11:38:33.941Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVD6XZSQC1YM5YRQZ81J32CZ
     entries:
       - _ulid: 01KVD6XZSRNB61FSFECWS9JBJT
@@ -306,5 +314,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-18T11:12:57.532Z
 created_at: 2026-06-18T10:58:07.299Z
-updated_at: 2026-06-18T11:38:22.060Z
+updated_at: 2026-06-18T11:38:33.941Z
 notes: []
