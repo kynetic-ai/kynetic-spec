@@ -1214,7 +1214,7 @@ features:
               identify the affected entity and the kind of change.
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
             depends_on: []
             implements: []
             relates_to:
