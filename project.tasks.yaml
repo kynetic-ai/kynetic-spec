@@ -32535,7 +32535,7 @@
   type: task
   spec_ref: "@mutation-event-coverage"
   plan_ref: "@plan-dispatch-mutation-service"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-command-path-typed-events"
@@ -32545,7 +32545,7 @@
     - events
     - implementation
   review_ref: "@01KVD3NXFRF3QA8WK0YQXH22PT"
-  notes_count: 10
+  notes_count: 11
   todos_count: 0
   created_at: 2026-06-18T00:45:12.792Z
   started_at: 2026-06-18T09:55:35.293Z

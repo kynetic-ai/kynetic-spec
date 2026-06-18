@@ -2,7 +2,101 @@ _ulid: 01KVD3NXFRF3QA8WK0YQXH22PT
 slugs: []
 title: Review task-missing-event-types cycle 4
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1089 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-18T10:31:02.638Z
+    completed_at: 2026-06-18T10:31:02.638Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors. Repo warning baseline reported 689 warnings under oxlint --quiet.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-18T10:31:05.496Z
+    completed_at: 2026-06-18T10:31:05.496Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors on 18 changed files. Reported 12 vitest mock type-parameter warnings
+      in tests/agent-invocation-lifecycle.test.ts; git blame shows those warning lines are
+      pre-existing March commits outside this diff.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-18T10:31:08.331Z
+    completed_at: 2026-06-18T10:31:08.331Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared && tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-18T10:31:11.330Z
+    completed_at: 2026-06-18T10:31:11.330Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2883 suites passed; 10950 tests passed; 3 skipped; duration 2450.5s. Full log:
+      /tmp/kspec-test-cache/01KVD3KYKHA87EZKAHJENXG92H/f95bb5ca19c74802.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-18T10:31:14.164Z
+    completed_at: 2026-06-18T10:31:14.164Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with existing reference warnings accepted.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T10:31:17.114Z
+    completed_at: 2026-06-18T10:31:17.114Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with existing alignment warnings accepted.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T10:31:20.310Z
+    completed_at: 2026-06-18T10:31:20.310Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with existing completeness warnings
+      accepted.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T10:31:23.347Z
+    completed_at: 2026-06-18T10:31:23.347Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check ce763c87e81cd2eff58d1021da5753e442322259...HEAD exited 0.
+    name: diff whitespace
+    required: true
+    runner: git diff --check
+    created_at: 2026-06-18T10:31:26.333Z
+    completed_at: 2026-06-18T10:31:26.333Z
 events:
   - _ulid: 01KVD3NXFRMN7GZ655YTQRPA78
     actor: Jacob Chapel
@@ -17,17 +111,184 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-18T10:16:10.009Z
+  - _ulid: 01KVD4HHEY9CBVHT63ZRYYZEFE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-18T10:31:02.878Z
+  - _ulid: 01KVD4HM7J239GANN43Z42ME2F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-18T10:31:05.714Z
+  - _ulid: 01KVD4HQ27NC6SXKWRR74HD0GM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-18T10:31:08.615Z
+  - _ulid: 01KVD4HSZF76BZGCC63JR4X0EF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-18T10:31:11.599Z
+  - _ulid: 01KVD4HWPJ83DF12SV7MSFWB63
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-18T10:31:14.386Z
+  - _ulid: 01KVD4HZME51XFTXVDAYMYA9C9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-18T10:31:17.390Z
+  - _ulid: 01KVD4J2PTWD1WHQDYREXNF2WX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-18T10:31:20.538Z
+  - _ulid: 01KVD4J5R4CKZ41XRG9XCCY9GF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-18T10:31:23.652Z
+  - _ulid: 01KVD4J8M21ER95279GCNXH8Q7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-06-18T10:31:26.594Z
+  - _ulid: 01KVD4JBBT7DHSKCXA24EG6CWV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVD4JB46DHECVEB88DQ23KD5
+    timestamp: 2026-06-18T10:31:29.402Z
+  - _ulid: 01KVD4JE545F5KJ6ZA36NG011E
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVD4JDY4MRF25HXZ8ESB3QMS
+    timestamp: 2026-06-18T10:31:32.260Z
+  - _ulid: 01KVD4JGTTT5FRE21N7DMQJ0NX
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-18T10:31:35.002Z
+  - _ulid: 01KVD4JGTT2A223V27A3KRFDKW
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-18T10:31:35.002Z
 examined_commit: 0f12d200a1094a27e2acf794d6987eed45200dcf
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVC30V6R468JZTF5BHVVYKB0"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVD4JB46DHECVEB88DQ23KD5
+    anchor:
+      type: code
+      commit: 0f12d200a1094a27e2acf794d6987eed45200dcf
+      line_end: 488
+      line_start: 487
+      path: src/parser/task-data-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KVD4JB46ZV7CFBCKQYTP9AB4
+        author: Jacob Chapel
+        body: 'MUST-FIX: Task creation events are still limited to the `task add` command path.
+          `buildTaskCreatedEvent` returns null unless `commitOpts.operation === "task-add"`, but
+          successful task creation also happens through `kspec derive` (`operation: "derive"`),
+          inbox promotion, plan task derivation, and triage promotion. Those paths either pass a
+          non-`task-add` operation or no commit options, so `recordTaskCreatedEvent` records no
+          `tasks:updates` `task_updated` event for them. This violates @mutation-event-coverage ac-1
+          because task creation through those interfaces succeeds without a typed task-domain event;
+          it also leaves subscribers relying on broad cache/file fallback instead of the entity
+          event. Evidence: src/cli/commands/derive.ts:336 passes operation `derive`;
+          src/cli/commands/inbox.ts:276, src/cli/commands/plan.ts:1946, and src/triage/actions.ts:80
+          call `createTask` without create-event commit metadata.'
+        created_at: 2026-06-18T10:31:29.158Z
+    kind: blocker
+  - _ulid: 01KVD4JDY4MRF25HXZ8ESB3QMS
+    entries:
+      - _ulid: 01KVD4JDY4DZNY6C94536WVEJ5
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; packages/shared/src/websocket.ts;
+          packages/web-ui/src/lib/query/ws-invalidation.ts;
+          packages/daemon/src/routes/agent-dispatch.ts; packages/daemon/src/routes/command.ts;
+          packages/daemon/src/routes/tasks.ts; packages/daemon/src/routes/reviews.ts;
+          packages/daemon/src/routes/plan-resources.ts; src/mutation-pipeline.ts;
+          src/parser/task-data-manager.ts; src/parser/yaml.ts; src/parser/reviews.ts;
+          src/parser/review-storage-manager.ts; src/agent-runtime/dispatch.ts;
+          src/agent-runtime/invocation.ts; src/agent-runtime/task-bookkeeping.ts;
+          src/cli/commands/task.ts; src/cli/commands/derive.ts; src/cli/commands/inbox.ts;
+          src/cli/commands/plan.ts; src/triage/actions.ts; tests/daemon-command-api.test.ts;
+          tests/daemon-api/plan-resources.test.ts; tests/agent-invocation-lifecycle.test.ts.
+
+
+          Commands run: git status --short --branch; git diff --stat/name-only/check; git diff
+          targeted files; rg AC annotations and event terms; kspec task get; kspec review
+          for-task/get; kspec item get @mutation-event-coverage @mutation-event-naming
+          @ui-api-aggregation; kspec validate --refs/--alignment/--completeness --warnings-ok; npm
+          run format:check; npm run lint -- --quiet; npx oxlint changed files; npm run typecheck;
+          npm test.
+
+
+          Claims verified: Verified the prior cascade-delete fix by reading
+          deleteSpecItem/recordRemovedSpecItemMutationEvents and the behavioral command-route test.
+          Verified task/review/item/plan AC tests are behavioral, not source-scanning. Verified
+          review_created uses the command collector path and includes non-ref code review subject
+          identity. Verified plans:updates is in the shared topic list and web invalidation
+          subscription. Verified the focused lint warnings are pre-existing via git blame.
+
+
+          Categories searched: correctness, AC alignment, edge cases for cascade deletion and
+          alternate task-creation interfaces, error/success-only event emission, test quality,
+          websocket topic integration, lint hygiene. Finding recorded: task-created events are
+          missing for non-task-add creation interfaces.
+        created_at: 2026-06-18T10:31:32.036Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-18T10:31:35.002Z
 created_at: 2026-06-18T10:15:57.688Z
-updated_at: 2026-06-18T10:16:09.773Z
+updated_at: 2026-06-18T10:31:35.002Z
 notes: []

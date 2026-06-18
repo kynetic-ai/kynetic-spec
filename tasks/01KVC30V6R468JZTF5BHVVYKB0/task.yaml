@@ -63,7 +63,7 @@ description: |
 spec_ref: "@mutation-event-coverage"
 plan_ref: "@plan-dispatch-mutation-service"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-command-path-typed-events"
@@ -83,7 +83,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-missing-event-types/01kvc30v
-session_id: 01KVD2E7T731CRMJWRFSC6ZMKR
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -303,6 +303,16 @@ history:
         previous: "@01KVD1BMQHCXJSTH4107ZVWCSC"
     command: review-link
     timestamp: 2026-06-18T10:16:00.031Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KVD2E7T731CRMJWRFSC6ZMKR
+    command: review-verdict-needs-work
+    timestamp: 2026-06-18T10:31:37.062Z
 created_at: 2026-06-18T00:45:12.792Z
 started_at: 2026-06-18T09:55:35.293Z
 submitted_at: 2026-06-18T10:11:30.204Z
