@@ -32488,7 +32488,7 @@
   type: task
   spec_ref: "@shared-mutation-pipeline"
   plan_ref: "@plan-dispatch-mutation-service"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -32501,7 +32501,7 @@
   todos_count: 0
   created_at: 2026-06-18T00:45:12.026Z
   started_at: 2026-06-18T05:19:14.472Z
-  submitted_at: 2026-06-18T04:52:07.827Z
+  submitted_at: 2026-06-18T05:40:54.486Z
   automation: eligible
 - _ulid: 01KVC30TT5QTKT0Q8KVPPSJKHT
   slugs:

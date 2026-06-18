@@ -57,7 +57,7 @@ description: |
 spec_ref: "@shared-mutation-pipeline"
 plan_ref: "@plan-dispatch-mutation-service"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -71,8 +71,8 @@ review_ref: "@01KVCHDNKC315W7J7HJ1BJ3K96"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-shared-mutation-pipeline/01kvc30t
-  captured_at: 2026-06-18T04:52:07.822Z
-  commit: bfde105acd982fb9424afb538d18769e20e1d64e
+  captured_at: 2026-06-18T05:40:54.480Z
+  commit: fea84ff19a9cab40c1f1951e51c5eb5dfddbc6cf
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-shared-mutation-pipeline/01kvc30t
@@ -148,8 +148,35 @@ history:
         previous: 2026-06-18T04:20:54.762Z
     command: task-start
     timestamp: 2026-06-18T05:19:14.473Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-shared-mutation-pipeline/01kvc30t
+          captured_at: 2026-06-18T05:40:54.480Z
+          commit: fea84ff19a9cab40c1f1951e51c5eb5dfddbc6cf
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-shared-mutation-pipeline/01kvc30t
+        previous:
+          review_url: null
+          branch: dispatch/task/task-shared-mutation-pipeline/01kvc30t
+          captured_at: 2026-06-18T04:52:07.822Z
+          commit: bfde105acd982fb9424afb538d18769e20e1d64e
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-shared-mutation-pipeline/01kvc30t
+      submitted_at:
+        new: 2026-06-18T05:40:54.486Z
+        previous: 2026-06-18T04:52:07.827Z
+    command: task-submit
+    timestamp: 2026-06-18T05:40:54.486Z
 created_at: 2026-06-18T00:45:12.026Z
 started_at: 2026-06-18T05:19:14.472Z
-submitted_at: 2026-06-18T04:52:07.827Z
+submitted_at: 2026-06-18T05:40:54.486Z
 todos: []
 automation: eligible
