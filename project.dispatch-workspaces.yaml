@@ -26643,12 +26643,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-18T07:54:14.439Z
+      updated_at: 2026-06-18T07:57:53.984Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T07:54:14.439Z
+      updated_at: 2026-06-18T07:57:53.984Z
     integration:
       status: pending
       detail: null
@@ -26656,7 +26656,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: d7657c6dd8f45dba09c5074ab51d4e7acaf8dab8
-      updated_at: 2026-06-18T07:54:14.439Z
+      updated_at: 2026-06-18T07:57:53.984Z
     lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVC30VGXGQJ23PVYQWJB84DN
@@ -26665,9 +26665,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-18T07:26:32.618Z
-      last_reconciled_at: 2026-06-18T07:54:14.439Z
+      last_reconciled_at: 2026-06-18T07:57:53.984Z
       created_at: 2026-06-18T06:26:54.830Z
-      updated_at: 2026-06-18T07:54:14.439Z
+      updated_at: 2026-06-18T07:57:53.984Z
     workspace_id: dispatch-workspace-01KVC30VGXGQJ23PVYQWJB84DN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -26676,7 +26676,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-dispatch-engine-mutation-path/01kvc30v
         head: e8d4209b8b1f4c03ce6202670b792d1aecbfb714
-        last_seen_at: 2026-06-18T07:26:00.332Z
+        last_seen_at: 2026-06-18T07:57:53.984Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-engine-mutation-path-01kvc30v
   - active_role: null
     base_branch_point: ce763c87e81cd2eff58d1021da5753e442322259
