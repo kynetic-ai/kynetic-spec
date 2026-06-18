@@ -32580,6 +32580,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-18T00:45:13.452Z
+  automation: eligible
 - _ulid: 01KVC30W630R5AJWKDGSHJCX6P
   slugs:
     - task-mutation-service-spec-links
