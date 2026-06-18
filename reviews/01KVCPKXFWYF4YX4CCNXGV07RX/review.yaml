@@ -1,0 +1,26 @@
+_ulid: 01KVCPKXFWYF4YX4CCNXGV07RX
+slugs: []
+title: Review task-command-path-typed-events
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVCPKXFWWFM74E9JHKRREFDY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-18T06:27:40.668Z
+examined_commit: 665d4d420d2efcf995b7bf3b2cd7e868e287908d
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVC30TT5QTKT0Q8KVPPSJKHT"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-18T06:27:40.668Z
+updated_at: null
+notes: []
