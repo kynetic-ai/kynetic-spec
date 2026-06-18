@@ -27491,12 +27491,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-18T05:18:15.131Z
+      updated_at: 2026-06-18T05:18:29.803Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T05:18:15.131Z
+      updated_at: 2026-06-18T05:18:29.803Z
     integration:
       status: pending
       detail: null
@@ -27504,7 +27504,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: dd0134dc2c3b7a7b5f268a909499ba91b36cb880
-      updated_at: 2026-06-18T05:18:15.131Z
+      updated_at: 2026-06-18T05:18:29.803Z
     lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVC30W630R5AJWKDGSHJCX6P
@@ -27513,16 +27513,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-18T04:57:05.451Z
-      last_reconciled_at: 2026-06-18T05:18:15.131Z
+      last_reconciled_at: 2026-06-18T05:18:29.803Z
       created_at: 2026-06-18T04:56:35.007Z
-      updated_at: 2026-06-18T05:18:15.131Z
+      updated_at: 2026-06-18T05:18:29.803Z
     workspace_id: dispatch-workspace-01KVC30W630R5AJWKDGSHJCX6P
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: dd0134dc2c3b7a7b5f268a909499ba91b36cb880
+        last_seen_at: 2026-06-18T05:18:29.803Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-mutation-service-spec-links-01kvc30w-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-mutation-service-spec-links/01kvc30w
         head: dd0134dc2c3b7a7b5f268a909499ba91b36cb880
-        last_seen_at: 2026-06-18T04:56:35.007Z
+        last_seen_at: 2026-06-18T05:18:29.803Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-mutation-service-spec-links-01kvc30w
