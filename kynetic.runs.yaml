@@ -69180,7 +69180,7 @@ runs:
     completed_at: 2026-06-18T06:44:49.936Z
   - _ulid: 01KVCSQP5463MB9Y1Z5A1PY6VB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69195,7 +69195,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T07:23:36.405Z
-        completed_at: 2026-06-18T07:23:36.405Z
+        completed_at: 2026-06-18T07:24:57.847Z
+        notes: High-confidence reflection items identified after search/list checks. Captured success
+          @01KVCSSD for the taskBookkeeping injection seam enabling behavior-level dispatch
+          bookkeeping tests. Captured friction @01KVCSSF for transport-coupled kspec-capture-mock
+          assertions making the in-process mutation path migration broader than the production
+          change. Adjacent friction around workflow show requiring a run ref and full-suite
+          runtime/cache behavior is already tracked in existing inbox/observation state, so no
+          duplicate capture was added.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T07:24:57.847Z
+        completed_at: 2026-06-18T07:24:57.847Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T07:22:09.957Z
