@@ -12,3 +12,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T06:04:27.621Z
+  - _ulid: 01KVCP8EV8G5DFPVEG0EBHABD9
+    content: "Implemented command-path typed task event emission: proxied command and batch executions
+      now collect task_updated event descriptors from TaskDataManager and flush them from the
+      command route after successful cache write-through, before the existing
+      command_executed/batch_executed command-topic broadcast. Added behavioral daemon command API
+      coverage for @shared-mutation-pipeline ac-3 REST/command task-event schema parity and ac-5
+      per-affected-task batch events. Verification passed: npm run build; npm run format:check; npx
+      oxlint changed files; npm run lint -- --quiet; npm run typecheck; npm test -- --run
+      tests/daemon-command-api.test.ts; npm test; kspec validate --refs/--alignment/--completeness
+      --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T06:21:25.225Z
