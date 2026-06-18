@@ -76,5 +76,14 @@ tags:
   - plans
   - cli
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-18T22:22:29.424Z
 created_at: 2026-06-18T22:21:51.507Z
 todos: []
+automation: eligible
