@@ -19020,7 +19020,7 @@ workspaces:
         head: 88b0691213ac017059815e1fa58f064e997647c2
         last_seen_at: 2026-06-18T20:09:19.561Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-targeted-consumption-01kvc30v
-  - active_role: null
+  - active_role: worker
     base_branch_point: 4fdcd1312154624eb845b8e16b6095cfc5aaaa7d
     bootstrap:
       status: succeeded
@@ -19356,7 +19356,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T22:23:27.368Z
+      updated_at: 2026-06-18T22:24:30.219Z
     integration:
       status: pending
       detail: null
@@ -19365,17 +19365,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: 4fdcd1312154624eb845b8e16b6095cfc5aaaa7d
       updated_at: 2026-06-18T22:23:27.368Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVED703NAFBBBXJCAETHBYW1
     task_ref: "@01KVED703NAFBBBXJCAETHBYW1"
     task_slug: task-spec-ac-anchor-variant
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-18T22:23:27.368Z
+      last_active_at: 2026-06-18T22:24:30.219Z
+      last_reconciled_at: 2026-06-18T22:24:30.219Z
       created_at: 2026-06-18T22:23:27.368Z
-      updated_at: 2026-06-18T22:24:13.422Z
+      updated_at: 2026-06-18T22:24:30.219Z
     workspace_id: dispatch-workspace-01KVED703NAFBBBXJCAETHBYW1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
