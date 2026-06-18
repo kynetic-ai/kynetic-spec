@@ -69549,7 +69549,7 @@ runs:
     completed_at: 2026-06-18T09:06:43.935Z
   - _ulid: 01KVD12RTN46N8YMAFJXSMXWCE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69563,7 +69563,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T09:32:13.451Z
-        completed_at: 2026-06-18T09:32:13.451Z
+        completed_at: 2026-06-18T09:33:19.173Z
+        notes: "Captured one high-confidence friction observation as @01KVD15C: daemon command-route tests
+          can drift when RouteEntityCache mocks expose ref-only task indexes instead of
+          production-shaped TaskSummary records. Search also showed the full-suite teardown/tail
+          concern is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run, so no duplicate item was
+          added."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T09:33:19.173Z
+        completed_at: 2026-06-18T09:33:19.173Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T09:30:33.173Z
