@@ -195,6 +195,13 @@ events:
       status: pass
       name: diff check
     timestamp: 2026-06-18T20:27:57.831Z
+  - _ulid: 01KVE6Q6BM3R5NJGV0P4CQ748N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVE6Q62ZHMZSRV681E1K7V06
+    timestamp: 2026-06-18T20:28:19.700Z
 examined_commit: 88b0691213ac017059815e1fa58f064e997647c2
 external_links: []
 lifecycle_state: open
@@ -204,8 +211,47 @@ subject:
   content_hash: ""
   ref: "@01KVC30VVC1G051BP2QT5RPX3R"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVE6Q62ZHMZSRV681E1K7V06
+    entries:
+      - _ulid: 01KVE6Q62Z7ATR2Z0QRRC8Q8FW
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: packages/web-ui/src/lib/query/ws-invalidation.ts;
+          packages/web-ui/src/routes/plans/+page.svelte; tests/web-ui/ws-cache-invalidation.test.ts;
+          tests/e2e/connection.spec.ts; tests/e2e/fixtures/plans/01KG0RRPCA45ZT43W2T6HJMVP1/plan.md;
+          packages/web-ui/src/lib/query/keys.ts; packages/web-ui/src/routes/tasks/+page.svelte;
+          packages/web-ui/src/lib/components/board/TaskDetailModal.svelte;
+          packages/web-ui/src/lib/components/board/TaskDetailContent.svelte;
+          packages/web-ui/src/lib/components/ItemDetail.svelte;
+          packages/web-ui/src/lib/stores/connection.svelte.ts; packages/shared/src/websocket.ts;
+          packages/daemon/src/routes/tasks.ts; packages/daemon/src/routes/plan-resources.ts;
+          src/parser/yaml.ts; src/parser/reviews.ts; src/parser/task-data-manager.ts;
+          packages/web-ui/src/lib/api.ts.
+
+
+          Commands run: kspec item get @ui-targeted-event-consumption; kspec validate --refs
+          --warnings-ok; kspec validate --alignment --warnings-ok; kspec validate --completeness
+          --warnings-ok; npm run format:check; npm run lint -- --quiet; npx oxlint changed TS/test
+          files; npm run typecheck; npm test; git diff --check; npm run build:e2e && npx playwright
+          test tests/e2e/connection.spec.ts -g 'typed|plan-resource'.
+
+
+          Claims verified: typed task/item/review/plan-resource events map to targeted query keys
+          using the emitted payload fields; files:updates fallback no longer schedules fixed-delay
+          invalidation; plans page refreshes expanded resource content from the typed plan-resource
+          event path while file fallback is filtered out in E2E; command topic remains unsubscribed.
+
+
+          Categories searched: correctness, edge cases for missing refs/fallback paths, error
+          handling around plan content refresh, test quality/AC annotations, integration with daemon
+          payload schemas and existing query key consumers. No blocker or should-fix findings found.
+        created_at: 2026-06-18T20:28:19.423Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-18T20:10:36.421Z
-updated_at: 2026-06-18T20:27:57.536Z
+updated_at: 2026-06-18T20:28:19.423Z
 notes: []
