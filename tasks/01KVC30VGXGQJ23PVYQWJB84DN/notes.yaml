@@ -19,3 +19,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T06:33:07.044Z
+  - _ulid: 01KVCSN92FS53DVMMMWM61SAAV
+    content: "Implemented dispatch bookkeeping mutations through an in-process task bookkeeping pipeline
+      helper. Invocation failure/timeout notes and retry-threshold blocks now use direct pipeline
+      calls with separate mutation-failure logging, and daemon dispatch passes pubsub/cache
+      capabilities so successful bookkeeping broadcasts task_updated events matching the task API.
+      Updated lifecycle, dispatch-engine, stall, daemon-isolation, secret-redaction, and
+      bootstrap-contract tests away from CLI capture seams. Gates: format:check, lint --quiet,
+      focused oxlint (warnings-only existing lifecycle mock-type baseline), typecheck, kspec
+      validate refs/alignment/completeness --warnings-ok, and full npm test (2883 suites, 10942
+      passed, 3 skipped) all passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T07:20:51.023Z
