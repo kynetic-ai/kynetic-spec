@@ -1043,6 +1043,226 @@ features:
         tags: []
         created: 2026-06-11T03:53:15.658Z
         notes: []
+      - _ulid: 01KVC30T4XQ0YM1XA10RFAQRE2
+        slugs:
+          - shared-mutation-pipeline
+        title: Shared Mutation Pipeline
+        type: feature
+        description: |
+          Every mutation of project state follows one shared completion
+          sequence: the change is applied, a shadow branch commit records it,
+          the server's entity cache is updated to the post-mutation state, and
+          a typed event identifying the affected entities is broadcast to
+          subscribed clients. The sequence is the same regardless of the
+          interface the mutation arrived through — an entity API endpoint, a
+          proxied CLI command, or the dispatch engine's own record keeping.
+          When no daemon serves the project, the same mutation logic applies
+          and commits the change, and the cache and broadcast stages are
+          skipped without error.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a mutation succeeds through any daemon-served interface
+            id: ac-1
+            then: |
+              a shadow commit recording the change exists and the entity cache
+              reflects the post-mutation state
+            when: |
+              the originating caller observes the result
+          - given: |
+              a mutation's typed event is broadcast
+            id: ac-2
+            then: |
+              the response reflects the post-mutation state — the broadcast is
+              never observable before the cache reflects the change
+            when: |
+              a subscriber re-fetches the affected entity in response to the
+              event
+          - given: |
+              the same logical mutation is performed once through its entity
+              API endpoint and once through a proxied CLI command
+            id: ac-3
+            then: |
+              both broadcast on the same topic with the same event type and
+              the same payload schema, differing only in the values specific
+              to each occurrence
+            when: |
+              each succeeds
+          - given: |
+              a mutation executes while no daemon is serving the project
+            id: ac-4
+            then: |
+              the change is applied and committed to the shadow branch exactly
+              as it would be under a daemon, and the unavailable cache and
+              broadcast stages produce no error
+            when: |
+              the mutation succeeds
+          - given: |
+              a batch of mutations executes atomically through a
+              daemon-served interface
+            id: ac-5
+            then: |
+              exactly one shadow commit records the batch, and a typed event
+              is broadcast for each affected entity after the cache reflects
+              the batch's full result
+            when: |
+              the batch completes successfully
+          - given: |
+              a mutation fails at any stage of the sequence
+            id: ac-6
+            then: |
+              the report includes the underlying error description rather
+              than only a generic failure indication
+            when: |
+              the failure is reported to the originating caller
+          - given: |
+              a batch of mutations executes atomically while no daemon is
+              serving the project
+            id: ac-7
+            then: |
+              exactly one shadow commit records the batch, and the
+              unavailable cache and broadcast stages produce no error
+            when: |
+              the batch completes successfully
+        tags: []
+        requirements:
+          - _ulid: 01KVC30T7C9XD1M2P7ZDGWC396
+            slugs:
+              - dispatch-mutation-transparency
+            title: Dispatch Mutation Transparency
+            type: requirement
+            description: |
+              The dispatch engine records its own bookkeeping — failure notes,
+              timeout notes, and task blocking — through the shared mutation
+              pipeline. These mutations are applied in the engine's own process,
+              broadcast on the owning entity topics like any other mutation, and
+              report failures with their underlying detail. A bookkeeping failure
+              is always subordinate to the agent outcome it records: it never
+              replaces or hides that outcome.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            acceptance_criteria:
+              - given: |
+                  the dispatch engine records a failure note, timeout note, or
+                  block on a task
+                id: ac-1
+                then: |
+                  the broadcast topic, event type, and payload schema are
+                  identical to those produced when the same mutation is performed
+                  through the task API
+                when: |
+                  the mutation succeeds
+              - given: |
+                  the dispatch engine performs a bookkeeping mutation while
+                  running inside the daemon process
+                id: ac-2
+                then: |
+                  the mutation is applied in-process: no separate process is
+                  created on its behalf, and no request re-enters the daemon's
+                  command interface
+                when: |
+                  the mutation executes
+              - given: |
+                  a dispatch-initiated bookkeeping mutation fails
+                id: ac-3
+                then: |
+                  the underlying error description is written to the
+                  operator-visible log, in engine-driven and one-shot execution
+                  modes alike, and the failure is never silently discarded
+                when: |
+                  the failure is handled
+              - given: |
+                  an agent invocation fails and the subsequent failure-note
+                  mutation also fails
+                id: ac-4
+                then: |
+                  the recorded outcome remains the invocation's original error,
+                  and the note-write failure appears as a separate log entry
+                  rather than replacing it
+                when: |
+                  the invocation outcome is recorded
+            tags: []
+            created: 2026-06-18T00:45:11.788Z
+            notes: []
+          - _ulid: 01KVC30T98MEFCKWYP82JPSTK0
+            slugs:
+              - mutation-event-coverage
+            title: Mutation Event Coverage
+            type: requirement
+            description: |
+              Every entity domain that clients can subscribe to receives
+              entity-scoped typed events for all of its daemon-served mutations.
+              Task changes, review creation, spec item changes, and plan-local
+              resource changes each broadcast on their owning domain topic,
+              through every interface a mutation can arrive on, with payloads that
+              identify the affected entity and the kind of change.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            acceptance_criteria:
+              - given: |
+                  any task mutation — creation, any state transition, or any
+                  field change, including changes with no dedicated entity
+                  endpoint
+                id: ac-1
+                then: |
+                  a typed task event is broadcast on the task domain topic
+                  identifying the task and the kind of change, with prior and new
+                  status when the change is a state transition
+                when: |
+                  the mutation succeeds through any interface
+              - given: |
+                  a review record is created through any interface
+                id: ac-2
+                then: |
+                  a typed review-creation event is broadcast on the review domain
+                  topic identifying the new review and its subject
+                when: |
+                  creation succeeds
+              - given: |
+                  a spec item is created, changed, or removed through any
+                  interface
+                id: ac-3
+                then: |
+                  a typed spec-item event is broadcast on the spec-item domain
+                  topic, and a subscriber to that topic observes the change
+                  without relying on file-change fallback events
+                when: |
+                  the mutation succeeds
+              - given: |
+                  a plan-local resource is added, replaced, or removed through a
+                  daemon-served plan resource route
+                id: ac-4
+                then: |
+                  a typed plan-resource event is broadcast on the plan domain
+                  topic, identifying the owning plan, the resource, and the kind
+                  of change, and a subscriber to that topic observes the resource
+                  change without relying on file-change fallback events
+                when: |
+                  the mutation succeeds
+              - given: |
+                  any entity-scoped mutation event payload
+                id: ac-5
+                then: |
+                  the payload identifies each affected entity by its canonical
+                  identifier, sufficient to refresh exactly that entity and
+                  nothing broader
+                when: |
+                  a subscriber processes it
+            tags: []
+            created: 2026-06-18T00:45:11.848Z
+            notes: []
+        created: 2026-06-18T00:45:11.709Z
+        notes: []
     requirements:
       - _ulid: 01KJRZWDCC8W2WT0Q3A9CZAAGY
         slugs:
@@ -2337,6 +2557,64 @@ features:
       - api
       - rest
       - websocket
+    decisions:
+      - _ulid: 01KVC30TBAS54G4QKM425JR1D5
+        slugs:
+          - mutation-event-naming
+        title: Mutation Event Naming
+        type: decision
+        description: |
+          Broadcast vocabulary is organized by entity domain: each domain has
+          one updates topic, and entity-scoped event types within it name the
+          changed subject and the change in past-tense subject_change form.
+          The task, spec-item, review, plan, inbox, and triage domains use
+          `tasks:updates`, `items:updates`, `reviews:updates`,
+          `plans:updates`, `inbox:updates`, and `triage:updates`,
+          respectively. New capabilities extend an existing domain topic with
+          new event types rather than adding a parallel topic for the same
+          entities. Two event families are reserved by name for later
+          capabilities: plan-revision events on the plan domain topic and
+          coverage-state events on the spec-item domain topic. The reserved
+          names are part of this vocabulary; their payloads and semantics are
+          defined by the capabilities that introduce them.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              the set of entity-scoped event types the daemon broadcasts
+            id: ac-1
+            then: |
+              every entity-scoped event type follows the past-tense
+              subject_change form and is published on its owning domain's
+              updates topic
+            when: |
+              the vocabulary is enumerated
+          - given: |
+              a client subscribed to a single entity domain's updates topic
+            id: ac-2
+            then: |
+              every entity-scoped event for that domain arrives on that one
+              topic, and no other topic carries entity-scoped events for the
+              same domain
+            when: |
+              mutations occur anywhere in that domain
+          - given: |
+              the two reserved event families — plan-revision and
+              coverage-state
+            id: ac-3
+            then: |
+              the plan-revision family appears as a named reservation on the
+              plan domain's updates topic and the coverage-state family as a
+              named reservation on the spec-item domain's updates topic, each
+              with no payload or semantics defined
+            when: |
+              the broadcast vocabulary is enumerated
+        tags: []
+        created: 2026-06-18T00:45:11.914Z
+        notes: []
     requirements:
       - _ulid: 01KKB3PG8J6XME4PGACG3M94C6
         slugs:
@@ -4827,6 +5105,67 @@ features:
           loading skeleton
         when: the retry ceiling (30 seconds) is reached without the cache becoming ready
     tags: []
+    requirements:
+      - _ulid: 01KVC30TD11M6A23HHCBHXRKZK
+        slugs:
+          - ui-targeted-event-consumption
+        title: UI Targeted Event Consumption
+        type: requirement
+        description: |
+          The web client treats typed mutation events as its primary
+          freshness signal. An event drives one immediate, targeted refresh:
+          the affected entity's data and the views that include it update,
+          and unaffected domains are left alone. Changes that originate
+          outside daemon-served mutations reach the client through
+          file-change fallback events, which also trigger a single immediate
+          refresh of their affected domains. No freshness path schedules
+          repeated delayed refreshes to compensate for event-timing
+          uncertainty.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a typed mutation event identifying a single entity arrives
+            id: ac-1
+            then: |
+              the client refreshes that entity's cached data and the views
+              that include it, and does not refetch entity domains the event
+              does not affect
+            when: |
+              the client processes it
+          - given: |
+              any broadcast event arrives
+            id: ac-2
+            then: |
+              the refresh begins immediately on arrival and happens exactly
+              once per event, with no additional fixed-delay refreshes
+              scheduled for the same event
+            when: |
+              the client initiates refresh work for it
+          - given: |
+              a view is open and a mutation affecting it is performed through
+              the CLI
+            id: ac-3
+            then: |
+              the open view updates without a manual reload and without
+              depending on file-change fallback events
+            when: |
+              the mutation's typed event reaches the client
+          - given: |
+              a shadow branch file changes through a path that is not a
+              daemon-served mutation
+            id: ac-4
+            then: |
+              the client performs a single immediate refresh of the affected
+              domains and open views reflect the change
+            when: |
+              the file-change fallback event arrives
+        tags: []
+        created: 2026-06-18T00:45:11.969Z
+        notes: []
     created: 2026-03-15T03:28:12.161Z
     notes: []
   - _ulid: 01KKSGSZ6S0C4F4XMRP1PNPZ8K

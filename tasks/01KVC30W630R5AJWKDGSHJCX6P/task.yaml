@@ -1,0 +1,48 @@
+_ulid: 01KVC30W630R5AJWKDGSHJCX6P
+slugs:
+  - task-mutation-service-spec-links
+title: Declare relationship metadata between the new and foundation specs
+type: task
+description: |
+  Record the relationships between this plan's specs and the
+  foundation specs they extend, so the ownership boundaries are
+  navigable metadata rather than plan prose.
+
+  Why: The pipeline generalizes behavior owned today by the command
+  API and entity cache specs, the event coverage spec extends the
+  API contract and enriched-events specs, and plan-resource events
+  connect the mutation vocabulary to the entity-scoped resource
+  foundation. Without recorded links, future readers cannot navigate
+  from the foundation specs to the layer that now owns
+  cross-interface mutation behavior.
+
+  What — create relates_to links for exactly these pairs:
+  - @shared-mutation-pipeline ↔ @daemon-command-api
+  - @shared-mutation-pipeline ↔ @daemon-entity-cache
+  - @mutation-event-coverage ↔ @ui-api-aggregation
+  - @mutation-event-coverage ↔ @api-contract
+  - @mutation-event-coverage ↔ @trait-entity-scoped-local-resources-1
+  - @dispatch-mutation-transparency ↔ @agent-invocation-lifecycle
+
+  How: kspec link create --type relates_to for each pair (or the
+  item-set relationship flag if that is the supported mechanism at
+  execution time); verify with kspec link list and kspec refs, then
+  kspec validate --refs --warnings-ok.
+
+  Covers: @shared-mutation-pipeline, @mutation-event-coverage,
+  @dispatch-mutation-transparency (relationship metadata only — no
+  acceptance criteria).
+spec_ref: "@shared-mutation-pipeline"
+plan_ref: "@plan-dispatch-mutation-service"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - specs
+  - maintenance
+vcs_refs: []
+created_at: 2026-06-18T00:45:13.795Z
+todos: []

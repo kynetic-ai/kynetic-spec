@@ -31,3 +31,169 @@ notes:
       remains draft."
     author: Jacob Chapel
     created_at: 2026-06-17T23:26:14.586Z
+  - _ulid: 01KVC30WHYVTBWV37178SDBAA5
+    content: |-
+      ### Promotion and record continuity
+
+      This document is the expanded replacement content for the draft plan
+      record `@plan-dispatch-mutation-service` (ULID
+      `01KN53HWBGWJT52V2TC2PXKBKP`). Import with `--into
+      @plan-dispatch-mutation-service` so the record, its history, and its
+      disposition notes are preserved. The original content was an
+      investigation draft (problem statement, current architecture, explored
+      alternatives); its preferred direction — Option 2, a shared mutation
+      service with optional cache/pubsub dependencies — is what this revision
+      specs. The P0a global-decisions plan's disposition task records the
+      promotion on the overlapping draft records.
+
+      The record's stored `source_path` (`plans/dispatch-mutation-service.md`)
+      is **historical**: it names the retired investigation draft, which has
+      no `## Specs` section and no derivable content. Do not iterate by
+      editing that file. The authoritative source document for this plan is
+      `plans/ui-redesign-mutation-event-service.md`; iterate by editing it
+      and re-importing with `--into @plan-dispatch-mutation-service`.
+      (`plan import --into` preserves the stored `source_path`, so the stale
+      pointer persists on the record — treat this note as the source of
+      truth.)
+
+      ### Resolutions of the draft's open questions
+
+      - **Commit boundaries**: the pipeline owns the commit for a single
+        logical mutation; a batch is one logical unit with exactly one commit
+        and one cache update (matching `@daemon-command-api ac-batch-support`),
+        followed by per-entity event emission.
+      - **Optional cache/pubsub interface**: injected capabilities on the
+        pipeline instance, constructed by the host (daemon: real cache +
+        pubsub; direct CLI and one-shot agent run: absent). Absent
+        capabilities no-op; they never error or change the recorded result.
+      - **One-shot `kspec agent run` without a daemon**: standalone direct
+        application is the contract (`@shared-mutation-pipeline ac-4`). No
+        daemon auto-start.
+      - **The `strict` flag**: the conflation of "dispatch mode" with "should
+        mutation failures throw" is retired. Failures are always logged with
+        underlying detail; a bookkeeping failure never substitutes for the
+        invocation error it was recording.
+      - **Other subprocess mutation call sites**: audited during
+        `@task-dispatch-engine-mutation-path`; the investigation found them
+        only in the invocation runner.
+
+      ### Event derivation for the command path
+
+      Typed events for proxied CLI commands are emitted at the
+      mutation-manager level (the code that knows which entity changed and
+      how), not derived from command names. This keeps event emission correct
+      for compound commands and batches, and means direct REST routes and
+      proxied commands literally share the emission site. The command route's
+      existing write-through domain hints remain as the cache-consistency
+      safety net but are no longer the event source.
+
+      ### Current-state inventory this plan corrects
+
+      Verified at program research time (plans/ui-redesign/research/state-api.md
+      §6; analysis.md §3.3, §4.4):
+
+      - Granular typed events (`thread_created`, `verdict_submitted`,
+        `task_updated`, session streaming, etc.) fire only from web REST
+        routes.
+      - CLI-proxied mutations broadcast only `command_executed` /
+        `batch_executed` on the `command` topic, which the web client does
+        not subscribe to.
+      - The client compensates with 650ms/1500ms delayed double-invalidation
+        on file-change events (`FILE_WATCHER_INVALIDATION_DELAYS_MS` in
+        `ws-invalidation.ts`).
+      - Only five task transitions emit `task_updated`; all other task
+        mutations are command-path-only and emit nothing entity-scoped.
+      - `items:updates` is subscribed by the client but never emitted by any
+        daemon code.
+      - The client does not subscribe to a plan-domain updates topic today;
+        plan-resource upload/delete routes directly commit shadow state and
+        currently refresh only through file-change fallback.
+      - No event exists for review creation (creation is CLI-only).
+      - The coverage verification record store writes
+        `coverage/verifications/<item-ulid>.yaml` as a programmatic sidecar
+        and directly commits the stamp; no daemon or CLI write interface for
+        re-verification/ingestion exists yet.
+      - The dispatch invocation runner mutates tasks via CLI subprocess with
+        the documented error-opacity, error-masking, and loop-back defects.
+
+      ### Existing spec relationships (refs verified read-only)
+
+      - `@daemon-entity-cache` — `ac-write-through` (cache updated before
+        response) and `ac-broadcast-after-reload` (watcher-driven broadcasts
+        fire after reload) are the ordering guarantees the pipeline
+        generalizes and the client's single-immediate-refresh behavior relies
+        on. Unchanged by this plan.
+      - `@daemon-command-api` — `ac-mutation-cache-update`, `ac-batch-support`,
+        and `ac-no-recursive-command-proxy` remain satisfied; this plan adds
+        typed entity events alongside the existing coarse command-stream
+        broadcast, which is retained.
+      - `@ui-data-freshness` — `ac-3` (event-driven invalidation with
+        enriched-payload fast path) and `ac-10` (freshness independent of
+        which internal path produced the change) are the parent contracts the
+        new `@ui-targeted-event-consumption` spec refines. No edits to the
+        existing ACs are needed.
+      - `@ui-api-aggregation` — `ac-4` (enriched event payloads: display
+        title, old/new state) extends to the new event types; covered by
+        `@task-missing-event-types`.
+      - `@agent-invocation-lifecycle` — `ac-5` requires the failure note;
+        `@dispatch-mutation-transparency` specifies what happens when that
+        note write itself fails, which `ac-5` leaves open.
+      - `@api-contract` — owns the WS message envelope and subscribe
+        protocol; the naming decision governs vocabulary within that
+        envelope, which is why `@mutation-event-naming` is parented under
+        `@api-contract`.
+
+      ### Scope exclusions
+
+      - **Reserved event families only named, not built**: plan-revision and
+        coverage-state events get reserved names and owning topics
+        (`@mutation-event-naming` ac-3); payloads and semantics belong to the
+        plans that introduce those capabilities. Plan-resource add/replace/
+        remove is not reserved future work: this plan defines that current
+        route-driven mutation as a concrete plan-domain event.
+      - **Verification stamp sidecar writes are lower-level store operations
+        until write interfaces exist**: the storage primitive added by the AC
+        coverage plan remains a programmatic record-store API. Any future
+        daemon-served or CLI-served verification, ingestion, re-verification,
+        or coverage-state writer that calls it must do so through the shared
+        mutation pipeline and the reserved coverage-state/spec-item event
+        family once that later plan defines payload semantics. This plan does
+        not invent those coverage-state semantics early.
+      - **No event replay or resume**: the existing reconnect contract
+        (resubscribe + full refetch, no missed-event delivery) is unchanged.
+      - **No SSE or new transport**; no change to per-connection project
+        binding or topic subscription protocol.
+      - **The dispatch event registry** (`task.ready`, `invocation.*`, etc. —
+        the internal hooks/schedules bus) is a separate system and is
+        untouched.
+      - **No actor attribution in event payloads**: identity enrichment is
+        the identity model's concern, owned elsewhere in the program.
+      - **`files:updates` is retained** as the fallback for non-daemon
+        origins (external git operations, manual edits); only the client's
+        delay compensation is removed.
+      - **No daemon-initiated code-repository writes**: this service handles
+        shadow-branch project state only.
+
+      ### Migration and backward compatibility
+
+      - Existing event consumers are unaffected: all current topics, event
+        types, and payload schemas are preserved; this plan only adds event
+        types and re-homes their emission.
+      - `command_executed` / `batch_executed` remain for command-stream
+        observers; nothing may newly depend on them for entity freshness.
+      - The client change is behavior-compatible for end users: the same
+        views refresh, faster and exactly once.
+
+      ### Approval ordering
+
+      The program analysis records this plan (P0c) with no blocking
+      decisions; none of the P0a global-decision items gate these specs, and
+      no pending-materialization references are used in Specs or Tasks — all
+      external refs above exist today and were verified read-only. This plan
+      can be approved and derived independently of the P0a plan's
+      materialization. Later program work consumes this service (the
+      content-level spec-revert decision routes its mutations through this
+      pipeline; the cross-project event delivery work builds on the typed
+      vocabulary), so P0c should land before those tracks start.
+    author: Jacob Chapel
+    created_at: 2026-06-18T00:45:14.175Z

@@ -1,0 +1,64 @@
+_ulid: 01KVC30VGXGQJ23PVYQWJB84DN
+slugs:
+  - task-dispatch-engine-mutation-path
+title: Move dispatch engine bookkeeping mutations onto the pipeline
+type: task
+description: |
+  Replace the dispatch invocation runner's subprocess-based shadow
+  mutations with direct pipeline calls, and fix the error-masking and
+  silent-swallowing failure handling around them.
+
+  Why: The invocation runner (src/agent-runtime/invocation.ts) shells
+  out to the kspec CLI for failure notes, timeout notes, and task
+  blocks. Three concrete defects documented in the originating
+  investigation: opaque errors (empty stderr, generic exited-non-zero
+  reports), error masking (an unguarded note-write failure in the
+  failure handler replaces the original invocation error, so the
+  engine retries on the wrong cause and the real error vanishes from
+  logs), and daemon loop-back overhead (daemon spawns a subprocess
+  that proxies an HTTP request back into the same daemon process).
+
+  What:
+  - Replace the subprocess mutation helpers (addTaskNote, blockTask
+    via runKspecCli) with direct pipeline calls. Daemon-hosted
+    dispatch passes the daemon's cache and pubsub capabilities, so
+    these mutations broadcast the same typed task events as the task
+    API; one-shot kspec agent run passes neither and degrades
+    cleanly per the pipeline contract.
+  - Guard the failure-handler mutations: the invocation's original
+    error is always the recorded outcome; a note or block write
+    failure is logged as its own entry with the underlying error
+    detail and never propagates in place of the invocation error.
+  - Retire the strict-flag conflation: bookkeeping mutation failures
+    are logged with detail in every execution mode — never silently
+    swallowed in one-shot mode, never thrown over the original error
+    in dispatch mode.
+  - Audit for any remaining CLI-subprocess mutation call sites in the
+    agent runtime (the investigation found them only in the
+    invocation runner) and migrate any found. The mutation lock file
+    passed to agent subprocesses for the agents' own kspec calls is
+    unaffected — that path is the command proxy's concern.
+
+  How: Unit-test the failure handler with an injected failing
+  pipeline: assert the recorded invocation outcome is the original
+  error and the log contains a separate mutation-failure entry.
+  Integration-test that an engine-written failure note produces a
+  tasks:updates typed event identical in schema to the task API's.
+
+  Covers: @dispatch-mutation-transparency ac-1, ac-2, ac-3, ac-4.
+spec_ref: "@dispatch-mutation-transparency"
+plan_ref: "@plan-dispatch-mutation-service"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-shared-mutation-pipeline"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - daemon
+  - reliability
+vcs_refs: []
+created_at: 2026-06-18T00:45:13.117Z
+todos: []

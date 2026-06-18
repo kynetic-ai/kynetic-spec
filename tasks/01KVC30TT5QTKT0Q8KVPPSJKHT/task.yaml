@@ -1,0 +1,62 @@
+_ulid: 01KVC30TT5QTKT0Q8KVPPSJKHT
+slugs:
+  - task-command-path-typed-events
+title: Route command-proxy execution through the pipeline with typed entity events
+type: task
+description: |
+  Make mutations that arrive through the daemon's command execution
+  endpoint (single commands and batches) emit the same typed
+  entity-scoped events as the entity REST routes.
+
+  Why: This is the core asymmetry the plan removes. The command-proxy
+  path is the dominant mutation path — every CLI invocation under a
+  running daemon and every dispatch agent's kspec call routes through
+  it — yet it broadcasts only a coarse command_executed event on the
+  command topic, which the web client does not subscribe to. The
+  client papers over the gap with delayed re-invalidation timers.
+
+  What:
+  - Emit typed entity events from the library mutation managers
+    (task, item, review, plan, inbox, triage writes) through the
+    pipeline when a daemon-provided pipeline context is present, so a
+    proxied command (for example task cancel) produces the same
+    tasks:updates typed event as the equivalent REST route.
+  - Derive affected entities at the mutation-manager level — the
+    manager knows the entity and change kind — rather than mapping
+    from command names. The command route's existing write-through
+    domain hints remain as the cache-consistency safety net.
+  - Batch execution: keep the existing single-commit, single
+    cache-update contract (@daemon-command-api ac-batch-support) and
+    broadcast one typed event per affected entity after the cache
+    reflects the batch result.
+  - Keep command_executed and batch_executed broadcasts unchanged on
+    the command topic for command-stream observers.
+  - Preserve @daemon-command-api ac-mutation-cache-update and
+    ac-no-recursive-command-proxy behavior: cache updated before
+    response, no loop-back through the command endpoint from inside
+    the daemon.
+
+  How: Equivalence tests are the acceptance proof: perform the same
+  logical mutation via the REST route and via POST /api/command,
+  capture both broadcasts, and assert identical topic, event type,
+  and payload schema. Extend the command-route integration tests in
+  the daemon test suite; verify batch event emission with a
+  multi-entity batch fixture.
+
+  Covers: @shared-mutation-pipeline ac-3, ac-5.
+spec_ref: "@shared-mutation-pipeline"
+plan_ref: "@plan-dispatch-mutation-service"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-shared-mutation-pipeline"
+context: []
+priority: 1
+tags:
+  - daemon
+  - cli
+  - events
+vcs_refs: []
+created_at: 2026-06-18T00:45:12.389Z
+todos: []

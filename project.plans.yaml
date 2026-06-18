@@ -1105,12 +1105,23 @@ plans:
     slugs:
       - plan-dispatch-mutation-service
     title: Shared Mutation and Event Service
-    status: approved
+    status: active
     approved_at: 2026-06-18T00:43:58.068Z
     branch: feat/ui-redesign
-    derived_specs: []
-    derived_tasks: []
-    notes_count: 5
+    derived_specs:
+      - "@shared-mutation-pipeline"
+      - "@dispatch-mutation-transparency"
+      - "@mutation-event-coverage"
+      - "@mutation-event-naming"
+      - "@ui-targeted-event-consumption"
+    derived_tasks:
+      - "@task-shared-mutation-pipeline"
+      - "@task-command-path-typed-events"
+      - "@task-missing-event-types"
+      - "@task-dispatch-engine-mutation-path"
+      - "@task-ui-targeted-consumption"
+      - "@task-mutation-service-spec-links"
+    notes_count: 6
     resource_summary:
       count: 0
       total_bytes: 0

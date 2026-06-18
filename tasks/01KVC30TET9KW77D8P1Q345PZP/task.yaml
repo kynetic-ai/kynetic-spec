@@ -1,0 +1,71 @@
+_ulid: 01KVC30TET9KW77D8P1Q345PZP
+slugs:
+  - task-shared-mutation-pipeline
+title: Extract the shared mutation pipeline and migrate entity routes onto it
+type: task
+description: |
+  Build the apply → shadow-commit → cache-write-through → broadcast
+  sequence as one shared service and migrate the daemon's entity REST
+  routes to call it instead of inlining the sequence per handler.
+
+  Why: The four-stage sequence is currently copy-pasted across every
+  daemon route handler (packages/daemon/src/routes/ — tasks.ts,
+  inbox.ts, triage.ts, reviews.ts, review-resources.ts,
+  plan-resources.ts), and other
+  mutation origins bypass parts of it entirely. One service is the
+  precondition for every other task in this plan and for later
+  daemon-initiated writes (the spec-revert mutation class routes
+  through this service).
+
+  What:
+  - Implement the pipeline in the library layer (src/, importable by
+    both the daemon and the CLI): a mutation operation declares the
+    affected entity domain(s), an apply function, and typed event
+    descriptor(s); the pipeline performs apply, commitIfShadow, cache
+    write-through, then broadcast — in that order, so the broadcast is
+    never observable before the cache reflects the change.
+  - Cache and pubsub are optional injected capabilities. The daemon
+    constructs the pipeline with its entity cache and pubsub at
+    project registration; direct CLI execution constructs it with
+    neither, and both stages no-op without error — for single
+    mutations and for atomic batches alike (a no-daemon batch still
+    produces exactly one shadow commit).
+  - Native error propagation: stage failures surface the underlying
+    error message to the caller — no exit-code-only or empty-stderr
+    failure shapes.
+  - Migrate the existing entity REST routes (task transitions, inbox
+    create/delete, triage record/override/act, review threads,
+    replies, resolve/reopen, verdicts, checks, lifecycle, resources,
+    plan resources) onto the service. Existing topics, event types,
+    and payload schemas must be preserved where they already exist;
+    the plan-resource routes additionally adopt the plan-domain event
+    introduced by this plan. This task changes the plumbing, not the
+    vocabulary for domains that already had typed events.
+  - Reuse the existing write-through skip flag so the watcher does not
+    double-reload domains the pipeline already updated.
+
+  How: Follow the route handler sequence documented at
+  packages/daemon/src/routes/tasks.ts (mutateTask → commitIfShadow →
+  writeThrough → broadcast) as the extraction template. Thread the
+  pipeline through the project-context middleware so handlers receive
+  a ready instance. Add unit tests for stage ordering,
+  optional-capability degradation (single mutations and atomic
+  batches), and failure propagation; run the existing route test
+  suites to prove payload-schema preservation.
+
+  Covers: @shared-mutation-pipeline ac-1, ac-2, ac-4, ac-6, ac-7.
+spec_ref: "@shared-mutation-pipeline"
+plan_ref: "@plan-dispatch-mutation-service"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+  - infra
+  - implementation
+vcs_refs: []
+created_at: 2026-06-18T00:45:12.026Z
+todos: []

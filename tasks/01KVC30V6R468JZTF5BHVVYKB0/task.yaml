@@ -1,0 +1,78 @@
+_ulid: 01KVC30V6R468JZTF5BHVVYKB0
+slugs:
+  - task-missing-event-types
+title: Emit the missing entity and plan-resource event types
+type: task
+description: |
+  Fill the holes in the entity event vocabulary: review creation,
+  full task-mutation coverage, plan-local resource changes, and
+  emission on the spec-item and plan topics that clients need for
+  resource/state freshness.
+
+  Why: Today only five task transitions (start, note, submit,
+  complete, block) emit task_updated; review creation emits nothing
+  (creation is CLI-only); the items:updates topic is subscribed by
+  the web client but no daemon code ever broadcasts on it; and
+  plan-resource upload/delete routes commit shadow state without a
+  plan-domain typed event, so plan resource freshness still relies on
+  file-change fallback.
+
+  What:
+  - review_created event on the reviews topic when a review record is
+    created through any interface, identifying the review and its
+    subject.
+  - Task events for every task mutation — creation, all transitions
+    (including cancel, reset, unblock), and field changes via task
+    set / task note — with prior and new status on transitions and
+    display-title enrichment per the established enriched-payload
+    contract (@ui-api-aggregation ac-4).
+  - items:updates emission for spec item creation, change, and
+    removal (item add, item set, item ac mutations, trait changes,
+    removal), with the canonical item identifier and change kind in
+    the payload.
+  - plans:updates emission for plan-local resource add, replace, and
+    remove mutations, using a past-tense event type such as
+    plan_resource_changed and a payload that identifies the canonical
+    plan, resource id, and change kind (`added`, `replaced`, or
+    `removed`). Add the topic to the shared typed topic definitions
+    and the web client's subscription list; the file watcher remains
+    only a fallback, not the freshness path for these route-driven
+    mutations.
+  - Conform the full vocabulary to the naming decision: every
+    entity-scoped event type in past-tense subject_change form on its
+    owning domain topic, and no second topic carrying entity events
+    for the same domain.
+  - Record the two reserved event families (plan-revision events on
+    the plans topic, coverage-state events on the spec-items topic)
+    as named reservations in the shared typed event definitions
+    (packages/shared/src/websocket.ts) — names and owning topics
+    only, no payloads or semantics.
+
+  How: With the pipeline in place from the prior tasks, these are
+  event-descriptor additions at the mutation-manager and route call
+  sites plus typed payload definitions in the shared package.
+  Enumerate the vocabulary in a test that asserts naming-form
+  conformance and topic ownership. Verify items:updates emission
+  end-to-end with a subscribed test client and a proxied item
+  mutation; verify plans:updates emission with a plan-resource
+  upload/delete route fixture and a subscribed client.
+
+  Covers: @mutation-event-coverage ac-1, ac-2, ac-3, ac-4, ac-5.
+  @mutation-event-naming ac-1, ac-2, ac-3. @ui-api-aggregation ac-4
+  (for the new event types).
+spec_ref: "@mutation-event-coverage"
+plan_ref: "@plan-dispatch-mutation-service"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-command-path-typed-events"
+context: []
+priority: 1
+tags:
+  - daemon
+  - events
+  - implementation
+vcs_refs: []
+created_at: 2026-06-18T00:45:12.792Z
+todos: []

@@ -1,0 +1,71 @@
+_ulid: 01KVC30VVC1G051BP2QT5RPX3R
+slugs:
+  - task-ui-targeted-consumption
+title: Switch the web client to targeted, payload-driven event consumption
+type: task
+description: |
+  Replace wholesale domain invalidation and the delayed-invalidation
+  timers with targeted refresh driven by typed event payloads.
+
+  Why: The client's invalidation wiring
+  (packages/web-ui/src/lib/query/ws-invalidation.ts) ignores the
+  typed payloads that already arrive and wholesale-invalidates whole
+  domains, and it schedules 650ms and 1500ms delayed re-invalidations
+  (FILE_WATCHER_INVALIDATION_DELAYS_MS) on file-change events to
+  outrun the server's cache reload. With typed events now emitted
+  from every mutation origin and the server guaranteeing broadcasts
+  fire only after the cache reload completes (@daemon-entity-cache
+  ac-broadcast-after-reload, ac-write-through), both compensations
+  are obsolete.
+
+  What:
+  - Map typed entity events to targeted query handling: refresh the
+    affected entity's detail data and the list/aggregate views that
+    include it, keyed off the canonical identifier in the payload;
+    stop invalidating unrelated domain bundles (today a task file
+    event invalidates tasks, validation, and session-context
+    wholesale).
+  - Consume the new event types: items:updates spec-item events
+    (subscription already exists), plans:updates plan-resource
+    events (new subscription), review_created, and the expanded task
+    event coverage.
+  - Remove the delayed double-invalidation: every event triggers
+    exactly one immediate refresh pass; file-change fallback events
+    trigger a single immediate refresh of their mapped domains.
+  - The client continues not subscribing to the command topic;
+    entity freshness must not depend on it.
+  - Preserve the enriched-payload fast path from @ui-data-freshness
+    ac-3 (in-place cache update when the payload carries sufficient
+    data) and the path-independence contract of @ui-data-freshness
+    ac-10.
+
+  How: Rework the handler map in ws-invalidation.ts from topic-level
+  wholesale invalidation to event-type + payload dispatch, and add
+  `plans:updates` subscription handling for plan-resource events that
+  refresh the affected plan detail/list/resource queries without
+  touching unrelated domains. Unit-test the mapping (event in, exact
+  query keys refreshed, nothing else). E2E (Playwright,
+  ephemeral-port daemon fixture): open the task board, perform a
+  CLI-proxied mutation, and assert the view updates without reload;
+  upload/delete a plan resource through the API and assert the plan
+  view updates from the typed event path; assert no fixed-delay
+  re-invalidation timers are scheduled.
+
+  Covers: @ui-targeted-event-consumption ac-1, ac-2, ac-3, ac-4.
+spec_ref: "@ui-targeted-event-consumption"
+plan_ref: "@plan-dispatch-mutation-service"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-command-path-typed-events"
+  - "@task-missing-event-types"
+context: []
+priority: 1
+tags:
+  - web-ui
+  - events
+  - implementation
+vcs_refs: []
+created_at: 2026-06-18T00:45:13.452Z
+todos: []
