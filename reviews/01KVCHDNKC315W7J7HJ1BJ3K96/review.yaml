@@ -155,6 +155,34 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-18T05:13:07.986Z
+  - _ulid: 01KVCJCJ4R899PB1K6NTT9C8HV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVCJCHX963BD2875V5509SN1
+    timestamp: 2026-06-18T05:13:45.368Z
+  - _ulid: 01KVCJCN1YJ218FX0EH47QTD4E
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVCJCMTMGK51W7SXQBN8T0ZJ
+    timestamp: 2026-06-18T05:13:48.350Z
+  - _ulid: 01KVCJCR0HKCXZF500R905DMWT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVCJCQS810D3P5AV65X3V5MX
+    timestamp: 2026-06-18T05:13:51.377Z
+  - _ulid: 01KVCJCTVYN66RKW75RWKY8NZ8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVCJCTMMMJXEHG9V7XZ1VFMC
+    timestamp: 2026-06-18T05:13:54.302Z
 examined_commit: bfde105acd982fb9424afb538d18769e20e1d64e
 external_links: []
 lifecycle_state: open
@@ -164,8 +192,97 @@ subject:
   content_hash: ""
   ref: "@01KVC30TET9KW77D8P1Q345PZP"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVCJCHX963BD2875V5509SN1
+    anchor:
+      type: code
+      commit: bfde105acd982fb9424afb538d18769e20e1d64e
+      line_end: 588
+      line_start: 565
+      path: packages/daemon/src/routes/triage.ts
+      side: head
+    entries:
+      - _ulid: 01KVCJCHX9ARWEZH7J5WG2RBXC
+        author: Jacob Chapel
+        body: "MUST-FIX: `executeTriageAction(record, ctx)` performs the promote/delete/spec-gap side
+          effects before this route enters `runRouteMutation`; the pipeline `apply` only saves the
+          triage record. That means the shared service is not actually performing the full apply ->
+          commit -> cache -> broadcast sequence for triage act. If the later `saveTriageRecord`
+          apply step, shadow commit, or write-through fails, task/inbox/meta mutations from
+          `executeTriageAction` have already changed disk state outside the pipeline and can be left
+          uncommitted and unrefreshed. This violates @shared-mutation-pipeline ac-1/ac-5/ac-6 and
+          the task requirement to migrate triage act onto the shared pipeline. Move the full triage
+          action plus record status update into the pipeline apply stage, with one commit and
+          post-apply descriptors derived from the resulting mutation."
+        created_at: 2026-06-18T05:13:45.129Z
+    kind: blocker
+  - _ulid: 01KVCJCMTMGK51W7SXQBN8T0ZJ
+    anchor:
+      type: code
+      commit: bfde105acd982fb9424afb538d18769e20e1d64e
+      line_end: 340
+      line_start: 321
+      path: packages/daemon/src/routes/review-resources.ts
+      side: head
+    entries:
+      - _ulid: 01KVCJCMTM5T4KHVQN9P58ZHC4
+        author: Jacob Chapel
+        body: "MUST-FIX: review resource upload is not migrated onto the pipeline. `addReviewResource()`
+          copies bytes, updates `resources.yaml`, and re-saves the review before `runRouteMutation`
+          is called, then the pipeline receives `apply: () => undefined`. A failure in the later
+          commit/cache/broadcast stages now reports after the resource mutation already happened
+          outside the shared service, and the service cannot enforce or test the requested apply ->
+          commit -> cache -> broadcast sequence for this route. The DELETE path has the same shape
+          with `removeReviewResource()` before a no-op apply. Put the resource add/remove operation
+          itself inside the pipeline apply callback and derive the commit/write-through/event
+          descriptors from its result."
+        created_at: 2026-06-18T05:13:48.116Z
+    kind: blocker
+  - _ulid: 01KVCJCQS810D3P5AV65X3V5MX
+    anchor:
+      type: code
+      commit: bfde105acd982fb9424afb538d18769e20e1d64e
+      line_end: 552
+      line_start: 517
+      path: packages/daemon/src/routes/plan-resources.ts
+      side: head
+    entries:
+      - _ulid: 01KVCJCQS84BQJP2764Z0F5034
+        author: Jacob Chapel
+        body: "MUST-FIX: plan resource upload still performs material mutation work before the pipeline owns
+          apply. The route renames uploaded bytes into the plan resource tree and may remove the
+          previous file before calling `runRouteMutation`; the pipeline apply only writes the
+          manifest. DELETE has the same issue at the file removal before its pipeline call. These
+          file changes are part of the logical entity mutation, so a later
+          manifest/commit/cache/broadcast failure can leave file state changed outside the shared
+          service. This does not satisfy the task requirement that migrated entity routes call one
+          shared apply -> shadow-commit -> cache-write-through -> broadcast pipeline. Move the file
+          mutation and manifest update into the pipeline apply operation (or a helper called from
+          it) so plan resources are migrated as a single operation."
+        created_at: 2026-06-18T05:13:51.145Z
+    kind: blocker
+  - _ulid: 01KVCJCTMMMJXEHG9V7XZ1VFMC
+    entries:
+      - _ulid: 01KVCJCTMMBFB76V6P5Z2HC3V6
+        author: Jacob Chapel
+        body: "Evidence log: Files read included src/mutation-pipeline.ts,
+          packages/daemon/src/routes/{mutation-pipeline,tasks,inbox,triage,reviews,review-resources\
+          ,plan-resources}.ts, packages/daemon/src/server.ts, packages/shared/src/websocket.ts,
+          tests/mutation-pipeline.test.ts, tests/daemon-api/plan-resources.test.ts,
+          src/triage/actions.ts, src/parser/task-data-manager.ts,
+          src/parser/review-resource-manager.ts, and old/base versions of migrated routes. Commands
+          run: kspec task get, kspec item get @shared-mutation-pipeline, git diff/stat/name-only,
+          kspec validate refs/alignment/completeness with --warnings-ok, npm run format:check, npm
+          run lint -- --quiet, npx oxlint changed files, npm run typecheck, npm test. Claims
+          verified: worker's quality-gate claim was verified independently; event payload
+          preservation was spot-checked against pre-refactor route broadcasts and focused route
+          suites passed; failure/ordering paths were reviewed manually. Categories searched:
+          correctness, AC alignment, error handling, test quality, edge cases, integration.
+          Shared/package guidance neutrality: not applicable; no shared guidance surfaces were
+          changed."
+        created_at: 2026-06-18T05:13:54.068Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-18T04:56:53.100Z
-updated_at: 2026-06-18T05:13:07.763Z
+updated_at: 2026-06-18T05:13:54.068Z
 notes: []

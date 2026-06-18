@@ -27133,7 +27133,7 @@ reviews:
   - _ulid: 01KVCHDNKC315W7J7HJ1BJ3K96
     slugs: []
     title: Review shared mutation pipeline
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 8
     examined_commit: bfde105acd982fb9424afb538d18769e20e1d64e
@@ -27144,8 +27144,8 @@ reviews:
       content_hash: ""
       ref: "@01KVC30TET9KW77D8P1Q345PZP"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 4
+    unresolved_blocker_count: 3
     verdict_count: 0
     created_at: 2026-06-18T04:56:53.100Z
-    updated_at: 2026-06-18T05:13:07.763Z
+    updated_at: 2026-06-18T05:13:54.068Z
