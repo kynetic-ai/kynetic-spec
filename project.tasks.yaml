@@ -32673,7 +32673,7 @@
   type: task
   spec_ref: "@plan-revisions"
   plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -32685,6 +32685,7 @@
   todos_count: 0
   created_at: 2026-06-18T22:21:51.507Z
   started_at: 2026-06-18T23:10:19.289Z
+  submitted_at: 2026-06-18T23:46:50.270Z
   automation: eligible
 - _ulid: 01KVED78FQ4APC9E42P8EB23ZP
   slugs:
