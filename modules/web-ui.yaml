@@ -1148,6 +1148,9 @@ features:
               report failures with their underlying detail. A bookkeeping failure
               is always subordinate to the agent outcome it records: it never
               replaces or hides that outcome.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to:
