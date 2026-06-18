@@ -28,7 +28,6 @@ import {
   kspec,
   initGitRepo,
   readTestOutput,
-  readTestOutputSync,
   seedSplitTask,
   waitForStartup,
 } from "./helpers/cli.js";
@@ -46,6 +45,20 @@ import { registerAdapter } from "../src/agents/adapters.js";
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
+
+function captureTaskBookkeeping(
+  notes: Array<{ taskRef: string; note: string }>,
+  blocks: Array<{ taskRef: string; reason: string }> = [],
+) {
+  return {
+    addTaskNote: async (taskRef: string, note: string) => {
+      notes.push({ taskRef, note });
+    },
+    blockTask: async (taskRef: string, reason: string) => {
+      blocks.push({ taskRef, reason });
+    },
+  };
+}
 
 /**
  * Build a lightweight mock workspace metadata object for tests that need to
@@ -1544,38 +1557,33 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     });
     await setupProjectWithAgents(testDir, [agentBadAdapter]);
 
-    // Set up capture file to track kspec CLI calls
-    const captureFile = path.join(testDir, "kspec-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+      taskBookkeeping: {
+        addTaskNote: async (taskRef, note) => {
+          notes.push({ taskRef, note });
+        },
+        blockTask: async () => undefined,
+      },
+    });
+    (engine as unknown as { running: boolean }).running = true;
 
-    try {
-      const engine = new DispatchEngine({
-        projectDir: testDir,
-        specDir: testDir,
-        kspecCliPath: MOCK_KSPEC_CLI,
-        coalesceWindowMs: 0,
-      });
-      (engine as unknown as { running: boolean }).running = true;
+    type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+    const taskRef = `@${testUlid("TASK")}`;
+    const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
+    const entry = { agent: agentBadAdapter, change, retryCount: 0, nextRetryAt: 0 };
 
-      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
-      const taskRef = `@${testUlid("TASK")}`;
-      const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
-      const entry = { agent: agentBadAdapter, change, retryCount: 0, nextRetryAt: 0 };
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    await (engine as unknown as EngineInternal)._spawnInvocation(agentBadAdapter, entry);
+    vi.restoreAllMocks();
 
-      vi.spyOn(console, "error").mockImplementation(() => {});
-      await (engine as unknown as EngineInternal)._spawnInvocation(agentBadAdapter, entry);
-      vi.restoreAllMocks();
-
-      // Verify task note was added
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
-        args: string[];
-      }>;
-      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
-      expect(noteCall).toBeTruthy();
-      expect(noteCall!.args.join(" ")).toContain("AGENT-SKIP");
-    } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
-    }
+    expect(notes).toHaveLength(1);
+    expect(notes[0]?.taskRef).toBe(taskRef);
+    expect(notes[0]?.note).toContain("AGENT-SKIP");
   });
 
   // AC: @dispatch-invocation-worktree-isolation ac-4
@@ -1589,15 +1597,22 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       "utf-8",
     );
 
-    const captureFile = path.join(testDir, "kspec-workspace-failure-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
-
+    const notes: Array<{ taskRef: string; note: string }> = [];
+    const blocks: Array<{ taskRef: string; reason: string }> = [];
     try {
       const engine = new DispatchEngine({
         projectDir: testDir,
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: {
+          addTaskNote: async (taskRef, note) => {
+            notes.push({ taskRef, note });
+          },
+          blockTask: async (taskRef, reason) => {
+            blocks.push({ taskRef, reason });
+          },
+        },
       });
       (engine as unknown as { running: boolean }).running = true;
       const taskRef = `@${testUlid("TASK", 33)}`;
@@ -1612,25 +1627,16 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
 
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
-        args: string[];
-      }>;
-      const noteCall = calls.find(
-        (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
-      );
-      const blockCall = calls.find(
-        (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
-      );
-
-      expect(noteCall).toBeDefined();
-      expect(noteCall!.args.join(" ")).toContain("DISPATCH-WORKSPACE");
-      expect(blockCall).toBeDefined();
-      expect(blockCall!.args.join(" ")).toContain("Dispatch workspace provisioning failed");
-      expect(blockCall!.args.join(" ")).toContain(
+      expect(notes).toHaveLength(1);
+      expect(notes[0]?.taskRef).toBe(taskRef);
+      expect(notes[0]?.note).toContain("DISPATCH-WORKSPACE");
+      expect(blocks).toHaveLength(1);
+      expect(blocks[0]?.taskRef).toBe(taskRef);
+      expect(blocks[0]?.reason).toContain("Dispatch workspace provisioning failed");
+      expect(blocks[0]?.reason).toContain(
         "Set dispatch.worktree_root to a directory outside .kspec/.",
       );
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
       vi.restoreAllMocks();
     }
   });
@@ -1646,16 +1652,23 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       "utf-8",
     );
 
-    const captureFile = path.join(testDir, "kspec-workspace-block-failure-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
-    process.env.KSPEC_CAPTURE_FAIL_ON = "task:block";
-
+    const notes: Array<{ taskRef: string; note: string }> = [];
+    const blockAttempts: Array<{ taskRef: string; reason: string }> = [];
     try {
       const engine = new DispatchEngine({
         projectDir: testDir,
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: {
+          addTaskNote: async (taskRef, note) => {
+            notes.push({ taskRef, note });
+          },
+          blockTask: async (taskRef, reason) => {
+            blockAttempts.push({ taskRef, reason });
+            throw new Error("block writer failed");
+          },
+        },
       });
       (engine as unknown as { running: boolean }).running = true;
       const taskRef = `@${testUlid("TASK", 34)}`;
@@ -1672,21 +1685,11 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(runSpy).not.toHaveBeenCalled();
       expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to block task"));
 
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
-        args: string[];
-      }>;
-      const noteCall = calls.find(
-        (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
-      );
-      const blockCall = calls.find(
-        (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
-      );
-
-      expect(noteCall).toBeDefined();
-      expect(blockCall).toBeDefined();
+      expect(notes).toHaveLength(1);
+      expect(notes[0]?.taskRef).toBe(taskRef);
+      expect(blockAttempts).toHaveLength(1);
+      expect(blockAttempts[0]?.taskRef).toBe(taskRef);
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
-      delete process.env.KSPEC_CAPTURE_FAIL_ON;
       vi.restoreAllMocks();
     }
   });
@@ -1702,16 +1705,23 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       "utf-8",
     );
 
-    const captureFile = path.join(testDir, "kspec-workspace-note-failure-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
-    process.env.KSPEC_CAPTURE_FAIL_ON = "task:note";
-
+    const noteAttempts: Array<{ taskRef: string; note: string }> = [];
+    const blocks: Array<{ taskRef: string; reason: string }> = [];
     try {
       const engine = new DispatchEngine({
         projectDir: testDir,
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: {
+          addTaskNote: async (taskRef, note) => {
+            noteAttempts.push({ taskRef, note });
+            throw new Error("note writer failed");
+          },
+          blockTask: async (taskRef, reason) => {
+            blocks.push({ taskRef, reason });
+          },
+        },
       });
       (engine as unknown as { running: boolean }).running = true;
       const taskRef = `@${testUlid("TASK", 35)}`;
@@ -1727,22 +1737,12 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
 
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
-        args: string[];
-      }>;
-      const noteCall = calls.find(
-        (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
-      );
-      const blockCall = calls.find(
-        (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
-      );
-
-      expect(noteCall).toBeDefined();
-      expect(blockCall).toBeDefined();
-      expect(blockCall!.args.join(" ")).toContain("Dispatch workspace provisioning failed");
+      expect(noteAttempts).toHaveLength(1);
+      expect(noteAttempts[0]?.taskRef).toBe(taskRef);
+      expect(blocks).toHaveLength(1);
+      expect(blocks[0]?.taskRef).toBe(taskRef);
+      expect(blocks[0]?.reason).toContain("Dispatch workspace provisioning failed");
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
-      delete process.env.KSPEC_CAPTURE_FAIL_ON;
       vi.restoreAllMocks();
     }
   });
@@ -1850,14 +1850,14 @@ describe("Dispatch runner resolution preflight", () => {
     });
     await setupProjectWithAgents(testDir, [agentMissingRunner]);
 
-    const captureFile = path.join(testDir, "kspec-runner-preflight-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
     try {
       const engine = new DispatchEngine({
         projectDir: testDir,
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: captureTaskBookkeeping(notes),
       });
       (engine as unknown as { running: boolean }).running = true;
 
@@ -1891,10 +1891,9 @@ describe("Dispatch runner resolution preflight", () => {
 
       // Dispatch recorded the resolver guidance on the task so the next
       // operator can find both layers + the agent definition.
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      const noteCall = notes.find((note) => note.taskRef === taskRef);
       expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
-      const noteText = noteCall!.args.join(" ");
+      const noteText = noteCall!.note;
       expect(noteText).toContain("AGENT-SKIP");
       expect(noteText).toContain("absent-runner");
       expect(noteText).toContain("unknown_runner");
@@ -1902,7 +1901,6 @@ describe("Dispatch runner resolution preflight", () => {
       errorSpy.mockRestore();
       runSpy.mockRestore();
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
       vi.restoreAllMocks();
     }
   });
@@ -1927,8 +1925,7 @@ describe("Dispatch runner resolution preflight", () => {
 
     const missingExecutable = path.join(testDir, "no-such-runner-binary");
 
-    const captureFile = path.join(testDir, "kspec-runner-unspawnable-preflight-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
     try {
       vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
         project: { config: null, path: "", loaded: false, issues: null },
@@ -1949,6 +1946,7 @@ describe("Dispatch runner resolution preflight", () => {
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: captureTaskBookkeeping(notes),
       });
       (engine as unknown as { running: boolean }).running = true;
 
@@ -1978,10 +1976,9 @@ describe("Dispatch runner resolution preflight", () => {
       expect(errorMessage).toContain("unspawnable_command");
       expect(errorMessage).toContain(missingExecutable);
 
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      const noteCall = notes.find((note) => note.taskRef === taskRef);
       expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
-      const noteText = noteCall!.args.join(" ");
+      const noteText = noteCall!.note;
       expect(noteText).toContain("AGENT-SKIP");
       expect(noteText).toContain("unspawnable_command");
       expect(noteText).toContain(missingExecutable);
@@ -1989,7 +1986,6 @@ describe("Dispatch runner resolution preflight", () => {
       errorSpy.mockRestore();
       runSpy.mockRestore();
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
       vi.restoreAllMocks();
     }
   });
@@ -2194,8 +2190,7 @@ describe("Dispatch runner resolution preflight", () => {
     });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const captureFile = path.join(testDir, "kspec-runner-invalid-adapter-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
     try {
       vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
         project: { config: null, path: "", loaded: false, issues: null },
@@ -2215,6 +2210,7 @@ describe("Dispatch runner resolution preflight", () => {
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: captureTaskBookkeeping(notes),
       });
       (engine as unknown as { running: boolean }).running = true;
 
@@ -2240,10 +2236,9 @@ describe("Dispatch runner resolution preflight", () => {
       expect(errorMessage).toContain("runner-pointing-at-missing-adapter");
       expect(errorMessage).toContain("never-registered-adapter-id-xyz");
 
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      const noteCall = notes.find((note) => note.taskRef === taskRef);
       expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
-      const noteText = noteCall!.args.join(" ");
+      const noteText = noteCall!.note;
       expect(noteText).toContain("AGENT-SKIP");
       expect(noteText).toContain("invalid_adapter");
       expect(noteText).toContain("runner-pointing-at-missing-adapter");
@@ -2252,7 +2247,6 @@ describe("Dispatch runner resolution preflight", () => {
       errorSpy.mockRestore();
       runSpy.mockRestore();
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
       vi.restoreAllMocks();
     }
   });
@@ -2279,8 +2273,7 @@ describe("Dispatch runner resolution preflight", () => {
     });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const captureFile = path.join(testDir, "kspec-runner-missing-secret-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
     try {
       vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
         project: { config: null, path: "", loaded: false, issues: null },
@@ -2305,6 +2298,7 @@ describe("Dispatch runner resolution preflight", () => {
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: captureTaskBookkeeping(notes),
       });
       (engine as unknown as { running: boolean }).running = true;
 
@@ -2330,10 +2324,9 @@ describe("Dispatch runner resolution preflight", () => {
       expect(errorMessage).toContain("runner-with-required-secret");
       expect(errorMessage).toContain(missingSecretEnvName);
 
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      const noteCall = notes.find((note) => note.taskRef === taskRef);
       expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
-      const noteText = noteCall!.args.join(" ");
+      const noteText = noteCall!.note;
       expect(noteText).toContain("AGENT-SKIP");
       expect(noteText).toContain("missing_secret");
       expect(noteText).toContain("runner-with-required-secret");
@@ -2342,7 +2335,6 @@ describe("Dispatch runner resolution preflight", () => {
       errorSpy.mockRestore();
       runSpy.mockRestore();
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
       delete process.env[missingSecretEnvName];
       vi.restoreAllMocks();
     }
@@ -2600,8 +2592,7 @@ describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
 
     const sysConfigPath = path.join(testDir, "fake-system-runners.yaml");
 
-    const captureFile = path.join(testDir, "kspec-dispatch-registry-load-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
     try {
       // Simulate the loader returning a layer-load failure rather than a
       // healthy registry. Real disk path would also work, but the spy keeps
@@ -2624,6 +2615,7 @@ describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: captureTaskBookkeeping(notes),
       });
       (engine as unknown as { running: boolean }).running = true;
 
@@ -2657,10 +2649,9 @@ describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
 
       // Task note carries the stable reason and the failing config path so
       // operators can find which file to fix without rerunning the validator.
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      const noteCall = notes.find((note) => note.taskRef === taskRef);
       expect(noteCall, "expected dispatch to add an AGENT-SKIP task note").toBeDefined();
-      const noteText = noteCall!.args.join(" ");
+      const noteText = noteCall!.note;
       expect(noteText).toContain("AGENT-SKIP");
       expect(noteText).toContain("runner_registry_unavailable");
       expect(noteText).toContain(sysConfigPath);
@@ -2669,7 +2660,6 @@ describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
       errorSpy.mockRestore();
       runSpy.mockRestore();
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
       vi.restoreAllMocks();
     }
   });
@@ -2690,8 +2680,7 @@ describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
 
     const projectConfigPath = path.join(testDir, "fake-project-runners.yaml");
 
-    const captureFile = path.join(testDir, "kspec-dispatch-mixed-layer-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
     try {
       // System layer succeeds and contributes a runner with the agent's name.
       // Project layer fails to load. The dispatch preflight must still block.
@@ -2742,6 +2731,7 @@ describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: captureTaskBookkeeping(notes),
       });
       (engine as unknown as { running: boolean }).running = true;
 
@@ -2770,10 +2760,9 @@ describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
       expect(errorMessage).toContain("runner_registry_unavailable");
 
       // Task note carries the failing layer + config path.
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      const noteCall = notes.find((note) => note.taskRef === taskRef);
       expect(noteCall).toBeDefined();
-      const noteText = noteCall!.args.join(" ");
+      const noteText = noteCall!.note;
       expect(noteText).toContain("runner_registry_unavailable");
       expect(noteText).toContain(projectConfigPath);
       expect(noteText).toContain("project=");
@@ -2781,7 +2770,6 @@ describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
       errorSpy.mockRestore();
       runSpy.mockRestore();
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
       vi.restoreAllMocks();
     }
   });
@@ -2798,8 +2786,7 @@ describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
 
     const projectConfigPath = path.join(testDir, "fake-project-runners.yaml");
 
-    const captureFile = path.join(testDir, "kspec-dispatch-project-load-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
     try {
       vi.spyOn(runnerConfigModule, "resolveEffectiveRunners").mockResolvedValue({
         project: {
@@ -2817,6 +2804,7 @@ describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: captureTaskBookkeeping(notes),
       });
       (engine as unknown as { running: boolean }).running = true;
 
@@ -2835,17 +2823,15 @@ describe("Dispatch preflight surfaces runner_registry_unavailable", () => {
 
       expect(spawned).toBe(false);
 
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      const noteCall = notes.find((note) => note.taskRef === taskRef);
       expect(noteCall).toBeDefined();
-      const noteText = noteCall!.args.join(" ");
+      const noteText = noteCall!.note;
       expect(noteText).toContain("runner_registry_unavailable");
       expect(noteText).toContain(projectConfigPath);
       expect(noteText).toContain("project=");
 
       errorSpy.mockRestore();
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
       vi.restoreAllMocks();
     }
   });
@@ -4453,8 +4439,7 @@ describe("Dispatch role workflow entrypoints", () => {
       "utf-8",
     );
 
-    const captureFile = path.join(testDir, "kspec-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
 
     try {
       const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
@@ -4469,6 +4454,7 @@ describe("Dispatch role workflow entrypoints", () => {
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: captureTaskBookkeeping(notes),
       });
 
       type EngineInternal = {
@@ -4519,14 +4505,11 @@ describe("Dispatch role workflow entrypoints", () => {
       expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to build prompt"));
       expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
 
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
-        args: string[];
-      }>;
-      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      const noteCall = notes.find((note) => note.taskRef === taskRef);
       expect(noteCall).toBeTruthy();
-      expect(noteCall!.args.join(" ")).toContain("DISPATCH-PROMPT");
+      expect(noteCall!.note).toContain("DISPATCH-PROMPT");
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
     }
   });
 
@@ -4550,8 +4533,7 @@ describe("Dispatch role workflow entrypoints", () => {
       "utf-8",
     );
 
-    const captureFile = path.join(testDir, "kspec-capture.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
 
     const originalProvision = workspaceModule.provisionDispatchWorkspace;
 
@@ -4584,6 +4566,7 @@ describe("Dispatch role workflow entrypoints", () => {
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
         coalesceWindowMs: 0,
+        taskBookkeeping: captureTaskBookkeeping(notes),
       });
 
       type EngineInternal = {
@@ -4635,16 +4618,13 @@ describe("Dispatch role workflow entrypoints", () => {
       expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to build prompt"));
       expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
 
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
-        args: string[];
-      }>;
-      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      const noteCall = notes.find((note) => note.taskRef === taskRef);
       expect(noteCall).toBeTruthy();
-      expect(noteCall!.args.join(" ")).toContain("DISPATCH-PROMPT");
-      expect(noteCall!.args.join(" ")).toContain('publication mode "broken-mode" is invalid');
-      expect(noteCall!.args.join(" ")).toContain("publicationMode is pull_request or manual_merge");
+      expect(noteCall!.note).toContain("DISPATCH-PROMPT");
+      expect(noteCall!.note).toContain('publication mode "broken-mode" is invalid');
+      expect(noteCall!.note).toContain("publicationMode is pull_request or manual_merge");
     } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
     }
   });
 });

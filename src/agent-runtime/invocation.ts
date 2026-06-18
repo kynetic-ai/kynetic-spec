@@ -21,10 +21,6 @@
  */
 
 import * as path from "node:path";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
-
-const execFileAsync = promisify(execFile);
 import { fileURLToPath } from "node:url";
 import { ulid } from "ulid";
 import type { Agent, SessionMode } from "../schema/meta.js";
@@ -51,6 +47,12 @@ import {
 } from "../sessions/store.js";
 import type { SessionEventInput, SessionMetadata, SessionTrigger } from "../sessions/types.js";
 import type { SessionHandle, SessionRegistry, SessionState } from "./session-registry.js";
+import type { MutationCacheCapability, MutationPubSubCapability } from "../mutation-pipeline.js";
+import {
+  createTaskBookkeepingMutations,
+  describeBookkeepingError,
+  type TaskBookkeepingMutations,
+} from "./task-bookkeeping.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -282,6 +284,14 @@ export interface InvocationOptions {
   env?: Record<string, string>;
   /** Shared lock file used to serialize shadow mutations across dispatch worktrees */
   mutationLockFile?: string;
+  /** Optional cache capability used by direct bookkeeping mutations. */
+  mutationCache?: MutationCacheCapability | null;
+  /** Optional pubsub capability used by direct bookkeeping mutations. */
+  mutationPubSub?: MutationPubSubCapability | null;
+  /** Project path attached to direct bookkeeping broadcasts. */
+  mutationProjectPath?: string;
+  /** Test seam for injecting direct bookkeeping mutations. */
+  taskBookkeeping?: TaskBookkeepingMutations;
   /** Called for each streaming update from the agent */
   onUpdate?: (update: SessionUpdate) => void;
   /**
@@ -386,109 +396,6 @@ interface InvocationState {
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-/**
- * Run a kspec CLI command asynchronously.
- *
- * `env` is overlaid on top of the inherited host `process.env`. When
- * `stripFromHostEnv` is supplied, those keys are removed from the host
- * inheritance *before* the overlay — used by mutation helpers to drop
- * runner-resolved `env.secrets` so a `user_env`-sourced binding cannot
- * leak from the parent's process.env into kspec subprocesses.
- *
- * AC: @agent-dispatch-engine ac-28 — async to avoid blocking the event loop
- * AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
- * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
- */
-async function runKspecCli(
-  args: string[],
-  cwd: string,
-  kspecCliPath: string,
-  env?: Record<string, string>,
-  stripFromHostEnv?: readonly string[],
-): Promise<{ stdout: string; stderr: string; status: number | null }> {
-  try {
-    let spawnEnv: NodeJS.ProcessEnv;
-    if (stripFromHostEnv && stripFromHostEnv.length > 0) {
-      const sanitizedHost: NodeJS.ProcessEnv = { ...process.env };
-      for (const key of stripFromHostEnv) {
-        delete sanitizedHost[key];
-      }
-      spawnEnv = env ? { ...sanitizedHost, ...env } : sanitizedHost;
-    } else {
-      spawnEnv = env ? { ...process.env, ...env } : process.env;
-    }
-    const result = await execFileAsync(process.execPath, [kspecCliPath, ...args], {
-      encoding: "utf-8",
-      cwd,
-      env: spawnEnv,
-    });
-    return {
-      stdout: result.stdout ?? "",
-      stderr: result.stderr ?? "",
-      status: 0,
-    };
-  } catch (err: unknown) {
-    const e = err as { stdout?: string; stderr?: string; code?: number | string; killed?: boolean };
-    return {
-      stdout: e.stdout ?? "",
-      stderr: e.stderr ?? "",
-      status: typeof e.code === "number" ? e.code : e.killed ? null : 1,
-    };
-  }
-}
-
-/**
- * Add a note to a task via kspec CLI.
- */
-async function addTaskNote(
-  taskRef: string,
-  note: string,
-  cwd: string,
-  kspecCliPath: string,
-  env?: Record<string, string>,
-  strict = false,
-  stripFromHostEnv?: readonly string[],
-): Promise<void> {
-  const result = await runKspecCli(
-    ["task", "note", taskRef, note],
-    cwd,
-    kspecCliPath,
-    env,
-    stripFromHostEnv,
-  );
-  if (strict && result.status !== 0) {
-    throw new DispatchMutationError(
-      `Dispatch mutation failed while writing task note for ${taskRef}: ${result.stderr || result.stdout || "kspec task note exited non-zero"}`,
-    );
-  }
-}
-
-/**
- * Block a task via kspec CLI.
- */
-async function blockTask(
-  taskRef: string,
-  reason: string,
-  cwd: string,
-  kspecCliPath: string,
-  env?: Record<string, string>,
-  strict = false,
-  stripFromHostEnv?: readonly string[],
-): Promise<void> {
-  const result = await runKspecCli(
-    ["task", "block", taskRef, "--reason", reason],
-    cwd,
-    kspecCliPath,
-    env,
-    stripFromHostEnv,
-  );
-  if (strict && result.status !== 0) {
-    throw new DispatchMutationError(
-      `Dispatch mutation failed while blocking ${taskRef}: ${result.stderr || result.stdout || "kspec task block exited non-zero"}`,
-    );
-  }
-}
 
 function toInvocationOutcome(metadata: SessionMetadata): InvocationResult["outcome"] | null {
   switch (metadata.status) {
@@ -603,9 +510,17 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     autoApprove = agent.auto_approve,
     env = {},
     mutationLockFile,
+    mutationCache,
+    mutationPubSub,
+    mutationProjectPath,
+    taskBookkeeping = createTaskBookkeepingMutations({
+      projectDir: cwd,
+      cache: mutationCache ?? null,
+      pubsub: mutationPubSub ?? null,
+      projectPath: mutationProjectPath ?? cwd,
+    }),
     onUpdate,
     onEventAppended,
-    kspecCliPath = DEFAULT_KSPEC_CLI_PATH,
     abortSignal,
     onIdle,
     sessionRegistry,
@@ -720,26 +635,6 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   };
 
   const invocationEnv: Record<string, string> = contract.env;
-  // Sanitized env passed to internal kspec mutation subprocesses
-  // (`kspec task note`, `kspec task block`). Resolved env.secrets and
-  // runner env.set/env.pass/env.inherit values live in `contract.env` and
-  // are intended for the adapter spawn only; they must NEVER reach kspec
-  // subprocesses whose only need is the dispatch contract (KSPEC_NO_DAEMON,
-  // KSPEC_SESSION_ID, KSPEC_SHADOW_MUTATION_LOCK_FILE).
-  //
-  // Two defenses run together below:
-  //   - `mutationEnv` contains only kspec-required vars, so the overlay
-  //     itself can never inject a secret.
-  //   - `mutationSecretStripKeys` lists the env var names that were
-  //     resolved from `env.secrets`, so the spawner strips them from
-  //     `process.env` before overlay — closing the `user_env` leak path
-  //     where the parent's process.env already mirrors the secret.
-  //
-  // AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
-  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
-  const mutationEnv: Record<string, string> = contract.mutationEnv;
-  const mutationSecretStripKeys: readonly string[] = contract.secretEnvKeys;
-
   // ─── Prompt queue for multi-turn ─────────────────────────────────────────
   // AC: @multi-turn-session-lifecycle ac-8, ac-9, ac-17
   const promptQueue = new PromptQueue(maxPromptQueueDepth);
@@ -778,6 +673,11 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     nextEventSeq = event.seq + 1;
     // AC: @daemon-entity-cache ac-session-event-tracking — notify cache of new event
     onEventAppended?.(sessionId);
+  };
+
+  const logBookkeepingFailure = (action: string, targetTaskRef: string, err: unknown): void => {
+    const detail = redact(describeBookkeepingError(err));
+    console.warn(`[agent-runtime] Failed to ${action} for ${targetTaskRef}: ${detail}`);
   };
 
   // ─── Session handle for registry ─────────────────────────────────────────
@@ -1263,15 +1163,14 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
       // Add timeout note to task (only when a task is bound)
       if (taskRef) {
-        await addTaskNote(
-          taskRef,
-          `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
-          cwd,
-          kspecCliPath,
-          mutationEnv,
-          Boolean(mutationLockFile),
-          mutationSecretStripKeys,
-        );
+        try {
+          await taskBookkeeping.addTaskNote(
+            taskRef,
+            `[AGENT-TIMEOUT] Invocation timed out after ${timeoutMinutes} minutes`,
+          );
+        } catch (mutationErr) {
+          logBookkeepingFailure("write timeout note", taskRef, mutationErr);
+        }
       }
 
       return {
@@ -1426,15 +1325,14 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // Add failure note to task and check retry threshold (only when a task is bound)
     if (taskRef) {
-      await addTaskNote(
-        taskRef,
-        `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
-        cwd,
-        kspecCliPath,
-        mutationEnv,
-        Boolean(mutationLockFile),
-        mutationSecretStripKeys,
-      );
+      try {
+        await taskBookkeeping.addTaskNote(
+          taskRef,
+          `[AGENT-FAIL] Invocation failed: ${errorMessage}`,
+        );
+      } catch (mutationErr) {
+        logBookkeepingFailure("write failure note", taskRef, mutationErr);
+      }
 
       // ─── Check retry threshold ────────────────────────────────────────────
       // AC: @agent-invocation-lifecycle ac-9
@@ -1447,15 +1345,14 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       );
 
       if (consecutiveFailures >= retryLimit) {
-        await blockTask(
-          taskRef,
-          `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
-          cwd,
-          kspecCliPath,
-          mutationEnv,
-          Boolean(mutationLockFile),
-          mutationSecretStripKeys,
-        );
+        try {
+          await taskBookkeeping.blockTask(
+            taskRef,
+            `Agent ${agent.id} failed ${consecutiveFailures} consecutive times: ${errorMessage}`,
+          );
+        } catch (mutationErr) {
+          logBookkeepingFailure("block task after invocation failure", taskRef, mutationErr);
+        }
       }
     }
 
@@ -1554,13 +1451,6 @@ export class InvocationIdleTimeoutError extends Error {
   constructor(public readonly idleTimeoutMs: number) {
     super(`Session idle timeout after ${idleTimeoutMs}ms`);
     this.name = "InvocationIdleTimeoutError";
-  }
-}
-
-export class DispatchMutationError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "DispatchMutationError";
   }
 }
 

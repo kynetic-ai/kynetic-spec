@@ -31,7 +31,7 @@ import {
   findDispatchWorkspaceByCanonicalTask,
 } from "./workspace-identity.js";
 import { findPlanByRef } from "../parser/plans.js";
-import { DEFAULT_IDLE_GRACE_MS, DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
+import { DEFAULT_IDLE_GRACE_MS, runInvocation } from "./invocation.js";
 import { SessionRegistry } from "./session-registry.js";
 import type { SessionIdleContext } from "./invocation.js";
 import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.js";
@@ -82,7 +82,13 @@ import { normalizeTaskIdentity, buildTaskRefResolver } from "./task-identity.js"
 import type { AgentDispatchRule, AgentDispatchFilter } from "../schema/meta.js";
 import { matchesAutomationFilter } from "../schema/task.js";
 import type { SessionTrigger } from "../sessions/types.js";
-import { getEntityCache } from "../daemon/entity-cache.js";
+import { getEntityCache, type CacheDomain, type WriteThroughHint } from "../daemon/entity-cache.js";
+import {
+  createTaskBookkeepingMutations,
+  describeBookkeepingError,
+  type TaskBookkeepingMutations,
+} from "./task-bookkeeping.js";
+import type { MutationPubSubCapability } from "../mutation-pipeline.js";
 
 // ─── Simple Mutex ─────────────────────────────────────────────────────────────
 
@@ -713,12 +719,6 @@ interface SchedulerCandidate {
   entry: QueueEntry;
 }
 
-interface KspecCommandResult {
-  status: number | null;
-  stdout: string;
-  stderr: string;
-}
-
 /**
  * Tracking record for an active invocation.
  * AC: @cli-agent-commands ac-6
@@ -865,7 +865,7 @@ export interface DispatchEngineOptions {
    * AC: @per-task-dispatch-drain-coalescing ac-4
    */
   coalesceWindowMs?: number;
-  /** Path to kspec CLI binary (for task notes) */
+  /** Path to kspec CLI binary passed to spawned invocation helpers */
   kspecCliPath?: string;
   /**
    * Optional callback invoked on invocation lifecycle events (start, complete, fail).
@@ -885,6 +885,10 @@ export interface DispatchEngineOptions {
    * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
    */
   onSyncStateEvent?: (event: SyncStateEvent) => void;
+  /** Optional pubsub capability for direct task bookkeeping broadcasts. */
+  mutationPubSub?: MutationPubSubCapability;
+  /** Optional task bookkeeping implementation, primarily for tests. */
+  taskBookkeeping?: TaskBookkeepingMutations;
   /**
    * Configuration for the event bus (chain depth, ring buffer, dedup).
    * AC: @dispatch-event-envelope ac-5, ac-6
@@ -929,6 +933,8 @@ export class DispatchEngine {
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onSessionEvent?: (event: SessionEventData) => void;
   private onSyncStateEvent?: (event: SyncStateEvent) => void;
+  private mutationPubSub?: MutationPubSubCapability;
+  private taskBookkeeping: TaskBookkeepingMutations;
   /** Per-session text accumulator for newline-boundary streaming. */
   private accumulator = new SessionEventAccumulator();
 
@@ -1025,6 +1031,21 @@ export class DispatchEngine {
     this.onInvocationEvent = options.onInvocationEvent;
     this.onSessionEvent = options.onSessionEvent;
     this.onSyncStateEvent = options.onSyncStateEvent;
+    this.mutationPubSub = options.mutationPubSub;
+    this.taskBookkeeping =
+      options.taskBookkeeping ??
+      createTaskBookkeepingMutations({
+        projectDir: this.projectDir,
+        cache: {
+          writeThrough: (domain, hint) =>
+            getEntityCache(this.projectDir)?.writeThrough(
+              domain as CacheDomain,
+              hint as WriteThroughHint | undefined,
+            ) ?? Promise.resolve(),
+        },
+        pubsub: this.mutationPubSub ?? null,
+        projectPath: this.projectDir,
+      });
     // AC: @dispatch-event-envelope ac-1 through ac-6
     this._eventBus = new EventBus({
       dedupWindowMs: this.dedupWindowMs,
@@ -2560,61 +2581,18 @@ export class DispatchEngine {
     return `${basePrompt}\n\n${orientation}\n\n${roleEntry}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
   }
 
-  private async _runKspecCommand(args: string[]): Promise<KspecCommandResult> {
-    try {
-      const result = await execFileAsync(
-        process.execPath,
-        [this.kspecCliPath ?? DEFAULT_KSPEC_CLI_PATH, ...args],
-        {
-          cwd: this.cwd,
-          encoding: "utf-8",
-        },
-      );
-      return {
-        status: 0,
-        stdout: result.stdout ?? "",
-        stderr: result.stderr ?? "",
-      };
-    } catch (err: unknown) {
-      const e = err as {
-        stdout?: string;
-        stderr?: string;
-        code?: number | string;
-        killed?: boolean;
-      };
-      return {
-        status: typeof e.code === "number" ? e.code : e.killed ? null : 1,
-        stdout: e.stdout ?? "",
-        stderr: e.stderr ?? "",
-      };
-    }
-  }
-
-  private _taskCommandError(args: string[], result: KspecCommandResult): Error {
-    const exitDetail =
-      result.status === null ? "terminated by signal" : `exited with status ${result.status}`;
-    const details = [result.stderr.trim(), result.stdout.trim()].filter(Boolean).join(" ");
-    return new Error(
-      `Failed to run \`kspec ${args.join(" ")}\`: ${exitDetail}${details ? `. ${details}` : ""}`,
-    );
-  }
-
   private async _addTaskNote(taskRef: string, note: string): Promise<void> {
-    const args = ["task", "note", taskRef, note];
-    const result = await this._runKspecCommand(args);
-    if (result.status !== 0) {
+    try {
+      await this.taskBookkeeping.addTaskNote(taskRef, note);
+    } catch (err) {
       console.warn(
-        `[dispatch] Failed to add task note for ${taskRef}: ${this._taskCommandError(args, result).message}`,
+        `[dispatch] Failed to add task note for ${taskRef}: ${describeBookkeepingError(err)}`,
       );
     }
   }
 
   private async _blockTask(taskRef: string, reason: string): Promise<void> {
-    const args = ["task", "block", taskRef, "--reason", reason];
-    const result = await this._runKspecCommand(args);
-    if (result.status !== 0) {
-      throw this._taskCommandError(args, result);
-    }
+    await this.taskBookkeeping.blockTask(taskRef, reason);
   }
 
   private async _runRecoveryTaskCommand(
@@ -3099,6 +3077,15 @@ export class DispatchEngine {
         abortSignal: abortController.signal,
         sessionId: preSessionId,
         mutationLockFile: getDispatchShadowMutationLockPath(this.projectDir),
+        mutationCache: {
+          writeThrough: (domain, hint) =>
+            getEntityCache(this.projectDir)?.writeThrough(
+              domain as CacheDomain,
+              hint as WriteThroughHint | undefined,
+            ) ?? Promise.resolve(),
+        },
+        mutationPubSub: this.mutationPubSub ?? null,
+        mutationProjectPath: this.projectDir,
         // AC: @runner-resolution-and-preflight ac-dispatch-uses-runner-resolution
         // Reuse the registry loaded for preflight so the resolver inside
         // runInvocation produces the same contract.

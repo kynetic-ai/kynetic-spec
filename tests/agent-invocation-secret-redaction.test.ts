@@ -13,7 +13,7 @@
  *   2. process.stderr writes from the ACP framing error log
  *   3. the `agent.failed` session event in events.jsonl
  *   4. the persisted session metadata's `close_reason`
- *   5. the kspec CLI task-note arguments (captured via kspec-capture-mock)
+ *   5. the direct task-note body
  *   6. the returned InvocationResult.error value
  *
  * Each surface is checked for both absence of the secret literal and presence
@@ -36,7 +36,6 @@ import { testUlid, createTempDir, cleanupTempDir, readTestOutput } from "./helpe
 import * as YAML from "yaml";
 
 const MOCK_ACP = path.join(__dirname, "mocks", "acp-mock.js");
-const KSPEC_CAPTURE_MOCK = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 
 const SECRET_LITERAL = "supersecret-token-XYZ-987654321";
 const SECRET_VAR_NAME = "REDACTION_TEST_SECRET_KEY";
@@ -127,21 +126,6 @@ async function readSessionMetadata(
   return YAML.parse(content) as Record<string, unknown>;
 }
 
-interface CapturedKspecCall {
-  args: string[];
-  env: Record<string, string | null>;
-  timestamp: number;
-}
-
-async function readCapturedKspecCalls(captureFile: string): Promise<CapturedKspecCall[]> {
-  try {
-    const raw = await readTestOutput(captureFile);
-    return JSON.parse(raw) as CapturedKspecCall[];
-  } catch {
-    return [];
-  }
-}
-
 // ─── ac-diagnostics-redact-secrets ───────────────────────────────────────────
 
 describe(
@@ -150,29 +134,18 @@ describe(
   () => {
     let testDir: string;
     let sessionsDir: string;
-    let kspecCaptureFile: string;
     let stderrSpy: ReturnType<typeof vi.spyOn>;
     let stderrChunks: string[];
     let originalHostSecret: string | undefined;
-    let originalCaptureFile: string | undefined;
 
     beforeEach(async () => {
       testDir = await createTempDir("kspec-secret-redact-");
       sessionsDir = path.join(testDir, "sessions");
-      kspecCaptureFile = path.join(testDir, "kspec-captures.json");
 
       // Plant the secret in the parent host env so env.secrets:user_env can
       // resolve it. The runner contract picks it up for the child + redactor.
       originalHostSecret = process.env[SECRET_VAR_NAME];
       process.env[SECRET_VAR_NAME] = SECRET_LITERAL;
-
-      // Set KSPEC_CAPTURE_FILE on the dispatch process env so the mutation
-      // subprocess inherits it via runKspecCli's host env merge. The
-      // runner contract's mutationEnv only carries kspec-required vars and
-      // intentionally cannot ferry test-control values from the invocation
-      // baseEnv into the mutation subprocess.
-      originalCaptureFile = process.env.KSPEC_CAPTURE_FILE;
-      process.env.KSPEC_CAPTURE_FILE = kspecCaptureFile;
 
       registerMockSecretAdapter();
 
@@ -194,11 +167,6 @@ describe(
       } else {
         process.env[SECRET_VAR_NAME] = originalHostSecret;
       }
-      if (originalCaptureFile === undefined) {
-        delete process.env.KSPEC_CAPTURE_FILE;
-      } else {
-        process.env.KSPEC_CAPTURE_FILE = originalCaptureFile;
-      }
       await cleanupTempDir(testDir);
     });
 
@@ -208,6 +176,7 @@ describe(
       async () => {
         const agent = makeAgent();
         const taskRef = `@${testUlid("TASK")}`;
+        const notes: Array<{ taskRef: string; note: string }> = [];
 
         const result = await runInvocation({
           agent,
@@ -222,11 +191,12 @@ describe(
             // mock writes this exact string with a newline.
             MOCK_ACP_EMIT_ACTIONABLE_STDERR: `adapter trace [secret=${SECRET_LITERAL}]`,
           }),
-          kspecCliPath: KSPEC_CAPTURE_MOCK,
-          // KSPEC_CAPTURE_FILE is set on process.env in beforeEach so the
-          // kspec-capture-mock subprocess sees it via host env inheritance.
-          // (The runner contract's mutationEnv intentionally does not ferry
-          // invocation baseEnv values into mutation subprocesses.)
+          taskBookkeeping: {
+            addTaskNote: async (ref, note) => {
+              notes.push({ taskRef: ref, note });
+            },
+            blockTask: async () => undefined,
+          },
         });
 
         // ─── 1. InvocationResult.error must not contain the secret literal ─
@@ -259,19 +229,11 @@ describe(
         // future field that derives from the failure path is covered too.
         expect(JSON.stringify(metadata)).not.toContain(SECRET_LITERAL);
 
-        // ─── 4. kspec CLI task-note args must not contain the secret ──────
-        const calls = await readCapturedKspecCalls(kspecCaptureFile);
-        expect(calls.length).toBeGreaterThan(0);
-        const noteCall = calls.find((c) => c.args[0] === "task" && c.args[1] === "note");
-        expect(noteCall, "expected a kspec task note call after failure").toBeDefined();
-        // Every captured argument (including the freeform note body) must be
-        // free of the secret literal and contain the redaction marker on the
-        // body argument that carries the failure text.
-        for (const arg of noteCall!.args) {
-          expect(arg).not.toContain(SECRET_LITERAL);
-        }
-        const noteBody = noteCall!.args[noteCall!.args.length - 1];
-        expect(noteBody).toContain(REDACTION_MARKER);
+        // ─── 4. Direct task-note body must not contain the secret ─────────
+        expect(notes).toHaveLength(1);
+        expect(notes[0]?.taskRef).toBe(taskRef);
+        expect(notes[0]?.note).not.toContain(SECRET_LITERAL);
+        expect(notes[0]?.note).toContain(REDACTION_MARKER);
 
         // ─── 5. process.stderr writes from adapter stderr + ACP framing ───
         // The mock writes `adapter trace [secret=<literal>]` via console.error
@@ -287,145 +249,68 @@ describe(
   },
 );
 
-// ─── Mutation subprocess env boundary ────────────────────────────────────────
+// ─── Direct bookkeeping boundary ─────────────────────────────────────────────
 //
 // The adapter spawn intentionally receives resolved `env.secrets` so the
-// adapter process can use the credential. But the runner contract MUST NOT
-// pass that secret material into kspec-internal subprocesses (`kspec task
-// note`, `kspec task block`) spawned by the failure handler — those
-// helpers only need the kspec dispatch contract (KSPEC_NO_DAEMON,
-// KSPEC_SESSION_ID, KSPEC_SHADOW_MUTATION_LOCK_FILE).
-//
-// Two leak vectors get exercised here:
-//   1. Direct: invocationEnv (which contains resolved env.secrets) is
-//      passed to runKspecCli as the env overlay. Tested by ensuring the
-//      captured subprocess env does not include the runner-resolved
-//      secret value even when it is named the same as a real env var.
-//   2. Inherited: process.env mirrors the user_env source (which is how
-//      `source: user_env` is defined to work). When runKspecCli merges
-//      `{ ...process.env, ...env }`, the secret reaches the subprocess
-//      via process.env even if the overlay was sanitized. The contract's
-//      `secretEnvKeys` is the strip-list that closes this path.
+// adapter process can use the credential. Failure bookkeeping runs in-process
+// through a direct collaborator and must only receive the redacted task note
+// body, not a runner environment payload.
 
-describe(
-  "runInvocation: mutation subprocess env boundary (failure path)",
-  { timeout: 120_000 },
-  () => {
-    let testDir: string;
-    let sessionsDir: string;
-    let kspecCaptureFile: string;
-    let originalHostSecret: string | undefined;
-    let originalCaptureEnvVars: string | undefined;
-    let originalCaptureFile: string | undefined;
+describe("runInvocation: direct bookkeeping boundary (failure path)", { timeout: 120_000 }, () => {
+  let testDir: string;
+  let sessionsDir: string;
+  let originalHostSecret: string | undefined;
 
-    beforeEach(async () => {
-      testDir = await createTempDir("kspec-mutation-env-boundary-");
-      sessionsDir = path.join(testDir, "sessions");
-      kspecCaptureFile = path.join(testDir, "kspec-captures.json");
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-direct-bookkeeping-boundary-");
+    sessionsDir = path.join(testDir, "sessions");
 
-      originalHostSecret = process.env[SECRET_VAR_NAME];
-      process.env[SECRET_VAR_NAME] = SECRET_LITERAL;
+    originalHostSecret = process.env[SECRET_VAR_NAME];
+    process.env[SECRET_VAR_NAME] = SECRET_LITERAL;
 
-      // Tell kspec-capture-mock which env vars to record per subprocess
-      // invocation. We capture the secret var (to assert absence), the
-      // kspec dispatch vars (to assert presence), and a control var
-      // present in the dispatch process.env that is NOT a runner-resolved
-      // secret (to prove the strip is precise — only resolved keys are
-      // removed, not all host env).
-      originalCaptureEnvVars = process.env.KSPEC_CAPTURE_ENV_VARS;
-      process.env.KSPEC_CAPTURE_ENV_VARS = [
-        SECRET_VAR_NAME,
-        "KSPEC_NO_DAEMON",
-        "KSPEC_SESSION_ID",
-        "PATH",
-      ].join(",");
+    registerMockSecretAdapter();
+  });
 
-      // Mutation subprocess needs KSPEC_CAPTURE_FILE to know where to
-      // write — must come via host env, not invocation baseEnv (the
-      // contract's mutationEnv intentionally excludes baseEnv).
-      originalCaptureFile = process.env.KSPEC_CAPTURE_FILE;
-      process.env.KSPEC_CAPTURE_FILE = kspecCaptureFile;
+  afterEach(async () => {
+    if (originalHostSecret === undefined) {
+      delete process.env[SECRET_VAR_NAME];
+    } else {
+      process.env[SECRET_VAR_NAME] = originalHostSecret;
+    }
+    await cleanupTempDir(testDir);
+  });
 
-      registerMockSecretAdapter();
-    });
+  // AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
+  // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+  it("does not expose the runner-resolved env.secrets value to direct task bookkeeping", async () => {
+    const agent = makeAgent();
+    const taskRef = `@${testUlid("TASK")}`;
+    const notes: Array<{ taskRef: string; note: string }> = [];
 
-    afterEach(async () => {
-      if (originalHostSecret === undefined) {
-        delete process.env[SECRET_VAR_NAME];
-      } else {
-        process.env[SECRET_VAR_NAME] = originalHostSecret;
-      }
-      if (originalCaptureEnvVars === undefined) {
-        delete process.env.KSPEC_CAPTURE_ENV_VARS;
-      } else {
-        process.env.KSPEC_CAPTURE_ENV_VARS = originalCaptureEnvVars;
-      }
-      if (originalCaptureFile === undefined) {
-        delete process.env.KSPEC_CAPTURE_FILE;
-      } else {
-        process.env.KSPEC_CAPTURE_FILE = originalCaptureFile;
-      }
-      await cleanupTempDir(testDir);
-    });
-
-    // AC: @runner-environment-secret-boundaries ac-secret-values-not-stored-inline
-    // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
-    it(
-      "does not expose the runner-resolved env.secrets value to the kspec task " +
-        "note subprocess spawned on the failure path",
-      async () => {
-        const agent = makeAgent();
-        const taskRef = `@${testUlid("TASK")}`;
-
-        const result = await runInvocation({
-          agent,
-          specDir: testDir,
-          sessionsDir,
-          cwd: process.cwd(),
-          taskRef,
-          prompt: "Drive the adapter into a secret-laden failure",
-          trigger: "task.ready",
-          runnerRegistry: buildRegistry(),
-          kspecCliPath: KSPEC_CAPTURE_MOCK,
-        });
-
-        expect(result.outcome).toBe("failed");
-
-        const calls = await readCapturedKspecCalls(kspecCaptureFile);
-        expect(calls.length).toBeGreaterThan(0);
-
-        const noteCall = calls.find((c) => c.args[0] === "task" && c.args[1] === "note");
-        expect(noteCall, "expected a kspec task note call after failure").toBeDefined();
-
-        // ─── 1. The runner-resolved secret must NOT reach the subprocess ──
-        // Even though it is present in dispatch process.env (so user_env
-        // could resolve it), the contract strips secretEnvKeys from the
-        // spawned mutation subprocess env.
-        expect(
-          noteCall!.env[SECRET_VAR_NAME],
-          `Mutation subprocess env still contains the runner-resolved secret ` +
-            `${SECRET_VAR_NAME}=${noteCall!.env[SECRET_VAR_NAME]}. Adapter ` +
-            `env.secrets must not leak into kspec-internal mutation helpers.`,
-        ).toBeNull();
-
-        // ─── 2. Dispatch contract vars must still be set ──────────────────
-        expect(noteCall!.env.KSPEC_NO_DAEMON).toBe("1");
-        expect(noteCall!.env.KSPEC_SESSION_ID).toBe(result.session.id);
-
-        // ─── 3. Non-secret host vars are still inherited (strip is narrow) ─
-        expect(noteCall!.env.PATH).not.toBeNull();
-        expect(noteCall!.env.PATH).toBe(process.env.PATH);
-
-        // ─── 4. The note body argument must be free of the literal too ─────
-        // (Belt-and-suspenders: the redaction layer should already scrub
-        // the body, but the env probe is independent of that surface.)
-        for (const arg of noteCall!.args) {
-          expect(arg).not.toContain(SECRET_LITERAL);
-        }
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir,
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Drive the adapter into a secret-laden failure",
+      trigger: "task.ready",
+      runnerRegistry: buildRegistry(),
+      taskBookkeeping: {
+        addTaskNote: async (ref, note) => {
+          notes.push({ taskRef: ref, note });
+        },
+        blockTask: async () => undefined,
       },
-    );
-  },
-);
+    });
+
+    expect(result.outcome).toBe("failed");
+    expect(notes).toHaveLength(1);
+    expect(notes[0]?.taskRef).toBe(taskRef);
+    expect(notes[0]?.note).not.toContain(SECRET_LITERAL);
+    expect(notes[0]?.note).toContain(REDACTION_MARKER);
+  });
+});
 
 // ─── Negative control: implicit/legacy path no-op redactor ───────────────────
 

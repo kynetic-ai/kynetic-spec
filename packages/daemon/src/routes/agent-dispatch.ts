@@ -90,6 +90,7 @@ function createEngine(projectDir: string, cwd?: string, pubsub?: PubSubManager):
     projectDir,
     cwd,
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
+    mutationPubSub: pubsub,
     onInvocationEvent: pubsub
       ? (event: InvocationEvent) => {
           // AC: @ui-api-aggregation ac-4 - Include task_title for display

@@ -111,10 +111,6 @@ function makeAgent(overrides?: Partial<Agent>): Agent {
   };
 }
 
-async function readJson<T>(filePath: string): Promise<T> {
-  return JSON.parse(await readTestOutput(filePath)) as T;
-}
-
 async function readWorkspaceRecord(
   registryPath: string,
   taskRef: string,
@@ -156,20 +152,13 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
   // AC: @trait-error-guidance ac-5 — N/A: workspace validation failures are runtime diagnostics, not schema validation errors.
   // AC: @trait-error-guidance ac-6 — N/A: validateDispatchWorkspaceForInvocation is a runtime helper and has no JSON output mode.
   let tempDir: string;
-  let originalCaptureFile: string | undefined;
 
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-dispatch-bootstrap-");
-    originalCaptureFile = process.env.KSPEC_CAPTURE_FILE;
   });
 
   afterEach(async () => {
     vi.restoreAllMocks();
-    if (originalCaptureFile === undefined) {
-      delete process.env.KSPEC_CAPTURE_FILE;
-    } else {
-      process.env.KSPEC_CAPTURE_FILE = originalCaptureFile;
-    }
     await cleanupTempDir(tempDir);
   });
 
@@ -899,8 +888,8 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
   // AC: @trait-error-guidance ac-2
   it("records actionable bootstrap failure detail and blocks the task before invocation", async () => {
     await seedRepo(tempDir);
-    const captureFile = path.join(tempDir, "captured-cli.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
+    const blocks: Array<{ taskRef: string; reason: string }> = [];
     await setupProject(tempDir, {
       dispatchConfig: [
         "dispatch:",
@@ -922,6 +911,14 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
       specDir: tempDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       coalesceWindowMs: 0,
+      taskBookkeeping: {
+        addTaskNote: async (taskRef, note) => {
+          notes.push({ taskRef, note });
+        },
+        blockTask: async (taskRef, reason) => {
+          blocks.push({ taskRef, reason });
+        },
+      },
     });
 
     await engine.start();
@@ -952,22 +949,15 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
       } as never,
     });
 
-    for (let i = 0; i < 30; i++) {
-      if ((await fs.stat(captureFile).catch(() => null)) !== null) break;
+    for (let i = 0; i < 30 && blocks.length === 0; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
 
     expect(runSpy).not.toHaveBeenCalled();
-    const calls = await readJson<Array<{ args: string[] }>>(captureFile);
     expect(
-      calls.some(
-        (call) =>
-          call.args[0] === "task" &&
-          call.args[1] === "note" &&
-          call.args[3].includes("Suggested action"),
-      ),
+      notes.some((note) => note.taskRef === taskRef && note.note.includes("Suggested action")),
     ).toBe(true);
-    expect(calls.some((call) => call.args[0] === "task" && call.args[1] === "block")).toBe(true);
+    expect(blocks.some((block) => block.taskRef === taskRef)).toBe(true);
 
     const registryPath = path.join(tempDir, "project.dispatch-workspaces.yaml");
     const record = await readWorkspaceRecord(registryPath, taskRef);
@@ -1032,8 +1022,8 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
   // AC: @trait-error-guidance ac-2
   it("blocks the task instead of launching the agent when pre-invocation validation fails", async () => {
     await seedRepo(tempDir);
-    const captureFile = path.join(tempDir, "captured-cli-validation.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    const notes: Array<{ taskRef: string; note: string }> = [];
+    const blocks: Array<{ taskRef: string; reason: string }> = [];
     await setupProject(tempDir, {
       dispatchConfig: ["dispatch:", "  base_branch: agent-dev"].join("\n"),
     });
@@ -1056,13 +1046,22 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
       specDir: tempDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       coalesceWindowMs: 0,
+      taskBookkeeping: {
+        addTaskNote: async (taskRef, note) => {
+          notes.push({ taskRef, note });
+        },
+        blockTask: async (taskRef, reason) => {
+          blocks.push({ taskRef, reason });
+        },
+      },
     });
 
     await engine.start();
     const taskId = testUlid("TASK", 35);
+    const taskRef = `@${taskId}`;
     await engine.handleStateChange({
       taskId,
-      taskRef: `@${taskId}`,
+      taskRef,
       fromStatus: "in_progress",
       toStatus: "pending",
       timestamp: Date.now(),
@@ -1085,22 +1084,19 @@ describe("dispatch runtime bootstrap contract", { timeout: 60_000 }, () => {
       } as never,
     });
 
-    for (let i = 0; i < 30; i++) {
-      if ((await fs.stat(captureFile).catch(() => null)) !== null) break;
+    for (let i = 0; i < 30 && blocks.length === 0; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
 
     expect(runSpy).not.toHaveBeenCalled();
-    const calls = await readJson<Array<{ args: string[] }>>(captureFile);
     expect(
-      calls.some(
-        (call) =>
-          call.args[0] === "task" &&
-          call.args[1] === "note" &&
-          call.args[3].includes("Pre-invocation workspace validation failed"),
+      notes.some(
+        (note) =>
+          note.taskRef === taskRef &&
+          note.note.includes("Pre-invocation workspace validation failed"),
       ),
     ).toBe(true);
-    expect(calls.some((call) => call.args[0] === "task" && call.args[1] === "block")).toBe(true);
+    expect(blocks.some((block) => block.taskRef === taskRef)).toBe(true);
 
     await engine.stop();
   });
