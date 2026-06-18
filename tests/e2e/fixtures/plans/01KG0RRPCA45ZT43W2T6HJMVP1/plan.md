@@ -2,6 +2,8 @@
 
 This plan is actively being implemented.
 
+See [live diagram](./resources/live-diagram.md).
+
 ## Specs
 
 ```yaml
