@@ -1,0 +1,26 @@
+_ulid: 01KVD633T3C3JN4MWBRGKEJBVD
+slugs: []
+title: Review task-missing-event-types cycle 5
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVD633T30Y6WRF3RPD5GX7TR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-18T10:58:07.299Z
+examined_commit: c072e12fc35be928c8814703abdfec203aa58f48
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVC30V6R468JZTF5BHVVYKB0"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-18T10:58:07.299Z
+updated_at: null
+notes: []
