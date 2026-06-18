@@ -69346,7 +69346,7 @@ runs:
     started_at: 2026-06-18T08:18:58.702Z
   - _ulid: 01KVCX04P4MQ50C9DF6FW5AY7B
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69360,7 +69360,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T08:21:33.535Z
-        completed_at: 2026-06-18T08:21:33.535Z
+        completed_at: 2026-06-18T08:21:57.300Z
+        notes: "Friction points: full npm test had long quiet periods and took 2888.1s, but this is already
+          tracked by @task-investigate-npm-test-teardown-hang-after-green-suite-run and related
+          testing guidance. The reflect instructions still showed kspec workflow show without a run
+          ref, but searches found existing tasks/inbox/observations for that CLI/docs mismatch,
+          including @01KKBD52 and multiple reflection-doc inbox items. No new untracked friction
+          identified."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T08:21:57.300Z
+        completed_at: 2026-06-18T08:21:57.300Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-18T08:19:12.708Z
