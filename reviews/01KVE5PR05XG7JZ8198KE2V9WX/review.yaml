@@ -24,6 +24,17 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-18T20:27:10.577Z
     completed_at: 2026-06-18T20:27:10.577Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint packages/web-ui/src/lib/query/ws-invalidation.ts tests/e2e/connection.spec.ts
+      tests/web-ui/ws-cache-invalidation.test.ts: 0 warnings, 0 errors"
+    name: focused-lint
+    required: false
+    runner: npx oxlint changed files
+    created_at: 2026-06-18T20:27:16.428Z
+    completed_at: 2026-06-18T20:27:16.428Z
 events:
   - _ulid: 01KVE5PR0561R9CK84XQW9FT40
     actor: Jacob Chapel
@@ -52,6 +63,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-18T20:27:10.861Z
+  - _ulid: 01KVE6N8VJRPPPT34V86D16HJ9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-18T20:27:16.722Z
 examined_commit: 88b0691213ac017059815e1fa58f064e997647c2
 external_links: []
 lifecycle_state: open
@@ -64,5 +82,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-18T20:10:36.421Z
-updated_at: 2026-06-18T20:27:10.577Z
+updated_at: 2026-06-18T20:27:16.428Z
 notes: []
