@@ -70069,7 +70069,7 @@ runs:
     completed_at: 2026-06-18T20:08:28.140Z
   - _ulid: 01KVE6T2SPBZ6K2DDQKVGTNP8V
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70083,7 +70083,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T20:30:37.095Z
-        completed_at: 2026-06-18T20:30:37.095Z
+        completed_at: 2026-06-18T20:30:50.425Z
+        notes: "Friction point: the full npm test gate had long quiet intervals near the tail while
+          CLI-heavy Vitest workers were still active. I had to inspect the process tree multiple
+          times to distinguish progress from a hang. This is systemic for long review gates because
+          the progress reporter only emits when a suite completes, not while a long child command is
+          running."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T20:30:50.425Z
+        completed_at: 2026-06-18T20:30:50.425Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-18T20:29:54.358Z
