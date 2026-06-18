@@ -18,6 +18,7 @@ import {
   ReviewRecordSchema,
   ReviewRecordsFileSchema,
 } from "../schema/index.js";
+import { recordMutationEvents } from "../mutation-pipeline.js";
 import type { KspecContext } from "./yaml.js";
 import { readYamlFile, writeYamlFilePreserveFormat } from "./yaml.js";
 import {
@@ -53,6 +54,27 @@ function usesFolderStorage(ctx: KspecContext): boolean {
  */
 export interface LoadedReviewRecord extends ReviewRecord {
   _sourceFile?: string;
+}
+
+function reviewSubjectRef(review: ReviewRecord): string | null {
+  const maybeRef = (review.subject as { ref?: unknown }).ref;
+  return typeof maybeRef === "string" ? maybeRef : null;
+}
+
+function recordReviewCreatedEvent(review: ReviewRecord): void {
+  recordMutationEvents([
+    {
+      topic: "reviews:updates",
+      event: "review_created",
+      data: {
+        review_ulid: review._ulid,
+        title: review.title,
+        subject_type: review.subject.type,
+        subject_ref: reviewSubjectRef(review),
+        subject: review.subject,
+      },
+    },
+  ]);
 }
 
 /**
@@ -145,9 +167,9 @@ async function writeRawReviewArray(
 /**
  * Find review index in a raw array by ULID match.
  */
-function findRawReviewIndex(rawReviews: unknown[], ulid: string): number {
+function findRawReviewIndex(rawReviews: unknown[], reviewUlid: string): number {
   return rawReviews.findIndex(
-    (r) => r && typeof r === "object" && (r as Record<string, unknown>)._ulid === ulid,
+    (r) => r && typeof r === "object" && (r as Record<string, unknown>)._ulid === reviewUlid,
   );
 }
 
@@ -301,6 +323,7 @@ export async function saveReviewRecord(
   }
   await assertReviewStorageWritable(ctx);
   const reviewsPath = getReviewsFilePath(ctx);
+  let created = false;
 
   // Lock the file to prevent concurrent read-modify-write races
   await withFileLock(reviewsPath, async () => {
@@ -325,10 +348,15 @@ export async function saveReviewRecord(
       );
     } else {
       rawReviews.push(cleanReview);
+      created = true;
     }
 
     await writeRawReviewArray(reviewsPath, rawReviews, wrapperObj);
   });
+
+  if (created) {
+    recordReviewCreatedEvent(review);
+  }
 }
 
 /**

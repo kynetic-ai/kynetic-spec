@@ -1,3 +1,5 @@
+import type { ReviewSubject } from "./api.js";
+
 /**
  * WebSocket Protocol Types
  *
@@ -75,6 +77,13 @@ export interface TaskUpdatedEventData {
   old_status: string | null;
   new_status: string | null;
   note_ulid?: string;
+}
+
+/** Data payload for spec_item_changed broadcast events on items:updates topic. */
+export interface SpecItemChangedEventData {
+  item_ulid: string;
+  action: "created" | "changed" | "removed";
+  title: string;
 }
 
 /**
@@ -253,6 +262,15 @@ export interface ReviewLifecycleChangedEventData {
   actor: string;
 }
 
+/** Data payload for review_created broadcast events on reviews:updates topic. */
+export interface ReviewCreatedEventData {
+  review_ulid: string;
+  title: string;
+  subject_type: string;
+  subject_ref: string | null;
+  subject: ReviewSubject;
+}
+
 /** Data payload for plan_resource_changed broadcast events on plans:updates topic. */
 export interface PlanResourceChangedEventData {
   plan_ulid: string;
@@ -268,7 +286,50 @@ export type ReviewEventData =
   | ReviewThreadReopenedEventData
   | ReviewVerdictSubmittedEventData
   | ReviewCheckAddedEventData
-  | ReviewLifecycleChangedEventData;
+  | ReviewLifecycleChangedEventData
+  | ReviewCreatedEventData;
+
+// ─── Entity Event Vocabulary ────────────────────────────────────────────────
+// AC: @mutation-event-naming ac-1
+// AC: @mutation-event-naming ac-2
+
+export interface EntityEventVocabularyEntry {
+  topic: string;
+  event: string;
+}
+
+export const ENTITY_EVENT_VOCABULARY = [
+  { topic: "tasks:updates", event: "task_updated" },
+  { topic: "items:updates", event: "spec_item_changed" },
+  { topic: "inbox:updates", event: "inbox_item_created" },
+  { topic: "inbox:updates", event: "inbox_item_deleted" },
+  { topic: "triage:updates", event: "triage_record_created" },
+  { topic: "triage:updates", event: "triage_record_updated" },
+  { topic: "triage:updates", event: "triage_record_acted" },
+  { topic: "reviews:updates", event: "review_created" },
+  { topic: "reviews:updates", event: "thread_created" },
+  { topic: "reviews:updates", event: "thread_replied" },
+  { topic: "reviews:updates", event: "thread_resolved" },
+  { topic: "reviews:updates", event: "thread_reopened" },
+  { topic: "reviews:updates", event: "verdict_submitted" },
+  { topic: "reviews:updates", event: "check_added" },
+  { topic: "reviews:updates", event: "lifecycle_changed" },
+  { topic: "reviews:updates", event: "resource_changed" },
+  { topic: "plans:updates", event: "plan_resource_changed" },
+] as const satisfies readonly EntityEventVocabularyEntry[];
+
+// ─── Entity Event Vocabulary Reservations ───────────────────────────────────
+// AC: @mutation-event-naming ac-3
+
+export interface EntityEventFamilyReservation {
+  family: string;
+  topic: string;
+}
+
+export const ENTITY_EVENT_FAMILY_RESERVATIONS = [
+  { family: "plan_revision", topic: "plans:updates" },
+  { family: "coverage_state", topic: "items:updates" },
+] as const satisfies readonly EntityEventFamilyReservation[];
 
 /**
  * Union of all possible WebSocket messages from server

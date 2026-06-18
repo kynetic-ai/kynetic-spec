@@ -10,6 +10,10 @@ import {
 } from "../src/parser/task-data-manager.js";
 import { splitBackend, ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { runWithEntityCache } from "../src/parser/yaml.js";
+import {
+  createMutationEventCollector,
+  runWithMutationEventCollector,
+} from "../src/mutation-pipeline.js";
 
 // Register the split backend (no longer auto-registered at module scope)
 ensureSplitBackendRegistered();
@@ -117,6 +121,128 @@ describe("TaskDataManager", () => {
       const fetched = await manager.getTask(ctx, "@mgr-created");
       expect(fetched._ulid).toBe(created._ulid);
       expect(fetched.title).toBe("Manager-created task");
+    });
+
+    // AC: @mutation-event-coverage ac-1
+    // AC: @mutation-event-coverage ac-5
+    it("records a task creation event when callers omit commit metadata", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
+      const collector = createMutationEventCollector();
+
+      const created = await runWithMutationEventCollector(collector, () =>
+        manager.createTask(ctx, {
+          title: "Metadata-free creation task",
+          slugs: ["metadata-free-created"],
+        }),
+      );
+
+      expect(collector.drain()).toEqual([
+        {
+          topic: "tasks:updates",
+          event: "task_updated",
+          data: expect.objectContaining({
+            action: "created",
+            ref: "@metadata-free-created",
+            ulid: created._ulid,
+            title: "Metadata-free creation task",
+            old_status: null,
+            new_status: "pending",
+          }),
+        },
+      ]);
+    });
+
+    // AC: @mutation-event-coverage ac-1
+    // AC: @mutation-event-coverage ac-5
+    it("records task mutation events for skip-commit outer commits", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
+      const collector = createMutationEventCollector();
+      const task = await manager.createTask(ctx, {
+        title: "Outer-committed task",
+        slugs: ["outer-committed-task"],
+      });
+
+      const updated = await runWithMutationEventCollector(collector, () =>
+        manager.mutateTask(
+          ctx,
+          "@outer-committed-task",
+          (latest) => ({
+            ...latest,
+            review_ref: "@outer-review",
+          }),
+          {
+            operation: "review-link",
+            ref: "@outer-committed-task",
+            detail: "set review_ref to @outer-review",
+            skipCommit: true,
+          },
+        ),
+      );
+
+      expect(collector.drain()).toEqual([
+        {
+          topic: "tasks:updates",
+          event: "task_updated",
+          data: expect.objectContaining({
+            action: "review_linked",
+            ref: "@outer-committed-task",
+            ulid: task._ulid,
+            title: updated.title,
+            old_status: null,
+            new_status: null,
+          }),
+        },
+      ]);
+    });
+
+    // AC: @mutation-event-coverage ac-1
+    // AC: @mutation-event-coverage ac-5
+    it("records generic task change events when callers omit commit metadata", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
+      const collector = createMutationEventCollector();
+      const task = await manager.createTask(ctx, {
+        title: "Metadata-free mutation task",
+        slugs: ["metadata-free-mutation-task"],
+      });
+
+      const updated = await runWithMutationEventCollector(collector, () =>
+        manager.mutateTask(ctx, "@metadata-free-mutation-task", (latest) => ({
+          ...latest,
+          resource_refs: [
+            {
+              owner_type: "plan",
+              owner_ref: "@plan-event-coverage",
+              id: "doc",
+              path: "doc.txt",
+              sha256: "a".repeat(64),
+              git_commit: null,
+              git_path: null,
+              recorded_at: "2026-06-18T00:00:00.000Z",
+            },
+          ],
+        })),
+      );
+
+      expect(collector.drain()).toEqual([
+        {
+          topic: "tasks:updates",
+          event: "task_updated",
+          data: expect.objectContaining({
+            action: "changed",
+            ref: "@metadata-free-mutation-task",
+            ulid: task._ulid,
+            title: updated.title,
+            old_status: null,
+            new_status: null,
+          }),
+        },
+      ]);
     });
   });
 

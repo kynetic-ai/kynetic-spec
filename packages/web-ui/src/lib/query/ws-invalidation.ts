@@ -24,6 +24,7 @@ const INVALIDATION_TOPICS = [
   "inbox:updates",
   "triage:updates",
   "reviews:updates",
+  "plans:updates",
   "agents",
   "sessions",
   "files:updates",
@@ -120,6 +121,9 @@ function getInvalidationKeys(
     case "reviews:updates":
       // Review changes affect review lists and task detail (review_ref display)
       return [queryKeys.reviews.all, queryKeys.tasks.all];
+
+    case "plans:updates":
+      return [queryKeys.plans.all];
 
     case "agents": {
       // Streaming progress events don't need cache invalidation —

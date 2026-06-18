@@ -48,6 +48,10 @@ import type { LoadedSpecItem } from "../src/parser/index.js";
 import type { LoadedPlan } from "../src/parser/plans.js";
 import type { LoadedReviewRecord } from "../src/parser/reviews.js";
 import type { MetaContext } from "../src/parser/meta.js";
+import {
+  ENTITY_EVENT_FAMILY_RESERVATIONS,
+  ENTITY_EVENT_VOCABULARY,
+} from "../packages/shared/src/websocket.js";
 
 ensureSplitBackendRegistered();
 
@@ -116,6 +120,30 @@ function pickRefEntity(entity: { _ulid: string; slugs?: string[] }): RefEntity {
   };
 }
 
+function pickTaskSummary(task: LoadedTask) {
+  return {
+    _ulid: task._ulid,
+    slugs: task.slugs ?? [],
+    title: task.title,
+    type: task.type,
+    status: task.status,
+    priority: task.priority,
+    tags: task.tags ?? [],
+    automation: task.automation,
+    spec_ref: task.spec_ref,
+    plan_ref: task.plan_ref,
+    review_ref: task.review_ref,
+    depends_on: task.depends_on ?? [],
+    blocked_by: task.blocked_by ?? [],
+    created_at: task.created_at,
+    started_at: task.started_at,
+    submitted_at: task.submitted_at,
+    completed_at: task.completed_at,
+    notes_count: task.notes?.length ?? 0,
+    todos_count: task.todos?.length ?? 0,
+  };
+}
+
 function stripAnsi(s: string): string {
   // oxlint-disable-next-line no-control-regex
   return s.replace(/\x1b\[[0-9;]*m/g, "");
@@ -142,7 +170,7 @@ async function buildCacheSnapshot(): Promise<CacheSnapshot> {
       plans,
       reviews,
       meta,
-      taskIndex: tasks.map(pickRefEntity),
+      taskIndex: tasks.map(pickTaskSummary),
       itemIndex: items.map(pickRefEntity),
       planIndex: plans.map(pickRefEntity),
       reviewIndex: reviews.map(pickRefEntity),
@@ -454,6 +482,7 @@ includes:
     type: "task",
     automation: "eligible",
     spec_ref: "@test-feature",
+    depends_on: [],
     created_at: "2026-01-01T00:00:00Z",
     notes: [],
   });
@@ -466,6 +495,7 @@ includes:
     type: "task",
     automation: "eligible",
     spec_ref: "@test-feature",
+    depends_on: [],
     created_at: "2026-01-01T00:00:00Z",
     notes: [],
   });
@@ -1054,6 +1084,460 @@ describe("Daemon Command API", () => {
 
     const commandStreamEvent = broadcastEvents.find((entry) => entry.event === "command_executed");
     expect(commandStreamEvent).toBeDefined();
+  });
+
+  // AC: @mutation-event-coverage ac-1
+  // AC: @mutation-event-coverage ac-5
+  // AC: @ui-api-aggregation ac-4
+  it("emits typed task events for creation, field changes, notes, and transitions through command mutations", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+    const runTaskCommand = async (command: string, args: Record<string, unknown>) => {
+      const response = await makeRequest("/api/command", {
+        method: "POST",
+        body: JSON.stringify({ command, args }),
+      });
+      const body = await response.json();
+      if (response.status !== 200 || body.exitCode !== 0) {
+        throw new Error(
+          `Command ${command} failed: ${JSON.stringify({ args, body, status: response.status })}`,
+        );
+      }
+    };
+
+    await runTaskCommand("task set", {
+      ref: "@task-command",
+      title: "Retitled Command Task",
+    });
+
+    await runTaskCommand("task note", {
+      ref: "@task-command",
+      message: "event coverage note",
+    });
+
+    await runTaskCommand("task block", {
+      ref: "@task-command",
+      reason: "event coverage blocker",
+    });
+    await runTaskCommand("task unblock", { ref: "@task-command" });
+    await runTaskCommand("task cancel", {
+      ref: "@task-command",
+      reason: "event coverage cancellation",
+    });
+    await runTaskCommand("task reset", { ref: "@task-command" });
+
+    await runTaskCommand("task add", {
+      title: "Created Event Task",
+      slug: "task-created-event",
+      specRef: "@test-feature",
+    });
+
+    await runTaskCommand("derive", {
+      ref: "@test-feature",
+      force: true,
+      title: "Derived Event Task",
+    });
+
+    const taskEvents = broadcastEvents.filter(
+      (entry) => entry.topic === "tasks:updates" && entry.event === "task_updated",
+    );
+    expect(taskEvents).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "created",
+            ref: "@task-created-event",
+            title: "Created Event Task",
+            old_status: null,
+            new_status: "pending",
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "created",
+            ref: "@task-test-feature",
+            title: "Derived Event Task",
+            old_status: null,
+            new_status: "pending",
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "set",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: null,
+            new_status: null,
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "note_added",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: null,
+            new_status: null,
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "block",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: "pending",
+            new_status: "blocked",
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "unblock",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: "blocked",
+            new_status: "pending",
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "cancel",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: "pending",
+            new_status: "cancelled",
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "reset",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: "cancelled",
+            new_status: "pending",
+          }),
+        }),
+      ]),
+    );
+    const noteEvent = taskEvents.find((entry) => entry.data.action === "note_added");
+    expect(noteEvent?.data.note_ulid).toEqual(expect.any(String));
+  });
+
+  // AC: @mutation-event-coverage ac-2
+  // AC: @mutation-event-coverage ac-5
+  it("emits a review_created event when review add runs through the command route", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "review add",
+        args: {
+          title: "Event Review",
+          slug: "event-review",
+          subjectType: "task",
+          subjectRef: "@task-test",
+        },
+      }),
+    });
+
+    expect(response.status).toBe(200);
+    expect((await response.json()).exitCode).toBe(0);
+    expect(broadcastEvents).toContainEqual(
+      expect.objectContaining({
+        topic: "reviews:updates",
+        event: "review_created",
+        data: expect.objectContaining({
+          title: "Event Review",
+          subject_type: "task",
+          subject_ref: "@task-test",
+          subject: expect.objectContaining({
+            type: "task",
+            ref: "@task-test",
+          }),
+          review_ulid: expect.any(String),
+        }),
+      }),
+    );
+    expect(broadcastEvents).toContainEqual(
+      expect.objectContaining({
+        topic: "tasks:updates",
+        event: "task_updated",
+        data: expect.objectContaining({
+          action: "review_linked",
+          ref: "@task-test",
+          ulid: TASK_ULID,
+          old_status: null,
+          new_status: null,
+        }),
+      }),
+    );
+  });
+
+  // AC: @mutation-event-coverage ac-1
+  // AC: @mutation-event-coverage ac-5
+  it("emits task events for review-linked verdict transitions through the command route", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+    const runCommand = async (command: string, args: Record<string, unknown>) => {
+      const response = await makeRequest("/api/command", {
+        method: "POST",
+        body: JSON.stringify({ command, args }),
+      });
+      const body = await response.json();
+      if (response.status !== 200 || body.exitCode !== 0) {
+        throw new Error(
+          `Command ${command} failed: ${JSON.stringify({ args, body, status: response.status })}`,
+        );
+      }
+      cacheSnapshot = await buildCacheSnapshot();
+      return body;
+    };
+
+    await runCommand("task start", { ref: "@task-command" });
+    await runCommand("task submit", { ref: "@task-command" });
+    await runCommand("review add", {
+      title: "Needs Work Event Review",
+      slug: "needs-work-event-review",
+      subjectType: "task",
+      subjectRef: "@task-command",
+    });
+    const reviewCreatedEvent = broadcastEvents.find(
+      (entry) =>
+        entry.topic === "reviews:updates" &&
+        entry.event === "review_created" &&
+        entry.data.title === "Needs Work Event Review",
+    );
+    const reviewUlid = reviewCreatedEvent?.data.review_ulid;
+    expect(reviewUlid).toEqual(expect.any(String));
+    await runCommand("review verdict", {
+      ref: `@${reviewUlid}`,
+      decision: "request_changes",
+    });
+
+    expect(broadcastEvents).toContainEqual(
+      expect.objectContaining({
+        topic: "tasks:updates",
+        event: "task_updated",
+        data: expect.objectContaining({
+          action: "review_linked",
+          ref: "@task-command",
+          ulid: COMMAND_TASK_ULID,
+          old_status: null,
+          new_status: null,
+        }),
+      }),
+    );
+    expect(broadcastEvents).toContainEqual(
+      expect.objectContaining({
+        topic: "tasks:updates",
+        event: "task_updated",
+        data: expect.objectContaining({
+          action: "needs_work",
+          ref: "@task-command",
+          ulid: COMMAND_TASK_ULID,
+          old_status: "pending_review",
+          new_status: "needs_work",
+        }),
+      }),
+    );
+  });
+
+  // AC: @mutation-event-coverage ac-2
+  // AC: @mutation-event-coverage ac-5
+  it("emits review_created subject identity for non-ref review subjects", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "review add",
+        args: {
+          title: "Code Event Review",
+          slug: "code-event-review",
+          subjectType: "code",
+          base: "base-commit",
+          head: "head-commit",
+          baseBranch: "feat/base",
+          headBranch: "feat/head",
+        },
+      }),
+    });
+
+    expect(response.status).toBe(200);
+    expect((await response.json()).exitCode).toBe(0);
+    expect(broadcastEvents).toContainEqual(
+      expect.objectContaining({
+        topic: "reviews:updates",
+        event: "review_created",
+        data: expect.objectContaining({
+          title: "Code Event Review",
+          subject_type: "code",
+          subject_ref: null,
+          subject: expect.objectContaining({
+            type: "code",
+            base_commit: "base-commit",
+            head_commit: "head-commit",
+            base_branch: "feat/base",
+            head_branch: "feat/head",
+          }),
+          review_ulid: expect.any(String),
+        }),
+      }),
+    );
+  });
+
+  // AC: @mutation-event-coverage ac-3
+  // AC: @mutation-event-coverage ac-5
+  it("emits spec item events for item create, change, and removal through the command route", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+
+    const createItem = async (
+      under: string,
+      title: string,
+      type: string,
+      slug: string,
+    ): Promise<{ _ulid: string; ref: string }> => {
+      const response = await makeRequest("/api/command", {
+        method: "POST",
+        body: JSON.stringify({
+          command: "item add",
+          args: {
+            json: true,
+            under,
+            title,
+            type,
+            slug,
+          },
+        }),
+      });
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      expect(body.exitCode).toBe(0);
+      const output = JSON.parse(body.stdout) as {
+        item?: { _ulid: string };
+        data?: { item?: { _ulid: string } };
+      };
+      const item = output.item ?? output.data?.item;
+      expect(item?._ulid).toEqual(expect.any(String));
+      cacheSnapshot = await buildCacheSnapshot();
+      return { _ulid: item!._ulid, ref: `@${item!._ulid}` };
+    };
+
+    const createdItem = await createItem(
+      "@test-feature",
+      "Event Child Requirement",
+      "requirement",
+      "event-child-requirement",
+    );
+    const nestedConstraint = await createItem(
+      createdItem.ref,
+      "Event Nested Constraint",
+      "constraint",
+      "event-nested-constraint",
+    );
+    const deepDecision = await createItem(
+      nestedConstraint.ref,
+      "Event Deep Decision",
+      "decision",
+      "event-deep-decision",
+    );
+    cacheSnapshot = await buildCacheSnapshot();
+
+    const setResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "item set",
+        args: { ref: createdItem.ref, title: "Renamed Event Child" },
+      }),
+    });
+    const setBody = await setResponse.json();
+    expect(setResponse.status, JSON.stringify(setBody)).toBe(200);
+    expect(setBody.exitCode).toBe(0);
+    cacheSnapshot = await buildCacheSnapshot();
+
+    const deleteResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "item delete",
+        args: { ref: createdItem.ref, cascade: true, force: true },
+      }),
+    });
+    expect(deleteResponse.status).toBe(200);
+    expect((await deleteResponse.json()).exitCode).toBe(0);
+
+    const itemEvents = broadcastEvents.filter(
+      (entry) => entry.topic === "items:updates" && entry.event === "spec_item_changed",
+    );
+    expect(itemEvents.map((entry) => entry.data.action)).toEqual([
+      "created",
+      "created",
+      "created",
+      "changed",
+      "removed",
+      "removed",
+      "removed",
+    ]);
+    expect(itemEvents.map((entry) => entry.data.title)).toEqual([
+      "Event Child Requirement",
+      "Event Nested Constraint",
+      "Event Deep Decision",
+      "Renamed Event Child",
+      "Event Nested Constraint",
+      "Event Deep Decision",
+      "Renamed Event Child",
+    ]);
+    expect(itemEvents.map((entry) => entry.data.item_ulid)).toEqual([
+      createdItem._ulid,
+      nestedConstraint._ulid,
+      deepDecision._ulid,
+      createdItem._ulid,
+      nestedConstraint._ulid,
+      deepDecision._ulid,
+      createdItem._ulid,
+    ]);
+  });
+
+  // AC: @mutation-event-naming ac-1
+  // AC: @mutation-event-naming ac-2
+  // AC: @mutation-event-naming ac-3
+  it("enumerates entity event vocabulary with owning topics and reserved families", () => {
+    const allowedEndings = new Set([
+      "acted",
+      "added",
+      "changed",
+      "created",
+      "deleted",
+      "reopened",
+      "replied",
+      "resolved",
+      "submitted",
+      "updated",
+    ]);
+    const topicBySubject = new Map<string, string>();
+
+    for (const entry of ENTITY_EVENT_VOCABULARY) {
+      const segments = entry.event.split("_");
+      const ending = segments.at(-1);
+      const subject = segments.slice(0, -1).join("_");
+      expect(ending).toBeDefined();
+      expect(allowedEndings.has(ending!)).toBe(true);
+      expect(subject.length).toBeGreaterThan(0);
+
+      const priorTopic = topicBySubject.get(subject);
+      if (priorTopic) {
+        expect(entry.topic).toBe(priorTopic);
+      } else {
+        topicBySubject.set(subject, entry.topic);
+      }
+    }
+
+    expect(ENTITY_EVENT_FAMILY_RESERVATIONS).toEqual([
+      { family: "plan_revision", topic: "plans:updates" },
+      { family: "coverage_state", topic: "items:updates" },
+    ]);
   });
 
   // AC: @daemon-command-api ac-mutation-cache-update

@@ -426,6 +426,10 @@ function getReadyTaskCache(): TaskReadCache | null {
 }
 
 const TASK_MUTATION_ACTIONS: Record<string, string> = {
+  "api-task-start": "start",
+  "api-task-submit": "submit",
+  "api-task-complete": "complete",
+  "api-task-block": "block",
   "task-start": "start",
   "task-submit": "submit",
   "task-complete": "complete",
@@ -436,6 +440,12 @@ const TASK_MUTATION_ACTIONS: Record<string, string> = {
   "task-needs-work": "needs_work",
   "task-set": "set",
   "task-patch": "patch",
+  "task-note": "note_added",
+  "task-todo-add": "todo_added",
+  "task-todo-done": "todo_done",
+  "task-todo-undone": "todo_undone",
+  "review-link": "review_linked",
+  "review-verdict-needs-work": "needs_work",
 };
 
 function taskEventRef(task: LoadedTask): string {
@@ -447,12 +457,36 @@ function buildTaskMutationEvent(
   after: LoadedTask,
   commitOpts?: ShadowCommitOptions,
 ): MutationEventDescriptor | null {
-  if (!commitOpts || commitOpts.skipCommit) {
+  const action = commitOpts ? TASK_MUTATION_ACTIONS[commitOpts.operation] : "changed";
+  if (!action && commitOpts?.operation) {
     return null;
   }
 
-  const action = TASK_MUTATION_ACTIONS[commitOpts.operation];
-  if (!action) {
+  const data: Record<string, unknown> = {
+    ref: taskEventRef(after),
+    ulid: after._ulid,
+    action,
+    title: after.title,
+    old_status: before.status === after.status ? null : before.status,
+    new_status: before.status === after.status ? null : after.status,
+  };
+
+  if (action === "note_added" && after.notes.length > before.notes.length) {
+    data.note_ulid = after.notes.at(-1)?._ulid;
+  }
+
+  return {
+    topic: "tasks:updates",
+    event: "task_updated",
+    data,
+  };
+}
+
+function buildTaskCreatedEvent(
+  task: LoadedTask,
+  commitOpts?: ShadowCommitOptions,
+): MutationEventDescriptor | null {
+  if (commitOpts?.skipCommit) {
     return null;
   }
 
@@ -460,12 +494,12 @@ function buildTaskMutationEvent(
     topic: "tasks:updates",
     event: "task_updated",
     data: {
-      ref: taskEventRef(after),
-      ulid: after._ulid,
-      action,
-      title: after.title,
-      old_status: before.status === after.status ? null : before.status,
-      new_status: before.status === after.status ? null : after.status,
+      ref: taskEventRef(task),
+      ulid: task._ulid,
+      action: "created",
+      title: task.title,
+      old_status: null,
+      new_status: task.status,
     },
   };
 }
@@ -476,6 +510,13 @@ function recordTaskMutationEvent(
   commitOpts?: ShadowCommitOptions,
 ): void {
   const event = buildTaskMutationEvent(before, after, commitOpts);
+  if (event) {
+    recordMutationEvents([event]);
+  }
+}
+
+function recordTaskCreatedEvent(task: LoadedTask, commitOpts?: ShadowCommitOptions): void {
+  const event = buildTaskCreatedEvent(task, commitOpts);
   if (event) {
     recordMutationEvents([event]);
   }
@@ -942,6 +983,7 @@ export class TaskDataManager {
     // Propagate new task to entity cache immediately.
     const cache = getReadyTaskCache();
     cache?.applyTaskMutation?.(result._ulid, result);
+    recordTaskCreatedEvent(result, commitOpts);
 
     return result;
   }
@@ -1117,7 +1159,7 @@ export class TaskDataManager {
     // AC: @task-data-manager ac-10 — delete + mutate fully complete before other begins
     const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
     try {
-      return await this.withWriteBuffer(ctx, commitOpts, async () => {
+      await this.withWriteBuffer(ctx, commitOpts, async () => {
         // Delegate entirely to the backend — it decides how to locate and
         // remove the task based on its own storage format. The manager does
         // not require _sourceFile; a split backend may use other metadata.
@@ -1125,6 +1167,22 @@ export class TaskDataManager {
         // AC: @task-data-manager ac-8 — split backend owns its own deletion path
         await this.backend.deleteTask(ctx, task);
       });
+      if (commitOpts && !commitOpts.skipCommit && commitOpts.operation === "task-delete") {
+        recordMutationEvents([
+          {
+            topic: "tasks:updates",
+            event: "task_updated",
+            data: {
+              ref: taskEventRef(task),
+              ulid: task._ulid,
+              action: "deleted",
+              title: task.title,
+              old_status: task.status,
+              new_status: null,
+            },
+          },
+        ]);
+      }
     } finally {
       releaseTaskLock();
     }

@@ -260,6 +260,8 @@ describe("Plan Resource API", () => {
 
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
   // AC: @shared-mutation-pipeline ac-2
+  // AC: @mutation-event-coverage ac-4
+  // AC: @mutation-event-coverage ac-5
   it("POST /api/plans/:ref/resources creates a new resource and returns 201", async () => {
     writePlanFolderWithResources({});
     const broadcastSpy = captureBroadcasts(pubsub);
@@ -298,6 +300,8 @@ describe("Plan Resource API", () => {
   });
 
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  // AC: @mutation-event-coverage ac-4
+  // AC: @mutation-event-coverage ac-5
   it("POST with replace=true overwrites an existing resource and returns 200", async () => {
     writePlanFolderWithResources({
       resources: [
@@ -306,6 +310,7 @@ describe("Plan Resource API", () => {
     });
     const newBytes = Buffer.from([9, 9, 9]);
     const blob = new Blob([newBytes], { type: "image/png" });
+    const broadcastSpy = captureBroadcasts(pubsub);
     const response = await postUpload({
       file: blob,
       id: "shot",
@@ -316,6 +321,16 @@ describe("Plan Resource API", () => {
     const body = await response.json();
     expect(body.replaced).toBe(true);
     expect(body.resource.bytes).toBe(3);
+    expect(broadcastSpy).toHaveBeenCalledWith(
+      "plans:updates",
+      "plan_resource_changed",
+      {
+        plan_ulid: PLAN_ULID,
+        resource_id: "shot",
+        action: "replaced",
+      },
+      tempDir,
+    );
     const verify = await request(`/api/plans/${PLAN_REF}/resources/shot/bytes`);
     expect(Buffer.from(await verify.arrayBuffer()).equals(newBytes)).toBe(true);
   });
@@ -459,6 +474,8 @@ describe("Plan Resource API", () => {
 
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
   // AC: @shared-mutation-pipeline ac-2
+  // AC: @mutation-event-coverage ac-4
+  // AC: @mutation-event-coverage ac-5
   it("DELETE /api/plans/:ref/resources/:resourceId removes the resource and file", async () => {
     writePlanFolderWithResources({
       resources: [
