@@ -57,7 +57,7 @@ description: |
 spec_ref: "@shared-mutation-pipeline"
 plan_ref: "@plan-dispatch-mutation-service"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -67,6 +67,14 @@ tags:
   - infra
   - implementation
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-shared-mutation-pipeline/01kvc30t
+  captured_at: 2026-06-18T04:52:07.822Z
+  commit: bfde105acd982fb9424afb538d18769e20e1d64e
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-shared-mutation-pipeline/01kvc30t
 session_id: 01KVCFACR15QQAZ1DDFP6FAKQA
 history:
   - author: Jacob Chapel
@@ -89,7 +97,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-18T04:20:54.763Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-shared-mutation-pipeline/01kvc30t
+          captured_at: 2026-06-18T04:52:07.822Z
+          commit: bfde105acd982fb9424afb538d18769e20e1d64e
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-shared-mutation-pipeline/01kvc30t
+        previous: null
+      submitted_at:
+        new: 2026-06-18T04:52:07.827Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-18T04:52:07.827Z
 created_at: 2026-06-18T00:45:12.026Z
 started_at: 2026-06-18T04:20:54.762Z
+submitted_at: 2026-06-18T04:52:07.827Z
 todos: []
 automation: eligible
