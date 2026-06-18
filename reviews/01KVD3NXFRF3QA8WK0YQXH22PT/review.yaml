@@ -204,6 +204,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-18T10:31:35.002Z
+  - _ulid: 01KVD5QTDQA9C8VSRJ2ZM1H3T1
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVD4JB46DHECVEB88DQ23KD5
+    timestamp: 2026-06-18T10:51:57.239Z
 examined_commit: 0f12d200a1094a27e2acf794d6987eed45200dcf
 external_links: []
 lifecycle_state: closed
@@ -237,6 +243,13 @@ threads:
           src/cli/commands/inbox.ts:276, src/cli/commands/plan.ts:1946, and src/triage/actions.ts:80
           call `createTask` without create-event commit metadata.'
         created_at: 2026-06-18T10:31:29.158Z
+      - _ulid: 01KVD5QT5X5RBBAH6TEGB82M7K
+        author: Jacob Chapel
+        body: "Fixed: task creation event recording now skips only explicit skipCommit calls instead of
+          requiring operation=task-add, so derive and createTask callers without commit metadata can
+          record task_updated created events. Added behavioral coverage for derive via /api/command
+          and for metadata-free createTask calls through the mutation event collector."
+        created_at: 2026-06-18T10:51:56.989Z
     kind: blocker
   - _ulid: 01KVD4JDY4MRF25HXZ8ESB3QMS
     entries:
@@ -290,5 +303,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-18T10:31:35.002Z
 created_at: 2026-06-18T10:15:57.688Z
-updated_at: 2026-06-18T10:31:35.002Z
+updated_at: 2026-06-18T10:51:56.989Z
 notes: []
