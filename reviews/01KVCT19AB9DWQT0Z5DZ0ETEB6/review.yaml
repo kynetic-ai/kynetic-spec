@@ -151,6 +151,12 @@ events:
       kind: blocker
       thread_ulid: 01KVCV1F276J0R7VY9RKA7FHD3
     timestamp: 2026-06-18T07:44:59.211Z
+  - _ulid: 01KVCV39H45CSEGEF1EX814C71
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVCV1F276J0R7VY9RKA7FHD3
+    timestamp: 2026-06-18T07:45:58.820Z
 examined_commit: e8d4209b8b1f4c03ce6202670b792d1aecbfb714
 external_links: []
 lifecycle_state: open
@@ -180,8 +186,15 @@ threads:
           never be silently discarded. Route this through the same logged recovery path used for
           workspace provisioning/validation, or log  here."
         created_at: 2026-06-18T07:44:58.952Z
+      - _ulid: 01KVCV397EZYRVWH79WD6K0JK3
+        author: Jacob Chapel
+        body: "Clarification: the swallowed rejection is from _blockTask(), and the logged detail should
+          include the underlying error, e.g. by passing the caught error through
+          describeBookkeepingError(err). The core issue remains that the catch at lines 2734-2735 is
+          empty."
+        created_at: 2026-06-18T07:45:58.510Z
     kind: blocker
 verdicts: []
 created_at: 2026-06-18T07:27:24.491Z
-updated_at: 2026-06-18T07:44:58.952Z
+updated_at: 2026-06-18T07:45:58.510Z
 notes: []
