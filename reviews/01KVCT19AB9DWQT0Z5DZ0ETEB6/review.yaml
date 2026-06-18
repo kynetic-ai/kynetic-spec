@@ -157,6 +157,13 @@ events:
     payload:
       thread_ulid: 01KVCV1F276J0R7VY9RKA7FHD3
     timestamp: 2026-06-18T07:45:58.820Z
+  - _ulid: 01KVCV4423HCW61NNCPNE89Y5M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVCV43S1KH0N4XMVHP909GN4
+    timestamp: 2026-06-18T07:46:25.987Z
 examined_commit: e8d4209b8b1f4c03ce6202670b792d1aecbfb714
 external_links: []
 lifecycle_state: open
@@ -194,7 +201,28 @@ threads:
           empty."
         created_at: 2026-06-18T07:45:58.510Z
     kind: blocker
+  - _ulid: 01KVCV43S1KH0N4XMVHP909GN4
+    entries:
+      - _ulid: 01KVCV43S1CKJM7N8WVZH3A1BM
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; src/agent-runtime/task-bookkeeping.ts;
+          src/agent-runtime/invocation.ts; src/agent-runtime/dispatch.ts;
+          packages/daemon/src/routes/agent-dispatch.ts; packages/daemon/src/routes/tasks.ts;
+          src/mutation-pipeline.ts; changed tests in tests/agent-invocation-lifecycle.test.ts,
+          tests/agent-dispatch-engine.test.ts, tests/invocation-daemon-isolation.test.ts,
+          tests/invocation-stall-watchdog.test.ts, tests/agent-invocation-secret-redaction.test.ts,
+          tests/dispatch-runtime-bootstrap-contract.test.ts. Commands run: task/spec/review lookups;
+          git diff/stat/name-only/diff-check; rg scans for subprocess mutation calls, AC
+          annotations, source-scanning patterns; kspec validate refs/alignment/completeness; npm run
+          format:check; npm run lint -- --quiet; focused npx oxlint on changed files; npm run
+          typecheck; npm test. Claims verified: direct invocation bookkeeping no longer uses missing
+          kspecCliPath; task update event descriptors match daemon task API note/block payload
+          shape; focused lint warnings are pre-existing on base. Categories searched: correctness,
+          error handling, test quality, integration, AC coverage, and leftover subprocess mutation
+          paths."
+        created_at: 2026-06-18T07:46:25.697Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-18T07:27:24.491Z
-updated_at: 2026-06-18T07:45:58.510Z
+updated_at: 2026-06-18T07:46:25.697Z
 notes: []
