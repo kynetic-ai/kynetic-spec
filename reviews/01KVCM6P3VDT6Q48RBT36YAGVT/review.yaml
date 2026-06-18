@@ -1,0 +1,26 @@
+_ulid: 01KVCM6P3VDT6Q48RBT36YAGVT
+slugs: []
+title: Review shared mutation pipeline fix cycle
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVCM6P3VSZW80AXEQ5YZRMAC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-18T05:45:29.979Z
+examined_commit: fea84ff19a9cab40c1f1951e51c5eb5dfddbc6cf
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVC30TET9KW77D8P1Q345PZP"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-18T05:45:29.979Z
+updated_at: null
+notes: []
