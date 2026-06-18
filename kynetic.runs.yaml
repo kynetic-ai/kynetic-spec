@@ -68840,7 +68840,7 @@ runs:
     completed_at: 2026-06-18T04:55:19.149Z
   - _ulid: 01KVCJEFRETZRAQAXQQK1ME5J2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -68854,7 +68854,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T05:15:26.458Z
-        completed_at: 2026-06-18T05:15:26.458Z
+        completed_at: 2026-06-18T05:15:40.884Z
+        notes: "Friction points: the submitted tests proved the pipeline class ordering and route happy-path
+          payloads, but did not cover route-level late failures after partial side effects.
+          Detecting incomplete extraction required manual cross-reading of route call order rather
+          than a focused failure-injection test that would fail when mutations happen before the
+          shared pipeline apply callback."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T05:15:40.884Z
+        completed_at: 2026-06-18T05:15:40.884Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-18T05:14:48.462Z
