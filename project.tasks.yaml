@@ -32535,7 +32535,7 @@
   type: task
   spec_ref: "@mutation-event-coverage"
   plan_ref: "@plan-dispatch-mutation-service"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-command-path-typed-events"
@@ -32548,7 +32548,7 @@
   notes_count: 13
   todos_count: 0
   created_at: 2026-06-18T00:45:12.792Z
-  started_at: 2026-06-18T10:37:17.342Z
+  started_at: 2026-06-18T11:19:21.436Z
   submitted_at: 2026-06-18T10:53:16.620Z
   automation: eligible
 - _ulid: 01KVC30VGXGQJ23PVYQWJB84DN
