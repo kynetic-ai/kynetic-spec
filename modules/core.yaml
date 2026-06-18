@@ -2532,7 +2532,7 @@ features:
           shapes, and legacy records load and validate without modification.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@review-comment-threads-and-anchors"
         implements: []
