@@ -77,6 +77,17 @@ checks:
     runner: kspec
     created_at: 2026-06-18T09:01:34.785Z
     completed_at: 2026-06-18T09:01:34.785Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; warnings were existing missing/invalid
+      AC annotation baseline. Manual review still found a task-specific AC test-quality blocker.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T09:01:46.141Z
+    completed_at: 2026-06-18T09:01:46.141Z
 events:
   - _ulid: 01KVCYNRMSXKRR4FNT25494D7M
     actor: Jacob Chapel
@@ -140,6 +151,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-18T09:01:35.021Z
+  - _ulid: 01KVCZE2GHHBA8DAGFRRGA3095
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-18T09:01:46.386Z
 examined_commit: a19ac97e767c7542d75f92ff8e2d2c8dae5ef231
 external_links: []
 lifecycle_state: open
@@ -152,5 +170,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-18T08:48:29.849Z
-updated_at: 2026-06-18T09:01:34.785Z
+updated_at: 2026-06-18T09:01:46.141Z
 notes: []
