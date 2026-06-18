@@ -2,7 +2,84 @@ _ulid: 01KVCPKXFWYF4YX4CCNXGV07RX
 slugs: []
 title: Review task-command-path-typed-events
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check reported all 1088 matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-18T06:41:00.014Z
+    completed_at: 2026-06-18T06:41:00.014Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo lint passed with 0 errors. Focused changed-file lint also passed: npx oxlint
+      packages/daemon/src/routes/command.ts src/mutation-pipeline.ts src/parser/task-data-manager.ts
+      tests/daemon-command-api.test.ts reported 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-18T06:41:02.855Z
+    completed_at: 2026-06-18T06:41:02.855Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared and tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-18T06:41:05.634Z
+    completed_at: 2026-06-18T06:41:05.634Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2882 test suites passed; 10942 tests passed, 3 skipped; duration 2464.7s. Full
+      log: /tmp/kspec-test-cache/01KVCPJ4CXSS6V4W57WPBVGTKS/354fe37f37b45b6a.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-18T06:41:08.428Z
+    completed_at: 2026-06-18T06:41:08.428Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: schema OK, references OK; existing deprecated-reference
+      warnings reported."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-18T06:41:11.327Z
+    completed_at: 2026-06-18T06:41:11.327Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: schema OK, references OK; existing orphan/status alignment
+      warnings reported."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-18T06:41:14.185Z
+    completed_at: 2026-06-18T06:41:14.185Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: schema OK, references OK; existing completeness/annotation
+      warnings reported. New @shared-mutation-pipeline ac-3 and ac-5 annotations are present in
+      tests/daemon-command-api.test.ts."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-18T06:41:17.209Z
+    completed_at: 2026-06-18T06:41:17.209Z
 events:
   - _ulid: 01KVCPKXFWWFM74E9JHKRREFDY
     actor: Jacob Chapel
@@ -17,17 +94,130 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-18T06:29:06.473Z
+  - _ulid: 01KVCQCAADXJF2DT5606CMN9QG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-18T06:41:00.237Z
+  - _ulid: 01KVCQCD4Q8KG4VBRBH7BYJ1A2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-18T06:41:03.128Z
+  - _ulid: 01KVCQCFTK9568DD7RV3YPSGRQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-18T06:41:05.875Z
+  - _ulid: 01KVCQCJH7S3V77JHQ953ZJFZ8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-18T06:41:08.648Z
+  - _ulid: 01KVCQCNCJBZ1CGHH6WWRJBPFS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-18T06:41:11.570Z
+  - _ulid: 01KVCQCR5TD1B3EP12G16Y8GB4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-18T06:41:14.426Z
+  - _ulid: 01KVCQCV4EB4GWBJ3S38CTSHCS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-18T06:41:17.454Z
+  - _ulid: 01KVCQCY23HBZAZ6GCACD14E33
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVCQCXT54ESRTK7TZZXJ6JQQ
+    timestamp: 2026-06-18T06:41:20.451Z
+  - _ulid: 01KVCQD13FZRJF86EDAY9K0A1C
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-18T06:41:23.567Z
+  - _ulid: 01KVCQD13FBEVQSPCV9VZ9CMEX
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-18T06:41:23.567Z
 examined_commit: 665d4d420d2efcf995b7bf3b2cd7e868e287908d
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVC30TT5QTKT0Q8KVPPSJKHT"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVCQCXT54ESRTK7TZZXJ6JQQ
+    entries:
+      - _ulid: 01KVCQCXT5CAEE02HJ6JQQ4GV8
+        author: Jacob Chapel
+        body: >-
+          Evidence log (non-finding):
+
+
+          Files read: kspec-agents.md; task/spec/plan records for @01KVC30TT5QTKT0Q8KVPPSJKHT,
+          @shared-mutation-pipeline, and @plan-dispatch-mutation-service; changed files
+          packages/daemon/src/routes/command.ts, src/mutation-pipeline.ts,
+          src/parser/task-data-manager.ts, tests/daemon-command-api.test.ts; surrounding context in
+          packages/daemon/src/routes/tasks.ts, packages/daemon/src/routes/mutation-pipeline.ts,
+          src/cli/batch-exec.ts, and src/cli/commands/task.ts.
+
+
+          Commands run: git diff/stat/name-only/log/diff --check; rg for AC annotations and event
+          pipeline call sites; kspec item/task/plan/review lookups; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; npm run format:check; npx oxlint on
+          changed files; npm run lint -- --quiet; npm run typecheck; npm test.
+
+
+          Claims verified: command-path task mutations now collect task_updated descriptors from
+          TaskDataManager and flush them after command-route cache write-through; batch execution
+          keeps the legacy batch_executed broadcast while emitting one task_updated event per
+          affected task; existing REST task route payload schema matches the command-path task event
+          keys.
+
+
+          Categories searched: correctness, edge cases around batch buffering/skipCommit, error and
+          failed-command paths, test quality/AC annotation validity, integration with REST route
+          payloads and web UI task subscriptions. No blocking findings.
+        created_at: 2026-06-18T06:41:20.197Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-18T06:41:23.567Z
 created_at: 2026-06-18T06:27:40.668Z
-updated_at: 2026-06-18T06:29:06.239Z
+updated_at: 2026-06-18T06:41:23.567Z
 notes: []
