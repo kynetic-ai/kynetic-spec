@@ -1,1 +1,21 @@
-notes: []
+notes:
+  - _ulid: 01KVCPXW73AAKZJC6P2AZJKX6F
+    content: >-
+      Approach: add a shared agent-runtime task bookkeeping helper that applies note/block mutations
+      through createMutationPipeline using TaskDataManager, optional cache/pubsub capabilities, and
+      task update event descriptors matching the task API schema. Wire runInvocation and
+      DispatchEngine helpers to it; daemon dispatch passes pubsub while the helper uses optional
+      cache/pubsub so one-shot agent runs degrade without broadcast/cache.
+
+      Edge cases: note mutation failure inside invocation catch path; block mutation failure after
+      retry threshold; absent daemon cache/pubsub; invalid task refs; existing mutation lock env
+      remains only for spawned agents' own kspec calls, not engine bookkeeping.
+
+      Test plan: behavioral invocation tests for @dispatch-mutation-transparency ac-3/ac-4 with
+      injected failing bookkeeping in one-shot and dispatch-like modes; integration-style helper
+      test for ac-1/ac-2 proving a failure note uses in-process pipeline broadcast and does not use
+      kspecCliPath/subprocess; focused dispatch helper coverage for migrated _addTaskNote/_blockTask
+      remains async.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T06:33:07.044Z
