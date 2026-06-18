@@ -70215,7 +70215,7 @@ runs:
     completed_at: 2026-06-18T23:31:36.177Z
   - _ulid: 01KVEJ43J6GP0KQP6279B0X5EY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70229,7 +70229,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T23:48:05.561Z
-        completed_at: 2026-06-18T23:48:05.561Z
+        completed_at: 2026-06-18T23:48:37.664Z
+        notes: "High-confidence items: Success — the actor-field inventory completeness guard caught the
+          newly added plan revisions[].author schema field before actor normalization could miss it,
+          and the existing actor-normalization upgrade suite gave a direct fixture location for
+          coverage. Friction — full npm test duration/progress is already tracked by inbox
+          @01KTW9G9; workflow reflect docs/CLI run-ref mismatch is already tracked by inbox
+          @01KTWCCAS. No duplicate friction capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T23:48:37.664Z
+        completed_at: 2026-06-18T23:48:37.664Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T23:47:37.158Z
