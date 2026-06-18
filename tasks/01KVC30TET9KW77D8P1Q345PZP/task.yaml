@@ -57,7 +57,7 @@ description: |
 spec_ref: "@shared-mutation-pipeline"
 plan_ref: "@plan-dispatch-mutation-service"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -76,7 +76,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-shared-mutation-pipeline/01kvc30t
-session_id: null
+session_id: 01KVCJMXB81M1E4BF98ERTBG9C
 history:
   - author: Jacob Chapel
     changes:
@@ -135,8 +135,21 @@ history:
         previous: 01KVCFACR15QQAZ1DDFP6FAKQA
     command: review-verdict-needs-work
     timestamp: 2026-06-18T05:14:08.442Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KVCJMXB81M1E4BF98ERTBG9C
+        previous: null
+      started_at:
+        new: 2026-06-18T05:19:14.472Z
+        previous: 2026-06-18T04:20:54.762Z
+    command: task-start
+    timestamp: 2026-06-18T05:19:14.473Z
 created_at: 2026-06-18T00:45:12.026Z
-started_at: 2026-06-18T04:20:54.762Z
+started_at: 2026-06-18T05:19:14.472Z
 submitted_at: 2026-06-18T04:52:07.827Z
 todos: []
 automation: eligible
