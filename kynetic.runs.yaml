@@ -69681,7 +69681,7 @@ runs:
     completed_at: 2026-06-18T10:13:54.742Z
   - _ulid: 01KVD4M5YR3KWNGGHW8CJRS5PE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69695,7 +69695,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T10:33:01.831Z
-        completed_at: 2026-06-18T10:33:01.831Z
+        completed_at: 2026-06-18T10:34:54.602Z
+        notes: "Duplicate checks completed before capture: workflow-show run-ref friction is already covered
+          by existing tracking found in observations/inbox; review-check batching and long
+          full-suite gate friction are also already tracked. Unique high-confidence success captured
+          as @01KVD4R6: mutation-event reviews should enumerate all writer/mutation interfaces for
+          the affected entity, not just the AC-tagged command path."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T10:34:54.602Z
+        completed_at: 2026-06-18T10:34:54.602Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T10:32:29.400Z
