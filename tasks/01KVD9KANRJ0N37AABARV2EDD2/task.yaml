@@ -11,7 +11,7 @@ description: "During review of @01KVC30V6R468JZTF5BHVVYKB0 on 2026-06-18, full n
 spec_ref: "@daemon-sensitive-cli-test-determinism"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -20,6 +20,14 @@ tags:
   - test
   - flaky
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/stabilize-flaky-session-watcher-active-session-detection-test/01kvd9ka
+  captured_at: 2026-06-18T12:18:05.548Z
+  commit: dea376c424b5bfb5d0ee7b95b9570fb2fd9321e4
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KVD9MSDA3PW4TM22VP6X9BKM
 history:
   - author: Jacob Chapel
@@ -49,7 +57,28 @@ history:
         previous: "@daemon-file-monitoring"
     command: task-set
     timestamp: 2026-06-18T12:17:05.918Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/stabilize-flaky-session-watcher-active-session-detection-test/01kvd9ka
+          captured_at: 2026-06-18T12:18:05.548Z
+          commit: dea376c424b5bfb5d0ee7b95b9570fb2fd9321e4
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-18T12:18:05.554Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-18T12:18:05.554Z
 created_at: 2026-06-18T11:59:24.344Z
 started_at: 2026-06-18T12:00:56.150Z
+submitted_at: 2026-06-18T12:18:05.554Z
 todos: []
 automation: eligible
