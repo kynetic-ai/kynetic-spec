@@ -20042,7 +20042,7 @@ workspaces:
         head: dea376c424b5bfb5d0ee7b95b9570fb2fd9321e4
         last_seen_at: 2026-06-18T12:21:47.347Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-flaky-session-watcher-active-session-detection-test-01kvd9ka
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: d1183ad57015a8b808093382206b800aa903b0ca
     bootstrap:
       status: succeeded
@@ -20515,25 +20515,25 @@ workspaces:
     canonical_branch: dispatch/task/task-ui-targeted-consumption/01kvc30v
     canonical_branch_head: 88b0691213ac017059815e1fa58f064e997647c2
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-06-18T20:09:19.561Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-06-18T20:29:19.326Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T20:09:55.685Z
+      updated_at: 2026-06-18T20:29:19.326Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: d1183ad57015a8b808093382206b800aa903b0ca
-      updated_at: 2026-06-18T20:09:19.561Z
-    lifecycle_state: integrating
+      updated_at: 2026-06-18T20:29:19.326Z
+    lifecycle_state: closing
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVC30VVC1G051BP2QT5RPX3R
     task_ref: "@01KVC30VVC1G051BP2QT5RPX3R"
@@ -20541,9 +20541,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-18T20:09:55.685Z
-      last_reconciled_at: 2026-06-18T20:09:55.685Z
+      last_reconciled_at: 2026-06-18T20:29:19.326Z
       created_at: 2026-06-18T12:22:37.754Z
-      updated_at: 2026-06-18T20:09:55.685Z
+      updated_at: 2026-06-18T20:29:19.326Z
     workspace_id: dispatch-workspace-01KVC30VVC1G051BP2QT5RPX3R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
