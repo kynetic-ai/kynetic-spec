@@ -96,6 +96,59 @@ describe("Review Record Storage and Identity", () => {
     await expect(fs.stat(plansPath)).rejects.toThrow();
   });
 
+  // AC: @review-spec-ac-anchors ac-legacy-anchors-load
+  it("loads legacy loose structured AC anchors from monolithic storage unchanged", async () => {
+    const ctx = makeCtx(kspecDir);
+    const [reviewUlid, threadUlid, entryUlid] = testUlids("REV", 3);
+    await fs.writeFile(
+      getReviewsFilePath(ctx),
+      `kynetic_reviews: "1.0"
+reviews:
+  - _ulid: ${reviewUlid}
+    slugs:
+      - legacy-structured-ac-anchor
+    title: Legacy Structured AC Anchor
+    lifecycle_state: open
+    subject:
+      type: spec
+      ref: "@legacy-spec"
+      shadow_commit: abc123
+      content_hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+    author: "@reviewer"
+    related_refs: []
+    threads:
+      - _ulid: ${threadUlid}
+        kind: nit
+        anchor:
+          type: structured
+          ref: "@legacy-spec"
+          section: acceptance_criteria
+          field: ac-legacy-load
+        entries:
+          - _ulid: ${entryUlid}
+            author: "@reviewer"
+            body: Legacy loose AC anchor.
+            created_at: "2026-06-18T00:00:00.000Z"
+    checks: []
+    verdicts: []
+    events: []
+    notes: []
+    external_links: []
+    examined_commit:
+    created_at: "2026-06-18T00:00:00.000Z"
+`,
+    );
+
+    const loaded = await loadReviewRecords(ctx);
+    expect(loaded).toHaveLength(1);
+    expect(loaded[0].threads[0].anchor).toEqual({
+      type: "structured",
+      ref: "@legacy-spec",
+      section: "acceptance_criteria",
+      field: "ac-legacy-load",
+    });
+  });
+
   // AC: @review-record-storage-and-identity ac-1
   it("should persist all review record fields", async () => {
     const ctx = makeCtx(kspecDir);

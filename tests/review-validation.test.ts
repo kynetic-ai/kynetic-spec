@@ -349,6 +349,33 @@ describe("actionable validation feedback", () => {
     expect(versionError!.message).toContain("code_compare, entity_version");
   });
 
+  // AC: @review-spec-ac-anchors ac-anchor-variant-guidance
+  it("should enumerate spec AC anchors in invalid anchor type guidance", () => {
+    const result = validateReviewRecord(
+      validReviewRecord({
+        threads: [
+          {
+            _ulid: VALID_ULID_2,
+            kind: "nit",
+            anchor: { type: "bad_anchor" },
+            entries: [
+              {
+                _ulid: VALID_ULID_3,
+                author: "@reviewer",
+                body: "Bad anchor.",
+                created_at: VALID_DATE,
+              },
+            ],
+          },
+        ],
+      }),
+    );
+    expect(result.valid).toBe(false);
+    const anchorError = result.errors.find((e) => e.path?.includes("anchor"));
+    expect(anchorError).toBeDefined();
+    expect(anchorError!.message).toContain("code, structured, spec_ac, plan_text");
+  });
+
   // AC: @review-record-validation ac-2
   it("should provide actionable message for empty title", () => {
     const result = validateReviewRecord(validReviewRecord({ title: "" }));

@@ -34,7 +34,13 @@ import {
   getReviewIndexFilePath,
   rebuildReviewIndex,
 } from "../src/parser/review-storage-manager.js";
-import { cleanupTempDir, createTempDir, initGitRepo, readTestOutput } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  readTestOutput,
+  testUlid,
+} from "./helpers/cli.js";
 import { resolveResourceReference } from "../src/parser/entity-local-resources.js";
 
 interface FolderCtx {
@@ -642,6 +648,73 @@ describe("Folder-backed review storage manager", () => {
     expect(titlesByUlid.get(a._ulid)).toBe("Review A");
     expect(titlesByUlid.get(b._ulid)).toBe("Review B");
     expect(titlesByUlid.get(c._ulid)).toBe("Review C");
+  });
+
+  // AC: @review-spec-ac-anchors ac-legacy-anchors-load
+  it("loads legacy loose structured AC anchors from folder storage unchanged", async () => {
+    const reviewUlid = testUlid("REV", 20);
+    const threadUlid = testUlid("THR", 20);
+    const entryUlid = testUlid("ENT", 20);
+    const seedReview = makeReview({
+      _ulid: reviewUlid,
+      title: "Legacy Folder Structured AC Anchor",
+      slugs: ["legacy-folder-structured-ac-anchor"],
+      subject: {
+        type: "spec",
+        ref: "@legacy-spec",
+        shadow_commit: "abc123",
+        content_hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      },
+    });
+    await saveReviewRecord(ctx as any, { ...seedReview, _sourceFile: undefined });
+
+    const reviewDir = getReviewDir(ctx as any, reviewUlid);
+    await fs.mkdir(reviewDir, { recursive: true });
+    await fs.writeFile(
+      getReviewDetailFilePath(ctx as any, reviewUlid),
+      `_ulid: ${reviewUlid}
+slugs:
+  - legacy-folder-structured-ac-anchor
+title: Legacy Folder Structured AC Anchor
+lifecycle_state: open
+subject:
+  type: spec
+  ref: "@legacy-spec"
+  shadow_commit: abc123
+  content_hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+author: "@reviewer"
+related_refs: []
+threads:
+  - _ulid: ${threadUlid}
+    kind: nit
+    anchor:
+      type: structured
+      ref: "@legacy-spec"
+      section: acceptance_criteria
+      field: ac-legacy-load
+    entries:
+      - _ulid: ${entryUlid}
+        author: "@reviewer"
+        body: Legacy loose folder AC anchor.
+        created_at: "2026-06-18T00:00:00.000Z"
+checks: []
+verdicts: []
+events: []
+notes: []
+external_links: []
+examined_commit:
+created_at: "2026-06-18T00:00:00.000Z"
+`,
+    );
+
+    const loaded = await loadReviewRecords(ctx as any);
+    expect(loaded).toHaveLength(1);
+    expect(loaded[0].threads[0].anchor).toEqual({
+      type: "structured",
+      ref: "@legacy-spec",
+      section: "acceptance_criteria",
+      field: "ac-legacy-load",
+    });
   });
 
   // ── Index Consistency After Normal Mutations ─────────────────────────────

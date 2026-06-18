@@ -48,6 +48,7 @@ import {
   ReviewDispositionSchema,
   ReviewCheckStatusSchema,
   ReviewLifecycleStateSchema,
+  ReviewSpecAcAnchorSchema,
   ReviewThreadKindSchema,
 } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
@@ -755,6 +756,8 @@ export function registerReviewCommands(program: Command): void {
       .option("--section <section>", "Structured anchor: section")
       .option("--field <field>", "Structured anchor: field")
       .option("--anchor-ref <ref>", "Structured anchor: ref")
+      .option("--spec-ref <ref>", "Spec AC anchor: spec reference")
+      .option("--ac-id <id>", "Spec AC anchor: acceptance criterion id")
       .option("--author <author>", "Comment author")
       .action(async (ref: string, options) => {
         try {
@@ -786,6 +789,24 @@ export function registerReviewCommands(program: Command): void {
               line_end: options.lineEnd || options.lineStart || 1,
               commit: options.commit || "",
             };
+          } else if (options.specRef || options.acId) {
+            const specAcAnchor = {
+              type: "spec_ac" as const,
+              spec_ref: options.specRef,
+              criterion_id: options.acId,
+            };
+            const parsedAnchor = ReviewSpecAcAnchorSchema.safeParse(specAcAnchor);
+            if (!parsedAnchor.success) {
+              const issue = parsedAnchor.error.issues[0];
+              const field = issue?.path.join(".") || "anchor";
+              exitWithGuidance(
+                `Invalid spec AC anchor ${field}: ${issue?.message || "invalid value"}`,
+                EXIT_CODES.USAGE_ERROR,
+                "Use --spec-ref with a valid @reference and --ac-id with an ac-prefixed criterion id.",
+                { field, value: (specAcAnchor as Record<string, unknown>)[field] },
+              );
+            }
+            anchor = parsedAnchor.data;
           } else if (options.section || options.field || options.anchorRef) {
             anchor = {
               type: "structured" as const,

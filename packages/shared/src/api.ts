@@ -678,6 +678,11 @@ export type ReviewAnchor =
       field?: string;
       path?: string;
       ref?: string;
+    }
+  | {
+      type: "spec_ac";
+      spec_ref: string;
+      criterion_id: string;
     };
 
 /**

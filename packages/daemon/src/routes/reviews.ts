@@ -67,6 +67,7 @@ import {
   ReviewCodeAnchorSideSchema,
   ReviewDispositionSchema,
   ReviewLifecycleStateSchema,
+  ReviewSpecAcAnchorSchema,
   ReviewSubjectSchema,
   ReviewThreadKindSchema,
   ReviewVerdictDecisionSchema,
@@ -783,6 +784,28 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
                 ...(body.anchor.path ? { path: body.anchor.path } : {}),
                 ...(body.anchor.ref ? { ref: body.anchor.ref } : {}),
               };
+            } else if (body.anchor.type === "spec_ac") {
+              const specAcAnchor = {
+                type: "spec_ac" as const,
+                spec_ref: body.anchor.spec_ref,
+                criterion_id: body.anchor.criterion_id,
+              };
+              const parsedAnchor = ReviewSpecAcAnchorSchema.safeParse(specAcAnchor);
+              if (!parsedAnchor.success) {
+                const issue = parsedAnchor.error.issues[0];
+                const field = issue?.path.join(".") || "anchor";
+                return errorResponse(400, {
+                  error: "validation_error",
+                  message: `Invalid spec AC anchor ${field}: ${issue?.message || "invalid value"}`,
+                  details: [
+                    {
+                      field: `anchor.${field}`,
+                      message: issue?.message || "Invalid spec AC anchor value",
+                    },
+                  ],
+                });
+              }
+              anchor = parsedAnchor.data;
             } else {
               return errorResponse(400, {
                 error: "validation_error",
@@ -861,6 +884,8 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
                 section: t.Optional(t.String()),
                 field: t.Optional(t.String()),
                 ref: t.Optional(t.String()),
+                spec_ref: t.Optional(t.String()),
+                criterion_id: t.Optional(t.String()),
               }),
             ),
           }),
