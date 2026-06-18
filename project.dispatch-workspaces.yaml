@@ -27638,11 +27638,11 @@ workspaces:
     canonical_branch: dispatch/task/task-command-path-typed-events/01kvc30t
     canonical_branch_head: 665d4d420d2efcf995b7bf3b2cd7e868e287908d
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-18T06:42:15.568Z
+      updated_at: 2026-06-18T06:45:34.809Z
     health:
       status: healthy
       issues: []
@@ -27656,17 +27656,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: d7657c6dd8f45dba09c5074ab51d4e7acaf8dab8
       updated_at: 2026-06-18T06:42:15.568Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVC30TT5QTKT0Q8KVPPSJKHT
     task_ref: "@01KVC30TT5QTKT0Q8KVPPSJKHT"
     task_slug: task-command-path-typed-events
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-18T06:45:34.809Z
       last_active_at: 2026-06-18T06:26:48.368Z
       last_reconciled_at: 2026-06-18T06:45:13.168Z
       created_at: 2026-06-18T06:01:45.461Z
-      updated_at: 2026-06-18T06:45:13.168Z
+      updated_at: 2026-06-18T06:45:34.809Z
     workspace_id: dispatch-workspace-01KVC30TT5QTKT0Q8KVPPSJKHT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
