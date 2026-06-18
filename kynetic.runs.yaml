@@ -69815,7 +69815,7 @@ runs:
     completed_at: 2026-06-18T11:17:06.507Z
   - _ulid: 01KVD8GZM87CWNN1E9G34KSATN
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69838,7 +69838,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-18T11:42:42.068Z
-        completed_at: 2026-06-18T11:42:42.068Z
+        completed_at: 2026-06-18T11:42:50.792Z
+        notes: "Decision: skip capture. The daemon command-route cache/fixture friction is a narrower
+          instance of existing observation @01KVD15C. The targeted mutation writer-path review
+          success is covered by existing observation @01KVD4R6. Capturing new observations would
+          duplicate current tracking."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-18T11:42:50.792Z
+        completed_at: 2026-06-18T11:42:50.792Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T11:40:38.921Z
