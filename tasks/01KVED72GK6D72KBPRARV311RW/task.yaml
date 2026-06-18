@@ -1,0 +1,80 @@
+_ulid: 01KVED72GK6D72KBPRARV311RW
+slugs:
+  - task-plan-revision-records
+title: Implement plan revision records with publish and import minting
+type: task
+description: |
+  Add first-class revision records to plans, minted by an explicit
+  publish command and by import --into completion, storing a
+  shadow-commit pointer instead of a content copy.
+
+  Why: Plans store a single content blob today; the only history is
+  shadow-branch git log. The planning workspace, plan-text anchors, and
+  review-revision binding all need a durable, intentional revision
+  sequence (decision #16: publish-revs + commit pointers, not
+  every-edit-is-a-rev).
+
+  What:
+  - Revision record schema: ordinal, author, summary note, created_at
+    timestamp, shadow_commit pointer. Store revisions in the plan's
+    folder-backed metadata (plan.yaml sidecar), defaulting to an empty
+    list so pre-upgrade plans load cleanly.
+  - kspec plan publish <ref> --note "<summary>": commit the current
+    plan document content (if uncommitted), then append a revision
+    whose pointer is the commit containing that content. Pointer
+    mechanics need two commits: the content must be committed first so
+    its hash is known, then the revision metadata commits separately.
+  - Mint a revision when kspec plan import --into completes
+    successfully, using --note when supplied or the existing
+    "Content updated from file" auto-note text as the summary default.
+  - Do NOT mint on plan creation (plan add or an initial document
+    import), plan set --content-file, plan note, plan set
+    status/title/branch, or any other non-publish mutation. New plans
+    start with an empty revision history until their first publish or
+    re-import mints revision 1 (the N+1 ordinal rule with N=0).
+  - Author resolution reuses the canonical actor attribution model
+    materialized by the UI Redesign Global Decisions plan
+    (@actor-identity-model) and the actor attribution already used for
+    review records and notes, centralized in one helper; do not
+    introduce a new free-form author path. Revision authors use that
+    existing actor vocabulary so future identity display/resolution
+    improvements do not require a revision schema change.
+  - Read surfaces: kspec plan get lists revisions (ordinal, author,
+    note, timestamp); a revision content resolver reads the plan
+    document at the pointed commit from the shadow branch (first-party
+    helper — this is the first shadow-history content read path; keep
+    it read-only and lock-free).
+  - Index boundedness: project.plans.yaml gains at most a current
+    revision ordinal; the revision list and content stay out of the
+    index (honor @folder-backed-plan-storage-1
+    ac-plan-index-has-bounded-projection).
+
+  How: Extend PlanSchema (src/schema/plan.ts) and the plan storage
+  manager (src/parser/plan-storage-manager.ts). Content resolution via
+  git show of the folder-backed plan document path at the pointed
+  commit inside the shadow worktree. Tests: ordinal sequencing across
+  publish and import minting; non-publish paths leave revisions
+  unchanged; resolved content is byte-identical to what was published;
+  legacy plan fixtures load with empty revision history; a freshly
+  created plan reports an empty revision history until its first
+  publish.
+
+  Covers: @plan-revisions ac-publish-mints-revision,
+  ac-import-mints-revision, ac-draft-edits-do-not-mint,
+  ac-no-body-duplication, ac-revision-ordering, ac-legacy-plans-load,
+  ac-created-plans-start-empty.
+spec_ref: "@plan-revisions"
+plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - schema
+  - plans
+  - cli
+vcs_refs: []
+created_at: 2026-06-18T22:21:51.507Z
+todos: []

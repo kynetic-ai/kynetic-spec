@@ -30,3 +30,186 @@ notes:
       no remaining must-fix before user approval/derivation."
     author: Jacob Chapel
     created_at: 2026-06-18T22:09:06.646Z
+  - _ulid: 01KVED7AK14W5Y3Z8AQKRQFG4X
+    content: >-
+      ### Decision register mapping
+
+
+      This plan resolves four track-scoped items from the redesign decision
+
+      register as specd behavior (cited, not re-argued):
+
+
+      | Decision | Resolved by |
+
+      |---|---|
+
+      | #16 plan revisions — publish-revs + commit pointers, rev 1 backfill | @plan-revisions |
+
+      | #17 revision semantics — plans first-class; non-plan rev N derived from subject-refresh
+      ordinals; dropdown re-grounded as review passes | @plan-revisions,
+      @subject-revision-vocabulary |
+
+      | #19 anchors — server sections, rev-pinned `{section, offset, quoted_text, created_at_rev}` |
+      @review-plan-text-anchors |
+
+      | #44 idea-kind gating — advisory-only | @review-idea-threads |
+
+
+      ### Actor-identity sequencing
+
+
+      `@actor-identity-model` has now materialized from the P0a UI Redesign
+
+      Global Decisions plan, so `@plan-revisions` carries it as a structured
+
+      `depends_on` relationship. Revision-author attribution reuses that
+
+      canonical actor vocabulary and the actor attribution already used for
+
+      review records and notes, centralized in one resolution helper (see
+
+      task-plan-revision-records). The dependency is on the behavioral actor
+
+      identity model, not on a revision-specific author schema; adopting future
+
+      identity display/resolution improvements should require no revision
+
+      schema change. This plan carries no unresolved cross-plan references.
+
+
+      ### Anchor union mechanics
+
+
+      - Current union (`src/schema/review-records.ts:82-106`): exactly `code`
+        and `structured`. New discriminator literals: `spec_ac` and
+        `plan_text`. Additive only — the `structured` variant stays accepted
+        for new writes, because legacy tooling and consumer projects produce
+        it.
+      - The legacy AC convention being formalized:
+        `{type: "structured", ref: "@spec-x", section: "acceptance_criteria",
+        field: "ac-N"}` (documented in the shipped review skill). Dual-read is
+        a hard requirement: review YAML across ~20 consumer projects contains
+        these. No migration or rewrite of legacy anchors — they are preserved
+        as written; only new writes prefer the typed forms.
+      - The shared parser error map is `formatActionableMessage` in
+        `src/parser/review-validation.ts` (its anchor branch currently says
+        "Anchor type must be one of: code, structured"). Behavior is governed
+        by @review-record-validation ac-2 (actionable feedback); the
+        enumeration update is covered by @review-spec-ac-anchors
+        ac-anchor-variant-guidance.
+      - The anchor union is duplicated in client-side types
+        (packages/web-ui and shared packages). Tasks update those unions for
+        typecheck only; rendering the new variants is owned by the later
+        review-hub and planning-workspace plans.
+
+      ### Plan revision storage
+
+
+      - Revisions live in the folder-backed plan metadata (`plan.yaml`),
+        consistent with @folder-backed-plan-storage-1
+        ac-plan-metadata-sidecar-is-authoritative. The plan index gains at
+        most a current-ordinal field — never the list or content
+        (ac-plan-index-has-bounded-projection).
+      - Pointer mechanics: the published content must be committed before its
+        commit hash can be recorded, so publish is two shadow commits (content,
+        then revision metadata). The pointer references the content commit.
+      - Revision content resolution (`git show` of the plan document path at
+        the pointed commit) is the codebase's first shadow-history content
+        read. Keep it strictly read-only; it is also the foundation the later
+        revision-diff and anchor re-matching plans build on.
+      - Backfill pointers use shadow HEAD at upgrade time — any commit at or
+        after the plan's last content change correctly designates "current
+        content".
+      - Plan creation mints nothing: decision #16 enumerates the minting
+        events (explicit publish, `import --into` completion), and creation is
+        not one. A plan created after the upgrade starts with an empty
+        revision history, so plan-text anchors are unavailable on it until its
+        first publish or re-import — the binding resolver already tolerates
+        revisionless plans (no revision rather than a wrong one).
+
+      ### Review ↔ revision join
+
+
+      No schema change on reviews: `ReviewPlanSubjectSchema` already pins
+
+      `{shadow_commit, content_hash}` (@review-subject-bindings ac-4/ac-5).
+
+      The binding resolver matches the pinned content hash against revision
+
+      content. A review created against unpublished draft content legitimately
+
+      resolves to no revision — surfaces must treat that as "draft, no
+
+      revision", not as revision 1.
+
+
+      ### Idea-kind gating context
+
+
+      Disposition computation enumerates blocking kinds by filtering
+
+      `kind === "blocker"` (`src/parser/review-threads.ts`,
+
+      `getUnresolvedBlockers`), per @review-comment-threads-and-anchors ac-6
+
+      and @review-checks-and-gate-evaluation ac-4. Adding `idea` is therefore
+
+      structurally non-blocking today; @review-idea-threads ac-idea-never-blocks
+
+      turns that from an implementation accident into a contract so future
+
+      gate changes cannot silently start gating on idea threads.
+
+
+      Shipped-UI treatment: once the schema accepts idea, existing reviews
+
+      will contain idea threads, so the existing review detail UI gets an
+
+      enumeration-level update in this plan (kind badge + kind option, under
+
+      the @review-records-web-ui ac-2/ac-3 respec carried by
+
+      task-idea-thread-kind). The redesigned review surfaces still belong to
+
+      later plans.
+
+
+      ### Scope exclusions (later plans in this track)
+
+
+      - Anchor re-matching rev-N → current, and orphan/"anchor lost" rendering
+        (decision #19 names them explicitly as later work).
+      - Plan revision diff computation/API and the revision compare UI.
+
+      - The planning workspace, review hub, and any review/planning UI; the
+        anchor→DOM rendering engine.
+      - Review-creation/trigger-review APIs, WS event additions for revisions
+        or threads, and review.* dispatch events.
+      - First-class spec revisions (deferred by decision #17; non-plan
+        subjects use the derived ordinal only).
+
+      ### Sectioning utility
+
+
+      Section identity must be stable across revisions for later re-matching:
+
+      identifiers derive from heading text (slugified), so an unchanged
+
+      heading keeps its identifier in the next revision; duplicates get a
+
+      deterministic document-order suffix; the pre-heading preamble has a
+
+      fixed identifier. The utility ships as pure library code in this plan
+
+      (plan-text anchors cannot be validated without it) and gains its UI and
+
+      re-matching consumers later. Note: plan review content is currently
+
+      served to the web client as a single markdown section
+
+      (`routes/diff.ts`); that serving path is untouched here — the later
+
+      planning-workspace plan adopts the sectioning utility for display.
+    author: Jacob Chapel
+    created_at: 2026-06-18T22:21:59.777Z

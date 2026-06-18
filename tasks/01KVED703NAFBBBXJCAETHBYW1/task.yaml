@@ -1,0 +1,62 @@
+_ulid: 01KVED703NAFBBBXJCAETHBYW1
+slugs:
+  - task-spec-ac-anchor-variant
+title: Implement typed spec-criterion anchor variant with dual-read compatibility
+type: task
+description: |
+  Add the typed spec-criterion anchor variant to the review anchor
+  union, with validation, CLI write support, and guaranteed dual-read
+  of legacy loose structured anchors.
+
+  Why: Criterion-targeted review feedback exists today only as a loose
+  structured-anchor convention ({type: "structured", section:
+  "acceptance_criteria", field: "<ac-id>"}) that nothing validates or
+  types. The redesigned review and planning surfaces need an anchor
+  they can trust. Review YAML across ~20 consumer projects contains
+  legacy loose anchors, so readers must keep accepting both shapes.
+
+  What:
+  - Add a spec-AC variant to the anchor discriminated union in
+    src/schema/review-records.ts: a new type literal (spec_ac) with
+    required spec reference (RefSchema) and criterion identifier
+    (AcIdSchema from src/schema/common.ts) fields. The existing
+    structured variant stays untouched — the union gains a member;
+    nothing is removed or tightened.
+  - Extend kspec review comment with flags for the typed variant
+    (following the existing anchor flag groups), and apply the same
+    validation on the daemon thread-creation route.
+  - Reject malformed spec references and criterion identifiers at
+    creation with feedback naming the offending field; load-time
+    validation of legacy records must not change behavior.
+  - Extend the shared error map (formatActionableMessage in
+    src/parser/review-validation.ts) so anchor discriminator failures
+    enumerate the accepted variants.
+  - Update the duplicated anchor type unions in shared/web-ui packages
+    so typecheck stays green. No rendering changes — later plans own
+    anchor rendering.
+
+  How: Follow the discriminated-union pattern of
+  ReviewCodeAnchorSchema/ReviewStructuredAnchorSchema. Tests: schema
+  round-trip; creation-time rejection cases; a fixture file containing
+  legacy loose structured anchors (copied shapes from real records,
+  including the AC convention) loads and validates unchanged; error
+  message enumeration. Test against both monolithic and folder review
+  storage fixtures.
+
+  Covers: @review-spec-ac-anchors ac-typed-anchor-stored,
+  ac-anchor-field-validation, ac-legacy-anchors-load.
+spec_ref: "@review-spec-ac-anchors"
+plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - schema
+  - reviews
+  - cli
+vcs_refs: []
+created_at: 2026-06-18T22:21:49.045Z
+todos: []

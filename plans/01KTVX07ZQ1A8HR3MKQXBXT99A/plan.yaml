@@ -2,11 +2,23 @@ _ulid: 01KTVX07ZQ1A8HR3MKQXBXT99A
 slugs:
   - plan-review-anchors-and-plan-revisions-schema
 title: Review Anchors and Plan Revisions Schema
-status: approved
+status: active
 approved_at: 2026-06-18T22:21:28.300Z
 branch: feat/ui-redesign
-derived_specs: []
-derived_tasks: []
+derived_specs:
+  - "@review-spec-ac-anchors"
+  - "@review-plan-text-anchors"
+  - "@review-idea-threads"
+  - "@plan-revisions"
+  - "@subject-revision-vocabulary"
+derived_tasks:
+  - "@task-spec-ac-anchor-variant"
+  - "@task-plan-revision-records"
+  - "@task-plan-text-anchors"
+  - "@task-idea-thread-kind"
+  - "@task-plan-revision-backfill"
+  - "@task-review-revision-binding"
+  - "@task-respec-review-pass-vocabulary"
 module_ref: "@core"
 source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-review-plan-schema.md
 created_at: 2026-06-11T17:52:10.743Z

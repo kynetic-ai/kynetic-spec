@@ -190,6 +190,60 @@ traits:
     tags: []
     created: 2026-05-22T22:36:41.869Z
     notes: []
+decisions:
+  - _ulid: 01KVED702F0HMFRN30Q03WE5PY
+    slugs:
+      - subject-revision-vocabulary
+    title: Subject Revision Vocabulary
+    type: decision
+    description: |
+      A review subject's revision number means exactly one thing per
+      subject type. For plan subjects, it is the ordinal of the first-class
+      plan revision the review examined. For task, spec, and code subjects,
+      it derives from the review's recorded subject-refresh sequence: the
+      version captured at review creation is revision 1, and each recorded
+      subject refresh increments the ordinal — no dedicated field stores
+      it. A grouping of sibling reviews against the same subject is a
+      sequence of review passes ordered by creation; review passes are
+      never labeled with the revision vocabulary, and revision numbers are
+      never derived from sibling-review order.
+    depends_on:
+      - "@plan-revisions"
+      - "@review-subject-bindings"
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          a review on a task, spec, or code subject whose subject has been
+          refreshed N times since the review was created
+        id: ac-non-plan-derivation
+        then: |
+          the ordinal is N+1, derived from the review's recorded
+          subject-refresh events with no dedicated stored field
+        when: |
+          the subject revision ordinal is reported
+      - given: |
+          a review on a plan subject bound to plan revision N, whatever the
+          count of recorded subject refreshes on the review
+        id: ac-plan-subject-ordinal
+        then: |
+          the reported value is the bound plan revision ordinal N
+        when: |
+          the subject revision is reported
+      - given: |
+          a surface or interface presents the set of sibling reviews
+          against one subject
+        id: ac-review-pass-labeling
+        then: |
+          the grouping is identified as review passes ordered by creation
+          date and is not labeled with the revision vocabulary
+        when: |
+          the grouping is labeled and ordered
+    tags: []
+    created: 2026-06-18T22:21:49.007Z
+    notes: []
 features:
   - _ulid: 01KEZCJPHZTTRBTEXCF6WYQYR3
     slugs:
@@ -2462,6 +2516,210 @@ features:
         tags: []
         parent: "@review-record-core-model"
         created: 2026-03-14T08:45:51.815Z
+        notes: []
+      - _ulid: 01KVED6ZNNFEQEXWMR5J2GA11F
+        slugs:
+          - review-spec-ac-anchors
+        title: Typed Spec-Criterion Anchors
+        type: requirement
+        description: |
+          Review threads can target a single acceptance criterion of a spec item
+          through a typed anchor that carries the spec reference and the
+          criterion identifier as distinct validated fields. The typed form is
+          the canonical way to write criterion-targeted feedback, replacing the
+          loose structured-anchor convention for new writes. Records written
+          under the loose convention remain fully readable: readers accept both
+          shapes, and legacy records load and validate without modification.
+        depends_on:
+          - "@review-comment-threads-and-anchors"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a reviewer targets a specific acceptance criterion of a spec item
+            id: ac-typed-anchor-stored
+            then: |
+              the anchor stores the spec reference and the acceptance-criterion
+              identifier as distinct typed fields, and the stored record
+              round-trips through load and save unchanged
+            when: |
+              the thread is created through a supported write interface with a
+              spec-criterion anchor
+          - given: |
+              a spec-criterion anchor whose spec reference is not a valid
+              reference or whose criterion identifier does not match the
+              established acceptance-criterion identifier format
+            id: ac-anchor-field-validation
+            then: |
+              the mutation is rejected, no thread is stored, and the feedback
+              names the offending field
+            when: |
+              the anchor is validated during thread creation
+          - given: |
+              a review record written before the typed variant existed,
+              containing loose structured anchors — including the convention
+              that gestures at an acceptance criterion through section and
+              field values
+            id: ac-legacy-anchors-load
+            then: |
+              the record loads and validates without error and the anchor
+              content is preserved exactly as written, with no migration or
+              rewrite required
+            when: |
+              the record is loaded and validated
+          - given: |
+              review data containing an anchor whose type is not an accepted
+              variant
+            id: ac-anchor-variant-guidance
+            then: |
+              the feedback enumerates the complete set of accepted anchor
+              variants, including the spec-criterion and plan-text variants
+            when: |
+              validation feedback is produced
+        tags: []
+        created: 2026-06-18T22:21:48.598Z
+        notes: []
+      - _ulid: 01KVED6ZQ96G9DXWWWXSB0Z3AV
+        slugs:
+          - review-plan-text-anchors
+        title: Plan-Text Anchors
+        type: requirement
+        description: |
+          Review threads can target a span of a plan document through a typed
+          plan-text anchor. The plan document divides into sections derived
+          from its headings on the server side, and the anchor addresses a span
+          with four fields: the identifier of the containing section, the
+          offset of the span within that section, the quoted text of the span,
+          and the ordinal of the plan revision the anchor was created against.
+          Offsets are counted in Unicode code points from the start of the
+          section's content — never bytes and never UTF-16 code units — so
+          every write surface measures the same span identically regardless of
+          text encoding. Together these fields fully describe the anchored span:
+          given the anchor and the content of its creation revision, the exact
+          span is recoverable without consulting any other state. Plan-text
+          anchors are valid only on reviews whose subject is a plan; the
+          anchored plan is the review's subject.
+        depends_on:
+          - "@review-comment-threads-and-anchors"
+          - "@plan-revisions"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a reviewer targets a span of text in a plan document under review
+            id: ac-plan-text-anchor-stored
+            then: |
+              the anchor stores the section identifier, the offset of the span
+              within that section counted in Unicode code points, the quoted
+              span text, and the ordinal of the plan revision it was created
+              against, and the stored record round-trips through load and save
+              unchanged
+            when: |
+              the thread is created through a supported write interface with a
+              plan-text anchor
+          - given: |
+              the content of a plan revision
+            id: ac-deterministic-sectioning
+            then: |
+              each heading begins a section whose identifier derives
+              deterministically from the heading text, duplicate heading texts
+              disambiguate deterministically by document order, content before
+              the first heading forms a single leading section with a fixed
+              identifier, and identical content always yields identical section
+              identifiers
+            when: |
+              the document is divided into sections
+          - given: |
+              a plan-text anchor with a negative offset, an empty quoted text,
+              or a creation revision that is not a positive integer
+            id: ac-plan-text-anchor-validation
+            then: |
+              the mutation is rejected, no thread is stored, and the feedback
+              names the offending field
+            when: |
+              the anchor is validated
+          - given: |
+              a plan-text anchor whose creation revision ordinal is a positive
+              integer that does not exist in the subject plan's revision
+              history
+            id: ac-nonexistent-revision-rejected
+            then: |
+              the mutation is rejected with feedback naming the revision field
+              and the ordinal that failed to resolve
+            when: |
+              the anchor is validated at creation time
+          - given: |
+              a thread creation that supplies a plan-text anchor on a review
+              whose subject is not a plan
+            id: ac-plan-subject-only
+            then: |
+              the mutation is rejected with feedback stating that plan-text
+              anchors apply only to plan-subject reviews
+            when: |
+              the anchor is validated
+          - given: |
+              a plan-text anchor whose quoted text does not occur at the stored
+              offset within the stored section of the creation revision's
+              content
+            id: ac-span-integrity
+            then: |
+              the mutation is rejected with actionable feedback and no thread
+              is stored
+            when: |
+              the anchor is validated at creation time
+        tags: []
+        created: 2026-06-18T22:21:48.649Z
+        notes: []
+      - _ulid: 01KVED6ZRH6TYSX9THYRHBYJ02
+        slugs:
+          - review-idea-threads
+        title: Advisory Idea Threads
+        type: requirement
+        description: |
+          Review threads support the kind idea alongside blocker, question, and
+          nit. An idea thread carries a forward-looking suggestion that is
+          advisory only: whatever its resolution state, it never participates
+          in approval gating. In all other respects idea threads behave like
+          every other kind — they hold entries and replies, resolve and reopen,
+          and appear in the review's event history.
+        depends_on:
+          - "@review-comment-threads-and-anchors"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a reviewer opens a thread with kind idea
+            id: ac-idea-kind-accepted
+            then: |
+              the thread stores kind idea, and reply, resolve, and reopen
+              operate on it exactly as they do for the existing kinds
+            when: |
+              the thread is created through a supported write interface
+          - given: |
+              a review whose only unresolved threads have kind idea, with all
+              required checks passing against the current subject version and a
+              current approval verdict
+            id: ac-idea-never-blocks
+            then: |
+              the disposition is approved
+            when: |
+              the disposition is computed
+          - given: |
+              a thread whose kind is not one of blocker, question, nit, or idea
+            id: ac-kind-validation
+            then: |
+              the mutation is rejected with feedback enumerating the accepted
+              kinds
+            when: |
+              the thread is validated
+        tags: []
+        created: 2026-06-18T22:21:48.689Z
         notes: []
     created: 2026-03-14T08:45:51.655Z
     notes: []

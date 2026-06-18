@@ -1,0 +1,54 @@
+_ulid: 01KVED7A4WSWYEJEN8Z4BJ65RB
+slugs:
+  - task-respec-review-pass-vocabulary
+title: Respec the review-detail revision dropdown as review passes
+type: task
+description: |
+  Re-ground the existing review-detail "Revision" dropdown semantics as
+  review passes, in both the owning spec and the shipped label, so the
+  sibling-review grouping never collides with the new subject-revision
+  vocabulary.
+
+  Why: @review-records-web-ui ac-11 currently specifies a "revision
+  dropdown" listing all reviews for a subject — but those are sibling
+  review passes, not revisions. With subject revisions now defined
+  (plan revision ordinals and refresh-derived ordinals), the same word
+  cannot name both concepts (decision #17: the dropdown is
+  renamed/re-grounded as review passes).
+
+  What:
+  - Respec @review-records-web-ui ac-11 wording: a review-pass selector
+    lists all reviews for the subject ordered by creation date, with
+    the current review selected and selection navigating; subject
+    matching stays as specified (subject-ref for plan/task/spec
+    reviews, head-branch for code reviews). The word "revision" leaves
+    the AC.
+  - Update the @review-records-web-ui description sentence "Reviews on
+    the same subject are treated as revisions with a dropdown selector"
+    to review-pass vocabulary.
+  - Rename the shipped selector label in the review detail page from
+    "Revision" to "Review pass" — a text-level change only; the
+    redesigned review surfaces belong to later plans.
+
+  How: kspec item commands (batched) for the spec wording; a minimal
+  label change in the existing review detail component with its test
+  expectation updated.
+
+  Covers: @subject-revision-vocabulary ac-review-pass-labeling.
+  @review-records-web-ui (ac-11 respec + description update).
+spec_ref: "@review-records-web-ui"
+plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-review-revision-binding"
+context: []
+priority: 2
+tags:
+  - specs
+  - reviews
+  - maintenance
+vcs_refs: []
+created_at: 2026-06-18T22:21:59.324Z
+todos: []

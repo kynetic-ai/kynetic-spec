@@ -1,0 +1,52 @@
+_ulid: 01KVED79AAFAKDN7H1P2D6GTT5
+slugs:
+  - task-plan-revision-backfill
+title: Implement revision-one backfill for existing plans
+type: task
+description: |
+  Backfill every pre-existing plan with revision 1 designating its
+  current content, as an idempotent data-upgrade step.
+
+  Why: Reviews bind to revisions and plan-text anchors pin revision
+  ordinals; without backfill, every existing plan (93 in this project
+  alone, plus consumer projects) would have no revision to bind or pin
+  against. Decision #16 sets the policy: rev 1 = current content.
+  This runs at priority 1, ahead of plan-text anchors, so anchors are
+  usable on every pre-existing plan the moment they ship instead of
+  only on plans published after the upgrade.
+
+  What:
+  - Upgrade step: every plan with an empty revision history gets one
+    revision with ordinal 1, a fixed system/upgrade author recorded
+    through the same author-resolution helper publish uses, a fixed
+    backfill summary note, the upgrade timestamp, and a shadow-commit
+    pointer that resolves to the plan's content as of the upgrade (the
+    shadow HEAD at upgrade time satisfies this).
+  - Idempotent: re-running the upgrade neither duplicates revision 1
+    nor touches plans that already have revisions.
+  - Runs through the established storage-upgrade path used by prior
+    plan storage migrations, so consumer projects pick it up on
+    upgrade without a manual command.
+
+  How: Follow the existing plan storage migration pattern
+  (src/parser/plan-folder-migration.ts and migration-safety helpers).
+  Tests: fixture project with pre-revision plans upgrades to exactly
+  one revision each; double-run produces no change; resolved revision-1
+  content equals current plan content.
+
+  Covers: @plan-revisions ac-backfill-revision-one.
+spec_ref: "@plan-revisions"
+plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-plan-revision-records"
+context: []
+priority: 1
+tags:
+  - plans
+  - migration
+vcs_refs: []
+created_at: 2026-06-18T22:21:58.474Z
+todos: []

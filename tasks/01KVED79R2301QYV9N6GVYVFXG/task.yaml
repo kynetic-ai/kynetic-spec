@@ -1,0 +1,55 @@
+_ulid: 01KVED79R2301QYV9N6GVYVFXG
+slugs:
+  - task-review-revision-binding
+title: Implement review revision binding and derived subject revision ordinals
+type: task
+description: |
+  Resolve which plan revision a review examined via the existing
+  subject pinning, and derive subject revision ordinals for non-plan
+  subjects from the subject-refresh sequence.
+
+  Why: The redesigned review surfaces render "rev N" for every subject
+  type. For plans that must be the first-class revision examined; for
+  task/spec/code subjects there is no first-class revision, so the
+  ordinal derives from the review's own subject_refreshed event
+  sequence (decision #17) — no new storage on either side.
+
+  What:
+  - Plan binding resolver: given a plan review's subject
+    (content_hash + shadow_commit), identify the revision whose
+    published content matches — content-hash equality against the
+    revision's resolved content first, shadow-commit comparison as the
+    tiebreaker. Reviews pinned to unpublished draft content resolve to
+    no revision rather than a wrong one.
+  - Non-plan derivation: subject revision ordinal = 1 + the count of
+    subject_refreshed events recorded on the review (the existing
+    events vocabulary in src/schema/review-records.ts); no stored
+    field.
+  - Expose both through the review read path: kspec review get output
+    and the review JSON payload report the subject revision, so
+    downstream API/UI plans consume one definition.
+
+  How: Library functions beside the existing subject-bindings code
+  (src/review/subject-bindings.ts), surfaced through the review get
+  formatting. Tests: a review refreshed N times reports N+1; a plan
+  review bound to revision 2 reports 2 even after refreshes; a plan
+  review pinned to never-published content reports no revision.
+
+  Covers: @subject-revision-vocabulary ac-non-plan-derivation,
+  ac-plan-subject-ordinal. @plan-revisions ac-review-revision-binding.
+spec_ref: "@subject-revision-vocabulary"
+plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-plan-revision-records"
+context: []
+priority: 2
+tags:
+  - reviews
+  - plans
+  - schema
+vcs_refs: []
+created_at: 2026-06-18T22:21:58.914Z
+todos: []

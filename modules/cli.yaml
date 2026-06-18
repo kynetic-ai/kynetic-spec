@@ -5608,6 +5608,119 @@ features:
       - planning
       - shadow
       - agent-first
+    features:
+      - _ulid: 01KVED6ZVK6MK1K4AGP5JD80CP
+        slugs:
+          - plan-revisions
+        title: Plan Revisions
+        type: feature
+        description: |
+          Plans carry a first-class revision history. A revision marks an
+          intentional publish of the plan document: an explicit publish action
+          mints one, and completing a document re-import into an existing plan
+          mints one. Draft edits that replace content without publishing do
+          not. A revision record stores its ordinal, author, summary note,
+          timestamp, and a pointer to the shadow-branch commit containing the
+          published content; the document body is never duplicated into the
+          revision record. Revision authors use the same actor attribution
+          vocabulary as other authored records; no revision-specific author
+          format exists. The revision data upgrade gives every plan that
+          existed when it ran at least revision 1. Plan creation mints
+          nothing: a plan created after the upgrade — directly or through an
+          initial document import — starts with an empty revision history
+          until its first publish or document re-import mints revision 1. A
+          plan persisted before revision support and not yet upgraded
+          likewise loads with an empty revision history. A review of a plan
+          resolves to the revision it examined through the review's pinned
+          subject version, with no new field on the review record.
+        depends_on:
+          - "@actor-identity-model"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              an existing plan with N recorded revisions
+            id: ac-publish-mints-revision
+            then: |
+              a revision record is created with ordinal N+1, the acting author,
+              the supplied summary note, a creation timestamp, and a pointer to
+              the shadow-branch commit containing the published content
+            when: |
+              an explicit publish action is performed with a summary note
+          - given: |
+              a plan document is re-imported into an existing plan
+            id: ac-import-mints-revision
+            then: |
+              a new revision record is minted for the updated content carrying
+              the same fields as an explicit publish, with the summary note
+              supplied by the caller or recorded as a stated default
+            when: |
+              the import completes successfully
+          - given: |
+              a plan whose content is replaced through a non-publish update
+              path, or whose metadata or notes are mutated
+            id: ac-draft-edits-do-not-mint
+            then: |
+              the plan's revision list is unchanged
+            when: |
+              the mutation completes
+          - given: |
+              a revision record is stored
+            id: ac-no-body-duplication
+            then: |
+              it contains only bounded metadata and the commit pointer — no
+              copy of the document body — and resolving the pointer returns
+              content byte-identical to the document as published
+            when: |
+              its persisted form is inspected
+          - given: |
+              a plan with one or more revisions
+            id: ac-revision-ordering
+            then: |
+              ordinals form a strictly increasing sequence starting at 1 in
+              publish order, and each revision exposes its ordinal, author,
+              summary note, and timestamp
+            when: |
+              the plan's revisions are read
+          - given: |
+              a project whose plans were created before revision support
+            id: ac-backfill-revision-one
+            then: |
+              every existing plan has exactly one revision with ordinal 1 whose
+              pointer designates the plan's content as of the upgrade
+            when: |
+              the data upgrade completes
+          - given: |
+              a plan record persisted before revision support and not yet
+              upgraded
+            id: ac-legacy-plans-load
+            then: |
+              it loads without error and reports an empty revision history
+            when: |
+              the plan is loaded and validated
+          - given: |
+              a plan created after the revision data upgrade has run, with no
+              publish or document re-import yet completed on it
+            id: ac-created-plans-start-empty
+            then: |
+              it loads without error and reports an empty revision history
+            when: |
+              the plan is loaded and its revisions are read
+          - given: |
+              a plan review whose pinned subject version matches the content
+              published as revision N
+            id: ac-review-revision-binding
+            then: |
+              revision N is identified using the existing subject content-hash
+              and shadow-commit pinning, with no new stored field on the review
+              record
+            when: |
+              the revision the review examined is resolved
+        tags: []
+        created: 2026-06-18T22:21:48.788Z
+        notes: []
     requirements:
       - _ulid: 01KGKY0KSM993VBXR1WNG69QC9
         slugs:

@@ -1,0 +1,85 @@
+_ulid: 01KVED78FQ4APC9E42P8EB23ZP
+slugs:
+  - task-plan-text-anchors
+title: Implement plan-text anchor variant with deterministic heading sectioning
+type: task
+description: |
+  Add the plan-text anchor variant (section, offset, quoted text,
+  creation revision) with creation-time span-integrity validation, plus
+  the server-side deterministic heading-sectioning utility the anchor
+  addresses against. Depends on the revision backfill so that every
+  pre-existing plan already has revision 1 by the time anchors ship —
+  anchors validate against revision ordinals, so without backfill they
+  would be unusable on all legacy plans.
+
+  Why: Reviewers must be able to anchor threads to spans of plan text
+  that survive small edits (decision #19: anchor = section + offset +
+  quoted text + created-at revision, with server-side heading
+  sectioning). This plan stores and validates the shape; re-matching
+  against newer revisions and orphan rendering are later plans, and
+  they are only possible if every stored anchor is internally
+  consistent with the revision it was created against.
+
+  What:
+  - Add a plan-text variant to the anchor union: type literal
+    (plan_text) with section identifier (non-empty string), offset
+    (non-negative integer, counted in Unicode code points from the
+    start of the section content — never bytes or UTF-16 code units),
+    quoted_text (non-empty string), and created-at revision ordinal
+    (positive integer). Document the code-point unit on the schema
+    field so every writer measures spans identically.
+  - Server-side sectioning utility: a pure function dividing markdown
+    content into heading-delimited sections. Section identifier =
+    slugified heading text, with a deterministic document-order suffix
+    for duplicate headings; content before the first heading forms a
+    single leading section with a fixed identifier. Identical content
+    always yields identical identifiers. This utility is library code
+    consumed later by the re-matching and planning-workspace plans.
+  - Creation-time validation: review subject must be a plan; the
+    revision ordinal must exist on the subject plan; the quoted text
+    must occur at the stored offset within the stored section of the
+    creation revision's content (resolve content via the revision
+    pointer, sections via the utility). Failures reject with feedback
+    naming the offending field. Load-time validation stays shape-level
+    so imported or hand-edited records never fail loads on content
+    checks.
+  - CLI flags on kspec review comment for the plan-text variant, and
+    the same validation on the daemon thread-creation route.
+  - Finalize the shared anchor error map so discriminator failures
+    enumerate all accepted variants including spec-criterion and
+    plan-text.
+
+  How: Same union-extension pattern as the spec-AC variant task. The
+  sectioning utility lives next to the plan document parsing code
+  (src/parser/). Tests: round-trip; each rejection case (negative
+  offset, empty quote, non-positive revision ordinal, positive ordinal
+  absent from the plan's revision history, non-plan subject, quote
+  mismatch); a non-ASCII span case where multi-byte and surrogate-pair
+  characters (e.g. CJK text and emoji) precede the span, proving
+  offsets count Unicode code points rather than bytes or UTF-16 code
+  units; sectioning determinism including duplicate headings and
+  preamble-only documents.
+
+  Covers: @review-plan-text-anchors ac-plan-text-anchor-stored,
+  ac-deterministic-sectioning, ac-plan-text-anchor-validation,
+  ac-nonexistent-revision-rejected, ac-plan-subject-only,
+  ac-span-integrity.
+  @review-spec-ac-anchors ac-anchor-variant-guidance.
+spec_ref: "@review-plan-text-anchors"
+plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-spec-ac-anchor-variant"
+  - "@task-plan-revision-records"
+  - "@task-plan-revision-backfill"
+context: []
+priority: 1
+tags:
+  - schema
+  - reviews
+  - plans
+vcs_refs: []
+created_at: 2026-06-18T22:21:57.623Z
+todos: []
