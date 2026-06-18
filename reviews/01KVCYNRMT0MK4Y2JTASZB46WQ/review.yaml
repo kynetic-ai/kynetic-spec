@@ -13,6 +13,17 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-18T09:00:00.740Z
     completed_at: 2026-06-18T09:00:00.740Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors under --quiet; repo warning baseline reported separately by oxlint
+      and no errors were present.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-18T09:00:11.892Z
+    completed_at: 2026-06-18T09:00:11.892Z
 events:
   - _ulid: 01KVCYNRMSXKRR4FNT25494D7M
     actor: Jacob Chapel
@@ -34,6 +45,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-18T09:00:00.978Z
+  - _ulid: 01KVCZB6EXPC306AG2KBVTD51K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-18T09:00:12.125Z
 examined_commit: a19ac97e767c7542d75f92ff8e2d2c8dae5ef231
 external_links: []
 lifecycle_state: open
@@ -46,5 +64,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-18T08:48:29.849Z
-updated_at: 2026-06-18T09:00:00.740Z
+updated_at: 2026-06-18T09:00:11.892Z
 notes: []

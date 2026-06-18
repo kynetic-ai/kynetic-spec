@@ -27268,7 +27268,7 @@ reviews:
     title: Review task-missing-event-types cycle 2
     disposition: pending
     author: Jacob Chapel
-    check_count: 1
+    check_count: 2
     examined_commit: a19ac97e767c7542d75f92ff8e2d2c8dae5ef231
     lifecycle_state: open
     related_refs: []
@@ -27281,4 +27281,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-18T08:48:29.849Z
-    updated_at: 2026-06-18T09:00:00.740Z
+    updated_at: 2026-06-18T09:00:11.892Z
