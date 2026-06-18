@@ -24135,7 +24135,7 @@ workspaces:
         head: e2835cf4793e98df99dd52a668712990e680a08a
         last_seen_at: 2026-06-18T08:25:03.400Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-engine-mutation-path-01kvc30v
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: ce763c87e81cd2eff58d1021da5753e442322259
     bootstrap:
       status: succeeded
@@ -24637,9 +24637,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-18T11:44:08.743Z
-      last_reconciled_at: 2026-06-18T12:04:16.723Z
+      last_reconciled_at: 2026-06-18T12:06:06.309Z
       created_at: 2026-06-18T07:26:41.481Z
-      updated_at: 2026-06-18T12:04:16.723Z
+      updated_at: 2026-06-18T12:06:06.309Z
     workspace_id: dispatch-workspace-01KVC30V6R468JZTF5BHVVYKB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
