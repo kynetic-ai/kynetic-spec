@@ -70215,9 +70215,21 @@ runs:
     completed_at: 2026-06-18T23:31:36.177Z
   - _ulid: 01KVEJ43J6GP0KQP6279B0X5EY
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-18T23:47:37.158Z
+        completed_at: 2026-06-18T23:48:05.561Z
+        notes: "What worked well: the actor-field inventory fail-closed guard immediately exposed the new
+          revisions[].author schema field as unclassified, which prevented revision author data from
+          bypassing the canonical actor-normalization path. Focused reruns of the affected upgrade
+          suites then confirmed the fix before the full suite."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-18T23:48:05.561Z
+        completed_at: 2026-06-18T23:48:05.561Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T23:47:37.158Z
