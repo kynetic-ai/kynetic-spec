@@ -20515,11 +20515,11 @@ workspaces:
     canonical_branch: dispatch/task/task-ui-targeted-consumption/01kvc30v
     canonical_branch_head: 88b0691213ac017059815e1fa58f064e997647c2
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-18T20:30:05.720Z
+      updated_at: 2026-06-18T20:33:13.638Z
     health:
       status: healthy
       issues: []
@@ -20533,17 +20533,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: d1183ad57015a8b808093382206b800aa903b0ca
       updated_at: 2026-06-18T20:30:05.720Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVC30VVC1G051BP2QT5RPX3R
     task_ref: "@01KVC30VVC1G051BP2QT5RPX3R"
     task_slug: task-ui-targeted-consumption
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-18T20:33:13.638Z
       last_active_at: 2026-06-18T20:09:55.685Z
       last_reconciled_at: 2026-06-18T20:32:23.849Z
       created_at: 2026-06-18T12:22:37.754Z
-      updated_at: 2026-06-18T20:32:23.849Z
+      updated_at: 2026-06-18T20:33:13.638Z
     workspace_id: dispatch-workspace-01KVC30VVC1G051BP2QT5RPX3R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
