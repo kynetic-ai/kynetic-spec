@@ -32583,7 +32583,7 @@
   type: task
   spec_ref: "@ui-targeted-event-consumption"
   plan_ref: "@plan-dispatch-mutation-service"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-command-path-typed-events"
@@ -32596,6 +32596,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-18T00:45:13.452Z
+  started_at: 2026-06-18T12:24:08.878Z
   automation: eligible
 - _ulid: 01KVC30W630R5AJWKDGSHJCX6P
   slugs:

@@ -55,7 +55,7 @@ description: |
 spec_ref: "@ui-targeted-event-consumption"
 plan_ref: "@plan-dispatch-mutation-service"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-command-path-typed-events"
@@ -67,6 +67,7 @@ tags:
   - events
   - implementation
 vcs_refs: []
+session_id: 01KVDAYR6ADT08RCWAM2VS3TDF
 history:
   - author: Jacob Chapel
     changes:
@@ -75,6 +76,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-18T00:45:28.842Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KVDAYR6ADT08RCWAM2VS3TDF
+        previous: null
+      started_at:
+        new: 2026-06-18T12:24:08.878Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-18T12:24:08.878Z
 created_at: 2026-06-18T00:45:13.452Z
+started_at: 2026-06-18T12:24:08.878Z
 todos: []
 automation: eligible
