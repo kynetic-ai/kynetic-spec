@@ -13,3 +13,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T04:22:59.982Z
+  - _ulid: 01KVCH4D4H0HXD32Q8HP810DNN
+    content: "Implemented shared mutation pipeline and migrated daemon entity mutation routes for tasks,
+      inbox, triage, reviews, review resources, and plan resources. Added behavioral pipeline tests
+      covering apply/commit/cache/broadcast ordering, no-daemon/no-cache paths, batch sequencing,
+      and failure propagation; added plan resource broadcast coverage. Verification: format:check
+      passed; repo lint passed with existing warning baseline and 0 errors; focused oxlint over
+      changed files passed with 0 warnings/errors; typecheck passed; focused migrated-route tests
+      passed (268/268); npm test passed (2882 suites, 10939 passed, 3 skipped); kspec
+      refs/alignment/completeness validations passed with --warnings-ok and existing warning
+      baselines."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T04:51:49.521Z
