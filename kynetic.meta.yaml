@@ -22774,6 +22774,16 @@ observations:
     resolved: false
     workflow_ref: "@01KVEFNN"
     created_at: 2026-06-18T23:06:59.115Z
+  - _ulid: 01KVEJ6H5KTRXS1C6WHV0KVM0G
+    type: success
+    content: "The exhaustive actor-field inventory is an effective schema-evolution guard: adding plan
+      revisions[].author immediately failed the actor-normalization completeness check until the new
+      actor-bearing field was classified and covered by a migration fixture."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-18T23:48:56.627Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
