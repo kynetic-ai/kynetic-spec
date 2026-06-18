@@ -69772,9 +69772,21 @@ runs:
     started_at: 2026-06-18T11:13:50.281Z
   - _ulid: 01KVD6ZXXESHN6YXW61P7MMPDV
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-18T11:13:51.534Z
+        completed_at: 2026-06-18T11:16:22.112Z
+        notes: "What worked: diff-first review plus targeted call-site searches found a real event-emission
+          gap despite green gates. Friction: one review comment body was mangled by shell
+          interpretation of backticks before being corrected with a reply. Active product issue is
+          already tracked by review @01KVD633, so it will not be duplicated here."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-18T11:16:22.112Z
+        completed_at: 2026-06-18T11:16:22.112Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T11:13:51.534Z
