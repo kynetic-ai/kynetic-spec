@@ -89,6 +89,17 @@ checks:
     runner: kspec
     created_at: 2026-06-18T20:27:45.914Z
     completed_at: 2026-06-18T20:27:45.914Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused Playwright typed-event coverage passed: tests/e2e/connection.spec.ts -g
+      'typed|plan-resource' ran 2 tests, 2 passed"
+    name: focused e2e
+    required: false
+    runner: npm run build:e2e && npx playwright test
+    created_at: 2026-06-18T20:27:51.619Z
+    completed_at: 2026-06-18T20:27:51.619Z
 events:
   - _ulid: 01KVE5PR0561R9CK84XQW9FT40
     actor: Jacob Chapel
@@ -159,6 +170,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-18T20:27:46.186Z
+  - _ulid: 01KVE6PB6RBJN62940HZ1ZHZP1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e
+    timestamp: 2026-06-18T20:27:51.896Z
 examined_commit: 88b0691213ac017059815e1fa58f064e997647c2
 external_links: []
 lifecycle_state: open
@@ -171,5 +189,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-18T20:10:36.421Z
-updated_at: 2026-06-18T20:27:45.914Z
+updated_at: 2026-06-18T20:27:51.619Z
 notes: []
