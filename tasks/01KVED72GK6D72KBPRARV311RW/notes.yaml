@@ -12,3 +12,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T23:12:03.243Z
+  - _ulid: 01KVEJ1R1TWB5F3M9XHRDGW5WP
+    content: Implemented plan revision records with folder-backed metadata, publish/import minting,
+      read-side revision display, current_revision index projection, revision content resolution by
+      shadow commit, and actor-normalization coverage for revision authors. Verified format, lint,
+      typecheck, full npm test, and kspec validations.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T23:46:19.834Z
