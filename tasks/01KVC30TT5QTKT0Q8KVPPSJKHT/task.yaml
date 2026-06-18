@@ -47,7 +47,7 @@ description: |
 spec_ref: "@shared-mutation-pipeline"
 plan_ref: "@plan-dispatch-mutation-service"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-shared-mutation-pipeline"
@@ -58,6 +58,7 @@ tags:
   - cli
   - events
 vcs_refs: []
+session_id: 01KVCN58PETBKJ5CATJ2VJ116B
 history:
   - author: Jacob Chapel
     changes:
@@ -66,6 +67,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-18T00:45:27.561Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KVCN58PETBKJ5CATJ2VJ116B
+        previous: null
+      started_at:
+        new: 2026-06-18T06:02:46.540Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-18T06:02:46.541Z
 created_at: 2026-06-18T00:45:12.389Z
+started_at: 2026-06-18T06:02:46.540Z
 todos: []
 automation: eligible
