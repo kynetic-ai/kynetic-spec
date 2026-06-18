@@ -454,6 +454,7 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
             pathValidation.value,
           );
         }
+        let previousAbsolute: string | null = null;
         if (existingById && existingById.path !== pathValidation.value) {
           const safePrevious = await assertSafeResourceMutationPath({
             ownerResourcesDir: resourcesDir,
@@ -463,6 +464,7 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
             set.status = 400;
             return errorBody("invalid_resource_path", safePrevious.error, id, existingById.path);
           }
+          previousAbsolute = safePrevious.value.absolutePath;
         }
 
         // Stage uploaded bytes inside the plan directory itself rather than
@@ -487,7 +489,7 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
           );
         }
 
-        let metadata: ResourceMetadata;
+        let stagedMetadata: ResourceMetadata;
         try {
           const metadataResult = await computeResourceMetadata({
             id,
@@ -508,71 +510,72 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
               pathValidation.value,
             );
           }
-          metadata = metadataResult.value;
+          stagedMetadata = metadataResult.value;
         } catch (err) {
           await fs.rm(tempPath, { force: true });
           throw err;
         }
 
-        const destination = safeDestination.value.absolutePath;
-        await fs.mkdir(path.dirname(destination), { recursive: true });
-        try {
-          await fs.rename(tempPath, destination);
-        } catch (err) {
-          await fs.rm(tempPath, { force: true });
-          throw err;
-        }
+        const isReplacement = Boolean(existingById);
 
-        if (existingById && existingById.path !== pathValidation.value) {
-          const previousAbsolute = path.join(resourcesDir, existingById.path);
-          try {
-            await fs.rm(previousAbsolute, { force: true });
-          } catch {
-            // tolerated — drift will surface via the rebuild-index helper
-          }
-        }
-
-        const gitVersion = captureResourceGitVersion(destination);
-        metadata = {
-          ...metadata,
-          git_commit: gitVersion.git_commit,
-          git_path: gitVersion.git_path,
-        };
-
-        const replaced = Boolean(existingById);
-        const nextResources = replaced
-          ? manifest.resources.map((r) => (r.id === id ? metadata : r))
-          : [...manifest.resources, metadata];
-
-        await runRouteMutation({
+        const uploadMutation = await runRouteMutation({
           ctx: resolved.ctx,
           projectPath: projectContext.path,
           getEntityCache,
           pubsub,
-          apply: () => writeResourceManifest(planDir, { resources: nextResources }),
-          commit: {
+          apply: async () => {
+            const destination = safeDestination.value.absolutePath;
+            await fs.mkdir(path.dirname(destination), { recursive: true });
+            try {
+              await fs.rename(tempPath, destination);
+            } catch (err) {
+              await fs.rm(tempPath, { force: true });
+              throw err;
+            }
+
+            if (previousAbsolute) {
+              try {
+                await fs.rm(previousAbsolute, { force: true });
+              } catch {
+                // tolerated — drift will surface via the rebuild-index helper
+              }
+            }
+
+            const gitVersion = captureResourceGitVersion(destination);
+            const appliedMetadata = {
+              ...stagedMetadata,
+              git_commit: gitVersion.git_commit,
+              git_path: gitVersion.git_path,
+            };
+            const nextResources = isReplacement
+              ? manifest.resources.map((r) => (r.id === id ? appliedMetadata : r))
+              : [...manifest.resources, appliedMetadata];
+            await writeResourceManifest(planDir, { resources: nextResources });
+            return { metadata: appliedMetadata, replaced: isReplacement };
+          },
+          commit: (applied) => ({
             operation: "plan-resource-api-post",
             ref: resolved.plan.ref,
-            detail: `${replaced ? "replaced" : "added"} ${metadata.id} (${metadata.path})`,
-          },
+            detail: `${applied.replaced ? "replaced" : "added"} ${applied.metadata.id} (${applied.metadata.path})`,
+          }),
           writeThrough: [{ domain: "plans", hint: { ulid: resolved.plan.ulid } }],
-          events: [
+          events: (applied) => [
             {
               topic: "plans:updates",
               event: "plan_resource_changed",
               data: {
                 plan_ulid: resolved.plan.ulid,
-                resource_id: metadata.id,
-                action: replaced ? "replaced" : "added",
+                resource_id: applied.metadata.id,
+                action: applied.replaced ? "replaced" : "added",
               },
             },
           ],
         });
 
-        set.status = replaced ? 200 : 201;
+        set.status = uploadMutation.replaced ? 200 : 201;
         return {
-          resource: toPlanResourceMetadata(metadata),
-          replaced,
+          resource: toPlanResourceMetadata(uploadMutation.metadata),
+          replaced: uploadMutation.replaced,
         };
       })
       // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
@@ -610,34 +613,37 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
           return errorBody("invalid_resource_path", safeFile.error, params.resourceId, match.path);
         }
 
-        await fs.rm(safeFile.value.absolutePath, { force: true });
-        const nextResources = manifest.resources.filter((r) => r.id !== params.resourceId);
-        await runRouteMutation({
+        const mutation = await runRouteMutation({
           ctx: resolved.ctx,
           projectPath: projectContext.path,
           getEntityCache,
           pubsub,
-          apply: () => writeResourceManifest(planDir, { resources: nextResources }),
-          commit: {
+          apply: async () => {
+            await fs.rm(safeFile.value.absolutePath, { force: true });
+            const nextResources = manifest.resources.filter((r) => r.id !== params.resourceId);
+            await writeResourceManifest(planDir, { resources: nextResources });
+            return { removed: { id: params.resourceId, path: match.path } };
+          },
+          commit: ({ removed }) => ({
             operation: "plan-resource-api-delete",
             ref: resolved.plan.ref,
-            detail: `${params.resourceId} (${match.path})`,
-          },
+            detail: `${removed.id} (${removed.path})`,
+          }),
           writeThrough: [{ domain: "plans", hint: { ulid: resolved.plan.ulid } }],
-          events: [
+          events: ({ removed }) => [
             {
               topic: "plans:updates",
               event: "plan_resource_changed",
               data: {
                 plan_ulid: resolved.plan.ulid,
-                resource_id: params.resourceId,
+                resource_id: removed.id,
                 action: "removed",
               },
             },
           ],
         });
 
-        return { removed: { id: params.resourceId, path: match.path } };
+        return { removed: mutation.removed };
       })
   );
 }

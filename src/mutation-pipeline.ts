@@ -49,7 +49,9 @@ export interface MutationPipelineOptions {
 
 export interface MutationOperation<T> {
   apply: () => Promise<T> | T;
-  commit: MutationCommitDescriptor;
+  commit:
+    | MutationCommitDescriptor
+    | ((result: T) => MutationCommitDescriptor | Promise<MutationCommitDescriptor>);
   writeThrough?:
     | MutationWriteThroughDescriptor[]
     | ((result: T) => MutationWriteThroughDescriptor[] | Promise<MutationWriteThroughDescriptor[]>);
@@ -64,13 +66,15 @@ export class MutationPipeline {
   async run<T>(operation: MutationOperation<T>): Promise<T> {
     const result = await operation.apply();
     const commit = this.options.commit ?? commitIfShadow;
+    const commitDescriptor =
+      typeof operation.commit === "function" ? await operation.commit(result) : operation.commit;
 
     await commit(
       this.options.shadow ?? null,
-      operation.commit.operation,
-      operation.commit.ref,
-      operation.commit.detail,
-      operation.commit.verbose,
+      commitDescriptor.operation,
+      commitDescriptor.ref,
+      commitDescriptor.detail,
+      commitDescriptor.verbose,
     );
 
     const writeThrough =

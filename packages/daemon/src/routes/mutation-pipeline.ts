@@ -14,7 +14,9 @@ interface RouteMutationOptions<T> {
   getEntityCache?: EntityCacheAccessor;
   pubsub?: PubSubManager;
   apply: () => Promise<T> | T;
-  commit: MutationCommitDescriptor;
+  commit:
+    | MutationCommitDescriptor
+    | ((result: T) => MutationCommitDescriptor | Promise<MutationCommitDescriptor>);
   writeThrough?:
     | MutationWriteThroughDescriptor[]
     | ((result: T) => MutationWriteThroughDescriptor[] | Promise<MutationWriteThroughDescriptor[]>);

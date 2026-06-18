@@ -96,6 +96,19 @@ function toApiErrorBody(error: ReviewResourceError, fallbackCode?: string): ApiE
   };
 }
 
+class ReviewResourceRouteError extends Error {
+  constructor(readonly resourceError: ReviewResourceError) {
+    super(resourceError.message);
+  }
+}
+
+type ReviewResourceSuccess<T> =
+  Awaited<T> extends infer Result
+    ? Result extends { ok: true; value: infer Value }
+      ? Value
+      : never
+    : never;
+
 /**
  * Parse a `replace` multipart text field per the task contract:
  *   - undefined → false
@@ -318,47 +331,58 @@ export function createReviewResourcesRoutes(options: ReviewResourcesRouteOptions
             await fs.writeFile(tempFile, bytes);
 
             const ctx = await initContext(projectContext.path);
-            const result = await addReviewResource(ctx, params.id, {
-              id,
-              relativePath,
-              sourceFile: tempFile,
-              contentType,
-              label,
-              description,
-              replace: replaceParsed.value,
-            });
-
-            if (!result.ok) {
-              return errorResponse(statusForCode(result.error.code), toApiErrorBody(result.error));
+            let addedResource: ReviewResourceSuccess<ReturnType<typeof addReviewResource>>;
+            try {
+              addedResource = await runRouteMutation({
+                ctx,
+                projectPath: projectContext.path,
+                getEntityCache,
+                pubsub,
+                apply: async () => {
+                  const addResult = await addReviewResource(ctx, params.id, {
+                    id,
+                    relativePath,
+                    sourceFile: tempFile,
+                    contentType,
+                    label,
+                    description,
+                    replace: replaceParsed.value,
+                  });
+                  if (!addResult.ok) {
+                    throw new ReviewResourceRouteError(addResult.error);
+                  }
+                  return addResult.value;
+                },
+                commit: (mutation) => ({
+                  operation: "review-resource-add",
+                  ref: mutation.review.slugs[0] || mutation.review._ulid.slice(0, 8),
+                  detail: `${id} → ${relativePath}`,
+                }),
+                writeThrough: [{ domain: "reviews" }],
+                events: (mutation) => [
+                  {
+                    topic: "reviews:updates",
+                    event: "resource_changed",
+                    data: {
+                      review_ulid: mutation.review._ulid,
+                      resource_id: id,
+                      action: mutation.replaced ? "replaced" : "added",
+                    },
+                  },
+                ],
+              });
+            } catch (err) {
+              if (err instanceof ReviewResourceRouteError) {
+                return errorResponse(
+                  statusForCode(err.resourceError.code),
+                  toApiErrorBody(err.resourceError),
+                );
+              }
+              throw err;
             }
 
-            await runRouteMutation({
-              ctx,
-              projectPath: projectContext.path,
-              getEntityCache,
-              pubsub,
-              apply: () => undefined,
-              commit: {
-                operation: "review-resource-add",
-                ref: result.value.review.slugs[0] || result.value.review._ulid.slice(0, 8),
-                detail: `${id} → ${relativePath}`,
-              },
-              writeThrough: [{ domain: "reviews" }],
-              events: [
-                {
-                  topic: "reviews:updates",
-                  event: "resource_changed",
-                  data: {
-                    review_ulid: result.value.review._ulid,
-                    resource_id: id,
-                    action: result.value.replaced ? "replaced" : "added",
-                  },
-                },
-              ],
-            });
-
-            set.status = result.value.replaced ? 200 : 201;
-            return { resource: result.value.resource, replaced: result.value.replaced };
+            set.status = addedResource.replaced ? 200 : 201;
+            return { resource: addedResource.resource, replaced: addedResource.replaced };
           } finally {
             await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {});
           }
@@ -372,37 +396,49 @@ export function createReviewResourcesRoutes(options: ReviewResourcesRouteOptions
         "/:id/resources/:resourceId",
         async ({ params, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
-          const result = await removeReviewResource(ctx, params.id, params.resourceId);
-          if (!result.ok) {
-            return errorResponse(statusForCode(result.error.code), toApiErrorBody(result.error));
+          let removedResource: ReviewResourceSuccess<ReturnType<typeof removeReviewResource>>;
+          try {
+            removedResource = await runRouteMutation({
+              ctx,
+              projectPath: projectContext.path,
+              getEntityCache,
+              pubsub,
+              apply: async () => {
+                const removeResult = await removeReviewResource(ctx, params.id, params.resourceId);
+                if (!removeResult.ok) {
+                  throw new ReviewResourceRouteError(removeResult.error);
+                }
+                return removeResult.value;
+              },
+              commit: (mutation) => ({
+                operation: "review-resource-remove",
+                ref: mutation.review.slugs[0] || mutation.review._ulid.slice(0, 8),
+                detail: `${mutation.removed.id} (${mutation.removed.path})`,
+              }),
+              writeThrough: [{ domain: "reviews" }],
+              events: (mutation) => [
+                {
+                  topic: "reviews:updates",
+                  event: "resource_changed",
+                  data: {
+                    review_ulid: mutation.review._ulid,
+                    resource_id: mutation.removed.id,
+                    action: "removed",
+                  },
+                },
+              ],
+            });
+          } catch (err) {
+            if (err instanceof ReviewResourceRouteError) {
+              return errorResponse(
+                statusForCode(err.resourceError.code),
+                toApiErrorBody(err.resourceError),
+              );
+            }
+            throw err;
           }
 
-          await runRouteMutation({
-            ctx,
-            projectPath: projectContext.path,
-            getEntityCache,
-            pubsub,
-            apply: () => undefined,
-            commit: {
-              operation: "review-resource-remove",
-              ref: result.value.review.slugs[0] || result.value.review._ulid.slice(0, 8),
-              detail: `${result.value.removed.id} (${result.value.removed.path})`,
-            },
-            writeThrough: [{ domain: "reviews" }],
-            events: [
-              {
-                topic: "reviews:updates",
-                event: "resource_changed",
-                data: {
-                  review_ulid: result.value.review._ulid,
-                  resource_id: result.value.removed.id,
-                  action: "removed",
-                },
-              },
-            ],
-          });
-
-          return { removed: result.value.removed };
+          return { removed: removedResource.removed };
         },
         {
           params: t.Object({

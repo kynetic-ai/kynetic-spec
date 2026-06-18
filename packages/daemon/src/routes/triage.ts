@@ -560,9 +560,66 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           // AC: @api-contract ac-task-storage-incompatibility-* — promote actions
           // call resolveTaskDataManager(ctx).createTask(); surface the deterministic
           // storage error as a structured 409 instead of a 500.
-          let result: Awaited<ReturnType<typeof executeTriageAction>>;
+          type TriageActMutationResult = {
+            record: typeof record;
+            result: Awaited<ReturnType<typeof executeTriageAction>>;
+          };
+          let actedRecord: TriageActMutationResult;
           try {
-            result = await executeTriageAction(record, ctx);
+            actedRecord = await runRouteMutation({
+              ctx,
+              projectPath: projectContext.path,
+              getEntityCache,
+              pubsub,
+              apply: async () => {
+                const result = await executeTriageAction(record, ctx);
+
+                // Transition to acted_on as part of the same logical mutation
+                // as the triage action side effects.
+                record.status = "acted_on";
+                record.acted_at = new Date().toISOString();
+                if (result.resultRef) {
+                  record.result_ref = result.resultRef;
+                }
+                record.updated_at = new Date().toISOString();
+
+                await saveTriageRecord(ctx, record);
+                return { record, result };
+              },
+              commit: { operation: `triage: act ${record._ulid.slice(0, 8)}` },
+              writeThrough: async ({ record: actedTriageRecord, result }) => {
+                const descriptors = [{ domain: "triage" }];
+                const action = actedTriageRecord.action;
+                if (action === "promote") {
+                  const createdTask = result.resultRef
+                    ? await resolveTaskDataManager(ctx)
+                        .getTask(ctx, result.resultRef)
+                        .catch(() => undefined)
+                    : undefined;
+                  descriptors.push({
+                    domain: "tasks",
+                    ...(createdTask ? { hint: { ulid: createdTask._ulid } } : {}),
+                  });
+                  descriptors.push({ domain: "inbox" });
+                } else if (action === "delete" || action === "duplicate") {
+                  descriptors.push({ domain: "inbox" });
+                } else if (action === "spec-gap") {
+                  descriptors.push({ domain: "meta" });
+                }
+                return descriptors;
+              },
+              events: ({ record: actedTriageRecord }) => [
+                {
+                  topic: "triage:updates",
+                  event: "triage_record_acted",
+                  data: {
+                    ulid: actedTriageRecord._ulid,
+                    action: actedTriageRecord.action,
+                    result_ref: actedTriageRecord.result_ref,
+                  },
+                },
+              ],
+            });
           } catch (err) {
             const actCacheForError = getEntityCache?.(projectContext.path);
             const conflict = taskStorageIncompatibilityResponse(err, { cache: actCacheForError });
@@ -570,61 +627,9 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             throw err;
           }
 
-          // Transition to acted_on
-          record.status = "acted_on";
-          record.acted_at = new Date().toISOString();
-          if (result.resultRef) {
-            record.result_ref = result.resultRef;
-          }
-          record.updated_at = new Date().toISOString();
-
-          const actedRecord = await runRouteMutation({
-            ctx,
-            projectPath: projectContext.path,
-            getEntityCache,
-            pubsub,
-            apply: async () => {
-              await saveTriageRecord(ctx, record);
-              return record;
-            },
-            commit: { operation: `triage: act ${record._ulid.slice(0, 8)}` },
-            writeThrough: async () => {
-              const descriptors = [{ domain: "triage" }];
-              const action = record.action;
-              if (action === "promote") {
-                const createdTask = result.resultRef
-                  ? await resolveTaskDataManager(ctx)
-                      .getTask(ctx, result.resultRef)
-                      .catch(() => undefined)
-                  : undefined;
-                descriptors.push({
-                  domain: "tasks",
-                  ...(createdTask ? { hint: { ulid: createdTask._ulid } } : {}),
-                });
-                descriptors.push({ domain: "inbox" });
-              } else if (action === "delete" || action === "duplicate") {
-                descriptors.push({ domain: "inbox" });
-              } else if (action === "spec-gap") {
-                descriptors.push({ domain: "meta" });
-              }
-              return descriptors;
-            },
-            events: [
-              {
-                topic: "triage:updates",
-                event: "triage_record_acted",
-                data: {
-                  ulid: record._ulid,
-                  action: record.action,
-                  result_ref: record.result_ref,
-                },
-              },
-            ],
-          });
-
           return {
             success: true,
-            record: actedRecord,
+            record: actedRecord.record,
           };
         },
         {

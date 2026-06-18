@@ -68,6 +68,51 @@ describe("shared mutation pipeline", () => {
     ]);
   });
 
+  // AC: @shared-mutation-pipeline ac-1
+  // AC: @shared-mutation-pipeline ac-2
+  it("derives commit, cache, and event descriptors from the applied mutation result", async () => {
+    const recorder = createStageRecorder();
+    const pipeline = createMutationPipeline({
+      shadow: null,
+      cache: recorder.cache,
+      pubsub: recorder.pubsub,
+      projectPath: "/project",
+      commit: recorder.commit,
+    });
+
+    const mutationResult = await pipeline.run({
+      apply: async () => {
+        recorder.calls.push("apply-resource");
+        return { reviewUlid: "01REVIEW", resourceId: "shot", action: "added" };
+      },
+      commit: (applied) => ({
+        operation: "review-resource-add",
+        ref: applied.reviewUlid,
+        detail: `${applied.action} ${applied.resourceId}`,
+      }),
+      writeThrough: (applied) => [{ domain: "reviews", hint: { ulid: applied.reviewUlid } }],
+      events: (applied) => [
+        {
+          topic: "reviews:updates",
+          event: "resource_changed",
+          data: { ulid: applied.reviewUlid, resource_id: applied.resourceId },
+        },
+      ],
+    });
+
+    expect(mutationResult).toEqual({
+      reviewUlid: "01REVIEW",
+      resourceId: "shot",
+      action: "added",
+    });
+    expect(recorder.calls).toEqual([
+      "apply-resource",
+      "commit:review-resource-add:01REVIEW:added shot",
+      'cache:reviews:{"ulid":"01REVIEW"}',
+      "broadcast:reviews:updates:resource_changed:01REVIEW:/project",
+    ]);
+  });
+
   // AC: @shared-mutation-pipeline ac-4
   it("applies and commits a single mutation when cache and pubsub are unavailable", async () => {
     const calls: string[] = [];
