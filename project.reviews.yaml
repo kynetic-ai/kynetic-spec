@@ -27401,7 +27401,7 @@ reviews:
     title: Review task-spec-ac-anchor-variant
     disposition: pending
     author: Jacob Chapel
-    check_count: 6
+    check_count: 7
     examined_commit: 1ddf6dad70c3f39d41b48c59b79ff29fac8234ee
     lifecycle_state: open
     related_refs: []
@@ -27414,4 +27414,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-18T23:09:06.198Z
-    updated_at: 2026-06-18T23:27:27.646Z
+    updated_at: 2026-06-18T23:27:39.882Z
