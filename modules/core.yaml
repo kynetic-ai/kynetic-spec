@@ -2203,9 +2203,8 @@ features:
           - given: |
               Unresolved threads exist on a review
             id: ac-6
-            then: |
-              Only threads with kind blocker prevent the review from being approved
-              while unresolved nit and question threads do not block
+            then: Only threads with kind blocker prevent the review from being approved while unresolved nit,
+              question, and idea threads do not block
             when: |
               The review disposition is computed
         tags: []

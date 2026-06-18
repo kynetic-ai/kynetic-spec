@@ -6882,19 +6882,15 @@ requirements:
       - given: |
           A user opens /reviews/[id]
         id: ac-2
-        then: |
-          All threads are displayed with their entries, resolution state, and
-          kind badges (blocker/question/nit); checks show pass/fail with
-          staleness; verdicts show reviewer decisions; computed disposition
-          is prominent
+        then: All threads are displayed with their entries, resolution state, and kind badges (blocker,
+          question, nit, idea); checks show pass/fail with staleness; verdicts show reviewer
+          decisions; computed disposition is prominent
         when: |
           The review has threads, checks, and verdicts
       - given: |
           A user is viewing a review detail page
         id: ac-3
-        then: |
-          They can create a new thread with a body and kind selection
-          (blocker, question, nit)
+        then: They can create a new thread with a body and kind selection (blocker, question, nit, idea)
         when: |
           They click "Add Comment"
       - given: |
