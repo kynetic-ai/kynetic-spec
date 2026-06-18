@@ -1059,6 +1059,9 @@ features:
           When no daemon serves the project, the same mutation logic applies
           and commits the change, and the cache and broadcast stages are
           skipped without error.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
