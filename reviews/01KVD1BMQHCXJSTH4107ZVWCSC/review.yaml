@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-18T09:35:42.503Z
+  - _ulid: 01KVD1NE954KK5XM96EBGNP4KV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVD1NDZRKVKRPJKRDD0BYAQR
+    timestamp: 2026-06-18T09:40:44.965Z
 examined_commit: 88bcda60de2de1df10e00a8d5e7c7b4f6c4d4a16
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,29 @@ subject:
   content_hash: ""
   ref: "@01KVC30V6R468JZTF5BHVVYKB0"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVD1NDZRKVKRPJKRDD0BYAQR
+    anchor:
+      type: code
+      commit: 88bcda60de2de1df10e00a8d5e7c7b4f6c4d4a16
+      line_end: 2300
+      line_start: 2298
+      path: src/parser/yaml.ts
+      side: head
+    entries:
+      - _ulid: 01KVD1NDZRSQZRD1Y355F47W1R
+        author: Jacob Chapel
+        body: "MUST-FIX: Cascade spec-item deletion can remove nested descendants without emitting events
+          for them. The command path gathers only direct children before calling deleteSpecItem, and
+          this splice removes the selected child subtree; recordSpecItemMutationEvent then emits
+          only for that selected item. I verified with a temporary collector probe: deleting a child
+          containing a grandchild removed the grandchild from disk (containsGrandchild=false) but
+          produced only one items:updates/spec_item_changed event for the child. That violates
+          @mutation-event-coverage ac-3/ac-5 because subscribers tracking the removed grandchild do
+          not observe its removal without falling back to file-change invalidation."
+        created_at: 2026-06-18T09:40:44.664Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-18T09:35:23.889Z
-updated_at: 2026-06-18T09:35:42.175Z
+updated_at: 2026-06-18T09:40:44.664Z
 notes: []
