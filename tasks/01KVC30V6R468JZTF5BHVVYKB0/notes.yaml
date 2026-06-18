@@ -53,3 +53,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T09:09:31.912Z
+  - _ulid: 01KVD10BVDRRHRV2ZZ7GXRV1J7
+    content: "Fix cycle 2: addressed review @01KVCYNR blocker by expanding the behavioral command-route
+      AC test for @mutation-event-coverage ac-1. The test now executes task block, unblock, cancel,
+      and reset through /api/command and asserts task_updated old_status/new_status payloads for
+      each transition. Also corrected the daemon command test cache fixture to expose
+      production-like task summaries so transition commands exercise the real cache-backed listTasks
+      path. Resolved both review threads. Gates passed: format, repo lint, focused lint, typecheck,
+      focused daemon-command test, npm test (2883 suites/10950 tests passed/3 skipped), and kspec
+      refs/alignment/completeness validation with existing warnings accepted."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T09:29:14.349Z
