@@ -70,3 +70,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T09:50:48.346Z
+  - _ulid: 01KVD2H5381AFJ39QWZG1R2FHR
+    content: "Fix cycle 3 approach: address review @01KVD1BM blocker by making deleteSpecItem emit
+      spec_item_changed removed events for every item actually removed by a subtree splice, not just
+      the requested item. Reuse the existing mutation event collector and canonical item payload
+      shape. Edge cases: nested children removed by a single YAML splice, explicit cascade deletion
+      paths that call deleteSpecItem deepest-first, and fallback lookup/root-array deletion. Test
+      plan: expand the command-route behavioral item event test to create a child plus nested
+      grandchild, delete the child, and assert both removed item_ulid payloads are observed on
+      items:updates; then run focused tests and required project gates before resubmitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T09:55:53.064Z
