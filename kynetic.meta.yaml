@@ -22631,6 +22631,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-18T05:16:52.406Z
+  - _ulid: 01KVCPCT1PQE4N1AB7A56KWG81
+    type: success
+    content: "For command-path mutation work, adding the matching REST route to the command API test
+      harness enabled direct event-equivalence assertions in one temp project: perform the same
+      logical mutation through REST and /api/command, capture broadcasts, and compare
+      topic/event/payload schema. This gave behavioral AC coverage for typed event parity without
+      command-name mapping or source-scanning tests."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-18T06:23:47.766Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
