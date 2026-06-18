@@ -211,6 +211,12 @@ events:
     payload:
       thread_ulid: 01KVCJCHX963BD2875V5509SN1
     timestamp: 2026-06-18T05:39:19.552Z
+  - _ulid: 01KVCKW1X5TJ1H3NH3N0MZTAQA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVCJCMTMGK51W7SXQBN8T0ZJ
+    timestamp: 2026-06-18T05:39:41.605Z
 examined_commit: bfde105acd982fb9424afb538d18769e20e1d64e
 external_links: []
 lifecycle_state: closed
@@ -275,6 +281,14 @@ threads:
           itself inside the pipeline apply callback and derive the commit/write-through/event
           descriptors from its result."
         created_at: 2026-06-18T05:13:48.116Z
+      - _ulid: 01KVCKW1P6T7D1QDASQD35T9QK
+        author: Jacob Chapel
+        body: "Fixed in fea84ff19a: review resource add/remove now call
+          addReviewResource/removeReviewResource inside runRouteMutation.apply. Manager validation
+          errors are converted back to the existing API error envelopes before commit, while
+          successful mutations derive commit details and resource_changed events from the apply
+          result."
+        created_at: 2026-06-18T05:39:41.382Z
     kind: blocker
   - _ulid: 01KVCJCQS810D3P5AV65X3V5MX
     anchor:
@@ -329,5 +343,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-18T05:14:06.470Z
 created_at: 2026-06-18T04:56:53.100Z
-updated_at: 2026-06-18T05:39:19.296Z
+updated_at: 2026-06-18T05:39:41.382Z
 notes: []
