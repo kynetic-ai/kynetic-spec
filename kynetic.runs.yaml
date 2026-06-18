@@ -70068,7 +70068,7 @@ runs:
     started_at: 2026-06-18T20:05:32.947Z
     completed_at: 2026-06-18T20:08:28.140Z
   - _ulid: 01KVE6T2SPBZ6K2DDQKVGTNP8V
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -70118,7 +70118,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-18T20:31:31.902Z
-        completed_at: 2026-06-18T20:31:31.902Z
+        completed_at: 2026-06-18T20:31:55.789Z
+        notes: "Captured one friction observation: @01KVE6XH about long quiet npm test intervals during
+          CLI-heavy Vitest workers and possible heartbeat/progress output. Did not duplicate
+          existing review evidence log or detached merge helper success observations."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-18T20:29:54.358Z
+    completed_at: 2026-06-18T20:31:55.789Z
