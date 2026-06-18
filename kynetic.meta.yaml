@@ -22609,6 +22609,18 @@ observations:
     resolved: false
     workflow_ref: "@01KVCH70"
     created_at: 2026-06-18T04:54:56.126Z
+  - _ulid: 01KVCJHNF31B1CQQ9J7KD2YBXS
+    type: friction
+    content: "Session reflection after @task-shared-mutation-pipeline review: shared-service extraction
+      tasks can pass unit ordering tests and happy-path route tests while individual routes still
+      perform durable side effects before the extracted pipeline owns apply. Future extraction work
+      should include route-level failure-injection tests that fail at commit/cache/write-through and
+      assert no side effects escape outside the shared service sequence."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KVCJEF"
+    created_at: 2026-06-18T05:16:32.611Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
