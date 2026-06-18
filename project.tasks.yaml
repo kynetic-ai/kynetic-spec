@@ -32702,6 +32702,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-18T22:21:57.623Z
+  automation: eligible
 - _ulid: 01KVED78WTR2KMA4HZBHKJRE5R
   slugs:
     - task-idea-thread-kind
