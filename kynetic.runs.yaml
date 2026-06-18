@@ -69856,7 +69856,7 @@ runs:
     completed_at: 2026-06-18T11:42:59.485Z
   - _ulid: 01KVD9VZB505S0T4ARMDA4WPBK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69874,7 +69874,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T12:05:01.679Z
-        completed_at: 2026-06-18T12:05:01.679Z
+        completed_at: 2026-06-18T12:05:31.349Z
+        notes: "High-confidence items identified and checked against baseline: (1) session-watcher
+          full-suite flake is concrete and repeatable enough to track, already captured as task
+          @01KVD9KA; (2) review-check recording is repetitive, but already covered by
+          inbox/observation records including review-check bundle/batch friction; (3)
+          detached-reviewer merge helper success is a useful pattern, already covered by observation
+          @01KRGCTK and recent detached-review observations. No new untracked high-confidence item
+          remains."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T12:05:31.349Z
+        completed_at: 2026-06-18T12:05:31.349Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T12:04:07.654Z
