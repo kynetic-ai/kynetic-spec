@@ -32618,3 +32618,18 @@
   submitted_at: 2026-06-18T05:14:35.884Z
   completed_at: 2026-06-18T05:34:38.808Z
   automation: eligible
+- _ulid: 01KVD9KANRJ0N37AABARV2EDD2
+  slugs: []
+  title: Stabilize flaky session watcher active-session detection test
+  type: task
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - test
+    - flaky
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-18T11:59:24.344Z
+  automation: eligible

@@ -1,0 +1,25 @@
+_ulid: 01KVD9KANRJ0N37AABARV2EDD2
+slugs: []
+title: Stabilize flaky session watcher active-session detection test
+type: task
+description: "During review of @01KVC30V6R468JZTF5BHVVYKB0 on 2026-06-18, full npm test failed once
+  in tests/session-watcher.test.ts: SessionWatcher detects a new active session created after
+  monitoring starts. Assertion: expected vi.fn() to be called 1 time, got 0. A direct rerun with npm
+  test -- tests/session-watcher.test.ts passed all 10 tests, so this appears flaky/timing-sensitive.
+  Investigate watcher startup/event timing and make the test deterministic without weakening
+  coverage."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - flaky
+vcs_refs: []
+created_at: 2026-06-18T11:59:24.344Z
+todos: []
+automation: eligible
