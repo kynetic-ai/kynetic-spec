@@ -10,6 +10,10 @@ import {
 } from "../src/parser/task-data-manager.js";
 import { splitBackend, ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { runWithEntityCache } from "../src/parser/yaml.js";
+import {
+  createMutationEventCollector,
+  runWithMutationEventCollector,
+} from "../src/mutation-pipeline.js";
 
 // Register the split backend (no longer auto-registered at module scope)
 ensureSplitBackendRegistered();
@@ -117,6 +121,37 @@ describe("TaskDataManager", () => {
       const fetched = await manager.getTask(ctx, "@mgr-created");
       expect(fetched._ulid).toBe(created._ulid);
       expect(fetched.title).toBe("Manager-created task");
+    });
+
+    // AC: @mutation-event-coverage ac-1
+    // AC: @mutation-event-coverage ac-5
+    it("records a task creation event when callers omit commit metadata", async () => {
+      tempDir = await setupTempFixtures();
+      const ctx = await initContext(tempDir);
+      manager = resolveTaskDataManager(ctx);
+      const collector = createMutationEventCollector();
+
+      const created = await runWithMutationEventCollector(collector, () =>
+        manager.createTask(ctx, {
+          title: "Metadata-free creation task",
+          slugs: ["metadata-free-created"],
+        }),
+      );
+
+      expect(collector.drain()).toEqual([
+        {
+          topic: "tasks:updates",
+          event: "task_updated",
+          data: expect.objectContaining({
+            action: "created",
+            ref: "@metadata-free-created",
+            ulid: created._ulid,
+            title: "Metadata-free creation task",
+            old_status: null,
+            new_status: "pending",
+          }),
+        },
+      ]);
     });
   });
 

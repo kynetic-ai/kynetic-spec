@@ -484,7 +484,7 @@ function buildTaskCreatedEvent(
   task: LoadedTask,
   commitOpts?: ShadowCommitOptions,
 ): MutationEventDescriptor | null {
-  if (!commitOpts || commitOpts.skipCommit || commitOpts.operation !== "task-add") {
+  if (commitOpts?.skipCommit) {
     return null;
   }
 

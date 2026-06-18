@@ -1131,6 +1131,12 @@ describe("Daemon Command API", () => {
       specRef: "@test-feature",
     });
 
+    await runTaskCommand("derive", {
+      ref: "@test-feature",
+      force: true,
+      title: "Derived Event Task",
+    });
+
     const taskEvents = broadcastEvents.filter(
       (entry) => entry.topic === "tasks:updates" && entry.event === "task_updated",
     );
@@ -1141,6 +1147,15 @@ describe("Daemon Command API", () => {
             action: "created",
             ref: "@task-created-event",
             title: "Created Event Task",
+            old_status: null,
+            new_status: "pending",
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "created",
+            ref: "@task-test-feature",
+            title: "Derived Event Task",
             old_status: null,
             new_status: "pending",
           }),
