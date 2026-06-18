@@ -196,6 +196,8 @@
   slug: plan-revisions
   type: feature
   parent: "@plan-support"
+  depends_on:
+    - "@actor-identity-model"
   description: |
     Plans carry a first-class revision history. A revision marks an
     intentional publish of the plan document: an explicit publish action
@@ -430,13 +432,13 @@ derive_from_specs: false
       status/title/branch, or any other non-publish mutation. New plans
       start with an empty revision history until their first publish or
       re-import mints revision 1 (the N+1 ordinal rule with N=0).
-    - Author resolution reuses the actor attribution already used for
-      review records and notes (resolved agent or user identity),
-      centralized in one helper; do not introduce a new free-form author
-      path. The redesign's actor-identity decision (register #21) will
-      be specd by the P0a global-decisions plan — keeping resolution in
-      one helper lets revisions adopt the canonical identity model when
-      that spec lands, with no revision schema change.
+    - Author resolution reuses the canonical actor attribution model
+      materialized by the UI Redesign Global Decisions plan
+      (@actor-identity-model) and the actor attribution already used for
+      review records and notes, centralized in one helper; do not
+      introduce a new free-form author path. Revision authors use that
+      existing actor vocabulary so future identity display/resolution
+      improvements do not require a revision schema change.
     - Read surfaces: kspec plan get lists revisions (ordinal, author,
       note, timestamp); a revision content resolver reads the plan
       document at the pointed commit from the shadow branch (first-party
@@ -727,17 +729,15 @@ register as specd behavior (cited, not re-argued):
 
 ### Actor-identity sequencing
 
-An earlier draft declared a structured `depends_on` from
-`@plan-revisions` to the P0a actor-identity decision spec; that spec is
-not yet materialized, and the unresolvable reference made this plan
-underivable, so the structured dependency was removed. Revision-author
-attribution instead reuses the actor attribution that already exists
-for review records and notes, centralized in one resolution helper (see
-task-plan-revision-records). When the P0a global-decisions plan
-materializes the actor-identity decision (register #21), that spec
-governs canonical identity values and the helper adopts it — no
-revision schema change is expected. This plan carries no unresolved
-cross-plan references.
+`@actor-identity-model` has now materialized from the P0a UI Redesign
+Global Decisions plan, so `@plan-revisions` carries it as a structured
+`depends_on` relationship. Revision-author attribution reuses that
+canonical actor vocabulary and the actor attribution already used for
+review records and notes, centralized in one resolution helper (see
+task-plan-revision-records). The dependency is on the behavioral actor
+identity model, not on a revision-specific author schema; adopting future
+identity display/resolution improvements should require no revision
+schema change. This plan carries no unresolved cross-plan references.
 
 ### Anchor union mechanics
 

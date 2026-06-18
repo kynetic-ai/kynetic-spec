@@ -20,3 +20,7 @@ notes:
       left open. Plan remains draft."
     author: "@claude"
     created_at: 2026-06-11T22:07:04.760Z
+  - _ulid: 01KVEC63EW0338NH8NP8G6Q0ZG
+    content: "Address fresh plan-reviewer finding: actor-identity model is now materialized"
+    author: Jacob Chapel
+    created_at: 2026-06-18T22:03:51.132Z
