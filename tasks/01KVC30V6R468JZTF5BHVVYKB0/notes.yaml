@@ -119,3 +119,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T11:12:59.637Z
+  - _ulid: 01KVD7DJJ0ZXWYH90N0C12CVBC
+    content: "Fix cycle 5 approach: address review @01KVD633 blocker by making TaskDataManager record
+      task_updated descriptors for collector-backed task mutations even when callers use skipCommit
+      true or omit commit metadata. Reuse the existing mutation event collector and canonical task
+      payload shape. Edge cases: review add/link should emit a task review-link event,
+      request_changes verdict should emit a needs_work transition with old/new status, and
+      metadata-free resource_refs-style field patches should emit a changed event identifying the
+      exact task. Test plan: add behavioral TaskDataManager collector coverage for skipCommit and
+      metadata-free mutateTask paths, extend daemon command-route review tests for
+      review-link/verdict task events, then run focused tests and required gates before
+      resubmitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T11:21:18.657Z
