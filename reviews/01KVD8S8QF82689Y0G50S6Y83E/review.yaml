@@ -90,6 +90,17 @@ checks:
     runner: kspec
     created_at: 2026-06-18T12:02:08.415Z
     completed_at: 2026-06-18T12:02:08.415Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check ce763c87e81cd2eff58d1021da5753e442322259...HEAD passed with no whitespace
+      errors.
+    name: diff whitespace
+    required: true
+    runner: git diff --check
+    created_at: 2026-06-18T12:02:17.703Z
+    completed_at: 2026-06-18T12:02:17.703Z
 events:
   - _ulid: 01KVD8S8QE4937RFWZ7VB7XNVT
     actor: Jacob Chapel
@@ -160,6 +171,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-18T12:02:08.669Z
+  - _ulid: 01KVD9RM6Y2JBYDZWHCF70Z604
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-06-18T12:02:17.950Z
 examined_commit: 6467dcc8fa7eb01d7b11cce6493042b9570ef835
 external_links: []
 lifecycle_state: open
@@ -172,5 +190,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-18T11:45:10.383Z
-updated_at: 2026-06-18T12:02:08.415Z
+updated_at: 2026-06-18T12:02:17.703Z
 notes: []
