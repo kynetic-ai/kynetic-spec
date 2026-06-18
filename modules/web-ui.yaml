@@ -1212,6 +1212,9 @@ features:
               resource changes each broadcast on their owning domain topic,
               through every interface a mutation can arrive on, with payloads that
               identify the affected entity and the kind of change.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to:
