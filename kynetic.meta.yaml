@@ -22664,6 +22664,26 @@ observations:
     resolved: false
     workflow_ref: "@01KVCSQP"
     created_at: 2026-06-18T07:23:08.723Z
+  - _ulid: 01KVCVP1XW82Z1Q5YEDMJZMCW3
+    type: success
+    content: "Session pattern: adding missing daemon entity events was straightforward when each mutator
+      produced MutationEventDescriptor data through the existing mutation pipeline and tests
+      exercised daemon command/API behavior. Future event-coverage work should reuse the collector
+      plus behavioral subscribed-client tests instead of adding one-off broadcast plumbing."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-18T07:56:13.628Z
+  - _ulid: 01KVCVP27BRXJ338QWG0BYXTE2
+    type: friction
+    content: Reflection workflow guidance says `kspec workflow show` checks the current step, but the
+      CLI requires a run ref when an active workflow exists; after `kspec workflow start
+      @session-reflect-loop`, the usable command was `kspec workflow show @<run>`. Aligning guidance
+      or CLI default behavior would reduce loop-mode friction.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-18T07:56:13.932Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
