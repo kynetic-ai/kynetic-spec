@@ -70128,7 +70128,7 @@ runs:
     completed_at: 2026-06-18T20:31:55.789Z
   - _ulid: 01KVEFNNCAWY8H0Q53Y1X72CHS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70141,7 +70141,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T23:06:16.778Z
-        completed_at: 2026-06-18T23:06:16.778Z
+        completed_at: 2026-06-18T23:06:39.201Z
+        notes: "High-confidence findings: success pattern: schema/read-compatibility changes to review
+          records should include both monolithic and folder-backed storage fixture coverage when the
+          project supports both layouts. Friction: full npm test is long and can go quiet, but this
+          is already covered by recent observation @01KVE6XH and existing test-suite performance
+          tracking, so no duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T23:06:39.201Z
+        completed_at: 2026-06-18T23:06:39.201Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T23:04:46.731Z
