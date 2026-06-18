@@ -27677,3 +27677,80 @@ workspaces:
         head: d7657c6dd8f45dba09c5074ab51d4e7acaf8dab8
         last_seen_at: 2026-06-18T06:01:45.461Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-command-path-typed-events-01kvc30t
+  - active_role: null
+    base_branch_point: d7657c6dd8f45dba09c5074ab51d4e7acaf8dab8
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-dispatch-engine-mutation-path/01kvc30v
+    canonical_branch_head: d7657c6dd8f45dba09c5074ab51d4e7acaf8dab8
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-18T06:26:54.830Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-18T06:26:54.830Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: feat/ui-redesign
+      target_commit: d7657c6dd8f45dba09c5074ab51d4e7acaf8dab8
+      updated_at: 2026-06-18T06:26:54.830Z
+    lifecycle_state: ready
+    resolved_base_branch: feat/ui-redesign
+    task_id: 01KVC30VGXGQJ23PVYQWJB84DN
+    task_ref: "@01KVC30VGXGQJ23PVYQWJB84DN"
+    task_slug: task-dispatch-engine-mutation-path
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-18T06:26:54.830Z
+      created_at: 2026-06-18T06:26:54.830Z
+      updated_at: 2026-06-18T06:26:54.830Z
+    workspace_id: dispatch-workspace-01KVC30VGXGQJ23PVYQWJB84DN
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-dispatch-engine-mutation-path/01kvc30v
+        head: d7657c6dd8f45dba09c5074ab51d4e7acaf8dab8
+        last_seen_at: 2026-06-18T06:26:54.830Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-engine-mutation-path-01kvc30v
