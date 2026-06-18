@@ -1,0 +1,26 @@
+_ulid: 01KVEFXJRPP2HA20HBF2XRZT5D
+slugs: []
+title: Review task-spec-ac-anchor-variant
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVEFXJRPQHHRB56VZ2EYRA2P
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-18T23:09:06.198Z
+examined_commit: 1ddf6dad70c3f39d41b48c59b79ff29fac8234ee
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVED703NAFBBBXJCAETHBYW1"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-18T23:09:06.198Z
+updated_at: null
+notes: []

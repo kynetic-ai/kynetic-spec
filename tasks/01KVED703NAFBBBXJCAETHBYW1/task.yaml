@@ -58,6 +58,7 @@ tags:
   - reviews
   - cli
 vcs_refs: []
+review_ref: "@01KVEFXJRPP2HA20HBF2XRZT5D"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-spec-ac-anchor-variant/01kved70
@@ -108,6 +109,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-18T23:04:08.127Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KVEFXJRPP2HA20HBF2XRZT5D"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-18T23:09:09.056Z
 created_at: 2026-06-18T22:21:49.045Z
 started_at: 2026-06-18T22:25:53.228Z
 submitted_at: 2026-06-18T23:04:08.126Z
