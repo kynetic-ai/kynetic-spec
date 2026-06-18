@@ -1818,6 +1818,95 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       vi.restoreAllMocks();
     }
   });
+
+  // AC: @dispatch-mutation-transparency ac-3
+  it("logs bootstrap recovery block mutation failures with underlying detail", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: main",
+        "  bootstrap:",
+        "    steps:",
+        "      - run: exit 7",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const notes: Array<{ taskRef: string; note: string }> = [];
+    const blockAttempts: Array<{ taskRef: string; reason: string }> = [];
+    try {
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
+        taskBookkeeping: {
+          addTaskNote: async (taskRef, note) => {
+            notes.push({ taskRef, note });
+          },
+          blockTask: async (taskRef, reason) => {
+            blockAttempts.push({ taskRef, reason });
+            throw new Error("block writer failed", {
+              cause: new Error("lower-level pipeline failure"),
+            });
+          },
+        },
+      });
+      const taskId = testUlid("TASK", 36);
+      const taskRef = `@${taskId}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+        task: {
+          _ulid: taskId,
+          title: "Bootstrap recovery block failure logging",
+          slugs: ["bootstrap-recovery-block-failure-logging"],
+          status: "pending",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as any,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+      vi.spyOn(console, "error").mockImplementation(() => {});
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      type EngineInternal = {
+        running: boolean;
+        _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
+      };
+      const internal = engine as unknown as EngineInternal;
+      internal.running = true;
+
+      const spawned = await internal._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      expect(notes).toHaveLength(1);
+      expect(blockAttempts).toHaveLength(1);
+      expect(blockAttempts[0]?.taskRef).toBe(taskRef);
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          `Failed to block task for ${taskRef} during recovery: block writer failed Cause: lower-level pipeline failure`,
+        ),
+      );
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
 });
 
 // ─── Dispatch uses the runner resolver ──────────────────────────────────────

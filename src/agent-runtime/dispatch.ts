@@ -2603,8 +2603,9 @@ export class DispatchEngine {
     try {
       await run();
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      console.warn(`[dispatch] Failed to ${action} for ${taskRef} during recovery: ${message}`);
+      console.warn(
+        `[dispatch] Failed to ${action} for ${taskRef} during recovery: ${describeBookkeepingError(err)}`,
+      );
     }
   }
 
@@ -2723,18 +2724,16 @@ export class DispatchEngine {
         console.error(
           `[dispatch] Failed to bootstrap workspace for ${entry.change.taskRef}: ${message}`,
         );
-        if (this.kspecCliPath) {
-          // AC: @agent-dispatch-engine ac-28 — fire-and-forget async error recovery
-          await this._addTaskNote(
+        // AC: @agent-dispatch-engine ac-28 — fire-and-forget async error recovery
+        await this._runRecoveryTaskCommand(entry.change.taskRef, "add task note", () =>
+          this._addTaskNote(
             entry.change.taskRef,
             `[DISPATCH-BOOTSTRAP] ${message} Suggested action: ${guidance}`,
-          );
-          try {
-            await this._blockTask(entry.change.taskRef, `Dispatch bootstrap failed: ${message}`);
-          } catch {
-            // Best-effort — block may fail if task already blocked
-          }
-        }
+          ),
+        );
+        await this._runRecoveryTaskCommand(entry.change.taskRef, "block task", () =>
+          this._blockTask(entry.change.taskRef, `Dispatch bootstrap failed: ${message}`),
+        );
         return false;
       }
 
