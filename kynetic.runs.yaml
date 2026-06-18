@@ -69280,7 +69280,7 @@ runs:
     completed_at: 2026-06-18T07:52:36.629Z
   - _ulid: 01KVCVM7GZVA1SA60AXBMYDPCY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69293,7 +69293,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T07:56:25.755Z
-        completed_at: 2026-06-18T07:56:25.755Z
+        completed_at: 2026-06-18T07:56:29.499Z
+        notes: "Friction: reflection guidance listed kspec workflow show without a run ref, but this CLI
+          required the run ref after starting @session-reflect-loop. Also noted the full test suite
+          remains long, but did not capture that because this session alone was not enough evidence
+          for a new tracking item."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T07:56:29.499Z
+        completed_at: 2026-06-18T07:56:29.499Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T07:55:13.823Z
