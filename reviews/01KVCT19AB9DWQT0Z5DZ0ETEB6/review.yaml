@@ -144,6 +144,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-18T07:44:41.522Z
+  - _ulid: 01KVCV1FAB5E3DR7NM2XH7J7VR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVCV1F276J0R7VY9RKA7FHD3
+    timestamp: 2026-06-18T07:44:59.211Z
 examined_commit: e8d4209b8b1f4c03ce6202670b792d1aecbfb714
 external_links: []
 lifecycle_state: open
@@ -153,8 +160,28 @@ subject:
   content_hash: ""
   ref: "@01KVC30VGXGQJ23PVYQWJB84DN"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVCV1F276J0R7VY9RKA7FHD3
+    anchor:
+      type: code
+      commit: e8d4209b8b1f4c03ce6202670b792d1aecbfb714
+      line_end: 2735
+      line_start: 2733
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KVCV1F28903B7V77PH8QC5DD
+        author: Jacob Chapel
+        body: "MUST-FIX: this bootstrap recovery path still silently discards a direct bookkeeping mutation
+          failure. If  rejects, the empty catch hides the underlying error detail, so an operator
+          sees only the bootstrap failure and not the failed block mutation. That violates
+          @dispatch-mutation-transparency ac-3, which requires every dispatch-initiated bookkeeping
+          mutation failure to write the underlying error description to the operator-visible log and
+          never be silently discarded. Route this through the same logged recovery path used for
+          workspace provisioning/validation, or log  here."
+        created_at: 2026-06-18T07:44:58.952Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-18T07:27:24.491Z
-updated_at: 2026-06-18T07:44:41.192Z
+updated_at: 2026-06-18T07:44:58.952Z
 notes: []
