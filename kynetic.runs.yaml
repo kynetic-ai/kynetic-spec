@@ -70024,7 +70024,7 @@ runs:
     completed_at: 2026-06-18T12:41:20.277Z
   - _ulid: 01KVE5DFMK8QCACBWQDPY3VMQP
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70038,7 +70038,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T20:07:17.149Z
-        completed_at: 2026-06-18T20:07:17.149Z
+        completed_at: 2026-06-18T20:07:55.622Z
+        notes: "High-confidence items after baseline and targeted searches: capture one success pattern. The
+          exact pairing of query-key unit assertions with routeWebSocket E2E tests that suppress
+          files:updates is concrete, repeatable, and not covered by searches for 'typed event
+          without file fallback', 'exact query keys routeWebSocket', or 'files:updates fallback'. Do
+          not capture friction: full npm test duration and E2E response-count issues are already
+          covered by existing observations; the transient git add ignored-route message was not
+          reproducible with git check-ignore and is too uncertain."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T20:07:55.622Z
+        completed_at: 2026-06-18T20:07:55.622Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T20:05:32.947Z
