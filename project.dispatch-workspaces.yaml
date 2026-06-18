@@ -26660,12 +26660,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-18T08:46:43.679Z
+      updated_at: 2026-06-18T08:46:53.195Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T08:46:43.679Z
+      updated_at: 2026-06-18T08:46:53.195Z
     integration:
       status: pending
       detail: null
@@ -26673,8 +26673,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: ce763c87e81cd2eff58d1021da5753e442322259
-      updated_at: 2026-06-18T08:46:43.679Z
-    lifecycle_state: ready
+      updated_at: 2026-06-18T08:46:53.195Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVC30V6R468JZTF5BHVVYKB0
     task_ref: "@01KVC30V6R468JZTF5BHVVYKB0"
@@ -26682,16 +26682,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-18T08:25:00.240Z
-      last_reconciled_at: 2026-06-18T08:46:43.679Z
+      last_reconciled_at: 2026-06-18T08:46:53.195Z
       created_at: 2026-06-18T07:26:41.481Z
-      updated_at: 2026-06-18T08:46:43.679Z
+      updated_at: 2026-06-18T08:46:53.195Z
     workspace_id: dispatch-workspace-01KVC30V6R468JZTF5BHVVYKB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: a19ac97e767c7542d75f92ff8e2d2c8dae5ef231
+        last_seen_at: 2026-06-18T08:46:53.195Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-missing-event-types-01kvc30v-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-missing-event-types/01kvc30v
-        head: 29b26e465e5c2c5071873d4970b4a2e8de659419
-        last_seen_at: 2026-06-18T08:24:30.279Z
+        head: a19ac97e767c7542d75f92ff8e2d2c8dae5ef231
+        last_seen_at: 2026-06-18T08:46:53.195Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-missing-event-types-01kvc30v
