@@ -24,3 +24,9 @@ notes:
     content: "Address fresh plan-reviewer finding: actor-identity model is now materialized"
     author: Jacob Chapel
     created_at: 2026-06-18T22:03:51.132Z
+  - _ulid: 01KVECFQJP8GRT2R4VAYEEHMBG
+    content: "Readiness re-review after actor-identity sequencing patch: plan-reviewer session
+      01KVEC8PY1C3G5R4B17WH6QTM7 returned PASS/APPROVE; stale P0a actor-identity blocker resolved;
+      no remaining must-fix before user approval/derivation."
+    author: Jacob Chapel
+    created_at: 2026-06-18T22:09:06.646Z
