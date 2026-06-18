@@ -22653,6 +22653,17 @@ observations:
     resolved: false
     workflow_ref: "@01KVCSQP"
     created_at: 2026-06-18T07:23:06.143Z
+  - _ulid: 01KVCSSFHKNHJAXRYDX8YEF310
+    type: friction
+    content: Several dispatch/runtime tests asserted bookkeeping by inspecting kspec-capture-mock
+      subprocess calls. When bookkeeping moved in-process, unrelated preflight, bootstrap, stall,
+      and redaction tests needed migration, showing transport-coupled tests make internal mutation
+      path changes more expensive than behavior-coupled tests.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KVCSQP"
+    created_at: 2026-06-18T07:23:08.723Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
