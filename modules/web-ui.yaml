@@ -5136,6 +5136,9 @@ features:
           refresh of their affected domains. No freshness path schedules
           repeated delayed refreshes to compensate for event-timing
           uncertainty.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
