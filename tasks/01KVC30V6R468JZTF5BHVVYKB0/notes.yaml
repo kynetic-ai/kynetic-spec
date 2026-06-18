@@ -13,3 +13,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T07:36:10.415Z
+  - _ulid: 01KVCVJNXG1JZVWFGN1Y71VVQ7
+    content: "Implemented typed mutation events for task create/change/delete/note/todo actions, review
+      creation, spec item create/change/remove, and plan resource add/replace/remove coverage. Added
+      shared event vocabulary/reservations and web UI invalidation for plans:updates. Gates passed:
+      npm run build, npm run format:check, npm run lint -- --quiet, focused oxlint, npm run
+      typecheck, focused tests, npm test, and kspec refs/alignment/completeness validation with
+      existing warnings accepted."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T07:54:23.025Z
