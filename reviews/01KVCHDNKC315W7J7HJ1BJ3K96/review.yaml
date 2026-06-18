@@ -199,6 +199,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-18T05:14:06.471Z
+  - _ulid: 01KVCKV736XQ8QVS8TFE0X2ZBY
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVCJCHX963BD2875V5509SN1
+    timestamp: 2026-06-18T05:39:14.151Z
 examined_commit: bfde105acd982fb9424afb538d18769e20e1d64e
 external_links: []
 lifecycle_state: closed
@@ -231,6 +237,14 @@ threads:
           action plus record status update into the pipeline apply stage, with one commit and
           post-apply descriptors derived from the resulting mutation."
         created_at: 2026-06-18T05:13:45.129Z
+      - _ulid: 01KVCKV6W5VADY69S06D0X0KXW
+        author: Jacob Chapel
+        body: "Fixed in fea84ff19a: triage act now runs executeTriageAction, status/result_ref updates, and
+          saveTriageRecord inside runRouteMutation.apply. The commit, write-through descriptors, and
+          triage_record_acted event are derived after the full action result, so
+          promote/delete/spec-gap side effects are covered by the shared apply -> commit -> cache ->
+          broadcast sequence."
+        created_at: 2026-06-18T05:39:13.925Z
     kind: blocker
   - _ulid: 01KVCJCMTMGK51W7SXQBN8T0ZJ
     anchor:
@@ -307,5 +321,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-18T05:14:06.470Z
 created_at: 2026-06-18T04:56:53.100Z
-updated_at: 2026-06-18T05:14:06.471Z
+updated_at: 2026-06-18T05:39:13.925Z
 notes: []
