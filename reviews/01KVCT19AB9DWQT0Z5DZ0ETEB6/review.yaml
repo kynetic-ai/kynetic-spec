@@ -180,6 +180,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-18T07:46:52.498Z
+  - _ulid: 01KVCWXH8YRYYY7BWNC23F65WH
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVCV1F276J0R7VY9RKA7FHD3
+    timestamp: 2026-06-18T08:17:47.294Z
+  - _ulid: 01KVCWXMC32XDTDTHCTNDWF64V
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVCV1F276J0R7VY9RKA7FHD3
+    timestamp: 2026-06-18T08:17:50.467Z
+  - _ulid: 01KVCWXQAYZ6EG04H0RX1RSFYE
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVCV43S1KH0N4XMVHP909GN4
+    timestamp: 2026-06-18T08:17:53.502Z
+  - _ulid: 01KVCWXT9G5KH8F7693F2BD0PD
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVCV43S1KH0N4XMVHP909GN4
+    timestamp: 2026-06-18T08:17:56.528Z
 examined_commit: e8d4209b8b1f4c03ce6202670b792d1aecbfb714
 external_links: []
 lifecycle_state: closed
@@ -216,7 +240,17 @@ threads:
           describeBookkeepingError(err). The core issue remains that the catch at lines 2734-2735 is
           empty."
         created_at: 2026-06-18T07:45:58.510Z
+      - _ulid: 01KVCWXH1M29HYKTPFA745Q94W
+        author: Jacob Chapel
+        body: "Fixed in e2835cf479: bootstrap failure recovery now routes both the task note and task block
+          through the logged recovery helper, and that helper uses describeBookkeepingError so
+          caused failures include their underlying detail. Added a behavioral regression for
+          @dispatch-mutation-transparency ac-3 proving a bootstrap block mutation failure logs the
+          block error and cause instead of being swallowed."
+        created_at: 2026-06-18T08:17:47.059Z
     kind: blocker
+    resolved_at: 2026-06-18T08:17:50.219Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVCV43S1KH0N4XMVHP909GN4
     entries:
       - _ulid: 01KVCV43S1CKJM7N8WVZH3A1BM
@@ -237,7 +271,14 @@ threads:
           error handling, test quality, integration, AC coverage, and leftover subprocess mutation
           paths."
         created_at: 2026-06-18T07:46:25.697Z
+      - _ulid: 01KVCWXQ3QQ38P02SME2TYJCGM
+        author: Jacob Chapel
+        body: Acknowledged. This was an evidence-only note from the prior review; no code action required.
+          New verification run is recorded in the task note for this fix cycle.
+        created_at: 2026-06-18T08:17:53.271Z
     kind: nit
+    resolved_at: 2026-06-18T08:17:56.268Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -247,5 +288,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-18T07:46:52.498Z
 created_at: 2026-06-18T07:27:24.491Z
-updated_at: 2026-06-18T07:46:52.498Z
+updated_at: 2026-06-18T08:17:56.268Z
 notes: []

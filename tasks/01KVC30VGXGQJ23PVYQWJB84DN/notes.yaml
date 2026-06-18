@@ -37,3 +37,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T07:46:55.088Z
+  - _ulid: 01KVCWXVFZT5B8KKGV9AW4GETW
+    content: "Fix cycle 1: addressed review @01KVCT19 blocker by removing the empty bootstrap block-task
+      catch, routing bootstrap note/block recovery through the logged recovery helper, and
+      preserving caused bookkeeping error detail via describeBookkeepingError. Added behavioral
+      coverage for @dispatch-mutation-transparency ac-3 in tests/agent-dispatch-engine.test.ts.
+      Re-verified ACs 1-4; focused test slice passed, format:check passed, focused oxlint passed
+      with 0 warnings/errors, lint --quiet passed with existing warning baseline, typecheck passed,
+      kspec validate refs/alignment/completeness passed with existing warning baselines, and full
+      npm test passed (2883 suites, 10945 passed, 3 skipped; log
+      /tmp/kspec-test-cache/01KVCVSYZ1BAMQ5VHDM8KP3PG3/0ae9efd179c85741.log)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T08:17:57.759Z
