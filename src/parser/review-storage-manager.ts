@@ -85,6 +85,7 @@ function recordReviewCreatedEvent(review: ReviewRecord): void {
         title: review.title,
         subject_type: review.subject.type,
         subject_ref: reviewSubjectRef(review),
+        subject: review.subject,
       },
     },
   ]);

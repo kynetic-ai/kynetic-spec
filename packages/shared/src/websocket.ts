@@ -1,3 +1,5 @@
+import type { ReviewSubject } from "./api.js";
+
 /**
  * WebSocket Protocol Types
  *
@@ -266,6 +268,7 @@ export interface ReviewCreatedEventData {
   title: string;
   subject_type: string;
   subject_ref: string | null;
+  subject: ReviewSubject;
 }
 
 /** Data payload for plan_resource_changed broadcast events on plans:updates topic. */

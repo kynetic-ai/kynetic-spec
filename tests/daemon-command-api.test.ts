@@ -1168,6 +1168,54 @@ describe("Daemon Command API", () => {
           title: "Event Review",
           subject_type: "task",
           subject_ref: "@task-test",
+          subject: expect.objectContaining({
+            type: "task",
+            ref: "@task-test",
+          }),
+          review_ulid: expect.any(String),
+        }),
+      }),
+    );
+  });
+
+  // AC: @mutation-event-coverage ac-2
+  // AC: @mutation-event-coverage ac-5
+  it("emits review_created subject identity for non-ref review subjects", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "review add",
+        args: {
+          title: "Code Event Review",
+          slug: "code-event-review",
+          subjectType: "code",
+          base: "base-commit",
+          head: "head-commit",
+          baseBranch: "feat/base",
+          headBranch: "feat/head",
+        },
+      }),
+    });
+
+    expect(response.status).toBe(200);
+    expect((await response.json()).exitCode).toBe(0);
+    expect(broadcastEvents).toContainEqual(
+      expect.objectContaining({
+        topic: "reviews:updates",
+        event: "review_created",
+        data: expect.objectContaining({
+          title: "Code Event Review",
+          subject_type: "code",
+          subject_ref: null,
+          subject: expect.objectContaining({
+            type: "code",
+            base_commit: "base-commit",
+            head_commit: "head-commit",
+            base_branch: "feat/base",
+            head_branch: "feat/head",
+          }),
           review_ulid: expect.any(String),
         }),
       }),
