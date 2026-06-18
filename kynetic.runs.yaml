@@ -69226,7 +69226,7 @@ runs:
     completed_at: 2026-06-18T07:25:21.943Z
   - _ulid: 01KVCV6ZFJ1RQSVSTS014HVQ1Q
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69240,7 +69240,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T07:49:04.348Z
-        completed_at: 2026-06-18T07:49:04.348Z
+        completed_at: 2026-06-18T07:50:49.142Z
+        notes: "Friction: review comment CLI bodies are shell-fragile. A blocker body with markdown
+          backticks caused shell command substitution, stripping identifiers before kspec stored the
+          comment; I had to add a clarifying reply. This is systemic for freeform body and notes
+          payloads passed inline through shell."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T07:50:49.142Z
+        completed_at: 2026-06-18T07:50:49.142Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-18T07:47:59.602Z
