@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import * as fsSync from "node:fs";
 import * as path from "node:path";
 import { runInvocation } from "../src/agent-runtime/invocation.js";
 import { registerAdapter } from "../src/agents/adapters.js";
@@ -106,10 +107,11 @@ describe("agent invocation daemon isolation", () => {
   });
 
   // AC: @agent-invocation-lifecycle ac-invocation-lifecycle-helper-commands-do-not-proxy
-  it("writes invocation failure notes with daemon proxying disabled", async () => {
+  it("writes invocation failure notes without spawning a daemon-proxied helper", async () => {
     const testDir = await tempDir("kspec-invocation-note-env-");
     const captureFile = path.join(testDir, "kspec-calls.json");
     const mutationLockFile = path.join(testDir, "dispatch-shadow-mutation");
+    const notes: Array<{ taskRef: string; note: string }> = [];
 
     registerAdapter("daemon-isolation-fail-mock-acp", {
       command: "node",
@@ -131,16 +133,19 @@ describe("agent invocation daemon isolation", () => {
       taskRef: `@${testUlid("TASK")}`,
       prompt: "Force failure note",
       trigger: "task.ready",
-      kspecCliPath: MOCK_KSPEC_CLI,
       mutationLockFile,
       env: { KSPEC_CAPTURE_FILE: captureFile },
+      taskBookkeeping: {
+        addTaskNote: async (taskRef, note) => {
+          notes.push({ taskRef, note });
+        },
+        blockTask: async () => undefined,
+      },
     });
 
     expect(result.outcome).toBe("failed");
-    const calls = JSON.parse(readTestOutputSync(captureFile));
-    expect(calls.length).toBeGreaterThan(0);
-    expect(calls[0].args.slice(0, 2)).toEqual(["task", "note"]);
-    expect(calls[0].env.KSPEC_NO_DAEMON).toBe("1");
-    expect(calls[0].env.KSPEC_SHADOW_MUTATION_LOCK_FILE).toBe(mutationLockFile);
+    expect(notes).toHaveLength(1);
+    expect(notes[0]?.note).toContain("[AGENT-FAIL]");
+    expect(fsSync.existsSync(captureFile)).toBe(false);
   });
 });

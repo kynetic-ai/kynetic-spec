@@ -10,7 +10,6 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import * as fs from "node:fs/promises";
-import * as fsSync from "node:fs";
 import * as path from "node:path";
 
 import { pathToFileURL } from "node:url";
@@ -30,18 +29,20 @@ import { SANITIZED_ENV_VARS } from "../src/agents/spawner.js";
 import { ACPClient } from "../src/acp/index.js";
 import type { Agent } from "../src/schema/meta.js";
 import * as shadowModule from "../src/parser/shadow.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import {
   testUlid,
   createTempDir,
+  setupTempFixtures,
+  initGitRepo,
   cleanupTempDir,
   readTestOutput,
-  readTestOutputSync,
 } from "./helpers/cli.js";
+import { createTaskBookkeepingMutations } from "../src/agent-runtime/task-bookkeeping.js";
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
 const MOCK_ACP = path.join(__dirname, "mocks", "acp-mock.js");
-const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 
 /**
  * Create a minimal Agent definition for testing.
@@ -281,6 +282,161 @@ describe("Canonical task identity in persisted session state", { timeout: 120_00
   });
 });
 
+// ─── Dispatch Bookkeeping Mutation Pipeline ─────────────────────────────────
+
+describe("Dispatch bookkeeping mutation pipeline", { timeout: 120_000 }, () => {
+  let testDir: string;
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    if (testDir) {
+      await cleanupTempDir(testDir);
+    }
+  });
+
+  // AC: @dispatch-mutation-transparency ac-1
+  // AC: @dispatch-mutation-transparency ac-2
+  it("records engine failure notes through the in-process pipeline and emits task update events", async () => {
+    testDir = await setupTempFixtures();
+    ensureSplitBackendRegistered();
+    initGitRepo(testDir);
+    registerMockAdapter({
+      MOCK_ACP_EXIT_CODE: "1",
+      MOCK_ACP_FAIL_TEMPLATE: "original pipeline failure",
+    });
+
+    const broadcasts: Array<{
+      topic: string;
+      event: string;
+      data: Record<string, unknown>;
+      projectPath?: string;
+    }> = [];
+    const writeThroughs: Array<{ domain: string; hint?: unknown }> = [];
+    const agent = makeTestAgent({ id: "pipeline-worker" });
+    const missingCliPath = path.join(testDir, "missing-kspec-cli.js");
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: testDir,
+      taskRef: "@test-task-pending",
+      prompt: "Fail so the invocation runner records a task note",
+      trigger: "task.ready",
+      kspecCliPath: missingCliPath,
+      mutationCache: {
+        writeThrough: async (domain, hint) => {
+          writeThroughs.push({ domain, hint });
+        },
+      },
+      mutationPubSub: {
+        broadcast: (topic, event, data, projectPath) => {
+          broadcasts.push({ topic, event, data, projectPath });
+        },
+      },
+      mutationProjectPath: testDir,
+    });
+
+    expect(result.outcome).toBe("failed");
+    expect(result.error).toContain("original pipeline failure");
+    expect(writeThroughs).toEqual([
+      { domain: "tasks", hint: { ulid: "01KF1645CA45ZT43W2T6HJMVA1" } },
+    ]);
+    expect(broadcasts).toHaveLength(1);
+    expect(broadcasts[0]).toMatchObject({
+      topic: "tasks:updates",
+      event: "task_updated",
+      projectPath: testDir,
+      data: {
+        ref: "@test-task-pending",
+        ulid: "01KF1645CA45ZT43W2T6HJMVA1",
+        action: "note_added",
+        title: "Test pending task",
+        old_status: null,
+        new_status: null,
+      },
+    });
+    expect(broadcasts[0]?.data).toHaveProperty("note_ulid");
+
+    const bookkeeping = createTaskBookkeepingMutations({
+      projectDir: testDir,
+      cache: {
+        writeThrough: async (domain, hint) => {
+          writeThroughs.push({ domain, hint });
+        },
+      },
+      pubsub: {
+        broadcast: (topic, event, data, projectPath) => {
+          broadcasts.push({ topic, event, data, projectPath });
+        },
+      },
+      projectPath: testDir,
+    });
+    await bookkeeping.blockTask("@test-task-secondary", "blocked by pipeline test");
+
+    expect(broadcasts[1]).toMatchObject({
+      topic: "tasks:updates",
+      event: "task_updated",
+      projectPath: testDir,
+      data: {
+        ref: "@test-task-secondary",
+        ulid: "01KF1645CC9N4YGP991WD7XS8S",
+        action: "block",
+        title: "Test secondary task",
+        old_status: "pending",
+        new_status: "blocked",
+      },
+    });
+  });
+
+  // AC: @dispatch-mutation-transparency ac-3
+  // AC: @dispatch-mutation-transparency ac-4
+  it("logs bookkeeping write failures separately without replacing the invocation error", async () => {
+    testDir = await createTempDir("kspec-invoc-bookkeeping-failure-");
+    registerMockAdapter({
+      MOCK_ACP_EXIT_CODE: "1",
+      MOCK_ACP_FAIL_TEMPLATE: "original invocation broke",
+    });
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const agent = makeTestAgent({
+      id: "bookkeeping-worker",
+      budget: { max_retries: 0, timeout_minutes: 1 },
+    });
+
+    for (const mutationLockFile of [undefined, path.join(testDir, "dispatch-mutation.lock")]) {
+      const result = await runInvocation({
+        agent,
+        specDir: testDir,
+        sessionsDir: path.join(testDir, "sessions"),
+        cwd: testDir,
+        taskRef: "@task-bookkeeping-failure",
+        prompt: "Fail and then fail bookkeeping",
+        trigger: "task.ready",
+        ...(mutationLockFile ? { mutationLockFile } : {}),
+        taskBookkeeping: {
+          addTaskNote: async () => {
+            throw new Error("note writer exploded");
+          },
+          blockTask: async () => {
+            throw new Error("block writer exploded");
+          },
+        },
+      });
+
+      expect(result.outcome).toBe("failed");
+      expect(result.error).toBe("original invocation broke");
+    }
+
+    const warnings = warnSpy.mock.calls.flat().join("\n");
+    expect(warnings).toContain("Failed to write failure note for @task-bookkeeping-failure");
+    expect(warnings).toContain("note writer exploded");
+    expect(warnings).toContain(
+      "Failed to block task after invocation failure for @task-bookkeeping-failure",
+    );
+    expect(warnings).toContain("block writer exploded");
+  });
+});
+
 // ─── AC-2: KSPEC_SESSION_ID injection ────────────────────────────────────────
 
 // AC: @agent-invocation-lifecycle ac-2
@@ -483,72 +639,63 @@ describe("Timeout handling", { timeout: 120_000 }, () => {
   it("should add a timeout note to the task when timeout occurs", async () => {
     // AC: @agent-invocation-lifecycle ac-3 — timeout note written to task
     const agent = makeTestAgent({ adapter: "slow-mock-acp" });
-    const captureFile = path.join(testDir, "kspec-calls.json");
     const taskRef = `@${testUlid("TASK")}`;
+    const notes: Array<{ taskRef: string; note: string }> = [];
 
-    // Set capture env so runKspecCli's spawnSync inherits it
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
-    try {
-      await runInvocation({
-        agent,
-        specDir: testDir,
-        sessionsDir: path.join(testDir, "sessions"),
-        cwd: process.cwd(),
-        taskRef,
-        prompt: "Test timeout note",
-        trigger: "task.ready",
-        timeoutMinutes: 0.001,
-        kspecCliPath: MOCK_KSPEC_CLI,
-      });
-    } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
-    }
+    await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Test timeout note",
+      trigger: "task.ready",
+      timeoutMinutes: 0.001,
+      taskBookkeeping: {
+        addTaskNote: async (ref, note) => {
+          notes.push({ taskRef: ref, note });
+        },
+        blockTask: async () => undefined,
+      },
+    });
 
-    // Verify that kspec task note was called with the task ref and AGENT-TIMEOUT marker
-    const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
-      args: string[];
-    }>;
-    const noteCall = calls.find(
-      (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
-    );
-    expect(noteCall).toBeDefined();
-    const noteText = noteCall!.args[noteCall!.args.indexOf(taskRef) + 1] ?? "";
-    expect(noteText).toContain("[AGENT-TIMEOUT]");
+    expect(notes).toHaveLength(1);
+    expect(notes[0]?.taskRef).toBe(taskRef);
+    expect(notes[0]?.note).toContain("[AGENT-TIMEOUT]");
   });
 
-  it("should surface timeout note mutation failures as dispatch mutation failures", async () => {
+  it("should log timeout note mutation failures without replacing the timeout outcome", async () => {
     // AC: @scoped-dispatch-shadow-serialization ac-3
     // AC: @trait-error-guidance ac-1
     // AC: @trait-error-guidance ac-2
+    // AC: @dispatch-mutation-transparency ac-3
     const agent = makeTestAgent({ adapter: "slow-mock-acp" });
-    const failingCli = path.join(testDir, "failing-kspec.cjs");
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    await fs.writeFile(
-      failingCli,
-      [
-        "#!/usr/bin/env node",
-        "console.error('dispatch shadow mutation lock unavailable');",
-        "console.error('Suggested action: wait for the overlapping mutation to finish.');",
-        "process.exit(1);",
-      ].join("\n"),
-      "utf-8",
-    );
-    fsSync.chmodSync(failingCli, 0o755);
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef: `@${testUlid("TASK")}`,
+      prompt: "Test timeout mutation failure",
+      trigger: "task.ready",
+      timeoutMinutes: 0.001,
+      mutationLockFile: path.join(testDir, "dispatch-shadow-mutation"),
+      taskBookkeeping: {
+        addTaskNote: async () => {
+          throw new Error(
+            "dispatch shadow mutation lock unavailable. Suggested action: wait for the overlapping mutation to finish.",
+          );
+        },
+        blockTask: async () => undefined,
+      },
+    });
 
-    await expect(
-      runInvocation({
-        agent,
-        specDir: testDir,
-        sessionsDir: path.join(testDir, "sessions"),
-        cwd: process.cwd(),
-        taskRef: `@${testUlid("TASK")}`,
-        prompt: "Test timeout mutation failure",
-        trigger: "task.ready",
-        timeoutMinutes: 0.001,
-        kspecCliPath: failingCli,
-        mutationLockFile: path.join(testDir, "dispatch-shadow-mutation"),
-      }),
-    ).rejects.toThrow(/Dispatch mutation failed while writing task note/);
+    expect(result.outcome).toBe("timed_out");
+    const warnings = warnSpy.mock.calls.flat().join("\n");
+    expect(warnings).toContain("dispatch shadow mutation lock unavailable");
+    expect(warnings).toContain("Suggested action");
   });
 
   it("should dispatch ACP cancel request on timeout", async () => {
@@ -793,36 +940,28 @@ describe("Failure handling", { timeout: 120_000 }, () => {
   it("should add a failure note to the task when invocation fails", async () => {
     // AC: @agent-invocation-lifecycle ac-5 — failure note written to task
     const agent = makeTestAgent({ adapter: "failing-mock-acp" });
-    const captureFile = path.join(testDir, "kspec-calls.json");
     const taskRef = `@${testUlid("TASK")}`;
+    const notes: Array<{ taskRef: string; note: string }> = [];
 
-    // Set capture env so runKspecCli's spawnSync inherits it
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
-    try {
-      await runInvocation({
-        agent,
-        specDir: testDir,
-        sessionsDir: path.join(testDir, "sessions"),
-        cwd: process.cwd(),
-        taskRef,
-        prompt: "Test failure note",
-        trigger: "task.ready",
-        kspecCliPath: MOCK_KSPEC_CLI,
-      });
-    } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
-    }
+    await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Test failure note",
+      trigger: "task.ready",
+      taskBookkeeping: {
+        addTaskNote: async (ref, note) => {
+          notes.push({ taskRef: ref, note });
+        },
+        blockTask: async () => undefined,
+      },
+    });
 
-    // Verify that kspec task note was called with the task ref and AGENT-FAIL marker
-    const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
-      args: string[];
-    }>;
-    const noteCall = calls.find(
-      (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
-    );
-    expect(noteCall).toBeDefined();
-    const noteText = noteCall!.args[noteCall!.args.indexOf(taskRef) + 1] ?? "";
-    expect(noteText).toContain("[AGENT-FAIL]");
+    expect(notes).toHaveLength(1);
+    expect(notes[0]?.taskRef).toBe(taskRef);
+    expect(notes[0]?.note).toContain("[AGENT-FAIL]");
   });
 });
 
@@ -1422,143 +1561,124 @@ describe("Consecutive failure threshold and task blocking", { timeout: 120_000 }
 
   it("should block the task with a failure note when consecutive failures reach retry limit", async () => {
     // AC: @agent-invocation-lifecycle ac-9 — consecutive failures → task blocked with note
-    const captureFile = path.join(testDir, "kspec-calls.json");
     const taskRef = `@${testUlid("TASK")}`;
     const sessionsDir = path.join(testDir, "sessions");
     const agentId = "test-worker";
+    const notes: Array<{ taskRef: string; note: string }> = [];
+    const blocks: Array<{ taskRef: string; reason: string }> = [];
 
     await seedInvocationOutcome(sessionsDir, testUlid("SESS", 1), taskRef, agentId, "failed");
     await seedInvocationOutcome(sessionsDir, testUlid("SESS", 2), taskRef, agentId, "failed");
 
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
-    try {
-      const agent = makeTestAgent({
-        id: agentId,
-        adapter: "always-fail-acp",
-        budget: { max_retries: 3, timeout_minutes: 30 },
-      } as Partial<Agent>);
+    const agent = makeTestAgent({
+      id: agentId,
+      adapter: "always-fail-acp",
+      budget: { max_retries: 3, timeout_minutes: 30 },
+    } as Partial<Agent>);
 
-      await runInvocation({
-        agent,
-        specDir: testDir,
-        sessionsDir,
-        cwd: process.cwd(),
-        taskRef,
-        prompt: "Test consecutive failure blocking",
-        trigger: "task.ready",
-        kspecCliPath: MOCK_KSPEC_CLI,
-      });
-    } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
-    }
+    await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir,
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Test consecutive failure blocking",
+      trigger: "task.ready",
+      taskBookkeeping: {
+        addTaskNote: async (ref, note) => {
+          notes.push({ taskRef: ref, note });
+        },
+        blockTask: async (ref, reason) => {
+          blocks.push({ taskRef: ref, reason });
+        },
+      },
+    });
 
-    // Verify task block was called
-    const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
-      args: string[];
-    }>;
-    const blockCall = calls.find(
-      (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
-    );
-    expect(blockCall).toBeDefined();
-
-    // The block reason should mention consecutive failures and the agent
-    const reasonIdx = blockCall!.args.indexOf("--reason");
-    expect(reasonIdx).toBeGreaterThan(-1);
-    const blockReason = blockCall!.args[reasonIdx + 1] ?? "";
-    expect(blockReason).toContain("consecutive");
+    expect(notes).toHaveLength(1);
+    expect(notes[0]?.taskRef).toBe(taskRef);
+    expect(notes[0]?.note).toContain("[AGENT-FAIL]");
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({
+      taskRef,
+      reason: expect.stringContaining("consecutive"),
+    });
   });
 
   it("should NOT block the task when failure count is below the retry limit", async () => {
     // AC: @agent-invocation-lifecycle ac-9 — below threshold: note added, no block
-    const captureFile = path.join(testDir, "kspec-calls-below.json");
     const taskRef = `@${testUlid("TASK")}`;
+    const notes: Array<{ taskRef: string; note: string }> = [];
+    const blocks: Array<{ taskRef: string; reason: string }> = [];
 
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
-    try {
-      const agent = makeTestAgent({
-        adapter: "always-fail-acp",
-        budget: { max_retries: 3, timeout_minutes: 30 },
-      } as Partial<Agent>);
+    const agent = makeTestAgent({
+      adapter: "always-fail-acp",
+      budget: { max_retries: 3, timeout_minutes: 30 },
+    } as Partial<Agent>);
 
-      await runInvocation({
-        agent,
-        specDir: testDir,
-        sessionsDir: path.join(testDir, "sessions"),
-        cwd: process.cwd(),
-        taskRef,
-        prompt: "Test below threshold",
-        trigger: "task.ready",
-        kspecCliPath: MOCK_KSPEC_CLI,
-      });
-    } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
-    }
+    await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Test below threshold",
+      trigger: "task.ready",
+      taskBookkeeping: {
+        addTaskNote: async (ref, note) => {
+          notes.push({ taskRef: ref, note });
+        },
+        blockTask: async (ref, reason) => {
+          blocks.push({ taskRef: ref, reason });
+        },
+      },
+    });
 
-    const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
-      args: string[];
-    }>;
-
-    // Note should be written
-    const noteCall = calls.find(
-      (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
-    );
-    expect(noteCall).toBeDefined();
-
-    // Block should NOT be called (only 1 failure, limit is 3)
-    const blockCall = calls.find(
-      (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
-    );
-    expect(blockCall).toBeUndefined();
+    expect(notes).toHaveLength(1);
+    expect(notes[0]?.taskRef).toBe(taskRef);
+    expect(notes[0]?.note).toContain("[AGENT-FAIL]");
+    expect(blocks).toEqual([]);
   });
 
   it("should reset consecutive failure count after a successful invocation", async () => {
     // AC: @agent-invocation-lifecycle ac-9 — streak resets after success; fail→success→fail is not consecutive
-    const captureFile = path.join(testDir, "kspec-calls-reset.json");
     const taskRef = `@${testUlid("TASK")}`;
     const sessionsDir = path.join(testDir, "sessions");
     const agentId = "test-worker";
+    const notes: Array<{ taskRef: string; note: string }> = [];
+    const blocks: Array<{ taskRef: string; reason: string }> = [];
 
     await seedInvocationOutcome(sessionsDir, testUlid("SESS", 3), taskRef, agentId, "failed");
     await seedInvocationOutcome(sessionsDir, testUlid("SESS", 4), taskRef, agentId, "failed");
     await seedInvocationOutcome(sessionsDir, testUlid("SESS", 5), taskRef, agentId, "completed");
 
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
-    try {
-      const agent = makeTestAgent({
-        id: agentId,
-        adapter: "always-fail-acp",
-        budget: { max_retries: 3, timeout_minutes: 30 },
-      } as Partial<Agent>);
+    const agent = makeTestAgent({
+      id: agentId,
+      adapter: "always-fail-acp",
+      budget: { max_retries: 3, timeout_minutes: 30 },
+    } as Partial<Agent>);
 
-      await runInvocation({
-        agent,
-        specDir: testDir,
-        sessionsDir,
-        cwd: process.cwd(),
-        taskRef,
-        prompt: "Test streak reset after success",
-        trigger: "task.ready",
-        kspecCliPath: MOCK_KSPEC_CLI,
-      });
-    } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
-    }
+    await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir,
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Test streak reset after success",
+      trigger: "task.ready",
+      taskBookkeeping: {
+        addTaskNote: async (ref, note) => {
+          notes.push({ taskRef: ref, note });
+        },
+        blockTask: async (ref, reason) => {
+          blocks.push({ taskRef: ref, reason });
+        },
+      },
+    });
 
-    const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{
-      args: string[];
-    }>;
-
-    // Failure note should be written
-    const noteCall = calls.find(
-      (c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef),
-    );
-    expect(noteCall).toBeDefined();
-
-    // Block should NOT be called — the completed invocation reset the failure streak
-    const blockCall = calls.find(
-      (c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef),
-    );
-    expect(blockCall).toBeUndefined();
+    expect(notes).toHaveLength(1);
+    expect(notes[0]?.taskRef).toBe(taskRef);
+    expect(notes[0]?.note).toContain("[AGENT-FAIL]");
+    expect(blocks).toEqual([]);
   });
 });
 

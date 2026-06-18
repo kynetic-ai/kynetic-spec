@@ -9,7 +9,6 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import * as fsSync from "node:fs";
 import * as path from "node:path";
 import { createSession, closeSession } from "../src/sessions/store.js";
 import {
@@ -25,7 +24,6 @@ import { testUlid, createTempDir, cleanupTempDir, readTestOutputSync } from "./h
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
 const MOCK_ACP = path.join(__dirname, "mocks", "acp-mock.js");
-const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 
 /** Very short stall timeout for tests (100ms = 0.1s) */
 const TEST_STALL_TIMEOUT_SECONDS = 0.1;
@@ -263,33 +261,31 @@ describe("Stall handling — session close and cleanup", () => {
     const agent = makeTestAgent({
       budget: { initial_response_timeout_seconds: TEST_STALL_TIMEOUT_SECONDS },
     });
-    const captureFile = path.join(testDir, "kspec-calls.json");
     const taskRef = `@${testUlid("TASK")}`;
+    const notes: Array<{ taskRef: string; note: string }> = [];
+    const blocks: Array<{ taskRef: string; reason: string }> = [];
 
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
-    try {
-      await runInvocation({
-        agent,
-        specDir: testDir,
-        sessionsDir: path.join(testDir, "sessions"),
-        cwd: process.cwd(),
-        taskRef,
-        prompt: "Test no task note on stall",
-        trigger: "task.ready",
-        timeoutMinutes: 1,
-        kspecCliPath: MOCK_KSPEC_CLI,
-      });
-    } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
-    }
+    await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir: path.join(testDir, "sessions"),
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Test no task note on stall",
+      trigger: "task.ready",
+      timeoutMinutes: 1,
+      taskBookkeeping: {
+        addTaskNote: async (ref, note) => {
+          notes.push({ taskRef: ref, note });
+        },
+        blockTask: async (ref, reason) => {
+          blocks.push({ taskRef: ref, reason });
+        },
+      },
+    });
 
-    // kspec-capture-mock writes calls to capture file; if no calls, file doesn't exist
-    if (fsSync.existsSync(captureFile)) {
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const noteCall = calls.find((c) => c.args.includes("task") && c.args.includes("note"));
-      expect(noteCall).toBeUndefined();
-    }
-    // If file doesn't exist, no CLI calls were made — test passes
+    expect(notes).toEqual([]);
+    expect(blocks).toEqual([]);
   });
 
   it("should cancel ACP session on stall detection", async () => {
@@ -421,36 +417,33 @@ describe("Stalled sessions excluded from failure count", () => {
       description: "Failing mock for retry count test",
     });
 
-    const captureFile = path.join(testDir, "kspec-calls.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
-    try {
-      await runInvocation({
-        agent: makeTestAgent({
-          adapter: "fail-mock-acp",
-          id: "test-worker",
-          budget: { max_retries: 3 },
-        }),
-        specDir: testDir,
-        sessionsDir,
-        cwd: process.cwd(),
-        taskRef,
-        prompt: "Test failure after stalled",
-        trigger: "task.ready",
-        timeoutMinutes: 1,
-        kspecCliPath: MOCK_KSPEC_CLI,
-      });
-    } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
-    }
+    const blocks: Array<{ taskRef: string; reason: string }> = [];
+    await runInvocation({
+      agent: makeTestAgent({
+        adapter: "fail-mock-acp",
+        id: "test-worker",
+        budget: { max_retries: 3 },
+      }),
+      specDir: testDir,
+      sessionsDir,
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Test failure after stalled",
+      trigger: "task.ready",
+      timeoutMinutes: 1,
+      taskBookkeeping: {
+        addTaskNote: async () => undefined,
+        blockTask: async (ref, reason) => {
+          blocks.push({ taskRef: ref, reason });
+        },
+      },
+    });
 
     // The stalled session should be excluded from the count.
     // With only 2 prior failures (not 3), the new failure makes 3 total,
     // which meets the max_retries threshold → task should be blocked.
-    if (fsSync.existsSync(captureFile)) {
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const blockCall = calls.find((c) => c.args.includes("task") && c.args.includes("block"));
-      expect(blockCall).toBeDefined();
-    }
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]?.taskRef).toBe(taskRef);
   });
 
   it("should not break failure streak when stalled session is between successes and failures", async () => {
@@ -486,34 +479,30 @@ describe("Stalled sessions excluded from failure count", () => {
       description: "Failing mock for streak test",
     });
 
-    const captureFile = path.join(testDir, "kspec-calls.json");
-    process.env.KSPEC_CAPTURE_FILE = captureFile;
-    try {
-      await runInvocation({
-        agent: makeTestAgent({
-          adapter: "fail-mock-acp2",
-          id: "test-worker",
-          budget: { max_retries: 3 },
-        }),
-        specDir: testDir,
-        sessionsDir,
-        cwd: process.cwd(),
-        taskRef,
-        prompt: "Test failure streak with stalled",
-        trigger: "task.ready",
-        timeoutMinutes: 1,
-        kspecCliPath: MOCK_KSPEC_CLI,
-      });
-    } finally {
-      delete process.env.KSPEC_CAPTURE_FILE;
-    }
+    const blocks: Array<{ taskRef: string; reason: string }> = [];
+    await runInvocation({
+      agent: makeTestAgent({
+        adapter: "fail-mock-acp2",
+        id: "test-worker",
+        budget: { max_retries: 3 },
+      }),
+      specDir: testDir,
+      sessionsDir,
+      cwd: process.cwd(),
+      taskRef,
+      prompt: "Test failure streak with stalled",
+      trigger: "task.ready",
+      timeoutMinutes: 1,
+      taskBookkeeping: {
+        addTaskNote: async () => undefined,
+        blockTask: async (ref, reason) => {
+          blocks.push({ taskRef: ref, reason });
+        },
+      },
+    });
 
     // Should NOT be blocked — only 2 consecutive failures (< 3)
-    if (fsSync.existsSync(captureFile)) {
-      const calls = JSON.parse(readTestOutputSync(captureFile)) as Array<{ args: string[] }>;
-      const blockCall = calls.find((c) => c.args.includes("task") && c.args.includes("block"));
-      expect(blockCall).toBeUndefined();
-    }
+    expect(blocks).toEqual([]);
   });
 });
 
