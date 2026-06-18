@@ -68792,7 +68792,7 @@ runs:
     completed_at: 2026-06-17T04:48:53.699Z
   - _ulid: 01KVCH70XQVHVZW353ACAJ3G33
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -68808,7 +68808,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T04:54:15.037Z
-        completed_at: 2026-06-18T04:54:15.037Z
+        completed_at: 2026-06-18T04:54:45.055Z
+        notes: "Baseline searches completed: kspec meta observations list, kspec inbox list, kspec tasks
+          list, plus targeted searches for 'full test suite long', 'test suite duration', 'focused
+          route tests', 'route tests caught runtime', and 'focused migrated route'. Existing
+          coverage found: full-suite duration is already tracked by inbox 01KNTB8Z4 and related
+          testing-duration observations; workflow-run cleanup/noisy active runs are already tracked
+          by 01KV8Q0W and older workflow CLI items. High-confidence success to capture: for broad
+          route migrations, running a focused suite across all affected daemon route families before
+          the full suite caught runtime-only stale-reference regressions quickly, then the final
+          full npm test served as confirmation rather than first discovery."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T04:54:45.055Z
+        completed_at: 2026-06-18T04:54:45.055Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T04:53:15.319Z
