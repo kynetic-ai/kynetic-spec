@@ -2,7 +2,85 @@ _ulid: 01KVCXD7T9S9VTG0VHWXGXSZQP
 slugs: []
 title: Review task-dispatch-engine-mutation-path cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1089 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-18T08:39:40.293Z
+    completed_at: 2026-06-18T08:39:40.293Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide lint passed with existing baseline: 697 warnings, 0 errors. Focused oxlint on
+      changed files reported 12 require-mock-type-parameters warnings in
+      tests/agent-invocation-lifecycle.test.ts; verified those vi.fn patterns were pre-existing on
+      base d7657c6dd8f45dba09c5074ab51d4e7acaf8dab8."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-18T08:39:43.355Z
+    completed_at: 2026-06-18T08:39:43.355Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared && tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-18T08:39:46.315Z
+    completed_at: 2026-06-18T08:39:46.315Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2883 suites passed; 10945 tests passed, 3 skipped; duration 2677.6s; log
+      /tmp/kspec-test-cache/01KVCXBN70E4C6X34K2RYP127E/fe45c5ba854af76a.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-18T08:39:49.322Z
+    completed_at: 2026-06-18T08:39:49.322Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok exited 0; warnings are existing
+      deprecated-ref baseline."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T08:39:52.434Z
+    completed_at: 2026-06-18T08:39:52.434Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0; warnings are existing
+      orphan/status baseline."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T08:39:55.337Z
+    completed_at: 2026-06-18T08:39:55.337Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0;
+      @dispatch-mutation-transparency ac-1..ac-4 annotations present in behavioral tests. Warnings
+      are existing repo coverage/annotation baseline."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T08:39:58.294Z
+    completed_at: 2026-06-18T08:39:58.294Z
 events:
   - _ulid: 01KVCXD7T9H1YSKBA8YE7TZZP0
     actor: Jacob Chapel
@@ -17,17 +95,121 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-18T08:26:43.047Z
+  - _ulid: 01KVCY5KR7GK7JF7DBH3YED5G5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-18T08:39:40.551Z
+  - _ulid: 01KVCY5PRP8NBGCXBKCK89YNAG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-18T08:39:43.638Z
+  - _ulid: 01KVCY5SKE7Z6NC2NFBD0MGB68
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-18T08:39:46.542Z
+  - _ulid: 01KVCY5WK627B6SDYSQ2W7E36P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-18T08:39:49.606Z
+  - _ulid: 01KVCY5ZKYS0238NDYK5BHY6H5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-18T08:39:52.702Z
+  - _ulid: 01KVCY62DEYDQCEMV6Z98MCQKP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-18T08:39:55.566Z
+  - _ulid: 01KVCY65BEGQ5G3YCX6S59MMW0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-18T08:39:58.574Z
+  - _ulid: 01KVCY6897MXYTFY3W7445RJPD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVCY6812YZ9TAFZPFC3XZD3X
+    timestamp: 2026-06-18T08:40:01.575Z
+  - _ulid: 01KVCY6BA9N46BAYHEDH7E994E
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-18T08:40:04.681Z
+  - _ulid: 01KVCY6BA97W7VZFAMPRSRZBF7
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-18T08:40:04.681Z
 examined_commit: e2835cf4793e98df99dd52a668712990e680a08a
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVC30VGXGQJ23PVYQWJB84DN"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVCY6812YZ9TAFZPFC3XZD3X
+    entries:
+      - _ulid: 01KVCY6812TC7XH585FMJGQMG2
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; src/agent-runtime/task-bookkeeping.ts;
+          src/agent-runtime/invocation.ts; src/agent-runtime/dispatch.ts; src/mutation-pipeline.ts;
+          src/parser/task-data-manager.ts; packages/daemon/src/routes/agent-dispatch.ts;
+          packages/daemon/src/routes/command.ts; packages/daemon/src/routes/tasks.ts; changed tests
+          in tests/agent-invocation-lifecycle.test.ts, tests/agent-dispatch-engine.test.ts,
+          tests/daemon-command-api.test.ts, tests/agent-invocation-secret-redaction.test.ts,
+          tests/dispatch-runtime-bootstrap-contract.test.ts,
+          tests/invocation-daemon-isolation.test.ts, tests/invocation-stall-watchdog.test.ts.
+          Commands run: task/spec/prior-review lookups; git diff/stat/name-only/diff-check; rg scans
+          for subprocess mutation calls, AC annotations, and source-scanning patterns; kspec
+          validate refs/alignment/completeness; npm run format:check; npm run lint -- --quiet;
+          focused npx oxlint on changed files; npm run typecheck; npm test. Claims verified: prior
+          bootstrap blocker now routes note/block recovery through logged helper and preserves
+          Error.cause detail; invocation failure-note and retry block mutation failures log
+          separately while preserving original invocation outcome; successful dispatch bookkeeping
+          note/block broadcasts match task API tasks:updates schemas; remaining execFile usage in
+          dispatch is git/workspace diff, not task mutation subprocesses. Categories searched:
+          correctness, edge cases, error handling, test quality, integration, AC coverage, and
+          leftover subprocess mutation paths."
+        created_at: 2026-06-18T08:40:01.314Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-18T08:40:04.681Z
 created_at: 2026-06-18T08:26:21.897Z
-updated_at: 2026-06-18T08:26:42.780Z
+updated_at: 2026-06-18T08:40:04.681Z
 notes: []
