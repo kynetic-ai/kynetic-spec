@@ -58,5 +58,14 @@ tags:
   - reviews
   - cli
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-18T22:22:28.860Z
 created_at: 2026-06-18T22:21:49.045Z
 todos: []
+automation: eligible
