@@ -143,6 +143,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-18T23:27:40.158Z
+  - _ulid: 01KVEH02YFFN5BAJ3GBCT98EW8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVEH02NPKVNYYWJAQESA01MH
+    timestamp: 2026-06-18T23:27:56.879Z
 examined_commit: 1ddf6dad70c3f39d41b48c59b79ff29fac8234ee
 external_links: []
 lifecycle_state: open
@@ -152,8 +159,31 @@ subject:
   content_hash: ""
   ref: "@01KVED703NAFBBBXJCAETHBYW1"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVEH02NPKVNYYWJAQESA01MH
+    entries:
+      - _ulid: 01KVEH02NP5PGMHGAP7A3D2EHW
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; @review-spec-ac-anchors;
+          @review-comment-threads-and-anchors; @plan-review-anchors-and-plan-revisions-schema;
+          src/schema/review-records.ts; src/cli/commands/review.ts;
+          packages/daemon/src/routes/reviews.ts; src/parser/review-validation.ts;
+          packages/shared/src/api.ts; packages/web-ui/src/lib/api.ts;
+          tests/review-records-schema.test.ts; tests/review-cli.test.ts;
+          tests/daemon-api/reviews-threads.test.ts; tests/parser-reviews-folder.test.ts;
+          tests/review-storage.test.ts; tests/review-validation.test.ts. Commands run: git
+          diff/stat; rg AC/source-scan checks; kspec item/task/plan/search lookups; focused npm test
+          for review suites; npx oxlint changed files; npm run format:check; npm run lint --
+          --quiet; npm run typecheck; npm test; kspec validate --refs/--alignment/--completeness
+          --warnings-ok. Claims verified: typed spec_ac anchor stores spec_ref and criterion_id
+          through schema, CLI, and daemon paths; malformed spec_ref/ac-id rejected without thread
+          storage; legacy structured AC anchors load unchanged from monolithic and folder storage;
+          actionable discriminator guidance includes spec_ac and plan_text. Categories searched:
+          correctness, edge cases, error handling, test quality, integration, shared-surface
+          neutrality scope. No blocker or should-fix findings."
+        created_at: 2026-06-18T23:27:56.598Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-18T23:09:06.198Z
-updated_at: 2026-06-18T23:27:39.882Z
+updated_at: 2026-06-18T23:27:56.598Z
 notes: []
