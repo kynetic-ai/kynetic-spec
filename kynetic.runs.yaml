@@ -69422,7 +69422,7 @@ runs:
     completed_at: 2026-06-18T08:23:30.171Z
   - _ulid: 01KVCYAD6PM6FKCDAW72Y77G55
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69436,7 +69436,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T08:44:05.359Z
-        completed_at: 2026-06-18T08:44:05.359Z
+        completed_at: 2026-06-18T08:44:37.003Z
+        notes: "High-confidence candidates checked: (1) long or quiet full-suite test progress is already
+          covered by completed @task-test-runner-progress-output; (2) workflow CLI
+          discoverability/run-ref friction is already tracked by inbox 01KRYTG7 and broader workflow
+          CLI items. No new untracked friction or success pattern met the capture bar."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T08:44:37.003Z
+        completed_at: 2026-06-18T08:44:37.003Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T08:42:17.686Z
