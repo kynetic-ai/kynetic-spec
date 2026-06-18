@@ -22621,6 +22621,16 @@ observations:
     resolved: false
     workflow_ref: "@01KVCJEF"
     created_at: 2026-06-18T05:16:32.611Z
+  - _ulid: 01KVCJJ8SP3HR0RFVNZVZ2V7AM
+    type: success
+    content: For metadata-only relationship tasks, an atomic kspec batch of link create commands
+      followed by bidirectional kspec link list checks and kspec refs gives strong review evidence
+      without manual .kspec inspection.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-18T05:16:52.406Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
