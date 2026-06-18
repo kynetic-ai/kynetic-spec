@@ -27170,7 +27170,7 @@ workspaces:
         head: dd0134dc2c3b7a7b5f268a909499ba91b36cb880
         last_seen_at: 2026-06-18T05:18:29.803Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-mutation-service-spec-links-01kvc30w
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: d7657c6dd8f45dba09c5074ab51d4e7acaf8dab8
     bootstrap:
       status: succeeded
@@ -27647,7 +27647,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T06:26:17.961Z
+      updated_at: 2026-06-18T06:26:48.368Z
     integration:
       status: pending
       detail: null
@@ -27663,10 +27663,10 @@ workspaces:
     task_slug: task-command-path-typed-events
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-18T06:02:15.340Z
-      last_reconciled_at: 2026-06-18T06:26:15.430Z
+      last_active_at: 2026-06-18T06:26:48.368Z
+      last_reconciled_at: 2026-06-18T06:26:48.368Z
       created_at: 2026-06-18T06:01:45.461Z
-      updated_at: 2026-06-18T06:26:40.173Z
+      updated_at: 2026-06-18T06:26:48.368Z
     workspace_id: dispatch-workspace-01KVC30TT5QTKT0Q8KVPPSJKHT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
