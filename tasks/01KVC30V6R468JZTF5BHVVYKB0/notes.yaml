@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KVCTHAXF73Y1K8TB8HD76YJZ
+    content: "Approach: reuse the existing mutation event collector and route pipeline instead of adding
+      new broadcast plumbing. Task creation/deletion and additional task mutation actions now emit
+      through TaskDataManager; spec item create/update/delete emit through parser item mutation
+      helpers; review creation emits from review storage creation paths; plan resource route
+      emission was already present and now has AC coverage annotations. Edge cases: command-proxy
+      mutations only broadcast on successful command completion; folder-backed and monolithic review
+      storage both emit creation events; item cascade deletion emits one event per deleted item.
+      Test plan: focused daemon command API tests cover task, review, and spec-item event emissions
+      plus canonical IDs; plan resource route tests cover add/replace/remove plan-resource events;
+      shared vocabulary test covers naming/topic ownership reservations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T07:36:10.415Z
