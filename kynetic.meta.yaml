@@ -22687,6 +22687,17 @@ observations:
     resolved_at: 2026-06-18T07:57:15.304Z
     resolved_by: Jacob Chapel
     created_at: 2026-06-18T07:56:13.932Z
+  - _ulid: 01KVCX1PNPEVM96FJW4M4BVDS0
+    type: friction
+    content: Automated reviewer review comments/checks defaulted to the configured project author when
+      --author was omitted, so the review UI showed blocker/evidence threads authored by Jacob
+      Chapel even though the verdict reviewer was codex. Review automation should consistently set
+      reviewer identity on review check/comment writes or provide a reviewer-scoped default.
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-18T08:20:03.894Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
