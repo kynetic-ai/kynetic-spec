@@ -223,6 +223,12 @@ events:
     payload:
       thread_ulid: 01KVCJCMTMGK51W7SXQBN8T0ZJ
     timestamp: 2026-06-18T05:39:46.814Z
+  - _ulid: 01KVCKWKM0YAJJ3E1RMHEVES80
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVCJCQS810D3P5AV65X3V5MX
+    timestamp: 2026-06-18T05:39:59.744Z
 examined_commit: bfde105acd982fb9424afb538d18769e20e1d64e
 external_links: []
 lifecycle_state: closed
@@ -320,6 +326,13 @@ threads:
           mutation and manifest update into the pipeline apply operation (or a helper called from
           it) so plan resources are migrated as a single operation."
         created_at: 2026-06-18T05:13:51.145Z
+      - _ulid: 01KVCKWKCD47WZEDT16PG1R7KZ
+        author: Jacob Chapel
+        body: "Fixed in fea84ff19a: plan resource upload now keeps only validation/temp spooling outside the
+          pipeline; the destination rename, previous-file cleanup, git metadata capture, and
+          manifest write all run inside runRouteMutation.apply. DELETE likewise removes the file and
+          rewrites the manifest inside apply before commit/cache/event descriptors run."
+        created_at: 2026-06-18T05:39:59.501Z
     kind: blocker
   - _ulid: 01KVCJCTMMMJXEHG9V7XZ1VFMC
     entries:
@@ -351,5 +364,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-18T05:14:06.470Z
 created_at: 2026-06-18T04:56:53.100Z
-updated_at: 2026-06-18T05:39:46.583Z
+updated_at: 2026-06-18T05:39:59.501Z
 notes: []
