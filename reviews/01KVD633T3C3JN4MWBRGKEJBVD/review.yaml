@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-18T10:58:28.510Z
+  - _ulid: 01KVD6AV5Z5SCF8CA6EZHB7RBA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVD6ATWYYJYWS2W77RTEKENE
+    timestamp: 2026-06-18T11:02:20.607Z
 examined_commit: c072e12fc35be928c8814703abdfec203aa58f48
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,28 @@ subject:
   content_hash: ""
   ref: "@01KVC30V6R468JZTF5BHVVYKB0"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVD6ATWYYJYWS2W77RTEKENE
+    anchor:
+      type: code
+      commit: c072e12fc35be928c8814703abdfec203aa58f48
+      line_end: 456
+      line_start: 454
+      path: src/parser/task-data-manager.ts
+      side: head
+    entries:
+      - _ulid: 01KVD6ATWYA598NM4W9AH83B73
+        author: Jacob Chapel
+        body: "MUST-FIX:  still drops task mutations whenever callers use  or omit commit metadata, but
+          several real task mutations are intentionally outer-committed. For example,  sets  with
+          ,  transitions pending-review tasks to  with , and plan resource materialization patches a
+          task's  without commit metadata. None of those paths has a surrounding  event, so a
+          subscriber misses successful task mutations through non-task interfaces, violating
+          @mutation-event-coverage ac-1/ac-5. Evidence:  shows these call sites in , , and , while
+          the review verdict daemon route only broadcasts ."
+        created_at: 2026-06-18T11:02:20.318Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-18T10:58:07.299Z
-updated_at: 2026-06-18T10:58:28.277Z
+updated_at: 2026-06-18T11:02:20.318Z
 notes: []
