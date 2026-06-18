@@ -11,8 +11,11 @@ description: "During review of @01KVC30V6R468JZTF5BHVVYKB0 on 2026-06-18, full n
 spec_ref: "@daemon-sensitive-cli-test-determinism"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at c270c4dfcb88e235ac4ec26cc34ada376c4ea52f. Review approved;
+  stabilized the session watcher active-session detection test by replacing the fixed debounce sleep
+  with bounded polling while preserving exact callback coverage.
 depends_on: []
 context: []
 priority: 2
@@ -85,8 +88,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-18T12:23:27.966Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at c270c4dfcb88e235ac4ec26cc34ada376c4ea52f. Review approved; stabilized the
+          session watcher active-session detection test by replacing the fixed debounce sleep with
+          bounded polling while preserving exact callback coverage.
+        previous: null
+      completed_at:
+        new: 2026-06-18T12:37:53.978Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-18T12:37:53.987Z
 created_at: 2026-06-18T11:59:24.344Z
 started_at: 2026-06-18T12:00:56.150Z
 submitted_at: 2026-06-18T12:18:05.554Z
+completed_at: 2026-06-18T12:37:53.978Z
 todos: []
 automation: eligible
