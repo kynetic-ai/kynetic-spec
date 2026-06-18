@@ -188,6 +188,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-18T09:02:31.376Z
+  - _ulid: 01KVD0X28RTQSR1Y4TKAD8SD8X
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVCZEG9Y8CX6XGZ9NQX4E6HZ
+    timestamp: 2026-06-18T09:27:26.232Z
 examined_commit: a19ac97e767c7542d75f92ff8e2d2c8dae5ef231
 external_links: []
 lifecycle_state: closed
@@ -219,6 +225,13 @@ threads:
           for the transition actions in scope, at minimum the newly added cancel/reset/unblock
           mappings, and assert old_status/new_status on the resulting task_updated events."
         created_at: 2026-06-18T09:02:00.510Z
+      - _ulid: 01KVD0X21DV725JTAT1WJES33S
+        author: Jacob Chapel
+        body: "Fixed in 88bcda60de: expanded the AC-tagged daemon command-route test to execute task block,
+          unblock, cancel, and reset mutations and assert the task_updated old_status/new_status
+          payload for each transition. Also corrected the command-route cache fixture to expose
+          production-like task summaries so cancel exercises the real cache-backed listTasks path."
+        created_at: 2026-06-18T09:27:25.997Z
     kind: blocker
   - _ulid: 01KVCZF36JDA15FEZ69JE54J2C
     entries:
@@ -263,5 +276,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-18T09:02:31.376Z
 created_at: 2026-06-18T08:48:29.849Z
-updated_at: 2026-06-18T09:02:31.376Z
+updated_at: 2026-06-18T09:27:25.997Z
 notes: []
