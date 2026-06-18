@@ -44,6 +44,7 @@ tags:
   - specs
   - maintenance
 vcs_refs: []
+review_ref: "@01KVCJQNWMGBQFEZN8GN3WKQYR"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-mutation-service-spec-links/01kvc30w
@@ -94,6 +95,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-18T05:14:35.884Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KVCJQNWMGBQFEZN8GN3WKQYR"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-18T05:19:51.894Z
 created_at: 2026-06-18T00:45:13.795Z
 started_at: 2026-06-18T04:57:52.325Z
 submitted_at: 2026-06-18T05:14:35.884Z
