@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KVD9QXDJ66W2NX4MAXCJ5NCZ
+    content: "Approach: stabilize the existing behavioral watcher test rather than changing production
+      watcher behavior unless investigation finds a real bug. The failing path starts with a missing
+      .kspec-sessions directory, so SessionWatcher.start schedules bootstrap polling and returns
+      before the later callback/debounce chain completes. The fixed sleep can be too short under
+      full-suite load. Edge cases: preserve coverage that late-created active sessions trigger
+      exactly one session-root callback; avoid broad sleeps that weaken failure signal; keep
+      non-active/session-specific coverage unchanged. Test plan: run the focused session watcher
+      test repeatedly with npm test -- tests/session-watcher.test.ts, then run project gates before
+      submit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T12:01:54.610Z
