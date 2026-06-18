@@ -25127,12 +25127,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-18T11:17:31.235Z
+      updated_at: 2026-06-18T11:17:51.802Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T11:17:38.182Z
+      updated_at: 2026-06-18T11:17:51.802Z
     integration:
       status: pending
       detail: null
@@ -25140,7 +25140,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: ce763c87e81cd2eff58d1021da5753e442322259
-      updated_at: 2026-06-18T11:17:31.235Z
+      updated_at: 2026-06-18T11:17:51.802Z
     lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVC30V6R468JZTF5BHVVYKB0
@@ -25149,9 +25149,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-18T10:57:05.160Z
-      last_reconciled_at: 2026-06-18T11:17:38.182Z
+      last_reconciled_at: 2026-06-18T11:17:51.802Z
       created_at: 2026-06-18T07:26:41.481Z
-      updated_at: 2026-06-18T11:17:38.182Z
+      updated_at: 2026-06-18T11:17:51.802Z
     workspace_id: dispatch-workspace-01KVC30V6R468JZTF5BHVVYKB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -25160,5 +25160,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-missing-event-types/01kvc30v
         head: c072e12fc35be928c8814703abdfec203aa58f48
-        last_seen_at: 2026-06-18T10:56:34.196Z
+        last_seen_at: 2026-06-18T11:17:51.802Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-missing-event-types-01kvc30v
