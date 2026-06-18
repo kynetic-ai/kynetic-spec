@@ -68899,7 +68899,7 @@ runs:
     started_at: 2026-06-18T05:14:48.462Z
   - _ulid: 01KVCJFRN23FDFW8PZ1SZ1XD4Z
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -68916,7 +68916,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T05:16:17.856Z
-        completed_at: 2026-06-18T05:16:17.856Z
+        completed_at: 2026-06-18T05:16:39.281Z
+        notes: "High-confidence success: for metadata-only spec relationship work, using kspec batch for all
+          requested link create operations kept the shadow mutation atomic, and verifying with both
+          kspec link list --from/--to plus kspec refs produced clear evidence without inspecting
+          .kspec YAML. Friction considered but not captured: several repeated link-list commands
+          were needed, but this was a small one-off verification pattern and not enough evidence for
+          a systemic issue. Full npm test duration was long but expected by existing work-gates
+          guidance and completed cleanly."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T05:16:39.281Z
+        completed_at: 2026-06-18T05:16:39.281Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T05:15:30.338Z
