@@ -26183,7 +26183,7 @@ workspaces:
         head: e2835cf4793e98df99dd52a668712990e680a08a
         last_seen_at: 2026-06-18T08:25:03.400Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-engine-mutation-path-01kvc30v
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: ce763c87e81cd2eff58d1021da5753e442322259
     bootstrap:
       status: succeeded
@@ -26668,7 +26668,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T08:46:53.195Z
+      updated_at: 2026-06-18T08:47:28.179Z
     integration:
       status: pending
       detail: null
@@ -26684,10 +26684,10 @@ workspaces:
     task_slug: task-missing-event-types
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-18T08:25:00.240Z
-      last_reconciled_at: 2026-06-18T08:46:53.195Z
+      last_active_at: 2026-06-18T08:47:28.179Z
+      last_reconciled_at: 2026-06-18T08:47:28.179Z
       created_at: 2026-06-18T07:26:41.481Z
-      updated_at: 2026-06-18T08:47:17.487Z
+      updated_at: 2026-06-18T08:47:28.179Z
     workspace_id: dispatch-workspace-01KVC30V6R468JZTF5BHVVYKB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
