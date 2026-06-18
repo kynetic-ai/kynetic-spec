@@ -426,6 +426,10 @@ function getReadyTaskCache(): TaskReadCache | null {
 }
 
 const TASK_MUTATION_ACTIONS: Record<string, string> = {
+  "api-task-start": "start",
+  "api-task-submit": "submit",
+  "api-task-complete": "complete",
+  "api-task-block": "block",
   "task-start": "start",
   "task-submit": "submit",
   "task-complete": "complete",
@@ -440,6 +444,8 @@ const TASK_MUTATION_ACTIONS: Record<string, string> = {
   "task-todo-add": "todo_added",
   "task-todo-done": "todo_done",
   "task-todo-undone": "todo_undone",
+  "review-link": "review_linked",
+  "review-verdict-needs-work": "needs_work",
 };
 
 function taskEventRef(task: LoadedTask): string {
@@ -451,12 +457,8 @@ function buildTaskMutationEvent(
   after: LoadedTask,
   commitOpts?: ShadowCommitOptions,
 ): MutationEventDescriptor | null {
-  if (!commitOpts || commitOpts.skipCommit) {
-    return null;
-  }
-
-  const action = TASK_MUTATION_ACTIONS[commitOpts.operation];
-  if (!action) {
+  const action = commitOpts ? TASK_MUTATION_ACTIONS[commitOpts.operation] : "changed";
+  if (!action && commitOpts?.operation) {
     return null;
   }
 

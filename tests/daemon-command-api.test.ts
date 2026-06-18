@@ -1262,6 +1262,87 @@ describe("Daemon Command API", () => {
         }),
       }),
     );
+    expect(broadcastEvents).toContainEqual(
+      expect.objectContaining({
+        topic: "tasks:updates",
+        event: "task_updated",
+        data: expect.objectContaining({
+          action: "review_linked",
+          ref: "@task-test",
+          ulid: TASK_ULID,
+          old_status: null,
+          new_status: null,
+        }),
+      }),
+    );
+  });
+
+  // AC: @mutation-event-coverage ac-1
+  // AC: @mutation-event-coverage ac-5
+  it("emits task events for review-linked verdict transitions through the command route", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+    const runCommand = async (command: string, args: Record<string, unknown>) => {
+      const response = await makeRequest("/api/command", {
+        method: "POST",
+        body: JSON.stringify({ command, args }),
+      });
+      const body = await response.json();
+      if (response.status !== 200 || body.exitCode !== 0) {
+        throw new Error(
+          `Command ${command} failed: ${JSON.stringify({ args, body, status: response.status })}`,
+        );
+      }
+      cacheSnapshot = await buildCacheSnapshot();
+      return body;
+    };
+
+    await runCommand("task start", { ref: "@task-command" });
+    await runCommand("task submit", { ref: "@task-command" });
+    await runCommand("review add", {
+      title: "Needs Work Event Review",
+      slug: "needs-work-event-review",
+      subjectType: "task",
+      subjectRef: "@task-command",
+    });
+    const reviewCreatedEvent = broadcastEvents.find(
+      (entry) =>
+        entry.topic === "reviews:updates" &&
+        entry.event === "review_created" &&
+        entry.data.title === "Needs Work Event Review",
+    );
+    const reviewUlid = reviewCreatedEvent?.data.review_ulid;
+    expect(reviewUlid).toEqual(expect.any(String));
+    await runCommand("review verdict", {
+      ref: `@${reviewUlid}`,
+      decision: "request_changes",
+    });
+
+    expect(broadcastEvents).toContainEqual(
+      expect.objectContaining({
+        topic: "tasks:updates",
+        event: "task_updated",
+        data: expect.objectContaining({
+          action: "review_linked",
+          ref: "@task-command",
+          ulid: COMMAND_TASK_ULID,
+          old_status: null,
+          new_status: null,
+        }),
+      }),
+    );
+    expect(broadcastEvents).toContainEqual(
+      expect.objectContaining({
+        topic: "tasks:updates",
+        event: "task_updated",
+        data: expect.objectContaining({
+          action: "needs_work",
+          ref: "@task-command",
+          ulid: COMMAND_TASK_ULID,
+          old_status: "pending_review",
+          new_status: "needs_work",
+        }),
+      }),
+    );
   });
 
   // AC: @mutation-event-coverage ac-2
