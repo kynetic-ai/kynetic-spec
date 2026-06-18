@@ -66,7 +66,7 @@ description: |
 spec_ref: "@plan-revisions"
 plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -76,6 +76,7 @@ tags:
   - plans
   - cli
 vcs_refs: []
+session_id: 01KVEFY228GD4JV1Q5THVF630T
 history:
   - author: Jacob Chapel
     changes:
@@ -84,6 +85,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-18T22:22:29.424Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KVEFY228GD4JV1Q5THVF630T
+        previous: null
+      started_at:
+        new: 2026-06-18T23:10:19.289Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-18T23:10:19.289Z
 created_at: 2026-06-18T22:21:51.507Z
+started_at: 2026-06-18T23:10:19.289Z
 todos: []
 automation: eligible
