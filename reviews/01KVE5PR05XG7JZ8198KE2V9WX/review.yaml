@@ -202,9 +202,25 @@ events:
       kind: nit
       thread_ulid: 01KVE6Q62ZHMZSRV681E1K7V06
     timestamp: 2026-06-18T20:28:19.700Z
+  - _ulid: 01KVE6QGQ0QZ67QKC1WQQ1XK57
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-18T20:28:30.304Z
+  - _ulid: 01KVE6QGQ0PQJ66XT5ATKM5YCC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-18T20:28:30.304Z
 examined_commit: 88b0691213ac017059815e1fa58f064e997647c2
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -251,7 +267,14 @@ threads:
           payload schemas and existing query key consumers. No blocker or should-fix findings found.
         created_at: 2026-06-18T20:28:19.423Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-18T20:28:30.304Z
 created_at: 2026-06-18T20:10:36.421Z
-updated_at: 2026-06-18T20:28:19.423Z
+updated_at: 2026-06-18T20:28:30.304Z
 notes: []
