@@ -24611,11 +24611,11 @@ workspaces:
     canonical_branch: dispatch/task/stabilize-flaky-session-watcher-active-session-detection-test/01kvd9ka
     canonical_branch_head: dea376c424b5bfb5d0ee7b95b9570fb2fd9321e4
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-18T12:38:18.359Z
+      updated_at: 2026-06-18T12:42:25.156Z
     health:
       status: healthy
       issues: []
@@ -24629,17 +24629,17 @@ workspaces:
       target_branch: dev
       target_commit: e9ae4ba5867eeb3232b0d8444b27e11ff9e4409d
       updated_at: 2026-06-18T12:38:18.359Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KVD9KANRJ0N37AABARV2EDD2
     task_ref: "@01KVD9KANRJ0N37AABARV2EDD2"
     task_slug: stabilize-flaky-session-watcher-active-session-detection-test
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-18T12:42:25.156Z
       last_active_at: 2026-06-18T12:22:26.068Z
       last_reconciled_at: 2026-06-18T12:41:53.869Z
       created_at: 2026-06-18T11:59:44.609Z
-      updated_at: 2026-06-18T12:41:53.869Z
+      updated_at: 2026-06-18T12:42:25.156Z
     workspace_id: dispatch-workspace-01KVD9KANRJ0N37AABARV2EDD2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
