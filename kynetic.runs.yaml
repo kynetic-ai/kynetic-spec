@@ -69225,7 +69225,7 @@ runs:
     started_at: 2026-06-18T07:22:09.957Z
     completed_at: 2026-06-18T07:25:21.943Z
   - _ulid: 01KVCV6ZFJ1RQSVSTS014HVQ1Q
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -69268,10 +69268,13 @@ runs:
         completed_at: 2026-06-18T07:52:11.548Z
         notes: Skipped discussion because no new capture is proposed. The only friction found is already
           tracked by existing inbox items and observations.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-18T07:52:11.548Z
-        completed_at: 2026-06-18T07:52:11.548Z
+        completed_at: 2026-06-18T07:52:36.628Z
+        notes: No new inbox items, tasks, observations, or questions captured. Existing tracking already
+          covers the shell-fragile inline body issue, so duplicating it would add noise.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-18T07:47:59.602Z
+    completed_at: 2026-06-18T07:52:36.629Z
