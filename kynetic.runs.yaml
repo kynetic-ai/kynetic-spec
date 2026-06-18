@@ -69039,7 +69039,7 @@ runs:
     completed_at: 2026-06-18T05:43:37.334Z
   - _ulid: 01KVCN4GWRJ5PZPRPEV8FE6FSM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69052,7 +69052,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T06:02:59.268Z
-        completed_at: 2026-06-18T06:02:59.268Z
+        completed_at: 2026-06-18T06:03:08.608Z
+        notes: "Friction points: full npm test remained long (2425.5s) with intermittent quiet periods; this
+          is systemic review friction, but not new. The detached merge/helper path itself was smooth
+          and required no manual branch checkout."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T06:03:08.608Z
+        completed_at: 2026-06-18T06:03:08.608Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-18T06:01:47.672Z
