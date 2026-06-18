@@ -111,6 +111,29 @@ describe("POST /api/reviews/:id/comments", () => {
     });
   });
 
+  // AC: @review-spec-ac-anchors ac-typed-anchor-stored
+  it("creates a thread with a typed spec AC anchor", async () => {
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({
+        body: "Check this acceptance criterion.",
+        kind: "nit",
+        anchor: {
+          type: "spec_ac",
+          spec_ref: "@some-spec-item",
+          criterion_id: "ac-1",
+        },
+      }),
+    });
+    expect(response.status).toBe(200);
+    const thread = await response.json();
+    expect(thread.anchor).toEqual({
+      type: "spec_ac",
+      spec_ref: "@some-spec-item",
+      criterion_id: "ac-1",
+    });
+  });
+
   it("persists the new thread on the review", async () => {
     const createResponse = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
       method: "POST",
@@ -179,6 +202,35 @@ describe("POST /api/reviews/:id/comments", () => {
       }),
     });
     expect(response.status).toBe(400);
+  });
+
+  // AC: @review-spec-ac-anchors ac-anchor-field-validation
+  it("returns 400 for invalid spec AC anchor fields without storing a thread", async () => {
+    const beforeResponse = await request(`/api/reviews/${OPEN_REVIEW_ULID}`);
+    expect(beforeResponse.status).toBe(200);
+    const { data: beforeReview } = await beforeResponse.json();
+    const beforeCount = beforeReview.threads.length;
+
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({
+        body: "Bad spec AC anchor.",
+        kind: "nit",
+        anchor: {
+          type: "spec_ac",
+          spec_ref: "some-spec-item",
+          criterion_id: "criterion-1",
+        },
+      }),
+    });
+    expect(response.status).toBe(400);
+    const error = await response.json();
+    expect(JSON.stringify(error)).toContain("anchor.spec_ref");
+
+    const afterResponse = await request(`/api/reviews/${OPEN_REVIEW_ULID}`);
+    expect(afterResponse.status).toBe(200);
+    const { data: afterReview } = await afterResponse.json();
+    expect(afterReview.threads).toHaveLength(beforeCount);
   });
 
   it("returns 400 for invalid code anchor side", async () => {

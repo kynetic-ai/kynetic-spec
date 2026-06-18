@@ -7,6 +7,7 @@ import {
   ReviewSubjectVersionSchema,
   ReviewCodeAnchorSchema,
   ReviewStructuredAnchorSchema,
+  ReviewSpecAcAnchorSchema,
   ReviewAnchorSchema,
   ReviewThreadKindSchema,
   ReviewThreadSchema,
@@ -325,7 +326,39 @@ describe("ReviewAnchorSchema", () => {
     expect(result.success).toBe(true);
   });
 
-  it("should discriminate between code and structured anchors", () => {
+  // AC: @review-spec-ac-anchors ac-typed-anchor-stored
+  it("should accept spec AC anchor with typed spec and criterion fields", () => {
+    const result = ReviewSpecAcAnchorSchema.safeParse({
+      type: "spec_ac",
+      spec_ref: "@my-spec",
+      criterion_id: "ac-1",
+    });
+    expect(result.success).toBe(true);
+    expect(result.success && result.data).toEqual({
+      type: "spec_ac",
+      spec_ref: "@my-spec",
+      criterion_id: "ac-1",
+    });
+  });
+
+  // AC: @review-spec-ac-anchors ac-anchor-field-validation
+  it("should reject malformed spec AC anchor fields", () => {
+    const invalidSpecRef = ReviewSpecAcAnchorSchema.safeParse({
+      type: "spec_ac",
+      spec_ref: "my-spec",
+      criterion_id: "ac-1",
+    });
+    expect(invalidSpecRef.success).toBe(false);
+
+    const invalidCriterionId = ReviewSpecAcAnchorSchema.safeParse({
+      type: "spec_ac",
+      spec_ref: "@my-spec",
+      criterion_id: "criterion-1",
+    });
+    expect(invalidCriterionId.success).toBe(false);
+  });
+
+  it("should discriminate between code, structured, and spec AC anchors", () => {
     const codeResult = ReviewAnchorSchema.safeParse({
       type: "code",
       path: "src/foo.ts",
@@ -341,6 +374,13 @@ describe("ReviewAnchorSchema", () => {
       section: "ac-1",
     });
     expect(structuredResult.success).toBe(true);
+
+    const specAcResult = ReviewAnchorSchema.safeParse({
+      type: "spec_ac",
+      spec_ref: "@my-spec",
+      criterion_id: "ac-validation",
+    });
+    expect(specAcResult.success).toBe(true);
   });
 });
 

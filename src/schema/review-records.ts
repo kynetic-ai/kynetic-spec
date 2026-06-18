@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DateTimeSchema, RefSchema, SlugSchema, UlidSchema } from "./common.js";
+import { AcIdSchema, DateTimeSchema, RefSchema, SlugSchema, UlidSchema } from "./common.js";
 import { NoteSchema } from "./task.js";
 
 // --- Lifecycle & Disposition ---
@@ -79,7 +79,7 @@ export const ReviewSubjectVersionSchema = z.discriminatedUnion("type", [
 
 // --- Anchors ---
 
-export const ReviewAnchorTypeSchema = z.enum(["code", "structured"]);
+export const ReviewAnchorTypeSchema = z.enum(["code", "structured", "spec_ac"]);
 
 export const ReviewCodeAnchorSideSchema = z.enum(["base", "head"]);
 
@@ -100,9 +100,18 @@ export const ReviewStructuredAnchorSchema = z.object({
   ref: RefSchema.optional(),
 });
 
+// AC: @review-spec-ac-anchors ac-typed-anchor-stored
+// AC: @review-spec-ac-anchors ac-anchor-field-validation
+export const ReviewSpecAcAnchorSchema = z.object({
+  type: z.literal("spec_ac"),
+  spec_ref: RefSchema,
+  criterion_id: AcIdSchema,
+});
+
 export const ReviewAnchorSchema = z.discriminatedUnion("type", [
   ReviewCodeAnchorSchema,
   ReviewStructuredAnchorSchema,
+  ReviewSpecAcAnchorSchema,
 ]);
 
 // --- Threads ---
@@ -282,6 +291,7 @@ export type ReviewEntityVersion = z.infer<typeof ReviewEntityVersionSchema>;
 export type ReviewSubjectVersion = z.infer<typeof ReviewSubjectVersionSchema>;
 export type ReviewCodeAnchor = z.infer<typeof ReviewCodeAnchorSchema>;
 export type ReviewStructuredAnchor = z.infer<typeof ReviewStructuredAnchorSchema>;
+export type ReviewSpecAcAnchor = z.infer<typeof ReviewSpecAcAnchorSchema>;
 export type ReviewAnchor = z.infer<typeof ReviewAnchorSchema>;
 export type ReviewThreadKind = z.infer<typeof ReviewThreadKindSchema>;
 export type ReviewThreadEntry = z.infer<typeof ReviewThreadEntrySchema>;

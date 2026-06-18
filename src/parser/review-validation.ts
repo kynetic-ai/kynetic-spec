@@ -43,7 +43,7 @@ function formatActionableMessage(fieldPath: string, message: string): string {
 
   // Anchor type discrimination errors
   if (fieldPath.includes("anchor") && message.includes("discriminator")) {
-    return `${message}. Anchor type must be one of: code, structured`;
+    return `${message}. Anchor type must be one of: code, structured, spec_ac, plan_text`;
   }
 
   // Missing required title

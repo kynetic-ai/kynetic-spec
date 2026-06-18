@@ -445,6 +445,44 @@ describe("Integration: review CLI commands", () => {
       expect(review.threads[0].anchor.line_end).toBe(45);
     });
 
+    // AC: @review-spec-ac-anchors ac-typed-anchor-stored
+    it("should add a comment with a typed spec AC anchor", () => {
+      kspec(
+        `review comment @${reviewSlug} --body 'Check this criterion' --spec-ref @review-spec --ac-id ac-1`,
+        tempDir,
+      );
+
+      const review = kspecJson<{
+        threads: Array<{
+          anchor: {
+            type: string;
+            spec_ref: string;
+            criterion_id: string;
+          };
+        }>;
+      }>(`review get @${reviewSlug}`, tempDir);
+
+      expect(review.threads[0].anchor).toEqual({
+        type: "spec_ac",
+        spec_ref: "@review-spec",
+        criterion_id: "ac-1",
+      });
+    });
+
+    // AC: @review-spec-ac-anchors ac-anchor-field-validation
+    it("should reject malformed spec AC anchors without storing a thread", () => {
+      const result = kspecRun(
+        `review comment @${reviewSlug} --body 'Bad criterion' --spec-ref review-spec --ac-id criterion-1`,
+        tempDir,
+        { expectFail: true },
+      );
+      expect(result.exitCode).not.toBe(0);
+      expect(`${result.stderr}\n${result.stdout}`).toContain("spec_ref");
+
+      const review = kspecJson<{ threads: unknown[] }>(`review get @${reviewSlug}`, tempDir);
+      expect(review.threads).toHaveLength(0);
+    });
+
     it("should default thread kind to nit", () => {
       kspec(`review comment @${reviewSlug} --body 'A nit'`, tempDir);
 
