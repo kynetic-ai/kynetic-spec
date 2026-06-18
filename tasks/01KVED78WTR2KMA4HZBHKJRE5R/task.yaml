@@ -53,7 +53,7 @@ description: |
 spec_ref: "@review-idea-threads"
 plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -62,6 +62,7 @@ tags:
   - schema
   - reviews
 vcs_refs: []
+session_id: 01KVEJA9PBVH7M46DM78M1XEGX
 history:
   - author: Jacob Chapel
     changes:
@@ -70,6 +71,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-18T22:22:30.451Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KVEJA9PBVH7M46DM78M1XEGX
+        previous: null
+      started_at:
+        new: 2026-06-18T23:51:47.305Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-18T23:51:47.305Z
 created_at: 2026-06-18T22:21:58.042Z
+started_at: 2026-06-18T23:51:47.305Z
 todos: []
 automation: eligible
