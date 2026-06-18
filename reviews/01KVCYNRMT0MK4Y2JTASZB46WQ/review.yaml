@@ -165,6 +165,13 @@ events:
       kind: blocker
       thread_ulid: 01KVCZEG9Y8CX6XGZ9NQX4E6HZ
     timestamp: 2026-06-18T09:02:00.755Z
+  - _ulid: 01KVCZF3EKN5PNRGDEM7Y038WP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVCZF36JDA15FEZ69JE54J2C
+    timestamp: 2026-06-18T09:02:20.115Z
 examined_commit: a19ac97e767c7542d75f92ff8e2d2c8dae5ef231
 external_links: []
 lifecycle_state: open
@@ -197,7 +204,41 @@ threads:
           mappings, and assert old_status/new_status on the resulting task_updated events."
         created_at: 2026-06-18T09:02:00.510Z
     kind: blocker
+  - _ulid: 01KVCZF36JDA15FEZ69JE54J2C
+    entries:
+      - _ulid: 01KVCZF36J4B10F837D563A79J
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; packages/shared/src/websocket.ts;
+          packages/web-ui/src/lib/query/ws-invalidation.ts; packages/web-ui/src/lib/query/keys.ts;
+          src/mutation-pipeline.ts; packages/daemon/src/routes/command.ts;
+          packages/daemon/src/routes/tasks.ts; packages/daemon/src/routes/plan-resources.ts;
+          src/parser/task-data-manager.ts; src/parser/yaml.ts; src/parser/reviews.ts;
+          src/parser/review-storage-manager.ts; src/cli/commands/item.ts; src/cli/commands/task.ts;
+          tests/daemon-command-api.test.ts; tests/daemon-api/plan-resources.test.ts.
+
+          Commands run: git status/diff; kspec task get; kspec item get @mutation-event-coverage,
+          @mutation-event-naming, @spec-item-delete-children; kspec review get prior review; npm run
+          format:check; npm run lint -- --quiet; npx oxlint changed files; npm run typecheck; npm
+          test; kspec validate --refs/--alignment/--completeness --warnings-ok; rg/nl/sed
+          inspections.
+
+          Claims verified: prior review_created subject blocker fixed by full subject payload and
+          code-subject test; task events collect through TaskDataManager for command mutations; spec
+          item add/update/delete emit items:updates through shared helpers, including cascade
+          deletion; plan resource add/replace/remove broadcasts plans:updates and web UI
+          subscribes/invalidates plans.
+
+          Categories searched: correctness, command-route integration, route mutation integration,
+          AC annotation quality, edge cases around cascade delete and non-ref review subjects,
+          source-scanning tests, UI invalidation, naming vocabulary/topic ownership. Finding:
+          @mutation-event-coverage ac-1 test coverage overclaims because it does not exercise task
+          state transitions.
+        created_at: 2026-06-18T09:02:19.858Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-18T08:48:29.849Z
-updated_at: 2026-06-18T09:02:00.510Z
+updated_at: 2026-06-18T09:02:19.858Z
 notes: []
