@@ -1064,7 +1064,9 @@ features:
           implementation: in_progress
         depends_on: []
         implements: []
-        relates_to: []
+        relates_to:
+          - "@daemon-command-api"
+          - "@daemon-entity-cache"
         tests: []
         traits: []
         acceptance_criteria:
@@ -1148,7 +1150,8 @@ features:
               replaces or hides that outcome.
             depends_on: []
             implements: []
-            relates_to: []
+            relates_to:
+              - "@agent-invocation-lifecycle"
             tests: []
             traits: []
             acceptance_criteria:
@@ -1208,7 +1211,10 @@ features:
               identify the affected entity and the kind of change.
             depends_on: []
             implements: []
-            relates_to: []
+            relates_to:
+              - "@ui-api-aggregation"
+              - "@api-contract"
+              - "@trait-entity-scoped-local-resources-1"
             tests: []
             traits: []
             acceptance_criteria:
