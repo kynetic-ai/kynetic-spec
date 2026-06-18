@@ -120,6 +120,30 @@ function pickRefEntity(entity: { _ulid: string; slugs?: string[] }): RefEntity {
   };
 }
 
+function pickTaskSummary(task: LoadedTask) {
+  return {
+    _ulid: task._ulid,
+    slugs: task.slugs ?? [],
+    title: task.title,
+    type: task.type,
+    status: task.status,
+    priority: task.priority,
+    tags: task.tags ?? [],
+    automation: task.automation,
+    spec_ref: task.spec_ref,
+    plan_ref: task.plan_ref,
+    review_ref: task.review_ref,
+    depends_on: task.depends_on ?? [],
+    blocked_by: task.blocked_by ?? [],
+    created_at: task.created_at,
+    started_at: task.started_at,
+    submitted_at: task.submitted_at,
+    completed_at: task.completed_at,
+    notes_count: task.notes?.length ?? 0,
+    todos_count: task.todos?.length ?? 0,
+  };
+}
+
 function stripAnsi(s: string): string {
   // oxlint-disable-next-line no-control-regex
   return s.replace(/\x1b\[[0-9;]*m/g, "");
@@ -146,7 +170,7 @@ async function buildCacheSnapshot(): Promise<CacheSnapshot> {
       plans,
       reviews,
       meta,
-      taskIndex: tasks.map(pickRefEntity),
+      taskIndex: tasks.map(pickTaskSummary),
       itemIndex: items.map(pickRefEntity),
       planIndex: plans.map(pickRefEntity),
       reviewIndex: reviews.map(pickRefEntity),
@@ -458,6 +482,7 @@ includes:
     type: "task",
     automation: "eligible",
     spec_ref: "@test-feature",
+    depends_on: [],
     created_at: "2026-01-01T00:00:00Z",
     notes: [],
   });
@@ -470,6 +495,7 @@ includes:
     type: "task",
     automation: "eligible",
     spec_ref: "@test-feature",
+    depends_on: [],
     created_at: "2026-01-01T00:00:00Z",
     notes: [],
   });
@@ -1063,42 +1089,47 @@ describe("Daemon Command API", () => {
   // AC: @mutation-event-coverage ac-1
   // AC: @mutation-event-coverage ac-5
   // AC: @ui-api-aggregation ac-4
-  it("emits typed task events for creation, field changes, and notes through command mutations", async () => {
+  it("emits typed task events for creation, field changes, notes, and transitions through command mutations", async () => {
     const broadcastEvents = captureAllBroadcasts();
+    const runTaskCommand = async (command: string, args: Record<string, unknown>) => {
+      const response = await makeRequest("/api/command", {
+        method: "POST",
+        body: JSON.stringify({ command, args }),
+      });
+      const body = await response.json();
+      if (response.status !== 200 || body.exitCode !== 0) {
+        throw new Error(
+          `Command ${command} failed: ${JSON.stringify({ args, body, status: response.status })}`,
+        );
+      }
+    };
 
-    const createResponse = await makeRequest("/api/command", {
-      method: "POST",
-      body: JSON.stringify({
-        command: "task add",
-        args: {
-          title: "Created Event Task",
-          slug: "task-created-event",
-          specRef: "@test-feature",
-        },
-      }),
+    await runTaskCommand("task set", {
+      ref: "@task-command",
+      title: "Retitled Command Task",
     });
-    expect(createResponse.status).toBe(200);
-    expect((await createResponse.json()).exitCode).toBe(0);
 
-    const setResponse = await makeRequest("/api/command", {
-      method: "POST",
-      body: JSON.stringify({
-        command: "task set",
-        args: { ref: "@task-command", title: "Retitled Command Task" },
-      }),
+    await runTaskCommand("task note", {
+      ref: "@task-command",
+      message: "event coverage note",
     });
-    expect(setResponse.status).toBe(200);
-    expect((await setResponse.json()).exitCode).toBe(0);
 
-    const noteResponse = await makeRequest("/api/command", {
-      method: "POST",
-      body: JSON.stringify({
-        command: "task note",
-        args: { ref: "@task-command", message: "event coverage note" },
-      }),
+    await runTaskCommand("task block", {
+      ref: "@task-command",
+      reason: "event coverage blocker",
     });
-    expect(noteResponse.status).toBe(200);
-    expect((await noteResponse.json()).exitCode).toBe(0);
+    await runTaskCommand("task unblock", { ref: "@task-command" });
+    await runTaskCommand("task cancel", {
+      ref: "@task-command",
+      reason: "event coverage cancellation",
+    });
+    await runTaskCommand("task reset", { ref: "@task-command" });
+
+    await runTaskCommand("task add", {
+      title: "Created Event Task",
+      slug: "task-created-event",
+      specRef: "@test-feature",
+    });
 
     const taskEvents = broadcastEvents.filter(
       (entry) => entry.topic === "tasks:updates" && entry.event === "task_updated",
@@ -1132,6 +1163,46 @@ describe("Daemon Command API", () => {
             title: "Retitled Command Task",
             old_status: null,
             new_status: null,
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "block",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: "pending",
+            new_status: "blocked",
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "unblock",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: "blocked",
+            new_status: "pending",
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "cancel",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: "pending",
+            new_status: "cancelled",
+          }),
+        }),
+        expect.objectContaining({
+          data: expect.objectContaining({
+            action: "reset",
+            ref: "@task-command",
+            ulid: COMMAND_TASK_ULID,
+            title: "Retitled Command Task",
+            old_status: "cancelled",
+            new_status: "pending",
           }),
         }),
       ]),
