@@ -2,7 +2,84 @@ _ulid: 01KVCJQNWMGBQFEZN8GN3WKQYR
 slugs: []
 title: Review task-mutation-service-spec-links
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check . reported all matched files use correct format (1085 files)."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-18T05:33:43.327Z
+    completed_at: 2026-06-18T05:33:43.327Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors; repo warning baseline reported 712 warnings. Focused changed-file
+      lint not applicable because git diff feat/ui-redesign...HEAD lists no changed TS/Svelte/test
+      files.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-18T05:33:46.262Z
+    completed_at: 2026-06-18T05:33:46.262Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared completed and tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-18T05:33:49.179Z
+    completed_at: 2026-06-18T05:33:49.179Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2880 test suites passed; 10934 tests passed; 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KVCJP1QR9K08CCXW67PCBTNJ/0c7fe52b59ebe10b.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-18T05:33:52.140Z
+    completed_at: 2026-06-18T05:33:52.140Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --refs --warnings-ok passed: schema OK and references OK; exited 0 with
+      existing deprecated-item warning baseline."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T05:33:55.005Z
+    completed_at: 2026-06-18T05:33:55.005Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; exited 0 with existing alignment warning
+      baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T05:33:57.943Z
+    completed_at: 2026-06-18T05:33:57.943Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; exited 0 with existing completeness
+      warning baseline. This task is relationship metadata only and adds no behavioral AC
+      implementation.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T05:34:00.831Z
+    completed_at: 2026-06-18T05:34:00.831Z
 events:
   - _ulid: 01KVCJQNWK084JGR1BGGRR80A0
     actor: Jacob Chapel
@@ -17,17 +94,128 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-18T05:20:11.647Z
+  - _ulid: 01KVCKH48J8C41Q5J9QFXJ8M7B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-18T05:33:43.570Z
+  - _ulid: 01KVCKH74K2SHZWN0CCPCHTY4S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-18T05:33:46.515Z
+  - _ulid: 01KVCKH9ZMPC57E2QX935B3BMG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-18T05:33:49.428Z
+  - _ulid: 01KVCKHCVBN0GQS98FBH324WSE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-18T05:33:52.363Z
+  - _ulid: 01KVCKHFNSMT8FA2MJMY8JS67W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-18T05:33:55.257Z
+  - _ulid: 01KVCKHJH2XTKN2XKMXZ9KWKWJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-18T05:33:58.178Z
+  - _ulid: 01KVCKHNAY4XG12GD96RA0YE5F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-18T05:34:01.055Z
+  - _ulid: 01KVCKHRAPZ2DPN48E4X642095
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVCKHR3SFZB1DT5SCFPGHAG0
+    timestamp: 2026-06-18T05:34:04.118Z
+  - _ulid: 01KVCKHV563AN8KRY38DMDPDEQ
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-18T05:34:07.014Z
+  - _ulid: 01KVCKHV56W6VHBA95908TQAZT
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-18T05:34:07.014Z
 examined_commit: dd0134dc2c3b7a7b5f268a909499ba91b36cb880
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVC30W630R5AJWKDGSHJCX6P"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVCKHR3SFZB1DT5SCFPGHAG0
+    entries:
+      - _ulid: 01KVCKHR3S9YV6F1Q027HW5E5X
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files/context read: AGENTS.md, kspec-agents.md, task @01KVC30W630R5AJWKDGSHJCX6P, specs
+          @shared-mutation-pipeline, @mutation-event-coverage, @dispatch-mutation-transparency, git
+          log/show/diff for the detached snapshot.
+
+
+          Commands run: git status; git log/show/diff; kspec review add/open/get; kspec item get for
+          affected specs; kspec link list --from for all three source specs; kspec refs and kspec
+          link list --to for all six foundation targets; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; npm run format:check; npm run lint --
+          --quiet; npm run typecheck; npm test.
+
+
+          Claims verified: all six requested relates_to pairs are present from the source specs and
+          navigable from the foundation specs. The submitted code snapshot has no changed files
+          relative to feat/ui-redesign, matching the metadata-only task.
+
+
+          Categories searched: correctness (exact requested links), integration/navigation (forward
+          link lists plus reverse refs), validation/schema (kspec validate
+          refs/alignment/completeness), tests/gates (format/lint/typecheck/full suite), edge cases
+          (checked for duplicate or missing requested relationships). No blocker or should-fix
+          findings found.
+        created_at: 2026-06-18T05:34:03.897Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-18T05:34:07.014Z
 created_at: 2026-06-18T05:19:49.652Z
-updated_at: 2026-06-18T05:20:11.396Z
+updated_at: 2026-06-18T05:34:07.014Z
 notes: []
