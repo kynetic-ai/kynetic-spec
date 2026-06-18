@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KVCN9D359KFC5NPM9GFKSXG1
+    content: "Approach: add a daemon-scoped mutation-event context around proxied command execution and
+      have the task data manager emit task_updated descriptors from the mutation site after its
+      commit/cache patch completes. Preserve command_executed/batch_executed and the command route's
+      broad write-through safety net. Edge cases: no context for direct CLI must no-op; batch
+      commands should emit one task event per affected task while keeping one batch completion
+      event; failures/non-mutating commands emit no typed task events. Test plan: extend daemon
+      command API behavioral tests for @shared-mutation-pipeline ac-3 (REST task start and command
+      task start have matching task_updated topic/event/schema) and ac-5 (command batch emits
+      per-task typed events plus batch_executed after successful atomic batch)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T06:04:27.621Z
