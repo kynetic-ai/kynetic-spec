@@ -26144,11 +26144,11 @@ workspaces:
     canonical_branch: dispatch/task/task-dispatch-engine-mutation-path/01kvc30v
     canonical_branch_head: e2835cf4793e98df99dd52a668712990e680a08a
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-18T08:41:17.274Z
+      updated_at: 2026-06-18T08:46:24.149Z
     health:
       status: healthy
       issues: []
@@ -26162,17 +26162,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: d7657c6dd8f45dba09c5074ab51d4e7acaf8dab8
       updated_at: 2026-06-18T08:41:17.274Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVC30VGXGQJ23PVYQWJB84DN
     task_ref: "@01KVC30VGXGQJ23PVYQWJB84DN"
     task_slug: task-dispatch-engine-mutation-path
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-18T08:46:24.149Z
       last_active_at: 2026-06-18T08:25:35.195Z
       last_reconciled_at: 2026-06-18T08:45:35.996Z
       created_at: 2026-06-18T06:26:54.830Z
-      updated_at: 2026-06-18T08:45:35.996Z
+      updated_at: 2026-06-18T08:46:24.149Z
     workspace_id: dispatch-workspace-01KVC30VGXGQJ23PVYQWJB84DN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
