@@ -14,11 +14,12 @@ import { execSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import type { Elysia } from "elysia";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { stringify as yamlStringify } from "yaml";
 
 import {
   cleanupTempDir,
+  captureBroadcasts,
   createTempDir,
   createTestApp,
   initGitRepo,
@@ -29,6 +30,7 @@ import {
 
 let tempDir: string;
 let app: Elysia;
+let pubsub: ReturnType<typeof createTestApp>["pubsub"];
 
 const PLAN_ULID = "01KG0RRPCA45ZT43W2T6HJMVP1";
 const PLAN_SLUG = "test-plan-active";
@@ -111,10 +113,11 @@ describe("Plan Resource API", () => {
       path.join(tempDir, ".kspec", "project.plans.yaml"),
       `kynetic_plans: "1.0"\nplans:\n  - _ulid: ${PLAN_ULID}\n    slugs:\n      - ${PLAN_SLUG}\n    title: Active Plan\n    status: active\n    derived_tasks: []\n    derived_specs: []\n    source_path: null\n    created_at: "2026-01-15T10:00:00Z"\n    approved_at: "2026-01-16T12:00:00Z"\n    completed_at: null\n`,
     );
-    ({ app } = createTestApp());
+    ({ app, pubsub } = createTestApp());
   });
 
   afterEach(async () => {
+    vi.restoreAllMocks();
     await cleanupTempDir(tempDir);
   });
 
@@ -256,8 +259,10 @@ describe("Plan Resource API", () => {
   }
 
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-metadata-exposes-safe-preview-fields
+  // AC: @shared-mutation-pipeline ac-2
   it("POST /api/plans/:ref/resources creates a new resource and returns 201", async () => {
     writePlanFolderWithResources({});
+    const broadcastSpy = captureBroadcasts(pubsub);
     const blob = new Blob([new Uint8Array([1, 2, 3, 4])], { type: "image/png" });
     const response = await postUpload({
       file: blob,
@@ -273,6 +278,16 @@ describe("Plan Resource API", () => {
     expect(body.resource.bytes).toBe(4);
     expect(body.resource.content_type).toBe("image/png");
     expect(body.resource).not.toHaveProperty("bytes_url");
+    expect(broadcastSpy).toHaveBeenCalledWith(
+      "plans:updates",
+      "plan_resource_changed",
+      {
+        plan_ulid: PLAN_ULID,
+        resource_id: "shot",
+        action: "added",
+      },
+      tempDir,
+    );
 
     // Verify the file landed on disk via the documented bytes endpoint —
     // clients construct this URL from `PlanDetail.resources_base_url`, not
@@ -443,16 +458,28 @@ describe("Plan Resource API", () => {
   // ── DELETE ────────────────────────────────────────────────────────────────
 
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-delete-follows-owner-delete
+  // AC: @shared-mutation-pipeline ac-2
   it("DELETE /api/plans/:ref/resources/:resourceId removes the resource and file", async () => {
     writePlanFolderWithResources({
       resources: [
         { id: "shot", path: "shot.png", bytes: Buffer.from([1]), contentType: "image/png" },
       ],
     });
+    const broadcastSpy = captureBroadcasts(pubsub);
     const response = await request(`/api/plans/${PLAN_REF}/resources/shot`, { method: "DELETE" });
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.removed).toEqual({ id: "shot", path: "shot.png" });
+    expect(broadcastSpy).toHaveBeenCalledWith(
+      "plans:updates",
+      "plan_resource_changed",
+      {
+        plan_ulid: PLAN_ULID,
+        resource_id: "shot",
+        action: "removed",
+      },
+      tempDir,
+    );
 
     // Subsequent get returns 404
     const after = await request(`/api/plans/${PLAN_REF}/resources/shot`);

@@ -52,7 +52,6 @@ import { getUnresolvedBlockers } from "../../parser/review-threads.js";
 import { createCheck } from "../../review/checks.js";
 import { evaluateGates } from "../../review/checks.js";
 import { extractSubjectVersion } from "../../review/subject-bindings.js";
-import { commitIfShadow } from "../../parser/shadow.js";
 import type { PubSubManager } from "../websocket/pubsub.js";
 import type {
   ReviewVerdictDecision,
@@ -93,6 +92,7 @@ import { loadResourceManifest as loadReviewResourceManifest } from "../../parser
 import { getReviewDir as getReviewDirForResources } from "../../parser/review-storage-manager.js";
 import type { RouteEntityCache } from "./entity-cache-types.js";
 import type { KspecContext } from "../../parser/index.js";
+import { runRouteMutation } from "./mutation-pipeline.js";
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
@@ -812,33 +812,33 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
           const author = authorResult.actor;
 
-          const { review: updatedReview, thread } = await addThreadAtomic(ctx, review, {
-            author,
-            body: body.body,
-            kind: (body.kind as "blocker" | "question" | "nit") || undefined,
-            anchor,
+          const { thread } = await runRouteMutation({
+            ctx,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: () =>
+              addThreadAtomic(ctx, review, {
+                author,
+                body: body.body,
+                kind: (body.kind as "blocker" | "question" | "nit") || undefined,
+                anchor,
+              }),
+            commit: { operation: `review: add thread to ${params.id}` },
+            writeThrough: [{ domain: "reviews" }],
+            events: (mutation) => [
+              {
+                topic: "reviews:updates",
+                event: "thread_created",
+                data: {
+                  review_ulid: mutation.review._ulid,
+                  thread_ulid: mutation.thread._ulid,
+                  kind: mutation.thread.kind,
+                  author,
+                },
+              },
+            ],
           });
-
-          await commitIfShadow(ctx.shadow, `review: add thread to ${params.id}`);
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          const threadCache = getEntityCache?.(projectContext.path);
-          if (threadCache) {
-            await threadCache.writeThrough("reviews");
-          }
-
-          // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
-          pubsub.broadcast(
-            "reviews:updates",
-            "thread_created",
-            {
-              review_ulid: updatedReview._ulid,
-              thread_ulid: thread._ulid,
-              kind: thread.kind,
-              author,
-            },
-            projectContext.path,
-          );
 
           return thread;
         },
@@ -929,38 +929,37 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           const replyAuthor = replyAuthorResult.actor;
 
           try {
-            const { review: updatedReview, entry } = await addReplyAtomic(ctx, review, {
-              threadUlid: params.threadId,
-              author: replyAuthor,
-              body: body.body,
+            const replyMutation = await runRouteMutation({
+              ctx,
+              projectPath: projectContext.path,
+              getEntityCache,
+              pubsub,
+              apply: () =>
+                addReplyAtomic(ctx, review, {
+                  threadUlid: params.threadId,
+                  author: replyAuthor,
+                  body: body.body,
+                }),
+              commit: { operation: `review: reply to thread ${params.threadId} on ${params.id}` },
+              writeThrough: [{ domain: "reviews" }],
+              events: (mutation) => [
+                {
+                  topic: "reviews:updates",
+                  event: "thread_replied",
+                  data: {
+                    review_ulid: mutation.review._ulid,
+                    thread_ulid: params.threadId,
+                    entry_ulid: mutation.entry._ulid,
+                    author: replyAuthor,
+                  },
+                },
+              ],
             });
 
-            await commitIfShadow(
-              ctx.shadow,
-              `review: reply to thread ${params.threadId} on ${params.id}`,
-            );
-
-            // AC: @daemon-entity-cache ac-write-through — update cache before response
-            const replyCache = getEntityCache?.(projectContext.path);
-            if (replyCache) {
-              await replyCache.writeThrough("reviews");
-            }
-
-            // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
-            pubsub.broadcast(
-              "reviews:updates",
-              "thread_replied",
-              {
-                review_ulid: updatedReview._ulid,
-                thread_ulid: params.threadId,
-                entry_ulid: entry._ulid,
-                author: replyAuthor,
-              },
-              projectContext.path,
-            );
-
             // Return the updated thread
-            const updatedThread = updatedReview.threads.find((t) => t._ulid === params.threadId);
+            const updatedThread = replyMutation.review.threads.find(
+              (reviewThread) => reviewThread._ulid === params.threadId,
+            );
             return updatedThread;
           } catch (err) {
             return errorResponse(400, {
@@ -1005,7 +1004,9 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           // Check thread exists
-          const thread = review.threads.find((t) => t._ulid === params.threadId);
+          const thread = review.threads.find(
+            (reviewThread) => reviewThread._ulid === params.threadId,
+          );
           if (!thread) {
             return errorResponse(404, {
               error: "not_found",
@@ -1038,35 +1039,34 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           const resolveActor = resolveActorResult.actor;
 
           try {
-            const updatedReview = await resolveThreadAtomic(ctx, review, {
-              threadUlid: params.threadId,
-              actor: resolveActor,
+            const resolvedReview = await runRouteMutation({
+              ctx,
+              projectPath: projectContext.path,
+              getEntityCache,
+              pubsub,
+              apply: () =>
+                resolveThreadAtomic(ctx, review, {
+                  threadUlid: params.threadId,
+                  actor: resolveActor,
+                }),
+              commit: { operation: `review: resolve thread ${params.threadId} on ${params.id}` },
+              writeThrough: [{ domain: "reviews" }],
+              events: (updatedReview) => [
+                {
+                  topic: "reviews:updates",
+                  event: "thread_resolved",
+                  data: {
+                    review_ulid: updatedReview._ulid,
+                    thread_ulid: params.threadId,
+                    actor: resolveActor,
+                  },
+                },
+              ],
             });
 
-            await commitIfShadow(
-              ctx.shadow,
-              `review: resolve thread ${params.threadId} on ${params.id}`,
+            const updatedThread = resolvedReview.threads.find(
+              (reviewThread) => reviewThread._ulid === params.threadId,
             );
-
-            // AC: @daemon-entity-cache ac-write-through — update cache before response
-            const resolveCache = getEntityCache?.(projectContext.path);
-            if (resolveCache) {
-              await resolveCache.writeThrough("reviews");
-            }
-
-            // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
-            pubsub.broadcast(
-              "reviews:updates",
-              "thread_resolved",
-              {
-                review_ulid: updatedReview._ulid,
-                thread_ulid: params.threadId,
-                actor: resolveActor,
-              },
-              projectContext.path,
-            );
-
-            const updatedThread = updatedReview.threads.find((t) => t._ulid === params.threadId);
             return updatedThread;
           } catch (err) {
             return errorResponse(400, {
@@ -1112,7 +1112,9 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           // Check thread exists
-          const thread = review.threads.find((t) => t._ulid === params.threadId);
+          const thread = review.threads.find(
+            (reviewThread) => reviewThread._ulid === params.threadId,
+          );
           if (!thread) {
             return errorResponse(404, {
               error: "not_found",
@@ -1145,35 +1147,34 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           const reopenActor = reopenActorResult.actor;
 
           try {
-            const updatedReview = await reopenThreadAtomic(ctx, review, {
-              threadUlid: params.threadId,
-              actor: reopenActor,
+            const reopenedReview = await runRouteMutation({
+              ctx,
+              projectPath: projectContext.path,
+              getEntityCache,
+              pubsub,
+              apply: () =>
+                reopenThreadAtomic(ctx, review, {
+                  threadUlid: params.threadId,
+                  actor: reopenActor,
+                }),
+              commit: { operation: `review: reopen thread ${params.threadId} on ${params.id}` },
+              writeThrough: [{ domain: "reviews" }],
+              events: (updatedReview) => [
+                {
+                  topic: "reviews:updates",
+                  event: "thread_reopened",
+                  data: {
+                    review_ulid: updatedReview._ulid,
+                    thread_ulid: params.threadId,
+                    actor: reopenActor,
+                  },
+                },
+              ],
             });
 
-            await commitIfShadow(
-              ctx.shadow,
-              `review: reopen thread ${params.threadId} on ${params.id}`,
+            const updatedThread = reopenedReview.threads.find(
+              (reviewThread) => reviewThread._ulid === params.threadId,
             );
-
-            // AC: @daemon-entity-cache ac-write-through — update cache before response
-            const reopenCache = getEntityCache?.(projectContext.path);
-            if (reopenCache) {
-              await reopenCache.writeThrough("reviews");
-            }
-
-            // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
-            pubsub.broadcast(
-              "reviews:updates",
-              "thread_reopened",
-              {
-                review_ulid: updatedReview._ulid,
-                thread_ulid: params.threadId,
-                actor: reopenActor,
-              },
-              projectContext.path,
-            );
-
-            const updatedThread = updatedReview.threads.find((t) => t._ulid === params.threadId);
             return updatedThread;
           } catch (err) {
             return errorResponse(400, {
@@ -1297,97 +1298,80 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           // AC: @review-record-per-cycle-lifecycle ac-1 — auto-close on approve/request_changes
           const shouldAutoClose = decision === "approve" || decision === "request_changes";
 
-          const updated = await mutateReviewAtomically(ctx, review, (latest) => {
-            const withVerdict = submitVerdict(latest, {
-              reviewer,
-              decision,
-              role: body.role || undefined,
-            });
-
-            // Auto-close if approve or request_changes
-            if (shouldAutoClose && withVerdict.lifecycle_state !== "closed") {
-              return transitionLifecycle(withVerdict, "closed", reviewer);
-            }
-
-            return withVerdict;
-          });
-
-          await commitIfShadow(
-            ctx.shadow,
-            "review-verdict",
-            review.slugs[0] || review._ulid.slice(0, 8),
-            `${decision}${shouldAutoClose ? " (auto-closed)" : ""}`,
-          );
-
-          let transitionedTaskUlids: string[] = [];
-
-          // AC: @review-task-lifecycle-integration ac-4
-          // Auto-transition tasks to needs_work on changes_requested verdict
-          // AC: @api-contract ac-task-storage-incompatibility-* — surface storage
-          // incompatibility as a structured 409 instead of a 500. The verdict has
-          // already been committed; the response signals the post-verdict task
-          // transition could not run because of the project's storage state.
-          if (decision === "request_changes") {
-            let allTasks;
-            try {
-              allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-            } catch (err) {
-              const verdictCache = getEntityCache?.(projectContext.path);
-              const conflict = taskStorageIncompatibilityResponse(err, { cache: verdictCache });
-              if (conflict) {
-                if (verdictCache) {
-                  await verdictCache.writeThrough("reviews");
-                }
-                return errorResponse(conflict.status, conflict.body);
-              }
-              throw err;
-            }
-            const transitioned = await handleVerdictTaskTransition(
+          let mutationResult: { updated: ReviewRecord; transitionedTaskUlids: string[] };
+          try {
+            mutationResult = await runRouteMutation({
               ctx,
-              updated,
-              decision,
-              allTasks,
-              reviewer,
-            );
-            if (transitioned.some((tr) => tr.transitioned)) {
-              await commitIfShadow(
-                ctx.shadow,
-                "review-verdict-task-transition",
-                review.slugs[0] || review._ulid.slice(0, 8),
-                "tasks transitioned to needs_work",
-              );
-            }
-            transitionedTaskUlids = transitioned
-              .filter((taskTransition) => taskTransition.transitioned)
-              .map((taskTransition) => taskTransition.ulid);
+              projectPath: projectContext.path,
+              getEntityCache,
+              pubsub,
+              apply: async () => {
+                const updated = await mutateReviewAtomically(ctx, review, (latest) => {
+                  const withVerdict = submitVerdict(latest, {
+                    reviewer,
+                    decision,
+                    role: body.role || undefined,
+                  });
+
+                  // Auto-close if approve or request_changes
+                  if (shouldAutoClose && withVerdict.lifecycle_state !== "closed") {
+                    return transitionLifecycle(withVerdict, "closed", reviewer);
+                  }
+
+                  return withVerdict;
+                });
+
+                let transitionedTaskUlids: string[] = [];
+                if (decision === "request_changes") {
+                  const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+                  const transitioned = await handleVerdictTaskTransition(
+                    ctx,
+                    updated,
+                    decision,
+                    allTasks,
+                    reviewer,
+                  );
+                  transitionedTaskUlids = transitioned
+                    .filter((taskTransition) => taskTransition.transitioned)
+                    .map((taskTransition) => taskTransition.ulid);
+                }
+
+                return { updated, transitionedTaskUlids };
+              },
+              commit: {
+                operation: "review-verdict",
+                ref: review.slugs[0] || review._ulid.slice(0, 8),
+                detail: `${decision}${shouldAutoClose ? " (auto-closed)" : ""}`,
+              },
+              writeThrough: ({ transitionedTaskUlids }) => [
+                { domain: "reviews" },
+                ...transitionedTaskUlids.map((taskUlid) => ({
+                  domain: "tasks",
+                  hint: { ulid: taskUlid },
+                })),
+              ],
+              events: ({ updated }) => [
+                {
+                  topic: "reviews:updates",
+                  event: "verdict_submitted",
+                  data: {
+                    review_ulid: updated._ulid,
+                    decision,
+                    reviewer,
+                    lifecycle_state: updated.lifecycle_state,
+                    disposition: computeDisposition(updated),
+                  },
+                },
+              ],
+            });
+          } catch (err) {
+            const verdictCache = getEntityCache?.(projectContext.path);
+            const conflict = taskStorageIncompatibilityResponse(err, { cache: verdictCache });
+            if (conflict) return errorResponse(conflict.status, conflict.body);
+            throw err;
           }
 
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          // Verdict submission can transition linked tasks (e.g. request_changes → needs_work),
-          // so write-through both reviews and tasks domains.
-          const verdictCache = getEntityCache?.(projectContext.path);
-          if (verdictCache) {
-            await verdictCache.writeThrough("reviews");
-            if (transitionedTaskUlids.length > 0) {
-              await Promise.all(
-                transitionedTaskUlids.map((ulid) => verdictCache.writeThrough("tasks", { ulid })),
-              );
-            }
-          }
-
-          // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
-          pubsub.broadcast(
-            "reviews:updates",
-            "verdict_submitted",
-            {
-              review_ulid: updated._ulid,
-              decision,
-              reviewer,
-              lifecycle_state: updated.lifecycle_state,
-              disposition: computeDisposition(updated),
-            },
-            projectContext.path,
-          );
+          const { updated } = mutationResult;
 
           // Return verdict with recomputed disposition
           return {
@@ -1530,48 +1514,49 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             },
           };
 
-          const updated = await mutateReviewAtomically(ctx, review, (latest) => ({
-            ...latest,
-            checks: [...latest.checks, check],
-            events: [...latest.events, checkEvent],
-            updated_at: now,
-          }));
-
-          await commitIfShadow(
-            ctx.shadow,
-            "review-check",
-            review.slugs[0] || review._ulid.slice(0, 8),
-            `${body.name}: ${body.status}`,
-          );
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          const checkCache = getEntityCache?.(projectContext.path);
-          if (checkCache) {
-            await checkCache.writeThrough("reviews");
-          }
-
-          // Compute gate evaluation for the response
-          const currentVersion = extractSubjectVersion(updated.subject);
-          const gateResult = evaluateGates(updated.checks, currentVersion);
-
-          // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
-          pubsub.broadcast(
-            "reviews:updates",
-            "check_added",
-            {
-              review_ulid: updated._ulid,
-              check_name: body.name,
-              check_status: body.status,
-              gate_state: gateResult.state,
+          const checkMutation = await runRouteMutation({
+            ctx,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: async () => {
+              const updatedReview = await mutateReviewAtomically(ctx, review, (latest) => ({
+                ...latest,
+                checks: [...latest.checks, check],
+                events: [...latest.events, checkEvent],
+                updated_at: now,
+              }));
+              const currentVersion = extractSubjectVersion(updatedReview.subject);
+              return {
+                updated: updatedReview,
+                gateResult: evaluateGates(updatedReview.checks, currentVersion),
+              };
             },
-            projectContext.path,
-          );
+            commit: {
+              operation: "review-check",
+              ref: review.slugs[0] || review._ulid.slice(0, 8),
+              detail: `${body.name}: ${body.status}`,
+            },
+            writeThrough: [{ domain: "reviews" }],
+            events: (mutation) => [
+              {
+                topic: "reviews:updates",
+                event: "check_added",
+                data: {
+                  review_ulid: mutation.updated._ulid,
+                  check_name: body.name,
+                  check_status: body.status,
+                  gate_state: mutation.gateResult.state,
+                },
+              },
+            ],
+          });
 
           return {
-            review_ulid: updated._ulid,
+            review_ulid: checkMutation.updated._ulid,
             check,
-            gate_state: gateResult.state,
-            gate_summary: gateResult.summary,
+            gate_state: checkMutation.gateResult.state,
+            gate_summary: checkMutation.gateResult.summary,
           };
         },
         {
@@ -1675,35 +1660,34 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }
 
           try {
-            const updated = await mutateReviewAtomically(ctx, review, (latest) => {
-              return transitionLifecycle(latest, lifecycleTarget, actor);
-            });
-
-            await commitIfShadow(
-              ctx.shadow,
-              "review-lifecycle",
-              review.slugs[0] || review._ulid.slice(0, 8),
-              `${review.lifecycle_state} → ${lifecycleTarget}`,
-            );
-
-            // AC: @daemon-entity-cache ac-write-through — update cache before response
-            const lifecycleCache = getEntityCache?.(projectContext.path);
-            if (lifecycleCache) {
-              await lifecycleCache.writeThrough("reviews");
-            }
-
-            // AC: @review-records-daemon-api ac-9 - WebSocket broadcast
-            pubsub.broadcast(
-              "reviews:updates",
-              "lifecycle_changed",
-              {
-                review_ulid: updated._ulid,
-                from: review.lifecycle_state,
-                to: lifecycleTarget,
-                actor,
+            const updated = await runRouteMutation({
+              ctx,
+              projectPath: projectContext.path,
+              getEntityCache,
+              pubsub,
+              apply: () =>
+                mutateReviewAtomically(ctx, review, (latest) => {
+                  return transitionLifecycle(latest, lifecycleTarget, actor);
+                }),
+              commit: {
+                operation: "review-lifecycle",
+                ref: review.slugs[0] || review._ulid.slice(0, 8),
+                detail: `${review.lifecycle_state} → ${lifecycleTarget}`,
               },
-              projectContext.path,
-            );
+              writeThrough: [{ domain: "reviews" }],
+              events: [
+                {
+                  topic: "reviews:updates",
+                  event: "lifecycle_changed",
+                  data: {
+                    review_ulid: review._ulid,
+                    from: review.lifecycle_state,
+                    to: lifecycleTarget,
+                    actor,
+                  },
+                },
+              ],
+            });
 
             return {
               review_ulid: updated._ulid,

@@ -36,11 +36,11 @@ import {
   resolveReviewResourceFile,
   type ReviewResourceError,
 } from "../../parser/index.js";
-import { commitIfShadow } from "../../parser/shadow.js";
 import type { ResourceMetadata } from "../../schema/resources.js";
 import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
+import { runRouteMutation } from "./mutation-pipeline.js";
 
 interface ReviewResourcesRouteOptions {
   pubsub?: PubSubManager;
@@ -95,6 +95,19 @@ function toApiErrorBody(error: ReviewResourceError, fallbackCode?: string): ApiE
     path: error.path ?? null,
   };
 }
+
+class ReviewResourceRouteError extends Error {
+  constructor(readonly resourceError: ReviewResourceError) {
+    super(resourceError.message);
+  }
+}
+
+type ReviewResourceSuccess<T> =
+  Awaited<T> extends infer Result
+    ? Result extends { ok: true; value: infer Value }
+      ? Value
+      : never
+    : never;
 
 /**
  * Parse a `replace` multipart text field per the task contract:
@@ -318,45 +331,58 @@ export function createReviewResourcesRoutes(options: ReviewResourcesRouteOptions
             await fs.writeFile(tempFile, bytes);
 
             const ctx = await initContext(projectContext.path);
-            const result = await addReviewResource(ctx, params.id, {
-              id,
-              relativePath,
-              sourceFile: tempFile,
-              contentType,
-              label,
-              description,
-              replace: replaceParsed.value,
-            });
-
-            if (!result.ok) {
-              return errorResponse(statusForCode(result.error.code), toApiErrorBody(result.error));
+            let addedResource: ReviewResourceSuccess<ReturnType<typeof addReviewResource>>;
+            try {
+              addedResource = await runRouteMutation({
+                ctx,
+                projectPath: projectContext.path,
+                getEntityCache,
+                pubsub,
+                apply: async () => {
+                  const addResult = await addReviewResource(ctx, params.id, {
+                    id,
+                    relativePath,
+                    sourceFile: tempFile,
+                    contentType,
+                    label,
+                    description,
+                    replace: replaceParsed.value,
+                  });
+                  if (!addResult.ok) {
+                    throw new ReviewResourceRouteError(addResult.error);
+                  }
+                  return addResult.value;
+                },
+                commit: (mutation) => ({
+                  operation: "review-resource-add",
+                  ref: mutation.review.slugs[0] || mutation.review._ulid.slice(0, 8),
+                  detail: `${id} → ${relativePath}`,
+                }),
+                writeThrough: [{ domain: "reviews" }],
+                events: (mutation) => [
+                  {
+                    topic: "reviews:updates",
+                    event: "resource_changed",
+                    data: {
+                      review_ulid: mutation.review._ulid,
+                      resource_id: id,
+                      action: mutation.replaced ? "replaced" : "added",
+                    },
+                  },
+                ],
+              });
+            } catch (err) {
+              if (err instanceof ReviewResourceRouteError) {
+                return errorResponse(
+                  statusForCode(err.resourceError.code),
+                  toApiErrorBody(err.resourceError),
+                );
+              }
+              throw err;
             }
 
-            await commitIfShadow(
-              ctx.shadow,
-              "review-resource-add",
-              result.value.review.slugs[0] || result.value.review._ulid.slice(0, 8),
-              `${id} → ${relativePath}`,
-            );
-
-            const cache = getEntityCache?.(projectContext.path);
-            if (cache) {
-              await cache.writeThrough("reviews");
-            }
-
-            pubsub?.broadcast(
-              "reviews:updates",
-              "resource_changed",
-              {
-                review_ulid: result.value.review._ulid,
-                resource_id: id,
-                action: result.value.replaced ? "replaced" : "added",
-              },
-              projectContext.path,
-            );
-
-            set.status = result.value.replaced ? 200 : 201;
-            return { resource: result.value.resource, replaced: result.value.replaced };
+            set.status = addedResource.replaced ? 200 : 201;
+            return { resource: addedResource.resource, replaced: addedResource.replaced };
           } finally {
             await fs.rm(tempDir, { recursive: true, force: true }).catch(() => {});
           }
@@ -370,35 +396,49 @@ export function createReviewResourcesRoutes(options: ReviewResourcesRouteOptions
         "/:id/resources/:resourceId",
         async ({ params, error: errorResponse, projectContext }) => {
           const ctx = await initContext(projectContext.path);
-          const result = await removeReviewResource(ctx, params.id, params.resourceId);
-          if (!result.ok) {
-            return errorResponse(statusForCode(result.error.code), toApiErrorBody(result.error));
+          let removedResource: ReviewResourceSuccess<ReturnType<typeof removeReviewResource>>;
+          try {
+            removedResource = await runRouteMutation({
+              ctx,
+              projectPath: projectContext.path,
+              getEntityCache,
+              pubsub,
+              apply: async () => {
+                const removeResult = await removeReviewResource(ctx, params.id, params.resourceId);
+                if (!removeResult.ok) {
+                  throw new ReviewResourceRouteError(removeResult.error);
+                }
+                return removeResult.value;
+              },
+              commit: (mutation) => ({
+                operation: "review-resource-remove",
+                ref: mutation.review.slugs[0] || mutation.review._ulid.slice(0, 8),
+                detail: `${mutation.removed.id} (${mutation.removed.path})`,
+              }),
+              writeThrough: [{ domain: "reviews" }],
+              events: (mutation) => [
+                {
+                  topic: "reviews:updates",
+                  event: "resource_changed",
+                  data: {
+                    review_ulid: mutation.review._ulid,
+                    resource_id: mutation.removed.id,
+                    action: "removed",
+                  },
+                },
+              ],
+            });
+          } catch (err) {
+            if (err instanceof ReviewResourceRouteError) {
+              return errorResponse(
+                statusForCode(err.resourceError.code),
+                toApiErrorBody(err.resourceError),
+              );
+            }
+            throw err;
           }
 
-          await commitIfShadow(
-            ctx.shadow,
-            "review-resource-remove",
-            result.value.review.slugs[0] || result.value.review._ulid.slice(0, 8),
-            `${result.value.removed.id} (${result.value.removed.path})`,
-          );
-
-          const cache = getEntityCache?.(projectContext.path);
-          if (cache) {
-            await cache.writeThrough("reviews");
-          }
-
-          pubsub?.broadcast(
-            "reviews:updates",
-            "resource_changed",
-            {
-              review_ulid: result.value.review._ulid,
-              resource_id: result.value.removed.id,
-              action: "removed",
-            },
-            projectContext.path,
-          );
-
-          return { removed: result.value.removed };
+          return { removed: removedResource.removed };
         },
         {
           params: t.Object({

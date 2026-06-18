@@ -253,6 +253,13 @@ export interface ReviewLifecycleChangedEventData {
   actor: string;
 }
 
+/** Data payload for plan_resource_changed broadcast events on plans:updates topic. */
+export interface PlanResourceChangedEventData {
+  plan_ulid: string;
+  resource_id: string;
+  action: "added" | "replaced" | "removed";
+}
+
 /** Union of all review event payloads for the reviews:updates topic. */
 export type ReviewEventData =
   | ReviewThreadCreatedEventData

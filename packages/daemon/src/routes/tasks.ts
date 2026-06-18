@@ -37,7 +37,6 @@ import {
   type LoadedTask,
   type TaskSummary,
 } from "../../parser/index.js";
-import { commitIfShadow } from "../../parser/shadow.js";
 import { TaskStatusSchema, TaskTypeSchema } from "../../schema/common.js";
 import { AutomationStatusSchema } from "../../schema/task.js";
 import type { PubSubManager } from "../websocket/pubsub.js";
@@ -54,6 +53,7 @@ import type { EntityCacheAccessor, WriteThroughHint } from "./entity-cache-types
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
 import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
+import { runRouteMutation } from "./mutation-pipeline.js";
 
 interface TasksRouteOptions {
   pubsub: PubSubManager;
@@ -151,10 +151,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
                 summaries = cachedTasks;
                 if (query.status) {
                   const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
-                  summaries = summaries.filter((t) => statusFilters.includes(t.status));
+                  summaries = summaries.filter((taskSummary) =>
+                    statusFilters.includes(taskSummary.status),
+                  );
                 }
                 if (query.automation) {
-                  summaries = summaries.filter((t) => t.automation === query.automation);
+                  summaries = summaries.filter(
+                    (taskSummary) => taskSummary.automation === query.automation,
+                  );
                 }
               } else {
                 const ctx = await getCtx();
@@ -348,8 +352,10 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             if (taskIndex) {
               const ref = params.ref.startsWith("@") ? params.ref.slice(1) : params.ref;
               const matched = taskIndex.find(
-                (t) =>
-                  t._ulid === ref || t._ulid.startsWith(ref.toUpperCase()) || t.slugs.includes(ref),
+                (taskSummary) =>
+                  taskSummary._ulid === ref ||
+                  taskSummary._ulid.startsWith(ref.toUpperCase()) ||
+                  taskSummary.slugs.includes(ref),
               );
               if (matched) {
                 task = cache.getTaskDetail(matched._ulid);
@@ -607,56 +613,57 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
           // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
           // skipCommit: task mutation + spec sync committed as one shadow commit
-          const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
+          const { updatedTask } = await runRouteMutation({
             ctx,
-            params.ref,
-            (latestTask) => ({
-              ...latestTask,
-              status: "in_progress" as const,
-              started_at: latestTask.started_at || new Date().toISOString(),
-            }),
-            {
-              operation: "api-task-start",
-              ref: params.ref,
-              detail: `start ${params.ref}`,
-              skipCommit: true,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: async () => {
+              const nextTask = await resolveTaskDataManager(ctx).mutateTask(
+                ctx,
+                params.ref,
+                (latestTask) => ({
+                  ...latestTask,
+                  status: "in_progress" as const,
+                  started_at: latestTask.started_at || new Date().toISOString(),
+                }),
+                {
+                  operation: "api-task-start",
+                  ref: params.ref,
+                  detail: `start ${params.ref}`,
+                  skipCommit: true,
+                },
+              );
+
+              const items = await loadAllItems(ctx);
+              const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+              const index = new ReferenceIndex(allTasks, items);
+              await syncSpecImplementationStatus(ctx, nextTask, allTasks, items, index);
+              return { updatedTask: nextTask, index };
             },
-          );
-
-          // Sync spec implementation status and commit both changes together
-          const items = await loadAllItems(ctx);
-          const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const index = new ReferenceIndex(allTasks, items);
-          await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
-          await commitIfShadow(ctx.shadow, `task: start ${params.ref}`);
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          // Write through both tasks and items domains because syncSpecImplementationStatus
-          // modifies spec items (implementation status) as a side effect of task transitions.
-          const startCache = getEntityCache?.(projectContext.path);
-          if (startCache) {
-            await Promise.all([
-              startCache.writeThrough("tasks", getTaskWriteThroughHint(updatedTask)),
-              startCache.writeThrough("items", getSpecWriteThroughHint(updatedTask, index)),
-            ]);
-          }
-
-          // AC: @api-contract ac-6, @trait-api-endpoint ac-5 - WebSocket broadcast
-          // AC: @ui-api-aggregation ac-4 - Include title and old/new status
-          // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
-          pubsub.broadcast(
-            "tasks:updates",
-            "task_updated",
-            {
-              ref: params.ref,
-              ulid: task._ulid,
-              action: "start",
-              title: task.title,
-              old_status: oldStatus,
-              new_status: "in_progress",
-            },
-            projectContext.path,
-          );
+            commit: { operation: `task: start ${params.ref}` },
+            writeThrough: (mutation) => [
+              { domain: "tasks", hint: getTaskWriteThroughHint(mutation.updatedTask) },
+              {
+                domain: "items",
+                hint: getSpecWriteThroughHint(mutation.updatedTask, mutation.index),
+              },
+            ],
+            events: () => [
+              {
+                topic: "tasks:updates",
+                event: "task_updated",
+                data: {
+                  ref: params.ref,
+                  ulid: task._ulid,
+                  action: "start",
+                  title: task.title,
+                  old_status: oldStatus,
+                  new_status: "in_progress",
+                },
+              },
+            ],
+          });
 
           // AC: @api-contract ac-6 - Return updated task
           return updatedTask;
@@ -706,13 +713,38 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           // AC: @task-data-manager ac-4, ac-6 - Atomic note addition via manager
           let result: { task: LoadedTask; note: { _ulid: string } };
           try {
-            result = await resolveTaskDataManager(ctx).addNote(
+            result = await runRouteMutation({
               ctx,
-              params.ref,
-              body.content,
-              author,
-              { operation: "task", ref: params.ref, detail: "add note" },
-            );
+              projectPath: projectContext.path,
+              getEntityCache,
+              pubsub,
+              apply: () =>
+                resolveTaskDataManager(ctx).addNote(ctx, params.ref, body.content, author, {
+                  operation: "task",
+                  ref: params.ref,
+                  detail: "add note",
+                  skipCommit: true,
+                }),
+              commit: { operation: "task", ref: params.ref, detail: "add note" },
+              writeThrough: ({ task }) => [
+                { domain: "tasks", hint: getTaskWriteThroughHint(task) },
+              ],
+              events: ({ task, note }) => [
+                {
+                  topic: "tasks:updates",
+                  event: "task_updated",
+                  data: {
+                    ref: params.ref,
+                    ulid: task._ulid,
+                    action: "note_added",
+                    title: task.title,
+                    old_status: null,
+                    new_status: null,
+                    note_ulid: note._ulid,
+                  },
+                },
+              ],
+            });
           } catch (err) {
             // AC: @api-contract ac-task-storage-incompatibility-not-not-found
             const conflict = taskStorageIncompatibilityResponse(err, { cache: noteEntityCache });
@@ -725,30 +757,6 @@ export function createTasksRoutes(options: TasksRouteOptions) {
             }
             throw err;
           }
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          const noteCache = getEntityCache?.(projectContext.path);
-          if (noteCache) {
-            await noteCache.writeThrough("tasks", getTaskWriteThroughHint(result.task));
-          }
-
-          // AC: @api-contract ac-7 - WebSocket broadcast
-          // AC: @ui-api-aggregation ac-4 - Include title (no status change for notes)
-          // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
-          pubsub.broadcast(
-            "tasks:updates",
-            "task_updated",
-            {
-              ref: params.ref,
-              ulid: result.task._ulid,
-              action: "note_added",
-              title: result.task.title,
-              old_status: null,
-              new_status: null,
-              note_ulid: result.note._ulid,
-            },
-            projectContext.path,
-          );
 
           return {
             success: true,
@@ -804,50 +812,53 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
           // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
           // skipCommit: task mutation + spec sync committed as one shadow commit
-          const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
+          const { updatedTask } = await runRouteMutation({
             ctx,
-            params.ref,
-            (latestTask) => ({ ...latestTask, status: "pending_review" as const }),
-            {
-              operation: "api-task-submit",
-              ref: params.ref,
-              detail: `submit ${params.ref}`,
-              skipCommit: true,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: async () => {
+              const nextTask = await resolveTaskDataManager(ctx).mutateTask(
+                ctx,
+                params.ref,
+                (latestTask) => ({ ...latestTask, status: "pending_review" as const }),
+                {
+                  operation: "api-task-submit",
+                  ref: params.ref,
+                  detail: `submit ${params.ref}`,
+                  skipCommit: true,
+                },
+              );
+
+              const items = await loadAllItems(ctx);
+              const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+              const index = new ReferenceIndex(allTasks, items);
+              await syncSpecImplementationStatus(ctx, nextTask, allTasks, items, index);
+              return { updatedTask: nextTask, index };
             },
-          );
-
-          // Sync spec implementation status and commit both changes together
-          const items = await loadAllItems(ctx);
-          const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const index = new ReferenceIndex(allTasks, items);
-          await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
-          await commitIfShadow(ctx.shadow, `task: submit ${params.ref}`);
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          // Write through both tasks and items domains because syncSpecImplementationStatus
-          // modifies spec items (implementation status) as a side effect of task transitions.
-          const submitCache = getEntityCache?.(projectContext.path);
-          if (submitCache) {
-            await Promise.all([
-              submitCache.writeThrough("tasks", getTaskWriteThroughHint(updatedTask)),
-              submitCache.writeThrough("items", getSpecWriteThroughHint(updatedTask, index)),
-            ]);
-          }
-
-          // AC: @ui-api-aggregation ac-4 - Include title and old/new status
-          pubsub.broadcast(
-            "tasks:updates",
-            "task_updated",
-            {
-              ref: params.ref,
-              ulid: task._ulid,
-              action: "submit",
-              title: task.title,
-              old_status: oldStatus,
-              new_status: "pending_review",
-            },
-            projectContext.path,
-          );
+            commit: { operation: `task: submit ${params.ref}` },
+            writeThrough: (mutation) => [
+              { domain: "tasks", hint: getTaskWriteThroughHint(mutation.updatedTask) },
+              {
+                domain: "items",
+                hint: getSpecWriteThroughHint(mutation.updatedTask, mutation.index),
+              },
+            ],
+            events: () => [
+              {
+                topic: "tasks:updates",
+                event: "task_updated",
+                data: {
+                  ref: params.ref,
+                  ulid: task._ulid,
+                  action: "submit",
+                  title: task.title,
+                  old_status: oldStatus,
+                  new_status: "pending_review",
+                },
+              },
+            ],
+          });
 
           return updatedTask;
         },
@@ -885,55 +896,58 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
           // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
           // skipCommit: task mutation + spec sync committed as one shadow commit
-          const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
+          const { updatedTask } = await runRouteMutation({
             ctx,
-            params.ref,
-            (latestTask) => ({
-              ...latestTask,
-              status: "completed" as const,
-              completed_at: new Date().toISOString(),
-              closed_reason: body.reason,
-            }),
-            {
-              operation: "api-task-complete",
-              ref: params.ref,
-              detail: `complete ${params.ref}`,
-              skipCommit: true,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: async () => {
+              const nextTask = await resolveTaskDataManager(ctx).mutateTask(
+                ctx,
+                params.ref,
+                (latestTask) => ({
+                  ...latestTask,
+                  status: "completed" as const,
+                  completed_at: new Date().toISOString(),
+                  closed_reason: body.reason,
+                }),
+                {
+                  operation: "api-task-complete",
+                  ref: params.ref,
+                  detail: `complete ${params.ref}`,
+                  skipCommit: true,
+                },
+              );
+
+              const items = await loadAllItems(ctx);
+              const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+              const index = new ReferenceIndex(allTasks, items);
+              await syncSpecImplementationStatus(ctx, nextTask, allTasks, items, index);
+              return { updatedTask: nextTask, index };
             },
-          );
-
-          // Sync spec implementation status and commit both changes together
-          const items = await loadAllItems(ctx);
-          const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const index = new ReferenceIndex(allTasks, items);
-          await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
-          await commitIfShadow(ctx.shadow, `task: complete ${params.ref}`);
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          // Write through both tasks and items domains because syncSpecImplementationStatus
-          // modifies spec items (implementation status) as a side effect of task transitions.
-          const completeCache = getEntityCache?.(projectContext.path);
-          if (completeCache) {
-            await Promise.all([
-              completeCache.writeThrough("tasks", getTaskWriteThroughHint(updatedTask)),
-              completeCache.writeThrough("items", getSpecWriteThroughHint(updatedTask, index)),
-            ]);
-          }
-
-          // AC: @ui-api-aggregation ac-4 - Include title and old/new status
-          pubsub.broadcast(
-            "tasks:updates",
-            "task_updated",
-            {
-              ref: params.ref,
-              ulid: task._ulid,
-              action: "complete",
-              title: task.title,
-              old_status: oldStatus,
-              new_status: "completed",
-            },
-            projectContext.path,
-          );
+            commit: { operation: `task: complete ${params.ref}` },
+            writeThrough: (mutation) => [
+              { domain: "tasks", hint: getTaskWriteThroughHint(mutation.updatedTask) },
+              {
+                domain: "items",
+                hint: getSpecWriteThroughHint(mutation.updatedTask, mutation.index),
+              },
+            ],
+            events: () => [
+              {
+                topic: "tasks:updates",
+                event: "task_updated",
+                data: {
+                  ref: params.ref,
+                  ulid: task._ulid,
+                  action: "complete",
+                  title: task.title,
+                  old_status: oldStatus,
+                  new_status: "completed",
+                },
+              },
+            ],
+          });
 
           return updatedTask;
         },
@@ -984,54 +998,57 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
           // AC: @task-data-manager ac-4, ac-6 - Atomic mutation via manager
           // skipCommit: task mutation + spec sync committed as one shadow commit
-          const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
+          const { updatedTask } = await runRouteMutation({
             ctx,
-            params.ref,
-            (latestTask) => ({
-              ...latestTask,
-              status: "blocked" as const,
-              notes: [...latestTask.notes, note],
-            }),
-            {
-              operation: "api-task-block",
-              ref: params.ref,
-              detail: `block ${params.ref}`,
-              skipCommit: true,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: async () => {
+              const nextTask = await resolveTaskDataManager(ctx).mutateTask(
+                ctx,
+                params.ref,
+                (latestTask) => ({
+                  ...latestTask,
+                  status: "blocked" as const,
+                  notes: [...latestTask.notes, note],
+                }),
+                {
+                  operation: "api-task-block",
+                  ref: params.ref,
+                  detail: `block ${params.ref}`,
+                  skipCommit: true,
+                },
+              );
+
+              const items = await loadAllItems(ctx);
+              const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+              const index = new ReferenceIndex(allTasks, items);
+              await syncSpecImplementationStatus(ctx, nextTask, allTasks, items, index);
+              return { updatedTask: nextTask, index };
             },
-          );
-
-          // Sync spec implementation status and commit both changes together
-          const items = await loadAllItems(ctx);
-          const allTasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
-          const index = new ReferenceIndex(allTasks, items);
-          await syncSpecImplementationStatus(ctx, updatedTask, allTasks, items, index);
-          await commitIfShadow(ctx.shadow, `task: block ${params.ref}`);
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          // Write through both tasks and items domains because syncSpecImplementationStatus
-          // modifies spec items (implementation status) as a side effect of task transitions.
-          const blockCache = getEntityCache?.(projectContext.path);
-          if (blockCache) {
-            await Promise.all([
-              blockCache.writeThrough("tasks", getTaskWriteThroughHint(updatedTask)),
-              blockCache.writeThrough("items", getSpecWriteThroughHint(updatedTask, index)),
-            ]);
-          }
-
-          // AC: @ui-api-aggregation ac-4 - Include title and old/new status
-          pubsub.broadcast(
-            "tasks:updates",
-            "task_updated",
-            {
-              ref: params.ref,
-              ulid: task._ulid,
-              action: "block",
-              title: task.title,
-              old_status: oldStatus,
-              new_status: "blocked",
-            },
-            projectContext.path,
-          );
+            commit: { operation: `task: block ${params.ref}` },
+            writeThrough: (mutation) => [
+              { domain: "tasks", hint: getTaskWriteThroughHint(mutation.updatedTask) },
+              {
+                domain: "items",
+                hint: getSpecWriteThroughHint(mutation.updatedTask, mutation.index),
+              },
+            ],
+            events: () => [
+              {
+                topic: "tasks:updates",
+                event: "task_updated",
+                data: {
+                  ref: params.ref,
+                  ulid: task._ulid,
+                  action: "block",
+                  title: task.title,
+                  old_status: oldStatus,
+                  new_status: "blocked",
+                },
+              },
+            ],
+          });
 
           return updatedTask;
         },

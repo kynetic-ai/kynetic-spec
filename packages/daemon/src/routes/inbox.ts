@@ -22,11 +22,11 @@ import {
   findInboxItemByRef,
   type InboxItemInput,
 } from "../../parser/index.js";
-import { commitIfShadow } from "../../parser/shadow.js";
 import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { resolveWriteActor, toValidationErrorBody } from "./actor-resolution.js";
 import { wrapResponse } from "./response-envelope.js";
+import { runRouteMutation } from "./mutation-pipeline.js";
 
 interface InboxRouteOptions {
   pubsub: PubSubManager;
@@ -114,31 +114,28 @@ export function createInboxRoutes(options: InboxRouteOptions) {
           // resolved through the shared utility into input.added_by above).
           const item = createInboxItem(input, addedByResult.actor);
 
-          // Save and commit
-          await saveInboxItem(ctx, item);
-          await commitIfShadow(ctx.shadow, `inbox: add item ${item._ulid}`);
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          const createCache = getEntityCache?.(projectContext.path);
-          if (createCache) {
-            await createCache.writeThrough("inbox");
-          }
-
-          // Broadcast update
-          // AC: @ui-api-aggregation ac-4 - Include full item data for in-place UI updates
-          // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
-          pubsub.broadcast(
-            "inbox:updates",
-            "inbox_item_created",
-            {
-              ulid: item._ulid,
-              text: item.text,
-              tags: item.tags,
-              added_by: item.added_by,
-              created_at: item.created_at,
-            },
-            projectContext.path,
-          );
+          await runRouteMutation({
+            ctx,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: () => saveInboxItem(ctx, item),
+            commit: { operation: `inbox: add item ${item._ulid}` },
+            writeThrough: [{ domain: "inbox" }],
+            events: [
+              {
+                topic: "inbox:updates",
+                event: "inbox_item_created",
+                data: {
+                  ulid: item._ulid,
+                  text: item.text,
+                  tags: item.tags,
+                  added_by: item.added_by,
+                  created_at: item.created_at,
+                },
+              },
+            ],
+          });
 
           // AC: @api-contract ac-13 - Return item with generated ULID
           return {
@@ -175,26 +172,25 @@ export function createInboxRoutes(options: InboxRouteOptions) {
           }
 
           // AC: @api-contract ac-14 - Delete item
-          await deleteInboxItem(ctx, item._ulid);
-          await commitIfShadow(ctx.shadow, `inbox: delete ${params.ref}`);
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          const deleteCache = getEntityCache?.(projectContext.path);
-          if (deleteCache) {
-            await deleteCache.writeThrough("inbox");
-          }
-
-          // Broadcast update
-          // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
-          pubsub.broadcast(
-            "inbox:updates",
-            "inbox_item_deleted",
-            {
-              ref: params.ref,
-              ulid: item._ulid,
-            },
-            projectContext.path,
-          );
+          await runRouteMutation({
+            ctx,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: () => deleteInboxItem(ctx, item._ulid),
+            commit: { operation: `inbox: delete ${params.ref}` },
+            writeThrough: [{ domain: "inbox" }],
+            events: [
+              {
+                topic: "inbox:updates",
+                event: "inbox_item_deleted",
+                data: {
+                  ref: params.ref,
+                  ulid: item._ulid,
+                },
+              },
+            ],
+          });
 
           // AC: @api-contract ac-14 - Return success confirmation
           return {

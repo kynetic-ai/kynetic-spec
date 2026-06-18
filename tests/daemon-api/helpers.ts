@@ -586,14 +586,14 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
     .use(createItemsRoutes())
     .use(createReviewsRoutes({ pubsub, getEntityCache }))
     .use(createReviewResourcesRoutes({ pubsub, getEntityCache }))
-    .use(createTriageRoutes({ pubsub }))
+    .use(createTriageRoutes({ pubsub, getEntityCache }))
     .use(createPlansRoutes({ getEntityCache }))
-    .use(createPlanResourcesRoutes({ getEntityCache }))
+    .use(createPlanResourcesRoutes({ getEntityCache, pubsub }))
     .use(createSessionRoutes())
     .use(createValidationRoutes())
     .use(createMetaRoutes())
     .use(createIdentityRoutes())
-    .use(createInboxRoutes({ pubsub }))
+    .use(createInboxRoutes({ pubsub, getEntityCache }))
     .use(createAggregationRoutes())
     .use(createAgentDispatchRoutes());
 
