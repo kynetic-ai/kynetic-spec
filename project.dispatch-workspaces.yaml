@@ -24975,18 +24975,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/stabilize-flaky-session-watcher-active-session-detection-test/01kvd9ka
-    canonical_branch_head: e9ae4ba5867eeb3232b0d8444b27e11ff9e4409d
+    canonical_branch_head: dea376c424b5bfb5d0ee7b95b9570fb2fd9321e4
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-18T11:59:44.609Z
+      updated_at: 2026-06-18T12:18:16.075Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T12:00:15.501Z
+      updated_at: 2026-06-18T12:18:16.075Z
     integration:
       status: pending
       detail: null
@@ -24994,7 +24994,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e9ae4ba5867eeb3232b0d8444b27e11ff9e4409d
-      updated_at: 2026-06-18T11:59:44.609Z
+      updated_at: 2026-06-18T12:18:16.075Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KVD9KANRJ0N37AABARV2EDD2
@@ -25003,9 +25003,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-18T12:00:15.501Z
-      last_reconciled_at: 2026-06-18T12:00:15.501Z
+      last_reconciled_at: 2026-06-18T12:18:16.075Z
       created_at: 2026-06-18T11:59:44.609Z
-      updated_at: 2026-06-18T12:00:15.501Z
+      updated_at: 2026-06-18T12:18:16.075Z
     workspace_id: dispatch-workspace-01KVD9KANRJ0N37AABARV2EDD2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
