@@ -2,7 +2,99 @@ _ulid: 01KVD633T3C3JN4MWBRGKEJBVD
 slugs: []
 title: Review task-missing-event-types cycle 5
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: oxfmt --check passed on 1089 files.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-18T11:12:18.757Z
+    completed_at: 2026-06-18T11:12:18.757Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint reported 0 errors with existing warning baseline.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-18T11:12:22.930Z
+    completed_at: 2026-06-18T11:12:22.930Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Focused oxlint on 19 changed TS/test files reported 0 errors. Warnings were existing vi.fn
+      type-parameter baseline or outside added diff; verified with git diff searches.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-18T11:12:26.104Z
+    completed_at: 2026-06-18T11:12:26.104Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: build:shared and tsc --noEmit completed with exit 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-18T11:12:29.156Z
+    completed_at: 2026-06-18T11:12:29.156Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2883 suites passed; 10951 tests passed; 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KVD6120CNQPH9PFVXJ6SJZTE/a924c12ac103c198.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-18T11:12:32.427Z
+    completed_at: 2026-06-18T11:12:32.427Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with existing reference warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T11:12:35.287Z
+    completed_at: 2026-06-18T11:12:35.287Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with existing alignment warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T11:12:38.665Z
+    completed_at: 2026-06-18T11:12:38.665Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with existing completeness warnings.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-18T11:12:41.693Z
+    completed_at: 2026-06-18T11:12:41.693Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check against ce763c87e81cd2eff58d1021da5753e442322259 produced no output.
+    name: diff whitespace
+    required: true
+    runner: git diff --check
+    created_at: 2026-06-18T11:12:44.867Z
+    completed_at: 2026-06-18T11:12:44.867Z
 events:
   - _ulid: 01KVD633T30Y6WRF3RPD5GX7TR
     actor: Jacob Chapel
@@ -30,6 +122,76 @@ events:
     payload:
       thread_ulid: 01KVD6ATWYYJYWS2W77RTEKENE
     timestamp: 2026-06-18T11:02:53.435Z
+  - _ulid: 01KVD6X3MFQXZB0F6X9KRQ9TGS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-18T11:12:19.087Z
+  - _ulid: 01KVD6X7KNHBBA5BQKYVWBQPGH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-18T11:12:23.157Z
+  - _ulid: 01KVD6XAQTEEFQ63YYPPEMN1KZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-18T11:12:26.362Z
+  - _ulid: 01KVD6XDPSTBRQ24X4GGTB1ZQ6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-18T11:12:29.401Z
+  - _ulid: 01KVD6XGWFGAJ09CTQVDV3H7FX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-18T11:12:32.655Z
+  - _ulid: 01KVD6XKPWBR6PE7TR7BHDJSS8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-18T11:12:35.548Z
+  - _ulid: 01KVD6XPZ67KNB3AAJGMM4K3ZA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-18T11:12:38.886Z
+  - _ulid: 01KVD6XSZ54YXYP1KB2R7BTFFA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-18T11:12:41.957Z
+  - _ulid: 01KVD6XX2KTW6X4M25D8ZP12XG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff whitespace
+    timestamp: 2026-06-18T11:12:45.139Z
+  - _ulid: 01KVD6Y03RJE2BPGDP6AK2RHTZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVD6XZSQC1YM5YRQZ81J32CZ
+    timestamp: 2026-06-18T11:12:48.248Z
 examined_commit: c072e12fc35be928c8814703abdfec203aa58f48
 external_links: []
 lifecycle_state: open
@@ -74,7 +236,37 @@ threads:
           review verdict daemon route only broadcasts reviews:updates verdict_submitted."
         created_at: 2026-06-18T11:02:53.136Z
     kind: blocker
+  - _ulid: 01KVD6XZSQC1YM5YRQZ81J32CZ
+    entries:
+      - _ulid: 01KVD6XZSRNB61FSFECWS9JBJT
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; packages/shared/src/websocket.ts;
+          packages/web-ui/src/lib/query/ws-invalidation.ts;
+          packages/daemon/src/routes/agent-dispatch.ts; packages/daemon/src/routes/tasks.ts;
+          packages/daemon/src/routes/reviews.ts; packages/daemon/src/routes/plan-resources.ts;
+          src/parser/task-data-manager.ts; src/parser/reviews.ts;
+          src/parser/review-storage-manager.ts; src/parser/yaml.ts;
+          src/parser/review-task-integration.ts; src/cli/commands/plan.ts;
+          src/cli/commands/inbox.ts; src/triage/actions.ts; src/agent-runtime/dispatch.ts;
+          src/agent-runtime/invocation.ts; src/agent-runtime/task-bookkeeping.ts;
+          tests/daemon-command-api.test.ts; tests/task-data-manager.test.ts;
+          tests/daemon-api/plan-resources.test.ts; tests/agent-invocation-lifecycle.test.ts.
+          Commands run: git diff/stat/name-only/log/status; kspec task get; kspec item get for
+          @mutation-event-coverage and @mutation-event-naming; kspec review
+          for-task/get/add/open/comment/reply; rg searches for AC annotations and TaskDataManager
+          call sites; format, lint, focused lint, typecheck, full npm test, kspec
+          refs/alignment/completeness validation, git diff --check. Claims verified: cycle-4
+          creation-event blocker is fixed for metadata-free createTask and derive/task-add command
+          coverage; review_created includes full subject identity; spec-item cascade deletion emits
+          descendant removed events; plan-resource route events emit add/replace/remove on
+          plans:updates; event vocabulary reservations exist. Categories searched: correctness, spec
+          alignment, edge cases around outer-committed mutations, error handling around dispatch
+          bookkeeping failures, test quality/AC annotations, integration with UI invalidation and
+          daemon command/review/plan routes. Finding: task mutations performed under outer commits
+          are still dropped from task event emission."
+        created_at: 2026-06-18T11:12:47.928Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-18T10:58:07.299Z
-updated_at: 2026-06-18T11:02:53.136Z
+updated_at: 2026-06-18T11:12:47.928Z
 notes: []
