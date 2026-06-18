@@ -82,3 +82,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T09:55:53.064Z
+  - _ulid: 01KVD3D329WQXXY90V06JB48R8
+    content: "Fix cycle 3: addressed review @01KVD1BM blocker for cascade spec-item deletion.
+      deleteSpecItem now emits spec_item_changed removed events for every spec item identity in the
+      raw subtree removed by a YAML splice, so nested descendants do not rely on file-change
+      fallback. Expanded the command-route behavioral test for @mutation-event-coverage ac-3/ac-5 to
+      create nested item descendants, delete with cascade, and assert all removed item_ulid
+      payloads. Resolved the blocker and evidence-log nit threads. Gates passed: focused
+      daemon-command test, format, repo lint, focused lint, typecheck, npm test (2883 suites/10950
+      tests passed/3 skipped), and kspec refs/alignment/completeness validation with existing
+      warnings accepted."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T10:11:08.489Z
