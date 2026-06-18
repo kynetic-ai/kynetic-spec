@@ -22730,6 +22730,15 @@ observations:
     resolved: false
     workflow_ref: "@01KVD4M5"
     created_at: 2026-06-18T10:34:41.534Z
+  - _ulid: 01KVDATKRR3FHKC11N7B310ZXV
+    type: success
+    content: Running completeness and alignment validation before submission caught a missing task
+      spec_ref and then an overly broad spec link; using the validation warnings plus kspec search
+      led to the correct in-progress test-determinism spec and AC annotation before review.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-18T12:20:51.608Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
