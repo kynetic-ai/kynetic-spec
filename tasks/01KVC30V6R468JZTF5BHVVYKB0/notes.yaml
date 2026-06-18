@@ -100,3 +100,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T10:31:37.062Z
+  - _ulid: 01KVD5SVV8VHBXEEV1BCB3JCW0
+    content: "Fix cycle 4: addressed review @01KVD3NX blocker for task creation events outside the
+      task-add path. buildTaskCreatedEvent now records task_updated created events for any persisted
+      createTask call unless commit/event handling is explicitly skipped, covering derive and
+      no-commit-metadata callers such as inbox/plan/triage promotion paths. Added behavioral
+      coverage for derive through /api/command and for metadata-free createTask through the mutation
+      event collector, both asserting canonical task identifiers. Resolved both cycle-4 review
+      threads. Gates passed: focused daemon-command/task-data-manager tests, format, repo lint,
+      focused lint (existing vi.fn warning baseline only), typecheck, npm test (2883 suites passed;
+      10951 tests passed; 3 skipped), kspec refs/alignment/completeness validation with existing
+      warnings accepted, and git diff --check."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T10:53:04.232Z
