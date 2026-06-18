@@ -26153,7 +26153,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T08:41:17.274Z
+      updated_at: 2026-06-18T08:45:35.996Z
     integration:
       status: merged
       detail: integration:merged
@@ -26170,18 +26170,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-18T08:25:35.195Z
-      last_reconciled_at: 2026-06-18T08:45:21.786Z
+      last_reconciled_at: 2026-06-18T08:45:35.996Z
       created_at: 2026-06-18T06:26:54.830Z
-      updated_at: 2026-06-18T08:45:21.786Z
+      updated_at: 2026-06-18T08:45:35.996Z
     workspace_id: dispatch-workspace-01KVC30VGXGQJ23PVYQWJB84DN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: e2835cf4793e98df99dd52a668712990e680a08a
-        last_seen_at: 2026-06-18T08:25:03.400Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-engine-mutation-path-01kvc30v-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-dispatch-engine-mutation-path/01kvc30v
