@@ -193,6 +193,12 @@ events:
     payload:
       thread_ulid: 01KVD1NDZRKVKRPJKRDD0BYAQR
     timestamp: 2026-06-18T10:10:40.014Z
+  - _ulid: 01KVD3CAG6N1S8S7VKTQQS1M3V
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVD27EER0VKP0TMMGZHYESPY
+    timestamp: 2026-06-18T10:10:43.334Z
 examined_commit: 88bcda60de2de1df10e00a8d5e7c7b4f6c4d4a16
 external_links: []
 lifecycle_state: closed
@@ -274,6 +280,11 @@ threads:
           Findings: one blocker recorded for cascade spec-item deletion removing nested descendants
           without emitting per-entity removal events.
         created_at: 2026-06-18T09:50:34.969Z
+      - _ulid: 01KVD3CA7XX2EBNFJY275RHWMR
+        author: Jacob Chapel
+        body: Acknowledged. The evidence log was used to target the remaining blocker; no separate code
+          change was needed for this nit beyond the nested-removal fix.
+        created_at: 2026-06-18T10:10:43.068Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -284,5 +295,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-18T09:50:46.322Z
 created_at: 2026-06-18T09:35:23.889Z
-updated_at: 2026-06-18T10:10:39.775Z
+updated_at: 2026-06-18T10:10:43.068Z
 notes: []
