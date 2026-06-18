@@ -42,15 +42,17 @@ import {
   writeResourceManifest,
 } from "../../parser/entity-local-resources.js";
 import { getPlanDir } from "../../parser/plan-storage-manager.js";
-import { commitIfShadow } from "../../parser/shadow.js";
 import type { ResourceMetadata } from "../../schema/resources.js";
 import type { PlanResourceMetadata } from "@kynetic-ai/shared";
 
+import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
+import { runRouteMutation } from "./mutation-pipeline.js";
 
 interface PlanResourcesRouteOptions {
   getEntityCache?: EntityCacheAccessor;
+  pubsub?: PubSubManager;
 }
 
 export type PlanResourceErrorCode =
@@ -202,7 +204,7 @@ async function resolvePlanForResources(
 }
 
 export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {}) {
-  const { getEntityCache } = options;
+  const { getEntityCache, pubsub } = options;
 
   return (
     new Elysia({ prefix: "/api/plans" })
@@ -542,14 +544,30 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
           ? manifest.resources.map((r) => (r.id === id ? metadata : r))
           : [...manifest.resources, metadata];
 
-        await writeResourceManifest(planDir, { resources: nextResources });
-
-        await commitIfShadow(
-          resolved.ctx.shadow,
-          "plan-resource-api-post",
-          resolved.plan.ref,
-          `${replaced ? "replaced" : "added"} ${metadata.id} (${metadata.path})`,
-        );
+        await runRouteMutation({
+          ctx: resolved.ctx,
+          projectPath: projectContext.path,
+          getEntityCache,
+          pubsub,
+          apply: () => writeResourceManifest(planDir, { resources: nextResources }),
+          commit: {
+            operation: "plan-resource-api-post",
+            ref: resolved.plan.ref,
+            detail: `${replaced ? "replaced" : "added"} ${metadata.id} (${metadata.path})`,
+          },
+          writeThrough: [{ domain: "plans", hint: { ulid: resolved.plan.ulid } }],
+          events: [
+            {
+              topic: "plans:updates",
+              event: "plan_resource_changed",
+              data: {
+                plan_ulid: resolved.plan.ulid,
+                resource_id: metadata.id,
+                action: replaced ? "replaced" : "added",
+              },
+            },
+          ],
+        });
 
         set.status = replaced ? 200 : 201;
         return {
@@ -594,14 +612,30 @@ export function createPlanResourcesRoutes(options: PlanResourcesRouteOptions = {
 
         await fs.rm(safeFile.value.absolutePath, { force: true });
         const nextResources = manifest.resources.filter((r) => r.id !== params.resourceId);
-        await writeResourceManifest(planDir, { resources: nextResources });
-
-        await commitIfShadow(
-          resolved.ctx.shadow,
-          "plan-resource-api-delete",
-          resolved.plan.ref,
-          `${params.resourceId} (${match.path})`,
-        );
+        await runRouteMutation({
+          ctx: resolved.ctx,
+          projectPath: projectContext.path,
+          getEntityCache,
+          pubsub,
+          apply: () => writeResourceManifest(planDir, { resources: nextResources }),
+          commit: {
+            operation: "plan-resource-api-delete",
+            ref: resolved.plan.ref,
+            detail: `${params.resourceId} (${match.path})`,
+          },
+          writeThrough: [{ domain: "plans", hint: { ulid: resolved.plan.ulid } }],
+          events: [
+            {
+              topic: "plans:updates",
+              event: "plan_resource_changed",
+              data: {
+                plan_ulid: resolved.plan.ulid,
+                resource_id: params.resourceId,
+                action: "removed",
+              },
+            },
+          ],
+        });
 
         return { removed: { id: params.resourceId, path: match.path } };
       })

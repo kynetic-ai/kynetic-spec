@@ -40,7 +40,6 @@ import {
 } from "../../parser/index.js";
 import { resolveRefEntries } from "./ref-resolution.js";
 import { resolveWriteActor, toValidationErrorBody } from "./actor-resolution.js";
-import { commitIfShadow } from "../../parser/shadow.js";
 import { normalizeRefInput, TriageActionSchema, TriageStatusSchema } from "../../schema/index.js";
 import type { TriageAction } from "../../schema/index.js";
 import { exportTriageRecords } from "../../export/triage.js";
@@ -50,6 +49,7 @@ import { enumArrayUnion, enumUnion } from "./enum-utils.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { wrapResponse } from "./response-envelope.js";
 import { taskStorageIncompatibilityResponse } from "./task-storage-error.js";
+import { runRouteMutation } from "./mutation-pipeline.js";
 
 interface TriageRouteOptions {
   pubsub: PubSubManager;
@@ -277,36 +277,32 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             created_at: existing?.created_at || new Date().toISOString(),
           };
 
-          await saveTriageRecord(ctx, record);
-
-          // Reload to get the persisted record (saveTriageRecord may upsert by inbox_ref)
-          const savedRecords = await loadTriageRecords(ctx);
-          const savedRecord = findTriageRecordByInboxRef(savedRecords, inboxItem._ulid) || record;
-
-          // AC: @trait-api-endpoint ac-5 - Shadow commit
-          await commitIfShadow(
-            ctx.shadow,
-            `triage: record ${savedRecord._ulid.slice(0, 8)} as ${savedRecord.action}`,
-          );
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          const createTriageCache = getEntityCache?.(projectContext.path);
-          if (createTriageCache) {
-            await createTriageCache.writeThrough("triage");
-          }
-
-          // AC: @triage-daemon-api ac-3 - Broadcast triage:updates via WebSocket
-          // AC: @trait-websocket-protocol ac-3 - Broadcast event
-          pubsub.broadcast(
-            "triage:updates",
-            "triage_record_created",
-            {
-              ulid: savedRecord._ulid,
-              inbox_ref: savedRecord.inbox_ref,
-              action: savedRecord.action,
+          const savedRecord = await runRouteMutation({
+            ctx,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: async () => {
+              await saveTriageRecord(ctx, record);
+              const savedRecords = await loadTriageRecords(ctx);
+              return findTriageRecordByInboxRef(savedRecords, inboxItem._ulid) || record;
             },
-            projectContext.path,
-          );
+            commit: {
+              operation: `triage: record ${record._ulid.slice(0, 8)} as ${record.action}`,
+            },
+            writeThrough: [{ domain: "triage" }],
+            events: (createdRecord) => [
+              {
+                topic: "triage:updates",
+                event: "triage_record_created",
+                data: {
+                  ulid: createdRecord._ulid,
+                  inbox_ref: createdRecord.inbox_ref,
+                  action: createdRecord.action,
+                },
+              },
+            ],
+          });
 
           // AC: @trait-api-endpoint ac-1 - Return 2xx with JSON body
           return {
@@ -481,28 +477,26 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             record.result_ref = undefined;
           }
 
-          await saveTriageRecord(ctx, record);
-
-          // AC: @trait-api-endpoint ac-5 - Shadow commit
-          await commitIfShadow(ctx.shadow, `triage: override ${record._ulid.slice(0, 8)}`);
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          const overrideCache = getEntityCache?.(projectContext.path);
-          if (overrideCache) {
-            await overrideCache.writeThrough("triage");
-          }
-
-          // AC: @triage-daemon-api ac-4 - Broadcast triage:updates
-          pubsub.broadcast(
-            "triage:updates",
-            "triage_record_updated",
-            {
-              ulid: record._ulid,
-              action: "override",
-              new_action: record.action,
-            },
-            projectContext.path,
-          );
+          await runRouteMutation({
+            ctx,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: () => saveTriageRecord(ctx, record),
+            commit: { operation: `triage: override ${record._ulid.slice(0, 8)}` },
+            writeThrough: [{ domain: "triage" }],
+            events: [
+              {
+                topic: "triage:updates",
+                event: "triage_record_updated",
+                data: {
+                  ulid: record._ulid,
+                  action: "override",
+                  new_action: record.action,
+                },
+              },
+            ],
+          });
 
           return {
             success: true,
@@ -584,53 +578,53 @@ export function createTriageRoutes(options: TriageRouteOptions) {
           }
           record.updated_at = new Date().toISOString();
 
-          await saveTriageRecord(ctx, record);
-
-          // AC: @trait-api-endpoint ac-5 - Shadow commit
-          await commitIfShadow(ctx.shadow, `triage: act ${record._ulid.slice(0, 8)}`);
-
-          // AC: @daemon-entity-cache ac-write-through — update cache before response
-          // executeTriageAction performs cross-domain mutations depending on action:
-          //   promote → creates task + deletes inbox item
-          //   delete/duplicate → deletes inbox item
-          //   spec-gap → saves observation (meta domain)
-          const actCache = getEntityCache?.(projectContext.path);
-          if (actCache) {
-            await actCache.writeThrough("triage");
-            const action = record.action;
-            if (action === "promote") {
-              const createdTask = result.resultRef
-                ? await resolveTaskDataManager(ctx)
-                    .getTask(ctx, result.resultRef)
-                    .catch(() => undefined)
-                : undefined;
-              await actCache.writeThrough(
-                "tasks",
-                createdTask ? { ulid: createdTask._ulid } : undefined,
-              );
-              await actCache.writeThrough("inbox");
-            } else if (action === "delete" || action === "duplicate") {
-              await actCache.writeThrough("inbox");
-            } else if (action === "spec-gap") {
-              await actCache.writeThrough("meta");
-            }
-          }
-
-          // AC: @triage-daemon-api ac-5 - Broadcast triage:updates
-          pubsub.broadcast(
-            "triage:updates",
-            "triage_record_acted",
-            {
-              ulid: record._ulid,
-              action: record.action,
-              result_ref: record.result_ref,
+          const actedRecord = await runRouteMutation({
+            ctx,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: async () => {
+              await saveTriageRecord(ctx, record);
+              return record;
             },
-            projectContext.path,
-          );
+            commit: { operation: `triage: act ${record._ulid.slice(0, 8)}` },
+            writeThrough: async () => {
+              const descriptors = [{ domain: "triage" }];
+              const action = record.action;
+              if (action === "promote") {
+                const createdTask = result.resultRef
+                  ? await resolveTaskDataManager(ctx)
+                      .getTask(ctx, result.resultRef)
+                      .catch(() => undefined)
+                  : undefined;
+                descriptors.push({
+                  domain: "tasks",
+                  ...(createdTask ? { hint: { ulid: createdTask._ulid } } : {}),
+                });
+                descriptors.push({ domain: "inbox" });
+              } else if (action === "delete" || action === "duplicate") {
+                descriptors.push({ domain: "inbox" });
+              } else if (action === "spec-gap") {
+                descriptors.push({ domain: "meta" });
+              }
+              return descriptors;
+            },
+            events: [
+              {
+                topic: "triage:updates",
+                event: "triage_record_acted",
+                data: {
+                  ulid: record._ulid,
+                  action: record.action,
+                  result_ref: record.result_ref,
+                },
+              },
+            ],
+          });
 
           return {
             success: true,
-            record,
+            record: actedRecord,
           };
         },
         {

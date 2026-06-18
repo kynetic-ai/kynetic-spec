@@ -36,11 +36,11 @@ import {
   resolveReviewResourceFile,
   type ReviewResourceError,
 } from "../../parser/index.js";
-import { commitIfShadow } from "../../parser/shadow.js";
 import type { ResourceMetadata } from "../../schema/resources.js";
 import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { entityStorageIncompatibilityResponse } from "./entity-storage-error.js";
+import { runRouteMutation } from "./mutation-pipeline.js";
 
 interface ReviewResourcesRouteOptions {
   pubsub?: PubSubManager;
@@ -332,28 +332,30 @@ export function createReviewResourcesRoutes(options: ReviewResourcesRouteOptions
               return errorResponse(statusForCode(result.error.code), toApiErrorBody(result.error));
             }
 
-            await commitIfShadow(
-              ctx.shadow,
-              "review-resource-add",
-              result.value.review.slugs[0] || result.value.review._ulid.slice(0, 8),
-              `${id} → ${relativePath}`,
-            );
-
-            const cache = getEntityCache?.(projectContext.path);
-            if (cache) {
-              await cache.writeThrough("reviews");
-            }
-
-            pubsub?.broadcast(
-              "reviews:updates",
-              "resource_changed",
-              {
-                review_ulid: result.value.review._ulid,
-                resource_id: id,
-                action: result.value.replaced ? "replaced" : "added",
+            await runRouteMutation({
+              ctx,
+              projectPath: projectContext.path,
+              getEntityCache,
+              pubsub,
+              apply: () => undefined,
+              commit: {
+                operation: "review-resource-add",
+                ref: result.value.review.slugs[0] || result.value.review._ulid.slice(0, 8),
+                detail: `${id} → ${relativePath}`,
               },
-              projectContext.path,
-            );
+              writeThrough: [{ domain: "reviews" }],
+              events: [
+                {
+                  topic: "reviews:updates",
+                  event: "resource_changed",
+                  data: {
+                    review_ulid: result.value.review._ulid,
+                    resource_id: id,
+                    action: result.value.replaced ? "replaced" : "added",
+                  },
+                },
+              ],
+            });
 
             set.status = result.value.replaced ? 200 : 201;
             return { resource: result.value.resource, replaced: result.value.replaced };
@@ -375,28 +377,30 @@ export function createReviewResourcesRoutes(options: ReviewResourcesRouteOptions
             return errorResponse(statusForCode(result.error.code), toApiErrorBody(result.error));
           }
 
-          await commitIfShadow(
-            ctx.shadow,
-            "review-resource-remove",
-            result.value.review.slugs[0] || result.value.review._ulid.slice(0, 8),
-            `${result.value.removed.id} (${result.value.removed.path})`,
-          );
-
-          const cache = getEntityCache?.(projectContext.path);
-          if (cache) {
-            await cache.writeThrough("reviews");
-          }
-
-          pubsub?.broadcast(
-            "reviews:updates",
-            "resource_changed",
-            {
-              review_ulid: result.value.review._ulid,
-              resource_id: result.value.removed.id,
-              action: "removed",
+          await runRouteMutation({
+            ctx,
+            projectPath: projectContext.path,
+            getEntityCache,
+            pubsub,
+            apply: () => undefined,
+            commit: {
+              operation: "review-resource-remove",
+              ref: result.value.review.slugs[0] || result.value.review._ulid.slice(0, 8),
+              detail: `${result.value.removed.id} (${result.value.removed.path})`,
             },
-            projectContext.path,
-          );
+            writeThrough: [{ domain: "reviews" }],
+            events: [
+              {
+                topic: "reviews:updates",
+                event: "resource_changed",
+                data: {
+                  review_ulid: result.value.review._ulid,
+                  resource_id: result.value.removed.id,
+                  action: "removed",
+                },
+              },
+            ],
+          });
 
           return { removed: result.value.removed };
         },
