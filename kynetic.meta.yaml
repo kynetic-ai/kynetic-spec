@@ -22762,6 +22762,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-18T20:31:47.545Z
+  - _ulid: 01KVEFSPNB9EV96F0S22EKMAZW
+    type: success
+    content: For review-record schema/read-compatibility changes, pairing monolithic
+      project.reviews.yaml fixtures with folder-backed reviews/<ulid>/review.yaml fixtures proves
+      both supported storage readers preserve legacy anchors. This caught the need to seed the
+      folder-backed index before overwriting the detail fixture and made the compatibility guarantee
+      concrete.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KVEFNN"
+    created_at: 2026-06-18T23:06:59.115Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
