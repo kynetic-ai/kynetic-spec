@@ -69038,7 +69038,7 @@ runs:
     started_at: 2026-06-18T05:41:37.318Z
     completed_at: 2026-06-18T05:43:37.334Z
   - _ulid: 01KVCN4GWRJ5PZPRPEV8FE6FSM
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -69084,7 +69084,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-18T06:03:44.947Z
-        completed_at: 2026-06-18T06:03:44.947Z
+        completed_at: 2026-06-18T06:03:55.038Z
+        notes: "Capture: no new inbox items or observations added. Existing tracked coverage is sufficient:
+          @01KTN0CE for long full-suite review experience, @01KN8VK1/@01KP6PS1Q for quiet
+          test-runner output, @01KNTPX5/@01KT5ZGF for fresh-review/evidence-log success patterns,
+          and detached-reviewer merge helper tasks for merge workflow mechanics."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-18T06:01:47.672Z
+    completed_at: 2026-06-18T06:03:55.038Z
