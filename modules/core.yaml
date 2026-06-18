@@ -2689,6 +2689,9 @@ features:
           in approval gating. In all other respects idea threads behave like
           every other kind — they hold entries and replies, resolve and reopen,
           and appear in the review's event history.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@review-comment-threads-and-anchors"
         implements: []
