@@ -57,12 +57,10 @@ function trackTasksApi(page: Page) {
      * Wait until no new /api/tasks request has started AND none is in flight
      * for `stableMs`, then return the request count.
      *
-     * stableMs must exceed the longest delayed invalidation timer in
-     * ws-invalidation.ts (files:updates events schedule invalidations at
-     * +650ms and +1500ms) so that timers already scheduled by earlier events
-     * fire inside the stability window instead of after settle returns.
+     * WebSocket invalidation is immediate, so the stability window only needs
+     * to cover in-flight request completion and any browser scheduling jitter.
      */
-    async settle(stableMs = 2_000, timeoutMs = 15_000): Promise<number> {
+    async settle(stableMs = 500, timeoutMs = 15_000): Promise<number> {
       const pollMs = 100;
       const deadline = Date.now() + timeoutMs;
       let lastStarted = started;
@@ -242,9 +240,7 @@ test.describe("WebSocket Connection Handling", () => {
     // client receives are the ones this test injects.
     forwardServerMessages = false;
 
-    // Drain pending traffic — including the up-to-1500ms delayed file-watcher
-    // invalidation timers scheduled by events forwarded during page load —
-    // before establishing the baseline.
+    // Drain pending traffic before establishing the baseline.
     const baselineRequestCount = await tasksApi.settle();
 
     // First delivery of seq=500 must be handled and start a task-list refetch.
@@ -299,6 +295,111 @@ test.describe("WebSocket Connection Handling", () => {
     // start a request synchronously on the client — 1s is ample to observe it.
     await page.waitForTimeout(1000);
     expect(tasksApi.requestCount).toBe(afterFirstDeliveryCount);
+  });
+
+  // AC: @ui-targeted-event-consumption ac-3
+  test("updates the open task list from a CLI-proxied typed task event without file fallback", async ({
+    page,
+    daemon,
+    request,
+  }) => {
+    const tasksApi = trackTasksApi(page);
+
+    await page.routeWebSocket(/ws/, (ws) => {
+      const server = ws.connectToServer();
+      server.onMessage((msg) => {
+        const parsed = JSON.parse(String(msg)) as { topic?: string };
+        if (parsed.topic === "files:updates") return;
+        ws.send(msg);
+      });
+      ws.onMessage((msg) => server.send(msg));
+    });
+
+    await page.goto("/tasks");
+
+    const row = page.locator('[data-testid="task-list-item"][data-task-ref="test-task-ready"]');
+    await expect(row).toBeVisible();
+    await expect(row.getByTestId("task-status-badge")).toHaveAttribute(
+      "data-status-state",
+      "pending",
+    );
+
+    await tasksApi.settle();
+
+    const refetch = page.waitForRequest(
+      (req) => req.method() === "GET" && isTasksApiUrl(req.url()),
+    );
+    const response = await request.post(`${daemon.baseUrl}/api/command`, {
+      data: {
+        command: "task start",
+        args: { ref: "@test-task-ready" },
+      },
+    });
+    expect(response.status()).toBe(200);
+    const body = await response.json();
+    expect(body.exitCode).toBe(0);
+
+    await refetch;
+    await expect(row.getByTestId("task-status-badge")).toHaveAttribute(
+      "data-status-state",
+      "in_progress",
+    );
+  });
+
+  // AC: @ui-targeted-event-consumption ac-3
+  test("updates expanded plan content from a typed plan-resource event without file fallback", async ({
+    page,
+    daemon,
+    request,
+  }) => {
+    await page.routeWebSocket(/ws/, (ws) => {
+      const server = ws.connectToServer();
+      server.onMessage((msg) => {
+        const parsed = JSON.parse(String(msg)) as { topic?: string };
+        if (parsed.topic === "files:updates") return;
+        ws.send(msg);
+      });
+      ws.onMessage((msg) => server.send(msg));
+    });
+
+    await page.goto("/plans");
+
+    const activePlan = page
+      .getByTestId("plan-card")
+      .filter({ hasText: "Active Implementation Plan" });
+    await expect(activePlan).toBeVisible();
+    await activePlan.getByTestId("plan-expand-toggle").click();
+    const rendered = activePlan.getByTestId("plan-content-rendered").first();
+    await expect(rendered).toBeVisible({ timeout: 10000 });
+
+    const resourceLink = rendered.getByRole("link", { name: "live diagram" });
+    await expect(resourceLink).toBeVisible();
+    await expect(resourceLink).not.toHaveAttribute("href", /\/api\/plans\//);
+
+    const refreshedContent = page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/plans/test-plan-active") &&
+        response.request().method() === "GET" &&
+        response.status() === 200,
+    );
+    const response = await request.post(`${daemon.baseUrl}/api/plans/test-plan-active/resources`, {
+      multipart: {
+        id: "live-diagram",
+        path: "live-diagram.md",
+        file: {
+          name: "live-diagram.md",
+          mimeType: "text/markdown",
+          buffer: Buffer.from("# Live diagram\n"),
+        },
+      },
+    });
+    expect(response.status()).toBe(201);
+
+    await refreshedContent;
+    await expect(resourceLink).toHaveAttribute(
+      "href",
+      /\/api\/plans\/01KG0RRPCA45ZT43W2T6HJMVP1\/resources\/live-diagram\/bytes/,
+    );
   });
 
   // AC: @web-dashboard ac-31, ac-32

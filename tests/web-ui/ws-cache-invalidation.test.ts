@@ -16,26 +16,26 @@ import type { BroadcastEvent } from "@kynetic-ai/shared";
 
 // Hoisted mock state — accessible inside vi.mock factories
 const { connectionHandlers, subscribedTopics, connectionFns } = vi.hoisted(() => {
-  const connectionHandlers = new Map<string, Set<(event: any) => void>>();
-  const subscribedTopics = new Set<string>();
-  const connectionFns = {
+  const handlers = new Map<string, Set<(event: any) => void>>();
+  const topics = new Set<string>();
+  const fns = {
     on: (topic: string, handler: (event: any) => void) => {
-      if (!connectionHandlers.has(topic)) {
-        connectionHandlers.set(topic, new Set());
+      if (!handlers.has(topic)) {
+        handlers.set(topic, new Set());
       }
-      connectionHandlers.get(topic)!.add(handler);
+      handlers.get(topic)!.add(handler);
     },
     off: (topic: string, handler: (event: any) => void) => {
-      connectionHandlers.get(topic)?.delete(handler);
+      handlers.get(topic)?.delete(handler);
     },
-    subscribe: (topics: string[]) => {
-      for (const t of topics) subscribedTopics.add(t);
+    subscribe: (topicNames: string[]) => {
+      for (const t of topicNames) topics.add(t);
     },
-    unsubscribe: (topics: string[]) => {
-      for (const t of topics) subscribedTopics.delete(t);
+    unsubscribe: (topicNames: string[]) => {
+      for (const t of topicNames) topics.delete(t);
     },
   };
-  return { connectionHandlers, subscribedTopics, connectionFns };
+  return { connectionHandlers: handlers, subscribedTopics: topics, connectionFns: fns };
 });
 
 vi.mock("$lib/stores/connection.svelte", () => connectionFns);
@@ -71,7 +71,11 @@ function makeBroadcastEvent(
 
 function createMockQueryClient() {
   return {
-    invalidateQueries: vi.fn(),
+    invalidateQueries: vi.fn<(options: { queryKey: readonly unknown[] }) => void>(),
+    setQueriesData:
+      vi.fn<
+        (filters: { queryKey: readonly unknown[] }, updater: (old: unknown) => unknown) => void
+      >(),
   } as any;
 }
 
@@ -85,7 +89,236 @@ function dispatchEvent(topic: string, event: BroadcastEvent) {
   }
 }
 
+function invalidatedKeys(mockQueryClient: ReturnType<typeof createMockQueryClient>) {
+  return mockQueryClient.invalidateQueries.mock.calls.map(
+    ([arg]: [{ queryKey: readonly unknown[] }]) => arg.queryKey,
+  );
+}
+
 // ── Tests ───────────────────────────────────────────────────────────────────
+
+describe("ws-invalidation targeted entity event handling", () => {
+  let mockQueryClient: ReturnType<typeof createMockQueryClient>;
+
+  beforeEach(() => {
+    connectionHandlers.clear();
+    subscribedTopics.clear();
+    mockQueryClient = createMockQueryClient();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    teardownWsInvalidation();
+  });
+
+  describe("topic subscription", () => {
+    it("subscribes to entity and fallback topics without subscribing to command events", () => {
+      setupWsInvalidation(mockQueryClient);
+
+      expect(subscribedTopics.has("tasks:updates")).toBe(true);
+      expect(subscribedTopics.has("items:updates")).toBe(true);
+      expect(subscribedTopics.has("reviews:updates")).toBe(true);
+      expect(subscribedTopics.has("plans:updates")).toBe(true);
+      expect(subscribedTopics.has("files:updates")).toBe(true);
+      expect(subscribedTopics.has("command")).toBe(false);
+    });
+  });
+
+  // AC: @ui-targeted-event-consumption ac-1
+  it("refreshes only the affected task entity and task views for a task event", () => {
+    setupWsInvalidation(mockQueryClient);
+    const event = makeBroadcastEvent("tasks:updates", "task_updated", {
+      ref: "@task-target",
+      ulid: "01TASKTARGET0000000000000",
+      action: "start",
+      title: "Target task",
+      old_status: "pending",
+      new_status: "in_progress",
+    });
+
+    dispatchEvent("tasks:updates", event);
+
+    expect(invalidatedKeys(mockQueryClient)).toEqual([
+      queryKeys.tasks.detail("01TASKTARGET0000000000000"),
+      queryKeys.tasks.detail("@task-target"),
+      queryKeys.tasks.lists(),
+      queryKeys.tasks.summary(),
+    ]);
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.items.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.reviews.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.validation.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.sessionContext.all,
+    });
+    expect(mockQueryClient.setQueriesData).toHaveBeenCalled();
+  });
+
+  // AC: @ui-targeted-event-consumption ac-1
+  it("refreshes review-created list/detail/for-task keys without refetching task domains", () => {
+    setupWsInvalidation(mockQueryClient);
+    const event = makeBroadcastEvent("reviews:updates", "review_created", {
+      review_ulid: "01REVIEWTARGET00000000000",
+      title: "Task review",
+      subject_type: "task",
+      subject_ref: "@task-target",
+      subject: { type: "task", ref: "@task-target" },
+    });
+
+    dispatchEvent("reviews:updates", event);
+
+    expect(invalidatedKeys(mockQueryClient)).toEqual([
+      queryKeys.reviews.detail("01REVIEWTARGET00000000000"),
+      queryKeys.reviews.lists(),
+      queryKeys.reviews.forTask("@task-target"),
+    ]);
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.tasks.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.items.all,
+    });
+  });
+
+  // AC: @ui-targeted-event-consumption ac-1
+  it("refreshes affected item and validation views for a spec-item event only", () => {
+    setupWsInvalidation(mockQueryClient);
+    const event = makeBroadcastEvent("items:updates", "spec_item_changed", {
+      item_ulid: "01ITEMTARGET0000000000000",
+      action: "changed",
+      title: "Target item",
+    });
+
+    dispatchEvent("items:updates", event);
+
+    expect(invalidatedKeys(mockQueryClient)).toEqual([
+      queryKeys.items.detail("01ITEMTARGET0000000000000"),
+      queryKeys.items.lists(),
+      queryKeys.validation.all,
+    ]);
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.tasks.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.reviews.all,
+    });
+  });
+
+  // AC: @ui-targeted-event-consumption ac-1
+  it("refreshes affected plan resource queries without touching other domains", () => {
+    setupWsInvalidation(mockQueryClient);
+    const event = makeBroadcastEvent("plans:updates", "plan_resource_changed", {
+      plan_ulid: "01PLANTARGET0000000000000",
+      resource_id: "diagram",
+      action: "added",
+    });
+
+    dispatchEvent("plans:updates", event);
+
+    expect(invalidatedKeys(mockQueryClient)).toEqual([
+      queryKeys.plans.detail("01PLANTARGET0000000000000"),
+      queryKeys.plans.content("01PLANTARGET0000000000000"),
+      queryKeys.plans.lists(),
+    ]);
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.tasks.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.items.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.reviews.all,
+    });
+  });
+
+  // AC: @ui-targeted-event-consumption ac-2
+  it("starts fallback file refresh immediately and does not schedule fixed-delay refreshes", () => {
+    const timeoutSpy = vi.spyOn(globalThis, "setTimeout");
+    setupWsInvalidation(mockQueryClient);
+    const event = makeBroadcastEvent("files:updates", "file_changed", {
+      ref: "project.tasks.yaml",
+    });
+
+    dispatchEvent("files:updates", event);
+
+    expect(invalidatedKeys(mockQueryClient)).toEqual([
+      queryKeys.tasks.lists(),
+      queryKeys.tasks.summary(),
+    ]);
+    expect(timeoutSpy).not.toHaveBeenCalled();
+  });
+
+  // AC: @ui-targeted-event-consumption ac-4
+  it("maps non-daemon task file changes to a single immediate task-domain refresh", () => {
+    setupWsInvalidation(mockQueryClient);
+    const event = makeBroadcastEvent("files:updates", "file_changed", {
+      ref: "tasks/01TASKTARGET0000000000000/task.yaml",
+    });
+
+    dispatchEvent("files:updates", event);
+
+    expect(invalidatedKeys(mockQueryClient)).toEqual([
+      queryKeys.tasks.detail("01TASKTARGET0000000000000"),
+      queryKeys.tasks.lists(),
+      queryKeys.tasks.summary(),
+    ]);
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.validation.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.sessionContext.all,
+    });
+  });
+
+  // AC: @ui-targeted-event-consumption ac-4
+  it("maps non-daemon plan folder changes to a single immediate affected-plan refresh", () => {
+    setupWsInvalidation(mockQueryClient);
+    const event = makeBroadcastEvent("files:updates", "file_changed", {
+      ref: "plans/01PLANTARGET0000000000000/resources/diagram.png",
+    });
+
+    dispatchEvent("files:updates", event);
+
+    expect(invalidatedKeys(mockQueryClient)).toEqual([
+      queryKeys.plans.detail("01PLANTARGET0000000000000"),
+      queryKeys.plans.content("01PLANTARGET0000000000000"),
+      queryKeys.plans.lists(),
+    ]);
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.tasks.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.items.all,
+    });
+  });
+
+  // AC: @ui-targeted-event-consumption ac-4
+  it("maps non-daemon review folder changes to a single immediate affected-review refresh", () => {
+    setupWsInvalidation(mockQueryClient);
+    const event = makeBroadcastEvent("files:updates", "file_changed", {
+      ref: "reviews/01REVIEWTARGET00000000000/review.yaml",
+    });
+
+    dispatchEvent("files:updates", event);
+
+    expect(invalidatedKeys(mockQueryClient)).toEqual([
+      queryKeys.reviews.detail("01REVIEWTARGET00000000000"),
+      queryKeys.reviews.content("01REVIEWTARGET00000000000"),
+      queryKeys.reviews.lists(),
+    ]);
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.tasks.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.items.all,
+    });
+  });
+});
 
 describe("ws-invalidation cache:status handling", () => {
   let mockQueryClient: ReturnType<typeof createMockQueryClient>;

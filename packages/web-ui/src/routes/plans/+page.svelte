@@ -8,12 +8,20 @@
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import type { BatchItemSummary, PlanDetail, PlanSummary } from '@kynetic-ai/shared';
+	import { onDestroy, onMount } from 'svelte';
+	import type {
+		BatchItemSummary,
+		BroadcastEvent,
+		PlanDetail,
+		PlanResourceChangedEventData,
+		PlanSummary
+	} from '@kynetic-ai/shared';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { fetchPlans, fetchPlanContent, fetchBatchItems, isCacheWarmingError } from '$lib/api';
 	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { off, on } from '$lib/stores/connection.svelte';
 	import { queryKeys } from '$lib/query/keys.js';
 	import { buildPlanContentBlocks } from '$lib/utils/plan-embedded-content';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
@@ -203,6 +211,65 @@
 			batchError: embeddedItemsError[planId]
 		});
 	}
+
+	function planRefForContent(planId: string): string {
+		const plan = plans.find((candidate) => candidate._ulid === planId);
+		return plan?.slugs[0] ?? detailCache[planId]?.slugs[0] ?? planId;
+	}
+
+	// AC: @ui-targeted-event-consumption ac-3 — Refresh visible expanded plan
+	// content from the typed plan event path without relying on file fallback.
+	async function refreshCachedPlanContent(planId: string): Promise<void> {
+		if (detailCache[planId] === undefined && expandedPlanId !== planId) return;
+		if (contentLoading[planId]) return;
+
+		contentLoading = { ...contentLoading, [planId]: true };
+		contentError = { ...contentError, [planId]: '' };
+
+		try {
+			const detail = await fetchPlanContent(planRefForContent(planId));
+			detailCache = { ...detailCache, [planId]: detail };
+			if (detail.derived_specs.length + detail.derived_tasks.length > 0) {
+				void loadEmbeddedItems(detail);
+			}
+		} catch (err) {
+			contentError = {
+				...contentError,
+				[planId]: err instanceof Error ? err.message : 'Failed to refresh plan content'
+			};
+			console.error('Error refreshing plan content:', err);
+		} finally {
+			contentLoading = { ...contentLoading, [planId]: false };
+		}
+	}
+
+	function handlePlanUpdate(event: BroadcastEvent): void {
+		if (event.event === 'plan_resource_changed') {
+			const data = event.data as Partial<PlanResourceChangedEventData> | undefined;
+			if (data?.plan_ulid) {
+				void refreshCachedPlanContent(data.plan_ulid);
+			}
+			return;
+		}
+
+		if (event.event === 'file_changed') {
+			const ref = (event.data as { ref?: string } | undefined)?.ref;
+			const [, planId] = ref?.match(/^plans\/([^/]+)\//) ?? [];
+			if (planId) {
+				void refreshCachedPlanContent(planId);
+			}
+		}
+	}
+
+	onMount(() => {
+		on('plans:updates', handlePlanUpdate);
+		on('files:updates', handlePlanUpdate);
+	});
+
+	onDestroy(() => {
+		off('plans:updates', handlePlanUpdate);
+		off('files:updates', handlePlanUpdate);
+	});
 </script>
 
 <div class="flex flex-col gap-4 p-6">

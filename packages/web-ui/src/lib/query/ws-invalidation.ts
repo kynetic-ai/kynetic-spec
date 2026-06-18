@@ -10,7 +10,13 @@
  */
 
 import type { QueryClient } from "@tanstack/svelte-query";
-import type { BroadcastEvent } from "@kynetic-ai/shared";
+import type {
+  BroadcastEvent,
+  PlanResourceChangedEventData,
+  ReviewCreatedEventData,
+  SpecItemChangedEventData,
+  TaskUpdatedEventData,
+} from "@kynetic-ai/shared";
 import { queryKeys } from "./keys.js";
 import { on, off, subscribe, unsubscribe } from "$lib/stores/connection.svelte";
 
@@ -31,7 +37,105 @@ const INVALIDATION_TOPICS = [
   "cache:status",
 ] as const;
 
-const FILE_WATCHER_INVALIDATION_DELAYS_MS = [650, 1_500] as const;
+function uniqueKeys(keys: readonly (readonly unknown[])[]): readonly (readonly unknown[])[] {
+  const seen = new Set<string>();
+  const out: (readonly unknown[])[] = [];
+  for (const key of keys) {
+    const token = JSON.stringify(key);
+    if (seen.has(token)) continue;
+    seen.add(token);
+    out.push(key);
+  }
+  return out;
+}
+
+function taskViewInvalidationKeys(): readonly (readonly unknown[])[] {
+  return [queryKeys.tasks.lists(), queryKeys.tasks.summary()];
+}
+
+function folderBackedEntityId(ref: string, root: string): string | null {
+  const segments = ref.split("/");
+  return segments[0] === root && typeof segments[1] === "string" && segments[1].length > 0
+    ? segments[1]
+    : null;
+}
+
+function canonicalTaskRefs(data: Partial<TaskUpdatedEventData>): string[] {
+  return [data.ulid, data.ref].filter(
+    (value, index, arr): value is string =>
+      typeof value === "string" && value.length > 0 && arr.indexOf(value) === index,
+  );
+}
+
+function getTaskInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
+  if (event.event !== "task_updated") {
+    return taskViewInvalidationKeys();
+  }
+
+  const refs = canonicalTaskRefs(event.data as Partial<TaskUpdatedEventData>);
+  return uniqueKeys([
+    ...refs.map((ref) => queryKeys.tasks.detail(ref)),
+    ...taskViewInvalidationKeys(),
+  ]);
+}
+
+function getItemInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
+  if (event.event !== "spec_item_changed") {
+    return [queryKeys.items.lists(), queryKeys.validation.all];
+  }
+
+  const data = event.data as Partial<SpecItemChangedEventData>;
+  return uniqueKeys([
+    ...(typeof data.item_ulid === "string" && data.item_ulid.length > 0
+      ? [queryKeys.items.detail(data.item_ulid)]
+      : []),
+    queryKeys.items.lists(),
+    queryKeys.validation.all,
+  ]);
+}
+
+function getReviewInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
+  const data = event.data as Partial<
+    ReviewCreatedEventData & {
+      review_ulid: string;
+    }
+  >;
+  const keys: (readonly unknown[])[] = [];
+
+  if (typeof data.review_ulid === "string" && data.review_ulid.length > 0) {
+    keys.push(queryKeys.reviews.detail(data.review_ulid));
+    if (event.event !== "review_created") {
+      keys.push(queryKeys.reviews.content(data.review_ulid));
+    }
+  }
+
+  keys.push(queryKeys.reviews.lists());
+
+  if (
+    event.event === "review_created" &&
+    data.subject_type === "task" &&
+    typeof data.subject_ref === "string" &&
+    data.subject_ref.length > 0
+  ) {
+    keys.push(queryKeys.reviews.forTask(data.subject_ref));
+  }
+
+  return uniqueKeys(keys);
+}
+
+function getPlanInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
+  if (event.event !== "plan_resource_changed") {
+    return [queryKeys.plans.lists()];
+  }
+
+  const data = event.data as Partial<PlanResourceChangedEventData>;
+  return uniqueKeys([
+    ...(typeof data.plan_ulid === "string" && data.plan_ulid.length > 0
+      ? [queryKeys.plans.detail(data.plan_ulid), queryKeys.plans.content(data.plan_ulid)]
+      : []),
+    queryKeys.plans.lists(),
+  ]);
+}
 
 function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
   const ref = (event.data as { ref?: string } | undefined)?.ref;
@@ -39,13 +143,13 @@ function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonl
     return [];
   }
 
-  if (
-    ref.endsWith(".tasks.yaml") ||
-    ref === "project.tasks.yaml" ||
-    ref === "tasks.yaml" ||
-    ref.startsWith("tasks/")
-  ) {
-    return [queryKeys.tasks.all, queryKeys.validation.all, queryKeys.sessionContext.all];
+  if (ref.endsWith(".tasks.yaml") || ref === "project.tasks.yaml" || ref === "tasks.yaml") {
+    return taskViewInvalidationKeys();
+  }
+
+  const taskId = folderBackedEntityId(ref, "tasks");
+  if (taskId) {
+    return uniqueKeys([queryKeys.tasks.detail(taskId), ...taskViewInvalidationKeys()]);
   }
 
   if (ref === "project.inbox.yaml") {
@@ -57,15 +161,33 @@ function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonl
   }
 
   if (ref === "project.reviews.yaml") {
-    return [queryKeys.reviews.all, queryKeys.tasks.all];
+    return [queryKeys.reviews.lists()];
+  }
+
+  const reviewId = folderBackedEntityId(ref, "reviews");
+  if (reviewId) {
+    return uniqueKeys([
+      queryKeys.reviews.detail(reviewId),
+      queryKeys.reviews.content(reviewId),
+      queryKeys.reviews.lists(),
+    ]);
   }
 
   if (ref === "project.plans.yaml") {
-    return [queryKeys.plans.all];
+    return [queryKeys.plans.lists()];
+  }
+
+  const planId = folderBackedEntityId(ref, "plans");
+  if (planId) {
+    return uniqueKeys([
+      queryKeys.plans.detail(planId),
+      queryKeys.plans.content(planId),
+      queryKeys.plans.lists(),
+    ]);
   }
 
   if (ref.startsWith("modules/") || ref.endsWith(".spec.yaml")) {
-    return [queryKeys.items.all, queryKeys.validation.all];
+    return [queryKeys.items.lists(), queryKeys.validation.all];
   }
 
   if (ref === "kynetic.yaml" || ref.endsWith(".meta.yaml")) {
@@ -102,13 +224,10 @@ function getInvalidationKeys(
 ): readonly (readonly unknown[])[] {
   switch (topic) {
     case "tasks:updates":
-      // Task status changes affect task lists, summaries, sidebar counts,
-      // and session context (which includes current focus/active work)
-      return [queryKeys.tasks.all, queryKeys.validation.all, queryKeys.sessionContext.all];
+      return getTaskInvalidationKeys(event);
 
     case "items:updates":
-      // Spec item changes affect item lists and validation
-      return [queryKeys.items.all, queryKeys.validation.all];
+      return getItemInvalidationKeys(event);
 
     case "inbox:updates":
       // Inbox changes affect inbox list, count, and merged inbox (triage status)
@@ -119,11 +238,10 @@ function getInvalidationKeys(
       return [queryKeys.inbox.all];
 
     case "reviews:updates":
-      // Review changes affect review lists and task detail (review_ref display)
-      return [queryKeys.reviews.all, queryKeys.tasks.all];
+      return getReviewInvalidationKeys(event);
 
     case "plans:updates":
-      return [queryKeys.plans.all];
+      return getPlanInvalidationKeys(event);
 
     case "agents": {
       // Streaming progress events don't need cache invalidation —
@@ -227,26 +345,67 @@ function getDomainReadyInvalidationKeys(event: BroadcastEvent): readonly (readon
 let queryClientRef: QueryClient | null = null;
 let handlersRegistered = false;
 
+function patchTaskLikeRecord<T>(record: T, event: Partial<TaskUpdatedEventData>): T {
+  if (!record || typeof record !== "object") return record;
+  const task = record as Record<string, unknown>;
+  const matches =
+    (typeof event.ulid === "string" && task._ulid === event.ulid) ||
+    (typeof event.ref === "string" &&
+      Array.isArray(task.slugs) &&
+      task.slugs.some((slug) => `@${slug}` === event.ref || slug === event.ref));
+  if (!matches) return record;
+
+  return {
+    ...task,
+    ...(typeof event.title === "string" ? { title: event.title } : {}),
+    ...(typeof event.new_status === "string" ? { status: event.new_status } : {}),
+  } as T;
+}
+
+function applyTaskEventFastPath(event: BroadcastEvent): void {
+  if (!queryClientRef || event.event !== "task_updated") return;
+  const data = event.data as Partial<TaskUpdatedEventData>;
+  if (canonicalTaskRefs(data).length === 0) return;
+
+  queryClientRef.setQueriesData(
+    { queryKey: queryKeys.tasks.lists() as unknown[] },
+    (old: unknown) => {
+      if (!old || typeof old !== "object" || !Array.isArray((old as { items?: unknown[] }).items)) {
+        return old;
+      }
+
+      let changed = false;
+      const previous = old as { items: unknown[] };
+      const items = previous.items.map((item) => {
+        const next = patchTaskLikeRecord(item, data);
+        if (next !== item) changed = true;
+        return next;
+      });
+
+      return changed ? { ...previous, items } : old;
+    },
+  );
+
+  for (const ref of canonicalTaskRefs(data)) {
+    queryClientRef.setQueriesData(
+      { queryKey: queryKeys.tasks.detail(ref) as unknown[] },
+      (old: unknown) => patchTaskLikeRecord(old, data),
+    );
+  }
+}
+
 function handleBroadcastEvent(topic: string) {
   return (event: BroadcastEvent) => {
     if (!queryClientRef) return;
 
-    const keys = getInvalidationKeys(topic, event);
-    const invalidate = () => {
-      if (!queryClientRef) return;
-      for (const key of keys) {
-        queryClientRef.invalidateQueries({ queryKey: key as unknown[] });
-      }
-    };
-
-    if (topic === "files:updates") {
-      for (const delayMs of FILE_WATCHER_INVALIDATION_DELAYS_MS) {
-        setTimeout(invalidate, delayMs);
-      }
-      return;
+    if (topic === "tasks:updates") {
+      applyTaskEventFastPath(event);
     }
 
-    invalidate();
+    const keys = getInvalidationKeys(topic, event);
+    for (const key of keys) {
+      queryClientRef.invalidateQueries({ queryKey: key as unknown[] });
+    }
   };
 }
 
