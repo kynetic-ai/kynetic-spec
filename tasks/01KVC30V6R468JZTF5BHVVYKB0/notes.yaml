@@ -28,3 +28,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T08:17:54.863Z
+  - _ulid: 01KVCYBA4SVWD0WKVGFFEJV49Y
+    content: "Fix cycle 1: addressed review @01KVCVX6 blocker by adding the full normalized review
+      subject to review_created event payloads while preserving subject_type/subject_ref
+      compatibility. Covered a non-ref code review subject through the daemon command route and
+      re-verified @mutation-event-coverage ac-2/ac-5 plus the full gate set: format, repo lint,
+      focused lint, typecheck, focused daemon-command test, npm test, and kspec
+      refs/alignment/completeness validation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T08:42:47.321Z
