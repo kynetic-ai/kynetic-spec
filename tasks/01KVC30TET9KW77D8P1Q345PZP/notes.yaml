@@ -31,3 +31,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T05:14:08.442Z
+  - _ulid: 01KVCJSCZM5J4TR3JQ94B18814
+    content: "Fix cycle 1 approach: address all three blocker threads by moving the full logical
+      mutation into runRouteMutation apply for triage act, review resource add/delete, and plan
+      resource add/delete. Preserve existing validation responses by keeping preflight-only checks
+      outside the pipeline and deriving commit/write-through/event descriptors from the apply
+      result. Re-verify @shared-mutation-pipeline ac-1/ac-2/ac-5/ac-6 against the migrated routes
+      plus existing AC annotations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T05:20:46.068Z
