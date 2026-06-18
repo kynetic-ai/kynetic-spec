@@ -2,7 +2,17 @@ _ulid: 01KVEFXJRPP2HA20HBF2XRZT5D
 slugs: []
 title: Review task-spec-ac-anchor-variant
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1089 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-18T23:26:27.764Z
+    completed_at: 2026-06-18T23:26:27.764Z
 events:
   - _ulid: 01KVEFXJRPQHHRB56VZ2EYRA2P
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-18T23:09:19.633Z
+  - _ulid: 01KVEGXC7WRYA4YM2DYYAZ8XQ2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-18T23:26:28.093Z
 examined_commit: 1ddf6dad70c3f39d41b48c59b79ff29fac8234ee
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-18T23:09:06.198Z
-updated_at: 2026-06-18T23:09:19.352Z
+updated_at: 2026-06-18T23:26:27.764Z
 notes: []
