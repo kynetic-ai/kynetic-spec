@@ -5633,6 +5633,9 @@ features:
           likewise loads with an empty revision history. A review of a plan
           resolves to the revision it examined through the review's pinned
           subject version, with no new field on the review record.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@actor-identity-model"
         implements: []
