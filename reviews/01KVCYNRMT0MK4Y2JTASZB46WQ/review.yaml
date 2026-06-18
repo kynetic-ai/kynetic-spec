@@ -158,6 +158,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-18T09:01:46.386Z
+  - _ulid: 01KVCZEGHKF4M9N2J6T8PJ6SCN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVCZEG9Y8CX6XGZ9NQX4E6HZ
+    timestamp: 2026-06-18T09:02:00.755Z
 examined_commit: a19ac97e767c7542d75f92ff8e2d2c8dae5ef231
 external_links: []
 lifecycle_state: open
@@ -167,8 +174,30 @@ subject:
   content_hash: ""
   ref: "@01KVC30V6R468JZTF5BHVVYKB0"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVCZEG9Y8CX6XGZ9NQX4E6HZ
+    anchor:
+      type: code
+      commit: a19ac97e767c7542d75f92ff8e2d2c8dae5ef231
+      line_end: 1066
+      line_start: 1063
+      path: tests/daemon-command-api.test.ts
+      side: head
+    entries:
+      - _ulid: 01KVCZEG9YW4SHAXAPSJ0Q2YE0
+        author: Jacob Chapel
+        body: "MUST-FIX: This AC-tagged test does not prove @mutation-event-coverage ac-1. The AC requires
+          typed task events for creation, any state transition, and field changes, with prior/new
+          status on transitions. This test only runs task add, task set with a title change, and
+          task note, then asserts created/set/note_added payloads; it never executes a state
+          transition through the command route. The task scope specifically calls out all
+          transitions, including cancel, reset, and unblock, and those newly mapped actions would
+          not fail this test if they stopped emitting events. Add behavioral command-route coverage
+          for the transition actions in scope, at minimum the newly added cancel/reset/unblock
+          mappings, and assert old_status/new_status on the resulting task_updated events."
+        created_at: 2026-06-18T09:02:00.510Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-18T08:48:29.849Z
-updated_at: 2026-06-18T09:01:46.141Z
+updated_at: 2026-06-18T09:02:00.510Z
 notes: []

@@ -27266,7 +27266,7 @@ reviews:
   - _ulid: 01KVCYNRMT0MK4Y2JTASZB46WQ
     slugs: []
     title: Review task-missing-event-types cycle 2
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 8
     examined_commit: a19ac97e767c7542d75f92ff8e2d2c8dae5ef231
@@ -27277,8 +27277,8 @@ reviews:
       content_hash: ""
       ref: "@01KVC30V6R468JZTF5BHVVYKB0"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-18T08:48:29.849Z
-    updated_at: 2026-06-18T09:01:46.141Z
+    updated_at: 2026-06-18T09:02:00.510Z
