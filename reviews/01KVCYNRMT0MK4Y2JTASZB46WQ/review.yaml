@@ -194,6 +194,12 @@ events:
     payload:
       thread_ulid: 01KVCZEG9Y8CX6XGZ9NQX4E6HZ
     timestamp: 2026-06-18T09:27:26.232Z
+  - _ulid: 01KVD0XE8DCJWVK7EAFC7AK9XJ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVCZEG9Y8CX6XGZ9NQX4E6HZ
+    timestamp: 2026-06-18T09:27:38.509Z
 examined_commit: a19ac97e767c7542d75f92ff8e2d2c8dae5ef231
 external_links: []
 lifecycle_state: closed
@@ -233,6 +239,8 @@ threads:
           production-like task summaries so cancel exercises the real cache-backed listTasks path."
         created_at: 2026-06-18T09:27:25.997Z
     kind: blocker
+    resolved_at: 2026-06-18T09:27:38.280Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVCZF36JDA15FEZ69JE54J2C
     entries:
       - _ulid: 01KVCZF36J4B10F837D563A79J
@@ -276,5 +284,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-18T09:02:31.376Z
 created_at: 2026-06-18T08:48:29.849Z
-updated_at: 2026-06-18T09:27:25.997Z
+updated_at: 2026-06-18T09:27:38.280Z
 notes: []
