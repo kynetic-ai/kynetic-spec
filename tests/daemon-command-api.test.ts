@@ -36,6 +36,7 @@ import {
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
 import { createCommandRoutes } from "../dist/daemon/routes/command.js";
+import { createTasksRoutes } from "../dist/daemon/routes/tasks.js";
 import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 import type {
   RouteEntityCache,
@@ -51,6 +52,7 @@ import type { MetaContext } from "../src/parser/meta.js";
 ensureSplitBackendRegistered();
 
 const TASK_ULID = testUlid("TASK", 1);
+const COMMAND_TASK_ULID = testUlid("TASK", 2);
 const SPEC_ULID = testUlid("SPEC", 2);
 const PLAN_ULID = testUlid("PLAN", 3);
 const TEST_CWD = process.cwd();
@@ -112,6 +114,11 @@ function pickRefEntity(entity: { _ulid: string; slugs?: string[] }): RefEntity {
     _ulid: entity._ulid,
     slugs: entity.slugs ?? [],
   };
+}
+
+function stripAnsi(s: string): string {
+  // oxlint-disable-next-line no-control-regex
+  return s.replace(/\x1b\[[0-9;]*m/g, "");
 }
 
 async function buildCacheSnapshot(): Promise<CacheSnapshot> {
@@ -302,10 +309,10 @@ function createMockEntityCache(
     getShadowInfo: cacheSnapshot.shadowInfo,
     getProjectConfig: cacheSnapshot.projectConfig,
     getSessionContext: () => null,
-    writeThrough: vi.fn(async (domain: string) => {
+    writeThrough: vi.fn<(domain: string) => Promise<void>>(async (domain: string) => {
       writeThroughCalls.push(domain);
     }),
-    markWriteThrough: vi.fn(),
+    markWriteThrough: vi.fn<() => void>(),
     getCacheDiagnostics: () => ({
       projectPath: tempDir,
       domains: {
@@ -385,6 +392,26 @@ function makeRequest(urlPath: string, init: RequestInit = {}) {
   );
 }
 
+function captureAllBroadcasts() {
+  const events: Array<{
+    topic: string;
+    event: string;
+    data: Record<string, unknown>;
+    projectPath?: string;
+  }> = [];
+  const origBroadcast = pubsub.broadcast.bind(pubsub);
+  pubsub.broadcast = (
+    topic: string,
+    event: string,
+    data: Record<string, unknown>,
+    projectPath?: string,
+  ) => {
+    events.push({ topic, event, data, projectPath });
+    origBroadcast(topic, event, data, projectPath);
+  };
+  return events;
+}
+
 function setupFixtures() {
   mkdirSync(path.join(tempDir, ".kspec"), { recursive: true });
   mkdirSync(path.join(tempDir, "modules"), { recursive: true });
@@ -423,6 +450,18 @@ includes:
     slugs: ["task-test"],
     title: "Test Task",
     description: "A test task",
+    status: "pending",
+    type: "task",
+    automation: "eligible",
+    spec_ref: "@test-feature",
+    created_at: "2026-01-01T00:00:00Z",
+    notes: [],
+  });
+  seedSplitTask(tempDir, {
+    _ulid: COMMAND_TASK_ULID,
+    slugs: ["task-command"],
+    title: "Command Task",
+    description: "A task mutated through the command endpoint",
     status: "pending",
     type: "task",
     automation: "eligible",
@@ -509,6 +548,12 @@ function rebuildApp(routeOptions: { commandTimeoutMs?: number } = {}) {
       },
     }))
     .use(middleware)
+    .use(
+      createTasksRoutes({
+        pubsub,
+        getEntityCache,
+      }),
+    )
     .use(
       createCommandRoutes({
         pubsub,
@@ -671,8 +716,6 @@ describe("Daemon Command API", () => {
     // CLI stderr contains the Commander "command:*" handler output.
     // The API must produce the same error text — not a custom message.
     // Strip ANSI codes for comparison since chalk may differ between contexts.
-    // oxlint-disable-next-line no-control-regex
-    const stripAnsi = (s: string) => s.replace(/\x1b\[[0-9;]*m/g, "");
     const cliStderr = stripAnsi(cliResult.stderr);
     const apiStderr = stripAnsi(body.stderr);
 
@@ -942,18 +985,7 @@ describe("Daemon Command API", () => {
 
   // AC: @daemon-command-api ac-mutation-cache-update
   it("broadcasts WebSocket event after successful mutating command", async () => {
-    const broadcastEvents: Array<{ topic: string; event: string; data: Record<string, unknown> }> =
-      [];
-    const origBroadcast = pubsub.broadcast.bind(pubsub);
-    pubsub.broadcast = (
-      topic: string,
-      event: string,
-      data: Record<string, unknown>,
-      projectPath?: string,
-    ) => {
-      broadcastEvents.push({ topic, event, data });
-      origBroadcast(topic, event, data, projectPath);
-    };
+    const broadcastEvents = captureAllBroadcasts();
 
     const response = await makeRequest("/api/command", {
       method: "POST",
@@ -973,6 +1005,55 @@ describe("Daemon Command API", () => {
     expect(commandEvent!.data.mutating).toBe(true);
     expect(commandEvent!.data.success).toBe(true);
     expect(commandEvent!.data.command).toBe("task start");
+  });
+
+  // AC: @shared-mutation-pipeline ac-3
+  it("emits the same typed task event schema for REST and command task mutations", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+
+    const restResponse = await makeRequest("/api/tasks/@task-test/start", {
+      method: "POST",
+    });
+    expect(restResponse.status).toBe(200);
+
+    const commandResponse = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "task start",
+        args: { ref: "@task-command" },
+      }),
+    });
+    expect(commandResponse.status).toBe(200);
+    const commandBody = await commandResponse.json();
+    expect(commandBody.exitCode).toBe(0);
+
+    const taskEvents = broadcastEvents.filter((entry) => entry.event === "task_updated");
+    expect(taskEvents).toHaveLength(2);
+
+    const [restEvent, commandEvent] = taskEvents;
+    expect(commandEvent.topic).toBe(restEvent.topic);
+    expect(commandEvent.topic).toBe("tasks:updates");
+    expect(commandEvent.event).toBe(restEvent.event);
+    expect(Object.keys(commandEvent.data).toSorted()).toEqual(
+      Object.keys(restEvent.data).toSorted(),
+    );
+    expect(commandEvent.data).toMatchObject({
+      action: "start",
+      old_status: "pending",
+      new_status: "in_progress",
+      title: "Command Task",
+      ulid: COMMAND_TASK_ULID,
+    });
+    expect(restEvent.data).toMatchObject({
+      action: "start",
+      old_status: "pending",
+      new_status: "in_progress",
+      title: "Test Task",
+      ulid: TASK_ULID,
+    });
+
+    const commandStreamEvent = broadcastEvents.find((entry) => entry.event === "command_executed");
+    expect(commandStreamEvent).toBeDefined();
   });
 
   // AC: @daemon-command-api ac-mutation-cache-update
@@ -1239,18 +1320,7 @@ describe("Daemon Command API", () => {
 
   // AC: @daemon-command-api ac-batch-support
   it("broadcasts WebSocket event after batch completion", async () => {
-    const broadcastEvents: Array<{ topic: string; event: string; data: Record<string, unknown> }> =
-      [];
-    const origBroadcast = pubsub.broadcast.bind(pubsub);
-    pubsub.broadcast = (
-      topic: string,
-      event: string,
-      data: Record<string, unknown>,
-      projectPath?: string,
-    ) => {
-      broadcastEvents.push({ topic, event, data });
-      origBroadcast(topic, event, data, projectPath);
-    };
+    const broadcastEvents = captureAllBroadcasts();
 
     await makeRequest("/api/command/batch", {
       method: "POST",
@@ -1268,6 +1338,57 @@ describe("Daemon Command API", () => {
     expect(batchEvent).toBeDefined();
     expect(batchEvent!.data.mutating).toBe(true);
     expect(batchEvent!.data.success).toBe(true);
+  });
+
+  // AC: @shared-mutation-pipeline ac-5
+  it("emits one typed task event for each affected task in a successful command batch", async () => {
+    const broadcastEvents = captureAllBroadcasts();
+
+    const response = await makeRequest("/api/command/batch", {
+      method: "POST",
+      body: JSON.stringify({
+        commands: [
+          {
+            command: "task start",
+            args: { ref: "@task-test" },
+            id: "start-rest-fixture",
+          },
+          {
+            command: "task start",
+            args: { ref: "@task-command" },
+            id: "start-command-fixture",
+          },
+        ],
+      }),
+    });
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.success).toBe(true);
+    expect(body.summary.succeeded).toBe(2);
+
+    const taskEvents = broadcastEvents.filter((entry) => entry.event === "task_updated");
+    expect(taskEvents).toHaveLength(2);
+    expect(taskEvents.map((entry) => entry.topic)).toEqual(["tasks:updates", "tasks:updates"]);
+    expect(taskEvents.map((entry) => entry.data.ulid).toSorted()).toEqual(
+      [TASK_ULID, COMMAND_TASK_ULID].toSorted(),
+    );
+    for (const event of taskEvents) {
+      expect(event.data).toMatchObject({
+        action: "start",
+        old_status: "pending",
+        new_status: "in_progress",
+      });
+    }
+
+    const batchEvent = broadcastEvents.find((entry) => entry.event === "batch_executed");
+    expect(batchEvent).toBeDefined();
+    expect(broadcastEvents.indexOf(taskEvents[0])).toBeLessThan(
+      broadcastEvents.indexOf(batchEvent!),
+    );
+    expect(broadcastEvents.indexOf(taskEvents[1])).toBeLessThan(
+      broadcastEvents.indexOf(batchEvent!),
+    );
   });
 
   // AC: @daemon-command-api ac-batch-support
@@ -1480,8 +1601,12 @@ describe("Daemon Command API", () => {
     // set by runWithEntityCache. The post-batch writeThrough calls
     // cache.writeThrough(domain) but never getProjectConfig/getShadowInfo.
     // So calls to these methods prove ALS propagation into batch execution.
-    const getProjectConfigSpy = vi.fn(cacheSnapshot.projectConfig);
-    const getShadowInfoSpy = vi.fn(cacheSnapshot.shadowInfo);
+    const getProjectConfigSpy = vi.fn<NonNullable<RouteEntityCache["getProjectConfig"]>>(
+      cacheSnapshot.projectConfig,
+    );
+    const getShadowInfoSpy = vi.fn<NonNullable<RouteEntityCache["getShadowInfo"]>>(
+      cacheSnapshot.shadowInfo,
+    );
 
     const spiedCache: RouteEntityCache = {
       ...mockCache,
@@ -1542,7 +1667,7 @@ describe("Daemon Command API", () => {
     // commandExecutionStorage is active, the route's process.stdout.write
     // hook captures the sentinel and returns true without calling the
     // original write — so _write never sees it.
-    const SENTINEL = "BATCH_STDOUT_WRITE_SENTINEL_" + Date.now();
+    const SENTINEL = `BATCH_STDOUT_WRITE_SENTINEL_${Date.now()}`;
     let sentinelWritten = false;
 
     // Spy on the underlying stream writer to detect sentinel leaks.

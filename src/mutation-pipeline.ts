@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import { commitIfShadow, type ShadowConfig } from "./parser/shadow.js";
 
 export interface MutationCacheCapability {
@@ -30,6 +31,11 @@ export interface MutationEventDescriptor {
   topic: string;
   event: string;
   data: Record<string, unknown>;
+}
+
+export interface MutationEventCollector {
+  record(events: MutationEventDescriptor[]): void;
+  drain(): MutationEventDescriptor[];
 }
 
 export interface MutationCommitDescriptor {
@@ -108,4 +114,33 @@ export class MutationPipeline {
 
 export function createMutationPipeline(options: MutationPipelineOptions = {}): MutationPipeline {
   return new MutationPipeline(options);
+}
+
+const mutationEventCollectorStorage = new AsyncLocalStorage<MutationEventCollector>();
+
+export function createMutationEventCollector(): MutationEventCollector {
+  const events: MutationEventDescriptor[] = [];
+  return {
+    record(nextEvents) {
+      events.push(...nextEvents);
+    },
+    drain() {
+      return events.splice(0, events.length);
+    },
+  };
+}
+
+export function runWithMutationEventCollector<T>(
+  collector: MutationEventCollector,
+  fn: () => T,
+): T {
+  return mutationEventCollectorStorage.run(collector, fn);
+}
+
+export function recordMutationEvents(events: MutationEventDescriptor[]): void {
+  if (events.length === 0) {
+    return;
+  }
+
+  mutationEventCollectorStorage.getStore()?.record(events);
 }
