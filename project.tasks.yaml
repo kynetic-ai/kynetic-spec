@@ -32591,7 +32591,7 @@
   type: task
   spec_ref: "@shared-mutation-pipeline"
   plan_ref: "@plan-dispatch-mutation-service"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -32601,4 +32601,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-18T00:45:13.795Z
+  started_at: 2026-06-18T04:57:52.325Z
   automation: eligible
