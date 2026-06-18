@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KVEG2ZNBC3ZHQ819A8GEC0ER
+    content: "Approach: extend PlanSchema with revision metadata defaults, keep revision list in folder
+      plan.yaml and only current_revision in project.plans.yaml, reuse resolveCliActor for revision
+      authors, and add parser helpers for minting plus read-only git-show content resolution.
+      Explicit plan publish and import --into will commit content first, capture the shadow HEAD
+      pointer, then append revision metadata in a separate shadow commit. Non-publish plan mutations
+      will continue through existing paths without touching revisions. Test plan: behavioral CLI
+      tests for publish/import sequencing, non-publish no-mint, empty legacy/new plans, plan get
+      display, no body duplication in metadata/index, ordinal ordering, and resolved content byte
+      identity; backfill and review binding are scoped to dependent tasks."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T23:12:03.243Z
