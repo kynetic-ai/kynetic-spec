@@ -24,6 +24,12 @@ events:
       kind: blocker
       thread_ulid: 01KVD6ATWYYJYWS2W77RTEKENE
     timestamp: 2026-06-18T11:02:20.607Z
+  - _ulid: 01KVD6BV7VX932RV8AP751KP49
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVD6ATWYYJYWS2W77RTEKENE
+    timestamp: 2026-06-18T11:02:53.435Z
 examined_commit: c072e12fc35be928c8814703abdfec203aa58f48
 external_links: []
 lifecycle_state: open
@@ -53,8 +59,22 @@ threads:
           @mutation-event-coverage ac-1/ac-5. Evidence:  shows these call sites in , , and , while
           the review verdict daemon route only broadcasts ."
         created_at: 2026-06-18T11:02:20.318Z
+      - _ulid: 01KVD6BTYGFRF2ZPKX9GZ6VQAQ
+        author: Jacob Chapel
+        body: "Corrected finding text: MUST-FIX: buildTaskMutationEvent still drops task mutations whenever
+          callers use skipCommit true or omit commit metadata, but several real task mutations are
+          intentionally outer-committed. For example, linkReviewToTasks sets review_ref with
+          skipCommit true, handleVerdictTaskTransition transitions pending-review tasks to
+          needs_work with skipCommit true, and plan resource materialization patches a task
+          resource_refs field without commit metadata. None of those paths has a surrounding
+          tasks:updates task_updated event, so subscribers miss successful task mutations through
+          non-task interfaces, violating @mutation-event-coverage ac-1/ac-5. Evidence: rg shows
+          these call sites in src/parser/review-task-integration.ts:85,
+          src/parser/review-task-integration.ts:185, and src/cli/commands/plan.ts:700, while the
+          review verdict daemon route only broadcasts reviews:updates verdict_submitted."
+        created_at: 2026-06-18T11:02:53.136Z
     kind: blocker
 verdicts: []
 created_at: 2026-06-18T10:58:07.299Z
-updated_at: 2026-06-18T11:02:20.318Z
+updated_at: 2026-06-18T11:02:53.136Z
 notes: []
