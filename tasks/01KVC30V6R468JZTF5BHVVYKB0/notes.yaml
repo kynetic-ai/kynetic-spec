@@ -43,3 +43,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T09:02:33.352Z
+  - _ulid: 01KVCZW94890KRV7QTD5RKPBDN
+    content: "Fix cycle 2 approach: address review @01KVCYNR blocker by expanding the existing
+      behavioral command-route AC test to exercise state-transition task mutations, specifically
+      cancel/reset/unblock, and assert task_updated old_status/new_status payloads. Edge cases: use
+      command-route mutations only, preserve existing creation/field/note assertions, and avoid
+      source-scanning coverage. Test plan: run focused daemon-command API test, focused lint on
+      changed test file, then required project gates before resubmitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T09:09:31.912Z
