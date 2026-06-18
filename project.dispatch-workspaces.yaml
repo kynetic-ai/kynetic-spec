@@ -20373,12 +20373,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-18T20:09:05.494Z
+      updated_at: 2026-06-18T20:09:19.561Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-18T20:09:05.494Z
+      updated_at: 2026-06-18T20:09:19.561Z
     integration:
       status: pending
       detail: null
@@ -20386,7 +20386,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: d1183ad57015a8b808093382206b800aa903b0ca
-      updated_at: 2026-06-18T20:09:05.494Z
+      updated_at: 2026-06-18T20:09:19.561Z
     lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVC30VVC1G051BP2QT5RPX3R
@@ -20395,16 +20395,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-18T19:45:00.511Z
-      last_reconciled_at: 2026-06-18T20:09:05.494Z
+      last_reconciled_at: 2026-06-18T20:09:19.561Z
       created_at: 2026-06-18T12:22:37.754Z
-      updated_at: 2026-06-18T20:09:05.494Z
+      updated_at: 2026-06-18T20:09:19.561Z
     workspace_id: dispatch-workspace-01KVC30VVC1G051BP2QT5RPX3R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 88b0691213ac017059815e1fa58f064e997647c2
+        last_seen_at: 2026-06-18T20:09:19.561Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-targeted-consumption-01kvc30v-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ui-targeted-consumption/01kvc30v
-        head: d1183ad57015a8b808093382206b800aa903b0ca
-        last_seen_at: 2026-06-18T19:44:52.946Z
+        head: 88b0691213ac017059815e1fa58f064e997647c2
+        last_seen_at: 2026-06-18T20:09:19.561Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-targeted-consumption-01kvc30v
