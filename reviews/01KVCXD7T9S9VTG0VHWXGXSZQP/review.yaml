@@ -1,0 +1,26 @@
+_ulid: 01KVCXD7T9S9VTG0VHWXGXSZQP
+slugs: []
+title: Review task-dispatch-engine-mutation-path cycle 2
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVCXD7T9H1YSKBA8YE7TZZP0
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-18T08:26:21.897Z
+examined_commit: e2835cf4793e98df99dd52a668712990e680a08a
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVC30VGXGQJ23PVYQWJB84DN"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-18T08:26:21.897Z
+updated_at: null
+notes: []
