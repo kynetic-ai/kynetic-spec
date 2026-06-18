@@ -22597,6 +22597,18 @@ observations:
     resolved: false
     workflow_ref: "@01KV9FNH"
     created_at: 2026-06-17T00:30:52.455Z
+  - _ulid: 01KVCHA3BYJB4QB9XP4X2F1Y5P
+    type: success
+    content: For broad daemon route migrations, running a focused route-family suite across every
+      affected handler before the full suite is an effective regression screen. In
+      @task-shared-mutation-pipeline, the focused 268-test migrated-route run caught runtime-only
+      stale-reference mistakes in review verdict/lifecycle payloads, allowing a quick fix before the
+      40-minute full npm test gate.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KVCH70"
+    created_at: 2026-06-18T04:54:56.126Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
