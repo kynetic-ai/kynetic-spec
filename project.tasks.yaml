@@ -32591,15 +32591,16 @@
   type: task
   spec_ref: "@shared-mutation-pipeline"
   plan_ref: "@plan-dispatch-mutation-service"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
   tags:
     - specs
     - maintenance
-  notes_count: 1
+  notes_count: 2
   todos_count: 0
   created_at: 2026-06-18T00:45:13.795Z
   started_at: 2026-06-18T04:57:52.325Z
+  submitted_at: 2026-06-18T05:14:35.884Z
   automation: eligible

@@ -35,7 +35,7 @@ description: |
 spec_ref: "@shared-mutation-pipeline"
 plan_ref: "@plan-dispatch-mutation-service"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -44,6 +44,14 @@ tags:
   - specs
   - maintenance
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-mutation-service-spec-links/01kvc30w
+  captured_at: 2026-06-18T05:14:35.879Z
+  commit: dd0134dc2c3b7a7b5f268a909499ba91b36cb880
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KVCHDZ1G7TFFMF46DXGJ8H2S
 history:
   - author: Jacob Chapel
@@ -66,7 +74,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-18T04:57:52.326Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-mutation-service-spec-links/01kvc30w
+          captured_at: 2026-06-18T05:14:35.879Z
+          commit: dd0134dc2c3b7a7b5f268a909499ba91b36cb880
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-18T05:14:35.884Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-18T05:14:35.884Z
 created_at: 2026-06-18T00:45:13.795Z
 started_at: 2026-06-18T04:57:52.325Z
+submitted_at: 2026-06-18T05:14:35.884Z
 todos: []
 automation: eligible

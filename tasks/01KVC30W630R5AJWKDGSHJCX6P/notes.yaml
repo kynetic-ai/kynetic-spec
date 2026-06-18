@@ -9,3 +9,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T04:58:46.990Z
+  - _ulid: 01KVCJE2J1EJ7ETK98YZ9X95QD
+    content: "Completed relationship metadata task: created six relates_to links from the plan specs to
+      their foundation specs: @shared-mutation-pipeline to @daemon-command-api and
+      @daemon-entity-cache; @mutation-event-coverage to @ui-api-aggregation, @api-contract, and
+      @trait-entity-scoped-local-resources-1; @dispatch-mutation-transparency to
+      @agent-invocation-lifecycle. Verified forward and reverse link list output, confirmed kspec
+      refs includes the new relationship metadata, and ran gates: npm run format:check; npm run lint
+      -- --quiet (0 errors, existing warnings); npm run typecheck; npm test (2880 suites passed,
+      10934 tests passed, 3 skipped); kspec validate --refs/--alignment/--completeness
+      --warnings-ok. No code/test files changed, so focused changed-file oxlint was not applicable."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T05:14:34.946Z
