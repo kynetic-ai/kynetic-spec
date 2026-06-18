@@ -2078,6 +2078,44 @@ function recordSpecItemMutationEvent(
   ]);
 }
 
+function collectSpecItemMutationTargets(raw: unknown): Array<Pick<SpecItem, "_ulid" | "title">> {
+  const targets: Array<Pick<SpecItem, "_ulid" | "title">> = [];
+
+  const visit = (value: unknown): void => {
+    if (!value || typeof value !== "object") {
+      return;
+    }
+
+    const obj = value as Record<string, unknown>;
+    if (typeof obj._ulid === "string" && typeof obj.title === "string") {
+      targets.push({ _ulid: obj._ulid, title: obj.title });
+    }
+
+    for (const field of NESTED_ITEM_FIELDS) {
+      if (!Array.isArray(obj[field])) {
+        continue;
+      }
+      for (const child of obj[field]) {
+        visit(child);
+      }
+    }
+  };
+
+  visit(raw);
+  return targets;
+}
+
+function recordRemovedSpecItemMutationEvents(raw: unknown, fallbackItem: LoadedSpecItem): void {
+  const targets = collectSpecItemMutationTargets(raw);
+  if (!targets.some((target) => target._ulid === fallbackItem._ulid)) {
+    targets.unshift(fallbackItem);
+  }
+
+  for (const target of targets) {
+    recordSpecItemMutationEvent(target, "removed");
+  }
+}
+
 /**
  * Add a spec item as a child of a parent item.
  * @param parent The parent item to add under
@@ -2294,10 +2332,11 @@ export async function deleteSpecItem(_ctx: KspecContext, item: LoadedSpecItem): 
         if (!nav) {
           return false;
         }
+        const removedRaw = nav.array[nav.index];
         // Remove the item from the array
         nav.array.splice(nav.index, 1);
         await writeYamlFilePreserveFormat(item._sourceFile!, raw);
-        recordSpecItemMutationEvent(item, "removed");
+        recordRemovedSpecItemMutationEvents(removedRaw, item);
         return true;
       }
 
@@ -2306,9 +2345,10 @@ export async function deleteSpecItem(_ctx: KspecContext, item: LoadedSpecItem): 
       if (found?.path) {
         const nav = navigateToPath(raw, found.path);
         if (nav) {
+          const removedRaw = nav.array[nav.index];
           nav.array.splice(nav.index, 1);
           await writeYamlFilePreserveFormat(item._sourceFile!, raw);
-          recordSpecItemMutationEvent(item, "removed");
+          recordRemovedSpecItemMutationEvents(removedRaw, item);
           return true;
         }
       }
@@ -2322,9 +2362,10 @@ export async function deleteSpecItem(_ctx: KspecContext, item: LoadedSpecItem): 
             (i as Record<string, unknown>)._ulid === item._ulid,
         );
         if (index >= 0) {
+          const removedRaw = raw[index];
           raw.splice(index, 1);
           await writeYamlFilePreserveFormat(item._sourceFile!, raw);
-          recordSpecItemMutationEvent(item, "removed");
+          recordRemovedSpecItemMutationEvents(removedRaw, item);
           return true;
         }
       }

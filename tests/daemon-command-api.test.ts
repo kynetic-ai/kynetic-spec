@@ -1298,36 +1298,63 @@ describe("Daemon Command API", () => {
   it("emits spec item events for item create, change, and removal through the command route", async () => {
     const broadcastEvents = captureAllBroadcasts();
 
-    const createResponse = await makeRequest("/api/command", {
-      method: "POST",
-      body: JSON.stringify({
-        command: "item add",
-        args: {
-          json: true,
-          under: "@test-feature",
-          title: "Event Child Requirement",
-          type: "requirement",
-          slug: "event-child-requirement",
-        },
-      }),
-    });
-    expect(createResponse.status).toBe(200);
-    const createBody = await createResponse.json();
-    expect(createBody.exitCode).toBe(0);
-    const createOutput = JSON.parse(createBody.stdout) as {
-      item?: { _ulid: string };
-      data?: { item?: { _ulid: string } };
+    const createItem = async (
+      under: string,
+      title: string,
+      type: string,
+      slug: string,
+    ): Promise<{ _ulid: string; ref: string }> => {
+      const response = await makeRequest("/api/command", {
+        method: "POST",
+        body: JSON.stringify({
+          command: "item add",
+          args: {
+            json: true,
+            under,
+            title,
+            type,
+            slug,
+          },
+        }),
+      });
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      expect(body.exitCode).toBe(0);
+      const output = JSON.parse(body.stdout) as {
+        item?: { _ulid: string };
+        data?: { item?: { _ulid: string } };
+      };
+      const item = output.item ?? output.data?.item;
+      expect(item?._ulid).toEqual(expect.any(String));
+      cacheSnapshot = await buildCacheSnapshot();
+      return { _ulid: item!._ulid, ref: `@${item!._ulid}` };
     };
-    const createdItem = createOutput.item ?? createOutput.data?.item;
-    expect(createdItem?._ulid).toEqual(expect.any(String));
-    const createdItemRef = `@${createdItem!._ulid}`;
+
+    const createdItem = await createItem(
+      "@test-feature",
+      "Event Child Requirement",
+      "requirement",
+      "event-child-requirement",
+    );
+    const nestedConstraint = await createItem(
+      createdItem.ref,
+      "Event Nested Constraint",
+      "constraint",
+      "event-nested-constraint",
+    );
+    const deepDecision = await createItem(
+      nestedConstraint.ref,
+      "Event Deep Decision",
+      "decision",
+      "event-deep-decision",
+    );
     cacheSnapshot = await buildCacheSnapshot();
 
     const setResponse = await makeRequest("/api/command", {
       method: "POST",
       body: JSON.stringify({
         command: "item set",
-        args: { ref: createdItemRef, title: "Renamed Event Child" },
+        args: { ref: createdItem.ref, title: "Renamed Event Child" },
       }),
     });
     const setBody = await setResponse.json();
@@ -1339,7 +1366,7 @@ describe("Daemon Command API", () => {
       method: "POST",
       body: JSON.stringify({
         command: "item delete",
-        args: { ref: createdItemRef, force: true },
+        args: { ref: createdItem.ref, cascade: true, force: true },
       }),
     });
     expect(deleteResponse.status).toBe(200);
@@ -1348,15 +1375,33 @@ describe("Daemon Command API", () => {
     const itemEvents = broadcastEvents.filter(
       (entry) => entry.topic === "items:updates" && entry.event === "spec_item_changed",
     );
-    expect(itemEvents.map((entry) => entry.data.action)).toEqual(["created", "changed", "removed"]);
+    expect(itemEvents.map((entry) => entry.data.action)).toEqual([
+      "created",
+      "created",
+      "created",
+      "changed",
+      "removed",
+      "removed",
+      "removed",
+    ]);
     expect(itemEvents.map((entry) => entry.data.title)).toEqual([
       "Event Child Requirement",
+      "Event Nested Constraint",
+      "Event Deep Decision",
       "Renamed Event Child",
+      "Event Nested Constraint",
+      "Event Deep Decision",
       "Renamed Event Child",
     ]);
-    for (const event of itemEvents) {
-      expect(event.data.item_ulid).toEqual(expect.any(String));
-    }
+    expect(itemEvents.map((entry) => entry.data.item_ulid)).toEqual([
+      createdItem._ulid,
+      nestedConstraint._ulid,
+      deepDecision._ulid,
+      createdItem._ulid,
+      nestedConstraint._ulid,
+      deepDecision._ulid,
+      createdItem._ulid,
+    ]);
   });
 
   // AC: @mutation-event-naming ac-1
