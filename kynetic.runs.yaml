@@ -69856,9 +69856,25 @@ runs:
     completed_at: 2026-06-18T11:42:59.485Z
   - _ulid: 01KVD9VZB505S0T4ARMDA4WPBK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-18T12:04:07.654Z
+        completed_at: 2026-06-18T12:05:01.679Z
+        notes: "What worked: the detached reviewer merge helper cleanly selected the existing target
+          checkout, merged the approved branch, and kept the review snapshot isolated. Review
+          records also gave a clear merge gate after checks and verdict were recorded. Friction:
+          full npm test still produced unrelated flaky noise in tests/session-watcher.test.ts, and
+          recording many review checks remains repetitive. Search before capture: detached reviewer
+          success is already covered by observation @01KRGCTK; session-watcher flake is tracked by
+          task @01KVD9KA; review-check friction is already represented by existing inbox/observation
+          records found through kspec search. No new capture needed."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-18T12:05:01.679Z
+        completed_at: 2026-06-18T12:05:01.679Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-18T12:04:07.654Z
