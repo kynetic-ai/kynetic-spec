@@ -69963,7 +69963,7 @@ runs:
     completed_at: 2026-06-18T12:21:02.215Z
   - _ulid: 01KVDBVTVEQH4DHNBKPWX5ZVNB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69977,7 +69977,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T12:40:19.014Z
-        completed_at: 2026-06-18T12:40:19.014Z
+        completed_at: 2026-06-18T12:40:28.706Z
+        notes: "Friction points: full npm test took 2475.1s during review, which kept the merge blocked for
+          a long time. Review evidence/check recording still requires assembling many command
+          outcomes into individual review checks, though kspec batch made this manageable. No
+          user-facing confusion or code workaround beyond waiting for the required gate."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T12:40:28.706Z
+        completed_at: 2026-06-18T12:40:28.706Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-18T12:39:00.206Z
