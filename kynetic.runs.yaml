@@ -69903,7 +69903,7 @@ runs:
     completed_at: 2026-06-18T12:05:51.405Z
   - _ulid: 01KVDAQ0S7VSZSJ61K7NM989PK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -69918,7 +69918,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-18T12:19:45.535Z
-        completed_at: 2026-06-18T12:19:45.535Z
+        completed_at: 2026-06-18T12:19:56.584Z
+        notes: "Friction points: the task initially had no spec_ref despite automation eligibility, which
+          required a late metadata correction during validation. The full fresh npm test gate took
+          about 2446s, making closeout slow even for a narrow test-only change. The actual flaky
+          test issue was the existing daemon-sensitive pattern of fixed sleeps around async watcher
+          readiness; this was addressed locally with vi.waitFor."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-18T12:19:56.584Z
+        completed_at: 2026-06-18T12:19:56.584Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-18T12:18:53.863Z
