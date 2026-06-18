@@ -2,7 +2,93 @@ _ulid: 01KVCVX6AGAJDJ1H9DAY4B98QA
 slugs: []
 title: Review task-missing-event-types
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check . reported all matched files use correct format; 1088 files checked."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-18T08:17:22.834Z
+    completed_at: 2026-06-18T08:17:22.834Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo lint reported 689 warnings and 0 errors (existing warning baseline). Focused
+      lint on 8 changed TS/test files via npx oxlint reported 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-18T08:17:25.876Z
+    completed_at: 2026-06-18T08:17:25.876Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed on packages/shared/src/websocket.ts,
+      packages/web-ui/src/lib/query/ws-invalidation.ts, src/parser/review-storage-manager.ts,
+      src/parser/reviews.ts, src/parser/task-data-manager.ts, src/parser/yaml.ts,
+      tests/daemon-api/plan-resources.test.ts, tests/daemon-command-api.test.ts with 0 warnings and
+      0 errors.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-18T08:17:28.996Z
+    completed_at: 2026-06-18T08:17:28.996Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared and tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-18T08:17:31.838Z
+    completed_at: 2026-06-18T08:17:31.838Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2882/2882 test suites passed; 10946 passed, 3 skipped of 10949 tests; duration
+      2864.2s. Full log: /tmp/kspec-test-cache/01KVCVV3R8HKX6RATRETKJ3JNM/8ef2e29ca1da810d.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-18T08:17:34.692Z
+    completed_at: 2026-06-18T08:17:34.692Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: schema OK, references OK, 6 deprecated-reference warnings."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-18T08:17:37.527Z
+    completed_at: 2026-06-18T08:17:37.527Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: schema OK, references OK, 55 alignment warnings."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-18T08:17:40.484Z
+    completed_at: 2026-06-18T08:17:40.484Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: schema OK, references OK, 298 completeness warnings."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-18T08:17:43.319Z
+    completed_at: 2026-06-18T08:17:43.319Z
 events:
   - _ulid: 01KVCVX6AFHS4N5ZBKTP0J18QH
     actor: Jacob Chapel
@@ -17,17 +103,163 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-18T08:00:32.237Z
+  - _ulid: 01KVCWWSMW90MD9A2XN9NCYTF8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-18T08:17:23.100Z
+  - _ulid: 01KVCWWWMMNRTB6KEVN973NX1M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-18T08:17:26.164Z
+  - _ulid: 01KVCWWZMQVQC67M8KK2JBBMVY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-18T08:17:29.239Z
+  - _ulid: 01KVCWX2DFEPNVA2C86QEQMHTB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-18T08:17:32.080Z
+  - _ulid: 01KVCWX56TN2J0F7E8PYBAHYFN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-18T08:17:34.938Z
+  - _ulid: 01KVCWX7YYEEZPNHR6KZ2Z9ABR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-18T08:17:37.759Z
+  - _ulid: 01KVCWXAW4V8GJXM44825B8AWX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-18T08:17:40.740Z
+  - _ulid: 01KVCWXDKS3KRAXW911BMHPAXQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-18T08:17:43.545Z
+  - _ulid: 01KVCWXGK3Y38DQXJPEFGV8K0E
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVCWXGB9T5EMCGH163QMEVDC
+    timestamp: 2026-06-18T08:17:46.595Z
+  - _ulid: 01KVCWXKNK9AEAG9RJM45DE3YQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVCWXKCP96BVWGKCKC2AR0V2
+    timestamp: 2026-06-18T08:17:49.747Z
+  - _ulid: 01KVCWXPK5BGM2PBRGW7F5CV6W
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-18T08:17:52.741Z
+  - _ulid: 01KVCWXPK5DG9E3APE3W9T1W9X
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-18T08:17:52.741Z
 examined_commit: 29b26e465e5c2c5071873d4970b4a2e8de659419
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVC30V6R468JZTF5BHVVYKB0"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVCWXGB9T5EMCGH163QMEVDC
+    anchor:
+      type: code
+      commit: 29b26e465e5c2c5071873d4970b4a2e8de659419
+      line_end: 268
+      line_start: 268
+      path: packages/shared/src/websocket.ts
+      side: head
+    entries:
+      - _ulid: 01KVCWXGB9G4JWTE1CC13KMBAF
+        author: Jacob Chapel
+        body: "MUST-FIX: The review_created payload does not identify non-ref review subjects. Review
+          subjects can be task/plan/spec refs, code comparisons, or external URLs, but the new
+          payload only exposes subject_type plus subject_ref. The emitters in src/parser/reviews.ts
+          and src/parser/review-storage-manager.ts set subject_ref from review.subject.ref, so code
+          reviews and external reviews broadcast subject_ref: null with no base/head commits or URL.
+          That fails @mutation-event-coverage ac-2's requirement that the review-creation event
+          identify the new review and its subject; the new test only covers a task subject, so it
+          misses this case. Include enough subject identity for every ReviewSubject variant, or
+          carry the subject object in the event payload, and add coverage for at least a code or
+          external subject."
+        created_at: 2026-06-18T08:17:46.345Z
+    kind: blocker
+  - _ulid: 01KVCWXKCP96BVWGKCKC2AR0V2
+    entries:
+      - _ulid: 01KVCWXKCP0XS3TT7V4KWEYC4X
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; packages/shared/src/websocket.ts;
+          packages/web-ui/src/lib/query/ws-invalidation.ts; src/mutation-pipeline.ts;
+          src/parser/task-data-manager.ts; src/parser/reviews.ts;
+          src/parser/review-storage-manager.ts; src/parser/yaml.ts;
+          packages/daemon/src/routes/command.ts; packages/daemon/src/routes/tasks.ts;
+          packages/daemon/src/routes/reviews.ts; packages/daemon/src/routes/plan-resources.ts;
+          tests/daemon-command-api.test.ts; tests/daemon-api/plan-resources.test.ts.
+
+          Commands run: git diff/stat/name-only; kspec task get; kspec item get
+          @mutation-event-coverage, @mutation-event-naming, @ui-api-aggregation; rg searches for
+          mutation event call sites and AC annotations; npm run format:check; npm run lint --
+          --quiet; npx oxlint on changed files; npm run typecheck; npm test; kspec validate
+          --refs/--alignment/--completeness --warnings-ok.
+
+          Claims verified: task, review, item, and plan-resource events are routed through the
+          mutation event collector/route pipeline for successful command or route mutations; changed
+          tests exercise task, item, review-task-subject, vocabulary, and plan-resource emissions.
+
+          Categories searched: correctness, interface coverage, edge cases for non-ref review
+          subjects, test quality, AC annotations, validation, lint/type/test gates, and UI
+          invalidation integration. Finding recorded for incomplete review subject identity.
+        created_at: 2026-06-18T08:17:49.462Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-18T08:17:52.741Z
 created_at: 2026-06-18T08:00:07.504Z
-updated_at: 2026-06-18T08:00:31.970Z
+updated_at: 2026-06-18T08:17:52.741Z
 notes: []
