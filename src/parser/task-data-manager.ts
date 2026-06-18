@@ -20,6 +20,7 @@ import { createNote, createTask, getAuthor, getEntityCacheContext } from "./yaml
 import { createRequire } from "node:module";
 import { commitIfShadow } from "./shadow.js";
 import { getActiveBatchBuffer, runWithBuffer } from "../cli/batch-write-buffer.js";
+import { recordMutationEvents, type MutationEventDescriptor } from "../mutation-pipeline.js";
 
 /**
  * Storage format type. Only "split" is supported at runtime.
@@ -422,6 +423,62 @@ function getReadyTaskCache(): TaskReadCache | null {
   }
 
   return cache;
+}
+
+const TASK_MUTATION_ACTIONS: Record<string, string> = {
+  "task-start": "start",
+  "task-submit": "submit",
+  "task-complete": "complete",
+  "task-block": "block",
+  "task-unblock": "unblock",
+  "task-cancel": "cancel",
+  "task-reset": "reset",
+  "task-needs-work": "needs_work",
+  "task-set": "set",
+  "task-patch": "patch",
+};
+
+function taskEventRef(task: LoadedTask): string {
+  return task.slugs[0] ? `@${task.slugs[0]}` : `@${task._ulid}`;
+}
+
+function buildTaskMutationEvent(
+  before: LoadedTask,
+  after: LoadedTask,
+  commitOpts?: ShadowCommitOptions,
+): MutationEventDescriptor | null {
+  if (!commitOpts || commitOpts.skipCommit) {
+    return null;
+  }
+
+  const action = TASK_MUTATION_ACTIONS[commitOpts.operation];
+  if (!action) {
+    return null;
+  }
+
+  return {
+    topic: "tasks:updates",
+    event: "task_updated",
+    data: {
+      ref: taskEventRef(after),
+      ulid: after._ulid,
+      action,
+      title: after.title,
+      old_status: before.status === after.status ? null : before.status,
+      new_status: before.status === after.status ? null : after.status,
+    },
+  };
+}
+
+function recordTaskMutationEvent(
+  before: LoadedTask,
+  after: LoadedTask,
+  commitOpts?: ShadowCommitOptions,
+): void {
+  const event = buildTaskMutationEvent(before, after, commitOpts);
+  if (event) {
+    recordMutationEvents([event]);
+  }
 }
 
 function findTaskSummaryByRef(tasks: TaskSummary[], ref: string): TaskSummary | undefined {
@@ -925,11 +982,13 @@ export class TaskDataManager {
     // AC: @task-data-manager ac-9 — same-task mutations serialize through flush
     const releaseTaskLock = await this.taskMutex.acquire(task._ulid);
     try {
+      let eventBeforeTask = task;
       const result = await this.withWriteBuffer(ctx, commitOpts, async () => {
         return this.backend.mutateTask(
           ctx,
           task,
           async (latestTask) => {
+            eventBeforeTask = latestTask;
             const mutated = await mutate(latestTask);
             validateMutationOutput(mutated, latestTask._ulid);
             return mutated;
@@ -944,6 +1003,7 @@ export class TaskDataManager {
       // the file-watcher's debounced invalidation.
       const cache = getReadyTaskCache();
       cache?.applyTaskMutation?.(result._ulid, result);
+      recordTaskMutationEvent(eventBeforeTask, result, commitOpts);
 
       return result;
     } finally {
@@ -994,11 +1054,13 @@ export class TaskDataManager {
         releases.push(await this.taskMutex.acquire(ulid));
       }
 
+      let eventBeforeTasks = tasks;
       const results = await this.withWriteBuffer(ctx, commitOpts, async () => {
         return this.backend.mutateTasks(
           ctx,
           tasks,
           async (latestTasks) => {
+            eventBeforeTasks = latestTasks;
             const mutated = await mutate(latestTasks);
             for (let i = 0; i < mutated.length; i++) {
               validateMutationOutput(mutated[i], latestTasks[i]?._ulid);
@@ -1014,6 +1076,13 @@ export class TaskDataManager {
       if (cache?.applyTaskMutation) {
         for (const task of results) {
           cache.applyTaskMutation(task._ulid, task);
+        }
+      }
+      for (let i = 0; i < results.length; i++) {
+        const before = eventBeforeTasks[i];
+        const after = results[i];
+        if (before && after) {
+          recordTaskMutationEvent(before, after, commitOpts);
         }
       }
 

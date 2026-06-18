@@ -38,6 +38,11 @@ import {
 import { runWithOutputState } from "../../cli/output.js";
 import { runWithDaemonProxySuppressed } from "../../cli/daemon-proxy.js";
 import { DEFAULT_DAEMON_COMMAND_TIMEOUT_MS } from "../pid.js";
+import {
+  createMutationEventCollector,
+  runWithMutationEventCollector,
+  type MutationEventCollector,
+} from "../../mutation-pipeline.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -67,6 +72,16 @@ export interface CommandExecutionContext {
 }
 
 const commandExecutionStorage = new AsyncLocalStorage<CommandExecutionContext>();
+
+function broadcastCollectedMutationEvents(
+  collector: MutationEventCollector,
+  pubsub: PubSubManager,
+  projectPath: string,
+): void {
+  for (const descriptor of collector.drain()) {
+    pubsub.broadcast(descriptor.topic, descriptor.event, descriptor.data, projectPath);
+  }
+}
 
 function serializeConsoleArgs(args: unknown[]): string {
   return args.map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg))).join(" ");
@@ -800,6 +815,7 @@ export function createCommandRoutes(options: CommandRouteOptions) {
 
           const mutating = await isCommandMutating(payload, program);
           const cache = getEntityCache?.(projectContext.path) ?? null;
+          const mutationEvents = createMutationEventCollector();
 
           // Cache-served reads bypass the mutex and keep working during a
           // wedge — deliberately outside the timeout machinery.
@@ -820,10 +836,14 @@ export function createCommandRoutes(options: CommandRouteOptions) {
                 const { withFileLock } = await import("../../parser/file-lock.js");
                 const lockPath = getDispatchShadowMutationLockPath(projectContext.path);
                 return withFileLock(lockPath, () =>
-                  executeCommand(payload, program, projectContext.path, getEntityCache),
+                  runWithMutationEventCollector(mutationEvents, () =>
+                    executeCommand(payload, program, projectContext.path, getEntityCache),
+                  ),
                 );
               }
-              return executeCommand(payload, program, projectContext.path, getEntityCache);
+              return runWithMutationEventCollector(mutationEvents, () =>
+                executeCommand(payload, program, projectContext.path, getEntityCache),
+              );
             },
             // Completion side effects ride on the execution promise: before
             // the response on the normal path (update-before-response), and
@@ -842,6 +862,8 @@ export function createCommandRoutes(options: CommandRouteOptions) {
                     ),
                   );
                 }
+
+                broadcastCollectedMutationEvents(mutationEvents, pubsub, projectContext.path);
 
                 // AC: @daemon-command-api ac-mutation-cache-update — WebSocket broadcast
                 pubsub.broadcast(
@@ -938,6 +960,7 @@ export function createCommandRoutes(options: CommandRouteOptions) {
 
           const projectPath = projectContext.path;
           const cacheAccessor = getEntityCache;
+          const mutationEvents = createMutationEventCollector();
 
           // Batch execution goes through the dispatch mutex (process-global
           // state protection) and optionally the file lock (cross-process).
@@ -981,12 +1004,14 @@ export function createCommandRoutes(options: CommandRouteOptions) {
                     { outputFormat: "text", verboseMode: false },
                   );
 
-                return commandExecutionStorage.run(capture, () => {
-                  if (cacheAccessor) {
-                    return runWithEntityCache(parseCommands, cacheAccessor, projectPath);
-                  }
-                  return parseCommands();
-                });
+                return commandExecutionStorage.run(capture, () =>
+                  runWithMutationEventCollector(mutationEvents, () => {
+                    if (cacheAccessor) {
+                      return runWithEntityCache(parseCommands, cacheAccessor, projectPath);
+                    }
+                    return parseCommands();
+                  }),
+                );
               };
 
               if (hasMutating) {
@@ -1016,6 +1041,8 @@ export function createCommandRoutes(options: CommandRouteOptions) {
                     ),
                   );
                 }
+
+                broadcastCollectedMutationEvents(mutationEvents, pubsub, projectPath);
 
                 // WebSocket broadcast for batch completion
                 pubsub.broadcast(
