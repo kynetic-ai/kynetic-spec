@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KVEJPJN98QQQ66DWSK67VPQ7
+    content: "Approach: add idea as an additive ReviewThreadKindSchema enum value, letting existing
+      CLI/daemon validation derive accepted values from schema options; update shared/web UI
+      duplicated kind types, badge labels, and creation selectors. Edge cases: unresolved idea
+      threads must not affect approval disposition; invalid kind feedback must enumerate blocker,
+      question, nit, idea; reply/resolve/reopen must work on idea threads without kind-specific
+      branching. Test plan: schema acceptance for @review-idea-threads ac-idea-kind-accepted, CLI
+      and daemon write-interface coverage for ac-idea-kind-accepted and ac-kind-validation, pure
+      disposition regression for ac-idea-never-blocks, plus @review-comment-threads-and-anchors ac-6
+      wording coverage and web UI enumeration updates for @review-records-web-ui ac-2/ac-3."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T23:57:42.442Z
