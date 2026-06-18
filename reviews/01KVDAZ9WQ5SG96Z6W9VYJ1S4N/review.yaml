@@ -2,7 +2,118 @@ _ulid: 01KVDAZ9WQ5SG96Z6W9VYJ1S4N
 slugs: []
 title: Review stabilize flaky session watcher active-session detection test
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1038 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-18T12:36:29.618Z
+    completed_at: 2026-06-18T12:36:29.618Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxlint src/ tests/ packages/ --quiet reported 0 errors; existing repo warning
+      baseline was 716 warnings. Focused changed-file lint also passed separately with 0 warnings
+      and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-18T12:36:33.295Z
+    completed_at: 2026-06-18T12:36:33.295Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: changed file reported 0 warnings and 0 errors."
+    name: focused-lint
+    required: true
+    runner: npx oxlint tests/session-watcher.test.ts
+    created_at: 2026-06-18T12:36:36.930Z
+    completed_at: 2026-06-18T12:36:36.930Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared and tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-18T12:36:40.721Z
+    completed_at: 2026-06-18T12:36:40.721Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tests/session-watcher.test.ts reported 10 tests passed in 10.1s."
+    name: focused session watcher test
+    required: true
+    runner: npm test -- tests/session-watcher.test.ts
+    created_at: 2026-06-18T12:36:44.444Z
+    completed_at: 2026-06-18T12:36:44.444Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2788 test suites passed of 2788; 10569 tests passed of 10572, 3 skipped; duration
+      2475.1s; full log /tmp/kspec-test-cache/01KVDAX78N0D9V1HRBE65RMA66/c3394e99d358f290.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-18T12:36:48.038Z
+    completed_at: 2026-06-18T12:36:48.038Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: schema OK, references OK; 6 existing reference warnings."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-18T12:36:51.694Z
+    completed_at: 2026-06-18T12:36:51.694Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: schema OK, references OK; 54 existing alignment warnings."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-18T12:36:55.214Z
+    completed_at: 2026-06-18T12:36:55.214Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with warnings allowed: schema OK, references OK; 290 existing completeness warnings."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-18T12:36:58.832Z
+    completed_at: 2026-06-18T12:36:58.832Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, tests/session-watcher.test.ts,
+      packages/daemon/src/session-watcher.ts. Commands run: git diff/stat/name-only, kspec task get,
+      kspec review for-task/add/open, kspec item get @daemon-sensitive-cli-test-determinism and
+      @daemon-file-monitoring, AC annotation rg, source-scanning rg, all required gates. Claims
+      verified: fixed sleep was replaced by bounded polling in the late active-session test;
+      SessionWatcher missing-dir startup uses bootstrap polling plus debounce; test remains
+      behavioral and exact-one-callback coverage is preserved. Categories searched: correctness,
+      edge cases/timing, error cleanup/regression risk, test quality, AC coverage, integration.
+      Shared/package guidance surfaces touched: none; shared-guidance neutrality not applicable."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-06-18T12:37:02.285Z
+    completed_at: 2026-06-18T12:37:02.285Z
 events:
   - _ulid: 01KVDAZ9WPCCH74YYW7KB1E8MQ
     actor: Jacob Chapel
@@ -17,6 +128,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-18T12:23:44.582Z
+  - _ulid: 01KVDBQ833FPDSWTD1SVX4R1Y2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-18T12:36:29.923Z
+  - _ulid: 01KVDBQBNA60BDBECVYRN8KF7D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-18T12:36:33.578Z
+  - _ulid: 01KVDBQF6XV7MVJGFZFTN7AMJ2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-18T12:36:37.213Z
+  - _ulid: 01KVDBQJY03RDZ8C9EBJ97NTQE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-18T12:36:41.024Z
+  - _ulid: 01KVDBQPJDVMXX7RC47BP5TJH7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused session watcher test
+    timestamp: 2026-06-18T12:36:44.749Z
+  - _ulid: 01KVDBQT22TJWK47X4BEEVW05V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-18T12:36:48.322Z
+  - _ulid: 01KVDBQXMQ9DD64PKJ8WWXYB19
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-18T12:36:51.991Z
+  - _ulid: 01KVDBR11SVPEQPJ18YBZVH7CA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-18T12:36:55.482Z
+  - _ulid: 01KVDBR4KS8DN4M9ZEVKDGACEZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-18T12:36:59.129Z
+  - _ulid: 01KVDBR7YXQWETCJKXXZNRJBF9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-18T12:37:02.557Z
 examined_commit: dea376c424b5bfb5d0ee7b95b9570fb2fd9321e4
 external_links: []
 lifecycle_state: open
@@ -29,5 +210,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-18T12:23:25.335Z
-updated_at: 2026-06-18T12:23:44.303Z
+updated_at: 2026-06-18T12:37:02.285Z
 notes: []
