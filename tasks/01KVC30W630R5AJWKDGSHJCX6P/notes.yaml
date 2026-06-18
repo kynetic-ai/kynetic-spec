@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KVCHH4TEFNREE1DP07HMG959
+    content: "Approach: create the six requested relates_to relationships from the new plan specs to the
+      existing foundation specs using kspec link create, without editing .kspec YAML directly. Edge
+      cases: verify refs resolve and avoid duplicate links; relationship metadata only, so no
+      behavioral tests or AC annotations apply. Test plan: kspec link list from each new spec,
+      reverse link lookups from each foundation spec, kspec refs for navigability, and kspec
+      validate --refs --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T04:58:46.990Z
