@@ -1,0 +1,26 @@
+_ulid: 01KVDAZ9WQ5SG96Z6W9VYJ1S4N
+slugs: []
+title: Review stabilize flaky session watcher active-session detection test
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVDAZ9WPCCH74YYW7KB1E8MQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-18T12:23:25.335Z
+examined_commit: dea376c424b5bfb5d0ee7b95b9570fb2fd9321e4
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVD9KANRJ0N37AABARV2EDD2"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-18T12:23:25.335Z
+updated_at: null
+notes: []
