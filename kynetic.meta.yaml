@@ -22750,6 +22750,18 @@ observations:
     resolved: false
     workflow_ref: "@01KVE5DF"
     created_at: 2026-06-18T20:08:17.345Z
+  - _ulid: 01KVE6XHASYEFZKPHT56R92D0D
+    type: friction
+    content: During long review gates, npm test can go quiet for extended periods while CLI-heavy Vitest
+      workers are still active. Reviewers may need to inspect the process tree to distinguish
+      progress from a hang. Consider adding low-frequency heartbeat/progress output to
+      scripts/test.cjs or the custom progress reporter, ideally including active worker or
+      child-command context when available.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-18T20:31:47.545Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
