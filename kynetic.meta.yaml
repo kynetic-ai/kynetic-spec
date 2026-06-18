@@ -22698,6 +22698,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-18T08:20:03.894Z
+  - _ulid: 01KVD15CP9Q6QETBYP786MW47Z
+    type: friction
+    content: Daemon command-route tests can drift when RouteEntityCache mocks expose ref-only task
+      indexes instead of production-like TaskSummary records. The mismatch hid until a task
+      transition command used listTasks() and failed on missing depends_on; shared helpers for
+      production-shaped cache fixtures would reduce this class of false failures.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-18T09:31:59.049Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
