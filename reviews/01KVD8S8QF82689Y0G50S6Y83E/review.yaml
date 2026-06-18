@@ -24,6 +24,18 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-18T12:01:10.911Z
     completed_at: 2026-06-18T12:01:10.911Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Focused oxlint on changed TS/Svelte/test files passed with 0 errors. Reported 132 vi.fn
+      warnings in touched test files; diff inspection showed no new vi.fn warning lines in added
+      hunks, so this is baseline noise.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-18T12:01:20.541Z
+    completed_at: 2026-06-18T12:01:20.541Z
 events:
   - _ulid: 01KVD8S8QE4937RFWZ7VB7XNVT
     actor: Jacob Chapel
@@ -52,6 +64,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-18T12:01:11.153Z
+  - _ulid: 01KVD9PWD7QN25K5CYFRTX49TC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-18T12:01:20.807Z
 examined_commit: 6467dcc8fa7eb01d7b11cce6493042b9570ef835
 external_links: []
 lifecycle_state: open
@@ -64,5 +83,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-18T11:45:10.383Z
-updated_at: 2026-06-18T12:01:10.911Z
+updated_at: 2026-06-18T12:01:20.541Z
 notes: []
