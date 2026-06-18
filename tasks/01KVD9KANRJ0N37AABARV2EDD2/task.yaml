@@ -8,7 +8,7 @@ description: "During review of @01KVC30V6R468JZTF5BHVVYKB0 on 2026-06-18, full n
   test -- tests/session-watcher.test.ts passed all 10 tests, so this appears flaky/timing-sensitive.
   Investigate watcher startup/event timing and make the test deterministic without weakening
   coverage."
-spec_ref: null
+spec_ref: "@daemon-file-monitoring"
 meta_ref: null
 plan_ref: null
 status: in_progress
@@ -35,6 +35,13 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-18T12:00:56.151Z
+  - author: Jacob Chapel
+    changes:
+      spec_ref:
+        new: "@daemon-file-monitoring"
+        previous: null
+    command: task-set
+    timestamp: 2026-06-18T12:15:34.434Z
 created_at: 2026-06-18T11:59:24.344Z
 started_at: 2026-06-18T12:00:56.150Z
 todos: []
