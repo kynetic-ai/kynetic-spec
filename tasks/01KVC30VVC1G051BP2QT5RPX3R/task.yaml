@@ -55,7 +55,7 @@ description: |
 spec_ref: "@ui-targeted-event-consumption"
 plan_ref: "@plan-dispatch-mutation-service"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-command-path-typed-events"
@@ -67,6 +67,14 @@ tags:
   - events
   - implementation
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-ui-targeted-consumption/01kvc30v
+  captured_at: 2026-06-18T20:04:48.853Z
+  commit: 88b0691213ac017059815e1fa58f064e997647c2
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KVDAYR6ADT08RCWAM2VS3TDF
 history:
   - author: Jacob Chapel
@@ -89,7 +97,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-18T12:24:08.878Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-ui-targeted-consumption/01kvc30v
+          captured_at: 2026-06-18T20:04:48.853Z
+          commit: 88b0691213ac017059815e1fa58f064e997647c2
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-18T20:04:48.860Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-18T20:04:48.860Z
 created_at: 2026-06-18T00:45:13.452Z
 started_at: 2026-06-18T12:24:08.878Z
+submitted_at: 2026-06-18T20:04:48.860Z
 todos: []
 automation: eligible
