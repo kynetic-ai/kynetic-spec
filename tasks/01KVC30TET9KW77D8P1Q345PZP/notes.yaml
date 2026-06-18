@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KVCFFM4DA8C6ADHDXQNPKTCP
+    content: "Approach: add a library-layer shared mutation pipeline that accepts an apply callback,
+      commit descriptor, cache write-through descriptors, and typed event descriptors. Migrate
+      daemon entity REST routes by keeping their validation and mutation logic local but delegating
+      the apply -> commitIfShadow -> cache write-through -> broadcast completion sequence to the
+      pipeline. Edge cases: optional cache/pubsub no-op for direct/no-daemon execution, batch
+      operations must use one commit with multiple write-through/event descriptors, broadcasts must
+      occur only after cache write-through resolves, and stage failures must preserve underlying
+      error messages. Test plan: add behavioral unit tests for @shared-mutation-pipeline
+      ac-1/ac-2/ac-4/ac-5/ac-6/ac-7, then run focused route suites for
+      tasks/inbox/triage/reviews/resources to verify existing event payload schemas remain intact."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T04:22:59.982Z
