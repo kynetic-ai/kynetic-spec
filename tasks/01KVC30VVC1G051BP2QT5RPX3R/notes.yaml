@@ -13,3 +13,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T12:25:59.656Z
+  - _ulid: 01KVE5AYRY4GGH1VKFE2E54DSM
+    content: "Implemented targeted payload-driven WebSocket invalidation: typed task/item/review/plan
+      events now invalidate affected entity, detail, and view keys instead of broad unrelated
+      domains; file fallback refreshes once immediately for mapped task/plan/review/item domains;
+      and the plans page refreshes expanded local content from typed plan-resource events and plan
+      file fallback. Verification passed: format:check, lint --quiet, changed-file oxlint,
+      typecheck, focused ws-cache invalidation unit tests, focused connection E2E typed-event tests,
+      full npm test, and kspec refs/alignment/completeness validation with warnings allowed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T20:04:10.143Z
