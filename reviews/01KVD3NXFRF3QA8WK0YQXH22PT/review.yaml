@@ -210,6 +210,12 @@ events:
     payload:
       thread_ulid: 01KVD4JB46DHECVEB88DQ23KD5
     timestamp: 2026-06-18T10:51:57.239Z
+  - _ulid: 01KVD5R2W42SBT24YHNT7QAA4Z
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVD4JB46DHECVEB88DQ23KD5
+    timestamp: 2026-06-18T10:52:05.892Z
 examined_commit: 0f12d200a1094a27e2acf794d6987eed45200dcf
 external_links: []
 lifecycle_state: closed
@@ -251,6 +257,8 @@ threads:
           and for metadata-free createTask calls through the mutation event collector."
         created_at: 2026-06-18T10:51:56.989Z
     kind: blocker
+    resolved_at: 2026-06-18T10:52:05.639Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVD4JDY4MRF25HXZ8ESB3QMS
     entries:
       - _ulid: 01KVD4JDY4DZNY6C94536WVEJ5
@@ -303,5 +311,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-18T10:31:35.002Z
 created_at: 2026-06-18T10:15:57.688Z
-updated_at: 2026-06-18T10:51:56.989Z
+updated_at: 2026-06-18T10:52:05.639Z
 notes: []
