@@ -32739,6 +32739,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-18T22:21:58.474Z
+  automation: eligible
 - _ulid: 01KVED79R2301QYV9N6GVYVFXG
   slugs:
     - task-review-revision-binding
