@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KVDB40K8WZCYDK6VPGG2NJYX
+    content: "Approach: rework packages/web-ui/src/lib/query/ws-invalidation.ts from topic-level domain
+      invalidation to payload-aware handlers. Reuse existing queryKeys factories and TanStack Query
+      invalidateQueries/setQueriesData APIs; keep connection subscription setup unchanged and keep
+      command topic unsubscribed. Edge cases: missing canonical ids fall back only to affected
+      domain list keys; review_created refreshes review list/for-task keys without task-domain
+      wholesale invalidation; file watcher fallback is immediate and single-pass with no fixed delay
+      timers. Test plan: add behavioral unit tests in tests/web-ui/ws-cache-invalidation.test.ts for
+      @ui-targeted-event-consumption ac-1 exact typed-event keys/unaffected domains, ac-2 immediate
+      once/no setTimeout, and ac-4 single immediate file fallback; use E2E coverage only if feasible
+      after unit mapping is green."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-18T12:25:59.656Z
