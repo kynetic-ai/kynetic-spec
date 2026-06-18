@@ -63,7 +63,7 @@ description: |
 spec_ref: "@mutation-event-coverage"
 plan_ref: "@plan-dispatch-mutation-service"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-command-path-typed-events"
@@ -78,8 +78,8 @@ review_ref: "@01KVD1BMQHCXJSTH4107ZVWCSC"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-missing-event-types/01kvc30v
-  captured_at: 2026-06-18T09:29:25.364Z
-  commit: 88bcda60de2de1df10e00a8d5e7c7b4f6c4d4a16
+  captured_at: 2026-06-18T10:11:30.196Z
+  commit: 0f12d200a1094a27e2acf794d6987eed45200dcf
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-missing-event-types/01kvc30v
@@ -269,8 +269,35 @@ history:
         previous: 2026-06-18T09:09:10.024Z
     command: task-start
     timestamp: 2026-06-18T09:55:35.293Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-missing-event-types/01kvc30v
+          captured_at: 2026-06-18T10:11:30.196Z
+          commit: 0f12d200a1094a27e2acf794d6987eed45200dcf
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-missing-event-types/01kvc30v
+        previous:
+          review_url: null
+          branch: dispatch/task/task-missing-event-types/01kvc30v
+          captured_at: 2026-06-18T09:29:25.364Z
+          commit: 88bcda60de2de1df10e00a8d5e7c7b4f6c4d4a16
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-missing-event-types/01kvc30v
+      submitted_at:
+        new: 2026-06-18T10:11:30.204Z
+        previous: 2026-06-18T09:29:25.371Z
+    command: task-submit
+    timestamp: 2026-06-18T10:11:30.204Z
 created_at: 2026-06-18T00:45:12.792Z
 started_at: 2026-06-18T09:55:35.293Z
-submitted_at: 2026-06-18T09:29:25.371Z
+submitted_at: 2026-06-18T10:11:30.204Z
 todos: []
 automation: eligible
