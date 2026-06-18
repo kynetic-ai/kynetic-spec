@@ -2530,6 +2530,9 @@ features:
           loose structured-anchor convention for new writes. Records written
           under the loose convention remain fully readable: readers accept both
           shapes, and legacy records load and validate without modification.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@review-comment-threads-and-anchors"
         implements: []
