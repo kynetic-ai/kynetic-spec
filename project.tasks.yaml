@@ -32622,7 +32622,7 @@
   slugs: []
   title: Stabilize flaky session watcher active-session detection test
   type: task
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -32632,4 +32632,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-18T11:59:24.344Z
+  started_at: 2026-06-18T12:00:56.150Z
   automation: eligible
