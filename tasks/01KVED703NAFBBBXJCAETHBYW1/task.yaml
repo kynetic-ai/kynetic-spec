@@ -48,8 +48,12 @@ description: |
 spec_ref: "@review-spec-ac-anchors"
 plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign at dd39af3f0c6e975442d79bef57325bbb2ecc6b83 after approved
+  review @01KVEFXJ. Implemented typed spec_ac review anchors with CLI and daemon creation
+  validation, legacy structured-anchor read compatibility, parser guidance update, shared/web-ui
+  type unions, and AC coverage tests.
 depends_on: []
 context: []
 priority: 1
@@ -116,8 +120,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-18T23:09:09.056Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign at dd39af3f0c6e975442d79bef57325bbb2ecc6b83 after approved review
+          @01KVEFXJ. Implemented typed spec_ac review anchors with CLI and daemon creation
+          validation, legacy structured-anchor read compatibility, parser guidance update,
+          shared/web-ui type unions, and AC coverage tests.
+        previous: null
+      completed_at:
+        new: 2026-06-18T23:28:44.060Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-18T23:28:44.069Z
 created_at: 2026-06-18T22:21:49.045Z
 started_at: 2026-06-18T22:25:53.228Z
 submitted_at: 2026-06-18T23:04:08.126Z
+completed_at: 2026-06-18T23:28:44.060Z
 todos: []
 automation: eligible
