@@ -189,6 +189,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-18T08:17:52.741Z
+  - _ulid: 01KVCY9FSY2MDZ8HHH0XE22C2F
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVCWXGB9T5EMCGH163QMEVDC
+    timestamp: 2026-06-18T08:41:47.582Z
 examined_commit: 29b26e465e5c2c5071873d4970b4a2e8de659419
 external_links: []
 lifecycle_state: closed
@@ -221,6 +227,13 @@ threads:
           carry the subject object in the event payload, and add coverage for at least a code or
           external subject."
         created_at: 2026-06-18T08:17:46.345Z
+      - _ulid: 01KVCY9FJFHSE6DYH4D22GS6MR
+        author: Jacob Chapel
+        body: "Fixed in a19ac97e76: review_created now carries the full normalized review subject in
+          addition to subject_type and subject_ref, so task/plan/spec refs, code comparisons, and
+          external URL subjects all have enough identity in the event payload. Added daemon
+          command-route coverage for a code review subject with base/head commits and branch names."
+        created_at: 2026-06-18T08:41:47.343Z
     kind: blocker
   - _ulid: 01KVCWXKCP96BVWGKCKC2AR0V2
     entries:
@@ -261,5 +274,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-18T08:17:52.741Z
 created_at: 2026-06-18T08:00:07.504Z
-updated_at: 2026-06-18T08:17:52.741Z
+updated_at: 2026-06-18T08:41:47.343Z
 notes: []
