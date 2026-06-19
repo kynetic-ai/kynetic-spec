@@ -19529,7 +19529,7 @@ workspaces:
         head: 99c047e7fba7a619c05ae01a09abbf360cffadfc
         last_seen_at: 2026-06-19T00:22:39.104Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-idea-thread-kind-01kved78
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 41f077c5061300e7783a8ed01287c71ce30fe435
     bootstrap:
       status: succeeded
@@ -20011,7 +20011,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-19T00:49:47.360Z
+      updated_at: 2026-06-19T00:50:24.393Z
     integration:
       status: pending
       detail: null
@@ -20027,10 +20027,10 @@ workspaces:
     task_slug: task-plan-revision-backfill
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-19T00:23:51.576Z
-      last_reconciled_at: 2026-06-19T00:49:47.360Z
+      last_active_at: 2026-06-19T00:50:24.393Z
+      last_reconciled_at: 2026-06-19T00:50:24.393Z
       created_at: 2026-06-19T00:23:22.080Z
-      updated_at: 2026-06-19T00:50:11.559Z
+      updated_at: 2026-06-19T00:50:24.393Z
     workspace_id: dispatch-workspace-01KVED79AAFAKDN7H1P2D6GTT5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
