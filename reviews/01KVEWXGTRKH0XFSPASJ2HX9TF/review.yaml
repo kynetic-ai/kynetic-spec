@@ -1,0 +1,26 @@
+_ulid: 01KVEWXGTRKH0XFSPASJ2HX9TF
+slugs: []
+title: Review task-respec-review-pass-vocabulary (cycle 2)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVEWXGTRE74C5MKE5H2PD009
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-19T02:56:15.704Z
+examined_commit: 91fff0e4804af9bbf1dd9da573b188863fc01c75
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVED7A4WSWYEJEN8Z4BJ65RB"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-19T02:56:15.704Z
+updated_at: null
+notes: []
