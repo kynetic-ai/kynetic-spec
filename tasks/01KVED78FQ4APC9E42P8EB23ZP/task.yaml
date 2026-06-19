@@ -68,7 +68,7 @@ description: |
 spec_ref: "@review-plan-text-anchors"
 plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-spec-ac-anchor-variant"
@@ -85,8 +85,8 @@ review_ref: "@01KVEY404JWQGW2G8N8492BND2"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-plan-text-anchors/01kved78
-  captured_at: 2026-06-19T03:11:21.867Z
-  commit: cc27b4db5012d606b967af584c0f9b1a930b960b
+  captured_at: 2026-06-19T03:53:16.443Z
+  commit: 9b4985dd6ae9ac7f5b515b9477be0ec3845097d5
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-plan-text-anchors/01kved78
@@ -276,8 +276,35 @@ history:
         previous: 2026-06-19T02:55:03.574Z
     command: task-start
     timestamp: 2026-06-19T03:38:36.895Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-plan-text-anchors/01kved78
+          captured_at: 2026-06-19T03:53:16.443Z
+          commit: 9b4985dd6ae9ac7f5b515b9477be0ec3845097d5
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-plan-text-anchors/01kved78
+        previous:
+          review_url: null
+          branch: dispatch/task/task-plan-text-anchors/01kved78
+          captured_at: 2026-06-19T03:11:21.867Z
+          commit: cc27b4db5012d606b967af584c0f9b1a930b960b
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-plan-text-anchors/01kved78
+      submitted_at:
+        new: 2026-06-19T03:53:16.451Z
+        previous: 2026-06-19T03:11:21.874Z
+    command: task-submit
+    timestamp: 2026-06-19T03:53:16.451Z
 created_at: 2026-06-18T22:21:57.623Z
 started_at: 2026-06-19T03:38:36.895Z
-submitted_at: 2026-06-19T03:11:21.874Z
+submitted_at: 2026-06-19T03:53:16.451Z
 todos: []
 automation: eligible
