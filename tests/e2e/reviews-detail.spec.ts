@@ -635,6 +635,7 @@ test.describe("Review Detail Page", () => {
 
   test.describe("Review Pass Selector", () => {
     // AC: @review-records-web-ui ac-11 — Review-pass selector for same-subject reviews
+    // AC: @subject-revision-vocabulary ac-review-pass-labeling
     test("shows review-pass selector when multiple reviews exist for same subject", async ({
       page,
       daemon: _daemon,
