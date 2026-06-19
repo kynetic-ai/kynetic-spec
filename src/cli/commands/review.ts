@@ -32,7 +32,10 @@ import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { resolveCliActor } from "../actor.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { evaluateGates } from "../../review/checks.js";
-import { extractSubjectVersion } from "../../review/subject-bindings.js";
+import {
+  extractSubjectVersion,
+  resolveReviewSubjectRevision,
+} from "../../review/subject-bindings.js";
 import type {
   ReviewAnchor,
   ReviewCheck,
@@ -168,11 +171,13 @@ function formatSubject(subject: ReviewSubject): string {
  * AC: @review-cli-commands ac-2
  * AC: @trait-json-output ac-2, ac-4, ac-5
  */
-function buildReviewOutput(
+async function buildReviewOutput(
+  ctx: Awaited<ReturnType<typeof initContext>>,
   review: LoadedReviewRecord,
   _reviews: LoadedReviewRecord[],
-): Record<string, unknown> {
+): Promise<Record<string, unknown>> {
   const threadState = computeThreadState(review);
+  const subjectRevision = await resolveReviewSubjectRevision(ctx, review);
   return {
     _ulid: review._ulid,
     ref: `@${review.slugs[0] || review._ulid}`,
@@ -182,6 +187,7 @@ function buildReviewOutput(
     disposition: computeDisposition(review),
     gate_state: computeGateState(review),
     subject: review.subject,
+    subject_revision: subjectRevision,
     author: review.author,
     related_refs: review.related_refs,
     threads: review.threads,
@@ -201,7 +207,11 @@ function buildReviewOutput(
  * Format review details for human-readable output.
  * AC: @review-cli-commands ac-2
  */
-function formatReviewDetails(review: LoadedReviewRecord, _reviews: LoadedReviewRecord[]): void {
+function formatReviewDetails(
+  review: LoadedReviewRecord,
+  _reviews: LoadedReviewRecord[],
+  subjectRevision: number | null,
+): void {
   const disposition = computeDisposition(review);
   const gateState = computeGateState(review);
   const threadState = computeThreadState(review);
@@ -216,6 +226,7 @@ function formatReviewDetails(review: LoadedReviewRecord, _reviews: LoadedReviewR
   console.log(`Disposition:  ${disposition}`);
   console.log(`Gate:         ${gateState}`);
   console.log(`Subject:      ${formatSubject(review.subject)}`);
+  console.log(`Subject Rev:  ${subjectRevision ?? "none"}`);
   console.log(`Author:       ${review.author}`);
   if (review.examined_commit) {
     console.log(`Examined:     ${review.examined_commit}`);
@@ -536,7 +547,12 @@ export function registerReviewCommands(program: Command): void {
           const reviews = await loadReviewRecords(ctx);
           const shortRef = shortReviewRef({ ...review, _sourceFile: undefined }, reviews);
 
-          output(buildReviewOutput({ ...review, _sourceFile: undefined }, reviews), () => {
+          const reviewOutput = await buildReviewOutput(
+            ctx,
+            { ...review, _sourceFile: undefined },
+            reviews,
+          );
+          output(reviewOutput, () => {
             success(
               `Created review: ${shortRef}${review.slugs.length > 0 ? ` (${review.slugs[0]})` : ""}`,
             );
@@ -561,8 +577,9 @@ export function registerReviewCommands(program: Command): void {
         const reviews = await loadReviewRecords(ctx);
         const found = resolveReviewRef(ref, reviews);
 
-        output(buildReviewOutput(found, reviews), () => {
-          formatReviewDetails(found, reviews);
+        const reviewOutput = await buildReviewOutput(ctx, found, reviews);
+        output(reviewOutput, () => {
+          formatReviewDetails(found, reviews, reviewOutput.subject_revision as number | null);
         });
       } catch (err) {
         if (err instanceof CommandExitError) throw err;

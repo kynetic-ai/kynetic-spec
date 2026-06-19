@@ -240,6 +240,7 @@ export interface ExportedReview {
   updated_at: string | null;
   examined_commit: string | null;
   disposition: string;
+  subject_revision: number | null;
   resources: ExportedReviewResource[];
   /**
    * Server-resolved breadcrumb ancestor chain (root → this review), precomputed
