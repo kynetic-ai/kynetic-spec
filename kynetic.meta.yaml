@@ -22867,6 +22867,20 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-19T02:05:52.425Z
+  - _ulid: 01KVET9H80HMKJ9QM02X8KVYPC
+    type: friction
+    content: During dispatch task submission, kspec task submit captured submission_linkage.upstream_ref
+      as the branch's git upstream ('dev') even though the dispatch prompt and
+      KSPEC_DISPATCH_MERGE_TARGET identified feat/ui-redesign as the manual_merge target. The worker
+      had to inspect the JSON, dry-run a full submission_linkage patch, and repair the metadata
+      after submit. Existing @portable-task-submission-linkage lets git upstream tracking take
+      precedence, but dispatch/manual_merge review continuity needs the dispatch-provided merge
+      target to win or be explicitly represented so reviewers do not merge to stale project
+      defaults.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-19T02:10:23.617Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
