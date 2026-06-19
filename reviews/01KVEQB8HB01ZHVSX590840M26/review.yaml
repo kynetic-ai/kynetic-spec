@@ -1,0 +1,26 @@
+_ulid: 01KVEQB8HB01ZHVSX590840M26
+slugs: []
+title: Review task-review-revision-binding
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVEQB8HBSPETCTPYSHBHH0A3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-19T01:18:54.507Z
+examined_commit: 03cdfa3de95213d8fbb38e8dd843e99ee4be115a
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVED79R2301QYV9N6GVYVFXG"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-19T01:18:54.507Z
+updated_at: null
+notes: []
