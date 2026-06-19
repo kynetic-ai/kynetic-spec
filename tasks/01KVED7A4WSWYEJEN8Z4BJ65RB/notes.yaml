@@ -31,3 +31,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-19T02:29:15.572Z
+  - _ulid: 01KVEVQZ875H5V9EGMHS1DW1W3
+    content: "Fix cycle 1 plan: replace the stale @subject-revision-vocabulary ac-review-pass-labeling
+      N/A marker with real behavioral E2E coverage on the review-pass selector test that asserts the
+      visible 'Review pass:' label and ordered sibling review options. Re-verified
+      @review-records-web-ui ac-11 and @subject-revision-vocabulary ac-review-pass-labeling before
+      editing."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-19T02:35:45.287Z
