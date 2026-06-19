@@ -27515,7 +27515,7 @@ reviews:
     title: Review task-respec-review-pass-vocabulary
     disposition: pending
     author: Jacob Chapel
-    check_count: 5
+    check_count: 6
     examined_commit: 578ab20ab828807c0d157581a9e613867b66058d
     lifecycle_state: open
     related_refs: []
@@ -27528,4 +27528,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-19T02:13:54.017Z
-    updated_at: 2026-06-19T02:28:20.543Z
+    updated_at: 2026-06-19T02:28:23.791Z
