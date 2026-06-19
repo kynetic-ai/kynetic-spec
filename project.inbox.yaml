@@ -5051,3 +5051,16 @@ inbox:
       - reflection
     added_by: Jacob Chapel
     created_at: 2026-06-19T01:44:24.894Z
+  - _ulid: 01KVF1FXX77KXERR2DK8ZSSG92
+    text: Batch review-comment support does not include plan-text anchor arguments. Direct CLI supports
+      --plan-section, --plan-offset, --quoted-text, and --created-at-rev, but kspec batch commands
+      "review comment" omits these options and kspec batch --dry-run rejects planSection,
+      planOffset, quotedText, and createdAtRev as unknown arguments. Add batch
+      schema/allowed-argument parity and behavioral coverage so automation can create plan-text
+      anchored review comments through batch.
+    tags:
+      - reflection
+      - batch
+      - reviews
+    added_by: Jacob Chapel
+    created_at: 2026-06-19T04:16:13.223Z
