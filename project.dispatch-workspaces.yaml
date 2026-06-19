@@ -20366,18 +20366,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-review-revision-binding/01kved79
-    canonical_branch_head: d828cf5bc0b9b87d6c65fb71997031b260779fe4
+    canonical_branch_head: 03cdfa3de95213d8fbb38e8dd843e99ee4be115a
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-19T00:50:36.028Z
+      updated_at: 2026-06-19T01:13:17.054Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-19T00:51:04.733Z
+      updated_at: 2026-06-19T01:13:17.054Z
     integration:
       status: pending
       detail: null
@@ -20385,7 +20385,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: d828cf5bc0b9b87d6c65fb71997031b260779fe4
-      updated_at: 2026-06-19T00:50:36.028Z
+      updated_at: 2026-06-19T01:13:17.054Z
     lifecycle_state: active
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVED79R2301QYV9N6GVYVFXG
@@ -20394,9 +20394,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-19T00:51:04.733Z
-      last_reconciled_at: 2026-06-19T00:51:04.733Z
+      last_reconciled_at: 2026-06-19T01:13:17.054Z
       created_at: 2026-06-19T00:50:36.028Z
-      updated_at: 2026-06-19T00:51:04.733Z
+      updated_at: 2026-06-19T01:13:17.054Z
     workspace_id: dispatch-workspace-01KVED79R2301QYV9N6GVYVFXG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
