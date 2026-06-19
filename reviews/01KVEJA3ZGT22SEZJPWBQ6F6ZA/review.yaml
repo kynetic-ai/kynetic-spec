@@ -143,6 +143,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-19T00:05:25.557Z
+  - _ulid: 01KVEK57N33SC53RYKMYW03YFE
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVEK57BX9FWP28YEPZSP394G
+    timestamp: 2026-06-19T00:05:42.691Z
 examined_commit: a4578c3ef6e20b6abcb9f2416bd0c758aa570dd4
 external_links: []
 lifecycle_state: open
@@ -152,8 +159,46 @@ subject:
   content_hash: ""
   ref: "@01KVED72GK6D72KBPRARV311RW"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVEK57BX9FWP28YEPZSP394G
+    entries:
+      - _ulid: 01KVEK57BXJM4FS6K8X5KP0R0H
+        author: pr-reviewer
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; task/spec context for @01KVED72GK6D72KBPRARV311RW and
+          @plan-revisions; src/schema/plan.ts; src/parser/plan-revisions.ts;
+          src/parser/plan-storage-manager.ts; src/parser/plans.ts; src/parser/shadow.ts;
+          src/cli/commands/plan.ts; src/cli/commands/plan-import.ts;
+          src/parser/actor-field-inventory.ts; tests/plan-revisions.test.ts;
+          tests/cli-plan-import.test.ts; tests/actor-normalization-upgrade.test.ts; related
+          output/actor helpers.
+
+
+          Commands run: git diff/stat/name-only against 4fdcd1312154624eb845b8e16b6095cfc5aaaa7d;
+          kspec item get @plan-revisions; kspec search for dependent backfill/review-binding tasks;
+          npm run format:check; npm run lint -- --quiet; npx oxlint on all changed TS/test files;
+          npm run typecheck; npm test; kspec validate --refs --warnings-ok; kspec validate
+          --alignment --warnings-ok; kspec validate --completeness --warnings-ok; git diff --check.
+
+
+          Claims verified: publish and import mint revision metadata after the content commit
+          pointer is captured; revision content resolves from the stored shadow commit and remains
+          byte-identical after unpublished draft edits; revisions stay out of the plan index except
+          current_revision; new/legacy plans load with empty revision history; revision authors are
+          inventoried for actor normalization. Backfill and review binding ACs are explicitly N/A in
+          this task and have dependent tasks @task-plan-revision-backfill and
+          @task-review-revision-binding.
+
+
+          Categories searched: correctness, edge cases, error handling, security/read-only git-show
+          path containment, test quality, AC coverage, integration with folder-backed plan storage,
+          shadow commits, actor normalization, and bounded indexes. No blockers found.
+        created_at: 2026-06-19T00:05:42.397Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-18T23:50:54.192Z
-updated_at: 2026-06-19T00:05:25.314Z
+updated_at: 2026-06-19T00:05:42.397Z
 notes: []
