@@ -150,6 +150,13 @@ events:
       kind: blocker
       thread_ulid: 01KVEVB4B7YG7P8SMH3FQC89Y8
     timestamp: 2026-06-19T02:28:44.765Z
+  - _ulid: 01KVEVBXG38C0AJPZE11PMF0Z4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVEVBX8YQTC07FJKEGRHCD43
+    timestamp: 2026-06-19T02:29:10.275Z
 examined_commit: 578ab20ab828807c0d157581a9e613867b66058d
 external_links: []
 lifecycle_state: open
@@ -182,7 +189,25 @@ threads:
           @subject-revision-vocabulary ac-review-pass-labeling`.'
         created_at: 2026-06-19T02:28:44.519Z
     kind: blocker
+  - _ulid: 01KVEVBX8YQTC07FJKEGRHCD43
+    entries:
+      - _ulid: 01KVEVBX8YJH4B5FBFRPCPVXH3
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte;
+          tests/e2e/review-detail-page.spec.ts; tests/e2e/reviews-detail.spec.ts;
+          tests/review-subject-revisions.test.ts; @review-records-web-ui;
+          @subject-revision-vocabulary. Commands run: git diff/stat/log; rg AC/label searches; kspec
+          item get for linked specs; kspec validate refs/alignment/completeness with --warnings-ok;
+          npm run format:check; npm run lint -- --quiet; focused npx oxlint on changed files; npm
+          run typecheck; npm test. Claims verified: visible selector label is now Review pass;
+          sibling grouping logic and navigation remain existing behavior; worker full npm test claim
+          verified. Categories searched: correctness, edge cases (single vs multiple sibling
+          reviews, code head_branch grouping), error handling impact, test quality/AC coverage,
+          integration with review sibling API."
+        created_at: 2026-06-19T02:29:10.046Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-19T02:13:54.017Z
-updated_at: 2026-06-19T02:28:44.519Z
+updated_at: 2026-06-19T02:29:10.046Z
 notes: []
