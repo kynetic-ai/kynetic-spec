@@ -39,7 +39,7 @@ description: |
 spec_ref: "@review-records-web-ui"
 plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-review-revision-binding"
@@ -54,11 +54,11 @@ review_ref: "@01KVETFYQ1WRB50DTR7CN6R0ZW"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-respec-review-pass-vocabulary/01kved7a
-  captured_at: 2026-06-19T02:06:06.326Z
-  commit: 578ab20ab828807c0d157581a9e613867b66058d
-  remote: null
-  remote_url: null
-  upstream_ref: feat/ui-redesign
+  captured_at: 2026-06-19T02:50:48.482Z
+  commit: 91fff0e4804af9bbf1dd9da573b188863fc01c75
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-respec-review-pass-vocabulary/01kved7a
 session_id: 01KVEVMY1J4MRRCD12QW3W6JKT
 history:
   - author: Jacob Chapel
@@ -152,8 +152,35 @@ history:
         previous: 2026-06-19T01:47:34.894Z
     command: task-start
     timestamp: 2026-06-19T02:35:13.027Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-respec-review-pass-vocabulary/01kved7a
+          captured_at: 2026-06-19T02:50:48.482Z
+          commit: 91fff0e4804af9bbf1dd9da573b188863fc01c75
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-respec-review-pass-vocabulary/01kved7a
+        previous:
+          review_url: null
+          branch: dispatch/task/task-respec-review-pass-vocabulary/01kved7a
+          captured_at: 2026-06-19T02:06:06.326Z
+          commit: 578ab20ab828807c0d157581a9e613867b66058d
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+      submitted_at:
+        new: 2026-06-19T02:50:48.488Z
+        previous: 2026-06-19T02:06:06.332Z
+    command: task-submit
+    timestamp: 2026-06-19T02:50:48.489Z
 created_at: 2026-06-18T22:21:59.324Z
 started_at: 2026-06-19T02:35:13.027Z
-submitted_at: 2026-06-19T02:06:06.332Z
+submitted_at: 2026-06-19T02:50:48.488Z
 todos: []
 automation: eligible
