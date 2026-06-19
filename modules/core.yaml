@@ -2606,6 +2606,9 @@ features:
           span is recoverable without consulting any other state. Plan-text
           anchors are valid only on reviews whose subject is a plan; the
           anchored plan is the review's subject.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@review-comment-threads-and-anchors"
           - "@plan-revisions"
