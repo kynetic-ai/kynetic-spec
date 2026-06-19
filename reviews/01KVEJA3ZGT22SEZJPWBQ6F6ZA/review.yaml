@@ -150,9 +150,25 @@ events:
       kind: nit
       thread_ulid: 01KVEK57BX9FWP28YEPZSP394G
     timestamp: 2026-06-19T00:05:42.691Z
+  - _ulid: 01KVEK5H4JB60QWBQ501W39Q7V
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-19T00:05:52.402Z
+  - _ulid: 01KVEK5H4JRFBT0WXVSZW9BWAJ
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-19T00:05:52.402Z
 examined_commit: a4578c3ef6e20b6abcb9f2416bd0c758aa570dd4
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -198,7 +214,14 @@ threads:
           shadow commits, actor normalization, and bounded indexes. No blockers found.
         created_at: 2026-06-19T00:05:42.397Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-19T00:05:52.402Z
 created_at: 2026-06-18T23:50:54.192Z
-updated_at: 2026-06-19T00:05:42.397Z
+updated_at: 2026-06-19T00:05:52.402Z
 notes: []
