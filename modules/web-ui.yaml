@@ -6854,12 +6854,10 @@ requirements:
       - review-records-web-ui
     title: Review Records Web UI
     type: requirement
-    description: |
-      SvelteKit pages for viewing and interacting with review records in the
-      browser. The primary interface for humans to see agent review activity
-      and participate in reviews. Routes: /reviews for list, /reviews/[id]
-      for detail. Reviews on the same subject are treated as revisions with
-      a dropdown selector to navigate between them.
+    description: "SvelteKit pages for viewing and interacting with review records in the browser. The
+      primary interface for humans to see agent review activity and participate in reviews. Routes:
+      /reviews for list, /reviews/[id] for detail. Reviews on the same subject are treated as review
+      passes with a dropdown selector to navigate between them."
     status:
       maturity: draft
       implementation: in_progress
@@ -6951,11 +6949,9 @@ requirements:
       - given: |
           Multiple reviews exist for the same subject
         id: ac-11
-        then: |
-          A revision dropdown is shown listing all reviews for that subject
-          ordered by creation date, with the current review selected; selecting
-          another review navigates to it; subject matching uses subject-ref
-          for plan/task/spec reviews, or head-branch for code reviews
+        then: A review-pass selector is shown listing all reviews for that subject ordered by creation date,
+          with the current review selected; selecting another review navigates to it; subject
+          matching uses subject-ref for plan/task/spec reviews, or head-branch for code reviews
         when: |
           The user views any one of those reviews
     tags: []
