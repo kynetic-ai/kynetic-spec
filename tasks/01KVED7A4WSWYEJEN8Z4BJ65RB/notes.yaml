@@ -40,3 +40,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-19T02:35:45.287Z
+  - _ulid: 01KVEWJG3VP9WZZQ21VPKASTKH
+    content: "Fix cycle 1: addressed all review threads. Replaced the stale @subject-revision-vocabulary
+      ac-review-pass-labeling N/A marker with real behavioral E2E coverage on the review-pass
+      selector test, resolving the coverage traceability blocker; acknowledged the evidence-log nit
+      as no-action. Re-verified @review-records-web-ui ac-11 and @subject-revision-vocabulary
+      ac-review-pass-labeling. Verification passed: npm run format:check; npx oxlint
+      tests/e2e/reviews-detail.spec.ts tests/review-subject-revisions.test.ts; npm run lint --
+      --quiet; npm run typecheck; npm run test:e2e -- tests/e2e/reviews-detail.spec.ts --grep Review
+      Pass Selector; npm test; kspec validate refs/alignment/completeness with --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-19T02:50:14.523Z

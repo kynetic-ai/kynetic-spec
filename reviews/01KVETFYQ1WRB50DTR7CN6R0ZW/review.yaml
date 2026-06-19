@@ -173,6 +173,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-19T02:29:13.487Z
+  - _ulid: 01KVEWJ642MKQK9P2N1WW80WZS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVEVB4B7YG7P8SMH3FQC89Y8
+    timestamp: 2026-06-19T02:50:04.290Z
+  - _ulid: 01KVEWJ95G81C62GBVGGVRQF1B
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVEVB4B7YG7P8SMH3FQC89Y8
+    timestamp: 2026-06-19T02:50:07.408Z
+  - _ulid: 01KVEWJC4X89MNG3FEVKQQ8AB3
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVEVBX8YQTC07FJKEGRHCD43
+    timestamp: 2026-06-19T02:50:10.461Z
+  - _ulid: 01KVEWJF16WT6YGBQM1JJE39J4
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVEVBX8YQTC07FJKEGRHCD43
+    timestamp: 2026-06-19T02:50:13.414Z
 examined_commit: 578ab20ab828807c0d157581a9e613867b66058d
 external_links: []
 lifecycle_state: closed
@@ -204,7 +228,17 @@ threads:
           also annotating the review-pass selector E2E label/grouping assertion with `// AC:
           @subject-revision-vocabulary ac-review-pass-labeling`.'
         created_at: 2026-06-19T02:28:44.519Z
+      - _ulid: 01KVEWJ5WB8RNDKTQYD5629NBT
+        author: Jacob Chapel
+        body: "Fixed in commit 91fff0e480: removed the stale @subject-revision-vocabulary
+          ac-review-pass-labeling N/A marker and added that AC annotation to the behavioral
+          review-pass selector E2E test that asserts the visible Review pass label and ordered
+          sibling options. Verified with kspec validate completeness/refs/alignment, format, focused
+          oxlint, lint, typecheck, targeted E2E, and full npm test."
+        created_at: 2026-06-19T02:50:04.043Z
     kind: blocker
+    resolved_at: 2026-06-19T02:50:07.140Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVEVBX8YQTC07FJKEGRHCD43
     entries:
       - _ulid: 01KVEVBX8YJH4B5FBFRPCPVXH3
@@ -222,7 +256,14 @@ threads:
           reviews, code head_branch grouping), error handling impact, test quality/AC coverage,
           integration with review sibling API."
         created_at: 2026-06-19T02:29:10.046Z
+      - _ulid: 01KVEWJBX5H6F4AXQ2W96A91ZR
+        author: Jacob Chapel
+        body: Acknowledged the review evidence log. No code change was requested in this nit; the blocker
+          above is addressed and the full verification set has been rerun for the fix commit.
+        created_at: 2026-06-19T02:50:10.213Z
     kind: nit
+    resolved_at: 2026-06-19T02:50:13.178Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -232,5 +273,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-19T02:29:13.487Z
 created_at: 2026-06-19T02:13:54.017Z
-updated_at: 2026-06-19T02:29:13.487Z
+updated_at: 2026-06-19T02:50:13.178Z
 notes: []
