@@ -27448,8 +27448,8 @@ reviews:
       content_hash: ""
       ref: "@01KVED78WTR2KMA4HZBHKJRE5R"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-19T00:23:50.466Z
-    updated_at: 2026-06-19T00:38:46.799Z
+    updated_at: 2026-06-19T00:39:12.521Z
