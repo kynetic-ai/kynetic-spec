@@ -2,7 +2,104 @@ _ulid: 01KVEWXGTRKH0XFSPASJ2HX9TF
 slugs: []
 title: Review task-respec-review-pass-vocabulary (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1094 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-19T03:10:32.235Z
+    completed_at: 2026-06-19T03:10:32.235Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with 0 errors (repo warning baseline: 680 warnings). Focused changed-file oxlint
+      also passed with 0 warnings and 0 errors on packages/web-ui/src/lib/api.ts and changed tests."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-19T03:10:35.248Z
+    completed_at: 2026-06-19T03:10:35.248Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 warnings and 0 errors for packages/web-ui/src/lib/api.ts,
+      tests/e2e/review-detail-page.spec.ts, tests/e2e/reviews-detail.spec.ts,
+      tests/review-subject-revisions.test.ts.
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed ts/test files>
+    created_at: 2026-06-19T03:10:38.220Z
+    completed_at: 2026-06-19T03:10:38.220Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared and tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-19T03:10:41.191Z
+    completed_at: 2026-06-19T03:10:41.191Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2889/2889 test suites, 10985/10988 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KVEWTSKTHSE3KX9DE298SC35/572766b6be33e9bf.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-19T03:10:44.112Z
+    completed_at: 2026-06-19T03:10:44.112Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 3/3 Playwright tests for Review Pass Selector, including visible Review pass
+      label, sibling navigation, and single-review hiding."
+    name: focused e2e
+    required: false
+    runner: npm run test:e2e -- tests/e2e/reviews-detail.spec.ts --grep Review Pass Selector
+    created_at: 2026-06-19T03:10:47.014Z
+    completed_at: 2026-06-19T03:10:47.014Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; warnings are existing deprecated-reference
+      baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-19T03:10:49.907Z
+    completed_at: 2026-06-19T03:10:49.907Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; warnings are existing orphan/status baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-19T03:10:52.831Z
+    completed_at: 2026-06-19T03:10:52.831Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; warnings are existing AC
+      coverage/annotation baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-19T03:10:55.724Z
+    completed_at: 2026-06-19T03:10:55.724Z
 events:
   - _ulid: 01KVEWXGTRE74C5MKE5H2PD009
     actor: Jacob Chapel
@@ -17,6 +114,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-19T02:56:37.532Z
+  - _ulid: 01KVEXQNGWSJ3W95HSMMPEP551
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-19T03:10:32.476Z
+  - _ulid: 01KVEXQREYPJDB42FD67VFSAWH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-19T03:10:35.486Z
+  - _ulid: 01KVEXQVBQTHCTZJT7DZ8VP0GY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-19T03:10:38.455Z
+  - _ulid: 01KVEXQY8M1CWWJQBDTMFFD6XQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-19T03:10:41.428Z
+  - _ulid: 01KVEXR142R1AK6MTK2QJ3AJ4S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-19T03:10:44.355Z
+  - _ulid: 01KVEXR3YYHVQQAXQ08NMZ4ZBB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e
+    timestamp: 2026-06-19T03:10:47.262Z
+  - _ulid: 01KVEXR6RS7MKAVSNF4H9DHK0Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-19T03:10:50.137Z
+  - _ulid: 01KVEXR9MFGZVS3KN38P486D4T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-19T03:10:53.071Z
+  - _ulid: 01KVEXRCFRV8459YCJ8G04E266
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-19T03:10:55.992Z
 examined_commit: 91fff0e4804af9bbf1dd9da573b188863fc01c75
 external_links: []
 lifecycle_state: open
@@ -29,5 +189,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-19T02:56:15.704Z
-updated_at: 2026-06-19T02:56:37.282Z
+updated_at: 2026-06-19T03:10:55.724Z
 notes: []
