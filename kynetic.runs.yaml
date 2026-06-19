@@ -70706,7 +70706,7 @@ runs:
     completed_at: 2026-06-19T02:03:58.213Z
   - _ulid: 01KVET63H8978SVV54CP35NZSZ
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70742,7 +70742,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-19T02:10:58.845Z
-        completed_at: 2026-06-19T02:10:58.845Z
+        completed_at: 2026-06-19T02:11:11.783Z
+        notes: "Proposed improvement: update task submission linkage rules for dispatch/manual_merge so the
+          dispatch-provided merge target is either preferred over branch git-upstream tracking or
+          stored as a distinct intended_merge_target field. This would prevent reviewer/merge
+          helpers from seeing stale project defaults after workers submit from branches whose git
+          upstream points elsewhere. Scope: medium, because it touches submission-linkage semantics,
+          dispatch prompt/env behavior, and compatibility with @portable-task-submission-linkage
+          ac-5/ac-worktree-remote."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-19T02:11:11.783Z
+        completed_at: 2026-06-19T02:11:11.783Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T02:08:31.272Z
