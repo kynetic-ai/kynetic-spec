@@ -18978,11 +18978,11 @@ workspaces:
     canonical_branch: dispatch/task/task-plan-revision-records/01kved72
     canonical_branch_head: a4578c3ef6e20b6abcb9f2416bd0c758aa570dd4
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-19T00:07:23.367Z
+      updated_at: 2026-06-19T00:10:28.503Z
     health:
       status: healthy
       issues: []
@@ -18996,17 +18996,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: 4fdcd1312154624eb845b8e16b6095cfc5aaaa7d
       updated_at: 2026-06-19T00:07:23.367Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVED72GK6D72KBPRARV311RW
     task_ref: "@01KVED72GK6D72KBPRARV311RW"
     task_slug: task-plan-revision-records
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-19T00:10:28.503Z
       last_active_at: 2026-06-18T23:50:17.013Z
       last_reconciled_at: 2026-06-19T00:09:42.600Z
       created_at: 2026-06-18T23:08:42.447Z
-      updated_at: 2026-06-19T00:09:42.600Z
+      updated_at: 2026-06-19T00:10:28.503Z
     workspace_id: dispatch-workspace-01KVED72GK6D72KBPRARV311RW
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
