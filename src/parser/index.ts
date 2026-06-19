@@ -24,6 +24,7 @@ export * from "./freshness-resolver.js";
 export * from "./items.js";
 export * from "./meta.js";
 export * from "./plans.js";
+export * from "./plan-revisions.js";
 export * from "./refs.js";
 export * from "./review-operations.js";
 export * from "./review-task-integration.js";

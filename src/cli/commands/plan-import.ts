@@ -32,6 +32,7 @@ import {
   validatePlanImportResources,
 } from "../../parser/plan-resource-import.js";
 import { getPlanDir } from "../../parser/plan-storage-manager.js";
+import { appendPlanRevision, getCurrentShadowCommit } from "../../parser/plan-revisions.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { type Note, type PlanInput, PlanStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
@@ -419,6 +420,20 @@ async function importIntoExistingPlan(
     updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
     updatedPlan.title,
   );
+  if (ctx.shadow?.enabled) {
+    const contentCommit = getCurrentShadowCommit(ctx);
+    const revisionPlan = await appendPlanRevision(ctx, updatedPlan, {
+      author,
+      note: noteMessage,
+      shadowCommit: contentCommit,
+    });
+    await commitIfShadow(
+      ctx.shadow,
+      "plan-revision",
+      revisionPlan.slugs[0] || revisionPlan._ulid.slice(0, 8),
+      `revision ${revisionPlan.revisions.at(-1)?.ordinal}`,
+    );
+  }
   emitImportResult(preview, {
     dryRun: false,
     createdAt: updatedPlan.created_at,

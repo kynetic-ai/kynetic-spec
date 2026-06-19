@@ -288,7 +288,7 @@ async function seedVariants(tempDir: string): Promise<void> {
   moduleRaw.notes = [{ _ulid: specNoteU, created_at: TS, author: "@claude", content: "spec note" }];
   await fs.writeFile(modulePath, yaml.stringify(moduleRaw));
 
-  // ── Plan (covers notes[].author) ──
+  // ── Plan (covers notes[].author and revisions[].author) ──
   const plan = {
     _ulid: planU,
     slugs: ["seeded-plan"],
@@ -298,6 +298,15 @@ async function seedVariants(tempDir: string): Promise<void> {
     derived_tasks: [],
     derived_specs: [],
     created_at: TS,
+    revisions: [
+      {
+        ordinal: 1,
+        author: "Test User",
+        note: "seeded revision",
+        created_at: TS,
+        shadow_commit: "0123456789abcdef0123456789abcdef01234567",
+      },
+    ],
     notes: [{ _ulid: planNoteU, created_at: TS, author: "@dispatch", content: "plan note" }],
   };
   await savePlanToFolder(seedCtx, plan as Parameters<typeof savePlanToFolder>[1]);
@@ -426,6 +435,7 @@ describe("actor normalization migration over a real project", () => {
     const plans = await loadPlansFromFolders(fresh);
     const plan = plans.find((p) => p.slugs.includes("seeded-plan"))!;
     expect(plan.notes[0].author).toBe("pr-reviewer"); // @dispatch → pr-reviewer
+    expect(plan.revisions[0].author).toBe("Jacob Chapel"); // Test User → human
 
     // ac-5 — re-running the resolver over the normalized corpus finds nothing
     // left to change: every value is now canonical or a declared default.

@@ -149,9 +149,9 @@ async function writeRawPlanArray(
 /**
  * Find plan index in a raw array by ULID match.
  */
-function findRawPlanIndex(rawPlans: unknown[], ulid: string): number {
+function findRawPlanIndex(rawPlans: unknown[], planUlid: string): number {
   return rawPlans.findIndex(
-    (p) => p && typeof p === "object" && (p as Record<string, unknown>)._ulid === ulid,
+    (p) => p && typeof p === "object" && (p as Record<string, unknown>)._ulid === planUlid,
   );
 }
 
@@ -297,6 +297,7 @@ export function createPlan(input: PlanInput, _author?: string): Plan {
     approved_at: input.approved_at ?? null,
     completed_at: input.completed_at ?? null,
     notes: input.notes ?? [],
+    revisions: input.revisions ?? [],
   };
 }
 

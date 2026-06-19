@@ -42,6 +42,7 @@ import {
   type PlanSpec,
   type PlanTask,
 } from "../../parser/plan-document.js";
+import { appendPlanRevision, getCurrentShadowCommit } from "../../parser/plan-revisions.js";
 import type { Note, PlanInput, SpecItemInput, TaskInput } from "../../schema/index.js";
 import { PlanStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
@@ -624,11 +625,11 @@ async function materializePlanResourcesForTask(options: {
   recordedAt: string;
 }): Promise<void> {
   if (options.planResources.length === 0) return;
-  const fs = await import("node:fs/promises");
-  const path = await import("node:path");
+  const fsModule = await import("node:fs/promises");
+  const pathModule = await import("node:path");
   const planResourcesDir = getResourcesDir(getPlanDir(options.ctx, options.planUlid));
   const taskResourcesDir = getResourcesDir(getTaskDir(options.ctx, options.taskUlid));
-  const taskSubPrefix = path.posix.join("plan", options.planUlid);
+  const taskSubPrefix = pathModule.posix.join("plan", options.planUlid);
 
   const taskMetadata: ResourceMetadata[] = [];
   const taskResourceRefs: TaskResourceRef[] = [];
@@ -648,7 +649,7 @@ async function materializePlanResourcesForTask(options: {
         `Refusing to materialize plan resource ${planResource.id}: ${safeSource.error}`,
       );
     }
-    const destinationRelative = path.posix.join(taskSubPrefix, planResource.path);
+    const destinationRelative = pathModule.posix.join(taskSubPrefix, planResource.path);
     const safeDestination = await assertSafeResourceMutationPath({
       ownerResourcesDir: taskResourcesDir,
       relativePath: destinationRelative,
@@ -661,8 +662,8 @@ async function materializePlanResourcesForTask(options: {
 
     const sourceAbs = safeSource.value.absolutePath;
     const destinationAbs = safeDestination.value.absolutePath;
-    await fs.mkdir(path.dirname(destinationAbs), { recursive: true });
-    await fs.copyFile(sourceAbs, destinationAbs);
+    await fsModule.mkdir(pathModule.dirname(destinationAbs), { recursive: true });
+    await fsModule.copyFile(sourceAbs, destinationAbs);
 
     const computed = await computeResourceMetadata({
       id: buildMaterializedResourceId(planResource.id),
@@ -1099,6 +1100,18 @@ Examples:
             }
           }
 
+          if (foundPlan.revisions.length > 0) {
+            console.log("\nRevisions:");
+            for (const revision of foundPlan.revisions) {
+              console.log(
+                `  ${revision.ordinal}. ${revision.note} (${formatRelativeTime(revision.created_at)} by ${revision.author})`,
+              );
+              console.log(`     Commit: ${revision.shadow_commit}`);
+            }
+          } else {
+            console.log("\nRevisions: none");
+          }
+
           // Show content
           if (foundPlan.content) {
             console.log("\n─── Content ───");
@@ -1118,6 +1131,60 @@ Examples:
         });
       } catch (err) {
         error(errors.failures.getPlan, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // kspec plan publish <ref>
+  // AC: @plan-revisions ac-publish-mints-revision
+  markMutating(plan.command("publish <ref>"))
+    .description("Publish the current plan document as a numbered revision")
+    .requiredOption("--note <summary>", "Summary note for the published revision")
+    .action(async (ref: string, options: { note: string }) => {
+      try {
+        const ctx = await initContext();
+        if (!ctx.shadow?.enabled) {
+          error("Plan publish requires an enabled shadow branch");
+          process.exit(EXIT_CODES.CONFLICT);
+        }
+
+        const plans = await loadPlans(ctx);
+        const foundPlan = resolvePlanRef(ref, plans);
+        const foundPlanRef = shortPlanRef(foundPlan, plans);
+        const note = options.note.trim();
+        if (!note) {
+          error("Revision note is required");
+          process.exit(EXIT_CODES.USAGE_ERROR);
+        }
+        const author = await resolveCliActor(ctx, undefined, "author");
+
+        await commitIfShadow(
+          ctx.shadow,
+          "plan-publish",
+          foundPlan.slugs[0] || foundPlan._ulid.slice(0, 8),
+          "content",
+        );
+        const contentCommit = getCurrentShadowCommit(ctx);
+        const updatedPlan = await appendPlanRevision(ctx, foundPlan, {
+          author,
+          note,
+          shadowCommit: contentCommit,
+        });
+        const revision = updatedPlan.revisions.at(-1);
+
+        await commitIfShadow(
+          ctx.shadow,
+          "plan-revision",
+          updatedPlan.slugs[0] || updatedPlan._ulid.slice(0, 8),
+          `revision ${revision?.ordinal}`,
+        );
+
+        success(`Published plan revision ${revision?.ordinal}: ${foundPlanRef}`, {
+          revision,
+          plan: updatedPlan,
+        });
+      } catch (err) {
+        error("Failed to publish plan revision", err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
@@ -1332,7 +1399,6 @@ Examples:
           try {
             const { assertMarkdownLinksResolveAgainstPlan, PlanImportResourceError } =
               await import("../../parser/plan-resource-import.js");
-            const { getPlanDir } = await import("../../parser/plan-storage-manager.js");
             await assertMarkdownLinksResolveAgainstPlan(
               getPlanDir(ctx, foundPlan._ulid),
               newContent,
@@ -1880,7 +1946,7 @@ Examples:
 
         const { refIndex, items, tasks } = await buildIndexes(ctx, plans);
         const reservedSlugs = new Set([
-          ...plans.flatMap((plan) => plan.slugs),
+          ...plans.flatMap((planRecord) => planRecord.slugs),
           ...items.flatMap((item) => item.slugs),
           ...tasks.flatMap((task) => task.slugs),
         ]);

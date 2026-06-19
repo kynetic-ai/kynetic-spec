@@ -304,7 +304,14 @@ export const ACTOR_FIELD_INVENTORY: readonly ActorFieldInventoryEntry[] = [
     reason: "Reference to the verifying spec item (entity ref), not an actor identity.",
   },
 
-  // ── Plans (folder-backed: plans/<ulid>/notes.yaml) ──
+  // ── Plans (folder-backed: plans/<ulid>/plan.yaml + notes.yaml) ──
+  {
+    recordKind: "plan",
+    schemaType: "PlanRevisionSchema",
+    storagePath: "plans/<ulid>/plan.yaml",
+    fieldPath: "revisions[].author",
+    disposition: "normalize",
+  },
   {
     recordKind: "plan",
     schemaType: "NoteSchema",
