@@ -12,3 +12,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-19T00:28:43.049Z
+  - _ulid: 01KVEND8GDRHTBPHF249B1C5JV
+    content: "Implemented revision-one backfill in the upgrade pipeline. Existing plans without
+      revisions now receive ordinal 1 with kspec-upgrade author, a shared upgrade timestamp, and a
+      shadow commit pointer to the plan document content at upgrade time. Dry-run previews the count
+      without writes; repeat upgrade runs skip plans that already have revisions. Verification:
+      focused upgrade-folder-storage test passed; format check, repo lint --quiet, focused oxlint,
+      typecheck, full npm test, and refs/alignment/completeness validation all passed with the
+      existing warning baselines."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-19T00:45:02.861Z
