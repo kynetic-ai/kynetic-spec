@@ -32790,7 +32790,7 @@
   type: task
   spec_ref: "@review-records-web-ui"
   plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-review-revision-binding"
@@ -32803,4 +32803,5 @@
   todos_count: 0
   created_at: 2026-06-18T22:21:59.324Z
   started_at: 2026-06-19T01:47:34.894Z
+  submitted_at: 2026-06-19T02:06:06.332Z
   automation: eligible
