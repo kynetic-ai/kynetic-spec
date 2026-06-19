@@ -6860,7 +6860,7 @@ requirements:
       passes with a dropdown selector to navigate between them."
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
