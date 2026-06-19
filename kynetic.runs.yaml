@@ -70706,7 +70706,7 @@ runs:
     completed_at: 2026-06-19T02:03:58.213Z
   - _ulid: 01KVET63H8978SVV54CP35NZSZ
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70731,7 +70731,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-19T02:10:47.463Z
-        completed_at: 2026-06-19T02:10:47.463Z
+        completed_at: 2026-06-19T02:10:58.845Z
+        notes: "Coverage checks run: kspec search 'submission linkage upstream' and 'dispatch merge target
+          upstream_ref' returned no matches; broader searches found
+          @portable-task-submission-linkage and @dispatch-workspace-configuration. Those partially
+          cover submission linkage and dispatch base branches, but the observed manual_merge
+          env/prompt target versus git upstream precedence conflict is not directly tracked.
+          Searches for review-pass/targeted E2E patterns found existing observation @01KN2JT0, so no
+          duplicate success/friction capture for that broader E2E issue."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-19T02:10:58.845Z
+        completed_at: 2026-06-19T02:10:58.845Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T02:08:31.272Z
