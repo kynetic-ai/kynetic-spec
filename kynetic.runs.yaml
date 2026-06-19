@@ -71092,7 +71092,7 @@ runs:
     started_at: 2026-06-19T03:12:17.018Z
   - _ulid: 01KVEXVX7ZVX3FF1EBQ1M97PS7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71106,7 +71106,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-19T03:14:04.958Z
-        completed_at: 2026-06-19T03:14:04.958Z
+        completed_at: 2026-06-19T03:14:16.141Z
+        notes: "Friction points: the full npm test review gate took 2853.7s for a small UI vocabulary task,
+          which materially slowed review completion. This appears systemic rather than
+          task-specific, but it may already be tracked; no other workflow friction surfaced.
+          Evidence-log and merge-helper concerns are already represented by existing
+          observations/specs."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-19T03:14:16.141Z
+        completed_at: 2026-06-19T03:14:16.141Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T03:12:51.455Z
