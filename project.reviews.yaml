@@ -27513,7 +27513,7 @@ reviews:
   - _ulid: 01KVETFYQ1WRB50DTR7CN6R0ZW
     slugs: []
     title: Review task-respec-review-pass-vocabulary
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 7
     examined_commit: 578ab20ab828807c0d157581a9e613867b66058d
@@ -27524,8 +27524,8 @@ reviews:
       content_hash: ""
       ref: "@01KVED7A4WSWYEJEN8Z4BJ65RB"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-19T02:13:54.017Z
-    updated_at: 2026-06-19T02:28:27.013Z
+    updated_at: 2026-06-19T02:28:44.519Z

@@ -143,6 +143,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-19T02:28:27.253Z
+  - _ulid: 01KVEVB4JX4FC70NXV894E5BC0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVEVB4B7YG7P8SMH3FQC89Y8
+    timestamp: 2026-06-19T02:28:44.765Z
 examined_commit: 578ab20ab828807c0d157581a9e613867b66058d
 external_links: []
 lifecycle_state: open
@@ -152,8 +159,30 @@ subject:
   content_hash: ""
   ref: "@01KVED7A4WSWYEJEN8Z4BJ65RB"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVEVB4B7YG7P8SMH3FQC89Y8
+    anchor:
+      type: code
+      commit: 578ab20ab828807c0d157581a9e613867b66058d
+      line_end: 178
+      line_start: 178
+      path: tests/review-subject-revisions.test.ts
+      side: head
+    entries:
+      - _ulid: 01KVEVB4B7N0K1F66NT2EYJS13
+        author: Jacob Chapel
+        body: 'MUST-FIX: `@subject-revision-vocabulary ac-review-pass-labeling` is still represented only by
+          this N/A annotation: "implemented by dependent @task-respec-review-pass-vocabulary." This
+          task is that dependent implementation, and the behavioral E2E assertions added for the
+          visible "Review pass:" label are annotated only with `@review-records-web-ui ac-11`. As a
+          result the subject-revision vocabulary AC remains falsely marked N/A instead of being tied
+          to a behavioral test, so coverage traceability is misleading even though the UI label
+          itself is correct. Replace this stale N/A marker with real AC coverage, for example by
+          also annotating the review-pass selector E2E label/grouping assertion with `// AC:
+          @subject-revision-vocabulary ac-review-pass-labeling`.'
+        created_at: 2026-06-19T02:28:44.519Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-19T02:13:54.017Z
-updated_at: 2026-06-19T02:28:27.013Z
+updated_at: 2026-06-19T02:28:44.519Z
 notes: []
