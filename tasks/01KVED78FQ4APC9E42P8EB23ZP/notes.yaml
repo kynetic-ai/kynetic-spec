@@ -29,3 +29,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-19T02:01:43.607Z
+  - _ulid: 01KVEVBBS7MPG1R7GCM008GAT0
+    content: "Fix cycle 1: addressed the review blocker by replacing lossy parseInt handling for
+      plan-text CLI numeric flags with strict parseIntOption validation. Added behavioral CLI
+      coverage for decimal offsets and partially numeric revision ordinals, and re-verified all
+      @review-plan-text-anchors ACs against the unchanged write/validation paths. Gates passed:
+      format:check, lint -- --quiet, focused oxlint, typecheck, focused plan-text anchor tests, full
+      npm test (10991 passed, 3 skipped), and kspec validate refs/alignment/completeness with
+      warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-19T02:28:52.135Z
