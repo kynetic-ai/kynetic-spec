@@ -207,6 +207,9 @@ decisions:
       sequence of review passes ordered by creation; review passes are
       never labeled with the revision vocabulary, and revision numbers are
       never derived from sibling-review order.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on:
       - "@plan-revisions"
       - "@review-subject-bindings"
