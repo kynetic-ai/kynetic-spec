@@ -32718,7 +32718,7 @@
   type: task
   spec_ref: "@review-idea-threads"
   plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -32731,6 +32731,7 @@
   created_at: 2026-06-18T22:21:58.042Z
   started_at: 2026-06-18T23:51:47.305Z
   submitted_at: 2026-06-19T00:18:15.008Z
+  completed_at: 2026-06-19T00:39:57.938Z
   automation: eligible
 - _ulid: 01KVED79AAFAKDN7H1P2D6GTT5
   slugs:
