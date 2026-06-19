@@ -683,6 +683,13 @@ export type ReviewAnchor =
       type: "spec_ac";
       spec_ref: string;
       criterion_id: string;
+    }
+  | {
+      type: "plan_text";
+      section: string;
+      offset: number;
+      quoted_text: string;
+      created_at_rev: number;
     };
 
 /**

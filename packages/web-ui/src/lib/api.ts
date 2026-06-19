@@ -31,6 +31,7 @@ import type {
   ReviewDetail,
   ReviewResource,
   ReviewThread,
+  ReviewAnchor,
   ReviewThreadKind,
   ReviewContentResourceContext,
   ErrorResponse,
@@ -2231,27 +2232,7 @@ export async function createReviewThread(
     body: string;
     kind?: ReviewThreadKind;
     author?: string;
-    anchor?:
-      | {
-          type: "code";
-          path: string;
-          side: "base" | "head";
-          line_start: number;
-          line_end: number;
-          commit: string;
-        }
-      | {
-          type: "structured";
-          section?: string;
-          field?: string;
-          path?: string;
-          ref?: string;
-        }
-      | {
-          type: "spec_ac";
-          spec_ref: string;
-          criterion_id: string;
-        };
+    anchor?: ReviewAnchor;
   },
 ): Promise<ReviewThread> {
   assertWritable("add comment to review");

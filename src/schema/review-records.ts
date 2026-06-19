@@ -79,7 +79,7 @@ export const ReviewSubjectVersionSchema = z.discriminatedUnion("type", [
 
 // --- Anchors ---
 
-export const ReviewAnchorTypeSchema = z.enum(["code", "structured", "spec_ac"]);
+export const ReviewAnchorTypeSchema = z.enum(["code", "structured", "spec_ac", "plan_text"]);
 
 export const ReviewCodeAnchorSideSchema = z.enum(["base", "head"]);
 
@@ -108,10 +108,22 @@ export const ReviewSpecAcAnchorSchema = z.object({
   criterion_id: AcIdSchema,
 });
 
+// AC: @review-plan-text-anchors ac-plan-text-anchor-stored
+// AC: @review-plan-text-anchors ac-plan-text-anchor-validation
+export const ReviewPlanTextAnchorSchema = z.object({
+  type: z.literal("plan_text"),
+  section: z.string().min(1, "section is required"),
+  // Offset is measured in Unicode code points from the start of section content.
+  offset: z.number().int().nonnegative(),
+  quoted_text: z.string().min(1, "quoted_text is required"),
+  created_at_rev: z.number().int().positive(),
+});
+
 export const ReviewAnchorSchema = z.discriminatedUnion("type", [
   ReviewCodeAnchorSchema,
   ReviewStructuredAnchorSchema,
   ReviewSpecAcAnchorSchema,
+  ReviewPlanTextAnchorSchema,
 ]);
 
 // --- Threads ---
@@ -292,6 +304,7 @@ export type ReviewSubjectVersion = z.infer<typeof ReviewSubjectVersionSchema>;
 export type ReviewCodeAnchor = z.infer<typeof ReviewCodeAnchorSchema>;
 export type ReviewStructuredAnchor = z.infer<typeof ReviewStructuredAnchorSchema>;
 export type ReviewSpecAcAnchor = z.infer<typeof ReviewSpecAcAnchorSchema>;
+export type ReviewPlanTextAnchor = z.infer<typeof ReviewPlanTextAnchorSchema>;
 export type ReviewAnchor = z.infer<typeof ReviewAnchorSchema>;
 export type ReviewThreadKind = z.infer<typeof ReviewThreadKindSchema>;
 export type ReviewThreadEntry = z.infer<typeof ReviewThreadEntrySchema>;

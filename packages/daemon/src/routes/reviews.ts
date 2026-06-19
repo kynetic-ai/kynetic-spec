@@ -44,6 +44,7 @@ import {
   addReplyAtomic,
   resolveThreadAtomic,
   reopenThreadAtomic,
+  validatePlanTextAnchorForReview,
   resolveTaskDataManager,
   type LoadedTask,
   type LoadedSpecItem,
@@ -70,6 +71,7 @@ import {
   ReviewCodeAnchorSideSchema,
   ReviewDispositionSchema,
   ReviewLifecycleStateSchema,
+  ReviewPlanTextAnchorSchema,
   ReviewSpecAcAnchorSchema,
   ReviewSubjectSchema,
   ReviewThreadKindSchema,
@@ -811,6 +813,48 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
                 });
               }
               anchor = parsedAnchor.data;
+            } else if (body.anchor.type === "plan_text") {
+              const planTextAnchor = {
+                type: "plan_text" as const,
+                section: body.anchor.section,
+                offset: body.anchor.offset,
+                quoted_text: body.anchor.quoted_text,
+                created_at_rev: body.anchor.created_at_rev,
+              };
+              const parsedAnchor = ReviewPlanTextAnchorSchema.safeParse(planTextAnchor);
+              if (!parsedAnchor.success) {
+                const issue = parsedAnchor.error.issues[0];
+                const field = issue?.path.join(".") || "anchor";
+                return errorResponse(400, {
+                  error: "validation_error",
+                  message: `Invalid plan-text anchor ${field}: ${issue?.message || "invalid value"}`,
+                  details: [
+                    {
+                      field: `anchor.${field}`,
+                      message: issue?.message || "Invalid plan-text anchor value",
+                    },
+                  ],
+                });
+              }
+
+              const validation = await validatePlanTextAnchorForReview(
+                ctx,
+                review,
+                parsedAnchor.data,
+              );
+              if (!validation.ok) {
+                return errorResponse(400, {
+                  error: "validation_error",
+                  message: `Invalid plan-text anchor ${validation.failure.field}: ${validation.failure.message}`,
+                  details: [
+                    {
+                      field: `anchor.${validation.failure.field}`,
+                      message: validation.failure.message,
+                    },
+                  ],
+                });
+              }
+              anchor = validation.anchor;
             } else {
               return errorResponse(400, {
                 error: "validation_error",
@@ -818,7 +862,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
                 details: [
                   {
                     field: "anchor.type",
-                    message: 'Anchor type must be "code" or "structured"',
+                    message: `Anchor type must be one of: ${VALID_ANCHOR_TYPES.join(", ")}`,
                   },
                 ],
               });
@@ -891,6 +935,9 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
                 ref: t.Optional(t.String()),
                 spec_ref: t.Optional(t.String()),
                 criterion_id: t.Optional(t.String()),
+                offset: t.Optional(t.Number()),
+                quoted_text: t.Optional(t.String()),
+                created_at_rev: t.Optional(t.Number()),
               }),
             ),
           }),
