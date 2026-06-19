@@ -39,7 +39,7 @@ description: |
 spec_ref: "@review-records-web-ui"
 plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-review-revision-binding"
@@ -59,7 +59,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: feat/ui-redesign
-session_id: null
+session_id: 01KVEVMY1J4MRRCD12QW3W6JKT
 history:
   - author: Jacob Chapel
     changes:
@@ -139,8 +139,21 @@ history:
         previous: 01KVERY9KR4B8YCZXJ4VR0X662
     command: review-verdict-needs-work
     timestamp: 2026-06-19T02:29:15.573Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KVEVMY1J4MRRCD12QW3W6JKT
+        previous: null
+      started_at:
+        new: 2026-06-19T02:35:13.027Z
+        previous: 2026-06-19T01:47:34.894Z
+    command: task-start
+    timestamp: 2026-06-19T02:35:13.027Z
 created_at: 2026-06-18T22:21:59.324Z
-started_at: 2026-06-19T01:47:34.894Z
+started_at: 2026-06-19T02:35:13.027Z
 submitted_at: 2026-06-19T02:06:06.332Z
 todos: []
 automation: eligible
