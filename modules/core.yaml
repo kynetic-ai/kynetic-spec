@@ -2608,7 +2608,7 @@ features:
           anchored plan is the review's subject.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@review-comment-threads-and-anchors"
           - "@plan-revisions"
