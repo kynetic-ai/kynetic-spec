@@ -12,3 +12,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-18T23:57:42.442Z
+  - _ulid: 01KVEKTZSBBDYZKFBDDNHW21SX
+    content: "Implemented idea as an additive review thread kind across schema, CLI/daemon validation,
+      shared/web UI types, badge labels, and creation selectors. Added behavioral coverage for idea
+      thread create/reply/resolve/reopen, non-blocking approval disposition, and invalid-kind
+      feedback. Verification passed: npm run format:check; npm run lint -- --quiet; npx oxlint
+      changed TypeScript/test files; npm run typecheck; focused review tests and E2E; npm test;
+      kspec validate --refs/--alignment/--completeness --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-19T00:17:35.531Z
