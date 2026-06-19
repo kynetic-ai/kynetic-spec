@@ -71227,7 +71227,7 @@ runs:
     completed_at: 2026-06-19T03:36:23.018Z
   - _ulid: 01KVF077ECH3JD9SHSH2TKBEHM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71241,7 +71241,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-19T03:54:47.345Z
-        completed_at: 2026-06-19T03:54:47.345Z
+        completed_at: 2026-06-19T03:54:58.433Z
+        notes: "Friction: variant-extension work touched backend schema, CLI, daemon, and behavioral tests,
+          but public consumer API type surfaces were not part of the initial checklist. The
+          duplicated createReviewThread anchor input union in packages/web-ui drifted from the
+          shared/backend ReviewAnchor shape."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-19T03:54:58.433Z
+        completed_at: 2026-06-19T03:54:58.433Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T03:53:59.500Z
