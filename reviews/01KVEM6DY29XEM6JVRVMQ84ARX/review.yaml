@@ -149,9 +149,25 @@ events:
       kind: nit
       thread_ulid: 01KVEN2JC9Z2VPXHA845AK9GTZ
     timestamp: 2026-06-19T00:39:12.773Z
+  - _ulid: 01KVEN2WEKZC29MXQ3AQTY1292
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-19T00:39:22.835Z
+  - _ulid: 01KVEN2WEKH4EG7M0WJ3EN29G0
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-19T00:39:22.835Z
 examined_commit: 99c047e7fba7a619c05ae01a09abbf360cffadfc
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -198,7 +214,14 @@ threads:
           schema/parser/CLI/daemon/shared/web-ui/websocket. No blockers found.
         created_at: 2026-06-19T00:39:12.521Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-19T00:39:22.834Z
 created_at: 2026-06-19T00:23:50.466Z
-updated_at: 2026-06-19T00:39:12.521Z
+updated_at: 2026-06-19T00:39:22.835Z
 notes: []
