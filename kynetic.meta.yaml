@@ -22829,6 +22829,27 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-19T01:16:07.412Z
+  - _ulid: 01KVESXQKYRSW3BCG0ZRCYZA3H
+    type: friction
+    content: Review-gates requires a review evidence log, but review records do not provide a
+      first-class evidence-log or verdict-body field. Reviewers currently have to embed the log in a
+      blocker thread, a check evidence string, or another workaround, which is especially awkward
+      for clean approvals with no findings.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-19T02:03:56.927Z
+  - _ulid: 01KVESXQWB1VJ10FHSW7TR8ETK
+    type: success
+    content: Batching review checks, findings, and verdict into one kspec batch kept the review record
+      and task transition atomic during automated review. This avoided a partial review state while
+      still preserving per-check evidence and an anchored blocker thread.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-19T02:03:57.195Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
