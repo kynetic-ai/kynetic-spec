@@ -70771,9 +70771,20 @@ runs:
     completed_at: 2026-06-19T02:11:32.684Z
   - _ulid: 01KVEVD6KG1EQ2703YWF0GPSK2
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-19T02:29:52.369Z
+        completed_at: 2026-06-19T02:31:42.294Z
+        notes: "Worked well: review records captured the decision cleanly; running the full required gates
+          before verdict gave solid evidence; rg searches quickly exposed the stale N/A coverage
+          marker and the related existing N/A-policy work."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-19T02:31:42.294Z
+        completed_at: 2026-06-19T02:31:42.294Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-19T02:29:52.369Z
