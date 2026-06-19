@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KVES1K5S7RJNWSR74EMKK4JH
+    content: "Approach: update @review-records-web-ui description and ac-11 via kspec batch to describe
+      sibling reviews as review passes, then update the review detail page label and AC/test wording
+      from revision selector to review-pass selector while preserving the existing sibling-fetching,
+      creation-date ordering, current selection, and navigation behavior. Edge cases: code reviews
+      must still group by head_branch, plan/task/spec reviews by subject ref, and single-review
+      subjects must not show the selector. Test plan: adjust existing AC-annotated E2E coverage for
+      @review-records-web-ui ac-11 to assert the Review pass label, sibling navigation, code
+      head-branch grouping, and no-selector single-review case; run focused E2E where practical plus
+      project gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-19T01:48:34.874Z
