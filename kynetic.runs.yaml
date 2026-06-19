@@ -70306,7 +70306,7 @@ runs:
     completed_at: 2026-06-19T00:09:09.111Z
   - _ulid: 01KVEKY69MMCX377Z7A3R4KNK4
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70321,7 +70321,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-19T00:21:04.212Z
-        completed_at: 2026-06-19T00:21:04.212Z
+        completed_at: 2026-06-19T00:21:15.604Z
+        notes: "High-confidence friction candidate: daemon routes that declare enum request fields with
+          framework-level enum schemas can prevent route-local validation from returning
+          project-specific accepted-value feedback. In this session, POST /api/reviews/:id/comments
+          initially rejected invalid kind before the handler could emit the required
+          blocker/question/nit/idea guidance; changing the body schema to accept string let the
+          existing ReviewThreadKindSchema validation produce the correct user feedback. Skipped
+          duplicates: workflow show run-ref mismatch and quiet npm test tail are already tracked. No
+          unique success captured: the useful test-first/type-propagation pattern is already well
+          represented by existing success observations."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-19T00:21:15.604Z
+        completed_at: 2026-06-19T00:21:15.604Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-19T00:19:20.500Z
