@@ -40,7 +40,7 @@ description: |
 spec_ref: "@subject-revision-vocabulary"
 plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-plan-revision-records"
@@ -51,6 +51,14 @@ tags:
   - plans
   - schema
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-review-revision-binding/01kved79
+  captured_at: 2026-06-19T01:12:44.930Z
+  commit: 03cdfa3de95213d8fbb38e8dd843e99ee4be115a
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KVENR7F1PHTZS8TT3864RTPE
 history:
   - author: Jacob Chapel
@@ -73,7 +81,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-19T00:51:56.872Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-review-revision-binding/01kved79
+          captured_at: 2026-06-19T01:12:44.930Z
+          commit: 03cdfa3de95213d8fbb38e8dd843e99ee4be115a
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-19T01:12:44.935Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-19T01:12:44.935Z
 created_at: 2026-06-18T22:21:58.914Z
 started_at: 2026-06-19T00:51:56.872Z
+submitted_at: 2026-06-19T01:12:44.935Z
 todos: []
 automation: eligible
