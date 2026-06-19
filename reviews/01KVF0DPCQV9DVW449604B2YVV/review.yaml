@@ -2,7 +2,90 @@ _ulid: 01KVF0DPCQV9DVW449604B2YVV
 slugs: []
 title: Review task-plan-text-anchors
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; 1097 files checked.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-19T04:12:23.351Z
+    completed_at: 2026-06-19T04:12:23.351Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "oxlint src/ tests/ packages/ --quiet: 0 errors; existing warning baseline reported 678
+      warnings."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-19T04:12:26.637Z
+    completed_at: 2026-06-19T04:12:26.637Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused oxlint on 9 changed TS/Svelte/test files: 0 warnings, 0 errors."
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-19T04:12:29.965Z
+    completed_at: 2026-06-19T04:12:29.965Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: build:shared and tsc --noEmit completed with exit code 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-19T04:12:33.207Z
+    completed_at: 2026-06-19T04:12:33.207Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2893 test suites passed; 10991 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KVF0CDGGYCQ9JQEVTF9D82G2/07bf95d43ac66d93.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-19T04:12:36.472Z
+    completed_at: 2026-06-19T04:12:36.472Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with existing reference warnings; exit code 0 due to --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-19T04:12:39.583Z
+    completed_at: 2026-06-19T04:12:39.583Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with existing alignment warnings; exit code 0 due to --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-19T04:12:42.784Z
+    completed_at: 2026-06-19T04:12:42.784Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with existing completeness warnings; plan-text AC annotations are
+      present for all six direct ACs.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-19T04:12:45.982Z
+    completed_at: 2026-06-19T04:12:45.982Z
 events:
   - _ulid: 01KVF0DPCP1EVXN9YWPRVYYS6N
     actor: Jacob Chapel
@@ -17,17 +100,136 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-19T03:57:53.793Z
+  - _ulid: 01KVF18XPHNWMVAD4115XM13QY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-19T04:12:23.633Z
+  - _ulid: 01KVF190WA5JWNP100EB3J8A47
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-19T04:12:26.891Z
+  - _ulid: 01KVF19443EXGJ6MPAZT0R8NRN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-19T04:12:30.211Z
+  - _ulid: 01KVF1978N8MQ397C1P0A39DAZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-19T04:12:33.429Z
+  - _ulid: 01KVF19AGHRKZHS5SQE3EH63CF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-19T04:12:36.753Z
+  - _ulid: 01KVF19DG3EAGVRSG7C8PSSE1C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-19T04:12:39.811Z
+  - _ulid: 01KVF19GM1M8V7KFGPZ8AM3CQ4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-19T04:12:43.009Z
+  - _ulid: 01KVF19KR026ER889CYKWMA74K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-19T04:12:46.208Z
+  - _ulid: 01KVF19PR4V7W8A960HZ82HEYV
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVF19PFNZJTHAE26YGXBEJVN
+    timestamp: 2026-06-19T04:12:49.284Z
+  - _ulid: 01KVF19SSTV5XEMMVDA6KQ8ZGE
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-19T04:12:52.410Z
+  - _ulid: 01KVF19SSTP8KR7RFQ7ZWCTMZC
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-19T04:12:52.410Z
 examined_commit: 9b4985dd6ae9ac7f5b515b9477be0ec3845097d5
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVED78FQ4APC9E42P8EB23ZP"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVF19PFNZJTHAE26YGXBEJVN
+    entries:
+      - _ulid: 01KVF19PFPDWYFMQV74ZBCJRKK
+        author: codex-reviewer
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; src/schema/review-records.ts;
+          src/parser/plan-text-anchors.ts; src/parser/index.ts; src/parser/plan-revisions.ts;
+          src/cli/commands/review.ts; src/cli/validators.ts; packages/daemon/src/routes/reviews.ts;
+          packages/shared/src/api.ts; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/routes/reviews/[id]/+page.svelte; tests/plan-text-anchors.test.ts;
+          tests/daemon-api/reviews-plan-text-anchors.test.ts; tests/review-validation.test.ts; prior
+          reviews @01KVERYB, @01KVEVND, @01KVEY40.
+
+          Commands run: git status --short --branch; git log --oneline --decorate -8; git diff
+          feat/ui-redesign...HEAD --name-status/stat/patch; kspec task get
+          @01KVED78FQ4APC9E42P8EB23ZP; kspec item get @review-plan-text-anchors; kspec item get
+          @review-spec-ac-anchors; kspec review add/open/for-task/get; rg AC annotations and anchor
+          type paths; git diff --check; npm run format:check; npx oxlint changed files; npm run lint
+          -- --quiet; npm run typecheck; npm test; kspec validate refs/alignment/completeness with
+          --warnings-ok.
+
+          Claims verified: strict CLI numeric parsing now uses parseIntOption and tests reject
+          decimal/partial numeric values; section IDs are globally de-duplicated including preamble
+          and suffix-shaped collisions; public shared ReviewAnchor and web createReviewThread now
+          accept plan_text; creation validation is write-time only while persisted load stays
+          shape-level.
+
+          Categories searched: correctness, edge cases, error handling, test quality,
+          integration/API typing, AC coverage, prior fix-cycle regressions. No blocking findings.
+        created_at: 2026-06-19T04:12:49.014Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-19T04:12:52.410Z
 created_at: 2026-06-19T03:57:31.415Z
-updated_at: 2026-06-19T03:57:53.521Z
+updated_at: 2026-06-19T04:12:52.410Z
 notes: []
