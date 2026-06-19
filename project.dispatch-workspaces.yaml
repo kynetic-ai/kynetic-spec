@@ -19860,12 +19860,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-19T00:49:36.484Z
+      updated_at: 2026-06-19T00:49:47.360Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-19T00:49:36.484Z
+      updated_at: 2026-06-19T00:49:47.360Z
     integration:
       status: pending
       detail: null
@@ -19873,8 +19873,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 41f077c5061300e7783a8ed01287c71ce30fe435
-      updated_at: 2026-06-19T00:49:36.484Z
-    lifecycle_state: ready
+      updated_at: 2026-06-19T00:49:47.360Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVED79AAFAKDN7H1P2D6GTT5
     task_ref: "@01KVED79AAFAKDN7H1P2D6GTT5"
@@ -19882,16 +19882,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-19T00:23:51.576Z
-      last_reconciled_at: 2026-06-19T00:49:36.484Z
+      last_reconciled_at: 2026-06-19T00:49:47.360Z
       created_at: 2026-06-19T00:23:22.080Z
-      updated_at: 2026-06-19T00:49:36.484Z
+      updated_at: 2026-06-19T00:49:47.360Z
     workspace_id: dispatch-workspace-01KVED79AAFAKDN7H1P2D6GTT5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 18a71a66059abbb0b50dc969505aa5a8cf9c1cfc
+        last_seen_at: 2026-06-19T00:49:47.360Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-revision-backfill-01kved79-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-plan-revision-backfill/01kved79
-        head: 41f077c5061300e7783a8ed01287c71ce30fe435
-        last_seen_at: 2026-06-19T00:23:22.080Z
+        head: 18a71a66059abbb0b50dc969505aa5a8cf9c1cfc
+        last_seen_at: 2026-06-19T00:49:47.360Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-revision-backfill-01kved79
