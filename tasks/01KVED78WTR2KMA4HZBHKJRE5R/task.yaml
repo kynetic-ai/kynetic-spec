@@ -62,6 +62,7 @@ tags:
   - schema
   - reviews
 vcs_refs: []
+review_ref: "@01KVEM6DY29XEM6JVRVMQ84ARX"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-idea-thread-kind/01kved78
@@ -112,6 +113,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-19T00:18:15.009Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KVEM6DY29XEM6JVRVMQ84ARX"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-19T00:23:52.925Z
 created_at: 2026-06-18T22:21:58.042Z
 started_at: 2026-06-18T23:51:47.305Z
 submitted_at: 2026-06-19T00:18:15.008Z
