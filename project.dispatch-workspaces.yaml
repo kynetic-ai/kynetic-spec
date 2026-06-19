@@ -20041,7 +20041,7 @@ workspaces:
         head: 18a71a66059abbb0b50dc969505aa5a8cf9c1cfc
         last_seen_at: 2026-06-19T00:49:47.360Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-revision-backfill-01kved79
-  - active_role: worker
+  - active_role: null
     base_branch_point: d828cf5bc0b9b87d6c65fb71997031b260779fe4
     bootstrap:
       status: succeeded
@@ -20372,12 +20372,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-19T01:13:17.054Z
+      updated_at: 2026-06-19T01:16:57.031Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-19T01:13:17.054Z
+      updated_at: 2026-06-19T01:16:57.031Z
     integration:
       status: pending
       detail: null
@@ -20385,8 +20385,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: d828cf5bc0b9b87d6c65fb71997031b260779fe4
-      updated_at: 2026-06-19T01:13:17.054Z
-    lifecycle_state: active
+      updated_at: 2026-06-19T01:16:57.031Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVED79R2301QYV9N6GVYVFXG
     task_ref: "@01KVED79R2301QYV9N6GVYVFXG"
@@ -20394,9 +20394,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-19T00:51:04.733Z
-      last_reconciled_at: 2026-06-19T01:13:17.054Z
+      last_reconciled_at: 2026-06-19T01:16:57.031Z
       created_at: 2026-06-19T00:50:36.028Z
-      updated_at: 2026-06-19T01:13:17.054Z
+      updated_at: 2026-06-19T01:16:57.031Z
     workspace_id: dispatch-workspace-01KVED79R2301QYV9N6GVYVFXG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
