@@ -68,8 +68,11 @@ description: |
 spec_ref: "@review-plan-text-anchors"
 plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign via detached reviewer helper. Implemented plan_text review
+  anchors with deterministic heading sectioning, creation-time plan revision span validation,
+  CLI/API write support, and shared/web API type coverage.
 depends_on:
   - "@task-spec-ac-anchor-variant"
   - "@task-plan-revision-records"
@@ -310,8 +313,24 @@ history:
         previous: "@01KVEY404JWQGW2G8N8492BND2"
     command: review-link
     timestamp: 2026-06-19T03:57:34.055Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign via detached reviewer helper. Implemented plan_text review anchors
+          with deterministic heading sectioning, creation-time plan revision span validation,
+          CLI/API write support, and shared/web API type coverage.
+        previous: null
+      completed_at:
+        new: 2026-06-19T04:13:36.265Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-19T04:13:36.275Z
 created_at: 2026-06-18T22:21:57.623Z
 started_at: 2026-06-19T03:38:36.895Z
 submitted_at: 2026-06-19T03:53:16.451Z
+completed_at: 2026-06-19T04:13:36.265Z
 todos: []
 automation: eligible
