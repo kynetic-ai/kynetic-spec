@@ -23,6 +23,7 @@ import {
   type LoadedReviewRecord,
   loadReviewRecords,
   mutateReviewAtomically,
+  validatePlanTextAnchorForReview,
   saveReviewRecord,
   shortestUniqueUlid,
   submitVerdict,
@@ -51,6 +52,7 @@ import {
   ReviewDispositionSchema,
   ReviewCheckStatusSchema,
   ReviewLifecycleStateSchema,
+  ReviewPlanTextAnchorSchema,
   ReviewSpecAcAnchorSchema,
   ReviewThreadKindSchema,
 } from "../../schema/index.js";
@@ -468,23 +470,23 @@ function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubjec
 // --- Command Registration ---
 
 export function registerReviewCommands(program: Command): void {
-  const review = program.command("review").description("Manage first-party review records");
+  const reviewCommand = program.command("review").description("Manage first-party review records");
 
   // kspec review rebuild-index
   // AC: @folder-backed-review-storage-1 ac-review-index-has-bounded-projection
   // AC: @trait-folder-backed-entity-1 ac-index-rebuilds-from-folders
-  registerReviewRebuildIndexCommand(review);
+  registerReviewRebuildIndexCommand(reviewCommand);
 
   // kspec review resource add|list|get|remove
   // AC: @folder-backed-review-storage-1 ac-review-screenshot-resource-loads-in-ui
   // AC: @trait-entity-scoped-local-resources-1 ac-resource-reference-resolves-within-owner
-  registerReviewResourceCommands(review);
+  registerReviewResourceCommands(reviewCommand);
 
   // --- review add ---
   // AC: @review-cli-creation-and-query ac-1, ac-2, ac-5
   // AC: @review-cli-commands ac-1
   markMutating(
-    review
+    reviewCommand
       .command("add")
       .description("Create a new review record")
       .requiredOption("--title <title>", "Review title")
@@ -568,7 +570,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review get ---
   // AC: @review-cli-creation-and-query ac-3
   // AC: @review-cli-commands ac-2
-  review
+  reviewCommand
     .command("get <ref>")
     .description("Show review details")
     .action(async (ref: string) => {
@@ -591,7 +593,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review list ---
   // AC: @review-cli-creation-and-query ac-4
   // AC: @trait-filterable-list ac-1, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8
-  review
+  reviewCommand
     .command("list")
     .description("List review records")
     .option("--status <status>", "Filter by lifecycle state (draft, open, closed, archived)")
@@ -756,7 +758,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review comment add ---
   // AC: @review-cli-mutation-commands ac-1
   markMutating(
-    review
+    reviewCommand
       .command("comment <ref>")
       .description("Add a comment thread to a review")
       .requiredOption("--body <body>", "Comment body")
@@ -775,6 +777,14 @@ export function registerReviewCommands(program: Command): void {
       .option("--anchor-ref <ref>", "Structured anchor: ref")
       .option("--spec-ref <ref>", "Spec AC anchor: spec reference")
       .option("--ac-id <id>", "Spec AC anchor: acceptance criterion id")
+      .option("--plan-section <section>", "Plan-text anchor: section identifier")
+      .option(
+        "--plan-offset <n>",
+        "Plan-text anchor: code-point offset from section start",
+        parseInt,
+      )
+      .option("--quoted-text <text>", "Plan-text anchor: quoted span text")
+      .option("--created-at-rev <n>", "Plan-text anchor: creation revision ordinal", parseInt)
       .option("--author <author>", "Comment author")
       .action(async (ref: string, options) => {
         try {
@@ -824,6 +834,44 @@ export function registerReviewCommands(program: Command): void {
               );
             }
             anchor = parsedAnchor.data;
+          } else if (
+            options.planSection ||
+            options.planOffset !== undefined ||
+            options.quotedText ||
+            options.createdAtRev !== undefined
+          ) {
+            const planTextAnchor = {
+              type: "plan_text" as const,
+              section: options.planSection,
+              offset: options.planOffset,
+              quoted_text: options.quotedText,
+              created_at_rev: options.createdAtRev,
+            };
+            const parsedAnchor = ReviewPlanTextAnchorSchema.safeParse(planTextAnchor);
+            if (!parsedAnchor.success) {
+              const issue = parsedAnchor.error.issues[0];
+              const field = issue?.path.join(".") || "anchor";
+              exitWithGuidance(
+                `Invalid plan-text anchor ${field}: ${issue?.message || "invalid value"}`,
+                EXIT_CODES.USAGE_ERROR,
+                "Use --plan-section, --plan-offset, --quoted-text, and --created-at-rev with values that match the plan revision text.",
+                { field, value: (planTextAnchor as Record<string, unknown>)[field] },
+              );
+            }
+
+            const validation = await validatePlanTextAnchorForReview(ctx, found, parsedAnchor.data);
+            if (!validation.ok) {
+              exitWithGuidance(
+                `Invalid plan-text anchor ${validation.failure.field}: ${validation.failure.message}`,
+                EXIT_CODES.USAGE_ERROR,
+                "Use values that match the target plan review's published revision content.",
+                {
+                  field: validation.failure.field,
+                  value: (planTextAnchor as Record<string, unknown>)[validation.failure.field],
+                },
+              );
+            }
+            anchor = validation.anchor;
           } else if (options.section || options.field || options.anchorRef) {
             anchor = {
               type: "structured" as const,
@@ -884,7 +932,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review reply ---
   // AC: @review-cli-mutation-commands ac-1b
   markMutating(
-    review
+    reviewCommand
       .command("reply <ref>")
       .description("Reply to an existing review thread")
       .requiredOption("--thread <ulid>", "Thread ULID to reply to")
@@ -966,7 +1014,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review check ---
   // AC: @review-cli-mutation-commands ac-2
   markMutating(
-    review
+    reviewCommand
       .command("check <ref>")
       .description("Add a check result to a review")
       .requiredOption("--name <name>", "Check name")
@@ -1057,7 +1105,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review verdict ---
   // AC: @review-cli-mutation-commands ac-3
   markMutating(
-    review
+    reviewCommand
       .command("verdict <ref>")
       .description("Set a verdict on a review")
       .requiredOption("--decision <decision>", "Verdict: approve, request_changes, comment")
@@ -1113,7 +1161,9 @@ export function registerReviewCommands(program: Command): void {
           );
 
           // Single atomic commit: review verdict + any task transitions
-          const transitionedCount = transitioned.filter((t) => t.transitioned).length;
+          const transitionedCount = transitioned.filter(
+            (candidate) => candidate.transitioned,
+          ).length;
           await commitIfShadow(
             ctx.shadow,
             "review-verdict",
@@ -1135,8 +1185,12 @@ export function registerReviewCommands(program: Command): void {
               if (shouldAutoClose) {
                 info(`Review auto-closed`);
               }
-              for (const t of transitioned.filter((t) => t.transitioned)) {
-                info(`Task @${t.slug || t.ulid} transitioned to needs_work`);
+              for (const taskTransition of transitioned.filter(
+                (candidate) => candidate.transitioned,
+              )) {
+                info(
+                  `Task @${taskTransition.slug || taskTransition.ulid} transitioned to needs_work`,
+                );
               }
             },
           );
@@ -1151,7 +1205,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review resolve ---
   // AC: @review-cli-mutation-commands ac-4
   markMutating(
-    review
+    reviewCommand
       .command("resolve <ref>")
       .description("Resolve a review thread")
       .requiredOption("--thread <ulid>", "Thread ULID to resolve")
@@ -1232,7 +1286,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review reopen ---
   // AC: @review-cli-mutation-commands ac-4
   markMutating(
-    review
+    reviewCommand
       .command("reopen <ref>")
       .description("Reopen a resolved review thread")
       .requiredOption("--thread <ulid>", "Thread ULID to reopen")
@@ -1313,7 +1367,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review open ---
   // AC: @review-cli-mutation-commands ac-5
   markMutating(
-    review
+    reviewCommand
       .command("open <ref>")
       .description("Open a review (transition from draft to open)")
       .option("--author <author>", "Actor")
@@ -1371,7 +1425,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review close ---
   // AC: @review-cli-mutation-commands ac-5
   markMutating(
-    review
+    reviewCommand
       .command("close <ref>")
       .description("Close a review")
       .option("--author <author>", "Actor")
@@ -1437,7 +1491,7 @@ export function registerReviewCommands(program: Command): void {
   // deferred to future work and will require explicit safety behavior (--force / confirmation)
   // separate from close/archive lifecycle transitions.
   markMutating(
-    review
+    reviewCommand
       .command("archive <ref>")
       .description("Archive a review (permanent)")
       .option("--author <author>", "Actor")
@@ -1492,7 +1546,7 @@ export function registerReviewCommands(program: Command): void {
   // --- review refresh ---
   // AC: @review-cli-mutation-commands ac-6
   markMutating(
-    review
+    reviewCommand
       .command("refresh <ref>")
       .description("Update subject compare context after new commits")
       .requiredOption("--head <commit>", "New head commit")
@@ -1556,7 +1610,7 @@ export function registerReviewCommands(program: Command): void {
 
   // --- review for-task ---
   // AC: @review-cli-task-linkage ac-1, ac-2
-  review
+  reviewCommand
     .command("for-task <ref>")
     .description("Find reviews linked to a task")
     .action(async (ref: string) => {

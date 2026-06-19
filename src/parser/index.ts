@@ -27,6 +27,7 @@ export * from "./meta.js";
 export * from "./plans.js";
 export * from "./plan-revisions.js";
 export * from "./plan-revision-backfill.js";
+export * from "./plan-text-anchors.js";
 export * from "./refs.js";
 export * from "./review-operations.js";
 export * from "./review-task-integration.js";
