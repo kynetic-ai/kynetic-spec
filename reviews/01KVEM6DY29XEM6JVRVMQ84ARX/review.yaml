@@ -68,6 +68,17 @@ checks:
     runner: kspec
     created_at: 2026-06-19T00:38:43.510Z
     completed_at: 2026-06-19T00:38:43.510Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with existing completeness warning
+      baseline; @review-idea-threads ACs have behavioral annotations.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-19T00:38:46.799Z
+    completed_at: 2026-06-19T00:38:46.799Z
 events:
   - _ulid: 01KVEM6DY11PXKSCRV8Z00GWZ0
     actor: Jacob Chapel
@@ -124,6 +135,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-19T00:38:43.766Z
+  - _ulid: 01KVEN1SG459Q2RMB0VNXFEN9J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-19T00:38:47.044Z
 examined_commit: 99c047e7fba7a619c05ae01a09abbf360cffadfc
 external_links: []
 lifecycle_state: open
@@ -136,5 +154,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-19T00:23:50.466Z
-updated_at: 2026-06-19T00:38:43.510Z
+updated_at: 2026-06-19T00:38:46.799Z
 notes: []
