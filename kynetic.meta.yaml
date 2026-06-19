@@ -22811,6 +22811,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-19T00:48:19.913Z
+  - _ulid: 01KVEQ651Y16CBJMTPGX5GNNQA
+    type: success
+    content: "Shadow-backed behavioral tests worked well for review/plan revision binding: creating real
+      plan revisions and reading through kspec review get covered storage, subject pinning, and CLI
+      output without source scanning or UI coupling."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-19T01:16:07.102Z
+  - _ulid: 01KVEQ65BM300F37FCGYTDYTMG
+    type: friction
+    content: Computed review detail fields require manual fan-out across CLI review get, daemon review
+      detail, static export, shared API types, and static-mode adapters. A shared review detail
+      projection/serializer would reduce drift risk for future computed fields.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-19T01:16:07.412Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
