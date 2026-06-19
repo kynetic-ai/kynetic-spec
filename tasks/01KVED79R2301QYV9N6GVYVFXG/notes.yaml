@@ -13,3 +13,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-19T00:54:11.056Z
+  - _ulid: 01KVEPYSXSM6HWYAW8A3JYDYY0
+    content: "Implemented subject revision reporting. Added computed helpers for non-plan
+      refresh-derived ordinals and plan revision binding by published revision content hash with
+      shadow-commit tie-breaking. Surfaced subject_revision through review get JSON, human review
+      get output, daemon review detail, and static export detail. Added behavioral tests covering
+      code review refresh N+1, plan review binding to revision 2 despite refresh events, and
+      unpublished draft plan content resolving to null. Verification: format:check, lint --quiet,
+      changed-file oxlint (0 errors; pre-existing no-shadow warnings in review.ts), typecheck,
+      focused review-subject-revisions tests, full npm test, and all three kspec validate gates
+      passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-19T01:12:06.329Z
