@@ -2,7 +2,91 @@ _ulid: 01KVEVNDVDB2QP4RTT5QDAXAB6
 slugs: []
 title: Review task-plan-text-anchors fix cycle
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check reported all matched files use the correct format (1097 files)."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-19T02:49:25.401Z
+    completed_at: 2026-06-19T02:49:25.401Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxlint reported 0 errors; existing repo warning baseline remained at 678 warnings."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-19T02:49:28.412Z
+    completed_at: 2026-06-19T02:49:28.412Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 0 warnings and 0 errors on the 13 changed TypeScript/test files."
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-19T02:49:31.355Z
+    completed_at: 2026-06-19T02:49:31.355Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: shared package build and tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-19T02:49:34.135Z
+    completed_at: 2026-06-19T02:49:34.135Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2893/2893 suites, 10991 passed and 3 skipped of 10994 tests. Duration 2807.9s.
+      Full log: /tmp/kspec-test-cache/01KVEVKR87B58AZYHY46SW9962/91144f6f73e5bfb1.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-19T02:49:36.941Z
+    completed_at: 2026-06-19T02:49:36.941Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok exited 0; reference warnings are existing
+      deprecated-ref baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-19T02:49:39.780Z
+    completed_at: 2026-06-19T02:49:39.780Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok exited 0; alignment warnings are existing
+      orphan/status baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-19T02:49:42.541Z
+    completed_at: 2026-06-19T02:49:42.541Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok exited 0; completeness warnings are existing
+      AC coverage/annotation baseline.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-19T02:49:45.361Z
+    completed_at: 2026-06-19T02:49:45.361Z
 events:
   - _ulid: 01KVEVNDVCD9Z58FJZX5912APX
     actor: Jacob Chapel
@@ -17,17 +101,168 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-19T02:34:34.195Z
+  - _ulid: 01KVEWH0CDFJ806YNSVTJBY68T
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-19T02:49:25.645Z
+  - _ulid: 01KVEWH3ABZQ761ZN0VX3JRZJ6
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-19T02:49:28.651Z
+  - _ulid: 01KVEWH661SADSA463H4XW68D0
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-19T02:49:31.585Z
+  - _ulid: 01KVEWH8X0B7G1S60YMSAQZDV4
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-19T02:49:34.368Z
+  - _ulid: 01KVEWHBMWSM8YE8XQXACAYJW8
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-19T02:49:37.181Z
+  - _ulid: 01KVEWHEED1XE4TFXA3A4YJPA5
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-19T02:49:40.045Z
+  - _ulid: 01KVEWHH3F1DP2X9NYZCQ4S6C6
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-19T02:49:42.767Z
+  - _ulid: 01KVEWHKV3XDFFG7APYP7G17NE
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-19T02:49:45.571Z
+  - _ulid: 01KVEWHPJT0NMWHK9MNG5S26J3
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVEWHPBPJ5BQHBKFMHE4M4MX
+    timestamp: 2026-06-19T02:49:48.378Z
+  - _ulid: 01KVEWHSB67DEZT8RVP2CX31D0
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVEWHS46D6C2DDYMDDAQ9AK0
+    timestamp: 2026-06-19T02:49:51.206Z
+  - _ulid: 01KVEWHW4NAMKB8VAH5KQBQKR6
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-19T02:49:54.069Z
+  - _ulid: 01KVEWHW4N2S8RZPA6RKCPZFMN
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-19T02:49:54.069Z
 examined_commit: 9220033358c5c0bbaa012b3ccf3abd0792a1d085
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVED78FQ4APC9E42P8EB23ZP"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVEWHPBPJ5BQHBKFMHE4M4MX
+    anchor:
+      type: code
+      commit: 9220033358c5c0bbaa012b3ccf3abd0792a1d085
+      line_end: 68
+      line_start: 64
+      path: src/parser/plan-text-anchors.ts
+      side: head
+    entries:
+      - _ulid: 01KVEWHPBP9Z9N2HWQ877NG49R
+        author: codex-reviewer
+        body: "MUST-FIX: `headingSectionId` only counts duplicate slug bases, so the sectioning utility can
+          emit duplicate section identifiers. Reproduced against this snapshot:
+          `sectionPlanMarkdown('Lead\\n# Preamble\\nBody\\n')` returns two sections with id
+          `preamble`; `sectionPlanMarkdown('# Intro-2\\nA\\n# Intro\\nB\\n# Intro\\nC\\n')` returns
+          `intro-2`, `intro`, `intro-2`. Because `validatePlanTextAnchorForReview` later resolves a
+          section with `.find(...)`, an anchor using a duplicated id addresses the first matching
+          section rather than the containing section, so the exact span is not recoverable from
+          section+offset+quote+revision. This violates the plan-text anchor contract and leaves
+          ordinary headings like `# Preamble` or suffix-shaped headings unable to be anchored
+          reliably. Make generated section ids globally unique within the document, including
+          collisions with the fixed preamble id and already-suffixed heading slugs, and add
+          behavioral coverage for these collisions."
+        created_at: 2026-06-19T02:49:48.150Z
+    kind: blocker
+  - _ulid: 01KVEWHS46D6C2DDYMDDAQ9AK0
+    entries:
+      - _ulid: 01KVEWHS46NJJ3NASS9JVM2T7V
+        author: codex-reviewer
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; src/schema/review-records.ts;
+          src/parser/plan-text-anchors.ts; src/review/subject-bindings.ts;
+          src/cli/commands/review.ts; packages/daemon/src/routes/reviews.ts;
+          packages/shared/src/api.ts; packages/web-ui/src/lib/api-static.ts; src/export/json.ts;
+          src/export/types.ts; src/parser/index.ts; tests/plan-text-anchors.test.ts;
+          tests/daemon-api/reviews-plan-text-anchors.test.ts;
+          tests/review-subject-revisions.test.ts.
+
+          Commands run: kspec task get; kspec item get @review-plan-text-anchors; kspec review get
+          previous review; git diff/log; rg AC annotations; node --import tsx sectioning
+          reproductions; npm run format:check; npm run lint -- --quiet; npx oxlint changed files;
+          npm run typecheck; npm test; kspec validate --refs/--alignment/--completeness
+          --warnings-ok.
+
+          Claims verified: prior parseInt blocker is fixed by strict parseIntOption handling and
+          decimal/partial numeric CLI tests; daemon and CLI both call creation-time plan-text
+          validation; AC annotations exist for all six plan-text ACs and the related anchor guidance
+          AC.
+
+          Categories searched: correctness (found duplicate section-id blocker), edge cases
+          (preamble and suffix collisions, non-ASCII offsets, missing revision/subject), error
+          handling (CLI and daemon rejection paths), test quality (behavioral tests, no
+          source-scanning AC tests in changed files), integration (schema/export/shared
+          API/daemon/static surfaces).
+        created_at: 2026-06-19T02:49:50.982Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-19T02:49:54.069Z
 created_at: 2026-06-19T02:34:21.933Z
-updated_at: 2026-06-19T02:34:33.911Z
+updated_at: 2026-06-19T02:49:54.069Z
 notes: []
