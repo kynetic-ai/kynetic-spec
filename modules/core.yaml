@@ -209,7 +209,7 @@ decisions:
       never derived from sibling-review order.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on:
       - "@plan-revisions"
       - "@review-subject-bindings"
