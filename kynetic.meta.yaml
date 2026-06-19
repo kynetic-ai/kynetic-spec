@@ -22849,10 +22849,24 @@ observations:
       and task transition atomic during automated review. This avoided a partial review state while
       still preserving per-check evidence and an anchored blocker thread.
     author: Jacob Chapel
+    resolution: Duplicate of existing @01KT264AKBE2RK73W5W9HYGABM success observation about batching
+      review checks with the final verdict; resolved to avoid reflection noise.
+    resolved: true
+    resolved_at: 2026-06-19T02:05:52.152Z
+    resolved_by: Jacob Chapel
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-19T02:03:57.195Z
+  - _ulid: 01KVET18D99FG444958EPKQQEV
+    type: friction
+    content: Review evidence logs need a first-class home in kspec review records. During task
+      @01KVED78FQ4APC9E42P8EB23ZP, the required evidence log had to be embedded in a blocker thread
+      body; clean approvals would need an even less natural workaround because verdicts do not carry
+      review-body text.
+    author: Jacob Chapel
     resolution: null
     resolved: false
     workflow_ref: "@session-reflect"
-    created_at: 2026-06-19T02:03:57.195Z
+    created_at: 2026-06-19T02:05:52.425Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
