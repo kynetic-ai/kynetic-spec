@@ -1552,7 +1552,7 @@ export async function fetchReviewResources(
 }
 
 /**
- * Fetch sibling reviews for the same subject (for revision selector).
+ * Fetch sibling reviews for the same subject (for review-pass selector).
  * Returns all reviews matching the subject type, filtered client-side
  * by subject_ref or head_branch depending on subject type.
  * AC: @review-records-web-ui ac-11

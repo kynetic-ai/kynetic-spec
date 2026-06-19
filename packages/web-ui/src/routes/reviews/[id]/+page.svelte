@@ -7,7 +7,7 @@
   AC: @review-records-web-ui ac-8 — Markdown rendering with syntax highlighting in thread bodies
   AC: @review-records-web-ui ac-9 — Author identity and relative timestamp on thread entries
   AC: @review-records-web-ui ac-10 — Empty state messages for sections with no items
-  AC: @review-records-web-ui ac-11 — Revision dropdown for same-subject reviews
+  AC: @review-records-web-ui ac-11 — Review-pass selector for same-subject reviews
   AC: @review-structured-content-viewer ac-1 — Plan content rendered with identifiable sections
   AC: @review-structured-content-viewer ac-2 — Spec content rendered with targetable sections
   AC: @review-structured-content-viewer ac-3 — Comment creates thread with structured anchor
@@ -70,7 +70,7 @@
 	// this surface — review author, thread authors, verdict reviewers.
 	const actorClassifier = createActorClassifier();
 
-	// AC: @review-records-web-ui ac-11 — Fetch sibling reviews for revision selector
+	// AC: @review-records-web-ui ac-11 — Fetch sibling reviews for review-pass selector
 	let subjectRef = $derived(review?.subject && 'ref' in review.subject ? review.subject.ref : undefined);
 	let subjectType = $derived(review?.subject.type ?? '');
 	let headBranch = $derived(
@@ -89,7 +89,7 @@
 	}));
 
 	let siblings = $derived<ReviewSummary[]>(siblingsQuery.data ?? []);
-	let hasMultipleRevisions = $derived(siblings.length > 1);
+	let hasMultipleReviewPasses = $derived(siblings.length > 1);
 
 	// AC: @ui-view-header ac-1 — Standard header reference + server-resolved child counts.
 	// Counts come from the review detail payload's embedded child collections — the
@@ -291,8 +291,8 @@
 		unsubscribe(['reviews']);
 	});
 
-	// AC: @review-records-web-ui ac-11 — Navigate to sibling review
-	function navigateToRevision(ulid: string) {
+	// AC: @review-records-web-ui ac-11 — Navigate to sibling review pass
+	function navigateToReviewPass(ulid: string) {
 		goto(`${base}/reviews/${ulid}`);
 	}
 
@@ -545,15 +545,15 @@
 				{/snippet}
 			</ViewHeader>
 
-			<!-- AC: @review-records-web-ui ac-11 — Revision selector dropdown -->
-			{#if hasMultipleRevisions}
+			<!-- AC: @review-records-web-ui ac-11 — Review-pass selector dropdown -->
+			{#if hasMultipleReviewPasses}
 				<div class="flex items-center gap-2" data-testid="revision-selector">
-					<label for="revision-select" class="text-sm text-muted-foreground">Revision:</label>
+					<label for="revision-select" class="text-sm text-muted-foreground">Review pass:</label>
 					<select
 						id="revision-select"
 						class="rounded-md border bg-background px-3 py-1.5 text-sm"
 						value={review._ulid}
-						onchange={(e) => navigateToRevision(e.currentTarget.value)}
+						onchange={(e) => navigateToReviewPass(e.currentTarget.value)}
 					>
 						{#each siblings as sibling, i}
 							<option value={sibling._ulid}>

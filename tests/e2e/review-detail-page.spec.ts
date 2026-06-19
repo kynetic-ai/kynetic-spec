@@ -10,7 +10,7 @@ test.describe("Review Detail Page", () => {
   // AC: @review-records-web-ui ac-9
   // AC: @review-records-web-ui ac-11
   // AC: @ui-view-header ac-6 — review detail presents the standard view header
-  test("renders review details, markdown thread bodies, and revision selector", async ({
+  test("renders review details, markdown thread bodies, and review-pass selector", async ({
     page,
     daemon: _daemon,
   }) => {
@@ -26,8 +26,9 @@ test.describe("Review Detail Page", () => {
     await expect(page.getByTestId("view-header-count-threads")).toBeVisible();
 
     await expect(page.getByTestId("revision-selector")).toBeVisible();
-    const revisionSelect = page.locator("#revision-select");
-    await expect(revisionSelect.locator("option")).toHaveCount(2);
+    const reviewPassSelect = page.locator("#revision-select");
+    await expect(page.getByText("Review pass:")).toBeVisible();
+    await expect(reviewPassSelect.locator("option")).toHaveCount(2);
 
     const firstThread = page.getByTestId("thread-item").first();
     await expect(firstThread.getByTestId("thread-kind-badge")).toContainText("Blocker");
@@ -93,20 +94,17 @@ test.describe("Review Detail Page", () => {
     await expect(page.getByTestId("revision-selector")).toHaveCount(0);
   });
 
-  // AC: @review-records-web-ui ac-11 — code-review revision grouping uses head_branch
-  test("limits code review revisions to the same head branch", async ({
-    page,
-    daemon: _daemon,
-  }) => {
+  // AC: @review-records-web-ui ac-11 — code-review pass grouping uses head_branch
+  test("limits code review passes to the same head branch", async ({ page, daemon: _daemon }) => {
     await page.goto(`/reviews/${CODE_REVIEW_ULID}`);
 
-    const revisionSelect = page.locator("#revision-select");
-    await expect(revisionSelect).toBeVisible();
-    await expect(revisionSelect.locator("option")).toHaveCount(2);
-    await expect(revisionSelect.locator("option").nth(0)).toContainText(
+    const reviewPassSelect = page.locator("#revision-select");
+    await expect(reviewPassSelect).toBeVisible();
+    await expect(reviewPassSelect.locator("option")).toHaveCount(2);
+    await expect(reviewPassSelect.locator("option").nth(0)).toContainText(
       "Code review for feat/review-detail",
     );
-    await expect(revisionSelect.locator("option").nth(1)).toContainText(
+    await expect(reviewPassSelect.locator("option").nth(1)).toContainText(
       "Code review for feat/review-detail (cycle 2)",
     );
   });

@@ -174,6 +174,4 @@ describe("Review subject revisions", () => {
       expect(review.subject_revision).toBeNull();
     },
   );
-
-  // AC: @subject-revision-vocabulary ac-review-pass-labeling — N/A: implemented by dependent @task-respec-review-pass-vocabulary.
 });
