@@ -5635,7 +5635,7 @@ features:
           subject version, with no new field on the review record.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@actor-identity-model"
         implements: []
