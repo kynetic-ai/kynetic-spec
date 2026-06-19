@@ -70706,7 +70706,7 @@ runs:
     completed_at: 2026-06-19T02:03:58.213Z
   - _ulid: 01KVET63H8978SVV54CP35NZSZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70720,7 +70720,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-19T02:10:37.298Z
-        completed_at: 2026-06-19T02:10:37.298Z
+        completed_at: 2026-06-19T02:10:47.463Z
+        notes: "Friction: task submit captured submission_linkage.upstream_ref from git upstream/dev despite
+          dispatch prompt and KSPEC_DISPATCH_MERGE_TARGET=feat/ui-redesign. Repair required checking
+          env, inspecting --json, learning that nested task patch replaces the whole
+          submission_linkage object, dry-running the full object, and applying a metadata
+          correction. Also observed a broader two-file E2E run hit an unrelated breadcrumb keyboard
+          timeout, but existing observation @01KN2JT0 already tracks selector-scope review friction
+          from unrelated broader E2E failures."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-19T02:10:47.463Z
+        completed_at: 2026-06-19T02:10:47.463Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T02:08:31.272Z
