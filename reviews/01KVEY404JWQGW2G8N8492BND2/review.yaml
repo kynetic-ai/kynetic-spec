@@ -164,6 +164,13 @@ events:
       kind: blocker
       thread_ulid: 01KVEZ03BA291TKDH3KPJCD971
     timestamp: 2026-06-19T03:32:37.600Z
+  - _ulid: 01KVEZ0JQ8NCK0WJPZBMB6D4KA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVEZ0JFC2SEXTVQM8ZB7YNY9
+    timestamp: 2026-06-19T03:32:53.096Z
 examined_commit: cc27b4db5012d606b967af584c0f9b1a930b960b
 external_links: []
 lifecycle_state: open
@@ -195,7 +202,25 @@ threads:
           called with the new anchor shape.'
         created_at: 2026-06-19T03:32:37.354Z
     kind: blocker
+  - _ulid: 01KVEZ0JFC2SEXTVQM8ZB7YNY9
+    anchor:
+      type: code
+      commit: cc27b4db5012d606b967af584c0f9b1a930b960b
+      line_end: 2254
+      line_start: 2234
+      path: packages/web-ui/src/lib/api.ts
+      side: head
+    entries:
+      - _ulid: 01KVEZ0JFC49T61FSY54XGBXKV
+        author: Jacob Chapel
+        body: "MUST-FIX: The web API helper for POST /api/reviews/:id/comments still types anchor input as
+          code/structured/spec_ac only. The daemon route now accepts plan_text anchors, so typed
+          UI/static clients cannot call the supported write interface with the new variant without
+          bypassing this helper's contract. Add the same plan_text shape here (section, offset,
+          quoted_text, created_at_rev) so the daemon write path is exposed consistently."
+        created_at: 2026-06-19T03:32:52.844Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-19T03:17:16.562Z
-updated_at: 2026-06-19T03:32:37.354Z
+updated_at: 2026-06-19T03:32:52.844Z
 notes: []
