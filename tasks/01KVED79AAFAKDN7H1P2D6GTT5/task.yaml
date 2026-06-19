@@ -38,7 +38,7 @@ description: |
 spec_ref: "@plan-revisions"
 plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-plan-revision-records"
@@ -48,6 +48,14 @@ tags:
   - plans
   - migration
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-plan-revision-backfill/01kved79
+  captured_at: 2026-06-19T00:45:25.025Z
+  commit: 18a71a66059abbb0b50dc969505aa5a8cf9c1cfc
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KVEM6C7HQ26B1ABDZSGH2H5G
 history:
   - author: Jacob Chapel
@@ -70,7 +78,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-19T00:24:42.273Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-plan-revision-backfill/01kved79
+          captured_at: 2026-06-19T00:45:25.025Z
+          commit: 18a71a66059abbb0b50dc969505aa5a8cf9c1cfc
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-19T00:45:25.031Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-19T00:45:25.031Z
 created_at: 2026-06-18T22:21:58.474Z
 started_at: 2026-06-19T00:24:42.272Z
+submitted_at: 2026-06-19T00:45:25.031Z
 todos: []
 automation: eligible
