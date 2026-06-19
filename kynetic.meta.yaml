@@ -22798,6 +22798,19 @@ observations:
     resolved: false
     workflow_ref: "@01KVEKY6"
     created_at: 2026-06-19T00:21:40.159Z
+  - _ulid: 01KVENK8Y959RMN5QT2X75SVH3
+    type: success
+    content: "For upgrade-path data migrations that write revision or pointer metadata, a focused
+      upgrade fixture should assert the recorded commit pointer by resolving it with git show
+      <commit>:<entity-document-path>. In @task-plan-revision-backfill this proved @plan-revisions
+      ac-backfill-revision-one directly: dry-run wrote nothing, upgrade created revision 1, and git
+      show <shadow_commit>:plans/<plan-ulid>/plan.md returned the exact plan body after
+      folder-storage migration. This pattern is reusable for future upgrade steps that must
+      designate migrated content rather than merely store a non-empty commit hash."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-19T00:48:19.913Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
