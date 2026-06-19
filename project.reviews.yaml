@@ -27420,7 +27420,7 @@ reviews:
     title: Review plan revision records
     disposition: pending
     author: Jacob Chapel
-    check_count: 5
+    check_count: 6
     examined_commit: a4578c3ef6e20b6abcb9f2416bd0c758aa570dd4
     lifecycle_state: open
     related_refs: []
@@ -27433,4 +27433,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-18T23:50:54.192Z
-    updated_at: 2026-06-19T00:05:02.224Z
+    updated_at: 2026-06-19T00:05:14.916Z
