@@ -1,0 +1,26 @@
+_ulid: 01KVERYB4KQJDEPP942RMAR550
+slugs: []
+title: Review task-plan-text-anchors
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVERYB4KMRGC34AK56QE8K16
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-19T01:46:48.339Z
+examined_commit: cbf756508164fc1bab975071cdba697b91ddcd2c
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVED78FQ4APC9E42P8EB23ZP"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-19T01:46:48.339Z
+updated_at: null
+notes: []
