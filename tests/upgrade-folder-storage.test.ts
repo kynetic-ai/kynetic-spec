@@ -7,6 +7,7 @@
  *
  * Spec: @entity-folder-migration-and-compatibility-1
  *       @single-command-version-upgrade
+ *       @plan-revisions
  */
 
 import { execSync } from "node:child_process";
@@ -300,17 +301,20 @@ describe("kspec upgrade — folder storage migration", () => {
     const planStep = result.steps.find((s) => s.name === "Plan storage folder migration");
     const reviewStep = result.steps.find((s) => s.name === "Review storage folder migration");
     const manifestStep = result.steps.find((s) => s.name === "Storage manifest (kynetic 1.2)");
+    const backfillStep = result.steps.find((s) => s.name === "Plan revision backfill");
     expect(planStep?.status).toBe("done");
     expect(planStep?.details?.migrated).toBe(1);
     expect(reviewStep?.status).toBe("done");
     expect(reviewStep?.details?.migrated).toBe(1);
     expect(manifestStep?.status).toBe("done");
+    expect(backfillStep?.status).toBe("done");
 
     // Folder layout exists.
     const planCore = yamlParse(
       await readTestOutput(path.join(specDir, "plans", planUlid, "plan.yaml")),
     );
     expect(planCore._ulid).toBe(planUlid);
+    expect(planCore.revisions).toHaveLength(1);
     const planMd = await readTestOutput(path.join(specDir, "plans", planUlid, "plan.md"));
     expect(planMd).toBe("# Plan\nBody");
     const reviewDetail = yamlParse(
@@ -342,6 +346,7 @@ describe("kspec upgrade — folder storage migration", () => {
     // Lean indexes exist.
     const planIndex = yamlParse(await readTestOutput(path.join(specDir, "project.plans.yaml")));
     expect(planIndex.plans[0]._ulid).toBe(planUlid);
+    expect(planIndex.plans[0].current_revision).toBe(1);
     expect(planIndex.plans[0].content).toBeUndefined();
     const reviewIndex = yamlParse(await readTestOutput(path.join(specDir, "project.reviews.yaml")));
     expect(reviewIndex.reviews[0]._ulid).toBe(reviewUlid);
@@ -354,6 +359,79 @@ describe("kspec upgrade — folder storage migration", () => {
     expect((manifest.review_storage as Record<string, unknown>).format).toBe("folder");
     expect((manifest.resource_storage as Record<string, unknown>).format).toBe("entity_scoped");
     expect((manifest.task_storage as Record<string, unknown>).format).toBe("split");
+  });
+
+  // AC: @plan-revisions ac-backfill-revision-one
+  it("upgrade backfills revision 1 for existing plans and is idempotent", async () => {
+    const { specDir } = await initProject(tempDir);
+
+    await writeMonolithicPlans(specDir, [
+      {
+        _ulid: planUlid,
+        slugs: ["backfill-plan"],
+        title: "Backfill Plan",
+        content: "# Backfill\nBody",
+        status: "approved",
+        derived_tasks: [],
+        derived_specs: [],
+        created_at: "2026-05-22T10:00:00Z",
+        approved_at: "2026-05-23T10:00:00Z",
+        notes: [],
+      },
+    ]);
+
+    const dryRun = kspecJson<UpgradeResultShape>("upgrade --force --dry-run", tempDir);
+    const dryBackfill = dryRun.steps.find((s) => s.name === "Plan revision backfill");
+    expect(dryBackfill?.status).toBe("done");
+    expect(dryBackfill?.details?.backfilled).toBe(1);
+    await expect(fs.access(path.join(specDir, "plans", planUlid))).rejects.toThrow();
+
+    const first = kspecJson<UpgradeResultShape>("upgrade --force", tempDir);
+    expect(first.success).toBe(true);
+    const firstBackfill = first.steps.find((s) => s.name === "Plan revision backfill");
+    expect(firstBackfill?.status).toBe("done");
+    expect(firstBackfill?.details?.backfilled).toBe(1);
+
+    const corePath = path.join(specDir, "plans", planUlid, "plan.yaml");
+    const firstCore = yamlParse(await readTestOutput(corePath)) as {
+      revisions: Array<{
+        ordinal: number;
+        author: string;
+        note: string;
+        created_at: string;
+        shadow_commit: string;
+      }>;
+    };
+    expect(firstCore.revisions).toHaveLength(1);
+    expect(firstCore.revisions[0]).toMatchObject({
+      ordinal: 1,
+      author: "kspec-upgrade",
+      note: "Backfilled revision 1 during kspec upgrade",
+    });
+    expect(firstCore.revisions[0].created_at).toBeTruthy();
+    expect(firstCore.revisions[0].shadow_commit).toMatch(/^[0-9a-f]{40}$/);
+
+    const resolvedContent = execSync(
+      `git show ${firstCore.revisions[0].shadow_commit}:plans/${planUlid}/plan.md`,
+      { cwd: specDir, encoding: "utf-8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    expect(resolvedContent).toBe("# Backfill\nBody");
+
+    const planIndex = yamlParse(await readTestOutput(path.join(specDir, "project.plans.yaml"))) as {
+      plans: Array<Record<string, unknown>>;
+    };
+    expect(planIndex.plans[0].current_revision).toBe(1);
+    expect(JSON.stringify(planIndex.plans[0])).not.toContain("Backfill\\nBody");
+
+    const second = kspecJson<UpgradeResultShape>("upgrade --force", tempDir);
+    const secondBackfill = second.steps.find((s) => s.name === "Plan revision backfill");
+    expect(secondBackfill?.status).toBe("skipped");
+    expect(secondBackfill?.details?.backfilled).toBe(0);
+
+    const secondCore = yamlParse(await readTestOutput(corePath)) as {
+      revisions: unknown[];
+    };
+    expect(secondCore.revisions).toEqual(firstCore.revisions);
   });
 
   // AC: @entity-folder-migration-and-compatibility-1 ac-upgrade-dry-run-previews-layout

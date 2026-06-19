@@ -3,6 +3,7 @@
 // Actor identity: canonical write-path resolution + classifier config builder.
 // Exported here so daemon routes and CLI commands share one implementation.
 export * from "../identity/actor-identity-config.js";
+export * from "../identity/system-actors.js";
 export * from "../identity/actor-write.js";
 export * from "../identity/actor-write-context.js";
 // Historical actor normalization (upgrade path) builds on the same identity config.
@@ -25,6 +26,7 @@ export * from "./items.js";
 export * from "./meta.js";
 export * from "./plans.js";
 export * from "./plan-revisions.js";
+export * from "./plan-revision-backfill.js";
 export * from "./refs.js";
 export * from "./review-operations.js";
 export * from "./review-task-integration.js";
