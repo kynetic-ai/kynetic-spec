@@ -57,7 +57,7 @@ submission_linkage:
   commit: 578ab20ab828807c0d157581a9e613867b66058d
   remote: null
   remote_url: null
-  upstream_ref: dev
+  upstream_ref: feat/ui-redesign
 session_id: 01KVERY9KR4B8YCZXJ4VR0X662
 history:
   - author: Jacob Chapel
@@ -100,6 +100,27 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-19T02:06:06.332Z
+  - author: Jacob Chapel
+    changes:
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-respec-review-pass-vocabulary/01kved7a
+          captured_at: 2026-06-19T02:06:06.326Z
+          commit: 578ab20ab828807c0d157581a9e613867b66058d
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous:
+          review_url: null
+          branch: dispatch/task/task-respec-review-pass-vocabulary/01kved7a
+          captured_at: 2026-06-19T02:06:06.326Z
+          commit: 578ab20ab828807c0d157581a9e613867b66058d
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+    command: task-patch
+    timestamp: 2026-06-19T02:07:46.077Z
 created_at: 2026-06-18T22:21:59.324Z
 started_at: 2026-06-19T01:47:34.894Z
 submitted_at: 2026-06-19T02:06:06.332Z
