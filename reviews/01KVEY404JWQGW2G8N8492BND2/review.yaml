@@ -171,6 +171,13 @@ events:
       kind: blocker
       thread_ulid: 01KVEZ0JFC2SEXTVQM8ZB7YNY9
     timestamp: 2026-06-19T03:32:53.096Z
+  - _ulid: 01KVEZ14157X2T89P4P3KXC286
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVEZ13SHE5N8PZH4DPQ34CVP
+    timestamp: 2026-06-19T03:33:10.821Z
 examined_commit: cc27b4db5012d606b967af584c0f9b1a930b960b
 external_links: []
 lifecycle_state: open
@@ -220,7 +227,40 @@ threads:
           quoted_text, created_at_rev) so the daemon write path is exposed consistently."
         created_at: 2026-06-19T03:32:52.844Z
     kind: blocker
+  - _ulid: 01KVEZ13SHE5N8PZH4DPQ34CVP
+    entries:
+      - _ulid: 01KVEZ13SJQ9APV2K90J4VH8W0
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; src/schema/review-records.ts;
+          src/parser/plan-text-anchors.ts; src/cli/commands/review.ts;
+          packages/daemon/src/routes/reviews.ts; src/review/subject-bindings.ts; src/export/json.ts;
+          src/export/types.ts; packages/shared/src/api.ts; packages/web-ui/src/lib/api-static.ts;
+          packages/web-ui/src/lib/api.ts; tests/plan-text-anchors.test.ts;
+          tests/daemon-api/reviews-plan-text-anchors.test.ts;
+          tests/review-subject-revisions.test.ts; tests/review-validation.test.ts; prior reviews
+          @01KVERYB and @01KVEVND.
+
+          Commands run: git diff/name-status/log; kspec task get @01KVED78FQ4APC9E42P8EB23ZP; kspec
+          item get @review-plan-text-anchors @review-spec-ac-anchors @subject-revision-vocabulary
+          @plan-revisions; rg AC/type searches; npm run format:check; npm run lint -- --quiet; npx
+          oxlint changed TS/test files; npm run typecheck; npm test; kspec validate
+          --refs/--alignment/--completeness --warnings-ok.
+
+          Claims verified: strict CLI integer parsing is now via parseIntOption and behavioral
+          decimal/partial-number tests exist; duplicate section IDs are globally disambiguated and
+          covered by preamble/suffix collision tests; plan-text CLI/daemon create and reject paths
+          pass behavioral tests.
+
+          Categories searched: correctness, API/public type integration, AC coverage, prior
+          fix-cycle blockers, edge cases for duplicate headings and code-point offsets,
+          validation/error handling, test quality, export/static surfaces. Findings: shared/web API
+          types still omit plan_text.
+        created_at: 2026-06-19T03:33:10.578Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-19T03:17:16.562Z
-updated_at: 2026-06-19T03:32:52.844Z
+updated_at: 2026-06-19T03:33:10.578Z
 notes: []
