@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
 	import type { DiffFile, DiffHunk } from '$lib/api';
-	import type { ReviewThread } from '@kynetic-ai/shared';
+	import type { ReviewThread, ReviewThreadKind } from '@kynetic-ai/shared';
 	import { getFilePath as getFilePathUtil } from '$lib/utils/diff';
 	import { resolveStatusToken, statusTextClass } from '$lib/ds/status-tokens';
 	import type { ActorClassifier } from '$lib/utils/actor';
@@ -21,11 +21,11 @@
 		classifier?: ActorClassifier;
 		expanded: boolean;
 		onToggleExpand: () => void;
-		onAddComment: (data: {
-			body: string;
-			kind: 'blocker' | 'question' | 'nit';
-			path: string;
-			lineNumber: number;
+			onAddComment: (data: {
+				body: string;
+				kind: ReviewThreadKind;
+				path: string;
+				lineNumber: number;
 			side: 'base' | 'head';
 		}) => void;
 		onReply: (threadId: string, body: string) => void;
@@ -121,7 +121,7 @@
 		return Math.max(0, currHunk.newStart - prevEnd - 1);
 	}
 
-	function handleAddComment(data: { body: string; kind: 'blocker' | 'question' | 'nit'; lineNumber: number; side: 'base' | 'head' }) {
+	function handleAddComment(data: { body: string; kind: ReviewThreadKind; lineNumber: number; side: 'base' | 'head' }) {
 		onAddComment({
 			...data,
 			path: getFilePath(),

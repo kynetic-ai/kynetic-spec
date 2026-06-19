@@ -494,6 +494,21 @@ describe("AC-4: Blockers prevent approved disposition", () => {
     expect(computeDisposition(review)).toBe("approved");
   });
 
+  // AC: @review-idea-threads ac-idea-never-blocks
+  it("unresolved idea thread does not block approval when gates pass and approval is current", () => {
+    const ideaThread = makeThread({
+      _ulid: ULID_THREAD_1,
+      kind: "idea",
+    });
+    const review = makeReview({
+      verdicts: [makeVerdict({ decision: "approve" })],
+      checks: [makeCheck({ name: "ci", status: "pass", required: true })],
+      threads: [ideaThread],
+    });
+
+    expect(computeDisposition(review)).toBe("approved");
+  });
+
   // AC: @review-verdicts-and-resolution-lifecycle ac-4
   it("multiple blockers all prevent approval", () => {
     const blockerThread = makeThread({

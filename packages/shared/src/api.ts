@@ -689,9 +689,11 @@ export type ReviewAnchor =
  * Review thread with entries and resolution state
  * AC: @review-records-web-ui ac-2
  */
+export type ReviewThreadKind = "blocker" | "question" | "nit" | "idea";
+
 export interface ReviewThread {
   _ulid: string;
-  kind: "blocker" | "question" | "nit";
+  kind: ReviewThreadKind;
   anchor?: ReviewAnchor;
   entries: ReviewThreadEntry[];
   resolved_at?: string | null;

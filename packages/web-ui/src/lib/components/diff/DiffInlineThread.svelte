@@ -31,20 +31,22 @@
 	let collapsed = $derived(userCollapsed ?? !!thread.resolved_at);
 
 	function getKindColor(kind: string): string {
-		const colors: Record<string, string> = {
-			blocker: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-			question: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-			nit: 'bg-gray-100 text-gray-800 dark:bg-gray-800/50 dark:text-gray-400',
-		};
+			const colors: Record<string, string> = {
+				blocker: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+				question: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+				nit: 'bg-gray-100 text-gray-800 dark:bg-gray-800/50 dark:text-gray-400',
+				idea: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400',
+			};
 		return colors[kind] || 'bg-gray-100 text-gray-800';
 	}
 
 	function formatKind(kind: string): string {
-		const labels: Record<string, string> = {
-			blocker: 'Blocker',
-			question: 'Question',
-			nit: 'Nit',
-		};
+			const labels: Record<string, string> = {
+				blocker: 'Blocker',
+				question: 'Question',
+				nit: 'Nit',
+				idea: 'Idea',
+			};
 		return labels[kind] || kind;
 	}
 

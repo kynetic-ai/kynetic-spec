@@ -116,7 +116,7 @@ export const ReviewAnchorSchema = z.discriminatedUnion("type", [
 
 // --- Threads ---
 
-export const ReviewThreadKindSchema = z.enum(["blocker", "question", "nit"]);
+export const ReviewThreadKindSchema = z.enum(["blocker", "question", "nit", "idea"]);
 
 export const ReviewThreadEntrySchema = z.object({
   _ulid: UlidSchema,

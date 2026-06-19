@@ -2,15 +2,17 @@
   AC: @review-structured-content-viewer ac-3 — Comment form for creating threads with structured anchors
 -->
 <script lang="ts">
+	import type { ReviewThreadKind } from '@kynetic-ai/shared';
+
 	interface Props {
-		onSubmit: (body: string, kind: 'blocker' | 'question' | 'nit') => void;
+		onSubmit: (body: string, kind: ReviewThreadKind) => void;
 		onCancel: () => void;
 	}
 
 	let { onSubmit, onCancel }: Props = $props();
 
 	let body = $state('');
-	let kind = $state<'blocker' | 'question' | 'nit'>('nit');
+	let kind = $state<ReviewThreadKind>('nit');
 
 	function handleSubmit() {
 		if (!body.trim()) return;
@@ -30,10 +32,11 @@
 				class="rounded-md border bg-background px-2 py-1 text-xs"
 				bind:value={kind}
 			>
-				<option value="nit">Nit</option>
-				<option value="question">Question</option>
-				<option value="blocker">Blocker</option>
-			</select>
+					<option value="nit">Nit</option>
+					<option value="question">Question</option>
+					<option value="blocker">Blocker</option>
+					<option value="idea">Idea</option>
+				</select>
 		</div>
 		<label for="content-comment-body" class="sr-only">Comment</label>
 		<textarea

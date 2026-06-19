@@ -64,6 +64,18 @@ describe("POST /api/reviews/:id/comments", () => {
     expect(thread.kind).toBe("nit");
   });
 
+  // AC: @review-idea-threads ac-idea-kind-accepted
+  it("creates an idea thread", async () => {
+    const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
+      method: "POST",
+      body: JSON.stringify({ body: "Consider this for later.", kind: "idea" }),
+    });
+    expect(response.status).toBe(200);
+    const thread = await response.json();
+    expect(thread.kind).toBe("idea");
+    expect(thread.entries[0].body).toBe("Consider this for later.");
+  });
+
   it("creates a thread with a code anchor", async () => {
     const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
       method: "POST",
@@ -176,12 +188,15 @@ describe("POST /api/reviews/:id/comments", () => {
     expect(response.status).toBe(400);
   });
 
-  it("returns 400 for invalid kind", async () => {
+  // AC: @review-idea-threads ac-kind-validation
+  it("returns 400 for invalid kind with accepted-kind guidance", async () => {
     const response = await request(`/api/reviews/${OPEN_REVIEW_ULID}/comments`, {
       method: "POST",
       body: JSON.stringify({ body: "Some comment.", kind: "invalid_kind" }),
     });
     expect(response.status).toBe(400);
+    const error = await response.json();
+    expect(JSON.stringify(error)).toContain("Kind must be one of: blocker, question, nit, idea");
   });
 
   it("returns 404 for unknown review", async () => {
