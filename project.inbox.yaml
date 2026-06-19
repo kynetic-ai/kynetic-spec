@@ -5040,3 +5040,14 @@ inbox:
       - canonicalization
     added_by: Jacob Chapel
     created_at: 2026-06-16T23:47:11.904Z
+  - _ulid: 01KVERSZ1Y9X237K31FSGY1H03
+    text: Extract a shared helper for shadow-backed kspec test projects used by CLI and daemon tests.
+      Many tests duplicate canRunShadowTests plus setupShadowProject/setupShadowFolderProject
+      boilerplate; a helper could standardize git-version gating, kspec init, shadow worktree setup,
+      and cleanup while reducing fixture drift.
+    tags:
+      - testing
+      - dx
+      - reflection
+    added_by: Jacob Chapel
+    created_at: 2026-06-19T01:44:24.894Z
