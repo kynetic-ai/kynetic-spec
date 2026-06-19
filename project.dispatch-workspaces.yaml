@@ -20041,7 +20041,7 @@ workspaces:
         head: 18a71a66059abbb0b50dc969505aa5a8cf9c1cfc
         last_seen_at: 2026-06-19T00:49:47.360Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-revision-backfill-01kved79
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: d828cf5bc0b9b87d6c65fb71997031b260779fe4
     bootstrap:
       status: succeeded
@@ -20523,7 +20523,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-19T01:17:09.151Z
+      updated_at: 2026-06-19T01:17:41.935Z
     integration:
       status: pending
       detail: null
@@ -20539,10 +20539,10 @@ workspaces:
     task_slug: task-review-revision-binding
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-19T00:51:04.733Z
-      last_reconciled_at: 2026-06-19T01:17:09.151Z
+      last_active_at: 2026-06-19T01:17:41.935Z
+      last_reconciled_at: 2026-06-19T01:17:41.935Z
       created_at: 2026-06-19T00:50:36.028Z
-      updated_at: 2026-06-19T01:17:34.032Z
+      updated_at: 2026-06-19T01:17:41.935Z
     workspace_id: dispatch-workspace-01KVED79R2301QYV9N6GVYVFXG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
