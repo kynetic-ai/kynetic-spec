@@ -183,6 +183,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-19T02:01:41.576Z
+  - _ulid: 01KVEVBAGP9B6AJ0C7C0TWE0Q0
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVESSGFEGQX3866E9Y4FV93W
+    timestamp: 2026-06-19T02:28:50.838Z
 examined_commit: cbf756508164fc1bab975071cdba697b91ddcd2c
 external_links: []
 lifecycle_state: closed
@@ -228,6 +234,13 @@ threads:
           searched: correctness, CLI/API parity, edge cases, error handling, test quality,
           integration.
         created_at: 2026-06-19T02:01:38.542Z
+      - _ulid: 01KVEVBA8XJ29ATEAJHR7B1T7G
+        author: Jacob Chapel
+        body: "Fixed in commit 9220033358: the plan-text CLI flags now use strict parseIntOption validation
+          instead of parseInt truncation, so decimal offsets and partially numeric revision ordinals
+          are rejected before anchor construction. Added CLI coverage for --plan-offset 8.5 and
+          --created-at-rev 1abc, with assertions that the review remains unmodified."
+        created_at: 2026-06-19T02:28:50.589Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -238,5 +251,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-19T02:01:41.576Z
 created_at: 2026-06-19T01:46:48.339Z
-updated_at: 2026-06-19T02:01:41.576Z
+updated_at: 2026-06-19T02:28:50.589Z
 notes: []
