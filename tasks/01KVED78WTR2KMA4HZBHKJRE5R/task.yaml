@@ -53,7 +53,7 @@ description: |
 spec_ref: "@review-idea-threads"
 plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -62,6 +62,14 @@ tags:
   - schema
   - reviews
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-idea-thread-kind/01kved78
+  captured_at: 2026-06-19T00:18:15.003Z
+  commit: 99c047e7fba7a619c05ae01a09abbf360cffadfc
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KVEJA9PBVH7M46DM78M1XEGX
 history:
   - author: Jacob Chapel
@@ -84,7 +92,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-18T23:51:47.305Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-idea-thread-kind/01kved78
+          captured_at: 2026-06-19T00:18:15.003Z
+          commit: 99c047e7fba7a619c05ae01a09abbf360cffadfc
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-19T00:18:15.008Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-19T00:18:15.009Z
 created_at: 2026-06-18T22:21:58.042Z
 started_at: 2026-06-18T23:51:47.305Z
+submitted_at: 2026-06-19T00:18:15.008Z
 todos: []
 automation: eligible
