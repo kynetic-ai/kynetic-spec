@@ -61,11 +61,16 @@ function slugifyHeading(heading: string): string {
   return slug || "section";
 }
 
-function headingSectionId(heading: string, counts: Map<string, number>): string {
+function headingSectionId(heading: string, usedIds: Set<string>): string {
   const base = slugifyHeading(heading);
-  const nextCount = (counts.get(base) ?? 0) + 1;
-  counts.set(base, nextCount);
-  return nextCount === 1 ? base : `${base}-${nextCount}`;
+  let candidate = base;
+  let suffix = 2;
+  while (usedIds.has(candidate)) {
+    candidate = `${base}-${suffix}`;
+    suffix += 1;
+  }
+  usedIds.add(candidate);
+  return candidate;
 }
 
 /**
@@ -76,7 +81,7 @@ function headingSectionId(heading: string, counts: Map<string, number>): string 
  */
 export function sectionPlanMarkdown(content: string): PlanTextSection[] {
   const lines = splitLinesWithSpans(content);
-  const headingCounts = new Map<string, number>();
+  const usedSectionIds = new Set<string>([PLAN_TEXT_PREAMBLE_SECTION_ID]);
   const sections: PlanTextSection[] = [];
   let current: { id: string; start: number; heading?: string } | null = null;
 
@@ -97,7 +102,7 @@ export function sectionPlanMarkdown(content: string): PlanTextSection[] {
       }
 
       current = {
-        id: headingSectionId(heading, headingCounts),
+        id: headingSectionId(heading, usedSectionIds),
         start: line.start,
         heading,
       };

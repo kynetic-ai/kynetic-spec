@@ -88,6 +88,14 @@ describe("Plan text anchors", () => {
     expect(sectionPlanMarkdown("Only preamble\n").map((section) => section.id)).toEqual([
       "preamble",
     ]);
+
+    expect(sectionPlanMarkdown("Lead\n# Preamble\nBody\n").map((section) => section.id)).toEqual([
+      "preamble",
+      "preamble-2",
+    ]);
+    expect(
+      sectionPlanMarkdown("# Intro-2\nA\n# Intro\nB\n# Intro\nC\n").map((section) => section.id),
+    ).toEqual(["intro-2", "intro", "intro-3"]);
   });
 
   // AC: @review-plan-text-anchors ac-plan-text-anchor-stored
