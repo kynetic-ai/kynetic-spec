@@ -2690,7 +2690,7 @@ features:
           and appear in the review's event history.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@review-comment-threads-and-anchors"
         implements: []
