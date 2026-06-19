@@ -21033,12 +21033,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-19T03:56:05.617Z
+      updated_at: 2026-06-19T03:56:22.115Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-19T03:56:05.617Z
+      updated_at: 2026-06-19T03:56:22.115Z
     integration:
       status: pending
       detail: null
@@ -21046,8 +21046,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 47326c5f5853bd662b00a0702b0c255a002c3a03
-      updated_at: 2026-06-19T03:56:05.617Z
-    lifecycle_state: ready
+      updated_at: 2026-06-19T03:56:22.115Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVED78FQ4APC9E42P8EB23ZP
     task_ref: "@01KVED78FQ4APC9E42P8EB23ZP"
@@ -21055,18 +21055,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-19T03:37:49.244Z
-      last_reconciled_at: 2026-06-19T03:56:05.617Z
+      last_reconciled_at: 2026-06-19T03:56:22.115Z
       created_at: 2026-06-19T01:17:48.097Z
-      updated_at: 2026-06-19T03:56:05.617Z
+      updated_at: 2026-06-19T03:56:22.115Z
     workspace_id: dispatch-workspace-01KVED78FQ4APC9E42P8EB23ZP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 9b4985dd6ae9ac7f5b515b9477be0ec3845097d5
+        last_seen_at: 2026-06-19T03:56:22.115Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-text-anchors-01kved78-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-plan-text-anchors/01kved78
-        head: cc27b4db5012d606b967af584c0f9b1a930b960b
-        last_seen_at: 2026-06-19T03:37:18.511Z
+        head: 9b4985dd6ae9ac7f5b515b9477be0ec3845097d5
+        last_seen_at: 2026-06-19T03:56:22.115Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-text-anchors-01kved78
   - active_role: null
     base_branch_point: f047fff721dacbc2f65ed45feba236e81f03fc8d
