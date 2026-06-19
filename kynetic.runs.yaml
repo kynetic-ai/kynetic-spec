@@ -70952,7 +70952,7 @@ runs:
     completed_at: 2026-06-19T02:53:17.744Z
   - _ulid: 01KVEXTVKTDDSWBDJMBMDVHAPA
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70966,7 +70966,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-19T03:13:23.765Z
-        completed_at: 2026-06-19T03:13:23.765Z
+        completed_at: 2026-06-19T03:13:33.469Z
+        notes: "Friction points: the full npm test gate took 2841.1s and had several quiet periods while
+          long suites finalized. This is systemic, but it is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run, so no duplicate item is
+          needed from this reflection."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-19T03:13:33.469Z
+        completed_at: 2026-06-19T03:13:33.469Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T03:12:17.018Z
