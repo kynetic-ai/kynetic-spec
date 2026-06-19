@@ -51,6 +51,7 @@ import {
   normalizeFieldPathsFor,
 } from "./actor-field-inventory.js";
 import { buildActorIdentityConfig } from "../identity/actor-identity-config.js";
+import { KSPEC_UPGRADE_ACTOR } from "../identity/system-actors.js";
 import { writeFileBufferAware } from "../cli/batch-write-buffer.js";
 import { readYamlFile } from "./yaml.js";
 import type { KspecContext } from "./yaml.js";
@@ -257,7 +258,13 @@ class ActorResolver {
   private readonly defaults: Partial<Record<ActorRecordKind, string>>;
 
   constructor(config: ActorIdentityConfig, operatorMap: OperatorActorMap) {
-    this.classify = buildActorClassifier(config);
+    this.classify = buildActorClassifier({
+      ...config,
+      agents: [
+        ...config.agents.filter((agent) => agent.canonicalId !== KSPEC_UPGRADE_ACTOR.canonicalId),
+        KSPEC_UPGRADE_ACTOR,
+      ],
+    });
     this.defaults = { ...DECLARED_DEFAULT_ACTORS, ...operatorMap.defaults };
 
     // Validate and normalize operator mapping TARGETS before they can be

@@ -440,6 +440,7 @@ export async function runUpgradePipeline(
         { name: "Plan storage folder migration", status: "skipped", message: skipMessage },
         { name: "Review storage folder migration", status: "skipped", message: skipMessage },
         { name: "Storage manifest (kynetic 1.2)", status: "skipped", message: skipMessage },
+        { name: "Plan revision backfill", status: "skipped", message: skipMessage },
         { name: "Historical actor normalization", status: "skipped", message: skipMessage },
         { name: "Backfill core skills", status: "skipped", message: skipMessage },
         { name: "Re-render skills", status: "skipped", message: skipMessage },
@@ -532,6 +533,29 @@ export async function runUpgradePipeline(
         }
       }
     }
+  }
+
+  // ─── Step 1a: Plan revision-one backfill ────────────────────────────
+  // Runs after storage promotion so existing plans are folder-backed, and
+  // before actor normalization so the newly-written revision author is included
+  // in the same upgrade's actor-field scan.
+  //
+  // AC: @plan-revisions ac-backfill-revision-one
+  try {
+    const backfillResult = await runPlanRevisionBackfillStep(dryRun);
+    steps.push(backfillResult);
+    if (backfillResult.status === "done") {
+      const backfilled = (backfillResult.details?.backfilled as number) || 0;
+      if (backfilled > 0) {
+        followUps.push(`Plan revisions: backfilled revision 1 for ${backfilled} plan(s)`);
+      }
+    }
+  } catch (err) {
+    steps.push({
+      name: "Plan revision backfill",
+      status: "failed",
+      message: err instanceof Error ? err.message : String(err),
+    });
   }
 
   // ─── Step 1b: Historical actor normalization ────────────────────────
@@ -1678,6 +1702,85 @@ async function runActorNormalizationStep(
     name: "Historical actor normalization",
     status: "done",
     message: `rewrote ${report.rewriteCount} actor field value(s) across ${report.recordsModified} record(s); report at ${reportPath}`,
+    details,
+  };
+}
+
+/**
+ * Step 1a: Backfill revision 1 for plans that existed before revision
+ * support. Reinitializes context after storage promotion so the loader sees
+ * the current manifest, matching the actor-normalization step below.
+ *
+ * AC: @plan-revisions ac-backfill-revision-one
+ */
+async function runPlanRevisionBackfillStep(dryRun: boolean): Promise<UpgradeStepResult> {
+  const {
+    PLAN_REVISION_BACKFILL_STEP_NAME,
+    applyPlanRevisionBackfill,
+    computePlanRevisionBackfillReport,
+  } = await import("../../parser/plan-revision-backfill.js");
+  const { initContext } = await import("../../parser/index.js");
+
+  const ctx = await initContext(undefined, { syncMode: "skip" });
+  const manifest = ctx.manifest as Record<string, unknown> | null;
+  const planStorageReady =
+    (manifest?.plan_storage as { format?: string } | undefined)?.format === "folder";
+
+  if (!planStorageReady && !dryRun) {
+    return {
+      name: PLAN_REVISION_BACKFILL_STEP_NAME,
+      status: "skipped",
+      message: "skipped — project is not on folder-backed plan storage",
+    };
+  }
+
+  const report = await computePlanRevisionBackfillReport(ctx, { dryRun });
+  const details: Record<string, unknown> = {
+    plans_scanned: report.plansScanned,
+    backfilled: report.backfillCount,
+    skipped_with_revisions: report.skippedWithRevisions,
+    shadow_commit: report.shadowCommit,
+    generated_at: report.generatedAt,
+    entries: report.entries.map((entry) => ({
+      ulid: entry.ulid,
+      title: entry.title,
+    })),
+  };
+
+  if (report.backfillCount === 0) {
+    return {
+      name: PLAN_REVISION_BACKFILL_STEP_NAME,
+      status: "skipped",
+      message: "all plans already have revisions or no plans exist",
+      details,
+    };
+  }
+
+  if (dryRun) {
+    return {
+      name: PLAN_REVISION_BACKFILL_STEP_NAME,
+      status: "done",
+      message: `would backfill revision 1 for ${report.backfillCount} plan(s)`,
+      details,
+    };
+  }
+
+  const applied = await applyPlanRevisionBackfill(ctx, report);
+  details.author = applied.author;
+  details.backfilled = applied.backfilled;
+
+  if (applied.backfilled > 0) {
+    const { commitIfShadow } = await import("../../parser/shadow.js");
+    await commitIfShadow(ctx.shadow, "upgrade", undefined, "backfill plan revision history");
+  }
+
+  return {
+    name: PLAN_REVISION_BACKFILL_STEP_NAME,
+    status: applied.backfilled > 0 ? "done" : "skipped",
+    message:
+      applied.backfilled > 0
+        ? `backfilled revision 1 for ${applied.backfilled} plan(s)`
+        : "all plans already have revisions",
     details,
   };
 }
