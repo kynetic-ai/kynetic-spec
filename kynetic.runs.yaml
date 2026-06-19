@@ -70501,9 +70501,21 @@ runs:
     completed_at: 2026-06-19T01:10:18.554Z
   - _ulid: 01KVEQ21CSZWQ6P1ET8NKTWPCN
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-19T01:13:52.281Z
+        completed_at: 2026-06-19T01:14:53.551Z
+        notes: "What worked well: behavioral shadow-backed tests exercised plan revision binding through
+          real CLI/storage paths without source scanning or UI coupling. Friction: computed review
+          detail fields had to be wired separately through CLI JSON/human output, daemon detail,
+          static export, and shared types."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-19T01:14:53.551Z
+        completed_at: 2026-06-19T01:14:53.551Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T01:13:52.281Z
