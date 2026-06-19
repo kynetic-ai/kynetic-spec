@@ -19529,7 +19529,7 @@ workspaces:
         head: 99c047e7fba7a619c05ae01a09abbf360cffadfc
         last_seen_at: 2026-06-19T00:22:39.104Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-idea-thread-kind-01kved78
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 41f077c5061300e7783a8ed01287c71ce30fe435
     bootstrap:
       status: succeeded
@@ -20028,9 +20028,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-19T00:50:24.393Z
-      last_reconciled_at: 2026-06-19T01:07:19.588Z
+      last_reconciled_at: 2026-06-19T01:10:44.751Z
       created_at: 2026-06-19T00:23:22.080Z
-      updated_at: 2026-06-19T01:07:19.588Z
+      updated_at: 2026-06-19T01:10:44.751Z
     workspace_id: dispatch-workspace-01KVED79AAFAKDN7H1P2D6GTT5
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
