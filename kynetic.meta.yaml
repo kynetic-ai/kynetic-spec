@@ -22836,8 +22836,11 @@ observations:
       blocker thread, a check evidence string, or another workaround, which is especially awkward
       for clean approvals with no findings.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing @session-reflect success observation about batching review checks
+      with the final verdict; resolved to avoid reflection noise.
+    resolved: true
+    resolved_at: 2026-06-19T02:04:59.955Z
+    resolved_by: Jacob Chapel
     workflow_ref: "@session-reflect"
     created_at: 2026-06-19T02:03:56.927Z
   - _ulid: 01KVESXQWB1VJ10FHSW7TR8ETK
