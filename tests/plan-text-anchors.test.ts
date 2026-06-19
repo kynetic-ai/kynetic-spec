@@ -223,6 +223,21 @@ describe("Plan text anchors", () => {
       );
       expect(`${badShape.stderr}\n${badShape.stdout}`).toContain("offset");
 
+      const decimalOffset = kspecRun(
+        'review comment @plan-review --body "Bad" --plan-section intro --plan-offset 8.5 --quoted-text "Target" --created-at-rev 1',
+        projectDir,
+        { expectFail: true },
+      );
+      expect(`${decimalOffset.stderr}\n${decimalOffset.stdout}`).toContain("offset");
+      expect(`${decimalOffset.stderr}\n${decimalOffset.stdout}`).toContain("whole number");
+
+      const partialRevision = kspecRun(
+        'review comment @plan-review --body "Bad" --plan-section intro --plan-offset 8 --quoted-text "Target" --created-at-rev 1abc',
+        projectDir,
+        { expectFail: true },
+      );
+      expect(`${partialRevision.stderr}\n${partialRevision.stdout}`).toContain("created_at_rev");
+
       // AC: @review-plan-text-anchors ac-nonexistent-revision-rejected
       const badRevision = kspecRun(
         'review comment @plan-review --body "Bad" --plan-section intro --plan-offset 8 --quoted-text "Target" --created-at-rev 9',

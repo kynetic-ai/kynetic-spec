@@ -62,7 +62,7 @@ import { EXIT_CODES } from "../exit-codes.js";
 import { describeEnumValues } from "../enum-help.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
-import { validateEnumOption } from "../validators.js";
+import { parseIntOption, validateEnumOption } from "../validators.js";
 import { registerReviewResourceCommands } from "./review-resource.js";
 
 // --- Helpers ---
@@ -97,6 +97,29 @@ function exitWithGuidance(
   }
 
   process.exit(exitCode);
+}
+
+function parsePlanTextIntegerOption(
+  value: unknown,
+  field: "offset" | "created_at_rev",
+  min: number,
+): number {
+  const result = parseIntOption(String(value), {
+    min,
+    max: Number.MAX_SAFE_INTEGER,
+    name: `Plan-text anchor ${field}`,
+  });
+
+  if (!result.ok) {
+    exitWithGuidance(
+      `Invalid plan-text anchor ${field}: ${result.error}`,
+      EXIT_CODES.USAGE_ERROR,
+      "Use --plan-section, --plan-offset, --quoted-text, and --created-at-rev with values that match the plan revision text.",
+      { field, value },
+    );
+  }
+
+  return result.value;
 }
 
 /**
@@ -778,13 +801,9 @@ export function registerReviewCommands(program: Command): void {
       .option("--spec-ref <ref>", "Spec AC anchor: spec reference")
       .option("--ac-id <id>", "Spec AC anchor: acceptance criterion id")
       .option("--plan-section <section>", "Plan-text anchor: section identifier")
-      .option(
-        "--plan-offset <n>",
-        "Plan-text anchor: code-point offset from section start",
-        parseInt,
-      )
+      .option("--plan-offset <n>", "Plan-text anchor: code-point offset from section start")
       .option("--quoted-text <text>", "Plan-text anchor: quoted span text")
-      .option("--created-at-rev <n>", "Plan-text anchor: creation revision ordinal", parseInt)
+      .option("--created-at-rev <n>", "Plan-text anchor: creation revision ordinal")
       .option("--author <author>", "Comment author")
       .action(async (ref: string, options) => {
         try {
@@ -843,9 +862,15 @@ export function registerReviewCommands(program: Command): void {
             const planTextAnchor = {
               type: "plan_text" as const,
               section: options.planSection,
-              offset: options.planOffset,
+              offset:
+                options.planOffset === undefined
+                  ? undefined
+                  : parsePlanTextIntegerOption(options.planOffset, "offset", 0),
               quoted_text: options.quotedText,
-              created_at_rev: options.createdAtRev,
+              created_at_rev:
+                options.createdAtRev === undefined
+                  ? undefined
+                  : parsePlanTextIntegerOption(options.createdAtRev, "created_at_rev", 1),
             };
             const parsedAnchor = ReviewPlanTextAnchorSchema.safeParse(planTextAnchor);
             if (!parsedAnchor.success) {
