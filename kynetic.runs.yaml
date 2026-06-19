@@ -70354,7 +70354,7 @@ runs:
     completed_at: 2026-06-19T00:21:50.257Z
   - _ulid: 01KVEN5S68KPY3T68G273NJVRX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70370,7 +70370,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-19T00:41:37.790Z
-        completed_at: 2026-06-19T00:41:37.790Z
+        completed_at: 2026-06-19T00:41:52.072Z
+        notes: "Friction points: (1) Review evidence logs still require using a non-blocking review comment
+          because there is no first-class review note/evidence-log surface; this is already tracked
+          by observation 01KR2JD1 from search results. (2) Required review checks were recorded
+          through seven separate kspec review check writes; this is repetitive and creates avoidable
+          shadow-branch churn during reviewer closeout. Search for 'record review checks' found no
+          matches. (3) npm test took about 42 minutes and process inspection showed another worktree
+          test run active concurrently, suggesting cross-worktree test contention can slow dispatch
+          review gates. Search for 'test runner concurrent' found no matches."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-19T00:41:52.072Z
+        completed_at: 2026-06-19T00:41:52.072Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T00:40:57.800Z
