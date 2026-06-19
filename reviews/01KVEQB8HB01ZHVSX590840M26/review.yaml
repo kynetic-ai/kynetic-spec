@@ -2,7 +2,101 @@ _ulid: 01KVEQB8HB01ZHVSX590840M26
 slugs: []
 title: Review task-review-revision-binding
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1092 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-19T01:33:04.142Z
+    completed_at: 2026-06-19T01:33:04.142Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint reported 0 errors. Focused changed-file oxlint reported 0 errors
+      and 2 pre-existing no-shadow warnings in src/cli/commands/review.ts, not introduced by this
+      diff."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-19T01:33:07.722Z
+    completed_at: 2026-06-19T01:33:07.722Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared completed and tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-19T01:33:11.204Z
+    completed_at: 2026-06-19T01:33:11.204Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2889/2889 suites, 10984/10987 tests passed, 3 skipped. Duration 2535.6s. Full
+      log: /tmp/kspec-test-cache/01KVEQ8VTTWP3QJM02A8DY5DP6/a0373923f8c218c2.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-19T01:33:14.806Z
+    completed_at: 2026-06-19T01:33:14.806Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline: 6 reference warnings, exiting 0 due to --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-19T01:33:18.364Z
+    completed_at: 2026-06-19T01:33:18.364Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline: 55 alignment warnings, exiting 0 due to --warnings-ok."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-19T01:33:22.016Z
+    completed_at: 2026-06-19T01:33:22.016Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline: 297 completeness warnings, exiting 0 due to
+      --warnings-ok. Task AC annotations found in tests/review-subject-revisions.test.ts for
+      @subject-revision-vocabulary ac-non-plan-derivation, ac-plan-subject-ordinal, and
+      @plan-revisions ac-review-revision-binding; ac-review-pass-labeling is N/A for dependent task
+      @task-respec-review-pass-vocabulary."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-19T01:33:25.579Z
+    completed_at: 2026-06-19T01:33:25.579Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, src/review/subject-bindings.ts, src/cli/commands/review.ts,
+      packages/daemon/src/routes/reviews.ts, packages/shared/src/api.ts,
+      packages/web-ui/src/lib/api-static.ts, src/export/json.ts, src/export/types.ts,
+      tests/review-subject-revisions.test.ts, related review/plan tests. Claims verified: non-plan
+      ordinal derives from subject_refreshed events; plan revision binding uses published revision
+      content hash with shadow commit tie-breaker; unpublished draft content returns null; review
+      read surfaces include subject_revision. Categories searched: correctness, edge cases, error
+      handling, test quality, integration. No shared-guidance surfaces touched."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-06-19T01:33:29.118Z
+    completed_at: 2026-06-19T01:33:29.118Z
 events:
   - _ulid: 01KVEQB8HBSPETCTPYSHBHH0A3
     actor: Jacob Chapel
@@ -17,6 +111,62 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-19T01:19:23.550Z
+  - _ulid: 01KVER56HF32H1XC07P74Z2CR9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-19T01:33:04.431Z
+  - _ulid: 01KVER5A0Y0QFHPCDWVBZYZ63K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-19T01:33:07.998Z
+  - _ulid: 01KVER5DFVGSKYKNSM0BTAEHP8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-19T01:33:11.547Z
+  - _ulid: 01KVER5GZ4FVH4T6EVPNBAPDEY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-19T01:33:15.108Z
+  - _ulid: 01KVER5ME05TZH0XF3FHT4X49A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-19T01:33:18.656Z
+  - _ulid: 01KVER5R00NC27MBPVMKW8AWQY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-19T01:33:22.304Z
+  - _ulid: 01KVER5VF775ZB7E9GTJB43T71
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-19T01:33:25.863Z
+  - _ulid: 01KVER5YY58BYDJ3FMA6RZ176Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-19T01:33:29.413Z
 examined_commit: 03cdfa3de95213d8fbb38e8dd843e99ee4be115a
 external_links: []
 lifecycle_state: open
@@ -29,5 +179,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-19T01:18:54.507Z
-updated_at: 2026-06-19T01:19:23.319Z
+updated_at: 2026-06-19T01:33:29.118Z
 notes: []
