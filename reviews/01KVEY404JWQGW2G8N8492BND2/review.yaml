@@ -13,6 +13,16 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-19T03:31:40.772Z
     completed_at: 2026-06-19T03:31:40.772Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on 13 changed TypeScript/test files: 0 warnings, 0 errors."
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed ts/test files>
+    created_at: 2026-06-19T03:31:44.201Z
+    completed_at: 2026-06-19T03:31:44.201Z
 events:
   - _ulid: 01KVEY404J9F25G9QJ5V7DTH2Q
     actor: Jacob Chapel
@@ -34,6 +44,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-19T03:31:41.051Z
+  - _ulid: 01KVEYYFRS6XYYTH9HFA5XZEBH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-19T03:31:44.537Z
 examined_commit: cc27b4db5012d606b967af584c0f9b1a930b960b
 external_links: []
 lifecycle_state: open
@@ -46,5 +63,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-19T03:17:16.562Z
-updated_at: 2026-06-19T03:31:40.772Z
+updated_at: 2026-06-19T03:31:44.201Z
 notes: []
