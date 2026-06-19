@@ -70501,7 +70501,7 @@ runs:
     completed_at: 2026-06-19T01:10:18.554Z
   - _ulid: 01KVEQ21CSZWQ6P1ET8NKTWPCN
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70534,7 +70534,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-19T01:15:23.389Z
-        completed_at: 2026-06-19T01:15:23.389Z
+        completed_at: 2026-06-19T01:15:42.928Z
+        notes: "Proposed improvement: introduce a shared review detail projection/serializer for computed
+          read fields, consumed by CLI review get, daemon review detail, and static export. It would
+          reduce fan-out and drift risk when adding future computed review fields such as
+          subject_revision. Rough scope: medium, because it crosses parser/review helper boundaries
+          plus CLI/API/static export call sites."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-19T01:15:42.928Z
+        completed_at: 2026-06-19T01:15:42.928Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T01:13:52.281Z
