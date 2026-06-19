@@ -2,7 +2,94 @@ _ulid: 01KVERYB4KQJDEPP942RMAR550
 slugs: []
 title: Review task-plan-text-anchors
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check . reported all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-19T02:01:13.600Z
+    completed_at: 2026-06-19T02:01:13.600Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint --quiet reported 0 errors; baseline warnings remain outside
+      quiet gate."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-19T02:01:16.668Z
+    completed_at: 2026-06-19T02:01:16.668Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: focused oxlint on packages/daemon/src/routes/reviews.ts,
+      src/cli/commands/review.ts, src/parser/index.ts, src/parser/plan-text-anchors.ts,
+      src/schema/review-records.ts, tests/daemon-api/reviews-plan-text-anchors.test.ts,
+      tests/plan-text-anchors.test.ts reported 0 warnings and 0 errors."
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-19T02:01:19.688Z
+    completed_at: 2026-06-19T02:01:19.688Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with exit code 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-19T02:01:22.651Z
+    completed_at: 2026-06-19T02:01:22.651Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2891 suites passed; 10988 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KVERWZEQ2RH38MGE23J5RKE9/bc7b2d8247616c78.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-19T02:01:25.655Z
+    completed_at: 2026-06-19T02:01:25.655Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; reference warnings are existing deprecated-reference baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-19T02:01:29.448Z
+    completed_at: 2026-06-19T02:01:29.448Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; alignment warnings are existing orphan/status baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-19T02:01:32.526Z
+    completed_at: 2026-06-19T02:01:32.526Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; completeness warnings are existing coverage/annotation baseline.
+      Added annotations cover @review-plan-text-anchors ACs and @review-spec-ac-anchors
+      ac-anchor-variant-guidance.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-19T02:01:35.479Z
+    completed_at: 2026-06-19T02:01:35.479Z
 events:
   - _ulid: 01KVERYB4KMRGC34AK56QE8K16
     actor: Jacob Chapel
@@ -17,17 +104,139 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-19T01:47:38.262Z
+  - _ulid: 01KVESRRCA7X6SJG8FHB91ZFWZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-19T02:01:13.866Z
+  - _ulid: 01KVESRVC0PE7XP3R8Z6HRM9GZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-19T02:01:16.928Z
+  - _ulid: 01KVESRY9TVVD7WKRNVGRHYNY3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-19T02:01:19.930Z
+  - _ulid: 01KVESS169J2PM2RKPJSEZEMS2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-19T02:01:22.889Z
+  - _ulid: 01KVESS44523E9XBJD766JE52Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-19T02:01:25.893Z
+  - _ulid: 01KVESS7W3W1TMTY3GHJNNKQGS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-19T02:01:29.731Z
+  - _ulid: 01KVESSAV1C2APZX63JGZ2X894
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-19T02:01:32.769Z
+  - _ulid: 01KVESSDQ2TXQDWSW2PJ8G06EQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-19T02:01:35.714Z
+  - _ulid: 01KVESSGPYNDWNYTKSF2M8QGV3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVESSGFEGQX3866E9Y4FV93W
+    timestamp: 2026-06-19T02:01:38.782Z
+  - _ulid: 01KVESSKE8AXM4BX59M07QGRGH
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-19T02:01:41.576Z
+  - _ulid: 01KVESSKE87JR21BKWEV0A69KZ
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-19T02:01:41.576Z
 examined_commit: cbf756508164fc1bab975071cdba697b91ddcd2c
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVED78FQ4APC9E42P8EB23ZP"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVESSGFEGQX3866E9Y4FV93W
+    anchor:
+      type: code
+      commit: cbf756508164fc1bab975071cdba697b91ddcd2c
+      line_end: 770
+      line_start: 763
+      path: src/cli/commands/review.ts
+      side: head
+    entries:
+      - _ulid: 01KVESSGFESJG1NM6KKDY9JC8Z
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: The CLI plan-text numeric flags use raw parseInt, so non-integer or partially
+          numeric input is truncated before ReviewPlanTextAnchorSchema can reject it. For example,
+          parseInt("1.5", 10) returns 1 and parseInt("8abc", 10) returns 8. That violates
+          @review-plan-text-anchors ac-plan-text-anchor-validation for creation revisions that are
+          not positive integers, and it can also accept a non-integer plan offset as a different
+          code-point offset. The daemon path receives JSON numbers and lets Zod reject 1.5, so this
+          is a CLI-only write-surface gap. Evidence: src/cli/validators.ts documents parseIntOption
+          using Number(value), not parseInt, specifically to reject partial parses like 3abc and
+          1.9; tests/cli-validators.test.ts covers that behavior. Please parse these flags with
+          strict integer validation and add CLI coverage for decimal/partial numeric values.
+
+
+          Review evidence log: Files read: kspec-agents.md, task/spec details for
+          @01KVED78FQ4APC9E42P8EB23ZP and @review-plan-text-anchors, changed files in
+          schema/parser/CLI/daemon/tests, src/cli/validators.ts, tests/cli-validators.test.ts.
+          Commands run: git diff/stat/name-only, kspec item get, kspec review add/open, rg AC
+          annotations, git diff --check, npm run format:check, npm run lint -- --quiet, focused npx
+          oxlint, npm run typecheck, npm test, kspec validate refs/alignment/completeness. Claims
+          verified: worker's claimed gates passed; AC annotations exist for all plan-text ACs and
+          anchor-variant guidance; tests are behavioral rather than source-scanning. Categories
+          searched: correctness, CLI/API parity, edge cases, error handling, test quality,
+          integration.
+        created_at: 2026-06-19T02:01:38.542Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-19T02:01:41.576Z
 created_at: 2026-06-19T01:46:48.339Z
-updated_at: 2026-06-19T01:47:38.039Z
+updated_at: 2026-06-19T02:01:41.576Z
 notes: []
