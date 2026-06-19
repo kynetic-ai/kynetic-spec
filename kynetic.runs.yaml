@@ -71284,7 +71284,7 @@ runs:
     completed_at: 2026-06-19T03:55:50.536Z
   - _ulid: 01KVF1CMM47PNEDJFC0P5Q5PH7
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71316,7 +71316,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-19T04:15:44.321Z
-        completed_at: 2026-06-19T04:15:44.321Z
+        completed_at: 2026-06-19T04:15:54.226Z
+        notes: "Proposal: add plan-text anchor arguments to the batch command schema/allowed-arguments path
+          for review comment, matching the direct CLI flags (--plan-section, --plan-offset,
+          --quoted-text, --created-at-rev). This would let automation and batch workflows create the
+          same plan-text anchored review comments as the direct CLI. Scope: small, likely command
+          metadata/schema plus behavioral dry-run or batch execution coverage."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-19T04:15:54.226Z
+        completed_at: 2026-06-19T04:15:54.226Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T04:14:25.412Z
