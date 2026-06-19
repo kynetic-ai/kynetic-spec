@@ -167,9 +167,25 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-06-19T01:33:29.413Z
+  - _ulid: 01KVER6TEPW6BBQW7A5RR49MRZ
+    actor: Jacob Chapel
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-19T01:33:57.590Z
+  - _ulid: 01KVER6TEQDH5XT4GKA6WG27R1
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-19T01:33:57.591Z
 examined_commit: 03cdfa3de95213d8fbb38e8dd843e99ee4be115a
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -177,7 +193,14 @@ subject:
   ref: "@01KVED79R2301QYV9N6GVYVFXG"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: Jacob Chapel
+    role: reviewer
+    created_at: 2026-06-19T01:33:57.590Z
 created_at: 2026-06-19T01:18:54.507Z
-updated_at: 2026-06-19T01:33:29.118Z
+updated_at: 2026-06-19T01:33:57.591Z
 notes: []

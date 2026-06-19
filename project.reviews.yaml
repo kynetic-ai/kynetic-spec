@@ -27475,11 +27475,11 @@ reviews:
   - _ulid: 01KVEQB8HB01ZHVSX590840M26
     slugs: []
     title: Review task-review-revision-binding
-    disposition: pending
+    disposition: approved
     author: Jacob Chapel
     check_count: 8
     examined_commit: 03cdfa3de95213d8fbb38e8dd843e99ee4be115a
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -27488,6 +27488,6 @@ reviews:
       shadow_commit: ""
     thread_count: 0
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-06-19T01:18:54.507Z
-    updated_at: 2026-06-19T01:33:29.118Z
+    updated_at: 2026-06-19T01:33:57.591Z
