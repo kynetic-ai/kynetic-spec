@@ -157,6 +157,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-19T03:32:34.404Z
+  - _ulid: 01KVEZ03K0M3H4DZ2SDYPVTXHT
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVEZ03BA291TKDH3KPJCD971
+    timestamp: 2026-06-19T03:32:37.600Z
 examined_commit: cc27b4db5012d606b967af584c0f9b1a930b960b
 external_links: []
 lifecycle_state: open
@@ -166,8 +173,29 @@ subject:
   content_hash: ""
   ref: "@01KVED78FQ4APC9E42P8EB23ZP"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVEZ03BA291TKDH3KPJCD971
+    anchor:
+      type: code
+      commit: cc27b4db5012d606b967af584c0f9b1a930b960b
+      line_end: 686
+      line_start: 666
+      path: packages/shared/src/api.ts
+      side: head
+    entries:
+      - _ulid: 01KVEZ03BAE42NMWDVJEG51SHJ
+        author: Jacob Chapel
+        body: 'MUST-FIX: The public shared API ReviewAnchor union was not extended with the new plan_text
+          variant. The backend schema and daemon now accept/store/return anchors like { type:
+          "plan_text", section, offset, quoted_text, created_at_rev }, but shared consumers still
+          see ReviewThread.anchor as only code/structured/spec_ac. That makes valid review
+          detail/static export data unrepresentable in the shipped client contract and prevents
+          typed consumers from handling the new anchor shape. Add the plan_text variant here, and
+          update the matching web createReviewThread input type so the daemon write interface can be
+          called with the new anchor shape.'
+        created_at: 2026-06-19T03:32:37.354Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-19T03:17:16.562Z
-updated_at: 2026-06-19T03:32:34.160Z
+updated_at: 2026-06-19T03:32:37.354Z
 notes: []
