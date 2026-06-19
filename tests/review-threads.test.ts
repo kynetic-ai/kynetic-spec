@@ -442,6 +442,43 @@ describe("Thread kind field (AC-5)", () => {
 
     expect(updated.events[0].payload).toEqual(expect.objectContaining({ kind: "blocker" }));
   });
+
+  // AC: @review-idea-threads ac-idea-kind-accepted
+  it("should store idea threads and allow reply, resolve, and reopen operations", () => {
+    const review = createReviewRecord(makeInput({ _ulid: testUlid("RV") }));
+    const { review: withIdea, thread } = addThread(review, {
+      author: "reviewer@example.com",
+      body: "Consider a follow-up workflow.",
+      kind: "idea",
+    });
+
+    const { review: withReply } = addReply(withIdea, {
+      threadUlid: thread._ulid,
+      author: "author@example.com",
+      body: "Captured for later.",
+    });
+
+    const resolved = resolveThread(withReply, {
+      threadUlid: thread._ulid,
+      actor: "author@example.com",
+    });
+
+    const reopened = reopenThread(resolved, {
+      threadUlid: thread._ulid,
+      actor: "reviewer@example.com",
+    });
+
+    expect(reopened.threads[0].kind).toBe("idea");
+    expect(reopened.threads[0].entries).toHaveLength(2);
+    expect(reopened.threads[0].resolved_at).toBeNull();
+    expect(reopened.threads[0].resolved_by).toBeNull();
+    expect(reopened.events.map((event) => event.event_type)).toEqual([
+      "thread_created",
+      "thread_replied",
+      "thread_resolved",
+      "thread_reopened",
+    ]);
+  });
 });
 
 // ============================================================
@@ -483,6 +520,18 @@ describe("Disposition computation (AC-6)", () => {
     });
 
     expect(computeThreadDisposition(withQuestion)).toBe("pending");
+  });
+
+  // AC: @review-comment-threads-and-anchors ac-6
+  it("should return pending when only unresolved idea threads exist", () => {
+    const review = createReviewRecord(makeInput({ _ulid: testUlid("RV") }));
+    const { review: withIdea } = addThread(review, {
+      author: "reviewer@example.com",
+      body: "Consider a future improvement.",
+      kind: "idea",
+    });
+
+    expect(computeThreadDisposition(withIdea)).toBe("pending");
   });
 
   // AC: @review-comment-threads-and-anchors ac-6

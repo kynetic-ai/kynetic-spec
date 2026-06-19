@@ -10,7 +10,7 @@
 <script lang="ts">
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
-	import type { ReviewThread, ReviewDetail } from '@kynetic-ai/shared';
+	import type { ReviewThread, ReviewDetail, ReviewThreadKind } from '@kynetic-ai/shared';
 	import {
 		fetchReviewContent,
 		createReviewThread,
@@ -64,11 +64,11 @@
 
 	// AC: @review-structured-content-viewer ac-3 — Create thread with structured anchor
 	const addCommentMutation = createMutation(() => ({
-		mutationFn: (data: {
-			body: string;
-			kind: 'blocker' | 'question' | 'nit';
-			section: string;
-			field?: string;
+			mutationFn: (data: {
+				body: string;
+				kind: ReviewThreadKind;
+				section: string;
+				field?: string;
 		}) =>
 			createReviewThread(review._ulid, {
 				body: data.body,
@@ -151,7 +151,7 @@
 		commentingOnField = fieldId ?? null;
 	}
 
-	function handleCommentSubmit(body: string, kind: 'blocker' | 'question' | 'nit') {
+	function handleCommentSubmit(body: string, kind: ReviewThreadKind) {
 		if (!commentingOnSection) return;
 		addCommentMutation.mutate({
 			body,

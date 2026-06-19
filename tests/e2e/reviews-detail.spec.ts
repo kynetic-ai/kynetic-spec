@@ -59,6 +59,18 @@ function mockReviewDetail() {
         ],
       },
       {
+        _ulid: "01KKV0PCA45ZT43W2T6HJMVA11",
+        kind: "idea",
+        entries: [
+          {
+            _ulid: "01KKV0QCA45ZT43W2T6HJMVA12",
+            author: "reviewer@test.com",
+            body: "Consider a follow-up improvement.",
+            created_at: "2026-03-15T10:08:00Z",
+          },
+        ],
+      },
+      {
         _ulid: "01KKTX5CA45ZT43W2T6HJMVA06",
         kind: "question",
         resolved_at: "2026-03-15T11:00:00Z",
@@ -386,12 +398,12 @@ test.describe("Review Detail Page", () => {
 
       // Only the unresolved threads render before the resolved section is expanded.
       const threadItems = page.getByTestId("thread-item");
-      await expect(threadItems).toHaveCount(3);
+      await expect(threadItems).toHaveCount(4);
       await expect(page.getByTestId("resolved-threads-toggle")).toContainText("1 resolved thread");
     });
 
     // AC: @review-records-web-ui ac-2 — Kind badges with correct labels
-    test("shows correct kind badges (blocker, question, nit)", async ({
+    test("shows correct kind badges (blocker, question, nit, idea)", async ({
       page,
       daemon: _daemon,
     }) => {
@@ -415,8 +427,13 @@ test.describe("Review Detail Page", () => {
         .locator('[data-testid="thread-kind-badge"]:visible')
         .filter({ hasText: "Nit" })
         .count();
+      const ideaCount = await page
+        .locator('[data-testid="thread-kind-badge"]:visible')
+        .filter({ hasText: "Idea" })
+        .count();
       expect(blockerCount).toBe(2);
       expect(nitCount).toBe(1);
+      expect(ideaCount).toBe(1);
     });
 
     // AC: @review-records-web-ui ac-2 — Resolution state shown

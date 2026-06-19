@@ -403,6 +403,26 @@ describe("ReviewThreadSchema", () => {
     expect(result.success).toBe(true);
   });
 
+  // AC: @review-idea-threads ac-idea-kind-accepted
+  it("should accept idea thread kind with entries", () => {
+    const result = ReviewThreadSchema.safeParse({
+      _ulid: VALID_ULID,
+      kind: "idea",
+      entries: [
+        {
+          _ulid: VALID_ULID_2,
+          author: "reviewer@example.com",
+          body: "A forward-looking improvement idea.",
+          created_at: VALID_DATE,
+        },
+      ],
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.kind).toBe("idea");
+    }
+  });
+
   it("should default kind to nit", () => {
     const result = ReviewThreadSchema.safeParse({
       _ulid: VALID_ULID,
@@ -461,7 +481,7 @@ describe("ReviewThreadSchema", () => {
 
 describe("ReviewThreadKindSchema", () => {
   it("should accept valid kinds", () => {
-    for (const kind of ["blocker", "question", "nit"]) {
+    for (const kind of ["blocker", "question", "nit", "idea"]) {
       // oxlint-disable-next-line jest/valid-expect -- Vitest supports custom message as 2nd arg
       expect(ReviewThreadKindSchema.safeParse(kind).success, `should accept ${kind}`).toBe(true);
     }

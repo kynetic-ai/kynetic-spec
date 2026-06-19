@@ -103,7 +103,7 @@ test.describe("Review Interaction Controls", () => {
 
       // Add comment
       await page.getByTestId("add-comment-button").click();
-      await page.getByTestId("comment-kind-select").selectOption("question");
+      await page.getByTestId("comment-kind-select").selectOption("idea");
       await page.getByTestId("comment-body-input").fill("First comment on draft review");
       await page.getByTestId("comment-submit-button").click();
 
@@ -112,7 +112,7 @@ test.describe("Review Interaction Controls", () => {
       await expect(page.getByTestId("thread-item")).toBeVisible();
       await expect(
         page.getByTestId("thread-item").first().getByTestId("thread-kind-badge"),
-      ).toContainText("Question");
+      ).toContainText("Idea");
     });
   });
 
@@ -288,14 +288,14 @@ test.describe("Review Interaction Controls", () => {
       await page.getByTestId("verdict-decision-select").selectOption("comment");
 
       // Enter reviewer
-      await page.getByTestId("verdict-reviewer-input").fill("e2e-reviewer@test.com");
+      await page.getByTestId("verdict-reviewer-input").fill("pr-reviewer");
 
       // Submit
       await page.getByTestId("verdict-submit-button").click();
 
       // Wait for the verdict to appear in the verdicts section
       // A comment verdict should appear in the verdicts list
-      await expect(page.getByTestId("verdict-item").last()).toContainText("e2e-reviewer@test.com", {
+      await expect(page.getByTestId("verdict-item").last()).toContainText("PR Reviewer", {
         timeout: 5000,
       });
     });
@@ -310,7 +310,7 @@ test.describe("Review Interaction Controls", () => {
 
       // Select approve
       await page.getByTestId("verdict-decision-select").selectOption("approve");
-      await page.getByTestId("verdict-reviewer-input").fill("approver@test.com");
+      await page.getByTestId("verdict-reviewer-input").fill("pr-reviewer");
       await page.getByTestId("verdict-submit-button").click();
 
       // Disposition should update to Approved (approve auto-closes the review)

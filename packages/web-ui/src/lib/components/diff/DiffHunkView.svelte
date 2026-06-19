@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
 	import type { DiffHunk, DiffChangeLine } from '$lib/api';
-	import type { ReviewThread } from '@kynetic-ai/shared';
+	import type { ReviewThread, ReviewThreadKind } from '@kynetic-ai/shared';
 	import { highlightCode } from '$lib/utils/highlight';
 	import type { ActorClassifier } from '$lib/utils/actor';
 	import DiffInlineThread from './DiffInlineThread.svelte';
@@ -21,11 +21,11 @@
 		isInteractive: boolean;
 		/** Shared actor classifier threaded to inline diff thread authors. */
 		classifier?: ActorClassifier;
-		onAddComment: (data: {
-			body: string;
-			kind: 'blocker' | 'question' | 'nit';
-			lineNumber: number;
-			side: 'base' | 'head';
+			onAddComment: (data: {
+				body: string;
+				kind: ReviewThreadKind;
+				lineNumber: number;
+				side: 'base' | 'head';
 		}) => void;
 		onReply: (threadId: string, body: string) => void;
 		onResolve: (threadId: string) => void;
@@ -120,7 +120,7 @@
 		commentingOnLine = null;
 	}
 
-	function handleSubmitComment(body: string, kind: 'blocker' | 'question' | 'nit') {
+	function handleSubmitComment(body: string, kind: ReviewThreadKind) {
 		if (!commentingOnLine) return;
 		onAddComment({
 			body,

@@ -419,6 +419,60 @@ describe("Integration: review CLI commands", () => {
       expect(review.threads[0].entries[0].body).toBe("This needs fixing");
     });
 
+    // AC: @review-idea-threads ac-idea-kind-accepted
+    it("should add an idea thread and support reply, resolve, and reopen", () => {
+      const result = kspecJson<{ thread_ulid: string; review_ulid: string }>(
+        `review comment @${reviewSlug} --body 'Consider a future workflow' --kind idea`,
+        tempDir,
+      );
+
+      kspec(
+        `review reply @${reviewSlug} --thread ${result.thread_ulid} --body 'Captured'`,
+        tempDir,
+      );
+      kspec(`review resolve @${reviewSlug} --thread ${result.thread_ulid}`, tempDir);
+      kspec(`review reopen @${reviewSlug} --thread ${result.thread_ulid}`, tempDir);
+
+      const review = kspecJson<{
+        threads: Array<{
+          kind: string;
+          entries: Array<{ body: string }>;
+          resolved_at: string | null;
+          resolved_by: string | null;
+        }>;
+        events: Array<{ event_type: string }>;
+      }>(`review get @${reviewSlug}`, tempDir);
+
+      expect(review.threads[0].kind).toBe("idea");
+      expect(review.threads[0].entries.map((entry) => entry.body)).toEqual([
+        "Consider a future workflow",
+        "Captured",
+      ]);
+      expect(review.threads[0].resolved_at).toBeNull();
+      expect(review.threads[0].resolved_by).toBeNull();
+      expect(review.events.map((event) => event.event_type)).toEqual(
+        expect.arrayContaining([
+          "thread_created",
+          "thread_replied",
+          "thread_resolved",
+          "thread_reopened",
+        ]),
+      );
+    });
+
+    // AC: @review-idea-threads ac-kind-validation
+    it("should reject unknown thread kind with accepted-kind guidance", () => {
+      const result = kspecRun(
+        `review comment @${reviewSlug} --body 'Unknown kind' --kind warning`,
+        tempDir,
+        { expectFail: true },
+      );
+
+      expect(result.exitCode).not.toBe(0);
+      expect(result.stderr).toContain("Invalid thread kind: warning");
+      expect(result.stderr).toContain("Valid kinds: blocker, question, nit, idea");
+    });
+
     // AC: @review-cli-mutation-commands ac-1
     it("should add a comment with code anchor", () => {
       kspec(

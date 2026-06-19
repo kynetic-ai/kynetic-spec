@@ -24,7 +24,7 @@
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
-	import type { ReviewDetail, ReviewResource, ReviewSummary, ReviewThread, BroadcastEvent } from '@kynetic-ai/shared';
+	import type { ReviewDetail, ReviewResource, ReviewSummary, ReviewThread, ReviewThreadKind, BroadcastEvent } from '@kynetic-ai/shared';
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { Badge } from '$lib/components/ui/badge';
@@ -107,20 +107,22 @@
 
 	// AC: @review-records-web-ui ac-2 — Thread kind badges with appropriate colors
 	function getKindColor(kind: string): string {
-		const colors: Record<string, string> = {
-			blocker: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-			question: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-			nit: 'bg-gray-100 text-gray-800 dark:bg-gray-800/50 dark:text-gray-400',
-		};
+			const colors: Record<string, string> = {
+				blocker: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+				question: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+				nit: 'bg-gray-100 text-gray-800 dark:bg-gray-800/50 dark:text-gray-400',
+				idea: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400',
+			};
 		return colors[kind] || 'bg-gray-100 text-gray-800';
 	}
 
 	function formatKind(kind: string): string {
-		const labels: Record<string, string> = {
-			blocker: 'Blocker',
-			question: 'Question',
-			nit: 'Nit',
-		};
+			const labels: Record<string, string> = {
+				blocker: 'Blocker',
+				question: 'Question',
+				nit: 'Nit',
+				idea: 'Idea',
+			};
 		return labels[kind] || kind;
 	}
 
@@ -300,10 +302,10 @@
 	// AC: @review-records-web-ui ac-3 — Add Comment form state
 	let showAddComment = $state(false);
 	let commentBody = $state('');
-	let commentKind = $state<'blocker' | 'question' | 'nit'>('nit');
+	let commentKind = $state<ReviewThreadKind>('nit');
 
 	const addCommentMutation = createMutation(() => ({
-		mutationFn: (data: { body: string; kind: 'blocker' | 'question' | 'nit' }) =>
+		mutationFn: (data: { body: string; kind: ReviewThreadKind }) =>
 			createReviewThread(reviewId, data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: queryKeys.reviews.detail(reviewId) });
@@ -633,6 +635,7 @@
 								<option value="nit">Nit</option>
 								<option value="question">Question</option>
 								<option value="blocker">Blocker</option>
+								<option value="idea">Idea</option>
 							</select>
 						</div>
 						<div>

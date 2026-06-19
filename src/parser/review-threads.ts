@@ -232,7 +232,7 @@ export function reopenThread(review: ReviewRecord, input: ResolveThreadInput): R
  * AC: @review-comment-threads-and-anchors ac-6
  *
  * Only unresolved threads with kind "blocker" prevent approval.
- * Unresolved "nit" and "question" threads do not block.
+ * Unresolved "nit", "question", and "idea" threads do not block.
  */
 export function computeThreadDisposition(review: ReviewRecord): ReviewDisposition {
   const hasUnresolvedBlockers = review.threads.some((t) => t.kind === "blocker" && !t.resolved_at);

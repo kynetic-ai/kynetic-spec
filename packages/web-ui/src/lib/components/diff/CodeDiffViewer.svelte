@@ -9,7 +9,7 @@
 <script lang="ts">
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
-	import type { ReviewThread, ReviewDetail } from '@kynetic-ai/shared';
+	import type { ReviewThread, ReviewDetail, ReviewThreadKind } from '@kynetic-ai/shared';
 	import {
 		fetchDiff,
 		fetchFileDiff,
@@ -128,12 +128,12 @@
 
 	// AC: @review-code-diff-viewer ac-4 — Create thread with code anchor
 	const addCommentMutation = createMutation(() => ({
-		mutationFn: (data: {
-			body: string;
-			kind: 'blocker' | 'question' | 'nit';
-			path: string;
-			lineNumber: number;
-			side: 'base' | 'head';
+			mutationFn: (data: {
+				body: string;
+				kind: ReviewThreadKind;
+				path: string;
+				lineNumber: number;
+				side: 'base' | 'head';
 		}) =>
 			createReviewThread(review._ulid, {
 				body: data.body,
@@ -160,7 +160,7 @@
 
 	function handleAddComment(data: {
 		body: string;
-		kind: 'blocker' | 'question' | 'nit';
+		kind: ReviewThreadKind;
 		path: string;
 		lineNumber: number;
 		side: 'base' | 'head';

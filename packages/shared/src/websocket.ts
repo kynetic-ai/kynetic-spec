@@ -1,4 +1,4 @@
-import type { ReviewSubject } from "./api.js";
+import type { ReviewSubject, ReviewThreadKind } from "./api.js";
 
 /**
  * WebSocket Protocol Types
@@ -211,7 +211,7 @@ export type SessionEventType = SessionEventData["type"];
 export interface ReviewThreadCreatedEventData {
   review_ulid: string;
   thread_ulid: string;
-  kind: string;
+  kind: ReviewThreadKind;
   author: string;
 }
 

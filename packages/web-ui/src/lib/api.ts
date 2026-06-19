@@ -31,6 +31,7 @@ import type {
   ReviewDetail,
   ReviewResource,
   ReviewThread,
+  ReviewThreadKind,
   ReviewContentResourceContext,
   ErrorResponse,
   SearchResponse,
@@ -2228,7 +2229,7 @@ export async function createReviewThread(
   reviewId: string,
   data: {
     body: string;
-    kind?: "blocker" | "question" | "nit";
+    kind?: ReviewThreadKind;
     author?: string;
     anchor?:
       | {

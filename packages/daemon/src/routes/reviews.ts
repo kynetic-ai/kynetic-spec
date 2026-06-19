@@ -871,7 +871,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           }),
           body: t.Object({
             body: t.String(),
-            kind: t.Optional(enumUnion(ReviewThreadKindSchema.options)),
+            kind: t.Optional(t.String()),
             author: t.Optional(t.String()),
             anchor: t.Optional(
               t.Object({
