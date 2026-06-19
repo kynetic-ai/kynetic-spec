@@ -70501,7 +70501,7 @@ runs:
     completed_at: 2026-06-19T01:10:18.554Z
   - _ulid: 01KVEQ21CSZWQ6P1ET8NKTWPCN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -70515,7 +70515,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-19T01:14:53.551Z
-        completed_at: 2026-06-19T01:14:53.551Z
+        completed_at: 2026-06-19T01:15:05.770Z
+        notes: "Friction: adding one computed review detail field required manual fan-out across
+          src/cli/commands/review.ts, packages/daemon/src/routes/reviews.ts, src/export/json.ts,
+          src/export/types.ts, packages/shared/src/api.ts, and
+          packages/web-ui/src/lib/api-static.ts. This is repeatable for any future computed review
+          detail field and has drift risk."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-19T01:15:05.770Z
+        completed_at: 2026-06-19T01:15:05.770Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T01:13:52.281Z
