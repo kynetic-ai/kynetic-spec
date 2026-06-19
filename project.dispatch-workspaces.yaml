@@ -21073,7 +21073,7 @@ workspaces:
         head: 9220033358c5c0bbaa012b3ccf3abd0792a1d085
         last_seen_at: 2026-06-19T02:32:59.809Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-text-anchors-01kved78
-  - active_role: null
+  - active_role: worker
     base_branch_point: f047fff721dacbc2f65ed45feba236e81f03fc8d
     bootstrap:
       status: succeeded
@@ -21557,7 +21557,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-19T02:33:39.804Z
+      updated_at: 2026-06-19T02:34:09.892Z
     integration:
       status: pending
       detail: null
@@ -21566,17 +21566,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: f047fff721dacbc2f65ed45feba236e81f03fc8d
       updated_at: 2026-06-19T02:33:39.804Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVED7A4WSWYEJEN8Z4BJ65RB
     task_ref: "@01KVED7A4WSWYEJEN8Z4BJ65RB"
     task_slug: task-respec-review-pass-vocabulary
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-19T02:13:20.517Z
-      last_reconciled_at: 2026-06-19T02:33:39.804Z
+      last_active_at: 2026-06-19T02:34:09.892Z
+      last_reconciled_at: 2026-06-19T02:34:09.892Z
       created_at: 2026-06-19T01:46:19.916Z
-      updated_at: 2026-06-19T02:34:03.925Z
+      updated_at: 2026-06-19T02:34:09.892Z
     workspace_id: dispatch-workspace-01KVED7A4WSWYEJEN8Z4BJ65RB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
