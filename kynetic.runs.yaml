@@ -70412,9 +70412,23 @@ runs:
     started_at: 2026-06-19T00:40:57.800Z
   - _ulid: 01KVENFCPN8XDYC2TS94WXTVBS
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-19T00:46:12.694Z
+        completed_at: 2026-06-19T00:48:34.762Z
+        notes: "Baseline discovery completed: ran kspec meta observations list, kspec inbox list, kspec
+          tasks list, plus targeted kspec search queries for workflow show, full suite/quiet tests,
+          upgrade pipeline, shadow commit pointer, folder-backed plan mutation, git show, and
+          observations-list noise. Existing coverage found for workflow show run-ref mismatch
+          (@01KTWCCAS and related observations), long/quiet full-suite friction (@01KVE6XH,
+          @01KTW9G9), and noisy reflection baseline output (@01KQ8TTN, @01KSDZFN)."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-19T00:48:34.762Z
+        completed_at: 2026-06-19T00:48:34.762Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-19T00:46:12.694Z
