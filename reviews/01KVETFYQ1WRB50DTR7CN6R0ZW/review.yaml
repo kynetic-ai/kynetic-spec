@@ -34,6 +34,19 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-19T02:28:13.700Z
     completed_at: 2026-06-19T02:28:13.700Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxlint reported 0 errors under --quiet. Repo baseline still has 680 warnings;
+      focused changed-file lint separately passed with 0 warnings/errors for
+      packages/web-ui/src/lib/api.ts, packages/web-ui/src/routes/reviews/[id]/+page.svelte,
+      tests/e2e/review-detail-page.spec.ts, tests/e2e/reviews-detail.spec.ts."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-19T02:28:17.088Z
+    completed_at: 2026-06-19T02:28:17.088Z
 events:
   - _ulid: 01KVETFYQ0WGRTHSZJ3WWFYEAJ
     actor: Jacob Chapel
@@ -69,6 +82,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-19T02:28:13.986Z
+  - _ulid: 01KVEVA9T52BQSF9NP06JWB83F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-19T02:28:17.349Z
 examined_commit: 578ab20ab828807c0d157581a9e613867b66058d
 external_links: []
 lifecycle_state: open
@@ -81,5 +101,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-19T02:13:54.017Z
-updated_at: 2026-06-19T02:28:13.700Z
+updated_at: 2026-06-19T02:28:17.088Z
 notes: []
