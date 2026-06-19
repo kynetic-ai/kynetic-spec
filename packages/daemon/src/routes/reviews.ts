@@ -51,7 +51,10 @@ import {
 import { getUnresolvedBlockers } from "../../parser/review-threads.js";
 import { createCheck } from "../../review/checks.js";
 import { evaluateGates } from "../../review/checks.js";
-import { extractSubjectVersion } from "../../review/subject-bindings.js";
+import {
+  extractSubjectVersion,
+  resolveReviewSubjectRevision,
+} from "../../review/subject-bindings.js";
 import type { PubSubManager } from "../websocket/pubsub.js";
 import type {
   ReviewVerdictDecision,
@@ -579,11 +582,13 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           // AC: @ui-breadcrumb ac-10 — server-resolved ancestor chain (subject
           // entity's chain plus the review) in the same bounded detail response.
           const ancestors = await resolveReviewAncestors(review, cache, ctxForResources);
+          const subjectRevision = await resolveReviewSubjectRevision(ctxForResources, review);
 
           return wrapResponse(
             {
               ...review,
               disposition: computeDisposition(review),
+              subject_revision: subjectRevision,
               resources: resourceManifest.resources,
               ancestors,
             },

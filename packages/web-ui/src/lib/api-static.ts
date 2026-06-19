@@ -949,6 +949,7 @@ function toReviewDetail(review: ExportedReview): ReviewDetail {
     lifecycle_state: review.lifecycle_state,
     disposition: review.disposition,
     subject: review.subject,
+    subject_revision: review.subject_revision ?? null,
     author: review.author,
     related_refs: review.related_refs,
     threads: [],

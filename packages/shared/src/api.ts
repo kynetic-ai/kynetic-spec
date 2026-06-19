@@ -793,6 +793,7 @@ export interface ReviewDetail {
   lifecycle_state: string;
   disposition: string;
   subject: ReviewSubject;
+  subject_revision: number | null;
   author: string;
   related_refs: string[];
   threads: ReviewThread[];
@@ -1162,6 +1163,7 @@ export interface ExportedReview {
   updated_at: string | null;
   examined_commit: string | null;
   disposition: string;
+  subject_revision?: number | null;
   resources: ReviewResource[];
   /**
    * Server-resolved breadcrumb ancestor chain (root → this review), precomputed

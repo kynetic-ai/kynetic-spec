@@ -38,6 +38,7 @@ import {
 import { computeDisposition } from "../parser/review-operations.js";
 import { getReviewDir, type LoadedReviewRecord } from "../parser/review-storage-manager.js";
 import { resolveTaskDataManager } from "../parser/task-data-manager.js";
+import { resolveReviewSubjectRevision } from "../review/subject-bindings.js";
 import { loadSessionContext } from "../parser/meta.js";
 import { TraitIndex } from "../parser/traits.js";
 import {
@@ -617,6 +618,7 @@ async function expandReview(
     updated_at: review.updated_at ?? null,
     examined_commit: review.examined_commit ?? null,
     disposition: computeDisposition(review),
+    subject_revision: await resolveReviewSubjectRevision(ctx, review),
     resources,
   };
 }

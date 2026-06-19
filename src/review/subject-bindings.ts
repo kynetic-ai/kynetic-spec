@@ -7,9 +7,14 @@ import type {
   ReviewSubject,
   ReviewSubjectVersion,
   ReviewCheck,
+  ReviewEvent,
+  ReviewRecord,
   ReviewVerdict,
 } from "../schema/review-records.js";
 import { computeContentHash } from "../parser/skill-render.js";
+import { resolvePlanRevisionContent } from "../parser/plan-revisions.js";
+import { findPlanByRef, type LoadedPlan } from "../parser/plans.js";
+import type { KspecContext } from "../parser/yaml.js";
 
 // --- Subject Binding Factories ---
 
@@ -235,4 +240,83 @@ export function findStaleVerdicts(
       result: isVersionStale(verdict.applies_to_version, currentVersion),
     }))
     .filter((entry) => entry.result.stale);
+}
+
+// --- Subject Revision Ordinals ---
+
+// AC: @subject-revision-vocabulary ac-non-plan-derivation
+/**
+ * Derive the review subject revision ordinal for non-plan subjects.
+ * The created subject snapshot is revision 1; every subject refresh
+ * event increments the reported ordinal.
+ */
+export function deriveSubjectRefreshOrdinal(
+  events: readonly Pick<ReviewEvent, "event_type">[],
+): number {
+  return 1 + events.filter((event) => event.event_type === "subject_refreshed").length;
+}
+
+// AC: @subject-revision-vocabulary ac-plan-subject-ordinal
+// AC: @plan-revisions ac-review-revision-binding
+/**
+ * Resolve the first-class plan revision a plan review examined.
+ *
+ * Content hash equality is authoritative. If multiple revisions publish
+ * byte-identical content, the pinned shadow commit is used as the tiebreaker.
+ * Unpublished draft content returns null instead of binding to a wrong ordinal.
+ */
+export function resolvePlanSubjectRevision(
+  ctx: KspecContext,
+  subject: ReviewPlanSubject,
+  plan: Pick<LoadedPlan, "_ulid" | "revisions">,
+): number | null {
+  const contentMatches: Array<{ ordinal: number; shadow_commit: string }> = [];
+
+  for (const revision of plan.revisions) {
+    const content = resolvePlanRevisionContent(ctx, plan, revision);
+    if (computeContentHash(content) === subject.content_hash) {
+      contentMatches.push({
+        ordinal: revision.ordinal,
+        shadow_commit: revision.shadow_commit,
+      });
+    }
+  }
+
+  if (contentMatches.length === 0) {
+    return null;
+  }
+  if (contentMatches.length === 1) {
+    return contentMatches[0].ordinal;
+  }
+
+  const commitMatches = contentMatches.filter(
+    (revision) => revision.shadow_commit === subject.shadow_commit,
+  );
+  return commitMatches.length === 1 ? commitMatches[0].ordinal : null;
+}
+
+// AC: @subject-revision-vocabulary ac-non-plan-derivation
+// AC: @subject-revision-vocabulary ac-plan-subject-ordinal
+// AC: @plan-revisions ac-review-revision-binding
+/**
+ * Compute the subject revision ordinal reported by review read surfaces.
+ */
+export async function resolveReviewSubjectRevision(
+  ctx: KspecContext,
+  review: Pick<ReviewRecord, "subject" | "events">,
+): Promise<number | null> {
+  if (review.subject.type === "plan") {
+    const plan = await findPlanByRef(ctx, review.subject.ref);
+    return plan ? resolvePlanSubjectRevision(ctx, review.subject, plan) : null;
+  }
+
+  if (
+    review.subject.type === "code" ||
+    review.subject.type === "task" ||
+    review.subject.type === "spec"
+  ) {
+    return deriveSubjectRefreshOrdinal(review.events);
+  }
+
+  return null;
 }
