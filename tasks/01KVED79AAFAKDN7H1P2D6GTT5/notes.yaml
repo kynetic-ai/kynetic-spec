@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KVEMFBN9ASXG4YAD4FYB3R0F
+    content: "Approach: add a behavioral upgrade test for @plan-revisions ac-backfill-revision-one, then
+      implement a dedicated plan revision backfill helper wired into kspec upgrade after
+      folder-storage promotion. Reuse existing plan revision schema, plan storage mutation/index
+      refresh paths, shadow HEAD pointer resolution, and actor-write resolution with a built-in
+      kspec-upgrade system actor. Edge cases: revisionless legacy plans get exactly ordinal 1; plans
+      with existing revisions are skipped; dry-run writes nothing; second upgrade run is a no-op;
+      revision pointer resolves to the current plan.md content at upgrade time. Test plan: upgrade
+      fixture proves dry-run no-write, executing run creates one revision with metadata and
+      resolvable content pointer, and double-run does not duplicate."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-19T00:28:43.049Z
