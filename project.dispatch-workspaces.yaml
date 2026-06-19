@@ -21070,3 +21070,80 @@ workspaces:
         head: cbf756508164fc1bab975071cdba697b91ddcd2c
         last_seen_at: 2026-06-19T01:45:37.623Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-text-anchors-01kved78
+  - active_role: null
+    base_branch_point: f047fff721dacbc2f65ed45feba236e81f03fc8d
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-respec-review-pass-vocabulary/01kved7a
+    canonical_branch_head: f047fff721dacbc2f65ed45feba236e81f03fc8d
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-19T01:46:19.916Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-19T01:46:19.916Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: feat/ui-redesign
+      target_commit: f047fff721dacbc2f65ed45feba236e81f03fc8d
+      updated_at: 2026-06-19T01:46:19.916Z
+    lifecycle_state: ready
+    resolved_base_branch: feat/ui-redesign
+    task_id: 01KVED7A4WSWYEJEN8Z4BJ65RB
+    task_ref: "@01KVED7A4WSWYEJEN8Z4BJ65RB"
+    task_slug: task-respec-review-pass-vocabulary
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-19T01:46:19.916Z
+      created_at: 2026-06-19T01:46:19.916Z
+      updated_at: 2026-06-19T01:46:19.916Z
+    workspace_id: dispatch-workspace-01KVED7A4WSWYEJEN8Z4BJ65RB
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-respec-review-pass-vocabulary/01kved7a
+        head: f047fff721dacbc2f65ed45feba236e81f03fc8d
+        last_seen_at: 2026-06-19T01:46:19.916Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-respec-review-pass-vocabulary-01kved7a
