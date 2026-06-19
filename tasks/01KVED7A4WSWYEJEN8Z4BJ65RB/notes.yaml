@@ -12,3 +12,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-19T01:48:34.874Z
+  - _ulid: 01KVET1APAVM1H284FY9D0R064
+    content: "Implemented review-pass vocabulary for @review-records-web-ui ac-11: updated spec
+      description and AC wording through kspec batch, changed the visible review-detail selector
+      label to 'Review pass:', renamed local review-pass comments/variables, and updated
+      AC-annotated E2E expectations. Verification: npm run format:check passed; npm run lint --
+      --quiet reported 0 errors with existing warning baseline; focused oxlint on changed TS/test
+      files passed with 0 warnings/errors; npm run typecheck passed; targeted review-pass E2E run
+      passed 5/5; full npm test passed 10985/10988 with 3 skipped; kspec validate
+      refs/alignment/completeness passed with --warnings-ok. Note: the broader two-file E2E run
+      passed 24/25 and hit an unrelated breadcrumb keyboard-navigation timeout outside this task's
+      selector cases."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-19T02:05:54.762Z
