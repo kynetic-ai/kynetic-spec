@@ -21065,7 +21065,7 @@ workspaces:
         head: cbf756508164fc1bab975071cdba697b91ddcd2c
         last_seen_at: 2026-06-19T01:45:37.623Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-text-anchors-01kved78
-  - active_role: worker
+  - active_role: null
     base_branch_point: f047fff721dacbc2f65ed45feba236e81f03fc8d
     bootstrap:
       status: succeeded
@@ -21396,12 +21396,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-19T02:06:19.124Z
+      updated_at: 2026-06-19T02:12:01.352Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-19T02:06:19.124Z
+      updated_at: 2026-06-19T02:12:01.352Z
     integration:
       status: pending
       detail: null
@@ -21409,8 +21409,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: f047fff721dacbc2f65ed45feba236e81f03fc8d
-      updated_at: 2026-06-19T02:06:19.124Z
-    lifecycle_state: active
+      updated_at: 2026-06-19T02:12:01.352Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVED7A4WSWYEJEN8Z4BJ65RB
     task_ref: "@01KVED7A4WSWYEJEN8Z4BJ65RB"
@@ -21418,9 +21418,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-19T01:46:49.568Z
-      last_reconciled_at: 2026-06-19T02:06:19.124Z
+      last_reconciled_at: 2026-06-19T02:12:01.352Z
       created_at: 2026-06-19T01:46:19.916Z
-      updated_at: 2026-06-19T02:06:19.124Z
+      updated_at: 2026-06-19T02:12:01.352Z
     workspace_id: dispatch-workspace-01KVED7A4WSWYEJEN8Z4BJ65RB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
