@@ -194,6 +194,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-19T03:33:20.941Z
+  - _ulid: 01KVF04JVJJ4S9TFESBTKB318X
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVEZ03BA291TKDH3KPJCD971
+    timestamp: 2026-06-19T03:52:32.882Z
+  - _ulid: 01KVF04NSRCG1PA2A0SVWCCDYZ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVEZ03BA291TKDH3KPJCD971
+    timestamp: 2026-06-19T03:52:35.896Z
+  - _ulid: 01KVF04RWQ9ZSQY1Y0W6GRJ1AM
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVEZ0JFC2SEXTVQM8ZB7YNY9
+    timestamp: 2026-06-19T03:52:39.063Z
+  - _ulid: 01KVF04W0V2E1EBBM27JP7QR94
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVEZ0JFC2SEXTVQM8ZB7YNY9
+    timestamp: 2026-06-19T03:52:42.267Z
 examined_commit: cc27b4db5012d606b967af584c0f9b1a930b960b
 external_links: []
 lifecycle_state: closed
@@ -224,7 +248,15 @@ threads:
           update the matching web createReviewThread input type so the daemon write interface can be
           called with the new anchor shape.'
         created_at: 2026-06-19T03:32:37.354Z
+      - _ulid: 01KVF04JKCA729YMQG5JQB5Q5V
+        author: Jacob Chapel
+        body: "Fixed in 9b4985dd6a: extended the exported shared ReviewAnchor union with the plan_text
+          variant fields (section, offset, quoted_text, created_at_rev), so returned review threads
+          can represent stored plan-text anchors."
+        created_at: 2026-06-19T03:52:32.619Z
     kind: blocker
+    resolved_at: 2026-06-19T03:52:35.661Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVEZ0JFC2SEXTVQM8ZB7YNY9
     anchor:
       type: code
@@ -242,7 +274,15 @@ threads:
           bypassing this helper's contract. Add the same plan_text shape here (section, offset,
           quoted_text, created_at_rev) so the daemon write path is exposed consistently."
         created_at: 2026-06-19T03:32:52.844Z
+      - _ulid: 01KVF04RMV540ZPTJ7WXB3HG78
+        author: Jacob Chapel
+        body: "Fixed in 9b4985dd6a: createReviewThread now accepts the shared ReviewAnchor type, which
+          includes plan_text anchors with section, offset, quoted_text, and created_at_rev. This
+          exposes the daemon write path without a local stale union copy."
+        created_at: 2026-06-19T03:52:38.811Z
     kind: blocker
+    resolved_at: 2026-06-19T03:52:41.983Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVEZ13SHE5N8PZH4DPQ34CVP
     entries:
       - _ulid: 01KVEZ13SJQ9APV2K90J4VH8W0
@@ -285,5 +325,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-19T03:33:20.940Z
 created_at: 2026-06-19T03:17:16.562Z
-updated_at: 2026-06-19T03:33:20.941Z
+updated_at: 2026-06-19T03:52:41.983Z
 notes: []
