@@ -12,3 +12,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-19T01:20:19.420Z
+  - _ulid: 01KVERJCR7SBHZ0473SC3TABDJ
+    content: "Implemented plan-text anchors: added the plan_text anchor schema with code-point offsets,
+      deterministic markdown heading sectioning, creation-time validation against plan revision
+      content, CLI flags, and daemon route parity. Added behavioral coverage for schema round-trip,
+      duplicate-heading/preamble sectioning, non-ASCII code-point offsets, invalid shape fields,
+      nonexistent revisions, non-plan subjects, and quote mismatches. Verification passed:
+      format:check, repo lint --quiet, focused oxlint changed files, typecheck, focused tests, full
+      npm test (10988 passed, 3 skipped), and kspec validate refs/alignment/completeness with
+      warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-19T01:40:16.775Z
