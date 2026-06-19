@@ -70500,7 +70500,7 @@ runs:
     started_at: 2026-06-19T01:07:43.302Z
     completed_at: 2026-06-19T01:10:18.554Z
   - _ulid: 01KVEQ21CSZWQ6P1ET8NKTWPCN
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -70550,7 +70550,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-19T01:15:54.203Z
-        completed_at: 2026-06-19T01:15:54.203Z
+        completed_at: 2026-06-19T01:16:15.117Z
+        notes: "Captured two observations: success pattern for shadow-backed behavioral tests around
+          review/plan revision binding, and friction pattern for computed review detail fields
+          requiring manual fan-out across CLI, daemon, static export, shared API types, and static
+          adapters. Existing long-test concern was not duplicated because
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run already tracks it."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-19T01:13:52.281Z
+    completed_at: 2026-06-19T01:16:15.117Z
