@@ -21067,7 +21067,7 @@ workspaces:
         head: cbf756508164fc1bab975071cdba697b91ddcd2c
         last_seen_at: 2026-06-19T02:12:13.179Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-text-anchors-01kved78
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f047fff721dacbc2f65ed45feba236e81f03fc8d
     bootstrap:
       status: succeeded
@@ -21549,7 +21549,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-19T02:12:46.417Z
+      updated_at: 2026-06-19T02:13:20.517Z
     integration:
       status: pending
       detail: null
@@ -21565,10 +21565,10 @@ workspaces:
     task_slug: task-respec-review-pass-vocabulary
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-19T01:46:49.568Z
-      last_reconciled_at: 2026-06-19T02:12:46.417Z
+      last_active_at: 2026-06-19T02:13:20.517Z
+      last_reconciled_at: 2026-06-19T02:13:20.517Z
       created_at: 2026-06-19T01:46:19.916Z
-      updated_at: 2026-06-19T02:13:10.083Z
+      updated_at: 2026-06-19T02:13:20.517Z
     workspace_id: dispatch-workspace-01KVED7A4WSWYEJEN8Z4BJ65RB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
