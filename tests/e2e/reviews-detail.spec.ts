@@ -9,7 +9,7 @@
  * - @review-records-web-ui ac-8: Markdown rendering with syntax highlighting
  * - @review-records-web-ui ac-9: Author identity and relative timestamp on entries
  * - @review-records-web-ui ac-10: Empty state messages for sections with no items
- * - @review-records-web-ui ac-11: Revision dropdown for same-subject reviews
+ * - @review-records-web-ui ac-11: Review-pass selector for same-subject reviews
  */
 
 import { test, expect } from "./fixtures/test-base";
@@ -189,7 +189,7 @@ function mockEmptyReview() {
   };
 }
 
-/** Sibling reviews for revision selector test */
+/** Sibling reviews for review-pass selector test */
 function mockSiblingReviews() {
   return {
     items: [
@@ -633,9 +633,9 @@ test.describe("Review Detail Page", () => {
     });
   });
 
-  test.describe("Revision Selector", () => {
-    // AC: @review-records-web-ui ac-11 — Revision dropdown for same-subject reviews
-    test("shows revision selector when multiple reviews exist for same subject", async ({
+  test.describe("Review Pass Selector", () => {
+    // AC: @review-records-web-ui ac-11 — Review-pass selector for same-subject reviews
+    test("shows review-pass selector when multiple reviews exist for same subject", async ({
       page,
       daemon: _daemon,
     }) => {
@@ -646,18 +646,19 @@ test.describe("Review Detail Page", () => {
 
       const selector = page.getByTestId("revision-selector");
       await expect(selector).toBeVisible();
+      await expect(selector.locator("label")).toHaveText("Review pass:");
 
       const dropdown = selector.locator("select");
       const options = dropdown.locator("option");
       await expect(options).toHaveCount(2);
 
-      // First option: current review
+      // First option: current review pass
       await expect(options.nth(0)).toContainText("Review of test task");
-      // Second option: sibling review
+      // Second option: sibling review pass
       await expect(options.nth(1)).toContainText("Review of test task (cycle 2)");
     });
 
-    // AC: @review-records-web-ui ac-11 — Selecting a revision navigates to it
+    // AC: @review-records-web-ui ac-11 — Selecting a review pass navigates to it
     test("navigating to a sibling review changes the URL", async ({ page, daemon: _daemon }) => {
       const detail = mockReviewDetail();
       await page.route(`**/api/reviews/${REVIEW_ULID}`, routeDetailMock(detail));
@@ -676,7 +677,7 @@ test.describe("Review Detail Page", () => {
       const selector = page.getByTestId("revision-selector");
       await expect(selector).toBeVisible();
 
-      // Select the sibling review
+      // Select the sibling review pass
       const dropdown = selector.locator("select");
       await dropdown.selectOption(SIBLING_ULID);
 
@@ -684,8 +685,8 @@ test.describe("Review Detail Page", () => {
       await page.waitForURL(`**/reviews/${SIBLING_ULID}`);
     });
 
-    // AC: @review-records-web-ui ac-11 — No selector when only one review
-    test("hides revision selector when only one review exists for subject", async ({
+    // AC: @review-records-web-ui ac-11 — No selector when only one review pass exists
+    test("hides review-pass selector when only one review exists for subject", async ({
       page,
       daemon: _daemon,
     }) => {
