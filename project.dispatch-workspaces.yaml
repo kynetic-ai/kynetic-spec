@@ -15958,7 +15958,7 @@ workspaces:
         head: 578ab20ab828807c0d157581a9e613867b66058d
         last_seen_at: 2026-06-19T02:33:39.804Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-respec-review-pass-vocabulary-01kved7a
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 7a0c2be168bd32f39cd248d136e695d52054b335
     bootstrap:
       status: succeeded
@@ -16440,7 +16440,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-21T23:54:00.520Z
+      updated_at: 2026-06-21T23:54:35.719Z
     integration:
       status: pending
       detail: null
@@ -16456,10 +16456,10 @@ workspaces:
     task_slug: task-bind-cli-plan-review-subject-versions
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-21T23:33:14.141Z
-      last_reconciled_at: 2026-06-21T23:54:00.520Z
+      last_active_at: 2026-06-21T23:54:35.719Z
+      last_reconciled_at: 2026-06-21T23:54:35.719Z
       created_at: 2026-06-21T23:32:45.073Z
-      updated_at: 2026-06-21T23:54:24.748Z
+      updated_at: 2026-06-21T23:54:35.719Z
     workspace_id: dispatch-workspace-01KVP8DJC7D2410YZ2969RNCWC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
