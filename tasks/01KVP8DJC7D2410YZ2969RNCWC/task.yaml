@@ -1,0 +1,110 @@
+_ulid: 01KVP8DJC7D2410YZ2969RNCWC
+slugs:
+  - task-bind-cli-plan-review-subject-versions
+title: Bind CLI-created plan reviews to real shadow subject versions
+type: bug
+description: >-
+  Fix normal review creation so plan reviews created through `kspec review add --subject-type plan
+  --subject-ref @plan` store a real shadow-branch subject binding for the current plan content
+  instead of empty `shadow_commit` / `content_hash` values.
+
+
+  Problem:
+
+  `src/cli/commands/review.ts` currently constructs plan/task/spec subjects with empty
+  `shadow_commit` and `content_hash`. For plan subjects this prevents
+  `resolveReviewSubjectRevision()` from matching the review subject to any published plan revision,
+  so `kspec review get` reports `subject_revision: null` for the main CLI-created plan review path
+  even when the plan content is a published revision.
+
+
+  Covers:
+
+  - `@review-subject-bindings ac-4` — shadow-branch plan review bindings store shadow commit plus
+  per-entity content hash.
+
+  - `@plan-revisions ac-review-revision-binding` — plan review revision resolution uses existing
+  content-hash and shadow-commit pinning without adding a new review field.
+
+  - `@subject-revision-vocabulary ac-plan-subject-ordinal` — plan review read surfaces report the
+  bound first-class plan revision ordinal.
+
+
+  Required behavior:
+
+  - For `kspec review add --subject-type plan --subject-ref @plan`, store a subject with a non-empty
+  current shadow commit and the content hash of the current plan content.
+
+  - If the current plan content matches a published plan revision, `kspec review get @review` for
+  that CLI-created plan review must report that published plan revision ordinal through
+  `subject_revision`.
+
+  - If the current plan content does not match any published revision, review creation must still
+  store a real shadow commit and content hash for the current plan content; `kspec review get
+  @review` may report `subject_revision: null`.
+
+  - Do not create an unbound plan review with empty version identity.
+
+  - Keep task/spec review creation behavior compatible with existing behavior unless the same
+  subject-binding helper can safely populate real bindings for them without broadening this task.
+
+  - Do not add a dedicated plan-revision field to review records.
+
+  - Do not implement plan revision diff UI, anchor rematching, review-pass UI changes, or unrelated
+  anchor rendering cleanup in this task.
+
+  - Preserve legacy review records that already have empty or missing subject binding fields; read
+  surfaces may continue returning `null` for unbound legacy plan reviews.
+
+
+  Expected implementation areas:
+
+  - `src/cli/commands/review.ts`: replace the empty plan-subject construction in the normal CLI
+  creation path with a real plan subject binding. Prefer using existing subject binding/revision
+  helper functions or extracting a small helper if necessary.
+
+  - `src/review/subject-bindings.ts` and/or `src/parser/plan-revisions.ts`: add or reuse a helper
+  only if needed to compute the content hash for current plan content or a concrete plan revision
+  without duplicating logic.
+
+  - `tests/review-subject-revisions.test.ts` or an adjacent CLI review test: add a regression test
+  that creates a plan, publishes or re-imports a revision, creates a review using the real CLI
+  `review add --subject-type plan --subject-ref @plan`, and asserts `review get` returns the
+  expected `subject_revision`.
+
+  - Add a draft/unpublished-content regression test that creates or edits a plan into content that
+  does not match any published revision, creates a review through the real CLI, asserts the stored
+  subject has non-empty `shadow_commit` and `content_hash`, and asserts `subject_revision` is
+  `null`.
+
+
+  Verification gates:
+
+  - `npm test -- tests/review-subject-revisions.test.ts --fresh`
+
+  - `npm test -- tests/review-cli.test.ts --fresh` if `review.ts` command behavior changes outside
+  the focused subject-revision file.
+
+  - `npm run build:shared && npm run typecheck`
+
+  - `npm run lint -- --quiet`
+
+  - `KSPEC_NO_DAEMON=1 kspec validate --refs --alignment --completeness --warnings-ok`
+spec_ref: "@review-subject-bindings"
+meta_ref: null
+plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-review-revision-binding"
+context: []
+priority: 1
+tags:
+  - review
+  - plan-revisions
+  - bug
+  - ui-redesign
+vcs_refs: []
+created_at: 2026-06-21T23:31:56.935Z
+todos: []
+automation: eligible

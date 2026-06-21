@@ -32808,3 +32808,24 @@
   submitted_at: 2026-06-19T02:50:48.488Z
   completed_at: 2026-06-19T03:12:02.025Z
   automation: eligible
+- _ulid: 01KVP8DJC7D2410YZ2969RNCWC
+  slugs:
+    - task-bind-cli-plan-review-subject-versions
+  title: Bind CLI-created plan reviews to real shadow subject versions
+  type: bug
+  spec_ref: "@review-subject-bindings"
+  plan_ref: "@plan-review-anchors-and-plan-revisions-schema"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-review-revision-binding"
+  priority: 1
+  tags:
+    - review
+    - plan-revisions
+    - bug
+    - ui-redesign
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-21T23:31:56.935Z
+  automation: eligible
