@@ -16,6 +16,7 @@ import { markMutating } from "../command-annotations.js";
 import {
   computeDisposition,
   createReviewRecord,
+  findPlanByRef,
   findReviewByRef,
   handleVerdictTaskTransition,
   initContext,
@@ -28,15 +29,18 @@ import {
   shortestUniqueUlid,
   submitVerdict,
   transitionLifecycle,
+  getCurrentShadowCommit,
 } from "../../parser/index.js";
 import { resolveTaskDataManager } from "../../parser/task-data-manager.js";
 import { resolveCliActor } from "../actor.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import { evaluateGates } from "../../review/checks.js";
 import {
+  createPlanSubject,
   extractSubjectVersion,
   resolveReviewSubjectRevision,
 } from "../../review/subject-bindings.js";
+import { computeContentHash } from "../../parser/skill-render.js";
 import type {
   ReviewAnchor,
   ReviewCheck,
@@ -354,7 +358,10 @@ function createEvent(
  *     ac-code-subject-created-only-when-requested, ac-ambiguous-review-subject-rejected,
  *     ac-version-context-does-not-change-subject
  */
-function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubject {
+async function parseSubjectFromOptions(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  options: Record<string, unknown>,
+): Promise<ReviewSubject> {
   const subjectType = options.subjectType as string | undefined;
   const hasRefSubjectInput = Boolean(options.subjectRef);
   const hasCodeSubjectInput = Boolean(
@@ -406,11 +413,31 @@ function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubjec
       );
     }
 
+    const subjectRef = (options.subjectRef as string).startsWith("@")
+      ? (options.subjectRef as string)
+      : `@${options.subjectRef as string}`;
+
+    if (resolvedSubjectType === "plan") {
+      const plan = await findPlanByRef(ctx, subjectRef);
+      if (!plan) {
+        exitWithGuidance(
+          errors.reference.planNotFound(subjectRef),
+          EXIT_CODES.NOT_FOUND,
+          "Check available plans with: kspec plan list",
+          { ref: subjectRef, entity: "plan" },
+        );
+      }
+
+      return createPlanSubject({
+        ref: subjectRef,
+        shadow_commit: getCurrentShadowCommit(ctx),
+        content_hash: computeContentHash(plan.content),
+      });
+    }
+
     return {
       type: resolvedSubjectType,
-      ref: (options.subjectRef as string).startsWith("@")
-        ? (options.subjectRef as string)
-        : `@${options.subjectRef as string}`,
+      ref: subjectRef,
       shadow_commit: "",
       content_hash: "",
     };
@@ -531,7 +558,7 @@ export function registerReviewCommands(program: Command): void {
         try {
           const ctx = await initContext();
           const author = await resolveCliActor(ctx, options.author, "author");
-          const subject = parseSubjectFromOptions(options);
+          const subject = await parseSubjectFromOptions(ctx, options);
 
           // AC: @review-fix-cycle-diff ac-1 — capture examined commit
           const examinedCommit: string | null =

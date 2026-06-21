@@ -2,12 +2,7 @@ import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { ulid } from "ulid";
 import { afterEach, describe, expect, it } from "vitest";
-import { initContext } from "../src/parser/yaml.js";
-import { getCurrentShadowCommit } from "../src/parser/plan-revisions.js";
-import { createReviewRecord, saveReviewRecord } from "../src/parser/reviews.js";
-import { computeContentHash } from "../src/parser/skill-render.js";
 import type { LoadedPlan } from "../src/parser/plans.js";
 import {
   cleanupTempDir,
@@ -49,16 +44,6 @@ async function setupShadowProject(): Promise<string> {
   return projectDir;
 }
 
-function subjectRefreshEvent() {
-  return {
-    _ulid: ulid(),
-    event_type: "subject_refreshed" as const,
-    actor: "@test",
-    timestamp: new Date().toISOString(),
-    payload: {},
-  };
-}
-
 describe("Review subject revisions", () => {
   const tempDirs: string[] = [];
 
@@ -85,11 +70,10 @@ describe("Review subject revisions", () => {
   });
 
   it.runIf(canRunShadowTests)(
-    "reports the bound plan revision ordinal instead of the refresh-derived ordinal",
+    "binds CLI-created plan reviews to the matching published plan revision",
     async () => {
       const projectDir = await setupShadowProject();
       tempDirs.push(projectDir);
-      const ctx = await initContext(projectDir, { syncMode: "skip" });
 
       kspecOutput(
         'plan add --title "Revision Plan" --content "Initial body" --slug revision-plan',
@@ -107,39 +91,31 @@ describe("Review subject revisions", () => {
       const plan = kspecJson<
         LoadedPlan & { revisions: Array<{ ordinal: number; shadow_commit: string }> }
       >("plan get @revision-plan", projectDir);
-      const secondRevision = plan.revisions[1];
-      await saveReviewRecord(
-        ctx,
-        createReviewRecord({
-          title: "Plan Binding Review",
-          slugs: ["plan-binding-review"],
-          subject: {
-            type: "plan",
-            ref: "@revision-plan",
-            shadow_commit: secondRevision.shadow_commit,
-            content_hash: computeContentHash("# Revision Plan\n\nUpdated body\n"),
-          },
-          author: "@test",
-          events: [subjectRefreshEvent(), subjectRefreshEvent()],
-        }),
-      );
+      expect(plan.revisions).toHaveLength(2);
 
-      // AC: @subject-revision-vocabulary ac-plan-subject-ordinal
-      // AC: @plan-revisions ac-review-revision-binding
-      const review = kspecJson<{ subject_revision: number }>(
-        "review get @plan-binding-review",
+      kspecOutput(
+        'review add --title "Plan Binding Review" --subject-type plan --subject-ref @revision-plan --slug plan-binding-review',
         projectDir,
       );
+
+      // AC: @review-subject-bindings ac-4
+      // AC: @subject-revision-vocabulary ac-plan-subject-ordinal
+      // AC: @plan-revisions ac-review-revision-binding
+      const review = kspecJson<{
+        subject: { type: "plan"; shadow_commit: string; content_hash: string };
+        subject_revision: number;
+      }>("review get @plan-binding-review", projectDir);
+      expect(review.subject.shadow_commit).toMatch(/^[0-9a-f]{40}$/);
+      expect(review.subject.content_hash).toHaveLength(64);
       expect(review.subject_revision).toBe(2);
     },
   );
 
   it.runIf(canRunShadowTests)(
-    "reports no plan revision for unpublished draft content",
+    "binds CLI-created plan reviews for unpublished draft content without a revision",
     async () => {
       const projectDir = await setupShadowProject();
       tempDirs.push(projectDir);
-      const ctx = await initContext(projectDir, { syncMode: "skip" });
 
       kspecOutput(
         'plan add --title "Revision Plan" --content "Initial body" --slug revision-plan',
@@ -151,26 +127,19 @@ describe("Review subject revisions", () => {
       await fs.writeFile(draftPath, "Unpublished draft body", "utf-8");
       kspecOutput(`plan set @revision-plan --content-file "${draftPath}"`, projectDir);
 
-      await saveReviewRecord(
-        ctx,
-        createReviewRecord({
-          title: "Draft Plan Review",
-          slugs: ["draft-plan-review"],
-          subject: {
-            type: "plan",
-            ref: "@revision-plan",
-            shadow_commit: getCurrentShadowCommit(ctx),
-            content_hash: computeContentHash("Unpublished draft body"),
-          },
-          author: "@test",
-        }),
-      );
-
-      // AC: @plan-revisions ac-review-revision-binding
-      const review = kspecJson<{ subject_revision: number | null }>(
-        "review get @draft-plan-review",
+      kspecOutput(
+        'review add --title "Draft Plan Review" --subject-type plan --subject-ref @revision-plan --slug draft-plan-review',
         projectDir,
       );
+
+      // AC: @review-subject-bindings ac-4
+      // AC: @plan-revisions ac-review-revision-binding
+      const review = kspecJson<{
+        subject: { type: "plan"; shadow_commit: string; content_hash: string };
+        subject_revision: number | null;
+      }>("review get @draft-plan-review", projectDir);
+      expect(review.subject.shadow_commit).toMatch(/^[0-9a-f]{40}$/);
+      expect(review.subject.content_hash).toHaveLength(64);
       expect(review.subject_revision).toBeNull();
     },
   );
