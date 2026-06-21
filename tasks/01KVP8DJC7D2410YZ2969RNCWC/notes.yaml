@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KVP8K3B9Q60XV4RYGNZ554X1
+    content: "Approach: reuse existing plan subject/revision primitives instead of adding a review
+      schema field. Make CLI review subject parsing context-aware for plan subjects only: load the
+      current plan, store the current shadow commit, and compute the content hash from the loaded
+      plan content. Keep task/spec subject creation unchanged to avoid broadening behavior. Edge
+      cases: published content should resolve to the matching plan revision ordinal; unpublished
+      draft content should still store non-empty identity but resolve subject_revision to null;
+      missing plan refs should fail instead of creating an unbound plan review. Test plan:
+      behavioral CLI tests in tests/review-subject-revisions.test.ts for @review-subject-bindings
+      ac-4, @plan-revisions ac-review-revision-binding, and @subject-revision-vocabulary
+      ac-plan-subject-ordinal."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-21T23:34:58.153Z
