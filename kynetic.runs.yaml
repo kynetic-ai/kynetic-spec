@@ -71342,7 +71342,7 @@ runs:
     completed_at: 2026-06-19T04:16:25.387Z
   - _ulid: 01KVP9H41QW2G10RN475TK9YGQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71357,7 +71357,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-21T23:52:30.550Z
-        completed_at: 2026-06-21T23:52:30.550Z
+        completed_at: 2026-06-21T23:53:05.751Z
+        notes: "Identified items: (1) Success: CLI-driven, shadow-backed regression tests were effective for
+          this plan-review binding bug. This is already covered by existing behavioral-test guidance
+          and related observations such as shadow-backed behavioral tests working well. (2)
+          Friction: full npm test took 2540.4s and had quiet long-tail periods. Existing coverage
+          found: @task-investigate-npm-test-teardown-hang-after-green-suite-run, observation
+          @01KVE6XH about quiet long review gates, and inbox @01KTW9G9 about stale testing duration
+          docs. (3) Friction: workflow next without a run ref failed due many active runs. Existing
+          coverage found: inbox @01KV8Q0W and @01KTWCCAS / @01KHVCPEXG cover workflow run ambiguity
+          and stale active runs. (4) Possible duplicate shadow test setup remains covered by inbox
+          @01KVERSZ. No new high-confidence untracked item."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-21T23:53:05.751Z
+        completed_at: 2026-06-21T23:53:05.751Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-21T23:51:21.911Z
