@@ -25,7 +25,8 @@
   depends_on:
     - "@test-result-acquisition"
     - "@coverage-record-compatibility"
-    - "@trait-folder-backed-entity"
+  traits:
+    - "@trait-folder-backed-entity-1"
   description: |
     Durable storage for normalized completed test runs submitted to a
     kspec project. A run record captures one completed execution from
@@ -288,8 +289,9 @@
         it is submitted once through the CLI and once through the daemon
         ingestion route in equivalent projects
       then: |
-        both paths produce the same stored run shape, mapping report,
-        verification-stamp writes, and affected-domain event payloads
+        both paths produce the same stored run shape, mapping report, and
+        affected-domain event payloads before stamp-writing behavior is
+        layered on by the ingestion-provenance stamp task
     - id: ac-no-daemon-execution
       given: |
         a caller wants test results represented in kspec
@@ -389,6 +391,17 @@
       then: |
         the stamps conform to the existing verification stamp schema and
         do not require consumers to understand test-run store internals
+    - id: ac-stamp-cli-daemon-equivalence
+      given: |
+        the same valid normalized run payload with passing mapped cases is
+        submitted through the CLI and daemon ingestion paths in equivalent
+        projects
+      when: |
+        ingestion-provenance stamp writing is enabled
+      then: |
+        both paths produce the same verification stamp writes, stamp-write
+        count, non-positive mapped case count, and stored verification
+        effects in the run record
     - id: ac-latest-ingested-run-freshness
       given: |
         more than one accepted run has written ingestion-provenance
@@ -396,8 +409,10 @@
       when: |
         a consumer presents freshness based on ingested-run evidence
       then: |
-        it labels the evidence as latest ingested run evidence and uses
-        the latest accepted run relevant to that criterion
+        it labels the stamp as positive ingestion-provenance evidence from
+        an ingested run while the detailed latest-run, failed-run, or
+        unmapped evidence remains in the test-run store for the coverage
+        state engine to evaluate
 ```
 
 ## Tasks
@@ -434,11 +449,17 @@ derive_from_specs: false
       `coverage/test-runs/runs/<run-ulid>/run.yaml`. The per-run folder is a
       folder-backed entity: run.yaml is the source of truth for detailed
       case/mapping data; index.yaml stores bounded list/latest summaries for
-      consumers. The sidecar is additive like the verification
-      store: no spec source or code source file changes on ingestion, absent
-      store remains valid, first write materializes both the index and the
-      runs directory, and newer record format is refused with deterministic
-      diagnostics.
+      consumers and enumerates every accepted run id/path. The sidecar is
+      additive like the verification store: no spec source or code source file
+      changes on ingestion, absent store remains valid, first write
+      materializes both the index and the runs directory, and newer record
+      format is refused with deterministic diagnostics.
+    - Implement folder-backed trait behavior for test runs: stable ULID
+      directories, unknown-file preservation, bounded index entries,
+      index-entry-and-run-folder writes in one logical atomic mutation,
+      indexed mutation updates, rebuild from run folders, repair convergence,
+      and semantic-default drift avoidance.
+
     - Preserve unrecognized fields within supported record-format
       versions across read/write cycles.
     - Implement latest-run lookup by completed_at with deterministic
@@ -458,6 +479,15 @@ derive_from_specs: false
     ac-framework-neutral-storage, ac-sidecar-only, ac-fixed-storage-layout,
     ac-latest-run-query, ac-invalid-run-rejected,
     ac-forward-compatible-records, ac-newer-record-format-refused.
+    Covers @normalized-test-result-ingestion-contract ac-owned-envelope,
+    ac-status-vocabulary, ac-stable-case-identity, ac-location-optional,
+    ac-diagnostics-preserved, ac-producer-metadata for the schema/store
+    contract. Covers @trait-folder-backed-entity-1
+    ac-entity-has-ulid-directory, ac-index-excludes-heavy-detail-bytes,
+    ac-unknown-files-preserved, ac-index-rebuilds-from-folders,
+    ac-index-entry-created-with-folder, ac-indexed-mutation-updates-index,
+    ac-index-repair-converges, ac-semantic-defaults-do-not-drift for the
+    test-run store layout.
 
 - title: Implement normalized mapping and unmapped-result reporting
   slug: task-test-result-ac-mapping
@@ -530,8 +560,9 @@ derive_from_specs: false
     - Add a CLI command under a coverage/test-result namespace that reads
       a normalized JSON payload from a file or stdin, validates it, maps
       AC references, writes the run, and prints a JSON summary containing
-      run id, case counts, mapped criterion count, unmapped count, and
-      stamp-write count once the stamp task lands.
+      run id, case counts, mapped criterion count, unmapped count, invalid
+      mapping count, and affected item refs. Stamp-write counts are added
+      by the later ingestion-provenance stamp task, not by this task.
     - Add a daemon route that accepts the same normalized JSON payload and
       returns the same summary shape. The route must use the shared
       mutation pipeline for write → shadow commit → cache update → event
@@ -588,7 +619,9 @@ derive_from_specs: false
       run/case data only in the test-run store; stamps remain readable by
       existing freshness consumers without understanding run internals.
     - Make the CLI/API summary report how many stamps were written and
-      how many mapped cases were non-positive evidence.
+      how many mapped cases were non-positive evidence, and persist those
+      verification effects in the run record consistently for CLI and daemon
+      submissions.
     - Tests: passing mapped case writes ingestion stamp; failed/errored,
       skipped, unknown, unmapped, and invalidly mapped cases write none;
       commit/session attribution passes through; an existing stamp is
@@ -602,7 +635,8 @@ derive_from_specs: false
 
     Covers: @ingested-run-verification-stamps ac-passing-mapped-writes-stamp,
     ac-nonpassing-no-positive-stamp, ac-unmapped-no-stamp,
-    ac-stamp-store-contract-preserved, ac-latest-ingested-run-freshness.
+    ac-stamp-store-contract-preserved, ac-stamp-cli-daemon-equivalence,
+    ac-latest-ingested-run-freshness.
     Also covers @annotation-freshness-provenance ac-2 and
     @test-result-acquisition ac-1, ac-2, ac-3 for the ingested-run path.
 
@@ -682,7 +716,7 @@ The P1b ingestion store has a fixed shadow-metadata layout:
 
 Rules:
 
-- Test runs adopt `@trait-folder-backed-entity`: each accepted run owns a
+- Test runs adopt `@trait-folder-backed-entity-1`: each accepted run owns a
   stable directory named by its full ULID under `coverage/test-runs/runs/`.
 - `<run-ulid>` is the canonical kspec run id and must be a valid ULID. Do
   not use producer-native ids, test names, timestamps, or filesystem paths
@@ -693,6 +727,14 @@ Rules:
   cache warm-up. It is updated in the same logical atomic mutation as the
   run folder and `run.yaml`; it can be rebuilt from run folders if needed,
   but reads must not materialize it in an otherwise absent store.
+- `index.yaml` must enumerate every accepted run id and relative run-file
+  path. It does not contain a per-criterion latest-evidence projection in
+  this plan; downstream coverage-state consumers select latest relevant
+  per-criterion evidence by reading the indexed run files and applying the
+  completed_at plus run-id tie-break rule.
+- The store exposes an index rebuild/repair path that scans
+  `coverage/test-runs/runs/<run-ulid>/run.yaml` folders and rewrites
+  `index.yaml`; a dry-run rebuild after repair must report no drift.
 - Unknown files or directories inside a run folder are ignored by test-run
   semantics and preserved across writes, per the folder-backed entity trait.
 - This plan does not adopt `@trait-entity-scoped-local-resources` and does

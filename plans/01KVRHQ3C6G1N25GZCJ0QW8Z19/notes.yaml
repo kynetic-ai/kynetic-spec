@@ -7,3 +7,7 @@ notes:
     content: Adopt folder-backed entity trait for test run storage layout
     author: Jacob Chapel
     created_at: 2026-06-22T22:48:02.147Z
+  - _ulid: 01KVRRQD0GTHYD1JZTQ3XEYCJK
+    content: Address plan-reviewer feedback on folder-backed trait, index contract, and stamp equivalence
+    author: Jacob Chapel
+    created_at: 2026-06-22T22:55:25.200Z
