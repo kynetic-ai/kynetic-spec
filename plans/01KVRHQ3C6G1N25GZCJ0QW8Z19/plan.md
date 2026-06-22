@@ -122,6 +122,8 @@
   parent: "@test-result-run-store"
   depends_on:
     - "@test-result-acquisition"
+  traits:
+    - "@trait-type-safe-input"
   description: |
     The ingestion boundary accepts one kspec-owned normalized result
     format. Producers, reporters, and adapters translate framework-native
@@ -272,6 +274,12 @@
     - "@shared-mutation-pipeline"
     - "@actor-identity-model"
     - "@test-result-ac-mapping"
+  traits:
+    - "@trait-json-output"
+    - "@trait-semantic-exit-codes"
+    - "@trait-error-guidance"
+    - "@trait-api-endpoint"
+    - "@trait-dry-run"
   description: |
     Test-result ingestion is exposed through matching CLI and daemon
     interfaces that accept the same normalized payload and produce the
@@ -335,6 +343,17 @@
       then: |
         the interface refuses with a read-only/static-mode error and does
         not pretend the result was stored
+    - id: ac-dry-run-preview
+      given: |
+        a valid or invalid normalized payload is submitted with dry-run
+        preview enabled through the CLI or daemon ingestion route
+      when: |
+        ingestion validates and maps the payload
+      then: |
+        the response reports the run id, validation diagnostics, mapping
+        summary, affected items, and event scopes that would result, but
+        no run folder, index entry, verification stamp, shadow commit,
+        cache update, or event broadcast is produced
 
 - title: Ingested Run Verification Stamps
   slug: ingested-run-verification-stamps
@@ -482,7 +501,8 @@ derive_from_specs: false
     Covers @normalized-test-result-ingestion-contract ac-owned-envelope,
     ac-status-vocabulary, ac-stable-case-identity, ac-location-optional,
     ac-diagnostics-preserved, ac-producer-metadata for the schema/store
-    contract. Covers @trait-folder-backed-entity-1
+    contract. Covers @trait-type-safe-input ac-1, ac-2, and ac-3 for the
+    normalized payload schema boundary. Covers @trait-folder-backed-entity-1
     ac-entity-has-ulid-directory, ac-index-excludes-heavy-detail-bytes,
     ac-unknown-files-preserved, ac-index-rebuilds-from-folders,
     ac-index-entry-created-with-folder, ac-indexed-mutation-updates-index,
@@ -559,14 +579,21 @@ derive_from_specs: false
     What:
     - Add a CLI command under a coverage/test-result namespace that reads
       a normalized JSON payload from a file or stdin, validates it, maps
-      AC references, writes the run, and prints a JSON summary containing
-      run id, case counts, mapped criterion count, unmapped count, invalid
-      mapping count, and affected item refs. Stamp-write counts are added
-      by the later ingestion-provenance stamp task, not by this task.
+      AC references, writes the run, and prints human-readable or `--json`
+      summaries containing run id, case counts, mapped criterion count,
+      unmapped count, invalid mapping count, and affected item refs. Stamp-write
+      counts are added by the later ingestion-provenance stamp task, not by
+      this task.
     - Add a daemon route that accepts the same normalized JSON payload and
-      returns the same summary shape. The route must use the shared
-      mutation pipeline for write → shadow commit → cache update → event
-      broadcast ordering.
+      returns the same summary shape using REST endpoint conventions:
+      schema-derived request validation, JSON responses, structured error
+      bodies, request ids, and semantic status codes. Successful writes must
+      use the shared mutation pipeline for write → shadow commit → cache
+      update → event broadcast ordering.
+    - Add dry-run support for both CLI and daemon ingestion. Dry-run performs
+      validation and mapping, reports the same diagnostics/summary/event scopes
+      that a write would produce, and guarantees no run folder, index entry,
+      verification stamp, shadow commit, cache update, or event broadcast.
     - Resolve actor identity through the shared actor write rules. Accept
       optional session and source metadata; validate session id shape but
       do not require a session.
@@ -588,7 +615,11 @@ derive_from_specs: false
     Covers: @test-result-ingestion-interface ac-cli-daemon-equivalence,
     ac-no-daemon-execution, ac-actor-source-attribution,
     ac-session-attribution-optional, ac-mutation-pipeline-order,
-    ac-static-mode-readonly.
+    ac-static-mode-readonly, ac-dry-run-preview. Covers
+    @trait-json-output ac-1 through ac-6, @trait-semantic-exit-codes ac-1
+    through ac-8, @trait-error-guidance ac-1 through ac-6,
+    @trait-api-endpoint ac-1, ac-3, ac-5, ac-6, and @trait-dry-run ac-1
+    through ac-6 for the ingestion CLI/API surfaces.
 
 - title: Write ingestion-provenance verification stamps from passing mapped cases
   slug: task-ingested-run-verification-stamps
