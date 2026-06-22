@@ -213,3 +213,10 @@ notes:
       planning-workspace plan adopts the sectioning utility for display.
     author: Jacob Chapel
     created_at: 2026-06-18T22:21:59.777Z
+  - _ulid: 01KVR4FZ2CA9HJ5XCAN1CQXW0Q
+    content: "Closure audit: all eight plan-linked tasks are completed with closed/approved reviews,
+      including the follow-up @task-bind-cli-plan-review-subject-versions. Focused tests, format,
+      lint, typecheck, build, kspec validation, and all fresh test shards passed. Dispatch was idle
+      and both main and shadow worktrees were clean before administrative closure."
+    author: Jacob Chapel
+    created_at: 2026-06-22T17:01:50.028Z

@@ -1994,7 +1994,7 @@ plans:
     slugs:
       - plan-review-anchors-and-plan-revisions-schema
     title: Review Anchors and Plan Revisions Schema
-    status: active
+    status: completed
     approved_at: 2026-06-18T22:21:28.300Z
     branch: feat/ui-redesign
     derived_specs:
@@ -2012,7 +2012,7 @@ plans:
       - "@task-review-revision-binding"
       - "@task-respec-review-pass-vocabulary"
     module_ref: "@core"
-    notes_count: 6
+    notes_count: 7
     source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-review-plan-schema.md
     created_at: 2026-06-11T17:52:10.743Z
   - _ulid: 01KV65J5QQB16PACW2VF2WADKP

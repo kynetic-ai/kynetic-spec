@@ -2,7 +2,7 @@ _ulid: 01KTVX07ZQ1A8HR3MKQXBXT99A
 slugs:
   - plan-review-anchors-and-plan-revisions-schema
 title: Review Anchors and Plan Revisions Schema
-status: active
+status: completed
 approved_at: 2026-06-18T22:21:28.300Z
 branch: feat/ui-redesign
 derived_specs:
