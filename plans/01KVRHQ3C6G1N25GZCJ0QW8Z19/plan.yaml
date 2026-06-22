@@ -4,7 +4,7 @@ slugs:
 title: Test Result Ingestion
 status: draft
 approved_at: null
-branch: null
+branch: feat/ui-redesign
 derived_specs: []
 derived_tasks: []
 module_ref: "@core"
