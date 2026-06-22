@@ -265,6 +265,8 @@
     - "@coverage-state-engine"
     - "@daemon-entity-cache"
     - "@api-contract"
+  traits:
+    - "@trait-api-endpoint"
   description: |
     The daemon exposes coverage-state reads as server-computed data with
     explicit cache ownership, pagination/filter support where needed, and
@@ -335,6 +337,8 @@
   depends_on:
     - "@mutation-event-naming"
     - "@coverage-state-api-cache"
+  traits:
+    - "@trait-websocket-protocol"
   description: |
     Coverage-state changes broadcast through the reserved coverage-state
     event family on the spec-item domain topic. Events identify affected
@@ -576,9 +580,11 @@ derive_from_specs: false
     type generation before root typecheck if response types land in
     packages/shared.
 
-    Covers: @coverage-state-api-cache ac-corpus-rollup,
-    ac-item-and-ac-detail, ac-server-computed, ac-cache-invalidation,
-    ac-static-snapshot, ac-performance-bounded.
+    Covers: @coverage-state-api-cache ac-corpus-rollup, ac-item-and-ac-detail,
+    ac-server-computed, ac-cache-invalidation, ac-static-snapshot,
+    ac-performance-bounded. Covers @trait-api-endpoint ac-1, ac-2, ac-3,
+    ac-4, and ac-6 for coverage-state read endpoints; mutation/shadow
+    endpoint behavior remains owned by ingestion and existing mutation plans.
 
 - title: Emit coverage-state events and targeted UI invalidation
   slug: task-coverage-state-events
@@ -622,10 +628,12 @@ derive_from_specs: false
     Use the shared mutation pipeline event ordering for daemon-served
     mutations and explicit cache invalidation for watcher paths.
 
-    Covers: @coverage-state-events ac-event-topic,
-    ac-event-canonical-identity, ac-event-after-cache,
-    ac-file-change-fallback, ac-no-event-storm. Also covers
-    @mutation-event-naming ac-3 for the coverage-state reserved family.
+    Covers: @coverage-state-events ac-event-topic, ac-event-canonical-identity,
+    ac-event-after-cache, ac-file-change-fallback, ac-no-event-storm. Also covers
+    @mutation-event-naming ac-3 for the coverage-state reserved family and
+    @trait-websocket-protocol ac-2, ac-3, ac-6, and ac-8 for subscription,
+    broadcast envelope, coalescing/backpressure, and reconnect behavior using
+    the existing daemon websocket foundation.
 
 - title: Add coverage-state compatibility, performance, and neutral-project gates
   slug: task-coverage-state-validation-gates

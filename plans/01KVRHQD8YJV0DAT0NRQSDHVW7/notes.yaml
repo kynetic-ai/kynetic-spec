@@ -11,3 +11,7 @@ notes:
     content: Address plan-reviewer feedback on test-run index consumption contract
     author: Jacob Chapel
     created_at: 2026-06-22T22:55:28.384Z
+  - _ulid: 01KVRSP2QA38N8B5732K1GG6RK
+    content: Tie coverage API and events to endpoint and websocket traits
+    author: Jacob Chapel
+    created_at: 2026-06-22T23:12:10.474Z
