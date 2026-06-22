@@ -558,7 +558,9 @@ derive_from_specs: false
     - Define API response shapes for project summary, item summary,
       criterion detail, and unmapped-result summary. Include counts for
       covered/failing/not yet/re-verify, denominator, state explanation,
-      latest run id, freshness details, and secondary causes.
+      latest run id, freshness details, and secondary causes. These are read
+      endpoints; mutation/shadow-commit endpoint trait cases are owned by
+      ingestion and the shared mutation pipeline, not by coverage-state reads.
     - Add daemon routes that serve from the coverage-state read model and
       integrate with entity-cache domain readiness/loading envelopes.
     - Replace or wrap the old binary coverage-cache so it is an input to
@@ -605,10 +607,13 @@ derive_from_specs: false
     What:
     - Add typed event definitions for coverage-state changes on the
       spec-item domain topic (`items:updates`), using the reserved family
-      from @mutation-event-naming. Payloads identify affected item ULIDs,
-      AC ids when bounded, changed buckets/rollup scopes when known, and
-      whether the client should refresh item detail, project summary, or
-      unmapped-result summary.
+      from @mutation-event-naming and the existing daemon websocket protocol
+      foundation. Payloads identify affected item ULIDs, AC ids when bounded,
+      changed buckets/rollup scopes when known, and whether the client should
+      refresh item detail, project summary, or unmapped-result summary. This
+      plan owns coverage-state subscription payloads and refresh semantics; it
+      does not reimplement connection lifecycle, heartbeat, close-code, or base
+      reconnect mechanics.
     - Emit events after ingestion, verification stamp writes,
       spec/AC mutations, annotation file watcher invalidation, and cache
       recomputation paths that change visible state.
