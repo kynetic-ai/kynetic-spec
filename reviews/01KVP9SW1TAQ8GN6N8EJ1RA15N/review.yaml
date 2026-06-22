@@ -160,6 +160,13 @@ events:
       status: pass
       name: focused review tests
     timestamp: 2026-06-22T00:12:02.789Z
+  - _ulid: 01KVPAR10HBWRHJMC0MA57EBVF
+    actor: "@pr-reviewer"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVPAR0S29RV02PNA4G10CMPN
+    timestamp: 2026-06-22T00:12:36.753Z
 examined_commit: eef1bf9a44b097a8a966d872f5499a5a53f47070
 external_links: []
 lifecycle_state: open
@@ -169,8 +176,43 @@ subject:
   content_hash: ""
   ref: "@01KVP8DJC7D2410YZ2969RNCWC"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVPAR0S29RV02PNA4G10CMPN
+    entries:
+      - _ulid: 01KVPAR0S2KKHCNNNHJKFX92A1
+        author: "@pr-reviewer"
+        body: >-
+          Evidence log (non-finding).
+
+
+          Files read: kspec-agents.md; src/cli/commands/review.ts;
+          tests/review-subject-revisions.test.ts; src/review/subject-bindings.ts;
+          src/parser/plans.ts; src/parser/plan-revisions.ts; src/parser/skill-render.ts; relevant
+          existing tests in tests/review-subject-bindings.test.ts and tests/cli-plan-import.test.ts.
+
+
+          Commands run: git status --short --branch; git diff/stat/name-only/check against
+          7a0c2be..eef1bf9; kspec task get @01KVP8DJC7D2410YZ2969RNCWC; kspec review for-task; kspec
+          item get for @review-subject-bindings, @plan-revisions, @subject-revision-vocabulary; rg
+          AC annotation searches; npm run format:check; npx oxlint changed files; npm run lint --
+          --quiet; npm run typecheck; npm test -- tests/review-subject-revisions.test.ts --fresh;
+          npm test -- tests/review-cli.test.ts --fresh; npm test; KSPEC_NO_DAEMON=1 kspec validate
+          --refs/--alignment/--completeness --warnings-ok.
+
+
+          Claims verified: CLI-created plan reviews now call the real review add path, bind a
+          non-empty shadow commit and SHA-256 content hash from current plan content, resolve
+          published content to the matching plan revision ordinal, and leave unpublished draft
+          content with subject_revision null rather than an empty identity.
+
+
+          Categories searched: correctness, edge cases for unpublished draft content and legacy
+          non-plan behavior, error handling for missing plan refs, test quality/source-scanning
+          risk, AC annotation coverage, and integration with check/verdict subject versioning. No
+          findings.
+        created_at: 2026-06-22T00:12:36.515Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-21T23:56:08.634Z
-updated_at: 2026-06-22T00:12:02.568Z
+updated_at: 2026-06-22T00:12:36.515Z
 notes: []

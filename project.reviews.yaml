@@ -27619,8 +27619,8 @@ reviews:
       content_hash: ""
       ref: "@01KVP8DJC7D2410YZ2969RNCWC"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-21T23:56:08.634Z
-    updated_at: 2026-06-22T00:12:02.568Z
+    updated_at: 2026-06-22T00:12:36.515Z
