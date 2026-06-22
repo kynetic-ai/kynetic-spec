@@ -594,6 +594,11 @@ derive_from_specs: false
       validation and mapping, reports the same diagnostics/summary/event scopes
       that a write would produce, and guarantees no run folder, index entry,
       verification stamp, shadow commit, cache update, or event broadcast.
+      This command has no `--force`, confirmation prompt, state transition, or
+      batch partial-success mode; those inherited trait cases are explicitly
+      non-applicable. Accepted runs with unmapped/invalid mapping diagnostics
+      still succeed because diagnostics are retained result data, not command
+      partial failure.
     - Resolve actor identity through the shared actor write rules. Accept
       optional session and source metadata; validate session id shape but
       do not require a session.
@@ -615,11 +620,14 @@ derive_from_specs: false
     Covers: @test-result-ingestion-interface ac-cli-daemon-equivalence,
     ac-no-daemon-execution, ac-actor-source-attribution,
     ac-session-attribution-optional, ac-mutation-pipeline-order,
-    ac-static-mode-readonly, ac-dry-run-preview. Covers
-    @trait-json-output ac-1 through ac-6, @trait-semantic-exit-codes ac-1
-    through ac-8, @trait-error-guidance ac-1 through ac-6,
-    @trait-api-endpoint ac-1, ac-3, ac-5, ac-6, and @trait-dry-run ac-1
-    through ac-6 for the ingestion CLI/API surfaces.
+    ac-static-mode-readonly, ac-dry-run-preview. Covers the applicable
+    ingestion-command portions of @trait-json-output, @trait-semantic-exit-codes,
+    @trait-error-guidance, @trait-api-endpoint, and @trait-dry-run. Non-applicable
+    inherited cases are explicitly out of scope for this command: confirmation
+    decline, invalid state transition, batch partial failure, `--dry-run --force`,
+    and list-endpoint pagination. Accepted runs with unmapped or invalid mapping
+    diagnostics return success with diagnostics rather than semantic partial
+    failure.
 
 - title: Write ingestion-provenance verification stamps from passing mapped cases
   slug: task-ingested-run-verification-stamps
