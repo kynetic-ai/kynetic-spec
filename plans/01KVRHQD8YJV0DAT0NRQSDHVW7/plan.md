@@ -413,7 +413,7 @@ derive_from_specs: false
     - Feed the index from the existing structured annotation scan, the
       P1a freshness resolver and verification store, and the test-run
       store from the ingestion plan at `coverage/test-runs/index.yaml` plus
-      `coverage/test-runs/runs/<run-ulid>.yaml`.
+      `coverage/test-runs/runs/<run-ulid>/run.yaml`.
     - Label every evidence source: annotation, bootstrap freshness,
       recorded verification, ingested result, unmapped result.
     - Select latest relevant ingested result evidence per criterion using
@@ -724,7 +724,7 @@ positive evidence and do not exempt the criterion.
   event family.
 - The Test Result Ingestion plan provides normalized completed-run storage
   at `coverage/test-runs/index.yaml` and
-  `coverage/test-runs/runs/<run-ulid>.yaml`, including flat case records,
+  `coverage/test-runs/runs/<run-ulid>/run.yaml`, including folder-backed run entities, flat case records,
   attributed mappings, unmapped/invalid mapping reports, and verification
   effects. The state engine consumes that contract; it must not choose a
   different run-store layout or reinterpret native framework artifacts.

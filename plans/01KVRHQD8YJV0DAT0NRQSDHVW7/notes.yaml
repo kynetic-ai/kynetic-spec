@@ -3,3 +3,7 @@ notes:
     content: Consume fixed test-run store layout from ingestion plan
     author: Jacob Chapel
     created_at: 2026-06-22T22:22:27.847Z
+  - _ulid: 01KVRRA0G8DHYK7A2BBD3ZFB50
+    content: Align coverage state consumer contract with folder-backed test run layout
+    author: Jacob Chapel
+    created_at: 2026-06-22T22:48:06.409Z
