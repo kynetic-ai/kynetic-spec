@@ -71389,7 +71389,7 @@ runs:
     started_at: 2026-06-21T23:51:21.911Z
     completed_at: 2026-06-21T23:53:33.686Z
   - _ulid: 01KVPAWCSV34AEHNWGGCRK6RTM
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -71439,7 +71439,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-22T00:16:56.199Z
-        completed_at: 2026-06-22T00:16:56.199Z
+        completed_at: 2026-06-22T00:17:12.732Z
+        notes: "Capture: no new inbox items, observations, tasks, or questions created. Existing coverage is
+          sufficient: full-suite duration is already inbox @01KNTB8Z4; review evidence log friction
+          is already covered by existing observations; detached reviewer merge helper behavior is
+          already represented by implemented spec/tasks."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-22T00:14:59.899Z
+    completed_at: 2026-06-22T00:17:12.732Z
