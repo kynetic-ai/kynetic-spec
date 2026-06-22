@@ -71390,7 +71390,7 @@ runs:
     completed_at: 2026-06-21T23:53:33.686Z
   - _ulid: 01KVPAWCSV34AEHNWGGCRK6RTM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71404,7 +71404,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-22T00:16:05.263Z
-        completed_at: 2026-06-22T00:16:05.263Z
+        completed_at: 2026-06-22T00:16:18.245Z
+        notes: "Friction points: the required full npm test gate took 2540.8s in this session, which is
+          significant latency for review completion. This is systemic rather than specific to this
+          change, but it appears already tracked by inbox @01KNTB8Z4 (Test suite duration is too
+          long and trending worse). No additional friction from the merge helper or review record
+          flow; the evidence log still has no first-class home, but that is already tracked by
+          existing observations."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-22T00:16:18.245Z
+        completed_at: 2026-06-22T00:16:18.245Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-22T00:14:59.899Z
