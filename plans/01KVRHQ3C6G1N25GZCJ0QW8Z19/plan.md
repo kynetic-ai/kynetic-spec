@@ -25,6 +25,7 @@
   depends_on:
     - "@test-result-acquisition"
     - "@coverage-record-compatibility"
+    - "@trait-folder-backed-entity"
   description: |
     Durable storage for normalized completed test runs submitted to a
     kspec project. A run record captures one completed execution from
@@ -34,9 +35,10 @@
     run envelope, the normalized test cases, mappable acceptance-criterion
     references, unmapped cases, producer metadata, execution timestamps,
     and optional code revision. It lives in project metadata as an
-    additive sidecar at `coverage/test-runs/index.yaml` plus one normalized
-    run file per accepted run under `coverage/test-runs/runs/<run-ulid>.yaml`;
-    project source files and spec source files are never rewritten by ingestion.
+    additive folder-backed sidecar at `coverage/test-runs/index.yaml` plus one
+    folder-backed run entity per accepted run under
+    `coverage/test-runs/runs/<run-ulid>/run.yaml`; project source files and
+    spec source files are never rewritten by ingestion.
   acceptance_criteria:
     - id: ac-normalized-run-persistence
       given: |
@@ -72,10 +74,10 @@
         ingestion persists it
       then: |
         the run is stored as
-        coverage/test-runs/runs/01ARZ3NDEKTSV4RRFFQ69G5FAV.yaml and the
+        coverage/test-runs/runs/01ARZ3NDEKTSV4RRFFQ69G5FAV/run.yaml and the
         coverage/test-runs/index.yaml summary is updated in the same
-        mutation; ingestion does not create per-run directories or store
-        framework-native artifact files in this plan
+        mutation; ingestion uses the folder-backed entity trait for the run
+        folder and does not store framework-native artifact files in this plan
     - id: ac-latest-run-query
       given: |
         more than one accepted run in the store
@@ -429,9 +431,10 @@ derive_from_specs: false
       under an explicitly namespaced extension object.
     - Store runs in the fixed sidecar layout
       `coverage/test-runs/index.yaml` and
-      `coverage/test-runs/runs/<run-ulid>.yaml`. The run file is the source
-      of truth for detailed case/mapping data; index.yaml stores list/latest
-      summaries for consumers. The sidecar is additive like the verification
+      `coverage/test-runs/runs/<run-ulid>/run.yaml`. The per-run folder is a
+      folder-backed entity: run.yaml is the source of truth for detailed
+      case/mapping data; index.yaml stores bounded list/latest summaries for
+      consumers. The sidecar is additive like the verification
       store: no spec source or code source file changes on ingestion, absent
       store remains valid, first write materializes both the index and the
       runs directory, and newer record format is refused with deterministic
@@ -674,23 +677,27 @@ The P1b ingestion store has a fixed shadow-metadata layout:
 
 ```text
 <specDir>/coverage/test-runs/index.yaml
-<specDir>/coverage/test-runs/runs/<run-ulid>.yaml
+<specDir>/coverage/test-runs/runs/<run-ulid>/run.yaml
 ```
 
 Rules:
 
+- Test runs adopt `@trait-folder-backed-entity`: each accepted run owns a
+  stable directory named by its full ULID under `coverage/test-runs/runs/`.
 - `<run-ulid>` is the canonical kspec run id and must be a valid ULID. Do
   not use producer-native ids, test names, timestamps, or filesystem paths
-  as filenames.
-- `runs/<run-ulid>.yaml` is the source of truth for detailed case,
+  as directory names.
+- `runs/<run-ulid>/run.yaml` is the authoritative sidecar for detailed case,
   mapping, diagnostic, producer, and verification-effect data for that run.
-- `index.yaml` is a persisted list/latest summary for consumers and cache
-  warm-up. It is updated in the same mutation as the run file and can be
-  rebuilt from run files if needed, but reads must not materialize it in an
-  otherwise absent store.
-- This plan does not create per-run directories and does not persist
-  framework-native artifacts, logs, screenshots, XML, or JSON blobs. Those
-  require a future artifact-store plan if needed.
+- `index.yaml` is a bounded persisted list/latest summary for consumers and
+  cache warm-up. It is updated in the same logical atomic mutation as the
+  run folder and `run.yaml`; it can be rebuilt from run folders if needed,
+  but reads must not materialize it in an otherwise absent store.
+- Unknown files or directories inside a run folder are ignored by test-run
+  semantics and preserved across writes, per the folder-backed entity trait.
+- This plan does not adopt `@trait-entity-scoped-local-resources` and does
+  not persist framework-native artifacts, logs, screenshots, XML, or JSON
+  blobs. Those require a future artifact/resource-store plan if needed.
 - The store lives beside the existing `coverage/verifications/<item-ulid>.yaml`
   verification sidecar and never rewrites `.kspec/modules/*` spec source.
 
@@ -700,7 +707,7 @@ Expected `index.yaml` shape:
 format: 1
 runs:
   01ARZ3NDEKTSV4RRFFQ69G5FAV:
-    path: runs/01ARZ3NDEKTSV4RRFFQ69G5FAV.yaml
+    path: runs/01ARZ3NDEKTSV4RRFFQ69G5FAV/run.yaml
     completed_at: "2026-06-22T21:15:00.000Z"
     producer:
       kind: local
@@ -720,7 +727,7 @@ runs:
 latest_run_id: 01ARZ3NDEKTSV4RRFFQ69G5FAV
 ```
 
-Expected `runs/<run-ulid>.yaml` shape:
+Expected `runs/<run-ulid>/run.yaml` shape:
 
 ```text
 format: 1
@@ -780,8 +787,8 @@ verification_effects:
 Field-name and layout compatibility is part of this plan's contract. An
 implementation agent may add forward-compatible optional fields under
 schema-approved extension objects, but must not rename these fields, move the
-store, switch to per-run directories, or store framework-native payloads as
-the core persistence model.
+store, switch away from folder-backed run entities, or store framework-native
+payloads as the core persistence model.
 
 ### General-system guardrails
 

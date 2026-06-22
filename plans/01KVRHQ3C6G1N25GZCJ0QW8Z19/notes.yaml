@@ -3,3 +3,7 @@ notes:
     content: Define fixed test-run store layout and normalized record shape
     author: Jacob Chapel
     created_at: 2026-06-22T22:22:25.641Z
+  - _ulid: 01KVRR9WB2H44SG8KNVQSBXS79
+    content: Adopt folder-backed entity trait for test run storage layout
+    author: Jacob Chapel
+    created_at: 2026-06-22T22:48:02.147Z
