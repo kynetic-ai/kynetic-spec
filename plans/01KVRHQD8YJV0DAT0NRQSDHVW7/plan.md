@@ -413,7 +413,10 @@ derive_from_specs: false
     - Feed the index from the existing structured annotation scan, the
       P1a freshness resolver and verification store, and the test-run
       store from the ingestion plan at `coverage/test-runs/index.yaml` plus
-      `coverage/test-runs/runs/<run-ulid>/run.yaml`.
+      `coverage/test-runs/runs/<run-ulid>/run.yaml`. Treat index.yaml as the
+      authoritative bounded list of accepted run ids/paths, then read the
+      indexed run files to compute latest relevant per-criterion evidence;
+      do not expect ingestion to provide a per-criterion latest projection.
     - Label every evidence source: annotation, bootstrap freshness,
       recorded verification, ingested result, unmapped result.
     - Select latest relevant ingested result evidence per criterion using
@@ -724,10 +727,13 @@ positive evidence and do not exempt the criterion.
   event family.
 - The Test Result Ingestion plan provides normalized completed-run storage
   at `coverage/test-runs/index.yaml` and
-  `coverage/test-runs/runs/<run-ulid>/run.yaml`, including folder-backed run entities, flat case records,
-  attributed mappings, unmapped/invalid mapping reports, and verification
-  effects. The state engine consumes that contract; it must not choose a
-  different run-store layout or reinterpret native framework artifacts.
+  `coverage/test-runs/runs/<run-ulid>/run.yaml`, including folder-backed run
+  entities, flat case records, attributed mappings, unmapped/invalid mapping
+  reports, and verification effects. The state engine consumes that contract:
+  it uses index.yaml as the bounded run list and reads run.yaml files for
+  detailed evidence selection; it must not choose a different run-store layout,
+  expect a precomputed per-criterion latest projection, or reinterpret native
+  framework artifacts.
 - P0b's UI status tokens ensure later views render the four buckets with a
   shared token vocabulary; this plan supplies the state values, not the
   visual components.

@@ -7,3 +7,7 @@ notes:
     content: Align coverage state consumer contract with folder-backed test run layout
     author: Jacob Chapel
     created_at: 2026-06-22T22:48:06.409Z
+  - _ulid: 01KVRRQG40BJE2ZB59S0DS3JGZ
+    content: Address plan-reviewer feedback on test-run index consumption contract
+    author: Jacob Chapel
+    created_at: 2026-06-22T22:55:28.384Z
