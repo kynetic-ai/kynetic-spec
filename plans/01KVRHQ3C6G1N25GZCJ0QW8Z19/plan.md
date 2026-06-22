@@ -34,8 +34,9 @@
     run envelope, the normalized test cases, mappable acceptance-criterion
     references, unmapped cases, producer metadata, execution timestamps,
     and optional code revision. It lives in project metadata as an
-    additive sidecar; project source files and spec source files are never
-    rewritten by ingestion.
+    additive sidecar at `coverage/test-runs/index.yaml` plus one normalized
+    run file per accepted run under `coverage/test-runs/runs/<run-ulid>.yaml`;
+    project source files and spec source files are never rewritten by ingestion.
   acceptance_criteria:
     - id: ac-normalized-run-persistence
       given: |
@@ -64,6 +65,17 @@
       then: |
         no spec source file and no code source file is modified by the
         ingestion; only the project metadata sidecar changes
+    - id: ac-fixed-storage-layout
+      given: |
+        a valid normalized run with canonical run id 01ARZ3NDEKTSV4RRFFQ69G5FAV
+      when: |
+        ingestion persists it
+      then: |
+        the run is stored as
+        coverage/test-runs/runs/01ARZ3NDEKTSV4RRFFQ69G5FAV.yaml and the
+        coverage/test-runs/index.yaml summary is updated in the same
+        mutation; ingestion does not create per-run directories or store
+        framework-native artifact files in this plan
     - id: ac-latest-run-query
       given: |
         more than one accepted run in the store
@@ -406,18 +418,24 @@ derive_from_specs: false
     current Vitest output, package layout, or test file names.
 
     What:
-    - Add Zod schemas for a normalized run envelope, producer/source
-      metadata, normalized suite/case records, mapped criterion refs,
-      unmapped/invalid mapping reports, and a record-format version.
-      Required fields: run id, completed_at, producer kind/label, case
-      list, and each case's stable id, display name, and status. Optional
-      fields: started_at, duration, file/line, diagnostic text, command,
-      CI URL, code revision, session id, and producer-native metadata.
-    - Store runs under a new coverage test-runs sidecar in project
-      metadata. The sidecar is additive like the verification store: no
-      spec source or code source file changes on ingestion, absent store
-      remains valid, first write materializes it, and newer record
-      format is refused with deterministic diagnostics.
+    - Add Zod schemas for the concrete normalized run envelope, producer/source
+      metadata, normalized flat case records, mapped criterion refs,
+      unmapped/invalid mapping reports, verification effect summary, index
+      summary, and a record-format version. Required fields: canonical run id
+      as a ULID, completed_at, producer kind/label, case list, and each case's
+      stable id, display name, and status. Optional fields: started_at,
+      duration_ms, suite_path, file/line, diagnostic text, command, CI URL,
+      code revision, session id, and producer-native metadata retained only
+      under an explicitly namespaced extension object.
+    - Store runs in the fixed sidecar layout
+      `coverage/test-runs/index.yaml` and
+      `coverage/test-runs/runs/<run-ulid>.yaml`. The run file is the source
+      of truth for detailed case/mapping data; index.yaml stores list/latest
+      summaries for consumers. The sidecar is additive like the verification
+      store: no spec source or code source file changes on ingestion, absent
+      store remains valid, first write materializes both the index and the
+      runs directory, and newer record format is refused with deterministic
+      diagnostics.
     - Preserve unrecognized fields within supported record-format
       versions across read/write cycles.
     - Implement latest-run lookup by completed_at with deterministic
@@ -434,9 +452,9 @@ derive_from_specs: false
     unknown fields, and newer-format refusal.
 
     Covers: @test-result-run-store ac-normalized-run-persistence,
-    ac-framework-neutral-storage, ac-sidecar-only, ac-latest-run-query,
-    ac-invalid-run-rejected, ac-forward-compatible-records,
-    ac-newer-record-format-refused.
+    ac-framework-neutral-storage, ac-sidecar-only, ac-fixed-storage-layout,
+    ac-latest-run-query, ac-invalid-run-rejected,
+    ac-forward-compatible-records, ac-newer-record-format-refused.
 
 - title: Implement normalized mapping and unmapped-result reporting
   slug: task-test-result-ac-mapping
@@ -602,6 +620,7 @@ derive_from_specs: false
 
     What:
     - Add developer documentation for the normalized JSON envelope,
+      fixed shadow sidecar layout, required index.yaml and run-file shapes,
       required fields, status vocabulary, mapping reference shape,
       producer/source metadata, and examples for local, CI, and agent
       producers.
@@ -648,6 +667,121 @@ The split keeps dependencies simple:
 The only dependency is one-way: the state engine consumes the run store.
 The ingestion path is independently useful and testable through CLI/API
 round-trips, stored runs, unmapped reports, and verification stamps.
+
+### Expected storage layout
+
+The P1b ingestion store has a fixed shadow-metadata layout:
+
+```text
+<specDir>/coverage/test-runs/index.yaml
+<specDir>/coverage/test-runs/runs/<run-ulid>.yaml
+```
+
+Rules:
+
+- `<run-ulid>` is the canonical kspec run id and must be a valid ULID. Do
+  not use producer-native ids, test names, timestamps, or filesystem paths
+  as filenames.
+- `runs/<run-ulid>.yaml` is the source of truth for detailed case,
+  mapping, diagnostic, producer, and verification-effect data for that run.
+- `index.yaml` is a persisted list/latest summary for consumers and cache
+  warm-up. It is updated in the same mutation as the run file and can be
+  rebuilt from run files if needed, but reads must not materialize it in an
+  otherwise absent store.
+- This plan does not create per-run directories and does not persist
+  framework-native artifacts, logs, screenshots, XML, or JSON blobs. Those
+  require a future artifact-store plan if needed.
+- The store lives beside the existing `coverage/verifications/<item-ulid>.yaml`
+  verification sidecar and never rewrites `.kspec/modules/*` spec source.
+
+Expected `index.yaml` shape:
+
+```text
+format: 1
+runs:
+  01ARZ3NDEKTSV4RRFFQ69G5FAV:
+    path: runs/01ARZ3NDEKTSV4RRFFQ69G5FAV.yaml
+    completed_at: "2026-06-22T21:15:00.000Z"
+    producer:
+      kind: local
+      label: generic-project-tests
+    code_revision: abc123
+    totals:
+      cases: 2
+      mapped: 1
+      unmapped: 1
+      invalid: 0
+      passed: 1
+      failed: 0
+      errored: 0
+      skipped: 1
+      unknown: 0
+      stamps_written: 1
+latest_run_id: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+```
+
+Expected `runs/<run-ulid>.yaml` shape:
+
+```text
+format: 1
+run:
+  id: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+  completed_at: "2026-06-22T21:15:00.000Z"
+  started_at: "2026-06-22T21:14:10.000Z"
+  duration_ms: 50000
+producer:
+  kind: local                 # local | ci | agent | other
+  label: generic-project-tests
+  command: npm test
+  ci_url: null
+  agent_session: null
+  code_revision: abc123
+  native:
+    run_id: producer-owned-id
+cases:
+  - id: case-stable-id-1
+    display_name: accepts explicit AC references
+    suite_path: [adapter contract]
+    status: passed            # passed | failed | errored | skipped | unknown
+    duration_ms: 12
+    location:
+      file: tests/adapter-contract.test.ts
+      line: 42
+    diagnostic: null
+    refs:
+      - item_ref: "@generic-feature"
+        ac_id: ac-explicit-mapping
+  - id: case-stable-id-2
+    display_name: plain test without AC reference
+    suite_path: [adapter contract]
+    status: skipped
+    refs: []
+mapping:
+  attributed:
+    - case_id: case-stable-id-1
+      item_ulid: 01BX5ZZKBKACTAV9WEVGEMMVRZ
+      item_ref: "@generic-feature"
+      ac_id: ac-explicit-mapping
+      status: passed
+  unmapped:
+    - case_id: case-stable-id-2
+      reason: no_refs
+      display_name: plain test without AC reference
+  invalid: []
+verification_effects:
+  stamps_written:
+    - case_id: case-stable-id-1
+      item_ulid: 01BX5ZZKBKACTAV9WEVGEMMVRZ
+      ac_id: ac-explicit-mapping
+      verified_at: "2026-06-22T21:15:00.000Z"
+  non_positive_mapped_cases: []
+```
+
+Field-name and layout compatibility is part of this plan's contract. An
+implementation agent may add forward-compatible optional fields under
+schema-approved extension objects, but must not rename these fields, move the
+store, switch to per-run directories, or store framework-native payloads as
+the core persistence model.
 
 ### General-system guardrails
 
