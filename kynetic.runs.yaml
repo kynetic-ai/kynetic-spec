@@ -71390,9 +71390,21 @@ runs:
     completed_at: 2026-06-21T23:53:33.686Z
   - _ulid: 01KVPAWCSV34AEHNWGGCRK6RTM
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-22T00:14:59.899Z
+        completed_at: 2026-06-22T00:16:05.263Z
+        notes: "What worked well: the detached reviewer flow was coherent end to end. Creating a fresh kspec
+          review, recording gate evidence, approving, running the detached merge helper, and
+          completing the task all worked without manual branch checkout. Behavioral CLI tests in
+          tests/review-subject-revisions.test.ts gave direct evidence for the bug fix."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-22T00:16:05.263Z
+        completed_at: 2026-06-22T00:16:05.263Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-22T00:14:59.899Z
