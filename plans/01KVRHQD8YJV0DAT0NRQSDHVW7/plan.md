@@ -412,7 +412,8 @@ derive_from_specs: false
       including entries with no evidence.
     - Feed the index from the existing structured annotation scan, the
       P1a freshness resolver and verification store, and the test-run
-      store from the ingestion plan.
+      store from the ingestion plan at `coverage/test-runs/index.yaml` plus
+      `coverage/test-runs/runs/<run-ulid>.yaml`.
     - Label every evidence source: annotation, bootstrap freshness,
       recorded verification, ingested result, unmapped result.
     - Select latest relevant ingested result evidence per criterion using
@@ -722,7 +723,11 @@ positive evidence and do not exempt the criterion.
 - P0c provides mutation/event ordering and reserves the coverage-state
   event family.
 - The Test Result Ingestion plan provides normalized completed-run storage
-  and mapping reports.
+  at `coverage/test-runs/index.yaml` and
+  `coverage/test-runs/runs/<run-ulid>.yaml`, including flat case records,
+  attributed mappings, unmapped/invalid mapping reports, and verification
+  effects. The state engine consumes that contract; it must not choose a
+  different run-store layout or reinterpret native framework artifacts.
 - P0b's UI status tokens ensure later views render the four buckets with a
   shared token vocabulary; this plan supplies the state values, not the
   visual components.
