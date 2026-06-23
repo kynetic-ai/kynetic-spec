@@ -234,6 +234,12 @@ events:
     payload:
       thread_ulid: 01KVSBCPR1N06PQSJDWJF51S0M
     timestamp: 2026-06-23T04:42:38.927Z
+  - _ulid: 01KVSCKG2B3F42A5SNKZMYMZ4X
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVSBCPR1N06PQSJDWJF51S0M
+    timestamp: 2026-06-23T04:42:48.779Z
 examined_commit: 53cae84f6c68a970db90bfddbeceedd23e70a137
 external_links: []
 lifecycle_state: closed
@@ -322,6 +328,8 @@ threads:
           resubmission.
         created_at: 2026-06-23T04:42:38.674Z
     kind: nit
+    resolved_at: 2026-06-23T04:42:48.519Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -331,5 +339,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-23T04:21:50.738Z
 created_at: 2026-06-23T04:04:07.993Z
-updated_at: 2026-06-23T04:42:38.674Z
+updated_at: 2026-06-23T04:42:48.519Z
 notes: []
