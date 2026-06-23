@@ -14,6 +14,7 @@ export * from "./plan.js";
 export * from "./resources.js";
 export * from "./spec.js";
 export * from "./task.js";
+export * from "./test-result-runs.js";
 export * from "./triage.js";
 export * from "./batch.js";
 export * from "./review-records.js";
