@@ -39,8 +39,12 @@ description: |
 spec_ref: "@normalized-test-result-ingestion-contract"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign at ea5f9dce24b7e8a5ce46d92801e553613359e261. Added
+  normalized test-result producer contract docs, CLI help coverage, and neutral ingestion fixtures
+  for explicit refs, token extraction, native payload rejection, and schema-derived status
+  validation.
 depends_on:
   - "@task-ingested-run-verification-stamps"
 context: []
@@ -109,8 +113,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-23T22:17:58.323Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign at ea5f9dce24b7e8a5ce46d92801e553613359e261. Added normalized
+          test-result producer contract docs, CLI help coverage, and neutral ingestion fixtures for
+          explicit refs, token extraction, native payload rejection, and schema-derived status
+          validation.
+        previous: null
+      completed_at:
+        new: 2026-06-23T22:36:09.380Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-23T22:36:09.387Z
 created_at: 2026-06-23T02:03:31.719Z
 started_at: 2026-06-23T21:50:56.015Z
 submitted_at: 2026-06-23T22:11:47.709Z
+completed_at: 2026-06-23T22:36:09.380Z
 todos: []
 automation: eligible
