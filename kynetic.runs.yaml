@@ -72238,7 +72238,7 @@ runs:
     started_at: 2026-06-23T16:50:16.457Z
     completed_at: 2026-06-23T16:53:05.150Z
   - _ulid: 01KVTQNH1CYWTN6QQRYS5J9VH4
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -72280,7 +72280,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-23T17:17:26.295Z
-        completed_at: 2026-06-23T17:17:26.295Z
+        completed_at: 2026-06-23T17:17:36.774Z
+        notes: "Captured success observation @01KVTQQA. No inbox/task created: full-suite tail friction
+          already tracked by @task-investigate-npm-test-teardown-hang-after-green-suite-run, and
+          there were no new untracked friction items."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T17:15:24.076Z
+    completed_at: 2026-06-23T17:17:36.775Z
