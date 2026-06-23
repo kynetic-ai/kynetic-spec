@@ -25,6 +25,16 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-23T22:33:51.153Z
     completed_at: 2026-06-23T22:33:51.153Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 0 warnings and 0 errors on the changed TypeScript/test files."
+    name: focused-lint
+    required: true
+    runner: npx oxlint src/cli/help/content.ts tests/test-result-producer-contract.test.ts
+    created_at: 2026-06-23T22:33:57.448Z
+    completed_at: 2026-06-23T22:33:57.448Z
 events:
   - _ulid: 01KVV8ZF5Z23SVB62YMFVC7ZHX
     actor: Jacob Chapel
@@ -53,6 +63,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-23T22:33:51.453Z
+  - _ulid: 01KVV9WTQCZGSQ728KYV7WW5NX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-23T22:33:57.741Z
 examined_commit: 25ad6f033a3eb68a7d1fe4321f12b7b47779783c
 external_links: []
 lifecycle_state: open
@@ -65,5 +82,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T22:17:55.651Z
-updated_at: 2026-06-23T22:33:51.153Z
+updated_at: 2026-06-23T22:33:57.448Z
 notes: []
