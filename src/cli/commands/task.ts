@@ -1,4 +1,6 @@
 import chalk from "chalk";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import type { Command } from "commander";
 import { markMutating } from "../command-annotations.js";
 import {
@@ -15,6 +17,7 @@ import {
   ReferenceIndex,
   scanTestCoverage,
   syncSpecImplementationStatus,
+  type KspecContext,
 } from "../../parser/index.js";
 import {
   resolveTaskDataManager,
@@ -149,6 +152,95 @@ function resolveTaskRefForBatch(
 
 function getTaskDisplayRef(task: Pick<LoadedTask, "_ulid" | "slugs">): string {
   return `@${task.slugs[0] || task._ulid}`;
+}
+
+function taskIdentityMatches(value: unknown, task: Pick<LoadedTask, "_ulid" | "slugs">): boolean {
+  if (typeof value !== "string" || !value.trim()) return false;
+  const normalized = value.trim().replace(/^@/, "");
+  return normalized === task._ulid || task.slugs.includes(normalized);
+}
+
+function metadataMatchesCurrentTaskAndCheckout(
+  metadata: Record<string, unknown>,
+  task: Pick<LoadedTask, "_ulid" | "slugs">,
+  rootDir: string,
+): boolean {
+  const taskMatches =
+    taskIdentityMatches(metadata.taskId, task) ||
+    taskIdentityMatches(metadata.taskRef, task) ||
+    taskIdentityMatches(metadata.taskSlug, task);
+  if (!taskMatches) return false;
+
+  const checkout = path.resolve(rootDir);
+  const worktreeDirs = [metadata.workerWorktreeDir, metadata.reviewerWorktreeDir]
+    .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+    .map((value) => path.resolve(value));
+  return worktreeDirs.includes(checkout);
+}
+
+async function readMatchingWorkspaceIntegrationTarget(
+  ctx: KspecContext,
+  task: Pick<LoadedTask, "_ulid" | "slugs">,
+): Promise<string | null> {
+  try {
+    const raw = await fs.readFile(
+      path.join(ctx.rootDir, ".kspec-dispatch-workspace.json"),
+      "utf-8",
+    );
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    if (!metadataMatchesCurrentTaskAndCheckout(parsed, task, ctx.rootDir)) {
+      return null;
+    }
+
+    const target =
+      typeof parsed.integrationTargetBranch === "string" && parsed.integrationTargetBranch.trim()
+        ? parsed.integrationTargetBranch.trim()
+        : typeof parsed.mergeTargetBranch === "string" && parsed.mergeTargetBranch.trim()
+          ? parsed.mergeTargetBranch.trim()
+          : null;
+    return target;
+  } catch {
+    return null;
+  }
+}
+
+function branchAvailableForSubmissionFallback(branch: string): boolean {
+  return gitRefExists(`refs/heads/${branch}`) || findBranchOnRemote(branch) !== null;
+}
+
+async function resolvePlanBranchSubmissionFallback(
+  ctx: KspecContext,
+  task: Pick<LoadedTask, "plan_ref">,
+): Promise<string | null> {
+  const planRef = typeof task.plan_ref === "string" ? task.plan_ref.trim() : "";
+  if (!planRef) return null;
+
+  try {
+    const { findPlanByRef } = await import("../../parser/plans.js");
+    const plan = await findPlanByRef(ctx, planRef);
+    const planBranch = typeof plan?.branch === "string" ? plan.branch.trim() : "";
+    if (!planBranch) return null;
+    return branchAvailableForSubmissionFallback(planBranch) ? planBranch : null;
+  } catch {
+    return null;
+  }
+}
+
+async function resolveSubmissionLinkageFallbackUpstreamRef(
+  ctx: KspecContext,
+  task: Pick<LoadedTask, "_ulid" | "slugs" | "plan_ref">,
+): Promise<string | null> {
+  const workspaceTarget = await readMatchingWorkspaceIntegrationTarget(ctx, task);
+  if (workspaceTarget) {
+    return workspaceTarget;
+  }
+
+  const planBranch = await resolvePlanBranchSubmissionFallback(ctx, task);
+  if (planBranch) {
+    return planBranch;
+  }
+
+  return ctx.config?.dispatch?.base_branch?.trim() || null;
 }
 
 /**
@@ -344,6 +436,13 @@ async function setTaskFields(
       operation: "task-set",
       ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
     };
+    const submissionLinkageFallback =
+      options.submissionLinkage && isGitRepo(ctx.rootDir)
+        ? await resolveSubmissionLinkageFallbackUpstreamRef(
+            ctx,
+            await resolveTaskDataManager(ctx).getTask(ctx, foundTask._ulid),
+          )
+        : null;
     const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
       ctx,
       foundTask._ulid,
@@ -541,7 +640,7 @@ async function setTaskFields(
             ? captureSubmissionLinkage(
                 ctx.rootDir,
                 latestTask.review_url,
-                ctx.config?.dispatch?.base_branch,
+                submissionLinkageFallback,
               )
             : null;
           if (linkage) {
@@ -1774,12 +1873,11 @@ Examples:
 
         // AC: @portable-task-submission-linkage ac-1, ac-3, ac-5, ac-worktree-branch — capture git context
         // Use rootDir (active code checkout root) so worktree context captures the correct branch
+        const submissionLinkageFallback = isGitRepo(ctx.rootDir)
+          ? await resolveSubmissionLinkageFallbackUpstreamRef(ctx, foundTask)
+          : null;
         const linkage = isGitRepo(ctx.rootDir)
-          ? captureSubmissionLinkage(
-              ctx.rootDir,
-              options.reviewUrl,
-              ctx.config?.dispatch?.base_branch,
-            )
+          ? captureSubmissionLinkage(ctx.rootDir, options.reviewUrl, submissionLinkageFallback)
           : null;
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager

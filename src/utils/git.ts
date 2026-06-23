@@ -253,7 +253,7 @@ export function getBranchRemote(
 export function captureSubmissionLinkage(
   cwd?: string,
   reviewUrl?: string,
-  dispatchBaseBranch?: string | null,
+  fallbackUpstreamRef?: string | null,
 ): {
   branch: string | null;
   commit: string;
@@ -280,9 +280,9 @@ export function captureSubmissionLinkage(
     }
   }
 
-  // AC: @portable-task-submission-linkage ac-5 — fallback to dispatch config base_branch
-  if (!upstreamRef && dispatchBaseBranch) {
-    upstreamRef = dispatchBaseBranch;
+  // AC: @portable-task-submission-linkage ac-5 — git upstream wins before caller-provided fallback
+  if (!upstreamRef && fallbackUpstreamRef) {
+    upstreamRef = fallbackUpstreamRef;
   }
 
   return {

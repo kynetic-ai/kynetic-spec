@@ -296,10 +296,7 @@ export interface ReconcileDispatchWorkspaceLifecycleOptions {
   projectDir: string;
   taskRef: string;
   cleanupState: ResolveDispatchWorkspaceCleanupStateOptions;
-  task?: {
-    title?: string;
-    slugs?: string[];
-  };
+  task?: ProvisionDispatchWorkspaceOptions["task"];
 }
 
 export interface ValidateDispatchWorkspaceForInvocationOptions {
@@ -307,10 +304,7 @@ export interface ValidateDispatchWorkspaceForInvocationOptions {
   taskRef: string;
   workspace: ProvisionedDispatchWorkspace;
   role?: DispatchWorkspaceRole;
-  task?: {
-    title?: string;
-    slugs?: string[];
-  };
+  task?: ProvisionDispatchWorkspaceOptions["task"];
   submissionLinkage?: ProvisionDispatchWorkspaceOptions["submissionLinkage"];
   taskStatus?: ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"];
   allowRecovery?: boolean;
@@ -1949,13 +1943,13 @@ export async function persistDispatchWorkspaceMetadata(
 async function findWorkspaceRegistrationByTaskRef(
   projectDir: string,
   taskRef: string,
-  task?: { title?: string; slugs?: string[] },
+  task?: ProvisionDispatchWorkspaceOptions["task"],
 ): Promise<{
   canonicalBranch: string;
   workerWorktreeDir: string;
   metadata: DispatchWorkspaceMetadata;
 } | null> {
-  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir, { taskRef, task });
   // Try the deterministic dispatch/task/* branch first (most common path).
   // The short id is derived from the canonical task ULID so any display alias
   // of the task locates the same branch lineage.
@@ -3542,7 +3536,7 @@ export async function reconcileDispatchWorkspaceLifecycle(
 export async function cleanupReviewerDispatchWorkspace(
   projectDir: string,
   taskRef: string,
-  task?: { title?: string; slugs?: string[] },
+  task?: ProvisionDispatchWorkspaceOptions["task"],
 ): Promise<DispatchWorkspaceReapResult> {
   const existing = await findWorkspaceRegistrationByTaskRef(projectDir, taskRef, task);
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
@@ -3609,7 +3603,7 @@ export async function reapDispatchWorkspace(
   taskRef: string,
   options?: {
     activeTaskIds?: Iterable<string>;
-    task?: { title?: string; slugs?: string[] };
+    task?: ProvisionDispatchWorkspaceOptions["task"];
   },
 ): Promise<DispatchWorkspaceReapResult> {
   const existing = await findWorkspaceRegistrationByTaskRef(projectDir, taskRef, options?.task);
@@ -4935,8 +4929,8 @@ export async function markDispatchWorkspaceIdle(options: {
 export async function getDispatchWorkspaceHealth(
   options: ProvisionDispatchWorkspaceOptions,
 ): Promise<DispatchWorkspaceHealth> {
-  const { projectDir, taskRef, role = "worker" } = options;
-  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const { projectDir, taskRef, role = "worker", task } = options;
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir, { taskRef, task });
   const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
     projectDir,
     taskRef,
@@ -5196,6 +5190,7 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
   task?: {
     title?: string;
     slugs?: string[];
+    plan_ref?: string | null;
     submission_linkage?: DiscoverySubmissionLinkage | null;
     review_url?: string;
   };
@@ -5203,7 +5198,7 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
   const { projectDir, taskRef, role = "worker", task } = options;
   const diagnostics: WorkspaceDiscoveryDiagnostic[] = [];
   const branchSignals: BranchSignal[] = [];
-  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir, { taskRef, task });
   // Canonical task identity for any adopted/recreated record so submission
   // linkage adoption keeps stable lineage across display aliases.
   // AC: @dispatch-canonical-task-identity ac-workspace-lineage-stable-across-aliases

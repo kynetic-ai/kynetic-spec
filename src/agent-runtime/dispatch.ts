@@ -2082,6 +2082,7 @@ export class DispatchEngine {
       ? {
           title: entry.change.task.title,
           slugs: entry.change.task.slugs,
+          plan_ref: entry.change.task.plan_ref,
         }
       : undefined;
     const health = await getDispatchWorkspaceHealth({
@@ -2126,6 +2127,7 @@ export class DispatchEngine {
           ? {
               title: entry.change.task.title,
               slugs: entry.change.task.slugs,
+              plan_ref: entry.change.task.plan_ref,
               submission_linkage: entry.change.task.submission_linkage ?? undefined,
               review_url: entry.change.task.review_url,
             }
@@ -2680,6 +2682,7 @@ export class DispatchEngine {
             ? {
                 title: entry.change.task.title,
                 slugs: entry.change.task.slugs,
+                plan_ref: entry.change.task.plan_ref,
               }
             : undefined,
           // AC: @adopt-existing-task-branch-lineage ac-1, ac-2, ac-4
@@ -2770,6 +2773,7 @@ export class DispatchEngine {
             ? {
                 title: entry.change.task.title,
                 slugs: entry.change.task.slugs,
+                plan_ref: entry.change.task.plan_ref,
               }
             : undefined,
           submissionLinkage: entry.change.task?.submission_linkage ?? undefined,
@@ -2808,6 +2812,7 @@ export class DispatchEngine {
                 ? {
                     title: entry.change.task.title,
                     slugs: entry.change.task.slugs,
+                    plan_ref: entry.change.task.plan_ref,
                   }
                 : undefined,
               submissionLinkage: entry.change.task?.submission_linkage ?? undefined,

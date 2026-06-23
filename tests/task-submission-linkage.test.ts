@@ -28,6 +28,7 @@ interface SubmissionLinkage {
 }
 
 interface TaskWithLinkage {
+  _ulid?: string;
   status: string;
   submitted_at?: string;
   review_url?: string;
@@ -48,6 +49,38 @@ describe("Integration: task submission linkage", () => {
   afterEach(async () => {
     await cleanupTempDir(tempDir);
   });
+
+  function createPlanScopedTask(slug: string): void {
+    kspec(
+      'plan add --title "UI Redesign Plan" --content "Plan branch linkage" --slug ui-redesign-plan',
+      tempDir,
+    );
+    kspec('plan set @ui-redesign-plan --branch "feat/ui-redesign"', tempDir);
+    kspec(`task add --title "${slug}" --slug ${slug}`, tempDir);
+    kspec(`task set @${slug} --plan-ref @ui-redesign-plan`, tempDir);
+  }
+
+  function writeMatchingWorkspaceMetadata(taskSlug: string): void {
+    fs.writeFileSync(
+      path.join(tempDir, ".kspec-dispatch-workspace.json"),
+      `${JSON.stringify(
+        {
+          workspaceId: `dispatch-workspace-${taskSlug}`,
+          taskId: null,
+          taskRef: `@${taskSlug}`,
+          taskSlug,
+          integrationTargetBranch: "feat/ui-redesign",
+          mergeTargetBranch: "feat/ui-redesign",
+          canonicalBranch: `dispatch/task/${taskSlug}/01abcdef`,
+          workerWorktreeDir: tempDir,
+          reviewerWorktreeDir: null,
+          publicationMode: "manual_merge",
+        },
+        null,
+        2,
+      )}\n`,
+    );
+  }
 
   // AC: @portable-task-submission-linkage ac-1
   it("should capture branch and commit on submit from named branch", () => {
@@ -278,6 +311,46 @@ describe("Integration: task submission linkage", () => {
     expect(task.submission_linkage!.branch).toBe("feat/no-upstream");
     // No git upstream tracking, but dispatch config provides fallback
     expect(task.submission_linkage!.upstream_ref).toBe("dev");
+  });
+
+  // AC: @portable-task-submission-linkage ac-5
+  // AC: @plan-branch-dispatch-target ac-submission-linkage-plan-target
+  it("should prefer matching manual_merge workspace integration target over dispatch config fallback on submit", () => {
+    fs.writeFileSync(path.join(tempDir, "kspec.config.yaml"), "dispatch:\n  base_branch: dev\n");
+    git("branch dev", tempDir);
+    git("branch feat/ui-redesign", tempDir);
+    git("checkout -b dispatch/task/plan-submit-fallback/01abcdef", tempDir);
+    git("commit --allow-empty -m 'plan scoped submit work'", tempDir);
+
+    createPlanScopedTask("plan-submit-fallback");
+    writeMatchingWorkspaceMetadata("plan-submit-fallback");
+
+    kspec("task start @plan-submit-fallback", tempDir);
+    kspec("task submit @plan-submit-fallback", tempDir);
+
+    const task = kspecJson<TaskWithLinkage>("task get @plan-submit-fallback --json", tempDir);
+    expect(task.submission_linkage).toBeDefined();
+    expect(task.submission_linkage!.branch).toBe("dispatch/task/plan-submit-fallback/01abcdef");
+    expect(task.submission_linkage!.upstream_ref).toBe("feat/ui-redesign");
+  });
+
+  // AC: @portable-task-submission-linkage ac-5
+  // AC: @plan-branch-dispatch-target ac-submission-linkage-plan-target
+  it("should prefer available owning plan branch over dispatch config fallback when repairing linkage", () => {
+    fs.writeFileSync(path.join(tempDir, "kspec.config.yaml"), "dispatch:\n  base_branch: dev\n");
+    git("branch dev", tempDir);
+    git("branch feat/ui-redesign", tempDir);
+    git("checkout -b dispatch/task/plan-repair-fallback/01abcdef", tempDir);
+    git("commit --allow-empty -m 'plan scoped repair work'", tempDir);
+
+    createPlanScopedTask("plan-repair-fallback");
+
+    kspec("task set @plan-repair-fallback --submission-linkage", tempDir);
+
+    const task = kspecJson<TaskWithLinkage>("task get @plan-repair-fallback --json", tempDir);
+    expect(task.submission_linkage).toBeDefined();
+    expect(task.submission_linkage!.branch).toBe("dispatch/task/plan-repair-fallback/01abcdef");
+    expect(task.submission_linkage!.upstream_ref).toBe("feat/ui-redesign");
   });
 
   // AC: @portable-task-submission-linkage ac-5

@@ -220,6 +220,174 @@ describe("dispatch workspace configuration", () => {
     expect(workspace.metadata.integrationTargetBranch).toBe("dev");
   });
 
+  // AC: @plan-branch-dispatch-target ac-submission-linkage-plan-target
+  it("keeps plan branch as integration target when adopting a submitted branch", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithAgent(tempDir);
+    git(tempDir, "checkout -b feat/ui-redesign");
+    const planCommit = git(tempDir, "rev-parse HEAD");
+    git(tempDir, "checkout -b dispatch/task/adopt-plan-branch/01abcdef");
+    await fs.writeFile(path.join(tempDir, "feature.txt"), "submitted\n", "utf-8");
+    git(tempDir, "add feature.txt");
+    git(tempDir, 'commit -m "submitted work"');
+    const submittedCommit = git(tempDir, "rev-parse HEAD");
+    git(tempDir, "checkout main");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n  worktree_root: .dispatch-root\n",
+      "utf-8",
+    );
+    await writePlansFile(tempDir, [
+      {
+        _ulid: testUlid("PNAA", 11),
+        slug: "ui-redesign-plan",
+        title: "UI Redesign Plan",
+        branch: "feat/ui-redesign",
+      },
+    ]);
+
+    const taskRef = `@${testUlid("TASK", 11)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Adopt Plan Branch",
+        slugs: ["task-adopt-plan-branch"],
+        plan_ref: "@ui-redesign-plan",
+      },
+      taskStatus: "pending_review",
+      submissionLinkage: {
+        branch: "dispatch/task/adopt-plan-branch/01abcdef",
+        commit: submittedCommit,
+        remote: null,
+        remote_url: null,
+        upstream_ref: "feat/ui-redesign",
+        review_url: null,
+        captured_at: "2026-04-01T00:00:00.000Z",
+      },
+    });
+
+    const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+    expect(record.canonical_branch).toBe("dispatch/task/adopt-plan-branch/01abcdef");
+    expect(record.base_branch_point).toBe(planCommit);
+    expect(record.integration?.target_branch).toBe("feat/ui-redesign");
+    expect(workspace.metadata.integrationTargetBranch).toBe("feat/ui-redesign");
+  });
+
+  // AC: @plan-branch-dispatch-target ac-submission-linkage-plan-target
+  it("passes plan_ref through dispatch-engine provisioning when adopting a submitted branch", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithAgent(tempDir);
+    git(tempDir, "checkout -b feat/ui-redesign");
+    git(tempDir, "checkout -b dispatch/task/engine-plan-adopt/01abcdef");
+    await fs.writeFile(path.join(tempDir, "engine-feature.txt"), "submitted\n", "utf-8");
+    git(tempDir, "add engine-feature.txt");
+    git(tempDir, 'commit -m "submitted engine work"');
+    const submittedCommit = git(tempDir, "rev-parse HEAD");
+    git(tempDir, "checkout main");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n  worktree_root: .dispatch-root\n",
+      "utf-8",
+    );
+    await writePlansFile(tempDir, [
+      {
+        _ulid: testUlid("PNAA", 12),
+        slug: "engine-ui-redesign-plan",
+        title: "Engine UI Redesign Plan",
+        branch: "feat/ui-redesign",
+      },
+    ]);
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as never,
+      outcome: "success",
+      durationMs: 1,
+    });
+    const engine = new DispatchEngine({
+      projectDir: tempDir,
+      specDir: tempDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+      reconcileIntervalMs: 0,
+    });
+    (engine as unknown as { running: boolean }).running = true;
+
+    const taskId = testUlid("TASK", 12);
+    const taskRef = `@${taskId}`;
+    const agent = {
+      _ulid: "01AGNTREVIEW00000000000000",
+      id: "pr-reviewer",
+      name: "PR Reviewer",
+      capabilities: [],
+      tools: [],
+      conventions: [],
+      skills: [],
+      dispatch: [{ on: "task.pending_review" }],
+      adapter: "mock-acp",
+      auto_approve: false,
+      concurrency: { max_concurrent: 1 },
+    };
+
+    const spawned = await (
+      engine as unknown as { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> }
+    )._spawnInvocation(agent, {
+      agent,
+      change: {
+        taskId,
+        taskRef,
+        fromStatus: "in_progress",
+        toStatus: "pending_review",
+        timestamp: Date.now(),
+        task: {
+          _ulid: taskId,
+          title: "Engine Plan Adopt",
+          slugs: ["engine-plan-adopt"],
+          status: "pending_review",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+          plan_ref: "@engine-ui-redesign-plan",
+          submission_linkage: {
+            branch: "dispatch/task/engine-plan-adopt/01abcdef",
+            commit: submittedCommit,
+            remote: null,
+            remote_url: null,
+            upstream_ref: "feat/ui-redesign",
+            review_url: null,
+            captured_at: "2026-04-01T00:00:00.000Z",
+          },
+        },
+      },
+      retryCount: 0,
+      nextRetryAt: 0,
+      enqueuedAtMs: Date.now(),
+      sequence: 1,
+      starvationDeferrals: 0,
+    });
+
+    expect(spawned).toBe(true);
+    await vi.waitFor(() => expect(runSpy).toHaveBeenCalledTimes(1));
+    const invocation = runSpy.mock.calls[0][0];
+    expect(invocation.env?.KSPEC_DISPATCH_BASE_BRANCH).toBe("feat/ui-redesign");
+    expect(invocation.env?.KSPEC_DISPATCH_MERGE_TARGET).toBe("feat/ui-redesign");
+    expect(invocation.env?.KSPEC_DISPATCH_INTEGRATION_TARGET).toBe("feat/ui-redesign");
+
+    const workspaceFile = invocation.env?.KSPEC_DISPATCH_WORKSPACE_FILE;
+    expect(workspaceFile).toBeTruthy();
+    const record = await readWorkspaceRecord(workspaceFile!, taskRef);
+    expect(record.integration?.target_branch).toBe("feat/ui-redesign");
+    await engine.stop();
+  });
+
   // AC: @plan-branch-dispatch-target ac-no-plan-ref-passthrough
   it("keeps existing fallback behavior when the task has no plan reference", async () => {
     await seedRepo(tempDir);
