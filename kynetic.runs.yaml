@@ -72239,9 +72239,20 @@ runs:
     completed_at: 2026-06-23T16:53:05.150Z
   - _ulid: 01KVTQNH1CYWTN6QQRYS5J9VH4
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-23T17:15:24.076Z
+        completed_at: 2026-06-23T17:16:39.301Z
+        notes: "What worked well: anchored review feedback identified the exact dropped plan_ref call site
+          and requested engine-level regression coverage, which kept the fix focused and
+          verifiable."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-23T17:16:39.301Z
+        completed_at: 2026-06-23T17:16:39.301Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T17:15:24.076Z
