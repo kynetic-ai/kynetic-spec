@@ -90,6 +90,19 @@ checks:
     runner: kspec
     created_at: 2026-06-23T05:06:51.473Z
     completed_at: 2026-06-23T05:06:51.473Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass: kspec validate --completeness --warnings-ok completed; existing completeness
+      warning baseline remained. AC annotations for @test-result-run-store,
+      @normalized-test-result-ingestion-contract, @trait-type-safe-input, and
+      @trait-folder-backed-entity-1 were present."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-23T05:06:56.914Z
+    completed_at: 2026-06-23T05:06:56.914Z
 events:
   - _ulid: 01KVSD21KA2JB05QHT69SWW8DN
     actor: Jacob Chapel
@@ -160,6 +173,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-23T05:06:51.738Z
+  - _ulid: 01KVSDZPG1D8JCXQDZMGEYVF8Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-23T05:06:57.154Z
 examined_commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
 external_links: []
 lifecycle_state: open
@@ -172,5 +192,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T04:50:45.483Z
-updated_at: 2026-06-23T05:06:51.473Z
+updated_at: 2026-06-23T05:06:56.914Z
 notes: []
