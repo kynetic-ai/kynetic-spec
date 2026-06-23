@@ -216,6 +216,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-23T04:21:50.738Z
+  - _ulid: 01KVSCJJ30SWHPVGX7QMEMNJ5G
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVSAMJ278PKTADFACBS30SRV
+    timestamp: 2026-06-23T04:42:18.080Z
 examined_commit: 53cae84f6c68a970db90bfddbeceedd23e70a137
 external_links: []
 lifecycle_state: closed
@@ -256,6 +262,14 @@ threads:
           for forward-compatible reads, but make the external ingestion input boundary reject
           unknown top-level native/framework siblings before any sidecar mutation.'
         created_at: 2026-06-23T04:09:06.798Z
+      - _ulid: 01KVSCJHTZ6NF6AH61PZFXVQYZ
+        author: Jacob Chapel
+        body: "Fixed in e72ad3cdc6: TestResultRunRecordInputSchema is now strict at the submitted record
+          envelope boundary, so top-level native/framework siblings such as junit are rejected
+          before any sidecar mutation. Added behavioral regression coverage that the rejected
+          top-level field leaves coverage/test-runs unchanged while the stored-record schema remains
+          tolerant for forward-compatible on-disk reads."
+        created_at: 2026-06-23T04:42:17.823Z
     kind: blocker
   - _ulid: 01KVSBCPR1N06PQSJDWJF51S0M
     entries:
@@ -297,5 +311,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-23T04:21:50.738Z
 created_at: 2026-06-23T04:04:07.993Z
-updated_at: 2026-06-23T04:21:50.738Z
+updated_at: 2026-06-23T04:42:17.823Z
 notes: []
