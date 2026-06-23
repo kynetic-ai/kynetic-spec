@@ -206,6 +206,12 @@ events:
     payload:
       thread_ulid: 01KVV1M6G8TNVA07FH0S8VRNXV
     timestamp: 2026-06-23T20:32:13.080Z
+  - _ulid: 01KVV2Y8AAV9Y6AWCAXHYVZP28
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVV1M6G8TNVA07FH0S8VRNXV
+    timestamp: 2026-06-23T20:32:24.395Z
 examined_commit: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
 external_links: []
 lifecycle_state: closed
@@ -275,6 +281,8 @@ threads:
           typecheck, kspec validations, and full npm test.
         created_at: 2026-06-23T20:32:12.799Z
     kind: nit
+    resolved_at: 2026-06-23T20:32:24.106Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -284,5 +292,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-23T20:09:36.980Z
 created_at: 2026-06-23T19:51:11.035Z
-updated_at: 2026-06-23T20:32:12.799Z
+updated_at: 2026-06-23T20:32:24.106Z
 notes: []
