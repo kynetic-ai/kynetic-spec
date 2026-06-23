@@ -71562,7 +71562,7 @@ runs:
     completed_at: 2026-06-23T02:57:11.800Z
   - _ulid: 01KVS7PHVX66VWKA4G6SWS327C
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71599,7 +71599,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-23T03:18:58.892Z
-        completed_at: 2026-06-23T03:18:58.892Z
+        completed_at: 2026-06-23T03:19:09.369Z
+        notes: No new improvement proposal. The only high-confidence systemic friction is already covered by
+          @01KVET9H and @01KTYQ1R8. If that tracked work is taken up, this session adds confirming
+          evidence that even from the correct dispatch worker branch, task submit can record the
+          branch tracking ref as upstream_ref instead of the manual_merge target, requiring
+          post-submit patching.
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-23T03:19:09.369Z
+        completed_at: 2026-06-23T03:19:09.369Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T03:17:06.045Z
