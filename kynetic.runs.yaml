@@ -71624,7 +71624,7 @@ runs:
     completed_at: 2026-06-23T03:19:31.362Z
   - _ulid: 01KVS8X62K9VC6VYZYDHBAX3SD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71637,7 +71637,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T03:39:11.358Z
-        completed_at: 2026-06-23T03:39:11.358Z
+        completed_at: 2026-06-23T03:39:45.654Z
+        notes: "Identified high-confidence items. Success: a direct programmatic tsx repro against the new
+          store API was effective for distinguishing read-time refusal from write-time mutation, and
+          anchored review comments plus batched review checks made the fix-cycle handoff clear.
+          Friction candidates: full npm test took 2550.4s after a blocker was already confirmed;
+          already covered by existing tracking such as @01KTW9G9, @01KV3WHP, @01KTYQ1RG, and
+          @01KVE6XH. The future-format write gap is already captured as the active blocker on review
+          @01KVS7YY and task @01KVS3FSC, so no separate observation is needed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T03:39:45.654Z
+        completed_at: 2026-06-23T03:39:45.654Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-23T03:38:11.923Z
