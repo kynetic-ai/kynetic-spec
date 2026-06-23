@@ -71934,9 +71934,21 @@ runs:
     completed_at: 2026-06-23T06:00:31.186Z
   - _ulid: 01KVSJ5J6HTDFF85RC0JWKN655
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-23T06:20:03.665Z
+        completed_at: 2026-06-23T06:21:29.125Z
+        notes: "What worked well: tests-first implementation with neutral fixture projects exposed a real
+          boundary issue before implementation settled. The focused mapper suite caught that
+          buildReferenceIndex pulled task storage into a spec-corpus-only mapper; switching to
+          spec-item-only ReferenceIndex kept the store aligned with the spec."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-23T06:21:29.125Z
+        completed_at: 2026-06-23T06:21:29.125Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T06:20:03.665Z
