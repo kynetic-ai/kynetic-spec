@@ -220,6 +220,60 @@ describe("dispatch workspace configuration", () => {
     expect(workspace.metadata.integrationTargetBranch).toBe("dev");
   });
 
+  // AC: @plan-branch-dispatch-target ac-submission-linkage-plan-target
+  it("keeps plan branch as integration target when adopting a submitted branch", async () => {
+    await seedRepo(tempDir);
+    await setupProjectWithAgent(tempDir);
+    git(tempDir, "checkout -b feat/ui-redesign");
+    const planCommit = git(tempDir, "rev-parse HEAD");
+    git(tempDir, "checkout -b dispatch/task/adopt-plan-branch/01abcdef");
+    await fs.writeFile(path.join(tempDir, "feature.txt"), "submitted\n", "utf-8");
+    git(tempDir, "add feature.txt");
+    git(tempDir, 'commit -m "submitted work"');
+    const submittedCommit = git(tempDir, "rev-parse HEAD");
+    git(tempDir, "checkout main");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n  worktree_root: .dispatch-root\n",
+      "utf-8",
+    );
+    await writePlansFile(tempDir, [
+      {
+        _ulid: testUlid("PNAA", 11),
+        slug: "ui-redesign-plan",
+        title: "UI Redesign Plan",
+        branch: "feat/ui-redesign",
+      },
+    ]);
+
+    const taskRef = `@${testUlid("TASK", 11)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Adopt Plan Branch",
+        slugs: ["task-adopt-plan-branch"],
+        plan_ref: "@ui-redesign-plan",
+      },
+      taskStatus: "pending_review",
+      submissionLinkage: {
+        branch: "dispatch/task/adopt-plan-branch/01abcdef",
+        commit: submittedCommit,
+        remote: null,
+        remote_url: null,
+        upstream_ref: "feat/ui-redesign",
+        review_url: null,
+        captured_at: "2026-04-01T00:00:00.000Z",
+      },
+    });
+
+    const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+    expect(record.canonical_branch).toBe("dispatch/task/adopt-plan-branch/01abcdef");
+    expect(record.base_branch_point).toBe(planCommit);
+    expect(record.integration?.target_branch).toBe("feat/ui-redesign");
+    expect(workspace.metadata.integrationTargetBranch).toBe("feat/ui-redesign");
+  });
+
   // AC: @plan-branch-dispatch-target ac-no-plan-ref-passthrough
   it("keeps existing fallback behavior when the task has no plan reference", async () => {
     await seedRepo(tempDir);
