@@ -1,0 +1,26 @@
+_ulid: 01KVSD21KBS5576Q0D7YQTFHPP
+slugs: []
+title: Review test result run store
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVSD21KA2JB05QHT69SWW8DN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-23T04:50:45.483Z
+examined_commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVS3FSCHGFXW8XX9082T2TDH"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-23T04:50:45.483Z
+updated_at: null
+notes: []
