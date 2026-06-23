@@ -151,3 +151,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T05:15:34.420Z
+  - _ulid: 01KVSFD5B72K045BVAB8DYB9SN
+    content: "Fix cycle 4: addressed all review threads. Fixed writeTestRunIndex by applying the
+      existing test-result run record-format ceiling before any exported index write, and fixed
+      case-level native metadata leakage by using strict submitted-input schemas for normalized
+      cases and nested payload sections while keeping stored-record schemas tolerant for
+      supported-format forward compatibility. Added behavioral regressions for future-format index
+      writes and case-level junit fields leaving the sidecar unchanged. Re-verified ACs and gates:
+      format:check, repo lint --quiet, focused changed-file oxlint, typecheck, focused
+      test-result-run-store test, full npm test (2895 suites passed; 10999 passed, 3 skipped), and
+      kspec validate refs/alignment/completeness with warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T05:31:46.919Z
