@@ -57,6 +57,18 @@ checks:
     runner: npm test
     created_at: 2026-06-23T04:20:36.554Z
     completed_at: 2026-06-23T04:20:36.554Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass: focused test-result-run-store run completed after waiting for the full-suite lock;
+      8 tests passed. Full log:
+      /tmp/kspec-test-cache/01KVSAB71P3RZC26FEQ5PS4KX2/f2e67f1b7bfc4e1b.log"
+    name: focused test-result-run-store
+    required: false
+    runner: npm test -- tests/test-result-run-store.test.ts
+    created_at: 2026-06-23T04:20:47.433Z
+    completed_at: 2026-06-23T04:20:47.433Z
 events:
   - _ulid: 01KVSACNNRFC087F7BRE15CBF7
     actor: Jacob Chapel
@@ -119,6 +131,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-23T04:20:36.847Z
+  - _ulid: 01KVSBB5YYKXDZ3V4R182ETY95
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused test-result-run-store
+    timestamp: 2026-06-23T04:20:47.711Z
 examined_commit: 53cae84f6c68a970db90bfddbeceedd23e70a137
 external_links: []
 lifecycle_state: open
@@ -162,5 +181,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-23T04:04:07.993Z
-updated_at: 2026-06-23T04:20:36.554Z
+updated_at: 2026-06-23T04:20:47.433Z
 notes: []
