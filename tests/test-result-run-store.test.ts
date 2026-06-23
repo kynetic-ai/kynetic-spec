@@ -462,6 +462,25 @@ describe("test result run store", () => {
   // AC: @test-result-run-store ac-newer-record-format-refused
   it("refuses newer index and run record formats without blocking unrelated project reads", async () => {
     const ctx = await initContext(project.tempDir, { syncMode: "skip" });
+
+    await expect(
+      writeTestRun(
+        ctx,
+        validRun({
+          format: CURRENT_TEST_RESULT_RUN_RECORD_FORMAT + 1,
+          run: {
+            id: testUlid("RUN", 5),
+            completed_at: "2026-06-22T23:00:00.000Z",
+          },
+        }),
+      ),
+    ).rejects.toMatchObject({
+      code: TEST_RESULT_RUN_FORMAT_NEWER_THAN_SUPPORTED_CODE,
+      declaredVersion: CURRENT_TEST_RESULT_RUN_RECORD_FORMAT + 1,
+      maxSupportedVersion: CURRENT_TEST_RESULT_RUN_RECORD_FORMAT,
+    } satisfies Partial<TestResultRunRecordFormatCompatibilityError>);
+    expect(existsSync(path.join(project.specDir, "coverage", "test-runs"))).toBe(false);
+
     await writeTestRun(ctx, validRun());
 
     await writeYamlFilePreserveFormat(getTestRunIndexPath(ctx), {

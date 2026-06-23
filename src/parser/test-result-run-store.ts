@@ -387,6 +387,7 @@ export async function writeTestRun(
   input: TestResultRunRecordInput,
 ): Promise<TestResultRunRecord> {
   const parsed = TestResultRunRecordSchema.parse(TestResultRunRecordInputSchema.parse(input));
+  assertRawFormatSupported(parsed);
   UlidSchema.parse(parsed.run.id);
 
   const runId = parsed.run.id;
