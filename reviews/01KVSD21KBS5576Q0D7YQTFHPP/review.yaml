@@ -2,7 +2,17 @@ _ulid: 01KVSD21KBS5576Q0D7YQTFHPP
 slugs: []
 title: Review test result run store
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass: oxfmt checked 1100 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-23T05:05:56.960Z
+    completed_at: 2026-06-23T05:05:56.960Z
 events:
   - _ulid: 01KVSD21KA2JB05QHT69SWW8DN
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-23T04:50:57.434Z
+  - _ulid: 01KVSDXVZDG7A67K6D44Q1WN7D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-23T05:05:57.229Z
 examined_commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T04:50:45.483Z
-updated_at: 2026-06-23T04:50:57.207Z
+updated_at: 2026-06-23T05:05:56.960Z
 notes: []
