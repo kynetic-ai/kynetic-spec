@@ -72332,7 +72332,7 @@ runs:
     completed_at: 2026-06-23T17:39:34.334Z
   - _ulid: 01KVV0A9EX0F45SNJ1Y7JK0R76
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72350,7 +72350,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T19:47:47.680Z
-        completed_at: 2026-06-23T19:47:47.680Z
+        completed_at: 2026-06-23T19:48:21.876Z
+        notes: "Captured high-confidence outcomes only. Friction: long-running full npm test/no-progress
+          perception is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run and related teardown
+          observations, so I added concrete evidence there rather than duplicating. Success:
+          captured @01KVV0C3 for test runner stale-daemon-artifact auto-rebuild working during
+          focused daemon route tests."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T19:48:21.876Z
+        completed_at: 2026-06-23T19:48:21.876Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-23T19:46:33.053Z
