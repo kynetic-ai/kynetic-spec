@@ -48,7 +48,7 @@ description: |
 spec_ref: "@ingested-run-verification-stamps"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-test-result-ingestion-interface"
@@ -59,6 +59,14 @@ tags:
   - ingestion
   - verification
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-ingested-run-verification-stamps/01kvs3ft
+  captured_at: 2026-06-23T21:25:25.468Z
+  commit: 2a86753bfb156ccebf7fb3648f00856ee3bd8638
+  remote: null
+  remote_url: null
+  upstream_ref: feat/ui-redesign
 session_id: 01KVV4JS511ZGHE7G4W10ER11C
 history:
   - author: Jacob Chapel
@@ -81,7 +89,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-23T21:01:57.733Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-ingested-run-verification-stamps/01kvs3ft
+          captured_at: 2026-06-23T21:25:25.468Z
+          commit: 2a86753bfb156ccebf7fb3648f00856ee3bd8638
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous: null
+      submitted_at:
+        new: 2026-06-23T21:25:25.484Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-23T21:25:25.484Z
 created_at: 2026-06-23T02:03:31.306Z
 started_at: 2026-06-23T21:01:57.733Z
+submitted_at: 2026-06-23T21:25:25.484Z
 todos: []
 automation: eligible
