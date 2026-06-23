@@ -71450,7 +71450,7 @@ runs:
     completed_at: 2026-06-22T00:17:12.732Z
   - _ulid: 01KVS56C9KCT1AEAHG4VEQKVPD
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71479,10 +71479,17 @@ runs:
           @task-investigate-npm-test-teardown-hang-after-green-suite-run. No duplicate friction
           capture needed. Searches for process tree/full test found no existing success
           observation."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-06-23T02:35:19.191Z
-        completed_at: 2026-06-23T02:35:19.191Z
+        completed_at: 2026-06-23T02:35:30.125Z
+        notes: "No new friction proposal: submission-linkage target drift and full-test quiet/hang behavior
+          are already tracked. Candidate capture is a success observation, not an improvement
+          proposal."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-23T02:35:30.125Z
+        completed_at: 2026-06-23T02:35:30.125Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T02:33:18.899Z
