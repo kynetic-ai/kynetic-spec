@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KVV4QG9CN9W4J5BGE7WJ7F63
+    content: "Approach: reuse the existing normalized mapping output and verification record store. Add
+      a buffered verification-stamp write helper so writePreparedTestRun can persist the run, index,
+      and ingestion-provenance stamps in one mutation; summarize persisted effects from the run
+      record so CLI and daemon stay equivalent. Edge cases: only passed attributed mappings write
+      stamps; failed/errored/skipped/unknown attributed mappings become non-positive effects;
+      unmapped/invalid mappings write no positive stamp; existing stamps are replaced by the
+      verification store contract; commit/session attribution comes from producer code_revision and
+      resolved ingestion session. Test plan: add behavioral ingestion-interface coverage for all
+      @ingested-run-verification-stamps ACs plus @annotation-freshness-provenance ac-2 and
+      @test-result-acquisition ac-1/ac-2/ac-3 on the ingested-run path."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T21:03:40.333Z
