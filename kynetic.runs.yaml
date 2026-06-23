@@ -71505,7 +71505,7 @@ runs:
     started_at: 2026-06-23T02:33:18.899Z
     completed_at: 2026-06-23T02:36:06.604Z
   - _ulid: 01KVS6F847EAFEFD5H6QB5XY5M
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -71550,10 +71550,13 @@ runs:
         completed_at: 2026-06-23T02:57:02.394Z
         notes: "No discussion needed: no new improvement proposal emerged after search; existing tracking
           already covers the only systemic friction."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-23T02:57:02.394Z
-        completed_at: 2026-06-23T02:57:02.394Z
+        completed_at: 2026-06-23T02:57:11.800Z
+        notes: No new items captured. Existing tracking covers the shell-fragile review body issue;
+          duplicating it would add noise. Success pattern noted in the workflow run only.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T02:55:38.120Z
+    completed_at: 2026-06-23T02:57:11.800Z
