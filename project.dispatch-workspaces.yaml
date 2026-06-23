@@ -13346,7 +13346,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T22:36:58.202Z
+      updated_at: 2026-06-23T22:40:00.271Z
     integration:
       status: merged
       detail: integration:merged
@@ -13363,18 +13363,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T22:16:33.213Z
-      last_reconciled_at: 2026-06-23T22:39:46.964Z
+      last_reconciled_at: 2026-06-23T22:40:00.271Z
       created_at: 2026-06-23T21:49:28.503Z
-      updated_at: 2026-06-23T22:39:46.964Z
+      updated_at: 2026-06-23T22:40:00.271Z
     workspace_id: dispatch-workspace-01KVS3FV0797YW7SJSQC07R1QT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 25ad6f033a3eb68a7d1fe4321f12b7b47779783c
-        last_seen_at: 2026-06-23T22:15:52.109Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-producer-contract-fixtures-01kvs3fv-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-test-result-producer-contract-fixtures/01kvs3fv
