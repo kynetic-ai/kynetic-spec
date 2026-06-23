@@ -72539,7 +72539,7 @@ runs:
     completed_at: 2026-06-23T21:04:03.014Z
   - _ulid: 01KVV610XQN6CRE38Q59RVA81R
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72553,7 +72553,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T21:27:06.135Z
-        completed_at: 2026-06-23T21:27:06.135Z
+        completed_at: 2026-06-23T21:27:18.178Z
+        notes: "Friction: full npm test took 3296.8s and had long quiet intervals where I had to inspect
+          process state to distinguish normal progress from a hang. This is systemic but already
+          tracked by @task-investigate-npm-test-teardown-hang-after-green-suite-run, so no duplicate
+          capture is needed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T21:27:18.178Z
+        completed_at: 2026-06-23T21:27:18.178Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T21:26:20.855Z
