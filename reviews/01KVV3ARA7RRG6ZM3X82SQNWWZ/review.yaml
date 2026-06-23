@@ -2,7 +2,17 @@ _ulid: 01KVV3ARA7RRG6ZM3X82SQNWWZ
 slugs: []
 title: Review test result ingestion interface (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1107 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-23T20:57:06.871Z
+    completed_at: 2026-06-23T20:57:06.871Z
 events:
   - _ulid: 01KVV3ARA6P2R63XW4KK7C0EVV
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-23T20:39:39.193Z
+  - _ulid: 01KVV4BGCC845EBEPDW3D17ATW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-23T20:57:07.212Z
 examined_commit: 559099b7ab5c4394323962498e151b1c71dfabd3
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T20:39:13.991Z
-updated_at: 2026-06-23T20:39:38.854Z
+updated_at: 2026-06-23T20:57:06.871Z
 notes: []
