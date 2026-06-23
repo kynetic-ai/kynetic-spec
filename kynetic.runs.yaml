@@ -72125,9 +72125,24 @@ runs:
     completed_at: 2026-06-23T07:56:36.022Z
   - _ulid: 01KVTN02987SJ9GZTWV6F2PYSK
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-23T16:28:43.688Z
+        completed_at: 2026-06-23T16:29:35.706Z
+        notes: "What worked well: test-first behavioral regressions were effective. The new
+          task-submission-linkage tests first failed with upstream_ref recorded as dev for
+          plan-scoped no-upstream branches, then passed after the resolver change. The existing
+          focused gate list also gave the right scope: task-submission-linkage,
+          submission-linkage-worktree, and dispatch-workspace-config covered submit,
+          repair/backfill, git upstream precedence, non-plan fallback, and adoption recovery without
+          needing broad exploratory testing first."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-23T16:29:35.706Z
+        completed_at: 2026-06-23T16:29:35.706Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T16:28:43.688Z
