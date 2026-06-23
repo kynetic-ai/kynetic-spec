@@ -46,6 +46,17 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-23T05:06:22.644Z
     completed_at: 2026-06-23T05:06:22.644Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass: focused test-result-run-store run completed; 8 tests passed. Full log:
+      /tmp/kspec-test-cache/01KVSCZKNC8AN8P85SNPJ20268/4017d44f641a4995.log"
+    name: focused test-result-run-store
+    required: false
+    runner: npm test -- tests/test-result-run-store.test.ts
+    created_at: 2026-06-23T05:06:28.295Z
+    completed_at: 2026-06-23T05:06:28.295Z
 events:
   - _ulid: 01KVSD21KA2JB05QHT69SWW8DN
     actor: Jacob Chapel
@@ -88,6 +99,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-23T05:06:22.912Z
+  - _ulid: 01KVSDYTK40K97G2ZQ5MEEA8VB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused test-result-run-store
+    timestamp: 2026-06-23T05:06:28.580Z
 examined_commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
 external_links: []
 lifecycle_state: open
@@ -100,5 +118,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T04:50:45.483Z
-updated_at: 2026-06-23T05:06:22.644Z
+updated_at: 2026-06-23T05:06:28.295Z
 notes: []
