@@ -15,3 +15,11 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T02:10:24.291Z
+  - _ulid: 01KVS48G03FV0XMJVSFXMV8ZAA
+    content: Implemented the initial normalized test-result run schema and sidecar store. The write path
+      validates the kspec-owned envelope, writes run.yaml plus index.yaml in one buffered mutation,
+      preserves supported-format unknown fields, refuses newer record formats before mutation, and
+      exposes latest/read/rebuild APIs. Focused behavioral tests are green for the new store slice.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T02:16:59.651Z
