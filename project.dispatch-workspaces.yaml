@@ -11653,12 +11653,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-23T19:49:12.348Z
+      updated_at: 2026-06-23T19:49:22.168Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T19:49:12.348Z
+      updated_at: 2026-06-23T19:49:22.168Z
     integration:
       status: pending
       detail: null
@@ -11666,27 +11666,32 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 0ac90eba3918b5d27a6e2377984eccc6df12b149
-      updated_at: 2026-06-23T19:49:12.348Z
-    lifecycle_state: ready
+      updated_at: 2026-06-23T19:49:22.168Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVS3FT7PAVVFSBRQ2RGV9BQA
-    task_ref: "@task-test-result-ingestion-interface"
+    task_ref: "@01KVS3FT7PAVVFSBRQ2RGV9BQA"
     task_slug: task-test-result-ingestion-interface
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T19:27:26.419Z
-      last_reconciled_at: 2026-06-23T19:49:12.348Z
+      last_reconciled_at: 2026-06-23T19:49:22.168Z
       created_at: 2026-06-23T07:36:33.859Z
-      updated_at: 2026-06-23T19:49:12.348Z
+      updated_at: 2026-06-23T19:49:22.168Z
     workspace_id: dispatch-workspace-01KVS3FT7PAVVFSBRQ2RGV9BQA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
+        last_seen_at: 2026-06-23T19:49:22.168Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-ingestion-interface-01kvs3ft-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-test-result-ingestion-interface/01kvs3ft
-        head: 0ac90eba3918b5d27a6e2377984eccc6df12b149
-        last_seen_at: 2026-06-23T19:27:16.696Z
+        head: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
+        last_seen_at: 2026-06-23T19:49:22.168Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-ingestion-interface-01kvs3ft
   - active_role: null
     base_branch_point: 78222f08366c3336ff0164ed272181954ae8dbc1
