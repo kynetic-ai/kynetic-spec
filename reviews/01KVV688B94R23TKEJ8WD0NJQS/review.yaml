@@ -24,6 +24,18 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-23T21:47:11.740Z
     completed_at: 2026-06-23T21:47:11.740Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: src/cli/commands/coverage.ts, src/parser/test-result-ingestion.ts,
+      src/parser/test-result-run-store.ts, src/parser/verification-record-store.ts,
+      tests/test-result-ingestion-interface.test.ts had 0 warnings and 0 errors."
+    name: focused-lint
+    required: false
+    runner: npx oxlint changed files
+    created_at: 2026-06-23T21:47:17.737Z
+    completed_at: 2026-06-23T21:47:17.737Z
 events:
   - _ulid: 01KVV688B96ZYAE8HNP4DZE9BK
     actor: Jacob Chapel
@@ -52,6 +64,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-23T21:47:12.022Z
+  - _ulid: 01KVV77CKX6S6Q56SN4GTYRYPV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-23T21:47:18.013Z
 examined_commit: 2a86753bfb156ccebf7fb3648f00856ee3bd8638
 external_links: []
 lifecycle_state: open
@@ -64,5 +83,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T21:30:17.833Z
-updated_at: 2026-06-23T21:47:11.740Z
+updated_at: 2026-06-23T21:47:17.737Z
 notes: []
