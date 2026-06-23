@@ -112,7 +112,7 @@ description: >-
 spec_ref: "@portable-task-submission-linkage"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -127,11 +127,11 @@ review_ref: "@01KVTN9VJKM2DH572RC9QQ443Z"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
-  captured_at: 2026-06-23T16:27:58.818Z
-  commit: 1444054dca9caff2a8c120fbc7ebdd03220cf5c0
-  remote: null
-  remote_url: null
-  upstream_ref: dev
+  captured_at: 2026-06-23T17:14:32.830Z
+  commit: eb99e0b0caf11981e7dba93e00328060201eac4c
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
 session_id: 01KVTPFA2QCSKDG1T2JYWEACEW
 history:
   - author: Jacob Chapel
@@ -197,8 +197,35 @@ history:
         previous: 2026-06-23T16:07:39.944Z
     command: task-start
     timestamp: 2026-06-23T16:55:30.832Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
+          captured_at: 2026-06-23T17:14:32.830Z
+          commit: eb99e0b0caf11981e7dba93e00328060201eac4c
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
+        previous:
+          review_url: null
+          branch: dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
+          captured_at: 2026-06-23T16:27:58.818Z
+          commit: 1444054dca9caff2a8c120fbc7ebdd03220cf5c0
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+      submitted_at:
+        new: 2026-06-23T17:14:32.836Z
+        previous: 2026-06-23T16:27:58.824Z
+    command: task-submit
+    timestamp: 2026-06-23T17:14:32.836Z
 created_at: 2026-06-23T16:04:01.735Z
 started_at: 2026-06-23T16:55:30.831Z
-submitted_at: 2026-06-23T16:27:58.824Z
+submitted_at: 2026-06-23T17:14:32.836Z
 todos: []
 automation: eligible

@@ -32973,7 +32973,7 @@
   title: Capture plan-scoped submission linkage fallback
   type: bug
   spec_ref: "@portable-task-submission-linkage"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -32987,5 +32987,5 @@
   todos_count: 0
   created_at: 2026-06-23T16:04:01.735Z
   started_at: 2026-06-23T16:55:30.831Z
-  submitted_at: 2026-06-23T16:27:58.824Z
+  submitted_at: 2026-06-23T17:14:32.836Z
   automation: eligible
