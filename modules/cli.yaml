@@ -1300,7 +1300,7 @@ features:
               This linkage is portable bootstrap state, not local worktree metadata.
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
             depends_on: []
             implements: []
             relates_to: []
