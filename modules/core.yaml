@@ -3351,7 +3351,7 @@ features:
           Actions, or kynetic-spec-specific result shape as the internal model.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@test-result-acquisition"
         implements: []
