@@ -72539,7 +72539,7 @@ runs:
     completed_at: 2026-06-23T21:04:03.014Z
   - _ulid: 01KVV610XQN6CRE38Q59RVA81R
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72561,7 +72561,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-23T21:27:18.178Z
-        completed_at: 2026-06-23T21:27:18.178Z
+        completed_at: 2026-06-23T21:27:28.423Z
+        notes: Coverage checked with kspec search. Search 'no-source-scanning' returned completed guardrail
+          tasks and observations, including @task-custom-no-source-scanning-rule; this success is
+          already represented. Search 'full npm test' was broad, and search 'test teardown hang'
+          returned existing pending @task-investigate-npm-test-teardown-hang-after-green-suite-run,
+          which covers the long/quiet green-suite test-run friction.
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-23T21:27:28.423Z
+        completed_at: 2026-06-23T21:27:28.423Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T21:26:20.855Z
