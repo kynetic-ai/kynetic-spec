@@ -10,3 +10,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T06:56:08.433Z
+  - _ulid: 01KVSNEAN0N5ZTW2MWSQHNY9X2
+    content: "Investigation update: fresh full npm test did not reproduce the historical broad
+      STACK_TRACE_ERROR cascade. Current full run failed only
+      tests/git-terminal-prompt-suppression.test.ts (3 tests) because git fetch/push/ls-remote to
+      the nominally unreachable HTTPS remote hit spawnSync ETIMEDOUT. I am narrowing that fixture to
+      a deterministic no-prompt failure so the full gate is not network-dependent."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T07:17:16.576Z
