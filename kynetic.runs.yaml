@@ -72652,7 +72652,7 @@ runs:
     completed_at: 2026-06-23T21:51:57.186Z
   - _ulid: 01KVV8PF92MV3WDKG90N6XGKG1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72665,7 +72665,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T22:14:14.351Z
-        completed_at: 2026-06-23T22:14:14.351Z
+        completed_at: 2026-06-23T22:14:51.241Z
+        notes: "High-confidence findings: (1) AC-driven neutral temp-project fixtures were effective for
+          preserving the general-system ingestion boundary; already covered by existing success
+          observation @01KVSJAD. (2) Full npm test can look idle late in the run while slow suites
+          are still draining; already covered by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run and its 2026-06-23 note. No
+          duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T22:14:51.241Z
+        completed_at: 2026-06-23T22:14:51.241Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-23T22:13:00.835Z
