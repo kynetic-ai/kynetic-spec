@@ -141,3 +141,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T05:07:54.114Z
+  - _ulid: 01KVSEFFMMYTX0SDZENMG2FQR6
+    content: "Fix cycle 4 approach: address both unresolved review blockers by making the submitted
+      normalized test-case payload strict while retaining passthrough stored-record schemas for
+      supported-format forward compatibility, and by applying the existing record-format ceiling to
+      the exported writeTestRunIndex path before any index file write. Regression coverage will
+      prove case-level native fields and future-format index writes are rejected without sidecar
+      mutation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T05:15:34.420Z
