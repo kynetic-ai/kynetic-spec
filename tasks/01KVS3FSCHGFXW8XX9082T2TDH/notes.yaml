@@ -89,3 +89,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T03:43:28.455Z
+  - _ulid: 01KVS9ZXWE2VHF520KCAX8CWPN
+    content: "Fix cycle 2: addressed all review threads. Fixed the blocker by enforcing the existing
+      test-result run record-format ceiling on incoming writeTestRun payloads before any sidecar
+      reads, locks, buffered writes, or store materialization. Added behavioral regression coverage
+      proving a submitted future-format run returns deterministic version diagnostics and leaves
+      coverage/test-runs absent. Re-verified ACs and gates: format:check, repo lint --quiet, focused
+      changed-file oxlint, typecheck, focused test-result-run-store test, full npm test (10999
+      passed, 3 skipped), and kspec validate refs/alignment/completeness with warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T03:57:10.414Z
