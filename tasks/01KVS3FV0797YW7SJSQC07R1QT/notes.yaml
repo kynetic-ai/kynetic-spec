@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KVV7FE2Y9M2KN2RF4XSF1KJS
+    content: "Approach: add CLI-adjacent developer documentation for the normalized test-result producer
+      contract, then add behavioral ingestion tests using temporary projects with neutral repository
+      layouts. Reuse existing schema/parser/CLI helpers, write one fixture with explicit normalized
+      refs and one with token extraction before normalization, plus a negative native-payload
+      rejection check. Edge cases: skipped/unknown are non-positive evidence, missing locations
+      remain absent, diagnostics persist, producer metadata varies by local/CI/agent without
+      requiring all source fields, and framework-native fields must be rejected before persistence.
+      Test plan: annotate coverage for all six @normalized-test-result-ingestion-contract ACs plus
+      @trait-type-safe-input ac-1/ac-2/ac-3, run focused ingestion tests, changed-file lint, and
+      validation gates before submit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T21:51:41.662Z
