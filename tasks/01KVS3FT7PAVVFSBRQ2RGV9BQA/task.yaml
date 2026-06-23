@@ -68,7 +68,7 @@ description: |
 spec_ref: "@test-result-ingestion-interface"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-test-result-ac-mapping"
@@ -90,7 +90,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: feat/ui-redesign
-session_id: null
+session_id: 01KVV1VSHYPHXJ1SPT5G869AW6
 history:
   - author: Jacob Chapel
     changes:
@@ -179,9 +179,22 @@ history:
         previous: pending_review
     command: review-verdict-needs-work
     timestamp: 2026-06-23T20:09:39.432Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KVV1VSHYPHXJ1SPT5G869AW6
+        previous: null
+      started_at:
+        new: 2026-06-23T20:14:27.237Z
+        previous: 2026-06-23T07:37:41.438Z
+    command: task-start
+    timestamp: 2026-06-23T20:14:27.237Z
 prior_status: null
 created_at: 2026-06-23T02:03:30.934Z
-started_at: 2026-06-23T07:37:41.438Z
+started_at: 2026-06-23T20:14:27.237Z
 submitted_at: 2026-06-23T19:45:41.187Z
 todos: []
 automation: eligible
