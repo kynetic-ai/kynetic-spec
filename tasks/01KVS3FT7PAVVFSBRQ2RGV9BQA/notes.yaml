@@ -37,3 +37,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T08:44:40.889Z
+  - _ulid: 01KVV07RNG3K59TBYZEDKMFBR1
+    content: "Implemented shared test-result ingestion for CLI and daemon: both paths parse the same
+      normalized payload, resolve actor/session attribution, reuse the AC mapper and run store,
+      support dry-run previews, reject read-only/static ingestion, and emit the coverage evidence
+      event through the daemon mutation pipeline after write/commit/cache refresh. Added behavioral
+      coverage comparing CLI vs daemon stored runs/summaries/events plus
+      JSON/error/dry-run/static-mode cases. Gates passed: focused ingestion test, focused
+      changed-file oxlint, typecheck, format:check, repo lint --quiet, refs/alignment/completeness
+      validation with existing warnings, and full npm test (2899 suites, 11011 passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T19:45:10.322Z
