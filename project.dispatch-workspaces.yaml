@@ -10779,11 +10779,11 @@ workspaces:
     canonical_branch: dispatch/task/task-test-result-ac-mapping/01kvs3fs
     canonical_branch_head: 1d095288f6bd172a9ee052971cd88ae2c54ee0db
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-23T06:57:51.579Z
+      updated_at: 2026-06-23T07:01:13.368Z
     health:
       status: healthy
       issues: []
@@ -10797,17 +10797,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: 1fb1d8395885a4ba5e9298c33bb7da9c5a2ede68
       updated_at: 2026-06-23T06:57:51.579Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVS3FSSRJ6E6M2VEAKBE322G
     task_ref: "@01KVS3FSSRJ6E6M2VEAKBE322G"
     task_slug: task-test-result-ac-mapping
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-23T07:01:13.368Z
       last_active_at: 2026-06-23T06:24:37.790Z
       last_reconciled_at: 2026-06-23T07:00:17.284Z
       created_at: 2026-06-23T05:58:05.827Z
-      updated_at: 2026-06-23T07:00:17.284Z
+      updated_at: 2026-06-23T07:01:13.368Z
     workspace_id: dispatch-workspace-01KVS3FSSRJ6E6M2VEAKBE322G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
