@@ -27798,7 +27798,7 @@ reviews:
   - _ulid: 01KVV0JRXV2DCP93NREM3E280G
     slugs: []
     title: Review test result ingestion interface
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 8
     examined_commit: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
@@ -27809,8 +27809,8 @@ reviews:
       content_hash: ""
       ref: "@01KVS3FT7PAVVFSBRQ2RGV9BQA"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-23T19:51:11.035Z
-    updated_at: 2026-06-23T20:08:53.559Z
+    updated_at: 2026-06-23T20:09:08.736Z

@@ -158,6 +158,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-23T20:08:53.840Z
+  - _ulid: 01KVV1KNMZQ97VWRNHJ84CFAPP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVV1KNC0JQYB6B7FJQSJJKKR
+    timestamp: 2026-06-23T20:09:09.023Z
 examined_commit: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
 external_links: []
 lifecycle_state: open
@@ -167,8 +174,28 @@ subject:
   content_hash: ""
   ref: "@01KVS3FT7PAVVFSBRQ2RGV9BQA"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVV1KNC0JQYB6B7FJQSJJKKR
+    anchor:
+      type: code
+      commit: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
+      line_end: 238
+      line_start: 206
+      path: tests/test-result-ingestion-interface.test.ts
+      side: head
+    entries:
+      - _ulid: 01KVV1KNC0FB45R2SBPXXQDQZE
+        author: Jacob Chapel
+        body: "MUST-FIX: ac-dry-run-preview is only proven through the CLI path. These AC-tagged tests call
+          coverage test-result ingest --dry-run, but none call
+          /api/coverage/test-results/runs?dry_run=... or assert the daemon dry-run returns dry_run:
+          true, stored: false, no run files or index changes, no cache write-through, and no
+          coverage_evidence_changed broadcast. The task explicitly requires dry-run support for both
+          CLI and daemon ingestion, so this AC would not fail if the daemon path stopped honoring
+          dry_run."
+        created_at: 2026-06-23T20:09:08.736Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-23T19:51:11.035Z
-updated_at: 2026-06-23T20:08:53.559Z
+updated_at: 2026-06-23T20:09:08.736Z
 notes: []
