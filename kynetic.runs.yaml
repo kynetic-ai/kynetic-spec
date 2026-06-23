@@ -71668,7 +71668,7 @@ runs:
     completed_at: 2026-06-23T03:40:11.123Z
   - _ulid: 01KVSA51SW57H3STRXNK4B58VY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71681,7 +71681,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T04:01:03.771Z
-        completed_at: 2026-06-23T04:01:03.771Z
+        completed_at: 2026-06-23T04:01:38.014Z
+        notes: "Identified one high-confidence friction pattern: kspec task submit captured
+          submission_linkage.upstream_ref from the task branch/upstream instead of the dispatch
+          manual_merge target, requiring a post-submit patch. This was repeatable in this task
+          history and had a clear cause/effect. No high-confidence new success capture needed beyond
+          normal task notes."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T04:01:38.014Z
+        completed_at: 2026-06-23T04:01:38.014Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-23T03:59:58.268Z
