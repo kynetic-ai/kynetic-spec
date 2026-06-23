@@ -3349,6 +3349,9 @@ features:
           producer/source metadata, and zero or more acceptance-criterion
           references. It intentionally does not import a Vitest, JUnit, GitHub
           Actions, or kynetic-spec-specific result shape as the internal model.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@test-result-acquisition"
         implements: []
