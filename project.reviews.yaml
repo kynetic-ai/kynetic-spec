@@ -27857,7 +27857,7 @@ reviews:
     title: Review test result producer contract fixtures
     disposition: pending
     author: Jacob Chapel
-    check_count: 4
+    check_count: 5
     examined_commit: 25ad6f033a3eb68a7d1fe4321f12b7b47779783c
     lifecycle_state: open
     related_refs: []
@@ -27870,4 +27870,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-23T22:17:55.651Z
-    updated_at: 2026-06-23T22:34:03.749Z
+    updated_at: 2026-06-23T22:34:22.788Z
