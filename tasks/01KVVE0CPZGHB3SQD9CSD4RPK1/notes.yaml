@@ -15,3 +15,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T23:52:08.494Z
+  - _ulid: 01KVVER7NW1EXA2A190V19KA19
+    content: Implemented initial coverage evidence index module and AC-annotated behavioral tests. The
+      builder now creates one entry per live AC, labels annotation/bootstrap/verification/ingested
+      evidence, selects latest mapped run evidence by completed_at plus run id, and exposes
+      unmapped/invalid result evidence separately. Focused test passed before formatting; format and
+      changed-file oxlint are clean.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T23:58:50.044Z
