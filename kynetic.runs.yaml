@@ -71562,7 +71562,7 @@ runs:
     completed_at: 2026-06-23T02:57:11.800Z
   - _ulid: 01KVS7PHVX66VWKA4G6SWS327C
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71579,7 +71579,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T03:18:34.032Z
-        completed_at: 2026-06-23T03:18:34.032Z
+        completed_at: 2026-06-23T03:18:47.403Z
+        notes: "Friction points: (1) kspec task submit in this dispatch/manual_merge context captured
+          submission_linkage.upstream_ref from git tracking instead of the dispatch merge target,
+          requiring a structured task patch after submit. This repeated the earlier repair pattern
+          and is systemic. (2) npm test took about 42 minutes, but that is known project cost and
+          did complete cleanly; no new teardown or hang issue appeared in this session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T03:18:47.403Z
+        completed_at: 2026-06-23T03:18:47.403Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T03:17:06.045Z
