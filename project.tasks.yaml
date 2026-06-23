@@ -32914,6 +32914,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-23T02:03:31.306Z
+  automation: eligible
 - _ulid: 01KVS3FV0797YW7SJSQC07R1QT
   slugs:
     - task-test-result-producer-contract-fixtures
