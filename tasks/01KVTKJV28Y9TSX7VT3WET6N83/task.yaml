@@ -112,7 +112,7 @@ description: >-
 spec_ref: "@portable-task-submission-linkage"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -123,6 +123,14 @@ tags:
   - plan-branch
   - bug
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
+  captured_at: 2026-06-23T16:27:58.818Z
+  commit: 1444054dca9caff2a8c120fbc7ebdd03220cf5c0
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KVTKQA67A64JYCAYA31QQ5GF
 history:
   - author: Jacob Chapel
@@ -138,7 +146,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-23T16:07:39.945Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
+          captured_at: 2026-06-23T16:27:58.818Z
+          commit: 1444054dca9caff2a8c120fbc7ebdd03220cf5c0
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-23T16:27:58.824Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-23T16:27:58.824Z
 created_at: 2026-06-23T16:04:01.735Z
 started_at: 2026-06-23T16:07:39.944Z
+submitted_at: 2026-06-23T16:27:58.824Z
 todos: []
 automation: eligible
