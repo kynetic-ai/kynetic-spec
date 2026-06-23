@@ -19,3 +19,291 @@ notes:
     content: Clarify applicable trait scopes and non-applicable inherited cases
     author: Jacob Chapel
     created_at: 2026-06-22T23:16:52.970Z
+  - _ulid: 01KVS3FVCDH6H5241WT1BVRY37
+    content: >-
+      ### What this plan is
+
+
+      This is the ingestion half of P1b. It creates a general, durable input
+
+      pipeline for completed test runs and makes accepted passing mapped results
+
+      write ingestion-provenance verification stamps. It deliberately stops
+
+      before deriving coverage states such as covered/failing/re-verify; that is
+
+      owned by the companion coverage-state-engine plan.
+
+
+      ### Split rationale
+
+
+      The split keeps dependencies simple:
+
+
+      1. **This plan:** normalized run store, mapping, CLI/API ingestion,
+         verification stamps.
+      2. **Coverage state engine plan:** read the run store plus existing
+         annotation/freshness data and compute per-AC states.
+
+      The only dependency is one-way: the state engine consumes the run store.
+
+      The ingestion path is independently useful and testable through CLI/API
+
+      round-trips, stored runs, unmapped reports, and verification stamps.
+
+
+      ### Expected storage layout
+
+
+      The P1b ingestion store has a fixed shadow-metadata layout:
+
+
+      ```text
+
+      <specDir>/coverage/test-runs/index.yaml
+
+      <specDir>/coverage/test-runs/runs/<run-ulid>/run.yaml
+
+      ```
+
+
+      Rules:
+
+
+      - Test runs adopt `@trait-folder-backed-entity-1`: each accepted run owns a
+        stable directory named by its full ULID under `coverage/test-runs/runs/`.
+      - `<run-ulid>` is the canonical kspec run id and must be a valid ULID. Do
+        not use producer-native ids, test names, timestamps, or filesystem paths
+        as directory names.
+      - `runs/<run-ulid>/run.yaml` is the authoritative sidecar for detailed case,
+        mapping, diagnostic, producer, and verification-effect data for that run.
+      - `index.yaml` is a bounded persisted list/latest summary for consumers and
+        cache warm-up. It is updated in the same logical atomic mutation as the
+        run folder and `run.yaml`; it can be rebuilt from run folders if needed,
+        but reads must not materialize it in an otherwise absent store.
+      - `index.yaml` must enumerate every accepted run id and relative run-file
+        path. It does not contain a per-criterion latest-evidence projection in
+        this plan; downstream coverage-state consumers select latest relevant
+        per-criterion evidence by reading the indexed run files and applying the
+        completed_at plus run-id tie-break rule.
+      - The store exposes an index rebuild/repair path that scans
+        `coverage/test-runs/runs/<run-ulid>/run.yaml` folders and rewrites
+        `index.yaml`; a dry-run rebuild after repair must report no drift.
+      - Unknown files or directories inside a run folder are ignored by test-run
+        semantics and preserved across writes, per the folder-backed entity trait.
+      - This plan does not adopt `@trait-entity-scoped-local-resources` and does
+        not persist framework-native artifacts, logs, screenshots, XML, or JSON
+        blobs. Those require a future artifact/resource-store plan if needed.
+      - The store lives beside the existing `coverage/verifications/<item-ulid>.yaml`
+        verification sidecar and never rewrites `.kspec/modules/*` spec source.
+
+      Expected `index.yaml` shape:
+
+
+      ```text
+
+      format: 1
+
+      runs:
+        01ARZ3NDEKTSV4RRFFQ69G5FAV:
+          path: runs/01ARZ3NDEKTSV4RRFFQ69G5FAV/run.yaml
+          completed_at: "2026-06-22T21:15:00.000Z"
+          producer:
+            kind: local
+            label: generic-project-tests
+          code_revision: abc123
+          totals:
+            cases: 2
+            mapped: 1
+            unmapped: 1
+            invalid: 0
+            passed: 1
+            failed: 0
+            errored: 0
+            skipped: 1
+            unknown: 0
+            stamps_written: 1
+      latest_run_id: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+
+      ```
+
+
+      Expected `runs/<run-ulid>/run.yaml` shape:
+
+
+      ```text
+
+      format: 1
+
+      run:
+        id: 01ARZ3NDEKTSV4RRFFQ69G5FAV
+        completed_at: "2026-06-22T21:15:00.000Z"
+        started_at: "2026-06-22T21:14:10.000Z"
+        duration_ms: 50000
+      producer:
+        kind: local                 # local | ci | agent | other
+        label: generic-project-tests
+        command: npm test
+        ci_url: null
+        agent_session: null
+        code_revision: abc123
+        native:
+          run_id: producer-owned-id
+      cases:
+        - id: case-stable-id-1
+          display_name: accepts explicit AC references
+          suite_path: [adapter contract]
+          status: passed            # passed | failed | errored | skipped | unknown
+          duration_ms: 12
+          location:
+            file: tests/adapter-contract.test.ts
+            line: 42
+          diagnostic: null
+          refs:
+            - item_ref: "@generic-feature"
+              ac_id: ac-explicit-mapping
+        - id: case-stable-id-2
+          display_name: plain test without AC reference
+          suite_path: [adapter contract]
+          status: skipped
+          refs: []
+      mapping:
+        attributed:
+          - case_id: case-stable-id-1
+            item_ulid: 01BX5ZZKBKACTAV9WEVGEMMVRZ
+            item_ref: "@generic-feature"
+            ac_id: ac-explicit-mapping
+            status: passed
+        unmapped:
+          - case_id: case-stable-id-2
+            reason: no_refs
+            display_name: plain test without AC reference
+        invalid: []
+      verification_effects:
+        stamps_written:
+          - case_id: case-stable-id-1
+            item_ulid: 01BX5ZZKBKACTAV9WEVGEMMVRZ
+            ac_id: ac-explicit-mapping
+            verified_at: "2026-06-22T21:15:00.000Z"
+        non_positive_mapped_cases: []
+      ```
+
+
+      Field-name and layout compatibility is part of this plan's contract. An
+
+      implementation agent may add forward-compatible optional fields under
+
+      schema-approved extension objects, but must not rename these fields, move the
+
+      store, switch away from folder-backed run entities, or store framework-native
+
+      payloads as the core persistence model.
+
+
+      ### General-system guardrails
+
+
+      - Core ingestion accepts the kspec normalized envelope, not Vitest JSON,
+        JUnit XML, GitHub Actions artifacts, or this repository's current test
+        progress reporter output.
+      - Framework-native importers are adapters. They may live later or as thin
+        examples, but the store, mapper, daemon route, and state engine never
+        depend on native adapter fields.
+      - Tests must include temporary kspec projects whose package names, test
+        paths, spec slugs, and framework labels are not kynetic-spec.
+      - Do not infer AC mappings from file paths or repository conventions. The
+        core mapping input is explicit normalized references, optionally produced
+        by an adapter/token extractor before core ingestion.
+      - Do not make the daemon run test commands in this plan. Command execution
+        policy, resource limits, and dispatch-engine contention are separate
+        concerns deliberately avoided by the global ingestion decision.
+
+      ### Relationship to imported redesign plans
+
+
+      - `@plan-ui-redesign-global-decisions` provides
+        `@test-result-acquisition`, `@annotation-freshness-provenance`, and
+        `@coverage-state-presentation` decision boundaries.
+      - `@plan-ac-coverage-verification-schema-and-storage` provides the
+        verification stamp store, freshness resolver, session evidence, and
+        compatibility rules. This plan writes stamps through that store; it does
+        not replace it.
+      - `@plan-dispatch-mutation-service` provides the mutation pipeline and
+        event vocabulary reservation. Ingestion writes must use the pipeline for
+        daemon-served mutations.
+      - `@plan-web-ui-foundations` provides actor identity/write rules consumed
+        by ingestion attribution.
+
+      ### Event and cache boundary
+
+
+      A successful ingestion is a metadata mutation. It should broadcast a
+
+      minimal coverage-evidence-changed event on the spec-item domain
+
+      (`items:updates`) after the run store and any ingestion-provenance stamps
+
+      are committed and visible. The event identifies mapped affected items when
+
+      known and can carry a project-summary scope when only unmapped-result
+
+      summaries changed. It must not claim final covered/failing/not-yet/re-verify
+
+      state; the companion coverage-state-engine plan owns final coverage-state
+
+      payload semantics and cache invalidation for computed states.
+
+
+      ### Migration and backcompat
+
+
+      - Projects with no test-run store remain valid and unchanged.
+
+      - Reads do not create the store.
+
+      - First accepted ingestion creates the sidecar.
+
+      - Older kspec versions ignore the sidecar if they do not know it.
+
+      - Newer record formats fail closed for the store only.
+
+      - Unknown fields in supported records round-trip.
+
+
+      ### Scope exclusions
+
+
+      - Running tests from the daemon.
+
+      - A full adapter library for every framework.
+
+      - Coverage-state computation and UI presentation.
+
+      - Flakiness history, matrix observations, and trend analytics.
+
+      - Merge/repair/revert actions.
+
+      - Authentication or multi-user authorization. Actor identity here is
+        attribution, consistent with the imported UI foundation plan.
+
+      ### Validation gates
+
+
+      Before this plan is considered ready for approval, run at least:
+
+
+      - `KSPEC_NO_DAEMON=1 kspec plan import
+      /home/chapel/Projects/kynetic-spec/plans/ui-redesign-test-result-ingestion.md --module @core
+      --status draft --dry-run --json`
+
+      - `KSPEC_NO_DAEMON=1 kspec validate --warnings-ok`
+
+
+      Implementation tasks should add focused unit/integration tests and preserve
+
+      the established TypeScript build order: generate `packages/shared/dist`
+
+      before root `tsc` when a task touches shared package types.
+    author: Jacob Chapel
+    created_at: 2026-06-23T02:03:32.109Z

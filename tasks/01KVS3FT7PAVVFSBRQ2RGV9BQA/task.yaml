@@ -1,0 +1,85 @@
+_ulid: 01KVS3FT7PAVVFSBRQ2RGV9BQA
+slugs:
+  - task-test-result-ingestion-interface
+title: Expose equivalent CLI and daemon ingestion interfaces
+type: task
+description: |
+  Add the user-facing ingestion paths: a CLI command and a daemon API
+  route that accept the same normalized payload, use the same mapper and
+  store, and produce the same mutation/event behavior.
+
+  Why: Completed results may come from local scripts, CI, or agents.
+  The daemon should not run arbitrary test commands for this slice; it
+  should ingest completed run records. The CLI and daemon paths must be
+  equivalent so automation does not create a second semantics path.
+
+  What:
+  - Add a CLI command under a coverage/test-result namespace that reads
+    a normalized JSON payload from a file or stdin, validates it, maps
+    AC references, writes the run, and prints human-readable or `--json`
+    summaries containing run id, case counts, mapped criterion count,
+    unmapped count, invalid mapping count, and affected item refs. Stamp-write
+    counts are added by the later ingestion-provenance stamp task, not by
+    this task.
+  - Add a daemon route that accepts the same normalized JSON payload and
+    returns the same summary shape using REST endpoint conventions:
+    schema-derived request validation, JSON responses, structured error
+    bodies, request ids, and semantic status codes. Successful writes must
+    use the shared mutation pipeline for write → shadow commit → cache
+    update → event broadcast ordering.
+  - Add dry-run support for both CLI and daemon ingestion. Dry-run performs
+    validation and mapping, reports the same diagnostics/summary/event scopes
+    that a write would produce, and guarantees no run folder, index entry,
+    verification stamp, shadow commit, cache update, or event broadcast.
+    This command has no `--force`, confirmation prompt, state transition, or
+    batch partial-success mode; those inherited trait cases are explicitly
+    non-applicable. Accepted runs with unmapped/invalid mapping diagnostics
+    still succeed because diagnostics are retained result data, not command
+    partial failure.
+  - Resolve actor identity through the shared actor write rules. Accept
+    optional session and source metadata; validate session id shape but
+    do not require a session.
+  - Static/export mode refuses ingestion with a read-only/static-mode
+    error.
+  - Equivalence tests submit the same fixture through CLI and daemon in
+    equivalent temporary projects and compare stored run shape, mapping
+    report, and returned summary. Daemon tests assert the event is
+    observable only after read-back sees the new run.
+
+  How: Route implementation should call the same library function as
+  the CLI after actor/source resolution. Do not shell out from the
+  daemon to the CLI. Emit a minimal coverage-evidence-changed event on
+  the spec-item domain (`items:updates`) for affected mapped items and
+  for project-level unmapped-result summary changes. This plan's event
+  says evidence changed; the companion engine plan defines final
+  coverage-state event payload semantics after state recomputation.
+
+  Covers: @test-result-ingestion-interface ac-cli-daemon-equivalence,
+  ac-no-daemon-execution, ac-actor-source-attribution,
+  ac-session-attribution-optional, ac-mutation-pipeline-order,
+  ac-static-mode-readonly, ac-dry-run-preview. Covers the applicable
+  ingestion-command portions of @trait-json-output, @trait-semantic-exit-codes,
+  @trait-error-guidance, @trait-api-endpoint, and @trait-dry-run. Non-applicable
+  inherited cases are explicitly out of scope for this command: confirmation
+  decline, invalid state transition, batch partial failure, `--dry-run --force`,
+  and list-endpoint pagination. Accepted runs with unmapped or invalid mapping
+  diagnostics return success with diagnostics rather than semantic partial
+  failure.
+spec_ref: "@test-result-ingestion-interface"
+plan_ref: "@plan-test-result-ingestion"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-test-result-ac-mapping"
+context: []
+priority: 1
+tags:
+  - coverage
+  - ingestion
+  - cli
+  - daemon
+  - api
+vcs_refs: []
+created_at: 2026-06-23T02:03:30.934Z
+todos: []

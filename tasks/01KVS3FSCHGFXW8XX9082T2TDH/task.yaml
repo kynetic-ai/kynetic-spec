@@ -1,0 +1,85 @@
+_ulid: 01KVS3FSCHGFXW8XX9082T2TDH
+slugs:
+  - task-test-result-run-store
+title: Implement the normalized test result schema and run store
+type: task
+description: |
+  Build the normalized test-run record schema and additive metadata
+  sidecar store that future coverage-state computation reads.
+
+  Why: The redesign decision @test-result-acquisition says coverage is
+  ingestion-oriented, but no durable run store exists. This store must
+  be general for any kspec project, not shaped around kynetic-spec's
+  current Vitest output, package layout, or test file names.
+
+  What:
+  - Add Zod schemas for the concrete normalized run envelope, producer/source
+    metadata, normalized flat case records, mapped criterion refs,
+    unmapped/invalid mapping reports, verification effect summary, index
+    summary, and a record-format version. Required fields: canonical run id
+    as a ULID, completed_at, producer kind/label, case list, and each case's
+    stable id, display name, and status. Optional fields: started_at,
+    duration_ms, suite_path, file/line, diagnostic text, command, CI URL,
+    code revision, session id, and producer-native metadata retained only
+    under an explicitly namespaced extension object.
+  - Store runs in the fixed sidecar layout
+    `coverage/test-runs/index.yaml` and
+    `coverage/test-runs/runs/<run-ulid>/run.yaml`. The per-run folder is a
+    folder-backed entity: run.yaml is the source of truth for detailed
+    case/mapping data; index.yaml stores bounded list/latest summaries for
+    consumers and enumerates every accepted run id/path. The sidecar is
+    additive like the verification store: no spec source or code source file
+    changes on ingestion, absent store remains valid, first write
+    materializes both the index and the runs directory, and newer record
+    format is refused with deterministic diagnostics.
+  - Implement folder-backed trait behavior for test runs: stable ULID
+    directories, unknown-file preservation, bounded index entries,
+    index-entry-and-run-folder writes in one logical atomic mutation,
+    indexed mutation updates, rebuild from run folders, repair convergence,
+    and semantic-default drift avoidance.
+
+  - Preserve unrecognized fields within supported record-format
+    versions across read/write cycles.
+  - Implement latest-run lookup by completed_at with deterministic
+    tie-break by run id.
+  - Tests must use neutral fixture projects with different package/test
+    layouts; no test may rely on this repository's real test result
+    shape or kynetic-spec-specific path conventions.
+
+  How: Put schemas in src/schema/ and the store in src/parser/ following
+  the verification-record-store pattern: one store manager, tolerant
+  reads, explicit format ceiling, and no CLI/daemon endpoint in this
+  first task. Add focused unit tests for valid persistence, invalid
+  rejection, sidecar-only writes, latest-run ordering, forward-compatible
+  unknown fields, and newer-format refusal.
+
+  Covers: @test-result-run-store ac-normalized-run-persistence,
+  ac-framework-neutral-storage, ac-sidecar-only, ac-fixed-storage-layout,
+  ac-latest-run-query, ac-invalid-run-rejected,
+  ac-forward-compatible-records, ac-newer-record-format-refused.
+  Covers @normalized-test-result-ingestion-contract ac-owned-envelope,
+  ac-status-vocabulary, ac-stable-case-identity, ac-location-optional,
+  ac-diagnostics-preserved, ac-producer-metadata for the schema/store
+  contract. Covers @trait-type-safe-input ac-1, ac-2, and ac-3 for the
+  normalized payload schema boundary. Covers @trait-folder-backed-entity-1
+  ac-entity-has-ulid-directory, ac-index-excludes-heavy-detail-bytes,
+  ac-unknown-files-preserved, ac-index-rebuilds-from-folders,
+  ac-index-entry-created-with-folder, ac-indexed-mutation-updates-index,
+  ac-index-repair-converges, ac-semantic-defaults-do-not-drift for the
+  test-run store layout.
+spec_ref: "@test-result-run-store"
+plan_ref: "@plan-test-result-ingestion"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - coverage
+  - ingestion
+  - schema
+  - storage
+vcs_refs: []
+created_at: 2026-06-23T02:03:30.065Z
+todos: []

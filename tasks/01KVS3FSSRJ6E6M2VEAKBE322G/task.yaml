@@ -1,0 +1,63 @@
+_ulid: 01KVS3FSSRJ6E6M2VEAKBE322G
+slugs:
+  - task-test-result-ac-mapping
+title: Implement normalized mapping and unmapped-result reporting
+type: task
+description: |
+  Implement the mapper that validates normalized case-to-AC references
+  against the loaded spec corpus and records every unmapped or invalid
+  case explicitly.
+
+  Why: The important general-system boundary is here. Core ingestion
+  must consume explicit normalized references, not infer meaning from
+  kynetic-spec's current tests, Vitest field names, or repository paths.
+  Any framework parser is an adapter that emits normalized refs before
+  this mapper runs.
+
+  What:
+  - Define the normalized AC reference shape used by test cases. It
+    must reference the project's spec corpus by item ref/canonical id
+    plus AC id, and resolve through the same ref index as other kspec
+    surfaces.
+  - Attribute a passed/failed/errored/skipped/unknown case to every
+    valid referenced criterion without duplicating the stored case
+    payload.
+  - For each missing item, missing AC id, malformed reference, or case
+    with no references, record a structured unmapped entry naming the
+    case, native display name, and offending/absent reference.
+  - Keep invalid mappings out of positive attribution. Do not guess a
+    nearby AC or infer from file path.
+  - Add a small adapter-boundary helper that can extract agreed AC
+    tokens from arbitrary strings into normalized refs, but keep it
+    outside the store/engine core. Tests should prove explicit refs and
+    token-derived refs reach the core in the same normalized shape.
+  - Tests: valid explicit mapping, token-derived normalized mapping,
+    multiple criteria per case, malformed reference, missing item,
+    missing AC id, unmapped case retained, and a fixture project whose
+    names/paths differ from kynetic-spec.
+
+  How: Implement as pure parser/mapping functions in src/parser/ so both
+  CLI and daemon ingestion can call the same code. Use the existing
+  ref-resolution utilities rather than introducing a coverage-specific
+  ref resolver.
+
+  Covers: @test-result-ac-mapping ac-explicit-mapping,
+  ac-token-mapping-before-core, ac-invalid-mapping-reported,
+  ac-unmapped-results-retained, ac-multiple-criteria,
+  ac-no-project-name-assumption.
+spec_ref: "@test-result-ac-mapping"
+plan_ref: "@plan-test-result-ingestion"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-test-result-run-store"
+context: []
+priority: 1
+tags:
+  - coverage
+  - ingestion
+  - mapping
+vcs_refs: []
+created_at: 2026-06-23T02:03:30.488Z
+todos: []

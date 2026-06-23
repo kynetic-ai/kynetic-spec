@@ -3222,6 +3222,454 @@ features:
         notes: []
     created: 2026-06-15T23:37:18.011Z
     notes: []
+  - _ulid: 01KVS3FRWYCHJ3DZENBZ8P1KXT
+    slugs:
+      - test-result-run-store
+    title: Test Result Run Store
+    type: feature
+    description: |
+      Durable storage for normalized completed test runs submitted to a
+      kspec project. A run record captures one completed execution from
+      any producer — local tool, CI job, agent, or other runner — without
+      assuming the producer's framework, repository layout, package
+      manager, or result-file format. The store persists the normalized
+      run envelope, the normalized test cases, mappable acceptance-criterion
+      references, unmapped cases, producer metadata, execution timestamps,
+      and optional code revision. It lives in project metadata as an
+      additive folder-backed sidecar at `coverage/test-runs/index.yaml` plus one
+      folder-backed run entity per accepted run under
+      `coverage/test-runs/runs/<run-ulid>/run.yaml`; project source files and
+      spec source files are never rewritten by ingestion.
+    depends_on:
+      - "@test-result-acquisition"
+      - "@coverage-record-compatibility"
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-folder-backed-entity-1"
+    acceptance_criteria:
+      - given: |
+          a completed test run submitted in the supported normalized run
+          envelope
+        id: ac-normalized-run-persistence
+        then: |
+          the run is persisted with its run identity, producer metadata,
+          timestamps, test cases, mapped acceptance-criterion references,
+          unmapped cases, and optional code revision
+        when: |
+          ingestion accepts it
+      - given: |
+          two submitted runs produced by different test frameworks or CI
+          systems
+        id: ac-framework-neutral-storage
+        then: |
+          the stored records use the same kspec-owned schema and contain no
+          framework-specific top-level fields required for correctness
+        when: |
+          each is normalized before storage
+      - given: |
+          a project's spec files and source files before ingestion
+        id: ac-sidecar-only
+        then: |
+          no spec source file and no code source file is modified by the
+          ingestion; only the project metadata sidecar changes
+        when: |
+          a run is ingested
+      - given: |
+          a valid normalized run with canonical run id 01ARZ3NDEKTSV4RRFFQ69G5FAV
+        id: ac-fixed-storage-layout
+        then: |
+          the run is stored as
+          coverage/test-runs/runs/01ARZ3NDEKTSV4RRFFQ69G5FAV/run.yaml and the
+          coverage/test-runs/index.yaml summary is updated in the same
+          mutation; ingestion uses the folder-backed entity trait for the run
+          folder and does not store framework-native artifact files in this plan
+        when: |
+          ingestion persists it
+      - given: |
+          more than one accepted run in the store
+        id: ac-latest-run-query
+        then: |
+          the store returns the run with the latest completed-at timestamp,
+          breaking exact timestamp ties deterministically by run identity
+        when: |
+          consumers request the latest ingested run
+      - given: |
+          a submitted run missing required envelope fields or containing
+          an invalid case status
+        id: ac-invalid-run-rejected
+        then: |
+          the run is rejected with field-specific diagnostics and the store
+          remains unchanged
+        when: |
+          ingestion validates it
+      - given: |
+          a stored run record carrying unrecognized fields within a
+          supported record-format version
+        id: ac-forward-compatible-records
+        then: |
+          the unrecognized fields survive unchanged and do not prevent
+          supported fields from being read
+        when: |
+          a later run is ingested or the store is read
+      - given: |
+          a test-run store or run record declaring a record-format version
+          newer than the running kspec version supports
+        id: ac-newer-record-format-refused
+        then: |
+          the operation refuses with an error naming both versions, the
+          store is not modified, and unrelated project operations remain
+          available
+        when: |
+          the store is read or written
+    tags: []
+    requirements:
+      - _ulid: 01KVS3FRYBQR0F28TBP2KYG3GR
+        slugs:
+          - normalized-test-result-ingestion-contract
+        title: Normalized Test Result Ingestion Contract
+        type: requirement
+        description: |
+          The ingestion boundary accepts one kspec-owned normalized result
+          format. Producers, reporters, and adapters translate framework-native
+          output into this format before the core store, coverage engine, or
+          daemon routes see it. The contract models runs, suites, and cases in
+          general terms; it records stable case identity, display names,
+          optional file/line locations, status, duration, diagnostic text,
+          producer/source metadata, and zero or more acceptance-criterion
+          references. It intentionally does not import a Vitest, JUnit, GitHub
+          Actions, or kynetic-spec-specific result shape as the internal model.
+        depends_on:
+          - "@test-result-acquisition"
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-type-safe-input"
+        acceptance_criteria:
+          - given: |
+              a producer submits test results
+            id: ac-owned-envelope
+            then: |
+              the payload conforms to the kspec normalized run envelope rather
+              than to a framework-native result schema
+            when: |
+              the ingestion boundary accepts the payload
+          - given: |
+              a normalized test case in a submitted run
+            id: ac-status-vocabulary
+            then: |
+              the status is one of passed, failed, errored, skipped, or unknown,
+              and unknown or skipped cases never count as positive coverage
+              evidence
+            when: |
+              its status is read
+          - given: |
+              a normalized test case with a producer-supplied stable id
+            id: ac-stable-case-identity
+            then: |
+              consumers can match the case by that stable id without relying on
+              display-name text alone
+            when: |
+              the same logical case appears in a later run from the same
+              producer and project revision
+          - given: |
+              a normalized test case whose producer cannot provide a file or
+              line location
+            id: ac-location-optional
+            then: |
+              ingestion still accepts the case and records location absence as
+              absence rather than inventing a project-specific path
+            when: |
+              the run is ingested
+          - given: |
+              a failing or errored normalized case with diagnostic text or a
+              failure message
+            id: ac-diagnostics-preserved
+            then: |
+              the diagnostic material needed for a human to identify the
+              failure is preserved without requiring the original native result
+              file
+            when: |
+              the run is read back
+          - given: |
+              a run produced by a local command, CI job, or agent session
+            id: ac-producer-metadata
+            then: |
+              the run identifies the producer kind and producer label, and may
+              carry optional source details such as command, CI URL, agent
+              session id, or code revision without making any of those details
+              mandatory for all producers
+            when: |
+              it is normalized
+        tags: []
+        created: 2026-06-23T02:03:29.611Z
+        notes: []
+      - _ulid: 01KVS3FRZPH0BS4BDH9NXYM9WV
+        slugs:
+          - test-result-ac-mapping
+        title: Test Result AC Mapping
+        type: requirement
+        description: |
+          Ingested results map test cases onto acceptance criteria through the
+          normalized result contract, not through project-specific file names or
+          the shape of one repository's test suite. A case may carry explicit
+          criterion references emitted by a reporter or adapter, and adapters
+          may also extract references from agreed text tokens in test names or
+          suite names before producing the normalized payload. Core ingestion
+          validates mapped references against the project's current spec corpus,
+          records all valid mappings, and keeps invalid or absent mappings as
+          unmapped result data that later surfaces can show. No result is
+          silently discarded only because it cannot be mapped.
+        depends_on:
+          - "@normalized-test-result-ingestion-contract"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a normalized test case carrying explicit acceptance-criterion
+              references
+            id: ac-explicit-mapping
+            then: |
+              each reference that resolves to an existing criterion in the
+              project is attributed to that criterion
+            when: |
+              the run is ingested
+          - given: |
+              a framework-native result whose test name contains an agreed
+              acceptance-criterion token
+            id: ac-token-mapping-before-core
+            then: |
+              the adapter emits explicit normalized references, and the core
+              ingestion path handles them exactly like any other explicit
+              mapping
+            when: |
+              an adapter normalizes the result
+          - given: |
+              a normalized case whose mapped reference names a missing item or
+              criterion
+            id: ac-invalid-mapping-reported
+            then: |
+              ingestion records a structured unmapped-or-invalid mapping entry
+              naming the case and offending reference, and does not attribute
+              the case to any wrong criterion
+            when: |
+              the run is ingested
+          - given: |
+              a normalized run containing test cases with no acceptance-criterion
+              mapping
+            id: ac-unmapped-results-retained
+            then: |
+              those cases remain attached to the run as unmapped cases so UI,
+              CLI, or validation surfaces can report them later
+            when: |
+              ingestion accepts the run
+          - given: |
+              one test case intentionally covers multiple acceptance criteria
+            id: ac-multiple-criteria
+            then: |
+              the run attributes the same case outcome to every referenced
+              criterion without duplicating the stored case payload
+            when: |
+              the case carries several valid criterion references
+          - given: |
+              a kspec project whose package name, manifest file, test directory,
+              and spec item slugs differ from kynetic-spec
+            id: ac-no-project-name-assumption
+            then: |
+              mapping behavior depends only on the project's loaded spec corpus
+              and normalized references, not on kynetic-spec-specific names,
+              paths, or test framework conventions
+            when: |
+              its normalized test results are ingested
+        tags: []
+        created: 2026-06-23T02:03:29.654Z
+        notes: []
+      - _ulid: 01KVS3FS16WWS3NZD4P3AGA3VQ
+        slugs:
+          - test-result-ingestion-interface
+        title: Test Result Ingestion Interface
+        type: requirement
+        description: |
+          Test-result ingestion is exposed through matching CLI and daemon
+          interfaces that accept the same normalized payload and produce the
+          same stored run, validation diagnostics, cache updates, and events.
+          The daemon does not run arbitrary test commands for this plan; it
+          accepts completed run records submitted by trusted local tools, CI, or
+          agents. Successful ingestion is a project metadata mutation and uses
+          the shared mutation pipeline so the shadow commit, cache update, and
+          typed event order match the rest of the redesign program.
+        depends_on:
+          - "@shared-mutation-pipeline"
+          - "@actor-identity-model"
+          - "@test-result-ac-mapping"
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+          - "@trait-api-endpoint"
+          - "@trait-dry-run"
+        acceptance_criteria:
+          - given: |
+              the same valid normalized run payload
+            id: ac-cli-daemon-equivalence
+            then: |
+              both paths produce the same stored run shape, mapping report, and
+              affected-domain event payloads before stamp-writing behavior is
+              layered on by the ingestion-provenance stamp task
+            when: |
+              it is submitted once through the CLI and once through the daemon
+              ingestion route in equivalent projects
+          - given: |
+              a caller wants test results represented in kspec
+            id: ac-no-daemon-execution
+            then: |
+              the daemon accepts a completed result payload and never executes
+              a configured test command as part of this plan
+            when: |
+              the ingestion interface is used
+          - given: |
+              a run submitted through CLI, daemon route, CI helper, or agent
+              session
+            id: ac-actor-source-attribution
+            then: |
+              the run records the submitting actor resolved by the shared actor
+              identity rules and records source metadata sufficient to identify
+              whether the run came from local, CI, agent, or other producer
+            when: |
+              ingestion stores it
+          - given: |
+              a run submitted from inside a kspec session or outside any
+              session
+            id: ac-session-attribution-optional
+            then: |
+              the session id is recorded when supplied and valid, and absence
+              of session id remains valid for non-session producers
+            when: |
+              ingestion stores it
+          - given: |
+              a daemon-served ingestion succeeds
+            id: ac-mutation-pipeline-order
+            then: |
+              the shadow commit exists and the daemon read model reflects the
+              ingested run before the event is observable
+            when: |
+              subscribers observe the emitted event and re-fetch the latest run
+          - given: |
+              a static-export or read-only project snapshot
+            id: ac-static-mode-readonly
+            then: |
+              the interface refuses with a read-only/static-mode error and does
+              not pretend the result was stored
+            when: |
+              a caller attempts to ingest a run
+          - given: |
+              a valid or invalid normalized payload is submitted with dry-run
+              preview enabled through the CLI or daemon ingestion route
+            id: ac-dry-run-preview
+            then: |
+              the response reports the run id, validation diagnostics, mapping
+              summary, affected items, and event scopes that would result, but
+              no run folder, index entry, verification stamp, shadow commit,
+              cache update, or event broadcast is produced
+            when: |
+              ingestion validates and maps the payload
+        tags: []
+        created: 2026-06-23T02:03:29.702Z
+        notes: []
+      - _ulid: 01KVS3FSACEKAW9R1MVVY6HC2W
+        slugs:
+          - ingested-run-verification-stamps
+        title: Ingested Run Verification Stamps
+        type: requirement
+        description: |
+          Passing ingested results can confirm the test mapping for their
+          mapped acceptance criteria by writing verification stamps with
+          ingestion provenance. Failed, errored, skipped, unknown, unmapped, or
+          invalidly mapped cases do not write positive verification stamps.
+          Detailed run data remains in the test-run store; the verification
+          stamp records only the current verification fact supported by the
+          existing stamp schema — verified time, actor, provenance, optional
+          commit, and optional session linkage.
+        depends_on:
+          - "@ac-verification-record-store"
+          - "@verification-session-evidence"
+          - "@annotation-freshness-provenance"
+          - "@test-result-ingestion-interface"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              an accepted run containing a passed case mapped to an existing
+              acceptance criterion
+            id: ac-passing-mapped-writes-stamp
+            then: |
+              the criterion's verification stamp is written or replaced with
+              provenance ingestion, the run's completion time, the submitting
+              actor, and any supplied commit or session linkage
+            when: |
+              ingestion finalizes
+          - given: |
+              an accepted run containing failed, errored, skipped, or unknown
+              cases mapped to an acceptance criterion
+            id: ac-nonpassing-no-positive-stamp
+            then: |
+              those cases do not write positive verification stamps for that
+              criterion
+            when: |
+              ingestion finalizes
+          - given: |
+              an accepted run containing cases that cannot be mapped to any
+              acceptance criterion
+            id: ac-unmapped-no-stamp
+            then: |
+              no verification stamp is written for those cases, and their
+              unmapped status remains available from the run record
+            when: |
+              ingestion finalizes
+          - given: |
+              a run ingestion writes verification stamps
+            id: ac-stamp-store-contract-preserved
+            then: |
+              the stamps conform to the existing verification stamp schema and
+              do not require consumers to understand test-run store internals
+            when: |
+              the verification record store is read by existing consumers
+          - given: |
+              the same valid normalized run payload with passing mapped cases is
+              submitted through the CLI and daemon ingestion paths in equivalent
+              projects
+            id: ac-stamp-cli-daemon-equivalence
+            then: |
+              both paths produce the same verification stamp writes, stamp-write
+              count, non-positive mapped case count, and stored verification
+              effects in the run record
+            when: |
+              ingestion-provenance stamp writing is enabled
+          - given: |
+              more than one accepted run has written ingestion-provenance
+              verification stamps
+            id: ac-latest-ingested-run-freshness
+            then: |
+              it labels the stamp as positive ingestion-provenance evidence from
+              an ingested run while the detailed latest-run, failed-run, or
+              unmapped evidence remains in the test-run store for the coverage
+              state engine to evaluate
+            when: |
+              a consumer presents freshness based on ingested-run evidence
+        tags: []
+        created: 2026-06-23T02:03:29.996Z
+        notes: []
+    created: 2026-06-23T02:03:29.566Z
+    notes: []
 modules:
   - _ulid: 01KPPN4244R4AH3WQGW4F8M1CF
     slugs:

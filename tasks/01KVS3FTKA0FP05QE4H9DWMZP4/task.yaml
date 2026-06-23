@@ -1,0 +1,63 @@
+_ulid: 01KVS3FTKA0FP05QE4H9DWMZP4
+slugs:
+  - task-ingested-run-verification-stamps
+title: Write ingestion-provenance verification stamps from passing mapped cases
+type: task
+description: |
+  Connect accepted passing mapped results to the existing AC
+  verification record store by writing ingestion-provenance stamps.
+
+  Why: @annotation-freshness-provenance says ingested passing runs can
+  supersede bootstrap freshness. P1a already built the stamp store;
+  this task makes ingested runs write the current verification fact
+  without expanding the stamp schema into a framework-specific result
+  object.
+
+  What:
+  - For each passed case mapped to an existing criterion, write or
+    replace that criterion's verification stamp with provenance
+    ingestion, verified_at = run completed_at, actor = submitting actor,
+    optional commit = run code revision, and optional session = supplied
+    session id.
+  - Do not write positive stamps for failed, errored, skipped, unknown,
+    unmapped, or invalidly mapped cases.
+  - Preserve the existing verification stamp schema. Store detailed
+    run/case data only in the test-run store; stamps remain readable by
+    existing freshness consumers without understanding run internals.
+  - Make the CLI/API summary report how many stamps were written and
+    how many mapped cases were non-positive evidence, and persist those
+    verification effects in the run record consistently for CLI and daemon
+    submissions.
+  - Tests: passing mapped case writes ingestion stamp; failed/errored,
+    skipped, unknown, unmapped, and invalidly mapped cases write none;
+    commit/session attribution passes through; an existing stamp is
+    replaced according to the verification store contract; existing
+    freshness resolver returns the recorded ingestion stamp.
+
+  How: Reuse writeVerificationStamp from the P1a store inside the same
+  mutation transaction as the run write. If the run write succeeds but a
+  stamp write would fail validation, the whole ingestion mutation fails
+  and leaves both stores unchanged.
+
+  Covers: @ingested-run-verification-stamps ac-passing-mapped-writes-stamp,
+  ac-nonpassing-no-positive-stamp, ac-unmapped-no-stamp,
+  ac-stamp-store-contract-preserved, ac-stamp-cli-daemon-equivalence,
+  ac-latest-ingested-run-freshness.
+  Also covers @annotation-freshness-provenance ac-2 and
+  @test-result-acquisition ac-1, ac-2, ac-3 for the ingested-run path.
+spec_ref: "@ingested-run-verification-stamps"
+plan_ref: "@plan-test-result-ingestion"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-test-result-ingestion-interface"
+context: []
+priority: 1
+tags:
+  - coverage
+  - ingestion
+  - verification
+vcs_refs: []
+created_at: 2026-06-23T02:03:31.306Z
+todos: []

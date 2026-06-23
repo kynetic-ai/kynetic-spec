@@ -1,0 +1,55 @@
+_ulid: 01KVS3FV0797YW7SJSQC07R1QT
+slugs:
+  - task-test-result-producer-contract-fixtures
+title: Add producer contract docs and neutral ingestion fixtures
+type: task
+description: |
+  Document the normalized producer contract and add reusable fixtures
+  that prove the ingestion path is project- and framework-neutral.
+
+  Why: The first implementers and future adapters need a concrete
+  contract, but the contract must not be mistaken for kynetic-spec's
+  own test suite shape. Neutral fixtures are the regression guard.
+
+  What:
+  - Add developer documentation for the normalized JSON envelope,
+    fixed shadow sidecar layout, required index.yaml and run-file shapes,
+    required fields, status vocabulary, mapping reference shape,
+    producer/source metadata, and examples for local, CI, and agent
+    producers.
+  - Include examples that do not mention kynetic-spec paths, packages,
+    or Vitest fields. If Vitest or JUnit examples are included, label
+    them as adapter examples that translate into the normalized
+    envelope, not as accepted core schemas.
+  - Add temp-project fixtures with two different repository layouts and
+    test naming styles. One should submit explicit normalized refs; one
+    should exercise token extraction before normalization. Both should
+    verify the same core store/mapping behavior.
+  - Add a negative fixture showing a framework-native payload rejected
+    by the core ingestion endpoint until normalized, so the boundary is
+    explicit.
+
+  How: Keep docs near the CLI command/help text and tests near the new
+  ingestion test suite. Run focused ingestion tests plus kspec validate
+  before marking this task complete.
+
+  Covers: @normalized-test-result-ingestion-contract ac-owned-envelope,
+  ac-status-vocabulary, ac-stable-case-identity, ac-location-optional,
+  ac-diagnostics-preserved, ac-producer-metadata.
+spec_ref: "@normalized-test-result-ingestion-contract"
+plan_ref: "@plan-test-result-ingestion"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ingested-run-verification-stamps"
+context: []
+priority: 2
+tags:
+  - coverage
+  - ingestion
+  - docs
+  - tests
+vcs_refs: []
+created_at: 2026-06-23T02:03:31.719Z
+todos: []

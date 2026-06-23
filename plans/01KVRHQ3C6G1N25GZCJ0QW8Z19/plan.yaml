@@ -2,11 +2,21 @@ _ulid: 01KVRHQ3C6G1N25GZCJ0QW8Z19
 slugs:
   - plan-test-result-ingestion
 title: Test Result Ingestion
-status: approved
+status: active
 approved_at: 2026-06-23T02:02:40.541Z
 branch: feat/ui-redesign
-derived_specs: []
-derived_tasks: []
+derived_specs:
+  - "@test-result-run-store"
+  - "@normalized-test-result-ingestion-contract"
+  - "@test-result-ac-mapping"
+  - "@test-result-ingestion-interface"
+  - "@ingested-run-verification-stamps"
+derived_tasks:
+  - "@task-test-result-run-store"
+  - "@task-test-result-ac-mapping"
+  - "@task-test-result-ingestion-interface"
+  - "@task-ingested-run-verification-stamps"
+  - "@task-test-result-producer-contract-fixtures"
 module_ref: "@core"
 source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-test-result-ingestion.md
 created_at: 2026-06-22T20:52:55.301Z
