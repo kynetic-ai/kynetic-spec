@@ -33036,6 +33036,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-23T23:45:49.143Z
+  automation: eligible
 - _ulid: 01KVVE0DG6ZG9NX5A2A86ZJQ63
   slugs:
     - task-coverage-freshness-revision-comparison
