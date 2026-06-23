@@ -22943,6 +22943,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-23T05:10:08.445Z
+  - _ulid: 01KVSFNK9CC8VMF6GHX2SGP3AF
+    type: success
+    content: "For forward-compatible sidecar stores, keeping stored-record schemas tolerant while using
+      separate strict submitted-input schemas gives a clean boundary: external producer/native
+      fields are rejected before mutation, while supported-format on-disk unknown fields still
+      round-trip. This pattern resolved the normalized test-result run store fix cycle without
+      weakening forward compatibility."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-23T05:36:23.340Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
