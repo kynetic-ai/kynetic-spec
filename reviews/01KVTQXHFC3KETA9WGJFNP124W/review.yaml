@@ -13,6 +13,20 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-23T17:34:26.489Z
     completed_at: 2026-06-23T17:34:26.489Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint exited 0 with 0 errors (existing warning baseline reported). Focused
+      changed-file oxlint on src/agent-runtime/dispatch.ts src/agent-runtime/workspace.ts
+      src/cli/commands/task.ts src/utils/git.ts tests/dispatch-workspace-config.test.ts
+      tests/task-submission-linkage.test.ts exited 0; warnings were existing task.ts no-shadow
+      baseline, not added hunks.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-23T17:34:41.781Z
+    completed_at: 2026-06-23T17:34:41.781Z
 events:
   - _ulid: 01KVTQXHFC3CWMR0231XP580G3
     actor: Jacob Chapel
@@ -34,6 +48,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-23T17:34:26.732Z
+  - _ulid: 01KVTRRVVFYCTXX4906RB0JFQW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-23T17:34:42.031Z
 examined_commit: eb99e0b0caf11981e7dba93e00328060201eac4c
 external_links: []
 lifecycle_state: open
@@ -46,5 +67,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T17:19:46.668Z
-updated_at: 2026-06-23T17:34:26.489Z
+updated_at: 2026-06-23T17:34:41.781Z
 notes: []
