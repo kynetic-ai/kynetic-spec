@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KVSPREPJ1KPJBANE9VAH67NM
+    content: "Approach: add a shared test-result ingestion service that parses the normalized JSON
+      payload, resolves actor/session/source metadata through existing actor rules and schemas, maps
+      AC refs with the existing mapper, and either previews or writes through the existing run
+      store. Refactor the store so daemon can skip its internal commit and commit via
+      runRouteMutation, while CLI uses the same service directly. Add a coverage_evidence_changed
+      event on items:updates with affected item refs plus project-level unmapped/invalid
+      scope.\\nEdge cases: invalid JSON/schema fields, invalid session id, unmapped/invalid refs
+      that still succeed as diagnostics, dry-run with invalid payload preserving no state,
+      read-only/static request refusal, daemon event emitted after read-back can see the run, and
+      trait N/A cases for force/confirmation/pagination/partial batch.\\nTest plan: CLI behavioral
+      tests for human/JSON/error/dry-run/static and semantic exit behavior; daemon route tests for
+      validation/status/request id/read-only/dry-run/mutation pipeline/event ordering; equivalence
+      test comparing CLI and daemon stored run, mapping report, summary, and event payloads in
+      equivalent temp projects."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T07:40:16.978Z
