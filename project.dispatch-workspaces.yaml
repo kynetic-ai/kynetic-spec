@@ -12864,7 +12864,7 @@ workspaces:
         head: 2a86753bfb156ccebf7fb3648f00856ee3bd8638
         last_seen_at: 2026-06-23T21:28:46.866Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ingested-run-verification-stamps-01kvs3ft
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f633577fbaf546dad41b5a9cdc28a0aa556357d6
     bootstrap:
       status: succeeded
@@ -13346,7 +13346,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T22:15:52.109Z
+      updated_at: 2026-06-23T22:16:33.213Z
     integration:
       status: pending
       detail: null
@@ -13362,10 +13362,10 @@ workspaces:
     task_slug: task-test-result-producer-contract-fixtures
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-23T21:50:03.403Z
-      last_reconciled_at: 2026-06-23T22:15:52.109Z
+      last_active_at: 2026-06-23T22:16:33.213Z
+      last_reconciled_at: 2026-06-23T22:16:33.213Z
       created_at: 2026-06-23T21:49:28.503Z
-      updated_at: 2026-06-23T22:16:23.936Z
+      updated_at: 2026-06-23T22:16:33.213Z
     workspace_id: dispatch-workspace-01KVS3FV0797YW7SJSQC07R1QT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
