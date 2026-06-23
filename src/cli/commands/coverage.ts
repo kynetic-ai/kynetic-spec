@@ -54,6 +54,8 @@ function printHumanSummary(summary: TestResultIngestionSummary): void {
   console.log(`Mapped criteria: ${summary.mapped_criterion_count}`);
   console.log(`Unmapped cases: ${summary.unmapped_count}`);
   console.log(`Invalid mappings: ${summary.invalid_mapping_count}`);
+  console.log(`Verification stamps written: ${summary.stamps_written_count}`);
+  console.log(`Non-positive mapped cases: ${summary.non_positive_mapped_case_count}`);
   console.log(`Actor: ${summary.actor}`);
   console.log(
     `Affected items: ${

@@ -271,6 +271,31 @@ export async function writeVerificationStamp(
   acId: string,
   stamp: VerificationStampInput,
 ): Promise<VerificationStamp> {
+  const parsed = await runWithBuffer(ctx.specDir, async () =>
+    writeVerificationStampWithoutCommit(ctx, itemUlid, acId, stamp),
+  );
+
+  // Shadow commit AFTER flush — the record file is on disk atomically.
+  await commitIfShadow(ctx.shadow, "verification stamp", `@${itemUlid}`, `${acId} verified`);
+
+  return parsed;
+}
+
+/**
+ * Write (or replace) a verification stamp without creating a shadow commit.
+ *
+ * This is for higher-level metadata mutations that need verification effects
+ * to be flushed and committed together with another sidecar write. It uses the
+ * same validation, locking, record-format checks, and buffer-aware filesystem
+ * operations as `writeVerificationStamp`; the caller owns the surrounding
+ * buffered transaction and final commit.
+ */
+export async function writeVerificationStampWithoutCommit(
+  ctx: KspecContext,
+  itemUlid: string,
+  acId: string,
+  stamp: VerificationStampInput,
+): Promise<VerificationStamp> {
   // Validate the keys BEFORE constructing any filesystem path. An unvalidated
   // itemUlid is interpolated into the record path, so a traversal value like
   // `../../modules/specs` would otherwise resolve outside the store and could
@@ -323,9 +348,6 @@ export async function writeVerificationStamp(
       await writeFileBufferAware(recordPath, toYaml(next));
     });
   });
-
-  // Shadow commit AFTER flush — the record file is on disk atomically.
-  await commitIfShadow(ctx.shadow, "verification stamp", `@${itemUlid}`, `${acId} verified`);
 
   return parsed;
 }

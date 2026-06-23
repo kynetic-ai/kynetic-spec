@@ -45,6 +45,7 @@ import {
 import { withFileLock } from "./file-lock.js";
 import { ReferenceIndex } from "./refs.js";
 import { mapTestResultCasesToAcceptanceCriteria } from "./test-result-ac-mapping.js";
+import { writeVerificationStampWithoutCommit } from "./verification-record-store.js";
 import { commitIfShadow } from "./shadow.js";
 import { loadAllItems, type KspecContext } from "./yaml.js";
 import { readYamlFile, toYaml, writeYamlFile } from "./yaml.js";
@@ -404,7 +405,7 @@ export async function normalizeTestRunForWrite(
 export async function writePreparedTestRun(
   ctx: KspecContext,
   parsed: TestResultRunRecord,
-  options: { skipCommit?: boolean } = {},
+  options: { skipCommit?: boolean; writeVerificationStamps?: boolean } = {},
 ): Promise<TestResultRunRecord> {
   const runId = parsed.run.id;
   const runDir = getTestRunDir(ctx, runId);
@@ -425,6 +426,18 @@ export async function writePreparedTestRun(
 
       await mkdirBufferAware(runDir);
       await writeFileBufferAware(runPath, toYaml(mergeRunRecordForWrite(rawRun, parsed)));
+
+      if (options.writeVerificationStamps === true) {
+        for (const effect of parsed.verification_effects.stamps_written) {
+          await writeVerificationStampWithoutCommit(ctx, effect.item_ulid, effect.ac_id, {
+            verified_at: effect.verified_at,
+            actor: parsed.producer.actor ?? "",
+            provenance: "ingestion",
+            ...(parsed.producer.code_revision ? { commit: parsed.producer.code_revision } : {}),
+            ...(parsed.producer.agent_session ? { session: parsed.producer.agent_session } : {}),
+          });
+        }
+      }
 
       const currentIndex = normalizeRawIndex(rawIndex);
       const runs = { ...currentIndex.runs, [runId]: toTestRunIndexEntry(parsed) };
