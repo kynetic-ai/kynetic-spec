@@ -68,7 +68,7 @@ description: |
 spec_ref: "@test-result-ingestion-interface"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-test-result-ac-mapping"
@@ -85,11 +85,11 @@ review_ref: "@01KVV0JRXV2DCP93NREM3E280G"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-test-result-ingestion-interface/01kvs3ft
-  captured_at: 2026-06-23T19:45:41.181Z
-  commit: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
-  remote: null
-  remote_url: null
-  upstream_ref: feat/ui-redesign
+  captured_at: 2026-06-23T20:33:15.599Z
+  commit: 559099b7ab5c4394323962498e151b1c71dfabd3
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-test-result-ingestion-interface/01kvs3ft
 session_id: 01KVV1VSHYPHXJ1SPT5G869AW6
 history:
   - author: Jacob Chapel
@@ -192,9 +192,36 @@ history:
         previous: 2026-06-23T07:37:41.438Z
     command: task-start
     timestamp: 2026-06-23T20:14:27.237Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-test-result-ingestion-interface/01kvs3ft
+          captured_at: 2026-06-23T20:33:15.599Z
+          commit: 559099b7ab5c4394323962498e151b1c71dfabd3
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-test-result-ingestion-interface/01kvs3ft
+        previous:
+          review_url: null
+          branch: dispatch/task/task-test-result-ingestion-interface/01kvs3ft
+          captured_at: 2026-06-23T19:45:41.181Z
+          commit: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+      submitted_at:
+        new: 2026-06-23T20:33:15.609Z
+        previous: 2026-06-23T19:45:41.187Z
+    command: task-submit
+    timestamp: 2026-06-23T20:33:15.610Z
 prior_status: null
 created_at: 2026-06-23T02:03:30.934Z
 started_at: 2026-06-23T20:14:27.237Z
-submitted_at: 2026-06-23T19:45:41.187Z
+submitted_at: 2026-06-23T20:33:15.609Z
 todos: []
 automation: eligible
