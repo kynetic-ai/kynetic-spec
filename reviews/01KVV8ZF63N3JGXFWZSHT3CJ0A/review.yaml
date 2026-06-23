@@ -178,6 +178,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-23T22:34:48.059Z
+  - _ulid: 01KVV9ZDYG10QX8KZ75QZC7X88
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVV9ZDNJ4YJB6HCS8328YN32
+    timestamp: 2026-06-23T22:35:22.960Z
 examined_commit: 25ad6f033a3eb68a7d1fe4321f12b7b47779783c
 external_links: []
 lifecycle_state: open
@@ -187,8 +194,47 @@ subject:
   content_hash: ""
   ref: "@01KVS3FV0797YW7SJSQC07R1QT"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVV9ZDNJ4YJB6HCS8328YN32
+    entries:
+      - _ulid: 01KVV9ZDNJWE0ADK28SJPN04Q8
+        author: codex
+        body: >-
+          Evidence log:
+
+
+          Files read: kspec-agents.md; docs/guides/index.md;
+          docs/guides/test-result-producer-contract.md; src/cli/help/content.ts;
+          tests/test-result-producer-contract.test.ts; src/schema/test-result-runs.ts;
+          src/parser/test-result-ac-tokens.ts; src/parser/test-result-ingestion.ts;
+          src/parser/test-result-run-store.ts; tests/test-result-run-store.test.ts;
+          tests/helpers/cli.ts; src/cli/commands/help.ts.
+
+
+          Commands run: git diff/stat/name-only against feat/ui-redesign base; kspec task get
+          @01KVS3FV0797YW7SJSQC07R1QT; kspec item get @normalized-test-result-ingestion-contract;
+          kspec item get @trait-type-safe-input; rg AC annotation searches; npm run format:check;
+          npm run lint -- --quiet; npx oxlint src/cli/help/content.ts
+          tests/test-result-producer-contract.test.ts; npm run typecheck; npm test; npm test --
+          test-result-producer-contract; kspec validate --refs --warnings-ok; kspec validate
+          --alignment --warnings-ok; kspec validate --completeness --warnings-ok.
+
+
+          Claims verified: the guide and help topic describe the strict normalized input envelope
+          reflected by TestResultRunRecordInputSchema; the behavioral tests use temporary projects
+          with two neutral layouts, explicit refs, token extraction before normalization, and
+          native-payload rejection before persistence; invalid status validation reports
+          schema-derived alternatives; skipped/unknown/non-positive mapped cases are retained
+          without positive stamps.
+
+
+          Categories searched: correctness, spec/trait AC alignment, edge cases (missing locations,
+          skipped/unknown, invalid native payload, invalid enum), error handling, test quality,
+          integration with CLI help and ingestion storage, and project-neutral wording. No blocking
+          findings found.
+        created_at: 2026-06-23T22:35:22.674Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-23T22:17:55.651Z
-updated_at: 2026-06-23T22:34:47.722Z
+updated_at: 2026-06-23T22:35:22.674Z
 notes: []
