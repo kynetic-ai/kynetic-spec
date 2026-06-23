@@ -11150,12 +11150,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-23T06:23:43.665Z
+      updated_at: 2026-06-23T06:23:54.970Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T06:23:43.665Z
+      updated_at: 2026-06-23T06:23:54.970Z
     integration:
       status: pending
       detail: null
@@ -11163,7 +11163,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 1fb1d8395885a4ba5e9298c33bb7da9c5a2ede68
-      updated_at: 2026-06-23T06:23:43.665Z
+      updated_at: 2026-06-23T06:23:54.970Z
     lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVS3FSSRJ6E6M2VEAKBE322G
@@ -11172,16 +11172,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T05:58:49.524Z
-      last_reconciled_at: 2026-06-23T06:23:43.665Z
+      last_reconciled_at: 2026-06-23T06:23:54.970Z
       created_at: 2026-06-23T05:58:05.827Z
-      updated_at: 2026-06-23T06:23:43.665Z
+      updated_at: 2026-06-23T06:23:54.970Z
     workspace_id: dispatch-workspace-01KVS3FSSRJ6E6M2VEAKBE322G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 1d095288f6bd172a9ee052971cd88ae2c54ee0db
+        last_seen_at: 2026-06-23T06:23:54.970Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-ac-mapping-01kvs3fs-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-test-result-ac-mapping/01kvs3fs
-        head: 1fb1d8395885a4ba5e9298c33bb7da9c5a2ede68
-        last_seen_at: 2026-06-23T05:58:05.827Z
+        head: 1d095288f6bd172a9ee052971cd88ae2c54ee0db
+        last_seen_at: 2026-06-23T06:23:54.970Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-ac-mapping-01kvs3fs
