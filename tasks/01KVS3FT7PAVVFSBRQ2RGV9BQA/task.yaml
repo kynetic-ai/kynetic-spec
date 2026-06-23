@@ -68,7 +68,7 @@ description: |
 spec_ref: "@test-result-ingestion-interface"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-test-result-ac-mapping"
@@ -81,6 +81,14 @@ tags:
   - daemon
   - api
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-test-result-ingestion-interface/01kvs3ft
+  captured_at: 2026-06-23T19:45:41.181Z
+  commit: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
+  remote: null
+  remote_url: null
+  upstream_ref: feat/ui-redesign
 session_id: null
 history:
   - author: Jacob Chapel
@@ -136,8 +144,29 @@ history:
         previous: in_progress
     command: task-unblock
     timestamp: 2026-06-23T19:26:33.183Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-test-result-ingestion-interface/01kvs3ft
+          captured_at: 2026-06-23T19:45:41.181Z
+          commit: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous: null
+      submitted_at:
+        new: 2026-06-23T19:45:41.187Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-23T19:45:41.187Z
 prior_status: null
 created_at: 2026-06-23T02:03:30.934Z
 started_at: 2026-06-23T07:37:41.438Z
+submitted_at: 2026-06-23T19:45:41.187Z
 todos: []
 automation: eligible
