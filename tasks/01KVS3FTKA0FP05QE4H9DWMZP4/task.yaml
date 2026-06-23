@@ -48,7 +48,7 @@ description: |
 spec_ref: "@ingested-run-verification-stamps"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-test-result-ingestion-interface"
@@ -59,6 +59,7 @@ tags:
   - ingestion
   - verification
 vcs_refs: []
+session_id: 01KVV4JS511ZGHE7G4W10ER11C
 history:
   - author: Jacob Chapel
     changes:
@@ -67,6 +68,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-23T02:05:52.812Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KVV4JS511ZGHE7G4W10ER11C
+        previous: null
+      started_at:
+        new: 2026-06-23T21:01:57.733Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-23T21:01:57.733Z
 created_at: 2026-06-23T02:03:31.306Z
+started_at: 2026-06-23T21:01:57.733Z
 todos: []
 automation: eligible
