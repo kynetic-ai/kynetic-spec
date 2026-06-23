@@ -5064,3 +5064,20 @@ inbox:
       - reviews
     added_by: Jacob Chapel
     created_at: 2026-06-19T04:16:13.223Z
+  - _ulid: 01KVTGAAGD542MG7MAGYR65M02
+    text: "Submission linkage uses global dispatch base_branch instead of plan-scoped
+      resolved_base_branch when a dispatch task branch has no upstream at submit time. Evidence from
+      @task-test-result-ac-mapping: plan/workspace resolved to feat/ui-redesign and reviewer merged
+      into feat/ui-redesign, but kspec task submit ran before the daemon
+      first-pushed/tracking-established the task branch, so submission_linkage.upstream_ref fell
+      back to dev. Desired fix: task submit/linkage capture should prefer the dispatch workspace
+      resolved_base_branch or owning plan.branch for managed dispatch worktrees before falling back
+      to dispatch.base_branch; add regression coverage for manual_merge/plan-scoped branches where
+      the task branch has no upstream yet."
+    tags:
+      - dispatch
+      - submission-linkage
+      - plan-branch
+      - bug
+    added_by: Jacob Chapel
+    created_at: 2026-06-23T15:06:56.910Z
