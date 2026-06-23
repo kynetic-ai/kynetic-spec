@@ -13,3 +13,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T21:03:40.333Z
+  - _ulid: 01KVV5YB7X5CZVBASKWK135XJP
+    content: Implemented ingestion-provenance verification stamp writing. Passing attributed cases now
+      produce persisted verification effects and sidecar stamps in the same buffered run-store
+      mutation; non-positive attributed cases are retained as non-positive effects; unmapped and
+      invalid cases remain in mapping diagnostics without positive stamps. CLI/API summaries and
+      events include stamp/non-positive counts. Behavioral tests cover CLI/daemon equivalence,
+      negative/unmapped/invalid cases, replacement/freshness resolution, and rollback when the stamp
+      store refuses a write.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T21:24:53.117Z
