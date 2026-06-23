@@ -206,6 +206,12 @@ events:
     payload:
       thread_ulid: 01KVTP5TGK6W6QMTT01EPNQVRX
     timestamp: 2026-06-23T17:13:29.613Z
+  - _ulid: 01KVTQJC7800MMCJCBQE8VAJFB
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVTP5TGK6W6QMTT01EPNQVRX
+    timestamp: 2026-06-23T17:13:40.841Z
 examined_commit: 1444054dca9caff2a8c120fbc7ebdd03220cf5c0
 external_links: []
 lifecycle_state: closed
@@ -251,6 +257,8 @@ threads:
           format, lint, typecheck, and kspec refs/alignment/completeness validations.
         created_at: 2026-06-23T17:13:29.367Z
     kind: nit
+    resolved_at: 2026-06-23T17:13:40.602Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVTP5XR4522VAPHQHZ6M48NP
     anchor:
       type: code
@@ -294,5 +302,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-23T16:49:27.405Z
 created_at: 2026-06-23T16:34:04.499Z
-updated_at: 2026-06-23T17:13:29.367Z
+updated_at: 2026-06-23T17:13:40.602Z
 notes: []
