@@ -114,3 +114,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T04:21:52.915Z
+  - _ulid: 01KVSCKVMCJ3BS1VW367BJ2XF6
+    content: "Fix cycle 3: addressed all review threads. Fixed the blocker by making
+      TestResultRunRecordInputSchema strict at the submitted record envelope boundary so top-level
+      native/framework sibling fields are rejected before sidecar mutation, while the stored-record
+      schema remains tolerant for supported-format forward-compatible reads. Added behavioral
+      regression coverage for rejected top-level junit metadata leaving coverage/test-runs
+      unchanged. Re-verified ACs and gates: format:check, repo lint --quiet, focused changed-file
+      oxlint, typecheck, focused test-result-run-store test (8 passed), full npm test (2895 suites
+      passed; 10999 passed, 3 skipped), and kspec validate refs/alignment/completeness with
+      warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T04:43:00.620Z
