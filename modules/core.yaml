@@ -3425,6 +3425,9 @@ features:
           records all valid mappings, and keeps invalid or absent mappings as
           unmapped result data that later surfaces can show. No result is
           silently discarded only because it cannot be mapped.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@normalized-test-result-ingestion-contract"
         implements: []
