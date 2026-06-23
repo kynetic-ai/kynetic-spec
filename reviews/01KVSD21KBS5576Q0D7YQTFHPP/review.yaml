@@ -187,6 +187,13 @@ events:
       kind: blocker
       thread_ulid: 01KVSE05K1D4SSCD7YXWP9WHZ6
     timestamp: 2026-06-23T05:07:12.889Z
+  - _ulid: 01KVSE0HPKD8JTTVVCA63D6G8J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVSE0HEPAKB53PB2VTC425TP
+    timestamp: 2026-06-23T05:07:25.011Z
 examined_commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
 external_links: []
 lifecycle_state: open
@@ -217,7 +224,27 @@ threads:
           refused and leave the store unmodified."
         created_at: 2026-06-23T05:07:12.609Z
     kind: blocker
+  - _ulid: 01KVSE0HEPAKB53PB2VTC425TP
+    anchor:
+      type: code
+      commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
+      line_end: 78
+      line_start: 67
+      path: src/schema/test-result-runs.ts
+      side: head
+    entries:
+      - _ulid: 01KVSE0HEPW7JVYSEFVARXDCTP
+        author: Jacob Chapel
+        body: "MUST-FIX: NormalizedTestCaseSchema is passthrough and is reused by
+          TestResultRunRecordInputSchema, so ingestion accepts and persists framework-native case
+          fields outside the normalized envelope. I verified
+          TestResultRunRecordInputSchema.safeParse accepted cases[0].junit. The task requires a
+          kspec-owned normalized envelope and producer-native metadata retained only under
+          producer.native; external input should reject these case-level native fields while the
+          stored-record schema remains tolerant for on-disk forward compatibility."
+        created_at: 2026-06-23T05:07:24.758Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-23T04:50:45.483Z
-updated_at: 2026-06-23T05:07:12.609Z
+updated_at: 2026-06-23T05:07:24.758Z
 notes: []
