@@ -71562,7 +71562,7 @@ runs:
     completed_at: 2026-06-23T02:57:11.800Z
   - _ulid: 01KVS7PHVX66VWKA4G6SWS327C
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71588,7 +71588,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-23T03:18:47.403Z
-        completed_at: 2026-06-23T03:18:47.403Z
+        completed_at: 2026-06-23T03:18:58.892Z
+        notes: "Coverage search completed. Searches for 'submission linkage upstream dispatch merge target'
+          and 'task submit captured upstream_ref manual_merge' found no direct matches, but broader
+          searches found existing coverage: @01KVET9H is an unresolved friction observation for task
+          submit capturing git upstream instead of KSPEC_DISPATCH_MERGE_TARGET/manual_merge target;
+          @01KTYQ1R8 is an inbox item for broader dispatch submission_linkage capture from the wrong
+          worktree/source. Searches for strict/tolerant schema-boundary wording found no tracking,
+          but that is a local implementation pattern rather than a requested process improvement."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-23T03:18:58.892Z
+        completed_at: 2026-06-23T03:18:58.892Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T03:17:06.045Z
