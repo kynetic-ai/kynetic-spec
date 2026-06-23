@@ -22932,6 +22932,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-23T04:46:42.206Z
+  - _ulid: 01KVSE5H9XNZEKR2CR5EWSVWYA
+    type: friction
+    content: Automated detached reviews that must run the full npm test gate can spend most of the
+      review wall time waiting for the aggregate suite even when focused tests and code review
+      already found blockers; in review @01KVSD21, npm test passed but took 2854.8s before the
+      request_changes verdict could be recorded with complete gate evidence.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-23T05:10:08.445Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
