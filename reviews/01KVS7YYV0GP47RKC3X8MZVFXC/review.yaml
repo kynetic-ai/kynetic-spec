@@ -2,7 +2,104 @@ _ulid: 01KVS7YYV0GP47RKC3X8MZVFXC
 slugs: []
 title: Review test result run store
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1100 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-23T03:36:53.322Z
+    completed_at: 2026-06-23T03:36:53.322Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint reported 0 errors; 678 warnings are the existing warning
+      baseline. Focused oxlint on changed files reported 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-23T03:36:56.400Z
+    completed_at: 2026-06-23T03:36:56.400Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npx oxlint src/parser/index.ts src/parser/test-result-run-store.ts
+      src/schema/index.ts src/schema/test-result-runs.ts tests/test-result-run-store.test.ts
+      reported 0 warnings and 0 errors."
+    name: focused-lint
+    required: false
+    runner: npx oxlint changed files
+    created_at: 2026-06-23T03:36:59.359Z
+    completed_at: 2026-06-23T03:36:59.359Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared and tsc --noEmit completed with exit 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-23T03:37:02.445Z
+    completed_at: 2026-06-23T03:37:02.445Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2895 test suites passed; 10999 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KVS7X6VS81NFBAN1F7CN1A13/505011a1a13b2a41.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-23T03:37:05.472Z
+    completed_at: 2026-06-23T03:37:05.472Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tests/test-result-run-store.test.ts, 8 tests passed."
+    name: focused test-result-run-store
+    required: false
+    runner: npm test -- tests/test-result-run-store.test.ts
+    created_at: 2026-06-23T03:37:08.432Z
+    completed_at: 2026-06-23T03:37:08.432Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok exited 0 with existing reference warning
+      baseline."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-23T03:37:11.334Z
+    completed_at: 2026-06-23T03:37:11.334Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0 with existing alignment warning
+      baseline."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-23T03:37:14.282Z
+    completed_at: 2026-06-23T03:37:14.282Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0 with existing completeness
+      warning baseline. AC annotations for the changed test-result store slice were present."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-23T03:37:17.290Z
+    completed_at: 2026-06-23T03:37:17.290Z
 events:
   - _ulid: 01KVS7YYTZ2X8FCWT57FYCWAFF
     actor: Jacob Chapel
@@ -17,17 +114,162 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-23T03:21:59.111Z
+  - _ulid: 01KVS8TSJ6QZ0VC7PPGH68CFVS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-23T03:36:53.574Z
+  - _ulid: 01KVS8TWHTVKTGXW9FJER64HED
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-23T03:36:56.634Z
+  - _ulid: 01KVS8TZGJYGR9S63GPMCPC0Y8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-23T03:36:59.666Z
+  - _ulid: 01KVS8V2F853P9HBQVPBT7B0D4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-23T03:37:02.696Z
+  - _ulid: 01KVS8V5E3CA1GMPAMYJSKWCAB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-23T03:37:05.731Z
+  - _ulid: 01KVS8V8A1X5C4QMCJS5EVZNCV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused test-result-run-store
+    timestamp: 2026-06-23T03:37:08.673Z
+  - _ulid: 01KVS8VB4ZRJP9AGHMKMWZ00C9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-23T03:37:11.583Z
+  - _ulid: 01KVS8VE0V27FTB3A5KPDR1E6C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-23T03:37:14.523Z
+  - _ulid: 01KVS8VH1792VK3K990SKG6R93
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-23T03:37:17.607Z
+  - _ulid: 01KVS8VKZ796THCYZZG0PKN8CY
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVS8VKQHCDGR75C56XKY8SNR
+    timestamp: 2026-06-23T03:37:20.615Z
+  - _ulid: 01KVS8VPVEQZD2YF81VZKX9SH0
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVS8VPM0FBG1YRMJ87JZMA39
+    timestamp: 2026-06-23T03:37:23.566Z
+  - _ulid: 01KVS8VSN3WQNE6BB7MDWVWD7G
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-23T03:37:26.435Z
+  - _ulid: 01KVS8VSN3QHBJ4A7XKR9HXJCX
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-23T03:37:26.435Z
 examined_commit: fba9ca9f2f3aba7fd863019d192a0fb13abacf05
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVS3FSCHGFXW8XX9082T2TDH"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVS8VKQHCDGR75C56XKY8SNR
+    anchor:
+      type: code
+      commit: fba9ca9f2f3aba7fd863019d192a0fb13abacf05
+      line_end: 389
+      line_start: 389
+      path: src/parser/test-result-run-store.ts
+      side: head
+    entries:
+      - _ulid: 01KVS8VKQHSRPASWA942GX3HM7
+        author: pr-reviewer
+        body: "MUST-FIX: `writeTestRun` validates the incoming payload schema but does not check the
+          incoming `format` against `CURRENT_TEST_RESULT_RUN_RECORD_FORMAT` before writing. I
+          reproduced this by submitting a run with `format: 2` while the current supported format is
+          1: `writeTestRun` resolved successfully, created both `run.yaml` and `index.yaml`, and the
+          run file contained `format: 2`. Only a later read refused the record. This violates
+          @test-result-run-store ac-newer-record-format-refused because writes of newer run records
+          must refuse with version diagnostics and leave the store unmodified. Add an input format
+          ceiling check before any buffered writes and a behavioral regression that proves a
+          future-format submitted run creates/changes no sidecar files."
+        created_at: 2026-06-23T03:37:20.369Z
+    kind: blocker
+  - _ulid: 01KVS8VPM0FBG1YRMJ87JZMA39
+    entries:
+      - _ulid: 01KVS8VPM07W71FA3FRM6KQYPH
+        author: pr-reviewer
+        body: "Review evidence log: Files read: kspec-agents.md; prior review @01KVS5FH; task
+          @01KVS3FSCHGFXW8XX9082T2TDH; @test-result-run-store;
+          @normalized-test-result-ingestion-contract; @trait-type-safe-input;
+          @trait-folder-backed-entity-1; @plan-test-result-ingestion;
+          src/schema/test-result-runs.ts; src/parser/test-result-run-store.ts;
+          src/parser/folder-backed-entity.ts; src/parser/verification-record-store.ts;
+          src/cli/batch-write-buffer.ts; tests/test-result-run-store.test.ts; exports in
+          src/parser/index.ts and src/schema/index.ts. Commands run: git diff/stat/log; kspec
+          item/task/review lookups; AC annotation rg; source-scanning rg; custom tsx repros for
+          future-format write; npm run format:check; npm run lint -- --quiet; focused npx oxlint;
+          npm run typecheck; npm test -- tests/test-result-run-store.test.ts; npm test; kspec
+          validate refs/alignment/completeness with --warnings-ok. Claims verified: fix-cycle
+          producer-native field blocker is addressed by strict producer input schema and regression
+          coverage; neutral fixture/project coverage is present; future-format write refusal claim
+          is false for incoming payloads. Categories searched: correctness, edge cases, error
+          handling, test quality, integration, spec alignment. Finding: one blocker on incoming
+          future-format writes mutating the store."
+        created_at: 2026-06-23T03:37:23.328Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-23T03:37:26.435Z
 created_at: 2026-06-23T03:21:41.472Z
-updated_at: 2026-06-23T03:21:58.845Z
+updated_at: 2026-06-23T03:37:26.435Z
 notes: []
