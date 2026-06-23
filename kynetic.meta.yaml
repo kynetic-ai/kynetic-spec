@@ -23028,6 +23028,21 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-23T21:51:45.192Z
+  - _ulid: 01KVVA5Y32QKS8SX7VEQEFX2SS
+    type: friction
+    content: "Reviewer gate sequencing friction: starting a focused npm test while the full npm test
+      suite is already running in the same worktree adds no parallelism because the project
+      build/test lock serializes both runs. In this review, the focused producer-contract run waited
+      behind the full suite for about 859s, then duplicated coverage already included in the full
+      run. Existing tracking covers concurrent npm test races and the lock itself (for example
+      observations found by searching 'test lock'), but reviewer guidance could avoid launching
+      redundant focused tests until after the full suite result is known, or record the full-suite
+      inclusion as focused evidence when applicable."
+    author: codex
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KVVA2D"
+    created_at: 2026-06-23T22:38:56.098Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
