@@ -27724,7 +27724,7 @@ reviews:
     title: Review test result AC mapping
     disposition: pending
     author: Jacob Chapel
-    check_count: 3
+    check_count: 4
     examined_commit: 1d095288f6bd172a9ee052971cd88ae2c54ee0db
     lifecycle_state: open
     related_refs: []
@@ -27737,4 +27737,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-23T06:25:32.188Z
-    updated_at: 2026-06-23T06:54:43.550Z
+    updated_at: 2026-06-23T06:54:56.136Z
