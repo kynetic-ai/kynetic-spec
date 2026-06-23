@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KVSH1N6BBBWP020W3E42Y8AC
+    content: >-
+      Approach: reuse ReferenceIndex from src/parser/refs.ts and loaded spec items from initContext
+      to derive test-result mapping inside the parser/store boundary before persistence. Add a small
+      adapter helper that extracts explicit AC tokens into the same {item_ref, ac_id} shape that
+      normalized cases carry.
+
+      Edge cases: malformed refs that fail schema shape, missing item refs, refs resolving to
+      non-spec entities, missing AC ids, no refs, mixed valid/invalid refs, and one case mapped to
+      multiple ACs without duplicating cases.
+
+      Test plan: add behavioral tests for all six @test-result-ac-mapping ACs using neutral temp
+      projects and writeTestRun/loadTestRun, including token-derived refs and a fixture whose
+      project names/paths do not match kynetic-spec.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T06:00:27.083Z
