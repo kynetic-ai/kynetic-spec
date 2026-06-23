@@ -72047,7 +72047,7 @@ runs:
     completed_at: 2026-06-23T06:59:26.082Z
   - _ulid: 01KVSPBW8TQV423K5KXNB8WYRC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72061,7 +72061,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T07:34:04.654Z
-        completed_at: 2026-06-23T07:34:04.654Z
+        completed_at: 2026-06-23T07:34:50.278Z
+        notes: "Identified one high-confidence success after duplicate checks: local child-process HTTP 401
+          auth challenge is a repeatable test pattern for git credential-prompt suppression. No
+          high-confidence new friction captured; long full-test duration and workflow CLI run-ref
+          friction are already tracked in existing inbox/observations."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T07:34:50.278Z
+        completed_at: 2026-06-23T07:34:50.278Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-23T07:33:24.890Z
