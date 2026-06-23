@@ -72290,7 +72290,7 @@ runs:
     completed_at: 2026-06-23T17:17:36.775Z
   - _ulid: 01KVTRY8F8ZHDEWASBHHHDCGRZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72304,7 +72304,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T17:38:32.154Z
-        completed_at: 2026-06-23T17:38:32.154Z
+        completed_at: 2026-06-23T17:39:08.912Z
+        notes: "High-confidence candidates checked against baseline and targeted search. No new capture:
+          long full-suite review gate friction is already represented by existing observations
+          including @01KVSE5H and @01KVE6XH; real dispatch call-path/adoption review success is
+          already represented by @01KVTP8V. Evidence-log friction also already tracked by existing
+          observations. Decision: capture nothing rather than duplicate."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T17:39:08.912Z
+        completed_at: 2026-06-23T17:39:08.912Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-23T17:37:38.792Z
