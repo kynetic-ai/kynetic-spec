@@ -12834,7 +12834,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T21:50:59.409Z
+      updated_at: 2026-06-23T21:52:32.583Z
     integration:
       status: merged
       detail: integration:merged
@@ -12851,18 +12851,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T21:29:32.314Z
-      last_reconciled_at: 2026-06-23T21:52:13.682Z
+      last_reconciled_at: 2026-06-23T21:52:32.583Z
       created_at: 2026-06-23T21:00:33.279Z
-      updated_at: 2026-06-23T21:52:13.682Z
+      updated_at: 2026-06-23T21:52:32.583Z
     workspace_id: dispatch-workspace-01KVS3FTKA0FP05QE4H9DWMZP4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 2a86753bfb156ccebf7fb3648f00856ee3bd8638
-        last_seen_at: 2026-06-23T21:28:46.866Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ingested-run-verification-stamps-01kvs3ft-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ingested-run-verification-stamps/01kvs3ft
