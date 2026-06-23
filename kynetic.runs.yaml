@@ -72433,7 +72433,7 @@ runs:
     started_at: 2026-06-23T20:10:29.428Z
     completed_at: 2026-06-23T20:12:16.416Z
   - _ulid: 01KVV31BHNZ3QCRKT548T0GZHK
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -72484,7 +72484,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-23T20:35:52.476Z
-        completed_at: 2026-06-23T20:35:52.476Z
+        completed_at: 2026-06-23T20:36:16.620Z
+        notes: Captured inbox item @01KVV34X for the untracked workflow-show ergonomics idea. Did not
+          capture full npm test quiet/hang friction because it is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run. No task was created
+          directly.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T20:34:06.005Z
+    completed_at: 2026-06-23T20:36:16.620Z
