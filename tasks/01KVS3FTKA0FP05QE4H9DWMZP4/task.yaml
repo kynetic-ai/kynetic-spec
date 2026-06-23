@@ -48,8 +48,12 @@ description: |
 spec_ref: "@ingested-run-verification-stamps"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign at f633577fbaf546dad41b5a9cdc28a0aa556357d6 after approved
+  review. Implemented ingestion-provenance verification stamp writes, summary counts, persisted
+  verification effects, and behavioral coverage for positive, non-positive, unmapped, invalid,
+  replacement, freshness, and rollback cases.
 depends_on:
   - "@task-test-result-ingestion-interface"
 context: []
@@ -117,8 +121,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-23T21:30:20.896Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign at f633577fbaf546dad41b5a9cdc28a0aa556357d6 after approved review.
+          Implemented ingestion-provenance verification stamp writes, summary counts, persisted
+          verification effects, and behavioral coverage for positive, non-positive, unmapped,
+          invalid, replacement, freshness, and rollback cases.
+        previous: null
+      completed_at:
+        new: 2026-06-23T21:48:57.706Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-23T21:48:57.714Z
 created_at: 2026-06-23T02:03:31.306Z
 started_at: 2026-06-23T21:01:57.733Z
 submitted_at: 2026-06-23T21:25:25.484Z
+completed_at: 2026-06-23T21:48:57.706Z
 todos: []
 automation: eligible

@@ -32914,7 +32914,7 @@
   type: task
   spec_ref: "@ingested-run-verification-stamps"
   plan_ref: "@plan-test-result-ingestion"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-test-result-ingestion-interface"
@@ -32929,6 +32929,7 @@
   created_at: 2026-06-23T02:03:31.306Z
   started_at: 2026-06-23T21:01:57.733Z
   submitted_at: 2026-06-23T21:25:25.484Z
+  completed_at: 2026-06-23T21:48:57.706Z
   automation: eligible
 - _ulid: 01KVS3FV0797YW7SJSQC07R1QT
   slugs:
