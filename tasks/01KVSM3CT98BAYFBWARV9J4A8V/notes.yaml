@@ -19,3 +19,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T07:17:16.576Z
+  - _ulid: 01KVSNJW13CT44DXN1KJG30NN7
+    content: "Implemented stabilization for the current full-suite blocker: replaced GitHub/nonexistent
+      HTTPS remotes in git-terminal-prompt-suppression tests with a local child-process HTTP 401
+      auth challenge. This preserves fetch/push/ls-remote prompt-suppression coverage while removing
+      external network timing from npm test. Focused test now passes: npm test -- --fresh
+      tests/git-terminal-prompt-suppression.test.ts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T07:19:45.444Z
