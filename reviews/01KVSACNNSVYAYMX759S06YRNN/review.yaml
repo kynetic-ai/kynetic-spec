@@ -200,9 +200,25 @@ events:
       kind: nit
       thread_ulid: 01KVSBCPR1N06PQSJDWJF51S0M
     timestamp: 2026-06-23T04:21:37.949Z
+  - _ulid: 01KVSBD3GJ9WDV9NQFT8GTMVS1
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-23T04:21:50.738Z
+  - _ulid: 01KVSBD3GJT76NW3YARNXHJ9BD
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-23T04:21:50.738Z
 examined_commit: 53cae84f6c68a970db90bfddbeceedd23e70a137
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -272,7 +288,14 @@ threads:
           top-level input passthrough still lets framework-native fields bypass producer.native.
         created_at: 2026-06-23T04:21:37.665Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-23T04:21:50.738Z
 created_at: 2026-06-23T04:04:07.993Z
-updated_at: 2026-06-23T04:21:37.665Z
+updated_at: 2026-06-23T04:21:50.738Z
 notes: []
