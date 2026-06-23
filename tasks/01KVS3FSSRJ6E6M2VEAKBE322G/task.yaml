@@ -59,5 +59,14 @@ tags:
   - ingestion
   - mapping
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-23T02:05:51.308Z
 created_at: 2026-06-23T02:03:30.488Z
 todos: []
+automation: eligible
