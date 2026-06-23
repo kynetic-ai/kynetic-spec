@@ -3240,6 +3240,9 @@ features:
       folder-backed run entity per accepted run under
       `coverage/test-runs/runs/<run-ulid>/run.yaml`; project source files and
       spec source files are never rewritten by ingestion.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on:
       - "@test-result-acquisition"
       - "@coverage-record-compatibility"
