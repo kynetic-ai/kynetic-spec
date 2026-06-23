@@ -11688,3 +11688,80 @@ workspaces:
         head: 0ac90eba3918b5d27a6e2377984eccc6df12b149
         last_seen_at: 2026-06-23T08:44:03.028Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-ingestion-interface-01kvs3ft
+  - active_role: null
+    base_branch_point: 78222f08366c3336ff0164ed272181954ae8dbc1
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
+    canonical_branch_head: 78222f08366c3336ff0164ed272181954ae8dbc1
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-23T16:05:52.771Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-23T16:05:52.771Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 78222f08366c3336ff0164ed272181954ae8dbc1
+      updated_at: 2026-06-23T16:05:52.771Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_id: 01KVTKJV28Y9TSX7VT3WET6N83
+    task_ref: "@01KVTKJV28Y9TSX7VT3WET6N83"
+    task_slug: task-plan-scoped-submission-linkage-fallback
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-23T16:05:52.771Z
+      created_at: 2026-06-23T16:05:52.771Z
+      updated_at: 2026-06-23T16:05:52.771Z
+    workspace_id: dispatch-workspace-01KVTKJV28Y9TSX7VT3WET6N83
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
+        head: 78222f08366c3336ff0164ed272181954ae8dbc1
+        last_seen_at: 2026-06-23T16:05:52.771Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-scoped-submission-linkage-fallback-01kvtkjv
