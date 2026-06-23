@@ -72194,7 +72194,7 @@ runs:
     completed_at: 2026-06-23T16:31:24.985Z
   - _ulid: 01KVTP7GR9REX056N3Q0FKK48D
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72208,7 +72208,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T16:51:16.648Z
-        completed_at: 2026-06-23T16:51:16.648Z
+        completed_at: 2026-06-23T16:52:41.504Z
+        notes: "High-confidence findings after baseline search: captured one success observation @01KVTP8V
+          about reviewing real call paths in addition to directly tested helpers. Friction
+          candidates were already covered: workflow show run-ref mismatch is tracked by inbox
+          01KTWCCAS, review evidence-log storage is tracked by observations including 01KVET18,
+          quiet/long full npm test friction is tracked by existing test-run observations, and the
+          plan-scoped dispatch target bug remains covered by the active task/review plus inbox
+          01KVTGAA. No duplicate inbox/task capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T16:52:41.504Z
+        completed_at: 2026-06-23T16:52:41.504Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-23T16:50:16.457Z
