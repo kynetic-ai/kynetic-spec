@@ -13,3 +13,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T16:09:28.245Z
+  - _ulid: 01KVTMXPXJY5H054ZAMP2W3R5G
+    content: "Implemented submission-linkage fallback resolution for plan-scoped dispatch work. Both
+      task submit and task set --submission-linkage now pass a resolved fallback upstream ref into
+      captureSubmissionLinkage: matching active workspace metadata first, available owning plan
+      branch second, dispatch.base_branch last. Git upstream tracking still takes precedence inside
+      captureSubmissionLinkage. Added CLI regressions for manual_merge workspace target submit and
+      plan-branch repair/backfill, plus adoption coverage proving submitted branch recovery keeps
+      the plan branch integration target. Verification: focused linkage/workspace tests passed;
+      format:check passed; lint --quiet passed with existing warning baseline; typecheck passed;
+      kspec refs/alignment/completeness validations passed with warnings-ok; full npm test passed
+      (10572 passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T16:27:26.514Z
