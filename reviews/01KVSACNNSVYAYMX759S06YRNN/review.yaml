@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-23T04:04:31.955Z
+  - _ulid: 01KVSAMJDSST26YE425XNXH235
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVSAMJ278PKTADFACBS30SRV
+    timestamp: 2026-06-23T04:08:26.810Z
 examined_commit: 53cae84f6c68a970db90bfddbeceedd23e70a137
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,28 @@ subject:
   content_hash: ""
   ref: "@01KVS3FSCHGFXW8XX9082T2TDH"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVSAMJ278PKTADFACBS30SRV
+    anchor:
+      type: code
+      commit: 53cae84f6c68a970db90bfddbeceedd23e70a137
+      line_end: 176
+      line_start: 160
+      path: src/schema/test-result-runs.ts
+      side: head
+    entries:
+      - _ulid: 01KVSAMJ275814EHCC8Q8NSBE4
+        author: Jacob Chapel
+        body: "MUST-FIX:  remains top-level passthrough, so the ingestion boundary accepts
+          producer/framework-native sibling fields outside . I verified with  that a payload
+          containing top-level  parses successfully through the input schema and  persists
+          that  field into . This violates the normalized owned-envelope boundary and the
+          requirement that native producer metadata be retained only under the explicitly namespaced
+          extension object; the strict input boundary should reject these external top-level extras
+          while the stored-record schema can remain tolerant for forward-compatible on-disk reads."
+        created_at: 2026-06-23T04:08:26.439Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-23T04:04:07.993Z
-updated_at: 2026-06-23T04:04:31.697Z
+updated_at: 2026-06-23T04:08:26.439Z
 notes: []
