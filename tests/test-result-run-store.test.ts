@@ -376,6 +376,45 @@ describe("test result run store", () => {
     expectSnapshotUnchanged(before, after);
   });
 
+  // AC: @test-result-run-store ac-invalid-run-rejected
+  // AC: @normalized-test-result-ingestion-contract ac-owned-envelope
+  // AC: @normalized-test-result-ingestion-contract ac-producer-metadata
+  // AC: @trait-type-safe-input ac-1
+  // AC: @trait-type-safe-input ac-3
+  it("rejects producer-native fields outside the namespaced native extension object", async () => {
+    const ctx = await initContext(project.tempDir, { syncMode: "skip" });
+    await writeTestRun(ctx, validRun());
+    expect((await loadTestRun(ctx, FIXED_RUN_ID))?.producer.native).toEqual({
+      run_id: "producer-owned-id",
+    });
+    const before = await snapshotFiles(path.join(project.specDir, "coverage"));
+
+    const invalid = validRun({
+      run: {
+        id: testUlid("RUN", 4),
+        completed_at: "2026-06-22T21:30:00.000Z",
+      },
+      producer: {
+        kind: "ci",
+        label: "delta-framework-runner",
+        native: { retained: true },
+        junit: { suite: "native sibling field" },
+      } as unknown as TestResultRunRecordInput["producer"],
+      cases: [
+        {
+          id: "case-delta",
+          display_name: "delta framework case",
+          status: "passed",
+          refs: [],
+        },
+      ],
+    });
+
+    await expect(writeTestRun(ctx, invalid)).rejects.toThrow(/producer|junit|unrecognized/i);
+    const after = await snapshotFiles(path.join(project.specDir, "coverage"));
+    expectSnapshotUnchanged(before, after);
+  });
+
   // AC: @test-result-run-store ac-forward-compatible-records
   // AC: @trait-folder-backed-entity-1 ac-unknown-files-preserved
   it("preserves supported-format unknown fields and unknown files across read and update cycles", async () => {

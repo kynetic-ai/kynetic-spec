@@ -23,6 +23,7 @@ import {
 import { UlidSchema } from "../schema/common.js";
 import {
   CURRENT_TEST_RESULT_RUN_RECORD_FORMAT,
+  TestResultRunRecordInputSchema,
   TestResultRunRecordSchema,
   TestRunIndexSchema,
   type TestResultRunRecord,
@@ -385,7 +386,7 @@ export async function writeTestRun(
   ctx: KspecContext,
   input: TestResultRunRecordInput,
 ): Promise<TestResultRunRecord> {
-  const parsed = TestResultRunRecordSchema.parse(input);
+  const parsed = TestResultRunRecordSchema.parse(TestResultRunRecordInputSchema.parse(input));
   UlidSchema.parse(parsed.run.id);
 
   const runId = parsed.run.id;

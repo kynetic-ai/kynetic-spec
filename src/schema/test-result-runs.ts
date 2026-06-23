@@ -27,17 +27,19 @@ export const TestResultCaseStatusSchema = z.enum([
 
 const ExtensionObjectSchema = z.record(z.string(), z.unknown());
 
-export const TestResultProducerSchema = z
-  .object({
-    kind: TestResultProducerKindSchema,
-    label: z.string().min(1, "producer label is required"),
-    command: z.string().min(1).nullable().optional(),
-    ci_url: z.string().url().nullable().optional(),
-    agent_session: UlidSchema.nullable().optional(),
-    code_revision: z.string().min(1).nullable().optional(),
-    native: ExtensionObjectSchema.optional(),
-  })
-  .passthrough();
+const TestResultProducerShape = {
+  kind: TestResultProducerKindSchema,
+  label: z.string().min(1, "producer label is required"),
+  command: z.string().min(1).nullable().optional(),
+  ci_url: z.string().url().nullable().optional(),
+  agent_session: UlidSchema.nullable().optional(),
+  code_revision: z.string().min(1).nullable().optional(),
+  native: ExtensionObjectSchema.optional(),
+};
+
+export const TestResultProducerSchema = z.object(TestResultProducerShape).passthrough();
+
+export const TestResultProducerInputSchema = z.object(TestResultProducerShape).strict();
 
 export const NormalizedTestRunMetadataSchema = z
   .object({
@@ -155,6 +157,24 @@ export const TestResultRunRecordSchema = z
   })
   .passthrough();
 
+export const TestResultRunRecordInputSchema = z
+  .object({
+    format: z.number().int().positive().default(CURRENT_TEST_RESULT_RUN_RECORD_FORMAT),
+    run: NormalizedTestRunMetadataSchema,
+    producer: TestResultProducerInputSchema,
+    cases: z.array(NormalizedTestCaseSchema).min(1, "at least one test case is required"),
+    mapping: TestResultMappingSummarySchema.default({
+      attributed: [],
+      unmapped: [],
+      invalid: [],
+    }),
+    verification_effects: TestResultVerificationEffectsSchema.default({
+      stamps_written: [],
+      non_positive_mapped_cases: [],
+    }),
+  })
+  .passthrough();
+
 export const TestRunIndexProducerSchema = z
   .object({
     kind: TestResultProducerKindSchema,
@@ -198,12 +218,13 @@ export const TestRunIndexSchema = z
 export type TestResultProducerKind = z.infer<typeof TestResultProducerKindSchema>;
 export type TestResultCaseStatus = z.infer<typeof TestResultCaseStatusSchema>;
 export type TestResultProducer = z.infer<typeof TestResultProducerSchema>;
+export type TestResultProducerInput = z.input<typeof TestResultProducerInputSchema>;
 export type NormalizedTestRunMetadata = z.infer<typeof NormalizedTestRunMetadataSchema>;
 export type NormalizedTestCase = z.infer<typeof NormalizedTestCaseSchema>;
 export type TestResultCriterionRef = z.infer<typeof TestResultCriterionRefSchema>;
 export type TestResultMappingSummary = z.infer<typeof TestResultMappingSummarySchema>;
 export type TestResultVerificationEffects = z.infer<typeof TestResultVerificationEffectsSchema>;
 export type TestResultRunRecord = z.infer<typeof TestResultRunRecordSchema>;
-export type TestResultRunRecordInput = z.input<typeof TestResultRunRecordSchema>;
+export type TestResultRunRecordInput = z.input<typeof TestResultRunRecordInputSchema>;
 export type TestRunIndexEntry = z.infer<typeof TestRunIndexEntrySchema>;
 export type TestRunIndex = z.infer<typeof TestRunIndexSchema>;
