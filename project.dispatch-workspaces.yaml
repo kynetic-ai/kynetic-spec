@@ -12170,7 +12170,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T17:37:48.882Z
+      updated_at: 2026-06-23T17:40:06.247Z
     integration:
       status: merged
       detail: integration:merged
@@ -12187,18 +12187,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T17:19:00.784Z
-      last_reconciled_at: 2026-06-23T17:39:53.311Z
+      last_reconciled_at: 2026-06-23T17:40:06.247Z
       created_at: 2026-06-23T16:05:52.771Z
-      updated_at: 2026-06-23T17:39:53.311Z
+      updated_at: 2026-06-23T17:40:06.247Z
     workspace_id: dispatch-workspace-01KVTKJV28Y9TSX7VT3WET6N83
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: eb99e0b0caf11981e7dba93e00328060201eac4c
-        last_seen_at: 2026-06-23T17:18:24.107Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-scoped-submission-linkage-fallback-01kvtkjv-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
