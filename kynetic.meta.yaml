@@ -22997,6 +22997,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-23T16:51:00.695Z
+  - _ulid: 01KVTQQA043AFB6MPPWFXQ6GBQ
+    type: success
+    content: "Fix-cycle review feedback was highly actionable when it anchored the exact dropped
+      plan_ref call site and required an engine-level regression, not only utility-level coverage.
+      That combination made the worker fix narrow and verifiable: pass plan_ref through the
+      production dispatch path and prove _spawnInvocation targets the plan branch."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-23T17:16:22.404Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
