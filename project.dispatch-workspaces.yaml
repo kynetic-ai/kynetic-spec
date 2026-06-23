@@ -12167,12 +12167,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-23T17:18:11.407Z
+      updated_at: 2026-06-23T17:18:24.107Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T17:18:11.407Z
+      updated_at: 2026-06-23T17:18:24.107Z
     integration:
       status: pending
       detail: null
@@ -12180,8 +12180,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 78222f08366c3336ff0164ed272181954ae8dbc1
-      updated_at: 2026-06-23T17:18:11.407Z
-    lifecycle_state: ready
+      updated_at: 2026-06-23T17:18:24.107Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KVTKJV28Y9TSX7VT3WET6N83
     task_ref: "@01KVTKJV28Y9TSX7VT3WET6N83"
@@ -12189,16 +12189,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T16:54:34.947Z
-      last_reconciled_at: 2026-06-23T17:18:11.407Z
+      last_reconciled_at: 2026-06-23T17:18:24.107Z
       created_at: 2026-06-23T16:05:52.771Z
-      updated_at: 2026-06-23T17:18:11.407Z
+      updated_at: 2026-06-23T17:18:24.107Z
     workspace_id: dispatch-workspace-01KVTKJV28Y9TSX7VT3WET6N83
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: eb99e0b0caf11981e7dba93e00328060201eac4c
+        last_seen_at: 2026-06-23T17:18:24.107Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-scoped-submission-linkage-fallback-01kvtkjv-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
-        head: 1444054dca9caff2a8c120fbc7ebdd03220cf5c0
-        last_seen_at: 2026-06-23T16:54:04.499Z
+        head: eb99e0b0caf11981e7dba93e00328060201eac4c
+        last_seen_at: 2026-06-23T17:18:24.107Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-scoped-submission-linkage-fallback-01kvtkjv
