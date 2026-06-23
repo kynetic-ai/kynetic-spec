@@ -72539,9 +72539,21 @@ runs:
     completed_at: 2026-06-23T21:04:03.014Z
   - _ulid: 01KVV610XQN6CRE38Q59RVA81R
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-23T21:26:20.855Z
+        completed_at: 2026-06-23T21:27:06.135Z
+        notes: "Worked well: AC-driven task notes plus existing parser/store boundaries made the
+          implementation direct. Reusing normalized mapping output, the run-store buffer, and the
+          verification record store avoided a parallel schema. The no-source-scanning lint rule also
+          caught an invalid rollback-test assertion before it could become false AC coverage."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-23T21:27:06.135Z
+        completed_at: 2026-06-23T21:27:06.135Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T21:26:20.855Z
