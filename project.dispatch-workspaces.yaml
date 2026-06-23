@@ -10822,7 +10822,7 @@ workspaces:
         head: e72ad3cdc639416e3249382f9a507a55d4d0139a
         last_seen_at: 2026-06-23T05:12:13.685Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-run-store-01kvs3fs
-  - active_role: null
+  - active_role: worker
     base_branch_point: 1fb1d8395885a4ba5e9298c33bb7da9c5a2ede68
     bootstrap:
       status: succeeded
@@ -11155,7 +11155,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T05:58:05.827Z
+      updated_at: 2026-06-23T05:58:49.524Z
     integration:
       status: pending
       detail: null
@@ -11164,17 +11164,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: 1fb1d8395885a4ba5e9298c33bb7da9c5a2ede68
       updated_at: 2026-06-23T05:58:05.827Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVS3FSSRJ6E6M2VEAKBE322G
     task_ref: "@01KVS3FSSRJ6E6M2VEAKBE322G"
     task_slug: task-test-result-ac-mapping
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-23T05:58:05.827Z
+      last_active_at: 2026-06-23T05:58:49.524Z
+      last_reconciled_at: 2026-06-23T05:58:49.524Z
       created_at: 2026-06-23T05:58:05.827Z
-      updated_at: 2026-06-23T05:58:36.641Z
+      updated_at: 2026-06-23T05:58:49.524Z
     workspace_id: dispatch-workspace-01KVS3FSSRJ6E6M2VEAKBE322G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
