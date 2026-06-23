@@ -12683,12 +12683,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-23T21:28:33.132Z
+      updated_at: 2026-06-23T21:28:46.866Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T21:28:33.132Z
+      updated_at: 2026-06-23T21:28:46.866Z
     integration:
       status: pending
       detail: null
@@ -12696,8 +12696,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 8700daa444403f8fd4c674d1bc417bbb1ea2fdc3
-      updated_at: 2026-06-23T21:28:33.132Z
-    lifecycle_state: ready
+      updated_at: 2026-06-23T21:28:46.866Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVS3FTKA0FP05QE4H9DWMZP4
     task_ref: "@01KVS3FTKA0FP05QE4H9DWMZP4"
@@ -12705,16 +12705,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T21:01:08.822Z
-      last_reconciled_at: 2026-06-23T21:28:33.132Z
+      last_reconciled_at: 2026-06-23T21:28:46.866Z
       created_at: 2026-06-23T21:00:33.279Z
-      updated_at: 2026-06-23T21:28:33.132Z
+      updated_at: 2026-06-23T21:28:46.866Z
     workspace_id: dispatch-workspace-01KVS3FTKA0FP05QE4H9DWMZP4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 2a86753bfb156ccebf7fb3648f00856ee3bd8638
+        last_seen_at: 2026-06-23T21:28:46.866Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ingested-run-verification-stamps-01kvs3ft-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ingested-run-verification-stamps/01kvs3ft
-        head: 8700daa444403f8fd4c674d1bc417bbb1ea2fdc3
-        last_seen_at: 2026-06-23T21:00:33.279Z
+        head: 2a86753bfb156ccebf7fb3648f00856ee3bd8638
+        last_seen_at: 2026-06-23T21:28:46.866Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ingested-run-verification-stamps-01kvs3ft
