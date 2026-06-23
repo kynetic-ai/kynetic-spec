@@ -13,6 +13,18 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-23T22:33:44.752Z
     completed_at: 2026-06-23T22:33:44.752Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint reported 678 warnings and 0 errors under --quiet baseline;
+      focused changed-file lint on src/cli/help/content.ts and
+      tests/test-result-producer-contract.test.ts reported 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-23T22:33:51.153Z
+    completed_at: 2026-06-23T22:33:51.153Z
 events:
   - _ulid: 01KVV8ZF5Z23SVB62YMFVC7ZHX
     actor: Jacob Chapel
@@ -34,6 +46,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-23T22:33:45.043Z
+  - _ulid: 01KVV9WMJX21JPSZSC87P64NRH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-23T22:33:51.453Z
 examined_commit: 25ad6f033a3eb68a7d1fe4321f12b7b47779783c
 external_links: []
 lifecycle_state: open
@@ -46,5 +65,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T22:17:55.651Z
-updated_at: 2026-06-23T22:33:44.752Z
+updated_at: 2026-06-23T22:33:51.153Z
 notes: []
