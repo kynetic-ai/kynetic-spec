@@ -46,6 +46,16 @@ checks:
     runner: npm test
     created_at: 2026-06-23T02:52:37.601Z
     completed_at: 2026-06-23T02:52:37.601Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: focused store test file passed 7/7 tests."
+    name: focused test-result-run-store
+    required: false
+    runner: npm test -- tests/test-result-run-store.test.ts
+    created_at: 2026-06-23T02:52:47.822Z
+    completed_at: 2026-06-23T02:52:47.822Z
 events:
   - _ulid: 01KVS5FH8K9T165JJ2JA1ZHPHB
     actor: Jacob Chapel
@@ -88,6 +98,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-23T02:52:37.864Z
+  - _ulid: 01KVS6A21WBS72C679KJN3A885
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused test-result-run-store
+    timestamp: 2026-06-23T02:52:48.060Z
 examined_commit: 0fe42bc9c480cd87647c10dc34f0ffeef6f430c9
 external_links: []
 lifecycle_state: open
@@ -100,5 +117,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T02:38:18.899Z
-updated_at: 2026-06-23T02:52:37.601Z
+updated_at: 2026-06-23T02:52:47.822Z
 notes: []
