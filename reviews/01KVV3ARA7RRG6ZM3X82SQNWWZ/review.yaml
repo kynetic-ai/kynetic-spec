@@ -1,0 +1,26 @@
+_ulid: 01KVV3ARA7RRG6ZM3X82SQNWWZ
+slugs: []
+title: Review test result ingestion interface (cycle 2)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVV3ARA6P2R63XW4KK7C0EVV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-23T20:39:13.990Z
+examined_commit: 559099b7ab5c4394323962498e151b1c71dfabd3
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVS3FT7PAVVFSBRQ2RGV9BQA"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-23T20:39:13.991Z
+updated_at: null
+notes: []
