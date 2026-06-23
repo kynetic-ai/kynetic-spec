@@ -57,5 +57,14 @@ tags:
   - freshness
   - git
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-23T23:48:03.883Z
 created_at: 2026-06-23T23:45:49.574Z
 todos: []
+automation: eligible
