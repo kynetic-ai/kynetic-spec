@@ -5,3 +5,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-03-20T03:56:45.043Z
+  - _ulid: 01KVV0C2GSQHV5SQ6P1F2ZE26G
+    content: 'Reflection evidence from @task-test-result-ingestion-interface session: full npm test
+      initially looked like a post-green hang while many suites had already printed PASS, but it was
+      still draining slow session/dispatch/meta suites and eventually exited successfully after
+      3168.7s (2899 suites passed, 11011 tests passed, 3 skipped). During the run, ps briefly showed
+      a vitest worker and child CLI process (dist/cli/index.js meta observe success "Good thing")
+      before later suites completed. This supports investigating both true teardown hangs and
+      misleading long-tail/no-progress intervals after green-looking output.'
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T19:47:31.481Z
