@@ -32894,6 +32894,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-23T02:03:30.934Z
+  automation: eligible
 - _ulid: 01KVS3FTKA0FP05QE4H9DWMZP4
   slugs:
     - task-ingested-run-verification-stamps
