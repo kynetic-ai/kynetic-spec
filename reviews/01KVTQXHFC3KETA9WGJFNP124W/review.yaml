@@ -163,6 +163,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-23T17:35:45.311Z
+  - _ulid: 01KVTRVBB11863MPTZV897BDR0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVTRVB2SFABSJC9C7JH2ZNC3
+    timestamp: 2026-06-23T17:36:03.426Z
 examined_commit: eb99e0b0caf11981e7dba93e00328060201eac4c
 external_links: []
 lifecycle_state: open
@@ -172,8 +179,29 @@ subject:
   content_hash: ""
   ref: "@01KVTKJV28Y9TSX7VT3WET6N83"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVTRVB2SFABSJC9C7JH2ZNC3
+    entries:
+      - _ulid: 01KVTRVB2SEKD06NFR8KARD0D9
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; prior review @01KVTN9V; specs
+          @portable-task-submission-linkage and @plan-branch-dispatch-target;
+          src/cli/commands/task.ts; src/utils/git.ts; src/agent-runtime/dispatch.ts;
+          src/agent-runtime/workspace.ts; tests/task-submission-linkage.test.ts;
+          tests/dispatch-workspace-config.test.ts; branch-helper context. Commands run: git
+          diff/stat/log; kspec task get; kspec item get; kspec validate refs/alignment/completeness;
+          npm run format:check; npm run lint -- --quiet; focused oxlint; npm run typecheck; focused
+          npm test --fresh; full npm test. Claims verified: git upstream still wins inside
+          captureSubmissionLinkage; submit and task set use the resolved fallback; matching
+          workspace metadata is task/worktree scoped; dispatch review/fix-cycle provisioning now
+          passes plan_ref through health, discovery, provisioning, and validation; behavioral tests
+          cover plan-scoped submit, repair, and engine adoption. Categories searched: correctness,
+          plan branch edge cases, stale/unrelated workspace metadata handling, recovery/adoption
+          integration, error handling, AC coverage, source-scanning test quality, lint/type/test
+          regressions. Findings: none."
+        created_at: 2026-06-23T17:36:03.161Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-23T17:19:46.668Z
-updated_at: 2026-06-23T17:35:45.084Z
+updated_at: 2026-06-23T17:36:03.161Z
 notes: []
