@@ -32888,8 +32888,10 @@
   type: task
   spec_ref: "@test-result-ingestion-interface"
   plan_ref: "@plan-test-result-ingestion"
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Agent task-worker failed 3 consecutive times: Request 1 timed out after 30000ms (method:
+      initialize)"
   depends_on:
     - "@task-test-result-ac-mapping"
   priority: 1
