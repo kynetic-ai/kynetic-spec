@@ -11140,18 +11140,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-stabilize-full-npm-test-flake/01kvsm3c
-    canonical_branch_head: c270c4dfcb88e235ac4ec26cc34ada376c4ea52f
+    canonical_branch_head: 5a4134efb22c86455bc05b682f5196283926fe4a
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-23T06:54:10.238Z
+      updated_at: 2026-06-23T07:32:44.073Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T06:54:50.979Z
+      updated_at: 2026-06-23T07:32:44.073Z
     integration:
       status: pending
       detail: null
@@ -11159,7 +11159,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c270c4dfcb88e235ac4ec26cc34ada376c4ea52f
-      updated_at: 2026-06-23T06:54:10.238Z
+      updated_at: 2026-06-23T07:32:44.073Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KVSM3CT98BAYFBWARV9J4A8V
@@ -11168,9 +11168,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T06:54:50.979Z
-      last_reconciled_at: 2026-06-23T06:54:50.979Z
+      last_reconciled_at: 2026-06-23T07:32:44.073Z
       created_at: 2026-06-23T06:54:10.238Z
-      updated_at: 2026-06-23T06:54:50.979Z
+      updated_at: 2026-06-23T07:32:44.073Z
     workspace_id: dispatch-workspace-01KVSM3CT98BAYFBWARV9J4A8V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
