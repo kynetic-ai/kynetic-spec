@@ -182,9 +182,25 @@ events:
     payload:
       thread_ulid: 01KVS6C1ZP2CKPP5Z8WZG8V3S7
     timestamp: 2026-06-23T02:54:38.096Z
+  - _ulid: 01KVS6DRBQ74AF7SGF378BKZ9H
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-23T02:54:49.208Z
+  - _ulid: 01KVS6DRBRAF2ERX869DSQWVR6
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-23T02:54:49.208Z
 examined_commit: 0fe42bc9c480cd87647c10dc34f0ffeef6f430c9
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -248,7 +264,14 @@ threads:
           needs that.'
         created_at: 2026-06-23T02:54:37.850Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-23T02:54:49.207Z
 created_at: 2026-06-23T02:38:18.899Z
-updated_at: 2026-06-23T02:54:37.850Z
+updated_at: 2026-06-23T02:54:49.208Z
 notes: []

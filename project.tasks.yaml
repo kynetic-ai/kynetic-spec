@@ -32840,7 +32840,7 @@
   type: task
   spec_ref: "@test-result-run-store"
   plan_ref: "@plan-test-result-ingestion"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 1
@@ -32850,7 +32850,7 @@
     - schema
     - storage
   review_ref: "@01KVS5FH8KPGBXCKKSETFPK0MD"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-06-23T02:03:30.065Z
   started_at: 2026-06-23T02:09:18.316Z
