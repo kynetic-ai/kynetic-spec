@@ -11688,7 +11688,7 @@ workspaces:
         head: 0ac90eba3918b5d27a6e2377984eccc6df12b149
         last_seen_at: 2026-06-23T08:44:03.028Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-ingestion-interface-01kvs3ft
-  - active_role: worker
+  - active_role: null
     base_branch_point: 78222f08366c3336ff0164ed272181954ae8dbc1
     bootstrap:
       status: succeeded
@@ -12167,12 +12167,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-23T17:13:50.931Z
+      updated_at: 2026-06-23T17:18:11.407Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T17:13:50.931Z
+      updated_at: 2026-06-23T17:18:11.407Z
     integration:
       status: pending
       detail: null
@@ -12180,8 +12180,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 78222f08366c3336ff0164ed272181954ae8dbc1
-      updated_at: 2026-06-23T17:13:50.931Z
-    lifecycle_state: active
+      updated_at: 2026-06-23T17:18:11.407Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KVTKJV28Y9TSX7VT3WET6N83
     task_ref: "@01KVTKJV28Y9TSX7VT3WET6N83"
@@ -12189,9 +12189,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T16:54:34.947Z
-      last_reconciled_at: 2026-06-23T17:13:50.931Z
+      last_reconciled_at: 2026-06-23T17:18:11.407Z
       created_at: 2026-06-23T16:05:52.771Z
-      updated_at: 2026-06-23T17:13:50.931Z
+      updated_at: 2026-06-23T17:18:11.407Z
     workspace_id: dispatch-workspace-01KVTKJV28Y9TSX7VT3WET6N83
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
