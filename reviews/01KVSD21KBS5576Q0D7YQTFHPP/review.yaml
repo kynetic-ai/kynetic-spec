@@ -217,6 +217,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-23T05:07:51.864Z
+  - _ulid: 01KVSFANN96QCR3EARA67KPMD3
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVSE05K1D4SSCD7YXWP9WHZ6
+    timestamp: 2026-06-23T05:30:25.321Z
 examined_commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
 external_links: []
 lifecycle_state: closed
@@ -246,6 +252,12 @@ threads:
           ac-newer-record-format-refused because writes declaring newer record formats must be
           refused and leave the store unmodified."
         created_at: 2026-06-23T05:07:12.609Z
+      - _ulid: 01KVSFANAQBYBKM3S3397FWACZ
+        author: Jacob Chapel
+        body: "Fixed in 4d918a9d6f: writeTestRunIndex now runs the raw record-format ceiling check before
+          parsing or writing, and the regression test verifies a future-format index write is
+          refused while coverage/test-runs remains absent."
+        created_at: 2026-06-23T05:30:24.982Z
     kind: blocker
   - _ulid: 01KVSE0HEPAKB53PB2VTC425TP
     anchor:
@@ -308,5 +320,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-23T05:07:51.863Z
 created_at: 2026-06-23T04:50:45.483Z
-updated_at: 2026-06-23T05:07:51.864Z
+updated_at: 2026-06-23T05:30:24.982Z
 notes: []
