@@ -11,8 +11,15 @@ import type {
 import type { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 import { cleanupTempDir, createTempDir, initGitRepo, kspec, testUlid } from "./helpers/cli.js";
 import { captureBroadcasts, createTestApp, makeRequest } from "./daemon-api/helpers.js";
-import { initContext, loadTestRun } from "../src/parser/index.js";
+import {
+  initContext,
+  loadTestRun,
+  readVerificationStamp,
+  resolveAcFreshness,
+  writeVerificationStamp,
+} from "../src/parser/index.js";
 import type { TestResultRunRecordInput } from "../src/schema/test-result-runs.js";
+import type { VerificationStampInput } from "../src/schema/verification-records.js";
 
 const RUN_ID = "01ARZ3NDEKTSV4RRFFQ69G5FAV";
 const SECOND_RUN_ID = "01BRZ3NDEKTSV4RRFFQ69G5FAV";
@@ -116,6 +123,16 @@ function parseJson(stdout: string) {
   return JSON.parse(stdout) as Record<string, unknown>;
 }
 
+function existingStamp(overrides: Partial<VerificationStampInput> = {}): VerificationStampInput {
+  return {
+    verified_at: "2026-06-22T10:00:00.000Z",
+    actor: "previous-verifier",
+    provenance: "validation",
+    commit: "before-ingestion",
+    ...overrides,
+  };
+}
+
 function createCacheTracker(): {
   getEntityCache: EntityCacheAccessor;
   writeThrough: RouteEntityCache["writeThrough"];
@@ -137,6 +154,11 @@ describe("test result ingestion interface", () => {
   });
 
   // AC: @test-result-ingestion-interface ac-cli-daemon-equivalence
+  // AC: @ingested-run-verification-stamps ac-passing-mapped-writes-stamp
+  // AC: @ingested-run-verification-stamps ac-stamp-store-contract-preserved
+  // AC: @ingested-run-verification-stamps ac-stamp-cli-daemon-equivalence
+  // AC: @test-result-acquisition ac-1
+  // AC: @test-result-acquisition ac-2
   // AC: @test-result-ingestion-interface ac-no-daemon-execution
   // AC: @test-result-ingestion-interface ac-actor-source-attribution
   // AC: @test-result-ingestion-interface ac-session-attribution-optional
@@ -204,17 +226,267 @@ describe("test result ingestion interface", () => {
       ...daemonSummary,
       run_id: "<run>",
     });
+    expect(cliSummary).toMatchObject({
+      stamps_written_count: 1,
+      non_positive_mapped_case_count: 0,
+    });
+    expect(cliStored?.verification_effects).toEqual(daemonStored?.verification_effects);
+    expect(cliStored?.verification_effects.stamps_written).toEqual([
+      {
+        case_id: "case-mapped",
+        item_ulid: cliProject.featureUlid,
+        ac_id: "ac-renders-widget",
+        verified_at: "2026-06-23T12:00:00.000Z",
+      },
+    ]);
+    expect(cliStored?.verification_effects.non_positive_mapped_cases).toEqual([]);
+
+    const cliStamp = await readVerificationStamp(
+      await initContext(cliProject.tempDir, { syncMode: "skip" }),
+      cliProject.featureUlid,
+      "ac-renders-widget",
+    );
+    const daemonStamp = await readVerificationStamp(
+      await initContext(daemonProject.tempDir, { syncMode: "skip" }),
+      daemonProject.featureUlid,
+      "ac-renders-widget",
+    );
+    expect(cliStamp).toEqual({
+      verified_at: "2026-06-23T12:00:00.000Z",
+      actor: "Jacob Chapel",
+      provenance: "ingestion",
+      commit: "abc123",
+      session: SESSION_ID,
+    });
+    expect(daemonStamp).toEqual(cliStamp);
     expect(broadcasts).toHaveBeenCalledWith(
       "items:updates",
       "coverage_evidence_changed",
       expect.objectContaining({
         run_id: SECOND_RUN_ID,
         affected_item_refs: ["@portable-widget"],
+        stamps_written_count: 1,
+        non_positive_mapped_case_count: 0,
         unmapped_count: 1,
         invalid_mapping_count: 1,
       }),
       daemonProject.tempDir,
     );
+  });
+
+  // AC: @ingested-run-verification-stamps ac-nonpassing-no-positive-stamp
+  // AC: @ingested-run-verification-stamps ac-unmapped-no-stamp
+  // AC: @test-result-acquisition ac-2
+  it("records non-positive mapped evidence without writing positive stamps", async () => {
+    const project = await setupIngestionProject("non-positive");
+    tempDirs.push(project.tempDir);
+    const payloadPath = await writePayload(
+      project.tempDir,
+      normalizedPayload({
+        cases: [
+          {
+            id: "case-failed",
+            display_name: "failed mapped case",
+            status: "failed",
+            refs: [{ item_ref: "@portable-widget", ac_id: "ac-renders-widget" }],
+          },
+          {
+            id: "case-errored",
+            display_name: "errored mapped case",
+            status: "errored",
+            refs: [{ item_ref: "@portable-widget", ac_id: "ac-renders-widget" }],
+          },
+          {
+            id: "case-skipped",
+            display_name: "skipped mapped case",
+            status: "skipped",
+            refs: [{ item_ref: "@portable-widget", ac_id: "ac-renders-widget" }],
+          },
+          {
+            id: "case-unknown",
+            display_name: "unknown mapped case",
+            status: "unknown",
+            refs: [{ item_ref: "@portable-widget", ac_id: "ac-renders-widget" }],
+          },
+          {
+            id: "case-unmapped",
+            display_name: "unmapped case",
+            status: "passed",
+            refs: [],
+          },
+          {
+            id: "case-invalid",
+            display_name: "invalid mapped case",
+            status: "passed",
+            refs: [{ item_ref: "@portable-widget", ac_id: "ac-missing" }],
+          },
+        ],
+      }),
+    );
+
+    const result = kspec(
+      `coverage test-result ingest --file ${JSON.stringify(payloadPath)} --json`,
+      project.tempDir,
+    );
+
+    expect(result.exitCode).toBe(0);
+    const summary = parseJson(result.stdout);
+    expect(summary).toMatchObject({
+      stamps_written_count: 0,
+      non_positive_mapped_case_count: 4,
+      mapped_criterion_count: 4,
+      unmapped_count: 1,
+      invalid_mapping_count: 1,
+    });
+
+    const ctx = await initContext(project.tempDir, { syncMode: "skip" });
+    const stored = await loadTestRun(ctx, RUN_ID);
+    expect(stored?.verification_effects.stamps_written).toEqual([]);
+    expect(stored?.verification_effects.non_positive_mapped_cases).toEqual([
+      {
+        case_id: "case-failed",
+        item_ulid: project.featureUlid,
+        item_ref: "@portable-widget",
+        ac_id: "ac-renders-widget",
+        status: "failed",
+      },
+      {
+        case_id: "case-errored",
+        item_ulid: project.featureUlid,
+        item_ref: "@portable-widget",
+        ac_id: "ac-renders-widget",
+        status: "errored",
+      },
+      {
+        case_id: "case-skipped",
+        item_ulid: project.featureUlid,
+        item_ref: "@portable-widget",
+        ac_id: "ac-renders-widget",
+        status: "skipped",
+      },
+      {
+        case_id: "case-unknown",
+        item_ulid: project.featureUlid,
+        item_ref: "@portable-widget",
+        ac_id: "ac-renders-widget",
+        status: "unknown",
+      },
+    ]);
+    expect(stored?.mapping.unmapped.map((entry) => entry.case_id)).toEqual(["case-unmapped"]);
+    expect(stored?.mapping.invalid.map((entry) => entry.case_id)).toEqual(["case-invalid"]);
+    await expect(
+      readVerificationStamp(ctx, project.featureUlid, "ac-renders-widget"),
+    ).resolves.toBeUndefined();
+  });
+
+  // AC: @ingested-run-verification-stamps ac-passing-mapped-writes-stamp
+  // AC: @ingested-run-verification-stamps ac-latest-ingested-run-freshness
+  // AC: @annotation-freshness-provenance ac-2
+  // AC: @test-result-acquisition ac-3
+  it("replaces existing stamps and freshness resolves to latest ingested evidence", async () => {
+    const project = await setupIngestionProject("freshness");
+    tempDirs.push(project.tempDir);
+    const ctx = await initContext(project.tempDir, { syncMode: "skip" });
+    await writeVerificationStamp(ctx, project.featureUlid, "ac-renders-widget", existingStamp());
+
+    const firstPayloadPath = await writePayload(project.tempDir, normalizedPayload());
+    const first = kspec(
+      `coverage test-result ingest --file ${JSON.stringify(firstPayloadPath)} --json`,
+      project.tempDir,
+      { env: { KSPEC_AUTHOR: "first ingestion actor" } },
+    );
+    expect(first.exitCode).toBe(0);
+
+    const secondPayloadPath = await writePayload(
+      project.tempDir,
+      normalizedPayload({
+        run: {
+          id: SECOND_RUN_ID,
+          completed_at: "2026-06-23T13:00:00.000Z",
+          started_at: "2026-06-23T12:59:00.000Z",
+          duration_ms: 60000,
+        },
+        producer: {
+          kind: "ci",
+          label: "neutral-ci-runner",
+          code_revision: "def456",
+        },
+      }),
+    );
+    const second = kspec(
+      `coverage test-result ingest --file ${JSON.stringify(secondPayloadPath)} --json`,
+      project.tempDir,
+      { env: { KSPEC_AUTHOR: "second ingestion actor" } },
+    );
+    expect(second.exitCode).toBe(0);
+
+    const refreshedCtx = await initContext(project.tempDir, { syncMode: "skip" });
+    const stamp = await readVerificationStamp(
+      refreshedCtx,
+      project.featureUlid,
+      "ac-renders-widget",
+    );
+    expect(stamp).toEqual({
+      verified_at: "2026-06-23T13:00:00.000Z",
+      actor: "second ingestion actor",
+      provenance: "ingestion",
+      commit: "def456",
+    });
+
+    const freshness = await resolveAcFreshness(
+      refreshedCtx,
+      project.featureUlid,
+      "ac-renders-widget",
+      [],
+    );
+    expect(freshness).toMatchObject({
+      kind: "freshness",
+      value: {
+        source: "recorded",
+        timestamp: "2026-06-23T13:00:00.000Z",
+        commit: "def456",
+        stamp: {
+          provenance: "ingestion",
+          actor: "second ingestion actor",
+        },
+      },
+    });
+  });
+
+  // AC: @ingested-run-verification-stamps ac-stamp-store-contract-preserved
+  it("rolls back the run write when the verification stamp write is refused", async () => {
+    const project = await setupIngestionProject("rollback");
+    tempDirs.push(project.tempDir);
+    const verificationPath = path.join(
+      project.tempDir,
+      "coverage",
+      "verifications",
+      `${project.featureUlid}.yaml`,
+    );
+    await writeProjectFile(
+      verificationPath,
+      ["format: 999", "acs:", "  ac-renders-widget:", "    actor: old", ""].join("\n"),
+    );
+    const payloadPath = await writePayload(project.tempDir, normalizedPayload());
+
+    const result = kspec(
+      `coverage test-result ingest --file ${JSON.stringify(payloadPath)} --json`,
+      project.tempDir,
+      { expectFail: true },
+    );
+
+    expect(result.exitCode).toBe(3);
+    expect(result.stderr).toContain("verification_record_format_newer_than_supported");
+    expect(
+      existsSync(path.join(project.tempDir, "coverage", "test-runs", "runs", RUN_ID, "run.yaml")),
+    ).toBe(false);
+    await expect(
+      readVerificationStamp(
+        await initContext(project.tempDir, { syncMode: "skip" }),
+        project.featureUlid,
+        "ac-renders-widget",
+      ),
+    ).rejects.toThrow("verification_record_format_newer_than_supported");
   });
 
   // AC: @test-result-ingestion-interface ac-dry-run-preview

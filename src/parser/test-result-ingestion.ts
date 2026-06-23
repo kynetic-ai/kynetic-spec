@@ -4,8 +4,12 @@ import type {
   TestResultMappingSummary,
   TestResultRunRecord,
   TestResultRunRecordInput,
+  TestResultVerificationEffects,
 } from "../schema/test-result-runs.js";
-import { TestResultRunRecordInputSchema } from "../schema/test-result-runs.js";
+import {
+  TestResultRunRecordInputSchema,
+  TestResultRunRecordSchema,
+} from "../schema/test-result-runs.js";
 import type { ActorWriteValidationError } from "../identity/actor-write.js";
 import { resolveActorForContext } from "../identity/actor-write-context.js";
 import type { MutationEventDescriptor } from "../mutation-pipeline.js";
@@ -74,6 +78,8 @@ export interface TestResultIngestionSummary {
   mapped_criterion_count: number;
   unmapped_count: number;
   invalid_mapping_count: number;
+  stamps_written_count: number;
+  non_positive_mapped_case_count: number;
   affected_item_refs: string[];
   event_scopes: TestResultIngestionEventScope[];
   mapping: TestResultMappingSummary;
@@ -171,6 +177,8 @@ export function summarizeTestResultIngestion(
     mapped_criterion_count: run.mapping.attributed.length,
     unmapped_count: run.mapping.unmapped.length,
     invalid_mapping_count: run.mapping.invalid.length,
+    stamps_written_count: run.verification_effects.stamps_written.length,
+    non_positive_mapped_case_count: run.verification_effects.non_positive_mapped_cases.length,
     affected_item_refs: affectedItemRefs,
     event_scopes: buildTestResultIngestionEventScopes(run.mapping),
     mapping: run.mapping,
@@ -196,9 +204,42 @@ export function buildTestResultIngestionEvents(
         mapped_criterion_count: summary.mapped_criterion_count,
         unmapped_count: summary.unmapped_count,
         invalid_mapping_count: summary.invalid_mapping_count,
+        stamps_written_count: summary.stamps_written_count,
+        non_positive_mapped_case_count: summary.non_positive_mapped_case_count,
       },
     },
   ];
+}
+
+export function buildIngestionVerificationEffects(
+  run: TestResultRunRecord,
+): TestResultVerificationEffects {
+  const effects: TestResultVerificationEffects = {
+    stamps_written: [],
+    non_positive_mapped_cases: [],
+  };
+
+  for (const mapping of run.mapping.attributed) {
+    if (mapping.status === "passed") {
+      effects.stamps_written.push({
+        case_id: mapping.case_id,
+        item_ulid: mapping.item_ulid,
+        ac_id: mapping.ac_id,
+        verified_at: run.run.completed_at,
+      });
+      continue;
+    }
+
+    effects.non_positive_mapped_cases.push({
+      case_id: mapping.case_id,
+      item_ulid: mapping.item_ulid,
+      item_ref: mapping.item_ref,
+      ac_id: mapping.ac_id,
+      status: mapping.status,
+    });
+  }
+
+  return effects;
 }
 
 export async function ingestTestResultRun(
@@ -270,9 +311,17 @@ export async function ingestTestResultRun(
     throw err;
   }
 
+  const runWithVerificationEffects = TestResultRunRecordSchema.parse({
+    ...normalized,
+    verification_effects: buildIngestionVerificationEffects(normalized),
+  });
+
   const run = dryRun
-    ? normalized
-    : await writePreparedTestRun(ctx, normalized, { skipCommit: options.skipCommit });
+    ? runWithVerificationEffects
+    : await writePreparedTestRun(ctx, runWithVerificationEffects, {
+        skipCommit: options.skipCommit,
+        writeVerificationStamps: true,
+      });
   const summary = summarizeTestResultIngestion(run, {
     dryRun,
     stored: !dryRun,
