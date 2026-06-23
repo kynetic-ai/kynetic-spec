@@ -70,7 +70,7 @@ description: |
 spec_ref: "@test-result-run-store"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -90,7 +90,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: feat/ui-redesign
-session_id: null
+session_id: 01KVSBM5KM3B3ZZH30V4DJ91SM
 history:
   - author: Jacob Chapel
     changes:
@@ -326,8 +326,21 @@ history:
         previous: 01KVS93622MG09A3YNTBAVV95A
     command: review-verdict-needs-work
     timestamp: 2026-06-23T04:21:52.916Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KVSBM5KM3B3ZZH30V4DJ91SM
+        previous: null
+      started_at:
+        new: 2026-06-23T04:26:33.362Z
+        previous: 2026-06-23T03:42:31.649Z
+    command: task-start
+    timestamp: 2026-06-23T04:26:33.363Z
 created_at: 2026-06-23T02:03:30.065Z
-started_at: 2026-06-23T03:42:31.649Z
+started_at: 2026-06-23T04:26:33.362Z
 submitted_at: 2026-06-23T03:57:46.342Z
 todos: []
 automation: eligible
