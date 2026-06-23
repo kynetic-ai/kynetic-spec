@@ -619,6 +619,7 @@ async function readTestRunFolderIds(ctx: KspecContext): Promise<string[]> {
 // Utility retained for tests and future CLI wiring.
 export async function writeTestRunIndex(ctx: KspecContext, index: TestRunIndex): Promise<void> {
   const indexPath = getTestRunIndexPath(ctx);
+  assertRawFormatSupported(index);
   const parsed = TestRunIndexSchema.parse(index);
   await writeYamlFile(indexPath, parsed);
 }

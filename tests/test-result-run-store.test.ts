@@ -26,6 +26,7 @@ import {
   loadTestRunIndex,
   rebuildTestRunIndex,
   writeTestRun,
+  writeTestRunIndex,
 } from "../src/parser/test-result-run-store.js";
 import {
   cleanupTempDir,
@@ -427,6 +428,25 @@ describe("test result run store", () => {
       writeTestRun(ctx, invalidTopLevel as unknown as TestResultRunRecordInput),
     ).rejects.toThrow(/junit|unrecognized/i);
     expectSnapshotUnchanged(before, await snapshotFiles(path.join(project.specDir, "coverage")));
+
+    const invalidCaseNative = validRun({
+      run: {
+        id: testUlid("RUN", 6),
+        completed_at: "2026-06-22T21:32:00.000Z",
+      },
+      cases: [
+        {
+          id: "case-epsilon",
+          display_name: "epsilon framework case",
+          status: "passed",
+          refs: [],
+          junit: { testcase: "native case field" },
+        } as unknown as TestResultRunRecordInput["cases"][number],
+      ],
+    });
+
+    await expect(writeTestRun(ctx, invalidCaseNative)).rejects.toThrow(/junit|unrecognized/i);
+    expectSnapshotUnchanged(before, await snapshotFiles(path.join(project.specDir, "coverage")));
   });
 
   // AC: @test-result-run-store ac-forward-compatible-records
@@ -488,6 +508,18 @@ describe("test result run store", () => {
           },
         }),
       ),
+    ).rejects.toMatchObject({
+      code: TEST_RESULT_RUN_FORMAT_NEWER_THAN_SUPPORTED_CODE,
+      declaredVersion: CURRENT_TEST_RESULT_RUN_RECORD_FORMAT + 1,
+      maxSupportedVersion: CURRENT_TEST_RESULT_RUN_RECORD_FORMAT,
+    } satisfies Partial<TestResultRunRecordFormatCompatibilityError>);
+    expect(existsSync(path.join(project.specDir, "coverage", "test-runs"))).toBe(false);
+
+    await expect(
+      writeTestRunIndex(ctx, {
+        format: CURRENT_TEST_RESULT_RUN_RECORD_FORMAT + 1,
+        runs: {},
+      }),
     ).rejects.toMatchObject({
       code: TEST_RESULT_RUN_FORMAT_NEWER_THAN_SUPPORTED_CODE,
       declaredVersion: CURRENT_TEST_RESULT_RUN_RECORD_FORMAT + 1,

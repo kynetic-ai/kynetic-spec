@@ -50,6 +50,15 @@ export const NormalizedTestRunMetadataSchema = z
   })
   .passthrough();
 
+export const NormalizedTestRunMetadataInputSchema = z
+  .object({
+    id: UlidSchema,
+    completed_at: DateTimeSchema,
+    started_at: DateTimeSchema.nullable().optional(),
+    duration_ms: z.number().nonnegative().nullable().optional(),
+  })
+  .strict();
+
 export const TestResultCaseLocationSchema = z
   .object({
     file: z.string().min(1),
@@ -57,12 +66,26 @@ export const TestResultCaseLocationSchema = z
   })
   .passthrough();
 
+export const TestResultCaseLocationInputSchema = z
+  .object({
+    file: z.string().min(1),
+    line: z.number().int().positive().optional(),
+  })
+  .strict();
+
 export const TestResultCriterionRefSchema = z
   .object({
     item_ref: RefSchema,
     ac_id: AcIdSchema,
   })
   .passthrough();
+
+export const TestResultCriterionRefInputSchema = z
+  .object({
+    item_ref: RefSchema,
+    ac_id: AcIdSchema,
+  })
+  .strict();
 
 export const NormalizedTestCaseSchema = z
   .object({
@@ -77,6 +100,19 @@ export const NormalizedTestCaseSchema = z
   })
   .passthrough();
 
+export const NormalizedTestCaseInputSchema = z
+  .object({
+    id: z.string().min(1, "case stable id is required"),
+    display_name: z.string().min(1, "case display name is required"),
+    suite_path: z.array(z.string().min(1)).nullable().optional(),
+    status: TestResultCaseStatusSchema,
+    duration_ms: z.number().nonnegative().nullable().optional(),
+    location: TestResultCaseLocationInputSchema.nullable().optional(),
+    diagnostic: z.string().nullable().optional(),
+    refs: z.array(TestResultCriterionRefInputSchema).default([]),
+  })
+  .strict();
+
 export const TestResultAttributedMappingSchema = z
   .object({
     case_id: z.string().min(1),
@@ -87,6 +123,16 @@ export const TestResultAttributedMappingSchema = z
   })
   .passthrough();
 
+export const TestResultAttributedMappingInputSchema = z
+  .object({
+    case_id: z.string().min(1),
+    item_ulid: UlidSchema,
+    item_ref: RefSchema,
+    ac_id: AcIdSchema,
+    status: TestResultCaseStatusSchema,
+  })
+  .strict();
+
 export const TestResultUnmappedCaseSchema = z
   .object({
     case_id: z.string().min(1),
@@ -94,6 +140,14 @@ export const TestResultUnmappedCaseSchema = z
     display_name: z.string().min(1).optional(),
   })
   .passthrough();
+
+export const TestResultUnmappedCaseInputSchema = z
+  .object({
+    case_id: z.string().min(1),
+    reason: z.string().min(1),
+    display_name: z.string().min(1).optional(),
+  })
+  .strict();
 
 export const TestResultInvalidMappingSchema = z
   .object({
@@ -105,6 +159,16 @@ export const TestResultInvalidMappingSchema = z
   })
   .passthrough();
 
+export const TestResultInvalidMappingInputSchema = z
+  .object({
+    case_id: z.string().min(1),
+    item_ref: z.string().min(1).optional(),
+    ac_id: z.string().min(1).optional(),
+    reason: z.string().min(1),
+    display_name: z.string().min(1).optional(),
+  })
+  .strict();
+
 export const TestResultMappingSummarySchema = z
   .object({
     attributed: z.array(TestResultAttributedMappingSchema).default([]),
@@ -112,6 +176,14 @@ export const TestResultMappingSummarySchema = z
     invalid: z.array(TestResultInvalidMappingSchema).default([]),
   })
   .passthrough();
+
+export const TestResultMappingSummaryInputSchema = z
+  .object({
+    attributed: z.array(TestResultAttributedMappingInputSchema).default([]),
+    unmapped: z.array(TestResultUnmappedCaseInputSchema).default([]),
+    invalid: z.array(TestResultInvalidMappingInputSchema).default([]),
+  })
+  .strict();
 
 export const TestResultVerificationStampEffectSchema = z
   .object({
@@ -121,6 +193,15 @@ export const TestResultVerificationStampEffectSchema = z
     verified_at: DateTimeSchema,
   })
   .passthrough();
+
+export const TestResultVerificationStampEffectInputSchema = z
+  .object({
+    case_id: z.string().min(1),
+    item_ulid: UlidSchema,
+    ac_id: AcIdSchema,
+    verified_at: DateTimeSchema,
+  })
+  .strict();
 
 export const TestResultNonPositiveMappedCaseSchema = z
   .object({
@@ -132,12 +213,29 @@ export const TestResultNonPositiveMappedCaseSchema = z
   })
   .passthrough();
 
+export const TestResultNonPositiveMappedCaseInputSchema = z
+  .object({
+    case_id: z.string().min(1),
+    item_ulid: UlidSchema.optional(),
+    item_ref: RefSchema.optional(),
+    ac_id: AcIdSchema.optional(),
+    status: TestResultCaseStatusSchema,
+  })
+  .strict();
+
 export const TestResultVerificationEffectsSchema = z
   .object({
     stamps_written: z.array(TestResultVerificationStampEffectSchema).default([]),
     non_positive_mapped_cases: z.array(TestResultNonPositiveMappedCaseSchema).default([]),
   })
   .passthrough();
+
+export const TestResultVerificationEffectsInputSchema = z
+  .object({
+    stamps_written: z.array(TestResultVerificationStampEffectInputSchema).default([]),
+    non_positive_mapped_cases: z.array(TestResultNonPositiveMappedCaseInputSchema).default([]),
+  })
+  .strict();
 
 export const TestResultRunRecordSchema = z
   .object({
@@ -160,15 +258,15 @@ export const TestResultRunRecordSchema = z
 export const TestResultRunRecordInputSchema = z
   .object({
     format: z.number().int().positive().default(CURRENT_TEST_RESULT_RUN_RECORD_FORMAT),
-    run: NormalizedTestRunMetadataSchema,
+    run: NormalizedTestRunMetadataInputSchema,
     producer: TestResultProducerInputSchema,
-    cases: z.array(NormalizedTestCaseSchema).min(1, "at least one test case is required"),
-    mapping: TestResultMappingSummarySchema.default({
+    cases: z.array(NormalizedTestCaseInputSchema).min(1, "at least one test case is required"),
+    mapping: TestResultMappingSummaryInputSchema.default({
       attributed: [],
       unmapped: [],
       invalid: [],
     }),
-    verification_effects: TestResultVerificationEffectsSchema.default({
+    verification_effects: TestResultVerificationEffectsInputSchema.default({
       stamps_written: [],
       non_positive_mapped_cases: [],
     }),
