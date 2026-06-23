@@ -72125,7 +72125,7 @@ runs:
     completed_at: 2026-06-23T07:56:36.022Z
   - _ulid: 01KVTN02987SJ9GZTWV6F2PYSK
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72163,7 +72163,18 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-23T16:30:25.946Z
-        completed_at: 2026-06-23T16:30:25.946Z
+        completed_at: 2026-06-23T16:30:47.131Z
+        notes: "Proposed improvement: add or document a focused changed-file lint helper that reports only
+          warnings newly introduced by the current diff, or compares touched-file warnings against a
+          known baseline. This would make the project rule 'new warnings in changed files are
+          findings' mechanically checkable instead of requiring manual inspection through
+          pre-existing warnings in large files like src/cli/commands/task.ts. Rough scope: medium if
+          implemented as a baseline-aware script; small if first captured as an observation for
+          triage."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-23T16:30:47.131Z
+        completed_at: 2026-06-23T16:30:47.131Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T16:28:43.688Z
