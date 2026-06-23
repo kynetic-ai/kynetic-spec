@@ -68,8 +68,13 @@ description: |
 spec_ref: "@test-result-ingestion-interface"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: "Merged dispatch/task/task-test-result-ingestion-interface/01kvs3ft into
+  feat/ui-redesign at 8700daa444403f8fd4c674d1bc417bbb1ea2fdc3 after approved review @01KVV3AR.
+  Summary: added equivalent CLI and daemon normalized test-result ingestion interfaces with shared
+  mapping/store logic, dry-run previews, read-only refusal, actor/session attribution,
+  mutation-pipeline ordering, and behavioral coverage."
 depends_on:
   - "@task-test-result-ac-mapping"
 context: []
@@ -226,9 +231,27 @@ history:
         previous: "@01KVV0JRXV2DCP93NREM3E280G"
     command: review-link
     timestamp: 2026-06-23T20:39:17.388Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: "Merged dispatch/task/task-test-result-ingestion-interface/01kvs3ft into feat/ui-redesign at
+          8700daa444403f8fd4c674d1bc417bbb1ea2fdc3 after approved review @01KVV3AR. Summary: added
+          equivalent CLI and daemon normalized test-result ingestion interfaces with shared
+          mapping/store logic, dry-run previews, read-only refusal, actor/session attribution,
+          mutation-pipeline ordering, and behavioral coverage."
+        previous: null
+      completed_at:
+        new: 2026-06-23T20:59:50.743Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-23T20:59:50.752Z
 prior_status: null
 created_at: 2026-06-23T02:03:30.934Z
 started_at: 2026-06-23T20:14:27.237Z
 submitted_at: 2026-06-23T20:33:15.609Z
+completed_at: 2026-06-23T20:59:50.743Z
 todos: []
 automation: eligible
