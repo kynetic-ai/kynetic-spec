@@ -32864,7 +32864,7 @@
   type: task
   spec_ref: "@test-result-ac-mapping"
   plan_ref: "@plan-test-result-ingestion"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-test-result-run-store"
@@ -32879,6 +32879,7 @@
   created_at: 2026-06-23T02:03:30.488Z
   started_at: 2026-06-23T05:59:30.932Z
   submitted_at: 2026-06-23T06:19:15.304Z
+  completed_at: 2026-06-23T06:56:46.152Z
   automation: eligible
 - _ulid: 01KVS3FT7PAVVFSBRQ2RGV9BQA
   slugs:
