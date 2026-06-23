@@ -16,3 +16,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T06:00:27.083Z
+  - _ulid: 01KVSJ306DXH36EYE1JWQ8PCZ1
+    content: >-
+      Implemented normalized test-result AC mapping in the parser/store boundary. writeTestRun now
+      derives mapping from case refs against the loaded spec corpus via ReferenceIndex, records
+      no-ref cases as unmapped, records malformed/missing item/missing AC refs as invalid, and keeps
+      only valid refs in attributed mappings. Added adapter-boundary token extraction helper for
+      'AC: @item ac-id' tokens.
+
+      Verification: focused mapper suite passed; existing test-result-run-store suite passed;
+      format:check passed; changed-file oxlint passed; typecheck passed; repo lint passed with
+      existing warning baseline; kspec refs/alignment/completeness validation passed with
+      --warnings-ok; full npm test passed (2897 suites, 11005 passed, 3 skipped).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T06:18:39.693Z
