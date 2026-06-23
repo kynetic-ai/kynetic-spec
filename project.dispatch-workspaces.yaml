@@ -11334,7 +11334,7 @@ workspaces:
         head: 1d095288f6bd172a9ee052971cd88ae2c54ee0db
         last_seen_at: 2026-06-23T06:23:54.970Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-ac-mapping-01kvs3fs
-  - active_role: null
+  - active_role: worker
     base_branch_point: c270c4dfcb88e235ac4ec26cc34ada376c4ea52f
     bootstrap:
       status: succeeded
@@ -11667,7 +11667,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T06:54:10.238Z
+      updated_at: 2026-06-23T06:54:50.979Z
     integration:
       status: pending
       detail: null
@@ -11676,17 +11676,17 @@ workspaces:
       target_branch: dev
       target_commit: c270c4dfcb88e235ac4ec26cc34ada376c4ea52f
       updated_at: 2026-06-23T06:54:10.238Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KVSM3CT98BAYFBWARV9J4A8V
     task_ref: "@01KVSM3CT98BAYFBWARV9J4A8V"
     task_slug: task-stabilize-full-npm-test-flake
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-23T06:54:10.238Z
+      last_active_at: 2026-06-23T06:54:50.979Z
+      last_reconciled_at: 2026-06-23T06:54:50.979Z
       created_at: 2026-06-23T06:54:10.238Z
-      updated_at: 2026-06-23T06:54:35.152Z
+      updated_at: 2026-06-23T06:54:50.979Z
     workspace_id: dispatch-workspace-01KVSM3CT98BAYFBWARV9J4A8V
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
