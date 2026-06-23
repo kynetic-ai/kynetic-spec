@@ -22922,6 +22922,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-23T02:35:55.443Z
+  - _ulid: 01KVSCTM0YR6ASN0VF3SEXVV67
+    type: success
+    content: "Review findings that include the exact schema boundary, repro payload shape, and mutation
+      proof make fix cycles efficient: the test-result run store blocker mapped directly to a strict
+      input-schema change plus a behavioral regression proving top-level native metadata is rejected
+      before sidecar mutation."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-23T04:46:42.206Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
