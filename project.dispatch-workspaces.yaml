@@ -12869,3 +12869,80 @@ workspaces:
         head: 2a86753bfb156ccebf7fb3648f00856ee3bd8638
         last_seen_at: 2026-06-23T21:28:46.866Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ingested-run-verification-stamps-01kvs3ft
+  - active_role: null
+    base_branch_point: f633577fbaf546dad41b5a9cdc28a0aa556357d6
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-test-result-producer-contract-fixtures/01kvs3fv
+    canonical_branch_head: f633577fbaf546dad41b5a9cdc28a0aa556357d6
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-23T21:49:28.503Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-23T21:49:28.503Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: feat/ui-redesign
+      target_commit: f633577fbaf546dad41b5a9cdc28a0aa556357d6
+      updated_at: 2026-06-23T21:49:28.503Z
+    lifecycle_state: ready
+    resolved_base_branch: feat/ui-redesign
+    task_id: 01KVS3FV0797YW7SJSQC07R1QT
+    task_ref: "@01KVS3FV0797YW7SJSQC07R1QT"
+    task_slug: task-test-result-producer-contract-fixtures
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-23T21:49:28.503Z
+      created_at: 2026-06-23T21:49:28.503Z
+      updated_at: 2026-06-23T21:49:28.503Z
+    workspace_id: dispatch-workspace-01KVS3FV0797YW7SJSQC07R1QT
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-test-result-producer-contract-fixtures/01kvs3fv
+        head: f633577fbaf546dad41b5a9cdc28a0aa556357d6
+        last_seen_at: 2026-06-23T21:49:28.503Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-producer-contract-fixtures-01kvs3fv
