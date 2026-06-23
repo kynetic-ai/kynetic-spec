@@ -33017,6 +33017,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-23T23:45:48.767Z
+  automation: eligible
 - _ulid: 01KVVE0D2QJ4KEMNF7HG9MMFED
   slugs:
     - task-coverage-state-derivation
