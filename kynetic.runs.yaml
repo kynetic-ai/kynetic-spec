@@ -71708,7 +71708,7 @@ runs:
     completed_at: 2026-06-23T04:02:06.463Z
   - _ulid: 01KVSBEVGPTJJE85VESRB2KH9P
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71721,7 +71721,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T04:23:41.210Z
-        completed_at: 2026-06-23T04:23:41.210Z
+        completed_at: 2026-06-23T04:24:07.270Z
+        notes: "High-confidence observations checked: (1) Review-command bodies are fragile when passed
+          inline through the shell; this recurred when backticks in a review comment body were
+          interpreted before kspec received them. (2) Starting a focused npm test while a full npm
+          test is already active creates long lock waiting and adds no value when the full suite
+          includes the focused file. Both are repeatable, but both appear to have existing tracking
+          after search."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T04:24:07.270Z
+        completed_at: 2026-06-23T04:24:07.270Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-23T04:22:48.086Z
