@@ -168,9 +168,25 @@ events:
       kind: nit
       thread_ulid: 01KVSGSQKDKMYW9TYFSSQC736R
     timestamp: 2026-06-23T05:56:07.695Z
+  - _ulid: 01KVSGT1Z6EFWBFNRC7PM5G1E1
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-23T05:56:18.022Z
+  - _ulid: 01KVSGT1Z627WNSK2WGPCPYB0H
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-23T05:56:18.022Z
 examined_commit: 4d918a9d6f2505a5b9de6ed6a0027e2ccae473df
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -208,7 +224,14 @@ threads:
           applicable; changed files are schema/parser/tests only.
         created_at: 2026-06-23T05:56:07.405Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-23T05:56:18.021Z
 created_at: 2026-06-23T05:39:05.114Z
-updated_at: 2026-06-23T05:56:07.405Z
+updated_at: 2026-06-23T05:56:18.022Z
 notes: []
