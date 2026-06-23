@@ -3614,7 +3614,7 @@ features:
           commit, and optional session linkage.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@ac-verification-record-store"
           - "@verification-session-evidence"
