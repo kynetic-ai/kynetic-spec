@@ -19,3 +19,195 @@ notes:
     content: Clarify endpoint/websocket trait scope and existing-foundation ownership
     author: Jacob Chapel
     created_at: 2026-06-22T23:16:55.366Z
+  - _ulid: 01KVVE0EXAKSP6RY2N0DYRG32S
+    content: >-
+      ### What this plan is
+
+
+      This is the computation half of P1b. It consumes the normalized test-run
+
+      store from the Test Result Ingestion plan plus the already-completed P1a
+
+      verification/freshness store and computes backend-owned coverage state for
+
+      all later UI surfaces.
+
+
+      The plan deliberately does **not** build the spec workspace, Validate
+
+      matrix UI, resolution mutations, dispatch-fix/revert actions, flakiness
+
+      history, or generated observations. Those are follow-on plans that consume
+
+      this backend state.
+
+
+      ### State vocabulary
+
+
+      User-facing presentation remains exactly the four buckets from
+
+      @coverage-state-presentation:
+
+
+      - `covered`
+
+      - `failing`
+
+      - `not yet`
+
+      - `re-verify`
+
+
+      Internal causes may be richer, but every API/UI-facing response must map
+
+      one internal result to exactly one of those buckets. Do not introduce a
+
+      fifth corpus `not-applicable` bucket; @ac-coverage-applicability explicitly
+
+      rejects that state for corpus coverage.
+
+
+      ### Recommended precedence
+
+
+      The implementation task should codify and test the exact precedence, but
+
+      this draft expects the following shape:
+
+
+      1. Latest mapped failed/errored result → `failing`.
+
+      2. No positive evidence → `not yet`.
+
+      3. Positive evidence exists but required comparison says spec text,
+         annotation/mapping, or test/source evidence changed afterward →
+         `re-verify`.
+      4. Positive evidence exists but required comparison metadata is absent or
+         unresolvable → `re-verify` with unknown-freshness cause.
+      5. Current positive evidence and no stale/unknown cause → `covered`.
+
+
+      Skipped/unknown cases are not positive evidence. N/A annotations are not
+
+      positive evidence and do not exempt the criterion.
+
+
+      ### Relationship to imported redesign plans
+
+
+      - P0a provides the presentation and applicability decisions.
+
+      - P1a provides the verification record store and freshness resolver.
+
+      - P0c provides mutation/event ordering and reserves the coverage-state
+        event family.
+      - The Test Result Ingestion plan provides normalized completed-run storage
+        at `coverage/test-runs/index.yaml` and
+        `coverage/test-runs/runs/<run-ulid>/run.yaml`, including folder-backed run
+        entities, flat case records, attributed mappings, unmapped/invalid mapping
+        reports, and verification effects. The state engine consumes that contract:
+        it uses index.yaml as the bounded run list and reads run.yaml files for
+        detailed evidence selection; it must not choose a different run-store layout,
+        expect a precomputed per-criterion latest projection, or reinterpret native
+        framework artifacts.
+      - P0b's UI status tokens ensure later views render the four buckets with a
+        shared token vocabulary; this plan supplies the state values, not the
+        visual components.
+
+      ### General-system guardrails
+
+
+      - Use normalized ingested run records only. Never inspect Vitest/JUnit/etc.
+        native fields from the state engine.
+      - Fixtures must include projects other than kynetic-spec, with different
+        package names, test paths, spec refs, and result producers.
+      - Do not derive state in Svelte components. APIs return computed state and
+        rollups.
+      - Do not hardcode `.kspec/modules/*.yaml`, `kynetic.yaml`, current corpus
+        counts, or this repository's test annotation distribution. Use project
+        discovery and loaded context.
+      - Treat missing stores as valid absence, not as an upgrade task or error.
+
+
+      ### API/cache boundary
+
+
+      The existing `coverage-cache.ts` caches binary annotation scan results. The
+
+      engine needs a new read model that treats annotation scan output as one
+
+      input among several. Preserve the old scan utility as an input if useful;
+
+      do not expose binary annotation presence as the new public coverage state.
+
+
+      ### Performance notes
+
+
+      The original design assumed a much smaller corpus than the real projects
+
+      can have. The implementation should batch expensive history reads by file
+
+      or metadata revision, cache joined evidence/read models, and expose
+
+      rollups without requiring clients to fetch every criterion detail. A
+
+      performance smoke with generated thousands-of-AC fixture data is part of
+
+      this plan, not a later UI task.
+
+
+      ### Scope exclusions
+
+
+      - Test result ingestion/storage/mapping. That is the prerequisite plan.
+
+      - Daemon-run test execution.
+
+      - Coverage resolution mutations: re-verify button, revert, dispatch-fix.
+
+      - Spec workspace and Validate UI rendering.
+
+      - Flakiness detection and historical trend analytics.
+
+      - Generated matrix observations.
+
+      - Merge/repair authority and cross-project dashboard actions.
+
+
+      ### Migration and backcompat
+
+
+      - Projects with no verification store and no test-run store remain valid;
+        reads produce not-yet/annotation-derived states as allowed by the rules
+        and never materialize stores.
+      - Existing verification stores and future test-run stores are additive
+        sidecars.
+      - Static exports receive read-only snapshots and never pretend to ingest
+        or mutate coverage state.
+      - New API fields must be optional/tolerant for older snapshots and forward
+        compatible with unknown detail fields.
+
+      ### Validation gates
+
+
+      Before this plan is considered ready for approval, run at least:
+
+
+      - `KSPEC_NO_DAEMON=1 kspec plan import
+      /home/chapel/Projects/kynetic-spec/plans/ui-redesign-coverage-state-engine.md --module @core
+      --status draft --dry-run --json`
+
+      - `KSPEC_NO_DAEMON=1 kspec validate --warnings-ok`
+
+
+      Implementation tasks should run focused coverage-state tests, daemon route
+
+      and websocket tests touching the new API/events, static-export tests for
+
+      read-only coverage state, and broad TypeScript/build gates with shared
+
+      package generation before root `tsc` when shared types change.
+    author: Jacob Chapel
+    created_at: 2026-06-23T23:45:51.018Z

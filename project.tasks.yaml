@@ -32999,3 +32999,117 @@
   submitted_at: 2026-06-23T17:14:32.836Z
   completed_at: 2026-06-23T17:36:47.817Z
   automation: eligible
+- _ulid: 01KVVE0CPZGHB3SQD9CSD4RPK1
+  slugs:
+    - task-coverage-evidence-index
+  title: Build the backend coverage evidence index
+  type: task
+  spec_ref: "@coverage-evidence-index"
+  plan_ref: "@plan-coverage-state-engine"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - coverage
+    - parser
+    - daemon
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-23T23:45:48.767Z
+- _ulid: 01KVVE0D2QJ4KEMNF7HG9MMFED
+  slugs:
+    - task-coverage-state-derivation
+  title: Implement deterministic per-AC coverage state derivation
+  type: task
+  spec_ref: "@coverage-state-engine"
+  plan_ref: "@plan-coverage-state-engine"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-coverage-evidence-index"
+  priority: 1
+  tags:
+    - coverage
+    - state-engine
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-23T23:45:49.143Z
+- _ulid: 01KVVE0DG6ZG9NX5A2A86ZJQ63
+  slugs:
+    - task-coverage-freshness-revision-comparison
+  title: Add per-AC freshness and revision comparison for re-verify causes
+  type: task
+  spec_ref: "@coverage-freshness-revision-comparison"
+  plan_ref: "@plan-coverage-state-engine"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-coverage-state-derivation"
+  priority: 1
+  tags:
+    - coverage
+    - freshness
+    - git
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-23T23:45:49.574Z
+- _ulid: 01KVVE0DTZ9RGYWRC08376NZFX
+  slugs:
+    - task-coverage-state-api-cache
+  title: Expose coverage state daemon APIs and cache read model
+  type: task
+  spec_ref: "@coverage-state-api-cache"
+  plan_ref: "@plan-coverage-state-engine"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-coverage-freshness-revision-comparison"
+  priority: 1
+  tags:
+    - coverage
+    - daemon
+    - api
+    - cache
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-23T23:45:49.919Z
+- _ulid: 01KVVE0E692Z2PGF0TPM79QX9Q
+  slugs:
+    - task-coverage-state-events
+  title: Emit coverage-state events and targeted UI invalidation
+  type: task
+  spec_ref: "@coverage-state-events"
+  plan_ref: "@plan-coverage-state-engine"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-coverage-state-api-cache"
+  priority: 1
+  tags:
+    - coverage
+    - websocket
+    - daemon
+    - web-ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-23T23:45:50.281Z
+- _ulid: 01KVVE0EHJVET0QC95Z70YHMK9
+  slugs:
+    - task-coverage-state-validation-gates
+  title: Add coverage-state compatibility, performance, and neutral-project gates
+  type: task
+  spec_ref: "@coverage-state-engine"
+  plan_ref: "@plan-coverage-state-engine"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-coverage-state-events"
+  priority: 2
+  tags:
+    - coverage
+    - tests
+    - validation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-23T23:45:50.642Z

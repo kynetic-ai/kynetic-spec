@@ -1,0 +1,61 @@
+_ulid: 01KVVE0DG6ZG9NX5A2A86ZJQ63
+slugs:
+  - task-coverage-freshness-revision-comparison
+title: Add per-AC freshness and revision comparison for re-verify causes
+type: task
+description: |
+  Implement the comparison layer that decides whether positive evidence
+  is stale because AC text, covering annotations, or mapped test
+  evidence changed after verification.
+
+  Why: "Re-verify" is only trustworthy if it points to a real freshness
+  cause. Whole-file heuristics would flood unrelated criteria; the
+  comparison must be per-AC wherever the project data allows it.
+
+  What:
+  - Compare a criterion's current text/fingerprint against the version
+    that was current when its positive evidence was recorded. Use
+    shadow/project metadata history rather than writing operational
+    state into spec source.
+  - Provide a per-AC diff/read helper for stale-spec explanations so a
+    consumer can show why the criterion needs re-verification without
+    diffing an entire item client-side.
+  - Compare annotation freshness using the P1a resolver's recorded and
+    bootstrap values. A recorded stamp older than newer annotation
+    history causes re-verify; absent/unresolvable comparison metadata
+    degrades to re-verify with an unknown-freshness cause rather than
+    silently covered.
+  - Compare ingested run code revisions when available. If a run lacks
+    comparable code revision metadata, report that absence in the
+    explanation and follow the unknown-comparison rule.
+  - Tests: changed AC text re-verifies only that AC; sibling AC on same
+    item remains unchanged; changed annotation re-verifies mapped AC;
+    passing newer evidence clears stale cause; unknown revision metadata
+    yields re-verify not covered; per-AC diff helper returns focused
+    comparison data.
+
+  How: Reuse existing git utilities and plan-revision/content-hash
+  patterns where appropriate. Keep expensive history reads batched and
+  cacheable; add a performance regression fixture with many ACs and a
+  small number of changed criteria.
+
+  Covers: @coverage-freshness-revision-comparison
+  ac-ac-text-change-detected, ac-sibling-ac-unchanged,
+  ac-annotation-change-detected, ac-test-result-code-revision-compared,
+  ac-unknown-comparison-degrades-to-reverify, ac-per-ac-diff-read.
+spec_ref: "@coverage-freshness-revision-comparison"
+plan_ref: "@plan-coverage-state-engine"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-coverage-state-derivation"
+context: []
+priority: 1
+tags:
+  - coverage
+  - freshness
+  - git
+vcs_refs: []
+created_at: 2026-06-23T23:45:49.574Z
+todos: []

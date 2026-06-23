@@ -1,0 +1,60 @@
+_ulid: 01KVVE0D2QJ4KEMNF7HG9MMFED
+slugs:
+  - task-coverage-state-derivation
+title: Implement deterministic per-AC coverage state derivation
+type: task
+description: |
+  Implement the state engine that turns one evidence-index entry into a
+  deterministic internal state, four-bucket presentation value, and
+  explanation.
+
+  Why: P0a intentionally collapsed user-facing state to covered,
+  failing, not yet, and re-verify. The backend still needs precise
+  internal causes so Validate/spec workspace rows can explain what to
+  do next without forking state logic in the UI.
+
+  What:
+  - Define internal state/cause types for at least: covered,
+    failing_result, no_positive_evidence, stale_spec_text,
+    stale_annotation_or_mapping, stale_test_result, and
+    unknown_freshness. Map these to presentation buckets per
+    @coverage-state-presentation.
+  - Document and test precedence. Required rules: failed/errored latest
+    mapped result dominates covered; no positive evidence yields not
+    yet; stale positive evidence yields re-verify when no latest failure
+    dominates; N/A markers never create an N/A state or positive
+    evidence; equivalent inputs always produce equivalent outputs.
+  - Generate a machine-readable explanation containing the winning rule,
+    source evidence ids, latest run id when relevant, and secondary
+    re-verify causes.
+  - Test mixed evidence: annotation only, recorded stamp only, passing
+    latest run, failing latest run after older pass, passing latest run
+    after older failure, skipped/unknown only, N/A-only annotation,
+    stale evidence, and absent comparison metadata.
+
+  How: Keep derivation pure and side-effect-free. Use serializable
+  result objects so daemon APIs, static export, and CLI debug output can
+  all consume the same state result.
+
+  Covers: @coverage-state-engine ac-total-state,
+  ac-no-not-applicable-state, ac-failing-dominates-covered,
+  ac-covered-requires-current-positive-evidence,
+  ac-not-yet-for-no-positive-evidence, ac-reverify-for-stale-evidence,
+  ac-four-presentation-buckets, ac-deterministic-precedence.
+  Also covers @ac-coverage-applicability ac-1 and ac-2, and
+  @coverage-state-presentation ac-1.
+spec_ref: "@coverage-state-engine"
+plan_ref: "@plan-coverage-state-engine"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-coverage-evidence-index"
+context: []
+priority: 1
+tags:
+  - coverage
+  - state-engine
+vcs_refs: []
+created_at: 2026-06-23T23:45:49.143Z
+todos: []

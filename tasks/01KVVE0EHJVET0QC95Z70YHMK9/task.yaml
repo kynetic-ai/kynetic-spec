@@ -1,0 +1,58 @@
+_ulid: 01KVVE0EHJVET0QC95Z70YHMK9
+slugs:
+  - task-coverage-state-validation-gates
+title: Add coverage-state compatibility, performance, and neutral-project gates
+type: task
+description: |
+  Add the cross-cutting test and validation coverage that proves the
+  engine works as a reusable kspec system, not only for this repository.
+
+  Why: The highest risk in this track is accidental coupling to
+  kynetic-spec's own corpus and test setup. Completion must prove the
+  generic behavior across temp projects, older/no-store projects, static
+  snapshots, and large-ish corpora.
+
+  What:
+  - Add temp-project integration tests with at least two project shapes:
+    one with no test-run store and bootstrap annotations only, one with
+    normalized ingested runs from a differently named test framework or
+    fake producer.
+  - Add an upgrade/backcompat fixture: existing project with no
+    verification/test-run store reads as valid and does not materialize
+    stores on read; stores materialize only on write/ingestion.
+  - Add static snapshot tests for read-only coverage state and refused
+    mutation/ingestion actions.
+  - Add performance smoke for corpus-level rollups over thousands of ACs
+    using generated fixture data, proving cache reuse and avoiding one
+    git/history call per AC when batching is possible.
+  - Add validation/readiness notes documenting remaining follow-ons:
+    resolution mutations, spec workspace, Validate matrix, flakiness,
+    and generated observations.
+
+  How: Run focused coverage-state suites first, then the relevant daemon
+  route/websocket tests, then `KSPEC_NO_DAEMON=1 kspec validate
+  --warnings-ok`. For touched shared package types, generate
+  `packages/shared/dist` before root `tsc`.
+
+  Covers: @coverage-state-engine ac-total-state,
+  ac-deterministic-precedence; @coverage-state-api-cache
+  ac-performance-bounded, ac-static-snapshot; @coverage-evidence-index
+  ac-framework-neutral-input; @coverage-record-compatibility
+  ac-absent-store-no-behavior-change and ac-upgrade-without-rewrite as
+  regression coverage for this new read model.
+spec_ref: "@coverage-state-engine"
+plan_ref: "@plan-coverage-state-engine"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-coverage-state-events"
+context: []
+priority: 2
+tags:
+  - coverage
+  - tests
+  - validation
+vcs_refs: []
+created_at: 2026-06-23T23:45:50.642Z
+todos: []

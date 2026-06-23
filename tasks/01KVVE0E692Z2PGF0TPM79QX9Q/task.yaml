@@ -1,0 +1,66 @@
+_ulid: 01KVVE0E692Z2PGF0TPM79QX9Q
+slugs:
+  - task-coverage-state-events
+title: Emit coverage-state events and targeted UI invalidation
+type: task
+description: |
+  Define and emit typed coverage-state events through the existing
+  spec-item domain topic, and update clients to refresh coverage views
+  precisely.
+
+  Why: The mutation/event foundation reserved coverage-state events, but
+  left payload semantics to this plan. Without typed events, coverage
+  surfaces would fall back to broad delayed refreshes and stale badges.
+
+  What:
+  - Add typed event definitions for coverage-state changes on the
+    spec-item domain topic (`items:updates`), using the reserved family
+    from @mutation-event-naming and the existing daemon websocket protocol
+    foundation. Payloads identify affected item ULIDs, AC ids when bounded,
+    changed buckets/rollup scopes when known, and whether the client should
+    refresh item detail, project summary, or unmapped-result summary. This
+    plan owns coverage-state subscription payloads and refresh semantics; it
+    does not reimplement connection lifecycle, heartbeat, close-code, or base
+    reconnect mechanics.
+  - Emit events after ingestion, verification stamp writes,
+    spec/AC mutations, annotation file watcher invalidation, and cache
+    recomputation paths that change visible state.
+  - Ensure event-after-cache ordering: a subscriber that re-fetches
+    immediately sees the new state.
+  - Coalesce events for one run or broad file change so the daemon does
+    not send one websocket message per criterion.
+  - Wire the web client subscription/invalidation layer to refresh
+    coverage-state consumers by exact item/summary scope when possible,
+    with file-change fallback for out-of-band writes.
+  - Tests: typed topic/payload conformance, event-after-cache ordering,
+    ingestion event coalescing, watcher fallback invalidation, and UI
+    subscription refresh path without broad global reload.
+
+  How: Extend packages/shared websocket/event types first, regenerate
+  shared dist, then update daemon emitters and web client invalidation.
+  Use the shared mutation pipeline event ordering for daemon-served
+  mutations and explicit cache invalidation for watcher paths.
+
+  Covers: @coverage-state-events ac-event-topic, ac-event-canonical-identity,
+  ac-event-after-cache, ac-file-change-fallback, ac-no-event-storm. Also covers
+  @mutation-event-naming ac-3 for the coverage-state reserved family and
+  @trait-websocket-protocol ac-2, ac-3, ac-6, and ac-8 for subscription,
+  broadcast envelope, coalescing/backpressure, and reconnect behavior using
+  the existing daemon websocket foundation.
+spec_ref: "@coverage-state-events"
+plan_ref: "@plan-coverage-state-engine"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-coverage-state-api-cache"
+context: []
+priority: 1
+tags:
+  - coverage
+  - websocket
+  - daemon
+  - web-ui
+vcs_refs: []
+created_at: 2026-06-23T23:45:50.281Z
+todos: []

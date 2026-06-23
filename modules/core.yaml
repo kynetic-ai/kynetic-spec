@@ -3691,6 +3691,414 @@ features:
         notes: []
     created: 2026-06-23T02:03:29.566Z
     notes: []
+  - _ulid: 01KVVE0CG2P74RBN7KM6MFVYPH
+    slugs:
+      - coverage-evidence-index
+    title: Coverage Evidence Index
+    type: feature
+    description: |
+      A per-project read model that joins the spec corpus, acceptance
+      criteria, static coverage annotations, annotation freshness,
+      verification stamps, and ingested test-run outcomes into one evidence
+      index. The index is the only backend input used by coverage-state
+      computation. It records what evidence exists for each criterion,
+      where it came from, whether any mapped latest result is failing or
+      errored, which mappings are unmapped or invalid, and what freshness
+      values are available. It never derives final UI state in the client
+      and never assumes kynetic-spec-specific test files, slugs, packages,
+      or framework output.
+    depends_on:
+      - "@ac-verification-record-store"
+      - "@ac-freshness-resolution"
+      - "@test-result-run-store"
+      - "@test-result-ac-mapping"
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          a loaded kspec project with spec items and acceptance criteria
+        id: ac-one-entry-per-criterion
+        then: |
+          every acceptance criterion in the corpus has exactly one evidence
+          entry, including criteria with no annotations, no stamps, and no
+          ingested results
+        when: |
+          the coverage evidence index is built
+      - given: |
+          an indexed criterion with any combination of annotations,
+          freshness values, verification stamps, and ingested test results
+        id: ac-evidence-sources-labeled
+        then: |
+          each evidence fact names its source class — annotation,
+          bootstrap freshness, recorded verification, ingested result, or
+          unmapped result — without collapsing them into an unlabeled value
+        when: |
+          its evidence entry is read
+      - given: |
+          several ingested runs contain mapped results for the same
+          criterion
+        id: ac-latest-result-selection
+        then: |
+          it uses the latest accepted run relevant to that criterion,
+          breaking exact completed-at ties deterministically by run id and
+          preserving older runs for later history consumers
+        when: |
+          the evidence index selects result evidence for state computation
+      - given: |
+          an ingested run contains cases with no valid criterion mapping
+        id: ac-unmapped-separated
+        then: |
+          those cases are exposed as unmapped result evidence and are not
+          attributed to any criterion
+        when: |
+          the evidence index is built
+      - given: |
+          normalized results from different producers in projects whose
+          layouts differ from kynetic-spec
+        id: ac-framework-neutral-input
+        then: |
+          index behavior is identical for equivalent normalized records and
+          does not inspect framework-native fields or kynetic-spec paths
+        when: |
+          the evidence index reads them
+      - given: |
+          a web or CLI consumer requests coverage evidence
+        id: ac-no-client-side-join
+        then: |
+          the response contains backend-joined evidence or computed state;
+          the consumer is not required to fetch raw lists and reproduce the
+          join locally
+        when: |
+          the backend responds
+    tags: []
+    created: 2026-06-23T23:45:48.546Z
+    notes: []
+  - _ulid: 01KVVE0CHP61CQ9GPXRFGBVP34
+    slugs:
+      - coverage-state-engine
+    title: Coverage State Engine
+    type: feature
+    description: |
+      The backend service that computes one deterministic corpus coverage
+      state for every acceptance criterion from the coverage evidence index.
+      Internal causes may distinguish failing test evidence, missing
+      evidence, stale spec text, stale covering code, and stale mapping
+      confirmation, but user-facing presentation collapses to the four
+      buckets defined by @coverage-state-presentation: covered, failing,
+      not yet, and re-verify. Corpus coverage has no not-applicable state;
+      in-code not-applicable annotations neither cover nor exempt criteria.
+    depends_on:
+      - "@coverage-evidence-index"
+      - "@coverage-state-presentation"
+      - "@ac-coverage-applicability"
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          any acceptance criterion in the loaded spec corpus
+        id: ac-total-state
+        then: |
+          the criterion has exactly one computed state and a machine-readable
+          explanation naming the evidence and rule that produced it
+        when: |
+          coverage state computation completes
+      - given: |
+          a criterion whose only annotations are not-applicable markers or
+          whose tests mark it not-applicable
+        id: ac-no-not-applicable-state
+        then: |
+          the result is not a not-applicable state; the criterion is treated
+          according to the ordinary evidence rules, with N/A markers
+          contributing no positive coverage evidence
+        when: |
+          corpus coverage state is computed
+      - given: |
+          the latest relevant ingested evidence for a criterion contains a
+          failed or errored mapped case
+        id: ac-failing-dominates-covered
+        then: |
+          the criterion's presentation bucket is failing even if older
+          passing evidence or static annotations also exist
+        when: |
+          the state is computed
+      - given: |
+          a criterion with current positive evidence from a coverage
+          annotation, a passing mapped ingested result, or a verification
+          stamp that is not stale under the engine's freshness rules
+        id: ac-covered-requires-current-positive-evidence
+        then: |
+          the criterion's presentation bucket is covered
+        when: |
+          no latest mapped case is failing or errored and no re-verify cause
+          applies
+      - given: |
+          a criterion with no positive coverage evidence from annotations,
+          verification stamps, or mapped ingested results
+        id: ac-not-yet-for-no-positive-evidence
+        then: |
+          the criterion's presentation bucket is not yet
+        when: |
+          the state is computed
+      - given: |
+          a criterion with positive evidence whose confirmed freshness is
+          older than the criterion text, covering annotation, or mapped test
+          evidence it depends on
+        id: ac-reverify-for-stale-evidence
+        then: |
+          the criterion's presentation bucket is re-verify and the internal
+          cause identifies which dependency is stale
+        when: |
+          no latest mapped case is failing or errored
+      - given: |
+          computed internal coverage-state causes
+        id: ac-four-presentation-buckets
+        then: |
+          each state maps to exactly one of covered, failing, not yet, or
+          re-verify, and detailed causes are secondary metadata
+        when: |
+          any API, CLI, or UI-facing response presents the state
+      - given: |
+          a criterion with multiple evidence facts that could imply
+          different buckets
+        id: ac-deterministic-precedence
+        then: |
+          the same state, presentation bucket, and explanation are produced
+          each time according to the documented precedence rules
+        when: |
+          state computation runs repeatedly over the same inputs
+    tags: []
+    requirements:
+      - _ulid: 01KVVE0CK2WVFQPBGZWJA4P285
+        slugs:
+          - coverage-freshness-revision-comparison
+        title: Coverage Freshness and Revision Comparison
+        type: requirement
+        description: |
+          Coverage state can determine whether existing evidence must be
+          re-verified because the acceptance criterion text, covering
+          annotation, or mapped test evidence changed after verification. The
+          comparison reads version-control history and project metadata; it does
+          not require storing operational state in spec source. Criterion text
+          comparisons are per acceptance criterion, not only per whole spec
+          item, so changing one criterion does not force unrelated criteria on
+          the same item into re-verify.
+        depends_on:
+          - "@ac-freshness-resolution"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a criterion has positive verification evidence and its given,
+              when, or then text changes afterward
+            id: ac-ac-text-change-detected
+            then: |
+              that criterion enters the re-verify bucket with a spec-text
+              change cause unless newer positive evidence supersedes the change
+            when: |
+              coverage state is recomputed
+          - given: |
+              one criterion on a spec item changes while a sibling criterion on
+              the same item does not
+            id: ac-sibling-ac-unchanged
+            then: |
+              the unchanged sibling is not marked re-verify solely because the
+              item file changed
+            when: |
+              coverage state is recomputed
+          - given: |
+              a criterion's positive evidence relies on a coverage annotation
+              location and that annotation line changes after verification
+            id: ac-annotation-change-detected
+            then: |
+              the criterion enters the re-verify bucket with a covering-code or
+              mapping-change cause unless newer positive evidence supersedes it
+            when: |
+              coverage state is recomputed
+          - given: |
+              an ingested run carried a code revision and later source changes
+              affect the mapped test case or annotation location
+            id: ac-test-result-code-revision-compared
+            then: |
+              the state explanation reports whether the run evidence is current
+              or requires re-verification because code changed after the run
+            when: |
+              the engine can compare those revisions
+          - given: |
+              positive evidence exists but the engine cannot compare a required
+              freshness source because revision metadata is absent or
+              unresolvable
+            id: ac-unknown-comparison-degrades-to-reverify
+            then: |
+              the criterion does not get silently marked covered; it either
+              remains not yet when there is no positive evidence or enters
+              re-verify with an unknown-freshness cause
+            when: |
+              the state is computed
+          - given: |
+              a consumer requests why a criterion is stale
+            id: ac-per-ac-diff-read
+            then: |
+              it can provide a per-criterion text or metadata comparison for
+              that criterion without requiring the consumer to diff the entire
+              spec item locally
+            when: |
+              the backend can resolve the relevant prior and current versions
+        tags: []
+        created: 2026-06-23T23:45:48.642Z
+        notes: []
+      - _ulid: 01KVVE0CME1JBWX82Z7KN61Y25
+        slugs:
+          - coverage-state-api-cache
+        title: Coverage State API and Cache
+        type: requirement
+        description: |
+          The daemon exposes coverage-state reads as server-computed data with
+          explicit cache ownership, pagination/filter support where needed, and
+          static-mode fallback. Consumers can request corpus rollups, per-item
+          rollups, per-criterion state detail, and unmapped-result summaries
+          without rebuilding the evidence join client-side. Cache invalidation
+          follows the same project metadata, source annotation, verification
+          stamp, and test-run changes that affect state computation.
+        depends_on:
+          - "@coverage-state-engine"
+          - "@daemon-entity-cache"
+          - "@api-contract"
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-api-endpoint"
+        acceptance_criteria:
+          - given: |
+              a daemon client requests coverage-state summary for a project
+            id: ac-corpus-rollup
+            then: |
+              the response includes counts for covered, failing, not yet, and
+              re-verify plus the denominator used for corpus coverage
+            when: |
+              the project has computed states
+          - given: |
+              a daemon client requests a spec item or acceptance criterion
+              coverage detail
+            id: ac-item-and-ac-detail
+            then: |
+              the response includes the computed state, presentation bucket,
+              explanation, relevant latest run evidence, freshness values, and
+              any unmapped result references affecting that view
+            when: |
+              the item or criterion exists
+          - given: |
+              a web client renders a coverage badge, spec workspace row, or
+              Validate matrix row
+            id: ac-server-computed
+            then: |
+              it consumes server-computed state/rollup fields and does not
+              reproduce the state derivation rules locally
+            when: |
+              it requests coverage data
+          - given: |
+              spec source, configured annotation scan paths, verification
+              stamps, or test-run records change
+            id: ac-cache-invalidation
+            then: |
+              stale cached state is not returned for affected criteria or
+              rollups
+            when: |
+              a subsequent coverage-state request is served
+          - given: |
+              a static export contains coverage-state data
+            id: ac-static-snapshot
+            then: |
+              it can render the last computed state and rollups as read-only
+              data, and mutation or ingestion actions are unavailable
+            when: |
+              a client reads the exported snapshot
+          - given: |
+              a project with thousands of acceptance criteria and many
+              annotations
+            id: ac-performance-bounded
+            then: |
+              the daemon reuses the cache/read model instead of rescanning and
+              recomputing the full corpus for every request
+            when: |
+              coverage-state summary is requested repeatedly
+        tags: []
+        created: 2026-06-23T23:45:48.687Z
+        notes: []
+      - _ulid: 01KVVE0CNQ202MR0FRPZHH5SY0
+        slugs:
+          - coverage-state-events
+        title: Coverage State Events
+        type: requirement
+        description: |
+          Coverage-state changes broadcast through the reserved coverage-state
+          event family on the spec-item domain topic. Events identify affected
+          items and criteria by canonical identifiers and carry enough
+          information for clients to refresh precise rows or rollups. They are
+          emitted only after the daemon cache/read model reflects the changed
+          state, matching the shared mutation/event ordering contract.
+        depends_on:
+          - "@mutation-event-naming"
+          - "@coverage-state-api-cache"
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-websocket-protocol"
+        acceptance_criteria:
+          - given: |
+              a coverage-state-affecting mutation succeeds
+            id: ac-event-topic
+            then: |
+              the event is published on the spec-item domain topic using the
+              reserved coverage-state event family rather than on a parallel
+              coverage-only topic
+            when: |
+              the daemon broadcasts the resulting event
+          - given: |
+              an event identifies affected coverage state
+            id: ac-event-canonical-identity
+            then: |
+              the payload identifies affected spec items and criteria by
+              canonical identifiers sufficient to refresh exactly those rows or
+              rollups
+            when: |
+              a client receives it
+          - given: |
+              a subscriber receives a coverage-state event
+            id: ac-event-after-cache
+            then: |
+              the response reflects the state that caused the event
+            when: |
+              it immediately re-fetches the affected coverage state
+          - given: |
+              a source or metadata file changes outside a daemon-served
+              mutation path
+            id: ac-file-change-fallback
+            then: |
+              open clients still refresh affected coverage views even if no
+              precise typed mutation event was available
+            when: |
+              watcher fallback invalidation is all the daemon observes
+          - given: |
+              one ingestion or metadata mutation affects many criteria
+            id: ac-no-event-storm
+            then: |
+              the daemon can coalesce payloads by affected item/rollup so a
+              single run does not require one websocket message per criterion
+            when: |
+              coverage-state events are emitted
+        tags: []
+        created: 2026-06-23T23:45:48.727Z
+        notes: []
+    created: 2026-06-23T23:45:48.598Z
+    notes: []
 modules:
   - _ulid: 01KPPN4244R4AH3WQGW4F8M1CF
     slugs:
