@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KVVEBZHE05C9HGZCGQJEC1PA
+    content: "Approach: add a parser-layer coverage evidence index builder that can be called with
+      preloaded items, structured AC annotations, resolved freshness, verification stamps, and
+      normalized test-run records, plus a context wrapper that loads items, scans configured
+      annotations, resolves freshness, and reads only run ids listed in
+      coverage/test-runs/index.yaml. Reuse scanACAnnotations, ReferenceIndex,
+      resolveAcFreshnessWithBoth, and test-result run schemas/store; do not derive coverage state or
+      add daemon/UI APIs. Edge cases: criteria with no evidence still get one entry,
+      malformed/blanket annotations do not create criterion evidence, N/A annotations remain labeled
+      annotation evidence but not positive state, missing test-run index means no runs, latest
+      mapped run is selected by completed_at then run id, and unmapped/invalid cases stay outside
+      criterion entries. Test plan: behavioral unit tests for all six @coverage-evidence-index ACs,
+      including two neutral project fixtures with different layouts and producers."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T23:52:08.494Z
