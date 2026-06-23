@@ -13337,11 +13337,11 @@ workspaces:
     canonical_branch: dispatch/task/task-test-result-producer-contract-fixtures/01kvs3fv
     canonical_branch_head: 25ad6f033a3eb68a7d1fe4321f12b7b47779783c
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-23T22:36:58.202Z
+      updated_at: 2026-06-23T22:40:25.337Z
     health:
       status: healthy
       issues: []
@@ -13355,17 +13355,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: f633577fbaf546dad41b5a9cdc28a0aa556357d6
       updated_at: 2026-06-23T22:36:58.202Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVS3FV0797YW7SJSQC07R1QT
     task_ref: "@01KVS3FV0797YW7SJSQC07R1QT"
     task_slug: task-test-result-producer-contract-fixtures
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-23T22:40:25.337Z
       last_active_at: 2026-06-23T22:16:33.213Z
       last_reconciled_at: 2026-06-23T22:40:00.271Z
       created_at: 2026-06-23T21:49:28.503Z
-      updated_at: 2026-06-23T22:40:00.271Z
+      updated_at: 2026-06-23T22:40:25.337Z
     workspace_id: dispatch-workspace-01KVS3FV0797YW7SJSQC07R1QT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
