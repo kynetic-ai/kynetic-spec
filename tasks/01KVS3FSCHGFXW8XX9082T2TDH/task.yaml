@@ -81,7 +81,7 @@ tags:
   - schema
   - storage
 vcs_refs: []
-review_ref: "@01KVS7YYV0GP47RKC3X8MZVFXC"
+review_ref: "@01KVSACNNSVYAYMX759S06YRNN"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-test-result-run-store/01kvs3fs
@@ -309,6 +309,13 @@ history:
           upstream_ref: refs/heads/dispatch/task/task-test-result-run-store/01kvs3fs
     command: task-patch
     timestamp: 2026-06-23T03:58:48.822Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KVSACNNSVYAYMX759S06YRNN"
+        previous: "@01KVS7YYV0GP47RKC3X8MZVFXC"
+    command: review-link
+    timestamp: 2026-06-23T04:04:10.638Z
 created_at: 2026-06-23T02:03:30.065Z
 started_at: 2026-06-23T03:42:31.649Z
 submitted_at: 2026-06-23T03:57:46.342Z
