@@ -13,6 +13,17 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-23T20:07:24.745Z
     completed_at: 2026-06-23T20:07:24.745Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide lint completed with 0 errors and the existing warning baseline: Found 678
+      warnings and 0 errors on 924 files."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-23T20:07:40.429Z
+    completed_at: 2026-06-23T20:07:40.429Z
 events:
   - _ulid: 01KVV0JRXTYKGW52JH56BKYT1V
     actor: Jacob Chapel
@@ -34,6 +45,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-23T20:07:25.035Z
+  - _ulid: 01KVV1GZFTXMBB45QWZ3VYVKAC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-23T20:07:40.794Z
 examined_commit: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
 external_links: []
 lifecycle_state: open
@@ -46,5 +64,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T19:51:11.035Z
-updated_at: 2026-06-23T20:07:24.745Z
+updated_at: 2026-06-23T20:07:40.429Z
 notes: []
