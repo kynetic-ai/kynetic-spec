@@ -169,6 +169,13 @@ events:
       kind: nit
       thread_ulid: 01KVS6BKHDRZYG9K6JQF0CKK5V
     timestamp: 2026-06-23T02:53:38.971Z
+  - _ulid: 01KVS6C26SGVCE96618M6R61VM
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVS6C1ZP2CKPP5Z8WZG8V3S7
+    timestamp: 2026-06-23T02:53:53.753Z
 examined_commit: 0fe42bc9c480cd87647c10dc34f0ffeef6f430c9
 external_links: []
 lifecycle_state: open
@@ -198,7 +205,29 @@ threads:
           separately as blocker."
         created_at: 2026-06-23T02:53:38.733Z
     kind: nit
+  - _ulid: 01KVS6C1ZP2CKPP5Z8WZG8V3S7
+    anchor:
+      type: code
+      commit: 0fe42bc9c480cd87647c10dc34f0ffeef6f430c9
+      line_end: 40
+      line_start: 30
+      path: src/schema/test-result-runs.ts
+      side: head
+    entries:
+      - _ulid: 01KVS6C1ZP5TQMK591JPFG21PR
+        author: pr-reviewer
+        body: "MUST-FIX:  is passthrough, so the ingestion schema accepts producer-native/framework metadata
+          as arbitrary sibling fields beside . The task explicitly says producer-native metadata is
+          retained only under the namespaced extension object, and
+          @normalized-test-result-ingestion-contract requires a kspec-owned envelope instead of
+          framework-native shapes. Evidence:  returns success, and  uses this schema directly before
+          persistence. Impact: framework-specific producer fields can be accepted and stored outside
+          , so the schema boundary does not enforce the normalized contract. Please reject or strip
+          unknown producer-native fields at input while still preserving already-stored
+          forward-compatible fields where the record-format compatibility requirement needs that."
+        created_at: 2026-06-23T02:53:53.526Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-23T02:38:18.899Z
-updated_at: 2026-06-23T02:53:38.733Z
+updated_at: 2026-06-23T02:53:53.526Z
 notes: []

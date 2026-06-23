@@ -27627,7 +27627,7 @@ reviews:
   - _ulid: 01KVS5FH8KPGBXCKKSETFPK0MD
     slugs: []
     title: Review test result run store
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 8
     examined_commit: 0fe42bc9c480cd87647c10dc34f0ffeef6f430c9
@@ -27638,8 +27638,8 @@ reviews:
       content_hash: ""
       ref: "@01KVS3FSCHGFXW8XX9082T2TDH"
       shadow_commit: ""
-    thread_count: 1
-    unresolved_blocker_count: 0
+    thread_count: 2
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-23T02:38:18.899Z
-    updated_at: 2026-06-23T02:53:38.733Z
+    updated_at: 2026-06-23T02:53:53.526Z
