@@ -176,6 +176,12 @@ events:
       kind: blocker
       thread_ulid: 01KVS6C1ZP2CKPP5Z8WZG8V3S7
     timestamp: 2026-06-23T02:53:53.753Z
+  - _ulid: 01KVS6DDGGPCRKZGPNEAVM2C12
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVS6C1ZP2CKPP5Z8WZG8V3S7
+    timestamp: 2026-06-23T02:54:38.096Z
 examined_commit: 0fe42bc9c480cd87647c10dc34f0ffeef6f430c9
 external_links: []
 lifecycle_state: open
@@ -226,8 +232,23 @@ threads:
           unknown producer-native fields at input while still preserving already-stored
           forward-compatible fields where the record-format compatibility requirement needs that."
         created_at: 2026-06-23T02:53:53.526Z
+      - _ulid: 01KVS6DD8TKV6S2ZZJV8K22FXB
+        author: Jacob Chapel
+        body: 'Correction to previous entry: MUST-FIX: TestResultProducerSchema is passthrough, so the
+          ingestion schema accepts producer-native/framework metadata as arbitrary sibling fields
+          beside producer.native. The task explicitly says producer-native metadata is retained only
+          under the namespaced extension object, and @normalized-test-result-ingestion-contract
+          requires a kspec-owned envelope instead of framework-native shapes. Evidence:
+          TestResultRunRecordSchema.safeParse({...base, producer: { kind: "local", label: "x",
+          junit: { native: true } }}) returns success, and writeTestRun uses this schema directly
+          before persistence. Impact: framework-specific producer fields can be accepted and stored
+          outside producer.native, so the schema boundary does not enforce the normalized contract.
+          Please reject or strip unknown producer-native fields at input while still preserving
+          already-stored forward-compatible fields where the record-format compatibility requirement
+          needs that.'
+        created_at: 2026-06-23T02:54:37.850Z
     kind: blocker
 verdicts: []
 created_at: 2026-06-23T02:38:18.899Z
-updated_at: 2026-06-23T02:53:53.526Z
+updated_at: 2026-06-23T02:54:37.850Z
 notes: []
