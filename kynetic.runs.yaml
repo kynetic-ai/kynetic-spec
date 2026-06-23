@@ -72434,7 +72434,7 @@ runs:
     completed_at: 2026-06-23T20:12:16.416Z
   - _ulid: 01KVV31BHNZ3QCRKT548T0GZHK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72449,7 +72449,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T20:34:38.782Z
-        completed_at: 2026-06-23T20:34:38.782Z
+        completed_at: 2026-06-23T20:34:51.199Z
+        notes: "Friction points: full npm test was required and eventually passed, but it took about 3066
+          seconds and had multiple long quiet intervals between reported suites. This created
+          uncertainty about whether the run was still executing or sitting in teardown; I checked
+          the process tree once to verify Vitest still had an active worker. Minor CLI friction:
+          workflow show required the run ref even immediately after starting a single active
+          workflow, so I had to retry with @01KVV31B."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T20:34:51.199Z
+        completed_at: 2026-06-23T20:34:51.199Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T20:34:06.005Z
