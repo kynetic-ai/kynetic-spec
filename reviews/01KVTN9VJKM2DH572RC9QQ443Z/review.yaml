@@ -188,6 +188,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-23T16:49:27.406Z
+  - _ulid: 01KVTQH7SJ2MKZ3GRW5CNABFDS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVTP5XR4522VAPHQHZ6M48NP
+    timestamp: 2026-06-23T17:13:03.538Z
 examined_commit: 1444054dca9caff2a8c120fbc7ebdd03220cf5c0
 external_links: []
 lifecycle_state: closed
@@ -251,6 +257,14 @@ threads:
           provisioning/validation/discovery task payloads and add a dispatch-engine-level regression
           for a plan-scoped pending_review or needs_work entry."
         created_at: 2026-06-23T16:49:24.228Z
+      - _ulid: 01KVTQH7HX8QMKD4C6EN8TEBAQ
+        author: Jacob Chapel
+        body: "Fixed in eb99e0b0ca: dispatch engine workspace health, discovery, provisioning, and
+          validation task payloads now include plan_ref. Workspace config/health/discovery resolve
+          with that task context, and a dispatch-engine-level pending_review adoption regression
+          proves the invocation env and workspace record target the owning plan branch instead of
+          dispatch.base_branch."
+        created_at: 2026-06-23T17:13:03.293Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -261,5 +275,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-23T16:49:27.405Z
 created_at: 2026-06-23T16:34:04.499Z
-updated_at: 2026-06-23T16:49:27.406Z
+updated_at: 2026-06-23T17:13:03.293Z
 notes: []
