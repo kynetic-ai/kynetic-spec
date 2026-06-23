@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KVS3WDX3N0EA47VMCDVCHG1Q
+    content: "Approach: add src/schema/test-result-runs.ts for the kspec-owned normalized run envelope
+      and add src/parser/test-result-run-store.ts as a parser-level sidecar store modeled after
+      verification-record-store plus folder-backed-entity helpers. The store will write
+      coverage/test-runs/index.yaml and runs/<ULID>/run.yaml in one buffered mutation, preserve
+      supported-format unknown fields, refuse newer formats before writes, and expose
+      read/latest/rebuild APIs without CLI or daemon endpoints. Edge cases: absent store read
+      creates nothing, invalid payload leaves index/run files unchanged, unknown run-folder files
+      survive updates, index drift repairs converge, optional empty defaults do not flap as drift,
+      and latest-run ties sort deterministically by run id. Test plan: add behavioral unit tests
+      with neutral temp projects covering all @test-result-run-store ACs, the schema/store portions
+      of @normalized-test-result-ingestion-contract ACs, @trait-type-safe-input ac-1..3, and the
+      applicable @trait-folder-backed-entity-1 ACs."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T02:10:24.291Z
