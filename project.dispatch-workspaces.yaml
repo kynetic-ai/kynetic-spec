@@ -10822,3 +10822,80 @@ workspaces:
         head: e72ad3cdc639416e3249382f9a507a55d4d0139a
         last_seen_at: 2026-06-23T05:12:13.685Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-run-store-01kvs3fs
+  - active_role: null
+    base_branch_point: 1fb1d8395885a4ba5e9298c33bb7da9c5a2ede68
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-test-result-ac-mapping/01kvs3fs
+    canonical_branch_head: 1fb1d8395885a4ba5e9298c33bb7da9c5a2ede68
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-23T05:58:05.827Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-23T05:58:05.827Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: feat/ui-redesign
+      target_commit: 1fb1d8395885a4ba5e9298c33bb7da9c5a2ede68
+      updated_at: 2026-06-23T05:58:05.827Z
+    lifecycle_state: ready
+    resolved_base_branch: feat/ui-redesign
+    task_id: 01KVS3FSSRJ6E6M2VEAKBE322G
+    task_ref: "@01KVS3FSSRJ6E6M2VEAKBE322G"
+    task_slug: task-test-result-ac-mapping
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-23T05:58:05.827Z
+      created_at: 2026-06-23T05:58:05.827Z
+      updated_at: 2026-06-23T05:58:05.827Z
+    workspace_id: dispatch-workspace-01KVS3FSSRJ6E6M2VEAKBE322G
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-test-result-ac-mapping/01kvs3fs
+        head: 1fb1d8395885a4ba5e9298c33bb7da9c5a2ede68
+        last_seen_at: 2026-06-23T05:58:05.827Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-ac-mapping-01kvs3fs
