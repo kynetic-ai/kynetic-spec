@@ -32,3 +32,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T16:49:29.397Z
+  - _ulid: 01KVTQJWPZWFWDP8R38QENW5J7
+    content: "Fix cycle 1: addressed review blocker by preserving task plan_ref through dispatch engine
+      workspace health, discovery, provisioning, and validation payloads. Updated workspace config
+      resolution in health/discovery paths to consume task plan context, and added a
+      dispatch-engine-level pending_review adoption regression proving plan-scoped submission
+      linkage invokes against the plan branch instead of dispatch.base_branch. Re-verified
+      @portable-task-submission-linkage ac-5 and @plan-branch-dispatch-target
+      ac-submission-linkage-plan-target. Verification: focused linkage/workspace tests passed (48
+      tests); format:check passed; lint --quiet passed with existing warning baseline; focused
+      oxlint exited 0 with existing task.ts no-shadow warnings only; typecheck passed; full npm test
+      passed (2788 suites, 10573 passed, 3 skipped); kspec refs/alignment/completeness validations
+      passed with warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T17:13:57.727Z
