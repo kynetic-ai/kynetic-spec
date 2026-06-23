@@ -71449,7 +71449,7 @@ runs:
     started_at: 2026-06-22T00:14:59.899Z
     completed_at: 2026-06-22T00:17:12.732Z
   - _ulid: 01KVS56C9KCT1AEAHG4VEQKVPD
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -71495,7 +71495,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-23T02:35:46.036Z
-        completed_at: 2026-06-23T02:35:46.036Z
+        completed_at: 2026-06-23T02:36:06.604Z
+        notes: Captured success observation @01KVS5B5. Did not create duplicate friction items because
+          submission-linkage target drift is already covered by @01KVET9H and the full-suite
+          post-green hang/quiet behavior is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T02:33:18.899Z
+    completed_at: 2026-06-23T02:36:06.604Z
