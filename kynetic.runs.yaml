@@ -72434,7 +72434,7 @@ runs:
     completed_at: 2026-06-23T20:12:16.416Z
   - _ulid: 01KVV31BHNZ3QCRKT548T0GZHK
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72468,7 +72468,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-23T20:35:22.134Z
-        completed_at: 2026-06-23T20:35:22.134Z
+        completed_at: 2026-06-23T20:35:34.264Z
+        notes: "Proposed improvement: make 'kspec workflow show' default to the current active workflow run
+          when exactly one active run exists, or print the exact 'kspec workflow show @run' command
+          after 'workflow start'. Help: removes a small retry step during reflection and other
+          workflow-driven sessions. Scope: small CLI ergonomics change with focused command tests.
+          Already-tracked item: do not create a duplicate for full-suite quiet/hang behavior because
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run covers the systemic issue."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-23T20:35:34.264Z
+        completed_at: 2026-06-23T20:35:34.264Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T20:34:06.005Z
