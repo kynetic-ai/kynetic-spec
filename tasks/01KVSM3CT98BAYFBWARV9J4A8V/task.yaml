@@ -1,0 +1,27 @@
+_ulid: 01KVSM3CT98BAYFBWARV9J4A8V
+slugs:
+  - task-stabilize-full-npm-test-flake
+title: Stabilize full npm test flake after broad unrelated failures
+type: bug
+description: "During review of @01KVS3FSSRJ6E6M2VEAKBE322G, the first full npm test run failed with
+  48 suites marked failed but only 21 individual tests failed. Most failures were STACK_TRACE_ERROR
+  in unrelated beforeEach/afterEach hooks, plus isolated unrelated failures in batch stdin handling,
+  daemon watcher propagation, and daemon fixture cleanup. The changed test-result suites passed in
+  that run. A fresh rerun of every failed file passed: 153 suites, 593 tests. Investigate why the
+  full runner can produce this broad one-off failure pattern and make the suite stable or improve
+  diagnostics."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - flake
+vcs_refs: []
+created_at: 2026-06-23T06:53:49.769Z
+todos: []
+automation: eligible

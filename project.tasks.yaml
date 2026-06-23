@@ -32943,3 +32943,19 @@
   todos_count: 0
   created_at: 2026-06-23T02:03:31.719Z
   automation: eligible
+- _ulid: 01KVSM3CT98BAYFBWARV9J4A8V
+  slugs:
+    - task-stabilize-full-npm-test-flake
+  title: Stabilize full npm test flake after broad unrelated failures
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - testing
+    - flake
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-23T06:53:49.769Z
+  automation: eligible
