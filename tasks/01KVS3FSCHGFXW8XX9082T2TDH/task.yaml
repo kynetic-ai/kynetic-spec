@@ -70,7 +70,7 @@ description: |
 spec_ref: "@test-result-run-store"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -85,11 +85,11 @@ review_ref: "@01KVSACNNSVYAYMX759S06YRNN"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-test-result-run-store/01kvs3fs
-  captured_at: 2026-06-23T03:57:46.334Z
-  commit: 53cae84f6c68a970db90bfddbeceedd23e70a137
+  captured_at: 2026-06-23T04:43:13.293Z
+  commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
-  upstream_ref: feat/ui-redesign
+  upstream_ref: refs/heads/dispatch/task/task-test-result-run-store/01kvs3fs
 session_id: 01KVSBM5KM3B3ZZH30V4DJ91SM
 history:
   - author: Jacob Chapel
@@ -339,8 +339,35 @@ history:
         previous: 2026-06-23T03:42:31.649Z
     command: task-start
     timestamp: 2026-06-23T04:26:33.363Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-test-result-run-store/01kvs3fs
+          captured_at: 2026-06-23T04:43:13.293Z
+          commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-test-result-run-store/01kvs3fs
+        previous:
+          review_url: null
+          branch: dispatch/task/task-test-result-run-store/01kvs3fs
+          captured_at: 2026-06-23T03:57:46.334Z
+          commit: 53cae84f6c68a970db90bfddbeceedd23e70a137
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: feat/ui-redesign
+      submitted_at:
+        new: 2026-06-23T04:43:13.302Z
+        previous: 2026-06-23T03:57:46.342Z
+    command: task-submit
+    timestamp: 2026-06-23T04:43:13.302Z
 created_at: 2026-06-23T02:03:30.065Z
 started_at: 2026-06-23T04:26:33.362Z
-submitted_at: 2026-06-23T03:57:46.342Z
+submitted_at: 2026-06-23T04:43:13.302Z
 todos: []
 automation: eligible
