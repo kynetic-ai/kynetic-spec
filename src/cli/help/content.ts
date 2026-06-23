@@ -113,6 +113,68 @@ Alias: 'kspec lint' does the same thing.
     seeAlso: ["refs", "exit-codes"],
   },
 
+  coverage: {
+    concept: `
+Coverage and evidence commands.
+
+Test-result ingestion accepts completed test runs that have already been
+translated into the kspec normalized producer contract. Framework-native
+payloads are adapter inputs, not core ingestion inputs.
+`,
+    examples: [
+      "kspec coverage test-result ingest --file result.normalized.json --json",
+      "kspec coverage test-result ingest --file result.normalized.json --dry-run --json",
+      'cat result.normalized.json | kspec coverage test-result ingest - --actor "CI Bot"',
+    ],
+    seeAlso: ["test-result-producer-contract", "validate"],
+  },
+
+  "test-result-producer-contract": {
+    title: "Test Result Producer Contract",
+    concept: `
+The test-result ingestion boundary accepts one kspec-owned normalized JSON
+envelope. Producers and adapters translate local command output, CI artifacts,
+agent-produced reports, or framework-native files into this envelope before
+calling the CLI or daemon route.
+
+Required envelope:
+  format: 1
+  run.id: canonical kspec run ULID
+  run.completed_at: ISO completion timestamp
+  producer.kind: local | ci | agent | other
+  producer.label: producer name
+  cases[]: one or more normalized cases
+
+Each case requires:
+  id: stable producer-supplied case id
+  display_name: human-readable case name
+  status: passed | failed | errored | skipped | unknown
+
+Optional case fields:
+  suite_path, duration_ms, location.file, location.line, diagnostic, refs
+
+Mapping refs use:
+  { "item_ref": "@portable-feature", "ac_id": "ac-covered-behavior" }
+
+Native framework fields are rejected at the top level. Keep diagnostic native
+metadata only under producer.native, and keep normalized cases as the core
+contract.
+
+Storage layout after accepted ingestion:
+  coverage/test-runs/index.yaml
+  coverage/test-runs/runs/<run-ulid>/run.yaml
+
+Skipped and unknown mapped cases are retained for diagnostics, but never count
+as positive coverage evidence.
+`,
+    examples: [
+      "kspec coverage test-result ingest --file result.normalized.json --json",
+      "kspec coverage test-result ingest --file result.normalized.json --dry-run --json",
+      "kspec help coverage",
+    ],
+    seeAlso: ["coverage", "validate"],
+  },
+
   session: {
     concept: `
 Get context for a work session - what's active, ready, and recent.
