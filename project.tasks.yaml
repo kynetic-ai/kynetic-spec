@@ -32949,7 +32949,7 @@
     - task-stabilize-full-npm-test-flake
   title: Stabilize full npm test flake after broad unrelated failures
   type: bug
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 2
@@ -32960,4 +32960,5 @@
   todos_count: 0
   created_at: 2026-06-23T06:53:49.769Z
   started_at: 2026-06-23T06:55:23.915Z
+  submitted_at: 2026-06-23T07:32:14.007Z
   automation: eligible
