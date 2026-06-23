@@ -2,7 +2,92 @@ _ulid: 01KVTN9VJKM2DH572RC9QQ443Z
 slugs: []
 title: Review task-plan-scoped-submission-linkage-fallback
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check . reported all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-23T16:48:56.045Z
+    completed_at: 2026-06-23T16:48:56.045Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repository warning baseline: 716 warnings, 0 errors. Focused changed-file
+      lint also exited 0; warnings were existing no-shadow warnings in src/cli/commands/task.ts
+      outside the submitted hunks."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-23T16:48:59.093Z
+    completed_at: 2026-06-23T16:48:59.093Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared completed and tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-23T16:49:02.040Z
+    completed_at: 2026-06-23T16:49:02.040Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2788 suites passed; 10572 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KVTN78A0Q2RZ95T2YA0K0XG4/242f061fd18475ff.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-23T16:49:05.921Z
+    completed_at: 2026-06-23T16:49:05.921Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 8 suites, 47 tests. Full log:
+      /tmp/kspec-test-cache/01KVTN78A0Q2RZ95T2YA0K0XG4/c6e42b3e2f019ade.log"
+    name: focused linkage tests
+    required: true
+    runner: npm test -- tests/task-submission-linkage.test.ts tests/submission-linkage-worktree.test.ts
+      tests/dispatch-workspace-config.test.ts --fresh
+    created_at: 2026-06-23T16:49:08.920Z
+    completed_at: 2026-06-23T16:49:08.920Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with existing deprecated-reference warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-23T16:49:12.193Z
+    completed_at: 2026-06-23T16:49:12.193Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with existing alignment warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-23T16:49:15.112Z
+    completed_at: 2026-06-23T16:49:15.112Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with existing completeness warnings.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-23T16:49:17.965Z
+    completed_at: 2026-06-23T16:49:17.965Z
 events:
   - _ulid: 01KVTN9VJJM17Z8E5WJSETNK20
     actor: Jacob Chapel
@@ -17,17 +102,164 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-23T16:34:31.021Z
+  - _ulid: 01KVTP52F11GN6JJDWSCKCF67M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-23T16:48:56.289Z
+  - _ulid: 01KVTP55EE5QF7ZE2H97K3CSKR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-23T16:48:59.342Z
+  - _ulid: 01KVTP58AA9JZQJENEW73B0XEF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-23T16:49:02.282Z
+  - _ulid: 01KVTP5C3GH909KB0EWNXM8G87
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-23T16:49:06.160Z
+  - _ulid: 01KVTP5F3BT4HKVTSFJM9SBR44
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused linkage tests
+    timestamp: 2026-06-23T16:49:09.228Z
+  - _ulid: 01KVTP5J796E24RNFXP4AAE38Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-23T16:49:12.425Z
+  - _ulid: 01KVTP5N2TB1C9V8PSM7HSMEZH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-23T16:49:15.354Z
+  - _ulid: 01KVTP5QVWH4VPZ9143CBTVFRD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-23T16:49:18.204Z
+  - _ulid: 01KVTP5TR19XX727YKJXGSSWN7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVTP5TGK6W6QMTT01EPNQVRX
+    timestamp: 2026-06-23T16:49:21.153Z
+  - _ulid: 01KVTP5XZMTP2YXFMN0HPE0QM0
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVTP5XR4522VAPHQHZ6M48NP
+    timestamp: 2026-06-23T16:49:24.469Z
+  - _ulid: 01KVTP60VE0SENQGWCQH2RF3ZP
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-23T16:49:27.406Z
+  - _ulid: 01KVTP60VE1RKH2V1T9YRWW29J
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-23T16:49:27.406Z
 examined_commit: 1444054dca9caff2a8c120fbc7ebdd03220cf5c0
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVTKJV28Y9TSX7VT3WET6N83"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVTP5TGK6W6QMTT01EPNQVRX
+    entries:
+      - _ulid: 01KVTP5TGKRBXKHTHE1Y9K9XVB
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: kspec-agents.md; src/cli/commands/task.ts; src/utils/git.ts;
+          src/cli/branch-helper.ts; src/agent-runtime/workspace.ts; src/agent-runtime/dispatch.ts;
+          tests/task-submission-linkage.test.ts; tests/submission-linkage-worktree.test.ts;
+          tests/dispatch-workspace-config.test.ts; tests/dispatch-adopted-branch-regression.test.ts;
+          task/spec records for @01KVTKJV28Y9TSX7VT3WET6N83, @portable-task-submission-linkage,
+          @plan-branch-dispatch-target, @trait-error-guidance.
+
+          Commands run: git diff/name-status/log/show; kspec task get; kspec review
+          for-task/add/open; kspec item get; rg AC/call-site searches; npm run format:check; npm run
+          lint -- --quiet; npx oxlint changed files; npm run typecheck; focused npm test command;
+          npm test; kspec validate refs/alignment/completeness.
+
+          Claims verified: verified worker claim that submit/backfill fallback tests pass and git
+          upstream precedence remains covered; verified adjacent adoption/recovery claim against
+          dispatch call sites and found plan_ref is still dropped before actual
+          provisioning/discovery.
+
+          Categories searched: correctness, edge cases for stale/unrelated workspace metadata and
+          missing plan branch, error handling, test quality/AC annotations, integration with
+          dispatch workspace provisioning, and shared guidance neutrality (not applicable; no
+          shared/package guidance surfaces touched).
+        created_at: 2026-06-23T16:49:20.915Z
+    kind: nit
+  - _ulid: 01KVTP5XR4522VAPHQHZ6M48NP
+    anchor:
+      type: code
+      commit: 1444054dca9caff2a8c120fbc7ebdd03220cf5c0
+      line_end: 2684
+      line_start: 2679
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KVTP5XR47JSM8X26RTMM4W7C
+        author: Jacob Chapel
+        body: "MUST-FIX: the real dispatch provisioning path still drops the task's plan_ref before
+          resolving the workspace target. The same method uses plan_ref for target sync just above,
+          but this provisionDispatchWorkspace call passes only title and slugs, so
+          resolveDispatchWorkspaceConfig cannot see the owning plan during actual dispatched
+          review/fix-cycle provisioning. A plan-scoped submitted branch with no existing workspace
+          record can still be adopted/reconstructed against dispatch.base_branch rather than the
+          plan branch, which is the adjacent recovery/adoption case this task explicitly called out.
+          The new dispatch-workspace-config regression does not disprove this because it calls
+          provisionDispatchWorkspace directly with plan_ref. Pass plan_ref through the dispatch
+          provisioning/validation/discovery task payloads and add a dispatch-engine-level regression
+          for a plan-scoped pending_review or needs_work entry."
+        created_at: 2026-06-23T16:49:24.228Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-23T16:49:27.405Z
 created_at: 2026-06-23T16:34:04.499Z
-updated_at: 2026-06-23T16:34:30.765Z
+updated_at: 2026-06-23T16:49:27.406Z
 notes: []
