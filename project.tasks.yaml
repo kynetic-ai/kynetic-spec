@@ -32840,7 +32840,7 @@
   type: task
   spec_ref: "@test-result-run-store"
   plan_ref: "@plan-test-result-ingestion"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -32852,6 +32852,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-23T02:03:30.065Z
+  started_at: 2026-06-23T02:09:18.316Z
   automation: eligible
 - _ulid: 01KVS3FSSRJ6E6M2VEAKBE322G
   slugs:
