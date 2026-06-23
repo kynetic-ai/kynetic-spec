@@ -51,6 +51,7 @@ tags:
   - docs
   - tests
 vcs_refs: []
+review_ref: "@01KVV8ZF63N3JGXFWZSHT3CJ0A"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-test-result-producer-contract-fixtures/01kvs3fv
@@ -101,6 +102,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-23T22:11:47.709Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KVV8ZF63N3JGXFWZSHT3CJ0A"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-23T22:17:58.323Z
 created_at: 2026-06-23T02:03:31.719Z
 started_at: 2026-06-23T21:50:56.015Z
 submitted_at: 2026-06-23T22:11:47.709Z

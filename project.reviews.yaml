@@ -27852,3 +27852,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-23T21:30:17.833Z
     updated_at: 2026-06-23T21:48:23.851Z
+  - _ulid: 01KVV8ZF63N3JGXFWZSHT3CJ0A
+    slugs: []
+    title: Review test result producer contract fixtures
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 25ad6f033a3eb68a7d1fe4321f12b7b47779783c
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KVS3FV0797YW7SJSQC07R1QT"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-23T22:17:55.651Z
