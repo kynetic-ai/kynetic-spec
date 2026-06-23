@@ -71934,7 +71934,7 @@ runs:
     completed_at: 2026-06-23T06:00:31.186Z
   - _ulid: 01KVSJ5J6HTDFF85RC0JWKN655
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71948,7 +71948,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T06:21:29.125Z
-        completed_at: 2026-06-23T06:21:29.125Z
+        completed_at: 2026-06-23T06:21:42.642Z
+        notes: "Friction points: full npm test took 2698.4s for a narrow parser/store change, but this is
+          already partially covered by existing local sharding support, test cache work, and testing
+          conventions requiring full-suite verification before submit. No new task proposed for that
+          item. Minor command friction: workflow show requires an explicit run ref; not enough
+          evidence from this one session to capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T06:21:42.642Z
+        completed_at: 2026-06-23T06:21:42.642Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T06:20:03.665Z
