@@ -123,7 +123,7 @@ tags:
   - plan-branch
   - bug
 vcs_refs: []
-review_ref: "@01KVTN9VJKM2DH572RC9QQ443Z"
+review_ref: "@01KVTQXHFC3KETA9WGJFNP124W"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-plan-scoped-submission-linkage-fallback/01kvtkjv
@@ -224,6 +224,13 @@ history:
         previous: 2026-06-23T16:27:58.824Z
     command: task-submit
     timestamp: 2026-06-23T17:14:32.836Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KVTQXHFC3KETA9WGJFNP124W"
+        previous: "@01KVTN9VJKM2DH572RC9QQ443Z"
+    command: review-link
+    timestamp: 2026-06-23T17:19:49.312Z
 created_at: 2026-06-23T16:04:01.735Z
 started_at: 2026-06-23T16:55:30.831Z
 submitted_at: 2026-06-23T17:14:32.836Z

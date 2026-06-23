@@ -1,0 +1,26 @@
+_ulid: 01KVTQXHFC3KETA9WGJFNP124W
+slugs: []
+title: Review task-plan-scoped-submission-linkage-fallback cycle 2
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVTQXHFC3CWMR0231XP580G3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-23T17:19:46.668Z
+examined_commit: eb99e0b0caf11981e7dba93e00328060201eac4c
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVTKJV28Y9TSX7VT3WET6N83"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-23T17:19:46.668Z
+updated_at: null
+notes: []
