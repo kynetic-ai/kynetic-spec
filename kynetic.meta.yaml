@@ -23008,6 +23008,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-23T17:16:22.404Z
+  - _ulid: 01KVV0C33KFA6665H2GCVBSMCQ
+    type: success
+    content: During @task-test-result-ingestion-interface, the project test runner detected stale daemon
+      build artifacts for a new daemon route and rebuilt automatically before the focused ingestion
+      test. That prevented source/dist drift from producing misleading daemon API test results.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-23T19:47:32.083Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
