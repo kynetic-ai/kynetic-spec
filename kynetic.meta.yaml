@@ -22967,6 +22967,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-23T06:22:42.305Z
+  - _ulid: 01KVSPD3Z26M7T5W8FBTMEBBV9
+    type: success
+    content: For prompt-suppression and auth-failure tests, a local child-process HTTP 401 challenge
+      preserved real git fetch/push/ls-remote behavior while eliminating external GitHub/network
+      timing from full npm test.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-23T07:34:05.538Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
