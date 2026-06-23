@@ -3242,7 +3242,7 @@ features:
       spec source files are never rewritten by ingestion.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on:
       - "@test-result-acquisition"
       - "@coverage-record-compatibility"
