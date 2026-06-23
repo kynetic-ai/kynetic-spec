@@ -3516,7 +3516,7 @@ features:
           typed event order match the rest of the redesign program.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@shared-mutation-pipeline"
           - "@actor-identity-model"
