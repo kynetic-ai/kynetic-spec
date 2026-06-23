@@ -27686,7 +27686,7 @@ reviews:
     title: Review test result run store
     disposition: pending
     author: Jacob Chapel
-    check_count: 7
+    check_count: 8
     examined_commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
     lifecycle_state: open
     related_refs: []
@@ -27699,4 +27699,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-23T04:50:45.483Z
-    updated_at: 2026-06-23T05:06:45.948Z
+    updated_at: 2026-06-23T05:06:51.473Z
