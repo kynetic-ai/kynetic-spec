@@ -207,6 +207,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-23T03:37:26.435Z
+  - _ulid: 01KVS9Z8EP7PYY0NECMZACYGMY
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVS8VKQHCDGR75C56XKY8SNR
+    timestamp: 2026-06-23T03:56:48.470Z
+  - _ulid: 01KVS9ZBEXPWB55K9W0Y8JDECC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVS8VKQHCDGR75C56XKY8SNR
+    timestamp: 2026-06-23T03:56:51.549Z
+  - _ulid: 01KVS9ZEFC100SMS5K989JHGHV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVS8VPM0FBG1YRMJ87JZMA39
+    timestamp: 2026-06-23T03:56:54.636Z
+  - _ulid: 01KVS9ZHF52685T8HGBVCFPX8K
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVS8VPM0FBG1YRMJ87JZMA39
+    timestamp: 2026-06-23T03:56:57.701Z
 examined_commit: fba9ca9f2f3aba7fd863019d192a0fb13abacf05
 external_links: []
 lifecycle_state: closed
@@ -238,7 +262,17 @@ threads:
           ceiling check before any buffered writes and a behavioral regression that proves a
           future-format submitted run creates/changes no sidecar files."
         created_at: 2026-06-23T03:37:20.369Z
+      - _ulid: 01KVS9Z86PV08H9T140CJXEX7G
+        author: Jacob Chapel
+        body: "Fixed in 53cae84f6c: writeTestRun now applies the existing record-format ceiling check to the
+          parsed incoming payload before ULID handling, file-lock acquisition, buffered writes, or
+          sidecar materialization. Added a behavioral regression that submits format CURRENT+1
+          against an absent sidecar, verifies the deterministic compatibility error names both
+          versions, and verifies coverage/test-runs is not created."
+        created_at: 2026-06-23T03:56:48.214Z
     kind: blocker
+    resolved_at: 2026-06-23T03:56:51.299Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVS8VPM0FBG1YRMJ87JZMA39
     entries:
       - _ulid: 01KVS8VPM07W71FA3FRM6KQYPH
@@ -261,7 +295,14 @@ threads:
           handling, test quality, integration, spec alignment. Finding: one blocker on incoming
           future-format writes mutating the store."
         created_at: 2026-06-23T03:37:23.328Z
+      - _ulid: 01KVS9ZE8010FGAX6F0FMJ4EFQ
+        author: Jacob Chapel
+        body: Acknowledged. The evidence log required no code change; the blocker it identified has been
+          fixed and reverified.
+        created_at: 2026-06-23T03:56:54.400Z
     kind: nit
+    resolved_at: 2026-06-23T03:56:57.442Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -271,5 +312,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-23T03:37:26.435Z
 created_at: 2026-06-23T03:21:41.472Z
-updated_at: 2026-06-23T03:37:26.435Z
+updated_at: 2026-06-23T03:56:57.442Z
 notes: []
