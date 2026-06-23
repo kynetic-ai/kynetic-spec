@@ -54,3 +54,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T20:09:39.432Z
+  - _ulid: 01KVV2ZF2N0NHKK5D9SWVP9JRB
+    content: "Fix cycle 1: addressed review blocker 01KVV1KNC0JQYB6B7FJQSJJKKR by adding daemon dry-run
+      route coverage for /api/coverage/test-results/runs?dry_run=true. The new test proves dry_run
+      true/stored false preview summary, affected refs and event scopes, no run sidecar or loadable
+      run, no cache writeThrough, and no coverage_evidence_changed broadcast. Resolved the
+      evidence-log nit as acknowledged. Re-verified ACs with focused ingestion test, focused
+      changed-file oxlint, format:check, repo lint --quiet, typecheck, refs/alignment/completeness
+      validation, and full npm test (2899 suites passed; 11012 passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T20:33:04.086Z
