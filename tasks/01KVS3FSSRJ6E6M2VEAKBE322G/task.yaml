@@ -59,6 +59,7 @@ tags:
   - ingestion
   - mapping
 vcs_refs: []
+review_ref: "@01KVSJFK0WSJ05N0N23MH0WAQ5"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-test-result-ac-mapping/01kvs3fs
@@ -109,6 +110,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-23T06:19:15.304Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KVSJFK0WSJ05N0N23MH0WAQ5"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-23T06:25:34.846Z
 created_at: 2026-06-23T02:03:30.488Z
 started_at: 2026-06-23T05:59:30.932Z
 submitted_at: 2026-06-23T06:19:15.304Z
