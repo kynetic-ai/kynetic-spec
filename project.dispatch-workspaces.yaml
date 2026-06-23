@@ -11325,7 +11325,7 @@ workspaces:
         head: 5a4134efb22c86455bc05b682f5196283926fe4a
         last_seen_at: 2026-06-23T07:35:51.615Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-full-npm-test-flake-01kvsm3c
-  - active_role: worker
+  - active_role: null
     base_branch_point: 0ac90eba3918b5d27a6e2377984eccc6df12b149
     bootstrap:
       status: succeeded
@@ -11653,12 +11653,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-23T08:39:15.533Z
+      updated_at: 2026-06-23T08:39:58.381Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-23T08:39:15.533Z
+      updated_at: 2026-06-23T08:39:58.381Z
     integration:
       status: pending
       detail: null
@@ -11666,8 +11666,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 0ac90eba3918b5d27a6e2377984eccc6df12b149
-      updated_at: 2026-06-23T08:39:15.533Z
-    lifecycle_state: active
+      updated_at: 2026-06-23T08:39:58.381Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVS3FT7PAVVFSBRQ2RGV9BQA
     task_ref: "@01KVS3FT7PAVVFSBRQ2RGV9BQA"
@@ -11675,9 +11675,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T07:37:05.265Z
-      last_reconciled_at: 2026-06-23T08:39:15.533Z
+      last_reconciled_at: 2026-06-23T08:39:58.381Z
       created_at: 2026-06-23T07:36:33.859Z
-      updated_at: 2026-06-23T08:39:15.533Z
+      updated_at: 2026-06-23T08:39:58.381Z
     workspace_id: dispatch-workspace-01KVS3FT7PAVVFSBRQ2RGV9BQA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -11686,5 +11686,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-test-result-ingestion-interface/01kvs3ft
         head: 0ac90eba3918b5d27a6e2377984eccc6df12b149
-        last_seen_at: 2026-06-23T07:36:33.859Z
+        last_seen_at: 2026-06-23T08:39:58.381Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-ingestion-interface-01kvs3ft
