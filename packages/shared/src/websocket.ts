@@ -316,6 +316,7 @@ export const ENTITY_EVENT_VOCABULARY = [
   { topic: "reviews:updates", event: "lifecycle_changed" },
   { topic: "reviews:updates", event: "resource_changed" },
   { topic: "plans:updates", event: "plan_resource_changed" },
+  { topic: "items:updates", event: "coverage_evidence_changed" },
 ] as const satisfies readonly EntityEventVocabularyEntry[];
 
 // ─── Entity Event Vocabulary Reservations ───────────────────────────────────

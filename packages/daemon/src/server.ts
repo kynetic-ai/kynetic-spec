@@ -52,6 +52,7 @@ import { createSessionRoutes } from "./routes/sessions.js";
 import { createPlansRoutes } from "./routes/plans.js";
 import { createPlanResourcesRoutes } from "./routes/plan-resources.js";
 import { createAggregationRoutes } from "./routes/aggregation.js";
+import { createCoverageRoutes } from "./routes/coverage.js";
 import { createRefsRoutes } from "./routes/refs.js";
 import { createDiffRoutes } from "./routes/diff.js";
 import { createReviewsRoutes } from "./routes/reviews.js";
@@ -843,6 +844,14 @@ export async function createServer(options: ServerOptions) {
     // AC: @ui-api-aggregation ac-1, ac-2, ac-3 - Aggregation endpoints
     // AC: @daemon-read-path ac-no-per-request-sync, ac-index-from-cache — pass cache accessor
     .use(createAggregationRoutes({ getEntityCache: entityCacheModule.getEntityCache }))
+
+    // Test-result ingestion endpoint.
+    .use(
+      createCoverageRoutes({
+        pubsub: pubsubManager,
+        getEntityCache: entityCacheModule.getEntityCache,
+      }),
+    )
 
     // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
     // AC: @daemon-entity-cache ac-serve-from-memory — pass cache accessor

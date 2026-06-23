@@ -75,6 +75,7 @@ import { createMetaRoutes } from "../../dist/daemon/routes/meta.js";
 import { createIdentityRoutes } from "../../dist/daemon/routes/identity.js";
 import { createInboxRoutes } from "../../dist/daemon/routes/inbox.js";
 import { createAggregationRoutes } from "../../dist/daemon/routes/aggregation.js";
+import { createCoverageRoutes } from "../../dist/daemon/routes/coverage.js";
 import { createAgentDispatchRoutes } from "../../dist/daemon/routes/agent-dispatch.js";
 import { PubSubManager } from "../../dist/daemon/websocket/pubsub.js";
 import { ensureSplitBackendRegistered } from "../../dist/parser/split-backend.js";
@@ -508,6 +509,7 @@ export interface CreateTestAppOptions {
  *   - createIdentityRoutes     → /api/identity
  *   - createInboxRoutes        → /api/inbox/*
  *   - createAggregationRoutes  → /api/aggregation/*
+ *   - createCoverageRoutes     → /api/coverage/*
  *   - createAgentDispatchRoutes → /api/agent/*
  *
  * Production routes that this helper does NOT register (asserting
@@ -595,6 +597,7 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
     .use(createIdentityRoutes())
     .use(createInboxRoutes({ pubsub, getEntityCache }))
     .use(createAggregationRoutes())
+    .use(createCoverageRoutes({ pubsub, getEntityCache }))
     .use(createAgentDispatchRoutes());
 
   return { app, pubsub, manager };

@@ -208,6 +208,7 @@ const PRODUCER_SCHEMA_KEYS: ReadonlySet<string> = new Set([
   "command",
   "ci_url",
   "agent_session",
+  "actor",
   "code_revision",
   "native",
 ]);
@@ -384,7 +385,7 @@ export function testRunIndexEntriesEqual(
 
 // ── Write API ────────────────────────────────────────────────────────────────
 
-export async function writeTestRun(
+export async function normalizeTestRunForWrite(
   ctx: KspecContext,
   input: TestResultRunRecordInput,
 ): Promise<TestResultRunRecord> {
@@ -397,7 +398,14 @@ export async function writeTestRun(
   });
   assertRawFormatSupported(parsed);
   UlidSchema.parse(parsed.run.id);
+  return parsed;
+}
 
+export async function writePreparedTestRun(
+  ctx: KspecContext,
+  parsed: TestResultRunRecord,
+  options: { skipCommit?: boolean } = {},
+): Promise<TestResultRunRecord> {
   const runId = parsed.run.id;
   const runDir = getTestRunDir(ctx, runId);
   const runPath = getTestRunFilePath(ctx, runId);
@@ -431,8 +439,19 @@ export async function writeTestRun(
     });
   });
 
-  await commitIfShadow(ctx.shadow, "test result run", `@${runId}`, "ingested normalized run");
+  if (!options.skipCommit) {
+    await commitIfShadow(ctx.shadow, "test result run", `@${runId}`, "ingested normalized run");
+  }
   return parsed;
+}
+
+export async function writeTestRun(
+  ctx: KspecContext,
+  input: TestResultRunRecordInput,
+  options: { skipCommit?: boolean } = {},
+): Promise<TestResultRunRecord> {
+  const parsed = await normalizeTestRunForWrite(ctx, input);
+  return writePreparedTestRun(ctx, parsed, options);
 }
 
 // ── Read API ─────────────────────────────────────────────────────────────────

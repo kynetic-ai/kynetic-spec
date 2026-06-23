@@ -4,6 +4,7 @@ export { registerAgentCommands } from "./agent.js";
 export { registerAgentsCommands } from "./agents.js";
 export { registerBatchCommand } from "./batch.js";
 export { registerCloneForTestingCommand } from "./clone-for-testing.js";
+export { registerCoverageCommands } from "./coverage.js";
 export { registerDeriveCommand } from "./derive.js";
 export { registerDoctorCommand } from "./doctor.js";
 export { registerEventCommands } from "./event.js";

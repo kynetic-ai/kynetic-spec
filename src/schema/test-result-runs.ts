@@ -30,6 +30,7 @@ const ExtensionObjectSchema = z.record(z.string(), z.unknown());
 const TestResultProducerShape = {
   kind: TestResultProducerKindSchema,
   label: z.string().min(1, "producer label is required"),
+  actor: z.string().min(1).optional(),
   command: z.string().min(1).nullable().optional(),
   ci_url: z.string().url().nullable().optional(),
   agent_session: UlidSchema.nullable().optional(),
