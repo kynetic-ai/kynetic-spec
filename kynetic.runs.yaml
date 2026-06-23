@@ -71752,9 +71752,24 @@ runs:
     completed_at: 2026-06-23T04:24:30.346Z
   - _ulid: 01KVSCRVSBRX6A1T77X8DQ9105
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-23T04:45:44.619Z
+        completed_at: 2026-06-23T04:47:01.814Z
+        notes: "Meaningful session: fixed and resubmitted @task-test-result-run-store with commit
+          e72ad3cdc6. Worked well: latest review thread had exact schema anchor, repro payload, and
+          mutation proof, enabling a narrow strict-input fix plus behavioral regression. Friction:
+          task submit again captured submission_linkage.upstream_ref as the task branch in
+          manual_merge dispatch, requiring a metadata patch; searched and found existing coverage in
+          inbox 01KTYQ1R8 and observation 01KVET9H, so no duplicate captured. Captured success
+          observation @01KVSCTM."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-23T04:47:01.814Z
+        completed_at: 2026-06-23T04:47:01.814Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-23T04:45:44.619Z
