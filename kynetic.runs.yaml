@@ -71934,7 +71934,7 @@ runs:
     completed_at: 2026-06-23T06:00:31.186Z
   - _ulid: 01KVSJ5J6HTDFF85RC0JWKN655
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71968,7 +71968,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-23T06:21:58.445Z
-        completed_at: 2026-06-23T06:21:58.445Z
+        completed_at: 2026-06-23T06:22:10.437Z
+        notes: "Proposed capture: record a success observation that AC-driven neutral fixture tests are
+          effective at enforcing general-system boundaries for metadata sidecar code. In this
+          session they exposed accidental coupling to task-storage loading before implementation
+          shipped. No untracked friction improvement proposed."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-23T06:22:10.437Z
+        completed_at: 2026-06-23T06:22:10.437Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T06:20:03.665Z
