@@ -22955,6 +22955,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-23T05:36:23.340Z
+  - _ulid: 01KVSJAD418YCM74FJBERN8CHF
+    type: success
+    content: "AC-driven neutral fixture tests exposed an accidental boundary leak in test-result
+      ingestion: using metadata-only fixture projects made it obvious that AC mapping should build a
+      spec-item-only ReferenceIndex instead of loading task storage through the full project index.
+      Repeat this pattern for general-system sidecar code where project-specific state must not
+      shape core behavior."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-23T06:22:42.305Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
