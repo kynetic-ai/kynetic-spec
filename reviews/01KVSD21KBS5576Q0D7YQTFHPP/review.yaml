@@ -180,6 +180,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-23T05:06:57.154Z
+  - _ulid: 01KVSE05VSP9CS8GCRY0JS68F2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVSE05K1D4SSCD7YXWP9WHZ6
+    timestamp: 2026-06-23T05:07:12.889Z
 examined_commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
 external_links: []
 lifecycle_state: open
@@ -189,8 +196,28 @@ subject:
   content_hash: ""
   ref: "@01KVS3FSCHGFXW8XX9082T2TDH"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVSE05K1D4SSCD7YXWP9WHZ6
+    anchor:
+      type: code
+      commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
+      line_end: 623
+      line_start: 620
+      path: src/parser/test-result-run-store.ts
+      side: head
+    entries:
+      - _ulid: 01KVSE05K1TN786KET8YABVFC1
+        author: Jacob Chapel
+        body: "MUST-FIX: writeTestRunIndex is an exported store write path, but it only parses
+          TestRunIndexSchema and then writes the index. TestRunIndexSchema accepts any positive
+          format, so a caller can persist format 2 even though CURRENT_TEST_RESULT_RUN_RECORD_FORMAT
+          is 1. I verified this with node --import tsx: writeTestRunIndex(ctx, { format: 2, runs: {}
+          }) wrote coverage/test-runs/index.yaml. This violates @test-result-run-store
+          ac-newer-record-format-refused because writes declaring newer record formats must be
+          refused and leave the store unmodified."
+        created_at: 2026-06-23T05:07:12.609Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-23T04:50:45.483Z
-updated_at: 2026-06-23T05:06:56.914Z
+updated_at: 2026-06-23T05:07:12.609Z
 notes: []
