@@ -1568,7 +1568,7 @@ features:
               default integration branch.
             status:
               maturity: draft
-              implementation: implemented
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
@@ -1632,6 +1632,12 @@ features:
                   the plan's branch
                 when: |
                   The workspace record is reconciled
+              - given: a dispatch-managed task references a plan with branch set and its task branch has no git
+                  upstream tracking
+                id: ac-submission-linkage-plan-target
+                then: the stored submission_linkage.upstream_ref records the plan branch or equivalent resolved
+                  workspace integration target instead of the global dispatch.base_branch fallback
+                when: the task is submitted for review or its submission linkage is explicitly repaired
             tags: []
             created: 2026-04-02T01:45:32.875Z
             notes: []

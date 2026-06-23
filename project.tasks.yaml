@@ -32967,3 +32967,22 @@
   submitted_at: 2026-06-23T07:32:14.007Z
   completed_at: 2026-06-23T07:52:44.270Z
   automation: eligible
+- _ulid: 01KVTKJV28Y9TSX7VT3WET6N83
+  slugs:
+    - task-plan-scoped-submission-linkage-fallback
+  title: Capture plan-scoped submission linkage fallback
+  type: bug
+  spec_ref: "@portable-task-submission-linkage"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - submission-linkage
+    - plan-branch
+    - bug
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-23T16:04:01.735Z
+  automation: eligible

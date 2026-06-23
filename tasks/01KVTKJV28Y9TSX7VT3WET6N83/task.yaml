@@ -1,0 +1,128 @@
+_ulid: 01KVTKJV28Y9TSX7VT3WET6N83
+slugs:
+  - task-plan-scoped-submission-linkage-fallback
+title: Capture plan-scoped submission linkage fallback
+type: bug
+description: >-
+  Fix submission linkage fallback target selection for plan-scoped dispatch worktrees.
+
+
+  Why:
+
+  A dispatch task whose owning plan has branch `feat/ui-redesign` can be provisioned and merged
+  against that plan branch while its task submission metadata records
+  `submission_linkage.upstream_ref: dev`. This happens when the dispatch task branch has no git
+  upstream tracking: task submission currently falls back directly to global `dispatch.base_branch`,
+  ignoring the active dispatch workspace's resolved integration target and the owning plan branch.
+  That metadata is misleading for humans and can become unsafe for review/fix-cycle recovery when
+  workspace records are missing or stale.
+
+
+  What:
+
+  - Preserve current precedence that real git upstream tracking wins. If the task branch tracks
+  `origin/some-branch`, keep recording that git upstream ref.
+
+  - When no git upstream tracking exists, resolve the fallback upstream target in this order:
+    1. The active dispatch workspace metadata for the current checkout, when `.kspec-dispatch-workspace.json` is present and belongs to this task/worktree. Use its `integrationTargetBranch`/equivalent integration target, not the global config.
+    2. The task's owning `plan_ref` when the referenced plan has `branch` set and that branch is available by the same local/remote branch rules dispatch provisioning uses.
+    3. The existing global `dispatch.base_branch` fallback.
+  - Apply the same fallback resolution to both `kspec task submit` and `kspec task set
+  --submission-linkage` so repair/backfill cannot reintroduce the wrong upstream target.
+
+  - Keep ordinary non-plan tasks and tasks whose plans have no branch on the existing behavior: no
+  git upstream means `dispatch.base_branch` is still the fallback when configured.
+
+  - Do not retarget dispatch workspaces, merge branches, or modify task branch contents. This task
+  only changes how submission linkage chooses `upstream_ref` when capturing/re-capturing linkage.
+
+  - Check adjacent recovery adoption code for the same plan-context loss: review/fix-cycle workspace
+  discovery and adoption paths must not reconstruct a plan-scoped task's integration target from
+  global `dispatch.base_branch` when task plan context is available. If a narrow fix is needed
+  there, include it in this task; otherwise add a regression proving it already uses the plan
+  target.
+
+
+  Implementation guidance:
+
+  - Prefer a small helper near the CLI task command or shared dispatch/workspace utilities that
+  resolves a submission-linkage fallback target from `(ctx, task, current worktree)` without
+  duplicating the full dispatch provisioning pipeline.
+
+  - If reading active workspace metadata, treat it as an optional high-confidence hint only when it
+  matches the current task/worktree; fall through rather than trusting unrelated metadata.
+
+  - If resolving from `plan_ref`, reuse existing plan lookup and branch availability behavior from
+  dispatch workspace resolution where practical.
+
+  - Keep `captureSubmissionLinkage()` generic: either pass it the already-resolved fallback upstream
+  ref, or rename its third argument away from `dispatchBaseBranch` so callers cannot accidentally
+  pass the wrong precedence source.
+
+
+  Tests:
+
+  - Add a regression where `dispatch.base_branch` is `dev`, the task's plan branch is
+  `feat/ui-redesign`, the dispatch/task branch has no git upstream, and `kspec task submit` stores
+  `submission_linkage.upstream_ref` as `feat/ui-redesign` (or the equivalent resolved workspace
+  integration target), not `dev`.
+
+  - Add the same plan-scoped no-upstream regression for `kspec task set --submission-linkage`
+  repair/backfill.
+
+  - Keep or update existing coverage proving git upstream tracking takes precedence over any
+  fallback.
+
+  - Keep or update existing coverage proving a non-plan/no-plan-branch task still falls back to
+  `dispatch.base_branch` when no git upstream exists.
+
+  - Cover manual_merge publication mode because the observed failure involved manual_merge
+  plan-scoped dispatch workspaces.
+
+  - Add or update recovery/adoption coverage if inspection shows review/fix-cycle workspace
+  discovery loses task plan context.
+
+
+  Verification gates:
+
+  - `npm test -- tests/task-submission-linkage.test.ts tests/submission-linkage-worktree.test.ts
+  tests/dispatch-workspace-config.test.ts --fresh`
+
+  - Run any additional focused recovery/adoption test file touched by the adjacent discovery check
+  with `npm test -- <file> --fresh`.
+
+  - `npm run format:check`
+
+  - `npm run lint`
+
+  - `npm run typecheck`
+
+  - `kspec validate --refs --warnings-ok`
+
+  - `kspec validate --alignment --warnings-ok`
+
+  - `kspec validate --completeness --warnings-ok`
+
+
+  Covers:
+
+  - @portable-task-submission-linkage ac-5
+
+  - @plan-branch-dispatch-target ac-submission-linkage-plan-target
+spec_ref: "@portable-task-submission-linkage"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - submission-linkage
+  - plan-branch
+  - bug
+vcs_refs: []
+created_at: 2026-06-23T16:04:01.735Z
+todos: []
+automation: eligible

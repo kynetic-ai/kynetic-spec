@@ -1300,7 +1300,7 @@ features:
               This linkage is portable bootstrap state, not local worktree metadata.
             status:
               maturity: draft
-              implementation: implemented
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
@@ -1348,9 +1348,11 @@ features:
                   linkage
               - given: a task is submitted from a branch without git upstream tracking configured
                 id: ac-5
-                then: the upstream_ref field is populated from the dispatch config base_branch as a fallback; git
-                  upstream tracking takes precedence when available
-                when: submission linkage is captured and dispatch config specifies a base_branch
+                then: the upstream_ref field is populated from that resolved integration target before falling back
+                  to dispatch config base_branch; git upstream tracking takes precedence over every
+                  fallback
+                when: submission linkage is captured and kspec can resolve a more specific dispatch integration
+                  target from the active dispatch workspace or the task's owning plan branch
               - given: A task is submitted from a linked git worktree
                 id: ac-worktree-branch
                 then: The recorded branch reflects the worktree's checked-out branch
