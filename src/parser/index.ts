@@ -42,6 +42,7 @@ export * from "./task-data-manager.js";
 export * from "./task-resource-resolver.js";
 export * from "./test-result-ac-mapping.js";
 export * from "./test-result-ac-tokens.js";
+export * from "./test-result-ingestion.js";
 export * from "./test-result-run-store.js";
 export * from "./traits.js";
 export * from "./validate.js";

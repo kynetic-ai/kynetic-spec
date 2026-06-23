@@ -19,6 +19,7 @@ import {
   registerAgentsCommands,
   registerBatchCommand,
   registerCloneForTestingCommand,
+  registerCoverageCommands,
   registerDeriveCommand,
   registerDoctorCommand,
   registerEventCommands,
@@ -437,6 +438,7 @@ function configureProgram(program: Command): Command {
   registerValidateCommand(program);
   registerHelpCommand(program);
   registerDoctorCommand(program);
+  registerCoverageCommands(program);
   registerDeriveCommand(program);
   registerInboxCommands(program);
   registerTriageCommands(program);
