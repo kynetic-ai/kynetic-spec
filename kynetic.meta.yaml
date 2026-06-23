@@ -22976,6 +22976,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-23T07:34:05.538Z
+  - _ulid: 01KVTN4MEWT6TAXERWNYYTXGNV
+    type: friction
+    content: Focused changed-file lint can be hard to interpret when a touched large file already has
+      pre-existing warnings; this session's npx oxlint run on src/cli/commands/task.ts reported 22
+      existing no-shadow warnings, so verifying no new warnings required manual comparison rather
+      than a clear diff-aware gate.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-23T16:31:13.372Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
