@@ -24,6 +24,16 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-23T20:07:40.429Z
     completed_at: 2026-06-23T20:07:40.429Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Focused oxlint on 12 changed TypeScript and test files found 0 warnings and 0 errors.
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed TS/test files>
+    created_at: 2026-06-23T20:07:55.552Z
+    completed_at: 2026-06-23T20:07:55.552Z
 events:
   - _ulid: 01KVV0JRXTYKGW52JH56BKYT1V
     actor: Jacob Chapel
@@ -52,6 +62,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-23T20:07:40.794Z
+  - _ulid: 01KVV1HE8YYQV2QZ537ENKV6M8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-23T20:07:55.934Z
 examined_commit: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
 external_links: []
 lifecycle_state: open
@@ -64,5 +81,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T19:51:11.035Z
-updated_at: 2026-06-23T20:07:40.429Z
+updated_at: 2026-06-23T20:07:55.552Z
 notes: []

@@ -27800,7 +27800,7 @@ reviews:
     title: Review test result ingestion interface
     disposition: pending
     author: Jacob Chapel
-    check_count: 2
+    check_count: 3
     examined_commit: d0b9dfc20a2afa64f34d5670c1a8d6f719420c0d
     lifecycle_state: open
     related_refs: []
@@ -27813,4 +27813,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-23T19:51:11.035Z
-    updated_at: 2026-06-23T20:07:40.429Z
+    updated_at: 2026-06-23T20:07:55.552Z
