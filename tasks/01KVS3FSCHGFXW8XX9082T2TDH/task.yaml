@@ -88,7 +88,7 @@ submission_linkage:
   commit: 0fe42bc9c480cd87647c10dc34f0ffeef6f430c9
   remote: null
   remote_url: null
-  upstream_ref: dev
+  upstream_ref: feat/ui-redesign
 session_id: 01KVS3RX7008F9M3HA61N87FCK
 history:
   - author: Jacob Chapel
@@ -131,6 +131,27 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-23T02:30:21.193Z
+  - author: Jacob Chapel
+    changes:
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-test-result-run-store/01kvs3fs
+          captured_at: 2026-06-23T02:30:21.188Z
+          commit: 0fe42bc9c480cd87647c10dc34f0ffeef6f430c9
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous:
+          review_url: null
+          branch: dispatch/task/task-test-result-run-store/01kvs3fs
+          captured_at: 2026-06-23T02:30:21.188Z
+          commit: 0fe42bc9c480cd87647c10dc34f0ffeef6f430c9
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+    command: task-patch
+    timestamp: 2026-06-23T02:31:42.564Z
 created_at: 2026-06-23T02:03:30.065Z
 started_at: 2026-06-23T02:09:18.316Z
 submitted_at: 2026-06-23T02:30:21.193Z
