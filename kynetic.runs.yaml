@@ -71450,7 +71450,7 @@ runs:
     completed_at: 2026-06-22T00:17:12.732Z
   - _ulid: 01KVS56C9KCT1AEAHG4VEQKVPD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71464,7 +71464,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T02:34:52.522Z
-        completed_at: 2026-06-23T02:34:52.522Z
+        completed_at: 2026-06-23T02:35:06.549Z
+        notes: "Friction: task submit captured git upstream dev instead of the dispatch manual_merge target
+          feat/ui-redesign, requiring a post-submit task patch; full npm test had long quiet periods
+          where process-tree inspection was needed to verify active workers. Both looked systemic
+          rather than one-off."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T02:35:06.549Z
+        completed_at: 2026-06-23T02:35:06.549Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T02:33:18.899Z
