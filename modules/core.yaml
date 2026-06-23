@@ -3508,6 +3508,9 @@ features:
           agents. Successful ingestion is a project metadata mutation and uses
           the shared mutation pipeline so the shadow commit, cache update, and
           typed event order match the rest of the redesign program.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@shared-mutation-pipeline"
           - "@actor-identity-model"
