@@ -81,6 +81,7 @@ tags:
   - daemon
   - api
 vcs_refs: []
+review_ref: "@01KVV0JRXV2DCP93NREM3E280G"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-test-result-ingestion-interface/01kvs3ft
@@ -164,6 +165,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-23T19:45:41.187Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KVV0JRXV2DCP93NREM3E280G"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-23T19:51:13.767Z
 prior_status: null
 created_at: 2026-06-23T02:03:30.934Z
 started_at: 2026-06-23T07:37:41.438Z
