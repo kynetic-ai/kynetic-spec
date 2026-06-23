@@ -11801,11 +11801,11 @@ workspaces:
     canonical_branch: dispatch/task/task-test-result-ingestion-interface/01kvs3ft
     canonical_branch_head: 559099b7ab5c4394323962498e151b1c71dfabd3
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-23T21:01:56.947Z
+      updated_at: 2026-06-23T21:05:09.469Z
     health:
       status: healthy
       issues: []
@@ -11819,17 +11819,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: 0ac90eba3918b5d27a6e2377984eccc6df12b149
       updated_at: 2026-06-23T21:01:56.947Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVS3FT7PAVVFSBRQ2RGV9BQA
     task_ref: "@01KVS3FT7PAVVFSBRQ2RGV9BQA"
     task_slug: task-test-result-ingestion-interface
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-23T21:05:09.469Z
       last_active_at: 2026-06-23T20:37:52.029Z
       last_reconciled_at: 2026-06-23T21:04:29.286Z
       created_at: 2026-06-23T07:36:33.859Z
-      updated_at: 2026-06-23T21:04:29.286Z
+      updated_at: 2026-06-23T21:05:09.469Z
     workspace_id: dispatch-workspace-01KVS3FT7PAVVFSBRQ2RGV9BQA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
