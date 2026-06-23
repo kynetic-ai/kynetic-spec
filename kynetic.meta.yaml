@@ -23017,6 +23017,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-23T19:47:32.083Z
+  - _ulid: 01KVV7FHH8S7ARCKYMAJR27VPK
+    type: success
+    content: "Review records plus the detached-reviewer merge helper gave this dispatch review a clean
+      auditable path: required gates and evidence were recorded on @01KVV688, approval closed the
+      review, the helper merged the canonical task branch into feat/ui-redesign without target
+      checkout in the detached snapshot, and task completion synced the linked spec to implemented."
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-23T21:51:45.192Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
