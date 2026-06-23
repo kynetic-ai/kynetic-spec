@@ -3427,7 +3427,7 @@ features:
           silently discarded only because it cannot be mapped.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@normalized-test-result-ingestion-contract"
         implements: []
