@@ -79,3 +79,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T03:37:28.492Z
+  - _ulid: 01KVS96V67DH8BFE6DDSMHMD3H
+    content: "Fix cycle 2 approach: add a pre-mutation record-format ceiling check for incoming
+      normalized test-run payloads, reusing the existing canonical format compatibility helper
+      before any buffered write or sidecar materialization. Add a behavioral regression for
+      submitted future-format input against an absent sidecar so @test-result-run-store
+      ac-newer-record-format-refused and @trait-type-safe-input ac-1 are covered at the ingestion
+      boundary."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T03:43:28.455Z
