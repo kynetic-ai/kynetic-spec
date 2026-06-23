@@ -36,6 +36,16 @@ checks:
     runner: npx oxlint changed files
     created_at: 2026-06-23T04:20:07.786Z
     completed_at: 2026-06-23T04:20:07.786Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Pass: npm run build:shared and tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-23T04:20:20.503Z
+    completed_at: 2026-06-23T04:20:20.503Z
 events:
   - _ulid: 01KVSACNNRFC087F7BRE15CBF7
     actor: Jacob Chapel
@@ -84,6 +94,13 @@ events:
       status: pass
       name: focused-lint
     timestamp: 2026-06-23T04:20:08.106Z
+  - _ulid: 01KVSBABM6CBFE1J5DSCGTDMR3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-23T04:20:20.743Z
 examined_commit: 53cae84f6c68a970db90bfddbeceedd23e70a137
 external_links: []
 lifecycle_state: open
@@ -127,5 +144,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-23T04:04:07.993Z
-updated_at: 2026-06-23T04:20:07.786Z
+updated_at: 2026-06-23T04:20:20.503Z
 notes: []
