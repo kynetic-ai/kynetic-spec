@@ -40,6 +40,7 @@ export * from "./skill-render.js";
 export * from "./split-backend.js";
 export * from "./task-data-manager.js";
 export * from "./task-resource-resolver.js";
+export * from "./test-result-run-store.js";
 export * from "./traits.js";
 export * from "./validate.js";
 export * from "./verification-record-store.js";
