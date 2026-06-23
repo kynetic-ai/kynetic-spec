@@ -381,7 +381,7 @@ describe("test result run store", () => {
   // AC: @normalized-test-result-ingestion-contract ac-producer-metadata
   // AC: @trait-type-safe-input ac-1
   // AC: @trait-type-safe-input ac-3
-  it("rejects producer-native fields outside the namespaced native extension object", async () => {
+  it("rejects native fields outside the namespaced native extension object", async () => {
     const ctx = await initContext(project.tempDir, { syncMode: "skip" });
     await writeTestRun(ctx, validRun());
     expect((await loadTestRun(ctx, FIXED_RUN_ID))?.producer.native).toEqual({
@@ -411,8 +411,22 @@ describe("test result run store", () => {
     });
 
     await expect(writeTestRun(ctx, invalid)).rejects.toThrow(/producer|junit|unrecognized/i);
-    const after = await snapshotFiles(path.join(project.specDir, "coverage"));
-    expectSnapshotUnchanged(before, after);
+    expectSnapshotUnchanged(before, await snapshotFiles(path.join(project.specDir, "coverage")));
+
+    const invalidTopLevel = {
+      ...validRun({
+        run: {
+          id: testUlid("RUN", 5),
+          completed_at: "2026-06-22T21:31:00.000Z",
+        },
+      }),
+      junit: { suite: "native top-level field" },
+    };
+
+    await expect(
+      writeTestRun(ctx, invalidTopLevel as unknown as TestResultRunRecordInput),
+    ).rejects.toThrow(/junit|unrecognized/i);
+    expectSnapshotUnchanged(before, await snapshotFiles(path.join(project.specDir, "coverage")));
   });
 
   // AC: @test-result-run-store ac-forward-compatible-records

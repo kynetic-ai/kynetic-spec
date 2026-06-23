@@ -173,7 +173,7 @@ export const TestResultRunRecordInputSchema = z
       non_positive_mapped_cases: [],
     }),
   })
-  .passthrough();
+  .strict();
 
 export const TestRunIndexProducerSchema = z
   .object({
