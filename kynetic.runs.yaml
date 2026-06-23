@@ -71562,9 +71562,24 @@ runs:
     completed_at: 2026-06-23T02:57:11.800Z
   - _ulid: 01KVS7PHVX66VWKA4G6SWS327C
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-23T03:17:06.045Z
+        completed_at: 2026-06-23T03:18:34.032Z
+        notes: "What worked well: fix-cycle review threads were concrete and anchored; separating strict
+          ingestion input schemas from tolerant stored-record schemas let the fix address the
+          blocker without regressing forward-compatible reads. Friction: task submit again required
+          post-submit submission_linkage.upstream_ref repair for manual_merge target
+          feat/ui-redesign. Existing coverage found: @01KVET9H tracks this exact friction and
+          @01KTYQ1R8 tracks the broader submission-linkage worktree capture issue. No new capture
+          needed from this step."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-23T03:18:34.032Z
+        completed_at: 2026-06-23T03:18:34.032Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T03:17:06.045Z
