@@ -3612,6 +3612,9 @@ features:
           stamp records only the current verification fact supported by the
           existing stamp schema — verified time, actor, provenance, optional
           commit, and optional session linkage.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@ac-verification-record-store"
           - "@verification-session-evidence"
