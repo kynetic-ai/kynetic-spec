@@ -35,6 +35,16 @@ checks:
     runner: npx oxlint src/cli/help/content.ts tests/test-result-producer-contract.test.ts
     created_at: 2026-06-23T22:33:57.448Z
     completed_at: 2026-06-23T22:33:57.448Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared and tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-23T22:34:03.749Z
+    completed_at: 2026-06-23T22:34:03.749Z
 events:
   - _ulid: 01KVV8ZF5Z23SVB62YMFVC7ZHX
     actor: Jacob Chapel
@@ -70,6 +80,13 @@ events:
       status: pass
       name: focused-lint
     timestamp: 2026-06-23T22:33:57.741Z
+  - _ulid: 01KVV9X0WCJ4QZ3CYJYVV4CQQ7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-23T22:34:04.044Z
 examined_commit: 25ad6f033a3eb68a7d1fe4321f12b7b47779783c
 external_links: []
 lifecycle_state: open
@@ -82,5 +99,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-23T22:17:55.651Z
-updated_at: 2026-06-23T22:33:57.448Z
+updated_at: 2026-06-23T22:34:03.749Z
 notes: []
