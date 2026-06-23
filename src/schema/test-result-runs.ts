@@ -75,15 +75,15 @@ export const TestResultCaseLocationInputSchema = z
 
 export const TestResultCriterionRefSchema = z
   .object({
-    item_ref: RefSchema,
-    ac_id: AcIdSchema,
+    item_ref: z.string().min(1).optional(),
+    ac_id: z.string().min(1).optional(),
   })
   .passthrough();
 
 export const TestResultCriterionRefInputSchema = z
   .object({
-    item_ref: RefSchema,
-    ac_id: AcIdSchema,
+    item_ref: z.string().min(1).optional(),
+    ac_id: z.string().min(1).optional(),
   })
   .strict();
 

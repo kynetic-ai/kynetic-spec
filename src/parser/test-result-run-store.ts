@@ -43,8 +43,10 @@ import {
   objectsStructurallyEqual,
 } from "./folder-backed-entity.js";
 import { withFileLock } from "./file-lock.js";
+import { ReferenceIndex } from "./refs.js";
+import { mapTestResultCasesToAcceptanceCriteria } from "./test-result-ac-mapping.js";
 import { commitIfShadow } from "./shadow.js";
-import type { KspecContext } from "./yaml.js";
+import { loadAllItems, type KspecContext } from "./yaml.js";
 import { readYamlFile, toYaml, writeYamlFile } from "./yaml.js";
 
 // ── Layout ────────────────────────────────────────────────────────────────────
@@ -386,7 +388,13 @@ export async function writeTestRun(
   ctx: KspecContext,
   input: TestResultRunRecordInput,
 ): Promise<TestResultRunRecord> {
-  const parsed = TestResultRunRecordSchema.parse(TestResultRunRecordInputSchema.parse(input));
+  const inputRecord = TestResultRunRecordSchema.parse(TestResultRunRecordInputSchema.parse(input));
+  const items = await loadAllItems(ctx);
+  const refIndex = new ReferenceIndex([], items);
+  const parsed = TestResultRunRecordSchema.parse({
+    ...inputRecord,
+    mapping: mapTestResultCasesToAcceptanceCriteria(refIndex, items, inputRecord.cases),
+  });
   assertRawFormatSupported(parsed);
   UlidSchema.parse(parsed.run.id);
 
