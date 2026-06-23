@@ -72088,7 +72088,7 @@ runs:
     completed_at: 2026-06-23T07:35:07.338Z
   - _ulid: 01KVSQHGN753KM41BS81XW11B5
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72108,7 +72108,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-23T07:56:07.387Z
-        completed_at: 2026-06-23T07:56:07.387Z
+        completed_at: 2026-06-23T07:56:24.285Z
+        notes: "Decision: skip new captures. Duplicate/covered items: @01KVSPD3 covers the local HTTP 401
+          auth challenge success pattern; @01KVET18 covers first-class review evidence log storage
+          friction. The long full-suite duration is already covered by existing testing-duration and
+          review-gate observations, including @01KTW9G9 and @01KV3WHP, so no duplicate."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-23T07:56:24.285Z
+        completed_at: 2026-06-23T07:56:24.285Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-23T07:53:58.183Z
