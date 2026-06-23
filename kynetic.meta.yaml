@@ -22911,6 +22911,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-19T03:55:40.742Z
+  - _ulid: 01KVS5B55JYTD9EK11CGE40R16
+    type: success
+    content: During a long full npm test run, checking the process tree with ps --forest distinguished
+      active Vitest CLI subprocess work from a teardown hang after quiet output. This prevented
+      premature failure classification while still keeping evidence for the existing full-suite hang
+      investigation.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-23T02:35:55.443Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
