@@ -149,6 +149,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-23T06:55:32.246Z
+  - _ulid: 01KVSM76Q48KMA1NA55ED71B83
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVSM76F6CHM26QRW2M8S7VGD
+    timestamp: 2026-06-23T06:55:54.596Z
 examined_commit: 1d095288f6bd172a9ee052971cd88ae2c54ee0db
 external_links: []
 lifecycle_state: open
@@ -158,8 +165,39 @@ subject:
   content_hash: ""
   ref: "@01KVS3FSSRJ6E6M2VEAKBE322G"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVSM76F6CHM26QRW2M8S7VGD
+    entries:
+      - _ulid: 01KVSM76F7PT3Y56H06RYSGZQH
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+          Files read: kspec-agents.md; src/parser/test-result-ac-mapping.ts;
+          src/parser/test-result-ac-tokens.ts; src/parser/test-result-run-store.ts;
+          src/schema/test-result-runs.ts; src/parser/refs.ts; src/schema/common.ts;
+          src/parser/yaml.ts; tests/test-result-ac-mapping.test.ts;
+          tests/test-result-run-store.test.ts; src/parser/folder-backed-entity.ts.
+
+          Commands run: kspec task get @01KVS3FSSRJ6E6M2VEAKBE322G; kspec item get
+          @test-result-ac-mapping; git diff/stat/name-only against 1fb1d839; kspec review add/open;
+          npm run format:check; npx oxlint changed files; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; npm run lint -- --quiet; npm run
+          typecheck; npm test; npm test -- --fresh on the failed files; kspec task add
+          @task-stabilize-full-npm-test-flake; kspec review check entries.
+
+          Claims verified: explicit refs, token-derived refs, multiple criteria, invalid refs,
+          no-ref cases, and neutral project mapping are covered by behavioral temp-project tests;
+          writeTestRun recomputes mapping through ReferenceIndex/loadAllItems; invalid refs are
+          retained as invalid mapping entries and not attributed; task-specific suites passed in
+          full and focused runs.
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration,
+          and project-specific flake triage. No blocker findings found. Shared-guidance neutrality
+          not applicable: no shared guidance surfaces changed.
+        created_at: 2026-06-23T06:55:54.343Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-23T06:25:32.188Z
-updated_at: 2026-06-23T06:55:31.989Z
+updated_at: 2026-06-23T06:55:54.343Z
 notes: []
