@@ -89,7 +89,7 @@ submission_linkage:
   commit: fba9ca9f2f3aba7fd863019d192a0fb13abacf05
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
-  upstream_ref: refs/heads/dispatch/task/task-test-result-run-store/01kvs3fs
+  upstream_ref: feat/ui-redesign
 session_id: 01KVS6ME0T8J2ZF4NC3D1EMGP6
 history:
   - author: Jacob Chapel
@@ -210,6 +210,27 @@ history:
         previous: 2026-06-23T02:30:21.193Z
     command: task-submit
     timestamp: 2026-06-23T03:15:12.191Z
+  - author: Jacob Chapel
+    changes:
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-test-result-run-store/01kvs3fs
+          captured_at: 2026-06-23T03:15:12.185Z
+          commit: fba9ca9f2f3aba7fd863019d192a0fb13abacf05
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: feat/ui-redesign
+        previous:
+          review_url: null
+          branch: dispatch/task/task-test-result-run-store/01kvs3fs
+          captured_at: 2026-06-23T03:15:12.185Z
+          commit: fba9ca9f2f3aba7fd863019d192a0fb13abacf05
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-test-result-run-store/01kvs3fs
+    command: task-patch
+    timestamp: 2026-06-23T03:16:10.507Z
 created_at: 2026-06-23T02:03:30.065Z
 started_at: 2026-06-23T02:59:59.354Z
 submitted_at: 2026-06-23T03:15:12.191Z
