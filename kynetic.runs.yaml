@@ -71561,7 +71561,7 @@ runs:
     started_at: 2026-06-23T02:55:38.120Z
     completed_at: 2026-06-23T02:57:11.800Z
   - _ulid: 01KVS7PHVX66VWKA4G6SWS327C
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -71611,10 +71611,14 @@ runs:
         completed_at: 2026-06-23T03:19:21.143Z
         notes: "Skipped discussion: no untracked improvement proposals were identified. The relevant
           friction is already captured in existing unresolved tracking."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-23T03:19:21.143Z
-        completed_at: 2026-06-23T03:19:21.143Z
+        completed_at: 2026-06-23T03:19:31.362Z
+        notes: No new capture. Existing @01KVET9H remains the active friction observation for manual_merge
+          upstream_ref capture, and @01KTYQ1R8 remains the inbox item for broader dispatch
+          submission_linkage capture improvements. Avoided duplicate observation/inbox noise.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T03:17:06.045Z
+    completed_at: 2026-06-23T03:19:31.362Z
