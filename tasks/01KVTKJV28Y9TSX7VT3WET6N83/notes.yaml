@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KVTKWSXMPPEZV946M5E9APN6
+    content: "Approach: add a shared submission-linkage fallback resolver in the task CLI path and pass
+      its result into captureSubmissionLinkage for both task submit and task set
+      --submission-linkage. Precedence: real git upstream remains inside captureSubmissionLinkage;
+      fallback resolves active .kspec-dispatch-workspace.json only when it matches the task/current
+      checkout, then an available owning plan branch using local/remote branch checks, then
+      dispatch.base_branch. Edge cases: unrelated or stale workspace metadata is ignored,
+      missing/null plan branches preserve existing behavior, remote-only plan branches are accepted
+      like dispatch provisioning. Test plan: add behavioral CLI regressions for submit and repair
+      with manual_merge plan metadata/plan branch, keep existing git-upstream and non-plan
+      dispatch.base_branch coverage, and add recovery/adoption evidence if inspection finds a gap."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T16:09:28.245Z
