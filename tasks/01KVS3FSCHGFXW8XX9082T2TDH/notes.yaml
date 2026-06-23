@@ -127,3 +127,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T04:43:00.620Z
+  - _ulid: 01KVSCPRZ0JKJJB44GQEN2RKQ3
+    content: "Post-submit metadata repair: kspec task submit captured git upstream as
+      refs/heads/dispatch/task/task-test-result-run-store/01kvs3fs, but this dispatch invocation
+      manual_merge target is feat/ui-redesign. Patched submission_linkage.upstream_ref to
+      feat/ui-redesign while preserving submitted branch and commit
+      e72ad3cdc639416e3249382f9a507a55d4d0139a."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T04:44:36.192Z
