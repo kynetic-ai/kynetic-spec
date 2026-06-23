@@ -229,6 +229,12 @@ events:
     payload:
       thread_ulid: 01KVSE05K1D4SSCD7YXWP9WHZ6
     timestamp: 2026-06-23T05:30:35.650Z
+  - _ulid: 01KVSFBG2NVVVF8NMVVPZKN7FZ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVSE0HEPAKB53PB2VTC425TP
+    timestamp: 2026-06-23T05:30:52.373Z
 examined_commit: e72ad3cdc639416e3249382f9a507a55d4d0139a
 external_links: []
 lifecycle_state: closed
@@ -286,6 +292,13 @@ threads:
           producer.native; external input should reject these case-level native fields while the
           stored-record schema remains tolerant for on-disk forward compatibility."
         created_at: 2026-06-23T05:07:24.758Z
+      - _ulid: 01KVSFBFSGZE4PWTHFR7GS8GV3
+        author: Jacob Chapel
+        body: "Fixed in 4d918a9d6f: submitted test-run input now uses strict input schemas for cases and
+          nested normalized payload sections, while stored-record schemas remain passthrough for
+          supported-format forward-compatible reads. Added a behavioral regression proving a
+          case-level junit field is rejected and the sidecar is unchanged."
+        created_at: 2026-06-23T05:30:52.079Z
     kind: blocker
   - _ulid: 01KVSE11WSXTTEWFT3J7W3E64R
     entries:
@@ -328,5 +341,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-23T05:07:51.863Z
 created_at: 2026-06-23T04:50:45.483Z
-updated_at: 2026-06-23T05:30:35.357Z
+updated_at: 2026-06-23T05:30:52.079Z
 notes: []
