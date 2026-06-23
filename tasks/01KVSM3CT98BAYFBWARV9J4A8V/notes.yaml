@@ -28,3 +28,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T07:19:45.444Z
+  - _ulid: 01KVSP9C64AK2ZSDV39JX0GTYT
+    content: "Final verification: focused prompt-suppression suite passes after replacing external HTTPS
+      remotes with a local HTTP 401 auth challenge; full fresh npm test passes (2788/2788 suites,
+      10569 passed, 3 skipped). Gates passed: format:check, lint -- --quiet (0 errors; existing
+      warning baseline), focused oxlint for changed file, typecheck, kspec validate
+      --refs/--alignment/--completeness --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-23T07:32:02.884Z
