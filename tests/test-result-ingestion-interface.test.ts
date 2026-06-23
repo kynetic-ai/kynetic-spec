@@ -4,6 +4,10 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Elysia } from "elysia";
+import type {
+  EntityCacheAccessor,
+  RouteEntityCache,
+} from "../dist/daemon/routes/entity-cache-types.js";
 import type { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 import { cleanupTempDir, createTempDir, initGitRepo, kspec, testUlid } from "./helpers/cli.js";
 import { captureBroadcasts, createTestApp, makeRequest } from "./daemon-api/helpers.js";
@@ -110,6 +114,16 @@ async function writePayload(tempDir: string, payload: unknown): Promise<string> 
 
 function parseJson(stdout: string) {
   return JSON.parse(stdout) as Record<string, unknown>;
+}
+
+function createCacheTracker(): {
+  getEntityCache: EntityCacheAccessor;
+  writeThrough: RouteEntityCache["writeThrough"];
+} {
+  const writeThrough = vi.fn<RouteEntityCache["writeThrough"]>(async () => {});
+  const cache = { writeThrough } as unknown as RouteEntityCache;
+  const getEntityCache = vi.fn<EntityCacheAccessor>(() => cache);
+  return { getEntityCache, writeThrough };
 }
 
 describe("test result ingestion interface", () => {
@@ -233,6 +247,54 @@ describe("test result ingestion interface", () => {
     expect(
       existsSync(path.join(project.tempDir, "coverage", "test-runs", "runs", RUN_ID, "run.yaml")),
     ).toBe(false);
+  });
+
+  // AC: @test-result-ingestion-interface ac-dry-run-preview
+  // AC: @trait-dry-run ac-1
+  // AC: @trait-dry-run ac-2
+  // AC: @trait-dry-run ac-3
+  // AC: @trait-dry-run ac-6
+  it("previews daemon ingestion without write-through or broadcasts", async () => {
+    const project = await setupIngestionProject("daemon-dry-run");
+    tempDirs.push(project.tempDir);
+    const { getEntityCache, writeThrough } = createCacheTracker();
+    const { app, pubsub } = createTestApp({ getEntityCache });
+    const broadcasts = captureBroadcasts(pubsub);
+
+    const response = await makeRequest(
+      app,
+      project.tempDir,
+      "/api/coverage/test-results/runs?dry_run=true",
+      {
+        method: "POST",
+        body: JSON.stringify(normalizedPayload()),
+      },
+    );
+
+    const responseText = await response.text();
+    expect(response.status, responseText).toBe(200);
+    const body = JSON.parse(responseText);
+    expect(body.data).toMatchObject({
+      run_id: RUN_ID,
+      dry_run: true,
+      stored: false,
+      case_count: 3,
+      mapped_criterion_count: 1,
+      unmapped_count: 1,
+      invalid_mapping_count: 1,
+      affected_item_refs: ["@portable-widget"],
+      event_scopes: [
+        { type: "item", ref: "@portable-widget", reason: "mapped_criteria" },
+        { type: "project", ref: "@project", reason: "unmapped_results" },
+        { type: "project", ref: "@project", reason: "invalid_mappings" },
+      ],
+    });
+    expect(broadcasts).not.toHaveBeenCalled();
+    expect(writeThrough).not.toHaveBeenCalled();
+    expect(existsSync(path.join(project.tempDir, "coverage", "test-runs"))).toBe(false);
+    expect(
+      await loadTestRun(await initContext(project.tempDir, { syncMode: "skip" }), RUN_ID),
+    ).toBeUndefined();
   });
 
   // AC: @test-result-ingestion-interface ac-dry-run-preview
