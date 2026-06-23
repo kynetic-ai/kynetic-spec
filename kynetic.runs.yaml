@@ -71506,7 +71506,7 @@ runs:
     completed_at: 2026-06-23T02:36:06.604Z
   - _ulid: 01KVS6F847EAFEFD5H6QB5XY5M
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -71521,7 +71521,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-23T02:56:18.027Z
-        completed_at: 2026-06-23T02:56:18.027Z
+        completed_at: 2026-06-23T02:56:28.555Z
+        notes: "Friction points: Recording a review blocker with inline code/backticks through kspec review
+          comment --body under double quotes triggered shell command substitution and mangled the
+          comment body, requiring a corrective reply. Full npm test also took a long time, but it
+          made progress and passed; no new test-runner action identified from this session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-23T02:56:28.555Z
+        completed_at: 2026-06-23T02:56:28.555Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-23T02:55:38.120Z
