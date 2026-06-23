@@ -32938,7 +32938,7 @@
   type: task
   spec_ref: "@normalized-test-result-ingestion-contract"
   plan_ref: "@plan-test-result-ingestion"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-ingested-run-verification-stamps"
@@ -32951,6 +32951,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-23T02:03:31.719Z
+  started_at: 2026-06-23T21:50:56.015Z
   automation: eligible
 - _ulid: 01KVSM3CT98BAYFBWARV9J4A8V
   slugs:

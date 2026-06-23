@@ -39,7 +39,7 @@ description: |
 spec_ref: "@normalized-test-result-ingestion-contract"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-ingested-run-verification-stamps"
@@ -51,6 +51,7 @@ tags:
   - docs
   - tests
 vcs_refs: []
+session_id: 01KVV7CB28TEAKWQ6ADK0RB905
 history:
   - author: Jacob Chapel
     changes:
@@ -59,6 +60,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-23T02:05:53.725Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KVV7CB28TEAKWQ6ADK0RB905
+        previous: null
+      started_at:
+        new: 2026-06-23T21:50:56.015Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-23T21:50:56.016Z
 created_at: 2026-06-23T02:03:31.719Z
+started_at: 2026-06-23T21:50:56.015Z
 todos: []
 automation: eligible
