@@ -39,7 +39,7 @@ description: |
 spec_ref: "@normalized-test-result-ingestion-contract"
 plan_ref: "@plan-test-result-ingestion"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-ingested-run-verification-stamps"
@@ -51,6 +51,14 @@ tags:
   - docs
   - tests
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-test-result-producer-contract-fixtures/01kvs3fv
+  captured_at: 2026-06-23T22:11:47.694Z
+  commit: 25ad6f033a3eb68a7d1fe4321f12b7b47779783c
+  remote: null
+  remote_url: null
+  upstream_ref: feat/ui-redesign
 session_id: 01KVV7CB28TEAKWQ6ADK0RB905
 history:
   - author: Jacob Chapel
@@ -73,7 +81,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-23T21:50:56.016Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-test-result-producer-contract-fixtures/01kvs3fv
+          captured_at: 2026-06-23T22:11:47.694Z
+          commit: 25ad6f033a3eb68a7d1fe4321f12b7b47779783c
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous: null
+      submitted_at:
+        new: 2026-06-23T22:11:47.709Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-23T22:11:47.709Z
 created_at: 2026-06-23T02:03:31.719Z
 started_at: 2026-06-23T21:50:56.015Z
+submitted_at: 2026-06-23T22:11:47.709Z
 todos: []
 automation: eligible
