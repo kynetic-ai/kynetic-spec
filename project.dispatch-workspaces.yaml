@@ -12352,7 +12352,7 @@ workspaces:
         head: eb99e0b0caf11981e7dba93e00328060201eac4c
         last_seen_at: 2026-06-23T17:18:24.107Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-scoped-submission-linkage-fallback-01kvtkjv
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 8700daa444403f8fd4c674d1bc417bbb1ea2fdc3
     bootstrap:
       status: succeeded
@@ -12851,9 +12851,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T21:29:32.314Z
-      last_reconciled_at: 2026-06-23T21:50:59.409Z
+      last_reconciled_at: 2026-06-23T21:52:13.682Z
       created_at: 2026-06-23T21:00:33.279Z
-      updated_at: 2026-06-23T21:50:59.409Z
+      updated_at: 2026-06-23T21:52:13.682Z
     workspace_id: dispatch-workspace-01KVS3FTKA0FP05QE4H9DWMZP4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
