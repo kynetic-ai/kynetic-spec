@@ -3707,6 +3707,9 @@ features:
       values are available. It never derives final UI state in the client
       and never assumes kynetic-spec-specific test files, slugs, packages,
       or framework output.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on:
       - "@ac-verification-record-store"
       - "@ac-freshness-resolution"
