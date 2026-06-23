@@ -198,6 +198,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-23T02:54:49.208Z
+  - _ulid: 01KVS7J14X09XK9NGR5FZN2B1S
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVS6C1ZP2CKPP5Z8WZG8V3S7
+    timestamp: 2026-06-23T03:14:37.853Z
+  - _ulid: 01KVS7J4BP78MSWSCKKB4MVBPJ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVS6C1ZP2CKPP5Z8WZG8V3S7
+    timestamp: 2026-06-23T03:14:41.143Z
+  - _ulid: 01KVS7J7C71TZFVXQ916FJNMRZ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVS6BKHDRZYG9K6JQF0CKK5V
+    timestamp: 2026-06-23T03:14:44.231Z
+  - _ulid: 01KVS7JA3GCKS5W99X3J3EQBAF
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVS6BKHDRZYG9K6JQF0CKK5V
+    timestamp: 2026-06-23T03:14:47.024Z
 examined_commit: 0fe42bc9c480cd87647c10dc34f0ffeef6f430c9
 external_links: []
 lifecycle_state: closed
@@ -226,7 +250,14 @@ threads:
           cases, error handling, security/data shape, test quality, integration. Finding recorded
           separately as blocker."
         created_at: 2026-06-23T02:53:38.733Z
+      - _ulid: 01KVS7J74GZCPJM6TP406ZHWP5
+        author: Jacob Chapel
+        body: Acknowledged as the review evidence log. No code action required; leaving the resolution trail
+          explicit for the fix cycle.
+        created_at: 2026-06-23T03:14:43.984Z
     kind: nit
+    resolved_at: 2026-06-23T03:14:46.789Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVS6C1ZP2CKPP5Z8WZG8V3S7
     anchor:
       type: code
@@ -263,7 +294,18 @@ threads:
           already-stored forward-compatible fields where the record-format compatibility requirement
           needs that.'
         created_at: 2026-06-23T02:54:37.850Z
+      - _ulid: 01KVS7J0WZZF6Z0DZ738SRBSQD
+        author: Jacob Chapel
+        body: "Fixed in fba9ca9f2f: writeTestRun now validates new ingestion input through
+          TestResultRunRecordInputSchema, whose producer object is strict. producer.native remains
+          accepted for namespaced producer metadata, while sibling native/framework fields such as
+          producer.junit are rejected before persistence. Stored-record reads still use the tolerant
+          schema so supported-format forward-compatible producer fields already on disk are
+          preserved."
+        created_at: 2026-06-23T03:14:37.599Z
     kind: blocker
+    resolved_at: 2026-06-23T03:14:40.886Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -273,5 +315,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-23T02:54:49.207Z
 created_at: 2026-06-23T02:38:18.899Z
-updated_at: 2026-06-23T02:54:49.208Z
+updated_at: 2026-06-23T03:14:46.789Z
 notes: []
