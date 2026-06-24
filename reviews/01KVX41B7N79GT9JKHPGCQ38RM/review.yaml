@@ -2,7 +2,17 @@ _ulid: 01KVX41B7N79GT9JKHPGCQ38RM
 slugs: []
 title: Review task-coverage-freshness-revision-comparison cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm run format:check passed: oxfmt checked 1115 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-24T15:33:18.108Z
+    completed_at: 2026-06-24T15:33:18.108Z
 events:
   - _ulid: 01KVX41B7N0ZMQ2JCGPT2F8GSX
     actor: Jacob Chapel
@@ -31,6 +41,13 @@ events:
       kind: blocker
       thread_ulid: 01KVX46NJNHEDB8A6S3H7QKQW9
     timestamp: 2026-06-24T15:32:57.874Z
+  - _ulid: 01KVX479YCY0C9JS1WSCBFWARD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-24T15:33:18.412Z
 examined_commit: 981c807ffdee79f72422c1d3d85dc114c11337af
 external_links: []
 lifecycle_state: open
@@ -87,5 +104,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-24T15:30:03.125Z
-updated_at: 2026-06-24T15:32:57.558Z
+updated_at: 2026-06-24T15:33:18.108Z
 notes: []
