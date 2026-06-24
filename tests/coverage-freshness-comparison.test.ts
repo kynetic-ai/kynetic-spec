@@ -235,6 +235,34 @@ describe("coverage freshness comparison", () => {
     expect(sibling.state).toBe("covered");
   });
 
+  // AC: @coverage-freshness-revision-comparison ac-ac-text-change-detected
+  it("marks annotation-only positive evidence stale when criterion text changed after bootstrap freshness", async () => {
+    await commitPath(env, "spec", "2026-06-01T00:00:00.000Z");
+    await fs.writeFile(env.testFile, `// AC: @neutral-freshness ac-one\nit("covers", () => {});\n`);
+    const annotationCommit = await commitPath(
+      env,
+      "tests/coverage.test.ts",
+      "2026-06-02T00:00:00.000Z",
+    );
+    await writeSpec(env, [ac("ac-one", "changed"), ac("ac-two")]);
+    await commitPath(env, "spec/modules/specs.yaml", "2026-06-03T00:00:00.000Z");
+    const item = await loadItem(env);
+
+    const state = await deriveCoverageStateWithFreshnessComparison(
+      entryByAc([item], "ac-one", {
+        annotationLine: 1,
+        bootstrap: { timestamp: "2026-06-02T00:00:00.000Z", commit: annotationCommit },
+      }),
+      { item, projectRoot: env.tempDir },
+    );
+
+    expect(state.state).toBe("stale_spec_text");
+    expect(state.presentation).toBe("re_verify");
+    expect(state.explanation.sourceEvidenceIds).toEqual([
+      `annotation:tests/coverage.test.ts:1:${ITEM_ULID}:ac-one`,
+    ]);
+  });
+
   // AC: @coverage-freshness-revision-comparison ac-per-ac-diff-read
   it("returns focused prior/current text comparison for one stale criterion", async () => {
     await commitPath(env, "spec", "2026-06-01T00:00:00.000Z");

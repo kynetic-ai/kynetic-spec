@@ -134,18 +134,16 @@ async function compareCriterionTextFreshness(
   entry: CoverageEvidenceEntry,
   item: LoadedSpecItem,
 ): Promise<CoverageStateFreshnessFinding | null> {
-  const verifiedAt = latestPositiveEvidenceTimestamp(entry);
+  const verifiedAt = latestPositiveEvidenceVersion(entry);
   if (!verifiedAt) return null;
 
-  const comparison = await readCriterionFreshnessComparison(item, entry.acId, {
-    atTimestamp: verifiedAt,
-  });
+  const comparison = await readCriterionFreshnessComparison(item, entry.acId, verifiedAt);
 
   if (comparison.status === "changed") {
     return {
       cause: "stale_spec_text",
       sourceEvidenceIds: positiveEvidenceIds(entry),
-      detail: `criterion text changed after ${verifiedAt}`,
+      detail: `criterion text changed after ${formatComparisonVersion(verifiedAt)}`,
     };
   }
 
@@ -411,14 +409,44 @@ function hasPositiveEvidence(entry: CoverageEvidenceEntry): boolean {
   return positiveEvidenceIds(entry).length > 0;
 }
 
-function latestPositiveEvidenceTimestamp(entry: CoverageEvidenceEntry): string | null {
-  const timestamps = [
-    entry.recordedVerification?.timestamp ?? null,
+function latestPositiveEvidenceVersion(
+  entry: CoverageEvidenceEntry,
+): CriterionComparisonVersion | null {
+  const candidates: Array<CriterionComparisonVersion | null> = [
+    entry.recordedVerification
+      ? {
+          atTimestamp: entry.recordedVerification.timestamp,
+          atCommit: entry.recordedVerification.commit,
+        }
+      : null,
+    entry.bootstrapFreshness &&
+    (entry.bootstrapFreshness.timestamp || entry.bootstrapFreshness.commit)
+      ? {
+          ...(entry.bootstrapFreshness.timestamp
+            ? { atTimestamp: entry.bootstrapFreshness.timestamp }
+            : {}),
+          atCommit: entry.bootstrapFreshness.commit,
+        }
+      : null,
     ...entry.latestIngestedResults
       .filter((result) => result.status === "passed")
-      .map((result) => result.completedAt),
-  ].filter((timestamp): timestamp is string => Boolean(timestamp));
-  return timestamps.toSorted().at(-1) ?? null;
+      .map((result) => ({
+        atTimestamp: result.completedAt,
+        atCommit: result.codeRevision,
+      })),
+  ];
+  const versions = candidates.filter(
+    (version): version is CriterionComparisonVersion => version !== null,
+  );
+
+  const withTimestamp = versions
+    .filter((version) => version.atTimestamp)
+    .toSorted((a, b) => a.atTimestamp!.localeCompare(b.atTimestamp!));
+  return withTimestamp.at(-1) ?? versions[0] ?? null;
+}
+
+function formatComparisonVersion(version: CriterionComparisonVersion): string {
+  return version.atTimestamp ?? version.atCommit ?? "positive evidence";
 }
 
 function positiveEvidenceIds(entry: CoverageEvidenceEntry): string[] {
