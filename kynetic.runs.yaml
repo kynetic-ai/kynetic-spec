@@ -73971,7 +73971,7 @@ runs:
     completed_at: 2026-06-24T23:35:14.591Z
   - _ulid: 01KVY0SFZG85BQK832MVQ3MPG0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73987,7 +73987,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-24T23:53:45.620Z
-        completed_at: 2026-06-24T23:53:45.620Z
+        completed_at: 2026-06-24T23:54:21.133Z
+        notes: "Identified high-confidence candidates and checked them against baseline/search results.
+          Success candidate: review records plus detached merge helper and atomic review-check
+          batching worked cleanly in this session; already covered by observations @01KVEWNX and
+          @01KVV7FH. Friction candidate: full npm test in detached review took 2496.4s; already
+          covered by existing long-review-gate observations including @01KVSE5H and @01KVXPAN, and
+          related stabilization/test-cache items. No untracked high-confidence friction or success
+          remains."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T23:54:21.133Z
+        completed_at: 2026-06-24T23:54:21.133Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-24T23:52:34.544Z
