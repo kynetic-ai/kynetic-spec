@@ -13876,7 +13876,7 @@ workspaces:
         head: 64674c90fd90de522fb7d36a768142658ecfae4e
         last_seen_at: 2026-06-24T14:56:53.298Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shared-package-export-typecheck-baseline-01kvx11e
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 563659b13fe4bb8e7943024cc0d6fb096c7c81d0
     bootstrap:
       status: succeeded
@@ -14356,12 +14356,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-24T21:33:00.913Z
+      updated_at: 2026-06-24T21:33:40.829Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-24T21:33:00.913Z
+      updated_at: 2026-06-24T21:33:40.829Z
     integration:
       status: merged
       detail: integration:merged
@@ -14369,7 +14369,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 563659b13fe4bb8e7943024cc0d6fb096c7c81d0
-      updated_at: 2026-06-24T21:33:00.913Z
+      updated_at: 2026-06-24T21:33:40.829Z
     lifecycle_state: closing
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVVE0DTZ9RGYWRC08376NZFX
@@ -14378,9 +14378,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-24T21:16:05.072Z
-      last_reconciled_at: 2026-06-24T21:33:00.913Z
+      last_reconciled_at: 2026-06-24T21:33:40.829Z
       created_at: 2026-06-24T19:01:05.059Z
-      updated_at: 2026-06-24T21:33:00.913Z
+      updated_at: 2026-06-24T21:33:40.829Z
     workspace_id: dispatch-workspace-01KVVE0DTZ9RGYWRC08376NZFX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
