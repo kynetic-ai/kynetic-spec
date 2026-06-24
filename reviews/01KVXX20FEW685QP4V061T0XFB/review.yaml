@@ -190,6 +190,12 @@ events:
     payload:
       thread_ulid: 01KVXXXB32GS97AE52W5MQFEKH
     timestamp: 2026-06-24T23:30:12.280Z
+  - _ulid: 01KVXZGPAYC0JEMG63E1NJPFB4
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVXXXB32GS97AE52W5MQFEKH
+    timestamp: 2026-06-24T23:30:17.567Z
 examined_commit: 40669a5a9a7e0d60d301dbbcbd47dd7c0df548c8
 external_links: []
 lifecycle_state: closed
@@ -233,6 +239,8 @@ threads:
           identity, after-cache ordering, and websocket payload shape."
         created_at: 2026-06-24T23:30:12.029Z
     kind: blocker
+    resolved_at: 2026-06-24T23:30:17.325Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVXXXX29P5F2GDN2WC2RBS9F
     entries:
       - _ulid: 01KVXXXX29S5ETRK8RCNMWJPNN
@@ -273,5 +281,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-24T23:02:43.064Z
 created_at: 2026-06-24T22:47:19.278Z
-updated_at: 2026-06-24T23:30:12.029Z
+updated_at: 2026-06-24T23:30:17.325Z
 notes: []
