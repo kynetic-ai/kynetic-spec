@@ -166,9 +166,25 @@ events:
       kind: nit
       thread_ulid: 01KVW0V3F9FA7960CZ0PYJM5TW
     timestamp: 2026-06-24T05:14:58.699Z
+  - _ulid: 01KVW0VFDPPS1XX4SBXR66SKRY
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-24T05:15:10.646Z
+  - _ulid: 01KVW0VFDPNQ9SQEBXAQ832A3E
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-24T05:15:10.646Z
 examined_commit: acc03f55d7e06665f6221d489b666431539448ad
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -194,7 +210,14 @@ threads:
           and security/data exposure. No blocker or should-fix finding found."
         created_at: 2026-06-24T05:14:58.409Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-24T05:15:10.646Z
 created_at: 2026-06-24T00:19:53.212Z
-updated_at: 2026-06-24T05:14:58.409Z
+updated_at: 2026-06-24T05:15:10.646Z
 notes: []
