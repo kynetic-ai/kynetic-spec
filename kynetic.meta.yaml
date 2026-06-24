@@ -23223,6 +23223,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-24T19:03:23.042Z
+  - _ulid: 01KVXMWN0PS7FD2Q16VVNACNFX
+    type: success
+    content: For daemon data derived from files outside .kspec, the existing invalidation pipeline can
+      stay cohesive by forwarding configured source watcher events with the project root as the
+      watched root and teaching the entity cache to treat that boundary as source-only read-model
+      invalidation. This avoided a parallel cache path while fixing coverage-state freshness for
+      coverage.scan_paths changes.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KVXMRR"
+    created_at: 2026-06-24T20:24:35.094Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
