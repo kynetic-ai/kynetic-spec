@@ -149,6 +149,13 @@ events:
       kind: blocker
       thread_ulid: 01KVX7W44HD7MJHXH8TZBJG5R1
     timestamp: 2026-06-24T16:37:06.704Z
+  - _ulid: 01KVX7WSVNQS8GFWBWABR6D2YA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVX7WSFWQ75HWEC2N1CYW77N
+    timestamp: 2026-06-24T16:37:28.565Z
 examined_commit: f91fb3e401f96c34b48f76715ec8dc3808349df9
 external_links: []
 lifecycle_state: open
@@ -185,7 +192,47 @@ threads:
           do not contain shadow spec files."
         created_at: 2026-06-24T16:37:06.321Z
     kind: blocker
+  - _ulid: 01KVX7WSFWQ75HWEC2N1CYW77N
+    entries:
+      - _ulid: 01KVX7WSFWD0AZSJ190QSRTFRH
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; task/spec context for @01KVVE0DG6ZG9NX5A2A86ZJQ63 and
+          @coverage-freshness-revision-comparison; prior reviews @01KVX0RT and @01KVX41B;
+          src/parser/coverage-freshness-comparison.ts; src/parser/coverage-state.ts;
+          src/parser/index.ts; src/parser/coverage-evidence-index.ts;
+          src/parser/freshness-resolver.ts; src/parser/test-result-ingestion.ts;
+          src/parser/test-result-run-store.ts; src/schema/verification-records.ts;
+          tests/coverage-freshness-comparison.test.ts; related freshness and ingestion tests.
+
+
+          Commands run: git status --short --branch; git diff --stat/name-only/full against
+          779c732e5e203ebf73d23a6c5644b5dd9e1cd6a2..f91fb3e401f96c34b48f76715ec8dc3808349df9; rg
+          searches for coverage freshness APIs and AC annotations; kspec task get; kspec item get;
+          kspec review get/for-task; git diff --check; git show
+          f91fb3e401f96c34b48f76715ec8dc3808349df9:project.tasks.yaml; npm run format:check; npm run
+          lint -- --quiet; npx oxlint changed files; npm run typecheck; npm test; kspec validate
+          --refs --warnings-ok; kspec validate --alignment --warnings-ok; kspec validate
+          --completeness --warnings-ok.
+
+
+          Claims verified: the prior diverged-history blocker is fixed by checking both ancestry
+          directions; the run-only spec-text blocker is fixed for ingested runs by using
+          completed_at timestamps. A remaining blocker exists for recorded/bootstrap evidence
+          because their commits can still be project-code revisions while spec text lives in shadow
+          history.
+
+
+          Categories searched: correctness, shadow/project history integration, edge cases,
+          unknown-freshness error handling, AC coverage, test quality. Findings: one blocker
+          recorded on src/parser/coverage-freshness-comparison.ts. Shared/package guidance surfaces
+          touched: none.
+        created_at: 2026-06-24T16:37:28.188Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-24T16:16:01.699Z
-updated_at: 2026-06-24T16:37:06.321Z
+updated_at: 2026-06-24T16:37:28.188Z
 notes: []
