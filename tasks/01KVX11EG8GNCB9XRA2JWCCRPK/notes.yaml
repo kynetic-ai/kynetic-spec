@@ -1,1 +1,23 @@
-notes: []
+notes:
+  - _ulid: 01KVX1XEHDNB26ZRJNA9RVYF7D
+    content: >-
+      Approach: reproduced the reported build/typecheck baseline on the rebased dispatch branch
+      before editing. npm run typecheck passes, rg found no current root/shared import sites for the
+      previously missing identifiers (BreadcrumbAncestor, ActorIdentityConfig, AgentIdentity,
+      HumanIdentity, classifyActor, ClassifiedActor, buildActorClassifier), and packages/shared
+      exports its current API/WebSocket/schema surfaces through packages/shared/src/index.ts. No
+      code change was needed on this branch.
+
+
+      Edge cases checked: root typecheck after shared package build, full test pre-build path via
+      npm test, and kspec validation with warnings accepted. Task has no spec_ref, so there are no
+      AC annotations to add.
+
+
+      Gate results: npm run format:check passed; npm run lint -- --quiet passed with existing
+      warning baseline and 0 errors; npm run typecheck passed; npm test passed (2788 suites, 10573
+      tests, 3 skipped); kspec validate --refs/--alignment/--completeness --warnings-ok passed with
+      existing warnings.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T14:52:58.285Z
