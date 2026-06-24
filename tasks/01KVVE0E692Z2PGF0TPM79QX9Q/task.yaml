@@ -64,8 +64,12 @@ description: >-
 spec_ref: "@coverage-state-events"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign at 5b39e63189a371afbe7fbfb3a05960cef1c7811f after approved
+  review @01KVXZXK. Implemented typed coverage-state websocket events for ingestion and
+  daemon-served spec mutations, watcher fallback coverage invalidation, and targeted web query
+  invalidation for coverage summary/item/criterion/unmapped scopes.
 depends_on:
   - "@task-coverage-state-api-cache"
 context: []
@@ -369,8 +373,25 @@ history:
         previous: "@01KVXX20FEW685QP4V061T0XFB"
     command: review-link
     timestamp: 2026-06-24T23:37:22.940Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign at 5b39e63189a371afbe7fbfb3a05960cef1c7811f after approved review
+          @01KVXZXK. Implemented typed coverage-state websocket events for ingestion and
+          daemon-served spec mutations, watcher fallback coverage invalidation, and targeted web
+          query invalidation for coverage summary/item/criterion/unmapped scopes.
+        previous: null
+      completed_at:
+        new: 2026-06-24T23:51:41.512Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-24T23:51:41.521Z
 created_at: 2026-06-23T23:45:50.281Z
 started_at: 2026-06-24T23:31:16.802Z
 submitted_at: 2026-06-24T23:31:20.056Z
+completed_at: 2026-06-24T23:51:41.512Z
 todos: []
 automation: eligible
