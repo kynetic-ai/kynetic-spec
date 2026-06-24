@@ -142,6 +142,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-24T16:36:42.671Z
+  - _ulid: 01KVX7W4GGMVVQ2SSPHBSFYXWQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVX7W44HD7MJHXH8TZBJG5R1
+    timestamp: 2026-06-24T16:37:06.704Z
 examined_commit: f91fb3e401f96c34b48f76715ec8dc3808349df9
 external_links: []
 lifecycle_state: open
@@ -151,8 +158,34 @@ subject:
   content_hash: ""
   ref: "@01KVVE0DG6ZG9NX5A2A86ZJQ63"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVX7W44HD7MJHXH8TZBJG5R1
+    anchor:
+      type: code
+      commit: f91fb3e401f96c34b48f76715ec8dc3808349df9
+      line_end: 106
+      line_start: 97
+      path: src/parser/coverage-freshness-comparison.ts
+      side: head
+    entries:
+      - _ulid: 01KVX7W44HPAYVKR0WGF349G59
+        author: Jacob Chapel
+        body: "MUST-FIX: spec-text comparison still prefers project-code commits over timestamp fallback for
+          recorded/bootstrap evidence. `latestPositiveEvidenceVersion()` passes
+          `entry.recordedVerification.commit` and `entry.bootstrapFreshness.commit` as `atCommit`,
+          and `readCriterionFreshnessComparison()` uses that commit first and returns unknown when
+          `git show <commit>:<spec-relpath>` fails. In normal kspec projects those commits can be
+          project revisions: ingestion stamps write `producer.code_revision` into verification stamp
+          commits, and bootstrap annotation freshness comes from project test-file blame. The spec
+          source lives in shadow metadata history, so current covered evidence can be downgraded to
+          `unknown_freshness`/re-verify even when the timestamp can resolve the correct prior
+          criterion version. Evidence: `src/parser/test-result-run-store.ts:432-436` writes producer
+          code_revision to the recorded stamp; `git show
+          f91fb3e401f96c34b48f76715ec8dc3808349df9:project.tasks.yaml` fails because project commits
+          do not contain shadow spec files."
+        created_at: 2026-06-24T16:37:06.321Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-24T16:16:01.699Z
-updated_at: 2026-06-24T16:36:42.255Z
+updated_at: 2026-06-24T16:37:06.321Z
 notes: []
