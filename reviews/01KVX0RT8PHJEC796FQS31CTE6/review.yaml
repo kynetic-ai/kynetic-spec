@@ -198,6 +198,12 @@ events:
     payload:
       thread_ulid: 01KVX1499SGJ5XZ993EVTGJCVR
     timestamp: 2026-06-24T15:23:42.486Z
+  - _ulid: 01KVX3PA1X22GKT00PRQCJ9G33
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVX1499SGJ5XZ993EVTGJCVR
+    timestamp: 2026-06-24T15:24:01.469Z
 examined_commit: 70196da095e80a4a656bdca2d6113013ab27722c
 external_links: []
 lifecycle_state: closed
@@ -285,6 +291,8 @@ threads:
           from the same review has been fixed and covered by the new regression.
         created_at: 2026-06-24T15:23:42.230Z
     kind: nit
+    resolved_at: 2026-06-24T15:24:01.208Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -294,5 +302,5 @@ verdicts:
     role: pr-reviewer
     created_at: 2026-06-24T14:39:17.531Z
 created_at: 2026-06-24T14:32:57.878Z
-updated_at: 2026-06-24T15:23:42.230Z
+updated_at: 2026-06-24T15:24:01.208Z
 notes: []
