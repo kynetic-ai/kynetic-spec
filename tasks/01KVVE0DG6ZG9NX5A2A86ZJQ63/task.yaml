@@ -51,7 +51,7 @@ description: >-
 spec_ref: "@coverage-freshness-revision-comparison"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-coverage-state-derivation"
@@ -71,7 +71,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: feat/ui-redesign
-session_id: null
+session_id: 01KVX24BT1JFTMDRNYDGXAC7TE
 history:
   - author: Jacob Chapel
     changes:
@@ -261,9 +261,22 @@ history:
         previous: pending_review
     command: review-verdict-needs-work
     timestamp: 2026-06-24T14:39:19.791Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KVX24BT1JFTMDRNYDGXAC7TE
+        previous: null
+      started_at:
+        new: 2026-06-24T14:57:39.760Z
+        previous: 2026-06-24T06:02:44.185Z
+    command: task-start
+    timestamp: 2026-06-24T14:57:39.760Z
 prior_status: null
 created_at: 2026-06-23T23:45:49.574Z
-started_at: 2026-06-24T06:02:44.185Z
+started_at: 2026-06-24T14:57:39.760Z
 submitted_at: 2026-06-24T06:24:56.249Z
 todos: []
 automation: eligible
