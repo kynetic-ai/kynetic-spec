@@ -12864,7 +12864,7 @@ workspaces:
         head: 25ad6f033a3eb68a7d1fe4321f12b7b47779783c
         last_seen_at: 2026-06-23T22:15:52.109Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-result-producer-contract-fixtures-01kvs3fv
-  - active_role: worker
+  - active_role: null
     base_branch_point: ea5f9dce24b7e8a5ce46d92801e553613359e261
     bootstrap:
       status: succeeded
@@ -13195,12 +13195,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-24T00:13:03.802Z
+      updated_at: 2026-06-24T00:17:59.387Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-24T00:13:03.802Z
+      updated_at: 2026-06-24T00:17:59.387Z
     integration:
       status: pending
       detail: null
@@ -13208,8 +13208,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: ea5f9dce24b7e8a5ce46d92801e553613359e261
-      updated_at: 2026-06-24T00:13:03.802Z
-    lifecycle_state: active
+      updated_at: 2026-06-24T00:17:59.387Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVVE0CPZGHB3SQD9CSD4RPK1
     task_ref: "@01KVVE0CPZGHB3SQD9CSD4RPK1"
@@ -13217,9 +13217,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-23T23:50:00.979Z
-      last_reconciled_at: 2026-06-24T00:13:03.802Z
+      last_reconciled_at: 2026-06-24T00:17:59.387Z
       created_at: 2026-06-23T23:49:29.365Z
-      updated_at: 2026-06-24T00:13:03.802Z
+      updated_at: 2026-06-24T00:17:59.387Z
     workspace_id: dispatch-workspace-01KVVE0CPZGHB3SQD9CSD4RPK1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
