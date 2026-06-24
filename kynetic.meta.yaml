@@ -23258,6 +23258,16 @@ observations:
     resolved: false
     workflow_ref: "@01KVXP7M"
     created_at: 2026-06-24T20:49:43.379Z
+  - _ulid: 01KVXTA5PYP6R0EQVYAX6RBWQH
+    type: success
+    content: During @task-coverage-state-events, explicit task wording for owned websocket trait ACs and
+      non-applicable inherited lifecycle ACs kept implementation scoped to typed
+      payloads/invalidation instead of reworking base websocket behavior; pairing that with
+      centralized ws-invalidation made the UI refresh path small and behaviorally testable.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-24T21:59:21.054Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
