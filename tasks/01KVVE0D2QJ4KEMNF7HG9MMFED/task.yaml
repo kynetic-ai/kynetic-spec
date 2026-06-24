@@ -71,6 +71,13 @@ history:
         previous: eligible
     command: task-set
     timestamp: 2026-06-24T04:28:53.979Z
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: manual_only
+    command: task-set
+    timestamp: 2026-06-24T04:53:22.262Z
 created_at: 2026-06-23T23:45:49.143Z
 todos: []
-automation: manual_only
+automation: eligible
