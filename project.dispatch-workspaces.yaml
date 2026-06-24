@@ -12313,12 +12313,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-24T04:53:58.622Z
+      updated_at: 2026-06-24T04:54:18.346Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-24T04:53:58.622Z
+      updated_at: 2026-06-24T04:54:18.346Z
     integration:
       status: pending
       detail: null
@@ -12326,7 +12326,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: ea5f9dce24b7e8a5ce46d92801e553613359e261
-      updated_at: 2026-06-24T04:53:58.622Z
+      updated_at: 2026-06-24T04:54:18.346Z
     lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVVE0CPZGHB3SQD9CSD4RPK1
@@ -12335,16 +12335,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-24T00:18:49.181Z
-      last_reconciled_at: 2026-06-24T04:53:58.622Z
+      last_reconciled_at: 2026-06-24T04:54:18.346Z
       created_at: 2026-06-23T23:49:29.365Z
-      updated_at: 2026-06-24T04:53:58.622Z
+      updated_at: 2026-06-24T04:54:18.346Z
     workspace_id: dispatch-workspace-01KVVE0CPZGHB3SQD9CSD4RPK1
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: acc03f55d7e06665f6221d489b666431539448ad
+        last_seen_at: 2026-06-24T04:54:18.346Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-evidence-index-01kvve0c-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-evidence-index/01kvve0c
         head: acc03f55d7e06665f6221d489b666431539448ad
-        last_seen_at: 2026-06-24T00:18:16.568Z
+        last_seen_at: 2026-06-24T04:54:18.346Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-evidence-index-01kvve0c
