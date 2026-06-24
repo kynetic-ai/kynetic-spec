@@ -35,6 +35,17 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-24T05:58:48.682Z
     completed_at: 2026-06-24T05:58:48.682Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2905 test suites passed; 11032 tests passed; 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KVW2FFSR583J1PAC8MT3EJXV/9660473e30ae5f98.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-24T05:58:52.254Z
+    completed_at: 2026-06-24T05:58:52.254Z
 events:
   - _ulid: 01KVW2GXTS1SR1R59N6E1NEV39
     actor: Jacob Chapel
@@ -70,6 +81,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-24T05:58:48.968Z
+  - _ulid: 01KVW3BFVTXQK2XE2509AA4J3Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-24T05:58:52.538Z
 examined_commit: 8e035b45207cfbbb0decdf4635f4cf892890eddd
 external_links: []
 lifecycle_state: open
@@ -82,5 +100,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-24T05:44:22.106Z
-updated_at: 2026-06-24T05:58:48.682Z
+updated_at: 2026-06-24T05:58:52.254Z
 notes: []
