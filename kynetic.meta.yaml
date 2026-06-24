@@ -23190,6 +23190,17 @@ observations:
     resolved_by: Jacob Chapel
     workflow_ref: "@01KVX38X"
     created_at: 2026-06-24T15:17:49.745Z
+  - _ulid: 01KVX53RJHG5WA39VBH6HZR6RC
+    type: friction
+    content: "Freshness/revision comparison tests can miss production bugs when temp fixtures use one
+      git repository for both spec metadata and code history. Real kspec projects have separate
+      revision domains: shadow metadata contains spec source, while test-run producer code revisions
+      point at the project repository. Future freshness tests should model both domains when
+      validating spec-text versus test-code freshness comparisons."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-24T15:48:50.897Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
