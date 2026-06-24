@@ -33052,7 +33052,7 @@
   type: task
   spec_ref: "@coverage-freshness-revision-comparison"
   plan_ref: "@plan-coverage-state-engine"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-coverage-state-derivation"
@@ -33066,7 +33066,7 @@
   todos_count: 0
   created_at: 2026-06-23T23:45:49.574Z
   started_at: 2026-06-24T16:44:24.771Z
-  submitted_at: 2026-06-24T16:10:12.636Z
+  submitted_at: 2026-06-24T17:01:53.601Z
   automation: eligible
 - _ulid: 01KVVE0DTZ9RGYWRC08376NZFX
   slugs:
