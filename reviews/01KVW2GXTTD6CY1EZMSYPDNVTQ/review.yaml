@@ -150,9 +150,25 @@ events:
       kind: nit
       thread_ulid: 01KVW3D1AC3TYP57XXCT0KZRZ0
     timestamp: 2026-06-24T05:59:43.522Z
+  - _ulid: 01KVW3DEE33ZGKWCX8CBWJCK9T
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-24T05:59:56.611Z
+  - _ulid: 01KVW3DEE3CXJW4JBG1MB0W0ZX
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-24T05:59:56.611Z
 examined_commit: 8e035b45207cfbbb0decdf4635f4cf892890eddd
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -194,7 +210,14 @@ threads:
           surfaces changed). No blocking findings.
         created_at: 2026-06-24T05:59:43.181Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-24T05:59:56.611Z
 created_at: 2026-06-24T05:44:22.106Z
-updated_at: 2026-06-24T05:59:43.181Z
+updated_at: 2026-06-24T05:59:56.611Z
 notes: []
