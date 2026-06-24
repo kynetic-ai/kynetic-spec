@@ -45,7 +45,7 @@ description: |
 spec_ref: "@coverage-evidence-index"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -55,6 +55,14 @@ tags:
   - parser
   - daemon
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-coverage-evidence-index/01kvve0c
+  captured_at: 2026-06-24T00:13:29.645Z
+  commit: acc03f55d7e06665f6221d489b666431539448ad
+  remote: null
+  remote_url: null
+  upstream_ref: feat/ui-redesign
 session_id: 01KVVE7Z7H1ZSXXMNRJW8EDKHH
 history:
   - author: Jacob Chapel
@@ -77,7 +85,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-23T23:50:43.712Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-evidence-index/01kvve0c
+          captured_at: 2026-06-24T00:13:29.645Z
+          commit: acc03f55d7e06665f6221d489b666431539448ad
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous: null
+      submitted_at:
+        new: 2026-06-24T00:13:29.651Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-24T00:13:29.651Z
 created_at: 2026-06-23T23:45:48.767Z
 started_at: 2026-06-23T23:50:43.712Z
+submitted_at: 2026-06-24T00:13:29.651Z
 todos: []
 automation: eligible
