@@ -22,6 +22,7 @@ import {
   loadInboxItems,
   loadMetaContext,
   loadPlans,
+  loadCoverageStateReadModel,
   loadResourceManifest,
   loadReviewRecords,
   loadTriageRecords,
@@ -830,6 +831,7 @@ export async function generateJsonSnapshot(
     agent_aliases: ctx.config.identity.agent_aliases,
     workflows: metaContext.workflows,
     conventions: metaContext.conventions,
+    coverage_state: await loadCoverageStateReadModel(ctx),
   };
 
   // Include validation if requested

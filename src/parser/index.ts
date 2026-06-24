@@ -22,6 +22,7 @@ export * from "./coverage-cache.js";
 export * from "./coverage-evidence-index.js";
 export * from "./coverage-freshness-comparison.js";
 export * from "./coverage-state.js";
+export * from "./coverage-state-read-model.js";
 export * from "./file-lock.js";
 export * from "./fix.js";
 export * from "./freshness-resolver.js";

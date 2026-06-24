@@ -35,6 +35,10 @@ import type {
   TaskStatusSummary,
   ActorIdentityConfig,
   AgentIdentity,
+  CoverageCriterionStateDetail,
+  CoverageItemStateSummary,
+  CoverageStateSummary,
+  CoverageUnmappedResultSummary,
 } from "@kynetic-ai/shared";
 import type { ValidationResponse } from "$lib/api";
 import type {
@@ -486,6 +490,67 @@ export function fetchTaskStatusSummaryStatic(): ApiResponse<TaskStatusSummary> {
     ready,
     blocked_by_dependencies: blockedByDependencies,
     total: tasks.length,
+  });
+}
+
+/**
+ * Fetch the last-computed coverage-state summary from a static snapshot.
+ * AC: @coverage-state-api-cache ac-static-snapshot
+ */
+export function fetchCoverageStateSummaryStatic(): ApiResponse<CoverageStateSummary> {
+  const summary = getSnapshot()?.coverage_state?.summary ?? {
+    counts: { covered: 0, failing: 0, not_yet: 0, re_verify: 0 },
+    denominator: 0,
+    latest_run_id: null,
+    unmapped_result_count: 0,
+    invalid_result_count: 0,
+  };
+  return wrapEnvelope(summary);
+}
+
+/**
+ * Fetch a static coverage-state item rollup by item ref.
+ * AC: @coverage-state-api-cache ac-static-snapshot
+ */
+export function fetchCoverageStateItemStatic(
+  ref: string,
+): ApiResponse<CoverageItemStateSummary> | null {
+  const snapshot = getSnapshot();
+  const item =
+    snapshot?.coverage_state?.items[ref] ??
+    snapshot?.coverage_state?.items[ref.startsWith("@") ? ref.slice(1) : `@${ref}`];
+  return item ? wrapEnvelope(item) : null;
+}
+
+/**
+ * Fetch a static coverage-state criterion detail by item ref and AC id.
+ * AC: @coverage-state-api-cache ac-static-snapshot
+ */
+export function fetchCoverageStateCriterionStatic(
+  ref: string,
+  acId: string,
+): ApiResponse<CoverageCriterionStateDetail> | null {
+  const item = fetchCoverageStateItemStatic(ref)?.data;
+  if (!item) return null;
+  const criterion = getSnapshot()?.coverage_state?.criteria[`${item.item_ulid} ${acId}`];
+  return criterion ? wrapEnvelope(criterion) : null;
+}
+
+/**
+ * Fetch static unmapped coverage-state result summaries with pagination.
+ * AC: @coverage-state-api-cache ac-static-snapshot
+ */
+export function fetchCoverageStateUnmappedStatic(params?: {
+  limit?: number;
+  offset?: number;
+}): ApiResponse<CoverageUnmappedResultSummary[]> {
+  const entries = getSnapshot()?.coverage_state?.unmapped_results ?? [];
+  const offset = params?.offset ?? 0;
+  const limit = params?.limit ?? entries.length;
+  return wrapEnvelope(entries.slice(offset, offset + limit), {
+    total: entries.length,
+    offset,
+    limit,
   });
 }
 
@@ -1068,4 +1133,12 @@ export function addInboxItemStatic(_text: string, _tags?: string[]): never {
  */
 export function deleteInboxItemStatic(_ref: string): never {
   throw new ReadOnlyModeError("delete inbox item");
+}
+
+/**
+ * Coverage test-run ingestion is not available in static mode.
+ * AC: @coverage-state-api-cache ac-static-snapshot
+ */
+export function ingestCoverageTestResultStatic(): never {
+  throw new ReadOnlyModeError("ingest coverage test results");
 }

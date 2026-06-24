@@ -40,6 +40,7 @@ import {
   loadPlans,
   rawToSummary,
   resolveTaskDataManager,
+  invalidateCoverageStateReadModelCache,
   type KspecContext,
   type LoadedSpecItem,
   type LoadedTask,
@@ -1433,6 +1434,10 @@ export class ProjectEntityCache {
   async invalidateDomain(domain: CacheDomain): Promise<void> {
     if (this.disposed) return;
 
+    if (domain === "items" || domain === "meta") {
+      invalidateCoverageStateReadModelCache(this.projectPath);
+    }
+
     // AC: @daemon-entity-cache ac-task-storage-incompatibility-rechecked-after-storage-change
     // Watcher-driven invalidation of the tasks domain is the canonical
     // signal of a relevant project-state change: project.tasks.yaml,
@@ -1514,6 +1519,11 @@ export class ProjectEntityCache {
    */
   async handleFileChange(kspecDir: string, filePath: string, _content?: string): Promise<void> {
     if (this.disposed) return;
+
+    if (kspecDir === this.projectPath) {
+      invalidateCoverageStateReadModelCache(this.projectPath);
+      return;
+    }
 
     const relativePath = relative(kspecDir, filePath);
     // Detect whether this change came from the sessions directory (.kspec-sessions/)
