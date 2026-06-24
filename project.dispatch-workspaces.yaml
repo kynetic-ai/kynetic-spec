@@ -12348,7 +12348,7 @@ workspaces:
         head: acc03f55d7e06665f6221d489b666431539448ad
         last_seen_at: 2026-06-24T04:54:18.346Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-evidence-index-01kvve0c
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 4073bb9f1b43d024bbaa950db22629b7d3188bb5
     bootstrap:
       status: succeeded
@@ -12825,7 +12825,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-24T05:43:04.974Z
+      updated_at: 2026-06-24T05:43:44.285Z
     integration:
       status: pending
       detail: null
@@ -12841,10 +12841,10 @@ workspaces:
     task_slug: task-coverage-state-derivation
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-24T05:16:53.082Z
-      last_reconciled_at: 2026-06-24T05:43:04.974Z
+      last_active_at: 2026-06-24T05:43:44.285Z
+      last_reconciled_at: 2026-06-24T05:43:44.285Z
       created_at: 2026-06-24T05:16:15.123Z
-      updated_at: 2026-06-24T05:43:31.194Z
+      updated_at: 2026-06-24T05:43:44.285Z
     workspace_id: dispatch-workspace-01KVVE0D2QJ4KEMNF7HG9MMFED
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
