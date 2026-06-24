@@ -23111,8 +23111,11 @@ observations:
       Run `npm audit` for details. as the sanctioned repair when bootstrap is blocked in dispatch
       mode."
     author: codex-reviewer
-    resolution: null
-    resolved: false
+    resolution: Superseded by corrected observation; original was polluted by shell command substitution
+      while creating the reflection note.
+    resolved: true
+    resolved_at: 2026-06-24T05:19:54.165Z
+    resolved_by: codex-reviewer
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-24T05:18:41.838Z
 schedules:
