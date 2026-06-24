@@ -2,7 +2,94 @@ _ulid: 01KVXTF0C125ZJATF9X0YXTWB3
 slugs: []
 title: Review coverage-state events
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format. Finished in 642ms on 1118 files.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-24T22:18:07.790Z
+    completed_at: 2026-06-24T22:18:07.790Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found 665 warnings and 0 errors under repo-wide quiet lint baseline. Focused changed-file
+      lint also passed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-24T22:18:11.192Z
+    completed_at: 2026-06-24T22:18:11.192Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npx oxlint packages/daemon/src/project-context.ts packages/daemon/src/routes/coverage.ts
+      packages/shared/src/websocket.ts packages/web-ui/src/lib/query/keys.ts
+      packages/web-ui/src/lib/query/ws-invalidation.ts tests/coverage-state-api.test.ts
+      tests/web-ui/ws-cache-invalidation.test.ts: Found 0 warnings and 0 errors."
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed-ts-and-test-files>
+    created_at: 2026-06-24T22:18:14.594Z
+    completed_at: 2026-06-24T22:18:14.594Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run build:shared && tsc --noEmit completed with exit code 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-24T22:18:17.928Z
+    completed_at: 2026-06-24T22:18:17.928Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2912 test suites passed; 11062 tests passed, 3 skipped; duration 2917.2s. Full log:
+      /tmp/kspec-test-cache/01KVXTCND38T0R4A0026SX9WBF/0397dc4b4819ef39.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-24T22:18:21.284Z
+    completed_at: 2026-06-24T22:18:21.284Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with schema/references OK and known warning
+      baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T22:18:24.592Z
+    completed_at: 2026-06-24T22:18:24.592Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with existing alignment warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T22:18:27.922Z
+    completed_at: 2026-06-24T22:18:27.922Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with existing completeness warning
+      baseline; changed coverage-state AC annotations were present.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T22:18:31.230Z
+    completed_at: 2026-06-24T22:18:31.230Z
 events:
   - _ulid: 01KVXTF0C1Q0XZC504S70BWSF0
     actor: Jacob Chapel
@@ -17,17 +104,162 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-24T22:02:12.715Z
+  - _ulid: 01KVXVCJA1ZFAYT3XACJRFRQX1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-24T22:18:08.065Z
+  - _ulid: 01KVXVCNMR223EKBYPEG511QJJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-24T22:18:11.481Z
+  - _ulid: 01KVXVCRYN0PBA5H63WZS0Q00R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-24T22:18:14.869Z
+  - _ulid: 01KVXVCW6XKSC1FFGK8TNBQAVT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-24T22:18:18.205Z
+  - _ulid: 01KVXVCZFPRYN66RFNZWF1B5V5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-24T22:18:21.558Z
+  - _ulid: 01KVXVD2PYCN6JSMC127GZ47D2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-24T22:18:24.862Z
+  - _ulid: 01KVXVD5Z1FEKSR0P981NSG7B4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-24T22:18:28.193Z
+  - _ulid: 01KVXVD96J1QW82D1169W3E6ZM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-24T22:18:31.506Z
+  - _ulid: 01KVXVDCS9QBJQN8GJP7HMG2XZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVXVDCFB3PNVGJ27W034T9VT
+    timestamp: 2026-06-24T22:18:35.177Z
+  - _ulid: 01KVXVDG9YPVPW16Y3CRGH28XK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVXVDG0TBSH1HNEXWGGPYK1A
+    timestamp: 2026-06-24T22:18:38.783Z
+  - _ulid: 01KVXVDKZ11VRJHJNBCWNGFZ44
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-24T22:18:42.529Z
+  - _ulid: 01KVXVDKZ180QEAKR5P1BXH3ZQ
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-24T22:18:42.529Z
 examined_commit: 9639491b155f1db88e6238df22c2f0ec08d06ce4
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVVE0E692Z2PGF0TPM79QX9Q"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVXVDCFB3PNVGJ27W034T9VT
+    anchor:
+      type: code
+      commit: 9639491b155f1db88e6238df22c2f0ec08d06ce4
+      line_end: 99
+      line_start: 93
+      path: packages/web-ui/src/lib/query/ws-invalidation.ts
+      side: head
+    entries:
+      - _ulid: 01KVXVDCFBKMZHV8H1MVXE6D8F
+        author: Jacob Chapel
+        body: "MUST-FIX: daemon-served spec/AC mutations can still leave coverage-state views stale.
+          @coverage-state-events applies to coverage-state-affecting mutations, and the task
+          explicitly includes spec/AC mutations. Route-driven item changes record only
+          `spec_item_changed` (`src/parser/yaml.ts:2068-2077`), while command-route write-through
+          suppresses the watcher fallback; this handler then invalidates only item detail/list and
+          validation keys for `spec_item_changed`, with no `queryKeys.coverage.*` refresh and no
+          typed `coverage_state_changed` payload. Adding/removing/changing an AC through the daemon
+          can change coverage denominators/rows, but open coverage consumers will not refetch until
+          some later broad refresh. The existing `spec_item_changed` UI test asserts this stale key
+          set, so the gap is untested."
+        created_at: 2026-06-24T22:18:34.859Z
+    kind: blocker
+  - _ulid: 01KVXVDG0TBSH1HNEXWGGPYK1A
+    entries:
+      - _ulid: 01KVXVDG0TM0705GXQZBF74FJS
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: packages/daemon/src/routes/coverage.ts;
+          packages/daemon/src/project-context.ts; packages/shared/src/websocket.ts;
+          packages/web-ui/src/lib/query/keys.ts; packages/web-ui/src/lib/query/ws-invalidation.ts;
+          tests/coverage-state-api.test.ts; tests/web-ui/ws-cache-invalidation.test.ts;
+          src/parser/yaml.ts; src/daemon/entity-cache.ts; packages/daemon/src/routes/command.ts;
+          src/parser/test-result-ingestion.ts; src/mutation-pipeline.ts.
+
+          Commands run: git diff/stat/log/status; kspec task get @01KVVE0E692Z2PGF0TPM79QX9Q; kspec
+          item get @coverage-state-events; kspec item get @mutation-event-naming; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; npm run format:check; npm run lint --
+          --quiet; focused npx oxlint; npm run typecheck; npm test.
+
+          Claims verified: worker's gate claims verified independently; ingestion event-after-cache
+          behavior is covered by the new route test; coverage-state AC annotations exist;
+          shared-guidance neutrality not applicable because no shared/package guidance surfaces were
+          touched.
+
+          Categories searched: correctness, edge cases, error handling, test quality, AC coverage,
+          websocket integration, daemon cache invalidation. Finding recorded for daemon-served
+          spec/AC mutation invalidation gap.
+        created_at: 2026-06-24T22:18:38.490Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: automated-reviewer
+    created_at: 2026-06-24T22:18:42.529Z
 created_at: 2026-06-24T22:01:59.425Z
-updated_at: 2026-06-24T22:02:12.392Z
+updated_at: 2026-06-24T22:18:42.529Z
 notes: []
