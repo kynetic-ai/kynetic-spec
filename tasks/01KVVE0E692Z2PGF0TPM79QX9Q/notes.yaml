@@ -13,3 +13,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T21:37:05.732Z
+  - _ulid: 01KVXT3X6VSZF9GD7XJZ94KTN4
+    content: "Implemented typed coverage_state_changed websocket events on items:updates after
+      coverage-state cache recomputation for ingestion writes, including canonical item ULIDs/refs,
+      bounded AC ids, changed buckets, refresh scopes, and coalesced per-run payloads. Added source
+      watcher fallback files:updates events marked family=coverage_state and centralized web query
+      invalidation for coverage summary/item/criterion/unmapped keys. Verification: focused
+      coverage-state API + ws invalidation tests passed; format:check passed; focused oxlint passed;
+      repo lint --quiet passed with existing warnings only; typecheck passed; npm test passed 2912
+      suites / 11062 tests with 3 skipped; kspec validate refs/alignment/completeness passed with
+      warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T21:55:55.740Z
