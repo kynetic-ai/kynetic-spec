@@ -14871,12 +14871,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-24T23:35:48.188Z
+      updated_at: 2026-06-24T23:35:57.355Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-24T23:35:48.188Z
+      updated_at: 2026-06-24T23:35:57.355Z
     integration:
       status: pending
       detail: null
@@ -14884,8 +14884,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: d3b8f3c3b345c58d6a56326d0d3db779c982ac01
-      updated_at: 2026-06-24T23:35:48.188Z
-    lifecycle_state: ready
+      updated_at: 2026-06-24T23:35:57.355Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVVE0E692Z2PGF0TPM79QX9Q
     task_ref: "@01KVVE0E692Z2PGF0TPM79QX9Q"
@@ -14893,16 +14893,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-24T23:06:33.243Z
-      last_reconciled_at: 2026-06-24T23:35:48.188Z
+      last_reconciled_at: 2026-06-24T23:35:57.355Z
       created_at: 2026-06-24T21:34:04.089Z
-      updated_at: 2026-06-24T23:35:48.188Z
+      updated_at: 2026-06-24T23:35:57.355Z
     workspace_id: dispatch-workspace-01KVVE0E692Z2PGF0TPM79QX9Q
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 44f47aa78fdff35709a5e05dd789cabde4d4bf89
+        last_seen_at: 2026-06-24T23:35:57.355Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-state-events-01kvve0e-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-state-events/01kvve0e
-        head: 40669a5a9a7e0d60d301dbbcbd47dd7c0df548c8
-        last_seen_at: 2026-06-24T23:06:04.771Z
+        head: 44f47aa78fdff35709a5e05dd789cabde4d4bf89
+        last_seen_at: 2026-06-24T23:35:57.355Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-state-events-01kvve0e
