@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KVW3P8SMFMTBYQ96A9H51CN5
+    content: "Approach: add a coverage freshness comparison helper that reads per-AC historical spec
+      text from git metadata, compares source locations from normalized annotations/test cases
+      against recorded revisions, and feeds existing coverage-state freshnessFindings rather than
+      duplicating state precedence. Edge cases: sibling ACs in the same item file, newer passing
+      evidence superseding stale recorded stamps, absent/unresolvable run revisions, missing case
+      locations, and uncomparable git history. Test plan: behavior tests with temp git repos for all
+      six @coverage-freshness-revision-comparison ACs, plus focused coverage-state regression for
+      newer evidence clearing stale recorded/bootstrap causes."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T06:04:45.748Z
