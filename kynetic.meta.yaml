@@ -23247,6 +23247,17 @@ observations:
     resolved: false
     workflow_ref: "@01KVXP7M"
     created_at: 2026-06-24T20:49:42.791Z
+  - _ulid: 01KVXPANYK471718RC68F6NP53
+    type: success
+    content: Fix-cycle review worked best when the reviewer read the prior closed review first, verified
+      the worker's narrow fix, then deliberately broadened scrutiny to the full acceptance-criteria
+      wording. That sequence caught the remaining runtime scan-path-change invalidation gap instead
+      of approving a fix that only handled startup-configured source paths.
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KVXP7M"
+    created_at: 2026-06-24T20:49:43.379Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
