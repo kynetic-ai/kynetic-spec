@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-24T15:30:25.425Z
+  - _ulid: 01KVX46HRE9XH6MT7DPBNRSTR1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVX46HF60DMQ528EX3NVZ6YV
+    timestamp: 2026-06-24T15:32:53.646Z
 examined_commit: 981c807ffdee79f72422c1d3d85dc114c11337af
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,32 @@ subject:
   content_hash: ""
   ref: "@01KVVE0DG6ZG9NX5A2A86ZJQ63"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVX46HF60DMQ528EX3NVZ6YV
+    anchor:
+      type: code
+      commit: 981c807ffdee79f72422c1d3d85dc114c11337af
+      line_end: 436
+      line_start: 431
+      path: src/parser/coverage-freshness-comparison.ts
+      side: head
+    entries:
+      - _ulid: 01KVX46HF6D9KV4P4F2JM1JQQM
+        author: Jacob Chapel
+        body: "MUST-FIX: run-only positive evidence uses the producer code revision as the prior spec-text
+          commit. `latestPositiveEvidenceVersion()` attaches `result.codeRevision` as `atCommit`,
+          and `readCriterionFreshnessComparison()` prefers `atCommit` over `atTimestamp`. In real
+          kspec projects, spec source lives in the shadow metadata repo while producer
+          `code_revision` is the project code revision; the project commit object may be visible in
+          the shared object store but it does not contain shadow paths (`git -C
+          /home/chapel/Projects/kynetic-spec-dispatch/.kspec show
+          981c807ffdee79f72422c1d3d85dc114c11337af:project.tasks.yaml` fails with
+          path-not-in-commit). That means passing ingested evidence can be reported as
+          `unknown_freshness` for AC text even when the timestamp could resolve the correct
+          shadow-history version, so current evidence is sent to re-verify incorrectly."
+        created_at: 2026-06-24T15:32:53.351Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-24T15:30:03.125Z
-updated_at: 2026-06-24T15:30:25.144Z
+updated_at: 2026-06-24T15:32:53.351Z
 notes: []
