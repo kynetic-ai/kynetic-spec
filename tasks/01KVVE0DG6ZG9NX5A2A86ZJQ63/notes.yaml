@@ -63,3 +63,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T15:45:21.259Z
+  - _ulid: 01KVX59Y0TZNVP1DEJM2VV6026
+    content: "Fix cycle 2 approach: address review blockers by separating shadow spec-text freshness
+      versions from project code revisions and by treating non-ancestor/diverged source revision
+      comparisons as unknown_freshness instead of current. Add behavioral regressions for run-only
+      spec text comparison falling back to timestamp and for unrelated source histories degrading to
+      re-verify. Re-verify all six ACs through focused tests and project gates before resubmitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T15:52:13.082Z
