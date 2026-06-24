@@ -73919,7 +73919,7 @@ runs:
     completed_at: 2026-06-24T23:05:27.003Z
   - _ulid: 01KVXZM72MPRJS0AZ725FCEPMD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73934,7 +73934,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-24T23:33:09.359Z
-        completed_at: 2026-06-24T23:33:09.359Z
+        completed_at: 2026-06-24T23:34:09.393Z
+        notes: "High-confidence items: (1) Success: daemon cache/event tests were more reliable once the
+          test probed the same built dist/parser module graph used by the daemon route and asserted
+          immediate refetch from inside pubsub.broadcast. This caught stale-cache/module-instance
+          issues at the behavior boundary. (2) Friction: daemon command completion can still run
+          inside an entity-cache async context; post-mutation event emitters that invalidate/refetch
+          read models need an explicit fresh-read boundary, otherwise tests can pass against one
+          module/cache instance while production subscribers see stale state. Existing coverage
+          checked: baseline observations/inbox/tasks plus targeted searches for entity cache async
+          context, runWithEntityCache bypass, built dist parser cache, and coverage state
+          event-after-cache found no duplicates. Skipped duplicates: long npm test quiet periods,
+          workflow show run-ref ergonomics, and review evidence-log handling are already tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T23:34:09.393Z
+        completed_at: 2026-06-24T23:34:09.393Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-24T23:32:13.013Z
