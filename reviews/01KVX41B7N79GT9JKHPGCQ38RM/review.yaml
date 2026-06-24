@@ -156,6 +156,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-24T15:44:51.778Z
+  - _ulid: 01KVX4WZV9CFKE8ZNBGMXFAKQ8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVX4WZJKCGKZ990ZB9DCHWZB
+    timestamp: 2026-06-24T15:45:08.969Z
 examined_commit: 981c807ffdee79f72422c1d3d85dc114c11337af
 external_links: []
 lifecycle_state: open
@@ -210,7 +217,43 @@ threads:
           covered."
         created_at: 2026-06-24T15:32:57.558Z
     kind: blocker
+  - _ulid: 01KVX4WZJKCGKZ990ZB9DCHWZB
+    entries:
+      - _ulid: 01KVX4WZJKPHRDH54M3MGFS5GP
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; task/spec context for @01KVVE0DG6ZG9NX5A2A86ZJQ63 and
+          @coverage-freshness-revision-comparison; prior review @01KVX0RT8PHJEC796FQS31CTE6;
+          src/parser/coverage-freshness-comparison.ts; src/parser/coverage-state.ts;
+          src/parser/index.ts; src/parser/coverage-evidence-index.ts;
+          src/parser/test-result-ingestion.ts; src/parser/test-result-run-store.ts;
+          tests/coverage-freshness-comparison.test.ts; related coverage-state/search results.
+
+
+          Commands run: git diff/stat/name-only against
+          779c732e5e203ebf73d23a6c5644b5dd9e1cd6a2..981c807ffdee79f72422c1d3d85dc114c11337af; rg
+          searches for coverage APIs and AC annotations; git shadow/project path checks; npm run
+          format:check; npm run lint -- --quiet; npx oxlint changed files; npm run typecheck; npm
+          test; kspec validate --refs --warnings-ok; kspec validate --alignment --warnings-ok; kspec
+          validate --completeness --warnings-ok.
+
+
+          Claims verified: prior blocker fix was partially addressed by including bootstrap
+          annotation freshness in latestPositiveEvidenceVersion; new behavioral test covers
+          annotation-only AC text changes. However, run-only positive evidence still mixes project
+          code revisions with shadow spec history, and incomparable line revisions are treated as
+          current.
+
+
+          Categories searched: correctness, edge cases, error handling/unknown degradation, test
+          quality, integration with shadow/project history, AC coverage. Findings: two blockers
+          recorded on src/parser/coverage-freshness-comparison.ts.
+        created_at: 2026-06-24T15:45:08.692Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-24T15:30:03.125Z
-updated_at: 2026-06-24T15:44:51.478Z
+updated_at: 2026-06-24T15:45:08.692Z
 notes: []
