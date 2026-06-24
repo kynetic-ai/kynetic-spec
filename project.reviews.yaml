@@ -27924,10 +27924,10 @@ reviews:
       ref: "@01KVVE0DG6ZG9NX5A2A86ZJQ63"
       shadow_commit: ""
     thread_count: 2
-    unresolved_blocker_count: 1
+    unresolved_blocker_count: 0
     verdict_count: 1
     created_at: 2026-06-24T14:32:57.878Z
-    updated_at: 2026-06-24T15:23:20.842Z
+    updated_at: 2026-06-24T15:23:38.219Z
   - _ulid: 01KVX27NQ6CY5PBPT976JPNTH9
     slugs: []
     title: Review task-shared-package-export-typecheck-baseline
