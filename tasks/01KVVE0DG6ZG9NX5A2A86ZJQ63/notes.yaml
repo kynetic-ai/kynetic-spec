@@ -118,3 +118,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T17:31:12.622Z
+  - _ulid: 01KVXB9TZ9C1B1BC8D8PS4J5PD
+    content: "Fix cycle 4 approach: address the annotation-only missing metadata blocker by treating
+      positive evidence without any comparable criterion-version timestamp/commit as
+      unknown_freshness rather than no freshness finding. Add a behavioral regression through
+      buildCoverageEvidenceIndex with one annotation and no recorded/bootstrap/run metadata, then
+      re-run focused and project gates before resubmitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T17:37:01.417Z
