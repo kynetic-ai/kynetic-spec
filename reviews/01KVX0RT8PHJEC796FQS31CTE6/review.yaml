@@ -192,6 +192,12 @@ events:
     payload:
       thread_ulid: 01KVX13HDJB0HQHVRR1HS2TG88
     timestamp: 2026-06-24T15:23:38.476Z
+  - _ulid: 01KVX3NQGPE2XAN92TH6WDPKFC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVX1499SGJ5XZ993EVTGJCVR
+    timestamp: 2026-06-24T15:23:42.486Z
 examined_commit: 70196da095e80a4a656bdca2d6113013ab27722c
 external_links: []
 lifecycle_state: closed
@@ -273,6 +279,11 @@ threads:
           precedence, and validation/gate health. Finding recorded: annotation-only positive
           evidence is not included in spec-text freshness timestamp selection.
         created_at: 2026-06-24T14:39:13.721Z
+      - _ulid: 01KVX3NQ8P3HEM8CDKW9DGT3X2
+        author: Jacob Chapel
+        body: Acknowledged. This was an evidence log rather than an actionable code finding; the blocker
+          from the same review has been fixed and covered by the new regression.
+        created_at: 2026-06-24T15:23:42.230Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -283,5 +294,5 @@ verdicts:
     role: pr-reviewer
     created_at: 2026-06-24T14:39:17.531Z
 created_at: 2026-06-24T14:32:57.878Z
-updated_at: 2026-06-24T15:23:38.219Z
+updated_at: 2026-06-24T15:23:42.230Z
 notes: []
