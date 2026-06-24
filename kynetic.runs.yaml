@@ -73813,7 +73813,7 @@ runs:
     completed_at: 2026-06-24T22:22:19.398Z
   - _ulid: 01KVXWT3YWTB6CGRAMMTNDKBGA
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73827,7 +73827,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-24T22:44:11.816Z
-        completed_at: 2026-06-24T22:44:11.816Z
+        completed_at: 2026-06-24T22:44:20.744Z
+        notes: "Friction points: default kspec review get output truncated the blocker body, so I had to
+          rerun with --json to recover full details and thread ULIDs; the full npm test gate was
+          long for a three-file web invalidation fix, though it completed green; kspec workflow show
+          without the run ref produced a missing-argument error, which is minor but easy to trip
+          over during reflection."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T22:44:20.744Z
+        completed_at: 2026-06-24T22:44:20.744Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-24T22:43:00.701Z
