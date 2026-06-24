@@ -72958,7 +72958,7 @@ runs:
     completed_at: 2026-06-24T14:42:34.767Z
   - _ulid: 01KVX1YZWZZ8P5207AJNPZ18AM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -72971,7 +72971,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-24T14:54:43.874Z
-        completed_at: 2026-06-24T14:54:43.874Z
+        completed_at: 2026-06-24T14:55:17.314Z
+        notes: "Identified one high-confidence success: stale build-baseline tasks benefit from rebase-first
+          plus gate reproduction before edits; captured as observation @01KVX20M. Friction
+          candidates were already tracked: automation-eligible tasks without spec_ref via
+          @task-triage-automation-eligible-missing-spec-ref, and long/quiet npm test behavior via
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run plus existing
+          observations."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T14:55:17.314Z
+        completed_at: 2026-06-24T14:55:17.314Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-24T14:53:48.831Z
