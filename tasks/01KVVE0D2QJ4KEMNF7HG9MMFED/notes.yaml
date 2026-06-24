@@ -14,3 +14,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T05:19:33.616Z
+  - _ulid: 01KVW25FVC0AA854EXWEFBRQ7J
+    content: "Implemented pure per-AC coverage state derivation in src/parser/coverage-state.ts and
+      exported it through the parser barrel. The engine uses deterministic precedence: failing
+      latest mapped results, no positive evidence, re-verify freshness causes, then covered. Added
+      serializable explanations with stable evidence ids, latest run id, and secondary re-verify
+      causes. Behavioral tests cover annotation-only, recorded-stamp-only, passing/failing/latest
+      mixed results, skipped/unknown and N/A-only no-positive cases, stale/unknown freshness, and
+      equivalent-input determinism."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T05:38:07.340Z
