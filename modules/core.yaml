@@ -4053,7 +4053,7 @@ features:
           remain existing websocket foundation behavior.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@mutation-event-naming"
           - "@coverage-state-api-cache"
