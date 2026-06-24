@@ -33052,9 +33052,8 @@
   type: task
   spec_ref: "@coverage-freshness-revision-comparison"
   plan_ref: "@plan-coverage-state-engine"
-  status: blocked
-  blocked_by:
-    - "Agent pr-reviewer failed 3 consecutive times: Internal error"
+  status: pending_review
+  blocked_by: []
   depends_on:
     - "@task-coverage-state-derivation"
   priority: 1

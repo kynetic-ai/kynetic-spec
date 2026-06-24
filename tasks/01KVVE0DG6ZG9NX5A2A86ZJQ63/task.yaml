@@ -51,9 +51,8 @@ description: >-
 spec_ref: "@coverage-freshness-revision-comparison"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: blocked
-blocked_by:
-  - "Agent pr-reviewer failed 3 consecutive times: Internal error"
+status: pending_review
+blocked_by: []
 depends_on:
   - "@task-coverage-state-derivation"
 context: []
@@ -71,7 +70,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: feat/ui-redesign
-session_id: 01KVW3GKNJMWBPABDTA5X3X6T3
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -230,7 +229,24 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-06-24T06:28:30.064Z
-prior_status: pending_review
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - "Agent pr-reviewer failed 3 consecutive times: Internal error"
+      session_id:
+        new: null
+        previous: 01KVW3GKNJMWBPABDTA5X3X6T3
+      prior_status:
+        new: null
+        previous: pending_review
+    command: task-unblock
+    timestamp: 2026-06-24T14:31:00.616Z
+prior_status: null
 created_at: 2026-06-23T23:45:49.574Z
 started_at: 2026-06-24T06:02:44.185Z
 submitted_at: 2026-06-24T06:24:56.249Z
