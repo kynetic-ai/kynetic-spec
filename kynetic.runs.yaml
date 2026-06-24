@@ -73713,7 +73713,7 @@ runs:
     completed_at: 2026-06-24T21:35:23.093Z
   - _ulid: 01KVXT66EYSSZW6R4TXX1J9ARP
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73727,7 +73727,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-24T21:58:28.423Z
-        completed_at: 2026-06-24T21:58:28.423Z
+        completed_at: 2026-06-24T21:58:39.502Z
+        notes: "Friction points: full npm test verification took 3127.9s and had long quiet tail periods;
+          existing search found @task-investigate-npm-test-teardown-hang-after-green-suite-run and
+          @test-suite-perf-reliability, so no duplicate capture. Build artifact staleness around
+          dist/daemon and route tests remains a recurring concern, but search found existing
+          stale-build observations including @01KFXVK5 and @01KKDR3H, so no duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T21:58:39.502Z
+        completed_at: 2026-06-24T21:58:39.502Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-24T21:57:10.751Z
