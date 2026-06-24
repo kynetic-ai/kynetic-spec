@@ -48,3 +48,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T14:39:19.790Z
+  - _ulid: 01KVX3N3WN29A5RGQ5QF4VV6NE
+    content: "Fix cycle 1: addressed review blocker 01KVX13HDJB0HQHVRR1HS2TG88. Spec-text comparison now
+      includes bootstrap annotation freshness as a comparable positive-evidence version, so
+      annotation-only coverage re-verifies when AC text changes after the annotation freshness.
+      Added behavioral regression coverage. Re-verified ACs and gates: format:check, focused oxlint,
+      repo lint --quiet, typecheck, focused coverage freshness test, full npm test, and kspec
+      refs/alignment/completeness validation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T15:23:22.389Z
