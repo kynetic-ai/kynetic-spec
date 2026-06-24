@@ -172,6 +172,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-24T16:37:42.999Z
+  - _ulid: 01KVX97PBAKX93V68Y6ZNMWAPQ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVX7W44HD7MJHXH8TZBJG5R1
+    timestamp: 2026-06-24T17:00:53.994Z
 examined_commit: f91fb3e401f96c34b48f76715ec8dc3808349df9
 external_links: []
 lifecycle_state: closed
@@ -207,6 +213,14 @@ threads:
           f91fb3e401f96c34b48f76715ec8dc3808349df9:project.tasks.yaml` fails because project commits
           do not contain shadow spec files."
         created_at: 2026-06-24T16:37:06.321Z
+      - _ulid: 01KVX97P2R6BJCSH8S8ERPV43E
+        author: Jacob Chapel
+        body: "Fixed in 0b231000f6: recorded verification and bootstrap freshness now contribute only their
+          timestamps to criterion text comparison. Explicit source commits are still supported by
+          readCriterionFreshnessComparison, but project-code/annotation commits are no longer used
+          to git-show spec files in shadow history. Added a separate spec/project git history
+          regression for recorded and bootstrap evidence."
+        created_at: 2026-06-24T17:00:53.720Z
     kind: blocker
   - _ulid: 01KVX7WSFWQ75HWEC2N1CYW77N
     entries:
@@ -257,5 +271,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-24T16:37:42.993Z
 created_at: 2026-06-24T16:16:01.699Z
-updated_at: 2026-06-24T16:37:42.999Z
+updated_at: 2026-06-24T17:00:53.720Z
 notes: []
