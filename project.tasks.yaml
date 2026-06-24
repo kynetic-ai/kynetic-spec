@@ -33076,7 +33076,7 @@
   type: task
   spec_ref: "@coverage-state-api-cache"
   plan_ref: "@plan-coverage-state-engine"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-coverage-freshness-revision-comparison"
@@ -33087,7 +33087,7 @@
     - api
     - cache
   review_ref: "@01KVXN0KX0BXB1P4SCJ5GNHK9M"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-06-23T23:45:49.919Z
   started_at: 2026-06-24T19:59:41.140Z
