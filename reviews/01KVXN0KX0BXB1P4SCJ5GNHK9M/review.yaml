@@ -171,6 +171,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-24T20:46:57.853Z
+  - _ulid: 01KVXQHCKCDM84RX6JYNBM9DKA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVXP4M3JHJ5V9A8J89NHCTHK
+    timestamp: 2026-06-24T21:10:51.756Z
 examined_commit: 4fed1092eae0cd325f1711dfd6a41788a3cf8cc5
 external_links: []
 lifecycle_state: closed
@@ -207,6 +213,15 @@ threads:
           regression that changes scan_paths at runtime then verifies a source edit in the new path
           invalidates the read model."
         created_at: 2026-06-24T20:46:24.882Z
+      - _ulid: 01KVXQHC691EBZYA7NCTCWMTTR
+        author: Jacob Chapel
+        body: "Fixed in e6540f87ae: CoverageScanWatcher now watches kspec.config.yaml, reloads
+          coverage.scan_paths when that config changes, invalidates the coverage-state read model
+          for the config edit, and updates source watcher subscriptions so edits under newly
+          configured scan paths are forwarded to ProjectEntityCache.handleFileChange(). Added a
+          behavioral regression that changes scan_paths at runtime and verifies a source edit in the
+          new path reaches cache invalidation."
+        created_at: 2026-06-24T21:10:51.337Z
     kind: blocker
   - _ulid: 01KVXP56HR0QV9B3JXHANCMZ24
     entries:
@@ -255,5 +270,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-24T20:46:57.852Z
 created_at: 2026-06-24T20:26:45.024Z
-updated_at: 2026-06-24T20:46:57.853Z
+updated_at: 2026-06-24T21:10:51.337Z
 notes: []
