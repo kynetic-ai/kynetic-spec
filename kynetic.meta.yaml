@@ -23043,6 +23043,26 @@ observations:
     resolved: false
     workflow_ref: "@01KVVA2D"
     created_at: 2026-06-23T22:38:56.098Z
+  - _ulid: 01KVVFPY2JRKQA3S0BDGFZF20N
+    type: friction
+    content: "During coverage evidence index work, the guarded npm test auto-build path reported only
+      `npm run build failed: Command failed` when TypeScript compilation failed. I had to run `npm
+      run build` separately to see the actual diagnostics. A test-runner failure summary that
+      includes the captured build stderr would reduce this repeated debug step."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-24T00:15:36.019Z
+  - _ulid: 01KVVFPYCMMBXBMCZPPTG5GCZC
+    type: success
+    content: "AC-first behavioral tests with neutral project fixtures worked well for the coverage
+      evidence index: they validated source labeling, latest-run selection, unmapped separation, and
+      framework neutrality before daemon/API work existed, keeping the backend read-model task
+      scoped and reviewable."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-24T00:15:36.340Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
