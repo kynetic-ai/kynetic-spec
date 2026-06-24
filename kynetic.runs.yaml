@@ -73039,7 +73039,7 @@ runs:
     completed_at: 2026-06-24T15:19:36.205Z
   - _ulid: 01KVX3RN78AJNWZRMPYAAZPYYQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73053,7 +73053,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-24T15:26:46.046Z
-        completed_at: 2026-06-24T15:26:46.046Z
+        completed_at: 2026-06-24T15:26:57.983Z
+        notes: "Friction: full npm test has long quiet periods where an active suite can look like teardown
+          hang; this caused a premature interruption on the first attempt. Existing tracking found:
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run and observation 01KTV65Y
+          for quiet test tails. Minor friction: previous review checks recorded typecheck/full test
+          as skipped due a baseline that was resolved by the time this fix cycle ran; no new item
+          needed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T15:26:57.983Z
+        completed_at: 2026-06-24T15:26:57.983Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-24T15:25:18.440Z
