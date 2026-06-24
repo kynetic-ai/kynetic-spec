@@ -24,6 +24,13 @@ events:
       kind: blocker
       thread_ulid: 01KVX46HF60DMQ528EX3NVZ6YV
     timestamp: 2026-06-24T15:32:53.646Z
+  - _ulid: 01KVX46NWJMSWTKMQQBV4H737P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVX46NJNHEDB8A6S3H7QKQW9
+    timestamp: 2026-06-24T15:32:57.874Z
 examined_commit: 981c807ffdee79f72422c1d3d85dc114c11337af
 external_links: []
 lifecycle_state: open
@@ -58,7 +65,27 @@ threads:
           shadow-history version, so current evidence is sent to re-verify incorrectly."
         created_at: 2026-06-24T15:32:53.351Z
     kind: blocker
+  - _ulid: 01KVX46NJNHEDB8A6S3H7QKQW9
+    anchor:
+      type: code
+      commit: 981c807ffdee79f72422c1d3d85dc114c11337af
+      line_end: 241
+      line_start: 237
+      path: src/parser/coverage-freshness-comparison.ts
+      side: head
+    entries:
+      - _ulid: 01KVX46NJP04SAN12XETKFYWAQ
+        author: Jacob Chapel
+        body: "MUST-FIX: incomparable source revisions are classified as current. `git merge-base
+          --is-ancestor <runRevision> <currentBlameCommit>` returning exit 1 only proves the run
+          revision is not an ancestor of the current blamed line; it also covers diverged/unrelated
+          revisions where the project cannot compare the run to the current source history. The task
+          requires absent or unresolvable comparison metadata to degrade to re-verify with an
+          unknown-freshness cause, but this branch returns `current` and can mark the criterion
+          covered."
+        created_at: 2026-06-24T15:32:57.558Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-24T15:30:03.125Z
-updated_at: 2026-06-24T15:32:53.351Z
+updated_at: 2026-06-24T15:32:57.558Z
 notes: []
