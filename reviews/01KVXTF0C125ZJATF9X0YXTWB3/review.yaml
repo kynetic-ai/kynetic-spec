@@ -190,6 +190,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-24T22:18:42.529Z
+  - _ulid: 01KVXWPE0E74XMPZ44H52V5SGY
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVXVDCFB3PNVGJ27W034T9VT
+    timestamp: 2026-06-24T22:40:59.918Z
 examined_commit: 9639491b155f1db88e6238df22c2f0ec08d06ce4
 external_links: []
 lifecycle_state: closed
@@ -222,6 +228,14 @@ threads:
           some later broad refresh. The existing `spec_item_changed` UI test asserts this stale key
           set, so the gap is untested."
         created_at: 2026-06-24T22:18:34.859Z
+      - _ulid: 01KVXWPDRQV140KTAAD3BCMJHF
+        author: Jacob Chapel
+        body: "Fixed in 40669a5a9a: spec_item_changed now invalidates coverage summary, the affected
+          coverage item by canonical item ULID, and an item-scoped coverage criterion prefix so
+          daemon-served spec/AC mutations refresh coverage consumers even when watcher fallback is
+          suppressed. The ws-invalidation behavioral test now asserts those coverage keys for item
+          mutations."
+        created_at: 2026-06-24T22:40:59.671Z
     kind: blocker
   - _ulid: 01KVXVDG0TBSH1HNEXWGGPYK1A
     entries:
@@ -261,5 +275,5 @@ verdicts:
     role: automated-reviewer
     created_at: 2026-06-24T22:18:42.529Z
 created_at: 2026-06-24T22:01:59.425Z
-updated_at: 2026-06-24T22:18:42.529Z
+updated_at: 2026-06-24T22:40:59.671Z
 notes: []
