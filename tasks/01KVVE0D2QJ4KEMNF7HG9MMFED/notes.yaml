@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KVW13G7F3A4JN18KJWBN1FBW
+    content: "Approach: add a pure coverage-state derivation module beside the evidence index, reusing
+      CoverageEvidenceEntry as the input. The engine will define internal causes, map them to the
+      four presentation buckets, and return a serializable explanation with deterministic evidence
+      ids, latest run id, winning rule, and secondary re-verify causes. Edge cases: latest
+      failed/errored results dominate older/current positives; annotations marked N/A and
+      skipped/unknown test cases contribute no positive evidence; stale annotation-vs-recorded
+      freshness and explicit comparison findings produce re-verify; missing commit/revision metadata
+      for positive stamp/run evidence produces unknown_freshness; arrays are sorted for stable
+      equivalent outputs. Test plan: focused behavioral unit tests annotated for all
+      @coverage-state-engine ACs plus @ac-coverage-applicability ac-1/ac-2 and
+      @coverage-state-presentation ac-1."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T05:19:33.616Z
