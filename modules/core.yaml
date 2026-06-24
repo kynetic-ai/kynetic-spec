@@ -3708,7 +3708,7 @@ features:
       kynetic-spec-specific test files, slugs, packages, or framework output.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on:
       - "@ac-verification-record-store"
       - "@ac-freshness-resolution"
