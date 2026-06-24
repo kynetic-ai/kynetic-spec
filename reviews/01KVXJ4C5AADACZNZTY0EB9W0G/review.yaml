@@ -164,6 +164,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-24T19:53:45.693Z
+  - _ulid: 01KVXMNEN67A8HPZ468PRW5WSM
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVXK43AKS17V5MF3R4D9RYW6
+    timestamp: 2026-06-24T20:20:39.207Z
 examined_commit: 8924f3ba7cefddd06698bd3758e0c3c849e66dee
 external_links: []
 lifecycle_state: closed
@@ -218,6 +224,14 @@ threads:
           quality, integration. Shared guidance neutrality: not applicable; no shared/package
           guidance prose surfaces changed.
         created_at: 2026-06-24T19:53:41.972Z
+      - _ulid: 01KVXMNEC5A61NYB0BN7AJVE9N
+        author: Jacob Chapel
+        body: "Fixed: added a coverage scan-path watcher for configured coverage.scan_paths so source
+          annotation add/change/unlink events outside .kspec are forwarded to cache invalidation.
+          The entity cache now treats project-root watcher events as coverage-state-only
+          invalidation and evicts the read-model cache. Added regression coverage for watcher
+          forwarding and read-model cache eviction."
+        created_at: 2026-06-24T20:20:38.916Z
     kind: blocker
 verdicts:
   - applies_to_version:
@@ -228,5 +242,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-24T19:53:45.693Z
 created_at: 2026-06-24T19:36:22.442Z
-updated_at: 2026-06-24T19:53:45.693Z
+updated_at: 2026-06-24T20:20:38.916Z
 notes: []
