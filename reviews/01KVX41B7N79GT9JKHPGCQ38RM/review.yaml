@@ -24,6 +24,17 @@ checks:
     runner: kspec
     created_at: 2026-06-24T15:33:22.092Z
     completed_at: 2026-06-24T15:33:22.092Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run lint -- --quiet exited 0 with repo warning baseline (678 warnings, 0 errors).
+      Focused oxlint on changed TS/test files passed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-24T15:33:26.293Z
+    completed_at: 2026-06-24T15:33:26.293Z
 events:
   - _ulid: 01KVX41B7N0ZMQ2JCGPT2F8GSX
     actor: Jacob Chapel
@@ -66,6 +77,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-24T15:33:22.388Z
+  - _ulid: 01KVX47HYRACCM395TWEC4X5X8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-24T15:33:26.616Z
 examined_commit: 981c807ffdee79f72422c1d3d85dc114c11337af
 external_links: []
 lifecycle_state: open
@@ -122,5 +140,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-24T15:30:03.125Z
-updated_at: 2026-06-24T15:33:22.092Z
+updated_at: 2026-06-24T15:33:26.293Z
 notes: []
