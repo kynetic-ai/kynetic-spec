@@ -62,6 +62,7 @@ tags:
   - freshness
   - git
 vcs_refs: []
+review_ref: "@01KVX0RT8PHJEC796FQS31CTE6"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
@@ -246,6 +247,13 @@ history:
         previous: pending_review
     command: task-unblock
     timestamp: 2026-06-24T14:31:00.616Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KVX0RT8PHJEC796FQS31CTE6"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-24T14:33:00.599Z
 prior_status: null
 created_at: 2026-06-23T23:45:49.574Z
 started_at: 2026-06-24T06:02:44.185Z

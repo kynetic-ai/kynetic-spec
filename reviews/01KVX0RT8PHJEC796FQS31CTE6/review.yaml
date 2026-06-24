@@ -1,0 +1,26 @@
+_ulid: 01KVX0RT8PHJEC796FQS31CTE6
+slugs: []
+title: Review task-coverage-freshness-revision-comparison
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVX0RT8P0S98CM4Q65Q80D8T
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-24T14:32:57.878Z
+examined_commit: 70196da095e80a4a656bdca2d6113013ab27722c
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVVE0DG6ZG9NX5A2A86ZJQ63"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-24T14:32:57.878Z
+updated_at: null
+notes: []
