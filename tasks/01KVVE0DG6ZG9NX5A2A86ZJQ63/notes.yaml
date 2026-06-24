@@ -90,3 +90,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T16:37:46.573Z
+  - _ulid: 01KVX8B0117T6T2Z1RV2M7QCH8
+    content: "Fix cycle 3 approach: address review blocker by treating recorded verification and
+      bootstrap freshness commits as project-code/annotation revisions, not criterion-source
+      commits, for spec-text comparison. Use their timestamps to resolve prior criterion text from
+      the spec source repository, preserving explicit atCommit only for callers that already have a
+      criterion-source commit. Add regressions for recorded and bootstrap evidence with separate
+      project/spec git histories."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T16:45:13.634Z
