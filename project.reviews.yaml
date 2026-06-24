@@ -27947,3 +27947,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-24T14:58:33.318Z
     updated_at: 2026-06-24T15:15:01.017Z
+  - _ulid: 01KVX41B7N79GT9JKHPGCQ38RM
+    slugs: []
+    title: Review task-coverage-freshness-revision-comparison cycle 2
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 981c807ffdee79f72422c1d3d85dc114c11337af
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KVVE0DG6ZG9NX5A2A86ZJQ63"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-24T15:30:03.125Z
