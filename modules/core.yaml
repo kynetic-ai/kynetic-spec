@@ -3696,17 +3696,16 @@ features:
       - coverage-evidence-index
     title: Coverage Evidence Index
     type: feature
-    description: |
-      A per-project read model that joins the spec corpus, acceptance
-      criteria, static coverage annotations, annotation freshness,
-      verification stamps, and ingested test-run outcomes into one evidence
-      index. The index is the only backend input used by coverage-state
-      computation. It records what evidence exists for each criterion,
-      where it came from, whether any mapped latest result is failing or
-      errored, which mappings are unmapped or invalid, and what freshness
-      values are available. It never derives final UI state in the client
-      and never assumes kynetic-spec-specific test files, slugs, packages,
-      or framework output.
+    description: A per-project read model that joins the spec corpus, acceptance criteria, static
+      coverage annotations, annotation freshness, verification stamps, and ingested test-run
+      outcomes into one evidence index. The index is the only backend input used by coverage-state
+      computation. It records what evidence exists for each criterion, whether any mapped latest
+      result is failing or errored, which mappings are unmapped or invalid, and what freshness
+      values are available. Criterion evidence lists annotations, freshness values, verification
+      stamps, and ingested results when those evidence types apply. Unmapped or invalid ingested
+      cases are exposed separately as project/index-level diagnostics rather than being attributed
+      to any criterion. It never derives final UI state in the client and never assumes
+      kynetic-spec-specific test files, slugs, packages, or framework output.
     status:
       maturity: draft
       implementation: in_progress
@@ -3729,16 +3728,14 @@ features:
           ingested results
         when: |
           the coverage evidence index is built
-      - given: |
-          an indexed criterion with any combination of annotations,
-          freshness values, verification stamps, and ingested test results
+      - given: an indexed criterion with any combination of annotations, freshness values, verification
+          stamps, and ingested test results, and a project-level index with unmapped or invalid
+          ingested cases
         id: ac-evidence-sources-labeled
-        then: |
-          each evidence fact names its source class — annotation,
-          bootstrap freshness, recorded verification, ingested result, or
-          unmapped result — without collapsing them into an unlabeled value
-        when: |
-          its evidence entry is read
+        then: criterion evidence includes applicable annotations, freshness values, verification stamps, and
+          ingested results, and unmapped or invalid ingested cases are exposed separately rather
+          than being attributed to a criterion
+        when: the evidence index is read
       - given: |
           several ingested runs contain mapped results for the same
           criterion
@@ -3749,14 +3746,12 @@ features:
           preserving older runs for later history consumers
         when: |
           the evidence index selects result evidence for state computation
-      - given: |
-          an ingested run contains cases with no valid criterion mapping
+      - given: an ingested run contains cases with no valid criterion mapping or cases whose attempted
+          mapping is invalid
         id: ac-unmapped-separated
-        then: |
-          those cases are exposed as unmapped result evidence and are not
-          attributed to any criterion
-        when: |
-          the evidence index is built
+        then: those cases are exposed separately from criterion evidence and are not attributed to any
+          criterion
+        when: the evidence index is built
       - given: |
           normalized results from different producers in projects whose
           layouts differ from kynetic-spec
@@ -3960,14 +3955,14 @@ features:
           - coverage-state-api-cache
         title: Coverage State API and Cache
         type: requirement
-        description: |
-          The daemon exposes coverage-state reads as server-computed data with
-          explicit cache ownership, pagination/filter support where needed, and
-          static-mode fallback. Consumers can request corpus rollups, per-item
-          rollups, per-criterion state detail, and unmapped-result summaries
-          without rebuilding the evidence join client-side. Cache invalidation
-          follows the same project metadata, source annotation, verification
-          stamp, and test-run changes that affect state computation.
+        description: The daemon exposes coverage-state reads as server-computed data with explicit cache
+          ownership, pagination/filter support where needed, and static-mode fallback. Consumers can
+          request corpus rollups, per-item rollups, per-criterion state detail, and unmapped-result
+          summaries without rebuilding the evidence join client-side. Cache invalidation follows the
+          same project metadata, source annotation, verification stamp, and test-run changes that
+          affect state computation. This spec uses the read-endpoint portions of
+          @trait-api-endpoint; mutation and shadow-commit endpoint behavior is non-applicable for
+          coverage-state read endpoints and remains owned by ingestion and shared mutation paths.
         depends_on:
           - "@coverage-state-engine"
           - "@daemon-entity-cache"
@@ -4039,13 +4034,14 @@ features:
           - coverage-state-events
         title: Coverage State Events
         type: requirement
-        description: |
-          Coverage-state changes broadcast through the reserved coverage-state
-          event family on the spec-item domain topic. Events identify affected
-          items and criteria by canonical identifiers and carry enough
-          information for clients to refresh precise rows or rollups. They are
-          emitted only after the daemon cache/read model reflects the changed
-          state, matching the shared mutation/event ordering contract.
+        description: Coverage-state changes broadcast through the reserved coverage-state event family on
+          the spec-item domain topic. Events identify affected items and criteria by canonical
+          identifiers and carry enough information for clients to refresh precise rows or rollups.
+          They are emitted only after the daemon cache/read model reflects the changed state,
+          matching the shared mutation/event ordering contract. This spec owns coverage-state event
+          payloads, cache/event ordering, coalescing, and targeted invalidation semantics; base
+          websocket connection lifecycle, heartbeat, close-code, and generic reconnect behavior
+          remain existing websocket foundation behavior.
         depends_on:
           - "@mutation-event-naming"
           - "@coverage-state-api-cache"

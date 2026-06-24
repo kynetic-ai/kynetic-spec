@@ -211,3 +211,15 @@ notes:
       package generation before root `tsc` when shared types change.
     author: Jacob Chapel
     created_at: 2026-06-23T23:45:51.018Z
+  - _ulid: 01KVVY5R6C2195MG7VHERPVH21
+    content: Recovery/update approved by Jacob after plan-reviewer cycles 01KVVWRNG7N095TVV8G082T0WX,
+      01KVVWYJB2F38RG6RW5214VFBP, 01KVVX3R2VKWMCWC1RKV6DZ5E2, 01KVVX7FPWQPMG451YCJ5A5YAM, and final
+      APPROVED cycle 01KVVX9H1G2QGKT8XQB41N24SM. Dispatch was confirmed stopped before applying
+      updates. This note records that approval/derivation happened before the final review loop;
+      further execution remains paused until Jacob explicitly restarts/re-enables dispatch work.
+      @task-coverage-evidence-index must stay pending review until reviewed against the revised
+      evidence-index wording and commit acc03f55d7e06665f6221d489b666431539448ad. The final
+      validation/verification task is intentionally manual_only and should be performed with Jacob
+      after implementation tasks are complete.
+    author: Jacob Chapel
+    created_at: 2026-06-24T04:28:21.580Z

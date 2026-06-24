@@ -3,49 +3,60 @@ slugs:
   - task-coverage-state-api-cache
 title: Expose coverage state daemon APIs and cache read model
 type: task
-description: |
-  Add daemon read endpoints and cache ownership for coverage-state
-  summaries, item rollups, criterion details, and unmapped-result
-  summaries.
+description: >-
+  Add daemon read endpoints and cache ownership for coverage-state summaries, item rollups,
+  criterion details, and unmapped-result summaries.
 
-  Why: The spec workspace, Validate view, sidebar badge, and future
-  static export need the same server-computed state. Existing
-  coverage-cache only caches binary annotation scan results; it is not
-  the coverage-state read model.
+
+  Why: The spec workspace, Validate view, sidebar badge, and future static export need the same
+  server-computed state. Existing coverage-cache only caches binary annotation scan results; it is
+  not the coverage-state read model.
+
 
   What:
-  - Define API response shapes for project summary, item summary,
-    criterion detail, and unmapped-result summary. Include counts for
-    covered/failing/not yet/re-verify, denominator, state explanation,
-    latest run id, freshness details, and secondary causes. These are read
-    endpoints; mutation/shadow-commit endpoint trait cases are owned by
-    ingestion and the shared mutation pipeline, not by coverage-state reads.
-  - Add daemon routes that serve from the coverage-state read model and
-    integrate with entity-cache domain readiness/loading envelopes.
-  - Replace or wrap the old binary coverage-cache so it is an input to
-    the evidence index, not the public state cache.
-  - Define cache keys/invalidation triggers: spec corpus change,
-    configured annotation scan path change, source annotation file
-    change, verification stamp write, test-run ingestion, and relevant
-    static export snapshot load.
-  - Add static-export serialization for last-computed read-only state
-    and read-only errors for mutation/ingestion attempts in static
-    mode.
-  - Performance tests: repeated summary/detail requests reuse the cache;
-    invalidation refreshes affected rows/rollups; a fixture with
-    thousands of ACs stays bounded enough for daemon UI use.
 
-  How: Follow the daemon aggregation route conventions: server-derived
-  data, wrapped response envelopes, loading state while cache warms,
-  and no client-side derivation requirement. Coordinate shared package
-  type generation before root typecheck if response types land in
-  packages/shared.
+  - Define API response shapes for project summary, item summary, criterion detail, and
+  unmapped-result summary. Include counts for covered/failing/not yet/re-verify, denominator, state
+  explanation, latest run id, freshness details, and secondary causes. These are read endpoints;
+  mutation/shadow-commit endpoint trait cases are owned by ingestion and the shared mutation
+  pipeline, not by coverage-state reads.
 
-  Covers: @coverage-state-api-cache ac-corpus-rollup, ac-item-and-ac-detail,
-  ac-server-computed, ac-cache-invalidation, ac-static-snapshot,
-  ac-performance-bounded. Covers @trait-api-endpoint ac-1, ac-2, ac-3,
-  ac-4, and ac-6 for coverage-state read endpoints; mutation/shadow
-  endpoint behavior remains owned by ingestion and existing mutation plans.
+  - Add daemon routes that serve from the coverage-state read model and integrate with entity-cache
+  domain readiness/loading envelopes.
+
+  - Replace or wrap the old binary coverage-cache so it is an input to the evidence index, not the
+  public state cache.
+
+  - Define cache keys/invalidation triggers: spec corpus change, configured annotation scan path
+  change, source annotation file change, verification stamp write, test-run ingestion, and relevant
+  static export snapshot load.
+
+  - Bridge existing ingestion evidence/stamp/spec/source signals into coverage-state cache
+  invalidation and recomputation. Ingestion can keep its minimal evidence-changed event; this task
+  owns making coverage-state reads fresh after those signals before any coverage-state event is
+  emitted.
+
+  - Add static-export serialization for last-computed read-only state and read-only errors for
+  mutation/ingestion attempts in static mode.
+
+  - Performance tests: repeated summary/detail requests reuse the cache; invalidation refreshes
+  affected rows/rollups; a fixture with thousands of ACs stays bounded enough for daemon UI use.
+
+
+  How: Follow the daemon aggregation route conventions: server-derived data, wrapped response
+  envelopes, loading state while cache warms, and no client-side derivation requirement. Coordinate
+  shared package type generation before root typecheck if response types land in packages/shared.
+
+
+  Covers: @coverage-state-api-cache ac-corpus-rollup, ac-item-and-ac-detail, ac-server-computed,
+  ac-cache-invalidation, ac-static-snapshot, ac-performance-bounded. Covers @trait-api-endpoint
+  ac-1, ac-2, ac-3, ac-4, and ac-6 for coverage-state read endpoints.
+
+
+  Non-applicable inherited cases: @trait-api-endpoint ac-5 is N/A for these read endpoints because
+  coverage-state API reads do not mutate state; mutation/shadow endpoint behavior remains owned by
+  ingestion and existing shared mutation plans. Implementation/review evidence should annotate that
+  inherited AC as N/A rather than adding a mutation endpoint solely for trait compliance.
 spec_ref: "@coverage-state-api-cache"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
@@ -69,6 +80,115 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-23T23:48:04.348Z
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: >-
+          Add daemon read endpoints and cache ownership for coverage-state summaries, item rollups,
+          criterion details, and unmapped-result summaries.
+
+
+          Why: The spec workspace, Validate view, sidebar badge, and future static export need the
+          same server-computed state. Existing coverage-cache only caches binary annotation scan
+          results; it is not the coverage-state read model.
+
+
+          What:
+
+          - Define API response shapes for project summary, item summary, criterion detail, and
+          unmapped-result summary. Include counts for covered/failing/not yet/re-verify,
+          denominator, state explanation, latest run id, freshness details, and secondary causes.
+          These are read endpoints; mutation/shadow-commit endpoint trait cases are owned by
+          ingestion and the shared mutation pipeline, not by coverage-state reads.
+
+          - Add daemon routes that serve from the coverage-state read model and integrate with
+          entity-cache domain readiness/loading envelopes.
+
+          - Replace or wrap the old binary coverage-cache so it is an input to the evidence index,
+          not the public state cache.
+
+          - Define cache keys/invalidation triggers: spec corpus change, configured annotation scan
+          path change, source annotation file change, verification stamp write, test-run ingestion,
+          and relevant static export snapshot load.
+
+          - Bridge existing ingestion evidence/stamp/spec/source signals into coverage-state cache
+          invalidation and recomputation. Ingestion can keep its minimal evidence-changed event;
+          this task owns making coverage-state reads fresh after those signals before any
+          coverage-state event is emitted.
+
+          - Add static-export serialization for last-computed read-only state and read-only errors
+          for mutation/ingestion attempts in static mode.
+
+          - Performance tests: repeated summary/detail requests reuse the cache; invalidation
+          refreshes affected rows/rollups; a fixture with thousands of ACs stays bounded enough for
+          daemon UI use.
+
+
+          How: Follow the daemon aggregation route conventions: server-derived data, wrapped
+          response envelopes, loading state while cache warms, and no client-side derivation
+          requirement. Coordinate shared package type generation before root typecheck if response
+          types land in packages/shared.
+
+
+          Covers: @coverage-state-api-cache ac-corpus-rollup, ac-item-and-ac-detail,
+          ac-server-computed, ac-cache-invalidation, ac-static-snapshot, ac-performance-bounded.
+          Covers @trait-api-endpoint ac-1, ac-2, ac-3, ac-4, and ac-6 for coverage-state read
+          endpoints.
+
+
+          Non-applicable inherited cases: @trait-api-endpoint ac-5 is N/A for these read endpoints
+          because coverage-state API reads do not mutate state; mutation/shadow endpoint behavior
+          remains owned by ingestion and existing shared mutation plans. Implementation/review
+          evidence should annotate that inherited AC as N/A rather than adding a mutation endpoint
+          solely for trait compliance.
+        previous: |
+          Add daemon read endpoints and cache ownership for coverage-state
+          summaries, item rollups, criterion details, and unmapped-result
+          summaries.
+
+          Why: The spec workspace, Validate view, sidebar badge, and future
+          static export need the same server-computed state. Existing
+          coverage-cache only caches binary annotation scan results; it is not
+          the coverage-state read model.
+
+          What:
+          - Define API response shapes for project summary, item summary,
+            criterion detail, and unmapped-result summary. Include counts for
+            covered/failing/not yet/re-verify, denominator, state explanation,
+            latest run id, freshness details, and secondary causes. These are read
+            endpoints; mutation/shadow-commit endpoint trait cases are owned by
+            ingestion and the shared mutation pipeline, not by coverage-state reads.
+          - Add daemon routes that serve from the coverage-state read model and
+            integrate with entity-cache domain readiness/loading envelopes.
+          - Replace or wrap the old binary coverage-cache so it is an input to
+            the evidence index, not the public state cache.
+          - Define cache keys/invalidation triggers: spec corpus change,
+            configured annotation scan path change, source annotation file
+            change, verification stamp write, test-run ingestion, and relevant
+            static export snapshot load.
+          - Add static-export serialization for last-computed read-only state
+            and read-only errors for mutation/ingestion attempts in static
+            mode.
+          - Performance tests: repeated summary/detail requests reuse the cache;
+            invalidation refreshes affected rows/rollups; a fixture with
+            thousands of ACs stays bounded enough for daemon UI use.
+
+          How: Follow the daemon aggregation route conventions: server-derived
+          data, wrapped response envelopes, loading state while cache warms,
+          and no client-side derivation requirement. Coordinate shared package
+          type generation before root typecheck if response types land in
+          packages/shared.
+
+          Covers: @coverage-state-api-cache ac-corpus-rollup, ac-item-and-ac-detail,
+          ac-server-computed, ac-cache-invalidation, ac-static-snapshot,
+          ac-performance-bounded. Covers @trait-api-endpoint ac-1, ac-2, ac-3,
+          ac-4, and ac-6 for coverage-state read endpoints; mutation/shadow
+          endpoint behavior remains owned by ingestion and existing mutation plans.
+      automation:
+        new: manual_only
+        previous: eligible
+    command: task-set
+    timestamp: 2026-06-24T04:28:57.274Z
 created_at: 2026-06-23T23:45:49.919Z
 todos: []
-automation: eligible
+automation: manual_only
