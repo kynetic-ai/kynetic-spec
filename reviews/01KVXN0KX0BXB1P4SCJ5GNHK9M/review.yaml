@@ -141,6 +141,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-24T20:45:49.451Z
+  - _ulid: 01KVXP4MDQ8H69D6HH425S6C61
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVXP4M3JHJ5V9A8J89NHCTHK
+    timestamp: 2026-06-24T20:46:25.207Z
 examined_commit: 4fed1092eae0cd325f1711dfd6a41788a3cf8cc5
 external_links: []
 lifecycle_state: open
@@ -150,8 +157,35 @@ subject:
   content_hash: ""
   ref: "@01KVVE0DTZ9RGYWRC08376NZFX"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVXP4M3JHJ5V9A8J89NHCTHK
+    anchor:
+      type: code
+      commit: 4fed1092eae0cd325f1711dfd6a41788a3cf8cc5
+      line_end: 201
+      line_start: 201
+      path: packages/daemon/src/project-context.ts
+      side: head
+    entries:
+      - _ulid: 01KVXP4M3JWRGPQVTZ5FJBH5T5
+        author: pr-reviewer
+        body: "MUST-FIX: coverage source watcher subscriptions are fixed to the scan paths loaded at
+          startWatcher(). The read-model cache key changes after coverage.scan_paths changes, so the
+          first request after a config edit recomputes, but CoverageScanWatcher is never rebuilt to
+          watch the new path. kspec.config.yaml is not watched by this manager and the only observed
+          restart paths are duplicate start/health recovery. After that first recompute, edits under
+          the newly configured scan path are not forwarded to
+          ProjectEntityCache.handleFileChange(projectPath, ...), so
+          invalidateCoverageStateReadModelCache() is not called and subsequent coverage-state reads
+          can return stale annotation state. Evidence: line 201 loads scan paths once before
+          constructing CoverageScanWatcher; lines 307-339 construct it from that snapshot;
+          repository search found no config-change restart/reload path. Please reconfigure or
+          restart the coverage source watcher when coverage.scan_paths changes, and add a behavioral
+          regression that changes scan_paths at runtime then verifies a source edit in the new path
+          invalidates the read model."
+        created_at: 2026-06-24T20:46:24.882Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-24T20:26:45.024Z
-updated_at: 2026-06-24T20:45:49.107Z
+updated_at: 2026-06-24T20:46:24.882Z
 notes: []
