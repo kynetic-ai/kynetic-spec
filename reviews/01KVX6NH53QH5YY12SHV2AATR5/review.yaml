@@ -184,6 +184,12 @@ events:
     payload:
       thread_ulid: 01KVX7W44HD7MJHXH8TZBJG5R1
     timestamp: 2026-06-24T17:01:04.640Z
+  - _ulid: 01KVX98GNHG62BZR384J9EWZ21
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVX7WSFWQ75HWEC2N1CYW77N
+    timestamp: 2026-06-24T17:01:20.945Z
 examined_commit: f91fb3e401f96c34b48f76715ec8dc3808349df9
 external_links: []
 lifecycle_state: closed
@@ -269,6 +275,11 @@ threads:
           recorded on src/parser/coverage-freshness-comparison.ts. Shared/package guidance surfaces
           touched: none.
         created_at: 2026-06-24T16:37:28.188Z
+      - _ulid: 01KVX98GDGDN6DTMY4TYJWAJY0
+        author: Jacob Chapel
+        body: Acknowledged. No code action was requested in this evidence-log thread; the blocker noted here
+          was fixed and resolved, and the full gate set was rerun after the fix.
+        created_at: 2026-06-24T17:01:20.688Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -279,5 +290,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-24T16:37:42.993Z
 created_at: 2026-06-24T16:16:01.699Z
-updated_at: 2026-06-24T17:01:04.377Z
+updated_at: 2026-06-24T17:01:20.688Z
 notes: []
