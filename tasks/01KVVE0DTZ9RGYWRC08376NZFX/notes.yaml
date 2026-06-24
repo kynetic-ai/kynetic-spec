@@ -12,3 +12,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T19:04:39.177Z
+  - _ulid: 01KVXHT3TSJP983M2YYX3VH3JW
+    content: "Implemented coverage-state daemon read APIs and cached read model. Added server-computed
+      summary/item/criterion/unmapped projections, cache invalidation on coverage ingestion and
+      item/meta invalidation, static snapshot export/read helpers, and behavioral AC tests for
+      daemon, cache, and static mode. Gates: format:check, changed-file oxlint, lint --quiet,
+      typecheck, focused coverage tests, full npm test, and kspec refs/alignment/completeness
+      validation passed with existing warning baselines."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T19:30:46.233Z
