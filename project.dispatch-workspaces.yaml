@@ -14867,11 +14867,11 @@ workspaces:
     canonical_branch: dispatch/task/task-coverage-state-events/01kvve0e
     canonical_branch_head: 44f47aa78fdff35709a5e05dd789cabde4d4bf89
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-24T23:52:42.337Z
+      updated_at: 2026-06-24T23:55:47.718Z
     health:
       status: healthy
       issues: []
@@ -14885,17 +14885,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: d3b8f3c3b345c58d6a56326d0d3db779c982ac01
       updated_at: 2026-06-24T23:52:42.337Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVVE0E692Z2PGF0TPM79QX9Q
     task_ref: "@01KVVE0E692Z2PGF0TPM79QX9Q"
     task_slug: task-coverage-state-events
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-24T23:55:47.718Z
       last_active_at: 2026-06-24T23:36:28.435Z
       last_reconciled_at: 2026-06-24T23:55:04.581Z
       created_at: 2026-06-24T21:34:04.089Z
-      updated_at: 2026-06-24T23:55:04.581Z
+      updated_at: 2026-06-24T23:55:47.718Z
     workspace_id: dispatch-workspace-01KVVE0E692Z2PGF0TPM79QX9Q
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
