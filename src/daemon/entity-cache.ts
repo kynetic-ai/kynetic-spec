@@ -40,6 +40,7 @@ import {
   loadPlans,
   rawToSummary,
   resolveTaskDataManager,
+  invalidateCoverageStateReadModelCache,
   type KspecContext,
   type LoadedSpecItem,
   type LoadedTask,
@@ -1432,6 +1433,10 @@ export class ProjectEntityCache {
    */
   async invalidateDomain(domain: CacheDomain): Promise<void> {
     if (this.disposed) return;
+
+    if (domain === "items" || domain === "meta") {
+      invalidateCoverageStateReadModelCache(this.projectPath);
+    }
 
     // AC: @daemon-entity-cache ac-task-storage-incompatibility-rechecked-after-storage-change
     // Watcher-driven invalidation of the tasks domain is the canonical

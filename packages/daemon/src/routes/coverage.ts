@@ -1,12 +1,20 @@
 import { Elysia, t } from "elysia";
 import { ulid } from "ulidx";
 import {
+  getCachedCoverageStateReadModel,
   initContext,
   ingestTestResultRun,
+  invalidateCoverageStateReadModelCache,
   TestResultIngestionReadOnlyError,
   TestResultIngestionValidationError,
   type TestResultIngestionResult,
 } from "../../parser/index.js";
+import type {
+  CoverageCriterionStateDetail,
+  CoverageItemStateSummary,
+  CoverageStateSummary,
+  CoverageUnmappedResultSummary,
+} from "@kynetic-ai/shared";
 import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
 import { runRouteMutation } from "./mutation-pipeline.js";
@@ -39,6 +47,62 @@ function validationBody(error: TestResultIngestionValidationError) {
   };
 }
 
+function emptyCoverageSummary(): CoverageStateSummary {
+  return {
+    counts: { covered: 0, failing: 0, not_yet: 0, re_verify: 0 },
+    denominator: 0,
+    latest_run_id: null,
+    unmapped_result_count: 0,
+    invalid_result_count: 0,
+  };
+}
+
+function parsePagination(query: {
+  limit?: string;
+  offset?: string;
+}): { ok: true; limit: number; offset: number } | { ok: false; field: "limit" | "offset" } {
+  const parse = (field: "limit" | "offset", fallback: number) => {
+    const value = query[field];
+    if (value === undefined) return fallback;
+    if (!/^\d+$/.test(value)) return null;
+    return Number(value);
+  };
+  const limit = parse("limit", 50);
+  if (limit === null) return { ok: false, field: "limit" };
+  const offset = parse("offset", 0);
+  if (offset === null) return { ok: false, field: "offset" };
+  return { ok: true, limit, offset };
+}
+
+function paginationError(field: "limit" | "offset") {
+  return {
+    error: "validation_error",
+    details: [{ field, message: `${field} must be a non-negative integer` }],
+  };
+}
+
+function itemNotFound(ref: string, candidates: string[]) {
+  const nearest =
+    candidates.find((candidate) =>
+      candidate.toLowerCase().includes(ref.replace(/^@/, "").toLowerCase().slice(0, 6)),
+    ) ?? candidates[0];
+  return {
+    error: "not_found",
+    message: `Coverage item reference "${ref}" not found`,
+    suggestion: nearest
+      ? `Use a valid item reference such as ${nearest}`
+      : "Use kspec item list or kspec search to find valid item references",
+  };
+}
+
+function criterionNotFound(ref: string, acId: string) {
+  return {
+    error: "not_found",
+    message: `Coverage criterion "${ref} ${acId}" not found`,
+    suggestion: "Use GET /api/coverage/state/items/:ref to list available criteria",
+  };
+}
+
 export function createCoverageRoutes(options: CoverageRouteOptions) {
   const { pubsub, getEntityCache } = options;
 
@@ -48,6 +112,115 @@ export function createCoverageRoutes(options: CoverageRouteOptions) {
       .onTransform(({ set }) => {
         set.headers["X-Request-Id"] = ulid();
       })
+      .get("/state/summary", async ({ projectContext }) => {
+        const cache = getEntityCache?.(projectContext.path);
+        const itemsDomainState = cache?.getDomainState("items");
+        if (cache && itemsDomainState === "loading") {
+          return wrapResponse(emptyCoverageSummary(), { cacheDomainState: "loading" });
+        }
+        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+        const model = await getCachedCoverageStateReadModel(ctx);
+        return wrapResponse(model.summary, { cacheDomainState: itemsDomainState });
+      })
+      .get(
+        "/state/items/:ref",
+        async ({ params, projectContext, error: errorResponse }) => {
+          const cache = getEntityCache?.(projectContext.path);
+          const itemsDomainState = cache?.getDomainState("items");
+          if (cache && itemsDomainState === "loading") {
+            return wrapResponse(null as CoverageItemStateSummary | null, {
+              cacheDomainState: "loading",
+            });
+          }
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+          const model = await getCachedCoverageStateReadModel(ctx);
+          const item = model.items[params.ref] ?? model.items[`@${params.ref}`];
+          if (!item) {
+            const refs = Object.values(model.items)
+              .map((candidate) => candidate.item_ref)
+              .filter((value, index, arr) => arr.indexOf(value) === index)
+              .toSorted();
+            return errorResponse(404, itemNotFound(params.ref, refs));
+          }
+          return wrapResponse(item, { cacheDomainState: itemsDomainState });
+        },
+        {
+          params: t.Object({
+            ref: t.String(),
+          }),
+        },
+      )
+      .get(
+        "/state/criteria/:ref/:acId",
+        async ({ params, projectContext, error: errorResponse }) => {
+          const cache = getEntityCache?.(projectContext.path);
+          const itemsDomainState = cache?.getDomainState("items");
+          if (cache && itemsDomainState === "loading") {
+            return wrapResponse(null as CoverageCriterionStateDetail | null, {
+              cacheDomainState: "loading",
+            });
+          }
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+          const model = await getCachedCoverageStateReadModel(ctx);
+          const item = model.items[params.ref] ?? model.items[`@${params.ref}`];
+          if (!item) {
+            const refs = Object.values(model.items)
+              .map((candidate) => candidate.item_ref)
+              .filter((value, index, arr) => arr.indexOf(value) === index)
+              .toSorted();
+            return errorResponse(404, itemNotFound(params.ref, refs));
+          }
+          const criterion = model.criteria[`${item.item_ulid} ${params.acId}`];
+          if (!criterion) {
+            return errorResponse(404, criterionNotFound(item.item_ref, params.acId));
+          }
+          return wrapResponse(criterion, { cacheDomainState: itemsDomainState });
+        },
+        {
+          params: t.Object({
+            ref: t.String(),
+            acId: t.String(),
+          }),
+        },
+      )
+      .get(
+        "/state/unmapped",
+        async ({ query, projectContext, error: errorResponse }) => {
+          const pagination = parsePagination(query);
+          if (!pagination.ok) {
+            return errorResponse(400, paginationError(pagination.field));
+          }
+          const cache = getEntityCache?.(projectContext.path);
+          const itemsDomainState = cache?.getDomainState("items");
+          if (cache && itemsDomainState === "loading") {
+            return wrapResponse([] as CoverageUnmappedResultSummary[], {
+              cacheDomainState: "loading",
+              total: 0,
+              offset: pagination.offset,
+              limit: pagination.limit,
+            });
+          }
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+          const model = await getCachedCoverageStateReadModel(ctx);
+          const total = model.unmapped_results.length;
+          const data = model.unmapped_results.slice(
+            pagination.offset,
+            pagination.offset + pagination.limit,
+          );
+          return wrapResponse(data, {
+            cacheDomainState: itemsDomainState,
+            total,
+            offset: pagination.offset,
+            limit: pagination.limit,
+          });
+        },
+        {
+          query: t.Object({
+            limit: t.Optional(t.String()),
+            offset: t.Optional(t.String()),
+          }),
+        },
+      )
       .post(
         "/test-results/runs",
         async ({ body, query, request, error: errorResponse, projectContext }) => {
@@ -105,6 +278,7 @@ export function createCoverageRoutes(options: CoverageRouteOptions) {
             throw err;
           }
 
+          invalidateCoverageStateReadModelCache(projectPath);
           return wrapResponse(result.summary);
         },
         {
