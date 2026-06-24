@@ -76,7 +76,7 @@ tags:
   - daemon
   - web-ui
 vcs_refs: []
-review_ref: "@01KVXTF0C125ZJATF9X0YXTWB3"
+review_ref: "@01KVXX20FEW685QP4V061T0XFB"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-coverage-state-events/01kvve0e
@@ -305,6 +305,13 @@ history:
         previous: 2026-06-24T21:56:22.114Z
     command: task-submit
     timestamp: 2026-06-24T22:42:08.217Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KVXX20FEW685QP4V061T0XFB"
+        previous: "@01KVXTF0C125ZJATF9X0YXTWB3"
+    command: review-link
+    timestamp: 2026-06-24T22:47:21.625Z
 created_at: 2026-06-23T23:45:50.281Z
 started_at: 2026-06-24T22:24:58.551Z
 submitted_at: 2026-06-24T22:42:08.216Z
