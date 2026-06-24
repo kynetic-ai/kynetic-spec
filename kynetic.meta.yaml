@@ -23279,6 +23279,17 @@ observations:
     resolved: false
     workflow_ref: "@01KVXZM7"
     created_at: 2026-06-24T23:34:46.972Z
+  - _ulid: 01KVXZS6Q6618S1A93EWJ338P4
+    type: friction
+    content: Daemon command completion can still execute post-mutation broadcast work inside an
+      entity-cache async context. Freshness-sensitive emitters that invalidate and refetch read
+      models need a first-class fresh-read boundary/helper so event-after-cache guarantees do not
+      depend on each route remembering to bypass the inherited cache context manually.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KVXZM7"
+    created_at: 2026-06-24T23:34:56.486Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
