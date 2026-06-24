@@ -73302,9 +73302,22 @@ runs:
     completed_at: 2026-06-24T17:06:35.374Z
   - _ulid: 01KVXB0MQHKQBCKQNWZR1CMNW3
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-24T17:32:00.113Z
+        completed_at: 2026-06-24T17:32:41.118Z
+        notes: "What worked well: the review record flow made prior blocker history visible, and the
+          detached review process kept merge actions gated. Focused behavioral probing was
+          effective: an inline public-API probe exposed that annotation-only positive evidence with
+          no freshness metadata still resolves to covered, despite the broader AC-tagged test file
+          passing."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-24T17:32:41.118Z
+        completed_at: 2026-06-24T17:32:41.118Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-24T17:32:00.113Z
