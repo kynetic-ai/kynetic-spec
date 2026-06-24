@@ -3969,6 +3969,9 @@ features:
           affect state computation. This spec uses the read-endpoint portions of
           @trait-api-endpoint; mutation and shadow-commit endpoint behavior is non-applicable for
           coverage-state read endpoints and remains owned by ingestion and shared mutation paths.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@coverage-state-engine"
           - "@daemon-entity-cache"
