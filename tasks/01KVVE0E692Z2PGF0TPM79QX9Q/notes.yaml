@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KVXS1DP4V4E38KFNMEXQ77JC
+    content: "Approach: reuse the existing coverage-state read-model cache and mutation pipeline, adding
+      a typed coalesced coverage_state_changed event on items:updates after cache
+      invalidation/recompute. Web invalidation will extend centralized ws-invalidation query key
+      mapping rather than page-specific handlers. Edge cases: ingestion with many criteria must emit
+      one coverage-state event; unmapped/invalid runs must request summary/unmapped refreshes;
+      watcher fallback must refresh coverage state when precise event scope is unavailable; base
+      websocket lifecycle ACs remain existing-foundation N/A. Test plan: coverage API route test for
+      topic/payload/event-after-cache/coalescing, ws-invalidation test for targeted coverage keys
+      and file fallback, shared vocabulary/type assertions, existing protocol tests for inherited
+      behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T21:37:05.732Z
