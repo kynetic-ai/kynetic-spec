@@ -31,3 +31,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T22:18:45.126Z
+  - _ulid: 01KVXVSPF2H0CTJ9Y8YEJ8ZYWH
+    content: "Fix cycle plan: address review blocker by treating daemon-served spec_item_changed events
+      as coverage-state-affecting for web cache invalidation. Keep item/validation targeted
+      invalidation, add coverage summary plus affected item detail when item identity is known, and
+      update the behavioral ws-invalidation test so spec/AC mutations refresh coverage views without
+      relying on watcher fallback. Re-verify coverage-state ACs and inherited websocket AC
+      annotations after the patch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T22:25:18.306Z
