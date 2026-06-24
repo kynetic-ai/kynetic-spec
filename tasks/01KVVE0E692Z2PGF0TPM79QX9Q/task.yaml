@@ -64,7 +64,7 @@ description: >-
 spec_ref: "@coverage-state-events"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-coverage-state-api-cache"
@@ -76,6 +76,14 @@ tags:
   - daemon
   - web-ui
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-coverage-state-events/01kvve0e
+  captured_at: 2026-06-24T21:56:22.107Z
+  commit: 9639491b155f1db88e6238df22c2f0ec08d06ce4
+  remote: null
+  remote_url: null
+  upstream_ref: feat/ui-redesign
 session_id: 01KVXRWT5PN07DEMB8PMZ78916
 history:
   - author: Jacob Chapel
@@ -219,7 +227,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-24T21:35:08.276Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-state-events/01kvve0e
+          captured_at: 2026-06-24T21:56:22.107Z
+          commit: 9639491b155f1db88e6238df22c2f0ec08d06ce4
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous: null
+      submitted_at:
+        new: 2026-06-24T21:56:22.114Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-24T21:56:22.115Z
 created_at: 2026-06-23T23:45:50.281Z
 started_at: 2026-06-24T21:35:08.276Z
+submitted_at: 2026-06-24T21:56:22.114Z
 todos: []
 automation: eligible
