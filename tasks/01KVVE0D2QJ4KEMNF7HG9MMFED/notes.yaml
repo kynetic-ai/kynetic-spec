@@ -25,3 +25,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T05:38:07.340Z
+  - _ulid: 01KVW26E1V68BZSZW1PP3QDKKJ
+    content: "Verification passed: npm run format:check; npx oxlint src/parser/coverage-state.ts
+      src/parser/index.ts tests/coverage-state.test.ts; npm run lint -- --quiet (0 errors, existing
+      warning baseline); npm run typecheck; npm test (2905 suites passed, 11032 tests passed, 3
+      skipped); kspec validate --refs --warnings-ok; kspec validate --alignment --warnings-ok; kspec
+      validate --completeness --warnings-ok. Validation warnings are existing project baselines
+      under --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T05:38:38.267Z
