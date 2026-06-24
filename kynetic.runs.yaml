@@ -73530,7 +73530,7 @@ runs:
     completed_at: 2026-06-24T19:57:33.143Z
   - _ulid: 01KVXMRRJKG5VC693RAHHN3V54
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73543,7 +73543,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-24T20:23:26.517Z
-        completed_at: 2026-06-24T20:23:26.517Z
+        completed_at: 2026-06-24T20:24:15.452Z
+        notes: "High-confidence findings: duplicate coverage already exists for long npm test quiet
+          periods/process-tree checks (observations 01KVE6XH and 01KVS5B5) and workflow-show
+          ergonomics (inbox 01KVV34X), so no new friction capture. New success candidate: source
+          files outside .kspec can reuse existing daemon invalidation plumbing by forwarding
+          project-root watcher events and handling them as source-only cache invalidation at the
+          entity-cache boundary."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T20:24:15.452Z
+        completed_at: 2026-06-24T20:24:15.452Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-24T20:22:27.667Z
