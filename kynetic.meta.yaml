@@ -23181,8 +23181,13 @@ observations:
       full-suite review runs can consume most of an automated review session and make progress hard
       to distinguish from a hang without process inspection.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: "Resolved as duplicate/covered by existing reflection and inbox coverage: @01KVE6XH and
+      @01KVSE5H already track long/quiet automated review gates, and @01KV3WHP tracks the
+      metadata/no-code-diff gate-profile improvement. This session confirmed the pattern but does
+      not need a separate pending observation."
+    resolved: true
+    resolved_at: 2026-06-24T15:18:45.587Z
+    resolved_by: Jacob Chapel
     workflow_ref: "@01KVX38X"
     created_at: 2026-06-24T15:17:49.745Z
 schedules:
