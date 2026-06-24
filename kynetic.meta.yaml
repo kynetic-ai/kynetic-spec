@@ -23133,6 +23133,27 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-24T05:20:04.972Z
+  - _ulid: 01KVX17N93MP96SB1FNR1GVS5T
+    type: success
+    content: "Review session @01KVX0RT: an isolated temp-repo behavioral probe quickly confirmed a
+      freshness edge case that was not covered by the submitted tests. Pattern worth repeating: when
+      a review suspicion depends on state/history interactions, write a small disposable probe
+      against the public helper instead of relying only on static reasoning."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-24T14:41:04.291Z
+  - _ulid: 01KVX17NP9QY2YZ31GFW1N9KY0
+    type: friction
+    content: "Review gate triage was slowed by a pre-existing build/typecheck baseline: npm run
+      typecheck and npm test failed before task tests because @kynetic-ai/shared no longer exports
+      symbols imported by unchanged root modules. Follow-up task @01KVX11E tracks the baseline fix;
+      until resolved, reviewers must classify these gates carefully to avoid misattributing
+      unrelated failures to task branches."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-24T14:41:04.714Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
