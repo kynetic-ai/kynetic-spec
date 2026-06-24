@@ -41,3 +41,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T22:25:18.306Z
+  - _ulid: 01KVXWQTCFDRYAMXGT3AEK7HZ3
+    content: "Fix cycle 1: addressed review blocker from @01KVXTF0C125ZJATF9X0YXTWB3. Commit 40669a5a9a
+      makes daemon-served spec_item_changed events invalidate coverage summary, affected item
+      coverage detail, and item-scoped criterion coverage queries so spec/AC mutations refresh
+      coverage consumers even when watcher fallback is suppressed. Updated the ws-invalidation
+      behavioral test to assert the coverage keys. Re-verified AC coverage annotations and gates:
+      focused ws-invalidation test, focused oxlint, format:check, repo lint --quiet, typecheck, npm
+      test, and kspec validate refs/alignment/completeness all passed with known warning baselines
+      where applicable."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T22:41:45.359Z
