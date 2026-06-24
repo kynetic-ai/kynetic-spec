@@ -33006,7 +33006,7 @@
   type: task
   spec_ref: "@coverage-evidence-index"
   plan_ref: "@plan-coverage-state-engine"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -33020,6 +33020,7 @@
   created_at: 2026-06-23T23:45:48.767Z
   started_at: 2026-06-23T23:50:43.712Z
   submitted_at: 2026-06-24T00:13:29.651Z
+  completed_at: 2026-06-24T05:15:45.972Z
   automation: eligible
 - _ulid: 01KVVE0D2QJ4KEMNF7HG9MMFED
   slugs:

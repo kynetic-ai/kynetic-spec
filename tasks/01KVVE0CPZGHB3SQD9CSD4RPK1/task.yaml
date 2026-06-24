@@ -52,8 +52,12 @@ description: >-
 spec_ref: "@coverage-evidence-index"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign at 4073bb9f1b43. Added the backend coverage evidence index
+  builder and context loader with AC-covered tests for per-criterion entries, evidence labeling,
+  latest run selection, unmapped/invalid separation, framework-neutral inputs, and backend-joined
+  loading.
 depends_on: []
 context: []
 priority: 1
@@ -212,8 +216,25 @@ history:
           ac-no-client-side-join.
     command: task-set
     timestamp: 2026-06-24T04:31:45.086Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign at 4073bb9f1b43. Added the backend coverage evidence index builder
+          and context loader with AC-covered tests for per-criterion entries, evidence labeling,
+          latest run selection, unmapped/invalid separation, framework-neutral inputs, and
+          backend-joined loading.
+        previous: null
+      completed_at:
+        new: 2026-06-24T05:15:45.972Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-24T05:15:45.984Z
 created_at: 2026-06-23T23:45:48.767Z
 started_at: 2026-06-23T23:50:43.712Z
 submitted_at: 2026-06-24T00:13:29.651Z
+completed_at: 2026-06-24T05:15:45.972Z
 todos: []
 automation: eligible
