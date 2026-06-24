@@ -180,6 +180,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-24T14:39:17.531Z
+  - _ulid: 01KVX3N2KZKQ2ZXDEWMT1M57GZ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVX13HDJB0HQHVRR1HS2TG88
+    timestamp: 2026-06-24T15:23:21.087Z
 examined_commit: 70196da095e80a4a656bdca2d6113013ab27722c
 external_links: []
 lifecycle_state: closed
@@ -214,6 +220,13 @@ threads:
           `entry.bootstrapFreshness?.timestamp`/commit (or equivalent annotation freshness metadata)
           in the comparison so annotation-only coverage re-verifies after criterion text changes.'
         created_at: 2026-06-24T14:38:49.266Z
+      - _ulid: 01KVX3N2CBYFN96ZZGNT3ACQQC
+        author: Jacob Chapel
+        body: "Fixed in 981c807ffd: spec-text freshness now selects the latest comparable positive-evidence
+          version from recorded verification, passing ingested runs, and bootstrap annotation
+          freshness. Added an annotation-only regression proving AC text changes after bootstrap
+          freshness now produce stale_spec_text/re_verify instead of covered."
+        created_at: 2026-06-24T15:23:20.842Z
     kind: blocker
   - _ulid: 01KVX1499SGJ5XZ993EVTGJCVR
     entries:
@@ -262,5 +275,5 @@ verdicts:
     role: pr-reviewer
     created_at: 2026-06-24T14:39:17.531Z
 created_at: 2026-06-24T14:32:57.878Z
-updated_at: 2026-06-24T14:39:17.531Z
+updated_at: 2026-06-24T15:23:20.842Z
 notes: []
