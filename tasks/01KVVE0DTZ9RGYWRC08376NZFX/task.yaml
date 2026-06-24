@@ -60,8 +60,12 @@ description: >-
 spec_ref: "@coverage-state-api-cache"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign via detached reviewer merge helper. Exposes coverage-state
+  daemon read endpoints, cached read model, static snapshot helpers, cache invalidation for
+  spec/config/source/test-run/verification changes, and regression coverage for scan-path watcher
+  reconfiguration.
 depends_on:
   - "@task-coverage-freshness-revision-comparison"
 context: []
@@ -360,8 +364,25 @@ history:
         previous: "@01KVXN0KX0BXB1P4SCJ5GNHK9M"
     command: review-link
     timestamp: 2026-06-24T21:16:40.909Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign via detached reviewer merge helper. Exposes coverage-state daemon
+          read endpoints, cached read model, static snapshot helpers, cache invalidation for
+          spec/config/source/test-run/verification changes, and regression coverage for scan-path
+          watcher reconfiguration.
+        previous: null
+      completed_at:
+        new: 2026-06-24T21:32:50.660Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-24T21:32:50.671Z
 created_at: 2026-06-23T23:45:49.919Z
 started_at: 2026-06-24T20:55:50.771Z
 submitted_at: 2026-06-24T21:12:07.479Z
+completed_at: 2026-06-24T21:32:50.660Z
 todos: []
 automation: eligible
