@@ -90,6 +90,25 @@ checks:
     runner: npx oxlint <changed-ts-or-test-files>
     created_at: 2026-06-24T15:14:15.844Z
     completed_at: 2026-06-24T15:14:15.844Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: kspec-agents.md, packages/shared/src/index.ts, empty git diff dev...HEAD,
+      task metadata. Commands run: git status/diff/rev-parse/branch, kspec task get, kspec review
+      for-task, kspec validate refs/alignment/completeness, npm run format:check, npm run lint --
+      --quiet, npm run typecheck, npm test, rg missing shared identifiers. Claims verified: task
+      branch/dev/HEAD are identical at 64674c90fd90; no changed files; missing identifiers are not
+      imported in src/tests/packages outside shared dist; shared index exports
+      api/websocket/schemas; typecheck and test gates pass. Categories searched: correctness,
+      integration/build baseline, test quality/gates, edge/error surface from missing imports,
+      security/no data exposure change. Shared/package guidance surfaces touched: none; neutrality
+      checklist not applicable."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-06-24T15:14:39.259Z
+    completed_at: 2026-06-24T15:14:39.259Z
 events:
   - _ulid: 01KVX27NQ5AMMG9BMKCQRC0QJ0
     actor: Jacob Chapel
@@ -160,6 +179,13 @@ events:
       status: skipped
       name: focused-lint
     timestamp: 2026-06-24T15:14:16.171Z
+  - _ulid: 01KVX3559YNYWBJ0D7485PKY7X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-24T15:14:39.550Z
 examined_commit: 64674c90fd90de522fb7d36a768142658ecfae4e
 external_links: []
 lifecycle_state: open
@@ -172,5 +198,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-24T14:58:33.318Z
-updated_at: 2026-06-24T15:14:15.844Z
+updated_at: 2026-06-24T15:14:39.259Z
 notes: []
