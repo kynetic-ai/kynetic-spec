@@ -51,7 +51,7 @@ description: >-
 spec_ref: "@coverage-freshness-revision-comparison"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-coverage-state-derivation"
@@ -66,8 +66,8 @@ review_ref: "@01KVX41B7N79GT9JKHPGCQ38RM"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
-  captured_at: 2026-06-24T15:24:21.658Z
-  commit: 981c807ffdee79f72422c1d3d85dc114c11337af
+  captured_at: 2026-06-24T16:10:12.622Z
+  commit: f91fb3e401f96c34b48f76715ec8dc3808349df9
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
@@ -331,9 +331,36 @@ history:
         previous: 2026-06-24T14:57:39.760Z
     command: task-start
     timestamp: 2026-06-24T15:51:59.614Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
+          captured_at: 2026-06-24T16:10:12.622Z
+          commit: f91fb3e401f96c34b48f76715ec8dc3808349df9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
+        previous:
+          review_url: null
+          branch: dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
+          captured_at: 2026-06-24T15:24:21.658Z
+          commit: 981c807ffdee79f72422c1d3d85dc114c11337af
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
+      submitted_at:
+        new: 2026-06-24T16:10:12.636Z
+        previous: 2026-06-24T15:24:21.665Z
+    command: task-submit
+    timestamp: 2026-06-24T16:10:12.636Z
 prior_status: null
 created_at: 2026-06-23T23:45:49.574Z
 started_at: 2026-06-24T15:51:59.613Z
-submitted_at: 2026-06-24T15:24:21.665Z
+submitted_at: 2026-06-24T16:10:12.636Z
 todos: []
 automation: eligible
