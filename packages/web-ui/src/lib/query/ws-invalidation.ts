@@ -92,10 +92,15 @@ function getItemInvalidationKeys(event: BroadcastEvent): readonly (readonly unkn
   const data = event.data as Partial<SpecItemChangedEventData>;
   return uniqueKeys([
     ...(typeof data.item_ulid === "string" && data.item_ulid.length > 0
-      ? [queryKeys.items.detail(data.item_ulid)]
+      ? [
+          queryKeys.items.detail(data.item_ulid),
+          queryKeys.coverage.item(data.item_ulid),
+          queryKeys.coverage.criteriaForItem(data.item_ulid),
+        ]
       : []),
     queryKeys.items.lists(),
     queryKeys.validation.all,
+    queryKeys.coverage.summary(),
   ]);
 }
 

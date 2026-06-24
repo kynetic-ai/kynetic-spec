@@ -186,7 +186,8 @@ describe("ws-invalidation targeted entity event handling", () => {
   });
 
   // AC: @ui-targeted-event-consumption ac-1
-  it("refreshes affected item and validation views for a spec-item event only", () => {
+  // AC: @coverage-state-events ac-event-canonical-identity
+  it("refreshes affected item, validation, and coverage views for a spec-item event", () => {
     setupWsInvalidation(mockQueryClient);
     const event = makeBroadcastEvent("items:updates", "spec_item_changed", {
       item_ulid: "01ITEMTARGET0000000000000",
@@ -198,8 +199,11 @@ describe("ws-invalidation targeted entity event handling", () => {
 
     expect(invalidatedKeys(mockQueryClient)).toEqual([
       queryKeys.items.detail("01ITEMTARGET0000000000000"),
+      queryKeys.coverage.item("01ITEMTARGET0000000000000"),
+      queryKeys.coverage.criteriaForItem("01ITEMTARGET0000000000000"),
       queryKeys.items.lists(),
       queryKeys.validation.all,
+      queryKeys.coverage.summary(),
     ]);
     expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
       queryKey: queryKeys.tasks.all,
