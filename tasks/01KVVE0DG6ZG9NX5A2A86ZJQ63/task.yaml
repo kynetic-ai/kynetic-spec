@@ -51,7 +51,7 @@ description: >-
 spec_ref: "@coverage-freshness-revision-comparison"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-coverage-state-derivation"
@@ -62,6 +62,14 @@ tags:
   - freshness
   - git
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
+  captured_at: 2026-06-24T06:24:56.243Z
+  commit: 70196da095e80a4a656bdca2d6113013ab27722c
+  remote: null
+  remote_url: null
+  upstream_ref: feat/ui-redesign
 session_id: 01KVW3GKNJMWBPABDTA5X3X6T3
 history:
   - author: Jacob Chapel
@@ -187,7 +195,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-24T06:02:44.185Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
+          captured_at: 2026-06-24T06:24:56.243Z
+          commit: 70196da095e80a4a656bdca2d6113013ab27722c
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous: null
+      submitted_at:
+        new: 2026-06-24T06:24:56.249Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-24T06:24:56.250Z
 created_at: 2026-06-23T23:45:49.574Z
 started_at: 2026-06-24T06:02:44.185Z
+submitted_at: 2026-06-24T06:24:56.249Z
 todos: []
 automation: eligible
