@@ -23211,6 +23211,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-24T17:05:27.061Z
+  - _ulid: 01KVXG7Z525NDD3XVE36V1AS5Q
+    type: friction
+    content: "Detached reviewer gate friction: a clean review still required a fresh full npm test run
+      that took 2949.0s (2907 suites, 11044 passed, 3 skipped) before approval. Existing tracking
+      covers test progress output and historical flakes, but not a reviewer-specific
+      trust-preserving strategy for combining cached, focused, or sharded evidence with full-suite
+      requirements in detached review snapshots."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-24T19:03:23.042Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
