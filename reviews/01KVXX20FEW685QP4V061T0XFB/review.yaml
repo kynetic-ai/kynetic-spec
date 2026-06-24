@@ -184,6 +184,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-24T23:02:43.064Z
+  - _ulid: 01KVXZGH5RDB1TC2X1BGR48P12
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KVXXXB32GS97AE52W5MQFEKH
+    timestamp: 2026-06-24T23:30:12.280Z
 examined_commit: 40669a5a9a7e0d60d301dbbcbd47dd7c0df548c8
 external_links: []
 lifecycle_state: closed
@@ -216,6 +222,16 @@ threads:
           family event on `items:updates` after the cache/read model reflects the change. Consumers
           that subscribe to typed coverage-state events still miss spec/AC mutations."
         created_at: 2026-06-24T23:02:14.882Z
+      - _ulid: 01KVXZGGXX4X2YHME560V78M1H
+        author: Jacob Chapel
+        body: "Fixed in 44f47aa78f: daemon command completion now drains spec mutation descriptors,
+          invalidates/refetches the coverage-state read model after write-through, and emits a typed
+          items:updates/coverage_state_changed event before replaying the collected
+          spec_item_changed events. The refetch deliberately bypasses the daemon entity-cache async
+          context so the event payload and immediate subscribers observe the fresh coverage model.
+          Added behavioral coverage in tests/daemon-command-api.test.ts for topic, canonical item
+          identity, after-cache ordering, and websocket payload shape."
+        created_at: 2026-06-24T23:30:12.029Z
     kind: blocker
   - _ulid: 01KVXXXX29P5F2GDN2WC2RBS9F
     entries:
@@ -257,5 +273,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-24T23:02:43.064Z
 created_at: 2026-06-24T22:47:19.278Z
-updated_at: 2026-06-24T23:02:43.064Z
+updated_at: 2026-06-24T23:30:12.029Z
 notes: []
