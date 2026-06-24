@@ -2,7 +2,91 @@ _ulid: 01KVX0RT8PHJEC796FQS31CTE6
 slugs: []
 title: Review task-coverage-freshness-revision-comparison
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1115 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-24T14:38:25.212Z
+    completed_at: 2026-06-24T14:38:25.212Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint reported 0 errors under --quiet with existing warning baseline
+      (678 warnings). Focused changed-file lint also passed: npx oxlint
+      src/parser/coverage-freshness-comparison.ts src/parser/coverage-state.ts src/parser/index.ts
+      tests/coverage-freshness-comparison.test.ts reported 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-24T14:38:28.726Z
+    completed_at: 2026-06-24T14:38:28.726Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped as task regression gate after triage: command fails deterministically in
+      unchanged shared/export actor identity surface because @kynetic-ai/shared lacks exports
+      BreadcrumbAncestor, ActorIdentityConfig, AgentIdentity, HumanIdentity, classifyActor,
+      ClassifiedActor, and buildActorClassifier. The reviewed diff does not touch packages/shared,
+      package lockfiles, tsconfig, or the importer files. Baseline follow-up task created:
+      @01KVX11E."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-24T14:38:32.136Z
+    completed_at: 2026-06-24T14:38:32.136Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped as task regression gate after triage: npm test fails before running tests because
+      its pre-test npm run build fails on the same pre-existing @kynetic-ai/shared export/typecheck
+      baseline. Re-run after @01KVX11E is fixed."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-24T14:38:35.328Z
+    completed_at: 2026-06-24T14:38:35.328Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok exited 0 with existing reference warning
+      baseline."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T14:38:38.696Z
+    completed_at: 2026-06-24T14:38:38.696Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0 with existing alignment warning
+      baseline."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T14:38:42.222Z
+    completed_at: 2026-06-24T14:38:42.222Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0 with existing completeness
+      warning baseline. New task AC annotations are present for all six
+      @coverage-freshness-revision-comparison ACs."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T14:38:45.738Z
+    completed_at: 2026-06-24T14:38:45.738Z
 events:
   - _ulid: 01KVX0RT8P0S98CM4Q65Q80D8T
     actor: Jacob Chapel
@@ -17,6 +101,62 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-24T14:33:21.238Z
+  - _ulid: 01KVX12T9YV7RK8B42BZA811HW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-24T14:38:25.599Z
+  - _ulid: 01KVX12XM3T577XSAVJZJ88AKR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-24T14:38:28.995Z
+  - _ulid: 01KVX130XYNGT978AGPZBQTRNB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: typecheck
+    timestamp: 2026-06-24T14:38:32.382Z
+  - _ulid: 01KVX1341YS3TKST15C1TB61TS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-06-24T14:38:35.582Z
+  - _ulid: 01KVX137BVQ67KENWY2Q9JN2CJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-24T14:38:38.971Z
+  - _ulid: 01KVX13AWYER7MV667BSEHCV56
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-24T14:38:42.590Z
+  - _ulid: 01KVX13E6Z41Z0RKEG24KX9126
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-24T14:38:45.983Z
+  - _ulid: 01KVX13HMXJ9MXK8MN9ZSQN7TV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVX13HDJB0HQHVRR1HS2TG88
+    timestamp: 2026-06-24T14:38:49.501Z
 examined_commit: 70196da095e80a4a656bdca2d6113013ab27722c
 external_links: []
 lifecycle_state: open
@@ -26,8 +166,33 @@ subject:
   content_hash: ""
   ref: "@01KVVE0DG6ZG9NX5A2A86ZJQ63"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVX13HDJB0HQHVRR1HS2TG88
+    anchor:
+      type: code
+      commit: 70196da095e80a4a656bdca2d6113013ab27722c
+      line_end: 421
+      line_start: 414
+      path: src/parser/coverage-freshness-comparison.ts
+      side: head
+    entries:
+      - _ulid: 01KVX13HDJHXKNVF4CC79QRJN1
+        author: Jacob Chapel
+        body: 'MUST-FIX: spec-text freshness ignores annotation-only positive evidence.
+          `deriveCoverageState` treats non-N/A AC annotations as positive evidence, and
+          @coverage-state-engine ac-reverify-for-stale-evidence requires positive evidence whose
+          confirmed freshness is older than criterion text to enter re-verify. But
+          `latestPositiveEvidenceTimestamp` only considers recorded verifications and passed
+          ingested runs, so an annotation-only criterion with bootstrap freshness before a later AC
+          text edit returns no stale finding and remains covered. I reproduced this with an isolated
+          temp repo using the new helper: one annotation at 2026-06-02, AC text changed at
+          2026-06-03, `compareCoverageFreshness(...)` returned `[]`, and
+          `deriveCoverageStateWithFreshnessComparison(...)` returned `state: "covered"`. Include
+          `entry.bootstrapFreshness?.timestamp`/commit (or equivalent annotation freshness metadata)
+          in the comparison so annotation-only coverage re-verifies after criterion text changes.'
+        created_at: 2026-06-24T14:38:49.266Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-24T14:32:57.878Z
-updated_at: 2026-06-24T14:33:20.985Z
+updated_at: 2026-06-24T14:38:49.266Z
 notes: []
