@@ -28118,3 +28118,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-24T22:47:19.278Z
     updated_at: 2026-06-24T23:30:28.173Z
+  - _ulid: 01KVXZXK563WQVRHQ9JGFYR6VZ
+    slugs: []
+    title: Review coverage-state events (cycle 3)
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 44f47aa78fdff35709a5e05dd789cabde4d4bf89
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KVVE0E692Z2PGF0TPM79QX9Q"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-24T23:37:20.294Z

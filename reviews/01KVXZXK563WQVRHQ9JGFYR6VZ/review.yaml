@@ -1,0 +1,26 @@
+_ulid: 01KVXZXK563WQVRHQ9JGFYR6VZ
+slugs: []
+title: Review coverage-state events (cycle 3)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVXZXK555W79D5K71WDMN9ZB
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-24T23:37:20.294Z
+examined_commit: 44f47aa78fdff35709a5e05dd789cabde4d4bf89
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVVE0E692Z2PGF0TPM79QX9Q"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-24T23:37:20.294Z
+updated_at: null
+notes: []
