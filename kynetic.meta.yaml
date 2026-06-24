@@ -23163,6 +23163,28 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-24T14:54:42.491Z
+  - _ulid: 01KVX3AYQFEP5TP50KDR7RVDE7
+    type: success
+    content: "Detached review no-op path worked cleanly for an already-integrated task branch: the
+      reviewer created a fresh review record, recorded required gate evidence, approved, ran the
+      detached merge helper, received an explicit no-op result because canonical head already
+      matched dev, and completed the task without manual branch checkout or merge commands."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KVX38X"
+    created_at: 2026-06-24T15:17:49.424Z
+  - _ulid: 01KVX3AZ1HJWDDWT8FP2E2GK74
+    type: friction
+    content: Full npm test during automated review took 2727.8s in this session while another dispatch
+      worktree also had a full Vitest run active. The gate eventually passed, but parallel
+      full-suite review runs can consume most of an automated review session and make progress hard
+      to distinguish from a hang without process inspection.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KVX38X"
+    created_at: 2026-06-24T15:17:49.745Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
