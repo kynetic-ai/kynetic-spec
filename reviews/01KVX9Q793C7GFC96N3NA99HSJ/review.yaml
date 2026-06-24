@@ -142,6 +142,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-24T17:13:46.428Z
+  - _ulid: 01KVX9ZS03HQ331PYD5BTAFY46
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVX9ZRH54PA0ZAG1YAATH7TZ
+    timestamp: 2026-06-24T17:14:03.139Z
 examined_commit: 0b231000f66ba49fa349fad97cc173da9ca4be85
 external_links: []
 lifecycle_state: open
@@ -151,8 +158,30 @@ subject:
   content_hash: ""
   ref: "@01KVVE0DG6ZG9NX5A2A86ZJQ63"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVX9ZRH54PA0ZAG1YAATH7TZ
+    anchor:
+      type: code
+      commit: 0b231000f66ba49fa349fad97cc173da9ca4be85
+      line_end: 139
+      line_start: 139
+      path: src/parser/coverage-freshness-comparison.ts
+      side: head
+    entries:
+      - _ulid: 01KVX9ZRH559ZZNY9AM6TE1BP0
+        author: Jacob Chapel
+        body: "MUST-FIX: annotation-only positive evidence with absent freshness metadata is silently marked
+          covered. In compareCriterionTextFreshness(), latestPositiveEvidenceVersion() returns null
+          when an entry has only annotation evidence and no recorded/bootstrap/run timestamp, and
+          this early return emits no unknown_freshness finding. A behavioral probe using
+          buildCoverageEvidenceIndex() with one AC annotation and no freshness inputs produced
+          state=covered/presentation=covered, even though @coverage-freshness-revision-comparison
+          ac-unknown-comparison-degrades-to-reverify requires positive evidence with absent or
+          unresolvable comparison metadata to enter re_verify with unknown_freshness instead of
+          being silently covered."
+        created_at: 2026-06-24T17:14:02.661Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-24T17:09:22.850Z
-updated_at: 2026-06-24T17:13:45.975Z
+updated_at: 2026-06-24T17:14:02.661Z
 notes: []
