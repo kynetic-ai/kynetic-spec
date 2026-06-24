@@ -13367,7 +13367,7 @@ workspaces:
         head: 70196da095e80a4a656bdca2d6113013ab27722c
         last_seen_at: 2026-06-24T14:31:58.508Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-freshness-revision-comparison-01kvve0d
-  - active_role: null
+  - active_role: worker
     base_branch_point: 64674c90fd90de522fb7d36a768142658ecfae4e
     bootstrap:
       status: succeeded
@@ -13703,7 +13703,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-24T14:38:35.069Z
+      updated_at: 2026-06-24T14:39:05.253Z
     integration:
       status: pending
       detail: null
@@ -13712,17 +13712,17 @@ workspaces:
       target_branch: dev
       target_commit: 64674c90fd90de522fb7d36a768142658ecfae4e
       updated_at: 2026-06-24T14:38:35.069Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KVX11EG8GNCB9XRA2JWCCRPK
     task_ref: "@01KVX11EG8GNCB9XRA2JWCCRPK"
     task_slug: task-shared-package-export-typecheck-baseline
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-24T14:38:35.069Z
+      last_active_at: 2026-06-24T14:39:05.253Z
+      last_reconciled_at: 2026-06-24T14:39:05.253Z
       created_at: 2026-06-24T14:38:35.069Z
-      updated_at: 2026-06-24T14:39:00.848Z
+      updated_at: 2026-06-24T14:39:05.253Z
     workspace_id: dispatch-workspace-01KVX11EG8GNCB9XRA2JWCCRPK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
