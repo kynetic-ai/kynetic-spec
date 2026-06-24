@@ -2,7 +2,93 @@ _ulid: 01KVXF57DT8C6KZ5SRPYFZYQ06
 slugs: []
 title: Review task-coverage-freshness-revision-comparison cycle 5
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. oxfmt checked 1115 files; all matched files use correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-24T18:59:41.322Z
+    completed_at: 2026-06-24T18:59:41.322Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. Repo-wide lint reported 0 errors with the existing warning baseline; focused
+      oxlint on changed files reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-24T18:59:44.752Z
+    completed_at: 2026-06-24T18:59:44.752Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on src/parser/coverage-freshness-comparison.ts, src/parser/coverage-state.ts,
+      src/parser/index.ts, tests/coverage-freshness-comparison.test.ts: 0 warnings, 0 errors."
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-24T18:59:48.126Z
+    completed_at: 2026-06-24T18:59:48.126Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. build:shared and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-24T18:59:51.413Z
+    completed_at: 2026-06-24T18:59:51.413Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed fresh run: 2907 suites passed; 11044 tests passed, 3 skipped of 11047; duration
+      2949.0s. Full log: /tmp/kspec-test-cache/01KVXF3GDYDJGW7MX9WAG890TC/0cbb4f6cb76b8238.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-06-24T18:59:54.739Z
+    completed_at: 2026-06-24T18:59:54.739Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok. Schema OK; references OK; existing deprecated-reference warning
+      baseline remains.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-24T18:59:58.087Z
+    completed_at: 2026-06-24T18:59:58.087Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok. Existing alignment warning baseline remains.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-24T19:00:01.416Z
+    completed_at: 2026-06-24T19:00:01.416Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok. Existing completeness warning baseline remains;
+      @coverage-freshness-revision-comparison ACs have behavioral annotations in
+      tests/coverage-freshness-comparison.test.ts.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-24T19:00:04.748Z
+    completed_at: 2026-06-24T19:00:04.748Z
 events:
   - _ulid: 01KVXF57DSNQXGMK8Z3R62Q4AD
     actor: Jacob Chapel
@@ -17,17 +103,141 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-24T18:44:55.058Z
+  - _ulid: 01KVXG16X7W4PEF3YDA6CKPZ1T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-24T18:59:41.607Z
+  - _ulid: 01KVXG1A82TCVXTT0NNBA6HQ8K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-24T18:59:45.026Z
+  - _ulid: 01KVXG1DGQ0JBH2CRPBJQXVTCG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-24T18:59:48.375Z
+  - _ulid: 01KVXG1GRFQF5CPNG455RAS4ZV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-24T18:59:51.695Z
+  - _ulid: 01KVXG1M00PZZ2FVRDBJM2DSDM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-24T18:59:55.008Z
+  - _ulid: 01KVXG1Q8HWNSBXN6GSZQFRPTA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-24T18:59:58.353Z
+  - _ulid: 01KVXG1TGB6QKDH4W8M70N1GEY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-24T19:00:01.675Z
+  - _ulid: 01KVXG1XRSM6QJMV8YPH12ZPCB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-24T19:00:05.017Z
+  - _ulid: 01KVXG2112DAGCB65MSCEYQ6YN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVXG20RN6DV4KRM5AGQCQ0PM
+    timestamp: 2026-06-24T19:00:08.354Z
+  - _ulid: 01KVXG248TTAGWPADA75AXDKT0
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-24T19:00:11.674Z
+  - _ulid: 01KVXG248TF3XG3CMS0AMFCR7K
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-24T19:00:11.674Z
 examined_commit: fc89d710896b28e4b155deb61c77f941ccaea4a3
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVVE0DG6ZG9NX5A2A86ZJQ63"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVXG20RN6DV4KRM5AGQCQ0PM
+    entries:
+      - _ulid: 01KVXG20RNC6NGT4NX07VHTTCN
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; task/spec context for @01KVVE0DG6ZG9NX5A2A86ZJQ63 and
+          @coverage-freshness-revision-comparison; prior review records @01KVX0RT, @01KVX41B,
+          @01KVX6NH, @01KVX9Q7; src/parser/coverage-freshness-comparison.ts;
+          src/parser/coverage-state.ts; src/parser/coverage-evidence-index.ts; src/parser/index.ts;
+          tests/coverage-freshness-comparison.test.ts; tests/coverage-state.test.ts.
+
+
+          Commands run: git diff --stat/name-only/full diff against
+          779c732e5e203ebf73d23a6c5644b5dd9e1cd6a2; kspec item get
+          @coverage-freshness-revision-comparison; kspec review for-task/get prior cycles; rg AC
+          annotations; npm run format:check; npx oxlint changed files; npm run lint -- --quiet; npm
+          run typecheck; npm test -- --fresh; kspec validate --refs/--alignment/--completeness
+          --warnings-ok; git diff --check.
+
+
+          Claims verified: cycle-4 annotation-only metadata blocker is covered by a behavioral
+          regression and latestPositiveEvidenceVersion now returns unknown_freshness when no
+          comparable timestamp/commit exists; prior project-code-vs-spec-source and diverged-history
+          blockers are covered by temp-repo tests and implemented with timestamp-based spec text
+          lookup plus ancestor/descendant comparison.
+
+
+          Categories searched: correctness, edge cases for missing metadata/diverged
+          revisions/sibling ACs, error handling for unresolvable git history, test quality and AC
+          annotations, integration with coverage evidence/state precedence. No blockers found.
+
+
+          Shared/package guidance surfaces touched: none.
+        created_at: 2026-06-24T19:00:08.085Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-24T19:00:11.674Z
 created_at: 2026-06-24T18:44:24.634Z
-updated_at: 2026-06-24T18:44:54.811Z
+updated_at: 2026-06-24T19:00:11.674Z
 notes: []
