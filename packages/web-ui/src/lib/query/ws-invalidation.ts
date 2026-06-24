@@ -12,6 +12,7 @@
 import type { QueryClient } from "@tanstack/svelte-query";
 import type {
   BroadcastEvent,
+  CoverageStateChangedEventData,
   PlanResourceChangedEventData,
   ReviewCreatedEventData,
   SpecItemChangedEventData,
@@ -80,6 +81,10 @@ function getTaskInvalidationKeys(event: BroadcastEvent): readonly (readonly unkn
 }
 
 function getItemInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
+  if (event.event === "coverage_state_changed") {
+    return getCoverageStateInvalidationKeys(event);
+  }
+
   if (event.event !== "spec_item_changed") {
     return [queryKeys.items.lists(), queryKeys.validation.all];
   }
@@ -92,6 +97,42 @@ function getItemInvalidationKeys(event: BroadcastEvent): readonly (readonly unkn
     queryKeys.items.lists(),
     queryKeys.validation.all,
   ]);
+}
+
+function getCoverageStateInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
+  const data = event.data as Partial<CoverageStateChangedEventData>;
+  const keys: (readonly unknown[])[] = [];
+  const refresh = data.refresh ?? {};
+
+  if (refresh.project_summary !== false) {
+    keys.push(queryKeys.coverage.summary());
+  }
+
+  const items = Array.isArray(data.affected?.items) ? data.affected.items : [];
+  for (const item of items) {
+    const refs = [item.item_ulid, item.item_ref].filter(
+      (value, index, arr): value is string =>
+        typeof value === "string" && value.length > 0 && arr.indexOf(value) === index,
+    );
+    if (refresh.item_detail !== false) {
+      for (const ref of refs) {
+        keys.push(queryKeys.coverage.item(ref));
+      }
+    }
+    if (refresh.criterion_detail !== false && Array.isArray(item.ac_ids)) {
+      for (const ref of refs) {
+        for (const acId of item.ac_ids) {
+          keys.push(queryKeys.coverage.criterion(ref, acId));
+        }
+      }
+    }
+  }
+
+  if (refresh.unmapped_results) {
+    keys.push(queryKeys.coverage.unmapped());
+  }
+
+  return keys.length > 0 ? uniqueKeys(keys) : [queryKeys.coverage.all];
 }
 
 function getReviewInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
@@ -138,7 +179,12 @@ function getPlanInvalidationKeys(event: BroadcastEvent): readonly (readonly unkn
 }
 
 function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
-  const ref = (event.data as { ref?: string } | undefined)?.ref;
+  const data = event.data as { ref?: string; family?: string } | undefined;
+  if (data?.family === "coverage_state") {
+    return [queryKeys.coverage.all];
+  }
+
+  const ref = data?.ref;
   if (!ref) {
     return [];
   }
@@ -187,7 +233,7 @@ function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonl
   }
 
   if (ref.startsWith("modules/") || ref.endsWith(".spec.yaml")) {
-    return [queryKeys.items.lists(), queryKeys.validation.all];
+    return [queryKeys.items.lists(), queryKeys.validation.all, queryKeys.coverage.all];
   }
 
   if (ref === "kynetic.yaml" || ref.endsWith(".meta.yaml")) {
@@ -197,6 +243,7 @@ function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonl
       queryKeys.workflows.all,
       queryKeys.observations.all,
       queryKeys.validation.all,
+      queryKeys.coverage.all,
       queryKeys.automation.all,
       queryKeys.sessionContext.all,
     ];
@@ -207,6 +254,7 @@ function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonl
     queryKeys.workflows.all,
     queryKeys.observations.all,
     queryKeys.validation.all,
+    queryKeys.coverage.all,
     queryKeys.automation.all,
     queryKeys.sessionContext.all,
   ];
@@ -313,7 +361,7 @@ function getInvalidationKeys(
  */
 const DOMAIN_QUERY_KEY_MAP: Record<string, readonly (readonly unknown[])[]> = {
   tasks: [queryKeys.tasks.all, queryKeys.validation.all, queryKeys.sessionContext.all],
-  items: [queryKeys.items.all, queryKeys.validation.all],
+  items: [queryKeys.items.all, queryKeys.validation.all, queryKeys.coverage.all],
   inbox: [queryKeys.inbox.all],
   triage: [queryKeys.inbox.all],
   reviews: [queryKeys.reviews.all],

@@ -8,9 +8,12 @@ import {
   TestResultIngestionReadOnlyError,
   TestResultIngestionValidationError,
   type TestResultIngestionResult,
+  type TestResultIngestionSummary,
 } from "../../parser/index.js";
 import type {
   CoverageCriterionStateDetail,
+  CoverageStateChangedEventData,
+  CoverageStateSnapshot,
   CoverageItemStateSummary,
   CoverageStateSummary,
   CoverageUnmappedResultSummary,
@@ -100,6 +103,65 @@ function criterionNotFound(ref: string, acId: string) {
     error: "not_found",
     message: `Coverage criterion "${ref} ${acId}" not found`,
     suggestion: "Use GET /api/coverage/state/items/:ref to list available criteria",
+  };
+}
+
+function uniqueSorted(values: Iterable<string>): string[] {
+  return [...new Set(values)].toSorted();
+}
+
+function bucketsForCriteria(
+  item: CoverageItemStateSummary,
+  acIds: readonly string[],
+): Array<keyof CoverageStateSummary["counts"]> {
+  const acSet = new Set(acIds);
+  return uniqueSorted(
+    item.criteria
+      .filter((criterion) => acSet.has(criterion.ac_id))
+      .map((criterion) => criterion.presentation),
+  ) as Array<keyof CoverageStateSummary["counts"]>;
+}
+
+function buildCoverageStateChangedEvent(
+  summary: TestResultIngestionSummary,
+  model: CoverageStateSnapshot,
+): CoverageStateChangedEventData {
+  const acIdsByItemRef = new Map<string, Set<string>>();
+  for (const mapping of summary.mapping.attributed) {
+    const set = acIdsByItemRef.get(mapping.item_ref) ?? new Set<string>();
+    set.add(mapping.ac_id);
+    acIdsByItemRef.set(mapping.item_ref, set);
+  }
+
+  const affectedItems = summary.affected_item_refs.flatMap((itemRef) => {
+    const item = model.items[itemRef] ?? model.items[itemRef.replace(/^@/, "")];
+    if (!item) return [];
+    const acIds = uniqueSorted(acIdsByItemRef.get(itemRef) ?? []);
+    return [
+      {
+        item_ulid: item.item_ulid,
+        item_ref: item.item_ref,
+        ...(acIds.length > 0 ? { ac_ids: acIds } : {}),
+        ...(acIds.length > 0 ? { buckets: bucketsForCriteria(item, acIds) } : {}),
+      },
+    ];
+  });
+
+  return {
+    action: "changed",
+    family: "coverage_state",
+    run_id: summary.run_id,
+    affected: {
+      items: affectedItems,
+    },
+    refresh: {
+      project_summary: true,
+      item_detail: affectedItems.length > 0,
+      criterion_detail: affectedItems.some((item) => (item.ac_ids?.length ?? 0) > 0),
+      unmapped_results: summary.unmapped_count > 0 || summary.invalid_mapping_count > 0,
+    },
+    scope: affectedItems.length > 0 ? "precise" : "project",
+    reason: "test_result_ingestion",
   };
 }
 
@@ -279,6 +341,15 @@ export function createCoverageRoutes(options: CoverageRouteOptions) {
           }
 
           invalidateCoverageStateReadModelCache(projectPath);
+          if (!result.summary.dry_run && result.summary.stored) {
+            const refreshedModel = await getCachedCoverageStateReadModel(ctx);
+            pubsub.broadcast(
+              "items:updates",
+              "coverage_state_changed",
+              buildCoverageStateChangedEvent(result.summary, refreshedModel),
+              projectPath,
+            );
+          }
           return wrapResponse(result.summary);
         },
         {

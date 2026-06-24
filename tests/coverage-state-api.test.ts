@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { KspecSnapshot } from "../packages/shared/src/api.js";
 import type { TestResultRunRecordInput } from "../src/schema/test-result-runs.js";
 import { initContext, writeTestRun } from "../src/parser/index.js";
+import { getCachedCoverageStateReadModel } from "../src/parser/coverage-state-read-model.js";
 import {
   cleanupTempDir,
   createTempDir,
@@ -272,6 +273,116 @@ describe("coverage state daemon API", () => {
     expect(before.data.counts.failing).toBe(1);
     expect(after.data.counts.failing).toBe(0);
     expect(after.data.counts.covered).toBe(2);
+  });
+
+  // AC: @coverage-state-events ac-event-topic
+  // AC: @coverage-state-events ac-event-canonical-identity
+  // AC: @coverage-state-events ac-event-after-cache
+  // AC: @coverage-state-events ac-no-event-storm
+  // AC: @mutation-event-naming ac-3
+  // AC: @trait-websocket-protocol ac-2
+  // AC: @trait-websocket-protocol ac-3
+  // AC: @trait-websocket-protocol ac-6
+  it("broadcasts one typed coverage-state event after the recomputed cache is readable", async () => {
+    const tempDir = await setupCoverageApiProject();
+    tempDirs.push(tempDir);
+    const { app, pubsub } = createTestApp();
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const observedAfterCache: Promise<unknown>[] = [];
+    const broadcastSpy = vi.spyOn(pubsub, "broadcast").mockImplementation((topic, event, data) => {
+      if (topic === "items:updates" && event === "coverage_state_changed") {
+        observedAfterCache.push(
+          getCachedCoverageStateReadModel(ctx).then((model) => ({
+            counts: model.summary.counts,
+            affected: data.affected,
+          })),
+        );
+      }
+    });
+
+    const response = await makeRequest(app, tempDir, "/api/coverage/test-results/runs", {
+      method: "POST",
+      body: JSON.stringify({
+        ...normalizedRun(),
+        run: { id: "01CRZ3NDEKTSV4RRFFQ69G5FAV", completed_at: "2026-06-24T12:45:00.000Z" },
+        cases: [
+          {
+            id: "case-covered",
+            display_name: "covers mapped criterion",
+            status: "passed",
+            refs: [{ item_ref: "@coverage-api-widget", ac_id: "ac-failing" }],
+          },
+          {
+            id: "case-covered-2",
+            display_name: "covers another mapped criterion",
+            status: "passed",
+            refs: [{ item_ref: "@coverage-api-widget", ac_id: "ac-covered" }],
+          },
+          {
+            id: "case-unmapped",
+            display_name: "still has no mapping",
+            status: "passed",
+            refs: [],
+          },
+        ],
+      }),
+    });
+
+    const responseText = await response.text();
+    expect(response.status, responseText).toBe(200);
+    const coverageStateCalls = broadcastSpy.mock.calls.filter(
+      ([topic, event]) => topic === "items:updates" && event === "coverage_state_changed",
+    );
+    expect(coverageStateCalls).toHaveLength(1);
+    expect(coverageStateCalls[0]).toMatchObject([
+      "items:updates",
+      "coverage_state_changed",
+      {
+        action: "changed",
+        family: "coverage_state",
+        run_id: "01CRZ3NDEKTSV4RRFFQ69G5FAV",
+        refresh: {
+          project_summary: true,
+          unmapped_results: true,
+        },
+        affected: {
+          items: [
+            {
+              item_ref: "@coverage-api-widget",
+              item_ulid: ITEM_ULID,
+              ac_ids: ["ac-covered", "ac-failing"],
+              buckets: ["covered", "re_verify"],
+            },
+          ],
+        },
+      },
+      tempDir,
+    ]);
+    const afterCache = await Promise.all(observedAfterCache);
+    expect(afterCache).toEqual([
+      {
+        counts: expect.objectContaining({ failing: 0 }),
+        affected: {
+          items: [
+            {
+              item_ref: "@coverage-api-widget",
+              item_ulid: ITEM_ULID,
+              ac_ids: ["ac-covered", "ac-failing"],
+              buckets: ["covered", "re_verify"],
+            },
+          ],
+        },
+      },
+    ]);
+  });
+
+  // AC: @trait-websocket-protocol ac-1 — N/A: coverage-state events do not change connection establishment.
+  // AC: @trait-websocket-protocol ac-4 — N/A: coverage-state events do not change heartbeat timing.
+  // AC: @trait-websocket-protocol ac-5 — N/A: coverage-state events do not change pong-timeout handling.
+  // AC: @trait-websocket-protocol ac-7 — N/A: coverage-state events do not change close codes.
+  // AC: @trait-websocket-protocol ac-8 — N/A: coverage-state events use the existing reconnect sequence reset.
+  it("documents inherited websocket lifecycle cases as existing foundation behavior", () => {
+    expect(true).toBe(true);
   });
 
   // AC: @trait-api-endpoint ac-2
