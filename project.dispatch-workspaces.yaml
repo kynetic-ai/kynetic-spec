@@ -13876,7 +13876,7 @@ workspaces:
         head: 64674c90fd90de522fb7d36a768142658ecfae4e
         last_seen_at: 2026-06-24T14:56:53.298Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-shared-package-export-typecheck-baseline-01kvx11e
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 563659b13fe4bb8e7943024cc0d6fb096c7c81d0
     bootstrap:
       status: succeeded
@@ -14359,7 +14359,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-24T20:25:25.009Z
+      updated_at: 2026-06-24T20:26:01.176Z
     integration:
       status: pending
       detail: null
@@ -14375,10 +14375,10 @@ workspaces:
     task_slug: task-coverage-state-api-cache
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-24T19:58:50.180Z
-      last_reconciled_at: 2026-06-24T20:25:25.009Z
+      last_active_at: 2026-06-24T20:26:01.176Z
+      last_reconciled_at: 2026-06-24T20:26:01.176Z
       created_at: 2026-06-24T19:01:05.059Z
-      updated_at: 2026-06-24T20:25:53.350Z
+      updated_at: 2026-06-24T20:26:01.176Z
     workspace_id: dispatch-workspace-01KVVE0DTZ9RGYWRC08376NZFX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
