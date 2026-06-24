@@ -401,6 +401,40 @@ describe("coverage freshness comparison", () => {
     expect(state.presentation).toBe("covered");
   });
 
+  // AC: @coverage-freshness-revision-comparison ac-ac-text-change-detected
+  // AC: @coverage-freshness-revision-comparison ac-unknown-comparison-degrades-to-reverify
+  it("uses recorded and bootstrap timestamps instead of project code revisions when comparing shadow spec text", async () => {
+    initGitRepo(env.specDir);
+    await commitRepoPath(env.specDir, "kynetic.yaml", "2026-06-01T00:00:00.000Z");
+    await commitRepoPath(env.specDir, "modules/specs.yaml", "2026-06-01T00:01:00.000Z");
+    await fs.writeFile(env.testFile, `// AC: @neutral-freshness ac-one\nit("covers", () => {});\n`);
+    const projectRevision = await commitPath(
+      env,
+      "tests/coverage.test.ts",
+      "2026-06-02T00:00:00.000Z",
+    );
+    const item = await loadItem(env);
+
+    const recorded = await deriveCoverageStateWithFreshnessComparison(
+      entryByAc([item], "ac-one", {
+        recorded: { timestamp: "2026-06-02T00:30:00.000Z", commit: projectRevision },
+      }),
+      { item, projectRoot: env.tempDir },
+    );
+    const bootstrap = await deriveCoverageStateWithFreshnessComparison(
+      entryByAc([item], "ac-one", {
+        annotationLine: 1,
+        bootstrap: { timestamp: "2026-06-02T00:30:00.000Z", commit: projectRevision },
+      }),
+      { item, projectRoot: env.tempDir },
+    );
+
+    expect(recorded.state).toBe("covered");
+    expect(recorded.presentation).toBe("covered");
+    expect(bootstrap.state).toBe("covered");
+    expect(bootstrap.presentation).toBe("covered");
+  });
+
   // AC: @coverage-freshness-revision-comparison ac-test-result-code-revision-compared
   // AC: @coverage-freshness-revision-comparison ac-unknown-comparison-degrades-to-reverify
   it("reports unknown freshness when source revisions are diverged rather than comparable", async () => {

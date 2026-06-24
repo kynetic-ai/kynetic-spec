@@ -425,16 +425,11 @@ function latestPositiveEvidenceVersion(
     entry.recordedVerification
       ? {
           atTimestamp: entry.recordedVerification.timestamp,
-          atCommit: entry.recordedVerification.commit,
         }
       : null,
-    entry.bootstrapFreshness &&
-    (entry.bootstrapFreshness.timestamp || entry.bootstrapFreshness.commit)
+    entry.bootstrapFreshness?.timestamp
       ? {
-          ...(entry.bootstrapFreshness.timestamp
-            ? { atTimestamp: entry.bootstrapFreshness.timestamp }
-            : {}),
-          atCommit: entry.bootstrapFreshness.commit,
+          atTimestamp: entry.bootstrapFreshness.timestamp,
         }
       : null,
     ...entry.latestIngestedResults
