@@ -174,9 +174,25 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-24T17:30:59.151Z
+  - _ulid: 01KVXAZ470REWAWCEZ4CEV0C69
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-24T17:31:10.432Z
+  - _ulid: 01KVXAZ470JJ0YWDKQ9R4Y6NHQ
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-24T17:31:10.432Z
 examined_commit: 0b231000f66ba49fa349fad97cc173da9ca4be85
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -230,7 +246,14 @@ threads:
           unknown_freshness/re_verify."
         created_at: 2026-06-24T17:30:55.147Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-24T17:31:10.432Z
 created_at: 2026-06-24T17:09:22.850Z
-updated_at: 2026-06-24T17:30:58.896Z
+updated_at: 2026-06-24T17:31:10.432Z
 notes: []

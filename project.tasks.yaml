@@ -33052,7 +33052,7 @@
   type: task
   spec_ref: "@coverage-freshness-revision-comparison"
   plan_ref: "@plan-coverage-state-engine"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-coverage-state-derivation"
@@ -33062,7 +33062,7 @@
     - freshness
     - git
   review_ref: "@01KVX9Q793C7GFC96N3NA99HSJ"
-  notes_count: 14
+  notes_count: 15
   todos_count: 0
   created_at: 2026-06-23T23:45:49.574Z
   started_at: 2026-06-24T16:44:24.771Z
