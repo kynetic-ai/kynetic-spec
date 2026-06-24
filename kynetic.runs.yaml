@@ -73713,7 +73713,7 @@ runs:
     completed_at: 2026-06-24T21:35:23.093Z
   - _ulid: 01KVXT66EYSSZW6R4TXX1J9ARP
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73743,10 +73743,18 @@ runs:
           and related observations. Searches for 'non-applicable inherited trait', 'centralized
           invalidation', and 'N/A trait guidance' found no matches, so the success pattern appears
           untracked."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-06-24T21:58:51.921Z
-        completed_at: 2026-06-24T21:58:51.921Z
+        completed_at: 2026-06-24T21:59:01.478Z
+        notes: "No untracked friction improvements proposed. The two friction points are already tracked.
+          Candidate capture is a success observation, not an improvement task: explicit N/A trait
+          scope in task descriptions plus centralized invalidation reduced implementation and review
+          risk."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-24T21:59:01.478Z
+        completed_at: 2026-06-24T21:59:01.478Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-24T21:57:10.751Z
