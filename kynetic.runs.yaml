@@ -73712,7 +73712,7 @@ runs:
     started_at: 2026-06-24T21:33:44.945Z
     completed_at: 2026-06-24T21:35:23.093Z
   - _ulid: 01KVXT66EYSSZW6R4TXX1J9ARP
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -73760,7 +73760,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-24T21:59:10.480Z
-        completed_at: 2026-06-24T21:59:10.480Z
+        completed_at: 2026-06-24T21:59:34.120Z
+        notes: Captured success observation @01KVXTA5. No new friction items captured because full-test
+          runtime/teardown and stale build artifacts were already tracked by existing
+          tasks/observations.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-24T21:57:10.751Z
+    completed_at: 2026-06-24T21:59:34.120Z
