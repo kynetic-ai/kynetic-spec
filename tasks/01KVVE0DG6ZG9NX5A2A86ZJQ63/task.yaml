@@ -51,7 +51,7 @@ description: >-
 spec_ref: "@coverage-freshness-revision-comparison"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-coverage-state-derivation"
@@ -71,7 +71,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
-session_id: 01KVX56V9QYXQX1W7B7M2HDY3R
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -365,6 +365,16 @@ history:
         previous: "@01KVX41B7N79GT9JKHPGCQ38RM"
     command: review-link
     timestamp: 2026-06-24T16:16:04.860Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KVX56V9QYXQX1W7B7M2HDY3R
+    command: review-verdict-needs-work
+    timestamp: 2026-06-24T16:37:46.573Z
 prior_status: null
 created_at: 2026-06-23T23:45:49.574Z
 started_at: 2026-06-24T15:51:59.613Z
