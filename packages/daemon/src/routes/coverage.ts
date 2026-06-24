@@ -17,6 +17,7 @@ import type {
 } from "@kynetic-ai/shared";
 import type { PubSubManager } from "../websocket/pubsub.js";
 import type { EntityCacheAccessor } from "./entity-cache-types.js";
+import { buildCoverageStateChangedEventForIngestion } from "./coverage-state-events.js";
 import { runRouteMutation } from "./mutation-pipeline.js";
 import { wrapResponse } from "./response-envelope.js";
 
@@ -279,6 +280,15 @@ export function createCoverageRoutes(options: CoverageRouteOptions) {
           }
 
           invalidateCoverageStateReadModelCache(projectPath);
+          if (!result.summary.dry_run && result.summary.stored) {
+            const refreshedModel = await getCachedCoverageStateReadModel(ctx);
+            pubsub.broadcast(
+              "items:updates",
+              "coverage_state_changed",
+              buildCoverageStateChangedEventForIngestion(result.summary, refreshedModel),
+              projectPath,
+            );
+          }
           return wrapResponse(result.summary);
         },
         {

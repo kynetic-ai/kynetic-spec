@@ -41,8 +41,14 @@ import { DEFAULT_DAEMON_COMMAND_TIMEOUT_MS } from "../pid.js";
 import {
   createMutationEventCollector,
   runWithMutationEventCollector,
-  type MutationEventCollector,
+  type MutationEventDescriptor,
 } from "../../mutation-pipeline.js";
+import {
+  getCachedCoverageStateReadModel,
+  initContext,
+  invalidateCoverageStateReadModelCache,
+} from "../../parser/index.js";
+import { buildCoverageStateChangedEventForSpecMutations } from "./coverage-state-events.js";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -74,13 +80,41 @@ export interface CommandExecutionContext {
 const commandExecutionStorage = new AsyncLocalStorage<CommandExecutionContext>();
 
 function broadcastCollectedMutationEvents(
-  collector: MutationEventCollector,
+  events: readonly MutationEventDescriptor[],
   pubsub: PubSubManager,
   projectPath: string,
 ): void {
-  for (const descriptor of collector.drain()) {
+  for (const descriptor of events) {
     pubsub.broadcast(descriptor.topic, descriptor.event, descriptor.data, projectPath);
   }
+}
+
+async function broadcastCoverageStateForSpecMutations(
+  events: readonly MutationEventDescriptor[],
+  pubsub: PubSubManager,
+  projectPath: string,
+): Promise<void> {
+  if (
+    !events.some((event) => event.topic === "items:updates" && event.event === "spec_item_changed")
+  ) {
+    return;
+  }
+
+  await runWithEntityCache(
+    async () => {
+      invalidateCoverageStateReadModelCache(projectPath);
+      const ctx = await initContext(projectPath, { syncMode: "skip" });
+      const model = await getCachedCoverageStateReadModel(ctx);
+      const coverageEvent = buildCoverageStateChangedEventForSpecMutations(events, model);
+      if (!coverageEvent) {
+        return;
+      }
+
+      pubsub.broadcast("items:updates", "coverage_state_changed", coverageEvent, projectPath);
+    },
+    () => null,
+    projectPath,
+  );
 }
 
 function serializeConsoleArgs(args: unknown[]): string {
@@ -863,7 +897,9 @@ export function createCommandRoutes(options: CommandRouteOptions) {
                   );
                 }
 
-                broadcastCollectedMutationEvents(mutationEvents, pubsub, projectContext.path);
+                const events = mutationEvents.drain();
+                await broadcastCoverageStateForSpecMutations(events, pubsub, projectContext.path);
+                broadcastCollectedMutationEvents(events, pubsub, projectContext.path);
 
                 // AC: @daemon-command-api ac-mutation-cache-update — WebSocket broadcast
                 pubsub.broadcast(
@@ -1042,7 +1078,9 @@ export function createCommandRoutes(options: CommandRouteOptions) {
                   );
                 }
 
-                broadcastCollectedMutationEvents(mutationEvents, pubsub, projectPath);
+                const events = mutationEvents.drain();
+                await broadcastCoverageStateForSpecMutations(events, pubsub, projectPath);
+                broadcastCollectedMutationEvents(events, pubsub, projectPath);
 
                 // WebSocket broadcast for batch completion
                 pubsub.broadcast(

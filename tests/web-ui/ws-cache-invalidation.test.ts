@@ -186,7 +186,8 @@ describe("ws-invalidation targeted entity event handling", () => {
   });
 
   // AC: @ui-targeted-event-consumption ac-1
-  it("refreshes affected item and validation views for a spec-item event only", () => {
+  // AC: @coverage-state-events ac-event-canonical-identity
+  it("refreshes affected item, validation, and coverage views for a spec-item event", () => {
     setupWsInvalidation(mockQueryClient);
     const event = makeBroadcastEvent("items:updates", "spec_item_changed", {
       item_ulid: "01ITEMTARGET0000000000000",
@@ -198,14 +199,61 @@ describe("ws-invalidation targeted entity event handling", () => {
 
     expect(invalidatedKeys(mockQueryClient)).toEqual([
       queryKeys.items.detail("01ITEMTARGET0000000000000"),
+      queryKeys.coverage.item("01ITEMTARGET0000000000000"),
+      queryKeys.coverage.criteriaForItem("01ITEMTARGET0000000000000"),
       queryKeys.items.lists(),
       queryKeys.validation.all,
+      queryKeys.coverage.summary(),
     ]);
     expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
       queryKey: queryKeys.tasks.all,
     });
     expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
       queryKey: queryKeys.reviews.all,
+    });
+  });
+
+  // AC: @coverage-state-events ac-event-topic
+  // AC: @coverage-state-events ac-event-canonical-identity
+  it("refreshes precise coverage-state queries for coverage state item events", () => {
+    setupWsInvalidation(mockQueryClient);
+    const event = makeBroadcastEvent("items:updates", "coverage_state_changed", {
+      family: "coverage_state",
+      action: "changed",
+      refresh: {
+        project_summary: true,
+        item_detail: true,
+        criterion_detail: true,
+        unmapped_results: true,
+      },
+      affected: {
+        items: [
+          {
+            item_ulid: "01ITEMTARGET0000000000000",
+            item_ref: "@coverage-api-widget",
+            ac_ids: ["ac-covered", "ac-failing"],
+          },
+        ],
+      },
+    });
+
+    dispatchEvent("items:updates", event);
+
+    expect(invalidatedKeys(mockQueryClient)).toEqual([
+      queryKeys.coverage.summary(),
+      queryKeys.coverage.item("01ITEMTARGET0000000000000"),
+      queryKeys.coverage.item("@coverage-api-widget"),
+      queryKeys.coverage.criterion("01ITEMTARGET0000000000000", "ac-covered"),
+      queryKeys.coverage.criterion("01ITEMTARGET0000000000000", "ac-failing"),
+      queryKeys.coverage.criterion("@coverage-api-widget", "ac-covered"),
+      queryKeys.coverage.criterion("@coverage-api-widget", "ac-failing"),
+      queryKeys.coverage.unmapped(),
+    ]);
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.items.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.validation.all,
     });
   });
 
@@ -316,6 +364,29 @@ describe("ws-invalidation targeted entity event handling", () => {
     });
     expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
       queryKey: queryKeys.items.all,
+    });
+  });
+
+  // AC: @coverage-state-events ac-file-change-fallback
+  it("maps source file watcher fallback to coverage-state refreshes without global reload", () => {
+    setupWsInvalidation(mockQueryClient);
+    const event = makeBroadcastEvent("files:updates", "file_changed", {
+      ref: "tests/coverage-api.test.ts",
+      action: "modified",
+      family: "coverage_state",
+    });
+
+    dispatchEvent("files:updates", event);
+
+    expect(invalidatedKeys(mockQueryClient)).toEqual([queryKeys.coverage.all]);
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.tasks.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.items.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.sessionContext.all,
     });
   });
 });

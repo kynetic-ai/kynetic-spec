@@ -47,6 +47,16 @@ export const queryKeys = {
     aggregation: () => [...queryKeys.validation.all, "aggregation"] as const,
   },
 
+  coverage: {
+    all: ["coverage"] as const,
+    summary: () => [...queryKeys.coverage.all, "summary"] as const,
+    item: (ref: string) => [...queryKeys.coverage.all, "item", ref] as const,
+    criteriaForItem: (ref: string) => [...queryKeys.coverage.all, "criterion", ref] as const,
+    criterion: (ref: string, acId: string) =>
+      [...queryKeys.coverage.all, "criterion", ref, acId] as const,
+    unmapped: () => [...queryKeys.coverage.all, "unmapped"] as const,
+  },
+
   agents: {
     all: ["agents"] as const,
     status: () => [...queryKeys.agents.all, "status"] as const,

@@ -1,4 +1,4 @@
-import type { ReviewSubject, ReviewThreadKind } from "./api.js";
+import type { CoverageBucketCounts, ReviewSubject, ReviewThreadKind } from "./api.js";
 
 /**
  * WebSocket Protocol Types
@@ -84,6 +84,38 @@ export interface SpecItemChangedEventData {
   item_ulid: string;
   action: "created" | "changed" | "removed";
   title: string;
+}
+
+export type CoverageStateEventAction = "changed" | "invalidated";
+
+export interface CoverageStateAffectedItem {
+  item_ulid: string;
+  item_ref?: string;
+  ac_ids?: string[];
+  buckets?: Array<keyof CoverageBucketCounts>;
+}
+
+export interface CoverageStateChangedEventData {
+  action: CoverageStateEventAction;
+  family: "coverage_state";
+  run_id?: string;
+  affected: {
+    items: CoverageStateAffectedItem[];
+  };
+  refresh: {
+    project_summary: boolean;
+    item_detail: boolean;
+    criterion_detail: boolean;
+    unmapped_results: boolean;
+  };
+  scope: "precise" | "project";
+  reason:
+    | "test_result_ingestion"
+    | "verification_stamp"
+    | "spec_mutation"
+    | "annotation_file_change"
+    | "cache_invalidation"
+    | "unknown";
 }
 
 /**
@@ -317,6 +349,7 @@ export const ENTITY_EVENT_VOCABULARY = [
   { topic: "reviews:updates", event: "resource_changed" },
   { topic: "plans:updates", event: "plan_resource_changed" },
   { topic: "items:updates", event: "coverage_evidence_changed" },
+  { topic: "items:updates", event: "coverage_state_changed" },
 ] as const satisfies readonly EntityEventVocabularyEntry[];
 
 // ─── Entity Event Vocabulary Reservations ───────────────────────────────────

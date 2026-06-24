@@ -350,6 +350,19 @@ export class ProjectContextManager {
       coverageWatcher = new CoverageScanWatcher(
         normalizedPath,
         (file) => {
+          if (this.pubsub) {
+            const relativePath = relative(normalizedPath, file);
+            this.pubsub.broadcast(
+              "files:updates",
+              "file_changed",
+              {
+                ref: relativePath,
+                action: "modified",
+                family: "coverage_state",
+              },
+              normalizedPath,
+            );
+          }
           // AC: @coverage-state-api-cache ac-cache-invalidation — source annotation
           // files and coverage scan config are outside .kspec/, so forward them
           // with the project root as the watched root. Entity cache treats this
