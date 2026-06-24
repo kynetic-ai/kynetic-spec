@@ -73000,7 +73000,7 @@ runs:
     completed_at: 2026-06-24T14:55:41.591Z
   - _ulid: 01KVX38XE8MM7J0Q6P12EWWNED
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73013,7 +73013,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-24T15:18:08.718Z
-        completed_at: 2026-06-24T15:18:08.718Z
+        completed_at: 2026-06-24T15:19:00.059Z
+        notes: "High-confidence items after required baseline lists and keyword searches: kept success
+          observation @01KVX3AY for the clean detached-review no-op path. Resolved friction
+          observation @01KVX3AZ as duplicate because broad observation/inbox/task lists showed
+          existing coverage: @01KVE6XH, @01KVSE5H, and inbox @01KV3WHP."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T15:19:00.059Z
+        completed_at: 2026-06-24T15:19:00.059Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-24T15:16:42.568Z
