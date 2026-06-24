@@ -3887,6 +3887,9 @@ features:
           comparisons are per acceptance criterion, not only per whole spec
           item, so changing one criterion does not force unrelated criteria on
           the same item into re-verify.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@ac-freshness-resolution"
         implements: []
