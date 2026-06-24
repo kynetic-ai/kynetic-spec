@@ -20,6 +20,7 @@ export * from "./format-version.js";
 export * from "./convention-validation.js";
 export * from "./coverage-cache.js";
 export * from "./coverage-evidence-index.js";
+export * from "./coverage-freshness-comparison.js";
 export * from "./coverage-state.js";
 export * from "./file-lock.js";
 export * from "./fix.js";
