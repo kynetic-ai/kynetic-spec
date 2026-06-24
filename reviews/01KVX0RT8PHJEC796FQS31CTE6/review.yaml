@@ -157,9 +157,32 @@ events:
       kind: blocker
       thread_ulid: 01KVX13HDJB0HQHVRR1HS2TG88
     timestamp: 2026-06-24T14:38:49.501Z
+  - _ulid: 01KVX149HKAKAN9AZTBNC9JQWS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVX1499SGJ5XZ993EVTGJCVR
+    timestamp: 2026-06-24T14:39:13.971Z
+  - _ulid: 01KVX14D0V64Y1VFZN1MTJE93P
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-24T14:39:17.531Z
+  - _ulid: 01KVX14D0V4NQN7Z0NV8WQ38S3
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-24T14:39:17.531Z
 examined_commit: 70196da095e80a4a656bdca2d6113013ab27722c
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -192,7 +215,52 @@ threads:
           in the comparison so annotation-only coverage re-verifies after criterion text changes.'
         created_at: 2026-06-24T14:38:49.266Z
     kind: blocker
-verdicts: []
+  - _ulid: 01KVX1499SGJ5XZ993EVTGJCVR
+    entries:
+      - _ulid: 01KVX1499SNPGTQ78YVZH31105
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md, task/spec context for @01KVVE0DG6ZG9NX5A2A86ZJQ63 /
+          @coverage-freshness-revision-comparison, src/parser/coverage-freshness-comparison.ts,
+          src/parser/coverage-state.ts, src/parser/index.ts, src/parser/coverage-evidence-index.ts,
+          src/parser/freshness-resolver.ts, tests/coverage-freshness-comparison.test.ts,
+          tests/coverage-state.test.ts.
+
+
+          Commands run: git status --short --branch; git diff --stat/name-only/unified against
+          feat/ui-redesign base 779c732e5e203ebf73d23a6c5644b5dd9e1cd6a2; kspec item get
+          @coverage-freshness-revision-comparison; kspec item get @coverage-state-engine; kspec item
+          get @coverage-state-presentation; isolated node --import tsx probe for annotation-only
+          stale spec text; npm run format:check; npx oxlint changed files; npm run lint -- --quiet;
+          npm run typecheck twice/sequentially; npm test twice/sequentially; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; kspec search for existing shared export
+          baseline tasks; kspec task add @01KVX11E for the pre-existing baseline.
+
+
+          Claims verified: worker claim that the new tests are behavioral was checked by reading
+          tests/coverage-freshness-comparison.test.ts; worker claim that unknown producer
+          revision/location degrades to re-verify was checked in tests and implementation; worker
+          claim of passing gates could not be fully reproduced because typecheck/build fail on the
+          pre-existing @kynetic-ai/shared export baseline tracked as @01KVX11E.
+
+
+          Categories searched: correctness, edge cases around annotation-only evidence and sibling
+          ACs, unknown comparison handling, test quality, integration with coverage-state evidence
+          precedence, and validation/gate health. Finding recorded: annotation-only positive
+          evidence is not included in spec-text freshness timestamp selection.
+        created_at: 2026-06-24T14:39:13.721Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: pr-reviewer
+    created_at: 2026-06-24T14:39:17.531Z
 created_at: 2026-06-24T14:32:57.878Z
-updated_at: 2026-06-24T14:38:49.266Z
+updated_at: 2026-06-24T14:39:17.531Z
 notes: []
