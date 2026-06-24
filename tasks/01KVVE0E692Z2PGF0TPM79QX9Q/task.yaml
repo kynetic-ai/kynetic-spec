@@ -64,7 +64,7 @@ description: >-
 spec_ref: "@coverage-state-events"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-coverage-state-api-cache"
@@ -80,8 +80,8 @@ review_ref: "@01KVXX20FEW685QP4V061T0XFB"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-coverage-state-events/01kvve0e
-  captured_at: 2026-06-24T22:42:08.209Z
-  commit: 40669a5a9a7e0d60d301dbbcbd47dd7c0df548c8
+  captured_at: 2026-06-24T23:31:20.050Z
+  commit: 44f47aa78fdff35709a5e05dd789cabde4d4bf89
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-coverage-state-events/01kvve0e
@@ -335,8 +335,35 @@ history:
         previous: 2026-06-24T22:24:58.551Z
     command: task-start
     timestamp: 2026-06-24T23:31:16.802Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-state-events/01kvve0e
+          captured_at: 2026-06-24T23:31:20.050Z
+          commit: 44f47aa78fdff35709a5e05dd789cabde4d4bf89
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-coverage-state-events/01kvve0e
+        previous:
+          review_url: null
+          branch: dispatch/task/task-coverage-state-events/01kvve0e
+          captured_at: 2026-06-24T22:42:08.209Z
+          commit: 40669a5a9a7e0d60d301dbbcbd47dd7c0df548c8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-coverage-state-events/01kvve0e
+      submitted_at:
+        new: 2026-06-24T23:31:20.056Z
+        previous: 2026-06-24T22:42:08.216Z
+    command: task-submit
+    timestamp: 2026-06-24T23:31:20.057Z
 created_at: 2026-06-23T23:45:50.281Z
 started_at: 2026-06-24T23:31:16.802Z
-submitted_at: 2026-06-24T22:42:08.216Z
+submitted_at: 2026-06-24T23:31:20.056Z
 todos: []
 automation: eligible
