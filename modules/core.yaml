@@ -4051,6 +4051,9 @@ features:
           payloads, cache/event ordering, coalescing, and targeted invalidation semantics; base
           websocket connection lifecycle, heartbeat, close-code, and generic reconnect behavior
           remain existing websocket foundation behavior.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@mutation-event-naming"
           - "@coverage-state-api-cache"
