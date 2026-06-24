@@ -3889,7 +3889,7 @@ features:
           the same item into re-verify.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@ac-freshness-resolution"
         implements: []
