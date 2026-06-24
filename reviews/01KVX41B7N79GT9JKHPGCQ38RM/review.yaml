@@ -163,9 +163,25 @@ events:
       kind: nit
       thread_ulid: 01KVX4WZJKCGKZ990ZB9DCHWZB
     timestamp: 2026-06-24T15:45:08.969Z
+  - _ulid: 01KVX4X9N58065TGQ3FPY4B8Z5
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-24T15:45:19.013Z
+  - _ulid: 01KVX4X9N5R90C7D2T62MWDR5J
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-24T15:45:19.013Z
 examined_commit: 981c807ffdee79f72422c1d3d85dc114c11337af
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -253,7 +269,14 @@ threads:
           recorded on src/parser/coverage-freshness-comparison.ts.
         created_at: 2026-06-24T15:45:08.692Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-24T15:45:19.013Z
 created_at: 2026-06-24T15:30:03.125Z
-updated_at: 2026-06-24T15:45:08.692Z
+updated_at: 2026-06-24T15:45:19.013Z
 notes: []
