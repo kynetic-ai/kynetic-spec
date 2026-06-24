@@ -2,7 +2,93 @@ _ulid: 01KVVFYS7W230HKAM1Q38QNYBK
 slugs: []
 title: Review coverage evidence index
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: all matched files use the correct format (1111 files)."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-24T05:14:26.437Z
+    completed_at: 2026-06-24T05:14:26.437Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors; repo-wide warning baseline remains 678 warnings. Focused
+      changed-file lint was also clean.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-24T05:14:30.231Z
+    completed_at: 2026-06-24T05:14:30.231Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 0 warnings and 0 errors on the two changed TypeScript/test files."
+    name: focused-lint
+    required: false
+    runner: npx oxlint src/parser/coverage-evidence-index.ts tests/coverage-evidence-index.test.ts
+    created_at: 2026-06-24T05:14:34.020Z
+    completed_at: 2026-06-24T05:14:34.020Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed after installing local workspace dependency links in the detached review worktree
+      with npm install; git status remained clean.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-24T05:14:37.826Z
+    completed_at: 2026-06-24T05:14:37.826Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2903 suites passed; 11025 tests passed; 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KVVZND3FHR3VS2W67ZNXQF1C/25eb88bba4e98a42.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-24T05:14:42.886Z
+    completed_at: 2026-06-24T05:14:42.886Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; existing reference warnings allowed by
+      --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T05:14:47.055Z
+    completed_at: 2026-06-24T05:14:47.055Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; existing alignment warnings allowed by
+      --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T05:14:50.844Z
+    completed_at: 2026-06-24T05:14:50.844Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warnings allowed
+      by --warnings-ok. New @coverage-evidence-index AC annotations found for all six ACs.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T05:14:54.735Z
+    completed_at: 2026-06-24T05:14:54.735Z
 events:
   - _ulid: 01KVVFYS7VRWYBYNJN9B2KPJCP
     actor: Jacob Chapel
@@ -17,6 +103,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-24T00:21:20.246Z
+  - _ulid: 01KVW0T4GY8SNN3E47VRRHVPK1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-24T05:14:26.719Z
+  - _ulid: 01KVW0T885R02FWKHQQ2XSZEZ9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-24T05:14:30.533Z
+  - _ulid: 01KVW0TBYG2TS5GMWYV1W5G2RK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-24T05:14:34.320Z
+  - _ulid: 01KVW0TFT9776Z117S45MBE9DB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-24T05:14:38.281Z
+  - _ulid: 01KVW0TMKH8D6T8P3WN1FK0NCJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-24T05:14:43.185Z
+  - _ulid: 01KVW0TRNFY48Q65SHJB86NHTA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-24T05:14:47.343Z
+  - _ulid: 01KVW0TWBX74ADMXVEGEPWKW2R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-24T05:14:51.133Z
+  - _ulid: 01KVW0V063VKZ5K0SQJKDV2NC4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-24T05:14:55.044Z
+  - _ulid: 01KVW0V3RB7BC0EHDAAHZRER9E
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVW0V3F9FA7960CZ0PYJM5TW
+    timestamp: 2026-06-24T05:14:58.699Z
 examined_commit: acc03f55d7e06665f6221d489b666431539448ad
 external_links: []
 lifecycle_state: open
@@ -26,8 +175,26 @@ subject:
   content_hash: ""
   ref: "@01KVVE0CPZGHB3SQD9CSD4RPK1"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVW0V3F9FA7960CZ0PYJM5TW
+    entries:
+      - _ulid: 01KVW0V3F90G6HP26JKTBTT3VR
+        author: codex-reviewer
+        body: "Review evidence log: Files read: src/parser/coverage-evidence-index.ts;
+          tests/coverage-evidence-index.test.ts; src/parser/test-result-run-store.ts;
+          src/parser/freshness-resolver.ts; src/parser/test-result-ac-mapping.ts;
+          src/schema/test-result-runs.ts; src/parser/validate.ts; kspec-agents.md. Commands run: git
+          diff/stat/status/log; kspec task get; kspec item get @coverage-evidence-index; kspec
+          review get/for-task; rg AC annotations and integration points; npm run format:check; npm
+          run lint -- --quiet; npx oxlint changed files; npm run typecheck; npm test; kspec validate
+          refs/alignment/completeness. Claims verified: one entry per live AC, labeled evidence
+          sources, latest run selection by completed_at plus run id, unmapped/invalid separation,
+          framework-neutral fixture behavior, and backend context load using indexed accepted runs.
+          Categories searched: correctness, edge cases, error handling, test quality, integration,
+          and security/data exposure. No blocker or should-fix finding found."
+        created_at: 2026-06-24T05:14:58.409Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-24T00:19:53.212Z
-updated_at: 2026-06-24T00:21:20.005Z
+updated_at: 2026-06-24T05:14:58.409Z
 notes: []
