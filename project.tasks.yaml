@@ -33135,7 +33135,7 @@
     - task-shared-package-export-typecheck-baseline
   title: Fix shared package export baseline for typecheck
   type: bug
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 2
@@ -33148,4 +33148,5 @@
   created_at: 2026-06-24T14:37:40.744Z
   started_at: 2026-06-24T14:39:56.157Z
   submitted_at: 2026-06-24T14:52:59.286Z
+  completed_at: 2026-06-24T15:15:47.165Z
   automation: eligible
