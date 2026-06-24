@@ -100,3 +100,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T16:45:13.634Z
+  - _ulid: 01KVX996XJS6N7V4X7CQ1BZ1Y2
+    content: "Fix cycle 3: addressed review blocker from @01KVX6NH by removing recorded/bootstrap
+      commits from spec-text comparison version selection; those commits can be project-code or
+      annotation-history revisions, so criterion text now resolves prior spec source by timestamp
+      unless an explicit criterion-source commit is passed to the read helper. Added regression
+      coverage for recorded and bootstrap evidence with separate project/spec git histories.
+      Re-verified all six @coverage-freshness-revision-comparison ACs. Gates passed: focused
+      coverage freshness test, format:check, focused oxlint, repo lint --quiet, typecheck, full npm
+      test (2907 suites, 11043 passed, 3 skipped), and kspec refs/alignment/completeness validation
+      with warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T17:01:43.730Z
