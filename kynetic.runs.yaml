@@ -73347,7 +73347,7 @@ runs:
     started_at: 2026-06-24T17:32:00.113Z
     completed_at: 2026-06-24T17:33:41.033Z
   - _ulid: 01KVXEX05WP8JQXJSV1KXF99A5
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -73395,7 +73395,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-24T18:42:02.844Z
-        completed_at: 2026-06-24T18:42:02.844Z
+        completed_at: 2026-06-24T18:42:17.554Z
+        notes: "Capture result: no new inbox items, tasks, observations, or questions added. Existing
+          coverage: @task-investigate-npm-test-teardown-hang-after-green-suite-run covers the only
+          concrete test-run friction; existing behavioral-probe observations cover the success
+          pattern. Avoided duplicate/noisy reflection capture."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-24T18:39:55.068Z
+    completed_at: 2026-06-24T18:42:17.554Z
