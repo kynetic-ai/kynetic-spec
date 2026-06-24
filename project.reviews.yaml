@@ -27895,7 +27895,7 @@ reviews:
     title: Review deterministic per-AC coverage state derivation
     disposition: pending
     author: Jacob Chapel
-    check_count: 4
+    check_count: 5
     examined_commit: 8e035b45207cfbbb0decdf4635f4cf892890eddd
     lifecycle_state: open
     related_refs: []
@@ -27908,4 +27908,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-24T05:44:22.106Z
-    updated_at: 2026-06-24T05:58:52.254Z
+    updated_at: 2026-06-24T05:59:13.822Z
