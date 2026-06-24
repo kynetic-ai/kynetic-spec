@@ -3,44 +3,51 @@ slugs:
   - task-coverage-evidence-index
 title: Build the backend coverage evidence index
 type: task
-description: |
-  Create the server-side evidence index that joins spec ACs, static
-  annotations, freshness values, verification stamps, and ingested test
-  results into one per-criterion input model.
+description: >-
+  Create the server-side evidence index that joins spec ACs, static annotations, freshness values,
+  verification stamps, and ingested test results into one per-criterion input model.
 
-  Why: The redesigned spec workspace and Validate matrix must consume a
-  single backend dataset. If each UI surface joins raw specs, test
-  annotations, test runs, and stamps independently, the four coverage
-  buckets will drift and performance will collapse on large projects.
+
+  Why: The redesigned spec workspace and Validate matrix must consume a single backend dataset. If
+  each UI surface joins raw specs, test annotations, test runs, and stamps independently, the four
+  coverage buckets will drift and performance will collapse on large projects.
+
 
   What:
-  - Build an index entry for every AC in the loaded spec corpus,
-    including entries with no evidence.
-  - Feed the index from the existing structured annotation scan, the
-    P1a freshness resolver and verification store, and the test-run
-    store from the ingestion plan at `coverage/test-runs/index.yaml` plus
-    `coverage/test-runs/runs/<run-ulid>/run.yaml`. Treat index.yaml as the
-    authoritative bounded list of accepted run ids/paths, then read the
-    indexed run files to compute latest relevant per-criterion evidence;
-    do not expect ingestion to provide a per-criterion latest projection.
-  - Label every evidence source: annotation, bootstrap freshness,
-    recorded verification, ingested result, unmapped result.
-  - Select latest relevant ingested result evidence per criterion using
-    completed_at + run-id tie-break. Preserve older run data in the run
-    store; the index only selects current evidence for state.
+
+  - Build an index entry for every AC in the loaded spec corpus, including entries with no evidence.
+
+  - Feed the index from the existing structured annotation scan, the P1a freshness resolver and
+  verification store, and the test-run store from the ingestion plan at
+  `coverage/test-runs/index.yaml` plus `coverage/test-runs/runs/<run-ulid>/run.yaml`. Treat
+  index.yaml as the authoritative bounded list of accepted run ids/paths, then read the indexed run
+  files to compute latest relevant per-criterion evidence; do not expect ingestion to provide a
+  per-criterion latest projection.
+
+  - On criterion entries, include applicable annotations, bootstrap freshness, recorded
+  verification, and ingested result evidence.
+
+  - Expose unmapped or invalid ingested cases separately as project/index-level diagnostics, not as
+  evidence attributed to a criterion.
+
+  - Select latest relevant ingested result evidence per criterion using completed_at + run-id
+  tie-break. Preserve older run data in the run store; the index only selects current evidence for
+  state.
+
   - Keep unmapped/invalid results separate from criterion evidence.
-  - Add fixtures for at least two non-kynetic projects with different
-    layouts and normalized result producers.
 
-  How: Put the pure index builder in src/parser/ or a coverage domain
-  module importable by daemon and CLI. It should accept already-loaded
-  project context and stores, not call daemon routes. Add unit tests for
-  one-entry-per-criterion, source labeling, latest result selection,
-  unmapped separation, and framework/project neutrality.
+  - Add fixtures for at least two non-kynetic projects with different layouts and normalized result
+  producers.
 
-  Covers: @coverage-evidence-index ac-one-entry-per-criterion,
-  ac-evidence-sources-labeled, ac-latest-result-selection,
-  ac-unmapped-separated, ac-framework-neutral-input,
+
+  How: Put the pure index builder in src/parser/ or a coverage domain module importable by daemon
+  and CLI. It should accept already-loaded project context and stores, not call daemon routes. Add
+  unit tests for one-entry-per-criterion, evidence listing, latest result selection,
+  unmapped/invalid separation, and framework/project neutrality.
+
+
+  Covers: @coverage-evidence-index ac-one-entry-per-criterion, ac-evidence-sources-labeled,
+  ac-latest-result-selection, ac-unmapped-separated, ac-framework-neutral-input,
   ac-no-client-side-join.
 spec_ref: "@coverage-evidence-index"
 plan_ref: "@plan-coverage-state-engine"
@@ -113,6 +120,98 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-24T00:19:55.580Z
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: >-
+          Create the server-side evidence index that joins spec ACs, static annotations, freshness
+          values, verification stamps, and ingested test results into one per-criterion input model.
+
+
+          Why: The redesigned spec workspace and Validate matrix must consume a single backend
+          dataset. If each UI surface joins raw specs, test annotations, test runs, and stamps
+          independently, the four coverage buckets will drift and performance will collapse on large
+          projects.
+
+
+          What:
+
+          - Build an index entry for every AC in the loaded spec corpus, including entries with no
+          evidence.
+
+          - Feed the index from the existing structured annotation scan, the P1a freshness resolver
+          and verification store, and the test-run store from the ingestion plan at
+          `coverage/test-runs/index.yaml` plus `coverage/test-runs/runs/<run-ulid>/run.yaml`. Treat
+          index.yaml as the authoritative bounded list of accepted run ids/paths, then read the
+          indexed run files to compute latest relevant per-criterion evidence; do not expect
+          ingestion to provide a per-criterion latest projection.
+
+          - On criterion entries, include applicable annotations, bootstrap freshness, recorded
+          verification, and ingested result evidence.
+
+          - Expose unmapped or invalid ingested cases separately as project/index-level diagnostics,
+          not as evidence attributed to a criterion.
+
+          - Select latest relevant ingested result evidence per criterion using completed_at +
+          run-id tie-break. Preserve older run data in the run store; the index only selects current
+          evidence for state.
+
+          - Keep unmapped/invalid results separate from criterion evidence.
+
+          - Add fixtures for at least two non-kynetic projects with different layouts and normalized
+          result producers.
+
+
+          How: Put the pure index builder in src/parser/ or a coverage domain module importable by
+          daemon and CLI. It should accept already-loaded project context and stores, not call
+          daemon routes. Add unit tests for one-entry-per-criterion, evidence listing, latest result
+          selection, unmapped/invalid separation, and framework/project neutrality.
+
+
+          Covers: @coverage-evidence-index ac-one-entry-per-criterion, ac-evidence-sources-labeled,
+          ac-latest-result-selection, ac-unmapped-separated, ac-framework-neutral-input,
+          ac-no-client-side-join.
+        previous: |
+          Create the server-side evidence index that joins spec ACs, static
+          annotations, freshness values, verification stamps, and ingested test
+          results into one per-criterion input model.
+
+          Why: The redesigned spec workspace and Validate matrix must consume a
+          single backend dataset. If each UI surface joins raw specs, test
+          annotations, test runs, and stamps independently, the four coverage
+          buckets will drift and performance will collapse on large projects.
+
+          What:
+          - Build an index entry for every AC in the loaded spec corpus,
+            including entries with no evidence.
+          - Feed the index from the existing structured annotation scan, the
+            P1a freshness resolver and verification store, and the test-run
+            store from the ingestion plan at `coverage/test-runs/index.yaml` plus
+            `coverage/test-runs/runs/<run-ulid>/run.yaml`. Treat index.yaml as the
+            authoritative bounded list of accepted run ids/paths, then read the
+            indexed run files to compute latest relevant per-criterion evidence;
+            do not expect ingestion to provide a per-criterion latest projection.
+          - Label every evidence source: annotation, bootstrap freshness,
+            recorded verification, ingested result, unmapped result.
+          - Select latest relevant ingested result evidence per criterion using
+            completed_at + run-id tie-break. Preserve older run data in the run
+            store; the index only selects current evidence for state.
+          - Keep unmapped/invalid results separate from criterion evidence.
+          - Add fixtures for at least two non-kynetic projects with different
+            layouts and normalized result producers.
+
+          How: Put the pure index builder in src/parser/ or a coverage domain
+          module importable by daemon and CLI. It should accept already-loaded
+          project context and stores, not call daemon routes. Add unit tests for
+          one-entry-per-criterion, source labeling, latest result selection,
+          unmapped separation, and framework/project neutrality.
+
+          Covers: @coverage-evidence-index ac-one-entry-per-criterion,
+          ac-evidence-sources-labeled, ac-latest-result-selection,
+          ac-unmapped-separated, ac-framework-neutral-input,
+          ac-no-client-side-join.
+    command: task-set
+    timestamp: 2026-06-24T04:31:45.086Z
 created_at: 2026-06-23T23:45:48.767Z
 started_at: 2026-06-23T23:50:43.712Z
 submitted_at: 2026-06-24T00:13:29.651Z
