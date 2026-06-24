@@ -33029,7 +33029,7 @@
   type: task
   spec_ref: "@coverage-state-engine"
   plan_ref: "@plan-coverage-state-engine"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-coverage-evidence-index"
@@ -33041,6 +33041,7 @@
   todos_count: 0
   created_at: 2026-06-23T23:45:49.143Z
   started_at: 2026-06-24T05:17:42.375Z
+  submitted_at: 2026-06-24T05:38:48.858Z
   automation: eligible
 - _ulid: 01KVVE0DG6ZG9NX5A2A86ZJQ63
   slugs:
