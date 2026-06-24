@@ -154,6 +154,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-24T23:01:57.270Z
+  - _ulid: 01KVXXXBB2PCBAGVHJM5T0DHMF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVXXXB32GS97AE52W5MQFEKH
+    timestamp: 2026-06-24T23:02:15.138Z
 examined_commit: 40669a5a9a7e0d60d301dbbcbd47dd7c0df548c8
 external_links: []
 lifecycle_state: open
@@ -163,8 +170,31 @@ subject:
   content_hash: ""
   ref: "@01KVVE0E692Z2PGF0TPM79QX9Q"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVXXXB32GS97AE52W5MQFEKH
+    anchor:
+      type: code
+      commit: 40669a5a9a7e0d60d301dbbcbd47dd7c0df548c8
+      line_end: 866
+      line_start: 866
+      path: packages/daemon/src/routes/command.ts
+      side: head
+    entries:
+      - _ulid: 01KVXXXB32FZKNFC12047N1H0X
+        author: Jacob Chapel
+        body: "MUST-FIX: daemon-served spec/AC mutations still do not emit a typed coverage-state event
+          after the cache write-through. This completion path writes through all affected domains
+          and then only broadcasts the collected mutation events, which for spec item writes are
+          `spec_item_changed` from `src/parser/yaml.ts`. There is no `coverage_state_changed` event
+          synthesized after the recomputed coverage read model for item/AC changes. Adding
+          client-side coverage invalidation for `spec_item_changed` helps the current UI, but it
+          does not satisfy @coverage-state-events `ac-event-topic` / `ac-event-after-cache`: a
+          coverage-state-affecting spec/AC mutation should produce the reserved coverage-state
+          family event on `items:updates` after the cache/read model reflects the change. Consumers
+          that subscribe to typed coverage-state events still miss spec/AC mutations."
+        created_at: 2026-06-24T23:02:14.882Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-24T22:47:19.278Z
-updated_at: 2026-06-24T23:01:57.024Z
+updated_at: 2026-06-24T23:02:14.882Z
 notes: []

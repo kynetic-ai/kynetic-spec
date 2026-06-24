@@ -28102,7 +28102,7 @@ reviews:
   - _ulid: 01KVXX20FEW685QP4V061T0XFB
     slugs: []
     title: Review coverage-state events (cycle 2)
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 8
     examined_commit: 40669a5a9a7e0d60d301dbbcbd47dd7c0df548c8
@@ -28113,8 +28113,8 @@ reviews:
       content_hash: ""
       ref: "@01KVVE0E692Z2PGF0TPM79QX9Q"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-24T22:47:19.278Z
-    updated_at: 2026-06-24T23:01:57.024Z
+    updated_at: 2026-06-24T23:02:14.882Z
