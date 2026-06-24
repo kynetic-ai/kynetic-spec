@@ -456,6 +456,9 @@ project:
   status: draft
 includes:
   - modules/test.yaml
+coverage:
+  scan_paths:
+    - tests
 `,
   );
 
@@ -468,8 +471,23 @@ includes:
     title: "Test Feature"
     type: feature
     description: "A test feature"
+    acceptance_criteria:
+      - id: ac-covered
+        given: a command API fixture criterion
+        when: coverage state is loaded
+        then: the criterion can be covered by a test annotation
     created: "2026-01-01T00:00:00Z"
 `,
+  );
+
+  mkdirSync(path.join(tempDir, "tests"), { recursive: true });
+  writeFileSync(
+    path.join(tempDir, "tests", "command-coverage.test.ts"),
+    [
+      "// AC: @test-feature ac-covered",
+      "it('covers the command fixture criterion', () => {});",
+      "",
+    ].join("\n"),
   );
 
   // Seed task in split format (per-task directory)
@@ -1497,6 +1515,93 @@ describe("Daemon Command API", () => {
       nestedConstraint._ulid,
       deepDecision._ulid,
       createdItem._ulid,
+    ]);
+  });
+
+  // AC: @coverage-state-events ac-event-topic
+  // AC: @coverage-state-events ac-event-canonical-identity
+  // AC: @coverage-state-events ac-event-after-cache
+  // AC: @trait-websocket-protocol ac-3
+  it("emits a typed coverage-state event after daemon-served item mutations refresh coverage state", async () => {
+    const parser = await import("../dist/parser/index.js");
+    const { getCachedCoverageStateReadModel } =
+      await import("../dist/parser/coverage-state-read-model.js");
+    const ctx = await parser.initContext(tempDir, { syncMode: "skip" });
+    const cachedBefore = await getCachedCoverageStateReadModel(ctx);
+    const broadcastEvents = captureAllBroadcasts();
+    const observedAfterCache: Promise<unknown>[] = [];
+    const originalBroadcast = pubsub.broadcast.bind(pubsub);
+    pubsub.broadcast = (topic, event, data, projectPath) => {
+      if (topic === "items:updates" && event === "coverage_state_changed") {
+        observedAfterCache.push(
+          parser
+            .initContext(tempDir, { syncMode: "skip" })
+            .then((freshCtx) => getCachedCoverageStateReadModel(freshCtx))
+            .then((model) => ({
+              criteria: model.items[SPEC_ULID]?.criteria.map((criterion) => criterion.ac_id),
+              affected: data.affected,
+            })),
+        );
+      }
+      originalBroadcast(topic, event, data, projectPath);
+    };
+
+    const response = await makeRequest("/api/command", {
+      method: "POST",
+      body: JSON.stringify({
+        command: "item ac add",
+        args: {
+          ref: "@test-feature",
+          id: "ac-command-added",
+          given: "a daemon-served item mutation",
+          when: "the command adds an acceptance criterion",
+          then: "coverage-state subscribers receive fresh state",
+        },
+      }),
+    });
+    const body = await response.json();
+
+    expect(response.status, JSON.stringify(body)).toBe(200);
+    expect(body.exitCode).toBe(0);
+    expect(cachedBefore.summary.denominator).toBe(1);
+
+    const coverageEvents = broadcastEvents.filter(
+      (entry) => entry.topic === "items:updates" && entry.event === "coverage_state_changed",
+    );
+    expect(coverageEvents).toHaveLength(1);
+    expect(coverageEvents[0]).toMatchObject({
+      topic: "items:updates",
+      event: "coverage_state_changed",
+      data: {
+        action: "changed",
+        family: "coverage_state",
+        reason: "spec_mutation",
+        scope: "precise",
+        refresh: {
+          project_summary: true,
+          item_detail: true,
+          criterion_detail: true,
+          unmapped_results: true,
+        },
+        affected: {
+          items: [
+            {
+              item_ulid: SPEC_ULID,
+              item_ref: "@test-feature",
+              ac_ids: ["ac-command-added", "ac-covered"],
+              buckets: ["not_yet"],
+            },
+          ],
+        },
+      },
+      projectPath: tempDir,
+    });
+
+    await expect(Promise.all(observedAfterCache)).resolves.toEqual([
+      {
+        criteria: ["ac-command-added", "ac-covered"],
+        affected: coverageEvents[0].data.affected,
+      },
     ]);
   });
 

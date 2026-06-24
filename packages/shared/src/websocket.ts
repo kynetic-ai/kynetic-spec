@@ -90,7 +90,7 @@ export type CoverageStateEventAction = "changed" | "invalidated";
 
 export interface CoverageStateAffectedItem {
   item_ulid: string;
-  item_ref: string;
+  item_ref?: string;
   ac_ids?: string[];
   buckets?: Array<keyof CoverageBucketCounts>;
 }
