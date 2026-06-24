@@ -189,6 +189,12 @@ events:
     payload:
       thread_ulid: 01KVXP56HR0QV9B3JXHANCMZ24
     timestamp: 2026-06-24T21:11:16.957Z
+  - _ulid: 01KVXQJM14MHZ54KNGZ3JVQTV4
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVXP56HR0QV9B3JXHANCMZ24
+    timestamp: 2026-06-24T21:11:32.132Z
 examined_commit: 4fed1092eae0cd325f1711dfd6a41788a3cf8cc5
 external_links: []
 lifecycle_state: closed
@@ -281,6 +287,8 @@ threads:
           reconfiguration regression.
         created_at: 2026-06-24T21:11:16.543Z
     kind: nit
+    resolved_at: 2026-06-24T21:11:31.727Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -290,5 +298,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-24T20:46:57.852Z
 created_at: 2026-06-24T20:26:45.024Z
-updated_at: 2026-06-24T21:11:16.543Z
+updated_at: 2026-06-24T21:11:31.727Z
 notes: []
