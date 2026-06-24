@@ -73097,7 +73097,7 @@ runs:
     completed_at: 2026-06-24T15:27:52.414Z
   - _ulid: 01KVX4YW0FRH3G2SFTYB8TCBCK
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73111,7 +73111,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-24T15:46:58.061Z
-        completed_at: 2026-06-24T15:46:58.061Z
+        completed_at: 2026-06-24T15:47:11.990Z
+        notes: >-
+          Friction points: full review-gate 
+
+          > @kynetic-ai/spec@0.14.0 test
+
+          > node scripts/test.cjs took about 46 minutes in this detached snapshot, which is correct
+          policy but expensive for reviews that already have independent blockers. More importantly,
+          temp-repo freshness tests used one git repository for both spec and code history, which
+          masked the real kspec dual-domain shape where spec source lives in shadow metadata while
+          test run producer revisions refer to project code commits.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T15:47:11.990Z
+        completed_at: 2026-06-24T15:47:11.990Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-24T15:46:10.575Z
