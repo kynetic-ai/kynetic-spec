@@ -12353,3 +12353,80 @@ workspaces:
         head: acc03f55d7e06665f6221d489b666431539448ad
         last_seen_at: 2026-06-24T04:54:18.346Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-evidence-index-01kvve0c
+  - active_role: null
+    base_branch_point: 4073bb9f1b43d024bbaa950db22629b7d3188bb5
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-coverage-state-derivation/01kvve0d
+    canonical_branch_head: 4073bb9f1b43d024bbaa950db22629b7d3188bb5
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-24T05:16:15.123Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-24T05:16:15.123Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: feat/ui-redesign
+      target_commit: 4073bb9f1b43d024bbaa950db22629b7d3188bb5
+      updated_at: 2026-06-24T05:16:15.123Z
+    lifecycle_state: ready
+    resolved_base_branch: feat/ui-redesign
+    task_id: 01KVVE0D2QJ4KEMNF7HG9MMFED
+    task_ref: "@01KVVE0D2QJ4KEMNF7HG9MMFED"
+    task_slug: task-coverage-state-derivation
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-24T05:16:15.123Z
+      created_at: 2026-06-24T05:16:15.123Z
+      updated_at: 2026-06-24T05:16:15.123Z
+    workspace_id: dispatch-workspace-01KVVE0D2QJ4KEMNF7HG9MMFED
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-coverage-state-derivation/01kvve0d
+        head: 4073bb9f1b43d024bbaa950db22629b7d3188bb5
+        last_seen_at: 2026-06-24T05:16:15.123Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-state-derivation-01kvve0d
