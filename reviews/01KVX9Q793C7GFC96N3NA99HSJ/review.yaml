@@ -2,7 +2,18 @@ _ulid: 01KVX9Q793C7GFC96N3NA99HSJ
 slugs: []
 title: Review task-coverage-freshness-revision-comparison cycle 4
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxlint reported 0 errors under --quiet; focused changed-file lint also reported 0
+      warnings."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-24T17:13:05.975Z
+    completed_at: 2026-06-24T17:13:05.975Z
 events:
   - _ulid: 01KVX9Q78Y8CY41BCNA12BFPRF
     actor: Jacob Chapel
@@ -17,6 +28,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-24T17:10:15.733Z
+  - _ulid: 01KVX9Y1KCBCYETC9GM6PR5566
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-24T17:13:06.413Z
 examined_commit: 0b231000f66ba49fa349fad97cc173da9ca4be85
 external_links: []
 lifecycle_state: open
@@ -29,5 +47,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-24T17:09:22.850Z
-updated_at: 2026-06-24T17:10:15.391Z
+updated_at: 2026-06-24T17:13:05.975Z
 notes: []
