@@ -2,7 +2,82 @@ _ulid: 01KVXJ4C5AADACZNZTY0EB9W0G
 slugs: []
 title: Review task-coverage-state-api-cache
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check . reported all matched files use correct format (1118 files)."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-24T19:53:18.449Z
+    completed_at: 2026-06-24T19:53:18.449Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint passed with 0 errors under --quiet. Focused changed-file oxlint also passed
+      with 0 warnings and 0 errors on 10 changed TS/test files.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-24T19:53:21.892Z
+    completed_at: 2026-06-24T19:53:21.892Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared && tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-24T19:53:25.216Z
+    completed_at: 2026-06-24T19:53:25.216Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2912 test suites passed; 11055 tests passed, 3 skipped. Duration 2860.8s. Full
+      log: /tmp/kspec-test-cache/01KVXJ2PVDGQ2Y2F1CCA73WQ2J/aa96953565b90b67.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-24T19:53:28.482Z
+    completed_at: 2026-06-24T19:53:28.482Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; existing reference warning baseline remained
+      warnings-only.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T19:53:31.815Z
+    completed_at: 2026-06-24T19:53:31.815Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; existing alignment warning baseline
+      remained warnings-only.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T19:53:35.189Z
+    completed_at: 2026-06-24T19:53:35.189Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warning baseline
+      remained warnings-only.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T19:53:38.560Z
+    completed_at: 2026-06-24T19:53:38.560Z
 events:
   - _ulid: 01KVXJ4C5AEN72Z0QQQF1CYB13
     actor: Jacob Chapel
@@ -17,17 +92,141 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-24T19:36:43.564Z
+  - _ulid: 01KVXK3CKYM7AJ7ZAN87VACZ74
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-24T19:53:18.718Z
+  - _ulid: 01KVXK3FZH7TZ0WFEBK9Y1M78X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-24T19:53:22.161Z
+  - _ulid: 01KVXK3K7CVVKFD2AP6QNZXPC3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-24T19:53:25.484Z
+  - _ulid: 01KVXK3PDCRS2VCX39MGMJD04H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-24T19:53:28.748Z
+  - _ulid: 01KVXK3SNCKRFWAY6QR4V09JEV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-24T19:53:32.076Z
+  - _ulid: 01KVXK3WYWCHA0JG1MV9S8DQ7G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-24T19:53:35.452Z
+  - _ulid: 01KVXK4097G7K2EH9PWTQYQ7H7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-24T19:53:38.855Z
+  - _ulid: 01KVXK43K2CYAEBX6DK9XRMFMF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KVXK43AKS17V5MF3R4D9RYW6
+    timestamp: 2026-06-24T19:53:42.242Z
+  - _ulid: 01KVXK46YXT0C276RR9W9F5XMM
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-24T19:53:45.693Z
+  - _ulid: 01KVXK46YX4SYH11X0STAE8QRW
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-24T19:53:45.693Z
 examined_commit: 8924f3ba7cefddd06698bd3758e0c3c849e66dee
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KVVE0DTZ9RGYWRC08376NZFX"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KVXK43AKS17V5MF3R4D9RYW6
+    anchor:
+      type: code
+      commit: 8924f3ba7cefddd06698bd3758e0c3c849e66dee
+      line_end: 265
+      line_start: 263
+      path: src/parser/coverage-state-read-model.ts
+      side: head
+    entries:
+      - _ulid: 01KVXK43AK85772BH6RZ5CZC9Y
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: coverage-state reads can stay stale after source annotation files change.
+          getCachedCoverageStateReadModel returns an existing model for the same root/scan-path key
+          without reloading evidence, and the daemon invalidation paths added here only cover .kspec
+          items/meta changes plus the ingestion route. The project watcher is constructed for
+          .kspec, so edits under configured scan paths such as tests/*.ts do not trigger
+          invalidateCoverageStateReadModelCache. I verified the cache behavior with an in-process
+          reproduction: after changing the loader from no annotation evidence to covered annotation
+          evidence without explicit invalidation, the second read returned the original not_yet
+          counts and same:true. Impact: this violates @coverage-state-api-cache
+          ac-cache-invalidation for source annotation file changes; /api/coverage/state/summary and
+          detail endpoints can serve stale state until an unrelated .kspec/ingestion invalidation or
+          daemon restart. Please add an invalidation path for configured annotation scan file
+          changes, or make the cache key/validation account for source annotation freshness before
+          returning a cached model.
+
+
+          Evidence log: Files read: kspec-agents.md; packages/daemon/src/routes/coverage.ts;
+          packages/shared/src/api.ts; packages/web-ui/src/lib/api-static.ts;
+          src/daemon/entity-cache.ts; src/export/json.ts; src/export/types.ts;
+          src/parser/coverage-state-read-model.ts; src/parser/coverage-evidence-index.ts;
+          src/parser/coverage-state.ts; tests/coverage-state-api.test.ts;
+          tests/coverage-state-read-model.test.ts; watcher/project-context code. Commands run: kspec
+          task get; kspec item get @coverage-state-api-cache; kspec item get @trait-api-endpoint;
+          git diff/log/status; rg AC annotations; npm run format:check; npm run lint -- --quiet;
+          focused npx oxlint changed files; npm run typecheck; npm test; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; reproduction via npx tsx. Claims
+          verified: worker gate claim verified by commands; AC annotations verified by rg and test
+          inspection; stale-cache finding verified by code path plus reproduction. Categories
+          searched: correctness, cache invalidation, error handling, static mode, pagination, test
+          quality, integration. Shared guidance neutrality: not applicable; no shared/package
+          guidance prose surfaces changed.
+        created_at: 2026-06-24T19:53:41.972Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-24T19:53:45.693Z
 created_at: 2026-06-24T19:36:22.442Z
-updated_at: 2026-06-24T19:36:43.269Z
+updated_at: 2026-06-24T19:53:45.693Z
 notes: []
