@@ -73530,7 +73530,7 @@ runs:
     completed_at: 2026-06-24T19:57:33.143Z
   - _ulid: 01KVXMRRJKG5VC693RAHHN3V54
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73553,7 +73553,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-24T20:24:15.452Z
-        completed_at: 2026-06-24T20:24:15.452Z
+        completed_at: 2026-06-24T20:24:25.688Z
+        notes: "Decision: skip long-test/progress friction as duplicate of 01KVE6XH and 01KVS5B5; skip
+          workflow-show active-run ergonomics as duplicate of inbox 01KVV34X. Capture one unique
+          high-confidence success observation about routing non-.kspec source watcher events through
+          project-root source-only invalidation because searches for project-root watcher/source
+          annotation/coverage source watcher returned no matches."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-24T20:24:25.688Z
+        completed_at: 2026-06-24T20:24:25.688Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-24T20:22:27.667Z
