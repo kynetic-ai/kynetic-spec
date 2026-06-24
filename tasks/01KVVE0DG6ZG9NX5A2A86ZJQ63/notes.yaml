@@ -11,3 +11,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T06:04:45.748Z
+  - _ulid: 01KVW4TTMXRKZM2HQXRGB7F0JF
+    content: "Implemented per-AC freshness comparison in src/parser/coverage-freshness-comparison.ts and
+      wired it through parser exports. The comparison reads prior AC text from the item source
+      file's git history, compares normalized test/annotation locations against ingested run
+      revisions without inferring paths from display names, and returns unknown-freshness findings
+      when revision or location data is absent/uncomparable. Adjusted coverage-state
+      recorded/bootstrap stale handling so newer passing evidence can supersede older stale causes.
+      Verification passed: focused coverage tests, format check, focused oxlint, repo lint --quiet,
+      typecheck, full npm test, and kspec refs/alignment/completeness validation with warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T06:24:43.677Z
