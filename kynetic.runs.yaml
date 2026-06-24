@@ -73770,7 +73770,7 @@ runs:
     completed_at: 2026-06-24T21:59:34.120Z
   - _ulid: 01KVXVF8HY707P8NH1F5VB6X6M
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73794,7 +73794,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-24T22:21:59.514Z
-        completed_at: 2026-06-24T22:21:59.514Z
+        completed_at: 2026-06-24T22:22:09.152Z
+        notes: "Decision: skip all candidates. Duplicates/existing coverage: @01KVV34X covers workflow-show
+          active-run ergonomics; @01KVE6XH/@01KV3WHP/@01KTYQ1RG cover long/quiet full-suite review
+          gate friction and metadata/no-code gate-profile concerns; @01KTZTRAV covers review-check
+          batching ergonomics. The implementation defect belongs in the active review record and is
+          already a blocker on @01KVXTF0, so no separate inbox or observation was created."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-24T22:22:09.152Z
+        completed_at: 2026-06-24T22:22:09.152Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-24T22:19:36.382Z
