@@ -199,14 +199,20 @@ function implicitRecordedFreshnessCauses(
 
   const causes: CoverageStateCauseExplanation[] = [];
   const bootstrap = entry.bootstrapFreshness;
-  if (isBootstrapNewerThanRecorded(bootstrap, recorded)) {
+  if (
+    isBootstrapNewerThanRecorded(bootstrap, recorded) &&
+    !hasNewerPassingRun(entry, bootstrap!.timestamp)
+  ) {
     causes.push({
       cause: "stale_annotation_or_mapping",
       sourceEvidenceIds: [evidenceId(recorded), evidenceId(bootstrap!)].toSorted(compareStrings),
       detail: "recorded verification is older than annotation freshness",
     });
   }
-  if (!recorded.commit || (bootstrap && (!bootstrap.commit || !bootstrap.timestamp))) {
+  if (
+    (!recorded.commit || (bootstrap && (!bootstrap.commit || !bootstrap.timestamp))) &&
+    !hasNewerPassingRun(entry, recorded.timestamp)
+  ) {
     causes.push({
       cause: "unknown_freshness",
       sourceEvidenceIds: [
@@ -237,6 +243,14 @@ function isBootstrapNewerThanRecorded(
 ): boolean {
   if (!bootstrap?.timestamp) return false;
   return bootstrap.timestamp.localeCompare(recorded.timestamp) > 0;
+}
+
+function hasNewerPassingRun(entry: CoverageStateInput, timestamp: string | null): boolean {
+  if (!timestamp) return false;
+  return entry.latestIngestedResults.some(
+    (evidence) =>
+      evidence.status === "passed" && evidence.completedAt.localeCompare(timestamp) >= 0,
+  );
 }
 
 function normalizeFreshnessFinding(
