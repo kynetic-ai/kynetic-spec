@@ -161,6 +161,13 @@ events:
       kind: blocker
       thread_ulid: 01KVXXXB32GS97AE52W5MQFEKH
     timestamp: 2026-06-24T23:02:15.138Z
+  - _ulid: 01KVXXXX9YHBXB5Y377CEQWBKH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVXXXX29P5F2GDN2WC2RBS9F
+    timestamp: 2026-06-24T23:02:33.534Z
 examined_commit: 40669a5a9a7e0d60d301dbbcbd47dd7c0df548c8
 external_links: []
 lifecycle_state: open
@@ -194,7 +201,38 @@ threads:
           that subscribe to typed coverage-state events still miss spec/AC mutations."
         created_at: 2026-06-24T23:02:14.882Z
     kind: blocker
+  - _ulid: 01KVXXXX29P5F2GDN2WC2RBS9F
+    entries:
+      - _ulid: 01KVXXXX29S5ETRK8RCNMWJPNN
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+          Files read: kspec-agents.md; packages/shared/src/websocket.ts;
+          packages/daemon/src/project-context.ts; packages/daemon/src/routes/coverage.ts;
+          packages/daemon/src/routes/command.ts; src/mutation-pipeline.ts; src/parser/yaml.ts;
+          src/parser/test-result-ingestion.ts; src/parser/test-result-ac-mapping.ts;
+          src/parser/coverage-state-read-model.ts; packages/web-ui/src/lib/query/keys.ts;
+          packages/web-ui/src/lib/query/ws-invalidation.ts; tests/coverage-state-api.test.ts;
+          tests/web-ui/ws-cache-invalidation.test.ts.
+
+          Commands run: kspec task get; kspec review for-task/get/add/open/check/comment; kspec item
+          get @coverage-state-events, @mutation-event-naming, @trait-websocket-protocol; git
+          diff/log/show; rg AC/query/event searches; npm run format:check; npx oxlint changed files;
+          npm run lint -- --quiet; npm run typecheck; npm test; kspec validate
+          --refs/--alignment/--completeness --warnings-ok.
+
+          Claims verified: prior blocker fix exists for web `spec_item_changed` invalidation;
+          ingestion `coverage_state_changed` is emitted after coverage cache invalidation and fresh
+          read-model load; AC annotations exist for own coverage-state ACs and selected/N/A
+          inherited websocket ACs.
+
+          Categories searched: correctness, event ordering, spec/AC mutation edge paths, watcher
+          fallback, test quality, query-key integration, AC coverage. Finding: missing typed
+          coverage-state event for daemon-served spec/AC mutations.
+        created_at: 2026-06-24T23:02:33.289Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-24T22:47:19.278Z
-updated_at: 2026-06-24T23:02:14.882Z
+updated_at: 2026-06-24T23:02:33.289Z
 notes: []
