@@ -168,9 +168,25 @@ events:
       kind: nit
       thread_ulid: 01KVXXXX29P5F2GDN2WC2RBS9F
     timestamp: 2026-06-24T23:02:33.534Z
+  - _ulid: 01KVXXY6KR8VV3BYDW6HHT2H0M
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-24T23:02:43.064Z
+  - _ulid: 01KVXXY6KRQH6V4Q02FXN0XD50
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-24T23:02:43.064Z
 examined_commit: 40669a5a9a7e0d60d301dbbcbd47dd7c0df548c8
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -232,7 +248,14 @@ threads:
           coverage-state event for daemon-served spec/AC mutations.
         created_at: 2026-06-24T23:02:33.289Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-24T23:02:43.064Z
 created_at: 2026-06-24T22:47:19.278Z
-updated_at: 2026-06-24T23:02:33.289Z
+updated_at: 2026-06-24T23:02:43.064Z
 notes: []
