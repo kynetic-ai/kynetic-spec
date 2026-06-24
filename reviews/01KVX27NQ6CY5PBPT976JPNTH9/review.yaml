@@ -79,6 +79,17 @@ checks:
     runner: kspec
     created_at: 2026-06-24T15:14:01.666Z
     completed_at: 2026-06-24T15:14:01.666Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Skipped: git diff --name-only dev...HEAD returned no changed files, so there are no
+      changed TypeScript/test files to lint."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed-ts-or-test-files>
+    created_at: 2026-06-24T15:14:15.844Z
+    completed_at: 2026-06-24T15:14:15.844Z
 events:
   - _ulid: 01KVX27NQ5AMMG9BMKCQRC0QJ0
     actor: Jacob Chapel
@@ -142,6 +153,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-24T15:14:01.978Z
+  - _ulid: 01KVX34EFB04631WT9STFP5R21
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: focused-lint
+    timestamp: 2026-06-24T15:14:16.171Z
 examined_commit: 64674c90fd90de522fb7d36a768142658ecfae4e
 external_links: []
 lifecycle_state: open
@@ -154,5 +172,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-24T14:58:33.318Z
-updated_at: 2026-06-24T15:14:01.666Z
+updated_at: 2026-06-24T15:14:15.844Z
 notes: []
