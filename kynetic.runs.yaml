@@ -73611,7 +73611,7 @@ runs:
     completed_at: 2026-06-24T20:50:00.932Z
   - _ulid: 01KVXQNB1ASC6EV2CY9W9857BM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73626,7 +73626,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-24T21:13:59.207Z
-        completed_at: 2026-06-24T21:13:59.207Z
+        completed_at: 2026-06-24T21:14:34.367Z
+        notes: "Identified candidates: (1) workflow show requiring an explicit run ref after starting a
+          single reflect-loop run, (2) long/full npm test runtime and quiet periods, (3) review
+          evidence/log precision, (4) runtime coverage.scan_paths watcher reconfiguration.
+          Baseline/search results show (1) already tracked by inbox 01KVV34X, (2) already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run plus related testing
+          observations, and (3) already covered by existing review-evidence observations. (4) was
+          task-specific and fixed in e6540f87ae, not a new systemic item. No high-confidence
+          untracked friction or success needs capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T21:14:34.367Z
+        completed_at: 2026-06-24T21:14:34.367Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-24T21:13:01.226Z
