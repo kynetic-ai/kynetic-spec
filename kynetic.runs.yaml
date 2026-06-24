@@ -73488,7 +73488,7 @@ runs:
     completed_at: 2026-06-24T19:34:21.734Z
   - _ulid: 01KVXK5PWQNPT46M21DGNK710N
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73499,10 +73499,20 @@ runs:
           annotations were easy to verify with rg, and the required gates gave strong evidence. A
           small focused reproduction with getCachedCoverageStateReadModel was useful for validating
           the stale-cache finding before recording it. No capture yet; continuing loop reflection."
-      - status: completed
+      - status: skipped
         step_index: 1
         started_at: 2026-06-24T19:55:08.688Z
-        completed_at: 2026-06-24T19:55:08.688Z
+        completed_at: 2026-06-24T19:57:12.767Z
+        notes: "No new high-confidence friction to capture. The submitted task-specific stale coverage cache
+          issue was already recorded as a blocker on review @01KVXJ4C and transitioned task
+          @01KVVE0DTZ9RGYWRC08376NZFX to needs_work. Reflection friction encountered here is already
+          tracked: workflow show needing an explicit run ref is covered by inbox @01KVV34X, and
+          review evidence-log placement is covered by observations including @01KR2JD1, @01KVESXQK,
+          and @01KVET18."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T19:57:12.767Z
+        completed_at: 2026-06-24T19:57:12.767Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-24T19:54:34.775Z
