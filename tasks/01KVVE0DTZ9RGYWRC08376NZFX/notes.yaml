@@ -27,3 +27,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-24T19:53:48.013Z
+  - _ulid: 01KVXMP733YDBN0F1QW7S70SVP
+    content: "Fix cycle 1: addressed review blocker 01KVXK43AKS17V5MF3R4D9RYW6 by watching configured
+      coverage.scan_paths for source annotation changes and invalidating the cached coverage-state
+      read model on project-root source events. Added regression tests for watcher forwarding and
+      cache eviction. Re-verified ACs for daemon APIs/cache invalidation and passed gates: npm run
+      format:check, npm run lint -- --quiet, focused npx oxlint, npm run typecheck, focused
+      coverage-state tests, full npm test, and kspec refs/alignment/completeness validations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T20:21:04.227Z
