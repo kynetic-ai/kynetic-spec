@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KVXGA9G94AMW5QTB5JN7939J
+    content: "Approach: reuse the existing coverage evidence index and pure coverage-state derivation,
+      then add a cached read model that projects server-computed corpus rollups, item rollups,
+      criterion details, and paginated unmapped summaries. Daemon routes will live under
+      /api/coverage/state and return the existing {data, meta} envelope with X-Request-Id. Edge
+      cases: cache loading state, invalid refs, invalid pagination, stale cache after
+      spec/test-run/verification changes, static snapshot read-only behavior, and large corpus
+      repeated summary reads. Test plan: behavioral daemon route tests for direct ACs plus
+      @trait-api-endpoint ac-1/2/3/4/6 and N/A annotation for ac-5; pure read-model tests for cache
+      reuse/invalidation/performance; static export/provider tests for read-only snapshots."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T19:04:39.177Z
