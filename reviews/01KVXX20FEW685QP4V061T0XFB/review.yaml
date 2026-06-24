@@ -23,6 +23,16 @@ checks:
     runner: npx oxlint <changed files>
     created_at: 2026-06-24T23:01:24.095Z
     completed_at: 2026-06-24T23:01:24.095Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo lint reported 0 errors; existing warning baseline remains."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-24T23:01:29.717Z
+    completed_at: 2026-06-24T23:01:29.717Z
 events:
   - _ulid: 01KVXX20FDD65JWHZBAEEAKB3Q
     actor: Jacob Chapel
@@ -51,6 +61,13 @@ events:
       status: pass
       name: focused-lint
     timestamp: 2026-06-24T23:01:24.341Z
+  - _ulid: 01KVXXVZ7407BVGCRCS3BZ7NX9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-24T23:01:29.957Z
 examined_commit: 40669a5a9a7e0d60d301dbbcbd47dd7c0df548c8
 external_links: []
 lifecycle_state: open
@@ -63,5 +80,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-24T22:47:19.278Z
-updated_at: 2026-06-24T23:01:24.095Z
+updated_at: 2026-06-24T23:01:29.717Z
 notes: []
