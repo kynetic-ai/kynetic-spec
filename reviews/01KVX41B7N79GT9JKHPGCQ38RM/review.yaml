@@ -197,6 +197,12 @@ events:
     payload:
       thread_ulid: 01KVX46NJNHEDB8A6S3H7QKQW9
     timestamp: 2026-06-24T16:08:43.731Z
+  - _ulid: 01KVX68KEX26ZWJDJ44G69R7V2
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KVX46NJNHEDB8A6S3H7QKQW9
+    timestamp: 2026-06-24T16:08:58.077Z
 examined_commit: 981c807ffdee79f72422c1d3d85dc114c11337af
 external_links: []
 lifecycle_state: closed
@@ -268,6 +274,8 @@ threads:
           Added a side-branch regression that previously would have been classified current."
         created_at: 2026-06-24T16:08:43.483Z
     kind: blocker
+    resolved_at: 2026-06-24T16:08:57.795Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KVX4WZJKCGKZ990ZB9DCHWZB
     entries:
       - _ulid: 01KVX4WZJKPHRDH54M3MGFS5GP
@@ -313,5 +321,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-24T15:45:19.013Z
 created_at: 2026-06-24T15:30:03.125Z
-updated_at: 2026-06-24T16:08:43.483Z
+updated_at: 2026-06-24T16:08:57.795Z
 notes: []
