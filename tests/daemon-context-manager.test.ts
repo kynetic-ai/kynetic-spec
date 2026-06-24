@@ -10,7 +10,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { setupMultiDirFixtures, cleanupTempDir } from "./helpers/cli";
 import { join } from "path";
-import { access, readdir, rm, symlink, writeFile } from "fs/promises";
+import { access, mkdir, readdir, rm, symlink, writeFile } from "fs/promises";
 import { ProjectContextManager } from "../packages/daemon/src/project-context";
 import { KspecWatcher } from "../packages/daemon/src/watcher";
 import { SessionWatcher } from "../packages/daemon/src/session-watcher";
@@ -234,6 +234,48 @@ describe("ProjectContextManager", () => {
             projectPath: projectA,
             kspecDir: join(projectA, ".kspec"),
             file: removedFile,
+            content: undefined,
+          });
+        },
+        { timeout: WATCHER_WAIT_MS },
+      );
+    });
+
+    // AC: @coverage-state-api-cache ac-cache-invalidation
+    it("forwards configured coverage scan-path file changes to cache invalidation", async () => {
+      await writeFile(
+        join(projectA, "kspec.config.yaml"),
+        "coverage:\n  scan_paths:\n    - tests\n",
+        "utf-8",
+      );
+      await mkdir(join(projectA, "tests"), { recursive: true });
+      manager.registerProject(projectA);
+
+      const received: Array<{
+        projectPath: string;
+        kspecDir: string;
+        file: string;
+        content: string | undefined;
+      }> = [];
+      manager.setCacheInvalidationCallback((projectPath, kspecDir, file, content) => {
+        received.push({ projectPath, kspecDir, file, content });
+      });
+
+      await manager.startWatcher(projectA);
+
+      const changedFile = join(projectA, "tests", "coverage-source.test.ts");
+      await writeFile(
+        changedFile,
+        `// ${"AC"}: @coverage-state-api-cache ac-cache-invalidation\n`,
+        "utf-8",
+      );
+
+      await vi.waitFor(
+        () => {
+          expect(received).toContainEqual({
+            projectPath: projectA,
+            kspecDir: projectA,
+            file: changedFile,
             content: undefined,
           });
         },

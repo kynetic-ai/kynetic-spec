@@ -1520,6 +1520,11 @@ export class ProjectEntityCache {
   async handleFileChange(kspecDir: string, filePath: string, _content?: string): Promise<void> {
     if (this.disposed) return;
 
+    if (kspecDir === this.projectPath) {
+      invalidateCoverageStateReadModelCache(this.projectPath);
+      return;
+    }
+
     const relativePath = relative(kspecDir, filePath);
     // Detect whether this change came from the sessions directory (.kspec-sessions/)
     // or the spec directory (.kspec/). Session IDs can be arbitrary strings (not just

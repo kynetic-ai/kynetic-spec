@@ -24,6 +24,16 @@ import {
 } from "./helpers/cli";
 import { TaskDataManager } from "../src/parser/task-data-manager";
 import {
+  buildCoverageEvidenceIndex,
+  type CoverageEvidenceIndex,
+} from "../src/parser/coverage-evidence-index";
+import {
+  getCachedCoverageStateReadModel,
+  getCoverageStateReadModelCacheStats,
+  invalidateCoverageStateReadModelCache,
+} from "../src/parser/coverage-state-read-model";
+import type { KspecContext } from "../src/parser/yaml";
+import {
   ProjectEntityCache,
   fileToDomain,
   registerEntityCache,
@@ -60,6 +70,7 @@ describe("ProjectEntityCache", () => {
     await setupShadowDetection(projectB);
 
     clearAllEntityCaches();
+    invalidateCoverageStateReadModelCache();
   });
 
   afterEach(async () => {
@@ -67,6 +78,7 @@ describe("ProjectEntityCache", () => {
     vi.doUnmock("fs/promises");
     vi.resetModules();
     clearAllEntityCaches();
+    invalidateCoverageStateReadModelCache();
     await cleanupTempDir(fixturesRoot);
   });
 
@@ -81,7 +93,9 @@ describe("ProjectEntityCache", () => {
     let opendirMock!: ReturnType<typeof vi.fn>;
     vi.doMock("fs/promises", async (importOriginal) => {
       const actual = await importOriginal<typeof import("fs/promises")>();
-      opendirMock = vi.fn().mockResolvedValue(directoryHandle);
+      opendirMock = vi
+        .fn<() => Promise<Awaited<ReturnType<typeof fs.opendir>>>>()
+        .mockResolvedValue(directoryHandle);
       return {
         ...actual,
         opendir: opendirMock,
@@ -142,6 +156,30 @@ describe("ProjectEntityCache", () => {
       await fs.mkdir(dirname(absolutePath), { recursive: true });
       await fs.writeFile(absolutePath, yamlStringify(content), "utf-8");
     }
+  }
+
+  function fakeCoverageContext(rootDir: string): KspecContext {
+    return {
+      rootDir,
+      specDir: join(rootDir, ".kspec"),
+      projectRoot: rootDir,
+      manifest: null,
+      config: {
+        coverage: {
+          scan_paths: ["tests"],
+          exclude_patterns: [],
+        },
+      },
+      shadow: {
+        enabled: false,
+        branch: "kspec-meta",
+        directory: ".kspec",
+        auto_sync: false,
+        sync_interval: 0,
+        remote: null,
+        worktreeDir: null,
+      },
+    } as unknown as KspecContext;
   }
 
   // ─── fileToDomain mapping ──────────────────────────────────────────────
@@ -791,6 +829,28 @@ describe("ProjectEntityCache", () => {
       const after = cache.getTaskIndex();
       expect(after).not.toBeNull();
       expect(after![0].title).toBe("Sample Task A Updated");
+    });
+
+    // AC: @coverage-state-api-cache ac-cache-invalidation
+    it("should evict coverage-state read model cache when coverage source files change", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      const ctx = fakeCoverageContext(projectA);
+      const loadEvidenceIndex = vi.fn<() => Promise<CoverageEvidenceIndex>>(async () =>
+        buildCoverageEvidenceIndex({
+          items: [],
+          annotations: [],
+          testRuns: [],
+        }),
+      );
+
+      await getCachedCoverageStateReadModel(ctx, { loadEvidenceIndex });
+      expect(getCoverageStateReadModelCacheStats().entries).toBe(1);
+
+      await cache.handleFileChange(projectA, join(projectA, "tests", "coverage-source.test.ts"));
+
+      expect(getCoverageStateReadModelCacheStats().entries).toBe(0);
+      await getCachedCoverageStateReadModel(ctx, { loadEvidenceIndex });
+      expect(loadEvidenceIndex).toHaveBeenCalledTimes(2);
     });
 
     // AC: @daemon-incremental-cache ac-batch-coalescing
@@ -2878,9 +2938,9 @@ describe("ProjectEntityCache", () => {
         "utf-8",
       );
 
-      const close = vi.fn().mockResolvedValue(undefined);
-      const read = vi
-        .fn()
+      const close = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+      const read = vi.fn<() => Promise<{ name: string; isDirectory: () => boolean } | null>>();
+      read
         .mockResolvedValueOnce({
           name: sessionId,
           isDirectory: () => true,
@@ -2903,8 +2963,10 @@ describe("ProjectEntityCache", () => {
 
     it("closes the session directory handle when enumeration fails", async () => {
       const sessionsDir = join(projectA, ".kspec-sessions");
-      const close = vi.fn().mockResolvedValue(undefined);
-      const read = vi.fn().mockRejectedValue(new Error("enumeration failed"));
+      const close = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+      const read = vi
+        .fn<() => Promise<{ name: string; isDirectory: () => boolean } | null>>()
+        .mockRejectedValue(new Error("enumeration failed"));
 
       const { ProjectEntityCacheCtor, opendirMock } = await importEntityCacheWithMockedOpendir({
         read,
@@ -4125,10 +4187,10 @@ describe("ProjectEntityCache", () => {
           lastPong: Date.now(),
           projectPath: projectA,
         },
-        send: vi.fn((msg: string) => sentMessages.push(msg)),
-        close: vi.fn(),
-        subscribe: vi.fn(),
-        unsubscribe: vi.fn(),
+        send: vi.fn<(msg: string) => number>((msg: string) => sentMessages.push(msg)),
+        close: vi.fn<() => void>(),
+        subscribe: vi.fn<() => void>(),
+        unsubscribe: vi.fn<() => void>(),
       } as any;
 
       pubsub.addConnection("test-conn", mockWs);
@@ -4255,10 +4317,10 @@ describe("ProjectEntityCache", () => {
           lastPong: Date.now(),
           projectPath: projectA,
         },
-        send: vi.fn((msg: string) => sentMessages.push(msg)),
-        close: vi.fn(),
-        subscribe: vi.fn(),
-        unsubscribe: vi.fn(),
+        send: vi.fn<(msg: string) => number>((msg: string) => sentMessages.push(msg)),
+        close: vi.fn<() => void>(),
+        subscribe: vi.fn<() => void>(),
+        unsubscribe: vi.fn<() => void>(),
       } as any;
       pubsub.addConnection("test-conn", mockWs);
 
