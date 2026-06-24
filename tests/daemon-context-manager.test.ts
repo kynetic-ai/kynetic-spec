@@ -282,6 +282,60 @@ describe("ProjectContextManager", () => {
         { timeout: WATCHER_WAIT_MS },
       );
     });
+
+    // AC: @coverage-state-api-cache ac-cache-invalidation
+    it("reconfigures coverage source watching when configured scan paths change", async () => {
+      const configFile = join(projectA, "kspec.config.yaml");
+      await writeFile(configFile, "coverage:\n  scan_paths:\n    - tests\n", "utf-8");
+      await mkdir(join(projectA, "tests"), { recursive: true });
+      await mkdir(join(projectA, "runtime-tests"), { recursive: true });
+      manager.registerProject(projectA);
+
+      const received: Array<{
+        projectPath: string;
+        kspecDir: string;
+        file: string;
+        content: string | undefined;
+      }> = [];
+      manager.setCacheInvalidationCallback((projectPath, kspecDir, file, content) => {
+        received.push({ projectPath, kspecDir, file, content });
+      });
+
+      await manager.startWatcher(projectA);
+      await writeFile(configFile, "coverage:\n  scan_paths:\n    - runtime-tests\n", "utf-8");
+
+      await vi.waitFor(
+        () => {
+          expect(received).toContainEqual({
+            projectPath: projectA,
+            kspecDir: projectA,
+            file: configFile,
+            content: undefined,
+          });
+        },
+        { timeout: WATCHER_WAIT_MS },
+      );
+
+      received.length = 0;
+      const changedFile = join(projectA, "runtime-tests", "coverage-source.test.ts");
+      await writeFile(
+        changedFile,
+        `// ${"AC"}: @coverage-state-api-cache ac-cache-invalidation\n`,
+        "utf-8",
+      );
+
+      await vi.waitFor(
+        () => {
+          expect(received).toContainEqual({
+            projectPath: projectA,
+            kspecDir: projectA,
+            file: changedFile,
+            content: undefined,
+          });
+        },
+        { timeout: WATCHER_WAIT_MS },
+      );
+    });
   });
 
   describe("Watcher health verification", () => {

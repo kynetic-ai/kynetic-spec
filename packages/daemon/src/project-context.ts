@@ -67,19 +67,23 @@ async function loadCoverageScanPaths(projectPath: string): Promise<string[]> {
 
 class CoverageScanWatcher {
   private watcher: ChokidarWatcher | null = null;
+  private watchedSourcePaths = new Set<string>();
+  private reloadScanPathsPromise: Promise<void> = Promise.resolve();
+  private readonly configPath: string;
 
   constructor(
     private readonly projectPath: string,
-    private readonly scanPaths: readonly string[],
     private readonly onSourceChange: (file: string) => void,
     private readonly onError: (error: Error, file?: string) => void,
-  ) {}
+  ) {
+    this.configPath = join(projectPath, "kspec.config.yaml");
+  }
 
   async start(): Promise<void> {
-    const watchedPaths = [
-      ...new Set(this.scanPaths.map((scanPath) => join(this.projectPath, scanPath))),
-    ];
-    if (watchedPaths.length === 0) return;
+    this.watchedSourcePaths = this.resolveWatchedSourcePaths(
+      await loadCoverageScanPaths(this.projectPath),
+    );
+    const watchedPaths = [this.configPath, ...this.watchedSourcePaths];
 
     this.watcher = chokidarWatch(watchedPaths, {
       ignoreInitial: true,
@@ -90,9 +94,9 @@ class CoverageScanWatcher {
       },
     });
 
-    this.watcher.on("add", (file: string) => this.onSourceChange(file));
-    this.watcher.on("change", (file: string) => this.onSourceChange(file));
-    this.watcher.on("unlink", (file: string) => this.onSourceChange(file));
+    this.watcher.on("add", (file: string) => this.handleFileEvent(file));
+    this.watcher.on("change", (file: string) => this.handleFileEvent(file));
+    this.watcher.on("unlink", (file: string) => this.handleFileEvent(file));
     this.watcher.on("error", (error: unknown) => {
       this.onError(error instanceof Error ? error : new Error(String(error)));
     });
@@ -106,6 +110,46 @@ class CoverageScanWatcher {
     if (!this.watcher) return;
     await this.watcher.close();
     this.watcher = null;
+  }
+
+  private handleFileEvent(file: string): void {
+    if (normalize(file) === normalize(this.configPath)) {
+      this.reloadScanPathsPromise = this.reloadScanPathsPromise
+        .catch(() => undefined)
+        .then(async () => {
+          await this.reloadWatchedSourcePaths(file);
+          this.onSourceChange(file);
+        });
+      void this.reloadScanPathsPromise;
+      return;
+    }
+    this.onSourceChange(file);
+  }
+
+  private async reloadWatchedSourcePaths(file: string): Promise<void> {
+    try {
+      const nextSourcePaths = this.resolveWatchedSourcePaths(
+        await loadCoverageScanPaths(this.projectPath),
+      );
+      const removedPaths = [...this.watchedSourcePaths].filter(
+        (path) => !nextSourcePaths.has(path),
+      );
+      const addedPaths = [...nextSourcePaths].filter((path) => !this.watchedSourcePaths.has(path));
+
+      for (const removedPath of removedPaths) {
+        await this.watcher?.unwatch(removedPath);
+      }
+      if (addedPaths.length > 0) {
+        this.watcher?.add(addedPaths);
+      }
+      this.watchedSourcePaths = nextSourcePaths;
+    } catch (error) {
+      this.onError(error instanceof Error ? error : new Error(String(error)), file);
+    }
+  }
+
+  private resolveWatchedSourcePaths(scanPaths: readonly string[]): Set<string> {
+    return new Set(scanPaths.map((scanPath) => join(this.projectPath, scanPath)));
   }
 }
 
@@ -198,7 +242,6 @@ export class ProjectContextManager {
 
     const kspecDir = join(normalizedPath, ".kspec");
     const sessionsDir = join(normalizedPath, ".kspec-sessions");
-    const coverageScanPaths = await loadCoverageScanPaths(normalizedPath);
     let kspecWatcher: KspecWatcher | null = null;
     let sessionWatcher: SessionWatcher | null = null;
     let coverageWatcher: CoverageScanWatcher | null = null;
@@ -306,12 +349,12 @@ export class ProjectContextManager {
 
       coverageWatcher = new CoverageScanWatcher(
         normalizedPath,
-        coverageScanPaths,
         (file) => {
           // AC: @coverage-state-api-cache ac-cache-invalidation — source annotation
-          // files are outside .kspec/, so forward them with the project root as
-          // the watched root. Entity cache treats this as coverage-state-only
-          // invalidation, not as a regular spec/session domain reload.
+          // files and coverage scan config are outside .kspec/, so forward them
+          // with the project root as the watched root. Entity cache treats this
+          // as coverage-state-only invalidation, not as a regular spec/session
+          // domain reload.
           this.cacheInvalidationCallback?.(normalizedPath, normalizedPath, file, undefined);
         },
         (error, file) => {
