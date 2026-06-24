@@ -13332,12 +13332,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-24T15:28:32.826Z
+      updated_at: 2026-06-24T15:28:42.044Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-24T15:28:32.826Z
+      updated_at: 2026-06-24T15:28:42.044Z
     integration:
       status: pending
       detail: null
@@ -13345,8 +13345,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 779c732e5e203ebf73d23a6c5644b5dd9e1cd6a2
-      updated_at: 2026-06-24T15:28:32.826Z
-    lifecycle_state: ready
+      updated_at: 2026-06-24T15:28:42.044Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVVE0DG6ZG9NX5A2A86ZJQ63
     task_ref: "@01KVVE0DG6ZG9NX5A2A86ZJQ63"
@@ -13354,18 +13354,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-24T14:56:48.825Z
-      last_reconciled_at: 2026-06-24T15:28:32.826Z
+      last_reconciled_at: 2026-06-24T15:28:42.044Z
       created_at: 2026-06-24T06:01:11.458Z
-      updated_at: 2026-06-24T15:28:32.826Z
+      updated_at: 2026-06-24T15:28:42.044Z
     workspace_id: dispatch-workspace-01KVVE0DG6ZG9NX5A2A86ZJQ63
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 981c807ffdee79f72422c1d3d85dc114c11337af
+        last_seen_at: 2026-06-24T15:28:42.044Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-freshness-revision-comparison-01kvve0d-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
-        head: 70196da095e80a4a656bdca2d6113013ab27722c
-        last_seen_at: 2026-06-24T14:56:16.628Z
+        head: 981c807ffdee79f72422c1d3d85dc114c11337af
+        last_seen_at: 2026-06-24T15:28:42.044Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-freshness-revision-comparison-01kvve0d
   - active_role: null
     base_branch_point: 64674c90fd90de522fb7d36a768142658ecfae4e
