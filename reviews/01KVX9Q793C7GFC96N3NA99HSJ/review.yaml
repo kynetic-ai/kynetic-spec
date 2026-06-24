@@ -149,6 +149,13 @@ events:
       kind: blocker
       thread_ulid: 01KVX9ZRH54PA0ZAG1YAATH7TZ
     timestamp: 2026-06-24T17:14:03.139Z
+  - _ulid: 01KVXAYNKNF30SMBW5NGW2X8QA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVXAYN9BCKT1EFNJ8ZXFVHJ2
+    timestamp: 2026-06-24T17:30:55.477Z
 examined_commit: 0b231000f66ba49fa349fad97cc173da9ca4be85
 external_links: []
 lifecycle_state: open
@@ -181,7 +188,31 @@ threads:
           being silently covered."
         created_at: 2026-06-24T17:14:02.661Z
     kind: blocker
+  - _ulid: 01KVXAYN9BCKT1EFNJ8ZXFVHJ2
+    entries:
+      - _ulid: 01KVXAYN9BYKHA1SGB4MXJWH9N
+        author: Jacob Chapel
+        body: "Review evidence log:\\n\\nFiles read: kspec-agents.md; task/spec context for
+          @01KVVE0DG6ZG9NX5A2A86ZJQ63 and @coverage-freshness-revision-comparison; prior reviews
+          @01KVX0RT, @01KVX41B, @01KVX6NH; src/parser/coverage-freshness-comparison.ts;
+          src/parser/coverage-state.ts; src/parser/coverage-evidence-index.ts;
+          src/parser/freshness-resolver.ts; tests/coverage-freshness-comparison.test.ts;
+          tests/coverage-state.test.ts.\\n\\nCommands run: git diff/stat/name-only; kspec item get
+          @coverage-freshness-revision-comparison; kspec review for-task/get/add/open/comment/check;
+          npx oxlint changed files; npm run format:check; npm run lint -- --quiet; npm run
+          typecheck; npm test; kspec validate --refs/--alignment/--completeness --warnings-ok;
+          inline npx tsx behavioral probe for annotation-only missing freshness
+          metadata.\\n\\nClaims verified: prior blockers for separate project/spec histories and
+          diverged source revisions have explicit regression tests; all six task ACs have
+          annotations in tests/coverage-freshness-comparison.test.ts; no shared/package guidance
+          surfaces changed; focused changed-file lint has 0 warnings.\\n\\nCategories searched:
+          correctness, edge cases, error handling/unknown metadata, test quality, integration with
+          coverage-state precedence. Finding recorded: annotation-only positive evidence with no
+          comparable freshness metadata is still marked covered instead of
+          unknown_freshness/re_verify."
+        created_at: 2026-06-24T17:30:55.147Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-24T17:09:22.850Z
-updated_at: 2026-06-24T17:14:02.661Z
+updated_at: 2026-06-24T17:30:55.147Z
 notes: []
