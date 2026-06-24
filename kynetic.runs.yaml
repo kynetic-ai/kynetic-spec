@@ -73812,7 +73812,7 @@ runs:
     started_at: 2026-06-24T22:19:36.382Z
     completed_at: 2026-06-24T22:22:19.398Z
   - _ulid: 01KVXWT3YWTB6CGRAMMTNDKBGA
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -73860,7 +73860,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-24T22:45:14.161Z
-        completed_at: 2026-06-24T22:45:14.161Z
+        completed_at: 2026-06-24T22:45:25.331Z
+        notes: "Capture: no new observations, inbox items, tasks, or questions created. Review-output
+          truncation and full-test runtime friction already have existing tracking, so duplicate
+          capture was intentionally avoided."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-24T22:43:00.701Z
+    completed_at: 2026-06-24T22:45:25.331Z
