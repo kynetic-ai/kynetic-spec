@@ -136,7 +136,13 @@ async function compareCriterionTextFreshness(
   item: LoadedSpecItem,
 ): Promise<CoverageStateFreshnessFinding | null> {
   const verifiedAt = latestPositiveEvidenceVersion(entry);
-  if (!verifiedAt) return null;
+  if (!verifiedAt) {
+    return {
+      cause: "unknown_freshness",
+      sourceEvidenceIds: positiveEvidenceIds(entry),
+      detail: "positive evidence lacks comparable criterion text freshness metadata",
+    };
+  }
 
   const comparison = await readCriterionFreshnessComparison(item, entry.acId, verifiedAt);
 

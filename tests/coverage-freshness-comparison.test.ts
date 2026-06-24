@@ -267,6 +267,26 @@ describe("coverage freshness comparison", () => {
     ]);
   });
 
+  // AC: @coverage-freshness-revision-comparison ac-unknown-comparison-degrades-to-reverify
+  it("reports unknown freshness for annotation-only evidence without comparable freshness metadata", async () => {
+    await commitPath(env, "spec", "2026-06-01T00:00:00.000Z");
+    const item = await loadItem(env);
+
+    const state = await deriveCoverageStateWithFreshnessComparison(
+      entryByAc([item], "ac-one", {
+        annotationLine: 1,
+      }),
+      { item, projectRoot: env.tempDir },
+    );
+
+    expect(state.state).toBe("unknown_freshness");
+    expect(state.presentation).toBe("re_verify");
+    expect(state.explanation.sourceEvidenceIds).toEqual([
+      `annotation:tests/coverage.test.ts:1:${ITEM_ULID}:ac-one`,
+    ]);
+    expect(state.explanation.secondaryReverifyCauses).toEqual([]);
+  });
+
   // AC: @coverage-freshness-revision-comparison ac-per-ac-diff-read
   it("returns focused prior/current text comparison for one stale criterion", async () => {
     await commitPath(env, "spec", "2026-06-01T00:00:00.000Z");
