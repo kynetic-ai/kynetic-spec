@@ -3787,6 +3787,9 @@ features:
       buckets defined by @coverage-state-presentation: covered, failing,
       not yet, and re-verify. Corpus coverage has no not-applicable state;
       in-code not-applicable annotations neither cover nor exempt criteria.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on:
       - "@coverage-evidence-index"
       - "@coverage-state-presentation"
