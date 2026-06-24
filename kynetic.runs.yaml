@@ -73348,7 +73348,7 @@ runs:
     completed_at: 2026-06-24T17:33:41.033Z
   - _ulid: 01KVXEX05WP8JQXJSV1KXF99A5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73362,7 +73362,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-24T18:41:02.839Z
-        completed_at: 2026-06-24T18:41:02.839Z
+        completed_at: 2026-06-24T18:41:13.345Z
+        notes: "Friction: full npm test had long quiet intervals that looked like a possible teardown hang,
+          requiring ps/process inspection to confirm vitest was still active. Existing tracking
+          found: @task-investigate-npm-test-teardown-hang-after-green-suite-run, so no duplicate
+          item is needed from this session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-24T18:41:13.345Z
+        completed_at: 2026-06-24T18:41:13.345Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-24T18:39:55.068Z
