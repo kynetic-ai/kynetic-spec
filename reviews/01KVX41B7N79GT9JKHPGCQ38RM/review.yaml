@@ -35,6 +35,17 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-24T15:33:26.293Z
     completed_at: 2026-06-24T15:33:26.293Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; reference warnings only under existing warning
+      baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-24T15:33:30.390Z
+    completed_at: 2026-06-24T15:33:30.390Z
 events:
   - _ulid: 01KVX41B7N0ZMQ2JCGPT2F8GSX
     actor: Jacob Chapel
@@ -84,6 +95,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-24T15:33:26.616Z
+  - _ulid: 01KVX47NZQD568SE577W8Q0B8P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-24T15:33:30.743Z
 examined_commit: 981c807ffdee79f72422c1d3d85dc114c11337af
 external_links: []
 lifecycle_state: open
@@ -140,5 +158,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-24T15:30:03.125Z
-updated_at: 2026-06-24T15:33:26.293Z
+updated_at: 2026-06-24T15:33:30.390Z
 notes: []
