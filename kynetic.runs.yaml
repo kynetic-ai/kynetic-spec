@@ -73096,7 +73096,7 @@ runs:
     started_at: 2026-06-24T15:25:18.440Z
     completed_at: 2026-06-24T15:27:52.414Z
   - _ulid: 01KVX4YW0FRH3G2SFTYB8TCBCK
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -73159,7 +73159,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-24T15:48:40.867Z
-        completed_at: 2026-06-24T15:48:40.867Z
+        completed_at: 2026-06-24T15:49:03.573Z
+        notes: "Captured one friction observation: @01KVX53R, covering the need for freshness/revision
+          comparison tests to model separate shadow metadata and project-code git histories. No task
+          was created because the right implementation shape should be triaged first. No capture for
+          slow full-suite reviews because existing project guidance already requires npm test and
+          documents test caching."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-24T15:46:10.575Z
+    completed_at: 2026-06-24T15:49:03.573Z
