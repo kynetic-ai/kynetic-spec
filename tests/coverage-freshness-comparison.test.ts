@@ -35,11 +35,15 @@ function git(repo: string, args: string[], env: Record<string, string> = {}): st
   }).trim();
 }
 
-async function commitPath(env: TestEnv, relPath: string, iso: string): Promise<string> {
+async function commitRepoPath(repo: string, relPath: string, iso: string): Promise<string> {
   const dateEnv = { GIT_AUTHOR_DATE: iso, GIT_COMMITTER_DATE: iso };
-  git(env.tempDir, ["add", relPath], dateEnv);
-  git(env.tempDir, ["commit", "-m", `update ${relPath}`], dateEnv);
-  return git(env.tempDir, ["rev-parse", "HEAD"]);
+  git(repo, ["add", relPath], dateEnv);
+  git(repo, ["commit", "-m", `update ${relPath}`], dateEnv);
+  return git(repo, ["rev-parse", "HEAD"]);
+}
+
+async function commitPath(env: TestEnv, relPath: string, iso: string): Promise<string> {
+  return commitRepoPath(env.tempDir, relPath, iso);
 }
 
 function ac(id: string, text = id) {
@@ -364,6 +368,79 @@ describe("coverage freshness comparison", () => {
 
     expect(state.state).toBe("stale_test_result");
     expect(state.explanation.secondaryReverifyCauses).toEqual([]);
+  });
+
+  // AC: @coverage-freshness-revision-comparison ac-test-result-code-revision-compared
+  // AC: @coverage-freshness-revision-comparison ac-unknown-comparison-degrades-to-reverify
+  it("uses run timestamp instead of project code revision when comparing shadow spec text", async () => {
+    initGitRepo(env.specDir);
+    await commitRepoPath(env.specDir, "kynetic.yaml", "2026-06-01T00:00:00.000Z");
+    await commitRepoPath(env.specDir, "modules/specs.yaml", "2026-06-01T00:01:00.000Z");
+    await fs.writeFile(env.testFile, `// AC: @neutral-freshness ac-one\nit("covers", () => {});\n`);
+    const projectRevision = await commitPath(
+      env,
+      "tests/coverage.test.ts",
+      "2026-06-02T00:00:00.000Z",
+    );
+    const item = await loadItem(env);
+
+    const state = await deriveCoverageStateWithFreshnessComparison(
+      entryByAc([item], "ac-one", {
+        testRuns: [
+          runRecord({
+            completedAt: "2026-06-02T00:30:00.000Z",
+            codeRevision: projectRevision,
+            location: { file: "tests/coverage.test.ts", line: 2 },
+          }),
+        ],
+      }),
+      { item, projectRoot: env.tempDir },
+    );
+
+    expect(state.state).toBe("covered");
+    expect(state.presentation).toBe("covered");
+  });
+
+  // AC: @coverage-freshness-revision-comparison ac-test-result-code-revision-compared
+  // AC: @coverage-freshness-revision-comparison ac-unknown-comparison-degrades-to-reverify
+  it("reports unknown freshness when source revisions are diverged rather than comparable", async () => {
+    await commitPath(env, "spec", "2026-06-01T00:00:00.000Z");
+    await fs.writeFile(env.testFile, `// AC: @neutral-freshness ac-one\nit("covers", () => {});\n`);
+    await commitPath(env, "tests/coverage.test.ts", "2026-06-02T00:00:00.000Z");
+    const mainBranch = git(env.tempDir, ["branch", "--show-current"]);
+    git(env.tempDir, ["checkout", "-b", "run-side-branch"]);
+    await fs.writeFile(path.join(env.tempDir, "side.txt"), "side branch only\n");
+    const runRevision = await commitPath(env, "side.txt", "2026-06-02T00:30:00.000Z");
+    git(env.tempDir, ["checkout", mainBranch]);
+    await fs.writeFile(
+      env.testFile,
+      `// AC: @neutral-freshness ac-one\nit("covers changed", () => {});\n`,
+    );
+    await commitPath(env, "tests/coverage.test.ts", "2026-06-03T00:00:00.000Z");
+    const item = await loadItem(env);
+
+    const entry = entryByAc([item], "ac-one", {
+      testRuns: [
+        runRecord({
+          completedAt: "2026-06-02T00:45:00.000Z",
+          codeRevision: runRevision,
+          location: { file: "tests/coverage.test.ts", line: 2 },
+        }),
+      ],
+    });
+    const findings = await compareCoverageFreshness(entry, { item, projectRoot: env.tempDir });
+    const state = await deriveCoverageStateWithFreshnessComparison(entry, {
+      item,
+      projectRoot: env.tempDir,
+    });
+
+    expect(state.state).toBe("unknown_freshness");
+    expect(findings).toContainEqual(
+      expect.objectContaining({
+        cause: "unknown_freshness",
+        detail: expect.stringContaining("source revision is not comparable"),
+      }),
+    );
   });
 
   // AC: @coverage-freshness-revision-comparison ac-unknown-comparison-degrades-to-reverify

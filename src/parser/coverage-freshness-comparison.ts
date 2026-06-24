@@ -34,6 +34,7 @@ export interface CriterionTextComparison {
 
 export interface CriterionComparisonVersion {
   atTimestamp?: string;
+  /** Commit in the criterion source repository. Project code revisions are not valid here. */
   atCommit?: string | null;
 }
 
@@ -238,7 +239,15 @@ async function compareLineToRevision(
   if (ancestor === null) {
     return { status: "unknown", detail: "source revision could not be compared" };
   }
-  return ancestor ? { status: "changed", commit: blame.commit } : { status: "current" };
+  if (ancestor) return { status: "changed", commit: blame.commit };
+
+  const descendant = await isAncestor(gitFile.repoRoot, blame.commit, revision);
+  if (descendant === null) {
+    return { status: "unknown", detail: "source revision could not be compared" };
+  }
+  if (descendant) return { status: "current" };
+
+  return { status: "unknown", detail: "source revision is not comparable to current line history" };
 }
 
 function sourceComparisonFinding(
@@ -432,7 +441,6 @@ function latestPositiveEvidenceVersion(
       .filter((result) => result.status === "passed")
       .map((result) => ({
         atTimestamp: result.completedAt,
-        atCommit: result.codeRevision,
       })),
   ];
   const versions = candidates.filter(
