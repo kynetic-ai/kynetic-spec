@@ -1,0 +1,26 @@
+_ulid: 01KVW2GXTTD6CY1EZMSYPDNVTQ
+slugs: []
+title: Review deterministic per-AC coverage state derivation
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KVW2GXTS1SR1R59N6E1NEV39
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-24T05:44:22.105Z
+examined_commit: 8e035b45207cfbbb0decdf4635f4cf892890eddd
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KVVE0D2QJ4KEMNF7HG9MMFED"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-24T05:44:22.106Z
+updated_at: null
+notes: []
