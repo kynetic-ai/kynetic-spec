@@ -58,6 +58,16 @@ checks:
     runner: kspec
     created_at: 2026-06-24T15:33:34.764Z
     completed_at: 2026-06-24T15:33:34.764Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm run typecheck passed (build:shared plus tsc --noEmit exited 0).
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-24T15:33:39.037Z
+    completed_at: 2026-06-24T15:33:39.037Z
 events:
   - _ulid: 01KVX41B7N0ZMQ2JCGPT2F8GSX
     actor: Jacob Chapel
@@ -121,6 +131,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-24T15:33:35.087Z
+  - _ulid: 01KVX47YC7HS06TSVJJRZ6658H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-24T15:33:39.335Z
 examined_commit: 981c807ffdee79f72422c1d3d85dc114c11337af
 external_links: []
 lifecycle_state: open
@@ -177,5 +194,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-24T15:30:03.125Z
-updated_at: 2026-06-24T15:33:34.764Z
+updated_at: 2026-06-24T15:33:39.037Z
 notes: []
