@@ -13337,7 +13337,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-24T17:34:01.715Z
+      updated_at: 2026-06-24T17:34:12.448Z
     integration:
       status: pending
       detail: null
@@ -13346,7 +13346,7 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: 779c732e5e203ebf73d23a6c5644b5dd9e1cd6a2
       updated_at: 2026-06-24T17:34:01.715Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVVE0DG6ZG9NX5A2A86ZJQ63
     task_ref: "@01KVVE0DG6ZG9NX5A2A86ZJQ63"
@@ -13354,18 +13354,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-24T17:08:30.027Z
-      last_reconciled_at: 2026-06-24T17:34:01.715Z
+      last_reconciled_at: 2026-06-24T17:34:12.448Z
       created_at: 2026-06-24T06:01:11.458Z
-      updated_at: 2026-06-24T17:34:01.715Z
+      updated_at: 2026-06-24T17:34:12.448Z
     workspace_id: dispatch-workspace-01KVVE0DG6ZG9NX5A2A86ZJQ63
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 0b231000f66ba49fa349fad97cc173da9ca4be85
-        last_seen_at: 2026-06-24T17:07:37.139Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-freshness-revision-comparison-01kvve0d-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-freshness-revision-comparison/01kvve0d
