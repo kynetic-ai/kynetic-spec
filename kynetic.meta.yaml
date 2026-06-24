@@ -23118,6 +23118,21 @@ observations:
     resolved_by: codex-reviewer
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-24T05:18:41.838Z
+  - _ulid: 01KVW14EVBV941SD4EGBNRBZ09
+    type: friction
+    content: Detached review snapshots can be missing workspace-local npm package links even when
+      bootstrap state says ready. In this review, typecheck and npm test initially resolved
+      @kynetic-ai/shared from the parent checkout and failed on stale shared exports; node
+      scripts/bootstrap.cjs refused because KSPEC_SESSION_ID was set, and npm install in the
+      assigned worktree created the correct local symlinks and cleared the gates without source
+      changes. Dispatch workspace preparation should ensure workspace package links exist, or review
+      guidance should name npm install as the sanctioned repair when bootstrap is blocked in
+      dispatch mode.
+    author: codex-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-24T05:20:04.972Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
