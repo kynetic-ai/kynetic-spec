@@ -64,7 +64,7 @@ description: >-
 spec_ref: "@coverage-state-events"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-coverage-state-api-cache"
@@ -85,7 +85,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-coverage-state-events/01kvve0e
-session_id: null
+session_id: 01KVXY54XR7BGKBCKTNWMCD095
 history:
   - author: Jacob Chapel
     changes:
@@ -322,8 +322,21 @@ history:
         previous: 01KVXVPYVAXYB3KRZ267DVB7B3
     command: review-verdict-needs-work
     timestamp: 2026-06-24T23:02:45.164Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KVXY54XR7BGKBCKTNWMCD095
+        previous: null
+      started_at:
+        new: 2026-06-24T23:31:16.802Z
+        previous: 2026-06-24T22:24:58.551Z
+    command: task-start
+    timestamp: 2026-06-24T23:31:16.802Z
 created_at: 2026-06-23T23:45:50.281Z
-started_at: 2026-06-24T22:24:58.551Z
+started_at: 2026-06-24T23:31:16.802Z
 submitted_at: 2026-06-24T22:42:08.216Z
 todos: []
 automation: eligible
