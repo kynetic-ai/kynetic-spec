@@ -23063,6 +23063,58 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-24T00:15:36.340Z
+  - _ulid: 01KVW11XNEEP8AMBN77G9ZT6R5
+    type: friction
+    content: "Detached review snapshots can be missing workspace-local npm package links even when
+      bootstrap state says ready. In this review, typecheck and npm test initially resolved
+      @kynetic-ai/shared from the parent checkout and failed on stale shared exports; \e[31m✗\e[0m
+      Bootstrap cannot run inside a dispatch session (KSPEC_SESSION_ID is set). The dispatch engine
+      provides a ready environment — bootstrap is not needed. refused because KSPEC_SESSION_ID was
+      set, and\ 
+
+      changed 1 package, and audited 127 packages in 818ms
+
+
+      25 packages are looking for funding
+
+      \  run `npm fund` for details
+
+
+      3 vulnerabilities (2 moderate, 1 high)
+
+
+      To address all issues, run:
+
+      \  npm audit fix
+
+
+      Run `npm audit` for details. in the assigned worktree created the correct local symlinks and
+      cleared the gates without source changes. Dispatch workspace preparation should ensure
+      workspace package links exist, or the review guidance should name\ 
+
+      changed 1 package, and audited 127 packages in 744ms
+
+
+      25 packages are looking for funding
+
+      \  run `npm fund` for details
+
+
+      3 vulnerabilities (2 moderate, 1 high)
+
+
+      To address all issues, run:
+
+      \  npm audit fix
+
+
+      Run `npm audit` for details. as the sanctioned repair when bootstrap is blocked in dispatch
+      mode."
+    author: codex-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-24T05:18:41.838Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
