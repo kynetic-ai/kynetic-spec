@@ -73097,7 +73097,7 @@ runs:
     completed_at: 2026-06-24T15:27:52.414Z
   - _ulid: 01KVX4YW0FRH3G2SFTYB8TCBCK
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -73143,7 +73143,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-24T15:48:09.694Z
-        completed_at: 2026-06-24T15:48:09.694Z
+        completed_at: 2026-06-24T15:48:26.430Z
+        notes: "Proposed improvement: add or document a reusable freshness/revision test fixture that models
+          kspecs two git domains separately: shadow metadata for spec source and project repository
+          history for code/test locations. This would help freshness comparison tests catch
+          domain-mixing bugs before review. Scope: medium if implemented as a shared test helper
+          plus a couple of regression tests; small if first captured as an observation for triage."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-24T15:48:26.430Z
+        completed_at: 2026-06-24T15:48:26.430Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-24T15:46:10.575Z
