@@ -23235,6 +23235,18 @@ observations:
     resolved: false
     workflow_ref: "@01KVXMRR"
     created_at: 2026-06-24T20:24:35.094Z
+  - _ulid: 01KVXPANC6XT6HFVBS5DYKB56V
+    type: friction
+    content: "Required full npm test as a detached source-code review gate can dominate review
+      turnaround: this review's full suite passed but took 3199.0s after the blocker was already
+      found. Existing tracking covers metadata-only review profiles, but source-code reviews may
+      also benefit from clearer policy/tooling for when focused failing evidence can short-circuit
+      full-suite work, or from faster review-safe gate bundles that preserve rigor."
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KVXP7M"
+    created_at: 2026-06-24T20:49:42.791Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
