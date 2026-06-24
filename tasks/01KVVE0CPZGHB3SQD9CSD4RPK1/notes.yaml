@@ -24,3 +24,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T23:58:50.044Z
+  - _ulid: 01KVVFJQXXT5952RCYCVG26TYM
+    content: "Completed implementation in commit acc03f55d7. Added src/parser/coverage-evidence-index.ts
+      with a pure evidence builder plus loadCoverageEvidenceIndex(ctx), which joins live ACs,
+      structured annotations, bootstrap freshness, recorded verification stamps, and indexed
+      normalized test runs. Added tests/coverage-evidence-index.test.ts covering all six
+      @coverage-evidence-index ACs with neutral project fixtures and authoritative test-run index
+      behavior. Verification passed: npm run format:check; npx oxlint
+      src/parser/coverage-evidence-index.ts tests/coverage-evidence-index.test.ts; npm run
+      typecheck; npm run lint -- --quiet (0 errors, existing warning baseline); npm test -- --run
+      tests/coverage-evidence-index.test.ts; npm test (2903 suites passed, 11025 tests passed, 3
+      skipped); kspec validate --refs --warnings-ok; kspec validate --alignment --warnings-ok; kspec
+      validate --completeness --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-24T00:13:18.653Z
