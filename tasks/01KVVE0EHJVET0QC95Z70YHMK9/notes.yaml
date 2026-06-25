@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KVYKW8TYGVGHN23VZWMCPY12
+    content: "Final validation audit blocker: the freshness comparison layer is implemented and directly
+      tested, but the production coverage-state read model/API/export path currently calls
+      buildCoverageStateReadModel -> criterionDetail -> deriveCoverageState(entry) without
+      compareCoverageFreshness/deriveCoverageStateWithFreshnessComparison. Search confirmed
+      compareCoverageFreshness is only used by direct freshness tests, not by
+      loadCoverageStateReadModel/getCachedCoverageStateReadModel/API/export. This means stale AC
+      text, mapped test source revision, and per-AC freshness comparison can pass direct helper
+      tests while daemon/static coverage-state reads still report states from raw evidence only.
+      This blocks final validation for @plan-coverage-state-engine; fix should be in the
+      API/cache/read-model integration path rather than the manual validation task."
+    supersedes: null
+    author: Hermes
+    created_at: 2026-06-25T05:26:08.479Z
