@@ -3,18 +3,68 @@ slugs:
   - task-coverage-state-freshness-read-model-integration
 title: Integrate freshness comparison into coverage-state read model
 type: bug
-description: Wire the per-AC freshness comparison layer into the production coverage-state read
+description: >-
+  Wire the per-AC freshness comparison layer into the production coverage-state read
   model/API/static export path so daemon and exported coverage-state reads use the same
   stale-spec/stale-annotation/stale-test-result/unknown-freshness logic proven by
   tests/coverage-freshness-comparison.test.ts. The current implementation exposes
   compareCoverageFreshness/deriveCoverageStateWithFreshnessComparison, but
   loadCoverageStateReadModel/getCachedCoverageStateReadModel/buildCoverageStateReadModel call
   deriveCoverageState(entry) directly, so stale AC text and mapped test source revision comparisons
-  are not reflected in coverage-state API or static snapshots. Fix in the read-model/cache
-  integration path, with batching/caching so large corpora do not perform one git/history operation
-  per AC when avoidable. Add regression coverage proving daemon/API or read-model output re-verifies
-  stale AC text, changed annotation/test source, and unknown comparison metadata for neutral
-  temp-project fixtures, while no-store/backcompat reads remain read-only.
+  are not reflected in coverage-state API or static snapshots. Treat renamed functions as equivalent
+  if the current code has moved; the target is the production coverage-state read path, not exact
+  function names.
+
+
+  What:
+
+  - Fix the read-model/cache integration path so production coverage-state
+  state/detail/summary/export reads consume freshness comparison findings before deriving final
+  state.
+
+  - Preserve the existing evidence index, normalized test-run store, state precedence, and four
+  presentation buckets; do not duplicate freshness logic or introduce new coverage buckets.
+
+  - Keep the change to the read-model/cache/API/export integration boundary. Do not redesign daemon
+  route shapes, static export format, the evidence index, the test-run store, or Svelte consumers
+  except for minimal plumbing required by existing response fields.
+
+  - Maintain general-system neutrality: use normalized run records, annotation locations, criterion
+  metadata, and project/shadow metadata history. Do not infer test files or source locations from
+  Kynetic paths, suite names, package names, or framework-native output.
+
+
+  Verification:
+
+  - Add behavioral regression tests that exercise the production read-model path through
+  loadCoverageStateReadModel/getCachedCoverageStateReadModel or their current equivalents.
+
+  - Include at least one daemon API route or static JSON export regression proving consumers receive
+  the same freshness-enriched state.
+
+  - Prove separate cases for stale AC text, stale annotation source, stale mapped test source after
+  an accepted run, and unknown/uncomparable metadata.
+
+  - Prove unknown freshness only re-verifies when positive evidence exists; criteria with no
+  positive evidence remain not-yet.
+
+  - Prove no-store/backcompat/static reads remain read-only and do not materialize sidecar stores.
+
+  - Use neutral temp-project fixtures with non-kynetic package names, spec refs, source paths, and
+  normalized run producers.
+
+  - Add a bounded-performance regression using a generated neutral fixture with many criteria and a
+  small number of changed files/revisions. Instrument or inject the history/comparison reader so
+  repeated cached reads do not rerun comparison work, and cold reads batch by unique file/revision
+  where the existing helper API allows it.
+
+
+  Covers: @coverage-state-api-cache ac-corpus-rollup, ac-item-and-ac-detail, ac-server-computed,
+  ac-cache-invalidation, ac-static-snapshot, ac-performance-bounded as regression coverage for the
+  production read model using freshness comparison. Also regression-proves
+  @coverage-freshness-revision-comparison ac-ac-text-change-detected, ac-annotation-change-detected,
+  ac-test-result-code-revision-compared, and ac-unknown-comparison-degrades-to-reverify through the
+  production read path. @trait-api-endpoint ac-5 remains N/A because these are read endpoints.
 spec_ref: "@coverage-state-api-cache"
 meta_ref: null
 plan_ref: "@plan-coverage-state-engine"
@@ -30,6 +80,90 @@ tags:
   - validation
   - freshness
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      description:
+        new: >-
+          Wire the per-AC freshness comparison layer into the production coverage-state read
+          model/API/static export path so daemon and exported coverage-state reads use the same
+          stale-spec/stale-annotation/stale-test-result/unknown-freshness logic proven by
+          tests/coverage-freshness-comparison.test.ts. The current implementation exposes
+          compareCoverageFreshness/deriveCoverageStateWithFreshnessComparison, but
+          loadCoverageStateReadModel/getCachedCoverageStateReadModel/buildCoverageStateReadModel
+          call deriveCoverageState(entry) directly, so stale AC text and mapped test source revision
+          comparisons are not reflected in coverage-state API or static snapshots. Treat renamed
+          functions as equivalent if the current code has moved; the target is the production
+          coverage-state read path, not exact function names.
+
+
+          What:
+
+          - Fix the read-model/cache integration path so production coverage-state
+          state/detail/summary/export reads consume freshness comparison findings before deriving
+          final state.
+
+          - Preserve the existing evidence index, normalized test-run store, state precedence, and
+          four presentation buckets; do not duplicate freshness logic or introduce new coverage
+          buckets.
+
+          - Keep the change to the read-model/cache/API/export integration boundary. Do not redesign
+          daemon route shapes, static export format, the evidence index, the test-run store, or
+          Svelte consumers except for minimal plumbing required by existing response fields.
+
+          - Maintain general-system neutrality: use normalized run records, annotation locations,
+          criterion metadata, and project/shadow metadata history. Do not infer test files or source
+          locations from Kynetic paths, suite names, package names, or framework-native output.
+
+
+          Verification:
+
+          - Add behavioral regression tests that exercise the production read-model path through
+          loadCoverageStateReadModel/getCachedCoverageStateReadModel or their current equivalents.
+
+          - Include at least one daemon API route or static JSON export regression proving consumers
+          receive the same freshness-enriched state.
+
+          - Prove separate cases for stale AC text, stale annotation source, stale mapped test
+          source after an accepted run, and unknown/uncomparable metadata.
+
+          - Prove unknown freshness only re-verifies when positive evidence exists; criteria with no
+          positive evidence remain not-yet.
+
+          - Prove no-store/backcompat/static reads remain read-only and do not materialize sidecar
+          stores.
+
+          - Use neutral temp-project fixtures with non-kynetic package names, spec refs, source
+          paths, and normalized run producers.
+
+          - Add a bounded-performance regression using a generated neutral fixture with many
+          criteria and a small number of changed files/revisions. Instrument or inject the
+          history/comparison reader so repeated cached reads do not rerun comparison work, and cold
+          reads batch by unique file/revision where the existing helper API allows it.
+
+
+          Covers: @coverage-state-api-cache ac-corpus-rollup, ac-item-and-ac-detail,
+          ac-server-computed, ac-cache-invalidation, ac-static-snapshot, ac-performance-bounded as
+          regression coverage for the production read model using freshness comparison. Also
+          regression-proves @coverage-freshness-revision-comparison ac-ac-text-change-detected,
+          ac-annotation-change-detected, ac-test-result-code-revision-compared, and
+          ac-unknown-comparison-degrades-to-reverify through the production read path.
+          @trait-api-endpoint ac-5 remains N/A because these are read endpoints.
+        previous: Wire the per-AC freshness comparison layer into the production coverage-state read
+          model/API/static export path so daemon and exported coverage-state reads use the same
+          stale-spec/stale-annotation/stale-test-result/unknown-freshness logic proven by
+          tests/coverage-freshness-comparison.test.ts. The current implementation exposes
+          compareCoverageFreshness/deriveCoverageStateWithFreshnessComparison, but
+          loadCoverageStateReadModel/getCachedCoverageStateReadModel/buildCoverageStateReadModel
+          call deriveCoverageState(entry) directly, so stale AC text and mapped test source revision
+          comparisons are not reflected in coverage-state API or static snapshots. Fix in the
+          read-model/cache integration path, with batching/caching so large corpora do not perform
+          one git/history operation per AC when avoidable. Add regression coverage proving
+          daemon/API or read-model output re-verifies stale AC text, changed annotation/test source,
+          and unknown comparison metadata for neutral temp-project fixtures, while
+          no-store/backcompat reads remain read-only.
+    command: task-set
+    timestamp: 2026-06-25T15:02:29.661Z
 created_at: 2026-06-25T05:28:14.214Z
 todos: []
 automation: needs_review
