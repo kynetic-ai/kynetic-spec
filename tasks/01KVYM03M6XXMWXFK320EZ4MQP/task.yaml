@@ -164,6 +164,13 @@ history:
           no-store/backcompat reads remain read-only.
     command: task-set
     timestamp: 2026-06-25T15:02:29.661Z
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: needs_review
+    command: task-set
+    timestamp: 2026-06-25T15:04:52.738Z
 created_at: 2026-06-25T05:28:14.214Z
 todos: []
-automation: needs_review
+automation: eligible
