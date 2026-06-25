@@ -3789,7 +3789,7 @@ features:
       in-code not-applicable annotations neither cover nor exempt criteria.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on:
       - "@coverage-evidence-index"
       - "@coverage-state-presentation"
