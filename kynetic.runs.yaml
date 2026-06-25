@@ -74015,7 +74015,7 @@ runs:
     completed_at: 2026-06-24T23:54:41.440Z
   - _ulid: 01KVZPB68YTZX2TQFMK88AASQD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74030,7 +74030,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-25T15:29:00.979Z
-        completed_at: 2026-06-25T15:29:00.979Z
+        completed_at: 2026-06-25T15:29:39.336Z
+        notes: "High-confidence findings: Success: the task description precisely identified the production
+          integration boundary, so the fix stayed scoped to evidence index/read-model/API/export
+          integration rather than redesigning routes or state precedence. Success: using an
+          injectable freshness comparer at the cached read-model boundary gave deterministic
+          coverage for all four reverify causes, while daemon API and static export tests proved
+          real consumer paths. Friction: the full npm test run had long quiet tail periods, but this
+          is already tracked by @task-investigate-npm-test-teardown-hang-after-green-suite-run plus
+          prior observations about quiet long gates. Friction: I initially tried kspec workflow list
+          before checking help; workflow ergonomics are already tracked by existing workflow CLI
+          inbox/observations. No untracked high-confidence friction found."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-25T15:29:39.336Z
+        completed_at: 2026-06-25T15:29:39.336Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-25T15:28:28.958Z
