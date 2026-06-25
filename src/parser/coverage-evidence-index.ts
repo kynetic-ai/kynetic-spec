@@ -120,6 +120,7 @@ export interface CoverageEvidenceEntry extends CoverageCriterionIdentity {
 }
 
 export interface CoverageEvidenceIndex {
+  items: LoadedSpecItem[];
   entries: CoverageEvidenceEntry[];
   entriesByCriterion: Record<string, CoverageEvidenceEntry>;
   unmappedResults: CoverageUnmappedResultEvidence[];
@@ -189,6 +190,7 @@ export function buildCoverageEvidenceIndex(
     entryRecord[entry.criterionKey] = entry;
   }
   return {
+    items: sortedItems,
     entries,
     entriesByCriterion: entryRecord,
     unmappedResults,
