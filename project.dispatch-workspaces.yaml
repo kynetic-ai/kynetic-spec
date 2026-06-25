@@ -12165,18 +12165,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-coverage-state-freshness-read-model-integration/01kvym03
-    canonical_branch_head: 5b39e63189a371afbe7fbfb3a05960cef1c7811f
+    canonical_branch_head: 87e7e21b353487b6b99b8782f5cdbff31eff1682
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-25T15:05:34.749Z
+      updated_at: 2026-06-25T15:27:50.691Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-25T15:06:04.558Z
+      updated_at: 2026-06-25T15:27:50.691Z
     integration:
       status: pending
       detail: null
@@ -12184,7 +12184,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 5b39e63189a371afbe7fbfb3a05960cef1c7811f
-      updated_at: 2026-06-25T15:05:34.749Z
+      updated_at: 2026-06-25T15:27:50.691Z
     lifecycle_state: active
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVYM03M6XXMWXFK320EZ4MQP
@@ -12193,9 +12193,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-25T15:06:04.558Z
-      last_reconciled_at: 2026-06-25T15:06:04.558Z
+      last_reconciled_at: 2026-06-25T15:27:50.691Z
       created_at: 2026-06-25T15:05:34.749Z
-      updated_at: 2026-06-25T15:06:04.558Z
+      updated_at: 2026-06-25T15:27:50.691Z
     workspace_id: dispatch-workspace-01KVYM03M6XXMWXFK320EZ4MQP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
