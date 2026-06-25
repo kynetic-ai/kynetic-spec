@@ -67,6 +67,19 @@ checks:
     runner: kspec
     created_at: 2026-06-25T15:46:15.688Z
     completed_at: 2026-06-25T15:46:15.688Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0. Existing completeness
+      warning baseline: 320 warnings (240 missing own AC coverage, 80 invalid AC annotations).
+      Changed tests include AC annotations for @coverage-state-api-cache,
+      @coverage-freshness-revision-comparison, and @trait-api-endpoint cases relevant to this task."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-25T15:46:30.646Z
+    completed_at: 2026-06-25T15:46:30.646Z
 events:
   - _ulid: 01KVZPJS8PSKJ405WMS4Q7A927
     actor: Jacob Chapel
@@ -123,6 +136,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-25T15:46:15.929Z
+  - _ulid: 01KVZQC6VBXJATGGB05J5EHTYE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-25T15:46:30.891Z
 examined_commit: 87e7e21b353487b6b99b8782f5cdbff31eff1682
 external_links: []
 lifecycle_state: open
@@ -135,5 +155,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-25T15:32:37.782Z
-updated_at: 2026-06-25T15:46:15.688Z
+updated_at: 2026-06-25T15:46:30.646Z
 notes: []
