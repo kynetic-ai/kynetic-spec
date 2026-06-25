@@ -15,10 +15,19 @@ import {
   type CoverageIngestedResultEvidence,
   type CoverageUnmappedResultEvidence,
 } from "./coverage-evidence-index.js";
-import { deriveCoverageState } from "./coverage-state.js";
-import type { KspecContext } from "./yaml.js";
+import {
+  compareCoverageFreshness,
+  type CoverageFreshnessComparisonOptions,
+} from "./coverage-freshness-comparison.js";
+import { deriveCoverageState, type CoverageStateFreshnessFinding } from "./coverage-state.js";
+import type { KspecContext, LoadedSpecItem } from "./yaml.js";
 
 export type CoverageStateReadModel = CoverageStateSnapshot;
+
+export type CoverageFreshnessComparer = (
+  entry: CoverageEvidenceEntry,
+  options: CoverageFreshnessComparisonOptions,
+) => Promise<CoverageStateFreshnessFinding[]>;
 
 export interface CoverageStateReadModelCacheStats {
   entries: number;
@@ -133,8 +142,11 @@ function unmappedSummary(evidence: CoverageUnmappedResultEvidence): CoverageUnma
 function criterionDetail(
   entry: CoverageEvidenceEntry,
   unmappedResults: readonly CoverageUnmappedResultSummary[],
+  freshnessFindings: readonly CoverageStateFreshnessFinding[] = [],
 ): CoverageCriterionStateDetail {
-  const state = deriveCoverageState(entry);
+  const state = deriveCoverageState(
+    freshnessFindings.length > 0 ? { ...entry, freshnessFindings } : entry,
+  );
   const relevantUnmapped = unmappedResults.filter(
     (result) => result.item_ref === entry.itemRef && result.ac_id === entry.acId,
   );
@@ -181,6 +193,9 @@ function compareUnmapped(
 
 export function buildCoverageStateReadModel(
   evidenceIndex: CoverageEvidenceIndex,
+  options: {
+    freshnessFindingsByCriterion?: ReadonlyMap<string, readonly CoverageStateFreshnessFinding[]>;
+  } = {},
 ): CoverageStateReadModel {
   const unmappedResults = evidenceIndex.unmappedResults
     .map(unmappedSummary)
@@ -191,7 +206,11 @@ export function buildCoverageStateReadModel(
   const summaryCounts = emptyCounts();
 
   for (const entry of evidenceIndex.entries) {
-    const detail = criterionDetail(entry, unmappedResults);
+    const detail = criterionDetail(
+      entry,
+      unmappedResults,
+      options.freshnessFindingsByCriterion?.get(entry.criterionKey) ?? [],
+    );
     criteria[entry.criterionKey] = detail;
     const counts = countCriterion(detail);
     addCounts(summaryCounts, counts);
@@ -247,16 +266,47 @@ export function buildCoverageStateReadModel(
   };
 }
 
+export async function buildCoverageStateReadModelWithFreshnessComparison(
+  evidenceIndex: CoverageEvidenceIndex,
+  options: {
+    projectRoot?: string;
+    compareFreshness?: CoverageFreshnessComparer;
+  } = {},
+): Promise<CoverageStateReadModel> {
+  const compareFreshness = options.compareFreshness ?? compareCoverageFreshness;
+  const itemsByUlid = new Map<string, LoadedSpecItem>(
+    (evidenceIndex.items ?? []).map((item) => [item._ulid, item]),
+  );
+  const freshnessFindingsByCriterion = new Map<string, CoverageStateFreshnessFinding[]>();
+
+  for (const entry of evidenceIndex.entries) {
+    const item = itemsByUlid.get(entry.itemUlid);
+    if (!item) continue;
+    const findings = await compareFreshness(entry, {
+      item,
+      projectRoot: options.projectRoot,
+    });
+    if (findings.length > 0) {
+      freshnessFindingsByCriterion.set(entry.criterionKey, findings);
+    }
+  }
+
+  return buildCoverageStateReadModel(evidenceIndex, { freshnessFindingsByCriterion });
+}
+
 export async function loadCoverageStateReadModel(
   ctx: KspecContext,
 ): Promise<CoverageStateReadModel> {
-  return buildCoverageStateReadModel(await loadCoverageEvidenceIndex(ctx));
+  return buildCoverageStateReadModelWithFreshnessComparison(await loadCoverageEvidenceIndex(ctx), {
+    projectRoot: ctx.rootDir,
+  });
 }
 
 export async function getCachedCoverageStateReadModel(
   ctx: KspecContext,
   options: {
     loadEvidenceIndex?: () => Promise<CoverageEvidenceIndex>;
+    compareFreshness?: CoverageFreshnessComparer;
   } = {},
 ): Promise<CoverageStateReadModel> {
   const key = cacheKey(ctx);
@@ -266,9 +316,13 @@ export async function getCachedCoverageStateReadModel(
 
   const loadEvidenceIndex = options.loadEvidenceIndex ?? (() => loadCoverageEvidenceIndex(ctx));
   const pending = loadEvidenceIndex().then((index) => {
-    const model = buildCoverageStateReadModel(index);
-    readModelCache.set(key, { model });
-    return model;
+    return buildCoverageStateReadModelWithFreshnessComparison(index, {
+      projectRoot: ctx.rootDir,
+      compareFreshness: options.compareFreshness,
+    }).then((model) => {
+      readModelCache.set(key, { model });
+      return model;
+    });
   });
   readModelCache.set(key, { pending });
   try {

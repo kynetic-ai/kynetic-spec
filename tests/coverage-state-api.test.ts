@@ -3,9 +3,11 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { KspecSnapshot } from "../packages/shared/src/api.js";
+import { generateJsonSnapshot } from "../src/export/index.js";
 import type { TestResultRunRecordInput } from "../src/schema/test-result-runs.js";
 import { initContext, writeTestRun } from "../src/parser/index.js";
 import { getCachedCoverageStateReadModel } from "../src/parser/coverage-state-read-model.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import {
   cleanupTempDir,
   createTempDir,
@@ -41,6 +43,8 @@ const modeMock = vi.hoisted(() => () => ({
 
 vi.mock("$lib/stores/mode.svelte", modeMock);
 vi.mock("../packages/web-ui/src/lib/stores/mode.svelte", modeMock);
+
+ensureSplitBackendRegistered();
 
 async function setupCoverageApiProject(): Promise<string> {
   const tempDir = await createTempDir("coverage-state-api-");
@@ -97,28 +101,94 @@ async function setupCoverageApiProject(): Promise<string> {
       "",
     ].join("\n"),
   );
+  const fixtureCommit = commit(tempDir, "coverage state api fixture sources", {
+    GIT_AUTHOR_DATE: "2026-06-24T11:45:00.000Z",
+    GIT_COMMITTER_DATE: "2026-06-24T11:45:00.000Z",
+  });
   const ctx = await initContext(tempDir, { syncMode: "skip" });
-  await writeTestRun(ctx, normalizedRun(), { skipCommit: true });
-  execSync('git add -A && git commit -m "coverage state api fixture"', {
-    cwd: tempDir,
-    stdio: "pipe",
+  await writeTestRun(ctx, normalizedRun({ codeRevision: fixtureCommit }), { skipCommit: true });
+  commit(tempDir, "coverage state api fixture run", {
+    GIT_AUTHOR_DATE: "2026-06-24T12:05:00.000Z",
+    GIT_COMMITTER_DATE: "2026-06-24T12:05:00.000Z",
   });
   return tempDir;
 }
 
-function normalizedRun(): TestResultRunRecordInput {
+function commit(tempDir: string, message: string, env: Record<string, string> = {}): string {
+  execSync(`git add -A && git commit -m "${message}"`, {
+    cwd: tempDir,
+    env: { ...process.env, ...env },
+    stdio: "pipe",
+  });
+  return execSync("git rev-parse HEAD", {
+    cwd: tempDir,
+    encoding: "utf-8",
+    stdio: "pipe",
+  }).trim();
+}
+
+function head(tempDir: string): string {
+  return execSync("git rev-parse HEAD", {
+    cwd: tempDir,
+    encoding: "utf-8",
+    stdio: "pipe",
+  }).trim();
+}
+
+function writeCoverageApiSpec(tempDir: string, coveredGiven: string): void {
+  writeFileSync(
+    path.join(tempDir, "modules", "coverage.yaml"),
+    [
+      `- _ulid: ${ITEM_ULID}`,
+      "  slugs: [coverage-api-widget]",
+      "  title: Coverage API Widget",
+      "  type: feature",
+      "  description: Fixture for daemon coverage-state API behavior.",
+      "  acceptance_criteria:",
+      "    - id: ac-covered",
+      `      given: ${coveredGiven}`,
+      "      when: state is requested",
+      "      then: it is covered",
+      "    - id: ac-failing",
+      "      given: failing criterion",
+      "      when: state is requested",
+      "      then: it is failing",
+      "    - id: ac-empty",
+      "      given: empty criterion",
+      "      when: state is requested",
+      "      then: it is not yet covered",
+      "",
+    ].join("\n"),
+  );
+}
+
+function normalizedRun(
+  options: {
+    id?: string;
+    completedAt?: string;
+    codeRevision?: string | null;
+    cases?: TestResultRunRecordInput["cases"];
+  } = {},
+): TestResultRunRecordInput {
   return {
     format: 1,
     run: {
-      id: RUN_ID,
-      completed_at: "2026-06-24T12:00:00.000Z",
+      id: options.id ?? RUN_ID,
+      completed_at: options.completedAt ?? "2026-06-24T12:00:00.000Z",
     },
     producer: {
       kind: "local",
       label: "neutral-runner",
-      code_revision: "coverage-api-revision",
+      code_revision: options.codeRevision ?? null,
     },
-    cases: [
+    cases: options.cases ?? [
+      {
+        id: "case-covered",
+        display_name: "covers mapped criterion",
+        status: "passed",
+        location: { file: "tests/coverage-api.test.ts", line: 2 },
+        refs: [{ item_ref: "@coverage-api-widget", ac_id: "ac-covered" }],
+      },
       {
         id: "case-failing",
         display_name: "fails mapped criterion",
@@ -176,6 +246,50 @@ describe("coverage state daemon API", () => {
         latest_run_id: RUN_ID,
       },
       meta: { cache_status: "ready" },
+    });
+  });
+
+  // AC: @coverage-state-api-cache ac-corpus-rollup
+  // AC: @coverage-state-api-cache ac-item-and-ac-detail
+  // AC: @coverage-state-api-cache ac-server-computed
+  // AC: @coverage-freshness-revision-comparison ac-ac-text-change-detected
+  it("serves freshness-enriched reverify state when criterion text changed after accepted evidence", async () => {
+    const tempDir = await setupCoverageApiProject();
+    tempDirs.push(tempDir);
+    writeCoverageApiSpec(tempDir, "changed covered criterion");
+    commit(tempDir, "change covered criterion text", {
+      GIT_AUTHOR_DATE: "2026-06-24T13:00:00.000Z",
+      GIT_COMMITTER_DATE: "2026-06-24T13:00:00.000Z",
+    });
+    const { app } = createTestApp();
+
+    const summary = await json(await makeRequest(app, tempDir, "/api/coverage/state/summary"));
+    const criterion = await json(
+      await makeRequest(
+        app,
+        tempDir,
+        "/api/coverage/state/criteria/@coverage-api-widget/ac-covered",
+      ),
+    );
+
+    expect(summary.data.counts).toEqual({
+      covered: 0,
+      failing: 1,
+      not_yet: 1,
+      re_verify: 1,
+    });
+    expect(criterion.data).toMatchObject({
+      item_ref: "@coverage-api-widget",
+      ac_id: "ac-covered",
+      state: "stale_spec_text",
+      presentation: "re_verify",
+      explanation: {
+        rule: "positive_evidence_requires_reverification",
+        latestRunId: RUN_ID,
+      },
+      latest_run_evidence: [
+        expect.objectContaining({ run_id: RUN_ID, case_id: "case-covered", status: "passed" }),
+      ],
     });
   });
 
@@ -252,16 +366,21 @@ describe("coverage state daemon API", () => {
     const { app } = createTestApp();
 
     const before = await json(await makeRequest(app, tempDir, "/api/coverage/state/summary"));
+    const currentRevision = head(tempDir);
     const ingestResponse = await makeRequest(app, tempDir, "/api/coverage/test-results/runs", {
       method: "POST",
       body: JSON.stringify({
-        ...normalizedRun(),
-        run: { id: "01BRZ3NDEKTSV4RRFFQ69G5FAV", completed_at: "2026-06-24T12:30:00.000Z" },
+        ...normalizedRun({
+          id: "01BRZ3NDEKTSV4RRFFQ69G5FAV",
+          completedAt: "2026-06-24T12:30:00.000Z",
+          codeRevision: currentRevision,
+        }),
         cases: [
           {
             id: "case-covered",
             display_name: "covers mapped criterion",
             status: "passed",
+            location: { file: "tests/coverage-api.test.ts", line: 2 },
             refs: [{ item_ref: "@coverage-api-widget", ac_id: "ac-failing" }],
           },
         ],
@@ -303,19 +422,24 @@ describe("coverage state daemon API", () => {
     const response = await makeRequest(app, tempDir, "/api/coverage/test-results/runs", {
       method: "POST",
       body: JSON.stringify({
-        ...normalizedRun(),
-        run: { id: "01CRZ3NDEKTSV4RRFFQ69G5FAV", completed_at: "2026-06-24T12:45:00.000Z" },
+        ...normalizedRun({
+          id: "01CRZ3NDEKTSV4RRFFQ69G5FAV",
+          completedAt: "2026-06-24T12:45:00.000Z",
+          codeRevision: head(tempDir),
+        }),
         cases: [
           {
             id: "case-covered",
             display_name: "covers mapped criterion",
             status: "passed",
+            location: { file: "tests/coverage-api.test.ts", line: 2 },
             refs: [{ item_ref: "@coverage-api-widget", ac_id: "ac-failing" }],
           },
           {
             id: "case-covered-2",
             display_name: "covers another mapped criterion",
             status: "passed",
+            location: { file: "tests/coverage-api.test.ts", line: 2 },
             refs: [{ item_ref: "@coverage-api-widget", ac_id: "ac-covered" }],
           },
           {
@@ -351,7 +475,7 @@ describe("coverage state daemon API", () => {
               item_ref: "@coverage-api-widget",
               item_ulid: ITEM_ULID,
               ac_ids: ["ac-covered", "ac-failing"],
-              buckets: ["covered", "re_verify"],
+              buckets: ["covered"],
             },
           ],
         },
@@ -368,7 +492,7 @@ describe("coverage state daemon API", () => {
               item_ref: "@coverage-api-widget",
               item_ulid: ITEM_ULID,
               ac_ids: ["ac-covered", "ac-failing"],
-              buckets: ["covered", "re_verify"],
+              buckets: ["covered"],
             },
           ],
         },
@@ -425,6 +549,45 @@ describe("coverage state daemon API", () => {
 });
 
 describe("coverage state static API", () => {
+  const tempDirs: string[] = [];
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    for (const dir of tempDirs.splice(0)) {
+      await cleanupTempDir(dir);
+    }
+  });
+
+  // AC: @coverage-state-api-cache ac-static-snapshot
+  // AC: @coverage-freshness-revision-comparison ac-ac-text-change-detected
+  it("exports freshness-enriched coverage state in static snapshots", async () => {
+    const tempDir = await setupCoverageApiProject();
+    tempDirs.push(tempDir);
+    writeCoverageApiSpec(tempDir, "changed covered criterion");
+    commit(tempDir, "change covered criterion before export", {
+      GIT_AUTHOR_DATE: "2026-06-24T13:00:00.000Z",
+      GIT_COMMITTER_DATE: "2026-06-24T13:00:00.000Z",
+    });
+    const originalCwd = process.cwd();
+    process.chdir(tempDir);
+    try {
+      const snapshot = await generateJsonSnapshot();
+
+      expect(snapshot.coverage_state?.summary.counts).toEqual({
+        covered: 0,
+        failing: 1,
+        not_yet: 1,
+        re_verify: 1,
+      });
+      expect(snapshot.coverage_state?.criteria[`${ITEM_ULID} ac-covered`]).toMatchObject({
+        state: "stale_spec_text",
+        presentation: "re_verify",
+      });
+    } finally {
+      process.chdir(originalCwd);
+    }
+  });
+
   // AC: @coverage-state-api-cache ac-static-snapshot
   it("serves last-computed coverage state from static snapshots and refuses ingestion", async () => {
     modeState.snapshot = {
