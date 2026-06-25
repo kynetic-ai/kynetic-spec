@@ -55,8 +55,10 @@ description: >-
 spec_ref: "@coverage-state-engine"
 plan_ref: "@plan-coverage-state-engine"
 origin: derived
-status: in_progress
-blocked_by: []
+status: blocked
+blocked_by:
+  - Final validation found coverage freshness comparison is not wired into production
+    read-model/API/export path; implementation follow-up required before closure.
 depends_on:
   - "@task-coverage-state-events"
 context: []
@@ -184,6 +186,22 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-25T05:09:12.297Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: in_progress
+      blocked_by:
+        new:
+          - Final validation found coverage freshness comparison is not wired into production
+            read-model/API/export path; implementation follow-up required before closure.
+        previous: []
+      prior_status:
+        new: in_progress
+        previous: null
+    command: task-block
+    timestamp: 2026-06-25T05:26:43.550Z
+prior_status: in_progress
 created_at: 2026-06-23T23:45:50.642Z
 started_at: 2026-06-25T05:09:12.297Z
 todos: []

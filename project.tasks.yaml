@@ -33126,8 +33126,10 @@
   type: task
   spec_ref: "@coverage-state-engine"
   plan_ref: "@plan-coverage-state-engine"
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Final validation found coverage freshness comparison is not wired into production
+      read-model/API/export path; implementation follow-up required before closure.
   depends_on:
     - "@task-coverage-state-events"
   priority: 2
