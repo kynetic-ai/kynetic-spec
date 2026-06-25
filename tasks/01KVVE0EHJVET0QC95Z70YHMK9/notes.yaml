@@ -13,3 +13,16 @@ notes:
     supersedes: null
     author: Hermes
     created_at: 2026-06-25T05:26:08.479Z
+  - _ulid: 01KW025PXFRRYJJ81GMATJ1VD7
+    content: "Final validation rollup: freshness-production-path blocker is resolved by
+      @task-coverage-state-freshness-read-model-integration. Manual audit confirmed
+      daemon/API/static-export coverage-state reads route through
+      getCached/loadCoverageStateReadModel -> buildCoverageStateReadModelWithFreshnessComparison ->
+      compareCoverageFreshness -> deriveCoverageState. Focused
+      coverage-state/API/static/export/event tests passed; format:check, lint, typecheck, build,
+      kspec validate --warnings-ok, and all three fresh test shards passed. Remaining follow-ons
+      (resolution mutations, spec workspace, Validate matrix, flakiness/generated observations) are
+      downstream UI/follow-on tracks, not blockers for this engine closure."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-25T18:55:12.303Z
