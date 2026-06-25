@@ -68,7 +68,7 @@ description: >-
 spec_ref: "@coverage-state-api-cache"
 meta_ref: null
 plan_ref: "@plan-coverage-state-engine"
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-coverage-state-api-cache"
@@ -80,6 +80,14 @@ tags:
   - validation
   - freshness
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-coverage-state-freshness-read-model-integration/01kvym03
+  captured_at: 2026-06-25T15:27:21.318Z
+  commit: 87e7e21b353487b6b99b8782f5cdbff31eff1682
+  remote: null
+  remote_url: null
+  upstream_ref: feat/ui-redesign
 session_id: 01KVZN22G6GR2JN7QK50F7QTR8
 history:
   - author: Jacob Chapel
@@ -185,7 +193,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-25T15:06:55.901Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-state-freshness-read-model-integration/01kvym03
+          captured_at: 2026-06-25T15:27:21.318Z
+          commit: 87e7e21b353487b6b99b8782f5cdbff31eff1682
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous: null
+      submitted_at:
+        new: 2026-06-25T15:27:21.323Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-25T15:27:21.323Z
 created_at: 2026-06-25T05:28:14.214Z
 started_at: 2026-06-25T15:06:55.900Z
+submitted_at: 2026-06-25T15:27:21.323Z
 todos: []
 automation: eligible
