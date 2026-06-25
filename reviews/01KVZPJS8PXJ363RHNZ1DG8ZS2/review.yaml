@@ -143,6 +143,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-25T15:46:30.891Z
+  - _ulid: 01KVZQCQH7E2QNHNSX3BY84P1Z
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KVZQCQ9RJ1NQMZ4JYBPPVKRN
+    timestamp: 2026-06-25T15:46:47.975Z
 examined_commit: 87e7e21b353487b6b99b8782f5cdbff31eff1682
 external_links: []
 lifecycle_state: open
@@ -152,8 +159,29 @@ subject:
   content_hash: ""
   ref: "@01KVYM03M6XXMWXFK320EZ4MQP"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KVZQCQ9RJ1NQMZ4JYBPPVKRN
+    entries:
+      - _ulid: 01KVZQCQ9RF6WQ5AF7TZ61HWC8
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/parser/coverage-evidence-index.ts,
+          src/parser/coverage-state-read-model.ts, src/parser/coverage-freshness-comparison.ts,
+          src/parser/coverage-state.ts, packages/daemon/src/routes/coverage.ts,
+          packages/daemon/src/routes/command.ts, src/export/json.ts,
+          packages/web-ui/src/lib/api-static.ts, tests/coverage-state-api.test.ts,
+          tests/coverage-state-read-model.test.ts, tests/coverage-freshness-comparison.test.ts.
+          Commands run: kspec task get @01KVYM03M6XXMWXFK320EZ4MQP; kspec item get
+          @coverage-state-api-cache; kspec item get @coverage-freshness-revision-comparison; kspec
+          validate refs/alignment/completeness with warnings-ok; npm run format:check; npm run lint
+          -- --quiet; npx oxlint changed files; npm run typecheck; npm test. Claims verified:
+          production daemon routes use getCachedCoverageStateReadModel, static export uses
+          loadCoverageStateReadModel, freshness comparison is applied before deriveCoverageState in
+          the production read model, and cached repeated reads reuse the computed model. Categories
+          searched: correctness, edge cases, read-only sidecar behavior, test quality, AC annotation
+          coverage, integration, cache behavior. Findings: none."
+        created_at: 2026-06-25T15:46:47.736Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-25T15:32:37.782Z
-updated_at: 2026-06-25T15:46:30.646Z
+updated_at: 2026-06-25T15:46:47.736Z
 notes: []
