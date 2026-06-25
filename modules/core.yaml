@@ -3971,7 +3971,7 @@ features:
           coverage-state read endpoints and remains owned by ingestion and shared mutation paths.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on:
           - "@coverage-state-engine"
           - "@daemon-entity-cache"
