@@ -68,8 +68,11 @@ description: >-
 spec_ref: "@coverage-state-api-cache"
 meta_ref: null
 plan_ref: "@plan-coverage-state-engine"
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign at d89e811817476e64ee2a6a8a2f1734283ea0a961 after approved
+  review @01KVZPJS. Freshness comparison is integrated into production coverage-state
+  read-model/API/static export paths with passing gates.
 depends_on:
   - "@task-coverage-state-api-cache"
   - "@task-coverage-freshness-revision-comparison"
@@ -221,8 +224,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-25T15:32:40.192Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign at d89e811817476e64ee2a6a8a2f1734283ea0a961 after approved review
+          @01KVZPJS. Freshness comparison is integrated into production coverage-state
+          read-model/API/static export paths with passing gates.
+        previous: null
+      completed_at:
+        new: 2026-06-25T15:47:31.425Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-25T15:47:31.431Z
 created_at: 2026-06-25T05:28:14.214Z
 started_at: 2026-06-25T15:06:55.900Z
 submitted_at: 2026-06-25T15:27:21.323Z
+completed_at: 2026-06-25T15:47:31.425Z
 todos: []
 automation: eligible

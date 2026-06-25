@@ -33169,7 +33169,7 @@
   type: bug
   spec_ref: "@coverage-state-api-cache"
   plan_ref: "@plan-coverage-state-engine"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-coverage-state-api-cache"
@@ -33185,4 +33185,5 @@
   created_at: 2026-06-25T05:28:14.214Z
   started_at: 2026-06-25T15:06:55.900Z
   submitted_at: 2026-06-25T15:27:21.323Z
+  completed_at: 2026-06-25T15:47:31.425Z
   automation: eligible
