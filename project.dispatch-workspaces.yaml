@@ -12171,12 +12171,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-25T15:30:22.185Z
+      updated_at: 2026-06-25T15:30:32.130Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-25T15:30:22.185Z
+      updated_at: 2026-06-25T15:30:32.130Z
     integration:
       status: pending
       detail: null
@@ -12184,8 +12184,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 5b39e63189a371afbe7fbfb3a05960cef1c7811f
-      updated_at: 2026-06-25T15:30:22.185Z
-    lifecycle_state: ready
+      updated_at: 2026-06-25T15:30:32.130Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KVYM03M6XXMWXFK320EZ4MQP
     task_ref: "@01KVYM03M6XXMWXFK320EZ4MQP"
@@ -12193,16 +12193,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-25T15:06:04.558Z
-      last_reconciled_at: 2026-06-25T15:30:22.185Z
+      last_reconciled_at: 2026-06-25T15:30:32.130Z
       created_at: 2026-06-25T15:05:34.749Z
-      updated_at: 2026-06-25T15:30:22.185Z
+      updated_at: 2026-06-25T15:30:32.130Z
     workspace_id: dispatch-workspace-01KVYM03M6XXMWXFK320EZ4MQP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 87e7e21b353487b6b99b8782f5cdbff31eff1682
+        last_seen_at: 2026-06-25T15:30:32.130Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-state-freshness-read-model-integration-01kvym03-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-state-freshness-read-model-integration/01kvym03
-        head: 5b39e63189a371afbe7fbfb3a05960cef1c7811f
-        last_seen_at: 2026-06-25T15:05:34.749Z
+        head: 87e7e21b353487b6b99b8782f5cdbff31eff1682
+        last_seen_at: 2026-06-25T15:30:32.130Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-state-freshness-read-model-integration-01kvym03
