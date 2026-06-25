@@ -150,9 +150,25 @@ events:
       kind: nit
       thread_ulid: 01KVZQCQ9RJ1NQMZ4JYBPPVKRN
     timestamp: 2026-06-25T15:46:47.975Z
+  - _ulid: 01KVZQD3XQBQSHDK7S98RCYMV6
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-25T15:47:00.663Z
+  - _ulid: 01KVZQD3XQ63RV2BBTR354ZJ3G
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-25T15:47:00.663Z
 examined_commit: 87e7e21b353487b6b99b8782f5cdbff31eff1682
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -181,7 +197,14 @@ threads:
           coverage, integration, cache behavior. Findings: none."
         created_at: 2026-06-25T15:46:47.736Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-25T15:47:00.662Z
 created_at: 2026-06-25T15:32:37.782Z
-updated_at: 2026-06-25T15:46:47.736Z
+updated_at: 2026-06-25T15:47:00.663Z
 notes: []
