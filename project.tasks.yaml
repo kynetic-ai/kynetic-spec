@@ -33162,3 +33162,24 @@
   submitted_at: 2026-06-24T14:52:59.286Z
   completed_at: 2026-06-24T15:15:47.165Z
   automation: eligible
+- _ulid: 01KVYM03M6XXMWXFK320EZ4MQP
+  slugs:
+    - task-coverage-state-freshness-read-model-integration
+  title: Integrate freshness comparison into coverage-state read model
+  type: bug
+  spec_ref: "@coverage-state-api-cache"
+  plan_ref: "@plan-coverage-state-engine"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-coverage-state-api-cache"
+    - "@task-coverage-freshness-revision-comparison"
+  priority: 1
+  tags:
+    - coverage
+    - validation
+    - freshness
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-25T05:28:14.214Z
+  automation: needs_review

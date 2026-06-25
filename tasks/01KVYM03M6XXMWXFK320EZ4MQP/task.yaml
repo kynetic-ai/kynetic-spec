@@ -1,0 +1,35 @@
+_ulid: 01KVYM03M6XXMWXFK320EZ4MQP
+slugs:
+  - task-coverage-state-freshness-read-model-integration
+title: Integrate freshness comparison into coverage-state read model
+type: bug
+description: Wire the per-AC freshness comparison layer into the production coverage-state read
+  model/API/static export path so daemon and exported coverage-state reads use the same
+  stale-spec/stale-annotation/stale-test-result/unknown-freshness logic proven by
+  tests/coverage-freshness-comparison.test.ts. The current implementation exposes
+  compareCoverageFreshness/deriveCoverageStateWithFreshnessComparison, but
+  loadCoverageStateReadModel/getCachedCoverageStateReadModel/buildCoverageStateReadModel call
+  deriveCoverageState(entry) directly, so stale AC text and mapped test source revision comparisons
+  are not reflected in coverage-state API or static snapshots. Fix in the read-model/cache
+  integration path, with batching/caching so large corpora do not perform one git/history operation
+  per AC when avoidable. Add regression coverage proving daemon/API or read-model output re-verifies
+  stale AC text, changed annotation/test source, and unknown comparison metadata for neutral
+  temp-project fixtures, while no-store/backcompat reads remain read-only.
+spec_ref: "@coverage-state-api-cache"
+meta_ref: null
+plan_ref: "@plan-coverage-state-engine"
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-coverage-state-api-cache"
+  - "@task-coverage-freshness-revision-comparison"
+context: []
+priority: 1
+tags:
+  - coverage
+  - validation
+  - freshness
+vcs_refs: []
+created_at: 2026-06-25T05:28:14.214Z
+todos: []
+automation: needs_review
