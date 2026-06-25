@@ -24,6 +24,16 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-06-25T15:45:31.483Z
     completed_at: 2026-06-25T15:45:31.483Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared completed and tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-25T15:45:43.871Z
+    completed_at: 2026-06-25T15:45:43.871Z
 events:
   - _ulid: 01KVZPJS8PSKJ405WMS4Q7A927
     actor: Jacob Chapel
@@ -52,6 +62,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-25T15:45:31.724Z
+  - _ulid: 01KVZQAS5VS039CE06HFESAESE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-25T15:45:44.124Z
 examined_commit: 87e7e21b353487b6b99b8782f5cdbff31eff1682
 external_links: []
 lifecycle_state: open
@@ -64,5 +81,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-25T15:32:37.782Z
-updated_at: 2026-06-25T15:45:31.483Z
+updated_at: 2026-06-25T15:45:43.871Z
 notes: []
