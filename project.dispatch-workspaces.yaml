@@ -12322,7 +12322,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-25T15:47:54.534Z
+      updated_at: 2026-06-25T15:50:55.816Z
     integration:
       status: merged
       detail: integration:merged
@@ -12339,18 +12339,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-25T15:31:08.354Z
-      last_reconciled_at: 2026-06-25T15:50:46.170Z
+      last_reconciled_at: 2026-06-25T15:50:55.816Z
       created_at: 2026-06-25T15:05:34.749Z
-      updated_at: 2026-06-25T15:50:46.170Z
+      updated_at: 2026-06-25T15:50:55.816Z
     workspace_id: dispatch-workspace-01KVYM03M6XXMWXFK320EZ4MQP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 87e7e21b353487b6b99b8782f5cdbff31eff1682
-        last_seen_at: 2026-06-25T15:30:32.130Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-state-freshness-read-model-integration-01kvym03-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-state-freshness-read-model-integration/01kvym03
