@@ -74066,7 +74066,7 @@ runs:
     completed_at: 2026-06-25T15:30:06.279Z
   - _ulid: 01KVZQFHXE1NK4D46ZYHRJHYPZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74081,7 +74081,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-25T15:49:21.519Z
-        completed_at: 2026-06-25T15:49:21.519Z
+        completed_at: 2026-06-25T15:49:34.157Z
+        notes: 'Friction points: the full review gate required a long npm test run (2570.3s) with multiple
+          quiet intervals after most files had already passed. This is systemic review-gate
+          friction, but not new: kspec search "review gate" found existing observations including
+          @01KVE6XH about quiet long npm test periods, @01KP9KKD8 about review sessions slowed by
+          repo-wide validation, and @01KMNK4G/@01KMREBA about full-suite gate friction. Evidence-log
+          storage friction is also already tracked by observations @01KR2JD1, @01KVESXQK, and
+          @01KVET18.'
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-25T15:49:34.157Z
+        completed_at: 2026-06-25T15:49:34.157Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-25T15:48:20.526Z
