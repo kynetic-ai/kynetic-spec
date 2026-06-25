@@ -2052,7 +2052,7 @@ plans:
     slugs:
       - plan-coverage-state-engine
     title: Coverage State Engine
-    status: active
+    status: completed
     approved_at: 2026-06-23T23:45:37.496Z
     branch: feat/ui-redesign
     derived_specs:
