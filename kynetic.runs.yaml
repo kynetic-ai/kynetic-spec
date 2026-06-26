@@ -74494,7 +74494,7 @@ runs:
     completed_at: 2026-06-26T21:41:34.329Z
   - _ulid: 01KW2Z516ZT7X82QS3N34QE2Q7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74508,7 +74508,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-26T22:00:46.912Z
-        completed_at: 2026-06-26T22:00:46.912Z
+        completed_at: 2026-06-26T22:01:23.641Z
+        notes: "High-confidence reflection: success patterns from this session are already tracked elsewhere
+          (anchored fix-cycle review threads, detached merge helper, full-suite patience). New
+          friction candidate: /kspec:reflect guidance is ambiguous in non-interactive dispatch
+          close-out because the default says start @session-reflect, while loop mode says use
+          @session-reflect-loop; probing both created an unnecessary paused interactive run. Search
+          results for 'reflection workflow duplicate' and 'non-interactive reflection' found no
+          exact existing item."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-26T22:01:23.641Z
+        completed_at: 2026-06-26T22:01:23.641Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-26T22:00:07.647Z
