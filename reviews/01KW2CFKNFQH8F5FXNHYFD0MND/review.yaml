@@ -2,7 +2,79 @@ _ulid: 01KW2CFKNFQH8F5FXNHYFD0MND
 slugs: []
 title: "Plan review: Coverage Resolution Mutations (re-review)"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Dry-run import of
+      /home/chapel/Projects/kynetic-spec/plans/ui-redesign-coverage-resolution-mutations.md with
+      --module @core --status draft --json succeeded.
+    name: plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-26T16:34:21.267Z
+    completed_at: 2026-06-26T16:34:21.267Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 0. Existing deprecated-ref warnings remain in the repo baseline; no reference
+      errors for this draft plan review.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-26T16:34:24.394Z
+    completed_at: 2026-06-26T16:34:24.394Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 0 with existing alignment warning baseline. Draft plan is not derived yet, so no
+      new derived specs/tasks are present.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-26T16:34:27.461Z
+    completed_at: 2026-06-26T16:34:27.461Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 0 with existing completeness warning baseline. Draft plan coverage was reviewed
+      manually through task Covers lines and inherited trait mapping.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-26T16:34:30.448Z
+    completed_at: 2026-06-26T16:34:30.448Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Branch metadata is feat/ui-redesign; static/read-only dry-run wording is aligned; explicit
+      reverify is limited to re-verify bucket with positive non-failing evidence; inherited trait
+      ACs are mapped with N/A rationale; CLI/daemon stored-effect equivalence is separated from
+      event equivalence; dispatch-fix idempotency key is durable in the task body.
+    name: prior blocker recheck
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-26T16:34:33.600Z
+    completed_at: 2026-06-26T16:34:33.600Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "The four plan-level prerequisites are completed on feat/ui-redesign:
+      @plan-ac-coverage-verification-schema-and-storage, @plan-test-result-ingestion,
+      @plan-coverage-state-engine, and @plan-dispatch-mutation-service. Task dependency ordering is
+      coherent: shared contract first, per-action tasks parallel, CLI/daemon after actions,
+      events/validation last."
+    name: dependency and prerequisite gate
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-26T16:34:36.871Z
+    completed_at: 2026-06-26T16:34:36.871Z
 events:
   - _ulid: 01KW2CFKNEQTQ1EVRVM2BS89Z3
     actor: Jacob Chapel
@@ -10,9 +82,67 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-26T16:33:51.278Z
+  - _ulid: 01KW2CGH6ND20Z5JS1KSF64YMM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan import dry-run
+    timestamp: 2026-06-26T16:34:21.525Z
+  - _ulid: 01KW2CGM7Z36T9SQP5QP8M57ZF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-26T16:34:24.639Z
+  - _ulid: 01KW2CGQ7RXW8YPAETHH3RP8KT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-26T16:34:27.704Z
+  - _ulid: 01KW2CGT5AS3M5SWC811PZJ8MZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-26T16:34:30.698Z
+  - _ulid: 01KW2CGX8MJM3VAST8RNBZFRJS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior blocker recheck
+    timestamp: 2026-06-26T16:34:33.876Z
+  - _ulid: 01KW2CH0E56XZ418FWM04NFCV1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency and prerequisite gate
+    timestamp: 2026-06-26T16:34:37.125Z
+  - _ulid: 01KW2CH3KF9C5CKK4B0F07WGKN
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-26T16:34:40.367Z
+  - _ulid: 01KW2CH3KFSWES137ZCQA3C6CH
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-06-26T16:34:40.367Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +150,14 @@ subject:
   ref: "@plan-coverage-resolution-mutations"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-26T16:34:40.367Z
 created_at: 2026-06-26T16:33:51.279Z
-updated_at: null
+updated_at: 2026-06-26T16:34:40.367Z
 notes: []
