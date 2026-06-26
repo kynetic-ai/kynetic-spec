@@ -42,6 +42,11 @@ import {
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend";
 import * as yamlModule from "../src/parser/yaml";
 import * as sessionStoreModule from "../src/sessions/store";
+import {
+  getCachedTestCoverage,
+  getTestCoverageCacheStats,
+  invalidateTestCoverageCache,
+} from "../src/parser/coverage-cache";
 
 ensureSplitBackendRegistered();
 
@@ -67,6 +72,7 @@ describe("ProjectEntityCache", () => {
     vi.doUnmock("fs/promises");
     vi.resetModules();
     clearAllEntityCaches();
+    invalidateTestCoverageCache();
     await cleanupTempDir(fixturesRoot);
   });
 
@@ -81,7 +87,9 @@ describe("ProjectEntityCache", () => {
     let opendirMock!: ReturnType<typeof vi.fn>;
     vi.doMock("fs/promises", async (importOriginal) => {
       const actual = await importOriginal<typeof import("fs/promises")>();
-      opendirMock = vi.fn().mockResolvedValue(directoryHandle);
+      opendirMock = vi
+        .fn<() => Promise<typeof directoryHandle>>()
+        .mockResolvedValue(directoryHandle);
       return {
         ...actual,
         opendir: opendirMock,
@@ -791,6 +799,44 @@ describe("ProjectEntityCache", () => {
       const after = cache.getTaskIndex();
       expect(after).not.toBeNull();
       expect(after![0].title).toBe("Sample Task A Updated");
+    });
+
+    // AC: @coverage-state-api-cache ac-cache-invalidation
+    it("refreshes cached coverage when a watched source file changes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      const testsDir = join(projectA, "tests");
+      const sourcePath = join(testsDir, "coverage-source.test.ts");
+      await fs.mkdir(testsDir, { recursive: true });
+      await fs.writeFile(sourcePath, '// AC: @old-spec ac-1\nit("old", () => {});\n', "utf-8");
+
+      const before = await getCachedTestCoverage(projectA, ["tests"]);
+      expect(before.has("@old-spec ac-1")).toBe(true);
+
+      await fs.writeFile(sourcePath, '// AC: @new-spec ac-1\nit("new", () => {});\n', "utf-8");
+      await cache.handleFileChange(projectA, sourcePath);
+
+      const after = await getCachedTestCoverage(projectA, ["tests"]);
+      expect(after.has("@new-spec ac-1")).toBe(true);
+      expect(after.has("@old-spec ac-1")).toBe(false);
+      expect(after).not.toBe(before);
+    });
+
+    // AC: @coverage-state-api-cache ac-cache-invalidation
+    it("clears cached coverage variants when coverage config changes", async () => {
+      const cache = new ProjectEntityCache(projectA);
+      await fs.mkdir(join(projectA, "tests"), { recursive: true });
+      await fs.writeFile(
+        join(projectA, "tests", "coverage-source.test.ts"),
+        '// AC: @configured-spec ac-1\nit("configured", () => {});\n',
+        "utf-8",
+      );
+
+      await getCachedTestCoverage(projectA, ["tests"]);
+      expect(getTestCoverageCacheStats().entries).toBe(1);
+
+      await cache.handleFileChange(projectA, join(projectA, "kspec.config.yaml"));
+
+      expect(getTestCoverageCacheStats().entries).toBe(0);
     });
 
     // AC: @daemon-incremental-cache ac-batch-coalescing
@@ -2878,9 +2924,9 @@ describe("ProjectEntityCache", () => {
         "utf-8",
       );
 
-      const close = vi.fn().mockResolvedValue(undefined);
-      const read = vi
-        .fn()
+      const close = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+      const read = vi.fn<() => Promise<{ name: string; isDirectory: () => boolean } | null>>();
+      read
         .mockResolvedValueOnce({
           name: sessionId,
           isDirectory: () => true,
@@ -2903,8 +2949,10 @@ describe("ProjectEntityCache", () => {
 
     it("closes the session directory handle when enumeration fails", async () => {
       const sessionsDir = join(projectA, ".kspec-sessions");
-      const close = vi.fn().mockResolvedValue(undefined);
-      const read = vi.fn().mockRejectedValue(new Error("enumeration failed"));
+      const close = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+      const read = vi
+        .fn<() => Promise<{ name: string; isDirectory: () => boolean } | null>>()
+        .mockRejectedValue(new Error("enumeration failed"));
 
       const { ProjectEntityCacheCtor, opendirMock } = await importEntityCacheWithMockedOpendir({
         read,
@@ -4125,10 +4173,10 @@ describe("ProjectEntityCache", () => {
           lastPong: Date.now(),
           projectPath: projectA,
         },
-        send: vi.fn((msg: string) => sentMessages.push(msg)),
-        close: vi.fn(),
-        subscribe: vi.fn(),
-        unsubscribe: vi.fn(),
+        send: vi.fn<(msg: string) => void>((msg: string) => sentMessages.push(msg)),
+        close: vi.fn<() => void>(),
+        subscribe: vi.fn<() => void>(),
+        unsubscribe: vi.fn<() => void>(),
       } as any;
 
       pubsub.addConnection("test-conn", mockWs);
@@ -4255,10 +4303,10 @@ describe("ProjectEntityCache", () => {
           lastPong: Date.now(),
           projectPath: projectA,
         },
-        send: vi.fn((msg: string) => sentMessages.push(msg)),
-        close: vi.fn(),
-        subscribe: vi.fn(),
-        unsubscribe: vi.fn(),
+        send: vi.fn<(msg: string) => void>((msg: string) => sentMessages.push(msg)),
+        close: vi.fn<() => void>(),
+        subscribe: vi.fn<() => void>(),
+        unsubscribe: vi.fn<() => void>(),
       } as any;
       pubsub.addConnection("test-conn", mockWs);
 
