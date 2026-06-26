@@ -23376,6 +23376,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-26T23:10:38.486Z
+  - _ulid: 01KW33EZMXC4R090EGK24YXQQ8
+    type: success
+    content: For parser-service mutations that have no CLI/daemon adapter yet, a temp YAML source file
+      with realistic _path metadata plus a sidecar file and temporary git repo can behaviorally
+      prove updateSpecItem, sibling preservation, sidecar non-mutation, and forward shadow commit
+      semantics without source scanning or premature adapter work.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-26T23:15:28.030Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
