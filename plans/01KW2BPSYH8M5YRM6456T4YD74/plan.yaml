@@ -2,11 +2,22 @@ _ulid: 01KW2BPSYH8M5YRM6456T4YD74
 slugs:
   - plan-coverage-resolution-mutations
 title: Coverage Resolution Mutations
-status: approved
+status: active
 approved_at: 2026-06-26T19:16:24.752Z
 branch: feat/ui-redesign
-derived_specs: []
-derived_tasks: []
+derived_specs:
+  - "@coverage-resolution-mutation-interface"
+  - "@explicit-coverage-reverification"
+  - "@coverage-spec-text-revert"
+  - "@coverage-dispatch-fix-request"
+  - "@coverage-resolution-events-compatibility"
+derived_tasks:
+  - "@task-coverage-resolution-contract"
+  - "@task-explicit-coverage-reverification"
+  - "@task-coverage-spec-text-revert"
+  - "@task-coverage-dispatch-fix-request"
+  - "@task-coverage-resolution-cli-daemon"
+  - "@task-coverage-resolution-events-validation"
 module_ref: "@core"
 source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-coverage-resolution-mutations.md
 created_at: 2026-06-26T16:20:18.513Z

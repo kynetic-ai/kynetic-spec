@@ -1,0 +1,62 @@
+_ulid: 01KW2NT2528F5PYRHJYK2K804F
+slugs:
+  - task-coverage-spec-text-revert
+title: Implement content-level spec-text revert for stale AC text
+type: task
+description: |
+  Implement spec-text-revert for stale_spec_text causes by applying the
+  focused prior criterion text through normal kspec item mutation machinery.
+
+  Why: The redesign needs a direct way to resolve stale spec wording when a
+  user decides the prior AC text was correct. Decision #32 chose a
+  content-level forward mutation through kspec, not a raw git revert class.
+  This task must preserve siblings and guard against overwriting newer
+  edits.
+
+  What:
+  - Extend the coverage resolution service with previewSpecTextRevert and
+    applySpecTextRevert.
+  - Use readCriterionFreshnessComparison from
+    src/parser/coverage-freshness-comparison.ts to resolve the previous
+    criterion text for stale_spec_text causes. Refuse if prior text or the
+    source commit cannot be resolved.
+  - Compute a stable current criterion fingerprint from current
+    given/when/then plus item ULID and AC id. Apply requests must include
+    the expected fingerprint from preview unless an explicit non-preview
+    path computes and validates it in the same call.
+  - Apply only the changed given/when/then fields for the targeted AC
+    through the existing spec item mutation/storage path used by kspec item
+    commands, then commit through the shared mutation pipeline. Do not use
+    git revert and do not mutate the code repository.
+  - Preserve sibling ACs, item metadata, verification records, test-run
+    records, unknown sidecar files, and unrelated source bytes.
+  - Tests: dry-run reports exact field diff; apply changes only targeted
+    AC fields; stale preview fingerprint rejects after concurrent edit;
+    missing prior comparison rejects; commit message/effect summary names
+    the item and AC; recomputed coverage state/event scope identifies the
+    affected item/criterion.
+
+  How: Follow existing item mutation utilities rather than editing YAML with
+  ad-hoc string replacement. If no single helper exists for AC field edits,
+  add one in src/parser/yaml.ts or a focused spec-mutation module and test it
+  independently before wiring coverage actions.
+
+  Covers: @coverage-spec-text-revert ac-revert-preconditions,
+  ac-revert-preview, ac-content-level-forward-edit,
+  ac-sibling-preservation, ac-concurrency-guard.
+spec_ref: "@coverage-spec-text-revert"
+plan_ref: "@plan-coverage-resolution-mutations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-coverage-resolution-contract"
+context: []
+priority: 1
+tags:
+  - coverage
+  - specs
+  - mutation
+vcs_refs: []
+created_at: 2026-06-26T19:16:50.978Z
+todos: []

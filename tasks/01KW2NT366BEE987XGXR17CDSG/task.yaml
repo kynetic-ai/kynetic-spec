@@ -1,0 +1,68 @@
+_ulid: 01KW2NT366BEE987XGXR17CDSG
+slugs:
+  - task-coverage-resolution-cli-daemon
+title: Expose coverage resolution through CLI and daemon routes
+type: task
+description: |
+  Add the user-facing interfaces: CLI subcommands and daemon REST routes
+  that call the same shared coverage resolution service.
+
+  Why: Later spec workspace and Validate UI actions should consume daemon
+  routes, while local automation and review agents need CLI parity. The two
+  paths must not drift in semantics, diagnostics, or effects.
+
+  What:
+  - Extend src/cli/commands/coverage.ts with a coverage resolution namespace
+    such as `kspec coverage resolve reverify`,
+    `kspec coverage resolve revert-spec-text`, and
+    `kspec coverage resolve dispatch-fix`. Support `--item`, `--ac`,
+    `--dry-run`, `--json`, `--actor`, `--session`, and action-specific
+    options such as `--expected-fingerprint`, `--commit`,
+    `--automation-eligible`, and `--allow-duplicate` where applicable.
+  - Add daemon routes under packages/daemon/src/routes/coverage.ts for the
+    same actions, using runRouteMutation for non-dry-run writes and the
+    same parser service as the CLI. Route handlers resolve actor/session
+    attribution and request ids consistently with ingestion.
+  - Human output summarizes action, target, state before/after when known,
+    stored effect, affected scopes, and next suggested action. JSON output
+    returns the typed response schema unchanged.
+  - Error handling maps validation/precondition failures to semantic CLI
+    exit codes and structured HTTP errors with actionable suggestions.
+  - Static/read-only mode refuses all write actions through both CLI and
+    daemon. Dry-run remains available in read-only mode only if it can
+    compute previews without writing; if a preview requires unavailable
+    mutable context, it returns a read-only diagnostic rather than guessing.
+  - Tests compare CLI and daemon outcomes in equivalent temp projects for
+    all three action kinds, including dry-run, precondition failure, and
+    successful mutation.
+
+  How: Mirror the ingestion interface pattern in coverage.ts. Do not shell
+  out from daemon routes to the CLI; both adapters call the shared service.
+  Keep generated shared types in sync before running root typecheck if route
+  response types are exported to packages/shared.
+
+  Covers: @coverage-resolution-mutation-interface ac-cli-daemon-equivalence,
+  ac-dry-run-preview, ac-static-readonly-refusal. Covers @trait-api-endpoint
+  ac-1, ac-2, ac-3, ac-5, and ac-6; @trait-dry-run ac-1, ac-2, ac-3, ac-4,
+  ac-5, and ac-6; @trait-semantic-exit-codes ac-1, ac-2, ac-4, ac-6, and
+  ac-8; and @trait-error-guidance ac-1, ac-2, ac-3, ac-5, and ac-6.
+  Non-applicable inherited cases are listed in Implementation Notes.
+spec_ref: "@coverage-resolution-mutation-interface"
+plan_ref: "@plan-coverage-resolution-mutations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-explicit-coverage-reverification"
+  - "@task-coverage-spec-text-revert"
+  - "@task-coverage-dispatch-fix-request"
+context: []
+priority: 1
+tags:
+  - coverage
+  - cli
+  - daemon
+  - api
+vcs_refs: []
+created_at: 2026-06-26T19:16:52.038Z
+todos: []

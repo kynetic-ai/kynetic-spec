@@ -4110,6 +4110,386 @@ features:
         notes: []
     created: 2026-06-23T23:45:48.598Z
     notes: []
+  - _ulid: 01KW2NT0XV1R3S4KNAMT1NBSYJ
+    slugs:
+      - coverage-resolution-mutation-interface
+    title: Coverage Resolution Mutation Interface
+    type: feature
+    description: |
+      Coverage resolution actions are one shared mutation surface for
+      operator responses to backend-computed coverage state. The surface
+      exposes exactly three actions against an acceptance criterion:
+      explicit re-verification, spec-text revert, and dispatch-fix request.
+      Every action is available through equivalent CLI and daemon interfaces,
+      consumes the current server-computed coverage-state read model, supports
+      dry-run previews, refuses static/read-only snapshots, and reports its
+      stored effects and affected coverage-state scopes without requiring a UI
+      client to reconstruct state or mutation semantics locally.
+    depends_on:
+      - "@coverage-state-engine"
+      - "@coverage-state-api-cache"
+      - "@shared-mutation-pipeline"
+      - "@actor-identity-model"
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-api-endpoint"
+      - "@trait-dry-run"
+      - "@trait-semantic-exit-codes"
+      - "@trait-error-guidance"
+    acceptance_criteria:
+      - given: |
+          a caller wants to resolve a coverage-state issue for a specific
+          acceptance criterion
+        id: ac-action-set
+        then: |
+          it exposes exactly the supported action kinds explicit-reverify,
+          spec-text-revert, and dispatch-fix, each with a stable request and
+          response shape naming the target item and criterion
+        when: |
+          the coverage resolution mutation interface is enumerated
+      - given: |
+          any coverage resolution action is requested
+        id: ac-current-state-required
+        then: |
+          validation reads the current backend coverage-state detail for that
+          criterion, including freshness comparison findings, and rejects the
+          action if the current state no longer satisfies that action's
+          preconditions
+        when: |
+          the action validates its target before applying changes
+      - given: |
+          the same valid coverage resolution request is submitted through the
+          CLI and through the daemon route in equivalent projects
+        id: ac-cli-daemon-equivalence
+        then: |
+          both paths produce the same stored effect class, response summary,
+          affected coverage-state scopes, and diagnostics, differing only in
+          occurrence-specific ids and timestamps; typed event equivalence is
+          specified separately by @coverage-resolution-events-compatibility
+        when: |
+          each path succeeds
+      - given: |
+          any coverage resolution request is submitted in dry-run mode
+        id: ac-dry-run-preview
+        then: |
+          the response reports the action that would run, affected items and
+          criteria, precondition diagnostics, and exact stored effects that
+          would be attempted, but no verification stamp, spec source edit,
+          task, shadow commit, cache update, or event broadcast is produced
+        when: |
+          validation completes
+      - given: |
+          a static-export snapshot or read-only project context
+        id: ac-static-readonly-refusal
+        then: |
+          the interface refuses with a read-only/static-mode error and does
+          not pretend the resolution was stored or dispatched; dry-run preview
+          requests may still return computed previews when all required data is
+          available without writing
+        when: |
+          a caller attempts to apply any non-dry-run coverage resolution
+          mutation
+      - given: |
+          production code handles a coverage resolution action
+        id: ac-current-state-boundary
+        then: |
+          it uses the current production read path that includes freshness
+          comparison and cache ownership, and it does not directly derive a
+          raw read model from partial evidence in a way that bypasses
+          freshness comparison
+        when: |
+          it obtains coverage state for validation, previews, or responses
+    tags: []
+    requirements:
+      - _ulid: 01KW2NT0Z4SBCHV1ZQ9RGJ770B
+        slugs:
+          - explicit-coverage-reverification
+        title: Explicit Coverage Reverification
+        type: requirement
+        description: |
+          A caller can explicitly re-verify a criterion whose current presentation
+          bucket is re-verify and whose current state has positive non-failing
+          evidence. The action
+          writes a verification stamp with re_verification provenance using the
+          existing verification record store. It records the acting actor,
+          verification time, optional code commit, and optional producing session;
+          it never runs tests and never invents evidence for a criterion that has
+          no current positive basis.
+        depends_on:
+          - "@ac-verification-record-store"
+          - "@verification-session-evidence"
+          - "@coverage-state-engine"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a caller requests explicit re-verification for a criterion
+            id: ac-reverify-preconditions
+            then: |
+              the action is accepted only when the criterion is currently in the
+              re-verify bucket, has positive evidence, and has no latest mapped
+              failed or errored result; covered, not-yet, and failing criteria are
+              rejected with guidance to refresh the view, add evidence, or fix
+              failing tests instead
+            when: |
+              the current coverage state is checked
+          - given: |
+              an explicit re-verification request satisfies its preconditions
+            id: ac-reverify-stamp-written
+            then: |
+              the criterion's verification stamp is written or replaced with
+              provenance re_verification, the resolved actor, the mutation time,
+              optional comparable commit metadata, and optional session linkage
+            when: |
+              the mutation succeeds
+          - given: |
+              a criterion was in the re-verify bucket only because existing
+              positive evidence was older than comparable freshness sources
+            id: ac-reverify-state-clears-when-current
+            then: |
+              the criterion no longer remains in re-verify for that stale cause
+              unless another current failing, missing, or stale cause still applies
+            when: |
+              explicit re-verification writes a newer stamp and coverage state is
+              recomputed
+          - given: |
+              a caller explicitly re-verifies a criterion
+            id: ac-reverify-no-test-execution
+            then: |
+              the action writes only verification metadata and never runs a test
+              command, imports framework-native result data, or fabricates an
+              ingested run
+            when: |
+              the action executes through either CLI or daemon
+        tags: []
+        created: 2026-06-26T19:16:49.764Z
+        notes: []
+      - _ulid: 01KW2NT10H79KQ6DTHZHQXMV9K
+        slugs:
+          - coverage-spec-text-revert
+        title: Coverage Spec Text Revert
+        type: requirement
+        description: |
+          A caller can resolve a stale-spec-text coverage cause by applying a
+          content-level inverse edit to the current acceptance criterion text. The
+          revert uses the focused per-criterion comparison supplied by the coverage
+          freshness layer, changes only the selected criterion's given/when/then
+          text through normal kspec mutation machinery, and creates an ordinary
+          forward shadow commit. It is not a raw git revert and never rewrites
+          unrelated criteria or operational sidecars.
+        depends_on:
+          - "@coverage-freshness-revision-comparison"
+          - "@shared-mutation-pipeline"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a caller requests a spec-text revert for a criterion
+            id: ac-revert-preconditions
+            then: |
+              the action is accepted only when the current state includes a
+              stale_spec_text cause and the prior criterion text can be resolved
+              from project metadata history
+            when: |
+              the current coverage state and focused criterion comparison are
+              checked
+          - given: |
+              a spec-text revert request is submitted in dry-run mode
+            id: ac-revert-preview
+            then: |
+              the preview reports the current and prior given/when/then values,
+              the fields that would change, the prior commit or timestamp used,
+              and the affected coverage-state scopes without modifying files
+            when: |
+              the focused comparison resolves
+          - given: |
+              a spec-text revert request is applied
+            id: ac-content-level-forward-edit
+            then: |
+              it applies the inverse content edit through the normal kspec item
+              mutation path, creates a forward shadow commit describing the
+              criterion revert, and does not run git revert or mutate the code
+              repository directly
+            when: |
+              the mutation writes project metadata
+          - given: |
+              an item has several acceptance criteria and only one criterion is
+              targeted for spec-text revert
+            id: ac-sibling-preservation
+            then: |
+              only the targeted criterion's given/when/then fields are changed;
+              sibling criteria, item metadata, comments, verification stamps, and
+              test-run records remain byte-equivalent
+            when: |
+              the mutation succeeds
+          - given: |
+              the criterion text changes after a revert preview or before an
+              apply request reaches the mutation path
+            id: ac-concurrency-guard
+            then: |
+              the mutation refuses rather than overwriting newer text, and the
+              response tells the caller to refresh the coverage detail
+            when: |
+              the mutation validates the expected current criterion fingerprint
+        tags: []
+        created: 2026-06-26T19:16:49.809Z
+        notes: []
+      - _ulid: 01KW2NT192GTGK65WHKWGQ4KC3
+        slugs:
+          - coverage-dispatch-fix-request
+        title: Coverage Dispatch Fix Request
+        type: requirement
+        description: |
+          A caller can convert a coverage-state issue into ordinary kspec task
+          work for an agent or human to fix. The action creates or reuses a task
+          that targets the affected item and criterion, includes the current
+          coverage-state explanation and relevant evidence, and optionally marks
+          the task dispatch-eligible through existing task automation fields. The
+          action does not introduce a special coverage-only work queue, does not
+          bypass plan/task approval policy, and does not spawn a bespoke agent
+          outside the existing dispatch engine.
+        depends_on:
+          - "@coverage-state-engine"
+          - "@task-work-fields"
+          - "@shared-mutation-pipeline"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              a caller requests dispatch-fix for a criterion with a failing,
+              not-yet, or re-verify coverage issue
+            id: ac-dispatch-fix-task-shape
+            then: |
+              an ordinary kspec task exists whose title, spec reference, body,
+              and metadata identify the targeted item and criterion, the current
+              presentation bucket, the machine-readable explanation, and the
+              latest relevant run or freshness evidence when available
+            when: |
+              the mutation succeeds
+          - given: |
+              a dispatch-fix request is accepted
+            id: ac-no-special-queue
+            then: |
+              the work is represented by normal task records and existing
+              automation/dispatch fields, not by a parallel coverage-specific
+              queue or an ad-hoc daemon agent invocation
+            when: |
+              the resulting work is inspected
+          - given: |
+              an unresolved dispatch-fix task already exists for the same item,
+              criterion, action kind, and current issue fingerprint
+            id: ac-idempotent-open-request
+            then: |
+              the mutation finds the existing task by a durable idempotency key
+              stored in the task body, returns that task, and records no duplicate
+              task unless the caller explicitly asks to create another one
+            when: |
+              the caller requests dispatch-fix again
+          - given: |
+              dispatch-fix is requested in projects with different package names,
+              test frameworks, file layouts, or result producers
+            id: ac-project-neutral-context
+            then: |
+              the body uses normalized coverage-state evidence and kspec refs,
+              and does not assume kynetic-spec paths, Vitest output, package
+              scripts, or repository-specific branch names
+            when: |
+              the task body is generated
+          - given: |
+              a caller asks the dispatch-fix action to make the task automation
+              eligible
+            id: ac-existing-dispatch-policy
+            then: |
+              the task uses the existing automation fields and remains subject
+              to normal dispatch engine reconciliation, dependencies, and
+              operator policy; the coverage action itself does not start an
+              agent outside those mechanisms
+            when: |
+              the mutation stores the task
+        tags: []
+        created: 2026-06-26T19:16:50.082Z
+        notes: []
+      - _ulid: 01KW2NT1AHXRVQSJHMAFFFY115
+        slugs:
+          - coverage-resolution-events-compatibility
+        title: Coverage Resolution Events and Compatibility
+        type: requirement
+        description: |
+          Successful coverage resolution mutations invalidate the coverage-state
+          read model and broadcast targeted coverage-state events on the spec-item
+          domain after the post-mutation state is visible. The implementation is
+          additive and backward-compatible: projects with no verification or
+          test-run stores still load, dry-run and static snapshots are read-only,
+          and consumers that do not understand the new actions can continue to
+          read coverage state and metadata.
+        depends_on:
+          - "@coverage-state-events"
+          - "@mutation-event-naming"
+          - "@coverage-record-compatibility"
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-websocket-protocol"
+        acceptance_criteria:
+          - given: |
+              any coverage resolution mutation succeeds through the daemon
+            id: ac-event-after-cache
+            then: |
+              a same-tick refetch of the affected coverage detail or rollup
+              observes the post-mutation read model
+            when: |
+              clients receive the resulting coverage-state event
+          - given: |
+              a resolution mutation affects one criterion or one item
+            id: ac-targeted-scope
+            then: |
+              it identifies affected item and criterion scopes precisely when
+              known, and uses a project-wide scope only when precision is not
+              available
+            when: |
+              the event payload is emitted
+          - given: |
+              equivalent successful resolution mutations arrive through the daemon
+              REST route and through the daemon command-proxy CLI path
+            id: ac-cli-daemon-event-equivalence
+            then: |
+              clients observe the same typed coverage-state event family, topic,
+              affected scopes, and payload schema from both origins
+            when: |
+              subscribers observe the resulting events
+          - given: |
+              a project has no verification record store or no test-run store
+            id: ac-absent-store-compatible
+            then: |
+              absence is handled as ordinary coverage-state absence; reads do not
+              materialize stores, and the first action that writes a store follows
+              the existing first-write materialization contract
+            when: |
+              resolution actions are previewed, rejected, or applied where their
+              preconditions are otherwise satisfied
+          - given: |
+              the coverage resolution mutation plan implementation is complete
+            id: ac-validation-gates
+            then: |
+              they prove CLI/daemon equivalence, dry-run no-effects behavior,
+              static/read-only refusal, neutral-project behavior, event-after-cache
+              ordering, and no production bypass of the current-state read path
+            when: |
+              project validation and focused tests run
+        tags: []
+        created: 2026-06-26T19:16:50.129Z
+        notes: []
+    created: 2026-06-26T19:16:49.723Z
+    notes: []
 modules:
   - _ulid: 01KPPN4244R4AH3WQGW4F8M1CF
     slugs:

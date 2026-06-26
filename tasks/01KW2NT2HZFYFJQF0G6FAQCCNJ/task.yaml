@@ -1,0 +1,66 @@
+_ulid: 01KW2NT2HZFYFJQF0G6FAQCCNJ
+slugs:
+  - task-coverage-dispatch-fix-request
+title: Implement dispatch-fix task creation and idempotency
+type: task
+description: |
+  Implement the dispatch-fix action by creating or reusing ordinary kspec
+  task work from current coverage-state evidence.
+
+  Why: Some coverage issues require real implementation work: add evidence,
+  fix a failing test, update mappings, or repair stale code. The resolution
+  surface should hand that work to kspec's existing task/dispatch workflow,
+  not invent a parallel coverage work queue or spawn a special agent.
+
+  What:
+  - Add dispatch-fix handling to src/parser/coverage-resolution.ts. It may
+    target failing, not_yet, or re_verify criteria; covered targets reject
+    unless the caller explicitly asks for a task anyway.
+  - Persist the idempotency key as a stable machine-readable line in the task
+    body, e.g. `Coverage-Resolution-Key: <hash>`, because the current task
+    schema has no arbitrary metadata slot and this plan deliberately avoids
+    adding covers_ac/task metadata. Task lookup uses that marker plus open
+    lifecycle state; the marker remains visible and auditable.
+  - Generate a normal task whose spec_ref targets the owning item and whose
+    body contains: item ref/title, AC id and text, current presentation
+    bucket, internal state/cause, latest run evidence or freshness detail,
+    unmapped/invalid mapping summaries if relevant, and a neutral suggested
+    repair checklist. Do not add a new task schema field for covers_ac in
+    this plan.
+  - Add an idempotency key derived from target item ULID, AC id, action kind,
+    and current issue fingerprint. If an unresolved matching task exists,
+    return it instead of duplicating unless the caller passes an explicit
+    allow-duplicate option.
+  - If the caller requests automation eligibility, set only existing task
+    automation/dispatch fields and let the existing dispatch engine reconcile
+    normally. Do not invoke an agent process directly from this action.
+  - Tests: creates a task for failing/not-yet/re-verify; rejects covered by
+    default; repeats return existing open task for same fingerprint; a changed
+    issue fingerprint can create a new task; generated task body uses
+    normalized coverage evidence and works in two neutral fixture projects;
+    automation flag uses existing fields and no direct agent spawn occurs.
+
+  How: Reuse task creation/storage helpers and ref-resolution utilities.
+  Treat generated task text as durable user-facing context: concise,
+  framework-neutral, and explicit about which evidence was observed. Any
+  future covers_ac task metadata belongs to a separate schema plan.
+
+  Covers: @coverage-dispatch-fix-request ac-dispatch-fix-task-shape,
+  ac-no-special-queue, ac-idempotent-open-request,
+  ac-project-neutral-context, ac-existing-dispatch-policy.
+spec_ref: "@coverage-dispatch-fix-request"
+plan_ref: "@plan-coverage-resolution-mutations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-coverage-resolution-contract"
+context: []
+priority: 1
+tags:
+  - coverage
+  - tasks
+  - dispatch
+vcs_refs: []
+created_at: 2026-06-26T19:16:51.391Z
+todos: []

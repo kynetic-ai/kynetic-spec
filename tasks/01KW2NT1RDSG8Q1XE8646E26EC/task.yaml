@@ -1,0 +1,58 @@
+_ulid: 01KW2NT1RDSG8Q1XE8646E26EC
+slugs:
+  - task-explicit-coverage-reverification
+title: Implement explicit re-verification stamp mutation
+type: task
+description: |
+  Implement the explicit-reverify action in the shared coverage resolution
+  service by writing re_verification provenance stamps through the existing
+  verification record store.
+
+  Why: Re-verify is the safest first resolution action: it is an ordinary
+  verification-stamp write over already-built storage. It must still be
+  strict enough not to let users stamp not-yet or failing criteria as
+  covered, and it must not run tests or create fake ingested evidence.
+
+  What:
+  - Add applyExplicitReverification(ctx, request) in
+    src/parser/coverage-resolution.ts.
+  - Accept only current criteria with positive non-failing evidence. Reject
+    presentation bucket failing; reject not_yet/no_positive_evidence;
+    reject absent or unresolvable target; explain the next action to take.
+  - Write stamps through writeVerificationStampWithoutCommit when inside a
+    higher-level mutation transaction, with provenance re_verification,
+    verified_at from the mutation clock, actor resolved by the shared actor
+    rules, optional commit from request or current comparable source, and
+    optional session id. Preserve the verification store's validation and
+    format-ceiling behavior.
+  - Recompute or invalidate the coverage-state read model after the stamp
+    write so stale causes clear only when the engine's normal rules agree.
+  - Tests: accepted re-verify writes/replaces a stamp; failing and not-yet
+    targets reject; session/commit attribution round-trip; newer record
+    format refusal propagates; recomputed state clears stale cause when the
+    stamp is current; no test command or test-run store write occurs.
+
+  How: Reuse src/parser/verification-record-store.ts and the freshness
+  resolver/read-model path from the completed P1a/P1b plans. The action
+  writes only verification metadata; do not touch test-run store code except
+  to assert it remains unchanged in integration tests.
+
+  Covers: @explicit-coverage-reverification ac-reverify-preconditions,
+  ac-reverify-stamp-written, ac-reverify-state-clears-when-current,
+  ac-reverify-no-test-execution.
+spec_ref: "@explicit-coverage-reverification"
+plan_ref: "@plan-coverage-resolution-mutations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-coverage-resolution-contract"
+context: []
+priority: 1
+tags:
+  - coverage
+  - verification
+  - parser
+vcs_refs: []
+created_at: 2026-06-26T19:16:50.573Z
+todos: []

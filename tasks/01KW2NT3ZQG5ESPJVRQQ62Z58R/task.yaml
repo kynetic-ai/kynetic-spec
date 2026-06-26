@@ -1,0 +1,67 @@
+_ulid: 01KW2NT3ZQG5ESPJVRQQ62Z58R
+slugs:
+  - task-coverage-resolution-events-validation
+title: Wire coverage resolution cache invalidation, events, and compatibility gates
+type: task
+description: |
+  Complete the cross-cutting event/cache behavior and validation gates that
+  prove coverage resolution mutations are safe, project-neutral, and visible
+  to later UI surfaces.
+
+  Why: Resolution actions are only useful if the coverage-state read model
+  immediately reflects their effects, web clients can refresh targeted rows,
+  static/read-only snapshots remain honest, and tests prove the behavior is
+  reusable outside kynetic-spec.
+
+  What:
+  - Invalidate the coverage-state read model after each successful action
+    and recompute or refresh as needed before broadcasting.
+  - Emit coverage_state_changed events on items:updates after the post-mutation
+    read model is observable. Payloads identify item ULID/ref and AC id for
+    precise single-criterion actions; use project scope only for broad or
+    unresolved changes.
+  - Ensure command-proxy CLI mutations that go through the daemon produce the
+    same typed event family as direct REST routes, via the shared mutation
+    pipeline and command-path typed event bridge.
+  - Add compatibility tests for projects with no verification store, no
+    test-run store, newer-than-supported verification record formats, and
+    static exports. Reads must not materialize stores; first write follows
+    existing first-write behavior.
+  - Add neutral-project fixtures for the full resolution flow: one project
+    with annotation/bootstrap-only reverify, one with normalized test-run
+    evidence from a non-kynetic producer, and one with stale AC text history.
+  - Add final validation gates: focused coverage-resolution tests; relevant
+    coverage-state API/event tests; CLI/daemon equivalence tests; static mode
+    tests; `kspec validate --warnings-ok`; root format/lint/typecheck/build
+    gates according to touched packages.
+
+  How: Extend packages/daemon/src/routes/coverage-state-events.ts rather than
+  adding a new topic. Use existing coverage-state read APIs for post-mutation
+  assertions. The broad gates should run after focused suites so failures are
+  actionable.
+
+  Covers: @coverage-resolution-events-compatibility ac-event-after-cache,
+  ac-targeted-scope, ac-cli-daemon-event-equivalence,
+  ac-absent-store-compatible, ac-validation-gates. Also covers
+  @trait-websocket-protocol ac-2, ac-3, ac-6, and ac-8 for
+  resolution-originated events using the existing websocket infrastructure.
+  Also covers @coverage-state-events ac-event-topic,
+  ac-event-canonical-identity, ac-event-after-cache, and ac-no-event-storm
+  for resolution-originated changes.
+spec_ref: "@coverage-resolution-events-compatibility"
+plan_ref: "@plan-coverage-resolution-mutations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-coverage-resolution-cli-daemon"
+context: []
+priority: 2
+tags:
+  - coverage
+  - websocket
+  - validation
+  - tests
+vcs_refs: []
+created_at: 2026-06-26T19:16:52.855Z
+todos: []

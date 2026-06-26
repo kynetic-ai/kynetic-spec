@@ -8,3 +8,286 @@ notes:
     content: Remove version-scoped v1 wording from timeless behavioral specs and notes
     author: Jacob Chapel
     created_at: 2026-06-26T18:53:16.004Z
+  - _ulid: 01KW2NT61VJX6HZ04XMJMBRB2N
+    content: >-
+      ### What this plan is
+
+
+      This is P1c of the UI redesign coverage track. It consumes the completed
+
+      coverage-state backend and adds backend-owned resolution mutations that later
+
+      spec workspace and Validate UI plans can call. It closes the loop for the
+
+      four presentation buckets without building those UI surfaces.
+
+
+      The plan deliberately keeps resolution as normal kspec state changes:
+
+
+      1. Explicit re-verification writes a verification stamp.
+
+      2. Spec-text revert applies an item content edit through kspec mutation
+         machinery.
+      3. Dispatch-fix creates or reuses an ordinary task and optionally marks it
+         eligible through existing dispatch fields.
+
+      No action runs tests, imports framework-native results, performs raw git
+
+      revert, performs a code-repository merge, or directly spawns a special agent.
+
+
+      ### Relationship to prior imported redesign plans
+
+
+      - `@plan-web-ui-foundations` provides actor identity and status/read-only UI
+        conventions. This plan consumes actor identity for stamps/tasks and keeps UI
+        rendering out of scope.
+      - `@plan-ac-coverage-verification-schema-and-storage` provides
+        `coverage/verifications/<item-ulid>.yaml`, provenance class
+        `re_verification`, optional session evidence, first-write materialization,
+        and record-format compatibility. This plan writes through that store.
+      - `@plan-test-result-ingestion` provides normalized run records and
+        ingestion-provenance stamps. This plan reads their effects through the
+        coverage-state engine; it does not add framework adapters or daemon-run tests.
+      - `@plan-coverage-state-engine` provides the evidence index, state derivation,
+        freshness comparison, API/cache read model, and coverage-state event family.
+        This plan validates every action against that current state and invalidates
+        it after writes.
+      - `@plan-review-anchors-and-plan-revisions-schema` is a structural example for
+        how this plan handles schema additions, compatibility, precise validation,
+        and later-UI exclusions. It is not a direct dependency.
+      - `@plan-dispatch-mutation-service` provides shared write → shadow commit →
+        cache update → typed event ordering. All non-dry-run daemon mutations in this
+        plan ride that path.
+
+      ### Current-state guard and legacy-helper hardening
+
+
+      The resolution action precondition is intentionally tied to the production
+
+      coverage-state read path. The raw `buildCoverageStateReadModel(...)` helper is
+
+      valid as a pure projection inside the read-model module and tests, but
+
+      resolution mutations must not call it directly from production paths. They
+
+      should call the current cached/read-model path that includes freshness
+
+      comparison, cache ownership, and the same state seen by `/api/coverage/state/*`.
+
+
+      This prevents an action from approving or reverting against a state derived
+
+      from partial evidence without the freshness comparison that made the criterion
+
+      `re_verify` in the first place. The implementation task includes a regression
+
+      boundary check so future routes do not accidentally reintroduce that bypass.
+
+
+      ### Action preconditions
+
+
+      Expected action availability for this plan scope:
+
+
+      | Current presentation / cause | explicit-reverify | spec-text-revert | dispatch-fix |
+
+      |---|---|---|---|
+
+      | `covered` | rejected; refresh semantics are out of this resolution scope | rejected |
+      rejected by default |
+
+      | `failing` | rejected | rejected unless also stale-spec-text and caller chooses revert after
+      reading details | allowed |
+
+      | `not_yet` | rejected | rejected | allowed |
+
+      | `re_verify` + stale_spec_text | allowed when positive non-failing evidence exists | allowed
+      when focused prior text resolves | allowed |
+
+      | `re_verify` + stale_annotation_or_mapping / stale_test_result / unknown_freshness | allowed
+      when positive non-failing evidence exists | rejected | allowed |
+
+
+      Preconditions must be checked against the current read model immediately before
+
+      apply. Dry-run previews should include the same precondition diagnostics.
+
+
+      ### Spec-text revert semantics
+
+
+      Spec-text revert is a content-level forward edit, not a git operation:
+
+
+      - It uses the per-AC comparison from `readCriterionFreshnessComparison(...)`.
+
+      - It writes only the targeted AC's `given`, `when`, and `then` values.
+
+      - It commits through kspec's normal shadow mutation path with a forward commit
+        such as "revert coverage criterion text".
+      - It refuses stale previews via expected current fingerprint.
+
+      - It does not alter verification stamps or test-run records; after the edit,
+        coverage-state recomputation decides whether the criterion remains covered,
+        re-verify, failing, or not-yet.
+
+      ### Dispatch-fix semantics
+
+
+      Dispatch-fix should produce ordinary work, not new infrastructure:
+
+
+      - No new task schema field for `covers_ac` in this plan. The future task-level
+        covers/covers_ac design remains deferred.
+      - The idempotency key is persisted in the task body as a stable line such as
+        `Coverage-Resolution-Key: sha256:<hex>`. The key input is item ULID, AC id,
+        action kind, presentation bucket, internal cause, and source evidence ids.
+        This uses existing task storage, keeps the marker auditable, and avoids a
+        schema migration solely for this action.
+      - Task context should include enough normalized evidence for a worker to know
+        whether to add missing tests, fix a failing test, update a mapping, or repair
+        stale code, but it must not assume a framework or repository layout.
+      - Idempotency prevents one UI button from creating repeated identical tasks for
+        the same current issue fingerprint.
+      - If automation eligibility is requested, the action only sets existing fields.
+        The existing dispatch engine decides when or whether to run it.
+
+      ### API and CLI sketch
+
+
+      The exact command names are implementation details, but this draft expects a
+
+      shape close to:
+
+
+      ```text
+
+      kspec coverage resolve reverify --item @some-item --ac ac-1 [--commit <sha>] [--session
+      <ulid>] [--dry-run] [--json]
+
+      kspec coverage resolve revert-spec-text --item @some-item --ac ac-1 --expected-fingerprint
+      <hash> [--dry-run] [--json]
+
+      kspec coverage resolve dispatch-fix --item @some-item --ac ac-1 [--automation-eligible]
+      [--allow-duplicate] [--dry-run] [--json]
+
+      ```
+
+
+      Daemon routes should mirror these under `/api/coverage/resolve/...` or an
+
+      equivalent coverage namespace and return the same typed response shape. The
+
+      implemented names may differ if they fit existing route conventions better, but
+
+      CLI and daemon semantics must remain equivalent.
+
+
+      ### General-system guardrails
+
+
+      - Use loaded project context, item ULIDs, AC ids, normalized run records, and
+        server-computed coverage-state details. Never hardcode kynetic-spec package
+        names, paths, Vitest output, current corpus counts, or branch naming.
+      - Do not infer missing mappings from file paths in dispatch-fix task text.
+        Mapping semantics remain owned by normalized test-result ingestion.
+      - Do not add daemon-run test execution.
+
+      - Do not add daemon merge or code-repository repair authority.
+
+      - Do not derive state in Svelte/UI clients.
+
+      - Keep all action writes additive or ordinary kspec mutations and compatible
+        with existing shadow history and static export behavior.
+
+      ### Scope exclusions
+
+
+      - Spec workspace UI buttons and Validate matrix UI. Later P1d/P1e plans consume
+        these routes.
+      - Flakiness detection, result history charts, and generated matrix observations.
+
+      - Test-result adapters beyond the normalized payload already defined.
+
+      - Task `covers_ac`/coverage metadata schema.
+
+      - Direct agent spawning outside the dispatch engine.
+
+      - Merge execution, code-repo repair, or shadow repair from dashboard actions.
+
+      - Retiring the in-code N/A convention beyond behavior already implemented by
+        the coverage schema/storage and state-engine plans.
+
+      ### Inherited trait coverage and non-applicable cases
+
+
+      This plan uses broad traits, but only the following inherited acceptance
+
+      criteria apply to the mutation surfaces in this plan:
+
+
+      | Trait | Applicable ACs | Non-applicable / rationale |
+
+      |---|---|---|
+
+      | `@trait-api-endpoint` | ac-1 success JSON, ac-2 invalid ref/not found, ac-3 validation
+      errors, ac-5 shadow commit for mutating routes, ac-6 request id | ac-4 list pagination is not
+      applicable: these are action endpoints, not list endpoints |
+
+      | `@trait-dry-run` | ac-1 preview, ac-2 no file writes, ac-3 preview indication, ac-4 dry-run
+      errors without state change, ac-5 dry-run wins if a future force flag appears, ac-6 JSON
+      includes `dry_run` | none for CLI actions; daemon dry-run responses use the same semantic
+      fields even though they are query/body flags rather than commander flags |
+
+      | `@trait-semantic-exit-codes` | ac-1 success, ac-2 validation/precondition failure, ac-4
+      runtime failure, ac-6 invalid flags/arguments, ac-8 documented meanings | ac-3
+      confirmation-declined is not applicable because this plan has no interactive confirmation
+      prompt; ac-5 empty result set is not applicable because these are targeted actions; ac-7 batch
+      partial failure is not applicable because this plan has no batch mode |
+
+      | `@trait-error-guidance` | ac-1 description, ac-2 suggested action, ac-3 ref lookup guidance,
+      ac-5 field/value diagnostics, ac-6 structured JSON guidance | ac-4 invalid state transition is
+      represented by coverage action precondition diagnostics rather than task lifecycle transition
+      states |
+
+      | `@trait-websocket-protocol` | ac-2 subscription to `items:updates`, ac-3 broadcast envelope,
+      ac-6 no event storm/backpressure through coalesced events, ac-8 reconnect consumers can
+      refetch by affected scope | ac-1 connection establishment, ac-4 heartbeat, ac-5 heartbeat
+      timeout, and ac-7 close codes belong to the existing websocket infrastructure and are not
+      reimplemented by this plan |
+
+
+      Task coverage mapping follows this table. If an implementer changes command
+
+      shape enough to make an inherited AC newly applicable, they must update the
+
+      plan before deriving or completing the task.
+
+
+      ### Validation gates
+
+
+      Before this plan is considered ready for approval, run at least:
+
+
+      - `kspec plan import
+      /home/chapel/Projects/kynetic-spec/plans/ui-redesign-coverage-resolution-mutations.md --module
+      @core --status draft --dry-run --json`
+
+      - `kspec validate --warnings-ok`
+
+
+      Implementation tasks should add and run focused suites for coverage resolution,
+
+      verification records, coverage-state read model/API/events, CLI/daemon route
+
+      parity, static/read-only behavior, and neutral-project fixtures. If shared API
+
+      or websocket types change, regenerate shared outputs before root typecheck and
+
+      build gates.
+    author: Jacob Chapel
+    created_at: 2026-06-26T19:16:54.971Z

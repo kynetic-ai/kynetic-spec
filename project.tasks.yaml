@@ -33186,3 +33186,121 @@
   submitted_at: 2026-06-25T15:27:21.323Z
   completed_at: 2026-06-25T15:47:31.425Z
   automation: eligible
+- _ulid: 01KW2NT1BTBBPCAQ15RY9NE5QT
+  slugs:
+    - task-coverage-resolution-contract
+  title: Implement shared coverage resolution schemas and target resolver
+  type: task
+  spec_ref: "@coverage-resolution-mutation-interface"
+  plan_ref: "@plan-coverage-resolution-mutations"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - coverage
+    - schema
+    - parser
+    - api
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-26T19:16:50.170Z
+- _ulid: 01KW2NT1RDSG8Q1XE8646E26EC
+  slugs:
+    - task-explicit-coverage-reverification
+  title: Implement explicit re-verification stamp mutation
+  type: task
+  spec_ref: "@explicit-coverage-reverification"
+  plan_ref: "@plan-coverage-resolution-mutations"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-coverage-resolution-contract"
+  priority: 1
+  tags:
+    - coverage
+    - verification
+    - parser
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-26T19:16:50.573Z
+- _ulid: 01KW2NT2528F5PYRHJYK2K804F
+  slugs:
+    - task-coverage-spec-text-revert
+  title: Implement content-level spec-text revert for stale AC text
+  type: task
+  spec_ref: "@coverage-spec-text-revert"
+  plan_ref: "@plan-coverage-resolution-mutations"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-coverage-resolution-contract"
+  priority: 1
+  tags:
+    - coverage
+    - specs
+    - mutation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-26T19:16:50.978Z
+- _ulid: 01KW2NT2HZFYFJQF0G6FAQCCNJ
+  slugs:
+    - task-coverage-dispatch-fix-request
+  title: Implement dispatch-fix task creation and idempotency
+  type: task
+  spec_ref: "@coverage-dispatch-fix-request"
+  plan_ref: "@plan-coverage-resolution-mutations"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-coverage-resolution-contract"
+  priority: 1
+  tags:
+    - coverage
+    - tasks
+    - dispatch
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-26T19:16:51.391Z
+- _ulid: 01KW2NT366BEE987XGXR17CDSG
+  slugs:
+    - task-coverage-resolution-cli-daemon
+  title: Expose coverage resolution through CLI and daemon routes
+  type: task
+  spec_ref: "@coverage-resolution-mutation-interface"
+  plan_ref: "@plan-coverage-resolution-mutations"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-explicit-coverage-reverification"
+    - "@task-coverage-spec-text-revert"
+    - "@task-coverage-dispatch-fix-request"
+  priority: 1
+  tags:
+    - coverage
+    - cli
+    - daemon
+    - api
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-26T19:16:52.038Z
+- _ulid: 01KW2NT3ZQG5ESPJVRQQ62Z58R
+  slugs:
+    - task-coverage-resolution-events-validation
+  title: Wire coverage resolution cache invalidation, events, and compatibility gates
+  type: task
+  spec_ref: "@coverage-resolution-events-compatibility"
+  plan_ref: "@plan-coverage-resolution-mutations"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-coverage-resolution-cli-daemon"
+  priority: 2
+  tags:
+    - coverage
+    - websocket
+    - validation
+    - tests
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-26T19:16:52.855Z

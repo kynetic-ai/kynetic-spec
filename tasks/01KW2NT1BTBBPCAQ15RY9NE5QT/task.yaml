@@ -1,0 +1,66 @@
+_ulid: 01KW2NT1BTBBPCAQ15RY9NE5QT
+slugs:
+  - task-coverage-resolution-contract
+title: Implement shared coverage resolution schemas and target resolver
+type: task
+description: |
+  Add the shared request/response schemas and the production target
+  resolver used by every coverage resolution action.
+
+  Why: The three actions must not fork their target validation, dry-run
+  response shape, static-mode behavior, or coverage-state read path. This
+  is also where the recently identified legacy-builder risk is contained:
+  production mutation decisions must read the current coverage-state detail
+  through the production read model with freshness comparison, not directly
+  from a raw evidence-to-state helper that can bypass comparison.
+
+  What:
+  - Create src/schema/coverage-resolution.ts with discriminated request
+    schemas for explicit-reverify, spec-text-revert, and dispatch-fix;
+    shared target fields (item ref or canonical id plus ac id); dry-run;
+    expected current fingerprint for applying previews; optional actor,
+    session, and commit metadata; and typed response/effect summaries.
+  - Create src/parser/coverage-resolution.ts with a resolveCoverageTarget
+    helper that initializes project context, loads the current
+    getCachedCoverageStateReadModel path, resolves item aliases exactly as
+    packages/daemon/src/routes/coverage.ts does, and returns current
+    criterion detail plus item/context data needed by action handlers.
+  - Add explicit action precondition diagnostics that name the current
+    presentation bucket, internal state/cause, and missing requirement.
+  - Add dry-run effect modeling common to all actions. Dry-run returns
+    would-write stamps, would-edit fields, would-create/reuse task, and
+    affected coverage-state scopes, but calls no write helpers and creates
+    no commit.
+  - Add read-only/static-mode error class shared by CLI and daemon, aligned
+    with TestResultIngestionReadOnlyError behavior.
+  - Add a focused boundary test proving daemon/CLI resolution handlers do
+    not import or call buildCoverageStateReadModel directly; tests may
+    import the raw builder only in pure read-model unit suites.
+
+  How: Follow the normalized ingestion pattern: schema and pure parser
+  service first, route/CLI adapters later. Reuse shared coverage API types
+  where possible and add package/shared type exports only if response types
+  need to cross into web UI code. Tests: target resolution by @ref and bare
+  slug, criterion not found diagnostics, stale expected fingerprint refusal,
+  dry-run no-effect shape, static/read-only error shape, and current-state
+  read-path boundary.
+
+  Covers: @coverage-resolution-mutation-interface ac-action-set,
+  ac-current-state-required, ac-dry-run-preview,
+  ac-static-readonly-refusal, ac-current-state-boundary.
+spec_ref: "@coverage-resolution-mutation-interface"
+plan_ref: "@plan-coverage-resolution-mutations"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - coverage
+  - schema
+  - parser
+  - api
+vcs_refs: []
+created_at: 2026-06-26T19:16:50.170Z
+todos: []
