@@ -8735,7 +8735,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-26T20:59:44.725Z
+      updated_at: 2026-06-26T20:59:55.048Z
     integration:
       status: pending
       detail: null
@@ -8744,7 +8744,7 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: d89e811817476e64ee2a6a8a2f1734283ea0a961
       updated_at: 2026-06-26T20:59:44.725Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW2NT1BTBBPCAQ15RY9NE5QT
     task_ref: "@01KW2NT1BTBBPCAQ15RY9NE5QT"
@@ -8752,18 +8752,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-26T20:40:26.555Z
-      last_reconciled_at: 2026-06-26T20:59:44.725Z
+      last_reconciled_at: 2026-06-26T20:59:55.048Z
       created_at: 2026-06-26T19:21:32.519Z
-      updated_at: 2026-06-26T20:59:44.725Z
+      updated_at: 2026-06-26T20:59:55.048Z
     workspace_id: dispatch-workspace-01KW2NT1BTBBPCAQ15RY9NE5QT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: dcc0ede8c1fa9528da8eb8ee165a241c7a2d4ea5
-        last_seen_at: 2026-06-26T20:39:53.809Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-resolution-contract-01kw2nt1-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-resolution-contract/01kw2nt1
