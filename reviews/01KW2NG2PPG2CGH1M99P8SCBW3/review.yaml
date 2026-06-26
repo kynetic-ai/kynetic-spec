@@ -1,0 +1,26 @@
+_ulid: 01KW2NG2PPG2CGH1M99P8SCBW3
+slugs: []
+title: "Plan review: Coverage Resolution Mutations (post-clarification cleanup)"
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KW2NG2PPSN1AJZNBQEVVJT9E
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-26T19:11:23.862Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-coverage-resolution-mutations"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-26T19:11:23.862Z
+updated_at: null
+notes: []
