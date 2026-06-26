@@ -23314,6 +23314,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-26T20:38:58.258Z
+  - _ulid: 01KW2WRHMQ2G9BD9MTJYH4MAXA
+    type: friction
+    content: Review-spawned follow-up tasks can reference tests or source that exist only on a sibling
+      task branch. When the dispatched worker starts from the integration target, it must first
+      rediscover the originating branch or commit before it can patch the intended behavior; task
+      creation should carry that source branch/commit context explicitly.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-26T21:18:21.335Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
