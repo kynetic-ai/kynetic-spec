@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KW2VT9V2C88Q6C5SFPQCJQGV
+    content: "Approach: reproduced the flaky test context from the coverage branch without merging that
+      branch. Added ProjectContextManager coverage scan-path watching for kspec.config.yaml and
+      configured source paths, plus behavioral daemon-context-manager tests. Stabilized the
+      race-prone assertions with bounded repeated real file writes so the test still requires
+      watcher-delivered cache invalidation but no longer depends on a single write landing
+      immediately after Chokidar asynchronously adds a new path. Edge cases: initial configured scan
+      path, scan-path reconfiguration, source writes after config change. Test plan: focused
+      daemon-context-manager test, changed-file lint, typecheck, required repo gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T21:01:50.307Z
