@@ -23347,6 +23347,19 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-26T22:17:42.247Z
+  - _ulid: 01KW3364E97WYE6CPK2N2RC3FY
+    type: friction
+    content: "During review setup, running kspec review add in parallel with kspec item get/review reads
+      exposed a transient folder-backed review storage compatibility error: a review detail
+      directory existed before the index entry was visible. Existing concurrency tracking covers
+      lost task mutation updates, but not agent behavior around mixed kspec metadata writes and
+      reads. Agents should treat kspec mutating commands as serialization boundaries and avoid
+      parallel kspec reads during those writes."
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-26T23:10:38.025Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
