@@ -51,7 +51,7 @@ description: |
 spec_ref: "@coverage-resolution-mutation-interface"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -62,6 +62,7 @@ tags:
   - parser
   - api
 vcs_refs: []
+session_id: 01KW2P3HZC95DBQNBGNP7PHVAK
 history:
   - author: Jacob Chapel
     changes:
@@ -70,6 +71,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-26T19:19:52.409Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KW2P3HZC95DBQNBGNP7PHVAK
+        previous: null
+      started_at:
+        new: 2026-06-26T19:23:04.063Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-26T19:23:04.064Z
 created_at: 2026-06-26T19:16:50.170Z
+started_at: 2026-06-26T19:23:04.063Z
 todos: []
 automation: eligible
