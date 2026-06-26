@@ -43,7 +43,7 @@ description: |
 spec_ref: "@explicit-coverage-reverification"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-coverage-resolution-contract"
@@ -54,6 +54,7 @@ tags:
   - verification
   - parser
 vcs_refs: []
+session_id: 01KW30BQET1BCS8KEDEW71VNNJ
 history:
   - author: Jacob Chapel
     changes:
@@ -62,6 +63,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-26T19:19:53.268Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KW30BQET1BCS8KEDEW71VNNJ
+        previous: null
+      started_at:
+        new: 2026-06-26T22:22:07.638Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-26T22:22:07.638Z
 created_at: 2026-06-26T19:16:50.573Z
+started_at: 2026-06-26T22:22:07.638Z
 todos: []
 automation: eligible
