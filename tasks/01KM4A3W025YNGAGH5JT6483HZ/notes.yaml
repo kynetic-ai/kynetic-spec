@@ -16,3 +16,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-23T19:47:31.481Z
+  - _ulid: 01KW2XZ901WWRT3CTJA3T621PS
+    content: "Reflection evidence from @task-coverage-resolution-contract session: full npm test
+      attempted after d96f6f0f12. Changed coverage-resolution suite passed inside the run, but
+      tests/daemon-command-api.test.ts hit a single timeout in 'runs cache write-through and
+      broadcast when a mutating command completes after its caller timed out' (waitFor condition not
+      met). After the failure, the full run continued through many passing suites, then left a
+      Vitest worker alive for this worktree and required terminating the test process tree. Isolated
+      fresh rerun passed: npm test -- --fresh --run tests/daemon-command-api.test.ts (55/55). This
+      is fresh evidence for distinguishing true teardown hangs from long-tail/full-suite timing
+      flakes."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T21:39:30.433Z
