@@ -8765,7 +8765,7 @@ workspaces:
         head: dcc0ede8c1fa9528da8eb8ee165a241c7a2d4ea5
         last_seen_at: 2026-06-26T21:20:19.488Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-resolution-contract-01kw2nt1
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 64674c90fd90de522fb7d36a768142658ecfae4e
     bootstrap:
       status: succeeded
@@ -9247,7 +9247,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-26T21:20:58.190Z
+      updated_at: 2026-06-26T21:21:31.711Z
     integration:
       status: pending
       detail: null
@@ -9263,10 +9263,10 @@ workspaces:
     task_slug: task-stabilize-daemon-context-manager-coverage-watch-test
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-26T20:55:57.995Z
-      last_reconciled_at: 2026-06-26T21:20:57.213Z
+      last_active_at: 2026-06-26T21:21:31.711Z
+      last_reconciled_at: 2026-06-26T21:21:31.711Z
       created_at: 2026-06-26T20:55:25.970Z
-      updated_at: 2026-06-26T21:21:21.370Z
+      updated_at: 2026-06-26T21:21:31.711Z
     workspace_id: dispatch-workspace-01KW2VD3FG4RGY7011HEXQBWYC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
