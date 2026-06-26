@@ -162,6 +162,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-06-26T21:58:17.001Z
+  - _ulid: 01KW2Z285N2RJKZ6AK284T1Y3P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW2Z27WPRTSV61ZBK88J2JKV
+    timestamp: 2026-06-26T21:58:36.469Z
 examined_commit: d96f6f0f122c104ab0ad3644aab48edb5d3f838e
 external_links: []
 lifecycle_state: open
@@ -171,8 +178,47 @@ subject:
   content_hash: ""
   ref: "@01KW2NT1BTBBPCAQ15RY9NE5QT"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW2Z27WPRTSV61ZBK88J2JKV
+    entries:
+      - _ulid: 01KW2Z27WQW23HZ8Y4HMG2S6ZE
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; task @01KW2NT1BTBBPCAQ15RY9NE5QT; prior reviews @01KW2QKR and
+          @01KW2TMD; spec @coverage-resolution-mutation-interface; plan
+          @plan-coverage-resolution-mutations; src/schema/coverage-resolution.ts;
+          src/parser/coverage-resolution.ts; src/schema/index.ts; src/parser/index.ts;
+          tests/coverage-resolution.test.ts; src/parser/coverage-state-read-model.ts;
+          packages/daemon/src/routes/coverage.ts; packages/shared/src/api.ts; src/parser/yaml.ts;
+          src/parser/test-result-ingestion.ts.
+
+
+          Commands run: git status/diff/log/show; kspec task get; kspec review
+          for-task/get/add/open/check; kspec item get; kspec plan get; rg AC/source-scan/read-model
+          searches; npm run format:check; npm run lint -- --quiet; npx oxlint changed TS/test files;
+          npm run typecheck; npm test -- --run tests/coverage-resolution.test.ts; npm test; kspec
+          validate --refs/--alignment/--completeness --warnings-ok.
+
+
+          Claims verified: fix-cycle 1 boundary test now exercises resolveCoverageTarget without
+          injected loadReadModel and fails if raw/direct read-model builders are used; fix-cycle 2
+          rejects dual item_ref/item_ulid targets in schema and resolver while preserving ULID-only
+          resolution; resolver uses getCachedCoverageStateReadModel by default; target lookup
+          matches coverage route/read-model alias conventions; read-only error shape aligns with the
+          ingestion read-only pattern while allowing dry-run as the spec requires; AC and inherited
+          trait annotations are present with explicit N/A cases for deferred route/action behavior.
+
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration,
+          static/read-only behavior, current-state freshness boundary, schema strictness, and
+          shared-guidance neutrality applicability. Findings: none. Shared/package guidance surfaces
+          touched: none.
+        created_at: 2026-06-26T21:58:36.183Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-26T21:42:06.374Z
-updated_at: 2026-06-26T21:58:16.739Z
+updated_at: 2026-06-26T21:58:36.183Z
 notes: []
