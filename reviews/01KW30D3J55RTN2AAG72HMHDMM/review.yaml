@@ -13,6 +13,19 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-26T22:36:36.696Z
     completed_at: 2026-06-26T22:36:36.696Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo lint reported 0 errors (703 warning baseline); focused changed-file oxlint
+      on packages/daemon/src/project-context.ts, src/daemon/entity-cache.ts,
+      tests/daemon-context-manager.test.ts, tests/daemon-entity-cache.test.ts reported 0 warnings
+      and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-26T22:36:40.869Z
+    completed_at: 2026-06-26T22:36:40.869Z
 events:
   - _ulid: 01KW30D3J5X8E4CZ33MK490DFF
     actor: Jacob Chapel
@@ -34,6 +47,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-26T22:36:37.018Z
+  - _ulid: 01KW317ZBANVJH9PP12NYYA6DD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-26T22:36:41.195Z
 examined_commit: aada9cd0e84a7e8a68659065898c357cf8218e67
 external_links: []
 lifecycle_state: open
@@ -46,5 +66,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-26T22:22:00.773Z
-updated_at: 2026-06-26T22:36:36.696Z
+updated_at: 2026-06-26T22:36:40.869Z
 notes: []
