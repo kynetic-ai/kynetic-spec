@@ -33245,6 +33245,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-26T19:16:50.978Z
+  automation: eligible
 - _ulid: 01KW2NT2HZFYFJQF0G6FAQCCNJ
   slugs:
     - task-coverage-dispatch-fix-request
