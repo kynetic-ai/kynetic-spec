@@ -71,6 +71,19 @@ checks:
     runner: kspec
     created_at: 2026-06-26T23:29:42.547Z
     completed_at: 2026-06-26T23:29:42.547Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; completeness warning baseline remains.
+      The task spec ACs are annotated in tests/coverage-resolution.test.ts for
+      ac-revert-preconditions, ac-revert-preview, ac-content-level-forward-edit,
+      ac-sibling-preservation, and ac-concurrency-guard.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-26T23:29:46.555Z
+    completed_at: 2026-06-26T23:29:46.555Z
 events:
   - _ulid: 01KW33MFG1YJJGQ4VB71EEXHDR
     actor: Jacob Chapel
@@ -127,6 +140,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-26T23:29:42.843Z
+  - _ulid: 01KW3496AWJ4Y6PKEQSEAJF3N0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-26T23:29:46.844Z
 examined_commit: 1a1c5560e7791369b5c455adb44d6bc83353c6df
 external_links: []
 lifecycle_state: open
@@ -139,5 +159,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-26T23:18:28.097Z
-updated_at: 2026-06-26T23:29:42.547Z
+updated_at: 2026-06-26T23:29:46.555Z
 notes: []
