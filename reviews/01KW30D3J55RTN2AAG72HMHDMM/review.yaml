@@ -2,7 +2,17 @@ _ulid: 01KW30D3J55RTN2AAG72HMHDMM
 slugs: []
 title: Review stabilize daemon context manager coverage source watcher test cycle 2
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1038 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-26T22:36:36.696Z
+    completed_at: 2026-06-26T22:36:36.696Z
 events:
   - _ulid: 01KW30D3J5X8E4CZ33MK490DFF
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-26T22:22:14.789Z
+  - _ulid: 01KW317V8TVXPHN3GN7PCWGYP6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-26T22:36:37.018Z
 examined_commit: aada9cd0e84a7e8a68659065898c357cf8218e67
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-26T22:22:00.773Z
-updated_at: 2026-06-26T22:22:14.474Z
+updated_at: 2026-06-26T22:36:36.696Z
 notes: []
