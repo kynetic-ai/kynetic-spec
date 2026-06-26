@@ -74375,7 +74375,7 @@ runs:
     started_at: 2026-06-26T21:16:54.836Z
     completed_at: 2026-06-26T21:19:40.401Z
   - _ulid: 01KW2XV44B5E7X0NGDM6B5GC99
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -74424,7 +74424,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-26T21:39:14.676Z
-        completed_at: 2026-06-26T21:39:14.676Z
+        completed_at: 2026-06-26T21:39:32.026Z
+        notes: "Capture: no new inbox item, task, or observation created because searches found existing
+          tracking. Added fresh evidence to
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run describing the full-test
+          daemon-command-api timeout plus lingering Vitest worker, and the passing isolated fresh
+          rerun."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-26T21:37:14.380Z
+    completed_at: 2026-06-26T21:39:32.026Z
