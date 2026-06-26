@@ -60,6 +60,20 @@ checks:
       tests/daemon-entity-cache.test.ts
     created_at: 2026-06-26T22:36:53.500Z
     completed_at: 2026-06-26T22:36:53.500Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test ran through the full suite and passed the changed daemon files, including
+      tests/daemon-context-manager.test.ts (42 tests) and tests/daemon-entity-cache.test.ts (163
+      tests). One unrelated full-suite failure occurred in tests/ac-delete-confirmation.test.ts
+      beforeEach with STACK_TRACE_ERROR; the file passed two fresh isolated reruns (8/8 each), so
+      classified as flaky/non-regression per review-gates and tracked in new task @01KW316V.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-26T22:36:57.680Z
+    completed_at: 2026-06-26T22:36:57.680Z
 events:
   - _ulid: 01KW30D3J5X8E4CZ33MK490DFF
     actor: Jacob Chapel
@@ -109,6 +123,13 @@ events:
       status: pass
       name: focused daemon tests
     timestamp: 2026-06-26T22:36:53.798Z
+  - _ulid: 01KW318FR16QE0P9ZP5G0BK9JE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-26T22:36:57.985Z
 examined_commit: aada9cd0e84a7e8a68659065898c357cf8218e67
 external_links: []
 lifecycle_state: open
@@ -121,5 +142,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-26T22:22:00.773Z
-updated_at: 2026-06-26T22:36:53.500Z
+updated_at: 2026-06-26T22:36:57.680Z
 notes: []
