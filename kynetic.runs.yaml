@@ -74680,7 +74680,7 @@ runs:
     completed_at: 2026-06-26T22:49:19.027Z
   - _ulid: 01KW333MGDZ0HVTKTG1229B2N6
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74705,7 +74705,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-26T23:12:03.800Z
-        completed_at: 2026-06-26T23:12:03.800Z
+        completed_at: 2026-06-26T23:12:42.367Z
+        notes: "Decision review: existing observation @01KTYQ1RK already tracks transient review
+          lookup/storage compatibility after folder-backed review creation, so the new friction
+          capture @01KW3364E97WYE6CPK2N2RC3FY was resolved as duplicate/recurrence.
+          Full-test-duration friction was also skipped because existing observations already cover
+          it. Unique high-confidence capture retained: success observation @01KW3364W about the
+          detached reviewer merge helper path working cleanly in this approved manual_merge review."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-26T23:12:42.367Z
+        completed_at: 2026-06-26T23:12:42.367Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-26T23:09:16.173Z
