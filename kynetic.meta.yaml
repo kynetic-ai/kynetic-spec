@@ -23302,6 +23302,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-26T19:46:07.142Z
+  - _ulid: 01KW2TGDYJA9KDZ53JBN8V78FG
+    type: success
+    content: For ACs that assert production-boundary behavior, dependency-injection tests should be
+      paired with a production-default-path test. In the coverage resolution fix cycle, an injected
+      read-model loader test missed the boundary guarantee; dynamic-importing the resolver with
+      read-model module exports mocked let the test call the default path and fail if raw/direct
+      builders were used.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-26T20:38:58.258Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
