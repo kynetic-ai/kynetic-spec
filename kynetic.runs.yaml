@@ -74376,7 +74376,7 @@ runs:
     completed_at: 2026-06-26T21:19:40.401Z
   - _ulid: 01KW2XV44B5E7X0NGDM6B5GC99
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74390,7 +74390,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-26T21:38:41.391Z
-        completed_at: 2026-06-26T21:38:41.391Z
+        completed_at: 2026-06-26T21:38:43.460Z
+        notes: "What worked well: reading the latest review record as JSON exposed the exact blocker text,
+          including the conflicting item_ref/item_ulid repro. The focused behavioral test strategy
+          was effective: schema parse rejection plus resolver ULID-only lookup proved the fix
+          without source scanning, and resolving review threads gave the next reviewer clear
+          verification context."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-26T21:38:43.460Z
+        completed_at: 2026-06-26T21:38:43.460Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-26T21:37:14.380Z
