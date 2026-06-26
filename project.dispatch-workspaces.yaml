@@ -10123,12 +10123,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-26T23:16:53.836Z
+      updated_at: 2026-06-26T23:17:12.190Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-26T23:16:53.836Z
+      updated_at: 2026-06-26T23:17:12.190Z
     integration:
       status: pending
       detail: null
@@ -10136,8 +10136,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 929ca776cca711113af9a51c3635518af1886f10
-      updated_at: 2026-06-26T23:16:53.836Z
-    lifecycle_state: ready
+      updated_at: 2026-06-26T23:17:12.190Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW2NT2528F5PYRHJYK2K804F
     task_ref: "@01KW2NT2528F5PYRHJYK2K804F"
@@ -10145,16 +10145,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-26T22:51:20.683Z
-      last_reconciled_at: 2026-06-26T23:16:53.836Z
+      last_reconciled_at: 2026-06-26T23:17:12.190Z
       created_at: 2026-06-26T22:50:50.870Z
-      updated_at: 2026-06-26T23:16:53.836Z
+      updated_at: 2026-06-26T23:17:12.190Z
     workspace_id: dispatch-workspace-01KW2NT2528F5PYRHJYK2K804F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 1a1c5560e7791369b5c455adb44d6bc83353c6df
+        last_seen_at: 2026-06-26T23:17:12.190Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-spec-text-revert-01kw2nt2-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-coverage-spec-text-revert/01kw2nt2
-        head: 929ca776cca711113af9a51c3635518af1886f10
-        last_seen_at: 2026-06-26T22:50:50.870Z
+        head: 1a1c5560e7791369b5c455adb44d6bc83353c6df
+        last_seen_at: 2026-06-26T23:17:12.190Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-spec-text-revert-01kw2nt2
