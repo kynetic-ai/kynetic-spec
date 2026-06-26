@@ -10309,3 +10309,80 @@ workspaces:
         head: 1a1c5560e7791369b5c455adb44d6bc83353c6df
         last_seen_at: 2026-06-26T23:17:12.190Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-spec-text-revert-01kw2nt2
+  - active_role: null
+    base_branch_point: e450bd571cab6985dd0352710b20313beb5d5787
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-coverage-dispatch-fix-request/01kw2nt2
+    canonical_branch_head: e450bd571cab6985dd0352710b20313beb5d5787
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-26T23:17:52.548Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-26T23:17:52.548Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: feat/ui-redesign
+      target_commit: e450bd571cab6985dd0352710b20313beb5d5787
+      updated_at: 2026-06-26T23:17:52.548Z
+    lifecycle_state: ready
+    resolved_base_branch: feat/ui-redesign
+    task_id: 01KW2NT2HZFYFJQF0G6FAQCCNJ
+    task_ref: "@01KW2NT2HZFYFJQF0G6FAQCCNJ"
+    task_slug: task-coverage-dispatch-fix-request
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-26T23:17:52.548Z
+      created_at: 2026-06-26T23:17:52.548Z
+      updated_at: 2026-06-26T23:17:52.548Z
+    workspace_id: dispatch-workspace-01KW2NT2HZFYFJQF0G6FAQCCNJ
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-coverage-dispatch-fix-request/01kw2nt2
+        head: e450bd571cab6985dd0352710b20313beb5d5787
+        last_seen_at: 2026-06-26T23:17:52.548Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-dispatch-fix-request-01kw2nt2
