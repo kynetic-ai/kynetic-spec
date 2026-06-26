@@ -33193,7 +33193,7 @@
   type: task
   spec_ref: "@coverage-resolution-mutation-interface"
   plan_ref: "@plan-coverage-resolution-mutations"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 1
@@ -33206,7 +33206,7 @@
   notes_count: 3
   todos_count: 0
   created_at: 2026-06-26T19:16:50.170Z
-  started_at: 2026-06-26T19:23:04.063Z
+  started_at: 2026-06-26T20:08:03.073Z
   submitted_at: 2026-06-26T19:42:33.807Z
   automation: eligible
 - _ulid: 01KW2NT1RDSG8Q1XE8646E26EC
