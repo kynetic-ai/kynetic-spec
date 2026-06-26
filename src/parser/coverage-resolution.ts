@@ -29,6 +29,7 @@ export { CoverageResolutionReadOnlyError };
 export const COVERAGE_RESOLUTION_TARGET_NOT_FOUND_CODE = "coverage_resolution_target_not_found";
 export const COVERAGE_RESOLUTION_CRITERION_NOT_FOUND_CODE =
   "coverage_resolution_criterion_not_found";
+export const COVERAGE_RESOLUTION_AMBIGUOUS_TARGET_CODE = "coverage_resolution_ambiguous_target";
 
 export class CoverageResolutionTargetNotFoundError extends Error {
   readonly code: string;
@@ -87,6 +88,14 @@ async function resolveContext(project: string | KspecContext): Promise<KspecCont
 }
 
 function targetRef(target: CoverageResolutionTarget): string {
+  if (target.item_ref && target.item_ulid) {
+    throw new CoverageResolutionTargetNotFoundError({
+      code: COVERAGE_RESOLUTION_AMBIGUOUS_TARGET_CODE,
+      target: `${target.item_ref} / ${target.item_ulid}`,
+      message: "Coverage resolution target must use exactly one item identifier.",
+      suggestion: "Retry with either item_ref or item_ulid, not both.",
+    });
+  }
   return target.item_ref ?? target.item_ulid ?? "";
 }
 
@@ -116,7 +125,12 @@ function resolveCoverageItem(
   target: CoverageResolutionTarget,
 ): CoverageItemStateSummary {
   const ref = targetRef(target);
-  const item = model.items[ref] ?? model.items[`@${ref}`];
+  const item =
+    model.items[ref] ??
+    model.items[`@${ref}`] ??
+    (target.item_ulid
+      ? Object.values(model.items).find((candidate) => candidate.item_ulid === target.item_ulid)
+      : undefined);
   if (item) return item;
 
   throw new CoverageResolutionTargetNotFoundError({

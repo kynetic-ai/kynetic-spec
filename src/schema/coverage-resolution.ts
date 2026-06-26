@@ -30,9 +30,9 @@ export const CoverageResolutionTargetSchema = z
     ac_id: AcIdSchema,
   })
   .strict()
-  .refine((target) => Boolean(target.item_ref || target.item_ulid), {
+  .refine((target) => Boolean(target.item_ref) !== Boolean(target.item_ulid), {
     path: ["item_ref"],
-    message: "Either item_ref or item_ulid is required.",
+    message: "Exactly one of item_ref or item_ulid is required.",
   });
 
 export const CoverageResolutionCommitMetadataSchema = z

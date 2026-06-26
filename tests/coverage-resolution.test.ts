@@ -135,8 +135,6 @@ function readModel(): CoverageStateSnapshot {
     items: {
       "@neutral-resolution-target": item,
       "neutral-resolution-target": item,
-      [ITEM_ULID]: item,
-      [`@${ITEM_ULID}`]: item,
     },
     criteria: {
       [`${ITEM_ULID} ac-stale-text`]: detail,
@@ -173,6 +171,22 @@ describe("coverage resolution contract", () => {
         target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
       }),
     ).toThrow();
+    expect(
+      CoverageResolutionRequestSchema.parse({
+        action: "explicit-reverify",
+        target: { item_ulid: ITEM_ULID, ac_id: "ac-stale-text" },
+      }).target,
+    ).toEqual({ item_ulid: ITEM_ULID, ac_id: "ac-stale-text" });
+    expect(() =>
+      CoverageResolutionRequestSchema.parse({
+        action: "explicit-reverify",
+        target: {
+          item_ref: "@wrong-target",
+          item_ulid: ITEM_ULID,
+          ac_id: "ac-stale-text",
+        },
+      }),
+    ).toThrow("Exactly one of item_ref or item_ulid is required.");
   });
 
   // AC: @coverage-resolution-mutation-interface ac-current-state-required
@@ -208,6 +222,42 @@ describe("coverage resolution contract", () => {
     });
     expect(resolvedByBareSlug.item).toEqual(resolvedByRef.item);
     expect(resolvedByRef.fingerprint).toMatch(/^sha256:[0-9a-f]{64}$/);
+  });
+
+  // AC: @coverage-resolution-mutation-interface ac-current-state-required
+  it("resolves canonical item ULIDs without accepting conflicting target refs", async () => {
+    const resolvedByUlid = await resolveCoverageTarget(fakeContext(), {
+      request: {
+        action: "explicit-reverify",
+        target: { item_ulid: ITEM_ULID, ac_id: "ac-stale-text" },
+        dry_run: true,
+      },
+      items: [makeItem()],
+      loadReadModel: async () => readModel(),
+    });
+
+    expect(resolvedByUlid.item).toMatchObject({
+      item_ulid: ITEM_ULID,
+      item_ref: "@neutral-resolution-target",
+    });
+    await expect(
+      resolveCoverageTarget(fakeContext(), {
+        request: {
+          action: "explicit-reverify",
+          target: {
+            item_ref: "@wrong-target",
+            item_ulid: ITEM_ULID,
+            ac_id: "ac-stale-text",
+          },
+          dry_run: true,
+        },
+        items: [makeItem()],
+        loadReadModel: async () => readModel(),
+      }),
+    ).rejects.toMatchObject({
+      code: "coverage_resolution_ambiguous_target",
+      suggestion: expect.stringContaining("either item_ref or item_ulid"),
+    });
   });
 
   // AC: @coverage-resolution-mutation-interface ac-current-state-boundary
