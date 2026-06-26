@@ -9250,7 +9250,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-26T22:39:00.894Z
+      updated_at: 2026-06-26T22:41:56.859Z
     integration:
       status: merged
       detail: integration:merged
@@ -9267,18 +9267,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-26T22:20:40.657Z
-      last_reconciled_at: 2026-06-26T22:41:47.228Z
+      last_reconciled_at: 2026-06-26T22:41:56.859Z
       created_at: 2026-06-26T20:55:25.970Z
-      updated_at: 2026-06-26T22:41:47.228Z
+      updated_at: 2026-06-26T22:41:56.859Z
     workspace_id: dispatch-workspace-01KW2VD3FG4RGY7011HEXQBWYC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: aada9cd0e84a7e8a68659065898c357cf8218e67
-        last_seen_at: 2026-06-26T22:20:03.309Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-daemon-context-manager-coverage-watch-test-01kw2vd3-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-stabilize-daemon-context-manager-coverage-watch-test/01kw2vd3
