@@ -9792,7 +9792,7 @@ workspaces:
         head: fccc7237839c97b9956a2875701ca7ba9c30f361
         last_seen_at: 2026-06-26T22:50:06.721Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-explicit-coverage-reverification-01kw2nt1
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 929ca776cca711113af9a51c3635518af1886f10
     bootstrap:
       status: succeeded
@@ -10274,7 +10274,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-26T23:17:12.190Z
+      updated_at: 2026-06-26T23:17:47.333Z
     integration:
       status: pending
       detail: null
@@ -10290,10 +10290,10 @@ workspaces:
     task_slug: task-coverage-spec-text-revert
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-26T22:51:20.683Z
-      last_reconciled_at: 2026-06-26T23:17:12.190Z
+      last_active_at: 2026-06-26T23:17:47.333Z
+      last_reconciled_at: 2026-06-26T23:17:47.333Z
       created_at: 2026-06-26T22:50:50.870Z
-      updated_at: 2026-06-26T23:17:36.781Z
+      updated_at: 2026-06-26T23:17:47.333Z
     workspace_id: dispatch-workspace-01KW2NT2528F5PYRHJYK2K804F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
