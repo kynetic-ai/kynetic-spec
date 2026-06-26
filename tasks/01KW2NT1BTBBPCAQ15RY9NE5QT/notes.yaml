@@ -57,3 +57,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-26T20:57:01.386Z
+  - _ulid: 01KW2X0TJWP3ZT9RFTQX91SH5Y
+    content: "Fix cycle 2 approach: address review blocker @01KW2TVWW7J7QHJ1ZVMSK5AGKP by making
+      coverage resolution targets unambiguous. Enforce exactly one target identifier in the shared
+      schema, keep resolver defensive for direct calls, and prove item_ulid-only resolution works
+      without relying on item-map ULID aliases. Re-verified AC focus: ac-action-set target shape and
+      ac-current-state-required validation before action handlers."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T21:22:52.636Z
