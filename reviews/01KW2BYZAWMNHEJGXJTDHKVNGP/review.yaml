@@ -2,7 +2,53 @@ _ulid: 01KW2BYZAWMNHEJGXJTDHKVNGP
 slugs: []
 title: "Plan review: Coverage Resolution Mutations"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Dry-run import of
+      /home/chapel/Projects/kynetic-spec/plans/ui-redesign-coverage-resolution-mutations.md with
+      --module @core --status draft --json succeeded.
+    name: plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-26T16:26:06.719Z
+    completed_at: 2026-06-26T16:26:06.719Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation exited 0 with the existing warning baseline: 7 reference warnings, 55
+      alignment warnings, and 320 completeness warnings. No new derived refs from this draft are in
+      the corpus yet."
+    name: kspec validation baseline
+    required: true
+    runner: kspec validate --warnings-ok
+    created_at: 2026-06-26T16:26:09.719Z
+    completed_at: 2026-06-26T16:26:09.719Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Inherited trait ACs are not enumerated or marked N/A; `ac-cli-daemon-equivalence` is
+      claimed by a task that does not implement its event-payload portion.
+    name: AC coverage mapping
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-26T16:26:12.826Z
+    completed_at: 2026-06-26T16:26:12.826Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan has no stored branch despite its branch gate, and event equivalence is claimed before
+      event/cache wiring task.
+    name: Dependency and metadata ordering
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-26T16:26:15.947Z
+    completed_at: 2026-06-26T16:26:15.947Z
 events:
   - _ulid: 01KW2BYZAW1QE32S48JCP8VKYH
     actor: Jacob Chapel
@@ -10,17 +56,210 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-26T16:24:46.172Z
+  - _ulid: 01KW2C0TH8GSCW801PHRNEV4F5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW2C0T94HMY4XV3742BTG8HV
+    timestamp: 2026-06-26T16:25:46.792Z
+  - _ulid: 01KW2C0XQY1G63KG37C7ZPCBD9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW2C0XFWQS53D25TFM88892V
+    timestamp: 2026-06-26T16:25:50.078Z
+  - _ulid: 01KW2C11V6AJXQ6BRV2PFGH7ZY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW2C11KFQ8HRAWH10402SH1X
+    timestamp: 2026-06-26T16:25:54.279Z
+  - _ulid: 01KW2C14TFQJRZ353Q370EYFW5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW2C14JR21SZQMMPJFGZA0J3
+    timestamp: 2026-06-26T16:25:57.328Z
+  - _ulid: 01KW2C183MRR682E8DF5VKQSRR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW2C17V09K47FZ5CSTYWMMVM
+    timestamp: 2026-06-26T16:26:00.692Z
+  - _ulid: 01KW2C1B7JQ24YGR68V0DE1P0Y
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KW2C1AZBCMDQQDH0DGQTSYMC
+    timestamp: 2026-06-26T16:26:03.890Z
+  - _ulid: 01KW2C1E7SVWZGM4MA0T5VZC14
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan import dry-run
+    timestamp: 2026-06-26T16:26:06.969Z
+  - _ulid: 01KW2C1H5PT1NWBF1E7S3NFKRT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validation baseline
+    timestamp: 2026-06-26T16:26:09.974Z
+  - _ulid: 01KW2C1M6N7GJW8PXQRPSKC73F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC coverage mapping
+    timestamp: 2026-06-26T16:26:13.077Z
+  - _ulid: 01KW2C1Q7WSA50M54XWTZ0EQZD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency and metadata ordering
+    timestamp: 2026-06-26T16:26:16.188Z
+  - _ulid: 01KW2C1TDAYYQPBKDAWV29MXEC
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-26T16:26:19.434Z
+  - _ulid: 01KW2C1TDAY9FX0K1TZ326C23W
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-06-26T16:26:19.434Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-coverage-resolution-mutations"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KW2C0T94HMY4XV3742BTG8HV
+    anchor:
+      type: structured
+      ref: "@plan-coverage-resolution-mutations"
+      section: context
+    entries:
+      - _ulid: 01KW2C0T9437CXK6C37Y151M43
+        author: Jacob Chapel
+        body: The stored plan record violates its own branch gate. The plan text says imported P1c work must
+          stay on the shared redesign branch `feat/ui-redesign`, but `kspec plan get
+          @plan-coverage-resolution-mutations` shows no Branch value. If derived now, tasks will not
+          inherit the intended shared branch target. Set the plan branch metadata to
+          `feat/ui-redesign` before approval/derive.
+        created_at: 2026-06-26T16:25:46.532Z
+    kind: blocker
+  - _ulid: 01KW2C0XFWQS53D25TFM88892V
+    anchor:
+      type: structured
+      field: ac-static-readonly-refusal
+      ref: "@coverage-resolution-mutation-interface"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KW2C0XFWP30HF8Q198SJAB6V
+        author: Jacob Chapel
+        body: "The static/read-only contract conflicts with the CLI/daemon task. This AC says any coverage
+          resolution mutation in static/read-only context refuses, while
+          `@task-coverage-resolution-cli-daemon` says dry-run remains available in read-only mode
+          when it can compute a preview. Decide one behavior and update both the AC and task: either
+          read-only rejects every resolution request including dry-run, or non-mutating dry-run
+          previews are explicitly allowed and only apply/write paths refuse."
+        created_at: 2026-06-26T16:25:49.820Z
+    kind: blocker
+  - _ulid: 01KW2C11KFQ8HRAWH10402SH1X
+    anchor:
+      type: structured
+      field: ac-reverify-preconditions
+      ref: "@explicit-coverage-reverification"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KW2C11KFRBBYNP9MGB8FEZ55
+        author: Jacob Chapel
+        body: Explicit re-verification has contradictory scope. The spec description says it applies to
+          criteria that require re-verification, but the action-preconditions table allows `covered`
+          criteria as an explicit refresh, and the implementation task accepts any current positive
+          non-failing evidence. Choose the intended contract. If covered refresh is in scope,
+          rewrite the description/AC to say covered positive evidence can be refreshed; if it is
+          not, update the table and task to require a current re-verify cause.
+        created_at: 2026-06-26T16:25:54.031Z
+    kind: blocker
+  - _ulid: 01KW2C14JR21SZQMMPJFGZA0J3
+    anchor:
+      type: structured
+      ref: "@coverage-resolution-mutation-interface"
+      section: traits
+    entries:
+      - _ulid: 01KW2C14JRGJ1HX12GW2VFHY28
+        author: Jacob Chapel
+        body: Inherited trait coverage is not concretely mapped. This spec applies `@trait-api-endpoint`,
+          `@trait-dry-run`, `@trait-semantic-exit-codes`, and `@trait-error-guidance`, and
+          `@coverage-resolution-events-compatibility` applies `@trait-websocket-protocol`, but task
+          Covers lines only say generic `applicable cases` or omit the WebSocket trait entirely.
+          Plan review requires every AC, including inherited trait ACs, to be claimed or explicitly
+          marked non-applicable. Add exact Covers entries for each applicable trait AC and explicit
+          N/A rationale for non-applicable ones, following the accepted pattern from prior UI
+          redesign plans.
+        created_at: 2026-06-26T16:25:57.080Z
+    kind: blocker
+  - _ulid: 01KW2C17V09K47FZ5CSTYWMMVM
+    anchor:
+      type: structured
+      ref: "@task-coverage-resolution-cli-daemon"
+      section: tasks
+    entries:
+      - _ulid: 01KW2C17V05AQHXZCPJJDX209J
+        author: Jacob Chapel
+        body: "This P1 task claims `@coverage-resolution-mutation-interface ac-cli-daemon-equivalence`, but
+          that AC includes typed event payload equivalence. Event/cache wiring is explicitly
+          deferred to the later P2 `@task-coverage-resolution-events-validation`, so the CLI/daemon
+          task cannot satisfy the whole AC when it completes. Split the AC or split the Covers
+          mapping: have the CLI/daemon task cover stored effect and response equivalence, and have
+          the events task cover the event-payload portion, or make the dependency ordering reflect
+          that the full AC is not complete until event wiring lands."
+        created_at: 2026-06-26T16:26:00.417Z
+    kind: blocker
+  - _ulid: 01KW2C1AZBCMDQQDH0DGQTSYMC
+    anchor:
+      type: structured
+      ref: "@task-coverage-dispatch-fix-request"
+      section: tasks
+    entries:
+      - _ulid: 01KW2C1AZBYGT2XCQSS9H8Q35F
+        author: Jacob Chapel
+        body: Dispatch-fix idempotency needs a durable representation. The plan requires an idempotency key
+          over item, AC, action kind, and issue fingerprint, but the current task schema has no
+          arbitrary metadata field, and the plan explicitly excludes new `covers_ac` task metadata.
+          Define where the key lives using existing task fields or a sidecar/deterministic slug, and
+          update the task/AC wording so implementers do not resort to fragile description-text
+          parsing.
+        created_at: 2026-06-26T16:26:03.627Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-26T16:26:19.434Z
 created_at: 2026-06-26T16:24:46.172Z
-updated_at: null
+updated_at: 2026-06-26T16:26:19.434Z
 notes: []
