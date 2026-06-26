@@ -9244,12 +9244,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-26T22:20:01.136Z
+      updated_at: 2026-06-26T22:20:03.309Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-26T22:20:01.136Z
+      updated_at: 2026-06-26T22:20:03.309Z
     integration:
       status: pending
       detail: null
@@ -9257,7 +9257,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 64674c90fd90de522fb7d36a768142658ecfae4e
-      updated_at: 2026-06-26T22:20:01.136Z
+      updated_at: 2026-06-26T22:20:03.309Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KW2VD3FG4RGY7011HEXQBWYC
@@ -9266,16 +9266,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-26T21:43:10.780Z
-      last_reconciled_at: 2026-06-26T22:20:01.136Z
+      last_reconciled_at: 2026-06-26T22:20:03.309Z
       created_at: 2026-06-26T20:55:25.970Z
-      updated_at: 2026-06-26T22:20:01.136Z
+      updated_at: 2026-06-26T22:20:03.309Z
     workspace_id: dispatch-workspace-01KW2VD3FG4RGY7011HEXQBWYC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: aada9cd0e84a7e8a68659065898c357cf8218e67
+        last_seen_at: 2026-06-26T22:20:03.309Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-daemon-context-manager-coverage-watch-test-01kw2vd3-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-stabilize-daemon-context-manager-coverage-watch-test/01kw2vd3
-        head: 3492acdaf588885f6504bf697f16e746c3ef9fe3
-        last_seen_at: 2026-06-26T21:42:41.903Z
+        head: aada9cd0e84a7e8a68659065898c357cf8218e67
+        last_seen_at: 2026-06-26T22:20:03.309Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-daemon-context-manager-coverage-watch-test-01kw2vd3
