@@ -74727,7 +74727,7 @@ runs:
     completed_at: 2026-06-26T23:13:20.729Z
   - _ulid: 01KW33CXTHJ3NS4D0HVFR91GSQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74739,7 +74739,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-26T23:15:36.933Z
-        completed_at: 2026-06-26T23:15:36.933Z
+        completed_at: 2026-06-26T23:15:51.350Z
+        notes: "Identified one high-confidence success pattern: temp YAML source fixtures with realistic
+          _path metadata, sidecar files, and a temporary git repo proved parser-service mutation
+          behavior through updateSpecItem and commitIfShadow before CLI/daemon adapters existed.
+          Checked related searches first. Friction around long npm test duration/possible teardown
+          was already tracked by @task-investigate-npm-test-teardown-hang-after-green-suite-run, so
+          no duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-26T23:15:51.350Z
+        completed_at: 2026-06-26T23:15:51.350Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-26T23:14:20.625Z
