@@ -2,7 +2,115 @@ _ulid: 01KW2NG2PPG2CGH1M99P8SCBW3
 slugs: []
 title: "Plan review: Coverage Resolution Mutations (post-clarification cleanup)"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Dry-run import of
+      /home/chapel/Projects/kynetic-spec/plans/ui-redesign-coverage-resolution-mutations.md with
+      --module @core --status draft --json succeeded; parser returned 5 specs, 6 manual tasks,
+      derive_from_specs false, and no parse errors or warnings.
+    name: plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-26T19:12:25.528Z
+    completed_at: 2026-06-26T19:12:25.528Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited 0. References OK; existing deprecated-ref warning baseline only.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-26T19:12:28.554Z
+    completed_at: 2026-06-26T19:12:28.554Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited 0 with existing alignment warning baseline. No derived refs from this
+      draft are materialized yet.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-26T19:12:32.715Z
+    completed_at: 2026-06-26T19:12:32.715Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation exited 0 with existing completeness warning baseline. No current-plan derived
+      AC coverage is expected before derive.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-26T19:12:35.863Z
+    completed_at: 2026-06-26T19:12:35.863Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan parser accepts spec depends_on. Derive code normalizes spec depends_on into created
+      specs. derive_from_specs is intentionally false, so manual tasks materialize without auto-task
+      duplication; manual task dependency graph is contract -> three action tasks in parallel ->
+      CLI/daemon -> events/validation.
+    name: dependency and derive behavior
+    required: true
+    runner: manual plan review plus source inspection
+    created_at: 2026-06-26T19:12:38.818Z
+    completed_at: 2026-06-26T19:12:38.818Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every own AC across 5 specs is claimed by a manual task. Applicable inherited trait ACs
+      for API, dry-run, semantic exit codes, error guidance, websocket, and coverage-state event
+      precedent are explicitly claimed; non-applicable trait ACs have rationale in Implementation
+      Notes.
+    name: AC and trait coverage mapping
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-26T19:12:41.703Z
+    completed_at: 2026-06-26T19:12:41.703Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No v1 or version-scoped language remains in the behavioral specs or ACs. Scope is
+      expressed through plan context, dependencies, implementation notes, and explicit exclusions
+      rather than versioned behavioral contracts.
+    name: timeless scope language
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-26T19:12:45.053Z
+    completed_at: 2026-06-26T19:12:45.053Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Rechecked blockers from @01KW2BYZ: branch metadata is feat/ui-redesign; read-only dry-run
+      wording is consistent; reverify scope targets current re-verify bucket with positive
+      non-failing evidence; trait coverage is mapped; event equivalence is separated to the events
+      task; dispatch idempotency uses a durable task-body key."
+    name: prior blocker recheck
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-26T19:12:48.364Z
+    completed_at: 2026-06-26T19:12:48.364Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Prerequisite plans @plan-ac-coverage-verification-schema-and-storage,
+      @plan-test-result-ingestion, @plan-coverage-state-engine, and @plan-dispatch-mutation-service
+      are completed and on feat/ui-redesign.
+    name: prerequisite gate
+    required: true
+    runner: kspec plan get
+    created_at: 2026-06-26T19:12:51.400Z
+    completed_at: 2026-06-26T19:12:51.400Z
 events:
   - _ulid: 01KW2NG2PPSN1AJZNBQEVVJT9E
     actor: Jacob Chapel
@@ -10,9 +118,95 @@ events:
     payload:
       to: draft
     timestamp: 2026-06-26T19:11:23.862Z
+  - _ulid: 01KW2NHW4VXP19VDXEYW3QVK8Z
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-06-26T19:12:22.683Z
+  - _ulid: 01KW2NHZ5DKPX9QA6FHWW9RBCV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan import dry-run
+    timestamp: 2026-06-26T19:12:25.773Z
+  - _ulid: 01KW2NJ24VWZ7VA548K0VA2BDZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-26T19:12:28.827Z
+  - _ulid: 01KW2NJ65YYB8ZP20K8ATMQJ0G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-26T19:12:32.958Z
+  - _ulid: 01KW2NJ98G2G18SPRNCGNRSR1V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-26T19:12:36.112Z
+  - _ulid: 01KW2NJC47SB914XA29ZTQC446
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency and derive behavior
+    timestamp: 2026-06-26T19:12:39.047Z
+  - _ulid: 01KW2NJEYSZEMBMSZXVKTKDGST
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC and trait coverage mapping
+    timestamp: 2026-06-26T19:12:41.945Z
+  - _ulid: 01KW2NJJ7E59WRDMN7P8EEGD02
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: timeless scope language
+    timestamp: 2026-06-26T19:12:45.295Z
+  - _ulid: 01KW2NJNEP82D0JERT60DJPYHR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior blocker recheck
+    timestamp: 2026-06-26T19:12:48.598Z
+  - _ulid: 01KW2NJRERNV45WPC7B0NFC18H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: prerequisite gate
+    timestamp: 2026-06-26T19:12:51.672Z
+  - _ulid: 01KW2NJVF10379EAEGD8TJBR3N
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-26T19:12:54.753Z
+  - _ulid: 01KW2NJVF16ERG1NCJW5FCEKQV
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-26T19:12:54.753Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -20,7 +214,14 @@ subject:
   ref: "@plan-coverage-resolution-mutations"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-26T19:12:54.753Z
 created_at: 2026-06-26T19:11:23.862Z
-updated_at: null
+updated_at: 2026-06-26T19:12:54.753Z
 notes: []
