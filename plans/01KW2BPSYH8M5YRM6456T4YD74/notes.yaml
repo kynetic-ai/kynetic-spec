@@ -1,0 +1,6 @@
+notes:
+  - _ulid: 01KW2CACHCKMEBHEKADFFEDZC9
+    content: "Address plan-reviewer findings: branch gate clarity, readonly dry-run behavior, reverify
+      scope, trait mapping, event split, dispatch idempotency"
+    author: Jacob Chapel
+    created_at: 2026-06-26T16:31:00.140Z

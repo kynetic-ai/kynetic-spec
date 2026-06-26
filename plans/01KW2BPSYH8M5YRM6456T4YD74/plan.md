@@ -71,8 +71,9 @@
         each path succeeds
       then: |
         both paths produce the same stored effect class, response summary,
-        affected coverage-state scopes, and typed event payloads, differing
-        only in occurrence-specific ids and timestamps
+        affected coverage-state scopes, and diagnostics, differing only in
+        occurrence-specific ids and timestamps; typed event equivalence is
+        specified separately by @coverage-resolution-events-compatibility
     - id: ac-dry-run-preview
       given: |
         any coverage resolution request is submitted in dry-run mode
@@ -87,10 +88,13 @@
       given: |
         a static-export snapshot or read-only project context
       when: |
-        a caller attempts any coverage resolution mutation
+        a caller attempts to apply any non-dry-run coverage resolution
+        mutation
       then: |
         the interface refuses with a read-only/static-mode error and does
-        not pretend the resolution was stored or dispatched
+        not pretend the resolution was stored or dispatched; dry-run preview
+        requests may still return computed previews when all required data is
+        available without writing
     - id: ac-current-state-boundary
       given: |
         production code handles a coverage resolution action
@@ -113,8 +117,9 @@
     - "@verification-session-evidence"
     - "@coverage-state-engine"
   description: |
-    A caller can explicitly re-verify a criterion whose current state has
-    positive non-failing evidence but requires re-verification. The action
+    A caller can explicitly re-verify a criterion whose current presentation
+    bucket is re-verify and whose current state has positive non-failing
+    evidence. The action
     writes a verification stamp with re_verification provenance using the
     existing verification record store. It records the acting actor,
     verification time, optional code commit, and optional producing session;
@@ -127,9 +132,10 @@
       when: |
         the current coverage state is checked
       then: |
-        the action is accepted only when the criterion has current positive
-        evidence and no latest mapped failed or errored result; not-yet and
-        failing criteria are rejected with guidance to add evidence or fix
+        the action is accepted only when the criterion is currently in the
+        re-verify bucket, has positive evidence, and has no latest mapped
+        failed or errored result; covered, not-yet, and failing criteria are
+        rejected with guidance to refresh the view, add evidence, or fix
         failing tests instead
     - id: ac-reverify-stamp-written
       given: |
@@ -274,7 +280,8 @@
       when: |
         the caller requests dispatch-fix again
       then: |
-        the mutation returns the existing task and records no duplicate
+        the mutation finds the existing task by a durable idempotency key
+        stored in the task body, returns that task, and records no duplicate
         task unless the caller explicitly asks to create another one
     - id: ac-project-neutral-context
       given: |
@@ -336,15 +343,15 @@
         it identifies affected item and criterion scopes precisely when
         known, and uses a project-wide scope only when precision is not
         available
-    - id: ac-cli-path-events
+    - id: ac-cli-daemon-event-equivalence
       given: |
-        a resolution mutation arrives through the daemon command-proxy CLI
-        path
+        equivalent successful resolution mutations arrive through the daemon
+        REST route and through the daemon command-proxy CLI path
       when: |
-        the mutation succeeds
+        subscribers observe the resulting events
       then: |
-        subscribed clients observe the same typed coverage-state event
-        family as they would for the daemon REST route
+        clients observe the same typed coverage-state event family, topic,
+        affected scopes, and payload schema from both origins
     - id: ac-absent-store-compatible
       given: |
         a project has no verification record store or no test-run store
@@ -536,6 +543,11 @@ derive_from_specs: false
     - Add dispatch-fix handling to src/parser/coverage-resolution.ts. It may
       target failing, not_yet, or re_verify criteria; covered targets reject
       unless the caller explicitly asks for a task anyway.
+    - Persist the idempotency key as a stable machine-readable line in the task
+      body, e.g. `Coverage-Resolution-Key: <hash>`, because the current task
+      schema has no arbitrary metadata slot and this plan deliberately avoids
+      adding covers_ac/task metadata. Task lookup uses that marker plus open
+      lifecycle state; the marker remains visible and auditable.
     - Generate a normal task whose spec_ref targets the owning item and whose
       body contains: item ref/title, AC id and text, current presentation
       bucket, internal state/cause, latest run evidence or freshness detail,
@@ -612,9 +624,11 @@ derive_from_specs: false
     response types are exported to packages/shared.
 
     Covers: @coverage-resolution-mutation-interface ac-cli-daemon-equivalence,
-    ac-dry-run-preview, ac-static-readonly-refusal. Covers applicable cases of
-    @trait-api-endpoint, @trait-dry-run, @trait-semantic-exit-codes, and
-    @trait-error-guidance for these commands/routes.
+    ac-dry-run-preview, ac-static-readonly-refusal. Covers @trait-api-endpoint
+    ac-1, ac-2, ac-3, ac-5, and ac-6; @trait-dry-run ac-1, ac-2, ac-3, ac-4,
+    ac-5, and ac-6; @trait-semantic-exit-codes ac-1, ac-2, ac-4, ac-6, and
+    ac-8; and @trait-error-guidance ac-1, ac-2, ac-3, ac-5, and ac-6.
+    Non-applicable inherited cases are listed in Implementation Notes.
 
 - title: Wire coverage resolution cache invalidation, events, and compatibility gates
   slug: task-coverage-resolution-events-validation
@@ -661,8 +675,11 @@ derive_from_specs: false
     actionable.
 
     Covers: @coverage-resolution-events-compatibility ac-event-after-cache,
-    ac-targeted-scope, ac-cli-path-events, ac-absent-store-compatible,
-    ac-validation-gates. Also covers @coverage-state-events ac-event-topic,
+    ac-targeted-scope, ac-cli-daemon-event-equivalence,
+    ac-absent-store-compatible, ac-validation-gates. Also covers
+    @trait-websocket-protocol ac-2, ac-3, ac-6, and ac-8 for
+    resolution-originated events using the existing websocket infrastructure.
+    Also covers @coverage-state-events ac-event-topic,
     ac-event-canonical-identity, ac-event-after-cache, and ac-no-event-storm
     for resolution-originated changes.
 ```
@@ -730,7 +747,7 @@ Expected v1 action availability:
 
 | Current presentation / cause | explicit-reverify | spec-text-revert | dispatch-fix |
 |---|---|---|---|
-| `covered` | allowed only as an explicit refresh if positive evidence exists | rejected | rejected by default |
+| `covered` | rejected; refresh semantics are out of v1 resolution scope | rejected | rejected by default |
 | `failing` | rejected | rejected unless also stale-spec-text and caller chooses revert after reading details | allowed |
 | `not_yet` | rejected | rejected | allowed |
 | `re_verify` + stale_spec_text | allowed when positive non-failing evidence exists | allowed when focused prior text resolves | allowed |
@@ -758,6 +775,11 @@ Dispatch-fix should produce ordinary work, not new infrastructure:
 
 - No new task schema field for `covers_ac` in this plan. The future task-level
   covers/covers_ac design remains deferred.
+- The idempotency key is persisted in the task body as a stable line such as
+  `Coverage-Resolution-Key: sha256:<hex>`. The key input is item ULID, AC id,
+  action kind, presentation bucket, internal cause, and source evidence ids.
+  This uses existing task storage, keeps the marker auditable, and avoids a
+  schema migration solely for this action.
 - Task context should include enough normalized evidence for a worker to know
   whether to add missing tests, fix a failing test, update a mapping, or repair
   stale code, but it must not assume a framework or repository layout.
@@ -806,6 +828,23 @@ CLI and daemon semantics must remain equivalent.
 - Merge execution, code-repo repair, or shadow repair from dashboard actions.
 - Retiring the in-code N/A convention beyond behavior already implemented by
   the coverage schema/storage and state-engine plans.
+
+### Inherited trait coverage and non-applicable cases
+
+This plan uses broad traits, but only the following inherited acceptance
+criteria apply to the v1 mutation surfaces:
+
+| Trait | Applicable ACs | Non-applicable / rationale |
+|---|---|---|
+| `@trait-api-endpoint` | ac-1 success JSON, ac-2 invalid ref/not found, ac-3 validation errors, ac-5 shadow commit for mutating routes, ac-6 request id | ac-4 list pagination is not applicable: these are action endpoints, not list endpoints |
+| `@trait-dry-run` | ac-1 preview, ac-2 no file writes, ac-3 preview indication, ac-4 dry-run errors without state change, ac-5 dry-run wins if a future force flag appears, ac-6 JSON includes `dry_run` | none for CLI actions; daemon dry-run responses use the same semantic fields even though they are query/body flags rather than commander flags |
+| `@trait-semantic-exit-codes` | ac-1 success, ac-2 validation/precondition failure, ac-4 runtime failure, ac-6 invalid flags/arguments, ac-8 documented meanings | ac-3 confirmation-declined is not applicable because v1 has no interactive confirmation prompt; ac-5 empty result set is not applicable because these are targeted actions; ac-7 batch partial failure is not applicable because v1 has no batch mode |
+| `@trait-error-guidance` | ac-1 description, ac-2 suggested action, ac-3 ref lookup guidance, ac-5 field/value diagnostics, ac-6 structured JSON guidance | ac-4 invalid state transition is represented by coverage action precondition diagnostics rather than task lifecycle transition states |
+| `@trait-websocket-protocol` | ac-2 subscription to `items:updates`, ac-3 broadcast envelope, ac-6 no event storm/backpressure through coalesced events, ac-8 reconnect consumers can refetch by affected scope | ac-1 connection establishment, ac-4 heartbeat, ac-5 heartbeat timeout, and ac-7 close codes belong to the existing websocket infrastructure and are not reimplemented by this plan |
+
+Task coverage mapping follows this table. If an implementer changes command
+shape enough to make an inherited AC newly applicable, they must update the
+plan before deriving or completing the task.
 
 ### Validation gates
 
