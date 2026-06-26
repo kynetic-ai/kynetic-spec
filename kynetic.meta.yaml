@@ -23324,6 +23324,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-26T21:18:21.335Z
+  - _ulid: 01KW2Z7S78RMA6BENV1YT081BY
+    type: friction
+    content: During non-interactive review close-out, /kspec:reflect guidance can be ambiguous about
+      whether to start @session-reflect or @session-reflect-loop. The skill says to start
+      @session-reflect when present, while loop-mode guidance says to use @session-reflect-loop for
+      autonomous runs; an agent can accidentally start both and leave a paused interactive run.
+      Clarify the reflection skill/workflow guidance so autonomous or dispatch contexts choose the
+      loop variant directly and avoid creating duplicate active workflow runs.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-26T22:01:37.768Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
