@@ -176,7 +176,6 @@ describe("coverage resolution contract", () => {
   });
 
   // AC: @coverage-resolution-mutation-interface ac-current-state-required
-  // AC: @coverage-resolution-mutation-interface ac-current-state-boundary
   it("resolves @refs and bare slugs through the cached coverage-state read path", async () => {
     const loadReadModel = vi.fn<(ctx: KspecContext) => Promise<CoverageStateSnapshot>>(async () =>
       readModel(),
@@ -209,6 +208,60 @@ describe("coverage resolution contract", () => {
     });
     expect(resolvedByBareSlug.item).toEqual(resolvedByRef.item);
     expect(resolvedByRef.fingerprint).toMatch(/^sha256:[0-9a-f]{64}$/);
+  });
+
+  // AC: @coverage-resolution-mutation-interface ac-current-state-boundary
+  it("uses the production cached coverage-state read model by default", async () => {
+    vi.resetModules();
+    type ReadModelModule = typeof import("../src/parser/coverage-state-read-model.js");
+    const getCachedReadModel = vi.fn<ReadModelModule["getCachedCoverageStateReadModel"]>(async () =>
+      readModel(),
+    );
+    const rawBuilder = vi.fn<ReadModelModule["buildCoverageStateReadModel"]>(() => {
+      throw new Error("raw coverage-state builder bypassed the cached read path");
+    });
+    const freshnessBuilder = vi.fn<
+      ReadModelModule["buildCoverageStateReadModelWithFreshnessComparison"]
+    >(() => {
+      throw new Error("freshness builder bypassed the cached read path");
+    });
+    const directLoader = vi.fn<ReadModelModule["loadCoverageStateReadModel"]>(() => {
+      throw new Error("direct read-model loader bypassed the cached read path");
+    });
+
+    vi.doMock("../src/parser/coverage-state-read-model.js", async (importOriginal) => {
+      const actual = await importOriginal<ReadModelModule>();
+      return {
+        ...actual,
+        buildCoverageStateReadModel: rawBuilder,
+        buildCoverageStateReadModelWithFreshnessComparison: freshnessBuilder,
+        loadCoverageStateReadModel: directLoader,
+        getCachedCoverageStateReadModel: getCachedReadModel,
+      };
+    });
+
+    try {
+      const { resolveCoverageTarget: resolveWithDefaultReadPath } =
+        await import("../src/parser/coverage-resolution.js");
+
+      const resolved = await resolveWithDefaultReadPath(fakeContext(), {
+        request: {
+          action: "explicit-reverify",
+          target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+          dry_run: true,
+        },
+        items: [makeItem()],
+      });
+
+      expect(resolved.criterion.state).toBe("stale_spec_text");
+      expect(getCachedReadModel).toHaveBeenCalledTimes(1);
+      expect(rawBuilder).not.toHaveBeenCalled();
+      expect(freshnessBuilder).not.toHaveBeenCalled();
+      expect(directLoader).not.toHaveBeenCalled();
+    } finally {
+      vi.doUnmock("../src/parser/coverage-state-read-model.js");
+      vi.resetModules();
+    }
   });
 
   // AC: @coverage-resolution-mutation-interface ac-current-state-required
