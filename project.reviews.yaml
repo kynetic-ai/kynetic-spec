@@ -28305,3 +28305,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-26T22:22:00.773Z
     updated_at: 2026-06-26T22:37:52.588Z
+  - _ulid: 01KW3235CAMFEEQB1VT1M15DSV
+    slugs: []
+    title: Review explicit coverage re-verification mutation
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: fccc7237839c97b9956a2875701ca7ba9c30f361
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KW2NT1RDSG8Q1XE8646E26EC"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-26T22:51:32.106Z
