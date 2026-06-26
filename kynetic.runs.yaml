@@ -74589,7 +74589,7 @@ runs:
     completed_at: 2026-06-26T22:19:06.285Z
   - _ulid: 01KW31CZJ2VGHSPFAC81TZQH57
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74619,7 +74619,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-26T22:41:00.841Z
-        completed_at: 2026-06-26T22:41:00.841Z
+        completed_at: 2026-06-26T22:41:12.112Z
+        notes: "Duplicate gate results: skip success candidate because @01KW3057 already captures
+          stale-cache watcher-path behavioral tests as stronger evidence than callback-only watcher
+          assertions. Skip full-test log disappearance friction because @01KTWAYS already captures
+          --fresh reruns deleting the original failure log. Skip review-evidence-log nit friction
+          because @01KR2JD1 and @01KVET18 already track the lack of a first-class review evidence
+          log surface. Skip STACK_TRACE_ERROR full-suite noise as newly tracked by specific task
+          @01KW316V and broadly tracked by @01KN69W9. No unique high-confidence item remains."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-26T22:41:12.112Z
+        completed_at: 2026-06-26T22:41:12.112Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-26T22:39:25.250Z
