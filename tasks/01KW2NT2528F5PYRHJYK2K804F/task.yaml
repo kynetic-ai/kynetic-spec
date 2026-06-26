@@ -47,7 +47,7 @@ description: |
 spec_ref: "@coverage-spec-text-revert"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-coverage-resolution-contract"
@@ -58,6 +58,7 @@ tags:
   - specs
   - mutation
 vcs_refs: []
+session_id: 01KW322QDM3QZ89XNQM6TSYCVC
 history:
   - author: Jacob Chapel
     changes:
@@ -66,6 +67,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-26T19:19:53.787Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KW322QDM3QZ89XNQM6TSYCVC
+        previous: null
+      started_at:
+        new: 2026-06-26T22:51:58.127Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-26T22:51:58.128Z
 created_at: 2026-06-26T19:16:50.978Z
+started_at: 2026-06-26T22:51:58.127Z
 todos: []
 automation: eligible
