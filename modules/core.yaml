@@ -4363,6 +4363,9 @@ features:
           action does not introduce a special coverage-only work queue, does not
           bypass plan/task approval policy, and does not spawn a bespoke agent
           outside the existing dispatch engine.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@coverage-state-engine"
           - "@task-work-fields"
