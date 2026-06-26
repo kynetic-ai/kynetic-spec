@@ -33335,3 +33335,21 @@
   started_at: 2026-06-26T21:44:06.871Z
   submitted_at: 2026-06-26T22:12:51.225Z
   automation: eligible
+- _ulid: 01KW316VG32AXWCD0Q2KHRAXDK
+  slugs:
+    - task-stabilize-ac-delete-confirmation-empty-response-stack-trace-flake
+  title: Stabilize ac-delete-confirmation empty-response STACK_TRACE_ERROR flake
+  type: bug
+  spec_ref: "@spec-ac-delete-confirmation"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - testing
+    - flaky
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-26T22:36:04.483Z
+  automation: eligible
