@@ -184,6 +184,12 @@ events:
     payload:
       thread_ulid: 01KW2VH1HK51Y5Q1D8T9JY8PCP
     timestamp: 2026-06-26T21:35:31.789Z
+  - _ulid: 01KW2XR4XNWPP7SEDB0PD8BTQM
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW2TVWW7J7QHJ1ZVMSK5AGKP
+    timestamp: 2026-06-26T21:35:36.885Z
 examined_commit: dcc0ede8c1fa9528da8eb8ee165a241c7a2d4ea5
 external_links: []
 lifecycle_state: closed
@@ -214,6 +220,14 @@ threads:
           conflicting identifiers or enforce exactly one target identifier before action handlers
           use it.'
         created_at: 2026-06-26T20:45:13.991Z
+      - _ulid: 01KW2XR4NPRC6DYZT5GJAR0ZBX
+        author: Jacob Chapel
+        body: "Fixed in d96f6f0f12: CoverageResolutionTargetSchema now requires exactly one of item_ref or
+          item_ulid, so conflicting identifiers are rejected before action handling.
+          resolveCoverageTarget also defensively rejects direct-call dual identifiers and resolves
+          item_ulid-only targets by canonical item summary rather than relying on read-model alias
+          keys. Added behavioral tests for schema rejection and ULID-only resolver lookup."
+        created_at: 2026-06-26T21:35:36.630Z
     kind: blocker
   - _ulid: 01KW2VH1HK51Y5Q1D8T9JY8PCP
     entries:
@@ -262,5 +276,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-26T20:56:59.144Z
 created_at: 2026-06-26T20:41:08.449Z
-updated_at: 2026-06-26T21:35:31.492Z
+updated_at: 2026-06-26T21:35:36.630Z
 notes: []
