@@ -51,7 +51,7 @@ description: |
 spec_ref: "@coverage-dispatch-fix-request"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-coverage-resolution-contract"
@@ -62,6 +62,14 @@ tags:
   - tasks
   - dispatch
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-coverage-dispatch-fix-request/01kw2nt2
+  captured_at: 2026-06-26T23:52:22.036Z
+  commit: 5a4d550492f1245298e019d899a8654a28fe1808
+  remote: null
+  remote_url: null
+  upstream_ref: feat/ui-redesign
 session_id: 01KW33M7DH8PV858P2K210BWMW
 history:
   - author: Jacob Chapel
@@ -84,7 +92,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-26T23:18:57.997Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-dispatch-fix-request/01kw2nt2
+          captured_at: 2026-06-26T23:52:22.036Z
+          commit: 5a4d550492f1245298e019d899a8654a28fe1808
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous: null
+      submitted_at:
+        new: 2026-06-26T23:52:22.041Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-26T23:52:22.041Z
 created_at: 2026-06-26T19:16:51.391Z
 started_at: 2026-06-26T23:18:57.996Z
+submitted_at: 2026-06-26T23:52:22.041Z
 todos: []
 automation: eligible
