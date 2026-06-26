@@ -28215,7 +28215,7 @@ reviews:
     title: Review coverage resolution contract
     disposition: pending
     author: Jacob Chapel
-    check_count: 3
+    check_count: 4
     examined_commit: e055f62f00a2caca162cd517b36dd251344c3cd8
     lifecycle_state: open
     related_refs: []
@@ -28228,4 +28228,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-26T19:48:21.857Z
-    updated_at: 2026-06-26T19:51:41.224Z
+    updated_at: 2026-06-26T19:51:53.058Z
