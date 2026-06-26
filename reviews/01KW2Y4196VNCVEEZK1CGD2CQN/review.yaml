@@ -70,6 +70,17 @@ checks:
     runner: kspec
     created_at: 2026-06-26T21:57:52.151Z
     completed_at: 2026-06-26T21:57:52.151Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tests/coverage-resolution.test.ts, 9 tests. Full log:
+      /tmp/kspec-test-cache/01KW2Y1ZQVBMNXMQ47HBG60XDE/c28722c2e83b3653.log"
+    name: focused coverage-resolution test
+    required: false
+    runner: npm test -- --run tests/coverage-resolution.test.ts
+    created_at: 2026-06-26T21:58:06.080Z
+    completed_at: 2026-06-26T21:58:06.080Z
 events:
   - _ulid: 01KW2Y4196G77K0D4BFZY1ANXH
     actor: Jacob Chapel
@@ -126,6 +137,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-26T21:57:52.439Z
+  - _ulid: 01KW2Z1ARF3RFEC2V6WAPP4D99
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused coverage-resolution test
+    timestamp: 2026-06-26T21:58:06.351Z
 examined_commit: d96f6f0f122c104ab0ad3644aab48edb5d3f838e
 external_links: []
 lifecycle_state: open
@@ -138,5 +156,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-26T21:42:06.374Z
-updated_at: 2026-06-26T21:57:52.151Z
+updated_at: 2026-06-26T21:58:06.080Z
 notes: []
