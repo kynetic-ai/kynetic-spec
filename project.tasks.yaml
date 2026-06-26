@@ -33225,6 +33225,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-26T19:16:50.573Z
+  automation: eligible
 - _ulid: 01KW2NT2528F5PYRHJYK2K804F
   slugs:
     - task-coverage-spec-text-revert
