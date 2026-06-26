@@ -23360,6 +23360,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-26T23:10:38.025Z
+  - _ulid: 01KW3364WP7CN4KXKE3Z947GDM
+    type: success
+    content: "For detached reviewer snapshots, the supported merge helper provided a clean completion
+      path: after review approval and required gates passed, it merged the canonical task branch
+      into the dispatch-provided target through the existing clean target checkout without manual
+      checkout or merge commands in the detached snapshot."
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-26T23:10:38.486Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
