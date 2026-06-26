@@ -196,6 +196,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-26T21:39:05.431Z
+  - _ulid: 01KW2ZTSR5C24WNQPQHNRMTSVF
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW2X5STK088VV0Q5XXNP6YHG
+    timestamp: 2026-06-26T22:12:00.901Z
 examined_commit: 3492acdaf588885f6504bf697f16e746c3ef9fe3
 external_links: []
 lifecycle_state: closed
@@ -231,6 +237,14 @@ threads:
           that proves stale cached coverage is refreshed after the watcher event, not just that
           ProjectContextManager invokes its callback."
         created_at: 2026-06-26T21:25:35.700Z
+      - _ulid: 01KW2ZTSGBRED9BAR3A9W892DF
+        author: Jacob Chapel
+        body: "Fixed: project-root watcher events now invalidate the test coverage cache directly through
+          ProjectEntityCache.handleFileChange(), so source/config changes do not depend on .kspec
+          entity-domain routing. Added behavioral coverage proving a warmed stale coverage cache
+          refreshes after a watched source file changes, and proving kspec.config.yaml watcher
+          events clear cached coverage variants."
+        created_at: 2026-06-26T22:12:00.650Z
     kind: blocker
   - _ulid: 01KW2XY60TMSV2GSW02K3CEZAF
     entries:
@@ -264,5 +278,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-26T21:39:05.430Z
 created_at: 2026-06-26T21:22:10.790Z
-updated_at: 2026-06-26T21:39:05.431Z
+updated_at: 2026-06-26T22:12:00.650Z
 notes: []
