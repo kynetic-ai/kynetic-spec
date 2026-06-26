@@ -28324,3 +28324,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-26T22:51:32.106Z
     updated_at: 2026-06-26T23:07:40.243Z
+  - _ulid: 01KW33MFG166CGC0D71JBF52D0
+    slugs: []
+    title: Review task-coverage-spec-text-revert
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 1a1c5560e7791369b5c455adb44d6bc83353c6df
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KW2NT2528F5PYRHJYK2K804F"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-26T23:18:28.097Z

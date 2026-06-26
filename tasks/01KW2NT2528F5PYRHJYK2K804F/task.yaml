@@ -58,6 +58,7 @@ tags:
   - specs
   - mutation
 vcs_refs: []
+review_ref: "@01KW33MFG166CGC0D71JBF52D0"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-coverage-spec-text-revert/01kw2nt2
@@ -108,6 +109,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-26T23:13:19.273Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KW33MFG166CGC0D71JBF52D0"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-26T23:18:30.552Z
 created_at: 2026-06-26T19:16:50.978Z
 started_at: 2026-06-26T22:51:58.127Z
 submitted_at: 2026-06-26T23:13:19.273Z
