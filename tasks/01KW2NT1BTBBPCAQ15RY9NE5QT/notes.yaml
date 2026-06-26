@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KW2P8BB10FSTJ7988HYDK6SN
+    content: "Approach: add src/schema/coverage-resolution.ts for strict discriminated action requests,
+      shared target/metadata fields, typed diagnostics, effects, dry-run response summaries, and
+      read-only error shape. Add src/parser/coverage-resolution.ts for resolveCoverageTarget,
+      reusing initContext, loadAllItems, findItemByRef, and getCachedCoverageStateReadModel with
+      optional injection for focused tests. Edge cases: @ref vs bare slug/ULID aliases, missing
+      item, missing criterion, stale expected current fingerprint, read-only non-dry-run refusal,
+      dry-run modeled effects without writes, and avoiding the raw buildCoverageStateReadModel
+      production boundary. Test plan: behavioral schema/resolver tests annotated for
+      @coverage-resolution-mutation-interface ACs plus inherited trait N/A annotations for
+      non-applicable endpoint/CLI traits in this contract-only task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T19:24:39.138Z
