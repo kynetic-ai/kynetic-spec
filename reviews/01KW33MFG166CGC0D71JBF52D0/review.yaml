@@ -147,6 +147,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-26T23:29:46.844Z
+  - _ulid: 01KW349MTETJ5S67DJ4VNW6EVS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW349MHMFNGNCW4RK67C3WAT
+    timestamp: 2026-06-26T23:30:01.678Z
 examined_commit: 1a1c5560e7791369b5c455adb44d6bc83353c6df
 external_links: []
 lifecycle_state: open
@@ -156,8 +163,31 @@ subject:
   content_hash: ""
   ref: "@01KW2NT2528F5PYRHJYK2K804F"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW349MHMFNGNCW4RK67C3WAT
+    anchor:
+      type: code
+      commit: 1a1c5560e7791369b5c455adb44d6bc83353c6df
+      line_end: 547
+      line_start: 520
+      path: src/parser/coverage-resolution.ts
+      side: head
+    entries:
+      - _ulid: 01KW349MHMTRFSZB73RF8P0JNP
+        author: Jacob Chapel
+        body: "MUST-FIX: applySpecTextRevert validates expected_current_fingerprint before the mutation
+          path, then builds updatedCriteria from the previously loaded specItem and passes that
+          stale array to updateSpecItem. A concurrent AC edit made after validation but before
+          updateSpecItem is not re-read/re-fingerprinted under the file lock, so it is overwritten
+          instead of refused. I reproduced this by using readComparison to edit the fixture file
+          after resolveCoverageTarget computed the preview fingerprint and before updateSpecItem
+          ran; applySpecTextRevert completed and the final AC became the prior text rather than
+          rejecting with CoverageResolutionStaleTargetError. This violates
+          @coverage-spec-text-revert ac-concurrency-guard, which requires refusing when criterion
+          text changes before the apply reaches mutation."
+        created_at: 2026-06-26T23:30:01.396Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-26T23:18:28.097Z
-updated_at: 2026-06-26T23:29:46.555Z
+updated_at: 2026-06-26T23:30:01.396Z
 notes: []
