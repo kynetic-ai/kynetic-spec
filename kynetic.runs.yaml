@@ -74126,7 +74126,7 @@ runs:
     completed_at: 2026-06-25T15:50:18.770Z
   - _ulid: 01KW2QB86G4KZ3F2HH44KF0XYD
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74141,7 +74141,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-26T19:44:31.919Z
-        completed_at: 2026-06-26T19:44:31.919Z
+        completed_at: 2026-06-26T19:45:52.062Z
+        notes: Search coverage completed. Existing tracking covers the long full-suite/test-runner friction
+          via @task-investigate-npm-test-teardown-hang-after-green-suite-run and observation
+          01KVS5B5, so no duplicate capture. Existing inbox item 01KW07JF covers coverage-state
+          read-model hardening. The distinct high-confidence success is contract-first coverage
+          resolution testing with injected production read-model loading to prove shared
+          parser/schema semantics before adapters.
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-26T19:45:52.062Z
+        completed_at: 2026-06-26T19:45:52.062Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-26T19:43:42.801Z
