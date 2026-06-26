@@ -28253,7 +28253,7 @@ reviews:
     title: Review stabilize daemon context manager coverage source watcher test
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 4
+    check_count: 5
     examined_commit: 3492acdaf588885f6504bf697f16e746c3ef9fe3
     lifecycle_state: open
     related_refs: []
@@ -28266,4 +28266,4 @@ reviews:
     unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-26T21:22:10.790Z
-    updated_at: 2026-06-26T21:37:33.684Z
+    updated_at: 2026-06-26T21:37:45.644Z
