@@ -28210,3 +28210,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-26T19:11:23.862Z
     updated_at: 2026-06-26T19:12:54.753Z
+  - _ulid: 01KW2QKRQ1S02N2PA3KZESSPV0
+    slugs: []
+    title: Review coverage resolution contract
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: e055f62f00a2caca162cd517b36dd251344c3cd8
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KW2NT1BTBBPCAQ15RY9NE5QT"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-26T19:48:21.857Z

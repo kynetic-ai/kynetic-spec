@@ -62,6 +62,7 @@ tags:
   - parser
   - api
 vcs_refs: []
+review_ref: "@01KW2QKRQ1S02N2PA3KZESSPV0"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-coverage-resolution-contract/01kw2nt1
@@ -112,6 +113,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-26T19:42:33.807Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KW2QKRQ1S02N2PA3KZESSPV0"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-26T19:48:24.319Z
 created_at: 2026-06-26T19:16:50.170Z
 started_at: 2026-06-26T19:23:04.063Z
 submitted_at: 2026-06-26T19:42:33.807Z
