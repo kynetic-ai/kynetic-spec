@@ -71,6 +71,20 @@ checks:
     runner: kspec
     created_at: 2026-06-26T20:56:09.306Z
     completed_at: 2026-06-26T20:56:09.306Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm test -- --fresh completed with 11073 passed, 3 skipped, and one failure in unrelated
+      tests/daemon-context-manager.test.ts. Focused reruns of npm test -- --fresh --run
+      tests/daemon-context-manager.test.ts passed twice (40/40 each, ~4.4s), so classified as flaky
+      per review policy. Created follow-up task @01KW2VD3 to stabilize it. Changed-file suite
+      tests/coverage-resolution.test.ts passed in the full run.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-26T20:56:25.562Z
+    completed_at: 2026-06-26T20:56:25.562Z
 events:
   - _ulid: 01KW2TMD314P7J3QZD3SZ67NHJ
     actor: Jacob Chapel
@@ -134,6 +148,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-26T20:56:09.557Z
+  - _ulid: 01KW2VGCY4W5E4D5SAQCC88EG6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-26T20:56:25.797Z
 examined_commit: dcc0ede8c1fa9528da8eb8ee165a241c7a2d4ea5
 external_links: []
 lifecycle_state: open
@@ -167,5 +188,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-26T20:41:08.449Z
-updated_at: 2026-06-26T20:56:09.306Z
+updated_at: 2026-06-26T20:56:25.562Z
 notes: []
