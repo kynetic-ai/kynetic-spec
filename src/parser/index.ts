@@ -21,6 +21,7 @@ export * from "./convention-validation.js";
 export * from "./coverage-cache.js";
 export * from "./coverage-evidence-index.js";
 export * from "./coverage-freshness-comparison.js";
+export * from "./coverage-resolution.js";
 export * from "./coverage-state.js";
 export * from "./coverage-state-read-model.js";
 export * from "./file-lock.js";
