@@ -28,7 +28,7 @@
  * - @daemon-entity-cache ac-domain-ready-event
  */
 
-import { dirname, join, relative } from "path";
+import { dirname, join, normalize, relative } from "path";
 import {
   expandIncludePattern,
   getTaskFilePath,
@@ -57,6 +57,7 @@ import { loadReviewRecords, type LoadedReviewRecord } from "../parser/reviews.js
 import { type LoadedPlan } from "../parser/plans.js";
 import { computeDisposition } from "../parser/review-operations.js";
 import { getUnresolvedBlockers } from "../parser/review-threads.js";
+import { invalidateTestCoverageCache } from "../parser/coverage-cache.js";
 import {
   EntityStorageCompatibilityError,
   requirePlanFolderStorage,
@@ -1514,6 +1515,11 @@ export class ProjectEntityCache {
    */
   async handleFileChange(kspecDir: string, filePath: string, _content?: string): Promise<void> {
     if (this.disposed) return;
+
+    if (normalize(kspecDir) === normalize(this.projectPath)) {
+      invalidateTestCoverageCache(this.projectPath);
+      return;
+    }
 
     const relativePath = relative(kspecDir, filePath);
     // Detect whether this change came from the sessions directory (.kspec-sessions/)
