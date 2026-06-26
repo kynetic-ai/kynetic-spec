@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KW30HY4J06AH7E0BYV0XPMZQ
+    content: "Approach: add applyExplicitReverification in src/parser/coverage-resolution.ts using
+      resolveCoverageTarget, resolveActorForContext, writeVerificationStampWithoutCommit, and
+      invalidate/reload coverage-state read model. Preconditions: accept only re_verify criteria
+      whose rule has positive evidence and no failed/errored latest mapped result; reject
+      covered/not_yet/failing with specific guidance. Commit/session: stamp request commit when
+      supplied, otherwise the best comparable source commit from current evidence; session_id maps
+      to stamp session. Test plan: extend tests/coverage-resolution.test.ts with AC annotations for
+      accepted write/replace and attribution, invalid preconditions, newer record-format refusal
+      propagation, production read-model stale-cause clearing, and no test-run store writes."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T22:24:39.058Z
