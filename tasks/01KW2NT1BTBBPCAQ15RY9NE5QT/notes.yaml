@@ -66,3 +66,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-26T21:22:52.636Z
+  - _ulid: 01KW2XR1CM6DBSPH52J95D2D7P
+    content: "Fix cycle 2: addressed blocker @01KW2TVWW7J7QHJ1ZVMSK5AGKP by rejecting ambiguous coverage
+      resolution targets. Schema now requires exactly one of item_ref or item_ulid; resolver
+      defensively rejects dual identifiers and supports item_ulid-only lookup without relying on map
+      aliases. Verification passed: npm run format:check; npm run lint -- --quiet; npx oxlint
+      src/parser/coverage-resolution.ts src/schema/coverage-resolution.ts
+      tests/coverage-resolution.test.ts; npm run typecheck; npm test -- --run
+      tests/coverage-resolution.test.ts; kspec validate --refs/--alignment/--completeness
+      --warnings-ok. Full npm test was attempted and all changed coverage tests passed, but the run
+      hit an unrelated daemon-command-api timeout flake and then hung in teardown; isolated rerun
+      passed with npm test -- --fresh --run tests/daemon-command-api.test.ts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T21:35:33.269Z
