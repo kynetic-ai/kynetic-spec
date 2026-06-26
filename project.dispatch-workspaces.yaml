@@ -8770,7 +8770,7 @@ workspaces:
         head: d96f6f0f122c104ab0ad3644aab48edb5d3f838e
         last_seen_at: 2026-06-26T21:40:27.983Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-resolution-contract-01kw2nt1
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 64674c90fd90de522fb7d36a768142658ecfae4e
     bootstrap:
       status: succeeded
@@ -9247,12 +9247,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-26T21:20:58.190Z
+      updated_at: 2026-06-26T21:41:51.971Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-26T21:21:31.711Z
+      updated_at: 2026-06-26T21:41:51.971Z
     integration:
       status: pending
       detail: null
@@ -9260,7 +9260,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 64674c90fd90de522fb7d36a768142658ecfae4e
-      updated_at: 2026-06-26T21:20:58.190Z
+      updated_at: 2026-06-26T21:41:51.971Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KW2VD3FG4RGY7011HEXQBWYC
@@ -9269,9 +9269,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-26T21:21:31.711Z
-      last_reconciled_at: 2026-06-26T21:21:31.711Z
+      last_reconciled_at: 2026-06-26T21:41:51.971Z
       created_at: 2026-06-26T20:55:25.970Z
-      updated_at: 2026-06-26T21:21:31.711Z
+      updated_at: 2026-06-26T21:41:51.971Z
     workspace_id: dispatch-workspace-01KW2VD3FG4RGY7011HEXQBWYC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
