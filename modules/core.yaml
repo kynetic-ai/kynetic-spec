@@ -4222,7 +4222,7 @@ features:
           no current positive basis.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@ac-verification-record-store"
           - "@verification-session-evidence"
