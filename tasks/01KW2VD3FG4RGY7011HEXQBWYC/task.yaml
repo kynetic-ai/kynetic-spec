@@ -26,7 +26,7 @@ tags:
   - daemon
   - flaky
 vcs_refs: []
-review_ref: "@01KW2WZHQ67BDVTXVSP1VK33TE"
+review_ref: "@01KW30D3J55RTN2AAG72HMHDMM"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-stabilize-daemon-context-manager-coverage-watch-test/01kw2vd3
@@ -127,6 +127,13 @@ history:
         previous: 2026-06-26T21:16:00.626Z
     command: task-submit
     timestamp: 2026-06-26T22:12:51.225Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KW30D3J55RTN2AAG72HMHDMM"
+        previous: "@01KW2WZHQ67BDVTXVSP1VK33TE"
+    command: review-link
+    timestamp: 2026-06-26T22:22:03.490Z
 created_at: 2026-06-26T20:54:37.807Z
 started_at: 2026-06-26T21:44:06.871Z
 submitted_at: 2026-06-26T22:12:51.225Z
