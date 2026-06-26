@@ -185,6 +185,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-26T22:37:19.028Z
+  - _ulid: 01KW319RNTBEKRZFVBEHMAF3B6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW319RCPTKJKVV2R73CHGD1M
+    timestamp: 2026-06-26T22:37:39.898Z
 examined_commit: aada9cd0e84a7e8a68659065898c357cf8218e67
 external_links: []
 lifecycle_state: open
@@ -194,8 +201,46 @@ subject:
   content_hash: ""
   ref: "@01KW2VD3FG4RGY7011HEXQBWYC"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW319RCPTKJKVV2R73CHGD1M
+    entries:
+      - _ulid: 01KW319RCPD5ANN8PZY70PKJ5C
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; packages/daemon/src/project-context.ts;
+          src/daemon/entity-cache.ts; src/parser/coverage-cache.ts; packages/daemon/src/server.ts;
+          packages/daemon/src/routes/items.ts; tests/daemon-context-manager.test.ts;
+          tests/daemon-entity-cache.test.ts; tests/ac-delete-confirmation.test.ts;
+          @coverage-state-api-cache; @trait-api-endpoint; prior review @01KW2WZHQ67BDVTXVSP1VK33TE.
+
+
+          Commands run: git diff/stat/log against dev; kspec task get/review for-task/review
+          add/open/review get/item get/search; rg integration searches; npm run format:check; npx
+          oxlint changed files; npm run lint -- --quiet; npm run typecheck; node --import tsx
+          stale-cache reproduction; npm test; npm test -- --fresh --run
+          tests/daemon-context-manager.test.ts tests/daemon-entity-cache.test.ts; npm test --
+          --fresh --run tests/ac-delete-confirmation.test.ts twice; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; git diff --check.
+
+
+          Claims verified: The prior blocker is fixed: project-root coverage watcher events now
+          invalidate test coverage cache, confirmed by runtime stale-cache reproduction and
+          behavioral tests. The originally flaky daemon context manager watcher tests passed in the
+          full suite and in a fresh focused run.
+
+
+          Categories searched: correctness/cache invalidation, watcher scan-path reconfiguration,
+          lifecycle cleanup/error handling, integration with daemon callback routing, test
+          quality/AC annotations, and unrelated full-suite failure triage. No blocker findings
+          remain. Full npm test had one unrelated STACK_TRACE_ERROR in
+          tests/ac-delete-confirmation.test.ts; isolated fresh reruns passed twice, and follow-up
+          task @01KW316V tracks that flake per review-gates.
+        created_at: 2026-06-26T22:37:39.606Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-26T22:22:00.773Z
-updated_at: 2026-06-26T22:37:18.686Z
+updated_at: 2026-06-26T22:37:39.606Z
 notes: []
