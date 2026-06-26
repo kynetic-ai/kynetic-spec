@@ -1,0 +1,26 @@
+_ulid: 01KW2Y4196VNCVEEZK1CGD2CQN
+slugs: []
+title: Review coverage resolution contract (cycle 3)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KW2Y4196G77K0D4BFZY1ANXH
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-26T21:42:06.374Z
+examined_commit: d96f6f0f122c104ab0ad3644aab48edb5d3f838e
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KW2NT1BTBBPCAQ15RY9NE5QT"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-26T21:42:06.374Z
+updated_at: null
+notes: []
