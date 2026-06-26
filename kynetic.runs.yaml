@@ -74641,7 +74641,7 @@ runs:
     completed_at: 2026-06-26T22:41:26.120Z
   - _ulid: 01KW31W2H9DNB7MQBDPWSE7K8Y
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74655,7 +74655,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-26T22:48:47.743Z
-        completed_at: 2026-06-26T22:48:47.743Z
+        completed_at: 2026-06-26T22:48:59.171Z
+        notes: "Identified candidates: (1) full npm test consumed about 45 minutes but is already tracked;
+          (2) AC-annotated behavioral service tests worked well but duplicates existing AC-first
+          testing success observations; (3) creating real stale coverage-state fixtures was mildly
+          harder than expected, but this was a one-off implementation detail and below capture
+          threshold."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-26T22:48:59.171Z
+        completed_at: 2026-06-26T22:48:59.171Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-26T22:47:39.817Z
