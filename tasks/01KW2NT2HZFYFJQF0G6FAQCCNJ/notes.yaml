@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KW33Q596N2P4MZTZ5E3X76BY
+    content: "Approach: add parser-level dispatch-fix handling in src/parser/coverage-resolution.ts
+      using resolveCoverageTarget, CoverageResolutionResponseSchema, and TaskDataManager.createTask
+      rather than a new queue or schema field. The task body will carry a durable
+      Coverage-Resolution-Key marker plus neutral normalized coverage evidence. Idempotency will
+      search unresolved tasks for that marker and reuse unless allow_duplicate is set. Edge cases:
+      covered targets reject by default, dry-run creates no task, changed issue fingerprint produces
+      a different key, automation_eligible only sets existing task.automation. Test plan: add
+      behavioral coverage-resolution tests for all five @coverage-dispatch-fix-request ACs across
+      failing/not-yet/re-verify/covered/idempotent/neutral fixture cases."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T23:19:55.942Z
