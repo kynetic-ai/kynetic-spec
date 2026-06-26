@@ -18,3 +18,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-26T22:52:53.483Z
+  - _ulid: 01KW33AS9VZVNQMKMK8PPTK36N
+    content: "Implemented spec-text-revert preview/apply in the shared coverage resolution service. The
+      action now validates stale_spec_text preconditions against the current read model, resolves
+      prior criterion text through the freshness comparison path, reports exact current/prior
+      given/when/then diffs, applies only changed fields for the targeted AC through updateSpecItem,
+      commits via item-ac-set, invalidates the coverage-state cache, and returns affected criterion
+      scopes. Added focused behavioral tests for dry-run no writes, missing preconditions/prior
+      comparison rejection, targeted field mutation plus sibling/sidecar preservation and forward
+      commit, and stale fingerprint refusal. Verification passed: format:check, repo lint --quiet,
+      focused oxlint, typecheck, focused coverage-resolution tests, full npm test (2914 suites /
+      11079 passed / 3 skipped), and kspec refs/alignment/completeness validations with existing
+      warning baselines."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T23:13:10.459Z
