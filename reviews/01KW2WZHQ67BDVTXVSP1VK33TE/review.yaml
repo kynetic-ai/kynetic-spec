@@ -13,6 +13,16 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-26T21:37:22.825Z
     completed_at: 2026-06-26T21:37:22.825Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared and tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-26T21:37:26.388Z
+    completed_at: 2026-06-26T21:37:26.388Z
 events:
   - _ulid: 01KW2WZHQ6HJHAVJ6AAFKF9GC0
     actor: Jacob Chapel
@@ -41,6 +51,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-26T21:37:23.067Z
+  - _ulid: 01KW2XVG420GAV81WA20ND96YT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-26T21:37:26.658Z
 examined_commit: 3492acdaf588885f6504bf697f16e746c3ef9fe3
 external_links: []
 lifecycle_state: open
@@ -79,5 +96,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-26T21:22:10.790Z
-updated_at: 2026-06-26T21:37:22.825Z
+updated_at: 2026-06-26T21:37:26.388Z
 notes: []
