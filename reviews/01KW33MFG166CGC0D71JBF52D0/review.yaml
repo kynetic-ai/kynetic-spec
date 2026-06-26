@@ -161,9 +161,25 @@ events:
       kind: nit
       thread_ulid: 01KW34A70E7WNBVXH2F5XK7TH8
     timestamp: 2026-06-26T23:30:20.603Z
+  - _ulid: 01KW34AHFRWYHGKB8CYYJ9PMKV
+    actor: codex-pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-26T23:30:31.032Z
+  - _ulid: 01KW34AHFRTAYVG6VDJGJWFK30
+    actor: codex-pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-26T23:30:31.032Z
 examined_commit: 1a1c5560e7791369b5c455adb44d6bc83353c6df
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -217,7 +233,14 @@ threads:
           mutation path used), sidecar/sibling preservation (covered for non-concurrent path)."
         created_at: 2026-06-26T23:30:20.303Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-pr-reviewer
+    role: reviewer
+    created_at: 2026-06-26T23:30:31.032Z
 created_at: 2026-06-26T23:18:28.097Z
-updated_at: 2026-06-26T23:30:20.303Z
+updated_at: 2026-06-26T23:30:31.032Z
 notes: []

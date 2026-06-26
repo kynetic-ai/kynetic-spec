@@ -47,7 +47,7 @@ description: |
 spec_ref: "@coverage-spec-text-revert"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-coverage-resolution-contract"
@@ -67,7 +67,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: feat/ui-redesign
-session_id: 01KW322QDM3QZ89XNQM6TSYCVC
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -116,6 +116,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-26T23:18:30.552Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KW322QDM3QZ89XNQM6TSYCVC
+    command: review-verdict-needs-work
+    timestamp: 2026-06-26T23:30:33.588Z
 created_at: 2026-06-26T19:16:50.978Z
 started_at: 2026-06-26T22:51:58.127Z
 submitted_at: 2026-06-26T23:13:19.273Z
