@@ -12,3 +12,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-26T22:24:39.058Z
+  - _ulid: 01KW31R8854GQNK16THEBJE4ED
+    content: "Implemented explicit re-verification mutation in coverage-resolution service. Reuses
+      resolveCoverageTarget/current read path, shared actor resolution,
+      writeVerificationStampWithoutCommit, and coverage-state cache invalidation before reloading
+      post-write state. Preconditions reject covered/not-yet/failing targets with guidance; accepted
+      requests write re_verification stamps with mutation time, actor, optional commit/session.
+      Verification: format:check, repo lint --quiet, focused oxlint, typecheck, focused
+      coverage-resolution tests, full npm test (2914 suites / 11080 passed / 3 skipped), and kspec
+      refs/alignment/completeness validations all passed with existing warning baselines."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T22:45:34.597Z
