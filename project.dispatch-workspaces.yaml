@@ -9241,11 +9241,11 @@ workspaces:
     canonical_branch: dispatch/task/task-stabilize-daemon-context-manager-coverage-watch-test/01kw2vd3
     canonical_branch_head: aada9cd0e84a7e8a68659065898c357cf8218e67
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-26T22:39:00.894Z
+      updated_at: 2026-06-26T22:42:27.523Z
     health:
       status: healthy
       issues: []
@@ -9259,17 +9259,17 @@ workspaces:
       target_branch: dev
       target_commit: 64674c90fd90de522fb7d36a768142658ecfae4e
       updated_at: 2026-06-26T22:39:00.894Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KW2VD3FG4RGY7011HEXQBWYC
     task_ref: "@01KW2VD3FG4RGY7011HEXQBWYC"
     task_slug: task-stabilize-daemon-context-manager-coverage-watch-test
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-26T22:42:27.523Z
       last_active_at: 2026-06-26T22:20:40.657Z
       last_reconciled_at: 2026-06-26T22:41:56.859Z
       created_at: 2026-06-26T20:55:25.970Z
-      updated_at: 2026-06-26T22:41:56.859Z
+      updated_at: 2026-06-26T22:42:27.523Z
     workspace_id: dispatch-workspace-01KW2VD3FG4RGY7011HEXQBWYC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
