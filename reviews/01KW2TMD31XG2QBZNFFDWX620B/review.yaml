@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-26T20:41:26.012Z
+  - _ulid: 01KW2TVX5R8BEAYS9SQXQ774AJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW2TVWW7J7QHJ1ZVMSK5AGKP
+    timestamp: 2026-06-26T20:45:14.296Z
 examined_commit: dcc0ede8c1fa9528da8eb8ee165a241c7a2d4ea5
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,29 @@ subject:
   content_hash: ""
   ref: "@01KW2NT1BTBBPCAQ15RY9NE5QT"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW2TVWW7J7QHJ1ZVMSK5AGKP
+    anchor:
+      type: code
+      commit: dcc0ede8c1fa9528da8eb8ee165a241c7a2d4ea5
+      line_end: 90
+      line_start: 89
+      path: src/parser/coverage-resolution.ts
+      side: head
+    entries:
+      - _ulid: 01KW2TVWW7GXXQ1RWXMA883KTH
+        author: Jacob Chapel
+        body: 'MUST-FIX: The target contract accepts both item_ref and item_ulid, but resolveCoverageTarget
+          resolves only target.item_ref when it is present and ignores a conflicting item_ulid.
+          Runtime confirmation: CoverageResolutionRequestSchema parses { item_ref: "@wrong-target",
+          item_ulid: "01ARZ3NDEKTSV4RRFFQ69G5FAV", ac_id: "ac-1" }. That makes the shared mutation
+          target ambiguous and can validate/apply an action against the ref item while the caller
+          supplied a different canonical item id. The shared target validation should reject
+          conflicting identifiers or enforce exactly one target identifier before action handlers
+          use it.'
+        created_at: 2026-06-26T20:45:13.991Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-26T20:41:08.449Z
-updated_at: 2026-06-26T20:41:25.752Z
+updated_at: 2026-06-26T20:45:13.991Z
 notes: []
