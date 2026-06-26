@@ -8250,7 +8250,7 @@ workspaces:
         head: 87e7e21b353487b6b99b8782f5cdbff31eff1682
         last_seen_at: 2026-06-25T15:30:32.130Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-state-freshness-read-model-integration-01kvym03
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: d89e811817476e64ee2a6a8a2f1734283ea0a961
     bootstrap:
       status: succeeded
@@ -8727,7 +8727,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-26T19:47:08.811Z
+      updated_at: 2026-06-26T19:47:42.837Z
     integration:
       status: pending
       detail: null
@@ -8743,10 +8743,10 @@ workspaces:
     task_slug: task-coverage-resolution-contract
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-26T19:22:05.280Z
-      last_reconciled_at: 2026-06-26T19:47:08.811Z
+      last_active_at: 2026-06-26T19:47:42.837Z
+      last_reconciled_at: 2026-06-26T19:47:42.837Z
       created_at: 2026-06-26T19:21:32.519Z
-      updated_at: 2026-06-26T19:47:34.138Z
+      updated_at: 2026-06-26T19:47:42.837Z
     workspace_id: dispatch-workspace-01KW2NT1BTBBPCAQ15RY9NE5QT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
