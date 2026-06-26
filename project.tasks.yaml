@@ -33265,6 +33265,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-26T19:16:51.391Z
+  automation: eligible
 - _ulid: 01KW2NT366BEE987XGXR17CDSG
   slugs:
     - task-coverage-resolution-cli-daemon
