@@ -4125,6 +4125,9 @@ features:
       dry-run previews, refuses static/read-only snapshots, and reports its
       stored effects and affected coverage-state scopes without requiring a UI
       client to reconstruct state or mutation semantics locally.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on:
       - "@coverage-state-engine"
       - "@coverage-state-api-cache"
