@@ -58,6 +58,18 @@ checks:
     runner: kspec
     created_at: 2026-06-26T21:57:41.205Z
     completed_at: 2026-06-26T21:57:41.205Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0. Existing completeness
+      warnings remain, but @coverage-resolution-mutation-interface own ACs and inherited trait
+      annotations/N/A cases are present in tests/coverage-resolution.test.ts."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-26T21:57:52.151Z
+    completed_at: 2026-06-26T21:57:52.151Z
 events:
   - _ulid: 01KW2Y4196G77K0D4BFZY1ANXH
     actor: Jacob Chapel
@@ -107,6 +119,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-26T21:57:41.504Z
+  - _ulid: 01KW2Z0X5QQ1G0NV96ETEXK7RK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-26T21:57:52.439Z
 examined_commit: d96f6f0f122c104ab0ad3644aab48edb5d3f838e
 external_links: []
 lifecycle_state: open
@@ -119,5 +138,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-26T21:42:06.374Z
-updated_at: 2026-06-26T21:57:41.205Z
+updated_at: 2026-06-26T21:57:52.151Z
 notes: []
