@@ -9,6 +9,7 @@ import type {
   CoverageStateSnapshot,
 } from "@kynetic-ai/shared";
 import {
+  applyDispatchFixRequest,
   applyExplicitReverification,
   buildCoverageResolutionDryRunResponse,
   CoverageResolutionReadOnlyError,
@@ -16,11 +17,13 @@ import {
   resolveCoverageTarget,
 } from "../src/parser/coverage-resolution.js";
 import { invalidateCoverageStateReadModelCache } from "../src/parser/coverage-state-read-model.js";
+import { resolveTaskDataManager } from "../src/parser/task-data-manager.js";
 import {
   getVerificationRecordPath,
   readVerificationStamp,
   writeVerificationStamp,
 } from "../src/parser/verification-record-store.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import {
   COVERAGE_RESOLUTION_ACTIONS,
   CoverageResolutionRequestSchema,
@@ -37,6 +40,8 @@ const ITEM_ULID = testUlid("FEAT", 701);
 const SESSION_ID = testUlid("SESS", 701);
 const RUN_ID = testUlid("RUNN", 701);
 const tempDirs: string[] = [];
+
+ensureSplitBackendRegistered();
 
 afterEach(async () => {
   invalidateCoverageStateReadModelCache();
@@ -61,6 +66,15 @@ function makeItem(): LoadedSpecItem {
         then: "the current text participates in concurrency checks",
       },
     ],
+  };
+}
+
+function makeAlternateItem(): LoadedSpecItem {
+  return {
+    ...makeItem(),
+    title: "Portable Contract Target",
+    slugs: ["portable-contract-target"],
+    description: "Second neutral fixture for coverage resolution task text.",
   };
 }
 
@@ -193,30 +207,80 @@ function readModelFor(detail: CoverageCriterionStateDetail): CoverageStateSnapsh
   };
 }
 
-function failingCriterion(): CoverageCriterionStateDetail {
+function readModelForItem(
+  item: LoadedSpecItem,
+  detail: CoverageCriterionStateDetail,
+): CoverageStateSnapshot {
+  const itemRef = `@${item.slugs[0]}`;
+  const summary: CoverageItemStateSummary = {
+    ...itemSummary(detail),
+    item_ref: itemRef,
+    item_title: item.title,
+    criteria: [{ ...detail, item_ref: itemRef, item_title: item.title }],
+  };
+  const criterionDetail = summary.criteria[0]!;
+  return {
+    summary: {
+      counts: { covered: 0, failing: 1, not_yet: 0, re_verify: 0 },
+      denominator: 1,
+      latest_run_id: criterionDetail.explanation.latestRunId,
+      unmapped_result_count: 0,
+      invalid_result_count: 0,
+    },
+    items: {
+      [itemRef]: summary,
+      [item.slugs[0]!]: summary,
+    },
+    criteria: {
+      [`${ITEM_ULID} ac-stale-text`]: criterionDetail,
+    },
+    unmapped_results: [],
+  };
+}
+
+function failingCriterion(
+  overrides: Partial<
+    Omit<CoverageCriterionStateDetail, "explanation" | "freshness" | "latest_run_evidence">
+  > & {
+    explanation?: Partial<CoverageCriterionStateDetail["explanation"]>;
+    freshness?: Partial<CoverageCriterionStateDetail["freshness"]>;
+    latest_run_evidence?: CoverageCriterionStateDetail["latest_run_evidence"];
+  } = {},
+): CoverageCriterionStateDetail {
+  const baseExplanation: CoverageCriterionStateDetail["explanation"] = {
+    rule: "latest_failed_or_errored_result",
+    sourceEvidenceIds: [`test_run:${RUN_ID}:failed-case`],
+    latestRunId: RUN_ID,
+    secondaryReverifyCauses: [],
+  };
+  const baseFreshness: CoverageCriterionStateDetail["freshness"] = {
+    bootstrap: null,
+    recorded: null,
+    secondary_causes: [],
+  };
+  const baseLatestRunEvidence: CoverageCriterionStateDetail["latest_run_evidence"] = [
+    {
+      run_id: RUN_ID,
+      completed_at: "2026-06-24T12:00:00.000Z",
+      case_id: "failed-case",
+      display_name: "fails current behavior",
+      status: "failed",
+      producer: { kind: "local", label: "neutral-runner" },
+      code_revision: "failing-revision",
+    },
+  ];
   return criterion({
     state: "failing_result",
     presentation: "failing",
+    ...overrides,
     explanation: {
-      rule: "latest_failed_or_errored_result",
-      sourceEvidenceIds: [`test_run:${RUN_ID}:failed-case`],
-      latestRunId: RUN_ID,
-      secondaryReverifyCauses: [],
+      ...baseExplanation,
+      ...overrides.explanation,
     },
-    latest_run_evidence: [
-      {
-        run_id: RUN_ID,
-        completed_at: "2026-06-24T12:00:00.000Z",
-        case_id: "failed-case",
-        display_name: "fails current behavior",
-        status: "failed",
-        producer: { kind: "local", label: "neutral-runner" },
-        code_revision: "failing-revision",
-      },
-    ],
+    latest_run_evidence: overrides.latest_run_evidence ?? baseLatestRunEvidence,
     freshness: {
-      recorded: null,
-      secondary_causes: [],
+      ...baseFreshness,
+      ...overrides.freshness,
     },
   });
 }
@@ -969,6 +1033,333 @@ describe("coverage resolution contract", () => {
         .trim()
         .split("\n"),
     ).toContain(initialCommit);
+  });
+
+  // AC: @coverage-dispatch-fix-request ac-dispatch-fix-task-shape
+  it("creates ordinary tasks for failing, not-yet, and re-verify coverage issues", async () => {
+    const tempDir = await createTempProject("coverage-dispatch-fix-create-");
+    const ctx = fakeContext(tempDir);
+    const details = [failingCriterion(), notYetCriterion(), criterion()];
+
+    for (const detail of details) {
+      const response = await applyDispatchFixRequest(
+        ctx,
+        {
+          action: "dispatch-fix",
+          target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+          dry_run: false,
+          automation_eligible: false,
+          allow_duplicate: true,
+          allow_covered: false,
+        },
+        {
+          items: [makeItem()],
+          loadReadModel: async () => readModelFor(detail),
+        },
+      );
+
+      expect(response).toMatchObject({
+        action: "dispatch-fix",
+        dry_run: false,
+        stored: true,
+        target: {
+          item_ref: "@neutral-resolution-target",
+          ac_id: "ac-stale-text",
+        },
+        current: {
+          presentation: detail.presentation,
+          state: detail.state,
+          latest_run_id: detail.explanation.latestRunId,
+        },
+        effects: [
+          {
+            kind: "task",
+            operation: "created_task",
+            automation_eligible: false,
+            idempotency_key: expect.stringMatching(/^sha256:[0-9a-f]{64}$/),
+          },
+          {
+            kind: "cache_event",
+            operation: "invalidated",
+          },
+        ],
+      });
+    }
+
+    const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+    expect(tasks).toHaveLength(3);
+    for (const task of tasks) {
+      expect(task).toMatchObject({
+        type: "task",
+        status: "pending",
+        spec_ref: "@neutral-resolution-target",
+        tags: expect.arrayContaining(["coverage", "dispatch-fix"]),
+      });
+      expect(task.description).toContain("Coverage-Resolution-Key: sha256:");
+      expect(task.description).toContain(
+        "Item: @neutral-resolution-target — Neutral Resolution Target",
+      );
+      expect(task.description).toContain("Acceptance Criterion: ac-stale-text");
+      expect(task.description).toContain("Presentation Bucket:");
+      expect(task.description).toContain("Machine-Readable Explanation:");
+      expect(task.description).toContain("Suggested Repair Checklist");
+    }
+  });
+
+  // AC: @coverage-dispatch-fix-request ac-dispatch-fix-task-shape
+  it("rejects covered criteria by default without creating a task", async () => {
+    const tempDir = await createTempProject("coverage-dispatch-fix-covered-");
+    const ctx = fakeContext(tempDir);
+
+    const response = await applyDispatchFixRequest(
+      ctx,
+      {
+        action: "dispatch-fix",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: false,
+        automation_eligible: false,
+        allow_duplicate: false,
+        allow_covered: false,
+      },
+      {
+        items: [makeItem()],
+        loadReadModel: async () => readModelFor(coveredCriterion()),
+      },
+    );
+
+    expect(response).toMatchObject({
+      stored: false,
+      diagnostics: [
+        {
+          satisfied: false,
+          current_presentation: "covered",
+          suggestion: expect.stringContaining("already covered"),
+        },
+      ],
+      effects: [],
+    });
+    await expect(resolveTaskDataManager(ctx).loadAllTasks(ctx)).resolves.toEqual([]);
+  });
+
+  // AC: @coverage-dispatch-fix-request ac-dispatch-fix-task-shape
+  it("creates a task for a covered criterion when explicitly allowed", async () => {
+    const tempDir = await createTempProject("coverage-dispatch-fix-covered-allowed-");
+    const ctx = fakeContext(tempDir);
+
+    const response = await applyDispatchFixRequest(
+      ctx,
+      {
+        action: "dispatch-fix",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: false,
+        automation_eligible: false,
+        allow_duplicate: false,
+        allow_covered: true,
+      },
+      {
+        items: [makeItem()],
+        loadReadModel: async () => readModelFor(coveredCriterion()),
+      },
+    );
+
+    expect(response).toMatchObject({
+      stored: true,
+      current: {
+        presentation: "covered",
+        state: "covered",
+      },
+      diagnostics: [
+        {
+          satisfied: true,
+          current_presentation: "covered",
+          suggestion: expect.stringContaining("explicitly requested"),
+        },
+      ],
+      effects: [
+        {
+          kind: "task",
+          operation: "created_task",
+        },
+        {
+          kind: "cache_event",
+          operation: "invalidated",
+        },
+      ],
+    });
+    const [task] = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+    expect(task?.description).toContain("Presentation Bucket: covered");
+  });
+
+  // AC: @coverage-dispatch-fix-request ac-idempotent-open-request
+  it("reuses unresolved tasks by body idempotency key unless duplicates are allowed", async () => {
+    const tempDir = await createTempProject("coverage-dispatch-fix-idempotent-");
+    const ctx = fakeContext(tempDir);
+    const request = {
+      action: "dispatch-fix" as const,
+      target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+      dry_run: false,
+      automation_eligible: false,
+      allow_duplicate: false,
+      allow_covered: false,
+    };
+
+    const first = await applyDispatchFixRequest(ctx, request, {
+      items: [makeItem()],
+      loadReadModel: async () => readModelFor(failingCriterion()),
+    });
+    const repeated = await applyDispatchFixRequest(ctx, request, {
+      items: [makeItem()],
+      loadReadModel: async () => readModelFor(failingCriterion()),
+    });
+
+    expect(repeated.effects[0]).toMatchObject({
+      kind: "task",
+      operation: "reused_task",
+      task_ref: first.effects[0]?.kind === "task" ? first.effects[0].task_ref : undefined,
+      idempotency_key: first.effects[0]?.kind === "task" ? first.effects[0].idempotency_key : "",
+    });
+    await expect(resolveTaskDataManager(ctx).loadAllTasks(ctx)).resolves.toHaveLength(1);
+
+    await applyDispatchFixRequest(
+      ctx,
+      {
+        ...request,
+        allow_duplicate: true,
+      },
+      {
+        items: [makeItem()],
+        loadReadModel: async () => readModelFor(failingCriterion()),
+      },
+    );
+    await expect(resolveTaskDataManager(ctx).loadAllTasks(ctx)).resolves.toHaveLength(2);
+
+    await applyDispatchFixRequest(ctx, request, {
+      items: [makeItem()],
+      loadReadModel: async () =>
+        readModelFor(
+          failingCriterion({
+            explanation: {
+              sourceEvidenceIds: [`test_run:${RUN_ID}:different-failure`],
+              latestRunId: "different-run",
+            },
+          }),
+        ),
+    });
+    await expect(resolveTaskDataManager(ctx).loadAllTasks(ctx)).resolves.toHaveLength(3);
+  });
+
+  // AC: @coverage-dispatch-fix-request ac-project-neutral-context
+  it("generates neutral task bodies from normalized coverage evidence in different projects", async () => {
+    const projectA = await createTempProject("coverage-dispatch-fix-neutral-a-");
+    const projectB = await createTempProject("coverage-dispatch-fix-neutral-b-");
+    const firstCtx = fakeContext(projectA);
+    const secondCtx = fakeContext(projectB);
+    const alternateItem = makeAlternateItem();
+
+    await applyDispatchFixRequest(
+      firstCtx,
+      {
+        action: "dispatch-fix",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: false,
+        automation_eligible: false,
+        allow_duplicate: false,
+        allow_covered: false,
+      },
+      {
+        items: [makeItem()],
+        loadReadModel: async () => readModelFor(failingCriterion()),
+      },
+    );
+    await applyDispatchFixRequest(
+      secondCtx,
+      {
+        action: "dispatch-fix",
+        target: { item_ref: "@portable-contract-target", ac_id: "ac-stale-text" },
+        dry_run: false,
+        automation_eligible: false,
+        allow_duplicate: false,
+        allow_covered: false,
+      },
+      {
+        items: [alternateItem],
+        loadReadModel: async () =>
+          readModelForItem(
+            alternateItem,
+            failingCriterion({
+              latest_run_evidence: [
+                {
+                  run_id: RUN_ID,
+                  completed_at: "2026-06-24T12:00:00.000Z",
+                  case_id: "portable-case",
+                  display_name: "portable failing behavior",
+                  status: "failed",
+                  producer: { kind: "external", label: "portable-result-producer" },
+                  code_revision: null,
+                },
+              ],
+            }),
+          ),
+      },
+    );
+
+    const bodies = [
+      (await resolveTaskDataManager(firstCtx).loadAllTasks(firstCtx))[0]?.description ?? "",
+      (await resolveTaskDataManager(secondCtx).loadAllTasks(secondCtx))[0]?.description ?? "",
+    ];
+
+    expect(bodies[0]).toContain("neutral-runner");
+    expect(bodies[1]).toContain("portable-result-producer");
+    for (const body of bodies) {
+      expect(body).toContain("Coverage-Resolution-Key: sha256:");
+      expect(body).toContain("Latest Run Evidence:");
+      expect(body).not.toContain("/home/chapel/Projects/kynetic-spec");
+      expect(body).not.toContain("npm test");
+      expect(body).not.toContain("Vitest");
+      expect(body).not.toContain("feat/ui-redesign");
+    }
+  });
+
+  // AC: @coverage-dispatch-fix-request ac-no-special-queue
+  // AC: @coverage-dispatch-fix-request ac-existing-dispatch-policy
+  it("uses normal task automation fields without a special queue or agent invocation", async () => {
+    const tempDir = await createTempProject("coverage-dispatch-fix-automation-");
+    const ctx = fakeContext(tempDir);
+
+    const response = await applyDispatchFixRequest(
+      ctx,
+      {
+        action: "dispatch-fix",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: false,
+        automation_eligible: true,
+        allow_duplicate: false,
+        allow_covered: false,
+      },
+      {
+        items: [makeItem()],
+        loadReadModel: async () => readModelFor(notYetCriterion()),
+      },
+    );
+
+    const [task] = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+    expect(task).toMatchObject({
+      status: "pending",
+      spec_ref: "@neutral-resolution-target",
+      automation: "eligible",
+    });
+    expect(response.effects).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          kind: "task",
+          operation: "created_task",
+          automation_eligible: true,
+        }),
+      ]),
+    );
+    expect(task?.description).toContain("Existing Dispatch Policy:");
+    expect(task?.description).not.toContain("agent_id:");
+    expect(task?.description).not.toContain("queue:");
   });
 
   // AC: @trait-api-endpoint ac-2 — N/A: this contract module has no daemon route yet.

@@ -72,6 +72,7 @@ export const DispatchFixCoverageResolutionRequestSchema =
     action: z.literal("dispatch-fix"),
     automation_eligible: z.boolean().default(false),
     allow_duplicate: z.boolean().default(false),
+    allow_covered: z.boolean().default(false),
   }).strict();
 
 export const CoverageResolutionRequestSchema = z.discriminatedUnion("action", [
