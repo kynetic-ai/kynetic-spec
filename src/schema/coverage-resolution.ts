@@ -113,6 +113,14 @@ export const CoverageResolutionAffectedScopeSchema = z.discriminatedUnion("type"
     .strict(),
 ]);
 
+const CoverageResolutionCriterionTextSchema = z
+  .object({
+    given: z.string(),
+    when: z.string(),
+    then: z.string(),
+  })
+  .strict();
+
 export const CoverageResolutionPreconditionDiagnosticSchema = z
   .object({
     code: z.string().min(1),
@@ -147,8 +155,11 @@ export const CoverageResolutionEffectSchema = z.discriminatedUnion("kind", [
       item_ulid: UlidSchema,
       ac_id: AcIdSchema,
       fields: z.array(z.enum(["given", "when", "then"])).min(1),
+      current_text: CoverageResolutionCriterionTextSchema,
+      prior_text: CoverageResolutionCriterionTextSchema,
       prior_commit: z.string().min(1).nullable().optional(),
       prior_timestamp: DateTimeSchema.nullable().optional(),
+      summary: z.string().min(1),
     })
     .strict(),
   z

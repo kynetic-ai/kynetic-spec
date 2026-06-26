@@ -1843,6 +1843,34 @@ function assertSpecItemPatch(
   }
 }
 
+function findSpecItemObjectInRaw(raw: unknown, item: LoadedSpecItem): Record<string, unknown> {
+  if (item._path) {
+    const nav = navigateToPath(raw, item._path);
+    const candidate = nav?.array[nav.index];
+    if (
+      candidate &&
+      typeof candidate === "object" &&
+      (candidate as Record<string, unknown>)._ulid === item._ulid
+    ) {
+      return candidate as Record<string, unknown>;
+    }
+    const found = findItemInStructure(raw, item._ulid);
+    if (!found) {
+      throw new Error(`Could not find item ${item._ulid} in structure (path: ${item._path})`);
+    }
+    return found.item;
+  }
+
+  const found = findItemInStructure(raw, item._ulid);
+  if (found) {
+    return found.item;
+  }
+  if (raw && typeof raw === "object" && (raw as Record<string, unknown>)._ulid === item._ulid) {
+    return raw as Record<string, unknown>;
+  }
+  throw new Error(`Could not find item ${item._ulid} in structure`);
+}
+
 /**
  * Recursively collect AC validation errors from nested catalog structures.
  *
@@ -2245,35 +2273,7 @@ export async function updateSpecItem(
     const raw = await readYamlFile<unknown>(item._sourceFile!);
 
     // Find the item in the structure (use stored path or search by ULID)
-    let targetObj: Record<string, unknown>;
-
-    if (item._path) {
-      const nav = navigateToPath(raw, item._path);
-      const candidate = nav?.array[nav.index];
-      if (
-        candidate &&
-        typeof candidate === "object" &&
-        (candidate as Record<string, unknown>)._ulid === item._ulid
-      ) {
-        targetObj = candidate as Record<string, unknown>;
-      } else {
-        const found = findItemInStructure(raw, item._ulid);
-        if (!found) {
-          throw new Error(`Could not find item ${item._ulid} in structure (path: ${item._path})`);
-        }
-        targetObj = found.item;
-      }
-    } else {
-      // Item might be the root, or we need to find it
-      const found = findItemInStructure(raw, item._ulid);
-      if (found) {
-        targetObj = found.item;
-      } else if ((raw as Record<string, unknown>)._ulid === item._ulid) {
-        targetObj = raw as Record<string, unknown>;
-      } else {
-        throw new Error(`Could not find item ${item._ulid} in structure`);
-      }
-    }
+    const targetObj = findSpecItemObjectInRaw(raw, item);
 
     // Apply updates (but never change _ulid)
     for (const [key, value] of Object.entries(updates)) {
@@ -2285,6 +2285,45 @@ export async function updateSpecItem(
     // Write back with format preservation
     await writeYamlFilePreserveFormat(item._sourceFile!, raw);
     const updatedItem = { ...item, ...updates, _ulid: item._ulid } as SpecItem;
+    recordSpecItemMutationEvent(updatedItem, "changed");
+
+    return updatedItem;
+  });
+}
+
+export async function updateSpecItemFromCurrent(
+  _ctx: KspecContext,
+  item: LoadedSpecItem,
+  buildUpdates: (
+    current: LoadedSpecItem,
+  ) => Partial<SpecItemInput> | Promise<Partial<SpecItemInput>>,
+): Promise<SpecItem> {
+  if (!item._sourceFile) {
+    throw new Error("Item has no source file");
+  }
+
+  return withFileLock(item._sourceFile, async () => {
+    const raw = await readYamlFile<unknown>(item._sourceFile!);
+    const targetObj = findSpecItemObjectInRaw(raw, item);
+    const currentItem = { ...item, ...(targetObj as Partial<SpecItem>) } as LoadedSpecItem;
+    const updates = await buildUpdates(currentItem);
+    assertSpecItemPatch(updates, "updateSpecItem");
+
+    const validationError = validateSpecItemPatchData(updates as Record<string, unknown>, {
+      allowUnknown: true,
+    });
+    if (validationError) {
+      throw new Error(`Invalid patch data: ${validationError}`);
+    }
+
+    for (const [key, value] of Object.entries(updates)) {
+      if (key !== "_ulid" && key !== "_sourceFile" && key !== "_path") {
+        targetObj[key] = value;
+      }
+    }
+
+    await writeYamlFilePreserveFormat(item._sourceFile!, raw);
+    const updatedItem = { ...currentItem, ...updates, _ulid: item._ulid } as SpecItem;
     recordSpecItemMutationEvent(updatedItem, "changed");
 
     return updatedItem;
