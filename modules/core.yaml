@@ -4287,6 +4287,9 @@ features:
           text through normal kspec mutation machinery, and creates an ordinary
           forward shadow commit. It is not a raw git revert and never rewrites
           unrelated criteria or operational sidecars.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@coverage-freshness-revision-comparison"
           - "@shared-mutation-pipeline"
