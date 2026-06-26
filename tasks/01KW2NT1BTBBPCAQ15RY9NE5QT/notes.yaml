@@ -13,3 +13,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-26T19:24:39.138Z
+  - _ulid: 01KW2Q915714PHBXYS5A6CRP87
+    content: "Implemented shared coverage resolution contract layer: strict action request/response
+      schemas, read-only refusal error, precondition diagnostics, dry-run effect summaries, resolver
+      using getCachedCoverageStateReadModel, alias/criterion lookup, and expected-current
+      fingerprint guard. Verification passed: npm run format:check; npm run lint -- --quiet (0
+      errors, existing warning baseline); npx oxlint changed files (0 warnings/errors); npm run
+      typecheck; npm test (2914 suites, 11073 passed, 3 skipped); kspec validate
+      --refs/--alignment/--completeness --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T19:42:30.056Z
