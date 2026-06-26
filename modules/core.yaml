@@ -4220,6 +4220,9 @@ features:
           verification time, optional code commit, and optional producing session;
           it never runs tests and never invents evidence for a criterion that has
           no current positive basis.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@ac-verification-record-store"
           - "@verification-session-evidence"
