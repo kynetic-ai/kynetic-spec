@@ -1,1 +1,20 @@
-notes: []
+notes:
+  - _ulid: 01KW325MVB9E0MCA9NHQA0GG5A
+    content: >-
+      Approach: build on existing coverage resolution target resolver, current fingerprint
+      computation, dry-run response schema, readCriterionFreshnessComparison, updateSpecItem, and
+      commitIfShadow. Add spec-text preview/apply helpers that validate stale_spec_text cause,
+      require resolvable prior criterion text, model exact field diffs, and apply only targeted
+      given/when/then fields through updateSpecItem.
+
+      Edge cases: missing prior comparison/current criterion, current state without stale_spec_text,
+      no-op comparison, stale expected fingerprint after concurrent edits, sibling ACs and sidecar
+      stores must remain byte-equivalent, and apply must not touch the code repo.
+
+      Test plan: focused behavioral coverage in tests/coverage-resolution.test.ts for all five
+      @coverage-spec-text-revert ACs, including dry-run no file writes, apply writes only targeted
+      AC fields plus one shadow commit, stale fingerprint refusal, and missing prior comparison
+      rejection.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T22:52:53.483Z
