@@ -9090,18 +9090,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-stabilize-daemon-context-manager-coverage-watch-test/01kw2vd3
-    canonical_branch_head: 64674c90fd90de522fb7d36a768142658ecfae4e
+    canonical_branch_head: 3492acdaf588885f6504bf697f16e746c3ef9fe3
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-26T20:55:25.970Z
+      updated_at: 2026-06-26T21:15:54.307Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-26T20:55:57.995Z
+      updated_at: 2026-06-26T21:15:54.307Z
     integration:
       status: pending
       detail: null
@@ -9109,7 +9109,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 64674c90fd90de522fb7d36a768142658ecfae4e
-      updated_at: 2026-06-26T20:55:25.970Z
+      updated_at: 2026-06-26T21:15:54.307Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KW2VD3FG4RGY7011HEXQBWYC
@@ -9118,9 +9118,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-26T20:55:57.995Z
-      last_reconciled_at: 2026-06-26T20:55:57.995Z
+      last_reconciled_at: 2026-06-26T21:15:54.307Z
       created_at: 2026-06-26T20:55:25.970Z
-      updated_at: 2026-06-26T20:55:57.995Z
+      updated_at: 2026-06-26T21:15:54.307Z
     workspace_id: dispatch-workspace-01KW2VD3FG4RGY7011HEXQBWYC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
