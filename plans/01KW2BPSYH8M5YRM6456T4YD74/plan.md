@@ -35,7 +35,7 @@
   description: |
     Coverage resolution actions are one shared mutation surface for
     operator responses to backend-computed coverage state. The surface
-    exposes exactly three v1 actions against an acceptance criterion:
+    exposes exactly three actions against an acceptance criterion:
     explicit re-verification, spec-text revert, and dispatch-fix request.
     Every action is available through equivalent CLI and daemon interfaces,
     consumes the current server-computed coverage-state read model, supports
@@ -50,7 +50,7 @@
       when: |
         the coverage resolution mutation interface is enumerated
       then: |
-        it exposes exactly the v1 action kinds explicit-reverify,
+        it exposes exactly the supported action kinds explicit-reverify,
         spec-text-revert, and dispatch-fix, each with a stable request and
         response shape naming the target item and criterion
     - id: ac-current-state-required
@@ -743,11 +743,11 @@ boundary check so future routes do not accidentally reintroduce that bypass.
 
 ### Action preconditions
 
-Expected v1 action availability:
+Expected action availability for this plan scope:
 
 | Current presentation / cause | explicit-reverify | spec-text-revert | dispatch-fix |
 |---|---|---|---|
-| `covered` | rejected; refresh semantics are out of v1 resolution scope | rejected | rejected by default |
+| `covered` | rejected; refresh semantics are out of this resolution scope | rejected | rejected by default |
 | `failing` | rejected | rejected unless also stale-spec-text and caller chooses revert after reading details | allowed |
 | `not_yet` | rejected | rejected | allowed |
 | `re_verify` + stale_spec_text | allowed when positive non-failing evidence exists | allowed when focused prior text resolves | allowed |
@@ -832,13 +832,13 @@ CLI and daemon semantics must remain equivalent.
 ### Inherited trait coverage and non-applicable cases
 
 This plan uses broad traits, but only the following inherited acceptance
-criteria apply to the v1 mutation surfaces:
+criteria apply to the mutation surfaces in this plan:
 
 | Trait | Applicable ACs | Non-applicable / rationale |
 |---|---|---|
 | `@trait-api-endpoint` | ac-1 success JSON, ac-2 invalid ref/not found, ac-3 validation errors, ac-5 shadow commit for mutating routes, ac-6 request id | ac-4 list pagination is not applicable: these are action endpoints, not list endpoints |
 | `@trait-dry-run` | ac-1 preview, ac-2 no file writes, ac-3 preview indication, ac-4 dry-run errors without state change, ac-5 dry-run wins if a future force flag appears, ac-6 JSON includes `dry_run` | none for CLI actions; daemon dry-run responses use the same semantic fields even though they are query/body flags rather than commander flags |
-| `@trait-semantic-exit-codes` | ac-1 success, ac-2 validation/precondition failure, ac-4 runtime failure, ac-6 invalid flags/arguments, ac-8 documented meanings | ac-3 confirmation-declined is not applicable because v1 has no interactive confirmation prompt; ac-5 empty result set is not applicable because these are targeted actions; ac-7 batch partial failure is not applicable because v1 has no batch mode |
+| `@trait-semantic-exit-codes` | ac-1 success, ac-2 validation/precondition failure, ac-4 runtime failure, ac-6 invalid flags/arguments, ac-8 documented meanings | ac-3 confirmation-declined is not applicable because this plan has no interactive confirmation prompt; ac-5 empty result set is not applicable because these are targeted actions; ac-7 batch partial failure is not applicable because this plan has no batch mode |
 | `@trait-error-guidance` | ac-1 description, ac-2 suggested action, ac-3 ref lookup guidance, ac-5 field/value diagnostics, ac-6 structured JSON guidance | ac-4 invalid state transition is represented by coverage action precondition diagnostics rather than task lifecycle transition states |
 | `@trait-websocket-protocol` | ac-2 subscription to `items:updates`, ac-3 broadcast envelope, ac-6 no event storm/backpressure through coalesced events, ac-8 reconnect consumers can refetch by affected scope | ac-1 connection establishment, ac-4 heartbeat, ac-5 heartbeat timeout, and ac-7 close codes belong to the existing websocket infrastructure and are not reimplemented by this plan |
 
