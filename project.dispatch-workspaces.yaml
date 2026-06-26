@@ -9280,7 +9280,7 @@ workspaces:
         head: aada9cd0e84a7e8a68659065898c357cf8218e67
         last_seen_at: 2026-06-26T22:20:03.309Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-daemon-context-manager-coverage-watch-test-01kw2vd3
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 929ca776cca711113af9a51c3635518af1886f10
     bootstrap:
       status: succeeded
@@ -9757,12 +9757,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-26T23:08:26.435Z
+      updated_at: 2026-06-26T23:09:02.423Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-26T23:08:26.435Z
+      updated_at: 2026-06-26T23:09:02.423Z
     integration:
       status: merged
       detail: integration:merged
@@ -9770,7 +9770,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 929ca776cca711113af9a51c3635518af1886f10
-      updated_at: 2026-06-26T23:08:26.435Z
+      updated_at: 2026-06-26T23:09:02.423Z
     lifecycle_state: closing
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW2NT1RDSG8Q1XE8646E26EC
@@ -9779,9 +9779,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-26T22:50:45.515Z
-      last_reconciled_at: 2026-06-26T23:08:26.435Z
+      last_reconciled_at: 2026-06-26T23:09:02.423Z
       created_at: 2026-06-26T22:20:46.941Z
-      updated_at: 2026-06-26T23:08:26.435Z
+      updated_at: 2026-06-26T23:09:02.423Z
     workspace_id: dispatch-workspace-01KW2NT1RDSG8Q1XE8646E26EC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
