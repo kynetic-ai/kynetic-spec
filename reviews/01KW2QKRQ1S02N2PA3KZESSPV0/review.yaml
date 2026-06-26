@@ -173,6 +173,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-26T20:02:02.491Z
+  - _ulid: 01KW2T92P1DPQKW5W3JREYJRY2
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW2QVDSXEAEYDYX5141F3TR0
+    timestamp: 2026-06-26T20:34:57.345Z
+  - _ulid: 01KW2T95V0QPFXZ4KARC7BZQ59
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW2QVDSXEAEYDYX5141F3TR0
+    timestamp: 2026-06-26T20:35:00.577Z
+  - _ulid: 01KW2T991A0QVEMBDZA8MP05TG
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW2RCFX77BDTQ3ZN4GRWMES2
+    timestamp: 2026-06-26T20:35:03.850Z
+  - _ulid: 01KW2T9BZXBV4N3DBRESDTP9RM
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW2RCFX77BDTQ3ZN4GRWMES2
+    timestamp: 2026-06-26T20:35:06.877Z
 examined_commit: e055f62f00a2caca162cd517b36dd251344c3cd8
 external_links: []
 lifecycle_state: closed
@@ -204,7 +228,19 @@ threads:
           read path (or an equivalent route/CLI boundary once those handlers exist) and would fail
           if resolution production code bypasses the cached freshness-comparison read model."
         created_at: 2026-06-26T19:52:32.830Z
+      - _ulid: 01KW2T92DX0F0BEDC5BBPB03TY
+        author: Jacob Chapel
+        body: "Fixed in commit dcc0ede8c1: moved @coverage-resolution-mutation-interface
+          ac-current-state-boundary off the injected read-model test and added a production-default
+          resolver test that imports resolveCoverageTarget with the coverage-state read-model module
+          mocked. The test calls resolveCoverageTarget without loadReadModel, requires
+          getCachedCoverageStateReadModel to provide current state, and makes
+          buildCoverageStateReadModel/buildCoverageStateReadModelWithFreshnessComparison/loadCovera\
+          geStateReadModel fail if used."
+        created_at: 2026-06-26T20:34:57.085Z
     kind: blocker
+    resolved_at: 2026-06-26T20:35:00.313Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KW2RCFX77BDTQ3ZN4GRWMES2
     entries:
       - _ulid: 01KW2RCFX86PNF4T627E8NZEDZ
@@ -229,7 +265,15 @@ threads:
           quality, integration/barrel exports. Finding recorded: boundary AC test does not exercise
           the production default read path."
         created_at: 2026-06-26T20:01:52.040Z
+      - _ulid: 01KW2T98RBDF96N44VB6AN16A1
+        author: Jacob Chapel
+        body: "Acknowledged. Updated verification evidence after the fix: focused coverage-resolution test
+          passed; format, lint, focused oxlint, typecheck, fresh full npm test, and kspec
+          refs/alignment/completeness validation all passed."
+        created_at: 2026-06-26T20:35:03.563Z
     kind: nit
+    resolved_at: 2026-06-26T20:35:06.624Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -239,5 +283,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-26T20:02:02.490Z
 created_at: 2026-06-26T19:48:21.857Z
-updated_at: 2026-06-26T20:02:02.491Z
+updated_at: 2026-06-26T20:35:06.624Z
 notes: []
