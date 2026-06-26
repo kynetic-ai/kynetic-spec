@@ -28251,7 +28251,7 @@ reviews:
   - _ulid: 01KW2WZHQ67BDVTXVSP1VK33TE
     slugs: []
     title: Review stabilize daemon context manager coverage source watcher test
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 0
     examined_commit: 3492acdaf588885f6504bf697f16e746c3ef9fe3
@@ -28262,8 +28262,8 @@ reviews:
       content_hash: ""
       ref: "@01KW2VD3FG4RGY7011HEXQBWYC"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-26T21:22:10.790Z
-    updated_at: 2026-06-26T21:22:31.741Z
+    updated_at: 2026-06-26T21:25:35.700Z
