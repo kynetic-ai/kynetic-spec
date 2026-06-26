@@ -1,0 +1,31 @@
+_ulid: 01KW2VD3FG4RGY7011HEXQBWYC
+slugs:
+  - task-stabilize-daemon-context-manager-coverage-watch-test
+title: Stabilize daemon context manager coverage source watcher test
+type: bug
+description: "During review of @task-coverage-resolution-contract on detached snapshot dcc0ede8c1fa,
+  the full required gate npm test -- --fresh failed once in tests/daemon-context-manager.test.ts:
+  ProjectContextManager cache invalidation callback content passthrough reconfigures coverage source
+  watching when configured scan paths change. Failure: waitFor expected the watcher event array to
+  contain the changed coverage-source event, but observed [] at
+  tests/daemon-context-manager.test.ts:329. The changed coverage-resolution branch does not touch
+  tests/daemon-context-manager.test.ts, packages/daemon source, or watcher/context-manager code;
+  focused reruns with npm test -- --fresh --run tests/daemon-context-manager.test.ts passed twice
+  (40/40 each, ~4.4s). Investigate and stabilize the async watcher/cache invalidation assertion
+  rather than tying it to the coverage-resolution contract task."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - tests
+  - daemon
+  - flaky
+vcs_refs: []
+created_at: 2026-06-26T20:54:37.807Z
+todos: []
+automation: eligible

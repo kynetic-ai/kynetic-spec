@@ -33313,3 +33313,20 @@
   todos_count: 0
   created_at: 2026-06-26T19:16:52.855Z
   automation: eligible
+- _ulid: 01KW2VD3FG4RGY7011HEXQBWYC
+  slugs:
+    - task-stabilize-daemon-context-manager-coverage-watch-test
+  title: Stabilize daemon context manager coverage source watcher test
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 2
+  tags:
+    - tests
+    - daemon
+    - flaky
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-26T20:54:37.807Z
+  automation: eligible
