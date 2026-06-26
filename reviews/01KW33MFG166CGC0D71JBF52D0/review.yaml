@@ -23,6 +23,20 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-26T23:29:18.496Z
     completed_at: 2026-06-26T23:29:18.496Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full npm test run was started and later stopped after hanging post-run; output showed
+      tests/coverage-resolution.test.ts passed (13 tests) but one transient failure in
+      tests/daemon-context-manager.test.ts. Targeted rerun with npm test --
+      tests/daemon-context-manager.test.ts --fresh passed all 40 tests. The review still requests
+      changes for the confirmed spec-text revert concurrency bug.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-26T23:29:22.401Z
+    completed_at: 2026-06-26T23:29:22.401Z
 events:
   - _ulid: 01KW33MFG1YJJGQ4VB71EEXHDR
     actor: Jacob Chapel
@@ -51,6 +65,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-26T23:29:18.768Z
+  - _ulid: 01KW348ER7HJ3HEK1P9ETD4V4Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full test suite
+    timestamp: 2026-06-26T23:29:22.695Z
 examined_commit: 1a1c5560e7791369b5c455adb44d6bc83353c6df
 external_links: []
 lifecycle_state: open
@@ -63,5 +84,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-26T23:18:28.097Z
-updated_at: 2026-06-26T23:29:18.496Z
+updated_at: 2026-06-26T23:29:22.401Z
 notes: []
