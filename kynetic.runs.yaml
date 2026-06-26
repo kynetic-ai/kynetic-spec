@@ -74436,7 +74436,7 @@ runs:
     completed_at: 2026-06-26T21:39:32.026Z
   - _ulid: 01KW2Y02X4J12G3QD60YN1D1E3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74450,7 +74450,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-26T21:40:34.494Z
-        completed_at: 2026-06-26T21:40:34.494Z
+        completed_at: 2026-06-26T21:40:47.321Z
+        notes: "Friction points: the review evidence log and reproduction snippet still had to be stored as
+          generic review comments/check evidence rather than a structured evidence-log field. Search
+          found existing observations tracking that gap, so no duplicate capture is needed. The long
+          full test run was expected for uncached review verification, not a new systemic issue from
+          this task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-26T21:40:47.321Z
+        completed_at: 2026-06-26T21:40:47.321Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-26T21:39:56.965Z
