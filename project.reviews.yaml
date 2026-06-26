@@ -28310,7 +28310,7 @@ reviews:
     title: Review explicit coverage re-verification mutation
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 7
     examined_commit: fccc7237839c97b9956a2875701ca7ba9c30f361
     lifecycle_state: open
     related_refs: []
@@ -28319,8 +28319,8 @@ reviews:
       content_hash: ""
       ref: "@01KW2NT1RDSG8Q1XE8646E26EC"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-26T22:51:32.106Z
-    updated_at: 2026-06-26T22:52:31.873Z
+    updated_at: 2026-06-26T23:07:13.839Z

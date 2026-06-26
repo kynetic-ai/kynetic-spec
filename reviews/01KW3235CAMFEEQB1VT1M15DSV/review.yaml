@@ -2,7 +2,80 @@ _ulid: 01KW3235CAMFEEQB1VT1M15DSV
 slugs: []
 title: Review explicit coverage re-verification mutation
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; 1122 files checked.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-26T23:06:51.138Z
+    completed_at: 2026-06-26T23:06:51.138Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint reported 0 errors under quiet mode. Focused changed-file oxlint on
+      src/parser/coverage-resolution.ts and tests/coverage-resolution.test.ts reported 0 warnings
+      and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-26T23:06:54.259Z
+    completed_at: 2026-06-26T23:06:54.259Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Typecheck completed successfully after build:shared.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-26T23:06:57.561Z
+    completed_at: 2026-06-26T23:06:57.561Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2914 suites passed of 2914; 11080 tests passed of 11083; 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KW321G5Y3FP8QN1JZVM83740/4a2086f82712b7d0.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-26T23:07:00.711Z
+    completed_at: 2026-06-26T23:07:00.711Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; existing reference warnings only.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-26T23:07:03.721Z
+    completed_at: 2026-06-26T23:07:03.721Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; existing alignment warnings only.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-26T23:07:07.075Z
+    completed_at: 2026-06-26T23:07:07.075Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warnings only.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-26T23:07:10.483Z
+    completed_at: 2026-06-26T23:07:10.483Z
 events:
   - _ulid: 01KW3235CA2VF3V5CD63A5R35J
     actor: Jacob Chapel
@@ -17,6 +90,62 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-26T22:52:32.162Z
+  - _ulid: 01KW32Z73ZCPB3V9Q0864RGQQ7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-26T23:06:51.391Z
+  - _ulid: 01KW32ZA6A19SM60ARDB0XM3J0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-26T23:06:54.538Z
+  - _ulid: 01KW32ZDCTZW679F9X3ZCHS5KZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-26T23:06:57.818Z
+  - _ulid: 01KW32ZGF3E20NJXM24475D6B2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-26T23:07:00.963Z
+  - _ulid: 01KW32ZKE8JZMNDFFJR43X0J8B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-26T23:07:04.008Z
+  - _ulid: 01KW32ZPNC5YEPQV270PK1FSPB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-26T23:07:07.308Z
+  - _ulid: 01KW32ZT1FJAPFZHWWSJ0FXTG8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-26T23:07:10.767Z
+  - _ulid: 01KW32ZX8WG1NYGR2J0FXBCB45
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW32ZX1FDJ66PRSSS54W87Q6
+    timestamp: 2026-06-26T23:07:14.076Z
 examined_commit: fccc7237839c97b9956a2875701ca7ba9c30f361
 external_links: []
 lifecycle_state: open
@@ -26,8 +155,44 @@ subject:
   content_hash: ""
   ref: "@01KW2NT1RDSG8Q1XE8646E26EC"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW32ZX1FDJ66PRSSS54W87Q6
+    entries:
+      - _ulid: 01KW32ZX1FWFAQH31NENDTRWKC
+        author: Jacob Chapel
+        body: >-
+          Review evidence log
+
+
+          Files read: kspec-agents.md; src/parser/coverage-resolution.ts;
+          tests/coverage-resolution.test.ts; src/schema/coverage-resolution.ts;
+          src/parser/verification-record-store.ts; src/parser/coverage-state.ts;
+          src/parser/coverage-state-read-model.ts; src/parser/coverage-evidence-index.ts;
+          src/identity/actor-write-context.ts; src/identity/actor-write.ts.
+
+
+          Commands run: kspec task get @01KW2NT1RDSG8Q1XE8646E26EC; kspec item get
+          @explicit-coverage-reverification; kspec review for-task/get/open; git
+          diff/stat/name-only; rg searches for action wiring and AC annotations; git diff --check;
+          npm run format:check; npm run lint -- --quiet; npx oxlint
+          src/parser/coverage-resolution.ts tests/coverage-resolution.test.ts; npm run typecheck;
+          npm test; kspec validate --refs --warnings-ok; kspec validate --alignment --warnings-ok;
+          kspec validate --completeness --warnings-ok.
+
+
+          Claims verified: applyExplicitReverification resolves the current coverage target, rejects
+          covered/not_yet/failing states before writing, resolves actor through the shared actor
+          rules, writes re_verification stamps through the verification store path, invalidates and
+          reloads the coverage read model, and does not call test-run store APIs. AC annotations
+          exist for all four @explicit-coverage-reverification criteria and the tests are
+          behavioral, not implementation source scans.
+
+
+          Categories searched: correctness, edge cases, error handling, test quality, integration,
+          and unintended source-scanning coverage. No findings.
+        created_at: 2026-06-26T23:07:13.839Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-26T22:51:32.106Z
-updated_at: 2026-06-26T22:52:31.873Z
+updated_at: 2026-06-26T23:07:13.839Z
 notes: []
