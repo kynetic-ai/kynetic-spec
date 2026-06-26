@@ -33205,6 +33205,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-26T19:16:50.170Z
+  automation: eligible
 - _ulid: 01KW2NT1RDSG8Q1XE8646E26EC
   slugs:
     - task-explicit-coverage-reverification
