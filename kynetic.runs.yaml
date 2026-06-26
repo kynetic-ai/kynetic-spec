@@ -74323,7 +74323,7 @@ runs:
     completed_at: 2026-06-26T20:59:25.369Z
   - _ulid: 01KW2WNX5MXBDZ9BF9BJXC6KPS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74343,7 +74343,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-26T21:18:47.350Z
-        completed_at: 2026-06-26T21:18:47.350Z
+        completed_at: 2026-06-26T21:19:16.160Z
+        notes: "High-confidence items from this session: (1) friction captured as @01KW2WRH: review-spawned
+          follow-up tasks can point at sibling-branch-only code/tests without explicit source
+          branch/commit context; (2) not captured as duplicate: long full npm test tail/teardown
+          concern is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run; (3) not captured as
+          duplicate: automation-eligible tasks without spec_ref are covered by
+          @task-triage-automation-eligible-missing-spec-ref; (4) not captured as duplicate: detached
+          snapshot mechanics have substantial existing tracking."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-26T21:19:16.160Z
+        completed_at: 2026-06-26T21:19:16.160Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-26T21:16:54.836Z
