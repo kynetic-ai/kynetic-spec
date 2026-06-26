@@ -3,6 +3,7 @@
 export * from "./action.js";
 export * from "./common.js";
 export * from "./composition.js";
+export * from "./coverage-resolution.js";
 export * from "./dispatch-workspace.js";
 export * from "./event-payloads.js";
 export * from "./event-registry.js";
