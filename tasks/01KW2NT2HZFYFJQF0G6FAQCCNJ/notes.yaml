@@ -12,3 +12,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-26T23:19:55.942Z
+  - _ulid: 01KW34S6SX88CX17E6P4XQNV28
+    content: "Implemented dispatch-fix in src/parser/coverage-resolution.ts. The action now validates
+      current coverage state, rejects covered targets by default, creates ordinary kspec tasks via
+      TaskDataManager, stores a Coverage-Resolution-Key marker in the task description for
+      idempotent reuse, derives the key from a stable issue fingerprint, and uses existing
+      automation=eligible when requested without invoking dispatch directly. Added behavioral tests
+      covering task shape for failing/not-yet/re-verify, default covered rejection, idempotent
+      reuse/duplicates/changed fingerprints, neutral generated body content across two fixture
+      projects, and normal automation fields. Verification run: format:check pass; focused oxlint
+      pass; repo lint --quiet pass with existing warning baseline only; typecheck pass; kspec
+      validate refs/alignment/completeness --warnings-ok pass with existing warnings; focused
+      coverage-resolution test pass; full npm test pass (2914 suites, 11085 passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-26T23:38:31.613Z
