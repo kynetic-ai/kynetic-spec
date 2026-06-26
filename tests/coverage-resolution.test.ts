@@ -1,15 +1,26 @@
-import { describe, expect, it, vi } from "vitest";
+import { execSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type {
   CoverageCriterionStateDetail,
   CoverageItemStateSummary,
   CoverageStateSnapshot,
 } from "@kynetic-ai/shared";
 import {
+  applyExplicitReverification,
   buildCoverageResolutionDryRunResponse,
   CoverageResolutionReadOnlyError,
   CoverageResolutionStaleTargetError,
   resolveCoverageTarget,
 } from "../src/parser/coverage-resolution.js";
+import { invalidateCoverageStateReadModelCache } from "../src/parser/coverage-state-read-model.js";
+import {
+  getVerificationRecordPath,
+  readVerificationStamp,
+  writeVerificationStamp,
+} from "../src/parser/verification-record-store.js";
 import {
   COVERAGE_RESOLUTION_ACTIONS,
   CoverageResolutionRequestSchema,
@@ -17,10 +28,22 @@ import {
   assertCoverageResolutionWritable,
   buildCoverageResolutionPreconditionDiagnostic,
 } from "../src/schema/coverage-resolution.js";
+import { CURRENT_VERIFICATION_RECORD_FORMAT } from "../src/schema/verification-records.js";
+import { initContext } from "../src/parser/yaml.js";
 import type { KspecContext, LoadedSpecItem } from "../src/parser/yaml.js";
-import { testUlid } from "./helpers/cli.js";
+import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
 
 const ITEM_ULID = testUlid("FEAT", 701);
+const SESSION_ID = testUlid("SESS", 701);
+const RUN_ID = testUlid("RUNN", 701);
+const tempDirs: string[] = [];
+
+afterEach(async () => {
+  invalidateCoverageStateReadModelCache();
+  while (tempDirs.length > 0) {
+    await cleanupTempDir(tempDirs.pop()!);
+  }
+});
 
 function makeItem(): LoadedSpecItem {
   return {
@@ -51,6 +74,9 @@ function fakeContext(rootDir = "/tmp/coverage-resolution-contract"): KspecContex
     manifest: null,
     shadow: null,
     config: {
+      identity: {
+        author: "neutral-operator",
+      },
       coverage: {
         scan_paths: ["neutral/tests"],
         exclude_patterns: [],
@@ -59,8 +85,16 @@ function fakeContext(rootDir = "/tmp/coverage-resolution-contract"): KspecContex
   } as unknown as KspecContext;
 }
 
-function criterion(): CoverageCriterionStateDetail {
-  return {
+function criterion(
+  overrides: Partial<
+    Omit<CoverageCriterionStateDetail, "explanation" | "freshness" | "latest_run_evidence">
+  > & {
+    explanation?: Partial<CoverageCriterionStateDetail["explanation"]>;
+    freshness?: Partial<CoverageCriterionStateDetail["freshness"]>;
+    latest_run_evidence?: CoverageCriterionStateDetail["latest_run_evidence"];
+  } = {},
+): CoverageCriterionStateDetail {
+  const base: CoverageCriterionStateDetail = {
     criterion_key: `${ITEM_ULID} ac-stale-text`,
     item_ulid: ITEM_ULID,
     item_ref: "@neutral-resolution-target",
@@ -106,6 +140,18 @@ function criterion(): CoverageCriterionStateDetail {
     },
     unmapped_result_references: [],
   };
+  return {
+    ...base,
+    ...overrides,
+    explanation: {
+      ...base.explanation,
+      ...overrides.explanation,
+    },
+    freshness: {
+      ...base.freshness,
+      ...overrides.freshness,
+    },
+  };
 }
 
 function itemSummary(detail = criterion()): CoverageItemStateSummary {
@@ -123,6 +169,10 @@ function itemSummary(detail = criterion()): CoverageItemStateSummary {
 
 function readModel(): CoverageStateSnapshot {
   const detail = criterion();
+  return readModelFor(detail);
+}
+
+function readModelFor(detail: CoverageCriterionStateDetail): CoverageStateSnapshot {
   const item = itemSummary(detail);
   return {
     summary: {
@@ -141,6 +191,181 @@ function readModel(): CoverageStateSnapshot {
     },
     unmapped_results: [],
   };
+}
+
+function failingCriterion(): CoverageCriterionStateDetail {
+  return criterion({
+    state: "failing_result",
+    presentation: "failing",
+    explanation: {
+      rule: "latest_failed_or_errored_result",
+      sourceEvidenceIds: [`test_run:${RUN_ID}:failed-case`],
+      latestRunId: RUN_ID,
+      secondaryReverifyCauses: [],
+    },
+    latest_run_evidence: [
+      {
+        run_id: RUN_ID,
+        completed_at: "2026-06-24T12:00:00.000Z",
+        case_id: "failed-case",
+        display_name: "fails current behavior",
+        status: "failed",
+        producer: { kind: "local", label: "neutral-runner" },
+        code_revision: "failing-revision",
+      },
+    ],
+    freshness: {
+      recorded: null,
+      secondary_causes: [],
+    },
+  });
+}
+
+function notYetCriterion(): CoverageCriterionStateDetail {
+  return criterion({
+    state: "no_positive_evidence",
+    presentation: "not_yet",
+    explanation: {
+      rule: "no_positive_evidence",
+      sourceEvidenceIds: [],
+      latestRunId: null,
+      secondaryReverifyCauses: [],
+    },
+    freshness: {
+      recorded: null,
+      secondary_causes: [],
+    },
+  });
+}
+
+function coveredCriterion(): CoverageCriterionStateDetail {
+  return criterion({
+    state: "covered",
+    presentation: "covered",
+    explanation: {
+      rule: "current_positive_evidence",
+      secondaryReverifyCauses: [],
+    },
+    freshness: {
+      secondary_causes: [],
+    },
+  });
+}
+
+async function createTempProject(prefix: string): Promise<string> {
+  const tempDir = await createTempDir(prefix);
+  tempDirs.push(tempDir);
+  return tempDir;
+}
+
+async function writeProjectFile(filePath: string, content: string): Promise<void> {
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  await fs.writeFile(filePath, content, "utf-8");
+}
+
+function commit(tempDir: string, message: string, iso: string): string {
+  execSync(`git add -A && git commit -m "${message}"`, {
+    cwd: tempDir,
+    env: {
+      ...process.env,
+      GIT_AUTHOR_DATE: iso,
+      GIT_COMMITTER_DATE: iso,
+    },
+    stdio: "pipe",
+  });
+  return execSync("git rev-parse HEAD", {
+    cwd: tempDir,
+    encoding: "utf-8",
+    stdio: "pipe",
+  }).trim();
+}
+
+async function setupReverifyProject(): Promise<{
+  tempDir: string;
+  ctx: KspecContext;
+  testFile: string;
+  initialCommit: string;
+  updatedCommit: string;
+}> {
+  const tempDir = await createTempProject("coverage-reverify-");
+  initGitRepo(tempDir);
+  await writeProjectFile(
+    path.join(tempDir, "kynetic.yaml"),
+    [
+      'kynetic: "1.1"',
+      "project:",
+      "  name: Coverage Reverify Fixture",
+      "includes:",
+      "  - specs/widget.yaml",
+      "",
+    ].join("\n"),
+  );
+  await writeProjectFile(
+    path.join(tempDir, "kspec.config.yaml"),
+    [
+      "identity:",
+      "  author: neutral-operator",
+      "coverage:",
+      "  scan_paths:",
+      "    - tests",
+      "",
+    ].join("\n"),
+  );
+  await writeProjectFile(
+    path.join(tempDir, "specs", "widget.yaml"),
+    [
+      `- _ulid: ${ITEM_ULID}`,
+      "  title: Neutral Resolution Target",
+      "  slugs: [neutral-resolution-target]",
+      "  type: feature",
+      "  description: Neutral fixture for explicit re-verification.",
+      "  acceptance_criteria:",
+      "    - id: ac-stale-text",
+      "      given: a neutral target has old text",
+      "      when: coverage state is resolved",
+      "      then: explicit re-verification can refresh the stamp",
+      "",
+    ].join("\n"),
+  );
+  const testFile = path.join(tempDir, "tests", "contract.test.ts");
+  await writeProjectFile(
+    testFile,
+    [
+      "// AC: @neutral-resolution-target ac-stale-text",
+      "it('covers old behavior', () => {});",
+      "",
+    ].join("\n"),
+  );
+  const initialCommit = commit(tempDir, "initial coverage fixture", "2026-06-20T10:00:00.000Z");
+  await writeProjectFile(
+    path.join(tempDir, "specs", "widget.yaml"),
+    [
+      `- _ulid: ${ITEM_ULID}`,
+      "  title: Neutral Resolution Target",
+      "  slugs: [neutral-resolution-target]",
+      "  type: feature",
+      "  description: Neutral fixture for explicit re-verification.",
+      "  acceptance_criteria:",
+      "    - id: ac-stale-text",
+      "      given: a neutral target has revised text",
+      "      when: coverage state is recomputed",
+      "      then: explicit re-verification can refresh the current stamp",
+      "",
+    ].join("\n"),
+  );
+  const updatedCommit = commit(
+    tempDir,
+    "update coverage criterion text",
+    "2026-06-21T10:00:00.000Z",
+  );
+  const ctx = await initContext(tempDir, { syncMode: "skip" });
+  await writeVerificationStamp(ctx, ITEM_ULID, "ac-stale-text", {
+    verified_at: "2026-06-20T10:30:00.000Z",
+    actor: "neutral-operator",
+    provenance: "validation",
+    commit: initialCommit,
+  });
+  return { tempDir, ctx, testFile, initialCommit, updatedCommit };
 }
 
 describe("coverage resolution contract", () => {
@@ -452,6 +677,298 @@ describe("coverage resolution contract", () => {
         dryRun: true,
       }),
     ).not.toThrow();
+  });
+
+  // AC: @explicit-coverage-reverification ac-reverify-preconditions
+  // AC: @explicit-coverage-reverification ac-reverify-stamp-written
+  it("accepts current re-verify criteria and writes or replaces a re-verification stamp", async () => {
+    const tempDir = await createTempProject("coverage-resolution-write-");
+    const ctx = fakeContext(tempDir);
+    const loadReadModel = vi.fn<(ctx: KspecContext) => Promise<CoverageStateSnapshot>>(async () =>
+      readModel(),
+    );
+
+    const first = await applyExplicitReverification(
+      ctx,
+      {
+        action: "explicit-reverify",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: false,
+        actor: "neutral-operator",
+        commit: { commit: "request-revision", branch: null, remote_url: null },
+        session_id: SESSION_ID,
+      },
+      {
+        items: [makeItem()],
+        loadReadModel,
+        now: () => "2026-06-25T12:00:00.000Z",
+      },
+    );
+
+    expect(first).toMatchObject({
+      action: "explicit-reverify",
+      dry_run: false,
+      stored: true,
+      effects: [
+        {
+          kind: "verification_stamp",
+          operation: "wrote_stamp",
+          provenance: "re_verification",
+          actor: "neutral-operator",
+          verified_at: "2026-06-25T12:00:00.000Z",
+          commit: "request-revision",
+          session_id: SESSION_ID,
+        },
+        {
+          kind: "cache_event",
+          operation: "invalidated",
+        },
+      ],
+    });
+    expect(loadReadModel).toHaveBeenCalledTimes(2);
+    await expect(readVerificationStamp(ctx, ITEM_ULID, "ac-stale-text")).resolves.toMatchObject({
+      verified_at: "2026-06-25T12:00:00.000Z",
+      actor: "neutral-operator",
+      provenance: "re_verification",
+      commit: "request-revision",
+      session: SESSION_ID,
+    });
+
+    await applyExplicitReverification(
+      ctx,
+      {
+        action: "explicit-reverify",
+        target: { item_ulid: ITEM_ULID, ac_id: "ac-stale-text" },
+        dry_run: false,
+        actor: "neutral-operator",
+      },
+      {
+        items: [makeItem()],
+        loadReadModel,
+        now: () => "2026-06-26T12:00:00.000Z",
+      },
+    );
+
+    await expect(readVerificationStamp(ctx, ITEM_ULID, "ac-stale-text")).resolves.toMatchObject({
+      verified_at: "2026-06-26T12:00:00.000Z",
+      actor: "neutral-operator",
+      provenance: "re_verification",
+      commit: "recorded-revision",
+    });
+    expect(await readVerificationStamp(ctx, ITEM_ULID, "ac-stale-text")).not.toHaveProperty(
+      "session",
+    );
+  });
+
+  // AC: @explicit-coverage-reverification ac-reverify-preconditions
+  it("rejects covered, not-yet, and failing criteria with guided precondition diagnostics", async () => {
+    const tempDir = await createTempProject("coverage-resolution-reject-");
+    const ctx = fakeContext(tempDir);
+
+    const failing = await applyExplicitReverification(
+      ctx,
+      {
+        action: "explicit-reverify",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: false,
+        actor: "neutral-operator",
+      },
+      {
+        items: [makeItem()],
+        loadReadModel: async () => readModelFor(failingCriterion()),
+        now: () => "2026-06-25T12:00:00.000Z",
+      },
+    );
+    const notYet = await applyExplicitReverification(
+      ctx,
+      {
+        action: "explicit-reverify",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: false,
+        actor: "neutral-operator",
+      },
+      {
+        items: [makeItem()],
+        loadReadModel: async () => readModelFor(notYetCriterion()),
+        now: () => "2026-06-25T12:00:00.000Z",
+      },
+    );
+    const covered = await applyExplicitReverification(
+      ctx,
+      {
+        action: "explicit-reverify",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: false,
+        actor: "neutral-operator",
+      },
+      {
+        items: [makeItem()],
+        loadReadModel: async () => readModelFor(coveredCriterion()),
+        now: () => "2026-06-25T12:00:00.000Z",
+      },
+    );
+
+    expect(failing).toMatchObject({
+      stored: false,
+      diagnostics: [
+        {
+          satisfied: false,
+          current_presentation: "failing",
+          suggestion: expect.stringContaining("Fix failing tests"),
+        },
+      ],
+      effects: [],
+    });
+    expect(notYet).toMatchObject({
+      stored: false,
+      diagnostics: [
+        {
+          satisfied: false,
+          current_presentation: "not_yet",
+          suggestion: expect.stringContaining("Add coverage evidence"),
+        },
+      ],
+      effects: [],
+    });
+    expect(covered).toMatchObject({
+      stored: false,
+      diagnostics: [
+        {
+          satisfied: false,
+          current_presentation: "covered",
+          suggestion: expect.stringContaining("Refresh the coverage detail"),
+        },
+      ],
+      effects: [],
+    });
+    expect(existsSync(getVerificationRecordPath(ctx, ITEM_ULID))).toBe(false);
+  });
+
+  // AC: @explicit-coverage-reverification ac-reverify-stamp-written
+  it("propagates verification record format refusal without replacing stored records", async () => {
+    const tempDir = await createTempProject("coverage-resolution-format-");
+    const ctx = fakeContext(tempDir);
+    const recordPath = getVerificationRecordPath(ctx, ITEM_ULID);
+    await fs.mkdir(path.dirname(recordPath), { recursive: true });
+    await fs.writeFile(
+      recordPath,
+      [
+        `format: ${CURRENT_VERIFICATION_RECORD_FORMAT + 1}`,
+        "acs:",
+        "  ac-stale-text:",
+        "    verified_at: 2026-06-24T10:00:00.000Z",
+        "    actor: neutral-operator",
+        "    provenance: validation",
+        "",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    await expect(
+      applyExplicitReverification(
+        ctx,
+        {
+          action: "explicit-reverify",
+          target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+          dry_run: false,
+          actor: "neutral-operator",
+        },
+        {
+          items: [makeItem()],
+          loadReadModel: async () => readModel(),
+          now: () => "2026-06-25T12:00:00.000Z",
+        },
+      ),
+    ).rejects.toMatchObject({
+      code: "verification_record_format_newer_than_supported",
+      declaredVersion: CURRENT_VERIFICATION_RECORD_FORMAT + 1,
+      maxSupportedVersion: CURRENT_VERIFICATION_RECORD_FORMAT,
+    });
+  });
+
+  // AC: @explicit-coverage-reverification ac-reverify-state-clears-when-current
+  it("invalidates and recomputes coverage state so a current stamp clears the stale cause", async () => {
+    const tempDir = await createTempProject("coverage-resolution-recompute-");
+    const ctx = fakeContext(tempDir);
+    const loadReadModel = vi.fn<(ctx: KspecContext) => Promise<CoverageStateSnapshot>>();
+    loadReadModel
+      .mockResolvedValueOnce(readModelFor(criterion()))
+      .mockResolvedValueOnce(readModelFor(coveredCriterion()));
+
+    const response = await applyExplicitReverification(
+      ctx,
+      {
+        action: "explicit-reverify",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: false,
+        actor: "neutral-operator",
+      },
+      {
+        items: [makeItem()],
+        loadReadModel,
+        now: () => "2026-06-22T10:00:00.000Z",
+      },
+    );
+
+    expect(loadReadModel).toHaveBeenCalledTimes(2);
+    expect(response).toMatchObject({
+      stored: true,
+      current: {
+        presentation: "covered",
+        state: "covered",
+      },
+      effects: [
+        {
+          kind: "verification_stamp",
+          operation: "wrote_stamp",
+          commit: "recorded-revision",
+        },
+        {
+          kind: "cache_event",
+          operation: "invalidated",
+        },
+      ],
+    });
+    await expect(readVerificationStamp(ctx, ITEM_ULID, "ac-stale-text")).resolves.toMatchObject({
+      provenance: "re_verification",
+      verified_at: "2026-06-22T10:00:00.000Z",
+    });
+  });
+
+  // AC: @explicit-coverage-reverification ac-reverify-no-test-execution
+  it("writes only verification metadata and does not materialize test-run storage", async () => {
+    const { ctx, tempDir, testFile, initialCommit } = await setupReverifyProject();
+
+    await applyExplicitReverification(
+      ctx,
+      {
+        action: "explicit-reverify",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: false,
+        actor: "neutral-operator",
+        commit: { commit: "manual-review-commit" },
+      },
+      {
+        now: () => "2026-06-22T10:00:00.000Z",
+      },
+    );
+
+    await expect(readVerificationStamp(ctx, ITEM_ULID, "ac-stale-text")).resolves.toMatchObject({
+      provenance: "re_verification",
+      commit: "manual-review-commit",
+    });
+    expect(existsSync(path.join(ctx.specDir, "coverage", "test-runs"))).toBe(false);
+    expect(
+      execSync("git status --short -- tests/contract.test.ts", { cwd: tempDir }).toString(),
+    ).toBe("");
+    expect(
+      execSync(`git log --format=%H -- ${path.relative(tempDir, testFile)}`, {
+        cwd: tempDir,
+      })
+        .toString()
+        .trim()
+        .split("\n"),
+    ).toContain(initialCommit);
   });
 
   // AC: @trait-api-endpoint ac-2 — N/A: this contract module has no daemon route yet.

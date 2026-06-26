@@ -5,6 +5,8 @@ import type {
   CoverageStateSnapshot,
 } from "@kynetic-ai/shared";
 import {
+  assertCoverageResolutionWritable,
+  buildCoverageResolutionPreconditionDiagnostic,
   COVERAGE_RESOLUTION_STALE_TARGET_CODE,
   CoverageResolutionReadOnlyError,
   type CoverageResolutionAction,
@@ -15,6 +17,8 @@ import {
   type CoverageResolutionTarget,
 } from "../schema/coverage-resolution.js";
 import { CoverageResolutionResponseSchema } from "../schema/coverage-resolution.js";
+import type { ActorWriteValidationError, ActorWriteResolution } from "../identity/actor-write.js";
+import { resolveActorForContext } from "../identity/actor-write-context.js";
 import {
   findItemByRef,
   initContext,
@@ -22,7 +26,11 @@ import {
   type KspecContext,
   type LoadedSpecItem,
 } from "./yaml.js";
-import { getCachedCoverageStateReadModel } from "./coverage-state-read-model.js";
+import {
+  getCachedCoverageStateReadModel,
+  invalidateCoverageStateReadModelCache,
+} from "./coverage-state-read-model.js";
+import { writeVerificationStampWithoutCommit } from "./verification-record-store.js";
 
 export { CoverageResolutionReadOnlyError };
 
@@ -30,6 +38,27 @@ export const COVERAGE_RESOLUTION_TARGET_NOT_FOUND_CODE = "coverage_resolution_ta
 export const COVERAGE_RESOLUTION_CRITERION_NOT_FOUND_CODE =
   "coverage_resolution_criterion_not_found";
 export const COVERAGE_RESOLUTION_AMBIGUOUS_TARGET_CODE = "coverage_resolution_ambiguous_target";
+export const COVERAGE_RESOLUTION_ACTOR_INVALID_CODE = "coverage_resolution_actor_invalid";
+
+const EXPLICIT_REVERIFY_REQUIREMENT =
+  "criterion is currently in the re-verify bucket with positive non-failing evidence";
+
+export type ExplicitReverifyCoverageResolutionRequest = Extract<
+  CoverageResolutionRequest,
+  { action: "explicit-reverify" }
+>;
+
+export interface ApplyExplicitReverificationOptions {
+  readOnly?: boolean;
+  items?: LoadedSpecItem[];
+  loadReadModel?: (ctx: KspecContext) => Promise<CoverageStateSnapshot>;
+  now?: () => string;
+  resolveActor?: (
+    ctx: KspecContext,
+    options: { explicit?: string | null; field?: string },
+  ) => Promise<ActorWriteResolution>;
+  writeStamp?: typeof writeVerificationStampWithoutCommit;
+}
 
 export class CoverageResolutionTargetNotFoundError extends Error {
   readonly code: string;
@@ -57,6 +86,19 @@ export class CoverageResolutionStaleTargetError extends Error {
     this.name = "CoverageResolutionStaleTargetError";
     this.expectedFingerprint = options.expectedFingerprint;
     this.currentFingerprint = options.currentFingerprint;
+  }
+}
+
+export class CoverageResolutionActorError extends Error {
+  readonly code = COVERAGE_RESOLUTION_ACTOR_INVALID_CODE;
+  readonly details: ActorWriteValidationError;
+  readonly suggestion: string;
+
+  constructor(details: ActorWriteValidationError) {
+    super(details.message);
+    this.name = "CoverageResolutionActorError";
+    this.details = details;
+    this.suggestion = details.message;
   }
 }
 
@@ -274,6 +316,18 @@ function currentSummary(target: ResolvedCoverageTarget): CoverageResolutionRespo
   };
 }
 
+function affectedCriterionScope(
+  target: ResolvedCoverageTarget,
+): CoverageResolutionResponse["affected_scopes"] {
+  return [
+    {
+      type: "criterion",
+      item_ulid: target.item.item_ulid,
+      ac_id: target.criterion.ac_id,
+    },
+  ];
+}
+
 export function buildCoverageResolutionDryRunResponse(options: {
   action: CoverageResolutionAction;
   target: ResolvedCoverageTarget;
@@ -288,12 +342,218 @@ export function buildCoverageResolutionDryRunResponse(options: {
     current: currentSummary(options.target),
     diagnostics: options.diagnostics ?? [],
     effects: options.effects,
-    affected_scopes: [
-      {
-        type: "criterion",
-        item_ulid: options.target.item.item_ulid,
-        ac_id: options.target.criterion.ac_id,
-      },
-    ],
+    affected_scopes: affectedCriterionScope(options.target),
+  });
+}
+
+function buildCoverageResolutionResponse(options: {
+  action: CoverageResolutionAction;
+  dryRun: boolean;
+  stored: boolean;
+  target: ResolvedCoverageTarget;
+  diagnostics: CoverageResolutionPreconditionDiagnostic[];
+  effects: CoverageResolutionEffect[];
+}): CoverageResolutionResponse {
+  return CoverageResolutionResponseSchema.parse({
+    action: options.action,
+    dry_run: options.dryRun,
+    stored: options.stored,
+    target: targetSummary(options.target),
+    current: currentSummary(options.target),
+    diagnostics: options.diagnostics,
+    effects: options.effects,
+    affected_scopes: affectedCriterionScope(options.target),
+  });
+}
+
+function hasLatestFailedOrErroredResult(criterion: CoverageCriterionStateDetail): boolean {
+  return criterion.latest_run_evidence.some(
+    (evidence) => evidence.status === "failed" || evidence.status === "errored",
+  );
+}
+
+function explicitReverificationSuggestion(target: ResolvedCoverageTarget): string {
+  if (target.criterion.presentation === "covered") {
+    return "Refresh the coverage detail; this criterion is already covered.";
+  }
+  if (target.criterion.presentation === "not_yet") {
+    return "Add coverage evidence for this criterion before re-verifying it.";
+  }
+  if (
+    target.criterion.presentation === "failing" ||
+    hasLatestFailedOrErroredResult(target.criterion)
+  ) {
+    return "Fix failing tests before re-verifying this criterion.";
+  }
+  return "Refresh the coverage detail and retry once the criterion has positive non-failing evidence.";
+}
+
+function canExplicitlyReverify(target: ResolvedCoverageTarget): boolean {
+  return (
+    target.criterion.presentation === "re_verify" &&
+    target.criterion.explanation.rule === "positive_evidence_requires_reverification" &&
+    target.criterion.explanation.sourceEvidenceIds.length > 0 &&
+    !hasLatestFailedOrErroredResult(target.criterion)
+  );
+}
+
+function explicitReverificationDiagnostic(
+  target: ResolvedCoverageTarget,
+): CoverageResolutionPreconditionDiagnostic {
+  const satisfied = canExplicitlyReverify(target);
+  return buildCoverageResolutionPreconditionDiagnostic({
+    criterion: target.criterion,
+    requirement: EXPLICIT_REVERIFY_REQUIREMENT,
+    satisfied,
+    suggestion: satisfied
+      ? "Write a re-verification stamp for the current positive evidence."
+      : explicitReverificationSuggestion(target),
+  });
+}
+
+function selectComparableCommit(
+  request: ExplicitReverifyCoverageResolutionRequest,
+  target: ResolvedCoverageTarget,
+): string | undefined {
+  if (request.commit) return request.commit.commit;
+  if (request.commit === null) return undefined;
+
+  const positiveRunCommit = target.criterion.latest_run_evidence.find(
+    (evidence) =>
+      evidence.status !== "failed" &&
+      evidence.status !== "errored" &&
+      typeof evidence.code_revision === "string" &&
+      evidence.code_revision.length > 0,
+  )?.code_revision;
+  return (
+    positiveRunCommit ??
+    target.criterion.freshness.bootstrap?.commit ??
+    target.criterion.freshness.recorded?.commit ??
+    undefined
+  );
+}
+
+function verificationStampEffect(options: {
+  operation: "would_write_stamp" | "wrote_stamp";
+  target: ResolvedCoverageTarget;
+  actor: string;
+  verifiedAt: string;
+  commit?: string;
+  sessionId?: string | null;
+}): CoverageResolutionEffect {
+  return {
+    kind: "verification_stamp",
+    operation: options.operation,
+    item_ulid: options.target.item.item_ulid,
+    ac_id: options.target.criterion.ac_id,
+    provenance: "re_verification",
+    actor: options.actor,
+    verified_at: options.verifiedAt,
+    ...(options.commit ? { commit: options.commit } : {}),
+    ...(options.sessionId ? { session_id: options.sessionId } : {}),
+  };
+}
+
+function cacheInvalidationEffect(
+  operation: "would_invalidate" | "invalidated",
+  target: ResolvedCoverageTarget,
+): CoverageResolutionEffect {
+  return {
+    kind: "cache_event",
+    operation,
+    scopes: affectedCriterionScope(target),
+  };
+}
+
+async function resolveCoverageResolutionActor(
+  ctx: KspecContext,
+  request: ExplicitReverifyCoverageResolutionRequest,
+  options: ApplyExplicitReverificationOptions,
+): Promise<string> {
+  const actorResult = await (options.resolveActor ?? resolveActorForContext)(ctx, {
+    explicit: request.actor,
+    field: "actor",
+  });
+  if (!actorResult.ok) {
+    throw new CoverageResolutionActorError(actorResult.error);
+  }
+  return actorResult.actor;
+}
+
+export async function applyExplicitReverification(
+  ctx: KspecContext,
+  request: ExplicitReverifyCoverageResolutionRequest,
+  options: ApplyExplicitReverificationOptions = {},
+): Promise<CoverageResolutionResponse> {
+  assertCoverageResolutionWritable({
+    readOnly: options.readOnly,
+    dryRun: request.dry_run,
+  });
+
+  const target = await resolveCoverageTarget(ctx, {
+    request,
+    items: options.items,
+    loadReadModel: options.loadReadModel,
+  });
+  const diagnostic = explicitReverificationDiagnostic(target);
+  if (!diagnostic.satisfied) {
+    return buildCoverageResolutionResponse({
+      action: request.action,
+      dryRun: request.dry_run,
+      stored: false,
+      target,
+      diagnostics: [diagnostic],
+      effects: [],
+    });
+  }
+
+  const actor = await resolveCoverageResolutionActor(ctx, request, options);
+  const verifiedAt = (options.now ?? (() => new Date().toISOString()))();
+  const commit = selectComparableCommit(request, target);
+  const stampEffect = verificationStampEffect({
+    operation: request.dry_run ? "would_write_stamp" : "wrote_stamp",
+    target,
+    actor,
+    verifiedAt,
+    commit,
+    sessionId: request.session_id,
+  });
+
+  if (request.dry_run) {
+    return buildCoverageResolutionDryRunResponse({
+      action: request.action,
+      target,
+      diagnostics: [diagnostic],
+      effects: [stampEffect, cacheInvalidationEffect("would_invalidate", target)],
+    });
+  }
+
+  await (options.writeStamp ?? writeVerificationStampWithoutCommit)(
+    ctx,
+    target.item.item_ulid,
+    target.criterion.ac_id,
+    {
+      verified_at: verifiedAt,
+      actor,
+      provenance: "re_verification",
+      ...(commit ? { commit } : {}),
+      ...(request.session_id ? { session: request.session_id } : {}),
+    },
+  );
+  invalidateCoverageStateReadModelCache(ctx.rootDir);
+
+  const postWriteTarget = await resolveCoverageTarget(ctx, {
+    request,
+    items: options.items,
+    loadReadModel: options.loadReadModel,
+  });
+
+  return buildCoverageResolutionResponse({
+    action: request.action,
+    dryRun: false,
+    stored: true,
+    target: postWriteTarget,
+    diagnostics: [diagnostic],
+    effects: [stampEffect, cacheInvalidationEffect("invalidated", target)],
   });
 }
