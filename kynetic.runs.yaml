@@ -74997,7 +74997,7 @@ runs:
     completed_at: 2026-06-27T00:44:00.286Z
   - _ulid: 01KW38F5GXG5PADGDFATJNBYSS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75010,7 +75010,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-27T00:43:45.933Z
-        completed_at: 2026-06-27T00:43:45.933Z
+        completed_at: 2026-06-27T00:44:04.550Z
+        notes: "High-confidence points considered: (1) temp-project behavioral reproduction was effective in
+          proving a dry-run mutation bug, but this success pattern is already covered by
+          observations @01KP5PWBY, @01KP9XRA, and @01KV67H9; no duplicate capture. (2) queued
+          focused test behind full npm test was extra elapsed time, but it was self-inflicted in
+          this session and not high-confidence systemic enough to capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-27T00:44:04.550Z
+        completed_at: 2026-06-27T00:44:04.550Z
     task_ref: "@01KW2NT2528F5PYRHJYK2K804F"
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
