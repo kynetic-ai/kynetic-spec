@@ -74855,7 +74855,7 @@ runs:
     completed_at: 2026-06-26T23:55:53.816Z
   - _ulid: 01KW36WDPF62TQ1KK2YBXPPYRS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74870,7 +74870,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-27T00:15:55.679Z
-        completed_at: 2026-06-27T00:15:55.679Z
+        completed_at: 2026-06-27T00:16:06.102Z
+        notes: "Friction points: Review bookkeeping required many serial shadow-branch writes after
+          verification: one command per required review check, plus a separate evidence-log comment,
+          then a separate verdict read. This is correct and auditable, but repetitive for automated
+          reviewers and easy to partially omit if interrupted. The full npm test gate also ran for
+          ~44 minutes, but that is expected for this repository and already mitigated by the test
+          runner cache; I do not consider it new friction from this session."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-27T00:16:06.102Z
+        completed_at: 2026-06-27T00:16:06.102Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T00:15:14.127Z
