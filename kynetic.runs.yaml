@@ -75166,7 +75166,7 @@ runs:
     started_at: 2026-06-27T01:26:28.998Z
     completed_at: 2026-06-27T01:27:17.175Z
   - _ulid: 01KW3BTS3KDB57KX6JCJ10SAXE
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -75213,7 +75213,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-27T01:43:33.814Z
-        completed_at: 2026-06-27T01:43:33.814Z
+        completed_at: 2026-06-27T01:43:53.429Z
+        notes: "Captured one success observation: @01KW3BYD. No friction/inbox/task captures were created
+          because the full-test quiet-period friction is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run and no other untracked
+          systemic friction remained."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T01:41:43.155Z
+    completed_at: 2026-06-27T01:43:53.429Z
