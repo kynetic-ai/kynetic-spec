@@ -13,6 +13,19 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-27T00:12:18.250Z
     completed_at: 2026-06-27T00:12:18.250Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint --quiet reported 0 errors; existing warning baseline remains
+      (665 warnings). Focused oxlint on src/parser/coverage-resolution.ts
+      src/schema/coverage-resolution.ts tests/coverage-resolution.test.ts reported 0 warnings and 0
+      errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-27T00:12:28.881Z
+    completed_at: 2026-06-27T00:12:28.881Z
 events:
   - _ulid: 01KW35XW91NWEWEDPC5K8JAHQ4
     actor: Jacob Chapel
@@ -34,6 +47,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-27T00:12:18.516Z
+  - _ulid: 01KW36QCJBF6CS2KJRN5NHK429
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-27T00:12:29.131Z
 examined_commit: 5a4d550492f1245298e019d899a8654a28fe1808
 external_links: []
 lifecycle_state: open
@@ -46,5 +66,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-26T23:58:33.250Z
-updated_at: 2026-06-27T00:12:18.250Z
+updated_at: 2026-06-27T00:12:28.881Z
 notes: []
