@@ -4127,7 +4127,7 @@ features:
       client to reconstruct state or mutation semantics locally.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on:
       - "@coverage-state-engine"
       - "@coverage-state-api-cache"
