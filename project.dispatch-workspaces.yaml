@@ -12363,3 +12363,80 @@ workspaces:
         head: 58a6599dcb7ef7774d51d273c8798c287837290f
         last_seen_at: 2026-06-27T03:47:56.210Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-resolution-cli-daemon-01kw2nt3
+  - active_role: null
+    base_branch_point: d82f0577c6e13f5a7acf5d6f61b0d5b775eb9f33
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-coverage-resolution-events-validation/01kw2nt3
+    canonical_branch_head: d82f0577c6e13f5a7acf5d6f61b0d5b775eb9f33
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-27T04:11:44.343Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-27T04:11:44.343Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: feat/ui-redesign
+      target_commit: d82f0577c6e13f5a7acf5d6f61b0d5b775eb9f33
+      updated_at: 2026-06-27T04:11:44.343Z
+    lifecycle_state: ready
+    resolved_base_branch: feat/ui-redesign
+    task_id: 01KW2NT3ZQG5ESPJVRQQ62Z58R
+    task_ref: "@01KW2NT3ZQG5ESPJVRQQ62Z58R"
+    task_slug: task-coverage-resolution-events-validation
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-27T04:11:44.343Z
+      created_at: 2026-06-27T04:11:44.343Z
+      updated_at: 2026-06-27T04:11:44.343Z
+    workspace_id: dispatch-workspace-01KW2NT3ZQG5ESPJVRQQ62Z58R
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-coverage-resolution-events-validation/01kw2nt3
+        head: d82f0577c6e13f5a7acf5d6f61b0d5b775eb9f33
+        last_seen_at: 2026-06-27T04:11:44.343Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-resolution-events-validation-01kw2nt3
