@@ -203,6 +203,12 @@ events:
     payload:
       thread_ulid: 01KW3HDYDK4Y8Z2SXWKPX18AZA
     timestamp: 2026-06-27T03:43:27.293Z
+  - _ulid: 01KW3JT206C2NY0CWMWM8YC74F
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW3GS2CWN1368JYMY15SGSDG
+    timestamp: 2026-06-27T03:43:39.526Z
 examined_commit: 74b4bdb4734c78043dca16bed05bc12d2f74ef6d
 external_links: []
 lifecycle_state: closed
@@ -243,6 +249,8 @@ threads:
           reverify stored:true advances .kspec HEAD and leaves the shadow worktree clean."
         created_at: 2026-06-27T03:43:23.702Z
     kind: blocker
+    resolved_at: 2026-06-27T03:43:39.269Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KW3HDYDK4Y8Z2SXWKPX18AZA
     entries:
       - _ulid: 01KW3HDYDKWWK1WR1MGCNH5JNC
@@ -279,5 +287,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-27T03:20:02.604Z
 created_at: 2026-06-27T03:02:30.084Z
-updated_at: 2026-06-27T03:43:27.041Z
+updated_at: 2026-06-27T03:43:39.269Z
 notes: []
