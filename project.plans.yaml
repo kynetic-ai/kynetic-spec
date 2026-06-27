@@ -2096,3 +2096,13 @@ plans:
     notes_count: 3
     source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-coverage-resolution-mutations.md
     created_at: 2026-06-26T16:20:18.513Z
+  - _ulid: 01KW4V581GHDGJEMBZ2381JWRC
+    slugs:
+      - plan-unified-spec-workspace
+    title: Unified Spec Workspace
+    status: draft
+    derived_specs: []
+    derived_tasks: []
+    notes_count: 0
+    source_path: /home/chapel/Projects/kynetic-spec/plans/ui-redesign-unified-spec-workspace.md
+    created_at: 2026-06-27T15:28:49.200Z
