@@ -75292,7 +75292,7 @@ runs:
     completed_at: 2026-06-27T02:05:13.612Z
   - _ulid: 01KW3D9QY7KX4Z8A7VZJ748CED
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75325,10 +75325,17 @@ runs:
           1 result(s) found existing observation @01KW3B0A. Searches for  and  found no existing
           success observation.  was not pursued because test-cache/runtime tracking already exists
           and this run completed successfully.
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-06-27T02:09:18.513Z
-        completed_at: 2026-06-27T02:09:18.513Z
+        completed_at: 2026-06-27T02:09:32.359Z
+        notes: No new untracked friction proposal. Existing observation @01KW3B0A covered the
+          comment-preservation gap, and this session addressed it with a targeted YAML document-node
+          mutation helper plus a commented fixture regression.
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-27T02:09:32.359Z
+        completed_at: 2026-06-27T02:09:32.359Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T02:07:22.055Z
