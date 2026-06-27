@@ -11155,12 +11155,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-27T00:44:22.819Z
+      updated_at: 2026-06-27T00:44:44.092Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-27T00:44:22.819Z
+      updated_at: 2026-06-27T00:44:44.092Z
     integration:
       status: pending
       detail: null
@@ -11168,8 +11168,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: faf9fbc02d2e743e57878b50fa38b915cce5d4c8
-      updated_at: 2026-06-27T00:44:22.819Z
-    lifecycle_state: ready
+      updated_at: 2026-06-27T00:44:44.092Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KW316VG32AXWCD0Q2KHRAXDK
     task_ref: "@01KW316VG32AXWCD0Q2KHRAXDK"
@@ -11177,16 +11177,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-27T00:24:22.383Z
-      last_reconciled_at: 2026-06-27T00:44:22.819Z
+      last_reconciled_at: 2026-06-27T00:44:44.092Z
       created_at: 2026-06-27T00:23:52.348Z
-      updated_at: 2026-06-27T00:44:22.819Z
+      updated_at: 2026-06-27T00:44:44.092Z
     workspace_id: dispatch-workspace-01KW316VG32AXWCD0Q2KHRAXDK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 316a10bb402ca9b558a6b7f7e82311f18cca46c2
+        last_seen_at: 2026-06-27T00:44:44.092Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-ac-delete-confirmation-empty-response-stack-trace-flake-01kw316v-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-stabilize-ac-delete-confirmation-empty-response-stack-trace-flake/01kw316v
-        head: faf9fbc02d2e743e57878b50fa38b915cce5d4c8
-        last_seen_at: 2026-06-27T00:23:52.348Z
+        head: 316a10bb402ca9b558a6b7f7e82311f18cca46c2
+        last_seen_at: 2026-06-27T00:44:44.092Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-ac-delete-confirmation-empty-response-stack-trace-flake-01kw316v
