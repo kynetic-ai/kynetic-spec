@@ -69,3 +69,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-27T01:25:24.095Z
+  - _ulid: 01KW3D6QEF9JNKB4DJP7QBVGW1
+    content: "Fix cycle 3: addressed review blocker @01KW3AWMXHFSHXKWAGCQ6W8E5V by replacing the
+      spec-text apply path's full-object acceptance_criteria rewrite with a lock-held YAML
+      document-node helper that updates only targeted AC text scalars, preserving comments and
+      unrelated source bytes. Added a commented fixture regression that asserts the applied spec
+      file differs only in the targeted given/then values; acknowledged/resolved evidence-log nit
+      @01KW3AWQTJZ02B7Q1B4TQ52TBD. Re-verified all @coverage-spec-text-revert ACs with format:check,
+      repo lint --quiet, focused oxlint, typecheck, focused coverage-resolution tests, full npm test
+      (2914 suites / 11092 passed / 3 skipped), and kspec refs/alignment/completeness validations
+      with existing warning baselines."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T02:05:43.247Z
