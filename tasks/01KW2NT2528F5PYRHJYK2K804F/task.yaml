@@ -47,8 +47,13 @@ description: |
 spec_ref: "@coverage-spec-text-revert"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged dispatch/task/task-coverage-spec-text-revert/01kw2nt2 into feat/ui-redesign at
+  630e506c23befc517743128c77eaeb8a39c74d16 after approved review @01KW3DMG. Implemented
+  content-level spec-text revert with dry-run preview, stale-text precondition checks, lock-held
+  fingerprint guard, targeted AC text mutation preserving sibling/source bytes, forward shadow
+  commit, and coverage-state cache invalidation scope.
 depends_on:
   - "@task-coverage-resolution-contract"
 context: []
@@ -287,8 +292,26 @@ history:
         previous: "@01KW3A2C9PC3N0AK2VG6AKGYD2"
     command: review-link
     timestamp: 2026-06-27T02:13:17.594Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged dispatch/task/task-coverage-spec-text-revert/01kw2nt2 into feat/ui-redesign at
+          630e506c23befc517743128c77eaeb8a39c74d16 after approved review @01KW3DMG. Implemented
+          content-level spec-text revert with dry-run preview, stale-text precondition checks,
+          lock-held fingerprint guard, targeted AC text mutation preserving sibling/source bytes,
+          forward shadow commit, and coverage-state cache invalidation scope.
+        previous: null
+      completed_at:
+        new: 2026-06-27T02:28:37.802Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-27T02:28:37.815Z
 created_at: 2026-06-26T19:16:50.978Z
 started_at: 2026-06-27T01:46:24.382Z
 submitted_at: 2026-06-27T02:06:22.238Z
+completed_at: 2026-06-27T02:28:37.802Z
 todos: []
 automation: eligible
