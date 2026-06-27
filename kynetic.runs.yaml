@@ -75223,7 +75223,7 @@ runs:
     started_at: 2026-06-27T01:41:43.155Z
     completed_at: 2026-06-27T01:43:53.429Z
   - _ulid: 01KW3D1Y57QVRWJDZ3T9MQH2ZH
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -75282,7 +75282,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-27T02:04:54.606Z
-        completed_at: 2026-06-27T02:04:54.606Z
+        completed_at: 2026-06-27T02:05:13.611Z
+        notes: Captured friction observation @01KW3D5K for review-gate latency on narrow detached reviews.
+          No task/spec was created because scope requires triage and policy judgment. Existing
+          evidence-log and detached-merge-helper items were not duplicated.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T02:03:06.279Z
+    completed_at: 2026-06-27T02:05:13.612Z
