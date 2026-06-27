@@ -75514,7 +75514,7 @@ runs:
     completed_at: 2026-06-27T03:24:03.507Z
   - _ulid: 01KW3JX34G6SC8B1FD2TK3ZK1T
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75529,7 +75529,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-27T03:46:06.269Z
-        completed_at: 2026-06-27T03:46:06.269Z
+        completed_at: 2026-06-27T03:46:29.558Z
+        notes: "Friction points: the only notable friction was distinguishing a real post-green test hang
+          from late-running quiet suites during full npm test. This is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run and related teardown
+          observations, so no duplicate capture is needed. Another near-miss was that non-shadow
+          adapter fixtures could pass response parity while missing metadata durability; this
+          session fixed the concrete gap with a real shadow-backed CLI regression."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-27T03:46:29.558Z
+        completed_at: 2026-06-27T03:46:29.558Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T03:45:18.992Z
