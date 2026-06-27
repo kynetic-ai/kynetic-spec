@@ -50,7 +50,7 @@ description: |
 spec_ref: "@coverage-resolution-mutation-interface"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-explicit-coverage-reverification"
@@ -64,6 +64,14 @@ tags:
   - daemon
   - api
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-coverage-resolution-cli-daemon/01kw2nt3
+  captured_at: 2026-06-27T02:56:39.724Z
+  commit: 74b4bdb4734c78043dca16bed05bc12d2f74ef6d
+  remote: null
+  remote_url: null
+  upstream_ref: feat/ui-redesign
 session_id: 01KW3EK1TQV2K9WGKEDE6KVG7P
 history:
   - author: Jacob Chapel
@@ -86,7 +94,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-27T02:30:51.765Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-resolution-cli-daemon/01kw2nt3
+          captured_at: 2026-06-27T02:56:39.724Z
+          commit: 74b4bdb4734c78043dca16bed05bc12d2f74ef6d
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous: null
+      submitted_at:
+        new: 2026-06-27T02:56:39.729Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-27T02:56:39.729Z
 created_at: 2026-06-26T19:16:52.038Z
 started_at: 2026-06-27T02:30:51.765Z
+submitted_at: 2026-06-27T02:56:39.729Z
 todos: []
 automation: eligible
