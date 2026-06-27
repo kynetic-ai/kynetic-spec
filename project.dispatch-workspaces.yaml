@@ -11331,7 +11331,7 @@ workspaces:
         head: 316a10bb402ca9b558a6b7f7e82311f18cca46c2
         last_seen_at: 2026-06-27T00:44:44.092Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-ac-delete-confirmation-empty-response-stack-trace-flake-01kw316v
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 9be38a7a052cc51dfd438c3df7d99b286d86eb17
     bootstrap:
       status: succeeded
@@ -11813,7 +11813,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-27T01:45:28.568Z
+      updated_at: 2026-06-27T01:46:18.434Z
     integration:
       status: pending
       detail: null
@@ -11829,10 +11829,10 @@ workspaces:
     task_slug: task-stabilize-shadow-push-cleanup
     timestamps:
       closed_at: null
-      last_active_at: 2026-06-27T01:25:00.760Z
-      last_reconciled_at: 2026-06-27T01:45:28.568Z
+      last_active_at: 2026-06-27T01:46:18.434Z
+      last_reconciled_at: 2026-06-27T01:46:18.434Z
       created_at: 2026-06-27T01:24:30.119Z
-      updated_at: 2026-06-27T01:45:53.274Z
+      updated_at: 2026-06-27T01:46:18.434Z
     workspace_id: dispatch-workspace-01KW3AT40671KPV4GF5AK5C11E
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
