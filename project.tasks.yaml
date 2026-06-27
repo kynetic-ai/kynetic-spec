@@ -33241,7 +33241,7 @@
   type: task
   spec_ref: "@coverage-spec-text-revert"
   plan_ref: "@plan-coverage-resolution-mutations"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-coverage-resolution-contract"
@@ -33254,7 +33254,7 @@
   notes_count: 3
   todos_count: 0
   created_at: 2026-06-26T19:16:50.978Z
-  started_at: 2026-06-26T22:51:58.127Z
+  started_at: 2026-06-27T00:17:54.270Z
   submitted_at: 2026-06-26T23:13:19.273Z
   automation: eligible
 - _ulid: 01KW2NT2HZFYFJQF0G6FAQCCNJ
