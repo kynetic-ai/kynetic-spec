@@ -23478,6 +23478,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-27T03:00:08.782Z
+  - _ulid: 01KW3K0N8Q8VPER767RTG4PY3N
+    type: success
+    content: "When a review finding concerns metadata write durability, a real shadow-backed CLI
+      regression is the right proof: it verifies stored:true effects, shadow branch advancement, and
+      a clean shadow worktree together, while response-shape parity tests alone can miss uncommitted
+      sidecar writes."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-27T03:47:15.864Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
