@@ -12316,18 +12316,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-coverage-resolution-cli-daemon/01kw2nt3
-    canonical_branch_head: 74b4bdb4734c78043dca16bed05bc12d2f74ef6d
+    canonical_branch_head: 58a6599dcb7ef7774d51d273c8798c287837290f
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-27T03:24:57.793Z
+      updated_at: 2026-06-27T03:44:01.817Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-27T03:25:28.772Z
+      updated_at: 2026-06-27T03:44:01.817Z
     integration:
       status: pending
       detail: null
@@ -12335,7 +12335,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 630e506c23befc517743128c77eaeb8a39c74d16
-      updated_at: 2026-06-27T03:24:57.793Z
+      updated_at: 2026-06-27T03:44:01.817Z
     lifecycle_state: active
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW2NT366BEE987XGXR17CDSG
@@ -12344,9 +12344,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-27T03:25:28.772Z
-      last_reconciled_at: 2026-06-27T03:25:28.772Z
+      last_reconciled_at: 2026-06-27T03:44:01.817Z
       created_at: 2026-06-27T02:29:27.855Z
-      updated_at: 2026-06-27T03:25:28.772Z
+      updated_at: 2026-06-27T03:44:01.817Z
     workspace_id: dispatch-workspace-01KW2NT366BEE987XGXR17CDSG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
