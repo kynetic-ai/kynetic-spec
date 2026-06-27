@@ -177,6 +177,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-26T23:30:31.032Z
+  - _ulid: 01KW371Q7W2ZTD91ZW7DDZFQMS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW349MHMFNGNCW4RK67C3WAT
+    timestamp: 2026-06-27T00:18:07.741Z
 examined_commit: 1a1c5560e7791369b5c455adb44d6bc83353c6df
 external_links: []
 lifecycle_state: closed
@@ -209,6 +215,14 @@ threads:
           @coverage-spec-text-revert ac-concurrency-guard, which requires refusing when criterion
           text changes before the apply reaches mutation."
         created_at: 2026-06-26T23:30:01.396Z
+      - _ulid: 01KW371PZ4F4ADDT3ZFN46YTZH
+        author: Jacob Chapel
+        body: "Fixed: applySpecTextRevert now builds the AC update through updateSpecItemFromCurrent, which
+          re-reads the current item and fingerprints the current criterion while holding the YAML
+          file lock before applying the patch. Added a regression that mutates the spec file after
+          planning and verifies the action rejects with CoverageResolutionStaleTargetError without
+          overwriting the concurrent edit."
+        created_at: 2026-06-27T00:18:07.459Z
     kind: blocker
   - _ulid: 01KW34A70E7WNBVXH2F5XK7TH8
     entries:
@@ -242,5 +256,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-26T23:30:31.032Z
 created_at: 2026-06-26T23:18:28.097Z
-updated_at: 2026-06-26T23:30:31.032Z
+updated_at: 2026-06-27T00:18:07.459Z
 notes: []
