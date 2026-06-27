@@ -32,3 +32,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-27T03:20:04.686Z
+  - _ulid: 01KW3JTS32CVNH36GCZFV6BKDM
+    content: "Fix cycle 1: addressed all review threads. Fixed the blocker where CLI reverify reported
+      stored:true after writing verification stamps without a shadow commit by making
+      applyExplicitReverification default to writeVerificationStamp for standalone callers and
+      passing writeVerificationStampWithoutCommit explicitly from daemon runRouteMutation. Added a
+      shadow-backed CLI regression proving reverify advances .kspec HEAD and leaves the shadow
+      worktree clean. Re-verified ACs for CLI/daemon equivalence and API shadow commit behavior plus
+      prior adapter coverage. Gates: format:check pass; focused oxlint changed files pass; repo lint
+      --quiet pass with existing warning baseline; typecheck pass; kspec validate
+      refs/alignment/completeness pass with --warnings-ok; focused adapter test pass; full npm test
+      pass (2916 suites, 11098 passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T03:44:03.170Z
