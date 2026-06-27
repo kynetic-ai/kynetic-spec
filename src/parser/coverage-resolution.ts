@@ -83,6 +83,7 @@ export interface ApplyExplicitReverificationOptions {
 
 export interface ApplyDispatchFixOptions {
   readOnly?: boolean;
+  skipCommit?: boolean;
   items?: LoadedSpecItem[];
   loadReadModel?: (ctx: KspecContext) => Promise<CoverageStateSnapshot>;
 }
@@ -164,6 +165,7 @@ type SpecTextRevertRequest = Extract<CoverageResolutionRequest, { action: "spec-
 export interface SpecTextRevertOptions {
   request: SpecTextRevertRequest;
   readOnly?: boolean;
+  skipCommit?: boolean;
   items?: LoadedSpecItem[];
   loadReadModel?: (ctx: KspecContext) => Promise<CoverageStateSnapshot>;
   readComparison?: (
@@ -784,6 +786,7 @@ async function createDispatchFixTask(options: {
   target: ResolvedCoverageTarget;
   idempotencyKey: string;
   automationEligible: boolean;
+  skipCommit?: boolean;
 }): Promise<LoadedTask> {
   const input: TaskInput = {
     title: taskTitle(options.target),
@@ -800,6 +803,7 @@ async function createDispatchFixTask(options: {
     operation: "coverage-dispatch-fix",
     ref: options.target.item.item_ref,
     detail: `${options.target.item.item_ref} ${options.target.criterion.ac_id}`,
+    skipCommit: options.skipCommit,
   });
 }
 
@@ -1089,6 +1093,7 @@ export async function applyDispatchFixRequest(
     target,
     idempotencyKey,
     automationEligible: request.automation_eligible,
+    skipCommit: options.skipCommit,
   });
   invalidateCoverageStateReadModelCache(ctx.rootDir);
 
@@ -1185,12 +1190,14 @@ export async function applySpecTextRevert(
         }),
     },
   );
-  await commitIfShadow(
-    plan.target.ctx.shadow,
-    "item-ac-set",
-    plan.target.item.item_ref,
-    `${plan.target.criterion.ac_id} spec-text-revert`,
-  );
+  if (options.skipCommit !== true) {
+    await commitIfShadow(
+      plan.target.ctx.shadow,
+      "item-ac-set",
+      plan.target.item.item_ref,
+      `${plan.target.criterion.ac_id} spec-text-revert`,
+    );
+  }
   invalidateCoverageStateReadModelCache(plan.target.ctx.rootDir);
 
   return buildCoverageResolutionResponse({
