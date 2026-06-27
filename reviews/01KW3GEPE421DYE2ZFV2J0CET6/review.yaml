@@ -191,6 +191,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-27T03:20:02.605Z
+  - _ulid: 01KW3JSJSKZFXBGDWCK9Z17BR3
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW3GS2CWN1368JYMY15SGSDG
+    timestamp: 2026-06-27T03:43:23.955Z
 examined_commit: 74b4bdb4734c78043dca16bed05bc12d2f74ef6d
 external_links: []
 lifecycle_state: closed
@@ -222,6 +228,14 @@ threads:
           uncommitted and easy to lose; make the CLI path commit the reverify write, or route it
           through the same mutation pipeline semantics as the daemon."
         created_at: 2026-06-27T03:08:10.012Z
+      - _ulid: 01KW3JSJHQYD6ZJ7XYVJHHEZD6
+        author: Jacob Chapel
+        body: "Fixed in 58a6599dcb: applyExplicitReverification now defaults to the committing
+          verification-stamp writer for standalone CLI/service callers, while the daemon route
+          explicitly passes writeVerificationStampWithoutCommit inside runRouteMutation so
+          route-owned commits remain single-commit. Added a shadow-backed CLI regression proving
+          reverify stored:true advances .kspec HEAD and leaves the shadow worktree clean."
+        created_at: 2026-06-27T03:43:23.702Z
     kind: blocker
   - _ulid: 01KW3HDYDK4Y8Z2SXWKPX18AZA
     entries:
@@ -253,5 +267,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-27T03:20:02.604Z
 created_at: 2026-06-27T03:02:30.084Z
-updated_at: 2026-06-27T03:20:02.604Z
+updated_at: 2026-06-27T03:43:23.702Z
 notes: []
