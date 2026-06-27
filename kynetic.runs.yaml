@@ -75167,7 +75167,7 @@ runs:
     completed_at: 2026-06-27T01:27:17.175Z
   - _ulid: 01KW3BTS3KDB57KX6JCJ10SAXE
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75199,7 +75199,15 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-27T01:43:11.526Z
-        completed_at: 2026-06-27T01:43:11.526Z
+        completed_at: 2026-06-27T01:43:22.018Z
+        notes: "No untracked friction improvement proposed. Candidate capture is a success observation, not
+          new work: before adding tests for an existing helper behavior, search for helper-level
+          coverage; if present, reuse it and keep the task diff at the affected call site. Scope
+          impact: process learning only."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-27T01:43:22.018Z
+        completed_at: 2026-06-27T01:43:22.018Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T01:41:43.155Z
