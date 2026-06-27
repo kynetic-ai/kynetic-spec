@@ -10819,7 +10819,7 @@ workspaces:
         head: 5a4d550492f1245298e019d899a8654a28fe1808
         last_seen_at: 2026-06-26T23:57:10.336Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-dispatch-fix-request-01kw2nt2
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: faf9fbc02d2e743e57878b50fa38b915cce5d4c8
     bootstrap:
       status: succeeded
@@ -11318,9 +11318,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-27T00:45:21.395Z
-      last_reconciled_at: 2026-06-27T01:04:06.228Z
+      last_reconciled_at: 2026-06-27T01:06:43.325Z
       created_at: 2026-06-27T00:23:52.348Z
-      updated_at: 2026-06-27T01:04:06.228Z
+      updated_at: 2026-06-27T01:06:43.325Z
     workspace_id: dispatch-workspace-01KW316VG32AXWCD0Q2KHRAXDK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
