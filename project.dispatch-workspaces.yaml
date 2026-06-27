@@ -11662,12 +11662,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-27T01:44:58.803Z
+      updated_at: 2026-06-27T01:45:28.568Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-27T01:44:58.803Z
+      updated_at: 2026-06-27T01:45:28.568Z
     integration:
       status: pending
       detail: null
@@ -11675,7 +11675,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9be38a7a052cc51dfd438c3df7d99b286d86eb17
-      updated_at: 2026-06-27T01:44:58.803Z
+      updated_at: 2026-06-27T01:45:28.568Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_id: 01KW3AT40671KPV4GF5AK5C11E
@@ -11684,16 +11684,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-27T01:25:00.760Z
-      last_reconciled_at: 2026-06-27T01:44:58.803Z
+      last_reconciled_at: 2026-06-27T01:45:28.568Z
       created_at: 2026-06-27T01:24:30.119Z
-      updated_at: 2026-06-27T01:44:58.803Z
+      updated_at: 2026-06-27T01:45:28.568Z
     workspace_id: dispatch-workspace-01KW3AT40671KPV4GF5AK5C11E
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: fde630e2939347e110a1a3d3e8f3ae812ba528fc
+        last_seen_at: 2026-06-27T01:45:28.568Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-shadow-push-cleanup-01kw3at4-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-stabilize-shadow-push-cleanup/01kw3at4
-        head: 9be38a7a052cc51dfd438c3df7d99b286d86eb17
-        last_seen_at: 2026-06-27T01:24:30.119Z
+        head: fde630e2939347e110a1a3d3e8f3ae812ba528fc
+        last_seen_at: 2026-06-27T01:45:28.568Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-shadow-push-cleanup-01kw3at4
