@@ -50,7 +50,7 @@ description: |
 spec_ref: "@coverage-resolution-mutation-interface"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-explicit-coverage-reverification"
@@ -68,11 +68,11 @@ review_ref: "@01KW3GEPE421DYE2ZFV2J0CET6"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-coverage-resolution-cli-daemon/01kw2nt3
-  captured_at: 2026-06-27T02:56:39.724Z
-  commit: 74b4bdb4734c78043dca16bed05bc12d2f74ef6d
-  remote: null
-  remote_url: null
-  upstream_ref: feat/ui-redesign
+  captured_at: 2026-06-27T03:44:32.924Z
+  commit: 58a6599dcb7ef7774d51d273c8798c287837290f
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-coverage-resolution-cli-daemon/01kw2nt3
 session_id: 01KW3HRNRDAYDX4AEF0BJHTNGQ
 history:
   - author: Jacob Chapel
@@ -145,8 +145,35 @@ history:
         previous: 2026-06-27T02:30:51.765Z
     command: task-start
     timestamp: 2026-06-27T03:26:39.364Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-resolution-cli-daemon/01kw2nt3
+          captured_at: 2026-06-27T03:44:32.924Z
+          commit: 58a6599dcb7ef7774d51d273c8798c287837290f
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-coverage-resolution-cli-daemon/01kw2nt3
+        previous:
+          review_url: null
+          branch: dispatch/task/task-coverage-resolution-cli-daemon/01kw2nt3
+          captured_at: 2026-06-27T02:56:39.724Z
+          commit: 74b4bdb4734c78043dca16bed05bc12d2f74ef6d
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+      submitted_at:
+        new: 2026-06-27T03:44:32.930Z
+        previous: 2026-06-27T02:56:39.729Z
+    command: task-submit
+    timestamp: 2026-06-27T03:44:32.930Z
 created_at: 2026-06-26T19:16:52.038Z
 started_at: 2026-06-27T03:26:39.364Z
-submitted_at: 2026-06-27T02:56:39.729Z
+submitted_at: 2026-06-27T03:44:32.930Z
 todos: []
 automation: eligible
