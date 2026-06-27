@@ -11292,11 +11292,11 @@ workspaces:
     canonical_branch: dispatch/task/task-stabilize-ac-delete-confirmation-empty-response-stack-trace-flake/01kw316v
     canonical_branch_head: 316a10bb402ca9b558a6b7f7e82311f18cca46c2
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-27T01:04:06.228Z
+      updated_at: 2026-06-27T01:07:16.288Z
     health:
       status: healthy
       issues: []
@@ -11310,17 +11310,17 @@ workspaces:
       target_branch: dev
       target_commit: faf9fbc02d2e743e57878b50fa38b915cce5d4c8
       updated_at: 2026-06-27T01:04:06.228Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KW316VG32AXWCD0Q2KHRAXDK
     task_ref: "@01KW316VG32AXWCD0Q2KHRAXDK"
     task_slug: task-stabilize-ac-delete-confirmation-empty-response-stack-trace-flake
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-27T01:07:16.288Z
       last_active_at: 2026-06-27T00:45:21.395Z
       last_reconciled_at: 2026-06-27T01:06:51.852Z
       created_at: 2026-06-27T00:23:52.348Z
-      updated_at: 2026-06-27T01:06:51.852Z
+      updated_at: 2026-06-27T01:07:16.288Z
     workspace_id: dispatch-workspace-01KW316VG32AXWCD0Q2KHRAXDK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
