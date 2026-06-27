@@ -10272,12 +10272,17 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-27T00:45:24.637Z
+      updated_at: 2026-06-27T00:47:00.221Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-27T00:45:57.961Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-spec-text-revert-01kw2nt2"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-06-27T00:47:00.221Z
     integration:
       status: pending
       detail: null
@@ -10285,8 +10290,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 929ca776cca711113af9a51c3635518af1886f10
-      updated_at: 2026-06-27T00:45:24.637Z
-    lifecycle_state: active
+      updated_at: 2026-06-27T00:47:00.221Z
+    lifecycle_state: stale
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW2NT2528F5PYRHJYK2K804F
     task_ref: "@01KW2NT2528F5PYRHJYK2K804F"
@@ -10294,9 +10299,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-27T00:45:57.961Z
-      last_reconciled_at: 2026-06-27T00:45:57.961Z
+      last_reconciled_at: 2026-06-27T00:47:00.221Z
       created_at: 2026-06-26T22:50:50.870Z
-      updated_at: 2026-06-27T00:45:57.961Z
+      updated_at: 2026-06-27T00:47:00.221Z
     workspace_id: dispatch-workspace-01KW2NT2528F5PYRHJYK2K804F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
