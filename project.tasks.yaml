@@ -33373,7 +33373,7 @@
     - task-stabilize-shadow-push-cleanup
   title: Stabilize shadow.test bare repo cleanup after shadowPushAsync
   type: bug
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -33383,4 +33383,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-27T01:23:52.966Z
+  started_at: 2026-06-27T01:25:41.592Z
   automation: eligible
