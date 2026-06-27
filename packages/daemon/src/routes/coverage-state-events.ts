@@ -5,6 +5,7 @@ import type {
   CoverageStateSummary,
   SpecItemChangedEventData,
 } from "@kynetic-ai/shared";
+import type { CoverageResolutionResponse } from "../../schema/coverage-resolution.js";
 import type { MutationEventDescriptor } from "../../mutation-pipeline.js";
 import type { TestResultIngestionSummary } from "../../parser/index.js";
 
@@ -122,5 +123,109 @@ export function buildCoverageStateChangedEventForSpecMutations(
     },
     scope: unresolvedItem ? "project" : "precise",
     reason: "spec_mutation",
+  };
+}
+
+function coverageResolutionReason(
+  response: CoverageResolutionResponse,
+): CoverageStateChangedEventData["reason"] {
+  switch (response.action) {
+    case "explicit-reverify":
+      return "verification_stamp";
+    case "spec-text-revert":
+      return "spec_mutation";
+    case "dispatch-fix":
+      return "cache_invalidation";
+  }
+}
+
+export function buildCoverageStateChangedEventForResolution(
+  response: CoverageResolutionResponse,
+  model: CoverageStateSnapshot,
+): CoverageStateChangedEventData | null {
+  if (!response.stored || response.dry_run) {
+    return null;
+  }
+
+  let projectScope = false;
+  const affected = new Map<string, { item_ulid: string; item_ref?: string; acIds: Set<string> }>();
+  const addCriterion = (itemUlid: string, acId: string) => {
+    const item = model.items[itemUlid];
+    if (!item) {
+      projectScope = true;
+      const unresolved = affected.get(itemUlid) ?? {
+        item_ulid: itemUlid,
+        acIds: new Set<string>(),
+      };
+      unresolved.acIds.add(acId);
+      affected.set(itemUlid, unresolved);
+      return;
+    }
+    const entry = affected.get(item.item_ulid) ?? {
+      item_ulid: item.item_ulid,
+      item_ref: item.item_ref,
+      acIds: new Set<string>(),
+    };
+    entry.acIds.add(acId);
+    affected.set(item.item_ulid, entry);
+  };
+
+  for (const scope of response.affected_scopes) {
+    switch (scope.type) {
+      case "criterion":
+        addCriterion(scope.item_ulid, scope.ac_id);
+        break;
+      case "item": {
+        const item = model.items[scope.item_ulid];
+        if (!item) {
+          projectScope = true;
+          affected.set(scope.item_ulid, {
+            item_ulid: scope.item_ulid,
+            acIds: new Set<string>(),
+          });
+          break;
+        }
+        affected.set(item.item_ulid, {
+          item_ulid: item.item_ulid,
+          item_ref: item.item_ref,
+          acIds: new Set(allCriterionIds(item)),
+        });
+        break;
+      }
+      case "project":
+        projectScope = true;
+        break;
+    }
+  }
+
+  if (affected.size === 0 && !projectScope) {
+    addCriterion(response.target.item_ulid, response.target.ac_id);
+  }
+
+  const affectedItems = [...affected.values()].map((entry) => {
+    const acIds = uniqueSorted(entry.acIds);
+    const item = model.items[entry.item_ulid];
+    return {
+      item_ulid: entry.item_ulid,
+      ...(entry.item_ref ? { item_ref: entry.item_ref } : {}),
+      ...(acIds.length > 0 ? { ac_ids: acIds } : {}),
+      ...(item && acIds.length > 0 ? { buckets: bucketsForCriteria(item, acIds) } : {}),
+    };
+  });
+
+  return {
+    action: "changed",
+    family: "coverage_state",
+    affected: {
+      items: affectedItems,
+    },
+    refresh: {
+      project_summary: true,
+      item_detail: affectedItems.length > 0,
+      criterion_detail: affectedItems.some((item) => (item.ac_ids?.length ?? 0) > 0),
+      unmapped_results: projectScope,
+    },
+    scope: projectScope ? "project" : "precise",
+    reason: coverageResolutionReason(response),
   };
 }

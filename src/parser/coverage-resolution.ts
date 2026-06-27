@@ -19,6 +19,7 @@ import {
   type CoverageResolutionTarget,
 } from "../schema/coverage-resolution.js";
 import { CoverageResolutionResponseSchema } from "../schema/coverage-resolution.js";
+import { recordMutationEvents } from "../mutation-pipeline.js";
 import type { ActorWriteValidationError, ActorWriteResolution } from "../identity/actor-write.js";
 import { resolveActorForContext } from "../identity/actor-write-context.js";
 import type { TaskInput } from "../schema/task.js";
@@ -59,6 +60,8 @@ const EXPLICIT_REVERIFY_REQUIREMENT =
 const DISPATCH_FIX_REQUIREMENT =
   "criterion is currently in the failing, not-yet, or re-verify bucket";
 const DISPATCH_FIX_IDEMPOTENCY_PREFIX = "Coverage-Resolution-Key:";
+const COVERAGE_RESOLUTION_INTERNAL_EVENT_TOPIC = "internal:coverage-resolution";
+const COVERAGE_RESOLUTION_INTERNAL_EVENT_NAME = "coverage_resolution_applied";
 
 export type ExplicitReverifyCoverageResolutionRequest = Extract<
   CoverageResolutionRequest,
@@ -531,6 +534,20 @@ function cacheInvalidationEffect(
     operation,
     scopes: affectedCriterionScope(target),
   };
+}
+
+function recordCoverageResolutionApplied(response: CoverageResolutionResponse): void {
+  if (!response.stored || response.dry_run) {
+    return;
+  }
+
+  recordMutationEvents([
+    {
+      topic: COVERAGE_RESOLUTION_INTERNAL_EVENT_TOPIC,
+      event: COVERAGE_RESOLUTION_INTERNAL_EVENT_NAME,
+      data: response as unknown as Record<string, unknown>,
+    },
+  ]);
 }
 
 function canonicalize(value: unknown): unknown {
@@ -1011,7 +1028,7 @@ export async function applyExplicitReverification(
     loadReadModel: options.loadReadModel,
   });
 
-  return buildCoverageResolutionResponse({
+  const response = buildCoverageResolutionResponse({
     action: request.action,
     dryRun: false,
     stored: true,
@@ -1019,6 +1036,8 @@ export async function applyExplicitReverification(
     diagnostics: [diagnostic],
     effects: [stampEffect, cacheInvalidationEffect("invalidated", target)],
   });
+  recordCoverageResolutionApplied(response);
+  return response;
 }
 
 export async function applyDispatchFixRequest(
@@ -1097,7 +1116,7 @@ export async function applyDispatchFixRequest(
   });
   invalidateCoverageStateReadModelCache(ctx.rootDir);
 
-  return buildCoverageResolutionResponse({
+  const response = buildCoverageResolutionResponse({
     action: request.action,
     dryRun: false,
     stored: true,
@@ -1114,6 +1133,8 @@ export async function applyDispatchFixRequest(
       cacheInvalidationEffect("invalidated", target),
     ],
   });
+  recordCoverageResolutionApplied(response);
+  return response;
 }
 
 export async function previewSpecTextRevert(
@@ -1200,7 +1221,7 @@ export async function applySpecTextRevert(
   }
   invalidateCoverageStateReadModelCache(plan.target.ctx.rootDir);
 
-  return buildCoverageResolutionResponse({
+  const response = buildCoverageResolutionResponse({
     action: "spec-text-revert",
     dryRun: false,
     stored: true,
@@ -1227,4 +1248,6 @@ export async function applySpecTextRevert(
       cacheInvalidationEffect("invalidated", plan.target),
     ],
   });
+  recordCoverageResolutionApplied(response);
+  return response;
 }

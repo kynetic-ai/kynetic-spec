@@ -44,13 +44,23 @@ import {
   type MutationEventDescriptor,
 } from "../../mutation-pipeline.js";
 import {
+  CoverageResolutionResponseSchema,
+  type CoverageResolutionResponse,
+} from "../../schema/coverage-resolution.js";
+import {
   getCachedCoverageStateReadModel,
   initContext,
   invalidateCoverageStateReadModelCache,
 } from "../../parser/index.js";
-import { buildCoverageStateChangedEventForSpecMutations } from "./coverage-state-events.js";
+import {
+  buildCoverageStateChangedEventForResolution,
+  buildCoverageStateChangedEventForSpecMutations,
+} from "./coverage-state-events.js";
 
 // ── Types ──────────────────────────────────────────────────────────
+
+const COVERAGE_RESOLUTION_INTERNAL_EVENT_TOPIC = "internal:coverage-resolution";
+const COVERAGE_RESOLUTION_INTERNAL_EVENT_NAME = "coverage_resolution_applied";
 
 /** Single command payload (matches kspec batch JSON format) */
 interface CommandPayload {
@@ -85,8 +95,18 @@ function broadcastCollectedMutationEvents(
   projectPath: string,
 ): void {
   for (const descriptor of events) {
+    if (isInternalCoverageResolutionEvent(descriptor)) {
+      continue;
+    }
     pubsub.broadcast(descriptor.topic, descriptor.event, descriptor.data, projectPath);
   }
+}
+
+function isInternalCoverageResolutionEvent(descriptor: MutationEventDescriptor): boolean {
+  return (
+    descriptor.topic === COVERAGE_RESOLUTION_INTERNAL_EVENT_TOPIC &&
+    descriptor.event === COVERAGE_RESOLUTION_INTERNAL_EVENT_NAME
+  );
 }
 
 async function broadcastCoverageStateForSpecMutations(
@@ -115,6 +135,70 @@ async function broadcastCoverageStateForSpecMutations(
     () => null,
     projectPath,
   );
+}
+
+function coverageResolutionResponseFromCommand(
+  payload: CommandPayload,
+  result: CommandResult,
+): CoverageResolutionResponse | null {
+  if (!normalizeCommandKey(payload.command).startsWith("coverage resolve ")) {
+    return null;
+  }
+  if (result.exitCode !== 0) {
+    return null;
+  }
+
+  try {
+    return CoverageResolutionResponseSchema.parse(JSON.parse(result.stdout));
+  } catch {
+    return null;
+  }
+}
+
+function coverageResolutionResponseFromEvents(
+  events: readonly MutationEventDescriptor[],
+): CoverageResolutionResponse | null {
+  const descriptor = events.findLast(isInternalCoverageResolutionEvent);
+  if (!descriptor) {
+    return null;
+  }
+  try {
+    return CoverageResolutionResponseSchema.parse(descriptor.data);
+  } catch {
+    return null;
+  }
+}
+
+async function broadcastCoverageStateForResolutionCommand(
+  events: readonly MutationEventDescriptor[],
+  payload: CommandPayload,
+  result: CommandResult,
+  pubsub: PubSubManager,
+  projectPath: string,
+): Promise<boolean> {
+  const response =
+    coverageResolutionResponseFromEvents(events) ??
+    coverageResolutionResponseFromCommand(payload, result);
+  if (!response || !response.stored || response.dry_run) {
+    return false;
+  }
+
+  await runWithEntityCache(
+    async () => {
+      invalidateCoverageStateReadModelCache(projectPath);
+      const ctx = await initContext(projectPath, { syncMode: "skip" });
+      const model = await getCachedCoverageStateReadModel(ctx);
+      const coverageEvent = buildCoverageStateChangedEventForResolution(response, model);
+      if (!coverageEvent) {
+        return;
+      }
+
+      pubsub.broadcast("items:updates", "coverage_state_changed", coverageEvent, projectPath);
+    },
+    () => null,
+    projectPath,
+  );
+  return true;
 }
 
 function serializeConsoleArgs(args: unknown[]): string {
@@ -898,7 +982,17 @@ export function createCommandRoutes(options: CommandRouteOptions) {
                 }
 
                 const events = mutationEvents.drain();
-                await broadcastCoverageStateForSpecMutations(events, pubsub, projectContext.path);
+                const resolutionCoverageEventBroadcasted =
+                  await broadcastCoverageStateForResolutionCommand(
+                    events,
+                    payload,
+                    result,
+                    pubsub,
+                    projectContext.path,
+                  );
+                if (!resolutionCoverageEventBroadcasted) {
+                  await broadcastCoverageStateForSpecMutations(events, pubsub, projectContext.path);
+                }
                 broadcastCollectedMutationEvents(events, pubsub, projectContext.path);
 
                 // AC: @daemon-command-api ac-mutation-cache-update — WebSocket broadcast
