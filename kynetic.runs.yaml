@@ -74854,7 +74854,7 @@ runs:
     started_at: 2026-06-26T23:53:46.154Z
     completed_at: 2026-06-26T23:55:53.816Z
   - _ulid: 01KW36WDPF62TQ1KK2YBXPPYRS
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -74901,10 +74901,14 @@ runs:
         completed_at: 2026-06-27T00:17:05.993Z
         notes: "Skipped discussion: no untracked improvements were proposed, so there is nothing to ask the
           user to approve for capture."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-27T00:17:05.993Z
-        completed_at: 2026-06-27T00:17:05.993Z
+        completed_at: 2026-06-27T00:17:15.486Z
+        notes: No capture performed. The friction found during this reflection is already tracked by inbox
+          @01KQ1272 and observation @01KQ1272; adding another item would duplicate existing
+          coverage.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T00:15:14.127Z
+    completed_at: 2026-06-27T00:17:15.486Z
