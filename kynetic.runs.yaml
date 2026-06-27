@@ -74956,7 +74956,7 @@ runs:
     completed_at: 2026-06-27T00:22:13.794Z
   - _ulid: 01KW38E3MY76BXESKDSQRC959G
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74969,7 +74969,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-27T00:43:07.833Z
-        completed_at: 2026-06-27T00:43:07.833Z
+        completed_at: 2026-06-27T00:43:37.079Z
+        notes: "Identified one high-confidence success: in CLI-heavy behavioral tests, using kspec batch for
+          per-test setup reduces subprocess/shadow-mutation fan-out and gives clearer setup
+          diagnostics. Known STACK_TRACE_ERROR/full-suite contention friction was already covered by
+          existing tasks/observations, including @01KTYBHYK, so no duplicate friction item was
+          captured."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-27T00:43:37.079Z
+        completed_at: 2026-06-27T00:43:37.079Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-27T00:42:22.238Z
