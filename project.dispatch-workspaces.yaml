@@ -10824,7 +10824,7 @@ workspaces:
         head: 5a4d550492f1245298e019d899a8654a28fe1808
         last_seen_at: 2026-06-26T23:57:10.336Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-dispatch-fix-request-01kw2nt2
-  - active_role: null
+  - active_role: worker
     base_branch_point: faf9fbc02d2e743e57878b50fa38b915cce5d4c8
     bootstrap:
       status: succeeded
@@ -11160,7 +11160,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-27T00:23:52.348Z
+      updated_at: 2026-06-27T00:24:22.383Z
     integration:
       status: pending
       detail: null
@@ -11169,17 +11169,17 @@ workspaces:
       target_branch: dev
       target_commit: faf9fbc02d2e743e57878b50fa38b915cce5d4c8
       updated_at: 2026-06-27T00:23:52.348Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KW316VG32AXWCD0Q2KHRAXDK
     task_ref: "@01KW316VG32AXWCD0Q2KHRAXDK"
     task_slug: task-stabilize-ac-delete-confirmation-empty-response-stack-trace-flake
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-06-27T00:23:52.348Z
+      last_active_at: 2026-06-27T00:24:22.383Z
+      last_reconciled_at: 2026-06-27T00:24:22.383Z
       created_at: 2026-06-27T00:23:52.348Z
-      updated_at: 2026-06-27T00:24:17.539Z
+      updated_at: 2026-06-27T00:24:22.383Z
     workspace_id: dispatch-workspace-01KW316VG32AXWCD0Q2KHRAXDK
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
