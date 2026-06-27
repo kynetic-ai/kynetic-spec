@@ -75292,7 +75292,7 @@ runs:
     completed_at: 2026-06-27T02:05:13.612Z
   - _ulid: 01KW3D9QY7KX4Z8A7VZJ748CED
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75305,7 +75305,14 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-27T02:08:39.950Z
-        completed_at: 2026-06-27T02:08:39.950Z
+        completed_at: 2026-06-27T02:08:55.784Z
+        notes: "Friction: the prior apply path used plain-object YAML serialization, which was too broad for
+          an AC requiring sibling comments and unrelated bytes to remain equivalent. Existing
+          tracking found as observation @01KW3B0A, so no duplicate friction item is needed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-27T02:08:55.784Z
+        completed_at: 2026-06-27T02:08:55.784Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T02:07:22.055Z
