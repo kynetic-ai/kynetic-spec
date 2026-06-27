@@ -15,7 +15,7 @@ description: "During review of @01KW2VD3FG4RGY7011HEXQBWYC on 2026-06-26, the fu
 spec_ref: "@spec-ac-delete-confirmation"
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -25,6 +25,14 @@ tags:
   - flaky
   - cli
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-stabilize-ac-delete-confirmation-empty-response-stack-trace-flake/01kw316v
+  captured_at: 2026-06-27T00:41:18.278Z
+  commit: 316a10bb402ca9b558a6b7f7e82311f18cca46c2
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KW37D2ARQQ370KQ9YP8CE2XE
 history:
   - author: Jacob Chapel
@@ -40,7 +48,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-27T00:25:14.106Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-stabilize-ac-delete-confirmation-empty-response-stack-trace-flake/01kw316v
+          captured_at: 2026-06-27T00:41:18.278Z
+          commit: 316a10bb402ca9b558a6b7f7e82311f18cca46c2
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-27T00:41:18.283Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-27T00:41:18.284Z
 created_at: 2026-06-26T22:36:04.483Z
 started_at: 2026-06-27T00:25:14.105Z
+submitted_at: 2026-06-27T00:41:18.283Z
 todos: []
 automation: eligible
