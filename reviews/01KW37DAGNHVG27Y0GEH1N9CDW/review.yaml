@@ -192,6 +192,12 @@ events:
     payload:
       thread_ulid: 01KW38CJJHDJKGFPWW6DQKANSR
     timestamp: 2026-06-27T01:03:06.056Z
+  - _ulid: 01KW39M5KWD87VT8CKXGHK889S
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW38D5Z6SHK2T77C5GXA3AA6
+    timestamp: 2026-06-27T01:03:09.436Z
 examined_commit: 14e4d05776358ddb9f15b24ec1111850675a11e8
 external_links: []
 lifecycle_state: closed
@@ -288,6 +294,8 @@ threads:
           verification was rerun on the rebased branch."
         created_at: 2026-06-27T01:03:02.336Z
     kind: nit
+    resolved_at: 2026-06-27T01:03:09.183Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -297,5 +305,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-27T00:42:02.915Z
 created_at: 2026-06-27T00:24:27.925Z
-updated_at: 2026-06-27T01:03:05.801Z
+updated_at: 2026-06-27T01:03:09.183Z
 notes: []
