@@ -1,0 +1,26 @@
+_ulid: 01KW4VWQVFKM4BG2KYCMHEW60Y
+slugs: []
+title: "Plan re-review: Unified Spec Workspace"
+author: codex
+checks: []
+events:
+  - _ulid: 01KW4VWQVFV5D9PS2T2Q1BCVTA
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-27T15:41:39.055Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-unified-spec-workspace"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-27T15:41:39.055Z
+updated_at: null
+notes: []
