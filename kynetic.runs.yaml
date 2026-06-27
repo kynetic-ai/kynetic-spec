@@ -75224,9 +75224,24 @@ runs:
     completed_at: 2026-06-27T01:43:53.429Z
   - _ulid: 01KW3D1Y57QVRWJDZ3T9MQH2ZH
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-27T02:03:06.279Z
+        completed_at: 2026-06-27T02:03:58.802Z
+        notes: "What worked well: The review-gates checklist and detached-reviewer merge helper gave a clear
+          path from diff review through approval, merge, and task completion. The narrow diff made
+          it easy to verify the worker claim directly: direct fs.rm cleanup in tests/shadow.test.ts
+          was replaced by cleanupTempDir in the affected shadow sync and configured-remote cleanup
+          paths, while existing helper tests already covered transient retry and non-transient
+          propagation. Recording review checks plus an evidence-log thread gave a durable audit
+          trail for the clean approval."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-27T02:03:58.802Z
+        completed_at: 2026-06-27T02:03:58.802Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T02:03:06.279Z
