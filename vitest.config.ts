@@ -30,6 +30,11 @@ const heavySerialSuites = [
   "tests/cli/session-start-notes.test.ts",
   "tests/cli/session-start-activity-timeline.test.ts",
   "tests/meta.test.ts",
+  // Small but prompt-heavy destructive CLI suite. It still creates fresh
+  // fixture projects and mutates shadow state for every test; under default
+  // full-suite fan-out the empty-response case has surfaced the same opaque
+  // STACK_TRACE_ERROR pressure class as the larger CLI-heavy suites above.
+  "tests/ac-delete-confirmation.test.ts",
   // Rebuilds dist/daemon/ in-place via `npm run build:daemon`. Any other
   // suite that spawns dist/daemon/index.js concurrently can hit
   // ERR_MODULE_NOT_FOUND mid-rebuild, so this must run serially after the
