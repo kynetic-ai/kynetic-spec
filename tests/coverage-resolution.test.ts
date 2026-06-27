@@ -2,6 +2,7 @@ import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import { parse as parseYaml } from "yaml";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type {
   CoverageCriterionStateDetail,
@@ -11,9 +12,12 @@ import type {
 import {
   applyDispatchFixRequest,
   applyExplicitReverification,
+  applySpecTextRevert,
   buildCoverageResolutionDryRunResponse,
   CoverageResolutionReadOnlyError,
+  CoverageResolutionSpecTextUnavailableError,
   CoverageResolutionStaleTargetError,
+  previewSpecTextRevert,
   resolveCoverageTarget,
 } from "../src/parser/coverage-resolution.js";
 import { invalidateCoverageStateReadModelCache } from "../src/parser/coverage-state-read-model.js";
@@ -34,7 +38,13 @@ import {
 import { CURRENT_VERIFICATION_RECORD_FORMAT } from "../src/schema/verification-records.js";
 import { initContext } from "../src/parser/yaml.js";
 import type { KspecContext, LoadedSpecItem } from "../src/parser/yaml.js";
-import { cleanupTempDir, createTempDir, initGitRepo, testUlid } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  readTestOutput,
+  testUlid,
+} from "./helpers/cli.js";
 
 const ITEM_ULID = testUlid("FEAT", 701);
 const SESSION_ID = testUlid("SESS", 701);
@@ -75,6 +85,35 @@ function makeAlternateItem(): LoadedSpecItem {
     title: "Portable Contract Target",
     slugs: ["portable-contract-target"],
     description: "Second neutral fixture for coverage resolution task text.",
+  };
+}
+
+function makeItemWithSource(sourceFile: string): LoadedSpecItem {
+  return {
+    ...makeItem(),
+    _sourceFile: sourceFile,
+    _path: "features[0]",
+    acceptance_criteria: [
+      {
+        id: "ac-stale-text",
+        given: "current given",
+        when: "current when",
+        then: "current then",
+      },
+      {
+        id: "ac-sibling",
+        given: "sibling given",
+        when: "sibling when",
+        then: "sibling then",
+      },
+    ],
+    notes: [
+      {
+        content: "preserve item metadata",
+        created_at: "2026-06-24T11:00:00.000Z",
+        author: "neutral-author",
+      },
+    ],
   };
 }
 
@@ -124,11 +163,11 @@ function criterion(
       latestRunId: null,
       secondaryReverifyCauses: [
         {
-          cause: "stale_annotation_or_mapping",
+          cause: "stale_spec_text",
           sourceEvidenceIds: [
             `annotation:neutral/tests/contract.test.ts:1:${ITEM_ULID}:ac-stale-text`,
           ],
-          detail: "coverage annotation changed after verification",
+          detail: "criterion text changed after verification",
         },
       ],
     },
@@ -144,11 +183,11 @@ function criterion(
       },
       secondary_causes: [
         {
-          cause: "stale_annotation_or_mapping",
+          cause: "stale_spec_text",
           sourceEvidenceIds: [
             `annotation:neutral/tests/contract.test.ts:1:${ITEM_ULID}:ac-stale-text`,
           ],
-          detail: "coverage annotation changed after verification",
+          detail: "criterion text changed after verification",
         },
       ],
     },
@@ -430,6 +469,73 @@ async function setupReverifyProject(): Promise<{
     commit: initialCommit,
   });
   return { tempDir, ctx, testFile, initialCommit, updatedCommit };
+}
+
+function specTextComparison() {
+  return {
+    acId: "ac-stale-text",
+    status: "changed" as const,
+    current: {
+      id: "ac-stale-text",
+      given: "current given",
+      when: "current when",
+      then: "current then",
+    },
+    previous: {
+      id: "ac-stale-text",
+      given: "prior given",
+      when: "current when",
+      then: "prior then",
+    },
+    changedFields: ["given", "then"] as Array<"given" | "when" | "then">,
+    previousCommit: "1234567890abcdef1234567890abcdef12345678",
+  };
+}
+
+type TestReadComparison = (
+  item: LoadedSpecItem,
+  acId: string,
+  version: { atCommit?: string | null; atTimestamp?: string },
+) => Promise<ReturnType<typeof specTextComparison>>;
+
+async function writeSpecTextFixture(tempDir: string): Promise<string> {
+  const specFile = path.join(tempDir, "coverage-resolution.yaml");
+  await fs.writeFile(
+    specFile,
+    `features:
+  - _ulid: ${ITEM_ULID}
+    title: Neutral Resolution Target
+    slugs:
+      - neutral-resolution-target
+    type: feature
+    description: Neutral fixture for coverage resolution contract behavior.
+    notes:
+      - content: preserve item metadata
+        created_at: "2026-06-24T11:00:00.000Z"
+        author: neutral-author
+    acceptance_criteria:
+      # keep this criterion comment
+      - id: ac-stale-text
+        given: current given
+        when: current when
+        then: current then
+      - id: ac-sibling
+        given: sibling given
+        when: sibling when
+        then: sibling then
+`,
+  );
+  return specFile;
+}
+
+async function readFixtureItem(specFile: string) {
+  const raw = parseYaml(await readTestOutput(specFile)) as {
+    features: Array<{
+      acceptance_criteria: Array<{ id: string; given: string; when: string; then: string }>;
+      notes?: unknown[];
+    }>;
+  };
+  return raw.features[0];
 }
 
 describe("coverage resolution contract", () => {
@@ -718,6 +824,370 @@ describe("coverage resolution contract", () => {
         },
       ],
       affected_scopes: [{ type: "criterion", item_ulid: ITEM_ULID, ac_id: "ac-stale-text" }],
+    });
+  });
+
+  // AC: @coverage-spec-text-revert ac-revert-preconditions
+  // AC: @coverage-spec-text-revert ac-revert-preview
+  it("previews a stale spec-text revert with exact prior/current field diffs and no file writes", async () => {
+    const tempDir = await createTempProject("coverage-spec-text-preview-");
+    const specFile = await writeSpecTextFixture(tempDir);
+    const before = await readTestOutput(specFile);
+    const readComparison = vi.fn<TestReadComparison>(async () => specTextComparison());
+
+    const response = await previewSpecTextRevert(fakeContext(tempDir), {
+      request: {
+        action: "spec-text-revert",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: true,
+      },
+      items: [makeItemWithSource(specFile)],
+      loadReadModel: async () => readModel(),
+      readComparison,
+    });
+
+    expect(readComparison).toHaveBeenCalledWith(
+      expect.objectContaining({ _ulid: ITEM_ULID }),
+      "ac-stale-text",
+      { atCommit: "recorded-revision", atTimestamp: "2026-06-24T10:00:00.000Z" },
+    );
+    expect(await readTestOutput(specFile)).toBe(before);
+    expect(response).toMatchObject({
+      action: "spec-text-revert",
+      dry_run: true,
+      stored: false,
+      effects: [
+        {
+          kind: "spec_text",
+          operation: "would_edit_fields",
+          item_ulid: ITEM_ULID,
+          ac_id: "ac-stale-text",
+          fields: ["given", "then"],
+          prior_commit: "1234567890abcdef1234567890abcdef12345678",
+          current_text: {
+            given: "current given",
+            when: "current when",
+            then: "current then",
+          },
+          prior_text: {
+            given: "prior given",
+            when: "current when",
+            then: "prior then",
+          },
+          summary: expect.stringContaining("@neutral-resolution-target ac-stale-text"),
+        },
+        {
+          kind: "cache_event",
+          operation: "would_invalidate",
+          scopes: [{ type: "criterion", item_ulid: ITEM_ULID, ac_id: "ac-stale-text" }],
+        },
+      ],
+      affected_scopes: [{ type: "criterion", item_ulid: ITEM_ULID, ac_id: "ac-stale-text" }],
+    });
+  });
+
+  // AC: @coverage-spec-text-revert ac-revert-preview
+  // AC: @coverage-resolution-mutation-interface ac-static-readonly-refusal
+  it("honors dry-run and read-only semantics at the spec-text apply entry point", async () => {
+    const tempDir = await createTempProject("coverage-spec-text-apply-dry-run-");
+    initGitRepo(tempDir);
+    const specFile = await writeSpecTextFixture(tempDir);
+    execSync("git add . && git commit -m initial", { cwd: tempDir, stdio: "pipe" });
+    const before = await readTestOutput(specFile);
+
+    const response = await applySpecTextRevert(
+      {
+        ...fakeContext(tempDir),
+        shadow: {
+          enabled: true,
+          worktreeDir: tempDir,
+          branchName: "kspec-meta",
+          projectRoot: tempDir,
+        },
+      },
+      {
+        request: {
+          action: "spec-text-revert",
+          target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+          dry_run: true,
+        },
+        readOnly: true,
+        items: [makeItemWithSource(specFile)],
+        loadReadModel: async () => readModel(),
+        readComparison: async () => specTextComparison(),
+      },
+    );
+
+    expect(response).toMatchObject({
+      action: "spec-text-revert",
+      dry_run: true,
+      stored: false,
+      effects: [
+        {
+          kind: "spec_text",
+          operation: "would_edit_fields",
+        },
+        {
+          kind: "cache_event",
+          operation: "would_invalidate",
+        },
+      ],
+    });
+    expect(await readTestOutput(specFile)).toBe(before);
+    expect(execSync("git log --oneline", { cwd: tempDir, encoding: "utf-8" }).trim()).toMatch(
+      /^[0-9a-f]+ initial$/,
+    );
+
+    await expect(
+      applySpecTextRevert(fakeContext(tempDir), {
+        request: {
+          action: "spec-text-revert",
+          target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+          dry_run: false,
+        },
+        readOnly: true,
+        items: [makeItemWithSource(specFile)],
+        loadReadModel: async () => readModel(),
+        readComparison: async () => specTextComparison(),
+      }),
+    ).rejects.toBeInstanceOf(CoverageResolutionReadOnlyError);
+  });
+
+  // AC: @coverage-spec-text-revert ac-revert-preconditions
+  it("rejects spec-text revert when stale text state or prior comparison is missing", async () => {
+    const staleCoveredCriterion: CoverageCriterionStateDetail = {
+      ...criterion(),
+      state: "covered",
+      presentation: "covered",
+      explanation: {
+        ...criterion().explanation,
+        secondaryReverifyCauses: [],
+      },
+      freshness: {
+        ...criterion().freshness,
+        secondary_causes: [],
+      },
+    };
+    const coveredItem = itemSummary(staleCoveredCriterion);
+    const coveredModel = {
+      ...readModel(),
+      items: {
+        "@neutral-resolution-target": coveredItem,
+        "neutral-resolution-target": coveredItem,
+      },
+      criteria: {
+        [`${ITEM_ULID} ac-stale-text`]: staleCoveredCriterion,
+      },
+    };
+
+    await expect(
+      previewSpecTextRevert(fakeContext(), {
+        request: {
+          action: "spec-text-revert",
+          target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+          dry_run: true,
+        },
+        items: [makeItem()],
+        loadReadModel: async () => coveredModel,
+        readComparison: async () => specTextComparison(),
+      }),
+    ).rejects.toMatchObject({
+      code: "coverage_resolution_spec_text_unavailable",
+      suggestion: expect.stringContaining("stale spec text"),
+    });
+
+    await expect(
+      previewSpecTextRevert(fakeContext(), {
+        request: {
+          action: "spec-text-revert",
+          target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+          dry_run: true,
+        },
+        items: [makeItem()],
+        loadReadModel: async () => readModel(),
+        readComparison: async () => ({
+          ...specTextComparison(),
+          status: "unknown" as const,
+          previous: null,
+          changedFields: [],
+          previousCommit: null,
+          detail: "prior criterion source could not be read",
+        }),
+      }),
+    ).rejects.toBeInstanceOf(CoverageResolutionSpecTextUnavailableError);
+  });
+
+  // AC: @coverage-spec-text-revert ac-content-level-forward-edit
+  // AC: @coverage-spec-text-revert ac-sibling-preservation
+  it("applies only targeted criterion text through the spec item mutation path and commits forward", async () => {
+    const tempDir = await createTempProject("coverage-spec-text-apply-");
+    initGitRepo(tempDir);
+    const specFile = await writeSpecTextFixture(tempDir);
+    const sidecarFile = path.join(tempDir, "coverage-verifications.yaml");
+    await fs.writeFile(sidecarFile, "stamps:\n  untouched: true\n");
+    execSync("git add . && git commit -m initial", { cwd: tempDir, stdio: "pipe" });
+    const specBefore = await readTestOutput(specFile);
+    const sidecarBefore = await readTestOutput(sidecarFile);
+    const target = await resolveCoverageTarget(fakeContext(tempDir), {
+      request: {
+        action: "spec-text-revert",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: true,
+      },
+      items: [makeItemWithSource(specFile)],
+      loadReadModel: async () => readModel(),
+    });
+
+    const response = await applySpecTextRevert(
+      {
+        ...fakeContext(tempDir),
+        shadow: {
+          enabled: true,
+          worktreeDir: tempDir,
+          branchName: "kspec-meta",
+          projectRoot: tempDir,
+        },
+      },
+      {
+        request: {
+          action: "spec-text-revert",
+          target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+          expected_current_fingerprint: target.fingerprint,
+          dry_run: false,
+        },
+        items: [makeItemWithSource(specFile)],
+        loadReadModel: async () => readModel(),
+        readComparison: async () => specTextComparison(),
+      },
+    );
+
+    const updated = await readFixtureItem(specFile);
+    const specAfter = await readTestOutput(specFile);
+    expect(specAfter).toBe(
+      specBefore
+        .replace("given: current given", "given: prior given")
+        .replace("then: current then", "then: prior then"),
+    );
+    expect(updated.acceptance_criteria).toEqual([
+      {
+        id: "ac-stale-text",
+        given: "prior given",
+        when: "current when",
+        then: "prior then",
+      },
+      {
+        id: "ac-sibling",
+        given: "sibling given",
+        when: "sibling when",
+        then: "sibling then",
+      },
+    ]);
+    expect(updated.notes).toEqual([
+      {
+        content: "preserve item metadata",
+        created_at: "2026-06-24T11:00:00.000Z",
+        author: "neutral-author",
+      },
+    ]);
+    expect(await readTestOutput(sidecarFile)).toBe(sidecarBefore);
+    expect(execSync("git log -1 --format=%s", { cwd: tempDir, encoding: "utf-8" }).trim()).toBe(
+      "Update Item AC: @neutral-resolution-target - ac-stale-text spec-text-revert",
+    );
+    expect(response).toMatchObject({
+      action: "spec-text-revert",
+      dry_run: false,
+      stored: true,
+      effects: [
+        {
+          kind: "spec_text",
+          operation: "edited_fields",
+          item_ulid: ITEM_ULID,
+          ac_id: "ac-stale-text",
+          fields: ["given", "then"],
+          summary: expect.stringContaining("Neutral Resolution Target"),
+        },
+        {
+          kind: "cache_event",
+          operation: "invalidated",
+          scopes: [{ type: "criterion", item_ulid: ITEM_ULID, ac_id: "ac-stale-text" }],
+        },
+      ],
+    });
+  });
+
+  // AC: @coverage-spec-text-revert ac-concurrency-guard
+  it("refuses apply when the preview fingerprint no longer matches current criterion text", async () => {
+    await expect(
+      applySpecTextRevert(fakeContext(), {
+        request: {
+          action: "spec-text-revert",
+          target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+          expected_current_fingerprint: "sha256:".concat("0".repeat(64)),
+          dry_run: false,
+        },
+        items: [makeItem()],
+        loadReadModel: async () => readModel(),
+        readComparison: async () => specTextComparison(),
+      }),
+    ).rejects.toMatchObject({
+      suggestion: expect.stringContaining("Refresh the coverage detail"),
+    });
+  });
+
+  // AC: @coverage-spec-text-revert ac-concurrency-guard
+  it("refuses apply when criterion text changes after planning but before the locked mutation", async () => {
+    const tempDir = await createTempProject("coverage-spec-text-race-");
+    initGitRepo(tempDir);
+    const specFile = await writeSpecTextFixture(tempDir);
+    execSync("git add . && git commit -m initial", { cwd: tempDir, stdio: "pipe" });
+    const target = await resolveCoverageTarget(fakeContext(tempDir), {
+      request: {
+        action: "spec-text-revert",
+        target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+        dry_run: true,
+      },
+      items: [makeItemWithSource(specFile)],
+      loadReadModel: async () => readModel(),
+    });
+
+    await expect(
+      applySpecTextRevert(
+        {
+          ...fakeContext(tempDir),
+          shadow: {
+            enabled: true,
+            worktreeDir: tempDir,
+            branchName: "kspec-meta",
+            projectRoot: tempDir,
+          },
+        },
+        {
+          request: {
+            action: "spec-text-revert",
+            target: { item_ref: "@neutral-resolution-target", ac_id: "ac-stale-text" },
+            expected_current_fingerprint: target.fingerprint,
+            dry_run: false,
+          },
+          items: [makeItemWithSource(specFile)],
+          loadReadModel: async () => readModel(),
+          readComparison: async () => {
+            const concurrent = (await readTestOutput(specFile)).replace(
+              "given: current given",
+              "given: concurrent given",
+            );
+            await fs.writeFile(specFile, concurrent, "utf-8");
+            return specTextComparison();
+          },
+        },
+      ),
+    ).rejects.toBeInstanceOf(CoverageResolutionStaleTargetError);
+
+    const updated = await readFixtureItem(specFile);
+    expect(updated.acceptance_criteria[0]).toEqual({
+      id: "ac-stale-text",
+      given: "concurrent given",
+      when: "current when",
+      then: "current then",
     });
   });
 

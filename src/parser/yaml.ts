@@ -15,6 +15,7 @@ import {
 } from "../cli/batch-write-buffer.js";
 import {
   AcceptanceCriterionSchema,
+  type AcceptanceCriterion,
   InboxFileSchema,
   type InboxItem,
   type InboxItemInput,
@@ -1843,6 +1844,34 @@ function assertSpecItemPatch(
   }
 }
 
+function findSpecItemObjectInRaw(raw: unknown, item: LoadedSpecItem): Record<string, unknown> {
+  if (item._path) {
+    const nav = navigateToPath(raw, item._path);
+    const candidate = nav?.array[nav.index];
+    if (
+      candidate &&
+      typeof candidate === "object" &&
+      (candidate as Record<string, unknown>)._ulid === item._ulid
+    ) {
+      return candidate as Record<string, unknown>;
+    }
+    const found = findItemInStructure(raw, item._ulid);
+    if (!found) {
+      throw new Error(`Could not find item ${item._ulid} in structure (path: ${item._path})`);
+    }
+    return found.item;
+  }
+
+  const found = findItemInStructure(raw, item._ulid);
+  if (found) {
+    return found.item;
+  }
+  if (raw && typeof raw === "object" && (raw as Record<string, unknown>)._ulid === item._ulid) {
+    return raw as Record<string, unknown>;
+  }
+  throw new Error(`Could not find item ${item._ulid} in structure`);
+}
+
 /**
  * Recursively collect AC validation errors from nested catalog structures.
  *
@@ -2245,35 +2274,7 @@ export async function updateSpecItem(
     const raw = await readYamlFile<unknown>(item._sourceFile!);
 
     // Find the item in the structure (use stored path or search by ULID)
-    let targetObj: Record<string, unknown>;
-
-    if (item._path) {
-      const nav = navigateToPath(raw, item._path);
-      const candidate = nav?.array[nav.index];
-      if (
-        candidate &&
-        typeof candidate === "object" &&
-        (candidate as Record<string, unknown>)._ulid === item._ulid
-      ) {
-        targetObj = candidate as Record<string, unknown>;
-      } else {
-        const found = findItemInStructure(raw, item._ulid);
-        if (!found) {
-          throw new Error(`Could not find item ${item._ulid} in structure (path: ${item._path})`);
-        }
-        targetObj = found.item;
-      }
-    } else {
-      // Item might be the root, or we need to find it
-      const found = findItemInStructure(raw, item._ulid);
-      if (found) {
-        targetObj = found.item;
-      } else if ((raw as Record<string, unknown>)._ulid === item._ulid) {
-        targetObj = raw as Record<string, unknown>;
-      } else {
-        throw new Error(`Could not find item ${item._ulid} in structure`);
-      }
-    }
+    const targetObj = findSpecItemObjectInRaw(raw, item);
 
     // Apply updates (but never change _ulid)
     for (const [key, value] of Object.entries(updates)) {
@@ -2285,6 +2286,192 @@ export async function updateSpecItem(
     // Write back with format preservation
     await writeYamlFilePreserveFormat(item._sourceFile!, raw);
     const updatedItem = { ...item, ...updates, _ulid: item._ulid } as SpecItem;
+    recordSpecItemMutationEvent(updatedItem, "changed");
+
+    return updatedItem;
+  });
+}
+
+export async function updateSpecItemFromCurrent(
+  _ctx: KspecContext,
+  item: LoadedSpecItem,
+  buildUpdates: (
+    current: LoadedSpecItem,
+  ) => Partial<SpecItemInput> | Promise<Partial<SpecItemInput>>,
+): Promise<SpecItem> {
+  if (!item._sourceFile) {
+    throw new Error("Item has no source file");
+  }
+
+  return withFileLock(item._sourceFile, async () => {
+    const raw = await readYamlFile<unknown>(item._sourceFile!);
+    const targetObj = findSpecItemObjectInRaw(raw, item);
+    const currentItem = { ...item, ...(targetObj as Partial<SpecItem>) } as LoadedSpecItem;
+    const updates = await buildUpdates(currentItem);
+    assertSpecItemPatch(updates, "updateSpecItem");
+
+    const validationError = validateSpecItemPatchData(updates as Record<string, unknown>, {
+      allowUnknown: true,
+    });
+    if (validationError) {
+      throw new Error(`Invalid patch data: ${validationError}`);
+    }
+
+    for (const [key, value] of Object.entries(updates)) {
+      if (key !== "_ulid" && key !== "_sourceFile" && key !== "_path") {
+        targetObj[key] = value;
+      }
+    }
+
+    await writeYamlFilePreserveFormat(item._sourceFile!, raw);
+    const updatedItem = { ...currentItem, ...updates, _ulid: item._ulid } as SpecItem;
+    recordSpecItemMutationEvent(updatedItem, "changed");
+
+    return updatedItem;
+  });
+}
+
+type AcceptanceCriterionTextPatch = Partial<Pick<AcceptanceCriterion, "given" | "when" | "then">>;
+
+function getMapString(map: YAML.YAMLMap, key: string): string | null {
+  const value = map.get(key);
+  return typeof value === "string" ? value : null;
+}
+
+function findSpecItemMapInYaml(node: unknown, itemUlid: string): YAML.YAMLMap | null {
+  if (YAML.isMap(node)) {
+    if (getMapString(node, "_ulid") === itemUlid) {
+      return node;
+    }
+
+    for (const field of NESTED_ITEM_FIELDS) {
+      const childSeq = node.get(field, true);
+      if (!YAML.isSeq(childSeq)) {
+        continue;
+      }
+
+      for (const child of childSeq.items) {
+        const found = findSpecItemMapInYaml(child, itemUlid);
+        if (found) {
+          return found;
+        }
+      }
+    }
+  }
+
+  if (YAML.isSeq(node)) {
+    for (const child of node.items) {
+      const found = findSpecItemMapInYaml(child, itemUlid);
+      if (found) {
+        return found;
+      }
+    }
+  }
+
+  return null;
+}
+
+function findAcceptanceCriterionMap(itemMap: YAML.YAMLMap, acId: string): YAML.YAMLMap | null {
+  const criteria = itemMap.get("acceptance_criteria", true);
+  if (!YAML.isSeq(criteria)) {
+    return null;
+  }
+
+  for (const criterion of criteria.items) {
+    if (YAML.isMap(criterion) && getMapString(criterion, "id") === acId) {
+      return criterion;
+    }
+  }
+
+  return null;
+}
+
+function yamlMapToObject<T>(map: YAML.YAMLMap): T {
+  return map.toJSON() as T;
+}
+
+/**
+ * Update only a targeted acceptance criterion's text scalars while holding the
+ * source file lock. Unlike updateSpecItem(), this keeps the YAML document node
+ * tree intact so comments and unrelated source structure survive the mutation.
+ */
+export async function updateSpecItemAcceptanceCriterionTextFromCurrent(
+  _ctx: KspecContext,
+  item: LoadedSpecItem,
+  acId: string,
+  buildUpdates: (
+    current: LoadedSpecItem,
+    criterion: AcceptanceCriterion,
+  ) => AcceptanceCriterionTextPatch | Promise<AcceptanceCriterionTextPatch>,
+  options: { missingCriterionError?: () => Error } = {},
+): Promise<SpecItem> {
+  if (!item._sourceFile) {
+    throw new Error("Item has no source file");
+  }
+
+  return withFileLock(item._sourceFile, async () => {
+    const source = await readFileBufferAware(item._sourceFile!);
+    const doc = YAML.parseDocument(source);
+    if (doc.errors.length > 0) {
+      throw new Error(`Could not parse YAML file: ${doc.errors[0].message}`);
+    }
+
+    const itemMap = findSpecItemMapInYaml(doc.contents, item._ulid);
+    if (!itemMap) {
+      throw new Error(`Could not find item ${item._ulid} in structure`);
+    }
+
+    const criterionMap = findAcceptanceCriterionMap(itemMap, acId);
+    if (!criterionMap) {
+      if (options.missingCriterionError) {
+        throw options.missingCriterionError();
+      }
+      throw new Error(`Acceptance criterion "${acId}" was not found on the loaded spec item.`);
+    }
+
+    const currentItem = {
+      ...item,
+      ...yamlMapToObject<Partial<SpecItem>>(itemMap),
+    } as LoadedSpecItem;
+    const currentCriterion = AcceptanceCriterionSchema.parse(
+      yamlMapToObject<AcceptanceCriterion>(criterionMap),
+    );
+    const updates = await buildUpdates(currentItem, currentCriterion);
+    const allowedFields = new Set(["given", "when", "then"]);
+    for (const key of Object.keys(updates)) {
+      if (!allowedFields.has(key)) {
+        throw new Error(
+          `updateSpecItemAcceptanceCriterionTextFromCurrent only accepts criterion text fields; received ${key}`,
+        );
+      }
+    }
+
+    const updatedCriterion = AcceptanceCriterionSchema.parse({
+      ...currentCriterion,
+      ...updates,
+    });
+    for (const field of allowedFields) {
+      if (field in updates) {
+        criterionMap.set(field, updatedCriterion[field as keyof AcceptanceCriterionTextPatch]);
+      }
+    }
+
+    const content = String(doc);
+    const buffer = getActiveBatchBuffer();
+    if (buffer?.isInScope(item._sourceFile!)) {
+      buffer.write(item._sourceFile!, content);
+    } else {
+      await writeFileAtomic(item._sourceFile!, content);
+    }
+
+    const updatedCriteria = (currentItem.acceptance_criteria ?? []).map((criterion) =>
+      criterion.id === acId ? updatedCriterion : criterion,
+    );
+    const updatedItem = {
+      ...currentItem,
+      acceptance_criteria: updatedCriteria,
+      _ulid: item._ulid,
+    } as SpecItem;
     recordSpecItemMutationEvent(updatedItem, "changed");
 
     return updatedItem;

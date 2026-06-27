@@ -26,6 +26,7 @@ import {
   findItemByRef,
   initContext,
   loadAllItems,
+  updateSpecItemAcceptanceCriterionTextFromCurrent,
   type KspecContext,
   type LoadedSpecItem,
   type LoadedTask,
@@ -34,6 +35,12 @@ import {
   getCachedCoverageStateReadModel,
   invalidateCoverageStateReadModelCache,
 } from "./coverage-state-read-model.js";
+import {
+  readCriterionFreshnessComparison,
+  type CriterionComparisonVersion,
+  type CriterionTextComparison,
+} from "./coverage-freshness-comparison.js";
+import { commitIfShadow } from "./shadow.js";
 import { resolveTaskDataManager } from "./task-data-manager.js";
 import { writeVerificationStampWithoutCommit } from "./verification-record-store.js";
 
@@ -44,6 +51,8 @@ export const COVERAGE_RESOLUTION_CRITERION_NOT_FOUND_CODE =
   "coverage_resolution_criterion_not_found";
 export const COVERAGE_RESOLUTION_AMBIGUOUS_TARGET_CODE = "coverage_resolution_ambiguous_target";
 export const COVERAGE_RESOLUTION_ACTOR_INVALID_CODE = "coverage_resolution_actor_invalid";
+export const COVERAGE_RESOLUTION_SPEC_TEXT_UNAVAILABLE_CODE =
+  "coverage_resolution_spec_text_unavailable";
 
 const EXPLICIT_REVERIFY_REQUIREMENT =
   "criterion is currently in the re-verify bucket with positive non-failing evidence";
@@ -120,6 +129,17 @@ export class CoverageResolutionActorError extends Error {
   }
 }
 
+export class CoverageResolutionSpecTextUnavailableError extends Error {
+  readonly code = COVERAGE_RESOLUTION_SPEC_TEXT_UNAVAILABLE_CODE;
+  readonly suggestion: string;
+
+  constructor(options: { message: string; suggestion: string }) {
+    super(options.message);
+    this.name = "CoverageResolutionSpecTextUnavailableError";
+    this.suggestion = options.suggestion;
+  }
+}
+
 export interface ResolvedCoverageTarget {
   ctx: KspecContext;
   item: CoverageItemStateSummary;
@@ -137,6 +157,34 @@ export interface ResolveCoverageTargetOptions {
   request: CoverageResolutionRequest | { target: CoverageResolutionTarget };
   items?: LoadedSpecItem[];
   loadReadModel?: (ctx: KspecContext) => Promise<CoverageStateSnapshot>;
+}
+
+type SpecTextRevertRequest = Extract<CoverageResolutionRequest, { action: "spec-text-revert" }>;
+
+export interface SpecTextRevertOptions {
+  request: SpecTextRevertRequest;
+  readOnly?: boolean;
+  items?: LoadedSpecItem[];
+  loadReadModel?: (ctx: KspecContext) => Promise<CoverageStateSnapshot>;
+  readComparison?: (
+    item: LoadedSpecItem,
+    acId: string,
+    version: CriterionComparisonVersion,
+  ) => Promise<CriterionTextComparison>;
+}
+
+type CriterionText = {
+  given: string;
+  when: string;
+  then: string;
+};
+
+interface SpecTextRevertPlan {
+  target: ResolvedCoverageTarget;
+  previousText: CriterionText;
+  changedFields: Array<"given" | "when" | "then">;
+  priorCommit: string | null;
+  priorTimestamp: string | null;
 }
 
 function isContext(project: string | KspecContext): project is KspecContext {
@@ -755,6 +803,127 @@ async function createDispatchFixTask(options: {
   });
 }
 
+function hasStaleSpecTextCause(target: ResolvedCoverageTarget): boolean {
+  return (
+    target.criterion.state === "stale_spec_text" ||
+    target.criterion.explanation.secondaryReverifyCauses.some(
+      (cause) => cause.cause === "stale_spec_text",
+    ) ||
+    target.criterion.freshness.secondary_causes.some((cause) => cause.cause === "stale_spec_text")
+  );
+}
+
+function comparisonVersion(target: ResolvedCoverageTarget): CriterionComparisonVersion | null {
+  const recorded = target.criterion.freshness.recorded;
+  if (recorded) {
+    return {
+      atCommit: recorded.commit ?? null,
+      atTimestamp: recorded.timestamp || recorded.verified_at,
+    };
+  }
+
+  const bootstrap = target.criterion.freshness.bootstrap;
+  if (bootstrap) {
+    return {
+      atCommit: bootstrap.commit ?? null,
+      atTimestamp: bootstrap.timestamp ?? undefined,
+    };
+  }
+
+  return null;
+}
+
+function specTextUnavailable(
+  message: string,
+  suggestion: string,
+): CoverageResolutionSpecTextUnavailableError {
+  return new CoverageResolutionSpecTextUnavailableError({ message, suggestion });
+}
+
+function changedTextFields(
+  previous: CriterionText,
+  current: CriterionText,
+): Array<"given" | "when" | "then"> {
+  return (["given", "when", "then"] as const).filter((field) => previous[field] !== current[field]);
+}
+
+async function resolveSpecTextRevertPlan(
+  project: string | KspecContext,
+  options: SpecTextRevertOptions,
+): Promise<SpecTextRevertPlan> {
+  const target = await resolveCoverageTarget(project, options);
+  if (!hasStaleSpecTextCause(target)) {
+    throw specTextUnavailable(
+      `Coverage criterion "${target.item.item_ref} ${target.criterion.ac_id}" does not currently have stale spec text.`,
+      "Refresh the coverage detail and choose spec-text revert only for stale spec text causes.",
+    );
+  }
+
+  const version = comparisonVersion(target);
+  if (!version || (!version.atCommit && !version.atTimestamp)) {
+    throw specTextUnavailable(
+      `Coverage criterion "${target.item.item_ref} ${target.criterion.ac_id}" lacks comparable prior verification metadata.`,
+      "Refresh the coverage detail after recording comparable verification metadata.",
+    );
+  }
+
+  const comparison = await (options.readComparison ?? readCriterionFreshnessComparison)(
+    target.specItem,
+    target.criterion.ac_id,
+    version,
+  );
+  if (comparison.status !== "changed" || !comparison.previous || !comparison.previousCommit) {
+    throw specTextUnavailable(
+      comparison.detail ??
+        `Prior criterion text for "${target.item.item_ref} ${target.criterion.ac_id}" could not be resolved.`,
+      "Refresh the coverage detail; if the prior criterion text is still unavailable, edit the criterion manually.",
+    );
+  }
+
+  const previousText = {
+    given: comparison.previous.given,
+    when: comparison.previous.when,
+    then: comparison.previous.then,
+  };
+  const changedFields = changedTextFields(previousText, target.criterionText);
+  if (changedFields.length === 0) {
+    throw specTextUnavailable(
+      `Coverage criterion "${target.item.item_ref} ${target.criterion.ac_id}" already matches the prior criterion text.`,
+      "Refresh the coverage detail before retrying spec-text revert.",
+    );
+  }
+
+  return {
+    target,
+    previousText,
+    changedFields,
+    priorCommit: comparison.previousCommit,
+    priorTimestamp: version.atTimestamp ?? null,
+  };
+}
+
+function specTextRevertSummary(plan: SpecTextRevertPlan): string {
+  return `Revert ${plan.target.item.item_ref} ${plan.target.criterion.ac_id} (${plan.target.item.item_title}) spec text fields: ${plan.changedFields.join(", ")}`;
+}
+
+function specTextEffect(
+  plan: SpecTextRevertPlan,
+  operation: "would_edit_fields" | "edited_fields",
+): CoverageResolutionEffect {
+  return {
+    kind: "spec_text",
+    operation,
+    item_ulid: plan.target.item.item_ulid,
+    ac_id: plan.target.criterion.ac_id,
+    fields: plan.changedFields,
+    current_text: plan.target.criterionText,
+    prior_text: plan.previousText,
+    prior_commit: plan.priorCommit,
+    prior_timestamp: plan.priorTimestamp,
+    summary: specTextRevertSummary(plan),
+  };
+}
+
 async function resolveCoverageResolutionActor(
   ctx: KspecContext,
   request: ExplicitReverifyCoverageResolutionRequest,
@@ -938,6 +1107,117 @@ export async function applyDispatchFixRequest(
         idempotencyKey,
       }),
       cacheInvalidationEffect("invalidated", target),
+    ],
+  });
+}
+
+export async function previewSpecTextRevert(
+  project: string | KspecContext,
+  options: SpecTextRevertOptions,
+): Promise<CoverageResolutionResponse> {
+  const plan = await resolveSpecTextRevertPlan(project, options);
+  return buildCoverageResolutionDryRunResponse({
+    action: "spec-text-revert",
+    target: plan.target,
+    diagnostics: [
+      {
+        code: "coverage_resolution_precondition_satisfied",
+        message: "Spec-text revert precondition is satisfied.",
+        current_presentation: plan.target.criterion.presentation,
+        current_state: plan.target.criterion.state,
+        current_cause: "stale_spec_text",
+        missing_requirement: "current stale_spec_text cause with resolvable prior criterion text",
+        satisfied: true,
+        suggestion: "Apply the spec-text revert with the current fingerprint to store the edit.",
+      },
+    ],
+    effects: [
+      specTextEffect(plan, "would_edit_fields"),
+      cacheInvalidationEffect("would_invalidate", plan.target),
+    ],
+  });
+}
+
+export async function applySpecTextRevert(
+  project: string | KspecContext,
+  options: SpecTextRevertOptions,
+): Promise<CoverageResolutionResponse> {
+  assertCoverageResolutionWritable({
+    readOnly: options.readOnly,
+    dryRun: options.request.dry_run,
+  });
+  if (options.request.dry_run) {
+    return previewSpecTextRevert(project, options);
+  }
+
+  const plan = await resolveSpecTextRevertPlan(project, options);
+  let lockedCriterionText = plan.target.criterionText;
+  let lockedFingerprint = plan.target.fingerprint;
+  const updatedSpecItem = await updateSpecItemAcceptanceCriterionTextFromCurrent(
+    plan.target.ctx,
+    plan.target.specItem,
+    plan.target.criterion.ac_id,
+    (currentItem, currentCriterion) => {
+      lockedCriterionText = {
+        given: currentCriterion.given,
+        when: currentCriterion.when,
+        then: currentCriterion.then,
+      };
+      lockedFingerprint = fingerprintCoverageCriterionText({
+        itemUlid: plan.target.item.item_ulid,
+        acId: plan.target.criterion.ac_id,
+        ...lockedCriterionText,
+      });
+      assertExpectedFingerprint(options.request, lockedFingerprint);
+
+      return Object.fromEntries(
+        plan.changedFields.map((field) => [field, plan.previousText[field]]),
+      );
+    },
+    {
+      missingCriterionError: () =>
+        new CoverageResolutionTargetNotFoundError({
+          code: COVERAGE_RESOLUTION_CRITERION_NOT_FOUND_CODE,
+          target: `${plan.target.item.item_ref} ${plan.target.criterion.ac_id}`,
+          message: `Acceptance criterion "${plan.target.criterion.ac_id}" was not found on the loaded spec item.`,
+          suggestion:
+            "Refresh project context and retry after the acceptance criterion is available.",
+        }),
+    },
+  );
+  await commitIfShadow(
+    plan.target.ctx.shadow,
+    "item-ac-set",
+    plan.target.item.item_ref,
+    `${plan.target.criterion.ac_id} spec-text-revert`,
+  );
+  invalidateCoverageStateReadModelCache(plan.target.ctx.rootDir);
+
+  return buildCoverageResolutionResponse({
+    action: "spec-text-revert",
+    dryRun: false,
+    stored: true,
+    target: {
+      ...plan.target,
+      specItem: updatedSpecItem as LoadedSpecItem,
+      criterionText: lockedCriterionText,
+      fingerprint: lockedFingerprint,
+    },
+    diagnostics: [
+      {
+        code: "coverage_resolution_precondition_satisfied",
+        message: "Spec-text revert precondition is satisfied.",
+        current_presentation: plan.target.criterion.presentation,
+        current_state: plan.target.criterion.state,
+        current_cause: "stale_spec_text",
+        missing_requirement: "current stale_spec_text cause with resolvable prior criterion text",
+        satisfied: true,
+        suggestion: "Refresh coverage state to inspect the post-mutation criterion status.",
+      },
+    ],
+    effects: [
+      specTextEffect(plan, "edited_fields"),
+      cacheInvalidationEffect("invalidated", plan.target),
     ],
   });
 }
