@@ -144,6 +144,13 @@ events:
       status: pass
       name: lint
     timestamp: 2026-06-27T00:41:06.899Z
+  - _ulid: 01KW38CJTFZAFYX7PPRBYJB1PH
+    actor: codex-pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW38CJJHDJKGFPWW6DQKANSR
+    timestamp: 2026-06-27T00:41:32.239Z
 examined_commit: 14e4d05776358ddb9f15b24ec1111850675a11e8
 external_links: []
 lifecycle_state: open
@@ -153,8 +160,44 @@ subject:
   content_hash: ""
   ref: "@01KW2NT2528F5PYRHJYK2K804F"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW38CJJHDJKGFPWW6DQKANSR
+    anchor:
+      type: code
+      commit: 14e4d05776358ddb9f15b24ec1111850675a11e8
+      line_end: 808
+      line_start: 756
+      path: src/parser/coverage-resolution.ts
+      side: head
+    entries:
+      - _ulid: 01KW38CJJHKM2EV3HG28FHJZYK
+        author: codex-pr-reviewer
+        body: >-
+          MUST-FIX: `applySpecTextRevert` ignores dry-run/read-only semantics. The shared
+          `@coverage-resolution-mutation-interface` contract says dry-run coverage resolution
+          requests must not produce a spec source edit, shadow commit, cache update, or other stored
+          side effect, and non-dry-run mutations must refuse read-only/static contexts. This apply
+          path never calls `assertCoverageResolutionWritable`, has no `readOnly` option, and does
+          not branch on `options.request.dry_run` before `updateSpecItemFromCurrent` and
+          `commitIfShadow`.
+
+
+          I verified the behavior with a throwaway temp-project script: calling
+          `applySpecTextRevert` with `dry_run: true` and a valid expected fingerprint returned `{
+          responseDryRun: false, responseStored: true, fileChanged: true }` and created commit
+          `Update Item AC: @neutral-resolution-target - ac-stale-text spec-text-revert`. That
+          violates `@coverage-resolution-mutation-interface ac-dry-run-preview` and
+          `ac-static-readonly-refusal`, and it lets a caller that intended a preview mutate project
+          metadata.
+
+
+          Please add the same writable/dry-run guard semantics as the other coverage resolution
+          apply path, ensure `dry_run: true` routes to preview/no-write behavior or is refused
+          before mutation, add behavioral coverage for this action, and expose any required
+          read-only option at the service boundary.
+        created_at: 2026-06-27T00:41:31.985Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-27T00:24:27.925Z
-updated_at: 2026-06-27T00:41:06.642Z
+updated_at: 2026-06-27T00:41:31.985Z
 notes: []
