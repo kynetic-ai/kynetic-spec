@@ -23427,8 +23427,12 @@ observations:
       existing tests. Future tasks that require byte-equivalent preservation should either use a
       comment-preserving mutation primitive or include commented YAML fixtures in behavioral tests.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: "Addressed by task @task-coverage-spec-text-revert commit 4031861112: added a lock-held
+      YAML document-node mutation helper for targeted acceptance criterion text edits and a
+      commented fixture regression that asserts byte-level preservation."
+    resolved: true
+    resolved_at: 2026-06-27T02:10:11.607Z
+    resolved_by: Jacob Chapel
     created_at: 2026-06-27T01:27:16.131Z
   - _ulid: 01KW3BYDQN1PSJ2PWVAGA7DMYA
     type: success
@@ -23452,6 +23456,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-27T02:05:06.615Z
+  - _ulid: 01KW3DETWQXASADT5KVH78EPKB
+    type: success
+    content: "When a spec requires byte-equivalent preservation, test at the byte boundary: add a
+      commented YAML fixture and assert the final file bytes differ only in the intended scalar
+      values. This caught and proved the spec-text revert comment-preservation fix without relying
+      on source scanning."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-27T02:10:08.919Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
