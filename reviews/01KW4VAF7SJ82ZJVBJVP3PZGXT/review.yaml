@@ -2,7 +2,140 @@ _ulid: 01KW4VAF7SJ82ZJVBJVP3PZGXT
 slugs: []
 title: "Plan review: Unified Spec Workspace"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exported @plan-unified-spec-workspace to /tmp/plan-unified-spec-workspace.md and dry-ran
+      import with --module @web-ui --status draft --json; parser accepted the stored content.
+    name: plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-27T15:34:33.678Z
+    completed_at: 2026-06-27T15:34:33.678Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified completed status for @plan-web-ui-foundations,
+      @plan-ac-coverage-verification-schema-and-storage, @plan-test-result-ingestion,
+      @plan-coverage-state-engine, and @plan-coverage-resolution-mutations.
+    name: prerequisite plans completed
+    required: true
+    runner: kspec plan get
+    created_at: 2026-06-27T15:34:36.699Z
+    completed_at: 2026-06-27T15:34:36.699Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline: 1684 files, 691 items, 1676 tasks; schema OK and
+      references OK. Warnings were deprecated-reference baseline entries, not from this plan."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-27T15:34:39.584Z
+    completed_at: 2026-06-27T15:34:39.584Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing alignment warning baseline: orphaned specs and status mismatches
+      unrelated to this draft plan."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-27T15:34:42.617Z
+    completed_at: 2026-06-27T15:34:42.617Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing completeness warning baseline: missing coverage and invalid
+      annotations are pre-existing corpus warnings, not introduced by this un-derived draft plan."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-27T15:34:45.627Z
+    completed_at: 2026-06-27T15:34:45.627Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every own AC is claimed by a task, but @unified-spec-workspace-data-projection declares
+      @trait-api-endpoint and @trait-error-guidance without any task Covers entries or N/A mapping
+      for inherited trait ACs.
+    name: AC coverage mapping
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-27T15:34:48.591Z
+    completed_at: 2026-06-27T15:34:48.591Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task chain is ordered projection API -> shell navigation -> node/criterion pages ->
+      coverage presentation -> resolution panels -> quality verification. No circular or
+      lower-priority prerequisite dependency found.
+    name: dependency ordering
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-27T15:34:51.521Z
+    completed_at: 2026-06-27T15:34:51.521Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Static/read-only behavior is specified in data projection, resolution panel, and delivery
+      quality ACs; unavailable dynamic evidence is explicitly degraded and mutations are
+      disabled/refused in read-only contexts.
+    name: static and read-only behavior
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-27T15:34:54.518Z
+    completed_at: 2026-06-27T15:34:54.518Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Existing decision @coverage-state-presentation uses rendered buckets covered, failing, not
+      yet, re-verify. The plan mixes not_yet/re_verify enum spelling into a UI-facing AC and uses
+      older/unsupported secondary-cause wording in ac-four-bucket-tokens.
+    name: coverage vocabulary consistency
+    required: true
+    runner: manual plan review + kspec item get @coverage-state-presentation
+    created_at: 2026-06-27T15:34:57.612Z
+    completed_at: 2026-06-27T15:34:57.612Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Specs and task bodies generally avoid Kynetic-specific corpus assumptions and explicitly
+      require generic kspec behavior. Project-local branch/toolchain references are plan execution
+      context, not package-shipped shared guidance; no shared guidance surfaces are changed by this
+      plan.
+    name: project neutrality
+    required: true
+    runner: manual semantic review
+    created_at: 2026-06-27T15:35:00.703Z
+    completed_at: 2026-06-27T15:35:00.703Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/instructions read: kspec-agents.md, supplied
+      kspec-plan/review/writing-specs/review-gates/shared-guidance guidance. Commands run: kspec
+      plan get/export/import dry-run, kspec trait list, kspec search workspace/coverage state/view
+      header/spec workspace, kspec item get for web-ui/foundation/coverage refs, kspec validate
+      refs/alignment/completeness. Categories searched: plan format, dependencies, AC specificity,
+      trait coverage, task sequencing, static/read-only behavior, coverage vocabulary, project
+      neutrality."
+    name: review evidence log
+    required: false
+    runner: codex plan review
+    created_at: 2026-06-27T15:35:03.633Z
+    completed_at: 2026-06-27T15:35:03.633Z
 events:
   - _ulid: 01KW4VAF7RCC0FCR5896WR82EP
     actor: Jacob Chapel
@@ -17,17 +150,209 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-27T15:32:00.164Z
+  - _ulid: 01KW4VFCWM9ETS2XF6SSVCZH54
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW4VFCN144V965Z51DKM95HK
+    timestamp: 2026-06-27T15:34:21.844Z
+  - _ulid: 01KW4VFFWMS9SHX5FBX6MT4TV8
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW4VFFMZ86CJ5KFPPTT7BB7C
+    timestamp: 2026-06-27T15:34:24.916Z
+  - _ulid: 01KW4VFJSRPN4PMFS6H6W7TCMS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW4VFJHNX7J7DP4EDDVWPCDN
+    timestamp: 2026-06-27T15:34:27.896Z
+  - _ulid: 01KW4VFNP8258X0MEJZW4R25JF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KW4VFNEW8K0JYY3ARTD67R48
+    timestamp: 2026-06-27T15:34:30.856Z
+  - _ulid: 01KW4VFRPEVWDE8BN46FEJ1YSA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan import dry-run
+    timestamp: 2026-06-27T15:34:33.934Z
+  - _ulid: 01KW4VFVMJTDWRPY3YVB6T8Q0H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: prerequisite plans completed
+    timestamp: 2026-06-27T15:34:36.946Z
+  - _ulid: 01KW4VFYEQMHJDM2T01CQ59AAN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-27T15:34:39.831Z
+  - _ulid: 01KW4VG1DTJPE9GZG6951AAA87
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-27T15:34:42.874Z
+  - _ulid: 01KW4VG4BWRKEPR0BG67G2CP22
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-27T15:34:45.884Z
+  - _ulid: 01KW4VG783BYPB3H0T2WZNYRP6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC coverage mapping
+    timestamp: 2026-06-27T15:34:48.835Z
+  - _ulid: 01KW4VGA4JMZ4S7C8M36RRF7R6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-27T15:34:51.794Z
+  - _ulid: 01KW4VGD1BG5TXBKQTAHEQXJY9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: static and read-only behavior
+    timestamp: 2026-06-27T15:34:54.763Z
+  - _ulid: 01KW4VGG1WQTV06H9XQWC5PS02
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: coverage vocabulary consistency
+    timestamp: 2026-06-27T15:34:57.852Z
+  - _ulid: 01KW4VGK2ZY44QQJ2BT57613JB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: project neutrality
+    timestamp: 2026-06-27T15:35:00.959Z
+  - _ulid: 01KW4VGNZ04B1PNXTNE40YT61B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-27T15:35:03.904Z
+  - _ulid: 01KW4VGRZ2T0YNGDTV5RRAX0J6
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-27T15:35:06.978Z
+  - _ulid: 01KW4VGRZ2NDA0NE4HSM9XKRWE
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-27T15:35:06.978Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-unified-spec-workspace"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KW4VFCN144V965Z51DKM95HK
+    anchor:
+      type: structured
+      field: branch
+      ref: "@plan-unified-spec-workspace"
+      section: context
+    entries:
+      - _ulid: 01KW4VFCN1EPP88SEKRB40V8J5
+        author: Jacob Chapel
+        body: The stored plan has no Branch in `kspec plan get`, but the plan's own Branch gate says
+          imported work must stay on `feat/ui-redesign`. If approved/derived as-is, derived tasks
+          can target the default integration branch instead of the shared redesign stack. Set the
+          plan branch metadata before approval, or revise the gate to match the intended lifecycle.
+        created_at: 2026-06-27T15:34:21.601Z
+    kind: blocker
+  - _ulid: 01KW4VFFMZ86CJ5KFPPTT7BB7C
+    anchor:
+      type: structured
+      field: traits
+      ref: "@unified-spec-workspace-data-projection"
+      section: traits
+    entries:
+      - _ulid: 01KW4VFFMZW78Y2WCYRZJT4ZDY
+        author: Jacob Chapel
+        body: "`@unified-spec-workspace-data-projection` declares `@trait-api-endpoint` and
+          `@trait-error-guidance`, but the task coverage mapping only claims the spec's own eight
+          ACs. Inherited trait ACs would be orphaned or silently untested after derive. Add a trait
+          applicability table plus Covers entries for applicable inherited ACs, with explicit N/A
+          rationale for non-applicable cases, or remove the traits if the spec will not implement
+          them."
+        created_at: 2026-06-27T15:34:24.671Z
+    kind: blocker
+  - _ulid: 01KW4VFJHNX7J7DP4EDDVWPCDN
+    anchor:
+      type: structured
+      field: ac-coverage-source-of-truth
+      ref: "@unified-spec-workspace-data-projection"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KW4VFJHNEWT7F3PK8408V8E9
+        author: Jacob Chapel
+        body: This AC says displayed coverage values use `covered/failing/not_yet/re_verify`, while existing
+          `@coverage-state-presentation` defines rendered buckets as `covered`, `failing`, `not
+          yet`, and `re-verify`. That mixes API enum spelling into a UI-facing AC and contradicts
+          the existing presentation decision. Use the canonical presentation labels here, and keep
+          enum spellings only in implementation notes or API-field wording if needed.
+        created_at: 2026-06-27T15:34:27.637Z
+    kind: blocker
+  - _ulid: 01KW4VFNEW8K0JYY3ARTD67R48
+    anchor:
+      type: structured
+      field: ac-four-bucket-tokens
+      ref: "@spec-workspace-coverage-state-presentation"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KW4VFNEWJZKVR7YZVNM5M9N8
+        author: Jacob Chapel
+        body: This AC names `stale/drifted/spec-code` causes, but the completed coverage-state and
+          resolution specs expose backend secondary causes such as stale spec text, stale
+          annotation/mapping, stale test result, and unknown freshness. Please align the wording
+          with the backend-provided cause classes, or state it generically as backend secondary
+          re-verify causes, so the UI task does not invent an unsupported cause vocabulary.
+        created_at: 2026-06-27T15:34:30.620Z
+    kind: question
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-27T15:35:06.978Z
 created_at: 2026-06-27T15:31:40.409Z
-updated_at: 2026-06-27T15:31:59.903Z
+updated_at: 2026-06-27T15:35:06.978Z
 notes: []
