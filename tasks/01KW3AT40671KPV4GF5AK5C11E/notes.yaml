@@ -9,3 +9,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-27T01:26:48.891Z
+  - _ulid: 01KW3BRGKEJEZWB0KC7PZ9ZP7T
+    content: "Implemented cleanup stabilization by reusing cleanupTempDir for shadow sync temporary bare
+      remotes and configured-remote clone cleanup in tests/shadow.test.ts. Existing
+      tests/helpers-cli-cleanup.test.ts already proves transient ENOTEMPTY retry and non-transient
+      failure propagation, so no duplicate helper test was added. Verification passed: format:check,
+      focused oxlint, repo lint --quiet, typecheck, kspec validate refs/alignment/completeness with
+      warnings-ok, focused tests for helpers-cli-cleanup + shadow, and full npm test (2790 suites,
+      10579 passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T01:40:28.910Z
