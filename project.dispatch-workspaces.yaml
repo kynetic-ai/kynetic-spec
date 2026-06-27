@@ -10268,11 +10268,11 @@ workspaces:
     canonical_branch: dispatch/task/task-coverage-spec-text-revert/01kw2nt2
     canonical_branch_head: 403186111291b0a82cad4158b06fa83de18292a7
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-27T02:29:02.205Z
+      updated_at: 2026-06-27T02:33:15.075Z
     health:
       status: healthy
       issues: []
@@ -10286,17 +10286,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: 929ca776cca711113af9a51c3635518af1886f10
       updated_at: 2026-06-27T02:29:02.205Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW2NT2528F5PYRHJYK2K804F
     task_ref: "@01KW2NT2528F5PYRHJYK2K804F"
     task_slug: task-coverage-spec-text-revert
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-27T02:33:15.075Z
       last_active_at: 2026-06-27T02:11:52.641Z
       last_reconciled_at: 2026-06-27T02:32:19.241Z
       created_at: 2026-06-26T22:50:50.870Z
-      updated_at: 2026-06-27T02:32:19.241Z
+      updated_at: 2026-06-27T02:33:15.075Z
     workspace_id: dispatch-workspace-01KW2NT2528F5PYRHJYK2K804F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
