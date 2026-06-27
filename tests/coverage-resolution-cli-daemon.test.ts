@@ -1,10 +1,16 @@
 import { execSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import * as path from "node:path";
+import { Elysia } from "elysia";
 import { afterEach, describe, expect, it } from "vitest";
 import type { TestResultRunRecordInput } from "../src/schema/test-result-runs.js";
 import { initContext, writeTestRun } from "../src/parser/index.js";
 import { invalidateCoverageStateReadModelCache } from "../src/parser/coverage-state-read-model.js";
+import { getTestRunStoreRoot } from "../src/parser/test-result-run-store.js";
+import { getVerificationRecordPath } from "../src/parser/verification-record-store.js";
+import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
+import { createCommandRoutes } from "../dist/daemon/routes/command.js";
+import { PubSubManager } from "../dist/daemon/websocket/pubsub.js";
 import {
   cleanupTempDir,
   createTempDir,
@@ -25,6 +31,10 @@ import {
 // AC: @trait-semantic-exit-codes ac-5 - N/A: coverage resolution actions target one criterion, not an empty result set.
 // AC: @trait-semantic-exit-codes ac-7 - N/A: coverage resolution actions do not provide batch mode.
 // AC: @trait-error-guidance ac-4 - N/A: coverage precondition diagnostics describe action suitability, not lifecycle transitions.
+// AC: @trait-websocket-protocol ac-1 - N/A: connection establishment is covered by the shared websocket route infrastructure.
+// AC: @trait-websocket-protocol ac-4 - N/A: heartbeat scheduling is covered by the shared websocket route infrastructure.
+// AC: @trait-websocket-protocol ac-5 - N/A: heartbeat timeout handling is covered by the shared websocket route infrastructure.
+// AC: @trait-websocket-protocol ac-7 - N/A: close-code handling is covered by the shared websocket route infrastructure.
 
 const ITEM_ULID = testUlid("FEAT", 801);
 const RUN_ID = testUlid("RUNN", 801);
@@ -37,7 +47,9 @@ afterEach(async () => {
   }
 });
 
-async function setupResolutionProject(options: { changeText?: boolean } = {}): Promise<string> {
+async function setupResolutionProject(
+  options: { changeText?: boolean; writeRun?: boolean } = {},
+): Promise<string> {
   const tempDir = await createTempDir("coverage-resolution-cli-daemon-");
   tempDirs.push(tempDir);
   initGitRepo(tempDir);
@@ -82,12 +94,14 @@ async function setupResolutionProject(options: { changeText?: boolean } = {}): P
     GIT_AUTHOR_DATE: "2026-06-24T11:45:00.000Z",
     GIT_COMMITTER_DATE: "2026-06-24T11:45:00.000Z",
   });
-  const ctx = await initContext(tempDir, { syncMode: "skip" });
-  await writeTestRun(ctx, normalizedRun({ codeRevision: fixtureCommit }), { skipCommit: true });
-  commit(tempDir, "coverage resolution fixture run", {
-    GIT_AUTHOR_DATE: "2026-06-24T12:05:00.000Z",
-    GIT_COMMITTER_DATE: "2026-06-24T12:05:00.000Z",
-  });
+  if (options.writeRun !== false) {
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    await writeTestRun(ctx, normalizedRun({ codeRevision: fixtureCommit }), { skipCommit: true });
+    commit(tempDir, "coverage resolution fixture run", {
+      GIT_AUTHOR_DATE: "2026-06-24T12:05:00.000Z",
+      GIT_COMMITTER_DATE: "2026-06-24T12:05:00.000Z",
+    });
+  }
   if (options.changeText !== false) {
     writeFileSync(
       path.join(tempDir, "modules", "coverage.yaml"),
@@ -194,6 +208,19 @@ function commitShadow(tempDir: string, message: string, env: Record<string, stri
 
 const CLI_ACTOR_ENV = { KSPEC_AUTHOR: "neutral-operator" };
 
+function setupCommandApp(pubsub: PubSubManager): Elysia {
+  const { middleware } = projectContextMiddleware();
+  return new Elysia()
+    .resolve(({ set }) => ({
+      error: (status: number, body: unknown) => {
+        set.status = status;
+        return body;
+      },
+    }))
+    .use(middleware)
+    .use(createCommandRoutes({ pubsub }));
+}
+
 function cliJson<T>(tempDir: string, args: string, options: KspecOptions = {}): T {
   const result = kspec(`--json ${args}`, tempDir, {
     ...options,
@@ -210,6 +237,43 @@ async function daemonJson<T>(
   const { app } = createTestApp();
   const response = await requestJson(app, tempDir, "POST", urlPath, body);
   return { response, data: JSON.parse(await response.text()) as T };
+}
+
+async function commandJson<T>(
+  tempDir: string,
+  app: Elysia,
+  command: string,
+  args: Record<string, unknown>,
+): Promise<{ response: Response; data: T }> {
+  const response = await app.handle(
+    new Request("http://localhost/api/command", {
+      method: "POST",
+      headers: {
+        Host: "localhost",
+        "X-Kspec-Dir": tempDir,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ command, args }),
+    }),
+  );
+  return { response, data: JSON.parse(await response.text()) as T };
+}
+
+function captureCoverageStateEvents(pubsub: PubSubManager) {
+  const events: Array<{
+    topic: string;
+    event: string;
+    data: any;
+    projectPath?: string;
+  }> = [];
+  const originalBroadcast = pubsub.broadcast.bind(pubsub);
+  pubsub.broadcast = (topic, event, data, projectPath) => {
+    if (topic === "items:updates" && event === "coverage_state_changed") {
+      events.push({ topic, event, data, projectPath });
+    }
+    originalBroadcast(topic, event, data, projectPath);
+  };
+  return events;
 }
 
 async function setupResolutionShadowProject(): Promise<string> {
@@ -413,6 +477,195 @@ describe("coverage resolution CLI and daemon adapters", () => {
     );
   });
 
+  // AC: @coverage-resolution-events-compatibility ac-event-after-cache
+  // AC: @coverage-resolution-events-compatibility ac-targeted-scope
+  // AC: @coverage-state-events ac-event-topic
+  // AC: @coverage-state-events ac-event-canonical-identity
+  // AC: @coverage-state-events ac-event-after-cache
+  // AC: @coverage-state-events ac-no-event-storm
+  // AC: @trait-websocket-protocol ac-2
+  // AC: @trait-websocket-protocol ac-3
+  // AC: @trait-websocket-protocol ac-6
+  // AC: @trait-websocket-protocol ac-8
+  it("broadcasts a precise coverage-state event after a resolution mutation refreshes cache", async () => {
+    const tempDir = await setupResolutionProject();
+    const { app, pubsub } = createTestApp();
+    const events = captureCoverageStateEvents(pubsub);
+    const observedAfterCache: Promise<unknown>[] = [];
+    const originalBroadcast = pubsub.broadcast.bind(pubsub);
+    pubsub.broadcast = (topic, event, data, projectPath) => {
+      if (topic === "items:updates" && event === "coverage_state_changed") {
+        observedAfterCache.push(
+          import("../dist/parser/index.js").then(async (parser) => {
+            const { getCachedCoverageStateReadModel } =
+              await import("../dist/parser/coverage-state-read-model.js");
+            const freshCtx = await parser.initContext(tempDir, { syncMode: "skip" });
+            const model = await getCachedCoverageStateReadModel(freshCtx);
+            return {
+              counts: model.summary.counts,
+              criterion: model.criteria[`${ITEM_ULID} ac-covered`]?.presentation,
+              affected: data.affected,
+            };
+          }),
+        );
+      }
+      originalBroadcast(topic, event, data, projectPath);
+    };
+
+    const response = await requestJson(app, tempDir, "POST", "/api/coverage/resolve/reverify", {
+      target: { item_ref: "@coverage-api-widget", ac_id: "ac-covered" },
+      actor: "neutral-operator",
+    });
+    const body = await response.json();
+
+    expect(response.status, JSON.stringify(body)).toBe(200);
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({
+      topic: "items:updates",
+      event: "coverage_state_changed",
+      data: {
+        action: "changed",
+        family: "coverage_state",
+        reason: "verification_stamp",
+        scope: "precise",
+        refresh: {
+          project_summary: true,
+          item_detail: true,
+          criterion_detail: true,
+          unmapped_results: false,
+        },
+        affected: {
+          items: [
+            {
+              item_ulid: ITEM_ULID,
+              item_ref: "@coverage-api-widget",
+              ac_ids: ["ac-covered"],
+              buckets: ["re_verify"],
+            },
+          ],
+        },
+      },
+      projectPath: tempDir,
+    });
+    await expect(Promise.all(observedAfterCache)).resolves.toEqual([
+      {
+        counts: { covered: 0, failing: 1, not_yet: 0, re_verify: 1 },
+        criterion: "re_verify",
+        affected: events[0].data.affected,
+      },
+    ]);
+  });
+
+  // AC: @coverage-resolution-events-compatibility ac-cli-daemon-event-equivalence
+  // AC: @coverage-resolution-events-compatibility ac-targeted-scope
+  // AC: @coverage-state-events ac-event-topic
+  // AC: @coverage-state-events ac-event-canonical-identity
+  // AC: @trait-websocket-protocol ac-3
+  it("emits the same coverage-state event family through REST and daemon command-proxy paths", async () => {
+    const restDir = await setupResolutionProject();
+    const commandDir = await setupResolutionProject();
+    const restApp = createTestApp();
+    const restEvents = captureCoverageStateEvents(restApp.pubsub);
+    const commandPubsub = new PubSubManager();
+    const commandEvents = captureCoverageStateEvents(commandPubsub);
+    const commandApp = setupCommandApp(commandPubsub);
+
+    const restResponse = await requestJson(
+      restApp.app,
+      restDir,
+      "POST",
+      "/api/coverage/resolve/reverify",
+      {
+        target: { item_ref: "@coverage-api-widget", ac_id: "ac-covered" },
+        actor: "neutral-operator",
+      },
+    );
+    const commandResponse = await commandJson<any>(
+      commandDir,
+      commandApp,
+      "coverage resolve reverify",
+      {
+        item: "@coverage-api-widget",
+        ac: "ac-covered",
+        actor: "neutral-operator",
+      },
+    );
+
+    expect(restResponse.status).toBe(200);
+    expect(commandResponse.response.status).toBe(200);
+    expect(commandResponse.data).toMatchObject({ exitCode: 0 });
+    expect(restEvents).toHaveLength(1);
+    expect(commandEvents).toHaveLength(1);
+    expect(commandEvents[0]).toMatchObject({
+      topic: restEvents[0].topic,
+      event: restEvents[0].event,
+      data: restEvents[0].data,
+    });
+  });
+
+  // AC: @coverage-resolution-events-compatibility ac-absent-store-compatible
+  // AC: @coverage-resolution-events-compatibility ac-validation-gates
+  it("treats missing verification and test-run stores as ordinary absence until first write", async () => {
+    const tempDir = await setupResolutionProject({ writeRun: false });
+    const { app, pubsub } = createTestApp();
+    const events = captureCoverageStateEvents(pubsub);
+    const ctx = await initContext(tempDir, { syncMode: "skip" });
+    const verificationPath = getVerificationRecordPath(ctx, ITEM_ULID);
+    const testRunStoreRoot = getTestRunStoreRoot(ctx);
+
+    expect(existsSync(verificationPath)).toBe(false);
+    expect(existsSync(testRunStoreRoot)).toBe(false);
+
+    const dryRunResponse = await requestJson(
+      app,
+      tempDir,
+      "POST",
+      "/api/coverage/resolve/reverify?dry_run=true",
+      {
+        target: { item_ref: "@coverage-api-widget", ac_id: "ac-covered" },
+        actor: "neutral-operator",
+      },
+    );
+    const dryRunBody = await dryRunResponse.json();
+
+    expect(dryRunResponse.status, JSON.stringify(dryRunBody)).toBe(200);
+    expect(dryRunBody.data).toMatchObject({ dry_run: true, stored: false });
+    expect(existsSync(verificationPath)).toBe(false);
+    expect(existsSync(testRunStoreRoot)).toBe(false);
+    expect(events).toEqual([]);
+
+    const applyResponse = await requestJson(
+      app,
+      tempDir,
+      "POST",
+      "/api/coverage/resolve/reverify",
+      {
+        target: { item_ref: "@coverage-api-widget", ac_id: "ac-covered" },
+        actor: "neutral-operator",
+      },
+    );
+    const applyBody = await applyResponse.json();
+
+    expect(applyResponse.status, JSON.stringify(applyBody)).toBe(200);
+    expect(applyBody.data).toMatchObject({ dry_run: false, stored: true });
+    expect(existsSync(verificationPath)).toBe(true);
+    expect(existsSync(testRunStoreRoot)).toBe(false);
+    expect(events).toHaveLength(1);
+    expect(events[0].data).toMatchObject({
+      family: "coverage_state",
+      reason: "verification_stamp",
+      affected: {
+        items: [
+          {
+            item_ulid: ITEM_ULID,
+            item_ref: "@coverage-api-widget",
+            ac_ids: ["ac-covered"],
+          },
+        ],
+      },
+    });
+  });
+
   // AC: @coverage-resolution-mutation-interface ac-cli-daemon-equivalence
   // AC: @trait-api-endpoint ac-5
   it("commits CLI reverify verification stamps to the shadow branch", async () => {
@@ -504,6 +757,7 @@ describe("coverage resolution CLI and daemon adapters", () => {
   });
 
   // AC: @coverage-resolution-mutation-interface ac-static-readonly-refusal
+  // AC: @coverage-resolution-events-compatibility ac-validation-gates
   // AC: @trait-semantic-exit-codes ac-4
   it("refuses non-dry-run writes in read-only mode while allowing computed dry runs", async () => {
     const cliDir = await setupResolutionProject();
