@@ -13,3 +13,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-27T02:36:25.241Z
+  - _ulid: 01KW3G34KWW25JEDBM66KRYTZH
+    content: "Implemented coverage resolution CLI and daemon adapters. Added coverage resolve
+      reverify/revert-spec-text/dispatch-fix commands, POST /api/coverage/resolve/* routes,
+      structured validation/read-only/precondition error mapping, and route-owned skip-commit
+      support for spec-text/task writes under runRouteMutation. Added behavioral CLI/daemon parity
+      tests over real temp projects covering success for all three actions, dry-run no effects,
+      precondition failure, read-only refusal, API validation/not-found guidance, and inherited
+      trait N/A annotations. Gates: format:check pass; focused oxlint changed files pass; typecheck
+      pass; focused coverage-resolution-cli-daemon test pass; repo lint --quiet pass with existing
+      warning baseline; kspec validate refs/alignment/completeness pass with --warnings-ok; full npm
+      test pass (2916 suites, 11097 passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T02:56:11.388Z
