@@ -26,7 +26,7 @@ import {
   findItemByRef,
   initContext,
   loadAllItems,
-  updateSpecItemFromCurrent,
+  updateSpecItemAcceptanceCriterionTextFromCurrent,
   type KspecContext,
   type LoadedSpecItem,
   type LoadedTask,
@@ -1153,11 +1153,16 @@ export async function applySpecTextRevert(
   const plan = await resolveSpecTextRevertPlan(project, options);
   let lockedCriterionText = plan.target.criterionText;
   let lockedFingerprint = plan.target.fingerprint;
-  const updatedSpecItem = await updateSpecItemFromCurrent(
+  const updatedSpecItem = await updateSpecItemAcceptanceCriterionTextFromCurrent(
     plan.target.ctx,
     plan.target.specItem,
-    (currentItem) => {
-      lockedCriterionText = resolveCriterionText(currentItem, plan.target.criterion.ac_id);
+    plan.target.criterion.ac_id,
+    (currentItem, currentCriterion) => {
+      lockedCriterionText = {
+        given: currentCriterion.given,
+        when: currentCriterion.when,
+        then: currentCriterion.then,
+      };
       lockedFingerprint = fingerprintCoverageCriterionText({
         itemUlid: plan.target.item.item_ulid,
         acId: plan.target.criterion.ac_id,
@@ -1165,32 +1170,19 @@ export async function applySpecTextRevert(
       });
       assertExpectedFingerprint(options.request, lockedFingerprint);
 
-      const existingCriteria = currentItem.acceptance_criteria ?? [];
-      const criterionIndex = existingCriteria.findIndex(
-        (criterion) => criterion.id === plan.target.criterion.ac_id,
+      return Object.fromEntries(
+        plan.changedFields.map((field) => [field, plan.previousText[field]]),
       );
-      if (criterionIndex < 0) {
-        throw new CoverageResolutionTargetNotFoundError({
+    },
+    {
+      missingCriterionError: () =>
+        new CoverageResolutionTargetNotFoundError({
           code: COVERAGE_RESOLUTION_CRITERION_NOT_FOUND_CODE,
           target: `${plan.target.item.item_ref} ${plan.target.criterion.ac_id}`,
           message: `Acceptance criterion "${plan.target.criterion.ac_id}" was not found on the loaded spec item.`,
           suggestion:
             "Refresh project context and retry after the acceptance criterion is available.",
-        });
-      }
-
-      return {
-        acceptance_criteria: existingCriteria.map((criterion, index) =>
-          index === criterionIndex
-            ? {
-                ...criterion,
-                ...Object.fromEntries(
-                  plan.changedFields.map((field) => [field, plan.previousText[field]]),
-                ),
-              }
-            : criterion,
-        ),
-      };
+        }),
     },
   );
   await commitIfShadow(

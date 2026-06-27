@@ -15,6 +15,7 @@ import {
 } from "../cli/batch-write-buffer.js";
 import {
   AcceptanceCriterionSchema,
+  type AcceptanceCriterion,
   InboxFileSchema,
   type InboxItem,
   type InboxItemInput,
@@ -2324,6 +2325,153 @@ export async function updateSpecItemFromCurrent(
 
     await writeYamlFilePreserveFormat(item._sourceFile!, raw);
     const updatedItem = { ...currentItem, ...updates, _ulid: item._ulid } as SpecItem;
+    recordSpecItemMutationEvent(updatedItem, "changed");
+
+    return updatedItem;
+  });
+}
+
+type AcceptanceCriterionTextPatch = Partial<Pick<AcceptanceCriterion, "given" | "when" | "then">>;
+
+function getMapString(map: YAML.YAMLMap, key: string): string | null {
+  const value = map.get(key);
+  return typeof value === "string" ? value : null;
+}
+
+function findSpecItemMapInYaml(node: unknown, itemUlid: string): YAML.YAMLMap | null {
+  if (YAML.isMap(node)) {
+    if (getMapString(node, "_ulid") === itemUlid) {
+      return node;
+    }
+
+    for (const field of NESTED_ITEM_FIELDS) {
+      const childSeq = node.get(field, true);
+      if (!YAML.isSeq(childSeq)) {
+        continue;
+      }
+
+      for (const child of childSeq.items) {
+        const found = findSpecItemMapInYaml(child, itemUlid);
+        if (found) {
+          return found;
+        }
+      }
+    }
+  }
+
+  if (YAML.isSeq(node)) {
+    for (const child of node.items) {
+      const found = findSpecItemMapInYaml(child, itemUlid);
+      if (found) {
+        return found;
+      }
+    }
+  }
+
+  return null;
+}
+
+function findAcceptanceCriterionMap(itemMap: YAML.YAMLMap, acId: string): YAML.YAMLMap | null {
+  const criteria = itemMap.get("acceptance_criteria", true);
+  if (!YAML.isSeq(criteria)) {
+    return null;
+  }
+
+  for (const criterion of criteria.items) {
+    if (YAML.isMap(criterion) && getMapString(criterion, "id") === acId) {
+      return criterion;
+    }
+  }
+
+  return null;
+}
+
+function yamlMapToObject<T>(map: YAML.YAMLMap): T {
+  return map.toJSON() as T;
+}
+
+/**
+ * Update only a targeted acceptance criterion's text scalars while holding the
+ * source file lock. Unlike updateSpecItem(), this keeps the YAML document node
+ * tree intact so comments and unrelated source structure survive the mutation.
+ */
+export async function updateSpecItemAcceptanceCriterionTextFromCurrent(
+  _ctx: KspecContext,
+  item: LoadedSpecItem,
+  acId: string,
+  buildUpdates: (
+    current: LoadedSpecItem,
+    criterion: AcceptanceCriterion,
+  ) => AcceptanceCriterionTextPatch | Promise<AcceptanceCriterionTextPatch>,
+  options: { missingCriterionError?: () => Error } = {},
+): Promise<SpecItem> {
+  if (!item._sourceFile) {
+    throw new Error("Item has no source file");
+  }
+
+  return withFileLock(item._sourceFile, async () => {
+    const source = await readFileBufferAware(item._sourceFile!);
+    const doc = YAML.parseDocument(source);
+    if (doc.errors.length > 0) {
+      throw new Error(`Could not parse YAML file: ${doc.errors[0].message}`);
+    }
+
+    const itemMap = findSpecItemMapInYaml(doc.contents, item._ulid);
+    if (!itemMap) {
+      throw new Error(`Could not find item ${item._ulid} in structure`);
+    }
+
+    const criterionMap = findAcceptanceCriterionMap(itemMap, acId);
+    if (!criterionMap) {
+      if (options.missingCriterionError) {
+        throw options.missingCriterionError();
+      }
+      throw new Error(`Acceptance criterion "${acId}" was not found on the loaded spec item.`);
+    }
+
+    const currentItem = {
+      ...item,
+      ...yamlMapToObject<Partial<SpecItem>>(itemMap),
+    } as LoadedSpecItem;
+    const currentCriterion = AcceptanceCriterionSchema.parse(
+      yamlMapToObject<AcceptanceCriterion>(criterionMap),
+    );
+    const updates = await buildUpdates(currentItem, currentCriterion);
+    const allowedFields = new Set(["given", "when", "then"]);
+    for (const key of Object.keys(updates)) {
+      if (!allowedFields.has(key)) {
+        throw new Error(
+          `updateSpecItemAcceptanceCriterionTextFromCurrent only accepts criterion text fields; received ${key}`,
+        );
+      }
+    }
+
+    const updatedCriterion = AcceptanceCriterionSchema.parse({
+      ...currentCriterion,
+      ...updates,
+    });
+    for (const field of allowedFields) {
+      if (field in updates) {
+        criterionMap.set(field, updatedCriterion[field as keyof AcceptanceCriterionTextPatch]);
+      }
+    }
+
+    const content = String(doc);
+    const buffer = getActiveBatchBuffer();
+    if (buffer?.isInScope(item._sourceFile!)) {
+      buffer.write(item._sourceFile!, content);
+    } else {
+      await writeFileAtomic(item._sourceFile!, content);
+    }
+
+    const updatedCriteria = (currentItem.acceptance_criteria ?? []).map((criterion) =>
+      criterion.id === acId ? updatedCriterion : criterion,
+    );
+    const updatedItem = {
+      ...currentItem,
+      acceptance_criteria: updatedCriteria,
+      _ulid: item._ulid,
+    } as SpecItem;
     recordSpecItemMutationEvent(updatedItem, "changed");
 
     return updatedItem;

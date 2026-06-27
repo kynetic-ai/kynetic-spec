@@ -514,6 +514,7 @@ async function writeSpecTextFixture(tempDir: string): Promise<string> {
         created_at: "2026-06-24T11:00:00.000Z"
         author: neutral-author
     acceptance_criteria:
+      # keep this criterion comment
       - id: ac-stale-text
         given: current given
         when: current when
@@ -1025,6 +1026,7 @@ describe("coverage resolution contract", () => {
     const sidecarFile = path.join(tempDir, "coverage-verifications.yaml");
     await fs.writeFile(sidecarFile, "stamps:\n  untouched: true\n");
     execSync("git add . && git commit -m initial", { cwd: tempDir, stdio: "pipe" });
+    const specBefore = await readTestOutput(specFile);
     const sidecarBefore = await readTestOutput(sidecarFile);
     const target = await resolveCoverageTarget(fakeContext(tempDir), {
       request: {
@@ -1060,6 +1062,12 @@ describe("coverage resolution contract", () => {
     );
 
     const updated = await readFixtureItem(specFile);
+    const specAfter = await readTestOutput(specFile);
+    expect(specAfter).toBe(
+      specBefore
+        .replace("given: current given", "given: prior given")
+        .replace("then: current then", "then: prior then"),
+    );
     expect(updated.acceptance_criteria).toEqual([
       {
         id: "ac-stale-text",
