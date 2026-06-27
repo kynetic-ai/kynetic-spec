@@ -11843,7 +11843,7 @@ workspaces:
         head: fde630e2939347e110a1a3d3e8f3ae812ba528fc
         last_seen_at: 2026-06-27T01:45:28.568Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-shadow-push-cleanup-01kw3at4
-  - active_role: worker
+  - active_role: null
     base_branch_point: 630e506c23befc517743128c77eaeb8a39c74d16
     bootstrap:
       status: succeeded
@@ -12174,12 +12174,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-27T02:57:02.378Z
+      updated_at: 2026-06-27T03:00:59.519Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-27T02:57:02.378Z
+      updated_at: 2026-06-27T03:00:59.519Z
     integration:
       status: pending
       detail: null
@@ -12187,8 +12187,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 630e506c23befc517743128c77eaeb8a39c74d16
-      updated_at: 2026-06-27T02:57:02.378Z
-    lifecycle_state: active
+      updated_at: 2026-06-27T03:00:59.519Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW2NT366BEE987XGXR17CDSG
     task_ref: "@01KW2NT366BEE987XGXR17CDSG"
@@ -12196,9 +12196,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-27T02:29:59.282Z
-      last_reconciled_at: 2026-06-27T02:57:02.378Z
+      last_reconciled_at: 2026-06-27T03:00:59.519Z
       created_at: 2026-06-27T02:29:27.855Z
-      updated_at: 2026-06-27T02:57:02.378Z
+      updated_at: 2026-06-27T03:00:59.519Z
     workspace_id: dispatch-workspace-01KW2NT366BEE987XGXR17CDSG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
