@@ -12,3 +12,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-27T00:26:27.334Z
+  - _ulid: 01KW38B99WT6TY58ZKCMZ5K8AA
+    content: "Implemented stabilization: collapsed ac-delete-confirmation beforeEach setup into one
+      kspec batch subprocess with explicit setup failure diagnostics, added inherited trait AC
+      annotations/N/A markers, and moved the suite into the existing heavy-serial Vitest project
+      used for full-suite STACK_TRACE_ERROR resource-pressure cases. Verification passed: focused
+      oxlint, focused fresh ac-delete-confirmation test, format check, repo lint --quiet, typecheck,
+      refs/alignment/completeness validations with warnings-ok, and full npm test (2788 suites
+      passed; 10577 passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T00:40:49.724Z
