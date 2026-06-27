@@ -34,3 +34,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-27T04:22:21.723Z
+  - _ulid: 01KW3Q6T1FA3PRXXG77GQ4WZ5Z
+    content: "Implemented coverage resolution event wiring for REST and daemon command paths. REST
+      mutations now invalidate and refetch the coverage-state read-model before broadcasting
+      targeted coverage_state_changed events; command-proxy mutations use an internal recorded
+      resolution descriptor so broadcasts do not depend on JSON stdout. Added behavioral coverage
+      for cache freshness, REST/command event equivalence, targeted scopes, absent-store
+      compatibility, validation gates, and websocket trait expectations. Gates passed: format:check,
+      repo lint, changed-file oxlint, typecheck, focused daemon/coverage tests, full npm test, and
+      refs/alignment/completeness validations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T05:00:31.663Z
