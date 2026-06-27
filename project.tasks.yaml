@@ -33316,7 +33316,7 @@
   type: task
   spec_ref: "@coverage-resolution-events-compatibility"
   plan_ref: "@plan-coverage-resolution-mutations"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-coverage-resolution-cli-daemon"
@@ -33332,6 +33332,7 @@
   created_at: 2026-06-26T19:16:52.855Z
   started_at: 2026-06-27T04:13:17.302Z
   submitted_at: 2026-06-27T05:01:22.542Z
+  completed_at: 2026-06-27T05:25:01.663Z
   automation: eligible
 - _ulid: 01KW2VD3FG4RGY7011HEXQBWYC
   slugs:
