@@ -2,7 +2,174 @@ _ulid: 01KW4VWQVFKM4BG2KYCMHEW60Y
 slugs: []
 title: "Plan re-review: Unified Spec Workspace"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exported @plan-unified-spec-workspace to /tmp/plan-unified-spec-workspace-rereview.md and
+      dry-ran import with --module @web-ui --status draft --json; parser accepted the stored
+      content.
+    name: plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-27T15:42:56.914Z
+    completed_at: 2026-06-27T15:42:56.914Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "@plan-unified-spec-workspace now reports Branch: feat/ui-redesign. Prerequisite plans
+      @plan-web-ui-foundations, @plan-ac-coverage-verification-schema-and-storage,
+      @plan-test-result-ingestion, @plan-coverage-state-engine, and
+      @plan-coverage-resolution-mutations all report Status: completed on feat/ui-redesign."
+    name: branch metadata and prerequisites
+    required: true
+    runner: kspec plan get
+    created_at: 2026-06-27T15:42:59.974Z
+    completed_at: 2026-06-27T15:42:59.974Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 1684 files, 691 items, 1676 tasks; schema OK and references OK. Remaining
+      deprecated-reference warnings are existing baseline entries unrelated to this un-derived draft
+      plan."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-27T15:43:04.123Z
+    completed_at: 2026-06-27T15:43:04.123Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing alignment warning baseline: orphaned specs and status mismatches
+      unrelated to this draft plan."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-27T15:43:07.110Z
+    completed_at: 2026-06-27T15:43:07.110Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing completeness warning baseline: missing historical coverage and
+      invalid annotation entries are pre-existing corpus warnings, not introduced by this un-derived
+      draft plan."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-27T15:43:10.064Z
+    completed_at: 2026-06-27T15:43:10.064Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All prior review topics are addressed: branch metadata is set; task coverage now claims
+      @trait-api-endpoint ac-1, ac-2, ac-3, ac-4, ac-6 plus N/A for ac-5; @trait-error-guidance
+      ac-1, ac-2, ac-3, ac-5, ac-6 plus N/A for ac-4; coverage labels use covered, failing, not yet,
+      and re-verify; secondary causes now align with backend cause classes."
+    name: prior review blockers addressed
+    required: true
+    runner: manual re-review of @01KW4VAF
+    created_at: 2026-06-27T15:43:13.022Z
+    completed_at: 2026-06-27T15:43:13.022Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every own AC across the six planned specs is claimed by at least one task. Cross-spec
+      claims for shared URL state, data projection, cache/event coherence, and delivery quality are
+      explicit. Inherited trait applicability and N/A cases are now called out in the projection API
+      task Covers line.
+    name: AC coverage mapping
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-27T15:43:16.000Z
+    completed_at: 2026-06-27T15:43:16.000Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Existing specs define the rendered buckets as covered, failing, not yet, and re-verify,
+      with internal/API causes as secondary metadata. The revised plan uses those labels for UI
+      presentation and preserves API enum/secondary-cause boundaries in data-contract and task
+      wording.
+    name: coverage vocabulary consistency
+    required: true
+    runner: manual review + kspec item get @coverage-state-presentation @coverage-state-engine
+      @coverage-state-api-cache
+    created_at: 2026-06-27T15:43:18.917Z
+    completed_at: 2026-06-27T15:43:18.917Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task chain is ordered projection API -> shell navigation -> node/criterion pages ->
+      coverage presentation -> resolution panels -> quality verification. All tasks are P1,
+      dependencies are acyclic, and UI consumers depend on the backend projection before using it.
+    name: dependency ordering
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-27T15:43:21.834Z
+    completed_at: 2026-06-27T15:43:21.834Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Static/read-only handling appears in data projection, resolution panels, and delivery
+      quality ACs. Dynamic evidence and linked-work classes degrade explicitly, and mutation
+      affordances are disabled/refused instead of pretending writes can occur.
+    name: static and read-only behavior
+    required: true
+    runner: manual plan review + @gh-pages-export context
+    created_at: 2026-06-27T15:43:24.761Z
+    completed_at: 2026-06-27T15:43:24.761Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan scope is a generic kspec workspace for arbitrary projects. Kynetic-specific
+      branch/toolchain references are project-local plan execution context, not shared/package
+      guidance. The tasks explicitly avoid hard-coded Kynetic module names, source paths, and
+      repository-specific coverage inference. No shared/package guidance surfaces are changed by
+      this plan.
+    name: project neutrality
+    required: true
+    runner: manual semantic review + shared-guidance-neutrality checklist
+    created_at: 2026-06-27T15:43:27.737Z
+    completed_at: 2026-06-27T15:43:27.737Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan remains draft with derive_from_specs: false, structured specs/tasks/implementation
+      notes, specific task What/Why/How/Testing sections, scoped exclusions for CRUD and new
+      coverage computation, and testable ACs for URLs, projection behavior, coverage presentation,
+      resolution actions, static mode, accessibility, and browser proof."
+    name: structure and AC specificity
+    required: true
+    runner: manual plan review
+    created_at: 2026-06-27T15:43:30.679Z
+    completed_at: 2026-06-27T15:43:30.679Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Instructions read: AGENTS.md supplied context, kspec-agents.md, kspec-review-plan,
+      review-gates, shared-guidance-neutrality. Commands run: kspec plan get/export/import dry-run,
+      kspec review get/list, kspec validate refs/alignment/completeness, kspec item get coverage and
+      web-ui neighboring specs, kspec search for spec workspace, /specs, ItemTree, spec route,
+      coverage state. Categories checked: prior blockers, references, structure, AC coverage,
+      inherited trait N/A, vocabulary/API boundary, dependency ordering, static/read-only behavior,
+      project neutrality, existing-spec overlap."
+    name: review evidence log
+    required: true
+    runner: codex plan re-review
+    created_at: 2026-06-27T15:43:34.468Z
+    completed_at: 2026-06-27T15:43:34.468Z
 events:
   - _ulid: 01KW4VWQVFV5D9PS2T2Q1BCVTA
     actor: codex
@@ -17,6 +184,97 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-27T15:41:57.890Z
+  - _ulid: 01KW4VZ44H8XX9PZT5S69SQ8JE
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan import dry-run
+    timestamp: 2026-06-27T15:42:57.169Z
+  - _ulid: 01KW4VZ73VGEKGBCAQV85JB1PH
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: branch metadata and prerequisites
+    timestamp: 2026-06-27T15:43:00.219Z
+  - _ulid: 01KW4VZB53Z1NHNQAH7ZKBMYE9
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-27T15:43:04.355Z
+  - _ulid: 01KW4VZE2AW8TTQ432N7Z4PSMY
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-27T15:43:07.338Z
+  - _ulid: 01KW4VZGYSJ2GEWF32FWDBGMV3
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-27T15:43:10.297Z
+  - _ulid: 01KW4VZKVFDEVSJSDVS5XC8ATW
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior review blockers addressed
+    timestamp: 2026-06-27T15:43:13.263Z
+  - _ulid: 01KW4VZPR524ANZPJV37RAMHV1
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-27T15:43:16.229Z
+  - _ulid: 01KW4VZSM74WR826GD6WMR057T
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: coverage vocabulary consistency
+    timestamp: 2026-06-27T15:43:19.175Z
+  - _ulid: 01KW4VZWFCVJ9STR28CSE2YG40
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency ordering
+    timestamp: 2026-06-27T15:43:22.092Z
+  - _ulid: 01KW4VZZA27ZHT4EMFTWS1VT0R
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: static and read-only behavior
+    timestamp: 2026-06-27T15:43:24.994Z
+  - _ulid: 01KW4W027G2VPKNFSZ0KT4P3B2
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: project neutrality
+    timestamp: 2026-06-27T15:43:27.984Z
+  - _ulid: 01KW4W054RVST018SN2PBJYYSX
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: structure and AC specificity
+    timestamp: 2026-06-27T15:43:30.968Z
+  - _ulid: 01KW4W08T76842WM2NARXZJH2Z
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-27T15:43:34.727Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -29,5 +287,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-27T15:41:39.055Z
-updated_at: 2026-06-27T15:41:57.655Z
+updated_at: 2026-06-27T15:43:34.468Z
 notes: []
