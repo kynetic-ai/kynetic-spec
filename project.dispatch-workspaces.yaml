@@ -10265,23 +10265,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-coverage-spec-text-revert/01kw2nt2
-    canonical_branch_head: 1a1c5560e7791369b5c455adb44d6bc83353c6df
+    canonical_branch_head: 14e4d05776358ddb9f15b24ec1111850675a11e8
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-26T23:59:04.027Z
+      updated_at: 2026-06-27T00:05:00.018Z
     health:
-      status: stale
-      issues:
-        - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-coverage-spec-text-revert-01kw2nt2"
-            is missing or no longer registered.
-          suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-06-26T23:59:04.027Z
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-27T00:05:00.018Z
     integration:
       status: pending
       detail: null
@@ -10289,8 +10284,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 929ca776cca711113af9a51c3635518af1886f10
-      updated_at: 2026-06-26T23:59:04.027Z
-    lifecycle_state: stale
+      updated_at: 2026-06-27T00:05:00.018Z
+    lifecycle_state: active
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW2NT2528F5PYRHJYK2K804F
     task_ref: "@01KW2NT2528F5PYRHJYK2K804F"
@@ -10298,9 +10293,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-26T23:57:09.608Z
-      last_reconciled_at: 2026-06-26T23:59:04.027Z
+      last_reconciled_at: 2026-06-27T00:05:00.018Z
       created_at: 2026-06-26T22:50:50.870Z
-      updated_at: 2026-06-26T23:59:04.027Z
+      updated_at: 2026-06-27T00:05:00.018Z
     workspace_id: dispatch-workspace-01KW2NT2528F5PYRHJYK2K804F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
