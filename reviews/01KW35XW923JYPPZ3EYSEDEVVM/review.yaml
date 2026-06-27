@@ -70,6 +70,18 @@ checks:
     runner: kspec
     created_at: 2026-06-27T00:13:11.491Z
     completed_at: 2026-06-27T00:13:11.491Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0. Baseline warnings: 324
+      completeness warnings. Verified @coverage-dispatch-fix-request is not listed under missing
+      coverage; annotations exist for all five ACs."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-27T00:13:21.677Z
+    completed_at: 2026-06-27T00:13:21.677Z
 events:
   - _ulid: 01KW35XW91NWEWEDPC5K8JAHQ4
     actor: Jacob Chapel
@@ -126,6 +138,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-27T00:13:11.731Z
+  - _ulid: 01KW36S03Q2ZJ1S2PNNET5GKNG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-27T00:13:21.911Z
 examined_commit: 5a4d550492f1245298e019d899a8654a28fe1808
 external_links: []
 lifecycle_state: open
@@ -138,5 +157,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-26T23:58:33.250Z
-updated_at: 2026-06-27T00:13:11.491Z
+updated_at: 2026-06-27T00:13:21.677Z
 notes: []
