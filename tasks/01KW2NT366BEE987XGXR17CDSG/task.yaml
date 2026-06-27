@@ -50,8 +50,12 @@ description: |
 spec_ref: "@coverage-resolution-mutation-interface"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged dispatch/task/task-coverage-resolution-cli-daemon/01kw2nt3 into
+  feat/ui-redesign at d82f0577c6e13f5a7acf5d6f61b0d5b775eb9f33 after approved review
+  @01KW3K4QVETY46XC22ZTDGJB5R. Exposed coverage resolution CLI and daemon routes with shared service
+  semantics, adapter parity tests, and CLI shadow-commit fix.
 depends_on:
   - "@task-explicit-coverage-reverification"
   - "@task-coverage-spec-text-revert"
@@ -179,8 +183,25 @@ history:
         previous: "@01KW3GEPE421DYE2ZFV2J0CET6"
     command: review-link
     timestamp: 2026-06-27T03:49:33.024Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged dispatch/task/task-coverage-resolution-cli-daemon/01kw2nt3 into feat/ui-redesign at
+          d82f0577c6e13f5a7acf5d6f61b0d5b775eb9f33 after approved review
+          @01KW3K4QVETY46XC22ZTDGJB5R. Exposed coverage resolution CLI and daemon routes with shared
+          service semantics, adapter parity tests, and CLI shadow-commit fix.
+        previous: null
+      completed_at:
+        new: 2026-06-27T04:10:34.762Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-27T04:10:34.775Z
 created_at: 2026-06-26T19:16:52.038Z
 started_at: 2026-06-27T03:26:39.364Z
 submitted_at: 2026-06-27T03:44:32.930Z
+completed_at: 2026-06-27T04:10:34.762Z
 todos: []
 automation: eligible
