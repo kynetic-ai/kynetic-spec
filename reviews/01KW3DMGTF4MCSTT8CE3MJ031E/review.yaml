@@ -2,7 +2,83 @@ _ulid: 01KW3DMGTF4MCSTT8CE3MJ031E
 slugs: []
 title: Review task-coverage-spec-text-revert fix cycle 3
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. oxfmt checked 1122 files; all matched files use correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-27T02:27:36.933Z
+    completed_at: 2026-06-27T02:27:36.933Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with 0 errors. Repo-wide lint reported existing warning baseline: 665 warnings.
+      Focused changed-file lint also passed: npx oxlint src/parser/coverage-resolution.ts
+      src/parser/yaml.ts src/schema/coverage-resolution.ts tests/coverage-resolution.test.ts
+      reported 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-27T02:27:40.039Z
+    completed_at: 2026-06-27T02:27:40.039Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. build:shared and tsc --noEmit completed with exit code 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-27T02:27:42.970Z
+    completed_at: 2026-06-27T02:27:42.970Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed. 2914 test suites passed; 11092 tests passed; 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KW3DHTBQ3T1VHKEPYV8Z4RAY/c795f9e9d3847304.log. Focused npm test --
+      tests/coverage-resolution.test.ts also passed: 26 tests."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-27T02:27:46.243Z
+    completed_at: 2026-06-27T02:27:46.243Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok. Existing reference warnings baseline: 6 deprecated-item
+      reference warnings."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-27T02:27:49.477Z
+    completed_at: 2026-06-27T02:27:49.477Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok. Existing alignment warnings baseline: 55 warnings."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-27T02:27:52.557Z
+    completed_at: 2026-06-27T02:27:52.557Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok. Existing completeness warnings baseline: 323 warnings."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-27T02:27:55.581Z
+    completed_at: 2026-06-27T02:27:55.581Z
 events:
   - _ulid: 01KW3DMGTE1E7ARPD7CMM28GYP
     actor: Jacob Chapel
@@ -17,17 +93,127 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-27T02:13:42.967Z
+  - _ulid: 01KW3EETKBC61BEAH3KFB6R2XY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-27T02:27:37.196Z
+  - _ulid: 01KW3EEXKTHZTPM3GRJVYW6VSD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-27T02:27:40.282Z
+  - _ulid: 01KW3EF0F2GWT0GDWF8JKXK4EM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-27T02:27:43.202Z
+  - _ulid: 01KW3EF3QB4PNFBANTA6NBKAPK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-27T02:27:46.539Z
+  - _ulid: 01KW3EF6V1N2M54MXHT4X163SB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-27T02:27:49.729Z
+  - _ulid: 01KW3EF9TXATMAYW2ZYFEZ92KG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-27T02:27:52.797Z
+  - _ulid: 01KW3EFCSGBKPJK4FPVJYBG5G2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-27T02:27:55.824Z
+  - _ulid: 01KW3EFFW98R4RZ2AQHHGKW9RB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW3EFFMHPGN961773B2X6V0C
+    timestamp: 2026-06-27T02:27:58.985Z
+  - _ulid: 01KW3EFJXKX5BQCHJ68ZM7KN15
+    actor: codex-pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-27T02:28:02.099Z
+  - _ulid: 01KW3EFJXKFTQMEE7ETF1DDTX9
+    actor: codex-pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-27T02:28:02.099Z
 examined_commit: 403186111291b0a82cad4158b06fa83de18292a7
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KW2NT2528F5PYRHJYK2K804F"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KW3EFFMHPGN961773B2X6V0C
+    entries:
+      - _ulid: 01KW3EFFMHMKPD4X0SNMDZ2A5H
+        author: Jacob Chapel
+        body: >-
+          Evidence log:
+
+
+          Files read: kspec-agents.md; src/parser/coverage-resolution.ts; src/parser/yaml.ts;
+          src/schema/coverage-resolution.ts; tests/coverage-resolution.test.ts; prior review
+          @01KW3A2C; spec @coverage-spec-text-revert.
+
+          Commands run: git diff/stat/log; kspec task get @01KW2NT2528F5PYRHJYK2K804F; kspec review
+          for-task/get/add/open; kspec item get @coverage-spec-text-revert; rg for action and AC
+          annotations; npm run format:check; npm run lint -- --quiet; npx oxlint changed files; npm
+          run typecheck; npm test -- tests/coverage-resolution.test.ts; npm test; kspec validate
+          refs/alignment/completeness with --warnings-ok.
+
+          Claims verified: fix cycle 3 addressed the prior comment-preservation blocker by replacing
+          the full acceptance_criteria rewrite with
+          updateSpecItemAcceptanceCriterionTextFromCurrent, which edits YAML document nodes under
+          the file lock; the regression at tests/coverage-resolution.test.ts:1020 compares the full
+          fixture file after apply to the original with only the targeted given/then scalar
+          replacements, covering sibling metadata/comment preservation.
+
+          Categories searched: correctness, stale-state preconditions, dry-run/read-only behavior,
+          concurrency guard under lock, source-byte/sibling preservation, schema/effect shape, cache
+          invalidation scope, test quality, and integration with mutation/commit path. No blocker or
+          should-fix issue found.
+        created_at: 2026-06-27T02:27:58.737Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-pr-reviewer
+    role: reviewer
+    created_at: 2026-06-27T02:28:02.099Z
 created_at: 2026-06-27T02:13:15.215Z
-updated_at: 2026-06-27T02:13:42.710Z
+updated_at: 2026-06-27T02:28:02.099Z
 notes: []
