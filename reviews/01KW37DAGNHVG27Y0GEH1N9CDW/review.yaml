@@ -69,6 +69,18 @@ checks:
     runner: kspec
     created_at: 2026-06-27T00:41:03.206Z
     completed_at: 2026-06-27T00:41:03.206Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint reported 0 errors under --quiet; focused oxlint on
+      src/parser/coverage-resolution.ts src/parser/yaml.ts src/schema/coverage-resolution.ts
+      tests/coverage-resolution.test.ts reported 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-27T00:41:06.642Z
+    completed_at: 2026-06-27T00:41:06.642Z
 events:
   - _ulid: 01KW37DAGM5GZHTTPJ8YR23XWS
     actor: Jacob Chapel
@@ -125,6 +137,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-27T00:41:03.452Z
+  - _ulid: 01KW38BT2JKT36X6MVZXFW4F1W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-27T00:41:06.899Z
 examined_commit: 14e4d05776358ddb9f15b24ec1111850675a11e8
 external_links: []
 lifecycle_state: open
@@ -137,5 +156,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-27T00:24:27.925Z
-updated_at: 2026-06-27T00:41:03.206Z
+updated_at: 2026-06-27T00:41:06.642Z
 notes: []
