@@ -4442,6 +4442,9 @@ features:
           test-run stores still load, dry-run and static snapshots are read-only,
           and consumers that do not understand the new actions can continue to
           read coverage state and metadata.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@coverage-state-events"
           - "@mutation-event-naming"
