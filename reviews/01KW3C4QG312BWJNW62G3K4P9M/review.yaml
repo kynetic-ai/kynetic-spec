@@ -2,7 +2,104 @@ _ulid: 01KW3C4QG312BWJNW62G3K4P9M
 slugs: []
 title: Review shadow push cleanup stabilization
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. oxfmt checked 1038 files; all matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-27T02:01:06.836Z
+    completed_at: 2026-06-27T02:01:06.836Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed. Repo-wide lint reported 0 errors with existing warning baseline (703 warnings).
+      Focused changed-file lint also passed: npx oxlint tests/shadow.test.ts reported 0 warnings and
+      0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-27T02:01:09.946Z
+    completed_at: 2026-06-27T02:01:09.946Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 warnings and 0 errors on the only changed TypeScript test file.
+    name: focused-lint
+    required: true
+    runner: npx oxlint tests/shadow.test.ts
+    created_at: 2026-06-27T02:01:13.050Z
+    completed_at: 2026-06-27T02:01:13.050Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed. build:shared completed and tsc --noEmit exited 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-27T02:01:16.123Z
+    completed_at: 2026-06-27T02:01:16.123Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed. 2788 suites passed; 10577 tests passed; 3 skipped; duration 2562.0s. Full log:
+      /tmp/kspec-test-cache/01KW3C2SRTJ4NP8MJ7YN1WBKMV/ade333cafe81c4f9.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-27T02:01:19.087Z
+    completed_at: 2026-06-27T02:01:19.087Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed. tests/helpers-cli-cleanup.test.ts: 2 tests; tests/shadow.test.ts: 197 tests; 199
+      total focused tests passed."
+    name: focused tests
+    required: true
+    runner: npm test -- tests/helpers-cli-cleanup.test.ts tests/shadow.test.ts
+    created_at: 2026-06-27T02:01:22.014Z
+    completed_at: 2026-06-27T02:01:22.014Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "kspec validate --refs --warnings-ok passed: schema OK, references OK; warnings allowed by
+      gate."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-27T02:01:25.083Z
+    completed_at: 2026-06-27T02:01:25.083Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with existing alignment warning baseline;
+      exit 0.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-27T02:01:28.210Z
+    completed_at: 2026-06-27T02:01:28.210Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with warning baseline, including this
+      direct bug task's no-spec warning; exit 0.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-27T02:01:31.306Z
+    completed_at: 2026-06-27T02:01:31.306Z
 events:
   - _ulid: 01KW3C4QG305TK8VE7HP9VJC12
     actor: Jacob Chapel
@@ -17,17 +114,138 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-27T01:47:45.940Z
+  - _ulid: 01KW3CY9RMNA0WW318WJ9M20TQ
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-27T02:01:07.092Z
+  - _ulid: 01KW3CYCSV4T1GMZ46V2FE977E
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-27T02:01:10.204Z
+  - _ulid: 01KW3CYFTT43SX1Y7ZFJ2S9BZN
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-27T02:01:13.306Z
+  - _ulid: 01KW3CYJTHMRE677198QFED14X
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-27T02:01:16.369Z
+  - _ulid: 01KW3CYNQ28EWTCN1Z0D6Z1BFE
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-27T02:01:19.330Z
+  - _ulid: 01KW3CYRJ19Z2XMDBP9XXQVR2G
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused tests
+    timestamp: 2026-06-27T02:01:22.241Z
+  - _ulid: 01KW3CYVKK7M6NJS9VR1PF0A08
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-27T02:01:25.363Z
+  - _ulid: 01KW3CYYMFAD1EBV2EPFXQ0AB2
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-27T02:01:28.463Z
+  - _ulid: 01KW3CZ1MSK3ZDBMZCKH1A35PQ
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-27T02:01:31.545Z
+  - _ulid: 01KW3CZ4HM4X3QXCENCYB2DQX0
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW3CZ4A55TFZZ8XQX17C8XED
+    timestamp: 2026-06-27T02:01:34.516Z
+  - _ulid: 01KW3CZ7HWRTAMG1DQ8G16EXA5
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-27T02:01:37.596Z
+  - _ulid: 01KW3CZ7HWGFK3CV7AWPKJ332F
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-27T02:01:37.596Z
 examined_commit: fde630e2939347e110a1a3d3e8f3ae812ba528fc
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KW3AT40671KPV4GF5AK5C11E"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KW3CZ4A55TFZZ8XQX17C8XED
+    entries:
+      - _ulid: 01KW3CZ4A5Y6ZSP746AMN8PKA7
+        author: codex-reviewer
+        body: >-
+          Evidence log:
+
+          Files read: kspec-agents.md, tests/shadow.test.ts diff and surrounding shadow
+          sync/configured remote tests, tests/helpers/cli.ts cleanupTempDir implementation,
+          tests/helpers-cli-cleanup.test.ts.
+
+          Commands run: kspec task get @01KW3AT40671KPV4GF5AK5C11E; kspec review for-task; git
+          diff/stat/log; kspec item get @shadow-sync; kspec item get @config-shadow; kspec validate
+          refs/alignment/completeness with --warnings-ok; npm run format:check; npx oxlint
+          tests/shadow.test.ts; npm run lint -- --quiet; npm run typecheck; npm test --
+          tests/helpers-cli-cleanup.test.ts tests/shadow.test.ts; npm test.
+
+          Claims verified: worker claim that direct fs.rm cleanup was replaced with cleanupTempDir
+          in the affected shadow sync/configured remote cleanup paths; cleanupTempDir already has
+          behavioral tests for transient ENOTEMPTY retry and non-transient propagation; changed test
+          file has focused oxlint 0 warnings/errors and passes both focused and full test runs.
+
+          Categories searched: correctness, cleanup edge cases, error propagation, test quality, AC
+          annotation alignment, integration/full-suite regression. No blockers found.
+
+          Shared/package surfaces touched: none; shared-guidance neutrality not applicable.
+        created_at: 2026-06-27T02:01:34.277Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-27T02:01:37.596Z
 created_at: 2026-06-27T01:47:09.187Z
-updated_at: 2026-06-27T01:47:45.656Z
+updated_at: 2026-06-27T02:01:37.596Z
 notes: []
