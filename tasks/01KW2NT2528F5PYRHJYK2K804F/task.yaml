@@ -47,7 +47,7 @@ description: |
 spec_ref: "@coverage-spec-text-revert"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-coverage-resolution-contract"
@@ -62,8 +62,8 @@ review_ref: "@01KW37DAGNHVG27Y0GEH1N9CDW"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-coverage-spec-text-revert/01kw2nt2
-  captured_at: 2026-06-27T00:19:07.423Z
-  commit: 14e4d05776358ddb9f15b24ec1111850675a11e8
+  captured_at: 2026-06-27T01:03:48.141Z
+  commit: 8eb77e75d01d6902460695e7f1d0923074c68926
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-coverage-spec-text-revert/01kw2nt2
@@ -196,8 +196,35 @@ history:
         previous: 2026-06-27T00:17:54.270Z
     command: task-start
     timestamp: 2026-06-27T00:49:05.704Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-coverage-spec-text-revert/01kw2nt2
+          captured_at: 2026-06-27T01:03:48.141Z
+          commit: 8eb77e75d01d6902460695e7f1d0923074c68926
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-coverage-spec-text-revert/01kw2nt2
+        previous:
+          review_url: null
+          branch: dispatch/task/task-coverage-spec-text-revert/01kw2nt2
+          captured_at: 2026-06-27T00:19:07.423Z
+          commit: 14e4d05776358ddb9f15b24ec1111850675a11e8
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-coverage-spec-text-revert/01kw2nt2
+      submitted_at:
+        new: 2026-06-27T01:03:48.148Z
+        previous: 2026-06-27T00:19:07.430Z
+    command: task-submit
+    timestamp: 2026-06-27T01:03:48.148Z
 created_at: 2026-06-26T19:16:50.978Z
 started_at: 2026-06-27T00:49:05.704Z
-submitted_at: 2026-06-27T00:19:07.430Z
+submitted_at: 2026-06-27T01:03:48.148Z
 todos: []
 automation: eligible
