@@ -75455,13 +75455,15 @@ runs:
     started_at: 2026-06-27T02:57:26.227Z
     completed_at: 2026-06-27T03:00:33.847Z
   - _ulid: 01KW3HG7NVAMMG21R94B25KK8F
-    status: active
+    status: aborted
+    abort_reason: Using session-reflect-loop for autonomous reflection in this dispatch review context.
     current_step: 0
     initiated_by: Jacob Chapel
     step_results: []
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T03:20:49.083Z
+    completed_at: 2026-06-27T03:21:15.030Z
   - _ulid: 01KW3HG92CCD2EPHZ18HTJT252
     status: active
     current_step: 0
