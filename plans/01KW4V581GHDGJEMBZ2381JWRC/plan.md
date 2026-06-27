@@ -47,9 +47,10 @@
     projection exposes the root workspace, node detail, child-row summaries,
     acceptance-criterion detail, coverage-state summaries, and lightweight
     linked-work counts through bounded daemon/static API contracts. It uses
-    the canonical four presentation buckets from the coverage-state engine —
-    covered, failing, not yet, and re-verify — while preserving secondary
-    re-verify causes for captions and resolution panels.
+    the canonical four user-facing presentation buckets from the
+    coverage-state engine — covered, failing, not yet, and re-verify — while
+    preserving transport enum values and secondary re-verify causes for API
+    payloads, captions, and resolution panels.
   acceptance_criteria:
     - id: ac-bounded-root-projection
       given: |
@@ -91,9 +92,44 @@
         it needs coverage data
       then: |
         every displayed coverage value comes from the backend
-        coverage-state read model and uses the same covered/failing/not_yet/
-        re_verify vocabulary, with secondary causes used only as details and
-        never as a separate client-computed state model
+        coverage-state read model and maps API enum values onto the same
+        user-facing covered, failing, not yet, and re-verify vocabulary, with
+        secondary causes used only as details and never as a separate
+        client-computed state model
+    - id: ac-endpoint-contract
+      given: |
+        a client requests any workspace projection endpoint
+      when: |
+        the request succeeds, names a missing ref, includes invalid query
+        input, or is processed for tracing
+      then: |
+        responses follow the existing daemon API contract: successful reads
+        return 2xx JSON envelopes, missing refs return 404 bodies with error,
+        message, and suggestion, validation errors identify fields, paginated
+        projections expose limit/offset/total metadata where pagination is
+        supported, and responses carry the request tracing header required by
+        the API endpoint trait
+    - id: ac-read-endpoints-do-not-commit
+      given: |
+        workspace projection endpoints are read endpoints
+      when: |
+        they serve root, node, criterion, linked-work, or coverage projection
+        data
+      then: |
+        they do not mutate project state or create shadow commits; the
+        mutation-specific API endpoint trait criterion applies only to the
+        existing resolution mutation endpoints consumed by this workspace
+    - id: ac-error-guidance-contract
+      given: |
+        a workspace projection request fails because a ref, criterion, query
+        field, snapshot section, or coverage projection cannot be resolved
+      when: |
+        the error is returned to CLI, daemon, JSON, or web UI consumers
+      then: |
+        the response describes what failed, identifies the failed field or
+        value when applicable, and includes recovery guidance such as checking
+        refs, refreshing the workspace, or using an available read-only/static
+        path
     - id: ac-linked-work-definition
       given: |
         any workspace page displays linked tasks, sessions, plans, reviews, or
@@ -329,8 +365,10 @@
         banner, or criterion page
       then: |
         covered, failing, not yet, and re-verify each use one consistent
-        label/color/icon token, and stale/drifted/spec-code causes are shown
-        only as secondary explanation text under re-verify
+        label/color/icon token, and backend secondary re-verify causes such as
+        stale_spec_text, stale_annotation_or_mapping, stale_test_result, or
+        unknown_freshness are translated into secondary explanation text under
+        re-verify instead of top-level UI states
     - id: ac-rollup-bars
       given: |
         a node or root projection includes coverage bucket counts and a
@@ -591,6 +629,10 @@ derive_from_specs: false
     - Use backend-resolved refs/titles/statuses for linked work.
     - Ensure coverage values come from `getCachedCoverageStateReadModel`/existing route
       helpers, not from a fresh legacy covered-boolean scan.
+    - Cover inherited API/error trait behavior for the new read endpoints. Explicitly
+      document that shadow-commit behavior is not applicable to read-only projection
+      endpoints, while mutation behavior remains owned by the existing coverage
+      resolution endpoints consumed later in this plan.
 
     Testing:
     - Focused daemon/shared tests for root projection, node detail, criterion detail,
@@ -601,8 +643,13 @@ derive_from_specs: false
 
     Covers: @unified-spec-workspace-data-projection ac-bounded-root-projection,
       ac-node-detail-projection, ac-ac-detail-projection, ac-coverage-source-of-truth,
+      ac-endpoint-contract, ac-read-endpoints-do-not-commit, ac-error-guidance-contract,
       ac-linked-work-definition, ac-static-readonly-projection, ac-cache-and-event-coherence,
-      ac-error-boundaries
+      ac-error-boundaries; @trait-api-endpoint ac-1, ac-2, ac-3, ac-4, ac-6;
+      @trait-api-endpoint ac-5 (not applicable to read-only projection endpoints);
+      @trait-error-guidance ac-1, ac-2, ac-3, ac-5, ac-6;
+      @trait-error-guidance ac-4 (not applicable: projection reads do not perform
+      state transitions)
 
 - title: Replace specs route with page-tree workspace shell
   slug: task-unified-spec-workspace-shell-navigation
