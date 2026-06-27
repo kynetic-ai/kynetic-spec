@@ -1,8 +1,10 @@
 import { createHash } from "node:crypto";
 import type {
   CoverageCriterionStateDetail,
+  CoverageLatestRunEvidenceSummary,
   CoverageItemStateSummary,
   CoverageStateSnapshot,
+  CoverageUnmappedResultSummary,
 } from "@kynetic-ai/shared";
 import {
   assertCoverageResolutionWritable,
@@ -19,17 +21,20 @@ import {
 import { CoverageResolutionResponseSchema } from "../schema/coverage-resolution.js";
 import type { ActorWriteValidationError, ActorWriteResolution } from "../identity/actor-write.js";
 import { resolveActorForContext } from "../identity/actor-write-context.js";
+import type { TaskInput } from "../schema/task.js";
 import {
   findItemByRef,
   initContext,
   loadAllItems,
   type KspecContext,
   type LoadedSpecItem,
+  type LoadedTask,
 } from "./yaml.js";
 import {
   getCachedCoverageStateReadModel,
   invalidateCoverageStateReadModelCache,
 } from "./coverage-state-read-model.js";
+import { resolveTaskDataManager } from "./task-data-manager.js";
 import { writeVerificationStampWithoutCommit } from "./verification-record-store.js";
 
 export { CoverageResolutionReadOnlyError };
@@ -42,10 +47,17 @@ export const COVERAGE_RESOLUTION_ACTOR_INVALID_CODE = "coverage_resolution_actor
 
 const EXPLICIT_REVERIFY_REQUIREMENT =
   "criterion is currently in the re-verify bucket with positive non-failing evidence";
+const DISPATCH_FIX_REQUIREMENT =
+  "criterion is currently in the failing, not-yet, or re-verify bucket";
+const DISPATCH_FIX_IDEMPOTENCY_PREFIX = "Coverage-Resolution-Key:";
 
 export type ExplicitReverifyCoverageResolutionRequest = Extract<
   CoverageResolutionRequest,
   { action: "explicit-reverify" }
+>;
+export type DispatchFixCoverageResolutionRequest = Extract<
+  CoverageResolutionRequest,
+  { action: "dispatch-fix" }
 >;
 
 export interface ApplyExplicitReverificationOptions {
@@ -58,6 +70,12 @@ export interface ApplyExplicitReverificationOptions {
     options: { explicit?: string | null; field?: string },
   ) => Promise<ActorWriteResolution>;
   writeStamp?: typeof writeVerificationStampWithoutCommit;
+}
+
+export interface ApplyDispatchFixOptions {
+  readOnly?: boolean;
+  items?: LoadedSpecItem[];
+  loadReadModel?: (ctx: KspecContext) => Promise<CoverageStateSnapshot>;
 }
 
 export class CoverageResolutionTargetNotFoundError extends Error {
@@ -465,6 +483,278 @@ function cacheInvalidationEffect(
   };
 }
 
+function canonicalize(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(canonicalize);
+  }
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .filter(([, entry]) => entry !== undefined)
+        .toSorted(([left], [right]) => left.localeCompare(right))
+        .map(([key, entry]) => [key, canonicalize(entry)]),
+    );
+  }
+  return value;
+}
+
+function sha256Json(value: unknown): string {
+  return `sha256:${createHash("sha256")
+    .update(JSON.stringify(canonicalize(value)), "utf-8")
+    .digest("hex")}`;
+}
+
+function dispatchFixIssueFingerprint(target: ResolvedCoverageTarget): string {
+  return sha256Json({
+    item_ulid: target.item.item_ulid,
+    ac_id: target.criterion.ac_id,
+    presentation: target.criterion.presentation,
+    state: target.criterion.state,
+    rule: target.criterion.explanation.rule,
+    latest_run_id: target.criterion.explanation.latestRunId,
+    source_evidence_ids: target.criterion.explanation.sourceEvidenceIds.toSorted(),
+    secondary_causes: target.criterion.explanation.secondaryReverifyCauses.map((cause) => ({
+      cause: cause.cause,
+      detail: cause.detail ?? null,
+      source_evidence_ids: cause.sourceEvidenceIds.toSorted(),
+    })),
+    latest_run_evidence: target.criterion.latest_run_evidence.map((evidence) => ({
+      run_id: evidence.run_id,
+      case_id: evidence.case_id,
+      status: evidence.status,
+      completed_at: evidence.completed_at,
+      code_revision: evidence.code_revision,
+      producer: evidence.producer,
+    })),
+    freshness: target.criterion.freshness,
+    unmapped_result_references: target.criterion.unmapped_result_references,
+  });
+}
+
+function dispatchFixIdempotencyKey(target: ResolvedCoverageTarget): string {
+  return sha256Json({
+    action: "dispatch-fix",
+    item_ulid: target.item.item_ulid,
+    ac_id: target.criterion.ac_id,
+    issue_fingerprint: dispatchFixIssueFingerprint(target),
+  });
+}
+
+function canDispatchFix(target: ResolvedCoverageTarget, allowCovered: boolean): boolean {
+  return target.criterion.presentation !== "covered" || allowCovered;
+}
+
+function dispatchFixSuggestion(target: ResolvedCoverageTarget, allowCovered: boolean): string {
+  if (target.criterion.presentation === "covered" && allowCovered) {
+    return "Create ordinary task work for this covered criterion because the caller explicitly requested it.";
+  }
+  if (target.criterion.presentation === "covered") {
+    return "Refresh the coverage detail; this criterion is already covered.";
+  }
+  return "Create ordinary task work for a human or configured dispatch worker to repair the coverage issue.";
+}
+
+function dispatchFixDiagnostic(
+  target: ResolvedCoverageTarget,
+  allowCovered: boolean,
+): CoverageResolutionPreconditionDiagnostic {
+  const satisfied = canDispatchFix(target, allowCovered);
+  return buildCoverageResolutionPreconditionDiagnostic({
+    criterion: target.criterion,
+    requirement: DISPATCH_FIX_REQUIREMENT,
+    satisfied,
+    suggestion: dispatchFixSuggestion(target, allowCovered),
+  });
+}
+
+function formatEvidenceIds(ids: readonly string[]): string {
+  return ids.length > 0 ? ids.map((id) => `- ${id}`).join("\n") : "- None reported";
+}
+
+function formatLatestRunEvidence(evidence: readonly CoverageLatestRunEvidenceSummary[]): string {
+  if (evidence.length === 0) return "- None reported";
+  return evidence
+    .map((entry) =>
+      [
+        `- Run: ${entry.run_id}`,
+        `  Case: ${entry.case_id}`,
+        `  Display: ${entry.display_name}`,
+        `  Status: ${entry.status}`,
+        `  Completed: ${entry.completed_at}`,
+        `  Producer: ${entry.producer.kind}/${entry.producer.label}`,
+        `  Code revision: ${entry.code_revision ?? "not reported"}`,
+      ].join("\n"),
+    )
+    .join("\n");
+}
+
+function formatFreshness(target: ResolvedCoverageTarget): string {
+  const lines = [
+    `- Bootstrap: ${
+      target.criterion.freshness.bootstrap
+        ? JSON.stringify(target.criterion.freshness.bootstrap)
+        : "not reported"
+    }`,
+    `- Recorded: ${
+      target.criterion.freshness.recorded
+        ? JSON.stringify(target.criterion.freshness.recorded)
+        : "not reported"
+    }`,
+  ];
+  if (target.criterion.freshness.secondary_causes.length > 0) {
+    lines.push("- Secondary causes:");
+    for (const cause of target.criterion.freshness.secondary_causes) {
+      lines.push(
+        `  - ${cause.cause}: ${cause.detail ?? "no detail"} (${cause.sourceEvidenceIds.join(", ")})`,
+      );
+    }
+  }
+  return lines.join("\n");
+}
+
+function formatUnmappedResults(results: readonly CoverageUnmappedResultSummary[]): string {
+  if (results.length === 0) return "- None reported";
+  return results
+    .map((entry) =>
+      [
+        `- ${entry.kind}: ${entry.reason}`,
+        `  Run: ${entry.run_id}`,
+        `  Case: ${entry.case_id}`,
+        `  Display: ${entry.display_name ?? "not reported"}`,
+        `  Producer: ${entry.producer.kind}/${entry.producer.label}`,
+        `  Item ref: ${entry.item_ref ?? "not mapped"}`,
+        `  AC id: ${entry.ac_id ?? "not mapped"}`,
+      ].join("\n"),
+    )
+    .join("\n");
+}
+
+function taskRef(task: LoadedTask): string {
+  return `@${task.slugs[0] ?? task._ulid}`;
+}
+
+function taskTitle(target: ResolvedCoverageTarget): string {
+  return `Fix coverage for ${target.item.item_ref} ${target.criterion.ac_id}`;
+}
+
+function dispatchFixTaskBody(options: {
+  target: ResolvedCoverageTarget;
+  idempotencyKey: string;
+}): string {
+  const { target, idempotencyKey } = options;
+  const currentCause =
+    target.criterion.explanation.secondaryReverifyCauses[0]?.cause ??
+    (target.criterion.presentation === "covered" ? "covered" : target.criterion.state);
+  return [
+    `${DISPATCH_FIX_IDEMPOTENCY_PREFIX} ${idempotencyKey}`,
+    "",
+    "## Coverage Target",
+    "",
+    `Item: ${target.item.item_ref} — ${target.item.item_title}`,
+    `Item ULID: ${target.item.item_ulid}`,
+    `Acceptance Criterion: ${target.criterion.ac_id}`,
+    "",
+    "Current AC Text:",
+    `- Given: ${target.criterionText.given}`,
+    `- When: ${target.criterionText.when}`,
+    `- Then: ${target.criterionText.then}`,
+    "",
+    "## Coverage State",
+    "",
+    `Presentation Bucket: ${target.criterion.presentation}`,
+    `Internal State: ${target.criterion.state}`,
+    `Current Cause: ${currentCause}`,
+    "",
+    "Machine-Readable Explanation:",
+    "```json",
+    JSON.stringify(canonicalize(target.criterion.explanation), null, 2),
+    "```",
+    "",
+    "Source Evidence IDs:",
+    formatEvidenceIds(target.criterion.explanation.sourceEvidenceIds),
+    "",
+    "Latest Run Evidence:",
+    formatLatestRunEvidence(target.criterion.latest_run_evidence),
+    "",
+    "Freshness Detail:",
+    formatFreshness(target),
+    "",
+    "Unmapped or Invalid Result References:",
+    formatUnmappedResults(target.criterion.unmapped_result_references),
+    "",
+    "## Suggested Repair Checklist",
+    "",
+    "- Inspect the referenced kspec item and acceptance criterion.",
+    "- Add or repair behavioral evidence for the criterion.",
+    "- Fix failing or errored result cases when latest run evidence reports them.",
+    "- Update stale annotations or mappings when freshness causes point to mapping drift.",
+    "- Re-run the project's normal validation workflow after the repair.",
+    "",
+    "Existing Dispatch Policy:",
+    "This is an ordinary kspec task. Existing task automation fields may make it eligible for the configured dispatch engine, but this coverage action does not start an agent process.",
+  ].join("\n");
+}
+
+function taskEffect(options: {
+  operation: "would_create_task" | "would_reuse_task" | "created_task" | "reused_task";
+  target: ResolvedCoverageTarget;
+  automationEligible: boolean;
+  idempotencyKey: string;
+  task?: LoadedTask;
+}): CoverageResolutionEffect {
+  return {
+    kind: "task",
+    operation: options.operation,
+    task_ref: options.task ? taskRef(options.task) : null,
+    title: taskTitle(options.target),
+    automation_eligible: options.automationEligible,
+    idempotency_key: options.idempotencyKey,
+  };
+}
+
+function isUnresolvedTask(task: LoadedTask): boolean {
+  return task.status !== "completed" && task.status !== "cancelled";
+}
+
+function taskHasIdempotencyKey(task: LoadedTask, idempotencyKey: string): boolean {
+  const marker = `${DISPATCH_FIX_IDEMPOTENCY_PREFIX} ${idempotencyKey}`;
+  return task.description?.split(/\r?\n/).some((line) => line.trim() === marker) ?? false;
+}
+
+async function findExistingDispatchFixTask(
+  ctx: KspecContext,
+  idempotencyKey: string,
+): Promise<LoadedTask | undefined> {
+  const tasks = await resolveTaskDataManager(ctx).loadAllTasks(ctx);
+  return tasks.find(
+    (task) => isUnresolvedTask(task) && taskHasIdempotencyKey(task, idempotencyKey),
+  );
+}
+
+async function createDispatchFixTask(options: {
+  ctx: KspecContext;
+  target: ResolvedCoverageTarget;
+  idempotencyKey: string;
+  automationEligible: boolean;
+}): Promise<LoadedTask> {
+  const input: TaskInput = {
+    title: taskTitle(options.target),
+    description: dispatchFixTaskBody({
+      target: options.target,
+      idempotencyKey: options.idempotencyKey,
+    }),
+    spec_ref: options.target.item.item_ref,
+    priority: 2,
+    tags: ["coverage", "dispatch-fix"],
+    automation: options.automationEligible ? "eligible" : undefined,
+  };
+  return resolveTaskDataManager(options.ctx).createTask(options.ctx, input, {
+    operation: "coverage-dispatch-fix",
+    ref: options.target.item.item_ref,
+    detail: `${options.target.item.item_ref} ${options.target.criterion.ac_id}`,
+  });
+}
+
 async function resolveCoverageResolutionActor(
   ctx: KspecContext,
   request: ExplicitReverifyCoverageResolutionRequest,
@@ -555,5 +845,99 @@ export async function applyExplicitReverification(
     target: postWriteTarget,
     diagnostics: [diagnostic],
     effects: [stampEffect, cacheInvalidationEffect("invalidated", target)],
+  });
+}
+
+export async function applyDispatchFixRequest(
+  ctx: KspecContext,
+  request: DispatchFixCoverageResolutionRequest,
+  options: ApplyDispatchFixOptions = {},
+): Promise<CoverageResolutionResponse> {
+  assertCoverageResolutionWritable({
+    readOnly: options.readOnly,
+    dryRun: request.dry_run,
+  });
+
+  const target = await resolveCoverageTarget(ctx, {
+    request,
+    items: options.items,
+    loadReadModel: options.loadReadModel,
+  });
+  const diagnostic = dispatchFixDiagnostic(target, request.allow_covered);
+  if (!diagnostic.satisfied) {
+    return buildCoverageResolutionResponse({
+      action: request.action,
+      dryRun: request.dry_run,
+      stored: false,
+      target,
+      diagnostics: [diagnostic],
+      effects: [],
+    });
+  }
+
+  const idempotencyKey = dispatchFixIdempotencyKey(target);
+  const existingTask = request.allow_duplicate
+    ? undefined
+    : await findExistingDispatchFixTask(ctx, idempotencyKey);
+  if (existingTask) {
+    return buildCoverageResolutionResponse({
+      action: request.action,
+      dryRun: request.dry_run,
+      stored: false,
+      target,
+      diagnostics: [diagnostic],
+      effects: [
+        taskEffect({
+          operation: request.dry_run ? "would_reuse_task" : "reused_task",
+          target,
+          task: existingTask,
+          automationEligible: existingTask.automation === "eligible",
+          idempotencyKey,
+        }),
+      ],
+    });
+  }
+
+  if (request.dry_run) {
+    return buildCoverageResolutionDryRunResponse({
+      action: request.action,
+      target,
+      diagnostics: [diagnostic],
+      effects: [
+        taskEffect({
+          operation: "would_create_task",
+          target,
+          automationEligible: request.automation_eligible,
+          idempotencyKey,
+        }),
+        cacheInvalidationEffect("would_invalidate", target),
+      ],
+    });
+  }
+
+  const task = await createDispatchFixTask({
+    ctx,
+    target,
+    idempotencyKey,
+    automationEligible: request.automation_eligible,
+  });
+  invalidateCoverageStateReadModelCache(ctx.rootDir);
+
+  return buildCoverageResolutionResponse({
+    action: request.action,
+    dryRun: false,
+    stored: true,
+    target,
+    diagnostics: [diagnostic],
+    effects: [
+      taskEffect({
+        operation: "created_task",
+        target,
+        task,
+        automationEligible: task.automation === "eligible",
+        idempotencyKey,
+      }),
+      cacheInvalidationEffect("invalidated", target),
+    ],
   });
 }
