@@ -167,6 +167,31 @@ function head(tempDir: string): string {
   }).trim();
 }
 
+function shadowHead(tempDir: string): string {
+  return execSync("git rev-parse HEAD", {
+    cwd: path.join(tempDir, ".kspec"),
+    encoding: "utf-8",
+    stdio: "pipe",
+  }).trim();
+}
+
+function shadowStatus(tempDir: string): string {
+  return execSync("git status --short", {
+    cwd: path.join(tempDir, ".kspec"),
+    encoding: "utf-8",
+    stdio: "pipe",
+  }).trim();
+}
+
+function commitShadow(tempDir: string, message: string, env: Record<string, string> = {}): string {
+  execSync(`git add -A && git commit -m "${message}"`, {
+    cwd: path.join(tempDir, ".kspec"),
+    env: { ...process.env, KSPEC_SHADOW_COMMIT: "1", ...env },
+    stdio: "pipe",
+  });
+  return shadowHead(tempDir);
+}
+
 const CLI_ACTOR_ENV = { KSPEC_AUTHOR: "neutral-operator" };
 
 function cliJson<T>(tempDir: string, args: string, options: KspecOptions = {}): T {
@@ -185,6 +210,85 @@ async function daemonJson<T>(
   const { app } = createTestApp();
   const response = await requestJson(app, tempDir, "POST", urlPath, body);
   return { response, data: JSON.parse(await response.text()) as T };
+}
+
+async function setupResolutionShadowProject(): Promise<string> {
+  const tempDir = await createTempDir("coverage-resolution-cli-daemon-shadow-");
+  tempDirs.push(tempDir);
+  initGitRepo(tempDir);
+  writeFileSync(path.join(tempDir, "README.md"), "# Coverage Resolution Fixture\n");
+  commit(tempDir, "initial project");
+
+  const initResult = kspec("init --no-prompt", tempDir, { env: CLI_ACTOR_ENV });
+  if (initResult.exitCode !== 0) {
+    throw new Error(`kspec init --no-prompt failed: ${initResult.stderr || initResult.stdout}`);
+  }
+
+  writeFileSync(
+    path.join(tempDir, ".kspec", "kynetic.yaml"),
+    [
+      'kynetic: "1.1"',
+      "task_storage:",
+      "  format: split",
+      "project:",
+      "  name: Coverage Resolution Shadow Fixture",
+      "includes:",
+      "  - modules/coverage.yaml",
+      "coverage:",
+      "  scan_paths:",
+      "    - tests",
+      "",
+    ].join("\n"),
+  );
+  mkdirSync(path.join(tempDir, ".kspec", "modules"), { recursive: true });
+  writeFileSync(
+    path.join(tempDir, ".kspec", "modules", "coverage.yaml"),
+    coverageModule("covered criterion"),
+  );
+  commitShadow(tempDir, "coverage resolution fixture specs", {
+    GIT_AUTHOR_DATE: "2026-06-24T11:40:00.000Z",
+    GIT_COMMITTER_DATE: "2026-06-24T11:40:00.000Z",
+  });
+
+  mkdirSync(path.join(tempDir, "tests"), { recursive: true });
+  writeFileSync(
+    path.join(tempDir, "kspec.config.yaml"),
+    [
+      "identity:",
+      "  author: neutral-operator",
+      "coverage:",
+      "  scan_paths:",
+      "    - tests",
+      "",
+    ].join("\n"),
+  );
+  writeFileSync(
+    path.join(tempDir, "tests", "coverage-resolution.test.ts"),
+    ["// AC: @coverage-api-widget ac-covered", "it('covers mapped criterion', () => {});", ""].join(
+      "\n",
+    ),
+  );
+  const fixtureCommit = commit(tempDir, "coverage resolution fixture sources", {
+    GIT_AUTHOR_DATE: "2026-06-24T11:45:00.000Z",
+    GIT_COMMITTER_DATE: "2026-06-24T11:45:00.000Z",
+  });
+
+  const ctx = await initContext(tempDir, { syncMode: "skip" });
+  await writeTestRun(ctx, normalizedRun({ codeRevision: fixtureCommit }), { skipCommit: true });
+  commitShadow(tempDir, "coverage resolution fixture run", {
+    GIT_AUTHOR_DATE: "2026-06-24T12:05:00.000Z",
+    GIT_COMMITTER_DATE: "2026-06-24T12:05:00.000Z",
+  });
+  writeFileSync(
+    path.join(tempDir, ".kspec", "modules", "coverage.yaml"),
+    coverageModule("changed criterion"),
+  );
+  commitShadow(tempDir, "change covered criterion text", {
+    GIT_AUTHOR_DATE: "2026-06-24T13:00:00.000Z",
+    GIT_COMMITTER_DATE: "2026-06-24T13:00:00.000Z",
+  });
+
+  return tempDir;
 }
 
 function normalizeResolutionResponse(value: any): any {
@@ -307,6 +411,26 @@ describe("coverage resolution CLI and daemon adapters", () => {
     expect(normalizeResolutionResponse(daemonDispatch.data.data)).toEqual(
       normalizeResolutionResponse(cliDispatch),
     );
+  });
+
+  // AC: @coverage-resolution-mutation-interface ac-cli-daemon-equivalence
+  // AC: @trait-api-endpoint ac-5
+  it("commits CLI reverify verification stamps to the shadow branch", async () => {
+    const cliDir = await setupResolutionShadowProject();
+    const beforeHead = shadowHead(cliDir);
+
+    const cliReverify = cliJson<any>(
+      cliDir,
+      "coverage resolve reverify --item @coverage-api-widget --ac ac-covered --actor neutral-operator",
+    );
+
+    expect(cliReverify).toMatchObject({
+      action: "explicit-reverify",
+      stored: true,
+      effects: expect.arrayContaining([expect.objectContaining({ operation: "wrote_stamp" })]),
+    });
+    expect(shadowHead(cliDir)).not.toBe(beforeHead);
+    expect(shadowStatus(cliDir)).toBe("");
   });
 
   // AC: @coverage-resolution-mutation-interface ac-dry-run-preview

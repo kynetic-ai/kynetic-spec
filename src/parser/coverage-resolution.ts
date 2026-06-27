@@ -42,7 +42,7 @@ import {
 } from "./coverage-freshness-comparison.js";
 import { commitIfShadow } from "./shadow.js";
 import { resolveTaskDataManager } from "./task-data-manager.js";
-import { writeVerificationStampWithoutCommit } from "./verification-record-store.js";
+import { writeVerificationStamp } from "./verification-record-store.js";
 
 export { CoverageResolutionReadOnlyError };
 
@@ -78,7 +78,7 @@ export interface ApplyExplicitReverificationOptions {
     ctx: KspecContext,
     options: { explicit?: string | null; field?: string },
   ) => Promise<ActorWriteResolution>;
-  writeStamp?: typeof writeVerificationStampWithoutCommit;
+  writeStamp?: typeof writeVerificationStamp;
 }
 
 export interface ApplyDispatchFixOptions {
@@ -991,7 +991,7 @@ export async function applyExplicitReverification(
     });
   }
 
-  await (options.writeStamp ?? writeVerificationStampWithoutCommit)(
+  await (options.writeStamp ?? writeVerificationStamp)(
     ctx,
     target.item.item_ulid,
     target.criterion.ac_id,

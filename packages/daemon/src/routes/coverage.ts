@@ -17,6 +17,7 @@ import {
   TestResultIngestionReadOnlyError,
   TestResultIngestionValidationError,
   type TestResultIngestionResult,
+  writeVerificationStampWithoutCommit,
 } from "../../parser/index.js";
 import {
   CoverageResolutionRequestSchema,
@@ -229,7 +230,10 @@ export function createCoverageRoutes(options: CoverageRouteOptions) {
     const apply = (skipCommit: boolean): Promise<CoverageResolutionResponse> => {
       switch (resolutionRequest.action) {
         case "explicit-reverify":
-          return applyExplicitReverification(ctx, resolutionRequest, { readOnly });
+          return applyExplicitReverification(ctx, resolutionRequest, {
+            readOnly,
+            writeStamp: writeVerificationStampWithoutCommit,
+          });
         case "spec-text-revert":
           return applySpecTextRevert(ctx, {
             request: resolutionRequest,
