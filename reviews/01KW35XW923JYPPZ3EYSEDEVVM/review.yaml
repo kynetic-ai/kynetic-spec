@@ -2,7 +2,17 @@ _ulid: 01KW35XW923JYPPZ3EYSEDEVVM
 slugs: []
 title: Review dispatch-fix task creation and idempotency
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1122 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-27T00:12:18.250Z
+    completed_at: 2026-06-27T00:12:18.250Z
 events:
   - _ulid: 01KW35XW91NWEWEDPC5K8JAHQ4
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-26T23:58:56.290Z
+  - _ulid: 01KW36Q26M55399K4XFWHVQYRA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-27T00:12:18.516Z
 examined_commit: 5a4d550492f1245298e019d899a8654a28fe1808
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-26T23:58:33.250Z
-updated_at: 2026-06-26T23:58:55.995Z
+updated_at: 2026-06-27T00:12:18.250Z
 notes: []
