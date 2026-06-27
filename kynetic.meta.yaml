@@ -23430,6 +23430,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-27T01:27:16.131Z
+  - _ulid: 01KW3BYDQN1PSJ2PWVAGA7DMYA
+    type: success
+    content: When a task fix appears to need new helper-level coverage, search for existing helper tests
+      before adding another file. In the shadow cleanup stabilization,
+      tests/helpers-cli-cleanup.test.ts already proved cleanupTempDir retry and failure propagation,
+      so the final diff stayed focused on replacing direct fs.rm calls in tests/shadow.test.ts.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-27T01:43:42.581Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
