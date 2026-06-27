@@ -2,7 +2,95 @@ _ulid: 01KW3GEPE421DYE2ZFV2J0CET6
 slugs: []
 title: Review coverage resolution CLI and daemon routes
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1123 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-27T03:19:37.166Z
+    completed_at: 2026-06-27T03:19:37.166Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repo warning baseline: oxlint reported 665 warnings and 0 errors. Focused
+      changed-file lint also passed with 0 warnings and 0 errors for
+      packages/daemon/src/routes/coverage.ts, src/cli/commands/coverage.ts,
+      src/parser/coverage-resolution.ts, and tests/coverage-resolution-cli-daemon.test.ts."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-27T03:19:40.479Z
+    completed_at: 2026-06-27T03:19:40.479Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared and tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-27T03:19:43.794Z
+    completed_at: 2026-06-27T03:19:43.794Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2916/2916 suites, 11097 passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KW3GDA8941H29EXBTPXXCKCP/9e7a55398dc59bac.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-27T03:19:46.799Z
+    completed_at: 2026-06-27T03:19:46.799Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok: schema OK, references OK; 6 existing deprecated-reference
+      warnings."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-27T03:19:49.778Z
+    completed_at: 2026-06-27T03:19:49.778Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok: 55 existing alignment warnings (45 orphaned specs, 10 status
+      mismatches)."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-27T03:19:52.777Z
+    completed_at: 2026-06-27T03:19:52.777Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with --warnings-ok: 325 existing completeness warnings. Changed test includes AC
+      annotations for all own ACs and applicable inherited traits, with N/A annotations for
+      non-applicable inherited ACs."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-27T03:19:55.777Z
+    completed_at: 2026-06-27T03:19:55.777Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tests/coverage-resolution-cli-daemon.test.ts, 5 tests in 3.1s."
+    name: focused adapter tests
+    required: false
+    runner: npm test -- --fresh tests/coverage-resolution-cli-daemon.test.ts
+    created_at: 2026-06-27T03:19:59.010Z
+    completed_at: 2026-06-27T03:19:59.010Z
 events:
   - _ulid: 01KW3GEPE4X3SC009K7BWR90BV
     actor: Jacob Chapel
@@ -24,9 +112,88 @@ events:
       kind: blocker
       thread_ulid: 01KW3GS2CWN1368JYMY15SGSDG
     timestamp: 2026-06-27T03:08:10.318Z
+  - _ulid: 01KW3HDYNJK7084DX17WKT2GJ2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW3HDYDK4Y8Z2SXWKPX18AZA
+    timestamp: 2026-06-27T03:19:34.322Z
+  - _ulid: 01KW3HE1P3WHYM4JQQ1XHHTV65
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-27T03:19:37.411Z
+  - _ulid: 01KW3HE50AFVAVEAPAXW41NZVA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-27T03:19:40.810Z
+  - _ulid: 01KW3HE84S2C8A0591RNVT0V03
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-27T03:19:44.025Z
+  - _ulid: 01KW3HEB2XBT066RGY3NPM22N4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-27T03:19:47.037Z
+  - _ulid: 01KW3HEE0BZ3TARP2NMCB2FM55
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-27T03:19:50.027Z
+  - _ulid: 01KW3HEGXVHBRATP6KRARRS93P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-27T03:19:53.019Z
+  - _ulid: 01KW3HEKV636VFN6QCWYY357YH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-27T03:19:56.007Z
+  - _ulid: 01KW3HEQ1SKG45NBE2F1NW2M73
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused adapter tests
+    timestamp: 2026-06-27T03:19:59.289Z
+  - _ulid: 01KW3HET9CQD59Z3544XCBZ0WW
+    actor: codex-acp
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-27T03:20:02.604Z
+  - _ulid: 01KW3HET9CV8X1F5RRR3K9VYVK
+    actor: codex-acp
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-27T03:20:02.605Z
 examined_commit: 74b4bdb4734c78043dca16bed05bc12d2f74ef6d
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -56,7 +223,35 @@ threads:
           through the same mutation pipeline semantics as the daemon."
         created_at: 2026-06-27T03:08:10.012Z
     kind: blocker
-verdicts: []
+  - _ulid: 01KW3HDYDK4Y8Z2SXWKPX18AZA
+    entries:
+      - _ulid: 01KW3HDYDKWWK1WR1MGCNH5JNC
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; packages/daemon/src/routes/coverage.ts;
+          src/cli/commands/coverage.ts; src/parser/coverage-resolution.ts;
+          src/schema/coverage-resolution.ts; src/parser/verification-record-store.ts;
+          src/mutation-pipeline.ts; packages/daemon/src/routes/mutation-pipeline.ts;
+          tests/coverage-resolution-cli-daemon.test.ts; tests/coverage-resolution.test.ts;
+          tests/helpers/cli.ts. Commands run: git diff/stat/name-status against 630e506c...74b4bdb;
+          kspec task get; kspec item get; kspec validate refs/alignment/completeness; npm run
+          format:check; npm run lint -- --quiet; npx oxlint changed files; npm run typecheck; npm
+          test -- --fresh tests/coverage-resolution-cli-daemon.test.ts; npm test; throwaway tsx
+          reproduction for CLI reverify shadow status. Claims verified: CLI/daemon parity tests are
+          behavioral and pass; CLI read-only dry-run path is covered; worker's full-gate claim
+          independently verified. Categories searched: correctness, durability, dry-run/read-only
+          behavior, error mapping, AC coverage, test integrity, cache/commit integration. Finding:
+          one blocker for CLI reverify reporting stored:true while leaving verification record
+          uncommitted."
+        created_at: 2026-06-27T03:19:34.067Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-acp
+    role: reviewer
+    created_at: 2026-06-27T03:20:02.604Z
 created_at: 2026-06-27T03:02:30.084Z
-updated_at: 2026-06-27T03:08:10.012Z
+updated_at: 2026-06-27T03:20:02.604Z
 notes: []

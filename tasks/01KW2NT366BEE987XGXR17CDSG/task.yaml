@@ -50,7 +50,7 @@ description: |
 spec_ref: "@coverage-resolution-mutation-interface"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-explicit-coverage-reverification"
@@ -73,7 +73,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: feat/ui-redesign
-session_id: 01KW3EK1TQV2K9WGKEDE6KVG7P
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -122,6 +122,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-27T03:02:32.614Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KW3EK1TQV2K9WGKEDE6KVG7P
+    command: review-verdict-needs-work
+    timestamp: 2026-06-27T03:20:04.687Z
 created_at: 2026-06-26T19:16:52.038Z
 started_at: 2026-06-27T02:30:51.765Z
 submitted_at: 2026-06-27T02:56:39.729Z
