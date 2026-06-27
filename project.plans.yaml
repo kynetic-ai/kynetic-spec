@@ -2101,6 +2101,7 @@ plans:
       - plan-unified-spec-workspace
     title: Unified Spec Workspace
     status: draft
+    branch: feat/ui-redesign
     derived_specs: []
     derived_tasks: []
     notes_count: 1
