@@ -74855,7 +74855,7 @@ runs:
     completed_at: 2026-06-26T23:55:53.816Z
   - _ulid: 01KW36WDPF62TQ1KK2YBXPPYRS
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -74880,7 +74880,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-27T00:16:06.102Z
-        completed_at: 2026-06-27T00:16:06.102Z
+        completed_at: 2026-06-27T00:16:43.573Z
+        notes: "Existing coverage check: searched 'review check batch', 'review evidence log', 'review
+          gate', and 'bulk review checks'. The review-check batching friction is already tracked by
+          inbox @01KQ1272 and observation @01KQ1272: batch review check commands should preserve
+          optional check intent. Review evidence logs also have existing observations for
+          first-class evidence-log support. No duplicate capture needed from this session."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-27T00:16:43.573Z
+        completed_at: 2026-06-27T00:16:43.573Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T00:15:14.127Z
