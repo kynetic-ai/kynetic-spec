@@ -28403,19 +28403,19 @@ reviews:
   - _ulid: 01KW3A2C9PC3N0AK2VG6AKGYD2
     slugs: []
     title: Review task-coverage-spec-text-revert fix cycle 2
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 0
+    check_count: 7
     examined_commit: 8eb77e75d01d6902460695e7f1d0923074c68926
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KW2NT2528F5PYRHJYK2K804F"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
-    verdict_count: 0
+    thread_count: 2
+    unresolved_blocker_count: 1
+    verdict_count: 1
     created_at: 2026-06-27T01:10:55.030Z
-    updated_at: 2026-06-27T01:11:18.182Z
+    updated_at: 2026-06-27T01:25:22.036Z
