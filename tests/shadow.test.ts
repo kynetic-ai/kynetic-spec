@@ -36,7 +36,7 @@ import {
 } from "../src/parser/shadow.js";
 import { initContext } from "../src/parser/yaml.js";
 import { existsSync } from "node:fs";
-import { kspec as kspecRun, readTestOutput } from "./helpers/cli.js";
+import { cleanupTempDir, kspec as kspecRun, readTestOutput } from "./helpers/cli.js";
 import { detectRemoteType } from "../src/parser/config.js";
 import { createSession, appendEvent, getSession } from "../src/sessions/store.js";
 
@@ -1041,7 +1041,7 @@ describe("Shadow Branch", () => {
 
     beforeEach(async () => {
       try {
-        await fs.rm(remoteDir, { recursive: true });
+        await cleanupTempDir(remoteDir);
       } catch {
         // Doesn't exist
       }
@@ -1049,7 +1049,7 @@ describe("Shadow Branch", () => {
 
     afterEach(async () => {
       try {
-        await fs.rm(remoteDir, { recursive: true });
+        await cleanupTempDir(remoteDir);
       } catch {
         // Best effort
       }
@@ -1727,10 +1727,10 @@ describe("Shadow Branch", () => {
           const content = await readTestOutput(markerPath, "utf-8");
           expect(content).toContain("marker: from-specs-origin");
         } finally {
-          await fs.rm(cloneDir, { recursive: true, force: true });
+          await cleanupTempDir(cloneDir);
         }
       } finally {
-        await fs.rm(specsRemoteDir, { recursive: true, force: true });
+        await cleanupTempDir(specsRemoteDir);
       }
     });
 
@@ -1816,10 +1816,10 @@ describe("Shadow Branch", () => {
           const localMarkerPath = path.join(worktreeDir, "local-push-marker.yaml");
           expect(existsSync(localMarkerPath)).toBe(true);
         } finally {
-          await fs.rm(cloneDir, { recursive: true, force: true });
+          await cleanupTempDir(cloneDir);
         }
       } finally {
-        await fs.rm(specsRemoteDir, { recursive: true, force: true });
+        await cleanupTempDir(specsRemoteDir);
       }
     });
 
