@@ -174,6 +174,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-27T00:42:02.915Z
+  - _ulid: 01KW39KVMD52PN7088PCR57QSX
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW38CJJHDJKGFPWW6DQKANSR
+    timestamp: 2026-06-27T01:02:59.213Z
 examined_commit: 14e4d05776358ddb9f15b24ec1111850675a11e8
 external_links: []
 lifecycle_state: closed
@@ -219,6 +225,14 @@ threads:
           before mutation, add behavioral coverage for this action, and expose any required
           read-only option at the service boundary.
         created_at: 2026-06-27T00:41:31.985Z
+      - _ulid: 01KW39KVCKP6MA19SDG0YTR906
+        author: Jacob Chapel
+        body: "Fixed: applySpecTextRevert now uses assertCoverageResolutionWritable with a readOnly option,
+          routes dry_run requests through previewSpecTextRevert before any item mutation or shadow
+          commit, and has behavioral coverage proving dry-run/read-only semantics at the apply entry
+          point. Re-verified focused coverage-resolution tests, full npm test, format, lint,
+          typecheck, and kspec validations."
+        created_at: 2026-06-27T01:02:58.962Z
     kind: blocker
   - _ulid: 01KW38D5Z6SHK2T77C5GXA3AA6
     entries:
@@ -264,5 +278,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-27T00:42:02.915Z
 created_at: 2026-06-27T00:24:27.925Z
-updated_at: 2026-06-27T00:42:02.915Z
+updated_at: 2026-06-27T01:02:58.962Z
 notes: []
