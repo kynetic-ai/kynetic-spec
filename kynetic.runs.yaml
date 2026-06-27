@@ -75352,7 +75352,7 @@ runs:
     completed_at: 2026-06-27T02:10:26.580Z
   - _ulid: 01KW3EJ3Q32VC7R3KACH8XSK5B
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75367,7 +75367,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-27T02:30:35.377Z
-        completed_at: 2026-06-27T02:30:35.377Z
+        completed_at: 2026-06-27T02:30:48.092Z
+        notes: "Friction points: full npm test during review took 2597.9s, so the review was gated for a
+          long time even though all streamed suites were green. Review evidence logs still have to
+          be represented as an unresolved nit/comment thread, which is functional but awkward
+          because the approved review then shows an unresolved non-blocking thread."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-27T02:30:48.092Z
+        completed_at: 2026-06-27T02:30:48.092Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T02:29:24.836Z
