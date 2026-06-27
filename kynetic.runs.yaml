@@ -75513,7 +75513,7 @@ runs:
     started_at: 2026-06-27T03:20:50.509Z
     completed_at: 2026-06-27T03:24:03.507Z
   - _ulid: 01KW3JX34G6SC8B1FD2TK3ZK1T
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -75565,7 +75565,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-27T03:47:04.536Z
-        completed_at: 2026-06-27T03:47:04.536Z
+        completed_at: 2026-06-27T03:47:23.699Z
+        notes: "Captured success observation @01KW3K0N: shadow-backed CLI regressions are the right proof
+          for metadata write durability findings. No new friction item captured because full-test
+          quiet/teardown concerns are already tracked, and the concrete CLI reverify shadow-commit
+          gap was fixed in the submitted task."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T03:45:18.992Z
+    completed_at: 2026-06-27T03:47:23.699Z
