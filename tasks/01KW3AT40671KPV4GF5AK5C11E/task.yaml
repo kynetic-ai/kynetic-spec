@@ -1,0 +1,28 @@
+_ulid: 01KW3AT40671KPV4GF5AK5C11E
+slugs:
+  - task-stabilize-shadow-push-cleanup
+title: Stabilize shadow.test bare repo cleanup after shadowPushAsync
+type: bug
+description: "During review of @01KW2NT2528F5PYRHJYK2K804F, full npm test failed once in
+  tests/shadow.test.ts: Shadow Branch > shadow sync > shadowPushAsync pull-rebase uses configured
+  remote for integration. Failure: ENOTEMPTY while removing
+  /tmp/kspec-push-specs-remote-1782522703603/objects/pack during cleanup. Immediate rerun with npm
+  test -- tests/shadow.test.ts passed all 197 tests in the same workspace, so this appears flaky
+  cleanup behavior rather than a regression from the coverage spec-text revert branch. Investigate
+  cleanup/teardown for temporary bare repos used by shadowPushAsync tests and make deletion robust
+  without masking real git failures."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - shadow
+vcs_refs: []
+created_at: 2026-06-27T01:23:52.966Z
+todos: []
+automation: eligible
