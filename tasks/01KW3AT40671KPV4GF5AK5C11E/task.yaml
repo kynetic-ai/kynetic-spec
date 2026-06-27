@@ -14,7 +14,7 @@ description: "During review of @01KW2NT2528F5PYRHJYK2K804F, full npm test failed
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -23,6 +23,14 @@ tags:
   - testing
   - shadow
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-stabilize-shadow-push-cleanup/01kw3at4
+  captured_at: 2026-06-27T01:40:54.990Z
+  commit: fde630e2939347e110a1a3d3e8f3ae812ba528fc
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KW3AW36H42VNVK2614D2AQ5S
 history:
   - author: Jacob Chapel
@@ -38,7 +46,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-27T01:25:41.592Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-stabilize-shadow-push-cleanup/01kw3at4
+          captured_at: 2026-06-27T01:40:54.990Z
+          commit: fde630e2939347e110a1a3d3e8f3ae812ba528fc
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-27T01:40:54.996Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-27T01:40:54.996Z
 created_at: 2026-06-27T01:23:52.966Z
 started_at: 2026-06-27T01:25:41.592Z
+submitted_at: 2026-06-27T01:40:54.996Z
 todos: []
 automation: eligible
