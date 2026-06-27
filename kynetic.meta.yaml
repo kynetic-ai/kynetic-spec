@@ -23440,6 +23440,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-27T01:43:42.581Z
+  - _ulid: 01KW3D5KNQ2Z6889PDN78WSZ2Q
+    type: friction
+    content: "Detached review of a one-file test cleanup still required a full npm test run that took
+      2562.0s before approval. Existing sharding and test-cache work partially address local test
+      cost, but review-gate latency for narrow low-risk changes remains worth triage: future work
+      could consider better cache evidence reuse, clearer shard sequencing, or explicit policy for
+      when targeted plus cached full-suite evidence is sufficient without weakening required gates."
+    author: codex-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-27T02:05:06.615Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
