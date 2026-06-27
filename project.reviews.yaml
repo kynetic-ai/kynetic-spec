@@ -28367,7 +28367,7 @@ reviews:
     title: Review task-coverage-spec-text-revert fix cycle 1
     disposition: pending
     author: Jacob Chapel
-    check_count: 4
+    check_count: 5
     examined_commit: 14e4d05776358ddb9f15b24ec1111850675a11e8
     lifecycle_state: open
     related_refs: []
@@ -28380,4 +28380,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-27T00:24:27.925Z
-    updated_at: 2026-06-27T00:40:56.113Z
+    updated_at: 2026-06-27T00:40:59.554Z
