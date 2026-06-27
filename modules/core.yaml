@@ -4444,7 +4444,7 @@ features:
           read coverage state and metadata.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@coverage-state-events"
           - "@mutation-event-naming"
