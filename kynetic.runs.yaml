@@ -75623,7 +75623,7 @@ runs:
     completed_at: 2026-06-27T04:15:20.099Z
   - _ulid: 01KW3QA3A7PMVKTFX1GRG7Y178
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75638,7 +75638,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-27T05:04:26.999Z
-        completed_at: 2026-06-27T05:04:26.999Z
+        completed_at: 2026-06-27T05:04:58.637Z
+        notes: "High-confidence findings after baseline and targeted searches: (1) success: private
+          mutation-pipeline descriptors are an effective stdout-independent handoff for
+          command-proxy typed event bridges; captured as observation @01KW3QD7. (2) friction: full
+          npm test can look quiet during long-running files, but this is already tracked by existing
+          observations/inbox/tasks around the progress reporter and long full-suite review
+          experience, so no duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-27T05:04:58.637Z
+        completed_at: 2026-06-27T05:04:58.637Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-27T05:02:19.463Z
