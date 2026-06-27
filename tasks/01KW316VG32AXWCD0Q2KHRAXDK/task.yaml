@@ -15,7 +15,7 @@ description: "During review of @01KW2VD3FG4RGY7011HEXQBWYC on 2026-06-26, the fu
 spec_ref: "@spec-ac-delete-confirmation"
 meta_ref: null
 plan_ref: null
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -25,6 +25,22 @@ tags:
   - flaky
   - cli
 vcs_refs: []
+session_id: 01KW37D2ARQQ370KQ9YP8CE2XE
+history:
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KW37D2ARQQ370KQ9YP8CE2XE
+        previous: null
+      started_at:
+        new: 2026-06-27T00:25:14.105Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-27T00:25:14.106Z
 created_at: 2026-06-26T22:36:04.483Z
+started_at: 2026-06-27T00:25:14.105Z
 todos: []
 automation: eligible

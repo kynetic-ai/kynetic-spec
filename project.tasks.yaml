@@ -33352,7 +33352,7 @@
   title: Stabilize ac-delete-confirmation empty-response STACK_TRACE_ERROR flake
   type: bug
   spec_ref: "@spec-ac-delete-confirmation"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -33363,4 +33363,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-26T22:36:04.483Z
+  started_at: 2026-06-27T00:25:14.105Z
   automation: eligible
