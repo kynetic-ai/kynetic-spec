@@ -1,1 +1,24 @@
-notes: []
+notes:
+  - _ulid: 01KW3MK4APMR9EBRNRMAEKS5CK
+    content: >-
+      Approach: reuse the existing coverage-state read-model cache, mutation pipeline, and
+      items:updates coverage_state_changed event family. Add a resolution-specific event builder in
+      packages/daemon/src/routes/coverage-state-events.ts, have successful non-dry-run resolution
+      REST mutations invalidate and refetch the post-mutation model before broadcasting, and extend
+      the command-proxy typed-event bridge so CLI mutations executed through /api/command emit the
+      same event family and schema.
+
+      Edge cases: dry-run and failed preconditions must not broadcast or materialize stores;
+      static/read-only writes must refuse cleanly; missing verification/test-run stores must remain
+      ordinary absence until first write; precise criterion scopes should be used for
+      single-criterion actions, with project scope only when affected scope cannot be resolved;
+      command-proxy must not emit duplicate coverage events.
+
+      Test plan: add behavioral route tests annotated for @coverage-resolution-events-compatibility
+      ac-event-after-cache, ac-targeted-scope, ac-cli-daemon-event-equivalence,
+      ac-absent-store-compatible, ac-validation-gates; reuse existing websocket infrastructure tests
+      for trait ACs and add resolution-originated annotations for @trait-websocket-protocol
+      ac-2/ac-3/ac-6/ac-8 plus N/A annotations for ac-1/ac-4/ac-5/ac-7.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T04:14:49.687Z
