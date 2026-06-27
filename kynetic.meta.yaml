@@ -23467,6 +23467,17 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-27T02:10:08.919Z
+  - _ulid: 01KW3GACEEGAR7EJRHCYD10FB1
+    type: idea
+    content: CLI/daemon mutation parity tests need a shared semantic response-normalization helper for
+      occurrence-specific values such as generated evidence IDs, timestamps, temp paths, and created
+      task refs. This would let tests compare adapter behavior without ad hoc per-suite normalizers
+      while keeping assertions behavioral.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-06-27T03:00:08.782Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
