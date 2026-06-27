@@ -2076,7 +2076,7 @@ plans:
     slugs:
       - plan-coverage-resolution-mutations
     title: Coverage Resolution Mutations
-    status: active
+    status: completed
     approved_at: 2026-06-26T19:16:24.752Z
     branch: feat/ui-redesign
     derived_specs:
