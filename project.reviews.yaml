@@ -28460,7 +28460,7 @@ reviews:
   - _ulid: 01KW3GEPE421DYE2ZFV2J0CET6
     slugs: []
     title: Review coverage resolution CLI and daemon routes
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 0
     examined_commit: 74b4bdb4734c78043dca16bed05bc12d2f74ef6d
@@ -28471,8 +28471,8 @@ reviews:
       content_hash: ""
       ref: "@01KW2NT366BEE987XGXR17CDSG"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-27T03:02:30.084Z
-    updated_at: 2026-06-27T03:02:59.357Z
+    updated_at: 2026-06-27T03:08:10.012Z
