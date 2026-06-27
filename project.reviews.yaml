@@ -28538,7 +28538,7 @@ reviews:
     disposition: pending
     author: codex
     check_count: 13
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -28547,6 +28547,6 @@ reviews:
       shadow_commit: ""
     thread_count: 0
     unresolved_blocker_count: 0
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-06-27T15:41:39.055Z
-    updated_at: 2026-06-27T15:43:34.468Z
+    updated_at: 2026-06-27T15:43:52.373Z
