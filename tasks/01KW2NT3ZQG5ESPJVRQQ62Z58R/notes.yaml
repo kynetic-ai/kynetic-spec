@@ -22,3 +22,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-27T04:14:49.687Z
+  - _ulid: 01KW3N0XRV9VSQ1JTG0X3GP8FF
+    content: "Implemented resolution-originated coverage_state_changed events: REST resolution mutations
+      now invalidate the coverage-state read-model cache, refetch the post-mutation model, and
+      broadcast precise items:updates coverage_state events. The command API now recognizes
+      successful coverage resolve command output and emits the same event family after the same
+      invalidation/read path, while suppressing duplicate generic coverage-state bridging for those
+      commands. Added focused behavioral coverage for event-after-cache ordering, precise scopes,
+      REST/command event equivalence, absent-store compatibility, and read-only/static validation
+      gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T04:22:21.723Z
