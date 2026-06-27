@@ -1,1 +1,14 @@
-notes: []
+notes:
+  - _ulid: 01KW37GZ45PQRA29BY0YMJ3GS6
+    content: "Approach: preserve the existing behavioral confirmation coverage while reducing full-suite
+      pressure. Reuse the existing kspec() helper and kspec batch command to collapse beforeEach
+      setup from two mutating CLI subprocesses to one atomic mutation, then classify
+      tests/ac-delete-confirmation.test.ts with the existing heavy-serial Vitest project because the
+      repo already documents STACK_TRACE_ERROR as a full-suite CLI subprocess contention symptom.
+      Edge cases: empty input must still send a newline and decline, n must keep the AC, --force and
+      JSON/non-interactive paths remain covered, and trait confirmation/semantic-exit behavior keeps
+      annotated coverage. Test plan: run the focused ac-delete-confirmation suite repeatedly/fresh,
+      run focused lint for changed TS files, then run project gates before submit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T00:26:27.334Z
