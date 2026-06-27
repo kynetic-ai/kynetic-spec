@@ -1,6 +1,15 @@
 import { Elysia, t } from "elysia";
 import { ulid } from "ulidx";
+import { ZodError } from "zod";
 import {
+  applyDispatchFixRequest,
+  applyExplicitReverification,
+  applySpecTextRevert,
+  CoverageResolutionActorError,
+  CoverageResolutionReadOnlyError,
+  CoverageResolutionSpecTextUnavailableError,
+  CoverageResolutionStaleTargetError,
+  CoverageResolutionTargetNotFoundError,
   getCachedCoverageStateReadModel,
   initContext,
   ingestTestResultRun,
@@ -8,7 +17,14 @@ import {
   TestResultIngestionReadOnlyError,
   TestResultIngestionValidationError,
   type TestResultIngestionResult,
+  writeVerificationStampWithoutCommit,
 } from "../../parser/index.js";
+import {
+  CoverageResolutionRequestSchema,
+  type CoverageResolutionAction,
+  type CoverageResolutionRequest,
+  type CoverageResolutionResponse,
+} from "../../schema/coverage-resolution.js";
 import type {
   CoverageCriterionStateDetail,
   CoverageItemStateSummary,
@@ -46,6 +62,79 @@ function validationBody(error: TestResultIngestionValidationError) {
     run_id: error.runId,
     dry_run: error.dryRun,
   };
+}
+
+function zodValidationBody(error: ZodError) {
+  return {
+    error: "validation_error",
+    details: error.issues.map((issue) => ({
+      field: issue.path.join(".") || "request",
+      message: issue.message,
+    })),
+  };
+}
+
+function preconditionFailureBody(response: CoverageResolutionResponse) {
+  const diagnostic = response.diagnostics.find((entry) => !entry.satisfied);
+  return {
+    error: "precondition_failed",
+    message: diagnostic?.message ?? "Coverage resolution precondition failed.",
+    suggestion:
+      diagnostic?.suggestion ??
+      "Refresh the coverage detail and choose an action for the current state.",
+    details: response.diagnostics,
+    response,
+  };
+}
+
+function hasFailedPrecondition(response: CoverageResolutionResponse): boolean {
+  return response.diagnostics.some((entry) => !entry.satisfied);
+}
+
+function parseResolutionRequest(
+  action: CoverageResolutionAction,
+  body: unknown,
+  query: { dry_run?: string; actor?: string; session_id?: string },
+): CoverageResolutionRequest {
+  const raw = body && typeof body === "object" && !Array.isArray(body) ? { ...body } : {};
+  if (
+    "action" in raw &&
+    typeof raw.action === "string" &&
+    raw.action.length > 0 &&
+    raw.action !== action
+  ) {
+    throw new ZodError([
+      {
+        code: "custom",
+        path: ["action"],
+        message: `Request action must match route action "${action}".`,
+      },
+    ]);
+  }
+  return CoverageResolutionRequestSchema.parse({
+    ...raw,
+    action,
+    ...(query.dry_run !== undefined ? { dry_run: truthyQueryFlag(query.dry_run) } : {}),
+    ...(!("actor" in raw) && query.actor ? { actor: query.actor } : {}),
+    ...(!("session_id" in raw) && query.session_id ? { session_id: query.session_id } : {}),
+  });
+}
+
+function coverageResolutionCommit(response: CoverageResolutionResponse) {
+  return {
+    operation: `coverage resolve ${response.action}`,
+    ref: response.target.item_ref,
+    detail: `${response.target.ac_id} ${response.stored ? "stored" : "checked"}`,
+  };
+}
+
+function coverageResolutionWriteThrough(response: CoverageResolutionResponse) {
+  if (!response.stored) return [];
+  const domains = new Set<string>(["items"]);
+  if (response.effects.some((effect) => effect.kind === "task")) {
+    domains.add("tasks");
+  }
+  return [...domains].map((domain) => ({ domain }));
 }
 
 function emptyCoverageSummary(): CoverageStateSummary {
@@ -106,6 +195,124 @@ function criterionNotFound(ref: string, acId: string) {
 
 export function createCoverageRoutes(options: CoverageRouteOptions) {
   const { pubsub, getEntityCache } = options;
+
+  async function handleCoverageResolution(
+    action: CoverageResolutionAction,
+    routeOptions: {
+      body: unknown;
+      query: { dry_run?: string; actor?: string; session_id?: string };
+      request: Request;
+      projectContext?: { path?: string };
+      errorResponse: (status: number, body: unknown) => unknown;
+    },
+  ) {
+    const projectPath =
+      routeOptions.projectContext?.path ?? routeOptions.request.headers.get("X-Kspec-Dir");
+    if (!projectPath) {
+      return routeOptions.errorResponse(400, {
+        error: "validation_error",
+        details: [{ field: "project", message: "Project context is required." }],
+      });
+    }
+
+    let resolutionRequest: CoverageResolutionRequest;
+    try {
+      resolutionRequest = parseResolutionRequest(action, routeOptions.body, routeOptions.query);
+    } catch (err) {
+      if (err instanceof ZodError) {
+        return routeOptions.errorResponse(400, zodValidationBody(err));
+      }
+      throw err;
+    }
+
+    const ctx = await initContext(projectPath);
+    const readOnly = readOnlyRequest(routeOptions.request);
+    const apply = (skipCommit: boolean): Promise<CoverageResolutionResponse> => {
+      switch (resolutionRequest.action) {
+        case "explicit-reverify":
+          return applyExplicitReverification(ctx, resolutionRequest, {
+            readOnly,
+            writeStamp: writeVerificationStampWithoutCommit,
+          });
+        case "spec-text-revert":
+          return applySpecTextRevert(ctx, {
+            request: resolutionRequest,
+            readOnly,
+            skipCommit,
+          });
+        case "dispatch-fix":
+          return applyDispatchFixRequest(ctx, resolutionRequest, {
+            readOnly,
+            skipCommit,
+          });
+      }
+    };
+
+    try {
+      const result = resolutionRequest.dry_run
+        ? await apply(false)
+        : await runRouteMutation({
+            ctx,
+            projectPath,
+            getEntityCache,
+            pubsub,
+            apply: () => apply(true),
+            commit: coverageResolutionCommit,
+            writeThrough: coverageResolutionWriteThrough,
+            events: () => [],
+          });
+
+      if (hasFailedPrecondition(result)) {
+        return routeOptions.errorResponse(409, preconditionFailureBody(result));
+      }
+      return wrapResponse(result);
+    } catch (err) {
+      if (err instanceof CoverageResolutionReadOnlyError) {
+        return routeOptions.errorResponse(409, {
+          error: "read_only",
+          message: err.message,
+          suggestion: err.suggestion,
+          code: err.code,
+        });
+      }
+      if (err instanceof CoverageResolutionTargetNotFoundError) {
+        return routeOptions.errorResponse(404, {
+          error: "not_found",
+          message: err.message,
+          suggestion: err.suggestion,
+          code: err.code,
+          target: err.target,
+        });
+      }
+      if (err instanceof CoverageResolutionStaleTargetError) {
+        return routeOptions.errorResponse(409, {
+          error: "stale_target",
+          message: err.message,
+          suggestion: err.suggestion,
+          code: err.code,
+          expected_current_fingerprint: err.expectedFingerprint,
+          current_fingerprint: err.currentFingerprint,
+        });
+      }
+      if (err instanceof CoverageResolutionSpecTextUnavailableError) {
+        return routeOptions.errorResponse(409, {
+          error: "precondition_failed",
+          message: err.message,
+          suggestion: err.suggestion,
+          code: err.code,
+        });
+      }
+      if (err instanceof CoverageResolutionActorError) {
+        return routeOptions.errorResponse(400, {
+          error: "validation_error",
+          details: [{ field: err.details.field, message: err.details.message }],
+          suggestion: err.suggestion,
+          code: err.code,
+        });
+      }
+      throw err;
+    }
+  }
 
   return (
     new Elysia({ prefix: "/api/coverage" })
@@ -219,6 +426,63 @@ export function createCoverageRoutes(options: CoverageRouteOptions) {
           query: t.Object({
             limit: t.Optional(t.String()),
             offset: t.Optional(t.String()),
+          }),
+        },
+      )
+      .post(
+        "/resolve/reverify",
+        ({ body, query, request, error: errorResponse, projectContext }) =>
+          handleCoverageResolution("explicit-reverify", {
+            body,
+            query,
+            request,
+            projectContext,
+            errorResponse,
+          }),
+        {
+          body: t.Any(),
+          query: t.Object({
+            dry_run: t.Optional(t.String()),
+            actor: t.Optional(t.String()),
+            session_id: t.Optional(t.String()),
+          }),
+        },
+      )
+      .post(
+        "/resolve/revert-spec-text",
+        ({ body, query, request, error: errorResponse, projectContext }) =>
+          handleCoverageResolution("spec-text-revert", {
+            body,
+            query,
+            request,
+            projectContext,
+            errorResponse,
+          }),
+        {
+          body: t.Any(),
+          query: t.Object({
+            dry_run: t.Optional(t.String()),
+            actor: t.Optional(t.String()),
+            session_id: t.Optional(t.String()),
+          }),
+        },
+      )
+      .post(
+        "/resolve/dispatch-fix",
+        ({ body, query, request, error: errorResponse, projectContext }) =>
+          handleCoverageResolution("dispatch-fix", {
+            body,
+            query,
+            request,
+            projectContext,
+            errorResponse,
+          }),
+        {
+          body: t.Any(),
+          query: t.Object({
+            dry_run: t.Optional(t.String()),
+            actor: t.Optional(t.String()),
+            session_id: t.Optional(t.String()),
           }),
         },
       )
