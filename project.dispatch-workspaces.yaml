@@ -11336,3 +11336,80 @@ workspaces:
         head: 316a10bb402ca9b558a6b7f7e82311f18cca46c2
         last_seen_at: 2026-06-27T00:44:44.092Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-ac-delete-confirmation-empty-response-stack-trace-flake-01kw316v
+  - active_role: null
+    base_branch_point: 9be38a7a052cc51dfd438c3df7d99b286d86eb17
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-stabilize-shadow-push-cleanup/01kw3at4
+    canonical_branch_head: 9be38a7a052cc51dfd438c3df7d99b286d86eb17
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-06-27T01:24:30.119Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-06-27T01:24:30.119Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 9be38a7a052cc51dfd438c3df7d99b286d86eb17
+      updated_at: 2026-06-27T01:24:30.119Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_id: 01KW3AT40671KPV4GF5AK5C11E
+    task_ref: "@01KW3AT40671KPV4GF5AK5C11E"
+    task_slug: task-stabilize-shadow-push-cleanup
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-06-27T01:24:30.119Z
+      created_at: 2026-06-27T01:24:30.119Z
+      updated_at: 2026-06-27T01:24:30.119Z
+    workspace_id: dispatch-workspace-01KW3AT40671KPV4GF5AK5C11E
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-stabilize-shadow-push-cleanup/01kw3at4
+        head: 9be38a7a052cc51dfd438c3df7d99b286d86eb17
+        last_seen_at: 2026-06-27T01:24:30.119Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-stabilize-shadow-push-cleanup-01kw3at4
