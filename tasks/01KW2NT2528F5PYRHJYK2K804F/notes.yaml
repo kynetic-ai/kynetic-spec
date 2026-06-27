@@ -53,3 +53,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-27T00:42:04.978Z
+  - _ulid: 01KW39MZR79779XNBRX7WAYW9R
+    content: "Fix cycle 2: addressed the apply-path dry-run/read-only blocker. applySpecTextRevert now
+      accepts readOnly, asserts writeability before mutation, and routes dry_run requests through
+      previewSpecTextRevert so no spec file, shadow commit, or cache mutation occurs. Added
+      behavioral coverage for dry-run/read-only semantics at the spec-text apply entry point,
+      resolved review threads @01KW38CJJHDJKGFPWW6DQKANSR and @01KW38D5Z6SHK2T77C5GXA3AA6, rebased
+      onto feat/ui-redesign @02377a2456, pushed branch @8eb77e75d0, and re-verified all
+      @coverage-spec-text-revert ACs plus full project gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T01:03:36.199Z
