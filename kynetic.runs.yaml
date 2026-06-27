@@ -75408,9 +75408,24 @@ runs:
     completed_at: 2026-06-27T02:31:32.764Z
   - _ulid: 01KW3G5DPKPRY913YE0MG6FFGD
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-27T02:57:26.227Z
+        completed_at: 2026-06-27T02:58:26.641Z
+        notes: "Worked well: separate real temp projects for CLI and daemon parity tests proved adapter
+          semantics without sharing state, and caught actor identity/precondition assumptions early.
+          Friction: response equivalence required ad hoc normalization of occurrence-specific
+          evidence ids, timestamps, temp paths, and created task refs. Existing coverage check:
+          npm-test quiet/teardown concern is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run; searches found no shared
+          parity test helper."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-27T02:58:26.641Z
+        completed_at: 2026-06-27T02:58:26.641Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-27T02:57:26.227Z
