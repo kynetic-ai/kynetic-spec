@@ -28419,3 +28419,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-27T01:10:55.030Z
     updated_at: 2026-06-27T01:25:22.036Z
+  - _ulid: 01KW3C4QG312BWJNW62G3K4P9M
+    slugs: []
+    title: Review shadow push cleanup stabilization
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: fde630e2939347e110a1a3d3e8f3ae812ba528fc
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KW3AT40671KPV4GF5AK5C11E"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-27T01:47:09.187Z

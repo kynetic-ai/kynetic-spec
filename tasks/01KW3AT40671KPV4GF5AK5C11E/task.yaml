@@ -23,6 +23,7 @@ tags:
   - testing
   - shadow
 vcs_refs: []
+review_ref: "@01KW3C4QG312BWJNW62G3K4P9M"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-stabilize-shadow-push-cleanup/01kw3at4
@@ -66,6 +67,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-27T01:40:54.996Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KW3C4QG312BWJNW62G3K4P9M"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-27T01:47:11.653Z
 created_at: 2026-06-27T01:23:52.966Z
 started_at: 2026-06-27T01:25:41.592Z
 submitted_at: 2026-06-27T01:40:54.996Z
