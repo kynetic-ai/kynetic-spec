@@ -75167,7 +75167,7 @@ runs:
     completed_at: 2026-06-27T01:27:17.175Z
   - _ulid: 01KW3BTS3KDB57KX6JCJ10SAXE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75181,7 +75181,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-27T01:42:47.568Z
-        completed_at: 2026-06-27T01:42:47.568Z
+        completed_at: 2026-06-27T01:43:01.150Z
+        notes: "Friction considered: full npm test had long quiet periods and took 2423.4s, which can look
+          like a post-green hang. Existing tracking found via kspec search:
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run. No new friction item
+          needed. No task-specific blocker remained; full suite ultimately passed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-27T01:43:01.150Z
+        completed_at: 2026-06-27T01:43:01.150Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T01:41:43.155Z
