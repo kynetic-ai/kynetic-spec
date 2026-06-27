@@ -74855,9 +74855,22 @@ runs:
     completed_at: 2026-06-26T23:55:53.816Z
   - _ulid: 01KW36WDPF62TQ1KK2YBXPPYRS
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-27T00:15:14.127Z
+        completed_at: 2026-06-27T00:15:55.679Z
+        notes: "What worked well: The detached review workflow was crisp: read diff before relying on task
+          notes, created a fresh review record, recorded all required gates, then used the supported
+          detached merge helper instead of manual branch operations. The focused AC annotations in
+          tests/coverage-resolution.test.ts made coverage verification quick, and the merge helper
+          produced an explicit target before/after SHA for task completion."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-27T00:15:55.679Z
+        completed_at: 2026-06-27T00:15:55.679Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T00:15:14.127Z
