@@ -75514,9 +75514,22 @@ runs:
     completed_at: 2026-06-27T03:24:03.507Z
   - _ulid: 01KW3JX34G6SC8B1FD2TK3ZK1T
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-27T03:45:18.992Z
+        completed_at: 2026-06-27T03:46:06.269Z
+        notes: "Worked well: the prior review thread contained a precise reproduction, which made the fix
+          narrow and verifiable. A shadow-backed CLI regression was the right proof because the bug
+          was not response shape but durable metadata persistence. Keeping daemon route commits
+          explicit through runRouteMutation preserved the single-commit route contract while making
+          standalone service/CLI usage safe."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-27T03:46:06.269Z
+        completed_at: 2026-06-27T03:46:06.269Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T03:45:18.992Z
