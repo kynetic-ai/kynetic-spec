@@ -2,7 +2,116 @@ _ulid: 01KW3QKWE6ZRTPGYY6EKBDPEE0
 slugs: []
 title: Review coverage resolution events validation
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check reported all matched files use correct format; 1123 files checked."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-27T05:23:42.468Z
+    completed_at: 2026-06-27T05:23:42.468Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxlint src/ tests/ packages/ --quiet reported 0 errors with existing warning
+      baseline (665 warnings). Focused changed-file oxlint separately reported 0 warnings and 0
+      errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-27T05:23:45.554Z
+    completed_at: 2026-06-27T05:23:45.554Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed on packages/daemon/src/routes/command.ts, coverage-state-events.ts, coverage.ts,
+      src/parser/coverage-resolution.ts, tests/coverage-resolution-cli-daemon.test.ts: 0 warnings, 0
+      errors."
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed files>
+    created_at: 2026-06-27T05:23:48.518Z
+    completed_at: 2026-06-27T05:23:48.518Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared completed and tsc --noEmit exited 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-27T05:23:51.551Z
+    completed_at: 2026-06-27T05:23:51.551Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2916 test suites passed; 11101 tests passed, 3 skipped of 11104. Full log:
+      /tmp/kspec-test-cache/01KW3QJBFW3ASAWC1G2Y6GANV2/eb1bc387550e98e6.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-27T05:23:55.936Z
+    completed_at: 2026-06-27T05:23:55.936Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2 suites, 9 tests in tests/coverage-resolution-cli-daemon.test.ts."
+    name: focused coverage resolution tests
+    required: false
+    runner: npm test -- coverage-resolution-cli-daemon.test.ts --fresh
+    created_at: 2026-06-27T05:23:59.304Z
+    completed_at: 2026-06-27T05:23:59.304Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; reference warnings are existing deprecated-item references
+      unrelated to this diff.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-27T05:24:02.463Z
+    completed_at: 2026-06-27T05:24:02.463Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; alignment warnings are existing orphan/status baseline unrelated
+      to this diff.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-27T05:24:05.555Z
+    completed_at: 2026-06-27T05:24:05.555Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with warnings-ok; completeness warnings are existing missing AC/invalid annotation
+      baseline unrelated to this diff.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-27T05:24:08.555Z
+    completed_at: 2026-06-27T05:24:08.555Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: root build completed shared, TypeScript, daemon, web UI, docs search, and plugin
+      build. Svelte/a11y warnings were pre-existing unrelated files."
+    name: build
+    required: false
+    runner: npm run build
+    created_at: 2026-06-27T05:24:11.716Z
+    completed_at: 2026-06-27T05:24:11.716Z
 events:
   - _ulid: 01KW3QKWE5WMW8G97W4KDFXPPR
     actor: Jacob Chapel
@@ -17,6 +126,83 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-27T05:08:01.606Z
+  - _ulid: 01KW3RH8FXGK5Y6R7F89JBJKDG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-27T05:23:42.717Z
+  - _ulid: 01KW3RHBGF5BHWH458WNH85ZWB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-27T05:23:45.807Z
+  - _ulid: 01KW3RHECM6RNJD24HZFW5NVB9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-27T05:23:48.756Z
+  - _ulid: 01KW3RHHBMR7GHCDQSAW68B9YV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-27T05:23:51.797Z
+  - _ulid: 01KW3RHNQ98VEGF5D0FKKCE0ZR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-27T05:23:56.265Z
+  - _ulid: 01KW3RHRY0EV68CM50TWJC9KT9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused coverage resolution tests
+    timestamp: 2026-06-27T05:23:59.552Z
+  - _ulid: 01KW3RHW0C0ETVFZ22BGX2XW9K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-27T05:24:02.700Z
+  - _ulid: 01KW3RHZ126T2PT43J7C8GRVM3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-27T05:24:05.794Z
+  - _ulid: 01KW3RJ205M7KFT2EAGWA16GSC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-27T05:24:08.837Z
+  - _ulid: 01KW3RJ53FWEZZ7TX9QDD0036X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: build
+    timestamp: 2026-06-27T05:24:12.016Z
+  - _ulid: 01KW3RJ83QMYZQA48RXFRFBS69
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW3RJ7WCHNP9BXY1Y3V8KBBH
+    timestamp: 2026-06-27T05:24:15.095Z
 examined_commit: ebbc774ba6edacc2eaeb05676707f074912cdde3
 external_links: []
 lifecycle_state: open
@@ -26,8 +212,33 @@ subject:
   content_hash: ""
   ref: "@01KW2NT3ZQG5ESPJVRQQ62Z58R"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW3RJ7WCHNP9BXY1Y3V8KBBH
+    entries:
+      - _ulid: 01KW3RJ7WC7FCQ7K4VP22X1J1Q
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; task/spec context for @01KW2NT3ZQG5ESPJVRQQ62Z58R
+          and @coverage-resolution-events-compatibility;
+          packages/daemon/src/routes/coverage-state-events.ts;
+          packages/daemon/src/routes/coverage.ts; packages/daemon/src/routes/command.ts;
+          src/parser/coverage-resolution.ts; src/schema/coverage-resolution.ts;
+          src/cli/commands/coverage.ts; src/cli/daemon-proxy.ts;
+          tests/coverage-resolution-cli-daemon.test.ts; related mutation-pipeline code. Commands
+          run: git diff/stat/status/log/diff --check; kspec item get for spec and websocket trait;
+          kspec validate refs/alignment/completeness with warnings-ok; npm run format:check; npm run
+          lint -- --quiet; npx oxlint changed files; npm run typecheck; npm test --
+          coverage-resolution-cli-daemon.test.ts --fresh; npm test; npm run build. Claims verified:
+          REST resolution mutations invalidate and refetch the coverage-state read model before
+          emitting coverage_state_changed; daemon single-command proxy emits the same typed event
+          family using the internal mutation descriptor rather than text stdout;
+          dry-run/read-only/missing-store paths do not broadcast or materialize stores; CLI daemon
+          proxy uses /api/command and skips top-level batch, so /api/command/batch is separate from
+          the CLI-proxy equivalence claim. Categories searched: correctness, edge cases, error
+          handling, test quality, integration, cache/event ordering. Shared-guidance neutrality: not
+          applicable; changed files are daemon/parser/test code, not shared guidance surfaces."
+        created_at: 2026-06-27T05:24:14.860Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-27T05:07:40.102Z
-updated_at: 2026-06-27T05:08:01.338Z
+updated_at: 2026-06-27T05:24:14.860Z
 notes: []

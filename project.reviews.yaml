@@ -28500,7 +28500,7 @@ reviews:
     title: Review coverage resolution events validation
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 10
     examined_commit: ebbc774ba6edacc2eaeb05676707f074912cdde3
     lifecycle_state: open
     related_refs: []
@@ -28509,8 +28509,8 @@ reviews:
       content_hash: ""
       ref: "@01KW2NT3ZQG5ESPJVRQQ62Z58R"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-27T05:07:40.102Z
-    updated_at: 2026-06-27T05:08:01.338Z
+    updated_at: 2026-06-27T05:24:14.860Z
