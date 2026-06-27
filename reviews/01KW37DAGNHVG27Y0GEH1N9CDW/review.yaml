@@ -2,7 +2,17 @@ _ulid: 01KW37DAGNHVG27Y0GEH1N9CDW
 slugs: []
 title: Review task-coverage-spec-text-revert fix cycle 1
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1122 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-27T00:40:44.824Z
+    completed_at: 2026-06-27T00:40:44.824Z
 events:
   - _ulid: 01KW37DAGM5GZHTTPJ8YR23XWS
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-27T00:25:04.302Z
+  - _ulid: 01KW38B4RGW0T90JQ0QV1Y3HN8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-27T00:40:45.072Z
 examined_commit: 14e4d05776358ddb9f15b24ec1111850675a11e8
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-27T00:24:27.925Z
-updated_at: 2026-06-27T00:25:04.019Z
+updated_at: 2026-06-27T00:40:44.824Z
 notes: []
