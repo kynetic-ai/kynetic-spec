@@ -172,6 +172,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-27T01:25:22.037Z
+  - _ulid: 01KW3D53RC1EQMN0320W1NBYVP
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW3AWMXHFSHXKWAGCQ6W8E5V
+    timestamp: 2026-06-27T02:04:50.316Z
 examined_commit: 8eb77e75d01d6902460695e7f1d0923074c68926
 external_links: []
 lifecycle_state: closed
@@ -202,6 +208,13 @@ threads:
           rewritten YAML no longer contained the comment. The submitted tests assert sibling AC
           values and notes, but do not include a comment fixture."
         created_at: 2026-06-27T01:25:15.826Z
+      - _ulid: 01KW3D53GCTEXZSJ3V276XM7SV
+        author: Jacob Chapel
+        body: "Fixed in commit 4031861112: spec-text apply now uses a lock-held YAML document-node mutation
+          helper that updates only the targeted acceptance criterion text scalars. Added a commented
+          fixture and byte-level regression asserting the applied file equals the pre-apply file
+          with only the targeted given/then values changed."
+        created_at: 2026-06-27T02:04:50.060Z
     kind: blocker
   - _ulid: 01KW3AWQTJZ02B7Q1B4TQ52TBD
     entries:
@@ -248,5 +261,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-27T01:25:22.036Z
 created_at: 2026-06-27T01:10:55.030Z
-updated_at: 2026-06-27T01:25:22.036Z
+updated_at: 2026-06-27T02:04:50.060Z
 notes: []
