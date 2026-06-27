@@ -36,6 +36,18 @@ checks:
     runner: npm run typecheck
     created_at: 2026-06-27T00:12:38.841Z
     completed_at: 2026-06-27T00:12:38.841Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2914 test suites passed; 11086 tests passed and 3 skipped of 11089. Focused
+      coverage-resolution.test.ts passed 20 tests within the full run. Full log:
+      /tmp/kspec-test-cache/01KW35W7A95KT0KEVXNTXS3HNN/60db61d861a20102.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-27T00:12:49.736Z
+    completed_at: 2026-06-27T00:12:49.736Z
 events:
   - _ulid: 01KW35XW91NWEWEDPC5K8JAHQ4
     actor: Jacob Chapel
@@ -71,6 +83,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-06-27T00:12:39.093Z
+  - _ulid: 01KW36R0YEVM332H7X5RM999GY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-27T00:12:49.998Z
 examined_commit: 5a4d550492f1245298e019d899a8654a28fe1808
 external_links: []
 lifecycle_state: open
@@ -83,5 +102,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-26T23:58:33.250Z
-updated_at: 2026-06-27T00:12:38.841Z
+updated_at: 2026-06-27T00:12:49.736Z
 notes: []
