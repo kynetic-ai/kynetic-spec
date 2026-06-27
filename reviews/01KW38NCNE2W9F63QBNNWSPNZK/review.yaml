@@ -185,9 +185,25 @@ events:
       kind: nit
       thread_ulid: 01KW39JXWWPNZWJM442QGTGG0D
     timestamp: 2026-06-27T01:02:29.037Z
+  - _ulid: 01KW39K7GQYDR3M8PER013YTQ5
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-27T01:02:38.616Z
+  - _ulid: 01KW39K7GREK9FM0E3H634WSQQ
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-27T01:02:38.616Z
 examined_commit: 316a10bb402ca9b558a6b7f7e82311f18cca46c2
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -222,7 +238,14 @@ threads:
           coverage reduction, source-scanning tests, runner sequencing. No blocking findings found.
         created_at: 2026-06-27T01:02:28.765Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-27T01:02:38.615Z
 created_at: 2026-06-27T00:46:20.846Z
-updated_at: 2026-06-27T01:02:28.765Z
+updated_at: 2026-06-27T01:02:38.616Z
 notes: []
