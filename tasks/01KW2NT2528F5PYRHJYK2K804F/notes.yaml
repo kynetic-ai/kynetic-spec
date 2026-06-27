@@ -38,3 +38,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-26T23:30:33.588Z
+  - _ulid: 01KW372ZR26S9D5RAEH3NWZ595
+    content: "Fix cycle 1: addressed the concurrency blocker by adding a lock-held spec item mutation
+      helper and using it from applySpecTextRevert, so current AC text is re-read and fingerprinted
+      under the YAML file lock before applying the revert. Added a regression for an edit after
+      planning but before mutation, re-verified all @coverage-spec-text-revert ACs, and reran
+      format, lint, typecheck, focused/full tests, and kspec refs/alignment/completeness
+      validations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T00:18:49.218Z
