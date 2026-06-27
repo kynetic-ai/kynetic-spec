@@ -47,7 +47,7 @@ description: |
 spec_ref: "@coverage-spec-text-revert"
 plan_ref: "@plan-coverage-resolution-mutations"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-coverage-resolution-contract"
@@ -67,7 +67,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-coverage-spec-text-revert/01kw2nt2
-session_id: 01KW35V2PMPAFWF58FNR0SCVXX
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -173,6 +173,16 @@ history:
         previous: "@01KW33MFG166CGC0D71JBF52D0"
     command: review-link
     timestamp: 2026-06-27T00:24:30.418Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KW35V2PMPAFWF58FNR0SCVXX
+    command: review-verdict-needs-work
+    timestamp: 2026-06-27T00:42:04.978Z
 created_at: 2026-06-26T19:16:50.978Z
 started_at: 2026-06-27T00:17:54.270Z
 submitted_at: 2026-06-27T00:19:07.430Z
