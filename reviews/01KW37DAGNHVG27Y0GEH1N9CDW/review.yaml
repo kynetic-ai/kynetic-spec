@@ -151,6 +151,13 @@ events:
       kind: blocker
       thread_ulid: 01KW38CJJHDJKGFPWW6DQKANSR
     timestamp: 2026-06-27T00:41:32.239Z
+  - _ulid: 01KW38D66WTV7X70HKRWGMN6YG
+    actor: codex-pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW38D5Z6SHK2T77C5GXA3AA6
+    timestamp: 2026-06-27T00:41:52.092Z
 examined_commit: 14e4d05776358ddb9f15b24ec1111850675a11e8
 external_links: []
 lifecycle_state: open
@@ -197,7 +204,42 @@ threads:
           read-only option at the service boundary.
         created_at: 2026-06-27T00:41:31.985Z
     kind: blocker
+  - _ulid: 01KW38D5Z6SHK2T77C5GXA3AA6
+    entries:
+      - _ulid: 01KW38D5Z7B988WEJ3C9D5R5FK
+        author: codex-pr-reviewer
+        body: >-
+          Evidence log:
+
+
+          Files read: kspec-agents.md; src/parser/coverage-resolution.ts; src/parser/yaml.ts;
+          src/schema/coverage-resolution.ts; tests/coverage-resolution.test.ts; package.json;
+          previous review @01KW33MFG166CGC0D71JBF52D0; specs @coverage-spec-text-revert and
+          @coverage-resolution-mutation-interface.
+
+
+          Commands run: kspec task get @01KW2NT2528F5PYRHJYK2K804F; kspec review
+          for-task/get/add/open; kspec item get @coverage-spec-text-revert; kspec item get
+          @coverage-resolution-mutation-interface; git diff/stat/log; rg AC annotations; npm run
+          format:check; npm run lint -- --quiet; npx oxlint changed files; npm run typecheck; npm
+          test; npm test -- tests/coverage-resolution.test.ts --fresh; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; throwaway tsx reproduction for dry-run
+          apply.
+
+
+          Claims verified: prior concurrency blocker was addressed by re-reading and fingerprinting
+          the criterion inside `updateSpecItemFromCurrent` under the YAML file lock, with a
+          regression test for mutation after planning. Also verified all five
+          @coverage-spec-text-revert AC annotations exist in tests/coverage-resolution.test.ts.
+
+
+          Categories searched: correctness, concurrency, dry-run/read-only behavior, preservation of
+          sibling data and sidecars, error handling, test quality, source-scanning test avoidance,
+          schema/response contract, and integration with coverage resolution interface. Found one
+          blocker: spec-text apply mutates on dry-run and lacks read-only refusal.
+        created_at: 2026-06-27T00:41:51.847Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-27T00:24:27.925Z
-updated_at: 2026-06-27T00:41:31.985Z
+updated_at: 2026-06-27T00:41:51.847Z
 notes: []
