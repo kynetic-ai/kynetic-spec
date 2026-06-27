@@ -4289,7 +4289,7 @@ features:
           unrelated criteria or operational sidecars.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@coverage-freshness-revision-comparison"
           - "@shared-mutation-pipeline"
