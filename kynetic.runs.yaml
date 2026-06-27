@@ -75167,9 +75167,21 @@ runs:
     completed_at: 2026-06-27T01:27:17.175Z
   - _ulid: 01KW3BTS3KDB57KX6JCJ10SAXE
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-27T01:41:43.155Z
+        completed_at: 2026-06-27T01:42:47.568Z
+        notes: "Worked well: the existing cleanupTempDir helper and tests/helpers-cli-cleanup.test.ts
+          already covered transient cleanup retry and fatal cleanup propagation. Reusing that helper
+          kept the task fix to a narrow tests/shadow.test.ts cleanup-path change instead of adding
+          new cleanup semantics."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-27T01:42:47.568Z
+        completed_at: 2026-06-27T01:42:47.568Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-27T01:41:43.155Z
