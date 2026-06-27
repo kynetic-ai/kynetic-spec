@@ -1,1 +1,11 @@
-notes: []
+notes:
+  - _ulid: 01KW3AZFSVB6XDEPVV9TG452CC
+    content: "Approach: reuse the existing cleanupTempDir test helper for shadow sync temporary bare
+      remotes instead of inventing per-test cleanup logic. Edge cases: transient
+      ENOTEMPTY/EBUSY/EPERM during recursive removal of git object directories should be retried;
+      non-transient cleanup errors should still fail so real setup/git failures are not masked. Test
+      plan: add behavioral helper coverage for transient retry and non-transient propagation, then
+      run the focused shadow test file and project gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-27T01:26:48.891Z
