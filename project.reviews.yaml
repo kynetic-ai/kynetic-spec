@@ -28418,7 +28418,7 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 1
     created_at: 2026-06-27T01:10:55.030Z
-    updated_at: 2026-06-27T02:05:17.143Z
+    updated_at: 2026-06-27T02:05:31.811Z
   - _ulid: 01KW3C4QG312BWJNW62G3K4P9M
     slugs: []
     title: Review shadow push cleanup stabilization
