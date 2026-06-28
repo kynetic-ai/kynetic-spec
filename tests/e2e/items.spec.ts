@@ -11,6 +11,10 @@ function treeRow(node: Locator): Locator {
   return node.locator("> div").first();
 }
 
+function childContainer(node: Locator): Locator {
+  return node.locator("> [data-testid='tree-node-child']").first();
+}
+
 async function firstModule(page: Page): Promise<Locator> {
   const tree = await workspaceTree(page);
   const moduleNode = tree.locator('[data-testid*="tree-node-module"]').first();
@@ -21,14 +25,21 @@ async function firstModule(page: Page): Promise<Locator> {
 async function expandModule(page: Page): Promise<Locator> {
   const moduleNode = await firstModule(page);
   await treeRow(moduleNode).getByTestId("workspace-row-body").click();
-  await expect(moduleNode.getByTestId("tree-node-child")).toBeVisible();
+  await expect(childContainer(moduleNode)).toBeVisible();
   return moduleNode;
+}
+
+async function focusedFeatureDetail(page: Page): Promise<Locator> {
+  await page.goto("/specs?node=%40test-feature");
+  const detail = page.getByTestId("spec-detail-panel");
+  await expect(detail.getByTestId("spec-title")).toContainText("Test Feature");
+  return detail;
 }
 
 async function firstFeatureUnderModule(page: Page): Promise<Locator> {
   const moduleNode = await expandModule(page);
   const featureNode = moduleNode
-    .getByTestId("tree-node-child")
+    .locator("> [data-testid='tree-node-child']")
     .locator('[data-testid*="tree-node-feature"]')
     .first();
   await expect(featureNode).toBeVisible();
@@ -46,8 +57,11 @@ test.describe("Spec Workspace", () => {
     await expect(treeRow(moduleNode).getByTestId("node-title")).toContainText("Core Module");
 
     await treeRow(moduleNode).getByTestId("workspace-row-body").click();
-    await expect(moduleNode.getByTestId("tree-node-child")).toBeVisible();
+    await expect(childContainer(moduleNode)).toBeVisible();
     await expect(page).not.toHaveURL(/node=/);
+
+    await treeRow(moduleNode).getByTestId("workspace-row-body").click();
+    await expect(childContainer(moduleNode)).not.toBeVisible();
 
     await Promise.all([
       page.waitForURL(/\/specs\?.*node=/),
@@ -61,13 +75,33 @@ test.describe("Spec Workspace", () => {
   // AC: @unified-spec-workspace-navigation ac-stable-node-urls
   // AC: @unified-spec-workspace-navigation ac-existing-ref-links-compatible
   // AC: @web-dashboard ac-12
+  // AC: @markdown-ui-adoption ac-5
   test("stable node URLs and legacy ref URLs restore the focused workspace page", async ({
     page,
   }) => {
     await page.goto("/specs?node=%40test-feature");
     const detail = page.getByTestId("spec-detail-panel");
     await expect(detail.getByTestId("spec-title")).toContainText("Test Feature");
+    await expect(detail.getByTestId("implementation-status")).toHaveAttribute(
+      "data-status-state",
+      "in_progress",
+    );
     await expect(detail.getByTestId("spec-linked-work-count")).toContainText("7");
+    await expect(detail.getByTestId("spec-description")).toContainText(
+      "A test feature for integration testing",
+    );
+    await expect(detail.getByTestId("spec-description").locator("strong")).toContainText(
+      "integration testing",
+    );
+    await expect(detail.getByTestId("spec-description").locator("code")).toContainText(
+      "kspec item get",
+    );
+    await expect(detail.getByTestId("acceptance-criteria")).toBeVisible();
+    await expect(detail.getByTestId("ac-item").first().getByTestId("ac-given")).toContainText(
+      "a user is viewing the feature",
+    );
+    await expect(detail.getByTestId("traits-section")).toBeVisible();
+    await expect(detail.getByTestId("trait-chip").first()).toContainText("test-trait");
 
     await page.reload();
     await expect(detail.getByTestId("spec-title")).toContainText("Test Feature");
@@ -78,7 +112,6 @@ test.describe("Spec Workspace", () => {
   });
 
   // AC: @unified-spec-workspace-navigation ac-stable-node-urls
-  // AC: @web-dashboard ac-15
   test("criterion URLs are shareable and reload to the criterion page", async ({ page }) => {
     await page.goto("/specs?node=%40test-core&ac=ac-module");
 
@@ -90,6 +123,36 @@ test.describe("Spec Workspace", () => {
     await page.reload();
     await expect(detail.getByRole("heading", { name: "Scenario" })).toBeVisible();
     await expect(page).toHaveURL(/node=%40test-core&ac=ac-module/);
+  });
+
+  // AC: @web-dashboard ac-15
+  // AC: @markdown-ui-adoption ac-6
+  test("acceptance criterion rows expand with full scenario text and coverage state", async ({
+    page,
+  }) => {
+    const detail = await focusedFeatureDetail(page);
+    const acItem = detail.getByTestId("ac-item").first();
+    const expandToggle = acItem.getByTestId("ac-expand-toggle");
+
+    await expect(acItem.getByTestId("ac-given")).toContainText("a user is viewing the feature");
+    await expect(acItem.getByTestId("ac-when-full")).not.toBeVisible();
+    await expect(acItem.getByTestId("ac-then-full")).not.toBeVisible();
+
+    await expandToggle.click();
+    await expect(acItem.getByTestId("ac-given-full")).toContainText(
+      "a user is viewing the feature",
+    );
+    await expect(acItem.getByTestId("ac-when-full")).toContainText("they check the status");
+    await expect(acItem.getByTestId("ac-then-full")).toContainText(
+      "the feature shows as in_progress",
+    );
+    const coverageIndicator = acItem.getByTestId("test-coverage-indicator");
+    await expect(coverageIndicator).toBeVisible();
+    await expect(coverageIndicator).toHaveAttribute("data-status-domain", "coverage");
+    await expect(coverageIndicator).toContainText(/Covered|Not Yet|Failing|Re-verify/);
+
+    await expandToggle.click();
+    await expect(acItem.getByTestId("ac-when-full")).not.toBeVisible();
   });
 
   // AC: @unified-spec-workspace-navigation ac-touch-and-keyboard-open
@@ -109,7 +172,7 @@ test.describe("Spec Workspace", () => {
 
     await row.getByTestId("workspace-row-body").focus();
     await page.keyboard.press("Enter");
-    await expect(moduleNode.getByTestId("tree-node-child")).toBeVisible();
+    await expect(childContainer(moduleNode)).toBeVisible();
 
     await row.getByTestId("node-title").focus();
     await Promise.all([page.waitForURL(/node=/), page.keyboard.press("Enter")]);
@@ -122,6 +185,8 @@ test.describe("Spec Workspace", () => {
   test("browser back restores previously expanded branches", async ({ page }) => {
     await page.goto("/specs");
     const featureNode = await firstFeatureUnderModule(page);
+    await treeRow(featureNode).getByTestId("workspace-row-body").click();
+    await expect(childContainer(featureNode)).toBeVisible();
     await expect(page).toHaveURL(/expanded=/);
 
     await Promise.all([
@@ -134,7 +199,12 @@ test.describe("Spec Workspace", () => {
 
     await page.goBack();
     const moduleNode = await firstModule(page);
-    await expect(moduleNode.getByTestId("tree-node-child")).toBeVisible();
+    await expect(childContainer(moduleNode)).toBeVisible();
+    const restoredFeatureNode = childContainer(moduleNode)
+      .locator('[data-testid*="tree-node-feature"]')
+      .first();
+    await expect(restoredFeatureNode).toBeVisible();
+    await expect(childContainer(restoredFeatureNode)).toBeVisible();
     await expect(page).toHaveURL(/expanded=/);
   });
 
@@ -142,14 +212,13 @@ test.describe("Spec Workspace", () => {
   test("nested branch expansion does not collapse an already expanded branch", async ({ page }) => {
     await page.goto("/specs");
     const moduleNode = await expandModule(page);
-    const featureNode = moduleNode
-      .getByTestId("tree-node-child")
+    const featureNode = childContainer(moduleNode)
       .locator('[data-testid*="tree-node-feature"]')
       .first();
 
     await treeRow(featureNode).getByTestId("workspace-row-body").click();
-    await expect(moduleNode.getByTestId("tree-node-child")).toBeVisible();
-    await expect(featureNode.getByTestId("tree-node-child")).toBeVisible();
+    await expect(childContainer(moduleNode)).toBeVisible();
+    await expect(childContainer(featureNode)).toBeVisible();
     await expect(page).toHaveURL(
       /expanded=.*test-core.*test-feature|expanded=.*test-feature.*test-core/,
     );
@@ -165,7 +234,7 @@ test.describe("Spec Workspace", () => {
     await expect(childRow.getByTestId("node-title")).toContainText("Test Feature");
 
     await childRow.getByTestId("workspace-row-body").click();
-    await expect(childRow.getByTestId("tree-node-child")).toBeVisible();
+    await expect(childContainer(childRow)).toBeVisible();
   });
 
   // AC: @unified-spec-workspace-navigation ac-stable-node-urls
@@ -196,6 +265,16 @@ test.describe("Spec Workspace", () => {
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     );
     expect(hasHorizontalScroll).toBe(false);
+  });
+
+  // AC: @unified-spec-workspace-navigation ac-expansion-state-preserved
+  test("bounded expansion-state eviction is indicated to the user", async ({ page }) => {
+    const overflowingRefs = Array.from({ length: 81 }, () => "test-core").join(",");
+    await page.goto(`/specs?expanded=${overflowingRefs}`);
+
+    const notice = page.getByTestId("expansion-eviction-notice");
+    await expect(notice).toBeVisible();
+    await expect(notice).toContainText("1 older expanded branch was dropped");
   });
 
   // AC: @web-dashboard ac-13

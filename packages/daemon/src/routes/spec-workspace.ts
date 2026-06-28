@@ -193,14 +193,37 @@ function coverageForCriterion(
   coverage: CoverageStateSnapshot,
   item: LoadedSpecItem,
   acId: string,
-): CoverageCriterionStateDetail | null {
+): CoverageCriterionStateDetail {
   const itemCoverage = coverageForItem(coverage, item);
-  if (!itemCoverage) return null;
-  return (
-    coverage.criteria[`${itemCoverage.item_ulid} ${acId}`] ??
-    itemCoverage.criteria.find((criterion) => criterion.ac_id === acId) ??
-    null
-  );
+  const existing = itemCoverage
+    ? (coverage.criteria[`${itemCoverage.item_ulid} ${acId}`] ??
+      itemCoverage.criteria.find((criterion) => criterion.ac_id === acId))
+    : null;
+  return existing ?? noEvidenceCriterionCoverage(item, acId);
+}
+
+function noEvidenceCriterionCoverage(
+  item: LoadedSpecItem,
+  acId: string,
+): CoverageCriterionStateDetail {
+  return {
+    criterion_key: `${item._ulid} ${acId}`,
+    item_ulid: item._ulid,
+    item_ref: itemRef(item),
+    item_title: item.title,
+    ac_id: acId,
+    state: "not_yet",
+    presentation: "not_yet",
+    explanation: {
+      rule: "no_evidence",
+      sourceEvidenceIds: [],
+      latestRunId: null,
+      secondaryReverifyCauses: [],
+    },
+    latest_run_evidence: [],
+    freshness: { bootstrap: null, recorded: null, secondary_causes: [] },
+    unmapped_result_references: [],
+  };
 }
 
 function taskRef(task: Pick<LoadedTask, "_ulid" | "slugs">): string {

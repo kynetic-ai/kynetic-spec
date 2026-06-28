@@ -34,7 +34,11 @@
 	}: Props = $props();
 
 	function coverageBucket(node: SpecWorkspaceNodeSummary): string | null {
-		return node.coverage?.presentation_bucket ?? null;
+		if (!node.coverage || node.coverage.denominator === 0) return null;
+		if (node.coverage.counts.failing > 0) return 'failing';
+		if (node.coverage.counts.re_verify > 0) return 're_verify';
+		if (node.coverage.counts.not_yet > 0) return 'not_yet';
+		return 'covered';
 	}
 
 	function nodeStatus(node: SpecWorkspaceNodeSummary): string | null {

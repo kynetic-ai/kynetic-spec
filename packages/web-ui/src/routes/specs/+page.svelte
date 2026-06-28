@@ -42,6 +42,7 @@
 
 	const MAX_EXPANDED_REFS = 80;
 	const WORKSPACE_PAGE_SIZE = 100;
+	const EXPANSION_EVICTED_PARAM = 'expandedEvicted';
 
 	let expandedDetails = $state(new Map<string, SpecWorkspaceNodeDetailProjection>());
 	let expandedLoading = $state(new Set<string>());
@@ -55,6 +56,10 @@
 	});
 	let focusedCriterionId = $derived($page.url.searchParams.get('ac'));
 	let planFilter = $derived($page.url.searchParams.get('plan') ?? undefined);
+	let expandedRefParts = $derived(parseExpandedRefParts($page.url.searchParams.get('expanded')));
+	let expansionEvictedByUrl = $derived(Math.max(0, expandedRefParts.length - MAX_EXPANDED_REFS));
+	let expansionEvictedByMutation = $derived(parseEvictedCount($page.url.searchParams.get(EXPANSION_EVICTED_PARAM)));
+	let expansionEvictedCount = $derived(Math.max(expansionEvictedByUrl, expansionEvictedByMutation));
 	let expandedRefs = $derived(parseExpandedRefs($page.url.searchParams.get('expanded')));
 
 	const rootQuery = createQuery(() => ({
@@ -96,15 +101,21 @@
 				: null
 	);
 
+	function parseExpandedRefParts(value: string | null): string[] {
+		if (!value) return [];
+		return value
+			.split(',')
+			.map((part) => part.trim())
+			.filter(Boolean);
+	}
+
 	function parseExpandedRefs(value: string | null): Set<string> {
-		if (!value) return new Set();
-		return new Set(
-			value
-				.split(',')
-				.map((part) => part.trim())
-				.filter(Boolean)
-				.slice(0, MAX_EXPANDED_REFS)
-		);
+		return new Set(parseExpandedRefParts(value).slice(-MAX_EXPANDED_REFS));
+	}
+
+	function parseEvictedCount(value: string | null): number {
+		const count = Number(value);
+		return Number.isFinite(count) && count > 0 ? Math.floor(count) : 0;
 	}
 
 	function withWorkspaceState(updater: (url: URL) => void, options?: { replaceState?: boolean }) {
@@ -114,11 +125,18 @@
 	}
 
 	function setExpandedRefs(url: URL, refs: Set<string>) {
-		const bounded = [...refs].slice(-MAX_EXPANDED_REFS);
+		const allRefs = [...refs];
+		const evicted = Math.max(0, allRefs.length - MAX_EXPANDED_REFS);
+		const bounded = allRefs.slice(-MAX_EXPANDED_REFS);
 		if (bounded.length > 0) {
 			url.searchParams.set('expanded', bounded.join(','));
 		} else {
 			url.searchParams.delete('expanded');
+		}
+		if (evicted > 0) {
+			url.searchParams.set(EXPANSION_EVICTED_PARAM, String(evicted));
+		} else {
+			url.searchParams.delete(EXPANSION_EVICTED_PARAM);
 		}
 	}
 
@@ -249,10 +267,10 @@
 {/snippet}
 
 {#snippet criterionCoverageBadge(criterion: SpecWorkspaceCriterionSummary)}
-	{#if criterion.coverage?.presentation_bucket}
+	{#if criterion.coverage?.presentation}
 		<StatusBadge
 			domain="coverage"
-			state={criterion.coverage.presentation_bucket}
+			state={criterion.coverage.presentation}
 			testid="test-coverage-indicator"
 		/>
 	{/if}
@@ -340,13 +358,13 @@
 										<span class="min-w-0 text-sm" data-testid="ac-given">
 											{@html renderInlineMarkdown(criterionLabel(criterion))}
 										</span>
-										{#if criterion.coverage?.presentation_bucket}
-											<StatusBadge
-												domain="coverage"
-												state={criterion.coverage.presentation_bucket}
-												class="shrink-0 px-1.5 py-0 text-[10px]"
-											/>
-										{/if}
+											{#if criterion.coverage?.presentation}
+												<StatusBadge
+													domain="coverage"
+													state={criterion.coverage.presentation}
+													class="shrink-0 px-1.5 py-0 text-[10px]"
+												/>
+											{/if}
 									</span>
 								</button>
 								<a
@@ -420,9 +438,9 @@
 				reference={`${focusedCriterion.parent.ref} ${focusedCriterion.criterion.id}`}
 				title={`${focusedCriterion.parent.title} · ${focusedCriterion.criterion.id}`}
 				titleTestid="spec-title"
-				statusDomain={focusedCriterion.criterion.coverage?.presentation_bucket ? 'coverage' : undefined}
-				statusState={focusedCriterion.criterion.coverage?.presentation_bucket}
-				statusTestid="test-coverage-indicator"
+					statusDomain={focusedCriterion.criterion.coverage?.presentation ? 'coverage' : undefined}
+					statusState={focusedCriterion.criterion.coverage?.presentation}
+					statusTestid="test-coverage-indicator"
 				counts={[
 					{ label: 'siblings', value: focusedCriterion.siblings.length, testid: 'spec-ac-sibling-count' }
 				]}
@@ -513,8 +531,20 @@
 		>
 			<span class="min-w-0 truncate">Opened from plan <code class="rounded bg-muted px-1 py-0.5 text-xs">@{planFilter}</code></span>
 			<a href="{base}/specs" class="ml-auto shrink-0 text-xs text-primary hover:underline">Clear</a>
-		</div>
-	{/if}
+			</div>
+		{/if}
+
+		{#if expansionEvictedCount > 0}
+			<div
+				class="mb-4 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-100"
+				data-testid="expansion-eviction-notice"
+				role="status"
+			>
+				{expansionEvictedCount}
+				{expansionEvictedCount === 1 ? 'older expanded branch was' : 'older expanded branches were'}
+				dropped to keep the workspace responsive.
+			</div>
+		{/if}
 
 	<div class="grid min-w-0 gap-4 xl:grid-cols-[minmax(20rem,28rem)_minmax(0,1fr)]">
 		<aside class="min-w-0 rounded-lg border border-border bg-card p-3" data-testid="spec-tree-container">
