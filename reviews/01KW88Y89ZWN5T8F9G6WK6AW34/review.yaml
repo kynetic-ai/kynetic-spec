@@ -2,7 +2,90 @@ _ulid: 01KW88Y89ZWN5T8F9G6WK6AW34
 slugs: []
 title: Review coverage resolution panels (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt --check . reported all matched files use correct format (1131 files)."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-28T23:40:49.135Z
+    completed_at: 2026-06-28T23:40:49.135Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint reported 0 errors with existing 663-warning baseline. Focused
+      changed-file lint passed separately: npx oxlint packages/web-ui/src/lib/api.ts
+      packages/web-ui/src/lib/query/keys.ts packages/web-ui/src/lib/query/ws-invalidation.ts
+      packages/web-ui/src/lib/spec-workspace/coverage-resolution.ts
+      tests/web-ui/coverage-resolution-api.test.ts
+      tests/web-ui/spec-workspace-coverage-resolution.test.ts
+      tests/web-ui/ws-cache-invalidation.test.ts reported 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-28T23:40:52.124Z
+    completed_at: 2026-06-28T23:40:52.124Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared && tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-28T23:40:55.019Z
+    completed_at: 2026-06-28T23:40:55.019Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2926 test suites passed; 11132 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KW88T19WZC60TEF1S6ZDYN6D/35db3089d8daabbc.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-28T23:40:57.727Z
+    completed_at: 2026-06-28T23:40:57.727Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok exited 0. Existing warning baseline: 6
+      deprecated-reference warnings."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-28T23:41:00.580Z
+    completed_at: 2026-06-28T23:41:00.580Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0. Existing warning baseline: 55
+      alignment warnings."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-28T23:41:03.479Z
+    completed_at: 2026-06-28T23:41:03.479Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0. Existing warning baseline:
+      327 completeness warnings. The reviewed spec ACs have test annotations in
+      tests/web-ui/coverage-resolution-api.test.ts,
+      tests/web-ui/spec-workspace-coverage-resolution.test.ts, and
+      tests/web-ui/ws-cache-invalidation.test.ts."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-28T23:41:06.534Z
+    completed_at: 2026-06-28T23:41:06.534Z
 events:
   - _ulid: 01KW88Y89YDSQ0NA5V7YN52XYT
     actor: Jacob Chapel
@@ -17,6 +100,62 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-28T23:27:42.989Z
+  - _ulid: 01KW89PVAGCSRHDMTVPB23C04S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-28T23:40:49.360Z
+  - _ulid: 01KW89PY892YSB5VEMMB9QVD23
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-28T23:40:52.361Z
+  - _ulid: 01KW89Q12P6D5AF1XT9XX07ME3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-28T23:40:55.254Z
+  - _ulid: 01KW89Q3PXDAFSZ2J7WRD9A0X8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-28T23:40:57.949Z
+  - _ulid: 01KW89Q6GK0830BRMM55Z9CNRY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-28T23:41:00.819Z
+  - _ulid: 01KW89Q9B4394NMDM85F7624YQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-28T23:41:03.716Z
+  - _ulid: 01KW89QC9YS2RYG1MYY2RM7X3V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-28T23:41:06.750Z
+  - _ulid: 01KW89QF8GAB1F3CEG3FNDSM6P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW89QF08EX5KWPXTG8CC9T7W
+    timestamp: 2026-06-28T23:41:09.776Z
 examined_commit: 7fd9003b36dd0a1dc75f8bacdd66beb5a3eb115d
 external_links: []
 lifecycle_state: open
@@ -26,8 +165,34 @@ subject:
   content_hash: ""
   ref: "@01KW6Q04PHJWHE0BAKF77QF68A"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW89QF08EX5KWPXTG8CC9T7W
+    entries:
+      - _ulid: 01KW89QF08ME8VVRK7FZXJ9P1D
+        author: Jacob Chapel
+        body: "Evidence log: Files read: kspec-agents.md; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/lib/query/keys.ts; packages/web-ui/src/lib/query/ws-invalidation.ts;
+          packages/web-ui/src/lib/spec-workspace/coverage-resolution.ts;
+          packages/web-ui/src/routes/specs/+page.svelte; packages/daemon/src/routes/coverage.ts;
+          src/schema/coverage-resolution.ts; src/parser/coverage-resolution.ts;
+          tests/web-ui/coverage-resolution-api.test.ts;
+          tests/web-ui/spec-workspace-coverage-resolution.test.ts;
+          tests/web-ui/ws-cache-invalidation.test.ts;
+          tests/web-ui/spec-workspace-coverage-presentation.test.ts. Commands run: git
+          status/log/diff/diff --check; kspec task get; kspec item get
+          @spec-workspace-coverage-resolution-panels; kspec review get prior cycle; rg
+          AC/source-scan checks; npm run format:check; npx oxlint changed TS/test files; npm run
+          lint -- --quiet; npm run typecheck; npm test; kspec validate refs/alignment/completeness
+          with --warnings-ok. Claims verified: fix-cycle stale-target handling now records error and
+          refetches root/node/criterion queries; coverage_state_changed invalidation now uses
+          specWorkspace root/node prefixes so parameterized /specs queries are invalidated;
+          dispatch-fix task refs are displayed from server effects without composing client task
+          records. Categories searched: correctness, edge cases/stale conflicts, read-only handling,
+          API contract/error envelope, query invalidation integration, AC test coverage,
+          source-scanning tests, and project gates. No blockers found."
+        created_at: 2026-06-28T23:41:09.512Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-28T23:27:23.455Z
-updated_at: 2026-06-28T23:27:42.741Z
+updated_at: 2026-06-28T23:41:09.512Z
 notes: []
