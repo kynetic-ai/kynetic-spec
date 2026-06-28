@@ -77043,7 +77043,7 @@ runs:
     started_at: 2026-06-28T21:32:28.307Z
   - _ulid: 01KW875S9A89DYKR4BED4B0078
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77067,7 +77067,16 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-28T22:57:59.259Z
-        completed_at: 2026-06-28T22:57:59.259Z
+        completed_at: 2026-06-28T22:58:10.095Z
+        notes: "Decision: no new capture. Skip task-local bugs because they are already durable blocker
+          threads on review @01KW867C and the task is needs_work. Skip systemic event-driven review
+          lesson as duplicate/covered by observation @01KW6V2M. Skip detached full-suite cost as
+          duplicate/covered by existing detached-review gate friction observations, including
+          @01KVXPAN and @01KV3WHP."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-28T22:58:10.095Z
+        completed_at: 2026-06-28T22:58:10.095Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-28T22:56:33.066Z
