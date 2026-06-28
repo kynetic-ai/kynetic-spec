@@ -103,6 +103,18 @@ checks:
     runner: plan markdown inspection
     created_at: 2026-06-28T08:39:16.683Z
     completed_at: 2026-06-28T08:39:16.683Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Parsed six planned specs and six manual tasks from the stored markdown. Every planned spec
+      AC is claimed by at least one Covers line; no task spec_ref/depends_on issue found among
+      plan-local refs.
+    name: AC coverage mapping
+    required: true
+    runner: node plan parser
+    created_at: 2026-06-28T08:39:22.317Z
+    completed_at: 2026-06-28T08:39:22.317Z
 events:
   - _ulid: 01KW6P0VQGVWBE9Q9DJ7VNHFD6
     actor: Jacob Chapel
@@ -173,6 +185,13 @@ events:
       status: pass
       name: coverage vocabulary consistency
     timestamp: 2026-06-28T08:39:16.935Z
+  - _ulid: 01KW6P486BS0M6N11DHEB9DHXQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC coverage mapping
+    timestamp: 2026-06-28T08:39:22.571Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -185,5 +204,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T08:37:31.510Z
-updated_at: 2026-06-28T08:39:16.683Z
+updated_at: 2026-06-28T08:39:22.317Z
 notes: []
