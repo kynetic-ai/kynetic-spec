@@ -54,7 +54,7 @@ tags:
   - mutations
   - specs
 vcs_refs: []
-review_ref: "@01KW867CB5K6X8VG8ZGEHXXPQN"
+review_ref: "@01KW88Y89ZWN5T8F9G6WK6AW34"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-spec-workspace-resolution-panels/01kw6q04
@@ -162,6 +162,13 @@ history:
         previous: 2026-06-28T21:31:34.662Z
     command: task-submit
     timestamp: 2026-06-28T23:20:22.238Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KW88Y89ZWN5T8F9G6WK6AW34"
+        previous: "@01KW867CB5K6X8VG8ZGEHXXPQN"
+    command: review-link
+    timestamp: 2026-06-28T23:27:25.838Z
 resource_refs:
   - git_commit: null
     git_path: null
