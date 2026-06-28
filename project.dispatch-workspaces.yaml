@@ -13864,7 +13864,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-28T13:07:37.385Z
+      updated_at: 2026-06-28T13:07:52.565Z
     integration:
       status: pending
       detail: null
@@ -13873,7 +13873,7 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: 1ee439998e583e57b4b5c43025473cb5290e97a2
       updated_at: 2026-06-28T13:07:37.385Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW6Q03KGA93343F9SQJKSA0R
     task_ref: "@01KW6Q03KGA93343F9SQJKSA0R"
@@ -13881,18 +13881,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-28T12:45:38.889Z
-      last_reconciled_at: 2026-06-28T13:07:37.385Z
+      last_reconciled_at: 2026-06-28T13:07:52.565Z
       created_at: 2026-06-28T11:45:42.317Z
-      updated_at: 2026-06-28T13:07:37.385Z
+      updated_at: 2026-06-28T13:07:52.565Z
     workspace_id: dispatch-workspace-01KW6Q03KGA93343F9SQJKSA0R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
-        last_seen_at: 2026-06-28T12:44:39.451Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-unified-spec-workspace-shell-navigation-01kw6q03-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-unified-spec-workspace-shell-navigation/01kw6q03
