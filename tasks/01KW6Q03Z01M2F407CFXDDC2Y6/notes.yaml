@@ -1,1 +1,18 @@
-notes: []
+notes:
+  - _ulid: 01KW7HCDYG5HHXN1GTGQ47M2M4
+    content: "Approach: extend the existing /specs Svelte workspace shell rather than adding a new data
+      path. Reuse backend spec-workspace projections, ViewHeader, BreadcrumbNav, SpecWorkspaceRows,
+      StatusBadge, ReferenceLink, and goto-backed URL helpers. AC mapping: root page gets
+      corpus/coverage/top-level summary and no breadcrumb; node pages get shared header,
+      description, tags/traits, child sections, AC sections, and linked-work/unavailable states;
+      requirement AC rows get G/W/T expansion, evidence indicators, and open-page links; criterion
+      pages get parent context, scenario, coverage/evidence summaries, siblings, and linked work;
+      linked work stays grouped by projection class; empty/missing classes get concise states; no
+      CRUD controls are introduced. Edge cases: no children, no linked work, unavailable
+      review/observation classes, no evidence, root loading/errors, and long nested content without
+      horizontal scroll. Test plan: extend E2E route coverage with standalone AC annotations for
+      @spec-node-criterion-workspace-pages ac-root-page through ac-read-navigation-scope, using
+      fixture feature/requirement/criterion pages plus browser navigation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T16:35:42.160Z
