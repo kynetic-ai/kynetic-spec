@@ -20,3 +20,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T17:28:54.605Z
+  - _ulid: 01KW7P0KNE4PG896Y995VMTMA4
+    content: >-
+      Implemented coverage-state presentation for the spec workspace in commit 3bbde6254d. Added a
+      shared web-ui coverage presentation helper for four-bucket tokens, rollup math, local state
+      filters, re-verify cause summaries, attention priority, and readiness messages. Wired /specs
+      root/node/criterion pages and tree rows to segmented rollups, state chips, re-verify banners,
+      local filter chips via goto-backed URL state, and projection-only not-yet fallback for missing
+      criterion coverage. Static projections now mark coverage unavailable when snapshots omit
+      coverage_state.
+
+      Verification: npm run format:check; npx oxlint changed files; npm run lint -- --quiet (0
+      errors, existing warning baseline); npm run typecheck; focused tests for coverage
+      presentation/static/invalidation; npm test (2922 suites passed, 11120 tests passed, 3
+      skipped); kspec validate --refs/--alignment/--completeness --warnings-ok (passed with existing
+      warning baselines).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T17:56:37.679Z
