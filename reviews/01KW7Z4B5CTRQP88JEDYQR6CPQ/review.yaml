@@ -75,6 +75,17 @@ checks:
     runner: kspec
     created_at: 2026-06-28T20:52:56.995Z
     completed_at: 2026-06-28T20:52:56.995Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Build completed and 15 Playwright tests passed for tests/e2e/validate.spec.ts; build
+      emitted existing Svelte warning baseline only.
+    name: focused validate e2e
+    required: false
+    runner: npm run test:e2e -- tests/e2e/validate.spec.ts
+    created_at: 2026-06-28T20:53:02.494Z
+    completed_at: 2026-06-28T20:53:02.494Z
 events:
   - _ulid: 01KW7Z4B5A6DDNYDTG6SS86YRN
     actor: Jacob Chapel
@@ -138,6 +149,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-28T20:52:57.245Z
+  - _ulid: 01KW803MMYT8BRX8YT2305HXKA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused validate e2e
+    timestamp: 2026-06-28T20:53:02.750Z
 examined_commit: 5bb8e3d32c1e62ce6906fa6fab794b22d8db6795
 external_links: []
 lifecycle_state: open
@@ -150,5 +168,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T20:35:57.228Z
-updated_at: 2026-06-28T20:52:56.995Z
+updated_at: 2026-06-28T20:53:02.494Z
 notes: []
