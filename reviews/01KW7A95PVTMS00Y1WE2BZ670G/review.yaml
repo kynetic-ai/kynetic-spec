@@ -1,0 +1,26 @@
+_ulid: 01KW7A95PVTMS00Y1WE2BZ670G
+slugs: []
+title: Review page-tree workspace shell (cycle 3)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KW7A95PVZY9GWP2VQZG60C7Y
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-28T14:31:35.387Z
+examined_commit: a35677900ee073d6bcc6e1661c95fd81b082e43f
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KW6Q03KGA93343F9SQJKSA0R"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-28T14:31:35.387Z
+updated_at: null
+notes: []
