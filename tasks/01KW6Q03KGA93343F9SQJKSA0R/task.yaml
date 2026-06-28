@@ -45,7 +45,7 @@ description: |
 spec_ref: "@unified-spec-workspace-navigation"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-unified-spec-workspace-projection-api"
@@ -61,8 +61,8 @@ review_ref: "@01KW7DSJ19WPJ1HDHXZBVNSA54"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-unified-spec-workspace-shell-navigation/01kw6q03
-  captured_at: 2026-06-28T15:27:36.504Z
-  commit: c35fb3fd1b24db9555964ec1d061eec59df4e00b
+  captured_at: 2026-06-28T16:09:55.874Z
+  commit: 38042adb1c01d1833a7456df7e60d7c9936ad225
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-unified-spec-workspace-shell-navigation/01kw6q03
@@ -309,6 +309,33 @@ history:
         previous: 2026-06-28T15:08:21.178Z
     command: task-start
     timestamp: 2026-06-28T15:55:34.208Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-unified-spec-workspace-shell-navigation/01kw6q03
+          captured_at: 2026-06-28T16:09:55.874Z
+          commit: 38042adb1c01d1833a7456df7e60d7c9936ad225
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-unified-spec-workspace-shell-navigation/01kw6q03
+        previous:
+          review_url: null
+          branch: dispatch/task/task-unified-spec-workspace-shell-navigation/01kw6q03
+          captured_at: 2026-06-28T15:27:36.504Z
+          commit: c35fb3fd1b24db9555964ec1d061eec59df4e00b
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-unified-spec-workspace-shell-navigation/01kw6q03
+      submitted_at:
+        new: 2026-06-28T16:09:55.884Z
+        previous: 2026-06-28T15:27:36.513Z
+    command: task-submit
+    timestamp: 2026-06-28T16:09:55.884Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -352,6 +379,6 @@ resource_refs:
     sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
 created_at: 2026-06-28T08:54:35.376Z
 started_at: 2026-06-28T15:55:34.207Z
-submitted_at: 2026-06-28T15:27:36.513Z
+submitted_at: 2026-06-28T16:09:55.884Z
 todos: []
 automation: eligible
