@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KW6R7MGT9JM8PY1W4FGAS9G7
+    content: "Approach: add a read-only /api/spec-workspace projection family backed by existing item
+      ancestry, AlignmentIndex linked tasks, plan derived_specs, session-related lookup,
+      coverage-state read model, shared envelopes, and static snapshot helpers. Edge cases: bounded
+      root/child pagination, missing nodes/criteria, invalid pagination fields, absent static
+      snapshot/dynamic linked-work classes, and read endpoints creating no commits. Test plan:
+      daemon route tests cover root, node, criterion, error guidance, linked-work inclusion,
+      read-only no-commit, API trait behavior, and N/A mutation/state-transition trait cases; static
+      tests cover snapshot projections and unavailable dynamic sections."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T09:16:10.650Z
