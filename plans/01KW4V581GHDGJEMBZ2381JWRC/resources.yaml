@@ -103,3 +103,13 @@ resources:
     label: Spec workspace AC page
     path: handoff/shots/r3-spec-unified-5-ac.png
     sha256: ee9a4739f54fd1f65695fd99e5924287a205635f1b57e9b9303ce2573620a622
+  - description: Coverage visual recommendation; use four current UI buckets plus secondary re-verify
+      causes in this plan.
+    bytes: 85159
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-coverage-five-state
+    label: Coverage five-state recommendation
+    path: handoff/shots/r3-coverage-4-five-state-alt.png
+    sha256: a514d69630262ec638f66900b27fc8ceccd6b52d5cf8b50b3be72cf0b9450e63
