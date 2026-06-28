@@ -14409,7 +14409,7 @@ workspaces:
         head: 43fd42a131afb120681eed739a085d84864b1252
         last_seen_at: 2026-06-28T15:07:34.326Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-session-context-e2e-status-label-assertion-01kw7b56
-  - active_role: worker
+  - active_role: null
     base_branch_point: eda56f77c1e076124236473fe2a4eb963e717511
     bootstrap:
       status: succeeded
@@ -14740,12 +14740,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-28T17:02:29.378Z
+      updated_at: 2026-06-28T17:05:33.635Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-28T17:02:29.378Z
+      updated_at: 2026-06-28T17:05:33.635Z
     integration:
       status: pending
       detail: null
@@ -14753,8 +14753,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: eda56f77c1e076124236473fe2a4eb963e717511
-      updated_at: 2026-06-28T17:02:29.378Z
-    lifecycle_state: active
+      updated_at: 2026-06-28T17:05:33.635Z
+    lifecycle_state: ready
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW6Q03Z01M2F407CFXDDC2Y6
     task_ref: "@01KW6Q03Z01M2F407CFXDDC2Y6"
@@ -14762,9 +14762,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-28T16:33:19.038Z
-      last_reconciled_at: 2026-06-28T17:02:29.378Z
+      last_reconciled_at: 2026-06-28T17:05:33.635Z
       created_at: 2026-06-28T16:32:47.817Z
-      updated_at: 2026-06-28T17:02:29.378Z
+      updated_at: 2026-06-28T17:05:33.635Z
     workspace_id: dispatch-workspace-01KW6Q03Z01M2F407CFXDDC2Y6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
