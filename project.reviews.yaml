@@ -28739,3 +28739,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-28T16:14:05.915Z
     updated_at: 2026-06-28T16:31:19.803Z
+  - _ulid: 01KW7K6J7KHMA5YZR3R7HSKZH0
+    slugs: []
+    title: Review task-spec-node-criterion-workspace-pages
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: e5bea5bee0d91c2ca3ace2156b1b87cb1ed72bea
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KW6Q03Z01M2F407CFXDDC2Y6"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-28T17:07:27.091Z

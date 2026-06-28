@@ -1,0 +1,26 @@
+_ulid: 01KW7K6J7KHMA5YZR3R7HSKZH0
+slugs: []
+title: Review task-spec-node-criterion-workspace-pages
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KW7K6J7J42RK550E30H2J1PG
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-28T17:07:27.090Z
+examined_commit: e5bea5bee0d91c2ca3ace2156b1b87cb1ed72bea
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KW6Q03Z01M2F407CFXDDC2Y6"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-28T17:07:27.091Z
+updated_at: null
+notes: []

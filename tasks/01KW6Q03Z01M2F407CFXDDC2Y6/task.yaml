@@ -52,6 +52,7 @@ tags:
   - specs
   - linked-work
 vcs_refs: []
+review_ref: "@01KW7K6J7KHMA5YZR3R7HSKZH0"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-spec-node-criterion-workspace-pages/01kw6q03
@@ -102,6 +103,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-28T17:02:06.452Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KW7K6J7KHMA5YZR3R7HSKZH0"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-28T17:07:30.464Z
 resource_refs:
   - git_commit: null
     git_path: null
