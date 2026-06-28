@@ -2,7 +2,102 @@ _ulid: 01KW7DSJ19WPJ1HDHXZBVNSA54
 slugs: []
 title: Review page-tree workspace shell (cycle 4)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1126 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-28T15:48:28.544Z
+    completed_at: 2026-06-28T15:48:28.544Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors. Repo-wide warning baseline reported 665 warnings.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-28T15:48:31.720Z
+    completed_at: 2026-06-28T15:48:31.720Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 warnings and 0 errors on packages/daemon/src/routes/spec-workspace.ts,
+      packages/web-ui/src/lib/api-static.ts, packages/web-ui/src/lib/api.ts,
+      tests/daemon-api/spec-workspace.test.ts, tests/e2e/items.spec.ts, tests/e2e/plans.spec.ts,
+      tests/spec-workspace-static.test.ts. Svelte files are not oxlint inputs.
+    name: focused-lint
+    required: true
+    runner: npx oxlint changed TS/test files
+    created_at: 2026-06-28T15:48:34.702Z
+    completed_at: 2026-06-28T15:48:34.702Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with exit 0 after build:shared and tsc --noEmit.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-28T15:48:37.659Z
+    completed_at: 2026-06-28T15:48:37.659Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2920 suites passed; 11112 tests passed, 3 skipped; duration 2582.5s. Full log:
+      /tmp/kspec-test-cache/01KW7DQZHXEZWBECMV51TFXRFR/f40d191e52294c80.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-28T15:48:40.639Z
+    completed_at: 2026-06-28T15:48:40.639Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with existing reference warnings accepted by --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-28T15:48:43.594Z
+    completed_at: 2026-06-28T15:48:43.594Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with existing alignment warnings accepted by --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-28T15:48:46.549Z
+    completed_at: 2026-06-28T15:48:46.549Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with existing completeness warning baseline accepted by --warnings-ok. Manual AC
+      check still found a task-covered AC missing behavioral test annotation.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-28T15:48:49.499Z
+    completed_at: 2026-06-28T15:48:49.499Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 47 Playwright tests. Build completed with existing Svelte warning baseline."
+    name: focused e2e specs/plans
+    required: true
+    runner: npm run test:e2e -- tests/e2e/items.spec.ts tests/e2e/plans.spec.ts
+    created_at: 2026-06-28T15:48:52.399Z
+    completed_at: 2026-06-28T15:48:52.399Z
 events:
   - _ulid: 01KW7DSJ19B21A9TY65GDBM8YY
     actor: Jacob Chapel
@@ -17,17 +112,178 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-28T15:33:19.634Z
+  - _ulid: 01KW7ENZ0DTDJ6WPB5CEG336KB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-28T15:48:28.814Z
+  - _ulid: 01KW7EP22K6GCJKQ0NRQ5RMM8D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-28T15:48:31.955Z
+  - _ulid: 01KW7EP5001B569YY9F4R1EWT9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-28T15:48:34.944Z
+  - _ulid: 01KW7EP7WDF6404JFY2MS3R6ZK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-28T15:48:37.901Z
+  - _ulid: 01KW7EPASA29MS90GTS08N7YV0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-28T15:48:40.874Z
+  - _ulid: 01KW7EPDNNNVVQXAJ3436Z8RA8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-28T15:48:43.829Z
+  - _ulid: 01KW7EPGHN8RMQRJPQM716NMT0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-28T15:48:46.773Z
+  - _ulid: 01KW7EPKE29ADHDPJQK541H7V1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-28T15:48:49.730Z
+  - _ulid: 01KW7EPP9STKV8M9KQYBRQ7TQ9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e specs/plans
+    timestamp: 2026-06-28T15:48:52.665Z
+  - _ulid: 01KW7EPS6J5HHP9JB1V34FB1GS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW7EPRYT9NYRS92QRGDBRRRH
+    timestamp: 2026-06-28T15:48:55.634Z
+  - _ulid: 01KW7EPW5ZQ6SCJ3PHHRF89H7C
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW7EPVY2T2A4ZF1H882Z1RVJ
+    timestamp: 2026-06-28T15:48:58.687Z
+  - _ulid: 01KW7EPZ8MP71W4NKN0BNC2WRC
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-28T15:49:01.844Z
+  - _ulid: 01KW7EPZ8MTZR73B84H361SHVS
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-28T15:49:01.844Z
 examined_commit: c35fb3fd1b24db9555964ec1d061eec59df4e00b
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KW6Q03KGA93343F9SQJKSA0R"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KW7EPRYT9NYRS92QRGDBRRRH
+    anchor:
+      type: structured
+      field: ac-url-state-via-goto
+      ref: "@spec-workspace-delivery-quality"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KW7EPRYT02X89JHA47A2MNYA
+        author: Jacob Chapel
+        body: 'MUST-FIX: The task explicitly covers @spec-workspace-delivery-quality ac-url-state-via-goto,
+          but that AC has no behavioral test annotation. I ran `rg -n "AC:
+          @spec-workspace-delivery-quality ac-url-state-via-goto" tests packages src`; the only
+          match is `packages/web-ui/src/routes/specs/+page.svelte:10`, which is implementation
+          source, not a test. Review rules require each covered AC to have an annotated behavioral
+          test, and source annotations do not count as AC test coverage. Add or annotate a
+          behavioral test proving URL-state changes for focused node/criterion/expansion use
+          SvelteKit navigation or link behavior so `$page.url` stays reactive and direct history
+          mutation is not used.'
+        created_at: 2026-06-28T15:48:55.386Z
+    kind: blocker
+  - _ulid: 01KW7EPVY2T2A4ZF1H882Z1RVJ
+    entries:
+      - _ulid: 01KW7EPVY285CSSV70GSW2HE4M
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: `kspec-agents.md`; `.agents/skills/svelte-5/SKILL.md`;
+          `packages/daemon/src/routes/spec-workspace.ts`; `packages/web-ui/src/lib/api.ts`;
+          `packages/web-ui/src/lib/api-static.ts`;
+          `packages/web-ui/src/lib/components/SpecWorkspaceRows.svelte`;
+          `packages/web-ui/src/routes/specs/+page.svelte`; `packages/web-ui/src/lib/query/keys.ts`;
+          `packages/web-ui/src/lib/query/ws-invalidation.ts`;
+          `tests/daemon-api/spec-workspace.test.ts`; `tests/spec-workspace-static.test.ts`;
+          `tests/e2e/items.spec.ts`; `tests/e2e/plans.spec.ts`; prior reviews @01KW748D, @01KW77F1,
+          @01KW7A95.
+
+
+          Commands run: `git diff --stat/name-status`; per-file `git diff`; `kspec task get
+          @01KW6Q03KGA93343F9SQJKSA0R`; `kspec item get @unified-spec-workspace-navigation`; `kspec
+          item get @spec-workspace-delivery-quality`; `rg` for AC annotations and history APIs; `git
+          diff --check`; `npm run format:check`; `npm run lint -- --quiet`; focused `npx oxlint`;
+          `npm run typecheck`; `npm test`; `npm run test:e2e -- tests/e2e/items.spec.ts
+          tests/e2e/plans.spec.ts`; `kspec validate --refs/--alignment/--completeness
+          --warnings-ok`.
+
+
+          Claims verified: prior `/specs?plan=<ref>` blocker is addressed in live root projection,
+          static root projection, API client query param forwarding, route query key, and E2E plan
+          tree assertions. The specs route uses `goto()`/links and no direct history APIs in changed
+          code. The delivery-quality URL-state AC is only annotated in source, not a behavioral
+          test.
+
+
+          Categories searched: correctness, URL compatibility, plan filtering, browser
+          back/expansion state, accessibility controls, static/live API parity, query invalidation,
+          test quality, source-scanning tests, build/test config regressions, and horizontal-scroll
+          coverage.
+        created_at: 2026-06-28T15:48:58.434Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-28T15:49:01.844Z
 created_at: 2026-06-28T15:32:58.025Z
-updated_at: 2026-06-28T15:33:19.351Z
+updated_at: 2026-06-28T15:49:01.844Z
 notes: []
