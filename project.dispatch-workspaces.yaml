@@ -13346,12 +13346,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-28T10:31:35.152Z
+      updated_at: 2026-06-28T10:31:44.932Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-28T10:31:35.152Z
+      updated_at: 2026-06-28T10:31:44.932Z
     integration:
       status: pending
       detail: null
@@ -13359,8 +13359,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 2892c15b5f6fe9496baf0f2db847341debed596e
-      updated_at: 2026-06-28T10:31:35.152Z
-    lifecycle_state: ready
+      updated_at: 2026-06-28T10:31:44.932Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW6Q037Z2613K782P6FHEZZD
     task_ref: "@01KW6Q037Z2613K782P6FHEZZD"
@@ -13368,16 +13368,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-28T10:08:39.667Z
-      last_reconciled_at: 2026-06-28T10:31:35.152Z
+      last_reconciled_at: 2026-06-28T10:31:44.932Z
       created_at: 2026-06-28T09:04:39.025Z
-      updated_at: 2026-06-28T10:31:35.152Z
+      updated_at: 2026-06-28T10:31:44.932Z
     workspace_id: dispatch-workspace-01KW6Q037Z2613K782P6FHEZZD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f8b7d74abf7477b194213811564e2b758d4fef21
+        last_seen_at: 2026-06-28T10:31:44.932Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-unified-spec-workspace-projection-api-01kw6q03-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-unified-spec-workspace-projection-api/01kw6q03
-        head: 30f92fa025dac26ded72129e9b9d93b7bdd794ac
-        last_seen_at: 2026-06-28T10:08:10.340Z
+        head: f8b7d74abf7477b194213811564e2b758d4fef21
+        last_seen_at: 2026-06-28T10:31:44.932Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-unified-spec-workspace-projection-api-01kw6q03
