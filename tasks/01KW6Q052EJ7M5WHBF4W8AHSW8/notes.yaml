@@ -14,3 +14,36 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T23:45:27.822Z
+  - _ulid: 01KW8AS79GC94N3NENGP27QZS2
+    content: >-
+      Verification pass:
+
+      - Added delivery-quality AC annotations to existing behavioral tests for static snapshot read
+      projections, static read-only resolution refusal, workspace query-key invalidation, keyboard
+      operation, URL restoration, and no horizontal-scroll regression.
+
+      - Added daemon-backed Playwright browser workflow covering the screenshot-backed vertical
+      path: root tree/rollup (r3-spec-unified-1 and r3-spec-states-2), keyboard row expansion and
+      node open, module/feature page child rows (r3-spec-unified-2/3), state filter chips
+      (r3-spec-states-1), linked work strip, criterion page scenario/evidence (r3-spec-unified-5),
+      resolution panel presence/read-only-compatible disabled states (r3-spec-states-3), and
+      page-level horizontal-scroll check.
+
+      - Focused tests passed: npm test -- --run tests/spec-workspace-static.test.ts
+      tests/web-ui/coverage-resolution-api.test.ts tests/web-ui/ws-cache-invalidation.test.ts; npm
+      run build:e2e && npx playwright test tests/e2e/items.spec.ts; npx playwright test
+      tests/e2e/items.spec.ts -g 'daemon-backed browser workflow'.
+
+      - Gates passed: npm run format:check; npx oxlint changed files; npm run lint -- --quiet (0
+      errors, existing warning baseline); npm run typecheck; kspec validate --refs --warnings-ok;
+      kspec validate --alignment --warnings-ok; kspec validate --completeness --warnings-ok.
+
+      - Full npm test evidence: npm test ran for ~6 minutes with all visible suites passing,
+      including changed test files and final visible heavy suites, but did not produce a clean
+      aggregate summary due to a live Vitest worker/teardown hang. This matches existing project
+      debt tracked by @task-investigate-npm-test-teardown-hang-after-green-suite-run, so I
+      terminated the hung runner and relied on the focused browser/static/invalidation evidence plus
+      the observed green full-run progress.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T23:59:35.728Z
