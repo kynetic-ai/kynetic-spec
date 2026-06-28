@@ -2,7 +2,97 @@ _ulid: 01KW6ZTTVA12QGWR3X8X39HSFY
 slugs: []
 title: Review unified spec workspace projection API (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1126 files; all matched files use correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-28T11:43:38.215Z
+    completed_at: 2026-06-28T11:43:38.215Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed hard gate: oxlint reported 0 errors repo-wide. Existing warning baseline remains
+      665 warnings. Focused changed-file oxlint reported 0 warnings and 0 errors on all 11 changed
+      files."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-28T11:43:41.212Z
+    completed_at: 2026-06-28T11:43:41.212Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 0 warnings and 0 errors on packages/daemon/src/routes/spec-workspace.ts,
+      packages/daemon/src/server.ts, packages/shared/src/api.ts,
+      packages/web-ui/src/lib/api-static.ts, packages/web-ui/src/lib/api.ts,
+      packages/web-ui/src/lib/query/keys.ts, packages/web-ui/src/lib/query/ws-invalidation.ts,
+      tests/daemon-api/helpers.ts, tests/daemon-api/spec-workspace.test.ts,
+      tests/spec-workspace-static.test.ts, tests/web-ui/ws-cache-invalidation.test.ts."
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed-ts-and-test-files>
+    created_at: 2026-06-28T11:43:44.231Z
+    completed_at: 2026-06-28T11:43:44.231Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared and tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-28T11:43:47.207Z
+    completed_at: 2026-06-28T11:43:47.207Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed fresh run: 2920 test suites passed; 11110 tests passed, 3 skipped; duration
+      2578.1s. Full log: /tmp/kspec-test-cache/01KW6ZS3479SJ02Z8TNKV5JKKC/6cc34e18f32cf196.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-06-28T11:43:50.152Z
+    completed_at: 2026-06-28T11:43:50.152Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline: schema OK, references OK; 6 deprecated-reference
+      warnings."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-28T11:43:53.072Z
+    completed_at: 2026-06-28T11:43:53.072Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline: schema OK, references OK; 55 alignment warnings."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-28T11:43:56.036Z
+    completed_at: 2026-06-28T11:43:56.036Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing warning baseline: schema OK, references OK; 331 completeness
+      warnings. New AC annotations for this task were present and behavioral."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-28T11:43:58.983Z
+    completed_at: 2026-06-28T11:43:58.983Z
 events:
   - _ulid: 01KW6ZTTV9HZB6X0WZXSDE84TT
     actor: Jacob Chapel
@@ -17,17 +107,144 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-28T11:29:12.486Z
+  - _ulid: 01KW70NMYSGJT3844PQ6M4NYHH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-28T11:43:38.457Z
+  - _ulid: 01KW70NQWW744JKHSPWKZ0HD5G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-28T11:43:41.468Z
+  - _ulid: 01KW70NTTQCF64B8N30A60ZT98
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-28T11:43:44.471Z
+  - _ulid: 01KW70NXQ9YWNC89NGFVN58CVE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-28T11:43:47.433Z
+  - _ulid: 01KW70P0KNHHY82QRCH8AT3G4N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-28T11:43:50.389Z
+  - _ulid: 01KW70P3F1DV1CEJAVSDCETKF1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-28T11:43:53.313Z
+  - _ulid: 01KW70P6BXW7M7H9DEREHPY4F3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-28T11:43:56.285Z
+  - _ulid: 01KW70P97NBV16SEG4AVZAZ3HZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-28T11:43:59.221Z
+  - _ulid: 01KW70PC6YNFWJSG0Q00BHTKM1
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW70PBZ584TB3P0RRJMX0STV
+    timestamp: 2026-06-28T11:44:02.270Z
+  - _ulid: 01KW70PF00T1M2FV0KY087N0BJ
+    actor: codex-pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-28T11:44:05.121Z
+  - _ulid: 01KW70PF01JD26D0ECV4D2HQFQ
+    actor: codex-pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-28T11:44:05.121Z
 examined_commit: b5106f14ba336db3056cd1d145e0755714f291ec
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KW6Q037Z2613K782P6FHEZZD"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KW70PBZ584TB3P0RRJMX0STV
+    entries:
+      - _ulid: 01KW70PBZ54KBRWZR4ANXA16RN
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; task/spec context for @01KW6Q037Z2613K782P6FHEZZD and
+          @unified-spec-workspace-data-projection; prior reviews @01KW6T7E and @01KW6WMF;
+          packages/daemon/src/routes/spec-workspace.ts; packages/daemon/src/server.ts;
+          packages/shared/src/api.ts; packages/web-ui/src/lib/api-static.ts;
+          packages/web-ui/src/lib/api.ts; packages/web-ui/src/lib/query/keys.ts;
+          packages/web-ui/src/lib/query/ws-invalidation.ts; tests/daemon-api/helpers.ts;
+          tests/daemon-api/spec-workspace.test.ts; tests/spec-workspace-static.test.ts;
+          tests/web-ui/ws-cache-invalidation.test.ts; supporting context in
+          src/lib/breadcrumb-ancestry.ts, packages/daemon/src/routes/session-related.ts, and
+          response-envelope.ts.
+
+
+          Commands run: git status/diff/log; kspec task get; kspec review for-task/get/add/open;
+          kspec item get; rg AC/source-scan/hygiene searches; git diff --check; npm run
+          format:check; npm run lint -- --quiet; npx oxlint on changed files; npm run typecheck; npm
+          test -- --fresh; kspec validate --refs/--alignment/--completeness --warnings-ok.
+
+
+          Claims verified: prior blockers are addressed: session linked-work counts use
+          getRelatedSessionsForItem and are covered by daemon test; plan/task/session/spec/coverage
+          events invalidate specWorkspace keys; daemon pagination rejects limit > 100 and static
+          projections cap oversized limits. Verified coverage source-of-truth by comparing root
+          projection coverage_summary with /api/coverage/state/summary in tests. Verified read-only
+          behavior by daemon test checking no git commit or worktree mutation after
+          root/node/criterion reads.
+
+
+          Categories searched: correctness, pagination bounds, missing-ref and validation error
+          handling, read-only mutation safety, static-mode degradation, cache/event invalidation,
+          source-scanning tests, placeholders/TODOs, AC annotation coverage, and integration with
+          existing route helpers. No blockers found.
+        created_at: 2026-06-28T11:44:02.022Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex-pr-reviewer
+    role: reviewer
+    created_at: 2026-06-28T11:44:05.120Z
 created_at: 2026-06-28T11:28:59.754Z
-updated_at: 2026-06-28T11:29:12.236Z
+updated_at: 2026-06-28T11:44:05.121Z
 notes: []
