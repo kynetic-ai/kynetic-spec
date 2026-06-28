@@ -1,0 +1,26 @@
+_ulid: 01KW7CDHNP3MQHR4NPMSGNP4A3
+slugs: []
+title: Review fix session-context E2E status label assertion
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KW7CDHNNEE8F7J4XC62S06KR
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-28T15:08:55.861Z
+examined_commit: 43fd42a131afb120681eed739a085d84864b1252
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KW7B56RMXJNRKW8TDRH6STZQ"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-28T15:08:55.862Z
+updated_at: null
+notes: []
