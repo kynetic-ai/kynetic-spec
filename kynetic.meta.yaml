@@ -23527,6 +23527,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-28T10:30:16.605Z
+  - _ulid: 01KW6ZKHKCC70XQYWJCWY0STDS
+    type: friction
+    content: "The daemon-context-manager coverage source watcher flake recurred after
+      @task-stabilize-daemon-context-manager-coverage-watch-test was completed: this session's full
+      npm test failed once at tests/daemon-context-manager.test.ts:329 with the same watcher event
+      array assertion, while the focused rerun and a fresh full-suite rerun passed. Search found the
+      prior completed stabilization task and no open reinvestigation item."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-28T11:25:00.908Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
