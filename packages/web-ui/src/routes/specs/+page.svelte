@@ -15,6 +15,13 @@
 	AC: @spec-node-criterion-workspace-pages ac-linked-work-strip
 	AC: @spec-node-criterion-workspace-pages ac-empty-and-missing-sections
 	AC: @spec-node-criterion-workspace-pages ac-read-navigation-scope
+	AC: @spec-workspace-coverage-resolution-panels ac-resolution-visibility
+	AC: @spec-workspace-coverage-resolution-panels ac-dry-run-before-apply
+	AC: @spec-workspace-coverage-resolution-panels ac-explicit-reverify-action
+	AC: @spec-workspace-coverage-resolution-panels ac-spec-text-revert-action
+	AC: @spec-workspace-coverage-resolution-panels ac-dispatch-fix-action
+	AC: @spec-workspace-coverage-resolution-panels ac-readonly-resolution-refusal
+	AC: @spec-workspace-coverage-resolution-panels ac-resolution-event-refresh
 -->
 <script lang="ts">
 	import { base } from '$app/paths';
@@ -29,6 +36,10 @@
 		SpecWorkspaceNodeDetailProjection,
 		SpecWorkspaceNodeSummary
 	} from '@kynetic-ai/shared';
+	import type {
+		CoverageResolutionAction,
+		CoverageResolutionResponse
+	} from '$lib/spec-workspace/coverage-resolution';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import CacheWarmingBanner from '$lib/components/CacheWarmingBanner.svelte';
@@ -50,16 +61,33 @@
 		type CoverageFilterState
 	} from '$lib/spec-workspace/coverage-presentation';
 	import {
+		buildCoverageResolutionPanelModel,
+		coverageResolutionTarget,
+		isStaleCoverageResolutionConflict,
+		resolutionEffectSummary,
+		storedResultMessage,
+		taskEffectsFromResolution
+	} from '$lib/spec-workspace/coverage-resolution';
+	import {
+		CoverageResolutionApiError,
 		fetchSpecWorkspaceCriterion,
 		fetchSpecWorkspaceNode,
 		fetchSpecWorkspaceRoot,
-		isCacheWarmingError
+		isCacheWarmingError,
+		resolveCoverageResolution
 	} from '$lib/api';
+	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { cn } from '$lib/utils';
 	import { renderInlineMarkdown, renderMarkdown } from '$lib/utils/markdown';
 	import { normalizeRef } from '$lib/utils/reference';
+	import CheckCircle2 from 'lucide-svelte/icons/check-circle-2';
 	import ChevronLeft from 'lucide-svelte/icons/chevron-left';
 	import ExternalLink from 'lucide-svelte/icons/external-link';
+	import Eye from 'lucide-svelte/icons/eye';
+	import RotateCw from 'lucide-svelte/icons/rotate-cw';
+	import Undo2 from 'lucide-svelte/icons/undo-2';
+	import Wrench from 'lucide-svelte/icons/wrench';
 
 	const MAX_EXPANDED_REFS = 80;
 	const WORKSPACE_PAGE_SIZE = 100;
@@ -69,6 +97,16 @@
 	let expandedLoading = $state(new Set<string>());
 	let expandedErrors = $state(new Map<string, string>());
 	let expandedCriteria = $state(new Set<string>());
+	let resolutionActiveKey = $state<string | null>(null);
+	let resolutionSelectedAction = $state<CoverageResolutionAction | null>(null);
+	let resolutionPreview = $state<CoverageResolutionResponse | null>(null);
+	let resolutionResult = $state<CoverageResolutionResponse | null>(null);
+	let resolutionError = $state<string | null>(null);
+	let resolutionSuggestion = $state<string | null>(null);
+	let resolutionConflictFingerprint = $state<string | null>(null);
+	let resolutionBusy = $state(false);
+	let resolutionApplying = $state(false);
+	let lastResolutionTargetKey = $state<string | null>(null);
 
 	let focusedNodeRef = $derived.by(() => {
 		const node = $page.url.searchParams.get('node');
@@ -121,6 +159,12 @@
 			: focusedNodeRef
 				? nodeQuery.error?.message
 				: null
+	);
+	let readOnlyMode = $derived(isStaticMode());
+	let focusedResolutionTargetKey = $derived(
+		focusedCriterion
+			? `${focusedCriterion.parent.ref}::${focusedCriterion.criterion.id}::${focusedCriterion.coverage?.state ?? 'none'}`
+			: null
 	);
 
 	function parseExpandedRefParts(value: string | null): string[] {
@@ -245,6 +289,13 @@
 		}
 	});
 
+	$effect(() => {
+		if (focusedResolutionTargetKey !== lastResolutionTargetKey) {
+			clearResolutionState(true);
+			lastResolutionTargetKey = focusedResolutionTargetKey;
+		}
+	});
+
 	function toggleCriterion(id: string) {
 		const next = new Set(expandedCriteria);
 		if (next.has(id)) {
@@ -334,6 +385,100 @@
 		kind: SpecWorkspaceLinkedWorkItem['kind']
 	): SpecWorkspaceLinkedWorkGroup | undefined {
 		return groups.find((group) => group.kind === kind);
+	}
+
+	function resolutionPanelKey(parentRef: string, criterion: SpecWorkspaceCriterionSummary): string {
+		return `${parentRef}::${criterion.id}`;
+	}
+
+	function clearResolutionState(clearSelection: boolean) {
+		if (clearSelection) {
+			resolutionActiveKey = null;
+			resolutionSelectedAction = null;
+		}
+		resolutionPreview = null;
+		resolutionResult = null;
+		resolutionError = null;
+		resolutionSuggestion = null;
+		resolutionConflictFingerprint = null;
+		resolutionBusy = false;
+		resolutionApplying = false;
+	}
+
+	function recordResolutionError(err: unknown) {
+		if (err instanceof CoverageResolutionApiError) {
+			resolutionError = err.message;
+			resolutionSuggestion = err.suggestion;
+			resolutionConflictFingerprint = err.currentFingerprint;
+			if (err.response) {
+				resolutionPreview = err.response;
+			}
+			return;
+		}
+		resolutionError = err instanceof Error ? err.message : 'Coverage resolution failed.';
+		resolutionSuggestion = 'Refresh coverage state and retry the requested resolution action.';
+		resolutionConflictFingerprint = null;
+	}
+
+	async function refreshResolutionQueries() {
+		await Promise.allSettled([
+			rootQuery.refetch(),
+			nodeQuery.refetch(),
+			...(focusedCriterionId ? [criterionQuery.refetch()] : [])
+		]);
+	}
+
+	async function previewResolution(
+		action: CoverageResolutionAction,
+		parentRef: string,
+		criterion: SpecWorkspaceCriterionSummary
+	) {
+		const key = resolutionPanelKey(parentRef, criterion);
+		resolutionActiveKey = key;
+		resolutionSelectedAction = action;
+		clearResolutionState(false);
+		resolutionBusy = true;
+		try {
+			resolutionPreview = await resolveCoverageResolution(action, {
+				target: coverageResolutionTarget({ parentRef, criterion }),
+				dry_run: true
+			});
+		} catch (err) {
+			recordResolutionError(err);
+		} finally {
+			resolutionBusy = false;
+		}
+	}
+
+	async function applyResolution(parentRef: string, criterion: SpecWorkspaceCriterionSummary) {
+		if (!resolutionSelectedAction || !resolutionPreview) return;
+		resolutionApplying = true;
+		resolutionError = null;
+		resolutionSuggestion = null;
+		resolutionConflictFingerprint = null;
+		try {
+			const action = resolutionSelectedAction;
+			resolutionResult = await resolveCoverageResolution(action, {
+				target: coverageResolutionTarget({ parentRef, criterion }),
+				expected_current_fingerprint:
+					action === 'spec-text-revert'
+						? resolutionPreview.target.current_fingerprint
+						: undefined
+			});
+			resolutionPreview = null;
+			await Promise.all([
+				rootQuery.refetch(),
+				nodeQuery.refetch(),
+				...(focusedCriterionId ? [criterionQuery.refetch()] : [])
+			]);
+		} catch (err) {
+			recordResolutionError(err);
+			if (isStaleCoverageResolutionConflict(err)) {
+				await refreshResolutionQueries();
+			}
+		} finally {
+			resolutionApplying = false;
+		}
 	}
 
 </script>
@@ -679,6 +824,9 @@
 									<p class="text-xs text-muted-foreground" data-testid="ac-evidence-summary-expanded">
 										{criterionEvidenceLabel(criterion)}
 									</p>
+									{#if presentationForCriterion(criterion) === 're_verify'}
+										{@render resolutionPanel(detail.node.ref, criterion, true)}
+									{/if}
 								</div>
 							{/if}
 						</div>
@@ -846,6 +994,8 @@
 				{/if}
 			</section>
 
+			{@render resolutionPanel(focusedCriterion.parent.ref, focusedCriterion.criterion, false)}
+
 			<section class="min-w-0" data-testid="criterion-siblings">
 				<h2 class="mb-2 text-sm font-semibold">Sibling Criteria</h2>
 				<div class="flex min-w-0 flex-wrap gap-2">
@@ -864,6 +1014,180 @@
 			{@render linkedWorkSection(focusedCriterion.linked_work, focusedCriterion.parent)}
 		</div>
 	{/if}
+{/snippet}
+
+{#snippet resolutionActionIcon(action: CoverageResolutionAction)}
+	{#if action === 'explicit-reverify'}
+		<RotateCw class="size-4" aria-hidden="true" />
+	{:else if action === 'spec-text-revert'}
+		<Undo2 class="size-4" aria-hidden="true" />
+	{:else}
+		<Wrench class="size-4" aria-hidden="true" />
+	{/if}
+{/snippet}
+
+{#snippet resolutionPanel(parentRef: string, criterion: SpecWorkspaceCriterionSummary, compact: boolean)}
+	{@const model = buildCoverageResolutionPanelModel({ criterion, readOnly: readOnlyMode })}
+	{@const key = resolutionPanelKey(parentRef, criterion)}
+	<section
+		class={cn(
+			'min-w-0 rounded-md border border-border bg-card p-3',
+			compact ? 'mt-3 bg-muted/20' : ''
+		)}
+		data-testid={compact ? 'inline-resolution-panel' : 'criterion-resolution-panel'}
+	>
+		<div class="mb-3 flex min-w-0 flex-wrap items-center gap-2">
+			<h2 class="min-w-0 text-sm font-semibold">Resolution</h2>
+			<StatusBadge domain="coverage" state={model.stateLabel} class="shrink-0 px-1.5 py-0 text-[10px]" />
+			{#if model.readOnly}
+				<Badge variant="outline" class="shrink-0">Read-only</Badge>
+			{/if}
+		</div>
+
+		{#if model.guidance}
+			<p class="mb-3 rounded-md bg-muted/45 px-3 py-2 text-sm text-muted-foreground" data-testid="resolution-guidance">
+				{model.guidance}
+			</p>
+		{/if}
+
+		<div class={cn('grid min-w-0 gap-2', compact ? 'sm:grid-cols-1' : 'lg:grid-cols-3')}>
+			{#each model.actions as action (action.action)}
+				<article
+					class={cn(
+						'min-w-0 rounded-md border p-3',
+						action.available ? 'border-border' : 'border-dashed border-border bg-muted/25'
+					)}
+					data-testid={`resolution-action-${action.action}`}
+				>
+					<div class="mb-2 flex min-w-0 items-center gap-2">
+						{@render resolutionActionIcon(action.action)}
+						<h3 class="truncate text-sm font-medium">{action.label}</h3>
+					</div>
+					<p class="text-xs text-muted-foreground">{action.summary}</p>
+					{#if action.disabledReason}
+						<p class="mt-2 text-xs text-muted-foreground" data-testid="resolution-action-disabled">
+							{action.disabledReason}
+						</p>
+					{:else}
+						<button
+							type="button"
+							class="mt-3 inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+							disabled={resolutionBusy || resolutionApplying}
+							onclick={() => previewResolution(action.action, parentRef, criterion)}
+							data-testid={`resolution-preview-${action.action}`}
+						>
+							<Eye class="size-3.5" aria-hidden="true" />
+							Preview
+						</button>
+					{/if}
+				</article>
+			{/each}
+		</div>
+
+		{#if resolutionActiveKey === key}
+			{#if resolutionBusy}
+				<p class="mt-3 rounded-md bg-muted/45 px-3 py-2 text-sm text-muted-foreground" role="status">
+					Loading dry-run preview...
+				</p>
+			{/if}
+
+			{#if resolutionError}
+				<div
+					class="mt-3 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm"
+					data-testid="resolution-error"
+					role="alert"
+				>
+					<p class="font-medium text-destructive">{resolutionError}</p>
+					{#if resolutionSuggestion}
+						<p class="mt-1 text-xs text-muted-foreground">{resolutionSuggestion}</p>
+					{/if}
+					{#if resolutionConflictFingerprint}
+						<p class="mt-1 break-all font-mono text-[11px] text-muted-foreground">
+							Current fingerprint: {resolutionConflictFingerprint}
+						</p>
+					{/if}
+				</div>
+			{/if}
+
+			{#if resolutionPreview}
+				<div
+					class="mt-3 rounded-md border border-border bg-muted/20 p-3"
+					data-testid="resolution-preview"
+				>
+					<div class="mb-2 flex min-w-0 flex-wrap items-center gap-2">
+						<Badge variant="outline">Dry run</Badge>
+						<p class="min-w-0 text-sm font-medium">
+							{resolutionPreview.effects.length}
+							{resolutionPreview.effects.length === 1 ? 'stored effect' : 'stored effects'} previewed
+						</p>
+					</div>
+					<p class="break-all text-xs text-muted-foreground">
+						Fingerprint: {resolutionPreview.target.current_fingerprint}
+					</p>
+					{#if resolutionPreview.diagnostics.length > 0}
+						<div class="mt-2 space-y-1" data-testid="resolution-diagnostics">
+							{#each resolutionPreview.diagnostics as diagnostic (diagnostic.code + diagnostic.missing_requirement)}
+								<p class="text-xs text-muted-foreground">
+									<span class="font-medium">{diagnostic.satisfied ? 'Ready' : 'Blocked'}:</span>
+									{diagnostic.suggestion}
+								</p>
+							{/each}
+						</div>
+					{/if}
+					{#if resolutionPreview.effects.length > 0}
+						<ul class="mt-2 space-y-1" data-testid="resolution-effects">
+							{#each resolutionPreview.effects as effect, index (`${effect.kind}-${index}`)}
+								<li class="text-xs text-muted-foreground">{resolutionEffectSummary(effect)}</li>
+							{/each}
+						</ul>
+					{:else}
+						<p class="mt-2 text-xs text-muted-foreground">No stored effects are available for this action.</p>
+					{/if}
+					{#if resolutionPreview.affected_scopes.length > 0}
+						<p class="mt-2 text-xs text-muted-foreground" data-testid="resolution-affected-scopes">
+							Affected scopes: {resolutionPreview.affected_scopes.length}
+						</p>
+					{/if}
+					{#if !readOnlyMode && !resolutionPreview.diagnostics.some((diagnostic) => !diagnostic.satisfied)}
+						<button
+							type="button"
+							class="mt-3 inline-flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+							disabled={resolutionApplying}
+							onclick={() => applyResolution(parentRef, criterion)}
+							data-testid="resolution-confirm-apply"
+						>
+							<CheckCircle2 class="size-4" aria-hidden="true" />
+							{resolutionApplying ? 'Applying...' : 'Apply'}
+						</button>
+					{/if}
+				</div>
+			{/if}
+
+			{#if resolutionResult}
+				<div
+					class="mt-3 rounded-md border border-severity-success/40 bg-severity-success/10 px-3 py-2 text-sm"
+					data-testid="resolution-result"
+					role="status"
+				>
+					<p class="font-medium">{storedResultMessage(resolutionResult)}</p>
+					{#if taskEffectsFromResolution(resolutionResult).length > 0}
+						<div class="mt-2 space-y-1" data-testid="resolution-task-results">
+							{#each taskEffectsFromResolution(resolutionResult) as taskEffect (taskEffect.task_ref ?? taskEffect.idempotency_key ?? taskEffect.operation)}
+								<p class="text-xs text-muted-foreground">
+									{resolutionEffectSummary(taskEffect)}
+									{#if taskEffect.task_ref}
+										<span class="ml-1">
+											<ReferenceLink ref={taskEffect.task_ref} type="task" title={taskEffect.task_ref} />
+										</span>
+									{/if}
+								</p>
+							{/each}
+						</div>
+					{/if}
+				</div>
+			{/if}
+		{/if}
+	</section>
 {/snippet}
 
 {#snippet linkedWorkSection(groups: SpecWorkspaceLinkedWorkGroup[], node: SpecWorkspaceNodeSummary)}
@@ -1000,7 +1324,7 @@
 			</div>
 
 			{#if rootCacheWarming}
-				<CacheWarmingBanner entityName="spec workspace" queryKey={queryKeys.specWorkspace.root()} />
+				<CacheWarmingBanner entityName="spec workspace" queryKey={queryKeys.specWorkspace.rootPrefix()} />
 			{:else if rootLoading && !root}
 				{@render loadingRows()}
 			{:else if rootError}

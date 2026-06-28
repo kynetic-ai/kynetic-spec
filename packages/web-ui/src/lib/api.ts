@@ -46,6 +46,11 @@ import type {
   SpecWorkspaceNodeDetailProjection,
   SpecWorkspaceRootProjection,
 } from "@kynetic-ai/shared";
+import type {
+  CoverageResolutionAction,
+  CoverageResolutionRequest,
+  CoverageResolutionResponse,
+} from "./spec-workspace/coverage-resolution";
 import type { TriageRecord } from "./types/triage";
 import {
   getSelectedProjectPath,
@@ -236,6 +241,50 @@ async function handleResponseError(response: Response): Promise<never> {
   }
 
   throw new Error(message);
+}
+
+export class CoverageResolutionApiError extends Error {
+  readonly status: number;
+  readonly code: string | null;
+  readonly suggestion: string | null;
+  readonly response: CoverageResolutionResponse | null;
+  readonly currentFingerprint: string | null;
+  readonly expectedCurrentFingerprint: string | null;
+
+  constructor(status: number, body: Record<string, unknown>) {
+    const message =
+      typeof body.message === "string"
+        ? body.message
+        : typeof body.error === "string"
+          ? body.error
+          : "Coverage resolution failed.";
+    super(message);
+    this.name = "CoverageResolutionApiError";
+    this.status = status;
+    this.code = typeof body.code === "string" ? body.code : null;
+    this.suggestion = typeof body.suggestion === "string" ? body.suggestion : null;
+    this.response =
+      body.response && typeof body.response === "object"
+        ? (body.response as CoverageResolutionResponse)
+        : null;
+    this.currentFingerprint =
+      typeof body.current_fingerprint === "string" ? body.current_fingerprint : null;
+    this.expectedCurrentFingerprint =
+      typeof body.expected_current_fingerprint === "string"
+        ? body.expected_current_fingerprint
+        : null;
+  }
+}
+
+function coverageResolutionRoute(action: CoverageResolutionAction): string {
+  if (action === "explicit-reverify") return "reverify";
+  if (action === "spec-text-revert") return "revert-spec-text";
+  return "dispatch-fix";
+}
+
+async function handleCoverageResolutionError(response: Response): Promise<never> {
+  const body = (await response.json()) as Record<string, unknown>;
+  throw new CoverageResolutionApiError(response.status, body);
 }
 
 /**
@@ -603,6 +652,34 @@ export async function fetchSpecWorkspaceCriterion(
   );
   if (!response.ok) {
     await handleResponseError(response);
+  }
+  return unwrapEnvelope(await response.json());
+}
+
+export async function resolveCoverageResolution(
+  action: CoverageResolutionAction,
+  request: Omit<CoverageResolutionRequest, "action">,
+): Promise<CoverageResolutionResponse> {
+  assertWritable("resolve coverage");
+
+  const url = new URL(`${API_BASE}/api/coverage/resolve/${coverageResolutionRoute(action)}`);
+  if (request.dry_run === true) url.searchParams.set("dry_run", "true");
+
+  const body: CoverageResolutionRequest = {
+    ...request,
+    action,
+  };
+
+  const response = await fetch(url.toString(), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...getProjectHeaders(),
+    },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    await handleCoverageResolutionError(response);
   }
   return unwrapEnvelope(await response.json());
 }
