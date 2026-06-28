@@ -98,3 +98,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T15:49:03.897Z
+  - _ulid: 01KW7FWEHGZ4C201AXKZM57GB4
+    content: "Fix cycle 4: addressed the remaining AC coverage blocker for
+      @spec-workspace-delivery-quality ac-url-state-via-goto. Added the missing behavioral E2E
+      annotation to the spec workspace browser-back restoration test and tightened the URL assertion
+      to require both expanded refs before link navigation/back restoration. Resolved review threads
+      @01KW7EPRYT9NYRS92QRGDBRRRH and @01KW7EPVY2T2A4ZF1H882Z1RVJ. Verification passed: npm run
+      format:check; npm run lint -- --quiet; npx oxlint tests/e2e/items.spec.ts; npm run typecheck;
+      npm test (2920 suites passed, 11112 passed, 3 skipped); npm run test:e2e --
+      tests/e2e/items.spec.ts -g 'browser back restores previously expanded branches'; kspec
+      validate --refs/--alignment/--completeness --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T16:09:29.905Z
