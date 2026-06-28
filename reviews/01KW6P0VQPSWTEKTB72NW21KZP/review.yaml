@@ -28,6 +28,18 @@ checks:
     runner: kspec plan get
     created_at: 2026-06-28T08:38:42.425Z
     completed_at: 2026-06-28T08:38:42.425Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan has 18 attached resources: six UX docs, nine PNG screenshots, and three React
+      reference sources under handoff/. The stored plan folder contains the corresponding resources
+      and resources.yaml entries with hashes/bytes."
+    name: plan-owned resources
+    required: true
+    runner: kspec plan resource list
+    created_at: 2026-06-28T08:38:48.158Z
+    completed_at: 2026-06-28T08:38:48.158Z
 events:
   - _ulid: 01KW6P0VQGVWBE9Q9DJ7VNHFD6
     actor: Jacob Chapel
@@ -56,6 +68,13 @@ events:
       status: pass
       name: branch metadata and prerequisites
     timestamp: 2026-06-28T08:38:42.669Z
+  - _ulid: 01KW6P36VDMYCN9R301GR9VBEV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan-owned resources
+    timestamp: 2026-06-28T08:38:48.430Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -68,5 +87,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T08:37:31.510Z
-updated_at: 2026-06-28T08:38:42.425Z
+updated_at: 2026-06-28T08:38:48.158Z
 notes: []
