@@ -76827,7 +76827,7 @@ runs:
     completed_at: 2026-06-28T17:29:04.286Z
   - _ulid: 01KW7P2TC6MVCDC6PT8PJQYKSB
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -76842,7 +76842,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T17:58:46.416Z
-        completed_at: 2026-06-28T17:58:46.416Z
+        completed_at: 2026-06-28T17:58:59.532Z
+        notes: "Friction points: npm test was required and eventually passed, but the full suite took
+          3639.5s with long quiet periods during teardown/late-running files; existing tracking
+          includes @task-investigate-npm-test-teardown-hang-after-green-suite-run, so this is not
+          new capture. Task resource refs were useful in task context but the handoff paths were not
+          directly readable as repository-root files, requiring plan/resource lookup; existing
+          resource lifecycle/rendering tasks cover adjacent plan-resource mechanics, so this needs
+          only note-level awareness unless it recurs."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T17:58:59.532Z
+        completed_at: 2026-06-28T17:58:59.532Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T17:57:50.087Z
