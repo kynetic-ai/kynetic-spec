@@ -31,3 +31,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T22:55:48.848Z
+  - _ulid: 01KW88H330AEVYKXH466G1S74P
+    content: "Fix cycle 1: addressed all review threads. Fixed stale spec-text revert conflicts by
+      refetching root/node/focused criterion workspace queries after recording the conflict
+      message/fingerprint. Fixed coverage_state_changed invalidation by adding spec workspace
+      root/node prefix keys and using them for parameterized /specs queries; also switched the spec
+      workspace cache-warming retry to the root prefix. Re-verified ACs ac-spec-text-revert-action
+      and ac-resolution-event-refresh with focused tests. Verification passed: format:check; focused
+      coverage/ws tests (51 tests); changed-file oxlint (0 warnings/errors); repo lint --quiet (0
+      errors, existing 663 warnings); typecheck; full npm test (2926 suites, 11132 passed, 3
+      skipped); kspec validate refs/alignment/completeness with existing warning baselines."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T23:20:12.128Z
