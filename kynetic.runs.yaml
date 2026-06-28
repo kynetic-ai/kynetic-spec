@@ -76293,7 +76293,7 @@ runs:
     started_at: 2026-06-28T14:27:09.498Z
     completed_at: 2026-06-28T14:28:54.563Z
   - _ulid: 01KW7BB3SMHQKPPQK0DFDQ60XR
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -76345,7 +76345,11 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-28T14:51:26.209Z
-        completed_at: 2026-06-28T14:51:26.209Z
+        completed_at: 2026-06-28T14:51:30.798Z
+        notes: "Capture: No additional captures made. Existing durable outputs from the session are review
+          @01KW7A95PVTMS00Y1WE2BZ670G with changes_requested blocker, task @01KW7B56 for the
+          unrelated E2E assertion mismatch, and recorded review checks/evidence."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T14:50:07.540Z
+    completed_at: 2026-06-28T14:51:30.798Z
