@@ -57,7 +57,7 @@ tags:
   - navigation
   - accessibility
 vcs_refs: []
-review_ref: "@01KW7DSJ19WPJ1HDHXZBVNSA54"
+review_ref: "@01KW7G4W2VWFAH6ZAQSRPQDXGR"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-unified-spec-workspace-shell-navigation/01kw6q03
@@ -336,6 +336,13 @@ history:
         previous: 2026-06-28T15:27:36.513Z
     command: task-submit
     timestamp: 2026-06-28T16:09:55.884Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KW7G4W2VWFAH6ZAQSRPQDXGR"
+        previous: "@01KW7DSJ19WPJ1HDHXZBVNSA54"
+    command: review-link
+    timestamp: 2026-06-28T16:14:08.446Z
 resource_refs:
   - git_commit: null
     git_path: null
