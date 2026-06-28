@@ -88,7 +88,18 @@ const snapshot: KspecSnapshot = {
     },
   ],
   inbox: [],
-  plans: [],
+  plans: [
+    {
+      _ulid: "01KW7000000000000000000004",
+      slugs: ["static-plan"],
+      title: "Static Plan",
+      status: "active",
+      derived_specs: ["@static-requirement"],
+      derived_tasks: [],
+      notes_count: 0,
+      created_at: "2026-06-28T09:03:00.000Z",
+    },
+  ],
   reviews: [],
   triage: [],
   session: null,
@@ -175,6 +186,21 @@ describe("spec workspace static projections", () => {
           unavailable: expect.objectContaining({ status: "unavailable" }),
         }),
       ]),
+    });
+  });
+
+  // AC: @unified-spec-workspace-data-projection ac-static-readonly-projection
+  // AC: @unified-spec-workspace-data-projection ac-bounded-root-projection
+  it("filters static root projections to specs derived from a plan", () => {
+    modeState.snapshot = snapshot;
+
+    const root = fetchSpecWorkspaceRootStatic({ plan: "static-plan" }).data;
+
+    expect(root).toMatchObject({
+      kind: "root",
+      corpus: { items: 1, acceptance_criteria: 1, by_type: { requirement: 1 } },
+      top_level_nodes: [expect.objectContaining({ ref: "@static-requirement" })],
+      pagination: { total: 1, offset: 0, has_more: false },
     });
   });
 

@@ -193,14 +193,37 @@ function coverageForCriterion(
   coverage: CoverageStateSnapshot,
   item: LoadedSpecItem,
   acId: string,
-): CoverageCriterionStateDetail | null {
+): CoverageCriterionStateDetail {
   const itemCoverage = coverageForItem(coverage, item);
-  if (!itemCoverage) return null;
-  return (
-    coverage.criteria[`${itemCoverage.item_ulid} ${acId}`] ??
-    itemCoverage.criteria.find((criterion) => criterion.ac_id === acId) ??
-    null
-  );
+  const existing = itemCoverage
+    ? (coverage.criteria[`${itemCoverage.item_ulid} ${acId}`] ??
+      itemCoverage.criteria.find((criterion) => criterion.ac_id === acId))
+    : null;
+  return existing ?? noEvidenceCriterionCoverage(item, acId);
+}
+
+function noEvidenceCriterionCoverage(
+  item: LoadedSpecItem,
+  acId: string,
+): CoverageCriterionStateDetail {
+  return {
+    criterion_key: `${item._ulid} ${acId}`,
+    item_ulid: item._ulid,
+    item_ref: itemRef(item),
+    item_title: item.title,
+    ac_id: acId,
+    state: "not_yet",
+    presentation: "not_yet",
+    explanation: {
+      rule: "no_evidence",
+      sourceEvidenceIds: [],
+      latestRunId: null,
+      secondaryReverifyCauses: [],
+    },
+    latest_run_evidence: [],
+    freshness: { bootstrap: null, recorded: null, secondary_causes: [] },
+    unmapped_result_references: [],
+  };
 }
 
 function taskRef(task: Pick<LoadedTask, "_ulid" | "slugs">): string {
@@ -247,6 +270,32 @@ function linkedPlans(ctx: ProjectionContext, item: LoadedSpecItem): LoadedPlan[]
     plan.derived_specs.some(
       (ref) => refs.has(ref) || refs.has(ref.startsWith("@") ? ref : `@${ref}`),
     ),
+  );
+}
+
+function normalizePlanRef(ref: string): string {
+  return ref.startsWith("@") ? ref.slice(1) : ref;
+}
+
+function resolvePlan(ctx: ProjectionContext, ref: string): LoadedPlan | null {
+  const normalized = normalizePlanRef(ref);
+  const normalizedUpper = normalized.toUpperCase();
+  return (
+    ctx.plans.find(
+      (plan) =>
+        plan._ulid === normalized ||
+        plan._ulid.startsWith(normalizedUpper) ||
+        plan.slugs.includes(normalized),
+    ) ?? null
+  );
+}
+
+function planDerivedItems(ctx: ProjectionContext, ref: string): LoadedSpecItem[] {
+  const plan = resolvePlan(ctx, ref);
+  if (!plan) return [];
+  const derivedRefs = new Set(plan.derived_specs.map((entry) => normalizePlanRef(entry)));
+  return ctx.items.filter(
+    (item) => derivedRefs.has(item._ulid) || item.slugs.some((slug) => derivedRefs.has(slug)),
   );
 }
 
@@ -421,7 +470,7 @@ async function loadProjectionContext(
   const cacheDomainState = cache?.getDomainState("items");
   const ctx = await initContext(projectPath, { syncMode: "skip" });
   const items =
-    ((cache && cacheDomainState === "ready" ? cache.getItemIndex() : null) as
+    ((cache && cacheDomainState === "ready" ? cache.getAllItemDetails() : null) as
       | LoadedSpecItem[]
       | null) ?? (await loadAllItems(ctx));
   const tasks =
@@ -465,11 +514,13 @@ async function loadProjectionContext(
 async function buildRootProjection(
   ctx: ProjectionContext,
   pagination: Pagination,
+  planRef?: string,
 ): Promise<SpecWorkspaceRootProjection> {
-  const topLevel = ctx.childrenByParent.get(undefined) ?? [];
+  const visibleItems = planRef ? planDerivedItems(ctx, planRef) : ctx.items;
+  const topLevel = planRef ? visibleItems : (ctx.childrenByParent.get(undefined) ?? []);
   const byType: Record<string, number> = {};
   let acceptanceCriteria = 0;
-  for (const item of ctx.items) {
+  for (const item of visibleItems) {
     const type = item.type ?? "unknown";
     byType[type] = (byType[type] ?? 0) + 1;
     acceptanceCriteria += item.acceptance_criteria?.length ?? 0;
@@ -477,7 +528,7 @@ async function buildRootProjection(
   return {
     kind: "root",
     corpus: {
-      items: ctx.items.length,
+      items: visibleItems.length,
       acceptance_criteria: acceptanceCriteria,
       by_type: byType,
     },
@@ -573,7 +624,11 @@ export function createSpecWorkspaceRoutes(options: SpecWorkspaceRouteOptions = {
             );
           }
           const projectionContext = await loadProjectionContext(projectContext.path, options);
-          const projection = await buildRootProjection(projectionContext, pagination.pagination);
+          const projection = await buildRootProjection(
+            projectionContext,
+            pagination.pagination,
+            query.plan,
+          );
           return wrapResponse(projection, {
             cacheDomainState: projectionContext.cacheDomainState,
             total: projection.pagination.total,
@@ -585,6 +640,7 @@ export function createSpecWorkspaceRoutes(options: SpecWorkspaceRouteOptions = {
           query: t.Object({
             limit: t.Optional(t.String()),
             offset: t.Optional(t.String()),
+            plan: t.Optional(t.String()),
           }),
         },
       )

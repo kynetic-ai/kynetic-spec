@@ -355,6 +355,12 @@ Fallback should keep this YAML visible.
     await expect(page).toHaveURL(/\/specs\?plan=test-plan-active/);
     await expect(page.getByTestId("plan-filter-banner")).toBeVisible();
     await expect(page.getByTestId("plan-filter-banner")).toContainText("@test-plan-active");
+
+    const tree = page.getByTestId("spec-tree");
+    await expect(tree).toBeVisible();
+    await expect(tree).toContainText("Test Feature");
+    await expect(tree).not.toContainText("Core Module");
+    await expect(tree).not.toContainText("Test Trait");
   });
 
   // ── AC: @ui-plans-view ac-2 — Expandable plan content rendered as formatted markdown, loaded on demand ──

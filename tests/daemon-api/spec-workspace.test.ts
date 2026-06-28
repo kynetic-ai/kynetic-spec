@@ -162,6 +162,34 @@ describe("spec workspace projection API", () => {
   });
 
   // AC: @unified-spec-workspace-data-projection ac-bounded-root-projection
+  it("filters the root projection to specs derived from a plan", async () => {
+    const tempDir = await setupSpecWorkspaceProject();
+    tempDirs.push(tempDir);
+    const { app } = createTestApp();
+
+    const response = await makeRequest(
+      app,
+      tempDir,
+      "/api/spec-workspace/root?plan=workspace-plan",
+    );
+    const body = await json(response);
+
+    expect(response.status).toBe(200);
+    expect(body.data).toMatchObject({
+      kind: "root",
+      corpus: {
+        items: 1,
+        acceptance_criteria: 2,
+        by_type: { requirement: 1 },
+      },
+      pagination: { total: 1, offset: 0, has_more: false },
+    });
+    expect(body.data.top_level_nodes).toEqual([
+      expect.objectContaining({ ref: "@workspace-requirement", title: "Workspace Requirement" }),
+    ]);
+  });
+
+  // AC: @unified-spec-workspace-data-projection ac-bounded-root-projection
   // AC: @unified-spec-workspace-data-projection ac-endpoint-contract
   // AC: @trait-api-endpoint ac-3
   it("rejects over-limit workspace projection pagination", async () => {
