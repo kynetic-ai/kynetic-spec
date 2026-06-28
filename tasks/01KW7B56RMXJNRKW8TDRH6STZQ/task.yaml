@@ -15,7 +15,7 @@ description: "During review of @01KW6Q03KGA93343F9SQJKSA0R, running npm run test
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -24,6 +24,14 @@ tags:
   - web-ui
   - e2e
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/fix-session-context-e2e-status-label-assertion/01kw7b56
+  captured_at: 2026-06-28T15:03:03.341Z
+  commit: 43fd42a131afb120681eed739a085d84864b1252
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KW7B88A8DXMCG2809AM84SFV
 history:
   - author: Jacob Chapel
@@ -39,7 +47,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-28T14:49:27.261Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/fix-session-context-e2e-status-label-assertion/01kw7b56
+          captured_at: 2026-06-28T15:03:03.341Z
+          commit: 43fd42a131afb120681eed739a085d84864b1252
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-06-28T15:03:03.347Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-28T15:03:03.347Z
 created_at: 2026-06-28T14:46:53.972Z
 started_at: 2026-06-28T14:49:27.261Z
+submitted_at: 2026-06-28T15:03:03.347Z
 todos: []
 automation: eligible
