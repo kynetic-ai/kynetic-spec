@@ -76294,7 +76294,7 @@ runs:
     completed_at: 2026-06-28T14:28:54.563Z
   - _ulid: 01KW7BB3SMHQKPPQK0DFDQ60XR
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -76329,7 +76329,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-28T14:51:17.075Z
-        completed_at: 2026-06-28T14:51:17.075Z
+        completed_at: 2026-06-28T14:51:21.463Z
+        notes: "Proposed improvements: No new durable item beyond existing captures. The blocker asks the
+          worker to add behavioral coverage that proves /specs?plan filters tree contents, not just
+          URL/banner state. Task @01KW7B56 covers stabilizing the unrelated session-context
+          assertion. Evidence-log storage is already tracked by existing observations, so do not
+          duplicate."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-28T14:51:21.463Z
+        completed_at: 2026-06-28T14:51:21.463Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T14:50:07.540Z
