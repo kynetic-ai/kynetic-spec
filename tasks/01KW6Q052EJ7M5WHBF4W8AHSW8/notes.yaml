@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KW89ZB8EY0NXSCD4XTVCVMQ3
+    content: "Approach: verify the existing unified /specs implementation against
+      @spec-workspace-delivery-quality, then add focused behavioral coverage rather than
+      source-scanning tests. Reuse existing E2E daemon fixture, static API tests, and
+      ws-invalidation tests. Edge cases: static snapshot read-only projection, URL state must remain
+      SvelteKit-reactive via browser back/reload behavior, keyboard/touch controls cannot depend on
+      hover, coverage_state_changed events must invalidate workspace keys, and mobile must avoid
+      page-level horizontal scroll. Test plan: annotate/extend existing behavioral tests for
+      ac-url-state-via-goto, ac-static-export-build, ac-keyboard-and-screenreader, ac-browser-proof,
+      ac-test-coverage, ac-existing-specs-route-replaced, and convention evidence through
+      query-key/static-client invalidation behavior; run focused web/static/E2E tests plus normal
+      gates before submit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T23:45:27.822Z
