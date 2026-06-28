@@ -272,6 +272,29 @@ describe("ws-invalidation targeted entity event handling", () => {
 
   // AC: @ui-targeted-event-consumption ac-1
   // AC: @unified-spec-workspace-data-projection ac-cache-and-event-coherence
+  it("refreshes workspace linked-plan projections for plan update events", () => {
+    setupWsInvalidation(mockQueryClient);
+    const event = makeBroadcastEvent("plans:updates", "plan_updated", {
+      plan_ulid: "01PLANTARGET0000000000000",
+      action: "changed",
+    });
+
+    dispatchEvent("plans:updates", event);
+
+    expect(invalidatedKeys(mockQueryClient)).toEqual([
+      queryKeys.plans.lists(),
+      queryKeys.specWorkspace.all,
+    ]);
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.tasks.all,
+    });
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
+      queryKey: queryKeys.items.all,
+    });
+  });
+
+  // AC: @ui-targeted-event-consumption ac-1
+  // AC: @unified-spec-workspace-data-projection ac-cache-and-event-coherence
   it("refreshes affected plan resource queries without touching other domains", () => {
     setupWsInvalidation(mockQueryClient);
     const event = makeBroadcastEvent("plans:updates", "plan_resource_changed", {
@@ -312,6 +335,7 @@ describe("ws-invalidation targeted entity event handling", () => {
     expect(invalidatedKeys(mockQueryClient)).toEqual([
       queryKeys.tasks.lists(),
       queryKeys.tasks.summary(),
+      queryKeys.specWorkspace.all,
     ]);
     expect(timeoutSpy).not.toHaveBeenCalled();
   });
@@ -329,6 +353,7 @@ describe("ws-invalidation targeted entity event handling", () => {
       queryKeys.tasks.detail("01TASKTARGET0000000000000"),
       queryKeys.tasks.lists(),
       queryKeys.tasks.summary(),
+      queryKeys.specWorkspace.all,
     ]);
     expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
       queryKey: queryKeys.validation.all,

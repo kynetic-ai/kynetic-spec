@@ -177,7 +177,7 @@ function getReviewInvalidationKeys(event: BroadcastEvent): readonly (readonly un
 
 function getPlanInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
   if (event.event !== "plan_resource_changed") {
-    return [queryKeys.plans.lists()];
+    return [queryKeys.plans.lists(), queryKeys.specWorkspace.all];
   }
 
   const data = event.data as Partial<PlanResourceChangedEventData>;
@@ -205,12 +205,16 @@ function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonl
   }
 
   if (ref.endsWith(".tasks.yaml") || ref === "project.tasks.yaml" || ref === "tasks.yaml") {
-    return taskViewInvalidationKeys();
+    return [...taskViewInvalidationKeys(), queryKeys.specWorkspace.all];
   }
 
   const taskId = folderBackedEntityId(ref, "tasks");
   if (taskId) {
-    return uniqueKeys([queryKeys.tasks.detail(taskId), ...taskViewInvalidationKeys()]);
+    return uniqueKeys([
+      queryKeys.tasks.detail(taskId),
+      ...taskViewInvalidationKeys(),
+      queryKeys.specWorkspace.all,
+    ]);
   }
 
   if (ref === "project.inbox.yaml") {

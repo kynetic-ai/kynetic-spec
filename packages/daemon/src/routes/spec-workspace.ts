@@ -59,6 +59,7 @@ interface ProjectionContext {
   refIndex: ReferenceIndex;
   alignment: AlignmentIndex;
   sessionsDir: string;
+  sessionLinksByItemUlid: Map<string, Promise<SpecWorkspaceLinkedWorkItem[]>>;
   getEntityCache?: EntityCacheAccessor;
 }
 
@@ -219,17 +220,52 @@ function linkedPlans(ctx: ProjectionContext, item: LoadedSpecItem): LoadedPlan[]
   );
 }
 
-function linkedWorkCounts(ctx: ProjectionContext, item: LoadedSpecItem) {
+async function linkedSessions(
+  ctx: ProjectionContext,
+  item: LoadedSpecItem,
+): Promise<SpecWorkspaceLinkedWorkItem[]> {
+  const cached = ctx.sessionLinksByItemUlid.get(item._ulid);
+  if (cached) return cached;
+
+  const promise = getRelatedSessionsForItem({
+    itemRef: itemRef(item),
+    items: ctx.items,
+    tasks: ctx.tasks,
+    sessionsDir: ctx.sessionsDir,
+    getEntityCache: ctx.getEntityCache,
+    projectPath: ctx.projectPath,
+  }).then((sessionsResult) =>
+    "sessions" in sessionsResult
+      ? sessionsResult.sessions.map((session) => ({
+          kind: "session" as const,
+          ref: session.id,
+          title: session.title ?? null,
+          status: session.status ?? null,
+          created_at: session.started_at ?? null,
+          updated_at: session.updated_at ?? null,
+        }))
+      : [],
+  );
+
+  ctx.sessionLinksByItemUlid.set(item._ulid, promise);
+  return promise;
+}
+
+async function linkedWorkCounts(ctx: ProjectionContext, item: LoadedSpecItem) {
+  const sessions = await linkedSessions(ctx, item);
   return {
     task: linkedTasks(ctx, item).length,
-    session: 0,
+    session: sessions.length,
     plan: linkedPlans(ctx, item).length,
     review: 0,
     observation: 0,
   };
 }
 
-function toNodeSummary(ctx: ProjectionContext, item: LoadedSpecItem): SpecWorkspaceNodeSummary {
+async function toNodeSummary(
+  ctx: ProjectionContext,
+  item: LoadedSpecItem,
+): Promise<SpecWorkspaceNodeSummary> {
   const coverage = coverageForItem(ctx.coverage, item);
   return {
     ref: itemRef(item),
@@ -244,7 +280,7 @@ function toNodeSummary(ctx: ProjectionContext, item: LoadedSpecItem): SpecWorksp
     child_count: ctx.childrenByParent.get(item._ulid)?.length ?? 0,
     coverage,
     coverage_counts: coverage?.counts ?? emptyCounts(),
-    linked_work_counts: linkedWorkCounts(ctx, item),
+    linked_work_counts: await linkedWorkCounts(ctx, item),
   };
 }
 
@@ -262,11 +298,11 @@ function toCriterionSummary(
   };
 }
 
-function childSections(
+async function childSections(
   ctx: ProjectionContext,
   item: LoadedSpecItem,
   pagination: Pagination,
-): SpecWorkspaceChildSection[] {
+): Promise<SpecWorkspaceChildSection[]> {
   const children = ctx.childrenByParent.get(item._ulid) ?? [];
   const byType = new Map<string, LoadedSpecItem[]>();
   for (const child of children) {
@@ -276,14 +312,18 @@ function childSections(
     else byType.set(type, [child]);
   }
 
-  return [...byType.entries()].map(([type, nodes]) => ({
-    type,
-    title: type,
-    nodes: nodes
-      .slice(pagination.offset, pagination.offset + pagination.limit)
-      .map((node) => toNodeSummary(ctx, node)),
-    pagination: paginationMeta(nodes.length, pagination),
-  }));
+  return Promise.all(
+    [...byType.entries()].map(async ([type, nodes]) => ({
+      type,
+      title: type,
+      nodes: await Promise.all(
+        nodes
+          .slice(pagination.offset, pagination.offset + pagination.limit)
+          .map((node) => toNodeSummary(ctx, node)),
+      ),
+      pagination: paginationMeta(nodes.length, pagination),
+    })),
+  );
 }
 
 async function linkedWorkGroups(
@@ -292,25 +332,7 @@ async function linkedWorkGroups(
 ): Promise<SpecWorkspaceLinkedWorkGroup[]> {
   const tasks = linkedTasks(ctx, item);
   const plans = linkedPlans(ctx, item);
-  const sessionsResult = await getRelatedSessionsForItem({
-    itemRef: itemRef(item),
-    items: ctx.items,
-    tasks: ctx.tasks,
-    sessionsDir: ctx.sessionsDir,
-    getEntityCache: ctx.getEntityCache,
-    projectPath: ctx.projectPath,
-  });
-  const sessions =
-    "sessions" in sessionsResult
-      ? sessionsResult.sessions.map((session) => ({
-          kind: "session" as const,
-          ref: session.id,
-          title: session.title ?? null,
-          status: session.status ?? null,
-          created_at: session.started_at ?? null,
-          updated_at: session.updated_at ?? null,
-        }))
-      : [];
+  const sessions = await linkedSessions(ctx, item);
 
   return [
     {
@@ -405,14 +427,15 @@ async function loadProjectionContext(
     refIndex,
     alignment,
     sessionsDir: ctx.sessionsDir,
+    sessionLinksByItemUlid: new Map(),
     getEntityCache: options.getEntityCache,
   };
 }
 
-function buildRootProjection(
+async function buildRootProjection(
   ctx: ProjectionContext,
   pagination: Pagination,
-): SpecWorkspaceRootProjection {
+): Promise<SpecWorkspaceRootProjection> {
   const topLevel = ctx.childrenByParent.get(undefined) ?? [];
   const byType: Record<string, number> = {};
   let acceptanceCriteria = 0;
@@ -429,9 +452,11 @@ function buildRootProjection(
       by_type: byType,
     },
     coverage_summary: ctx.coverage.summary,
-    top_level_nodes: topLevel
-      .slice(pagination.offset, pagination.offset + pagination.limit)
-      .map((item) => toNodeSummary(ctx, item)),
+    top_level_nodes: await Promise.all(
+      topLevel
+        .slice(pagination.offset, pagination.offset + pagination.limit)
+        .map((item) => toNodeSummary(ctx, item)),
+    ),
     pagination: paginationMeta(topLevel.length, pagination),
     unavailable_sections: [],
   };
@@ -444,7 +469,7 @@ async function buildNodeProjection(
 ): Promise<SpecWorkspaceNodeDetailProjection> {
   return {
     kind: "node",
-    node: toNodeSummary(ctx, item),
+    node: await toNodeSummary(ctx, item),
     ancestors: buildItemAncestors(ctx.itemByUlid, ctx.parentMap, item._ulid),
     description: item.description,
     traits: item.traits ?? [],
@@ -455,7 +480,7 @@ async function buildNodeProjection(
       tests: item.tests ?? [],
       supersedes: item.supersedes ?? null,
     },
-    child_sections: childSections(ctx, item, pagination),
+    child_sections: await childSections(ctx, item, pagination),
     acceptance_criteria: (item.acceptance_criteria ?? []).map((ac) =>
       toCriterionSummary(ctx, item, ac),
     ),
@@ -475,7 +500,7 @@ async function buildCriterionProjection(
   const coverage = coverageForCriterion(ctx.coverage, item, acId);
   return {
     kind: "criterion",
-    parent: toNodeSummary(ctx, item),
+    parent: await toNodeSummary(ctx, item),
     ancestors: buildItemAncestors(ctx.itemByUlid, ctx.parentMap, item._ulid),
     criterion,
     coverage,
@@ -518,7 +543,7 @@ export function createSpecWorkspaceRoutes(options: SpecWorkspaceRouteOptions = {
             );
           }
           const projectionContext = await loadProjectionContext(projectContext.path, options);
-          const projection = buildRootProjection(projectionContext, pagination.pagination);
+          const projection = await buildRootProjection(projectionContext, pagination.pagination);
           return wrapResponse(projection, {
             cacheDomainState: projectionContext.cacheDomainState,
             total: projection.pagination.total,

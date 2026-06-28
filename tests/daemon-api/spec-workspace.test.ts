@@ -1,4 +1,6 @@
 import { execSync } from "node:child_process";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   cleanupTempDir,
@@ -15,9 +17,31 @@ const FEATURE_ULID = testUlid("FEAT", 902);
 const REQUIREMENT_ULID = testUlid("REQ", 903);
 const TASK_ULID = testUlid("TASK", 904);
 const PLAN_ULID = testUlid("PLAN", 905);
+const SESSION_ULID = testUlid("SESS", 906);
 
 async function json(response: Response): Promise<any> {
   return JSON.parse(await response.text());
+}
+
+function writeSession(projectDir: string): void {
+  const sessionDir = join(projectDir, ".kspec-sessions", SESSION_ULID);
+  mkdirSync(sessionDir, { recursive: true });
+  writeFileSync(
+    join(sessionDir, "session.yaml"),
+    [
+      `id: ${SESSION_ULID}`,
+      "agent_type: codex-acp",
+      "agent_id: task-worker",
+      "status: completed",
+      "session_type: invocation",
+      "trigger: task.in_progress",
+      "task_id: '@workspace-task'",
+      "started_at: 2026-06-28T09:30:00.000Z",
+      "ended_at: 2026-06-28T09:45:00.000Z",
+      "",
+    ].join("\n"),
+  );
+  writeFileSync(join(sessionDir, "events.jsonl"), "");
 }
 
 async function setupSpecWorkspaceProject(): Promise<string> {
@@ -84,6 +108,11 @@ async function setupSpecWorkspaceProject(): Promise<string> {
       "    created_at: 2026-06-28T08:00:00Z",
       "",
     ].join("\n"),
+  });
+  writeSession(tempDir);
+  execSync('git add -A && git commit -m "add linked workspace session"', {
+    cwd: tempDir,
+    stdio: "pipe",
   });
   return tempDir;
 }
@@ -152,7 +181,7 @@ describe("spec workspace projection API", () => {
       node: {
         ref: "@workspace-requirement",
         acceptance_criteria_count: 2,
-        linked_work_counts: { task: 1, plan: 1 },
+        linked_work_counts: { task: 1, session: 1, plan: 1 },
       },
       ancestors: [
         { ref: MODULE_ULID, title: "Workspace Module", kind: "module" },
@@ -178,6 +207,12 @@ describe("spec workspace projection API", () => {
           inclusion_rule: expect.stringContaining("derived_specs"),
           total: 1,
           items: [expect.objectContaining({ ref: "@workspace-plan", status: "active" })],
+        }),
+        expect.objectContaining({
+          kind: "session",
+          inclusion_rule: expect.stringContaining("task_id"),
+          total: 1,
+          items: [expect.objectContaining({ ref: SESSION_ULID, status: "completed" })],
         }),
         expect.objectContaining({
           kind: "review",
