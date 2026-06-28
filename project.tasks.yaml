@@ -33429,7 +33429,7 @@
   type: task
   spec_ref: "@unified-spec-workspace-navigation"
   plan_ref: "@plan-unified-spec-workspace"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-unified-spec-workspace-projection-api"
@@ -33442,6 +33442,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-28T08:54:35.376Z
+  started_at: 2026-06-28T11:46:57.504Z
   automation: eligible
 - _ulid: 01KW6Q03Z01M2F407CFXDDC2Y6
   slugs:

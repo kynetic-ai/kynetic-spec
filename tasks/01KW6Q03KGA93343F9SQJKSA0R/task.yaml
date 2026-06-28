@@ -45,7 +45,7 @@ description: |
 spec_ref: "@unified-spec-workspace-navigation"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-unified-spec-workspace-projection-api"
@@ -57,6 +57,7 @@ tags:
   - navigation
   - accessibility
 vcs_refs: []
+session_id: 01KW70T8FBMR1H77V9CKHW5JT6
 history:
   - author: Jacob Chapel
     changes:
@@ -65,6 +66,19 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-28T08:56:23.965Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KW70T8FBMR1H77V9CKHW5JT6
+        previous: null
+      started_at:
+        new: 2026-06-28T11:46:57.504Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-28T11:46:57.504Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -107,5 +121,6 @@ resource_refs:
     recorded_at: 2026-06-28T08:54:35.006Z
     sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
 created_at: 2026-06-28T08:54:35.376Z
+started_at: 2026-06-28T11:46:57.504Z
 todos: []
 automation: eligible
