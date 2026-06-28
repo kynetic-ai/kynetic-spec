@@ -2,7 +2,93 @@ _ulid: 01KW7CDHNP3MQHR4NPMSGNP4A3
 slugs: []
 title: Review fix session-context E2E status label assertion
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format; 1038 files checked.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-28T15:23:31.394Z
+    completed_at: 2026-06-28T15:23:31.394Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint completed with 0 errors and existing warning baseline (703 warnings).
+      Focused changed-file lint via npx oxlint tests/e2e/session-context.spec.ts completed with 0
+      warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-28T15:23:35.501Z
+    completed_at: 2026-06-28T15:23:35.501Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Typecheck exited 0 after build:shared and tsc --noEmit.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-28T15:23:38.671Z
+    completed_at: 2026-06-28T15:23:38.671Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Test Suites: 2788 passed of 2788. Tests: 10577 passed, 3 skipped of 10580. Full log:
+      /tmp/kspec-test-cache/01KW7CBVW24KSJ2GPNJJYYTJB8/59afb1fa6a313020.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-28T15:23:41.793Z
+    completed_at: 2026-06-28T15:23:41.793Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Affected Playwright file passed: 4 tests passed. Build completed; pre-existing Svelte
+      build warnings observed outside changed file."
+    name: affected e2e
+    required: true
+    runner: npm run test:e2e -- tests/e2e/session-context.spec.ts
+    created_at: 2026-06-28T15:23:44.783Z
+    completed_at: 2026-06-28T15:23:44.783Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; warnings baseline remains (deprecated-item
+      reference warnings).
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-28T15:23:47.856Z
+    completed_at: 2026-06-28T15:23:47.856Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed; existing alignment warning baseline reported.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-28T15:23:50.908Z
+    completed_at: 2026-06-28T15:23:50.908Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; existing completeness warning baseline
+      reported, including this bug task having no spec_ref.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-28T15:23:53.935Z
+    completed_at: 2026-06-28T15:23:53.935Z
 events:
   - _ulid: 01KW7CDHNNEE8F7J4XC62S06KR
     actor: Jacob Chapel
@@ -17,17 +103,128 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-28T15:09:16.252Z
+  - _ulid: 01KW7D88Z9K7HR9TESP8MDWNE4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-28T15:23:31.689Z
+  - _ulid: 01KW7D8CYDAZHKBGTH5REM28DQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-28T15:23:35.757Z
+  - _ulid: 01KW7D8G2EJB09XDPNXNE67G73
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-28T15:23:38.958Z
+  - _ulid: 01KW7D8K2F7BKJDN6S0M0F0MEQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-28T15:23:42.031Z
+  - _ulid: 01KW7D8P05CWGH1EXCJHNQP3S3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: affected e2e
+    timestamp: 2026-06-28T15:23:45.029Z
+  - _ulid: 01KW7D8RZS99ET892ETCP5RGA1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-28T15:23:48.090Z
+  - _ulid: 01KW7D8VZEPKYZBW9605CQGR3W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-28T15:23:51.150Z
+  - _ulid: 01KW7D8YYSTS36K8GXA7QMNGZ7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-28T15:23:54.202Z
+  - _ulid: 01KW7D921E5YX1J0YMJ2Z0NY61
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW7D91S3JKYT9AK7RCMTAC7Q
+    timestamp: 2026-06-28T15:23:57.358Z
+  - _ulid: 01KW7D94ZXHRVWX1QTJ3GT02QK
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-06-28T15:24:00.381Z
+  - _ulid: 01KW7D94ZXM2P6Q4J8PEQ73Q2V
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-28T15:24:00.381Z
 examined_commit: 43fd42a131afb120681eed739a085d84864b1252
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KW7B56RMXJNRKW8TDRH6STZQ"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KW7D91S3JKYT9AK7RCMTAC7Q
+    entries:
+      - _ulid: 01KW7D91S4TDB4WHHK2AE0MBQ6
+        author: Jacob Chapel
+        body: >-
+          Evidence log (non-finding):
+
+          Files read: tests/e2e/session-context.spec.ts;
+          packages/web-ui/src/lib/components/session/RelatedSessionsSection.svelte;
+          packages/web-ui/src/lib/components/ui/badge/badge.svelte; kspec-agents.md; task @01KW7B56.
+
+          Commands run: git diff/stat/log/status; kspec task get; kspec review for-task/get/open;
+          npx oxlint tests/e2e/session-context.spec.ts; npm run test:e2e --
+          tests/e2e/session-context.spec.ts; npm run format:check; npm run lint -- --quiet; npm run
+          typecheck; npm test; kspec validate --refs/--alignment/--completeness --warnings-ok.
+
+          Claims verified: the related-session rows render a shared Badge with data-slot="badge" and
+          the status text inside it; the changed E2E file passes; the full suite passes.
+
+          Categories searched: correctness (asserts badge-specific status text without weakening row
+          count/duration/href/navigation checks); test quality (behavioral E2E, no source-scanning
+          test); integration (shared Badge data-slot exists and related-session component uses it);
+          edge/error scope not applicable to this assertion-only bug fix. No blocker findings.
+        created_at: 2026-06-28T15:23:57.092Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-28T15:24:00.381Z
 created_at: 2026-06-28T15:08:55.862Z
-updated_at: 2026-06-28T15:09:15.997Z
+updated_at: 2026-06-28T15:24:00.381Z
 notes: []
