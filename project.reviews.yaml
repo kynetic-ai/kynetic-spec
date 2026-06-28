@@ -28820,7 +28820,7 @@ reviews:
     title: Review coverage resolution panels
     disposition: pending
     author: Jacob Chapel
-    check_count: 3
+    check_count: 4
     examined_commit: 9ba0efbbd15db6303fae955a58757c9f50af9972
     lifecycle_state: open
     related_refs: []
@@ -28833,4 +28833,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-28T22:39:56.773Z
-    updated_at: 2026-06-28T22:54:00.301Z
+    updated_at: 2026-06-28T22:54:17.060Z
