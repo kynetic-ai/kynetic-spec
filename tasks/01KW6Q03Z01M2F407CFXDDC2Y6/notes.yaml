@@ -16,3 +16,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T16:35:42.160Z
+  - _ulid: 01KW7JW5HMB9NY85868H100QTX
+    content: "Implemented spec workspace pages for root, node, and criterion views: root
+      summaries/top-level rows, node acceptance criteria with evidence and empty states, criterion
+      parent/evidence/sibling context, and grouped linked-work strips without edit controls.
+      Verification: format:check, lint --quiet, focused oxlint, typecheck, focused Playwright item
+      E2E, kspec refs/alignment/completeness validations, and git diff --check passed. Full npm test
+      streamed all suites green on rerun after an initial unrelated daemon-context-manager flake
+      passed in isolation, then hit the known post-green teardown hang and was terminated after the
+      final PASS output."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T17:01:46.425Z
