@@ -43,7 +43,7 @@ description: |
 spec_ref: "@spec-workspace-coverage-state-presentation"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-spec-node-criterion-workspace-pages"
@@ -58,11 +58,11 @@ review_ref: "@01KW7PB150TK86VZY4FRZWAXA6"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-spec-workspace-coverage-presentation/01kw6q04
-  captured_at: 2026-06-28T17:56:48.402Z
-  commit: 3bbde6254d09677d99863156817072b0d299637a
-  remote: null
-  remote_url: null
-  upstream_ref: feat/ui-redesign
+  captured_at: 2026-06-28T18:49:59.801Z
+  commit: 5bb8e3d32c1e62ce6906fa6fab794b22d8db6795
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-spec-workspace-coverage-presentation/01kw6q04
 session_id: 01KW7QHE67C9SQYWACNQQ9FM16
 history:
   - author: Jacob Chapel
@@ -135,6 +135,33 @@ history:
         previous: 2026-06-28T17:27:09.518Z
     command: task-start
     timestamp: 2026-06-28T18:24:14.854Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-spec-workspace-coverage-presentation/01kw6q04
+          captured_at: 2026-06-28T18:49:59.801Z
+          commit: 5bb8e3d32c1e62ce6906fa6fab794b22d8db6795
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-spec-workspace-coverage-presentation/01kw6q04
+        previous:
+          review_url: null
+          branch: dispatch/task/task-spec-workspace-coverage-presentation/01kw6q04
+          captured_at: 2026-06-28T17:56:48.402Z
+          commit: 3bbde6254d09677d99863156817072b0d299637a
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+      submitted_at:
+        new: 2026-06-28T18:49:59.809Z
+        previous: 2026-06-28T17:56:48.410Z
+    command: task-submit
+    timestamp: 2026-06-28T18:49:59.809Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -194,6 +221,6 @@ resource_refs:
     sha256: b9b6f967f22a1477a312878cafc27cf04dc110474093fd6e1548975eedd6b177
 created_at: 2026-06-28T08:54:36.097Z
 started_at: 2026-06-28T18:24:14.854Z
-submitted_at: 2026-06-28T17:56:48.410Z
+submitted_at: 2026-06-28T18:49:59.809Z
 todos: []
 automation: eligible
