@@ -75882,7 +75882,7 @@ runs:
     completed_at: 2026-06-28T10:31:00.712Z
   - _ulid: 01KW6XGW76SJDACNCCBCJMW9KE
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75907,7 +75907,15 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-28T10:50:52.310Z
-        completed_at: 2026-06-28T10:50:52.310Z
+        completed_at: 2026-06-28T10:51:16.242Z
+        notes: "Decision: skip all potential captures. Resource availability friction duplicates @01KV56QT8
+          and @01KV69DJF. Full-suite review-gate cost duplicates @01KV3WHP / @01KTQ1RG-class
+          review-gate observations surfaced in baseline results. No vague or speculative items
+          captured."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-28T10:51:16.242Z
+        completed_at: 2026-06-28T10:51:16.242Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-28T10:48:36.327Z
