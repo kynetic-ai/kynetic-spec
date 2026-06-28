@@ -2,7 +2,17 @@ _ulid: 01KW77F149RRJC2X903EKCXQW6
 slugs: []
 title: Review page-tree workspace shell (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1126 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-28T13:57:22.367Z
+    completed_at: 2026-06-28T13:57:22.367Z
 events:
   - _ulid: 01KW77F148N83FYB85DBDGVRM9
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-28T13:42:38.139Z
+  - _ulid: 01KW78AH2KV8MZ8EAXQG9TFDKF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-28T13:57:22.643Z
 examined_commit: 19ad0f44ea3ecddcd0be3a8faeecc16f8ad7036f
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T13:42:21.577Z
-updated_at: 2026-06-28T13:42:37.892Z
+updated_at: 2026-06-28T13:57:22.367Z
 notes: []
