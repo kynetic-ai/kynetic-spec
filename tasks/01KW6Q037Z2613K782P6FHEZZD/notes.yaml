@@ -11,3 +11,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T09:16:10.650Z
+  - _ulid: 01KW6STRNK0CX06RM5X7RMZAMB
+    content: "Implemented unified spec workspace projection API with root, node, and criterion read
+      endpoints; added shared projection contracts, static-mode fetchers, query keys, and WebSocket
+      invalidation for task/item/coverage/plan/session changes. Verification passed: npm run
+      format:check; npx oxlint changed files; npm run lint -- --quiet; npm run typecheck; npm test;
+      kspec validate --refs --warnings-ok; kspec validate --alignment --warnings-ok; kspec validate
+      --completeness --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T09:44:06.067Z
