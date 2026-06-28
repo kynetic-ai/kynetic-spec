@@ -76641,7 +76641,7 @@ runs:
     started_at: 2026-06-28T16:10:41.979Z
     completed_at: 2026-06-28T16:12:18.811Z
   - _ulid: 01KW7H733CRAAMTNDNB02ZB5QZ
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -76686,10 +76686,15 @@ runs:
         completed_at: 2026-06-28T16:36:10.495Z
         notes: "Skipped discussion: no untracked improvement proposals remained after search, so there was
           nothing to ask the user to approve."
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-06-28T16:36:10.495Z
-        completed_at: 2026-06-28T16:36:10.495Z
+        completed_at: 2026-06-28T16:36:21.031Z
+        notes: "No capture performed. Existing tracking covers the session's high-confidence friction
+          points: 01KNTB8Z4 for full-test duration, 01KVESXQK/01KVET18 for review evidence/log
+          friction, and 01KN4432C/01KTWBE2/01KN0F3GC/01KN2S0F/01KNEGKZ for focused E2E/build
+          overhead and reliability. No duplicate inbox or observation entries were added."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T16:32:47.212Z
+    completed_at: 2026-06-28T16:36:21.031Z
