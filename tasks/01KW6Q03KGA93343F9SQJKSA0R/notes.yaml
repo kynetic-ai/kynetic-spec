@@ -1,1 +1,25 @@
-notes: []
+notes:
+  - _ulid: 01KW70ZK79WF2N314EVA0RR9SG
+    content: >-
+      Approach: replace /specs with projection-backed workspace shell using
+      fetchSpecWorkspaceRoot/fetchSpecWorkspaceNode/fetchSpecWorkspaceCriterion and existing
+      SvelteKit query helpers, ViewHeader, BreadcrumbNav, status badges, and
+      ReferenceLink-compatible URLs. URL model: /specs?node=<ref> for focused nodes,
+      /specs?node=<ref>&ac=<id> for focused criteria, legacy /specs?ref=<ref> aliases to node focus,
+      and expanded=<refs> persists independent branch state via goto(). Reuse one recursive
+      workspace row component for root and page child sections so row body toggles inline while
+      title/open controls navigate.
+
+      Edge cases: legacy ref links, reload restoration for node/criterion URLs, browser back
+      preserving expanded branches, multiple expanded branches, keyboard/touch controls without
+      hover, long/deep rows avoiding page horizontal scroll, cache warming/error states, and bounded
+      query state.
+
+      Test plan: update E2E specs with behavioral coverage for @unified-spec-workspace-navigation
+      ac-stable-node-urls, ac-existing-ref-links-compatible, ac-dual-gesture-row,
+      ac-touch-and-keyboard-open, ac-expansion-state-preserved, ac-multi-branch-expansion,
+      ac-page-children-use-same-rows, and ac-no-horizontal-scroll; keep existing item behavior
+      covered where the route still exposes it.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T11:49:04.362Z
