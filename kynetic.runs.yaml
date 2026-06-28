@@ -75833,9 +75833,22 @@ runs:
     completed_at: 2026-06-28T10:07:30.972Z
   - _ulid: 01KW6WBWBXVSW0S1DP8V7WA6YQ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-28T10:28:24.062Z
+        completed_at: 2026-06-28T10:29:23.315Z
+        notes: "Step 1 complete. What worked: targeted review-thread fixes stayed narrow; full test was
+          allowed to finish instead of being interrupted during quiet long-tail suites; atomic kspec
+          batch reply/resolve updated all review threads consistently. Friction candidates for
+          search: workflow next run-id ambiguity with many active runs, and full-test quiet
+          intervals that can look like a hang."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-28T10:29:23.315Z
+        completed_at: 2026-06-28T10:29:23.315Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-28T10:28:24.062Z
