@@ -6776,6 +6776,9 @@ features:
       coverage-state engine — covered, failing, not yet, and re-verify — while
       preserving transport enum values and secondary re-verify causes for API
       payloads, captions, and resolution panels.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on:
       - "@ui-breadcrumb"
       - "@ui-view-header"
