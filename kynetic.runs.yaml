@@ -77136,7 +77136,7 @@ runs:
     started_at: 2026-06-28T23:21:25.581Z
     completed_at: 2026-06-28T23:24:02.464Z
   - _ulid: 01KW89TGE9775P62F7A5SSH6EW
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -77191,10 +77191,14 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-28T23:45:19.425Z
-        completed_at: 2026-06-28T23:45:19.425Z
+        completed_at: 2026-06-28T23:45:39.735Z
+        notes: "Captured one friction observation: @01KW89ZD for accidental duplicate @session-reflect /
+          @session-reflect-loop active runs. No inbox/task items created; review-check batching was
+          intentionally not captured due lower confidence."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T23:42:49.289Z
+    completed_at: 2026-06-28T23:45:39.735Z
   - _ulid: 01KW89THSS85ZYT5CG3CP5A6MS
     status: paused
     current_step: 0
