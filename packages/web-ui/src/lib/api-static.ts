@@ -9,6 +9,7 @@
  * - ac-12, ac-13 (@gh-pages-export): Deep linking with ref resolution
  */
 
+import { SPEC_WORKSPACE_MAX_PAGE_SIZE } from "@kynetic-ai/shared";
 import type {
   TaskSummary,
   TaskDetail,
@@ -39,6 +40,12 @@ import type {
   CoverageItemStateSummary,
   CoverageStateSummary,
   CoverageUnmappedResultSummary,
+  SpecWorkspaceCriterionDetailProjection,
+  SpecWorkspaceCriterionSummary,
+  SpecWorkspaceLinkedWorkGroup,
+  SpecWorkspaceNodeDetailProjection,
+  SpecWorkspaceNodeSummary,
+  SpecWorkspaceRootProjection,
 } from "@kynetic-ai/shared";
 import type { ValidationResponse } from "$lib/api";
 import type {
@@ -48,6 +55,20 @@ import type {
   ExportedReview,
 } from "$lib/types/snapshot";
 import { getSnapshot, ReadOnlyModeError } from "$lib/stores/mode.svelte";
+
+function specWorkspacePaginationParams(params?: { limit?: number; offset?: number }): {
+  limit: number;
+  offset: number;
+} {
+  const rawLimit =
+    Number.isFinite(params?.limit) && params?.limit !== undefined ? params.limit : 50;
+  const rawOffset =
+    Number.isFinite(params?.offset) && params?.offset !== undefined ? params.offset : 0;
+  return {
+    limit: Math.min(Math.max(0, Math.floor(rawLimit)), SPEC_WORKSPACE_MAX_PAGE_SIZE),
+    offset: Math.max(0, Math.floor(rawOffset)),
+  };
+}
 
 /**
  * Wrap data in a unified API response envelope with cache_status: "ready".
@@ -400,6 +421,218 @@ function findItemByRef(items: ExportedItem[], ref: string): ExportedItem | null 
   return null;
 }
 
+function emptyCoverageCounts() {
+  return { covered: 0, failing: 0, not_yet: 0, re_verify: 0 };
+}
+
+function emptyCoverageSummary(): CoverageStateSummary {
+  return {
+    counts: emptyCoverageCounts(),
+    denominator: 0,
+    latest_run_id: null,
+    unmapped_result_count: 0,
+    invalid_result_count: 0,
+  };
+}
+
+function staticItemRef(item: Pick<ExportedItem, "_ulid" | "slugs">): string {
+  return item.slugs[0] ? `@${item.slugs[0]}` : `@${item._ulid}`;
+}
+
+function staticCoverageForItem(
+  snapshot: KspecSnapshot,
+  item: Pick<ExportedItem, "_ulid" | "slugs">,
+): CoverageItemStateSummary | null {
+  const coverage = snapshot.coverage_state;
+  if (!coverage) return null;
+  const direct = coverage.items[item._ulid] ?? coverage.items[`@${item._ulid}`];
+  if (direct) return direct;
+  const refs = new Set([
+    item._ulid,
+    `@${item._ulid}`,
+    ...item.slugs,
+    ...item.slugs.map((slug) => `@${slug}`),
+  ]);
+  return (
+    Object.values(coverage.items).find(
+      (entry) => entry.item_ulid === item._ulid || refs.has(entry.item_ref),
+    ) ?? null
+  );
+}
+
+function staticCoverageForCriterion(
+  snapshot: KspecSnapshot,
+  item: ExportedItem,
+  acId: string,
+): CoverageCriterionStateDetail | null {
+  const itemCoverage = staticCoverageForItem(snapshot, item);
+  if (!itemCoverage) return null;
+  return (
+    snapshot.coverage_state?.criteria[`${itemCoverage.item_ulid} ${acId}`] ??
+    itemCoverage.criteria.find((criterion) => criterion.ac_id === acId) ??
+    null
+  );
+}
+
+function staticParent(item: ExportedItem): string | undefined {
+  if (typeof item.parent === "string") return item.parent;
+  const ancestors = item.ancestors ?? [];
+  if (ancestors.length < 2) return undefined;
+  return ancestors[ancestors.length - 2]?.ref;
+}
+
+function staticChildren(snapshot: KspecSnapshot): Map<string | undefined, ExportedItem[]> {
+  const children = new Map<string | undefined, ExportedItem[]>();
+  for (const item of snapshot.items) {
+    const parent = staticParent(item);
+    const bucket = children.get(parent);
+    if (bucket) bucket.push(item);
+    else children.set(parent, [item]);
+  }
+  return children;
+}
+
+function staticLinkedTasks(snapshot: KspecSnapshot, item: ExportedItem): ExportedTask[] {
+  const refs = new Set([
+    item._ulid,
+    `@${item._ulid}`,
+    ...item.slugs,
+    ...item.slugs.map((slug) => `@${slug}`),
+  ]);
+  return snapshot.tasks.filter((task) => task.spec_ref && refs.has(task.spec_ref));
+}
+
+function staticLinkedPlans(snapshot: KspecSnapshot, item: ExportedItem): PlanDetail[] {
+  const refs = new Set([
+    item._ulid,
+    `@${item._ulid}`,
+    ...item.slugs,
+    ...item.slugs.map((slug) => `@${slug}`),
+  ]);
+  return (snapshot.plans ?? []).filter((plan) => plan.derived_specs.some((ref) => refs.has(ref)));
+}
+
+function staticLinkedWork(
+  snapshot: KspecSnapshot,
+  item: ExportedItem,
+): SpecWorkspaceLinkedWorkGroup[] {
+  const tasks = staticLinkedTasks(snapshot, item);
+  const plans = staticLinkedPlans(snapshot, item);
+  return [
+    {
+      kind: "task",
+      inclusion_rule:
+        "Tasks are included when task.spec_ref resolves to this spec item through the static reference set.",
+      total: tasks.length,
+      items: tasks.map((task) => ({
+        kind: "task",
+        ref: task.slugs[0] ? `@${task.slugs[0]}` : `@${task._ulid}`,
+        title: task.title ?? null,
+        status: task.status ?? null,
+        created_at: task.created_at ?? null,
+        updated_at: task.updated_at ?? null,
+      })),
+    },
+    {
+      kind: "session",
+      inclusion_rule:
+        "Sessions require live session-log lookup and are unavailable in static snapshots.",
+      total: 0,
+      items: [],
+      unavailable: {
+        kind: "sessions",
+        status: "unavailable",
+        reason: "Session linked-work requires daemon session storage.",
+        suggestion: "Open the live daemon workspace to inspect linked sessions.",
+      },
+    },
+    {
+      kind: "plan",
+      inclusion_rule:
+        "Plans are included when their derived_specs list contains this spec item's ULID or slug reference.",
+      total: plans.length,
+      items: plans.map((plan) => ({
+        kind: "plan",
+        ref: plan.slugs[0] ? `@${plan.slugs[0]}` : `@${plan._ulid}`,
+        title: plan.title ?? null,
+        status: plan.status ?? null,
+        created_at: plan.created_at ?? null,
+        updated_at: plan.updated_at ?? null,
+      })),
+    },
+    {
+      kind: "review",
+      inclusion_rule:
+        "Reviews require live review subject expansion and are unavailable in this static projection.",
+      total: 0,
+      items: [],
+      unavailable: {
+        kind: "reviews",
+        status: "unavailable",
+        reason: "Review linked-work is not exported in the static spec workspace snapshot.",
+        suggestion: "Use the Reviews page or the live daemon workspace for review context.",
+      },
+    },
+    {
+      kind: "observation",
+      inclusion_rule:
+        "Observations require live evidence expansion and are unavailable in this static projection.",
+      total: 0,
+      items: [],
+      unavailable: {
+        kind: "observations",
+        status: "unavailable",
+        reason: "Observation linked-work is not exported in the static spec workspace snapshot.",
+        suggestion:
+          "Use the Observations page or the live daemon workspace for observation context.",
+      },
+    },
+  ];
+}
+
+function staticNodeSummary(
+  snapshot: KspecSnapshot,
+  children: Map<string | undefined, ExportedItem[]>,
+  item: ExportedItem,
+): SpecWorkspaceNodeSummary {
+  const coverage = staticCoverageForItem(snapshot, item);
+  return {
+    ref: staticItemRef(item),
+    _ulid: item._ulid,
+    slugs: item.slugs,
+    title: item.title,
+    type: item.type,
+    status: item.status,
+    tags: item.tags,
+    parent: staticParent(item),
+    acceptance_criteria_count: item.acceptance_criteria?.length ?? 0,
+    child_count: children.get(item._ulid)?.length ?? 0,
+    coverage,
+    coverage_counts: coverage?.counts ?? emptyCoverageCounts(),
+    linked_work_counts: {
+      task: staticLinkedTasks(snapshot, item).length,
+      session: 0,
+      plan: staticLinkedPlans(snapshot, item).length,
+      review: 0,
+      observation: 0,
+    },
+  };
+}
+
+function staticCriterionSummary(
+  snapshot: KspecSnapshot,
+  item: ExportedItem,
+  ac: NonNullable<ExportedItem["acceptance_criteria"]>[number],
+): SpecWorkspaceCriterionSummary {
+  return {
+    id: ac.id,
+    given: ac.given,
+    when: ac.when,
+    then: ac.then,
+    coverage: staticCoverageForCriterion(snapshot, item, ac.id),
+  };
+}
+
 // ============================================================
 // Static API Functions
 // ============================================================
@@ -551,6 +784,136 @@ export function fetchCoverageStateUnmappedStatic(params?: {
     total: entries.length,
     offset,
     limit,
+  });
+}
+
+export function fetchSpecWorkspaceRootStatic(params?: {
+  limit?: number;
+  offset?: number;
+}): ApiResponse<SpecWorkspaceRootProjection> {
+  const snapshot = getSnapshot();
+  const { offset, limit } = specWorkspacePaginationParams(params);
+  if (!snapshot) {
+    return wrapEnvelope(
+      {
+        kind: "root",
+        corpus: { items: 0, acceptance_criteria: 0, by_type: {} },
+        coverage_summary: emptyCoverageSummary(),
+        top_level_nodes: [],
+        pagination: { total: 0, offset, limit, has_more: false },
+        unavailable_sections: [
+          {
+            kind: "static_snapshot",
+            status: "unavailable",
+            reason: "No static snapshot is loaded.",
+            suggestion: "Refresh the exported site assets or use the live daemon workspace.",
+          },
+        ],
+      },
+      { total: 0, offset, limit },
+    );
+  }
+  const children = staticChildren(snapshot);
+  const topLevel = children.get(undefined) ?? [];
+  const byType: Record<string, number> = {};
+  let acceptanceCriteria = 0;
+  for (const item of snapshot.items) {
+    byType[item.type] = (byType[item.type] ?? 0) + 1;
+    acceptanceCriteria += item.acceptance_criteria?.length ?? 0;
+  }
+  const total = topLevel.length;
+  return wrapEnvelope(
+    {
+      kind: "root",
+      corpus: {
+        items: snapshot.items.length,
+        acceptance_criteria: acceptanceCriteria,
+        by_type: byType,
+      },
+      coverage_summary: snapshot.coverage_state?.summary ?? emptyCoverageSummary(),
+      top_level_nodes: topLevel
+        .slice(offset, offset + limit)
+        .map((item) => staticNodeSummary(snapshot, children, item)),
+      pagination: { total, offset, limit, has_more: offset + limit < total },
+      unavailable_sections: [],
+    },
+    { total, offset, limit },
+  );
+}
+
+export function fetchSpecWorkspaceNodeStatic(
+  ref: string,
+  params?: { limit?: number; offset?: number },
+): ApiResponse<SpecWorkspaceNodeDetailProjection> | null {
+  const snapshot = getSnapshot();
+  if (!snapshot) return null;
+  const item = findItemByRef(snapshot.items, ref);
+  if (!item) return null;
+  const { offset, limit } = specWorkspacePaginationParams(params);
+  const children = staticChildren(snapshot);
+  const directChildren = children.get(item._ulid) ?? [];
+  const byType = new Map<string, ExportedItem[]>();
+  for (const child of directChildren) {
+    const bucket = byType.get(child.type);
+    if (bucket) bucket.push(child);
+    else byType.set(child.type, [child]);
+  }
+  return wrapEnvelope({
+    kind: "node",
+    node: staticNodeSummary(snapshot, children, item),
+    ancestors: item.ancestors ?? [{ ref: staticItemRef(item), title: item.title, kind: item.type }],
+    description: item.description,
+    traits: item.traits ?? [],
+    relationships: {
+      depends_on: item.depends_on ?? [],
+      implements: item.implements ?? [],
+      relates_to: item.relates_to ?? [],
+      tests: item.tests ?? [],
+      supersedes: item.supersedes ?? null,
+    },
+    child_sections: [...byType.entries()].map(([type, nodes]) => ({
+      type,
+      title: type,
+      nodes: nodes
+        .slice(offset, offset + limit)
+        .map((node) => staticNodeSummary(snapshot, children, node)),
+      pagination: { total: nodes.length, offset, limit, has_more: offset + limit < nodes.length },
+    })),
+    acceptance_criteria: (item.acceptance_criteria ?? []).map((ac) =>
+      staticCriterionSummary(snapshot, item, ac),
+    ),
+    linked_work: staticLinkedWork(snapshot, item),
+    unavailable_sections: [],
+  });
+}
+
+export function fetchSpecWorkspaceCriterionStatic(
+  ref: string,
+  acId: string,
+): ApiResponse<SpecWorkspaceCriterionDetailProjection> | null {
+  const snapshot = getSnapshot();
+  if (!snapshot) return null;
+  const item = findItemByRef(snapshot.items, ref);
+  const ac = item?.acceptance_criteria?.find((candidate) => candidate.id === acId);
+  if (!item || !ac) return null;
+  const children = staticChildren(snapshot);
+  const coverage = staticCoverageForCriterion(snapshot, item, acId);
+  return wrapEnvelope({
+    kind: "criterion",
+    parent: staticNodeSummary(snapshot, children, item),
+    ancestors: item.ancestors ?? [{ ref: staticItemRef(item), title: item.title, kind: item.type }],
+    criterion: staticCriterionSummary(snapshot, item, ac),
+    coverage,
+    evidence: {
+      latest_run: coverage?.latest_run_evidence ?? [],
+      unmapped_results: coverage?.unmapped_result_references ?? [],
+      reverify_causes: coverage?.freshness.secondary_causes ?? [],
+    },
+    siblings: (item.acceptance_criteria ?? []).map((entry) =>
+      staticCriterionSummary(snapshot, item, entry),
+    ),
+    linked_work: staticLinkedWork(snapshot, item),
+    unavailable_sections: [],
   });
 }
 

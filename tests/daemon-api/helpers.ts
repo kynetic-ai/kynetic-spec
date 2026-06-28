@@ -76,6 +76,7 @@ import { createIdentityRoutes } from "../../dist/daemon/routes/identity.js";
 import { createInboxRoutes } from "../../dist/daemon/routes/inbox.js";
 import { createAggregationRoutes } from "../../dist/daemon/routes/aggregation.js";
 import { createCoverageRoutes } from "../../dist/daemon/routes/coverage.js";
+import { createSpecWorkspaceRoutes } from "../../dist/daemon/routes/spec-workspace.js";
 import { createAgentDispatchRoutes } from "../../dist/daemon/routes/agent-dispatch.js";
 import { PubSubManager } from "../../dist/daemon/websocket/pubsub.js";
 import { ensureSplitBackendRegistered } from "../../dist/parser/split-backend.js";
@@ -598,6 +599,7 @@ export function createTestApp(options: CreateTestAppOptions = {}): {
     .use(createInboxRoutes({ pubsub, getEntityCache }))
     .use(createAggregationRoutes())
     .use(createCoverageRoutes({ pubsub, getEntityCache }))
+    .use(createSpecWorkspaceRoutes({ getEntityCache }))
     .use(createAgentDispatchRoutes());
 
   return { app, pubsub, manager };

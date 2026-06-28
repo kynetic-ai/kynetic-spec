@@ -195,6 +195,122 @@ export interface CoverageStateSnapshot {
   unmapped_results: CoverageUnmappedResultSummary[];
 }
 
+// ─── Spec Workspace Projection API ──────────────────────────────────────────
+
+export const SPEC_WORKSPACE_MAX_PAGE_SIZE = 100;
+
+export interface SpecWorkspacePagination {
+  total: number;
+  offset: number;
+  limit: number;
+  has_more: boolean;
+}
+
+export interface SpecWorkspaceUnavailableSection {
+  kind: "sessions" | "reviews" | "observations" | "coverage" | "static_snapshot";
+  status: "unavailable";
+  reason: string;
+  suggestion: string;
+}
+
+export interface SpecWorkspaceLinkedWorkItem {
+  ref: string;
+  title: string | null;
+  status: string | null;
+  kind: "task" | "session" | "plan" | "review" | "observation";
+  created_at?: string | null;
+  updated_at?: string | null;
+}
+
+export interface SpecWorkspaceLinkedWorkGroup {
+  kind: SpecWorkspaceLinkedWorkItem["kind"];
+  inclusion_rule: string;
+  total: number;
+  items: SpecWorkspaceLinkedWorkItem[];
+  unavailable?: SpecWorkspaceUnavailableSection;
+}
+
+export interface SpecWorkspaceNodeSummary {
+  ref: string;
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  type: string;
+  status?: string | Record<string, string>;
+  tags: string[];
+  parent?: string;
+  acceptance_criteria_count: number;
+  child_count: number;
+  coverage: CoverageItemStateSummary | null;
+  coverage_counts: CoverageBucketCounts;
+  linked_work_counts: Record<SpecWorkspaceLinkedWorkItem["kind"], number>;
+}
+
+export interface SpecWorkspaceChildSection {
+  type: string;
+  title: string;
+  nodes: SpecWorkspaceNodeSummary[];
+  pagination: SpecWorkspacePagination;
+}
+
+export interface SpecWorkspaceCriterionSummary {
+  id: string;
+  given: string;
+  when: string;
+  then: string;
+  coverage: CoverageCriterionStateDetail | null;
+}
+
+export interface SpecWorkspaceCorpusCounts {
+  items: number;
+  acceptance_criteria: number;
+  by_type: Record<string, number>;
+}
+
+export interface SpecWorkspaceRootProjection {
+  kind: "root";
+  corpus: SpecWorkspaceCorpusCounts;
+  coverage_summary: CoverageStateSummary;
+  top_level_nodes: SpecWorkspaceNodeSummary[];
+  pagination: SpecWorkspacePagination;
+  unavailable_sections: SpecWorkspaceUnavailableSection[];
+}
+
+export interface SpecWorkspaceNodeDetailProjection {
+  kind: "node";
+  node: SpecWorkspaceNodeSummary;
+  ancestors: BreadcrumbAncestor[];
+  description?: string;
+  traits: string[];
+  relationships: {
+    depends_on: string[];
+    implements: string[];
+    relates_to: string[];
+    tests: string[];
+    supersedes?: string | null;
+  };
+  child_sections: SpecWorkspaceChildSection[];
+  acceptance_criteria: SpecWorkspaceCriterionSummary[];
+  linked_work: SpecWorkspaceLinkedWorkGroup[];
+  unavailable_sections: SpecWorkspaceUnavailableSection[];
+}
+
+export interface SpecWorkspaceCriterionDetailProjection {
+  kind: "criterion";
+  parent: SpecWorkspaceNodeSummary;
+  ancestors: BreadcrumbAncestor[];
+  criterion: SpecWorkspaceCriterionSummary;
+  coverage: CoverageCriterionStateDetail | null;
+  evidence: {
+    latest_run: CoverageLatestRunEvidenceSummary[];
+    unmapped_results: CoverageUnmappedResultSummary[];
+    reverify_causes: CoverageStateExplanationSummary["secondaryReverifyCauses"];
+  };
+  siblings: SpecWorkspaceCriterionSummary[];
+  linked_work: SpecWorkspaceLinkedWorkGroup[];
+  unavailable_sections: SpecWorkspaceUnavailableSection[];
+}
+
 /**
  * Common paginated response wrapper
  * AC: @api-contract ac-4
