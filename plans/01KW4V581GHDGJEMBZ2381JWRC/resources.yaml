@@ -18,3 +18,13 @@ resources:
     label: Product context
     path: handoff/docs/00-product-context.md
     sha256: acf72703d28c755e7925ed10cd8604814d4b640d609bdd9c4b93823f53701719
+  - description: Unified page/tree spec workspace behavior, row anatomy, page shapes, data notes,
+      archived alternatives, and open questions.
+    bytes: 5642
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-spec-workspace
+    label: Spec workspace UX handoff
+    path: handoff/docs/06-spec-workspace.md
+    sha256: 9859180adb431b75189f3a8d5d89bcecec614ced1c8b0cd242e1d333552fb52e
