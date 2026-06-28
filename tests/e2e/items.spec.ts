@@ -182,12 +182,15 @@ test.describe("Spec Workspace", () => {
   });
 
   // AC: @unified-spec-workspace-navigation ac-expansion-state-preserved
+  // AC: @spec-workspace-delivery-quality ac-url-state-via-goto
   test("browser back restores previously expanded branches", async ({ page }) => {
     await page.goto("/specs");
     const featureNode = await firstFeatureUnderModule(page);
     await treeRow(featureNode).getByTestId("workspace-row-body").click();
     await expect(childContainer(featureNode)).toBeVisible();
-    await expect(page).toHaveURL(/expanded=/);
+    await expect(page).toHaveURL(
+      /expanded=.*test-core.*test-feature|expanded=.*test-feature.*test-core/,
+    );
 
     await Promise.all([
       page.waitForURL(/node=.*test-feature/),
