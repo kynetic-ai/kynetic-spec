@@ -154,6 +154,13 @@ events:
       kind: blocker
       thread_ulid: 01KW8735DEZ73DW274JGT9YJ60
     timestamp: 2026-06-28T22:55:07.424Z
+  - _ulid: 01KW873JJ7G6X2SY00213JS793
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW873JA5GC8Y58S9PZ8TGBHT
+    timestamp: 2026-06-28T22:55:20.647Z
 examined_commit: 9ba0efbbd15db6303fae955a58757c9f50af9972
 external_links: []
 lifecycle_state: open
@@ -184,7 +191,30 @@ threads:
           and explaining that the criterion changed."
         created_at: 2026-06-28T22:55:07.182Z
     kind: blocker
+  - _ulid: 01KW873JA5GC8Y58S9PZ8TGBHT
+    anchor:
+      type: code
+      commit: 9ba0efbbd15db6303fae955a58757c9f50af9972
+      line_end: 130
+      line_start: 115
+      path: packages/web-ui/src/lib/query/ws-invalidation.ts
+      side: head
+    entries:
+      - _ulid: 01KW873JA6X2QW7RQDA9CPCXBY
+        author: Jacob Chapel
+        body: "MUST-FIX: coverage_state_changed events do not invalidate the parameterized spec workspace
+          root/node queries used by /specs. This code emits queryKeys.specWorkspace.root() and
+          queryKeys.specWorkspace.node(ref), but the route's active queries are
+          queryKeys.specWorkspace.root({ limit: WORKSPACE_PAGE_SIZE, plan }) and
+          queryKeys.specWorkspace.node(ref, { limit: WORKSPACE_PAGE_SIZE }). TanStack Query partial
+          matching does not match the same-length key when the parameter slot is undefined in the
+          invalidation key and an object in the active key. Criterion detail pages may refresh
+          because criterion keys match exactly, but root pages, filtered rollups, and inline panels
+          on node pages will not refresh for coverage_state_changed events from the CLI or another
+          daemon consumer, violating ac-resolution-event-refresh."
+        created_at: 2026-06-28T22:55:20.390Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-28T22:39:56.773Z
-updated_at: 2026-06-28T22:55:07.182Z
+updated_at: 2026-06-28T22:55:20.390Z
 notes: []
