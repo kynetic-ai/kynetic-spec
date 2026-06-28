@@ -215,6 +215,12 @@ events:
     payload:
       thread_ulid: 01KW78EE7T80E2J93HKF4SRERK
     timestamp: 2026-06-28T14:25:48.554Z
+  - _ulid: 01KW79YREVBK3ZADHN7VK9WE6R
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW78EE7T80E2J93HKF4SRERK
+    timestamp: 2026-06-28T14:25:54.139Z
 examined_commit: 19ad0f44ea3ecddcd0be3a8faeecc16f8ad7036f
 external_links: []
 lifecycle_state: closed
@@ -259,6 +265,8 @@ threads:
           format, lint, typecheck, full npm test, and kspec validations."
         created_at: 2026-06-28T14:25:48.300Z
     kind: blocker
+    resolved_at: 2026-06-28T14:25:53.894Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KW78F1JB8ZT6MEMX8H53CB4V
     entries:
       - _ulid: 01KW78F1JB2H1TPD20QBB6FREN
@@ -299,5 +307,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T14:00:02.566Z
 created_at: 2026-06-28T13:42:21.577Z
-updated_at: 2026-06-28T14:25:48.300Z
+updated_at: 2026-06-28T14:25:53.894Z
 notes: []
