@@ -196,6 +196,12 @@ events:
     payload:
       thread_ulid: 01KW8735DEZ73DW274JGT9YJ60
     timestamp: 2026-06-28T23:19:02.874Z
+  - _ulid: 01KW88FKF3W46YGPXDTRJ1APT3
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW873JA5GC8Y58S9PZ8TGBHT
+    timestamp: 2026-06-28T23:19:23.363Z
 examined_commit: 9ba0efbbd15db6303fae955a58757c9f50af9972
 external_links: []
 lifecycle_state: closed
@@ -257,6 +263,12 @@ threads:
           on node pages will not refresh for coverage_state_changed events from the CLI or another
           daemon consumer, violating ac-resolution-event-refresh."
         created_at: 2026-06-28T22:55:20.390Z
+      - _ulid: 01KW88FK7FH13HZHWTDHRWDQ3W
+        author: Jacob Chapel
+        body: "Fixed in 7fd9003b36: spec workspace query keys now expose root/node prefix keys,
+          coverage_state_changed invalidation uses those prefixes, and the regression test verifies
+          the prefixes match the parameterized /specs root and node query keys used by the route."
+        created_at: 2026-06-28T23:19:23.119Z
     kind: blocker
   - _ulid: 01KW8741M42F0HG5GAZ2JVDFJJ
     entries:
@@ -289,5 +301,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T22:55:46.781Z
 created_at: 2026-06-28T22:39:56.773Z
-updated_at: 2026-06-28T23:19:02.629Z
+updated_at: 2026-06-28T23:19:23.119Z
 notes: []
