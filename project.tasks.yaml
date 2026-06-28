@@ -33458,6 +33458,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-28T08:54:35.744Z
+  automation: eligible
 - _ulid: 01KW6Q04A1V24N1AY0H0YTD2YR
   slugs:
     - task-spec-workspace-coverage-presentation
