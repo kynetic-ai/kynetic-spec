@@ -76700,7 +76700,7 @@ runs:
     completed_at: 2026-06-28T16:36:21.031Z
   - _ulid: 01KW7JY8MN0KSTA3RZYD0T4944
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -76714,7 +76714,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T17:04:19.780Z
-        completed_at: 2026-06-28T17:04:19.780Z
+        completed_at: 2026-06-28T17:04:44.961Z
+        notes: "High-confidence findings: Success: projection-driven UI implementation worked well for spec
+          workspace pages; captured as observation @01KW7K06 after targeted searches found
+          projection-related prior work but not this exact UI-page pattern. Friction: full npm test
+          can stream all PASS output but remain alive with a leftover Vitest worker and no JSON
+          result artifact; this is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run, so I added session
+          evidence as a task note instead of duplicating it. Secondary friction: workflow next
+          without a run ID is noisy because many old active runs exist; baseline listings show this
+          is already tracked by inbox/observation coverage, so no duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T17:04:44.961Z
+        completed_at: 2026-06-28T17:04:44.961Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-28T17:02:55.125Z
