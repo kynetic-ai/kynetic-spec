@@ -337,9 +337,16 @@ events:
         content_hash: ""
       decision: comment
     timestamp: 2026-06-28T08:40:08.364Z
+  - _ulid: 01KW6P5VTNBGFY3XG4KWAVX1CY
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-28T08:40:15.445Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -356,5 +363,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T08:40:08.364Z
 created_at: 2026-06-28T08:37:31.510Z
-updated_at: 2026-06-28T08:40:08.364Z
+updated_at: 2026-06-28T08:40:15.189Z
 notes: []
