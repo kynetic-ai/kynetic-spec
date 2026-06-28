@@ -140,6 +140,17 @@ checks:
     runner: kspec item get + node parser
     created_at: 2026-06-28T08:39:33.964Z
     completed_at: 2026-06-28T08:39:33.964Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with the repo's known reference warning baseline and exit 0 under
+      --warnings-ok.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-28T08:39:39.843Z
+    completed_at: 2026-06-28T08:39:39.843Z
 events:
   - _ulid: 01KW6P0VQGVWBE9Q9DJ7VNHFD6
     actor: Jacob Chapel
@@ -231,6 +242,13 @@ events:
       status: pass
       name: cross-reference validation
     timestamp: 2026-06-28T08:39:34.224Z
+  - _ulid: 01KW6P4S9TANEWAGSTGXSRCAKS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-28T08:39:40.090Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -243,5 +261,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T08:37:31.510Z
-updated_at: 2026-06-28T08:39:33.964Z
+updated_at: 2026-06-28T08:39:39.843Z
 notes: []
