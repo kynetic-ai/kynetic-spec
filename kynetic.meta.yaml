@@ -23508,6 +23508,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-28T10:05:52.724Z
+  - _ulid: 01KW6WF9WKXAY9S56G2D6HN8MH
+    type: success
+    content: During spec workspace projection fix-cycle review, comparing lightweight summary counts
+      against the detailed linked-work groups exposed a false-zero session count that route tests
+      missed. Projection API tests should assert summary/detail consistency for derived counts
+      whenever both surfaces are returned.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-28T10:30:16.211Z
+  - _ulid: 01KW6WFA8X46F0JHSJ7XJSHG97
+    type: success
+    content: Using kspec batch to reply to and resolve all addressed review threads in one atomic
+      operation produced a clean fix-cycle audit trail and avoided partial thread state while
+      updating multiple review findings.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-28T10:30:16.605Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
