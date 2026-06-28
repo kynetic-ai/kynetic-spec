@@ -280,6 +280,12 @@ events:
     payload:
       thread_ulid: 01KW757QQMAFWB3AXZKFQM87KR
     timestamp: 2026-06-28T13:34:04.605Z
+  - _ulid: 01KW7701J2HGV7H0YTZHNVMX9T
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW757TT3E5PE164GAKD5RRY7
+    timestamp: 2026-06-28T13:34:10.498Z
 examined_commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
 external_links: []
 lifecycle_state: closed
@@ -408,6 +414,12 @@ threads:
           banner, status, or other indication that older expanded branches were dropped, so
           expansion context can be lost across navigation without the required notice."
         created_at: 2026-06-28T13:03:28.580Z
+      - _ulid: 01KW7701A8XD86S00GKJYT08MB
+        author: Jacob Chapel
+        body: "Fixed: bounded expansion-state eviction is now surfaced with an expandedEvicted URL marker
+          and a visible status notice. Added E2E coverage for overflow so truncation is communicated
+          to the user."
+        created_at: 2026-06-28T13:34:10.248Z
     kind: blocker
   - _ulid: 01KW757XWVD2BCX1ADTY7ZV0SJ
     entries:
@@ -438,5 +450,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T13:03:35.183Z
 created_at: 2026-06-28T12:46:18.934Z
-updated_at: 2026-06-28T13:34:04.359Z
+updated_at: 2026-06-28T13:34:10.248Z
 notes: []
