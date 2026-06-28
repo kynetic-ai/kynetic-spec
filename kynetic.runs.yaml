@@ -76025,7 +76025,7 @@ runs:
     completed_at: 2026-06-28T11:48:08.463Z
   - _ulid: 01KW73Z22R767XXQ1XETZ5P039
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -76039,7 +76039,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T12:43:22.622Z
-        completed_at: 2026-06-28T12:43:22.622Z
+        completed_at: 2026-06-28T12:43:45.411Z
+        notes: "High-confidence items after baseline and targeted searches: (1) Success: AC-aligned route
+          E2E against the real daemon projection exposed a projection cache summary/detail issue;
+          captured as @01KW742Q. (2) Friction: cached npm test failures replay after transient
+          failures; already covered by unresolved observations @01KP992X and @01KPPVM9H, so no
+          duplicate captured. Existing projection consistency observation @01KW6WF9 is related but
+          narrower than the route-E2E process pattern."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T12:43:45.411Z
+        completed_at: 2026-06-28T12:43:45.411Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-28T12:41:12.536Z
