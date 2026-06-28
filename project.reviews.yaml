@@ -28784,7 +28784,7 @@ reviews:
     author: Jacob Chapel
     check_count: 0
     examined_commit: 5bb8e3d32c1e62ce6906fa6fab794b22d8db6795
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -28795,7 +28795,7 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-28T18:55:53.775Z
-    updated_at: 2026-06-28T20:54:41.512Z
+    updated_at: 2026-06-28T20:54:47.081Z
   - _ulid: 01KW7Z4B5CTRQP88JEDYQR6CPQ
     slugs: []
     title: Review coverage state presentation workspace
