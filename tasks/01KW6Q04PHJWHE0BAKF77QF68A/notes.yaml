@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KW80R0XRCJFZ43T5N5VGXNEA
+    content: "Approach: reuse the existing spec-workspace projection and coverage resolution daemon
+      endpoints, adding a web-ui API wrapper plus a pure panel model for action visibility,
+      preview/result rendering, read-only guidance, and task-effect presentation. The specs route
+      renders focused and inline panels, obtains dry-run previews before apply, sends spec-text
+      revert with the preview fingerprint, and refreshes query data after stored mutation responses
+      while relying on existing coverage_state_changed invalidation. Edge cases: unsupported
+      criterion states, static/read-only mode, stale-target conflict fingerprints, failed
+      preconditions, dispatch-fix reuse/create effects, and event/query refresh without optimistic
+      coverage invention. Test plan: focused web-ui tests cover all seven
+      @spec-workspace-coverage-resolution-panels ACs through behavioral helper/API tests, followed
+      by changed-file lint, typecheck, full tests, and kspec validation gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T21:04:10.680Z
