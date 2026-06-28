@@ -76172,7 +76172,7 @@ runs:
     completed_at: 2026-06-28T13:40:02.457Z
   - _ulid: 01KW78H29BJDD55RHNRJWWZHC5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -76188,7 +76188,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T14:02:45.925Z
-        completed_at: 2026-06-28T14:02:45.925Z
+        completed_at: 2026-06-28T14:03:05.754Z
+        notes: "Friction points: the review had to manually infer which unchanged E2E suites still exercised
+          behavior now served by /specs after /items redirects. The task description said to
+          remove/adapt ItemTree/ItemDetail only after current read/navigation behavior was covered,
+          but there was no obvious route-replacement regression checklist tying old spec detail
+          workflows like related sessions to the new workspace. A secondary friction was that the
+          full required npm test gate took 2589.9s after a blocker was already reproduced, though it
+          did finish cleanly and remains required by current review policy."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T14:03:05.754Z
+        completed_at: 2026-06-28T14:03:05.754Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T14:00:56.876Z
