@@ -76067,7 +76067,7 @@ runs:
     completed_at: 2026-06-28T12:44:05.154Z
   - _ulid: 01KW759M7JK7V3Q6Z1CSWMRV1T
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -76084,7 +76084,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T13:05:48.305Z
-        completed_at: 2026-06-28T13:05:48.305Z
+        completed_at: 2026-06-28T13:06:18.543Z
+        notes: "High-confidence reflection item: automated reviewer review-record writes created through
+          kspec review check/comment defaulted to the configured human author in the review
+          timeline, while the verdict used reviewer=pr-reviewer. This is repeatable for automated
+          review batches unless every check/comment passes --author, and it makes the review
+          evidence log appear authored by Jacob Chapel instead of the reviewer agent. Existing
+          coverage checked: @task-actor-normalization-upgrade covers historical actor normalization;
+          @task-review-author-resolution is completed but this runtime batch/review-command default
+          still surfaced; no direct search hit for review check/comment author default."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T13:06:18.543Z
+        completed_at: 2026-06-28T13:06:18.543Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-28T13:04:27.378Z
