@@ -152,7 +152,7 @@ test.describe("Task and Spec Session Context", () => {
     await expect(sessionsSection).toBeVisible();
     const row = sessionsSection.getByTestId("task-related-sessions-row");
     await expect(row).toHaveCount(1);
-    await expect(row.first()).toContainText("completed");
+    await expect(row.first().locator('[data-slot="badge"]')).toHaveText(/completed/i);
     await expect(row.first()).toContainText("5m 0s");
     await expect(row.first()).toHaveAttribute("href", /\/sessions\/session-task-ready$/);
 
@@ -194,7 +194,7 @@ test.describe("Task and Spec Session Context", () => {
     await expect(sessionsSection).toBeVisible();
     const rows = sessionsSection.getByTestId("item-related-sessions-row");
     await expect(rows).toHaveCount(2);
-    await expect(rows.first()).toContainText("completed");
+    await expect(rows.first().locator('[data-slot="badge"]')).toHaveText(/completed/i);
     await expect(rows.first()).toHaveAttribute("href", /\/sessions\/session-task-progress$/);
 
     await sessionsSection.getByTestId("item-related-sessions-view-all").click();
