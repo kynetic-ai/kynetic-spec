@@ -59,6 +59,14 @@ tags:
   - accessibility
   - static
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-28T08:56:27.320Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -150,3 +158,4 @@ resource_refs:
     sha256: 164f12153268332a70fb6e26efd50d2f17df4dd13e00b15c1ccbf0310f50ee36
 created_at: 2026-06-28T08:54:36.878Z
 todos: []
+automation: eligible
