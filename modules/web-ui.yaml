@@ -6925,7 +6925,7 @@ features:
           expansion context across browser back/forward, and works without hover.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on:
           - "@ui-breadcrumb"
           - "@ui-view-header"
