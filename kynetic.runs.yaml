@@ -76067,9 +76067,24 @@ runs:
     completed_at: 2026-06-28T12:44:05.154Z
   - _ulid: 01KW759M7JK7V3Q6Z1CSWMRV1T
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-28T13:04:27.378Z
+        completed_at: 2026-06-28T13:05:48.305Z
+        notes: "Gate: meaningful session work occurred via review record creation, gate execution, five
+          blocker threads, request_changes verdict, and task transition to needs_work. Worked well:
+          batch review mutations captured all checks/findings/verdict atomically after gates
+          completed. Friction candidates searched: review check/comment author attribution, batch
+          review check optional intent, evidence-log batching. Existing coverage: @01KQ1272 tracks
+          optional check intent; @task-actor-normalization-upgrade covers historical actor
+          normalization, not current runtime author default."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-28T13:05:48.305Z
+        completed_at: 2026-06-28T13:05:48.305Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-28T13:04:27.378Z
