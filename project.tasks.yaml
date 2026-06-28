@@ -33502,7 +33502,7 @@
   type: task
   spec_ref: "@spec-workspace-coverage-resolution-panels"
   plan_ref: "@plan-unified-spec-workspace"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-spec-workspace-coverage-presentation"
@@ -33516,6 +33516,7 @@
   todos_count: 0
   created_at: 2026-06-28T08:54:36.497Z
   started_at: 2026-06-28T20:55:51.710Z
+  submitted_at: 2026-06-28T21:31:34.662Z
   automation: eligible
 - _ulid: 01KW6Q052EJ7M5WHBF4W8AHSW8
   slugs:

@@ -42,7 +42,7 @@ description: |
 spec_ref: "@spec-workspace-coverage-resolution-panels"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-spec-workspace-coverage-presentation"
@@ -54,6 +54,14 @@ tags:
   - mutations
   - specs
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-spec-workspace-resolution-panels/01kw6q04
+  captured_at: 2026-06-28T21:31:34.656Z
+  commit: 9ba0efbbd15db6303fae955a58757c9f50af9972
+  remote: null
+  remote_url: null
+  upstream_ref: feat/ui-redesign
 session_id: 01KW807NENF1V0JRR7F5PZJMGP
 history:
   - author: Jacob Chapel
@@ -76,6 +84,26 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-28T20:55:51.711Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-spec-workspace-resolution-panels/01kw6q04
+          captured_at: 2026-06-28T21:31:34.656Z
+          commit: 9ba0efbbd15db6303fae955a58757c9f50af9972
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous: null
+      submitted_at:
+        new: 2026-06-28T21:31:34.662Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-28T21:31:34.662Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -111,5 +139,6 @@ resource_refs:
     sha256: b9b6f967f22a1477a312878cafc27cf04dc110474093fd6e1548975eedd6b177
 created_at: 2026-06-28T08:54:36.497Z
 started_at: 2026-06-28T20:55:51.710Z
+submitted_at: 2026-06-28T21:31:34.662Z
 todos: []
 automation: eligible
