@@ -173,6 +173,19 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-06-28T08:39:51.047Z
     completed_at: 2026-06-28T08:39:51.047Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Prior blockers remain addressed: branch is set, trait coverage is explicit including N/A
+      cases, coverage vocabulary uses the completed four-bucket model, static/read-only behavior
+      remains specified, project-neutral scope remains explicit, and no derive/start/approval action
+      was taken."
+    name: prior approval-ready properties
+    required: true
+    runner: plan re-review
+    created_at: 2026-06-28T08:39:56.740Z
+    completed_at: 2026-06-28T08:39:56.740Z
 events:
   - _ulid: 01KW6P0VQGVWBE9Q9DJ7VNHFD6
     actor: Jacob Chapel
@@ -285,6 +298,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-28T08:39:51.296Z
+  - _ulid: 01KW6P59T0QNJY2TXM3P193XW4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior approval-ready properties
+    timestamp: 2026-06-28T08:39:56.992Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -297,5 +317,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T08:37:31.510Z
-updated_at: 2026-06-28T08:39:51.047Z
+updated_at: 2026-06-28T08:39:56.740Z
 notes: []
