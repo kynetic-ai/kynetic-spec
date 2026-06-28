@@ -43,8 +43,12 @@ description: |
 spec_ref: "@spec-workspace-coverage-state-presentation"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged dispatch/task/task-spec-workspace-coverage-presentation/01kw6q04 into
+  feat/ui-redesign at 66f9e3bfec7588aa5be930274bc1e21251c90dc8 after approved review @01KW7Z4B.
+  Added workspace coverage state presentation with four-bucket tokens, rollups, filters, re-verify
+  banner links, static unavailable indicators, and coverage-state invalidation coverage.
 depends_on:
   - "@task-spec-node-criterion-workspace-pages"
 context: []
@@ -176,6 +180,22 @@ history:
         previous: "@01KW7SD4DF414Z1NCE9848XAGY"
     command: review-link
     timestamp: 2026-06-28T20:36:01.746Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged dispatch/task/task-spec-workspace-coverage-presentation/01kw6q04 into feat/ui-redesign
+          at 66f9e3bfec7588aa5be930274bc1e21251c90dc8 after approved review @01KW7Z4B. Added
+          workspace coverage state presentation with four-bucket tokens, rollups, filters, re-verify
+          banner links, static unavailable indicators, and coverage-state invalidation coverage.
+        previous: null
+      completed_at:
+        new: 2026-06-28T20:54:06.324Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-28T20:54:06.333Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -236,5 +256,6 @@ resource_refs:
 created_at: 2026-06-28T08:54:36.097Z
 started_at: 2026-06-28T18:24:14.854Z
 submitted_at: 2026-06-28T18:49:59.809Z
+completed_at: 2026-06-28T20:54:06.324Z
 todos: []
 automation: eligible

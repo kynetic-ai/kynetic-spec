@@ -33478,7 +33478,7 @@
   type: task
   spec_ref: "@spec-workspace-coverage-state-presentation"
   plan_ref: "@plan-unified-spec-workspace"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-spec-node-criterion-workspace-pages"
@@ -33493,6 +33493,7 @@
   created_at: 2026-06-28T08:54:36.097Z
   started_at: 2026-06-28T18:24:14.854Z
   submitted_at: 2026-06-28T18:49:59.809Z
+  completed_at: 2026-06-28T20:54:06.324Z
   automation: eligible
 - _ulid: 01KW6Q04PHJWHE0BAKF77QF68A
   slugs:
