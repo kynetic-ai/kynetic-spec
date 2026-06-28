@@ -77137,7 +77137,7 @@ runs:
     completed_at: 2026-06-28T23:24:02.464Z
   - _ulid: 01KW89TGE9775P62F7A5SSH6EW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77152,7 +77152,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T23:43:42.221Z
-        completed_at: 2026-06-28T23:43:42.221Z
+        completed_at: 2026-06-28T23:44:41.837Z
+        notes: "Friction points: The reflection skill presents standard and loop variants, and the CLI
+          permits both to be started in the same session. That created two active reflection runs
+          and required manual discovery plus pause cleanup. This looks systemic because workflow
+          start does not warn about an already active reflection-family run. Minor friction also
+          remains around manually constructing seven review-check commands and an evidence-log
+          comment, but that was manageable and less clearly worth capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T23:44:41.837Z
+        completed_at: 2026-06-28T23:44:41.837Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T23:42:49.289Z
