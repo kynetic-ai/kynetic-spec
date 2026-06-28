@@ -23636,6 +23636,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-28T20:56:28.575Z
+  - _ulid: 01KW80A0DR6HTMMME1AXH3WKRR
+    type: friction
+    content: "A duplicate open review record can remain when a reviewer creates a fresh review while an
+      earlier cycle review record is still open. After approving and completing the task, review
+      for-task still showed the stale open/pending review until it was manually annotated and closed
+      as superseded. Search before capture: no matches for duplicate/superseded open review
+      records."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-28T20:56:31.416Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
