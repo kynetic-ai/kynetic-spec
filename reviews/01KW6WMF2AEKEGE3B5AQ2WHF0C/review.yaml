@@ -171,6 +171,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-28T10:47:35.015Z
+  - _ulid: 01KW6ZEAXAAQHRPGWM1BBKF49W
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW6XETA7QF1DHP24GZYB3527
+    timestamp: 2026-06-28T11:22:10.218Z
+  - _ulid: 01KW6ZEDXR7VV2HGTM1YBCRDZK
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW6XETA7QF1DHP24GZYB3527
+    timestamp: 2026-06-28T11:22:13.304Z
+  - _ulid: 01KW6ZEGY88D8QPJVW2C7CWJAA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW6XEX5TFGBD00MKY1CK166M
+    timestamp: 2026-06-28T11:22:16.392Z
+  - _ulid: 01KW6ZEKZGAJK2YB12QYNTS2V6
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW6XEX5TFGBD00MKY1CK166M
+    timestamp: 2026-06-28T11:22:19.504Z
 examined_commit: f8b7d74abf7477b194213811564e2b758d4fef21
 external_links: []
 lifecycle_state: closed
@@ -203,7 +227,16 @@ threads:
           server/static maximum (or reject over-limit values with the documented validation shape)
           and add regression coverage for over-limit requests."
         created_at: 2026-06-28T10:47:28.839Z
+      - _ulid: 01KW6ZEANY64B476QP6CSQVX13
+        author: Jacob Chapel
+        body: "Fixed in b5106f14ba: added shared SPEC_WORKSPACE_MAX_PAGE_SIZE, daemon validation now rejects
+          limit values over 100 with the existing validation_error shape, and static root/node
+          projection helpers cap numeric limits to the same maximum before slicing. Added daemon and
+          static regressions for over-limit root/node pagination."
+        created_at: 2026-06-28T11:22:09.981Z
     kind: blocker
+    resolved_at: 2026-06-28T11:22:13.044Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KW6XEX5TFGBD00MKY1CK166M
     entries:
       - _ulid: 01KW6XEX5T8EY6P0TEA519TWJV
@@ -227,7 +260,13 @@ threads:
           source-scanning tests, integration with existing route/envelope/cache patterns. Finding:
           one blocker for uncapped projection pagination."
         created_at: 2026-06-28T10:47:31.770Z
+      - _ulid: 01KW6ZEGPKCDG7S2H9C35W4BX6
+        author: Jacob Chapel
+        body: Acknowledged the review evidence log; no code action was requested in this nit.
+        created_at: 2026-06-28T11:22:16.147Z
     kind: nit
+    resolved_at: 2026-06-28T11:22:19.261Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -237,5 +276,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T10:47:35.015Z
 created_at: 2026-06-28T10:33:05.354Z
-updated_at: 2026-06-28T10:47:35.015Z
+updated_at: 2026-06-28T11:22:19.261Z
 notes: []

@@ -42,3 +42,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T10:47:36.975Z
+  - _ulid: 01KW6ZEN4TJB4AZM1FMVNTNDRE
+    content: "Fix cycle 2: addressed the pagination cap blocker. Added shared
+      SPEC_WORKSPACE_MAX_PAGE_SIZE=100; daemon root/node endpoints reject over-limit limit values
+      with structured validation errors; static root/node projection helpers cap large numeric
+      limits before slicing. Added daemon and static regression coverage for over-limit requests and
+      re-verified ACs around bounded projections and endpoint contracts. Gates passed: format:check;
+      focused oxlint; lint --quiet; typecheck; focused spec-workspace tests; npm test -- --fresh;
+      kspec validate refs/alignment/completeness with existing warning baselines."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T11:22:20.698Z

@@ -59,7 +59,7 @@ description: |
 spec_ref: "@unified-spec-workspace-data-projection"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -75,8 +75,8 @@ review_ref: "@01KW6WMF2AEKEGE3B5AQ2WHF0C"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-unified-spec-workspace-projection-api/01kw6q03
-  captured_at: 2026-06-28T10:27:37.674Z
-  commit: f8b7d74abf7477b194213811564e2b758d4fef21
+  captured_at: 2026-06-28T11:22:21.678Z
+  commit: b5106f14ba336db3056cd1d145e0755714f291ec
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-unified-spec-workspace-projection-api/01kw6q03
@@ -209,6 +209,33 @@ history:
         previous: 2026-06-28T10:09:35.852Z
     command: task-start
     timestamp: 2026-06-28T10:54:12.268Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-unified-spec-workspace-projection-api/01kw6q03
+          captured_at: 2026-06-28T11:22:21.678Z
+          commit: b5106f14ba336db3056cd1d145e0755714f291ec
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-unified-spec-workspace-projection-api/01kw6q03
+        previous:
+          review_url: null
+          branch: dispatch/task/task-unified-spec-workspace-projection-api/01kw6q03
+          captured_at: 2026-06-28T10:27:37.674Z
+          commit: f8b7d74abf7477b194213811564e2b758d4fef21
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-unified-spec-workspace-projection-api/01kw6q03
+      submitted_at:
+        new: 2026-06-28T11:22:21.685Z
+        previous: 2026-06-28T10:27:37.681Z
+    command: task-submit
+    timestamp: 2026-06-28T11:22:21.686Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -268,6 +295,6 @@ resource_refs:
     sha256: 168b0cc754d2622f560b813ca886152d7843511412790a4d8327ae04127fbe65
 created_at: 2026-06-28T08:54:35.007Z
 started_at: 2026-06-28T10:54:12.267Z
-submitted_at: 2026-06-28T10:27:37.681Z
+submitted_at: 2026-06-28T11:22:21.685Z
 todos: []
 automation: eligible
