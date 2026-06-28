@@ -208,6 +208,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-28T14:49:04.321Z
+  - _ulid: 01KW7DE3Z75FXBW7CM5GC9N3D0
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW7B5WDM26VF48MTRY45EPZB
+    timestamp: 2026-06-28T15:26:43.175Z
 examined_commit: a35677900ee073d6bcc6e1661c95fd81b082e43f
 external_links: []
 lifecycle_state: closed
@@ -247,6 +253,14 @@ threads:
           `fetchSpecWorkspaceRoot` without `planFilter`, while lines 589-596 only render the plan
           banner.
         created_at: 2026-06-28T14:47:16.149Z
+      - _ulid: 01KW7DE3PMCNR9V7M5JT2JMECD
+        author: Jacob Chapel
+        body: "Fixed in c35fb3fd1b: /api/spec-workspace/root now accepts plan and filters visible root
+          nodes/corpus counts to the plan's derived_specs, with live client, static fallback, and
+          /specs query key all preserving the plan parameter. Added behavioral daemon/static tests
+          and strengthened the View Specs E2E to assert the tree shows Test Feature and excludes
+          unrelated Core Module/Test Trait rows."
+        created_at: 2026-06-28T15:26:42.900Z
     kind: blocker
   - _ulid: 01KW7B8VM251GTJX7KYN3VB7EK
     entries:
@@ -302,5 +316,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T14:49:04.321Z
 created_at: 2026-06-28T14:31:35.387Z
-updated_at: 2026-06-28T14:49:04.321Z
+updated_at: 2026-06-28T15:26:42.900Z
 notes: []
