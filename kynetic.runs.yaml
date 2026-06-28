@@ -77200,7 +77200,7 @@ runs:
     started_at: 2026-06-28T23:42:49.289Z
     completed_at: 2026-06-28T23:45:39.735Z
   - _ulid: 01KW89THSS85ZYT5CG3CP5A6MS
-    status: paused
+    status: aborted
     current_step: 0
     initiated_by: Jacob Chapel
     paused_at: 2026-06-28T23:43:19.598Z
@@ -77208,3 +77208,4 @@ runs:
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-28T23:42:50.681Z
+    completed_at: 2026-06-28T23:45:52.379Z
