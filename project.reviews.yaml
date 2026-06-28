@@ -28571,9 +28571,9 @@ reviews:
   - _ulid: 01KW6T7E9AQF79YT82GT627AG5
     slugs: []
     title: Review unified spec workspace projection API
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 5
+    check_count: 6
     examined_commit: 30f92fa025dac26ded72129e9b9d93b7bdd794ac
     lifecycle_state: open
     related_refs: []
@@ -28586,4 +28586,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-28T09:51:01.418Z
-    updated_at: 2026-06-28T10:02:22.929Z
+    updated_at: 2026-06-28T10:02:26.258Z
