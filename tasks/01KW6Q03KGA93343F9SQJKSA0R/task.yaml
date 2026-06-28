@@ -45,7 +45,7 @@ description: |
 spec_ref: "@unified-spec-workspace-navigation"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-unified-spec-workspace-projection-api"
@@ -66,7 +66,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-unified-spec-workspace-shell-navigation/01kw6q03
-session_id: 01KW75H2X00MDHXG5ZQCHSTMBK
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -172,6 +172,16 @@ history:
         previous: "@01KW748D9P8E6T3KJXWDZ9432T"
     command: review-link
     timestamp: 2026-06-28T13:42:24.346Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KW75H2X00MDHXG5ZQCHSTMBK
+    command: review-verdict-needs-work
+    timestamp: 2026-06-28T14:00:04.605Z
 resource_refs:
   - git_commit: null
     git_path: null

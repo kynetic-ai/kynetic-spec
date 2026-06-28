@@ -33429,7 +33429,7 @@
   type: task
   spec_ref: "@unified-spec-workspace-navigation"
   plan_ref: "@plan-unified-spec-workspace"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-unified-spec-workspace-projection-api"
@@ -33440,7 +33440,7 @@
     - navigation
     - accessibility
   review_ref: "@01KW77F149RRJC2X903EKCXQW6"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-06-28T08:54:35.376Z
   started_at: 2026-06-28T13:09:31.143Z
