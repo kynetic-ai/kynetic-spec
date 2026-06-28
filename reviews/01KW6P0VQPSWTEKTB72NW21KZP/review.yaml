@@ -127,6 +127,19 @@ checks:
     runner: plan markdown inspection
     created_at: 2026-06-28T08:39:28.216Z
     completed_at: 2026-06-28T08:39:28.216Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All external spec/trait refs from planned parents/depends_on/traits resolve: web UI
+      foundations, coverage state/cache/events/presentation, resolution mutation specs, UI state
+      specs, gh-pages export, and traits. Plan-local spec_ref and task depends_on refs resolve to
+      planned specs/tasks."
+    name: cross-reference validation
+    required: true
+    runner: kspec item get + node parser
+    created_at: 2026-06-28T08:39:33.964Z
+    completed_at: 2026-06-28T08:39:33.964Z
 events:
   - _ulid: 01KW6P0VQGVWBE9Q9DJ7VNHFD6
     actor: Jacob Chapel
@@ -211,6 +224,13 @@ events:
       status: pass
       name: dependency ordering
     timestamp: 2026-06-28T08:39:28.477Z
+  - _ulid: 01KW6P4KJG7CCSP3H5AZH0PFHD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: cross-reference validation
+    timestamp: 2026-06-28T08:39:34.224Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -223,5 +243,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T08:37:31.510Z
-updated_at: 2026-06-28T08:39:28.216Z
+updated_at: 2026-06-28T08:39:33.964Z
 notes: []
