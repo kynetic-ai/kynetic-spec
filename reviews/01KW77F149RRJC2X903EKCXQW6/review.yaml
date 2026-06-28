@@ -209,6 +209,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-28T14:00:02.567Z
+  - _ulid: 01KW79YK0AH6B013H923A7BEX1
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW78EE7T80E2J93HKF4SRERK
+    timestamp: 2026-06-28T14:25:48.554Z
 examined_commit: 19ad0f44ea3ecddcd0be3a8faeecc16f8ad7036f
 external_links: []
 lifecycle_state: closed
@@ -244,6 +250,14 @@ threads:
           Restore the Sessions section/view-all behavior in the workspace, and update tests only if
           the selectors intentionally change while preserving the behavior."
         created_at: 2026-06-28T13:59:30.811Z
+      - _ulid: 01KW79YJRCZ2AV44CT4QY37MN7
+        author: Jacob Chapel
+        body: "Fixed in commit a35677900e: the workspace now splits session linked work into a dedicated
+          item-related-sessions section, preserves item-related-sessions-row and
+          item-related-sessions-view-all selectors, and links View all sessions to
+          /sessions?spec_ref=<focused spec ref>. Verified with the reproduced focused E2E plus
+          format, lint, typecheck, full npm test, and kspec validations."
+        created_at: 2026-06-28T14:25:48.300Z
     kind: blocker
   - _ulid: 01KW78F1JB8ZT6MEMX8H53CB4V
     entries:
@@ -285,5 +299,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T14:00:02.566Z
 created_at: 2026-06-28T13:42:21.577Z
-updated_at: 2026-06-28T14:00:02.567Z
+updated_at: 2026-06-28T14:25:48.300Z
 notes: []
