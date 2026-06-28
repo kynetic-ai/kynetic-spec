@@ -1,0 +1,152 @@
+_ulid: 01KW6Q052EJ7M5WHBF4W8AHSW8
+slugs:
+  - task-spec-workspace-quality-verification
+title: Verify workspace quality, static mode, and browser workflow
+type: task
+description: |
+  What:
+  - Complete the focused test/a11y/static/browser verification pass for the unified spec
+    workspace.
+  - Add or update tests that prove route restoration, row interaction, projection client
+    behavior, static fallback, event invalidation, resolution panels, keyboard operation,
+    and no horizontal-scroll regression.
+  - Browser-prove the vertical workflow against a live daemon project: root tree → node
+    page → requirement/AC page → state filter → linked work → resolution disabled or
+    preview path.
+  - Run the project's normal web UI and kspec gates.
+
+  Why:
+  This plan should ship the first major redesign UI surface, not a partial demo. The
+  final task ensures it matches project conventions and can safely replace the old
+  `/specs` surface.
+
+  How:
+  - UX resources: Browser proof must explicitly walk the attached screenshot set and
+    record which implemented surface covers each reference: root tree hover/keyboard
+    equivalent, module/feature pages, requirement AC rows, AC page, stateful filters,
+    rollups, and stale/re-verify panel behavior.
+  - Use existing test runner commands and project-local work-gate conventions.
+  - Include screenshots or logs as task resources/notes when browser proof is manual.
+  - If any spec-workspace behavior cannot be completed because an upstream API/design
+    decision is missing, block with the exact missing contract instead of silently
+    shipping a preview-only half.
+
+  Testing:
+  - npm run format:check
+  - npm run lint -- --quiet
+  - npm run typecheck
+  - focused workspace/unit tests
+  - npm test, or documented shard/focused evidence plus rationale if the full suite is
+    not practical in the worker environment
+  - kspec validate --refs --alignment --completeness --warnings-ok
+  - browser proof using the live daemon/web UI
+
+  Covers: @spec-workspace-delivery-quality ac-svelte-and-query-conventions,
+    ac-url-state-via-goto, ac-static-export-build, ac-keyboard-and-screenreader,
+    ac-browser-proof, ac-test-coverage, ac-existing-specs-route-replaced
+spec_ref: "@spec-workspace-delivery-quality"
+plan_ref: "@plan-unified-spec-workspace"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-spec-workspace-resolution-panels"
+context: []
+priority: 1
+tags:
+  - web-ui
+  - tests
+  - accessibility
+  - static
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-spec-workspace
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/06-spec-workspace.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 9859180adb431b75189f3a8d5d89bcecec614ced1c8b0cd242e1d333552fb52e
+  - git_commit: null
+    git_path: null
+    id: handoff-coverage-states
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/07-coverage-states.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 2663975b866d23cddc915a7ce73f4ac32ffbe495e4a6b77e124726537d40255c
+  - git_commit: null
+    git_path: null
+    id: handoff-spec-states-integration
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/08-spec-states-integration.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 1a280d3c6246e561c0d04400a6bfb1567ffd1cc7181ef2b9173acb9184e15493
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-tree
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-1-tree-hover.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: e09ec6a67209bfbba0d442920c828a3a980e212603f33a0a884a2a1f4b745893
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-module
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-2-module.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 24178a66e6c07925ced6acdd8f537184b1c44bac0707a2452f3ebc66db71b6f9
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-feature
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-3-feature.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 3a05d1f3fd5c4b50dac693f864913dd1f5240ea43147511b1d6dfb2b3c91fbc6
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-requirement
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-4-requirement.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 1ef96bf177177d55cf0bd0f395598712439e2786f54244b0d01b35b2422ef2bd
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-ac
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-5-ac.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: ee9a4739f54fd1f65695fd99e5924287a205635f1b57e9b9303ce2573620a622
+  - git_commit: null
+    git_path: null
+    id: shot-spec-state-requirement
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-states-1-requirement.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 9ef6b5a3f22a847abb9f5ff832b6e9132706ab0e38298bbc91aa3c394d649e71
+  - git_commit: null
+    git_path: null
+    id: shot-spec-state-rollups
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-states-2-tree-rollups.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 168b0cc754d2622f560b813ca886152d7843511412790a4d8327ae04127fbe65
+  - git_commit: null
+    git_path: null
+    id: shot-spec-state-stale-ac
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-states-3-stale-ac.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 164f12153268332a70fb6e26efd50d2f17df4dd13e00b15c1ccbf0310f50ee36
+created_at: 2026-06-28T08:54:36.878Z
+todos: []

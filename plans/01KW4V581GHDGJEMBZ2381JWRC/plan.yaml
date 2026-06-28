@@ -2,11 +2,23 @@ _ulid: 01KW4V581GHDGJEMBZ2381JWRC
 slugs:
   - plan-unified-spec-workspace
 title: Unified Spec Workspace
-status: approved
+status: active
 approved_at: 2026-06-28T08:53:34.122Z
 branch: feat/ui-redesign
-derived_specs: []
-derived_tasks: []
+derived_specs:
+  - "@unified-spec-workspace-data-projection"
+  - "@unified-spec-workspace-navigation"
+  - "@spec-node-criterion-workspace-pages"
+  - "@spec-workspace-coverage-state-presentation"
+  - "@spec-workspace-coverage-resolution-panels"
+  - "@spec-workspace-delivery-quality"
+derived_tasks:
+  - "@task-unified-spec-workspace-projection-api"
+  - "@task-unified-spec-workspace-shell-navigation"
+  - "@task-spec-node-criterion-workspace-pages"
+  - "@task-spec-workspace-coverage-presentation"
+  - "@task-spec-workspace-resolution-panels"
+  - "@task-spec-workspace-quality-verification"
 module_ref: null
 resource_summary:
   count: 18

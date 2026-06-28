@@ -6760,6 +6760,604 @@ features:
         notes: []
     created: 2026-06-15T00:55:21.854Z
     notes: []
+  - _ulid: 01KW6Q02V1Q3PPGJ118TSK3EA6
+    slugs:
+      - unified-spec-workspace-data-projection
+    title: Unified Spec Workspace Data Projection
+    type: feature
+    description: |
+      The spec workspace reads one backend-owned workspace projection instead
+      of reconstructing page hierarchy, breadcrumb paths, linked work, corpus
+      counts, or coverage rollups from unbounded client-side entity lists. The
+      projection exposes the root workspace, node detail, child-row summaries,
+      acceptance-criterion detail, coverage-state summaries, and lightweight
+      linked-work counts through bounded daemon/static API contracts. It uses
+      the canonical four user-facing presentation buckets from the
+      coverage-state engine — covered, failing, not yet, and re-verify — while
+      preserving transport enum values and secondary re-verify causes for API
+      payloads, captions, and resolution panels.
+    depends_on:
+      - "@ui-breadcrumb"
+      - "@ui-view-header"
+      - "@coverage-state-api-cache"
+      - "@coverage-state-events"
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-api-endpoint"
+      - "@trait-error-guidance"
+    acceptance_criteria:
+      - given: |
+          a web client opens the root Specs workspace
+        id: ac-bounded-root-projection
+        then: |
+          the daemon returns corpus counts, project coverage summary, top-level
+          visible nodes, and per-node child/coverage/linked-work counts in one
+          bounded envelope; the client does not fetch every item and compute
+          derived workspace statistics locally
+        when: |
+          it requests the root projection
+      - given: |
+          a client opens any module, feature, requirement, trait, constraint, or
+          other supported spec item node
+        id: ac-node-detail-projection
+        then: |
+          the response includes the node header fields, server-resolved
+          breadcrumb ancestors, ordered child sections, acceptance criteria when
+          present, coverage rollups, linked-work counts, and enough pagination
+          or continuation metadata to avoid unbounded child expansion
+        when: |
+          it requests the node's workspace detail
+      - given: |
+          a client opens an acceptance criterion as a focused workspace page
+        id: ac-ac-detail-projection
+        then: |
+          the response includes the parent item chain, criterion G/W/T text,
+          computed coverage state, coverage evidence summaries, sibling
+          criterion summaries, linked tasks/sessions/plans where available, and
+          any current re-verify explanation without requiring the client to join
+          raw coverage, task, session, and spec lists
+        when: |
+          it requests the criterion detail
+      - given: |
+          the workspace displays state pills, bars, banners, counts, filters, or
+          resolution affordances
+        id: ac-coverage-source-of-truth
+        then: |
+          every displayed coverage value comes from the backend
+          coverage-state read model and maps API enum values onto the same
+          user-facing covered, failing, not yet, and re-verify vocabulary, with
+          secondary causes used only as details and never as a separate
+          client-computed state model
+        when: |
+          it needs coverage data
+      - given: |
+          a client requests any workspace projection endpoint
+        id: ac-endpoint-contract
+        then: |
+          responses follow the existing daemon API contract: successful reads
+          return 2xx JSON envelopes, missing refs return 404 bodies with error,
+          message, and suggestion, validation errors identify fields, paginated
+          projections expose limit/offset/total metadata where pagination is
+          supported, and responses carry the request tracing header required by
+          the API endpoint trait
+        when: |
+          the request succeeds, names a missing ref, includes invalid query
+          input, or is processed for tracing
+      - given: |
+          workspace projection endpoints are read endpoints
+        id: ac-read-endpoints-do-not-commit
+        then: |
+          they do not mutate project state or create shadow commits; the
+          mutation-specific API endpoint trait criterion applies only to the
+          existing resolution mutation endpoints consumed by this workspace
+        when: |
+          they serve root, node, criterion, linked-work, or coverage projection
+          data
+      - given: |
+          a workspace projection request fails because a ref, criterion, query
+          field, snapshot section, or coverage projection cannot be resolved
+        id: ac-error-guidance-contract
+        then: |
+          the response describes what failed, identifies the failed field or
+          value when applicable, and includes recovery guidance such as checking
+          refs, refreshing the workspace, or using an available read-only/static
+          path
+        when: |
+          the error is returned to CLI, daemon, JSON, or web UI consumers
+      - given: |
+          any workspace page displays linked tasks, sessions, plans, reviews, or
+          observations for a spec node or criterion
+        id: ac-linked-work-definition
+        then: |
+          each link class has a documented inclusion rule, returns server-
+          resolved titles/statuses/ages, and omits or degrades unavailable
+          classes explicitly instead of letting the client infer relationships
+          from raw entity scans
+        when: |
+          the backend computes those links
+      - given: |
+          the web UI runs from a static export or other read-only context
+        id: ac-static-readonly-projection
+        then: |
+          read projections render from the static snapshot when present,
+          unavailable dynamic evidence or linked-work classes are labeled as
+          unavailable, and mutation affordances are disabled or replaced with
+          read-only guidance rather than pretending writes can occur
+        when: |
+          the workspace renders
+      - given: |
+          spec items, tasks, sessions, test-run ingestion, verification stamps,
+          or coverage resolution mutations change workspace-visible data
+        id: ac-cache-and-event-coherence
+        then: |
+          workspace query keys are invalidated at the narrowest practical scope
+          and the UI refreshes without polling or recomputing stale derived state
+          locally
+        when: |
+          the daemon broadcasts existing item/task/session/coverage events
+      - given: |
+          the workspace cannot resolve a node, criterion, child page, coverage
+          projection, or linked-work class
+        id: ac-error-boundaries
+        then: |
+          it shows a scoped empty/error state with actionable guidance and keeps
+          the rest of the workspace usable
+        when: |
+          the client receives the failure
+    tags: []
+    features:
+      - _ulid: 01KW6Q02X7FJKF97CXK0V6KN92
+        slugs:
+          - unified-spec-workspace-navigation
+        title: Unified Spec Workspace Navigation
+        type: feature
+        description: |
+          The `/specs` surface becomes a unified page+tree workspace. Every spec
+          node can be expanded inline to inspect children in context, and every node
+          including an acceptance criterion can be opened as a focused page with a
+          stable URL. Row body activation expands; title/open activation navigates.
+          Navigation uses SvelteKit `goto()` and reactive URL state, preserves
+          expansion context across browser back/forward, and works without hover.
+        depends_on:
+          - "@ui-breadcrumb"
+          - "@ui-view-header"
+          - "@ui-shortcut-registry"
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: |
+              any spec item or acceptance criterion shown in the workspace
+            id: ac-stable-node-urls
+            then: |
+              the browser URL identifies that node or criterion directly, can be
+              copied and reloaded, and restores the same focused workspace page
+            when: |
+              the user opens it as a page
+          - given: |
+              an existing link points to `/specs?ref=<ref>` or a ReferenceLink uses
+              the current spec route convention
+            id: ac-existing-ref-links-compatible
+            then: |
+              it opens the matching node in the new workspace instead of regressing
+              existing deep links
+            when: |
+              the redesigned workspace handles the URL
+          - given: |
+              a workspace row with children
+            id: ac-dual-gesture-row
+            then: |
+              the row expands or collapses inline without navigating; activating the
+              title, explicit open affordance, or keyboard open command navigates to
+              the node page
+            when: |
+              the user activates the row body
+          - given: |
+              the user has no hover-capable pointer or uses keyboard-only input
+            id: ac-touch-and-keyboard-open
+            then: |
+              both expand/collapse and open-page actions are visible or otherwise
+              reachable with named controls and accessible labels
+            when: |
+              they focus a row
+          - given: |
+              the user expands several branches and then opens a node page
+            id: ac-expansion-state-preserved
+            then: |
+              the previously expanded branches remain expanded, subject only to
+              bounded-data eviction that is explicitly indicated to the user
+            when: |
+              they return via browser back or workspace navigation
+          - given: |
+              multiple independent branches exist in the spec tree
+            id: ac-multi-branch-expansion
+            then: |
+              each branch remains open independently; expanding one branch does not
+              collapse unrelated branches
+            when: |
+              the user expands more than one branch
+          - given: |
+              a node page renders its child sections
+            id: ac-page-children-use-same-rows
+            then: |
+              they use the same row component, coverage tokens, expand behavior, and
+              open-page affordances as the root tree
+            when: |
+              children appear inside the page
+          - given: |
+              deeply nested paths, long titles, tags, or coverage summaries appear
+              in the workspace
+            id: ac-no-horizontal-scroll
+            then: |
+              content wraps, truncates, collapses, or stacks without introducing
+              page-level horizontal scrolling
+            when: |
+              the viewport is at supported desktop and mobile widths
+        tags: []
+        features:
+          - _ulid: 01KW6Q02Z41B3JVYTPRYQJ81NB
+            slugs:
+              - spec-node-criterion-workspace-pages
+            title: Spec Node and Criterion Workspace Pages
+            type: feature
+            description: |
+              The workspace presents first-class pages for the root, every spec item
+              node, and every acceptance criterion. Pages share breadcrumb and header
+              primitives, show children in typed sections, keep linked work near the
+              spec content, and render acceptance criteria as readable scenarios rather
+              than hidden sheet accordions. This plan is a read/navigation plan: spec
+              editing, add-AC flows, and broad spec CRUD are intentionally out of scope
+              unless a later approved plan designs them.
+            depends_on:
+              - "@unified-spec-workspace-data-projection"
+              - "@ui-breadcrumb"
+              - "@ui-view-header"
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            acceptance_criteria:
+              - given: |
+                  the user opens `/specs` with no focused node
+                id: ac-root-page
+                then: |
+                  it shows the root Specs page with corpus counts, project coverage
+                  summary, top-level rows, and no fake breadcrumb segment
+                when: |
+                  the workspace loads
+              - given: |
+                  the user opens a module, feature, requirement, trait, or constraint
+                  page
+                id: ac-module-feature-requirement-pages
+                then: |
+                  it shows the shared view header, breadcrumb, description, tags/traits
+                  where applicable, child sections appropriate to the node kind, and a
+                  linked-work strip or unavailable-state placeholder
+                when: |
+                  the page renders
+              - given: |
+                  a requirement has acceptance criteria
+                id: ac-requirement-ac-list
+                then: |
+                  criteria appear as state-aware rows with AC ids, concise summaries,
+                  expandable G/W/T bodies, linked evidence indicators, and open-page
+                  affordances for each criterion
+                when: |
+                  the requirement page renders
+              - given: |
+                  the user opens a criterion page
+                id: ac-criterion-page
+                then: |
+                  the page shows the criterion scenario, parent requirement context,
+                  current coverage state and explanation, evidence summaries, siblings,
+                  and links back to related task/session/plan context
+                when: |
+                  its detail projection is available
+              - given: |
+                  linked work exists for a node or criterion
+                id: ac-linked-work-strip
+                then: |
+                  counts and entries are grouped by entity class, use ReferenceLink or
+                  equivalent stable navigation, and do not require opening a side sheet
+                  to discover implementation context
+                when: |
+                  the workspace page renders its linked-work area
+              - given: |
+                  a node has no children, no acceptance criteria, no linked work, or a
+                  projection omits an unavailable class
+                id: ac-empty-and-missing-sections
+                then: |
+                  the section is omitted or displays a concise empty/unavailable state;
+                  blank panels and misleading zeroes are avoided
+                when: |
+                  the page renders
+              - given: |
+                  a user looks for editing actions such as add criterion, edit node
+                  text, reorder specs, or create child item
+                id: ac-read-navigation-scope
+                then: |
+                  the workspace does not expose partial CRUD controls; any mention of
+                  editing directs to later planning or existing CLI workflows
+                when: |
+                  those actions are not designed by this plan
+            tags: []
+            requirements:
+              - _ulid: 01KW6Q0315KH005YAZXW1EFK90
+                slugs:
+                  - spec-workspace-coverage-state-presentation
+                title: Spec Workspace Coverage State Presentation
+                type: requirement
+                description: |
+                  The spec workspace is the first major UI consumer of the completed
+                  coverage-state engine. It presents coverage rollups, state pills, filters,
+                  re-verify banners, and evidence captions using one shared token and label
+                  system for the four API-facing presentation buckets. It never falls back to
+                  the legacy boolean AC `covered` scan when state data is available.
+                depends_on:
+                  - "@coverage-state-presentation"
+                  - "@coverage-state-api-cache"
+                  - "@coverage-state-events"
+                implements: []
+                relates_to: []
+                tests: []
+                traits: []
+                acceptance_criteria:
+                  - given: |
+                      any coverage bucket is rendered in the spec workspace
+                    id: ac-four-bucket-tokens
+                    then: |
+                      covered, failing, not yet, and re-verify each use one consistent
+                      label/color/icon token, and backend secondary re-verify causes such as
+                      stale_spec_text, stale_annotation_or_mapping, stale_test_result, or
+                      unknown_freshness are translated into secondary explanation text under
+                      re-verify instead of top-level UI states
+                    when: |
+                      the token is displayed in a row, header, rollup bar, filter chip,
+                      banner, or criterion page
+                  - given: |
+                      a node or root projection includes coverage bucket counts and a
+                      denominator
+                    id: ac-rollup-bars
+                    then: |
+                      it shows a segmented rollup or compact equivalent whose counts match
+                      the backend projection and whose denominator rules match the coverage
+                      state engine
+                    when: |
+                      the workspace renders its header or row summary
+                  - given: |
+                      a requirement page has criteria in more than one presentation bucket
+                    id: ac-requirement-state-filter
+                    then: |
+                      each filter chip shows backend counts, filtering changes only the
+                      visible criteria for that page, and a reset/all filter restores the
+                      original ordered list without refetching raw unrelated entities
+                    when: |
+                      the state filter strip renders
+                  - given: |
+                      a node or requirement projection has one or more re-verify criteria
+                    id: ac-reverify-banner
+                    then: |
+                      a scoped re-verify banner summarizes the count and cause classes and
+                      links to the Validate surface filtered to the same node or criterion
+                      when that filtered destination exists
+                    when: |
+                      the page renders
+                  - given: |
+                      a page or list contains failing and re-verify criteria
+                    id: ac-failing-dominates-visual-priority
+                    then: |
+                      failing evidence is visually and semantically prioritized over
+                      re-verify, and not-yet remains visually distinct from work that needs
+                      immediate re-validation or repair
+                    when: |
+                      the workspace orders attention states
+                  - given: |
+                      the backend coverage-state projection is ready for a project
+                    id: ac-no-legacy-covered-fallback
+                    then: |
+                      it uses the projection's presentation bucket and explanation instead
+                      of the legacy acceptance-criterion boolean `covered` field or a fresh
+                      client annotation scan
+                    when: |
+                      the workspace renders AC state
+                  - given: |
+                      the coverage-state domain is warming, degraded, or unavailable in a
+                      static snapshot
+                    id: ac-warming-and-unavailable-state
+                    then: |
+                      it shows warming, retry, or unavailable indicators scoped to coverage
+                      state while preserving non-coverage spec navigation
+                    when: |
+                      the workspace renders coverage-dependent UI
+                tags: []
+                requirements:
+                  - _ulid: 01KW6Q0338ZW38NF3X224YQCC6
+                    slugs:
+                      - spec-workspace-coverage-resolution-panels
+                    title: Spec Workspace Coverage Resolution Panels
+                    type: requirement
+                    description: |
+                      Criterion pages and inline re-verify contexts expose coverage resolution
+                      actions only when the current backend state says they are applicable. The
+                      UI previews and applies the existing resolution mutations — explicit
+                      re-verification, spec-text revert, and dispatch-fix request — without
+                      inventing a separate mutation path, test runner, or workspace-specific
+                      task creation flow.
+                    depends_on:
+                      - "@coverage-resolution-mutation-interface"
+                      - "@explicit-coverage-reverification"
+                      - "@coverage-spec-text-revert"
+                      - "@coverage-dispatch-fix-request"
+                    implements: []
+                    relates_to: []
+                    tests: []
+                    traits: []
+                    acceptance_criteria:
+                      - given: |
+                          a criterion is not currently in a state that supports a resolution
+                          action
+                        id: ac-resolution-visibility
+                        then: |
+                          resolution controls are hidden or disabled with explanatory guidance
+                          instead of allowing a doomed mutation attempt
+                        when: |
+                          the workspace renders its criterion page or inline panel
+                      - given: |
+                          the user activates any resolution action from the workspace
+                        id: ac-dry-run-before-apply
+                        then: |
+                          the UI obtains and displays the existing dry-run preview before final
+                          confirmation, including expected stored effects and affected coverage
+                          scopes
+                        when: |
+                          the action has side effects
+                      - given: |
+                          a criterion satisfies explicit re-verification preconditions
+                        id: ac-explicit-reverify-action
+                        then: |
+                          the UI calls the shared coverage resolution endpoint, records no local
+                          fake state, and refreshes from the coverage-state event or mutation
+                          response
+                        when: |
+                          the user confirms the action
+                      - given: |
+                          a criterion has a stale spec-text cause with a current revert preview
+                        id: ac-spec-text-revert-action
+                        then: |
+                          the UI submits the shared spec-text revert request with the expected
+                          current fingerprint and handles stale-target conflicts by refreshing
+                          and explaining that the criterion changed
+                        when: |
+                          the user confirms revert
+                      - given: |
+                          a criterion needs code or test repair
+                        id: ac-dispatch-fix-action
+                        then: |
+                          the UI submits the shared dispatch-fix request and presents the
+                          resulting task reference/status without spawning agents or composing
+                          task records in client code
+                        when: |
+                          the user confirms dispatch fix
+                      - given: |
+                          the workspace is running in static or read-only mode
+                        id: ac-readonly-resolution-refusal
+                        then: |
+                          it presents the current state and disables mutations with read-only
+                          guidance; it does not offer confirmations that cannot be stored
+                        when: |
+                          a resolution panel would otherwise render actions
+                      - given: |
+                          a resolution action succeeds through the workspace, CLI, or another
+                          daemon consumer
+                        id: ac-resolution-event-refresh
+                        then: |
+                          the affected workspace pages, filters, rollups, and criterion panels
+                          invalidate and refresh consistently
+                        when: |
+                          the coverage_state_changed event is received
+                    tags: []
+                    created: 2026-06-28T08:54:34.856Z
+                    notes: []
+                created: 2026-06-28T08:54:34.789Z
+                notes: []
+            created: 2026-06-28T08:54:34.724Z
+            notes: []
+        requirements:
+          - _ulid: 01KW6Q035Q1G41N37FX4G198NQ
+            slugs:
+              - spec-workspace-delivery-quality
+            title: Spec Workspace Delivery Quality
+            type: requirement
+            description: |
+              The workspace ships as a production-quality SvelteKit surface that follows
+              existing web UI conventions: Svelte 5 runes, TanStack query keys,
+              centralized WebSocket invalidation, static-export degradation, URL changes
+              through `goto()`, component-level tests for stateful behavior, and browser
+              proof for the vertical workflow. It must replace the current tree + sheet
+              experience without leaving a preview-only half surface.
+            depends_on:
+              - "@ui-data-freshness"
+              - "@ui-url-panel-state"
+              - "@gh-pages-export"
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            acceptance_criteria:
+              - given: |
+                  workspace route, component, store, and API-client code is added
+                id: ac-svelte-and-query-conventions
+                then: |
+                  it uses existing Svelte 5, TanStack query wrapper, query-key factory,
+                  api/api-static split, and design-system conventions rather than
+                  introducing parallel data or style frameworks
+                when: |
+                  it is reviewed
+              - given: |
+                  workspace interactions change focused node, criterion, filter, or
+                  expansion state represented in the URL
+                id: ac-url-state-via-goto
+                then: |
+                  it uses SvelteKit `goto()` or link navigation so `$page.url` stays
+                  reactive; direct history mutation is not used
+                when: |
+                  code updates the URL
+              - given: |
+                  the web UI is built for static export
+                id: ac-static-export-build
+                then: |
+                  it renders read-only data from the snapshot when available, avoids
+                  daemon-only write attempts, and keeps existing static docs/spec links
+                  valid
+                when: |
+                  the workspace route is included in the export
+              - given: |
+                  a user navigates the workspace with keyboard or assistive technology
+                id: ac-keyboard-and-screenreader
+                then: |
+                  focus order, names, expanded states, selected states, and action
+                  labels are perceivable and operable without hover
+                when: |
+                  they move through rows, breadcrumbs, filters, banners, and resolution
+                  panels
+              - given: |
+                  the implementation is ready for review
+                id: ac-browser-proof
+                then: |
+                  the proof covers root tree navigation, opening a node page, opening an
+                  AC page, filtering by state, following linked work, static/read-only or
+                  disabled mutation behavior, and no horizontal-scroll regression
+                when: |
+                  it is verified in a browser against a live daemon project
+              - given: |
+                  the workspace implementation lands
+                id: ac-test-coverage
+                then: |
+                  focused tests cover route URL restoration, dual-gesture row behavior,
+                  projection API client/static fallback, coverage event invalidation,
+                  resolution preview/apply flows, and accessibility-critical keyboard
+                  interactions
+                when: |
+                  project gates run
+              - given: |
+                  the new workspace is complete enough to ship
+                id: ac-existing-specs-route-replaced
+                then: |
+                  users see the unified workspace as the primary surface, and the old
+                  sheet-only detail experience is removed, reused only as internal code
+                  where still appropriate, or explicitly redirected
+                when: |
+                  `/specs` is opened
+            tags: []
+            created: 2026-06-28T08:54:34.935Z
+            notes: []
+        created: 2026-06-28T08:54:34.663Z
+        notes: []
+    created: 2026-06-28T08:54:34.593Z
+    notes: []
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:

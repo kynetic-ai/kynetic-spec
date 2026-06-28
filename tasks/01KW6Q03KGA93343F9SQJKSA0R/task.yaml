@@ -1,0 +1,102 @@
+_ulid: 01KW6Q03KGA93343F9SQJKSA0R
+slugs:
+  - task-unified-spec-workspace-shell-navigation
+title: Replace specs route with page-tree workspace shell
+type: task
+description: |
+  What:
+  - Replace the current `/specs` tree + side-sheet route with the unified workspace shell.
+  - Introduce stable focused-node and focused-criterion URLs while preserving existing
+    `/specs?ref=` deep-link compatibility.
+  - Implement the dual-gesture row model: row/body expands inline; title/open control
+    navigates to the page.
+  - Preserve expansion state across open/back navigation and allow independent branches.
+  - Ensure touch and keyboard users can both expand and open nodes without relying on
+    hover-only controls.
+  - Use `goto()`/links for URL state; do not use direct history APIs.
+
+  Why:
+  This is the plan's core UX shift: specs become a real workspace rather than a flat
+  tree with a modal/sheet detail panel.
+
+  How:
+  - UX resources: Use the root tree hover screenshot as the binding interaction
+    reference for row-body expand vs title/open navigation. Use the module/feature
+    screenshots to keep page-level children visually consistent with root rows. Hover
+    affordances from the screenshot must become explicit focus/touch controls too.
+  - Reuse existing design-system primitives and the breadcrumb/view-header components
+    from the foundations plan.
+  - Keep expansion state bounded and project-scoped. If state is persisted outside the
+    URL, make reload/back behavior explicit and tested.
+  - Avoid page-level horizontal scrolling in deep trees; use truncation/collapse/stacking.
+  - Remove or adapt `ItemTree`/`ItemDetail` only after the new route covers their current
+    read/navigation behavior.
+
+  Testing:
+  - Component/route tests for URL compatibility, reload restoration, browser back,
+    independent branch expansion, keyboard/touch open controls, and no horizontal-scroll
+    regression at supported widths.
+  - npm run typecheck
+
+  Covers: @unified-spec-workspace-navigation ac-stable-node-urls,
+    ac-existing-ref-links-compatible, ac-dual-gesture-row, ac-touch-and-keyboard-open,
+    ac-expansion-state-preserved, ac-multi-branch-expansion, ac-page-children-use-same-rows,
+    ac-no-horizontal-scroll; @spec-workspace-delivery-quality ac-url-state-via-goto
+spec_ref: "@unified-spec-workspace-navigation"
+plan_ref: "@plan-unified-spec-workspace"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-unified-spec-workspace-projection-api"
+context: []
+priority: 1
+tags:
+  - web-ui
+  - specs
+  - navigation
+  - accessibility
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-spec-workspace
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/06-spec-workspace.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 9859180adb431b75189f3a8d5d89bcecec614ced1c8b0cd242e1d333552fb52e
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-tree
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-1-tree-hover.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: e09ec6a67209bfbba0d442920c828a3a980e212603f33a0a884a2a1f4b745893
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-module
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-2-module.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 24178a66e6c07925ced6acdd8f537184b1c44bac0707a2452f3ebc66db71b6f9
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-feature
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-3-feature.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 3a05d1f3fd5c4b50dac693f864913dd1f5240ea43147511b1d6dfb2b3c91fbc6
+  - git_commit: null
+    git_path: null
+    id: src-spec-unified
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/reference-src/wf3-spec-unified.jsx
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
+created_at: 2026-06-28T08:54:35.376Z
+todos: []

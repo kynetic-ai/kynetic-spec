@@ -1,0 +1,91 @@
+_ulid: 01KW6Q04PHJWHE0BAKF77QF68A
+slugs:
+  - task-spec-workspace-resolution-panels
+title: Integrate coverage resolution panels
+type: task
+description: |
+  What:
+  - Add criterion-page and inline re-verify resolution panels that call the shared
+    coverage resolution mutation API.
+  - Support dry-run preview before side effects for explicit re-verify, spec-text
+    revert, and dispatch-fix request.
+  - Hide or disable actions when current state/preconditions do not support them.
+  - Handle read-only/static mode, stale fingerprint conflicts, precondition failures,
+    and successful event-driven refresh.
+  - Present created/updated task refs from dispatch-fix responses; do not spawn agents
+    or build task records in client code.
+
+  Why:
+  P1c closed the backend action loop. The spec workspace should expose that loop where
+  users encounter stale/re-verify criterion state.
+
+  How:
+  - UX resources: Use the stale AC detail screenshot for panel placement, evidence/diff
+    hierarchy, and action-card layout. Map the wireframe's action language onto the
+    already-built resolution mutations: explicit re-verify, spec-text revert, and
+    dispatch-fix request.
+  - Reuse existing coverage resolution request/response schemas and API client helpers.
+  - Keep confirmation copy specific about what will be stored.
+  - Prefer existing dialog/button primitives and structured error components.
+  - Verify that mutation success is reflected by backend events/query invalidation, not
+    by optimistic local invention of coverage state.
+
+  Testing:
+  - Tests for action visibility, dry-run previews, successful apply refresh,
+    stale-target conflict refresh/guidance, read-only refusal, and dispatch-fix task-ref
+    presentation.
+  - Focused daemon/web UI tests around the coverage resolution API client if needed.
+
+  Covers: @spec-workspace-coverage-resolution-panels ac-resolution-visibility,
+    ac-dry-run-before-apply, ac-explicit-reverify-action, ac-spec-text-revert-action,
+    ac-dispatch-fix-action, ac-readonly-resolution-refusal, ac-resolution-event-refresh
+spec_ref: "@spec-workspace-coverage-resolution-panels"
+plan_ref: "@plan-unified-spec-workspace"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-spec-workspace-coverage-presentation"
+context: []
+priority: 1
+tags:
+  - web-ui
+  - coverage
+  - mutations
+  - specs
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-spec-states-integration
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/08-spec-states-integration.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 1a280d3c6246e561c0d04400a6bfb1567ffd1cc7181ef2b9173acb9184e15493
+  - git_commit: null
+    git_path: null
+    id: handoff-validate
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/09-validate.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 2830449d6fddf9a71b6b08b50519ec9efa3fe9ddeac831d04ca5157bf743fa64
+  - git_commit: null
+    git_path: null
+    id: shot-spec-state-stale-ac
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-states-3-stale-ac.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 164f12153268332a70fb6e26efd50d2f17df4dd13e00b15c1ccbf0310f50ee36
+  - git_commit: null
+    git_path: null
+    id: src-spec-states
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/reference-src/wf3-spec-states.jsx
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: b9b6f967f22a1477a312878cafc27cf04dc110474093fd6e1548975eedd6b177
+created_at: 2026-06-28T08:54:36.497Z
+todos: []

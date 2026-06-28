@@ -1,0 +1,132 @@
+_ulid: 01KW6Q037Z2613K782P6FHEZZD
+slugs:
+  - task-unified-spec-workspace-projection-api
+title: Build unified spec workspace projection API
+type: task
+description: |
+  What:
+  - Add the backend/shared/static projection needed by the unified spec workspace.
+  - Define shared response types for root workspace, node detail, child-row summaries,
+    criterion detail, linked-work counts, and unavailable dynamic sections.
+  - Reuse existing item detail ancestry, coverage-state read model, task/session/plan
+    reference resolution, response envelopes, and cache warming semantics.
+  - Provide bounded child expansion and count/continuation metadata rather than having
+    the client derive workspace state from an unbounded `fetchItems()` list.
+  - Include static snapshot/read-only behavior: workspace read projections render when
+    present; dynamic evidence classes clearly report unavailable when absent.
+  - Do not recreate the coverage engine, the coverage resolution service, or the
+    breadcrumb resolver.
+
+  Why:
+  The current `/specs` route fetches a flat item list and opens detail in a sheet. The
+  redesign requires stable node/AC pages, rollups, linked work, and evidence without
+  pushing joins into the browser.
+
+  How:
+  - UX resources: Read the spec workspace UX doc for the five page shapes and data
+    notes, the coverage-state docs for rollup/filter state semantics, and the tree
+    rollup screenshot for the exact kinds of backend-owned counts the client must not
+    derive from raw unbounded lists.
+  - Inspect existing `packages/daemon/src/routes/items.ts`, coverage routes, shared API
+    types, query keys, and `api-static.ts` before choosing the exact endpoint shape.
+  - Prefer a small family under an existing daemon route namespace if that matches
+    project conventions; otherwise document the new namespace clearly.
+  - Preserve envelope, cache-warming, `X-Kspec-Dir`, and structured error conventions.
+  - Use backend-resolved refs/titles/statuses for linked work.
+  - Ensure coverage values come from `getCachedCoverageStateReadModel`/existing route
+    helpers, not from a fresh legacy covered-boolean scan.
+  - Cover inherited API/error trait behavior for the new read endpoints. Explicitly
+    document that shadow-commit behavior is not applicable to read-only projection
+    endpoints, while mutation behavior remains owned by the existing coverage
+    resolution endpoints consumed later in this plan.
+
+  Testing:
+  - Focused daemon/shared tests for root projection, node detail, criterion detail,
+    coverage summary integration, linked-work counts, missing-node/criterion errors,
+    static fallback, and cache-warming responses.
+  - npm run typecheck
+  - kspec validate --refs --warnings-ok
+
+  Covers: @unified-spec-workspace-data-projection ac-bounded-root-projection,
+    ac-node-detail-projection, ac-ac-detail-projection, ac-coverage-source-of-truth,
+    ac-endpoint-contract, ac-read-endpoints-do-not-commit, ac-error-guidance-contract,
+    ac-linked-work-definition, ac-static-readonly-projection, ac-cache-and-event-coherence,
+    ac-error-boundaries; @trait-api-endpoint ac-1, ac-2, ac-3, ac-4, ac-6;
+    @trait-api-endpoint ac-5 (not applicable to read-only projection endpoints);
+    @trait-error-guidance ac-1, ac-2, ac-3, ac-5, ac-6;
+    @trait-error-guidance ac-4 (not applicable: projection reads do not perform
+    state transitions)
+spec_ref: "@unified-spec-workspace-data-projection"
+plan_ref: "@plan-unified-spec-workspace"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - web-ui
+  - daemon
+  - api
+  - specs
+  - coverage
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-readme
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/README.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: df9cb368a535357f7a137ebc94524c52b021e35e49bf643f4579ce213cf8570b
+  - git_commit: null
+    git_path: null
+    id: handoff-product-context
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/00-product-context.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: acf72703d28c755e7925ed10cd8604814d4b640d609bdd9c4b93823f53701719
+  - git_commit: null
+    git_path: null
+    id: handoff-spec-workspace
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/06-spec-workspace.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 9859180adb431b75189f3a8d5d89bcecec614ced1c8b0cd242e1d333552fb52e
+  - git_commit: null
+    git_path: null
+    id: handoff-coverage-states
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/07-coverage-states.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 2663975b866d23cddc915a7ce73f4ac32ffbe495e4a6b77e124726537d40255c
+  - git_commit: null
+    git_path: null
+    id: handoff-spec-states-integration
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/08-spec-states-integration.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 1a280d3c6246e561c0d04400a6bfb1567ffd1cc7181ef2b9173acb9184e15493
+  - git_commit: null
+    git_path: null
+    id: handoff-validate
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/09-validate.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 2830449d6fddf9a71b6b08b50519ec9efa3fe9ddeac831d04ca5157bf743fa64
+  - git_commit: null
+    git_path: null
+    id: shot-spec-state-rollups
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-states-2-tree-rollups.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 168b0cc754d2622f560b813ca886152d7843511412790a4d8327ae04127fbe65
+created_at: 2026-06-28T08:54:35.007Z
+todos: []

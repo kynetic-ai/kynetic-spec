@@ -1,0 +1,105 @@
+_ulid: 01KW6Q03Z01M2F407CFXDDC2Y6
+slugs:
+  - task-spec-node-criterion-workspace-pages
+title: Implement spec node and criterion workspace pages
+type: task
+description: |
+  What:
+  - Implement the root, node, requirement, and acceptance-criterion page bodies.
+  - Render shared view headers, breadcrumbs, descriptions, tags/traits, child sections,
+    acceptance criteria, linked-work strips, evidence summaries, and sibling navigation.
+  - Make criteria readable as scenario content with G/W/T blocks and focused AC pages.
+  - Keep this plan read/navigation scoped: do not add spec edit/add/reorder controls.
+  - Provide clear empty/unavailable states for missing child, linked-work, or evidence
+    sections.
+
+  Why:
+  The workspace must be usable as a vertical workflow, not a preview-only shell. Users
+  should be able to move from corpus overview to a requirement to a criterion and then
+  to related work without losing context.
+
+  How:
+  - UX resources: Use the module, feature, requirement, and AC screenshots as the
+    expected vertical workflow: root/module/feature headers, requirement AC rows with
+    expandable Given/When/Then bodies, and AC pages with scenario, evidence, siblings,
+    and stable breadcrumbs.
+  - Reuse ReferenceLink, RelatedSessionsSection patterns where they fit, but avoid sheet
+    dependence for primary discovery.
+  - Keep linked-work inclusion rules aligned with the projection API task; do not add
+    client-side scans to fill gaps.
+  - Treat constraints/traits generically based on current item types; do not hard-code
+    Kynetic module names or source paths.
+
+  Testing:
+  - Route/component tests for root page, node page, requirement AC list, criterion page,
+    linked-work groups, empty sections, and no-CRUD controls.
+  - Browser proof through root → node → criterion → linked task/session/plan navigation.
+
+  Covers: @spec-node-criterion-workspace-pages ac-root-page,
+    ac-module-feature-requirement-pages, ac-requirement-ac-list, ac-criterion-page,
+    ac-linked-work-strip, ac-empty-and-missing-sections, ac-read-navigation-scope
+spec_ref: "@spec-node-criterion-workspace-pages"
+plan_ref: "@plan-unified-spec-workspace"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-unified-spec-workspace-shell-navigation"
+context: []
+priority: 1
+tags:
+  - web-ui
+  - specs
+  - linked-work
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-spec-workspace
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/06-spec-workspace.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 9859180adb431b75189f3a8d5d89bcecec614ced1c8b0cd242e1d333552fb52e
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-module
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-2-module.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 24178a66e6c07925ced6acdd8f537184b1c44bac0707a2452f3ebc66db71b6f9
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-feature
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-3-feature.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 3a05d1f3fd5c4b50dac693f864913dd1f5240ea43147511b1d6dfb2b3c91fbc6
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-requirement
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-4-requirement.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 1ef96bf177177d55cf0bd0f395598712439e2786f54244b0d01b35b2422ef2bd
+  - git_commit: null
+    git_path: null
+    id: shot-spec-unified-ac
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-unified-5-ac.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: ee9a4739f54fd1f65695fd99e5924287a205635f1b57e9b9303ce2573620a622
+  - git_commit: null
+    git_path: null
+    id: src-spec-unified
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/reference-src/wf3-spec-unified.jsx
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
+created_at: 2026-06-28T08:54:35.744Z
+todos: []

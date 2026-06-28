@@ -33397,3 +33397,121 @@
   submitted_at: 2026-06-27T01:40:54.996Z
   completed_at: 2026-06-27T02:02:18.218Z
   automation: eligible
+- _ulid: 01KW6Q037Z2613K782P6FHEZZD
+  slugs:
+    - task-unified-spec-workspace-projection-api
+  title: Build unified spec workspace projection API
+  type: task
+  spec_ref: "@unified-spec-workspace-data-projection"
+  plan_ref: "@plan-unified-spec-workspace"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - web-ui
+    - daemon
+    - api
+    - specs
+    - coverage
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-28T08:54:35.007Z
+- _ulid: 01KW6Q03KGA93343F9SQJKSA0R
+  slugs:
+    - task-unified-spec-workspace-shell-navigation
+  title: Replace specs route with page-tree workspace shell
+  type: task
+  spec_ref: "@unified-spec-workspace-navigation"
+  plan_ref: "@plan-unified-spec-workspace"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-unified-spec-workspace-projection-api"
+  priority: 1
+  tags:
+    - web-ui
+    - specs
+    - navigation
+    - accessibility
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-28T08:54:35.376Z
+- _ulid: 01KW6Q03Z01M2F407CFXDDC2Y6
+  slugs:
+    - task-spec-node-criterion-workspace-pages
+  title: Implement spec node and criterion workspace pages
+  type: task
+  spec_ref: "@spec-node-criterion-workspace-pages"
+  plan_ref: "@plan-unified-spec-workspace"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-unified-spec-workspace-shell-navigation"
+  priority: 1
+  tags:
+    - web-ui
+    - specs
+    - linked-work
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-28T08:54:35.744Z
+- _ulid: 01KW6Q04A1V24N1AY0H0YTD2YR
+  slugs:
+    - task-spec-workspace-coverage-presentation
+  title: Add coverage state presentation to the workspace
+  type: task
+  spec_ref: "@spec-workspace-coverage-state-presentation"
+  plan_ref: "@plan-unified-spec-workspace"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-spec-node-criterion-workspace-pages"
+  priority: 1
+  tags:
+    - web-ui
+    - coverage
+    - specs
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-28T08:54:36.097Z
+- _ulid: 01KW6Q04PHJWHE0BAKF77QF68A
+  slugs:
+    - task-spec-workspace-resolution-panels
+  title: Integrate coverage resolution panels
+  type: task
+  spec_ref: "@spec-workspace-coverage-resolution-panels"
+  plan_ref: "@plan-unified-spec-workspace"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-spec-workspace-coverage-presentation"
+  priority: 1
+  tags:
+    - web-ui
+    - coverage
+    - mutations
+    - specs
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-28T08:54:36.497Z
+- _ulid: 01KW6Q052EJ7M5WHBF4W8AHSW8
+  slugs:
+    - task-spec-workspace-quality-verification
+  title: Verify workspace quality, static mode, and browser workflow
+  type: task
+  spec_ref: "@spec-workspace-delivery-quality"
+  plan_ref: "@plan-unified-spec-workspace"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-spec-workspace-resolution-panels"
+  priority: 1
+  tags:
+    - web-ui
+    - tests
+    - accessibility
+    - static
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-28T08:54:36.878Z

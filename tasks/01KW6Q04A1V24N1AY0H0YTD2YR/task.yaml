@@ -1,0 +1,115 @@
+_ulid: 01KW6Q04A1V24N1AY0H0YTD2YR
+slugs:
+  - task-spec-workspace-coverage-presentation
+title: Add coverage state presentation to the workspace
+type: task
+description: |
+  What:
+  - Add shared workspace coverage tokens, row/header rollups, state pills, requirement
+    filter chips, and re-verify banners backed by the projection API.
+  - Use the current four presentation buckets: covered, failing, not yet, re-verify.
+  - Use secondary re-verify causes only for captions/details; do not resurrect the old
+    six-state UI as a separate top-level model.
+  - Ensure coverage_state_changed events invalidate the workspace coverage queries.
+  - Remove or bypass legacy boolean `covered` display when the coverage-state projection
+    is ready.
+
+  Why:
+  This is the first real UI consumer of the completed coverage-state engine and must
+  prove that the foundational backend work drives a coherent spec-reading workflow.
+
+  How:
+  - UX resources: Use the five-state recommendation, requirement-state, and tree-rollup
+    screenshots for layout, density, and attention hierarchy. Translate any wireframe
+    stale/drifted labels into the current backend four-bucket model by showing them as
+    secondary re-verify causes, not separate top-level filters.
+  - Build on existing `queryKeys.coverage`, `ws-invalidation.ts`, coverage API client
+    helpers, and design-system status tokens.
+  - Keep filters local to the current projected page or request an explicit scoped
+    projection; do not fetch unrelated raw lists to filter.
+  - Make warming/degraded coverage state visible without blocking non-coverage navigation.
+
+  Testing:
+  - Tests for four-bucket rendering, rollup count accuracy, requirement filter behavior,
+    re-verify banner links, failing-vs-reverify priority, coverage warming/degraded UI,
+    and coverage event invalidation.
+  - npm run typecheck
+
+  Covers: @spec-workspace-coverage-state-presentation ac-four-bucket-tokens,
+    ac-rollup-bars, ac-requirement-state-filter, ac-reverify-banner,
+    ac-failing-dominates-visual-priority, ac-no-legacy-covered-fallback,
+    ac-warming-and-unavailable-state; @unified-spec-workspace-data-projection
+    ac-coverage-source-of-truth, ac-cache-and-event-coherence
+spec_ref: "@spec-workspace-coverage-state-presentation"
+plan_ref: "@plan-unified-spec-workspace"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-spec-node-criterion-workspace-pages"
+context: []
+priority: 1
+tags:
+  - web-ui
+  - coverage
+  - specs
+vcs_refs: []
+resource_refs:
+  - git_commit: null
+    git_path: null
+    id: handoff-coverage-states
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/07-coverage-states.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 2663975b866d23cddc915a7ce73f4ac32ffbe495e4a6b77e124726537d40255c
+  - git_commit: null
+    git_path: null
+    id: handoff-spec-states-integration
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/docs/08-spec-states-integration.md
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 1a280d3c6246e561c0d04400a6bfb1567ffd1cc7181ef2b9173acb9184e15493
+  - git_commit: null
+    git_path: null
+    id: shot-coverage-five-state
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-coverage-4-five-state-alt.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: a514d69630262ec638f66900b27fc8ceccd6b52d5cf8b50b3be72cf0b9450e63
+  - git_commit: null
+    git_path: null
+    id: shot-spec-state-requirement
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-states-1-requirement.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 9ef6b5a3f22a847abb9f5ff832b6e9132706ab0e38298bbc91aa3c394d649e71
+  - git_commit: null
+    git_path: null
+    id: shot-spec-state-rollups
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/shots/r3-spec-states-2-tree-rollups.png
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 168b0cc754d2622f560b813ca886152d7843511412790a4d8327ae04127fbe65
+  - git_commit: null
+    git_path: null
+    id: src-coverage-states
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/reference-src/wf3-coverage-states.jsx
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: 906f3d6b60776618d102a6fb49e7e3f18fcee7eb5dfbd1d75537fd07ffc6dbad
+  - git_commit: null
+    git_path: null
+    id: src-spec-states
+    owner_ref: "@plan-unified-spec-workspace"
+    owner_type: plan
+    path: handoff/reference-src/wf3-spec-states.jsx
+    recorded_at: 2026-06-28T08:54:35.006Z
+    sha256: b9b6f967f22a1477a312878cafc27cf04dc110474093fd6e1548975eedd6b177
+created_at: 2026-06-28T08:54:36.097Z
+todos: []

@@ -8,3 +8,39 @@ notes:
     content: Attach UX handoff screenshots/resources and add task resource_refs
     author: Jacob Chapel
     created_at: 2026-06-28T08:33:55.512Z
+  - _ulid: 01KW6Q05G0KNGJCGMS0RC0XX7W
+    content: |-
+      ### Scope boundaries
+
+      - In scope: replacing `/specs` with a navigable page+tree workspace, stable node/AC
+        URLs, coverage-state rollups and filters, linked-work/evidence discovery, and
+        coverage resolution panels backed by the existing mutation endpoints.
+      - Out of scope: spec editing, add/reorder/delete spec controls, Validate queue/matrix
+        redesign, cross-project dashboard behavior, and a new coverage-state computation model.
+      - The workspace should use the completed four-bucket coverage presentation from the
+        coverage-state engine. Design handoff references to six visual states should be mapped
+        to four UI buckets plus secondary re-verify causes unless a later approved decision
+        changes the global coverage vocabulary.
+
+      ### Existing surfaces to reuse or replace carefully
+
+      - Current `/specs` fetches a flat item list and renders `ItemTree` plus `ItemDetail` in a
+        sheet. Reuse pieces only if they fit the new routed workspace; do not preserve the sheet
+        as the primary detail UX.
+      - Breadcrumb ancestry, view header/status tokens, coverage-state query keys, coverage
+        invalidation events, and coverage resolution endpoints already exist from foundation
+        plans and should be consumed rather than rebuilt.
+      - Existing `ReferenceLink` destinations that target `/specs?ref=` must keep working.
+
+      ### Review checklist for this plan
+
+      - Does every UI requirement consume the backend coverage/read projection instead of doing
+        client-side raw-list joins?
+      - Are static/read-only and cache-warming states specified for all dynamic parts?
+      - Is hover-only behavior paired with keyboard/touch equivalents?
+      - Is the plan explicit that spec CRUD is not in scope?
+      - Are the tasks sequenced so backend projection work lands before UI consumers?
+      - Is the plan project-neutral and suitable for arbitrary kspec projects rather than tuned
+        to kynetic-spec's own spec tree?
+    author: Jacob Chapel
+    created_at: 2026-06-28T08:54:37.312Z
