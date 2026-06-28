@@ -29,3 +29,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-26T21:39:30.433Z
+  - _ulid: 01KW7K08MZ4PCMMQEE9ZTXTEPG
+    content: "Reflection evidence from @task-spec-node-criterion-workspace-pages: full npm test rerun
+      streamed all suites green, including the previously flaky daemon-context-manager file passing,
+      then remained alive with a single Vitest worker after the final PASS output and no JSON result
+      artifact was written under /tmp/kspec-test-cache. The stuck process group was terminated
+      manually after two quiet intervals."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T17:04:00.671Z
