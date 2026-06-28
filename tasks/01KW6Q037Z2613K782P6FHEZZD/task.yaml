@@ -71,6 +71,14 @@ tags:
   - specs
   - coverage
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-28T08:56:23.191Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -130,3 +138,4 @@ resource_refs:
     sha256: 168b0cc754d2622f560b813ca886152d7843511412790a4d8327ae04127fbe65
 created_at: 2026-06-28T08:54:35.007Z
 todos: []
+automation: eligible
