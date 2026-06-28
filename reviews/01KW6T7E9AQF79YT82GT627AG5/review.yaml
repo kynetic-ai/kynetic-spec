@@ -151,6 +151,13 @@ events:
       kind: nit
       thread_ulid: 01KW6TWHT0WNKYSFVJZHJAMCCB
     timestamp: 2026-06-28T10:02:33.404Z
+  - _ulid: 01KW6TXKANQ6N9KQSH87NFYR57
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW6TXK2PZPSW11T1EC2BKRK9
+    timestamp: 2026-06-28T10:03:07.477Z
 examined_commit: 30f92fa025dac26ded72129e9b9d93b7bdd794ac
 external_links: []
 lifecycle_state: open
@@ -182,7 +189,27 @@ threads:
           behavior. Findings recorded separately."
         created_at: 2026-06-28T10:02:33.152Z
     kind: nit
+  - _ulid: 01KW6TXK2PZPSW11T1EC2BKRK9
+    anchor:
+      type: code
+      commit: 30f92fa025dac26ded72129e9b9d93b7bdd794ac
+      line_end: 229
+      line_start: 222
+      path: packages/daemon/src/routes/spec-workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KW6TXK2PHVRK17YM24EE0PDR
+        author: Jacob Chapel
+        body: "MUST-FIX: linked_work_counts reports session: 0 for every node summary even though this same
+          route resolves related sessions in linkedWorkGroups via getRelatedSessionsForItem. Impact:
+          root and node projections can show false linked-work counts for any spec item with
+          sessions tied to linked tasks, violating
+          ac-bounded-root-projection/ac-node-detail-projection/ac-linked-work-definition. Evidence:
+          getRelatedSessionsForItem builds sessions from tasks linked to the item, but the count
+          helper hard-codes session to 0 and tests only cover task/plan counts."
+        created_at: 2026-06-28T10:03:07.222Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-28T09:51:01.418Z
-updated_at: 2026-06-28T10:02:33.152Z
+updated_at: 2026-06-28T10:03:07.222Z
 notes: []
