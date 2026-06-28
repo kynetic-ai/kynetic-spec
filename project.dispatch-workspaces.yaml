@@ -14370,11 +14370,11 @@ workspaces:
     canonical_branch: dispatch/task/fix-session-context-e2e-status-label-assertion/01kw7b56
     canonical_branch_head: 43fd42a131afb120681eed739a085d84864b1252
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-28T15:25:23.133Z
+      updated_at: 2026-06-28T15:28:35.801Z
     health:
       status: healthy
       issues: []
@@ -14388,17 +14388,17 @@ workspaces:
       target_branch: dev
       target_commit: a1898ce34545bc5515f162d39089c7a17e68c70d
       updated_at: 2026-06-28T15:25:23.133Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: dev
     task_id: 01KW7B56RMXJNRKW8TDRH6STZQ
     task_ref: "@01KW7B56RMXJNRKW8TDRH6STZQ"
     task_slug: fix-session-context-e2e-status-label-assertion
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-28T15:28:35.801Z
       last_active_at: 2026-06-28T15:08:06.847Z
       last_reconciled_at: 2026-06-28T15:27:54.307Z
       created_at: 2026-06-28T14:48:03.803Z
-      updated_at: 2026-06-28T15:27:54.307Z
+      updated_at: 2026-06-28T15:28:35.801Z
     workspace_id: dispatch-workspace-01KW7B56RMXJNRKW8TDRH6STZQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
