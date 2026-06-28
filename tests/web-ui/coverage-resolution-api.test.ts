@@ -150,6 +150,7 @@ describe("coverage resolution API client", () => {
   });
 
   // AC: @spec-workspace-coverage-resolution-panels ac-readonly-resolution-refusal
+  // AC: @spec-workspace-delivery-quality ac-static-export-build
   it("refuses coverage resolution calls in static read-only mode before opening confirmation", async () => {
     modeState.staticMode = true;
     vi.stubGlobal("fetch", vi.fn());

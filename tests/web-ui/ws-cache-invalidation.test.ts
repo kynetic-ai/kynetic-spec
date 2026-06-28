@@ -218,6 +218,7 @@ describe("ws-invalidation targeted entity event handling", () => {
     });
   });
 
+  // AC: @spec-workspace-delivery-quality ac-svelte-and-query-conventions
   // AC: @coverage-state-events ac-event-topic
   // AC: @coverage-state-events ac-event-canonical-identity
   // AC: @unified-spec-workspace-data-projection ac-cache-and-event-coherence
@@ -278,6 +279,7 @@ describe("ws-invalidation targeted entity event handling", () => {
   });
 
   // AC: @ui-targeted-event-consumption ac-1
+  // AC: @spec-workspace-delivery-quality ac-svelte-and-query-conventions
   // AC: @unified-spec-workspace-data-projection ac-cache-and-event-coherence
   it("refreshes workspace linked-plan projections for plan update events", () => {
     setupWsInvalidation(mockQueryClient);

@@ -256,6 +256,8 @@ test.describe("Spec Workspace", () => {
   });
 
   // AC: @unified-spec-workspace-navigation ac-touch-and-keyboard-open
+  // AC: @spec-workspace-delivery-quality ac-keyboard-and-screenreader
+  // AC: @spec-workspace-delivery-quality ac-test-coverage
   test("keyboard and touch users get named controls for expand and open", async ({ page }) => {
     await page.goto("/specs");
     const moduleNode = await firstModule(page);
@@ -283,6 +285,7 @@ test.describe("Spec Workspace", () => {
 
   // AC: @unified-spec-workspace-navigation ac-expansion-state-preserved
   // AC: @spec-workspace-delivery-quality ac-url-state-via-goto
+  // AC: @spec-workspace-delivery-quality ac-test-coverage
   test("browser back restores previously expanded branches", async ({ page }) => {
     await page.goto("/specs");
     const featureNode = await firstFeatureUnderModule(page);
@@ -359,6 +362,8 @@ test.describe("Spec Workspace", () => {
   });
 
   // AC: @unified-spec-workspace-navigation ac-no-horizontal-scroll
+  // AC: @spec-workspace-delivery-quality ac-browser-proof
+  // AC: @spec-workspace-delivery-quality ac-test-coverage
   test("workspace avoids page-level horizontal scroll on mobile", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto("/specs?node=test-feature&expanded=test-core,test-feature");
@@ -395,5 +400,62 @@ test.describe("Spec Workspace", () => {
     await expect(traitLink).toContainText("test-trait");
     await Promise.all([page.waitForURL(/\/specs\?ref=.*test-trait/), traitLink.click()]);
     await expect(detail.getByTestId("spec-title")).toContainText("Test Trait");
+  });
+
+  // AC: @spec-workspace-delivery-quality ac-browser-proof
+  // AC: @spec-workspace-delivery-quality ac-keyboard-and-screenreader
+  // AC: @spec-workspace-delivery-quality ac-existing-specs-route-replaced
+  // AC: @spec-workspace-delivery-quality ac-test-coverage
+  test("daemon-backed browser workflow walks root, node, criterion, filter, linked work, and resolution states", async ({
+    page,
+  }) => {
+    await page.goto("/specs");
+
+    const workspace = page.getByTestId("spec-workspace");
+    await expect(workspace).toBeVisible();
+    await expect(page.getByTestId("item-detail-sheet")).toHaveCount(0);
+    await expect(page.getByTestId("root-top-level-rows")).toContainText("Core Module");
+    await expect(page.getByTestId("root-coverage-rollup")).toBeVisible();
+
+    const moduleNode = await firstModule(page);
+    const moduleRow = treeRow(moduleNode);
+    await moduleRow.getByTestId("workspace-row-body").focus();
+    await page.keyboard.press("Enter");
+    await expect(childContainer(moduleNode)).toBeVisible();
+
+    await Promise.all([
+      page.waitForURL(/node=.*test-core/),
+      moduleRow.getByTestId("node-title").click(),
+    ]);
+    const modulePage = page.getByTestId("spec-detail-panel");
+    await expect(modulePage.getByTestId("spec-title")).toContainText("Core Module");
+    await expect(modulePage.getByTestId("workspace-page-children")).toContainText("Test Feature");
+
+    await page.goto("/specs?node=test-feature");
+    const featurePage = page.getByTestId("spec-detail-panel");
+    await expect(featurePage.getByTestId("spec-title")).toContainText("Test Feature");
+    await expect(featurePage.getByTestId("linked-work-section")).toContainText("Ready task");
+    await expect(featurePage.getByTestId("coverage-filter-strip")).toBeVisible();
+
+    const notYetFilter = featurePage.getByTestId("coverage-filter-not_yet");
+    await notYetFilter.click();
+    await expect(page).toHaveURL(/coverage=not_yet/);
+    await expect(notYetFilter).toHaveAttribute("aria-pressed", "true");
+    await expect(featurePage.getByTestId("ac-item").first()).toContainText(/ac-/);
+
+    await featurePage.getByTestId("ac-open-page").first().click();
+    await expect(page).toHaveURL(/node=.*test-feature.*ac=/);
+    const criterionPage = page.getByTestId("spec-detail-panel");
+    await expect(criterionPage.getByRole("heading", { name: "Scenario" })).toBeVisible();
+    await expect(criterionPage.getByTestId("criterion-evidence-summary")).toBeVisible();
+    await expect(criterionPage.getByTestId("criterion-resolution-panel")).toContainText(
+      "Resolution",
+    );
+    await expect(criterionPage.getByTestId("linked-work-section")).toContainText("Tasks");
+
+    const hasHorizontalScroll = await page.evaluate(
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    );
+    expect(hasHorizontalScroll).toBe(false);
   });
 });
