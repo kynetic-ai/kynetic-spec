@@ -244,6 +244,12 @@ events:
     payload:
       thread_ulid: 01KW757D1VEF38XTW5YWGY5HK0
     timestamp: 2026-06-28T13:33:30.013Z
+  - _ulid: 01KW76YZKYF1BDHCZG0H61FKFM
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW757GJ6R6DSWNACYBRPP7JR
+    timestamp: 2026-06-28T13:33:35.742Z
 examined_commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
 external_links: []
 lifecycle_state: closed
@@ -297,6 +303,12 @@ threads:
           The old tests covered those behaviors; this rewrite reduces coverage and would pass if AC
           row expansion or coverage display broke."
         created_at: 2026-06-28T13:03:18.087Z
+      - _ulid: 01KW76YZBJ4KPW92MNJ3HC22A1
+        author: Jacob Chapel
+        body: "Fixed: moved @web-dashboard ac-15 coverage onto a behavioral AC row expansion test. It now
+          expands and collapses an AC row, verifies full Given/When/Then text, and asserts a visible
+          coverage badge backed by daemon fallback coverage state."
+        created_at: 2026-06-28T13:33:35.474Z
     kind: blocker
   - _ulid: 01KW757MC0QQ43SQNJK1HMVEEA
     anchor:
@@ -380,5 +392,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T13:03:35.183Z
 created_at: 2026-06-28T12:46:18.934Z
-updated_at: 2026-06-28T13:33:29.753Z
+updated_at: 2026-06-28T13:33:35.474Z
 notes: []
