@@ -43,7 +43,7 @@ description: |
 spec_ref: "@spec-workspace-coverage-state-presentation"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-spec-node-criterion-workspace-pages"
@@ -54,6 +54,7 @@ tags:
   - coverage
   - specs
 vcs_refs: []
+session_id: 01KW7M97EVSBMBK278AZ37VWZ9
 history:
   - author: Jacob Chapel
     changes:
@@ -62,6 +63,19 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-28T08:56:25.330Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KW7M97EVSBMBK278AZ37VWZ9
+        previous: null
+      started_at:
+        new: 2026-06-28T17:27:09.518Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-28T17:27:09.519Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -120,5 +134,6 @@ resource_refs:
     recorded_at: 2026-06-28T08:54:35.006Z
     sha256: b9b6f967f22a1477a312878cafc27cf04dc110474093fd6e1548975eedd6b177
 created_at: 2026-06-28T08:54:36.097Z
+started_at: 2026-06-28T17:27:09.518Z
 todos: []
 automation: eligible
