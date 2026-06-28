@@ -33478,7 +33478,7 @@
   type: task
   spec_ref: "@spec-workspace-coverage-state-presentation"
   plan_ref: "@plan-unified-spec-workspace"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-spec-node-criterion-workspace-pages"
@@ -33491,7 +33491,7 @@
   notes_count: 3
   todos_count: 0
   created_at: 2026-06-28T08:54:36.097Z
-  started_at: 2026-06-28T17:27:09.518Z
+  started_at: 2026-06-28T18:24:14.854Z
   submitted_at: 2026-06-28T17:56:48.410Z
   automation: eligible
 - _ulid: 01KW6Q04PHJWHE0BAKF77QF68A
