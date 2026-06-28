@@ -232,6 +232,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-28T13:03:35.183Z
+  - _ulid: 01KW76YM5XNQ6XB50AX7XKP114
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW757D1VEF38XTW5YWGY5HK0
+    timestamp: 2026-06-28T13:33:24.029Z
 examined_commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
 external_links: []
 lifecycle_state: closed
@@ -259,6 +265,12 @@ threads:
           and the previous markdown description assertion for @markdown-ui-adoption ac-5 was
           removed. A regression in spec description/markdown/AC/status rendering would now pass."
         created_at: 2026-06-28T13:03:14.492Z
+      - _ulid: 01KW76YKXWRH542XWXP989M7EQ
+        author: Jacob Chapel
+        body: "Fixed: restored @web-dashboard ac-12 behavioral coverage on the focused specs page. The E2E
+          now verifies title, implementation status, linked work count, description markdown,
+          acceptance criteria, and trait chips on the stable node URL and legacy ref path."
+        created_at: 2026-06-28T13:33:23.771Z
     kind: blocker
   - _ulid: 01KW757GJ6R6DSWNACYBRPP7JR
     anchor:
@@ -360,5 +372,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T13:03:35.183Z
 created_at: 2026-06-28T12:46:18.934Z
-updated_at: 2026-06-28T13:03:35.183Z
+updated_at: 2026-06-28T13:33:23.771Z
 notes: []
