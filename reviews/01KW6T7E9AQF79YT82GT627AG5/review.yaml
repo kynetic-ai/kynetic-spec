@@ -45,6 +45,18 @@ checks:
     runner: kspec
     created_at: 2026-06-28T10:01:57.554Z
     completed_at: 2026-06-28T10:01:57.554Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0 with existing completeness
+      warning baseline; new AC annotations for @unified-spec-workspace-data-projection and inherited
+      traits were present in behavioral tests."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-28T10:02:22.929Z
+    completed_at: 2026-06-28T10:02:22.929Z
 events:
   - _ulid: 01KW6T7E99MGN0C7YAFYMYE656
     actor: Jacob Chapel
@@ -87,6 +99,13 @@ events:
       status: pass
       name: kspec validate refs
     timestamp: 2026-06-28T10:01:57.941Z
+  - _ulid: 01KW6TW82AW8G3NV2T56WQVP78
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-28T10:02:23.178Z
 examined_commit: 30f92fa025dac26ded72129e9b9d93b7bdd794ac
 external_links: []
 lifecycle_state: open
@@ -99,5 +118,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T09:51:01.418Z
-updated_at: 2026-06-28T10:01:57.554Z
+updated_at: 2026-06-28T10:02:22.929Z
 notes: []
