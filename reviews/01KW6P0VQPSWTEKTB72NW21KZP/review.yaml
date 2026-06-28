@@ -1,0 +1,26 @@
+_ulid: 01KW6P0VQPSWTEKTB72NW21KZP
+slugs: []
+title: "Plan re-review: Unified Spec Workspace (UX resources)"
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KW6P0VQGVWBE9Q9DJ7VNHFD6
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-28T08:37:31.504Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-unified-spec-workspace"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-28T08:37:31.510Z
+updated_at: null
+notes: []
