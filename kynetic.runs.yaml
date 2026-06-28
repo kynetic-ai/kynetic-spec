@@ -76450,7 +76450,7 @@ runs:
     completed_at: 2026-06-28T15:27:09.100Z
   - _ulid: 01KW7DH4JZBYKPCSY2S3HQ2SES
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -76463,7 +76463,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T15:29:52.531Z
-        completed_at: 2026-06-28T15:29:52.531Z
+        completed_at: 2026-06-28T15:30:04.910Z
+        notes: "Friction points: full npm test took 2713s and had long quiet/drain periods, but searches
+          found existing coverage: @task-investigate-npm-test-teardown-hang-after-green-suite-run,
+          @test-suite-perf-reliability, inbox @01KTN0CE, and multiple test-runner observations.
+          Review evidence log friction is also already tracked by observations @01KR2JD1, @01KT5ZGF,
+          @01KVESXQK, and @01KVET18."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T15:30:04.910Z
+        completed_at: 2026-06-28T15:30:04.910Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T15:28:22.111Z
