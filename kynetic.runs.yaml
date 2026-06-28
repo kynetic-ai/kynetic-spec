@@ -76749,7 +76749,7 @@ runs:
     completed_at: 2026-06-28T17:05:07.070Z
   - _ulid: 01KW7M9ARM2RP7E6QHP8DW7KFV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -76762,7 +76762,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T17:27:23.151Z
-        completed_at: 2026-06-28T17:27:23.151Z
+        completed_at: 2026-06-28T17:27:34.447Z
+        notes: "Friction: review evidence logs are still recorded as non-blocking review threads because
+          there is no first-class evidence-log field. This is systemic, but search found existing
+          observations covering it (@01KR2JD1 and related review-evidence-log observations), so no
+          duplicate capture is needed. Full npm test duration was long but expected for this repo
+          and completed cleanly."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T17:27:34.447Z
+        completed_at: 2026-06-28T17:27:34.447Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T17:26:26.325Z
