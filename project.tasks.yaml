@@ -33478,6 +33478,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-28T08:54:36.097Z
+  automation: eligible
 - _ulid: 01KW6Q04PHJWHE0BAKF77QF68A
   slugs:
     - task-spec-workspace-resolution-panels
