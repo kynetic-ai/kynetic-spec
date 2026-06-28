@@ -70,3 +70,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T14:49:06.368Z
+  - _ulid: 01KW7CJYN3BTXJ2DT6C2EW7YV0
+    content: "Fix cycle 3 approach: preserve legacy /specs?plan=<ref> behavior by threading plan
+      filtering through the spec-workspace root projection, web API client, static snapshot
+      fallback, and the /specs route query key. Behavioral proof: daemon/static projection tests
+      assert filtered root nodes, and the plan View Specs E2E assertion verifies the tree contents
+      are filtered rather than only showing the banner."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T15:11:52.995Z
