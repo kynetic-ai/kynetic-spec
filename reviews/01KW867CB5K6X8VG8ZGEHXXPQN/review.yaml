@@ -168,9 +168,25 @@ events:
       kind: nit
       thread_ulid: 01KW8741M42F0HG5GAZ2JVDFJJ
     timestamp: 2026-06-28T22:55:36.317Z
+  - _ulid: 01KW874C2XPTHN2ZJYJPYF6Z91
+    actor: codex-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-28T22:55:46.781Z
+  - _ulid: 01KW874C2X4A8FDWBTBJNWGT4A
+    actor: codex-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-28T22:55:46.781Z
 examined_commit: 9ba0efbbd15db6303fae955a58757c9f50af9972
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -243,7 +259,14 @@ threads:
           two blockers recorded."
         created_at: 2026-06-28T22:55:36.068Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-reviewer
+    role: reviewer
+    created_at: 2026-06-28T22:55:46.781Z
 created_at: 2026-06-28T22:39:56.773Z
-updated_at: 2026-06-28T22:55:36.068Z
+updated_at: 2026-06-28T22:55:46.781Z
 notes: []
