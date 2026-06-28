@@ -23538,6 +23538,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-28T11:25:00.908Z
+  - _ulid: 01KW742Q7DD613G1SNNSYERVH7
+    type: success
+    content: "AC-aligned route E2E tests were effective for the spec workspace shell: exercising stable
+      URLs, reload/back behavior, and criterion pages against the running daemon exposed that the
+      projection route was reading cached summary items instead of full item details. For
+      projection-backed UI work, route E2E coverage should hit the real daemon projection rather
+      than only component/source checks."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KW73Z2"
+    created_at: 2026-06-28T12:43:12.493Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
