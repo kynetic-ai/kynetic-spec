@@ -268,6 +268,12 @@ events:
     payload:
       thread_ulid: 01KW757MC0QQ43SQNJK1HMVEEA
     timestamp: 2026-06-28T13:33:52.804Z
+  - _ulid: 01KW76ZP0PS3J66ZVMJ17AREGC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW757QQMAFWB3AXZKFQM87KR
+    timestamp: 2026-06-28T13:33:58.678Z
 examined_commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
 external_links: []
 lifecycle_state: closed
@@ -371,6 +377,11 @@ threads:
           open/back navigation, this test would still pass, so it does not prove that the previously
           expanded branches remain expanded."
         created_at: 2026-06-28T13:03:25.428Z
+      - _ulid: 01KW76ZNQV1CSC64QVY2Z3R1A1
+        author: Jacob Chapel
+        body: "Fixed: the browser-back test now opens a nested feature branch before navigation and verifies
+          both the module branch and nested feature branch remain visible after returning."
+        created_at: 2026-06-28T13:33:58.395Z
     kind: blocker
   - _ulid: 01KW757TT3E5PE164GAKD5RRY7
     anchor:
@@ -419,5 +430,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T13:03:35.183Z
 created_at: 2026-06-28T12:46:18.934Z
-updated_at: 2026-06-28T13:33:52.546Z
+updated_at: 2026-06-28T13:33:58.395Z
 notes: []
