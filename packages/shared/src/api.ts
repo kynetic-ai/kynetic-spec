@@ -197,6 +197,8 @@ export interface CoverageStateSnapshot {
 
 // ─── Spec Workspace Projection API ──────────────────────────────────────────
 
+export const SPEC_WORKSPACE_MAX_PAGE_SIZE = 100;
+
 export interface SpecWorkspacePagination {
   total: number;
   offset: number;

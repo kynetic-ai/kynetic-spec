@@ -9,6 +9,7 @@
  * - ac-12, ac-13 (@gh-pages-export): Deep linking with ref resolution
  */
 
+import { SPEC_WORKSPACE_MAX_PAGE_SIZE } from "@kynetic-ai/shared";
 import type {
   TaskSummary,
   TaskDetail,
@@ -54,6 +55,20 @@ import type {
   ExportedReview,
 } from "$lib/types/snapshot";
 import { getSnapshot, ReadOnlyModeError } from "$lib/stores/mode.svelte";
+
+function specWorkspacePaginationParams(params?: { limit?: number; offset?: number }): {
+  limit: number;
+  offset: number;
+} {
+  const rawLimit =
+    Number.isFinite(params?.limit) && params?.limit !== undefined ? params.limit : 50;
+  const rawOffset =
+    Number.isFinite(params?.offset) && params?.offset !== undefined ? params.offset : 0;
+  return {
+    limit: Math.min(Math.max(0, Math.floor(rawLimit)), SPEC_WORKSPACE_MAX_PAGE_SIZE),
+    offset: Math.max(0, Math.floor(rawOffset)),
+  };
+}
 
 /**
  * Wrap data in a unified API response envelope with cache_status: "ready".
@@ -777,8 +792,7 @@ export function fetchSpecWorkspaceRootStatic(params?: {
   offset?: number;
 }): ApiResponse<SpecWorkspaceRootProjection> {
   const snapshot = getSnapshot();
-  const offset = params?.offset ?? 0;
-  const limit = params?.limit ?? 50;
+  const { offset, limit } = specWorkspacePaginationParams(params);
   if (!snapshot) {
     return wrapEnvelope(
       {
@@ -835,8 +849,7 @@ export function fetchSpecWorkspaceNodeStatic(
   if (!snapshot) return null;
   const item = findItemByRef(snapshot.items, ref);
   if (!item) return null;
-  const offset = params?.offset ?? 0;
-  const limit = params?.limit ?? 50;
+  const { offset, limit } = specWorkspacePaginationParams(params);
   const children = staticChildren(snapshot);
   const directChildren = children.get(item._ulid) ?? [];
   const byType = new Map<string, ExportedItem[]>();

@@ -1,5 +1,6 @@
 import { Elysia, t } from "elysia";
 import { ulid } from "ulidx";
+import { SPEC_WORKSPACE_MAX_PAGE_SIZE } from "@kynetic-ai/shared";
 import type {
   CoverageBucketCounts,
   CoverageCriterionStateDetail,
@@ -46,6 +47,11 @@ interface Pagination {
   offset: number;
 }
 
+interface PaginationValidationError {
+  field: "limit" | "offset";
+  message: string;
+}
+
 interface ProjectionContext {
   projectPath: string;
   cacheDomainState: string | undefined;
@@ -80,18 +86,42 @@ function emptyCoverageSummary() {
 function parsePagination(query: {
   limit?: string;
   offset?: string;
-}): { ok: true; pagination: Pagination } | { ok: false; field: "limit" | "offset" } {
-  const parse = (field: "limit" | "offset", fallback: number) => {
+}): { ok: true; pagination: Pagination } | { ok: false; error: PaginationValidationError } {
+  const parse = (
+    field: "limit" | "offset",
+    fallback: number,
+  ): { ok: true; value: number } | { ok: false; error: PaginationValidationError } => {
     const value = query[field];
-    if (value === undefined) return fallback;
-    if (!/^\d+$/.test(value)) return null;
-    return Number(value);
+    if (value === undefined) return { ok: true, value: fallback };
+    if (!/^\d+$/.test(value)) {
+      return {
+        ok: false,
+        error: { field, message: `${field} must be a non-negative integer` },
+      };
+    }
+    const parsed = Number(value);
+    if (!Number.isSafeInteger(parsed)) {
+      return {
+        ok: false,
+        error: { field, message: `${field} must be a non-negative integer` },
+      };
+    }
+    if (field === "limit" && parsed > SPEC_WORKSPACE_MAX_PAGE_SIZE) {
+      return {
+        ok: false,
+        error: {
+          field,
+          message: `limit must be less than or equal to ${SPEC_WORKSPACE_MAX_PAGE_SIZE}`,
+        },
+      };
+    }
+    return { ok: true, value: parsed };
   };
   const limit = parse("limit", 50);
-  if (limit === null) return { ok: false, field: "limit" };
+  if (!limit.ok) return { ok: false, error: limit.error };
   const offset = parse("offset", 0);
-  if (offset === null) return { ok: false, field: "offset" };
-  return { ok: true, pagination: { limit, offset } };
+  if (!offset.ok) return { ok: false, error: offset.error };
+  return { ok: true, pagination: { limit: limit.value, offset: offset.value } };
 }
 
 function paginationMeta(total: number, pagination: Pagination): SpecWorkspacePagination {
@@ -103,10 +133,10 @@ function paginationMeta(total: number, pagination: Pagination): SpecWorkspacePag
   };
 }
 
-function validationError(field: "limit" | "offset") {
+function validationError(validation: PaginationValidationError) {
   return {
     error: "validation_error",
-    details: [{ field, message: `${field} must be a non-negative integer` }],
+    details: [{ field: validation.field, message: validation.message }],
     suggestion: "Use non-negative integer pagination parameters.",
   };
 }
@@ -526,7 +556,7 @@ export function createSpecWorkspaceRoutes(options: SpecWorkspaceRouteOptions = {
         "/root",
         async ({ query, projectContext, error: errorResponse }) => {
           const pagination = parsePagination(query);
-          if (!pagination.ok) return errorResponse(400, validationError(pagination.field));
+          if (!pagination.ok) return errorResponse(400, validationError(pagination.error));
           const cache = options.getEntityCache?.(projectContext.path);
           const itemsDomainState = cache?.getDomainState("items");
           if (cache && itemsDomainState === "loading") {
@@ -562,7 +592,7 @@ export function createSpecWorkspaceRoutes(options: SpecWorkspaceRouteOptions = {
         "/nodes/:ref",
         async ({ params, query, projectContext, error: errorResponse }) => {
           const pagination = parsePagination(query);
-          if (!pagination.ok) return errorResponse(400, validationError(pagination.field));
+          if (!pagination.ok) return errorResponse(400, validationError(pagination.error));
           const projectionContext = await loadProjectionContext(projectContext.path, options);
           const item = resolveItem(projectionContext, params.ref);
           if (!item) return errorResponse(404, notFound(params.ref));

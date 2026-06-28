@@ -143,26 +143,32 @@ const snapshot: KspecSnapshot = {
 describe("spec workspace static projections", () => {
   // AC: @unified-spec-workspace-data-projection ac-static-readonly-projection
   // AC: @unified-spec-workspace-data-projection ac-bounded-root-projection
-  it("serves bounded root and node projections from a static snapshot", () => {
+  // AC: @unified-spec-workspace-data-projection ac-node-detail-projection
+  it("serves capped root and node projections from a static snapshot", () => {
     modeState.snapshot = snapshot;
 
-    const root = fetchSpecWorkspaceRootStatic({ limit: 1 }).data;
-    const node = fetchSpecWorkspaceNodeStatic("@static-requirement")?.data;
+    const root = fetchSpecWorkspaceRootStatic({ limit: 999_999 }).data;
+    const node = fetchSpecWorkspaceNodeStatic("@static-module", { limit: 999_999 })?.data;
 
     expect(root).toMatchObject({
       kind: "root",
       corpus: { items: 2, acceptance_criteria: 1 },
       coverage_summary: snapshot.coverage_state?.summary,
       top_level_nodes: [expect.objectContaining({ ref: "@static-module", child_count: 1 })],
-      pagination: { total: 1, limit: 1, offset: 0, has_more: false },
+      pagination: { total: 1, limit: 100, offset: 0, has_more: false },
     });
     expect(node).toMatchObject({
       kind: "node",
       node: {
-        ref: "@static-requirement",
-        coverage_counts: { covered: 0, failing: 0, not_yet: 1, re_verify: 0 },
-        linked_work_counts: { task: 1, session: 0, plan: 0, review: 0, observation: 0 },
+        ref: "@static-module",
+        coverage_counts: { covered: 0, failing: 0, not_yet: 0, re_verify: 0 },
+        linked_work_counts: { task: 0, session: 0, plan: 0, review: 0, observation: 0 },
       },
+      child_sections: [
+        expect.objectContaining({
+          pagination: { total: 1, limit: 100, offset: 0, has_more: false },
+        }),
+      ],
       linked_work: expect.arrayContaining([
         expect.objectContaining({
           kind: "session",

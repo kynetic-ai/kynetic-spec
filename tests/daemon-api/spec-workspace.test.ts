@@ -161,6 +161,35 @@ describe("spec workspace projection API", () => {
     });
   });
 
+  // AC: @unified-spec-workspace-data-projection ac-bounded-root-projection
+  // AC: @unified-spec-workspace-data-projection ac-endpoint-contract
+  // AC: @trait-api-endpoint ac-3
+  it("rejects over-limit workspace projection pagination", async () => {
+    const tempDir = await setupSpecWorkspaceProject();
+    tempDirs.push(tempDir);
+    const { app } = createTestApp();
+
+    const rootResponse = await makeRequest(app, tempDir, "/api/spec-workspace/root?limit=101");
+    const nodeResponse = await makeRequest(
+      app,
+      tempDir,
+      "/api/spec-workspace/nodes/@workspace-module?limit=101",
+    );
+    const root = await json(rootResponse);
+    const node = await json(nodeResponse);
+
+    expect(rootResponse.status).toBe(400);
+    expect(nodeResponse.status).toBe(400);
+    expect(root).toMatchObject({
+      error: "validation_error",
+      details: [{ field: "limit", message: expect.stringContaining("less than or equal to 100") }],
+    });
+    expect(node).toMatchObject({
+      error: "validation_error",
+      details: [{ field: "limit", message: expect.stringContaining("less than or equal to 100") }],
+    });
+  });
+
   // AC: @unified-spec-workspace-data-projection ac-node-detail-projection
   // AC: @unified-spec-workspace-data-projection ac-linked-work-definition
   it("serves node detail with ancestors, bounded child sections, criteria, and linked work", async () => {
