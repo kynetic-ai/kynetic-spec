@@ -158,6 +158,13 @@ events:
       kind: blocker
       thread_ulid: 01KW6TXK2PZPSW11T1EC2BKRK9
     timestamp: 2026-06-28T10:03:07.477Z
+  - _ulid: 01KW6TXPK46M8C0AZQZMMJG5HF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW6TXPAN7NN2F22ZCEZ87X05
+    timestamp: 2026-06-28T10:03:10.820Z
 examined_commit: 30f92fa025dac26ded72129e9b9d93b7bdd794ac
 external_links: []
 lifecycle_state: open
@@ -209,7 +216,27 @@ threads:
           helper hard-codes session to 0 and tests only cover task/plan counts."
         created_at: 2026-06-28T10:03:07.222Z
     kind: blocker
+  - _ulid: 01KW6TXPAN7NN2F22ZCEZ87X05
+    anchor:
+      type: code
+      commit: 30f92fa025dac26ded72129e9b9d93b7bdd794ac
+      line_end: 213
+      line_start: 207
+      path: packages/web-ui/src/lib/query/ws-invalidation.ts
+      side: head
+    entries:
+      - _ulid: 01KW6TXPANKXFGHZB9GCACHCS7
+        author: Jacob Chapel
+        body: "MUST-FIX: direct task-file watcher events still invalidate only task queries and do not
+          invalidate specWorkspace. Impact: when a task file changes outside a route-driven
+          task_updated event, linked task counts/statuses in the spec workspace remain stale until a
+          reload or unrelated invalidation, violating ac-cache-and-event-coherence for task changes.
+          Evidence: the daemon file fallback maps project.tasks.yaml and tasks/<id>/task.yaml here,
+          while the new tests at tests/web-ui/ws-cache-invalidation.test.ts:303 and :320 assert only
+          task keys."
+        created_at: 2026-06-28T10:03:10.550Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-28T09:51:01.418Z
-updated_at: 2026-06-28T10:03:07.222Z
+updated_at: 2026-06-28T10:03:10.550Z
 notes: []
