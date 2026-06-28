@@ -7198,6 +7198,9 @@ features:
                       re-verification, spec-text revert, and dispatch-fix request — without
                       inventing a separate mutation path, test runner, or workspace-specific
                       task creation flow.
+                    status:
+                      maturity: draft
+                      implementation: in_progress
                     depends_on:
                       - "@coverage-resolution-mutation-interface"
                       - "@explicit-coverage-reverification"
