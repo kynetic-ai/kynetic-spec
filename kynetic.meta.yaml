@@ -23550,6 +23550,19 @@ observations:
     resolved: false
     workflow_ref: "@01KW73Z2"
     created_at: 2026-06-28T12:43:12.493Z
+  - _ulid: 01KW75DQHW60S75MX678NYJQH7
+    type: friction
+    content: Automated reviewer review-record writes can default to the configured human author for
+      checks and comment threads unless every kspec review check/comment command explicitly passes
+      --author. In review @01KW748D9P8E6T3KJXWDZ9432T, checks and threads appeared as Jacob Chapel
+      while the verdict was pr-reviewer, making agent-authored evidence look human-authored. This is
+      separate from historical actor normalization and suggests review-command defaults or reviewer
+      workflow guidance should derive the active reviewer identity consistently.
+    author: pr-reviewer
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KW759M"
+    created_at: 2026-06-28T13:06:41.852Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
