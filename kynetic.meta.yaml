@@ -23659,6 +23659,18 @@ observations:
     resolved: false
     workflow_ref: "@01KW82BT"
     created_at: 2026-06-28T21:33:32.352Z
+  - _ulid: 01KW89ZDQWJ815V7D9W5DZKB0V
+    type: friction
+    content: "Reflection workflows can be duplicated accidentally: during this session both
+      @session-reflect and @session-reflect-loop could be started, leaving two active runs and
+      requiring manual discovery plus pausing of the redundant run. Consider a small workflow-start
+      guard or clearer reflect guidance so agents choose exactly one reflection mode before
+      starting."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-28T23:45:30.364Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
