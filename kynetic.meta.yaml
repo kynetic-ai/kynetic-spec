@@ -23576,6 +23576,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-28T14:04:25.247Z
+  - _ulid: 01KW7A44TXW5GA0AHTKH0Y86N0
+    type: success
+    content: Review records that include the exact failing command, selector, expected behavior, and
+      impact make fix cycles narrow and verifiable; in this session the blocker was reproduced with
+      the listed E2E command, fixed in one route, and validated with focused plus full gates.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-28T14:28:50.653Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
