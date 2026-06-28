@@ -76236,7 +76236,7 @@ runs:
     started_at: 2026-06-28T14:00:56.876Z
     completed_at: 2026-06-28T14:04:41.373Z
   - _ulid: 01KW7A121TRH7MWFK87XWZQ7XV
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -76282,7 +76282,13 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-28T14:28:47.153Z
-        completed_at: 2026-06-28T14:28:47.153Z
+        completed_at: 2026-06-28T14:28:54.563Z
+        notes: "Captured one success observation: exact failing-command/selector review evidence made the
+          fix cycle precise. Did not capture duplicate long-test friction because
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run already tracks it, and did
+          not capture Svelte focused-lint as a task because existing work-gates wording covers
+          changed TS/test-file lint scope."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T14:27:09.498Z
+    completed_at: 2026-06-28T14:28:54.563Z
