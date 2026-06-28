@@ -256,6 +256,12 @@ events:
     payload:
       thread_ulid: 01KW757GJ6R6DSWNACYBRPP7JR
     timestamp: 2026-06-28T13:33:41.378Z
+  - _ulid: 01KW76ZAPSTMH3XKRY9MKGW2BA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW757MC0QQ43SQNJK1HMVEEA
+    timestamp: 2026-06-28T13:33:47.097Z
 examined_commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
 external_links: []
 lifecycle_state: closed
@@ -334,6 +340,11 @@ threads:
           the previous collapse assertion was removed, so a regression that prevents collapsing
           expanded rows would pass."
         created_at: 2026-06-28T13:03:21.984Z
+      - _ulid: 01KW76ZADWEJ8VQVRJ4WX2TD6W
+        author: Jacob Chapel
+        body: "Fixed: the dual-gesture row test now clicks the row body a second time and asserts the branch
+          collapses, while title navigation remains focused-page behavior."
+        created_at: 2026-06-28T13:33:46.812Z
     kind: blocker
   - _ulid: 01KW757QQMAFWB3AXZKFQM87KR
     anchor:
@@ -400,5 +411,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T13:03:35.183Z
 created_at: 2026-06-28T12:46:18.934Z
-updated_at: 2026-06-28T13:33:41.127Z
+updated_at: 2026-06-28T13:33:46.812Z
 notes: []
