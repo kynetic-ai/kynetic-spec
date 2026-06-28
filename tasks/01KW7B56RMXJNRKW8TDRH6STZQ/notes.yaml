@@ -8,3 +8,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T14:49:47.513Z
+  - _ulid: 01KW7C2F5VHGJ3DGYC57XJCYJD
+    content: "Implemented: updated session-context E2E related-session status assertions to target the
+      rendered badge text case-insensitively for both task and spec detail rows, preserving count,
+      duration, href, and filtered navigation checks. Verification: npx oxlint
+      tests/e2e/session-context.spec.ts; npm run test:e2e -- tests/e2e/session-context.spec.ts; npm
+      run format:check; npm run lint -- --quiet; npm run typecheck; npm test; kspec validate --refs
+      --warnings-ok; kspec validate --alignment --warnings-ok; kspec validate --completeness
+      --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T15:02:52.859Z
