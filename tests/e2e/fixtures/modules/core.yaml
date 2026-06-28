@@ -66,3 +66,8 @@ features:
         description: A test requirement nested under the feature
         implements:
           - "@test-feature"
+        acceptance_criteria:
+          - id: ac-requirement
+            given: a user opens a requirement workspace page
+            when: they inspect requirement criteria
+            then: the requirement criterion appears as a readable scenario row

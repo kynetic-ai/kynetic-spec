@@ -8,11 +8,19 @@
 	AC: @unified-spec-workspace-navigation ac-page-children-use-same-rows
 	AC: @unified-spec-workspace-navigation ac-no-horizontal-scroll
 	AC: @spec-workspace-delivery-quality ac-url-state-via-goto
+	AC: @spec-node-criterion-workspace-pages ac-root-page
+	AC: @spec-node-criterion-workspace-pages ac-module-feature-requirement-pages
+	AC: @spec-node-criterion-workspace-pages ac-requirement-ac-list
+	AC: @spec-node-criterion-workspace-pages ac-criterion-page
+	AC: @spec-node-criterion-workspace-pages ac-linked-work-strip
+	AC: @spec-node-criterion-workspace-pages ac-empty-and-missing-sections
+	AC: @spec-node-criterion-workspace-pages ac-read-navigation-scope
 -->
 <script lang="ts">
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import type { RefType } from '$lib/utils/reference';
 	import type {
 		SpecWorkspaceCriterionSummary,
 		SpecWorkspaceLinkedWorkGroup,
@@ -240,7 +248,26 @@
 		if (!root) return [];
 		return [
 			{ label: 'items', value: root.corpus.items, testid: 'spec-corpus-items' },
-			{ label: 'criteria', value: root.corpus.acceptance_criteria, testid: 'spec-corpus-ac' }
+			{ label: 'criteria', value: root.corpus.acceptance_criteria, testid: 'spec-corpus-ac' },
+			{
+				label: 'coverage denominator',
+				value: root.coverage_summary.denominator,
+				testid: 'spec-coverage-denominator'
+			}
+		];
+	}
+
+	function coverageCountEntries(counts: {
+		covered: number;
+		failing: number;
+		not_yet: number;
+		re_verify: number;
+	}): Array<{ key: string; label: string; value: number }> {
+		return [
+			{ key: 'covered', label: 'Covered', value: counts.covered },
+			{ key: 'failing', label: 'Failing', value: counts.failing },
+			{ key: 'not_yet', label: 'Not yet', value: counts.not_yet },
+			{ key: 're_verify', label: 'Re-verify', value: counts.re_verify }
 		];
 	}
 
@@ -257,6 +284,37 @@
 		return `${base}/observations`;
 	}
 
+	function linkedWorkLabel(kind: SpecWorkspaceLinkedWorkItem['kind']): string {
+		if (kind === 'task') return 'Tasks';
+		if (kind === 'session') return 'Sessions';
+		if (kind === 'plan') return 'Plans';
+		if (kind === 'review') return 'Reviews';
+		return 'Observations';
+	}
+
+	function linkedWorkRefType(kind: SpecWorkspaceLinkedWorkItem['kind']): RefType | null {
+		if (kind === 'task') return 'task';
+		if (kind === 'session') return 'session';
+		if (kind === 'plan') return 'plan';
+		if (kind === 'review') return 'review';
+		return null;
+	}
+
+	function criterionEvidenceCount(criterion: SpecWorkspaceCriterionSummary): number {
+		const coverage = criterion.coverage;
+		return (
+			(coverage?.latest_run_evidence.length ?? 0) +
+			(coverage?.unmapped_result_references.length ?? 0) +
+			(coverage?.freshness.secondary_causes.length ?? 0)
+		);
+	}
+
+	function criterionEvidenceLabel(criterion: SpecWorkspaceCriterionSummary): string {
+		const count = criterionEvidenceCount(criterion);
+		if (count === 0) return 'No evidence yet';
+		return `${count} evidence ${count === 1 ? 'entry' : 'entries'}`;
+	}
+
 	function linkedWorkGroup(
 		groups: SpecWorkspaceLinkedWorkGroup[],
 		kind: SpecWorkspaceLinkedWorkItem['kind']
@@ -264,11 +322,6 @@
 		return groups.find((group) => group.kind === kind);
 	}
 
-	function nonSessionLinkedWorkGroups(
-		groups: SpecWorkspaceLinkedWorkGroup[]
-	): SpecWorkspaceLinkedWorkGroup[] {
-		return groups.filter((group) => group.kind !== 'session');
-	}
 </script>
 
 {#snippet loadingRows()}
@@ -290,6 +343,36 @@
 	{/if}
 {/snippet}
 
+{#snippet emptyState(message: string, testid = 'section-empty')}
+	<p
+		class="rounded-md border border-dashed border-border px-3 py-4 text-sm text-muted-foreground"
+		data-testid={testid}
+	>
+		{message}
+	</p>
+{/snippet}
+
+{#snippet coverageSummary()}
+	{#if root}
+		<section class="min-w-0 rounded-md border border-border p-3" data-testid="root-coverage-summary">
+			<div class="mb-2 flex min-w-0 items-center justify-between gap-3">
+				<h2 class="text-sm font-semibold">Coverage Summary</h2>
+				<span class="shrink-0 text-xs text-muted-foreground">
+					{root.coverage_summary.denominator} criteria
+				</span>
+			</div>
+			<div class="grid min-w-0 gap-2 sm:grid-cols-2 xl:grid-cols-4">
+				{#each coverageCountEntries(root.coverage_summary.counts) as count (count.key)}
+					<div class="min-w-0 rounded-md bg-muted/45 px-3 py-2">
+						<p class="truncate text-xs text-muted-foreground">{count.label}</p>
+						<p class="text-lg font-semibold">{count.value}</p>
+					</div>
+				{/each}
+			</div>
+		</section>
+	{/if}
+{/snippet}
+
 {#snippet focusedActions()}
 	{#if focusedNodeRef}
 		<button
@@ -302,6 +385,50 @@
 			Close
 		</button>
 	{/if}
+{/snippet}
+
+{#snippet rootWorkspacePage()}
+	<div class="min-w-0 space-y-5" data-testid="spec-detail-panel">
+		<ViewHeader reference="specs" title="Specs" titleTestid="spec-title" counts={rootCounts()} />
+		<p class="text-sm text-muted-foreground">
+			Explore the spec corpus from the tree or open a top-level row as a focused workspace page.
+		</p>
+
+		{#if root}
+			{@render coverageSummary()}
+
+			<section class="min-w-0" data-testid="root-type-summary">
+				<h2 class="mb-2 text-sm font-semibold">Corpus by Type</h2>
+				<div class="grid min-w-0 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+					{#each Object.entries(root.corpus.by_type) as [type, count] (type)}
+						<div class="rounded-md border border-border px-3 py-2">
+							<p class="truncate text-sm font-medium">{type}</p>
+							<p class="text-2xl font-semibold">{count}</p>
+						</div>
+					{/each}
+				</div>
+			</section>
+
+			<section class="min-w-0" data-testid="root-top-level-rows">
+				<div class="mb-2 flex min-w-0 items-center justify-between gap-3">
+					<h2 class="text-sm font-semibold">Top-level Specs</h2>
+					<span class="shrink-0 text-xs text-muted-foreground">{root.pagination.total}</span>
+				</div>
+				<SpecWorkspaceRows
+					nodes={root.top_level_nodes}
+					{expandedRefs}
+					{expandedDetails}
+					{expandedLoading}
+					{expandedErrors}
+					focusedRef={focusedNodeRef}
+					nodeHref={nodeHref}
+					onToggle={toggleNode}
+				/>
+			</section>
+		{:else}
+			{@render emptyState('Spec corpus summary is unavailable while the workspace loads.')}
+		{/if}
+	</div>
 {/snippet}
 
 {#snippet nodeWorkspacePage(detail: SpecWorkspaceNodeDetailProjection)}
@@ -372,13 +499,16 @@
 										<span class="min-w-0 text-sm" data-testid="ac-given">
 											{@html renderInlineMarkdown(criterionLabel(criterion))}
 										</span>
-											{#if criterion.coverage?.presentation}
-												<StatusBadge
-													domain="coverage"
-													state={criterion.coverage.presentation}
-													class="shrink-0 px-1.5 py-0 text-[10px]"
-												/>
-											{/if}
+										{#if criterion.coverage?.presentation}
+											<StatusBadge
+												domain="coverage"
+												state={criterion.coverage.presentation}
+												class="shrink-0 px-1.5 py-0 text-[10px]"
+											/>
+										{/if}
+										<span class="shrink-0 text-xs text-muted-foreground" data-testid="ac-evidence-summary">
+											{criterionEvidenceLabel(criterion)}
+										</span>
 									</span>
 								</button>
 								<a
@@ -406,12 +536,17 @@
 										{@html renderInlineMarkdown(` ${criterion.then}`)}
 									</p>
 									{@render criterionCoverageBadge(criterion)}
+									<p class="text-xs text-muted-foreground" data-testid="ac-evidence-summary-expanded">
+										{criterionEvidenceLabel(criterion)}
+									</p>
 								</div>
 							{/if}
 						</div>
 					{/each}
 				</div>
 			</section>
+		{:else if detail.child_sections.length === 0}
+			{@render emptyState('No acceptance criteria are defined for this spec item.', 'acceptance-criteria-empty')}
 		{/if}
 
 		{#if detail.child_sections.length > 0}
@@ -438,6 +573,8 @@
 					{/each}
 				</div>
 			</section>
+		{:else}
+			{@render emptyState('No child sections are available for this spec item.', 'workspace-page-children-empty')}
 		{/if}
 
 		{@render linkedWorkSection(detail.linked_work, detail.node)}
@@ -461,6 +598,21 @@
 				actions={focusedActions}
 			/>
 
+			<section
+				class="min-w-0 rounded-md border border-border bg-muted/30 p-3"
+				data-testid="criterion-parent-context"
+			>
+				<h2 class="mb-2 text-sm font-semibold">Parent Requirement</h2>
+				<div class="flex min-w-0 flex-wrap items-center gap-2">
+					<Badge variant="outline">{focusedCriterion.parent.type}</Badge>
+					<ReferenceLink
+						ref={focusedCriterion.parent.ref}
+						type="spec"
+						title={focusedCriterion.parent.title}
+					/>
+				</div>
+			</section>
+
 			<section class="space-y-3 rounded-md border border-border p-4" data-testid="acceptance-criteria">
 				<h2 class="text-sm font-semibold">Scenario</h2>
 				<div class="space-y-2 text-sm" data-testid="ac-item">
@@ -479,7 +631,74 @@
 				</div>
 			</section>
 
-			<section class="min-w-0">
+			<section class="min-w-0 rounded-md border border-border p-3" data-testid="criterion-evidence-summary">
+				<div class="mb-2 flex min-w-0 flex-wrap items-center gap-2">
+					<h2 class="text-sm font-semibold">Coverage Evidence</h2>
+					{#if focusedCriterion.coverage?.presentation}
+						<span data-testid="criterion-coverage-state">
+							<StatusBadge
+								domain="coverage"
+								state={focusedCriterion.coverage.presentation}
+								testid="test-coverage-indicator"
+							/>
+						</span>
+					{/if}
+				</div>
+
+				<div class="grid min-w-0 gap-2 sm:grid-cols-3">
+					<div class="rounded-md bg-muted/45 px-3 py-2">
+						<p class="text-xs text-muted-foreground">Latest run</p>
+						<p class="text-lg font-semibold">{focusedCriterion.evidence.latest_run.length}</p>
+					</div>
+					<div class="rounded-md bg-muted/45 px-3 py-2">
+						<p class="text-xs text-muted-foreground">Unmapped</p>
+						<p class="text-lg font-semibold">{focusedCriterion.evidence.unmapped_results.length}</p>
+					</div>
+					<div class="rounded-md bg-muted/45 px-3 py-2">
+						<p class="text-xs text-muted-foreground">Re-verify causes</p>
+						<p class="text-lg font-semibold">{focusedCriterion.evidence.reverify_causes.length}</p>
+					</div>
+				</div>
+
+				{#if focusedCriterion.coverage?.explanation.rule}
+					<p class="mt-2 text-xs text-muted-foreground">
+						State explanation: {focusedCriterion.coverage.explanation.rule}
+					</p>
+				{/if}
+
+				{#if focusedCriterion.evidence.latest_run.length > 0}
+					<div class="mt-3 space-y-2" data-testid="criterion-evidence-latest-run">
+						{#each focusedCriterion.evidence.latest_run as evidence (evidence.run_id + evidence.case_id)}
+							<div class="min-w-0 rounded-md border border-border px-3 py-2 text-sm">
+								<div class="flex min-w-0 flex-wrap items-center gap-2">
+									<Badge variant="outline">{evidence.status}</Badge>
+									<span class="min-w-0 truncate font-medium">{evidence.display_name}</span>
+								</div>
+								<p class="mt-1 text-xs text-muted-foreground">
+									{evidence.producer.label} · {evidence.run_id}
+								</p>
+							</div>
+						{/each}
+					</div>
+				{:else if focusedCriterion.evidence.unmapped_results.length === 0 && focusedCriterion.evidence.reverify_causes.length === 0}
+					{@render emptyState('No coverage evidence is linked to this criterion yet.', 'criterion-evidence-empty')}
+				{/if}
+
+				{#if focusedCriterion.evidence.reverify_causes.length > 0}
+					<div class="mt-3 space-y-2" data-testid="criterion-reverify-causes">
+						{#each focusedCriterion.evidence.reverify_causes as cause (cause.cause)}
+							<p class="rounded-md bg-muted/45 px-3 py-2 text-sm">
+								<span class="font-medium">{cause.cause}</span>
+								{#if cause.detail}
+									<span class="text-muted-foreground"> — {cause.detail}</span>
+								{/if}
+							</p>
+						{/each}
+					</div>
+				{/if}
+			</section>
+
+			<section class="min-w-0" data-testid="criterion-siblings">
 				<h2 class="mb-2 text-sm font-semibold">Sibling Criteria</h2>
 				<div class="flex min-w-0 flex-wrap gap-2">
 					{#each focusedCriterion.siblings as sibling (sibling.id)}
@@ -500,87 +719,99 @@
 {/snippet}
 
 {#snippet linkedWorkSection(groups: SpecWorkspaceLinkedWorkGroup[], node: SpecWorkspaceNodeSummary)}
-	{@const implementationGroups = nonSessionLinkedWorkGroups(groups)}
-	{@const sessionGroup = linkedWorkGroup(groups, 'session')}
-	<section class="min-w-0" data-testid="implementation-section">
-		<h2 class="mb-2 text-sm font-semibold">Implementation</h2>
-		{#if implementationGroups.some((group) => group.items.length > 0)}
-			<div class="min-w-0 space-y-3">
-				{#each implementationGroups as group (group.kind)}
-					{#if group.items.length > 0}
-						<div class="min-w-0">
-							<h3 class="mb-1 text-xs font-medium uppercase tracking-normal text-muted-foreground">
-								{group.kind}
-							</h3>
-							<div class="min-w-0 space-y-1">
-								{#each group.items as item (item.kind + item.ref)}
-									<a
-										href={linkedWorkHref(item)}
-										class="flex min-w-0 items-center gap-2 rounded-md border border-border px-3 py-2 text-sm hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-										data-testid={item.kind === 'task' ? 'linked-task' : 'linked-work'}
-									>
-										{#if item.kind === 'task' && item.status}
-											<StatusBadge domain="task" state={item.status} testid="task-status-badge" />
-										{/if}
-										<span class="min-w-0 flex-1 truncate" data-testid={item.kind === 'task' ? 'task-title' : undefined}>
-											{item.title ?? item.ref}
-										</span>
-										<span class="shrink-0 font-mono text-xs text-muted-foreground">@{normalizeRef(item.ref)}</span>
-									</a>
-								{/each}
-							</div>
-						</div>
-					{/if}
-				{/each}
-			</div>
-		{:else}
-			<p class="text-sm text-muted-foreground">No tasks linked to this spec item yet.</p>
-		{/if}
-	</section>
-
-	<section class="min-w-0" data-testid="item-related-sessions">
+	<section class="min-w-0" data-testid="linked-work-section">
 		<div class="mb-2 flex min-w-0 items-center justify-between gap-3">
-			<h2 class="text-sm font-semibold">Sessions</h2>
-			<a
-				href="{base}/sessions?spec_ref={encodeURIComponent(node.ref)}"
-				class="shrink-0 rounded-md px-2 py-1 text-xs font-medium text-primary hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-				data-testid="item-related-sessions-view-all"
-			>
-				View all sessions
-			</a>
+			<h2 class="text-sm font-semibold">Linked Work</h2>
+			{#if linkedWorkGroup(groups, 'session')}
+				<a
+					href="{base}/sessions?spec_ref={encodeURIComponent(node.ref)}"
+					class="shrink-0 rounded-md px-2 py-1 text-xs font-medium text-primary hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					data-testid="item-related-sessions-view-all"
+				>
+					View all sessions
+				</a>
+			{/if}
 		</div>
 
-		{#if sessionGroup?.unavailable}
-			<p class="rounded-md bg-destructive/10 p-3 text-sm text-destructive" data-testid="item-related-sessions-error">
-				{sessionGroup.unavailable.reason}
-			</p>
-		{:else if sessionGroup && sessionGroup.items.length > 0}
-			<div class="space-y-2">
-				{#each sessionGroup.items as session (session.ref)}
-					<a
-						href="{base}/sessions/{normalizeRef(session.ref)}"
-						class="flex min-w-0 items-center gap-3 rounded-md border border-border p-3 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-						data-testid="item-related-sessions-row"
+		{#if groups.length === 0}
+			{@render emptyState('Linked work is not available for this workspace projection.', 'linked-work-empty')}
+		{:else}
+			<div class="grid min-w-0 gap-3 lg:grid-cols-2">
+				{#each groups as group (group.kind)}
+					<div
+						class="min-w-0 rounded-md border border-border p-3"
+						data-testid={`linked-work-group-${group.kind}`}
+						id={group.kind === 'session' ? 'item-related-sessions' : undefined}
 					>
-						{#if session.status}
-							<StatusBadge domain="session" state={session.status} testid="item-related-sessions-status-badge" />
-							<span class="sr-only">{session.status}</span>
-						{/if}
-						<div class="min-w-0 flex-1">
-							<div class="flex min-w-0 items-center gap-2">
-								<span class="truncate text-sm font-medium">{session.title ?? normalizeRef(session.ref)}</span>
-							</div>
-							{#if session.created_at}
-								<div class="text-xs text-muted-foreground">Started {session.created_at}</div>
-							{/if}
+						<div class="mb-2 flex min-w-0 items-center justify-between gap-2">
+							<h3 class="text-sm font-medium">{linkedWorkLabel(group.kind)}</h3>
+							<Badge variant="outline" class="shrink-0">{group.total}</Badge>
 						</div>
-					</a>
+						<p class="mb-2 text-xs text-muted-foreground">{group.inclusion_rule}</p>
+
+						{#if group.unavailable}
+							<p
+								class="rounded-md bg-muted/50 p-3 text-sm text-muted-foreground"
+								data-testid={group.kind === 'session' ? 'item-related-sessions-error' : 'linked-work-unavailable'}
+							>
+								<span class="font-medium">unavailable:</span>
+								{group.unavailable.reason}
+								<span class="block text-xs">{group.unavailable.suggestion}</span>
+							</p>
+						{:else if group.items.length > 0}
+							<div class="min-w-0 space-y-2">
+								{#each group.items as item (item.kind + item.ref)}
+									<div
+										class="flex min-w-0 items-center gap-3 rounded-md border border-border p-3 text-sm"
+										data-testid={item.kind === 'task' ? 'linked-task' : item.kind === 'session' ? 'item-related-sessions-row' : 'linked-work'}
+									>
+										{#if item.status}
+											<StatusBadge
+												domain={item.kind === 'task' ? 'task' : item.kind === 'session' ? 'session' : 'spec-implementation'}
+												state={item.status}
+												testid={item.kind === 'task' ? 'task-status-badge' : item.kind === 'session' ? 'item-related-sessions-status-badge' : undefined}
+											/>
+										{/if}
+										<div class="min-w-0 flex-1">
+											{#if linkedWorkRefType(item.kind)}
+												<ReferenceLink
+													ref={item.ref}
+													type={linkedWorkRefType(item.kind) ?? 'task'}
+													title={item.title}
+													class="min-w-0"
+												/>
+											{:else}
+												<a
+													href={linkedWorkHref(item)}
+													class="inline-flex min-w-0 items-baseline gap-1 text-primary hover:underline"
+												>
+													<span class="truncate text-sm" data-testid={item.kind === 'task' ? 'task-title' : undefined}>
+														{item.title ?? item.ref}
+													</span>
+													<span class="font-mono text-[10px] text-muted-foreground">@{normalizeRef(item.ref)}</span>
+												</a>
+											{/if}
+											{#if item.kind === 'task'}
+												<span class="sr-only" data-testid="task-title">{item.title ?? item.ref}</span>
+											{/if}
+											{#if item.created_at}
+												<p class="mt-1 text-xs text-muted-foreground">Created {item.created_at}</p>
+											{/if}
+										</div>
+									</div>
+								{/each}
+							</div>
+						{:else}
+							<p
+								class="text-sm text-muted-foreground"
+								data-testid={group.kind === 'session' ? 'item-related-sessions-empty' : 'linked-work-empty'}
+							>
+								No linked work entries are available for {linkedWorkLabel(group.kind).toLowerCase()}.
+							</p>
+						{/if}
+					</div>
 				{/each}
 			</div>
-		{:else}
-			<p class="text-sm text-muted-foreground" data-testid="item-related-sessions-empty">
-				No sessions are linked to tasks for this spec item yet.
-			</p>
 		{/if}
 	</section>
 {/snippet}
@@ -645,27 +876,7 @@
 
 		<main class="min-w-0 rounded-lg border border-border bg-card p-4">
 			{#if !focusedNodeRef}
-				<div class="min-w-0 space-y-5" data-testid="spec-detail-panel">
-					<ViewHeader
-						reference="specs"
-						title="Spec Items"
-						titleTestid="spec-title"
-						counts={rootCounts()}
-					/>
-					<p class="text-sm text-muted-foreground">
-						Expand branches in the tree, or open any row title as a focused workspace page.
-					</p>
-					{#if root}
-						<div class="grid min-w-0 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-							{#each Object.entries(root.corpus.by_type) as [type, count] (type)}
-								<div class="rounded-md border border-border px-3 py-2">
-									<p class="truncate text-sm font-medium">{type}</p>
-									<p class="text-2xl font-semibold">{count}</p>
-								</div>
-							{/each}
-						</div>
-					{/if}
-				</div>
+				{@render rootWorkspacePage()}
 			{:else if focusedCriterionId}
 				{#if criterionLoading && !focusedCriterion}
 					{@render loadingRows()}
