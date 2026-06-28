@@ -141,3 +141,13 @@ resources:
     label: Stale/re-verify AC detail
     path: handoff/shots/r3-spec-states-3-stale-ac.png
     sha256: 164f12153268332a70fb6e26efd50d2f17df4dd13e00b15c1ccbf0310f50ee36
+  - description: React wireframe source for interaction details and sample copy only; target
+      implementation remains Svelte.
+    bytes: 22921
+    content_type: application/octet-stream
+    git_commit: null
+    git_path: null
+    id: src-spec-unified
+    label: Spec workspace wireframe source
+    path: handoff/reference-src/wf3-spec-unified.jsx
+    sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
