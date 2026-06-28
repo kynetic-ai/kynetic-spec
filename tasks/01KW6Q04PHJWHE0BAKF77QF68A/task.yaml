@@ -42,7 +42,7 @@ description: |
 spec_ref: "@spec-workspace-coverage-resolution-panels"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-spec-workspace-coverage-presentation"
@@ -54,6 +54,7 @@ tags:
   - mutations
   - specs
 vcs_refs: []
+session_id: 01KW807NENF1V0JRR7F5PZJMGP
 history:
   - author: Jacob Chapel
     changes:
@@ -62,6 +63,19 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-06-28T08:56:26.531Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KW807NENF1V0JRR7F5PZJMGP
+        previous: null
+      started_at:
+        new: 2026-06-28T20:55:51.710Z
+        previous: null
+    command: task-start
+    timestamp: 2026-06-28T20:55:51.711Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -96,5 +110,6 @@ resource_refs:
     recorded_at: 2026-06-28T08:54:35.006Z
     sha256: b9b6f967f22a1477a312878cafc27cf04dc110474093fd6e1548975eedd6b177
 created_at: 2026-06-28T08:54:36.497Z
+started_at: 2026-06-28T20:55:51.710Z
 todos: []
 automation: eligible
