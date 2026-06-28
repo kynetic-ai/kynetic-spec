@@ -79,3 +79,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T15:11:52.995Z
+  - _ulid: 01KW7DF4YSAP2YQS33NVAMKQHE
+    content: "Fix cycle 3: addressed the /specs?plan=<ref> blocker. The spec workspace root projection
+      now accepts plan filtering and returns only the plan's derived spec rows/corpus counts; the
+      web API client, static snapshot fallback, and /specs root query key preserve that plan
+      parameter. Added behavioral coverage in tests/daemon-api/spec-workspace.test.ts,
+      tests/spec-workspace-static.test.ts, and tests/e2e/plans.spec.ts to prove filtered tree
+      contents, not just the banner. Resolved review threads @01KW7B5WDM26VF48MTRY45EPZB and
+      @01KW7B8VM251GTJX7KYN3VB7EK. Verification passed: npm run format:check; npm run lint --
+      --quiet; npx oxlint changed TS/test files; npm run typecheck; npm test (2920 suites, 11112
+      passed, 3 skipped); focused E2E plan View Specs test; kspec validate
+      --refs/--alignment/--completeness --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T15:27:16.953Z
