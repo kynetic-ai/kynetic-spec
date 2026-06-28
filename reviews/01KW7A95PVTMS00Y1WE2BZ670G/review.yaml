@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-28T14:31:56.564Z
+  - _ulid: 01KW7B5WNW7TH8F8019YZPYP5Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW7B5WDM26VF48MTRY45EPZB
+    timestamp: 2026-06-28T14:47:16.413Z
 examined_commit: a35677900ee073d6bcc6e1661c95fd81b082e43f
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,38 @@ subject:
   content_hash: ""
   ref: "@01KW6Q03KGA93343F9SQJKSA0R"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW7B5WDM26VF48MTRY45EPZB
+    anchor:
+      type: code
+      commit: a35677900ee073d6bcc6e1661c95fd81b082e43f
+      line_end: 68
+      line_start: 66
+      path: packages/web-ui/src/routes/specs/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KW7B5WDNW9H46X167F2BMEXZ
+        author: Jacob Chapel
+        body: >-
+          MUST-FIX: `/specs?plan=<ref>` no longer filters the specs workspace. The old route read
+          `planFilter` from the URL and passed it into `fetchItems(...)`, so the plan "View Specs"
+          path showed only specs for that plan. In the replacement route, `planFilter` is only used
+          for the banner; the root query always calls `fetchSpecWorkspaceRoot({ limit:
+          WORKSPACE_PAGE_SIZE })`, and the new spec-workspace API/client has no `plan` parameter to
+          apply. Impact: users following a plan's "View Specs" link land on `/specs?plan=...` but
+          see the whole spec corpus, which regresses the existing plan-filter navigation/read
+          behavior. Please preserve the filter in the new projection/API/client/static path and add
+          a behavioral assertion that the tree contents are filtered, not just that the banner
+          appears.
+
+
+          Evidence: base `packages/web-ui/src/routes/specs/+page.svelte` used `fetchItems(planFilter
+          ? { plan: planFilter } : undefined)`; current route lines 66-68 call
+          `fetchSpecWorkspaceRoot` without `planFilter`, while lines 589-596 only render the plan
+          banner.
+        created_at: 2026-06-28T14:47:16.149Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-28T14:31:35.387Z
-updated_at: 2026-06-28T14:31:56.318Z
+updated_at: 2026-06-28T14:47:16.149Z
 notes: []

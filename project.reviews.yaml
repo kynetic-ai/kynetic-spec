@@ -28666,7 +28666,7 @@ reviews:
   - _ulid: 01KW7A95PVTMS00Y1WE2BZ670G
     slugs: []
     title: Review page-tree workspace shell (cycle 3)
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 0
     examined_commit: a35677900ee073d6bcc6e1661c95fd81b082e43f
@@ -28677,8 +28677,8 @@ reviews:
       content_hash: ""
       ref: "@01KW6Q03KGA93343F9SQJKSA0R"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-28T14:31:35.387Z
-    updated_at: 2026-06-28T14:31:56.318Z
+    updated_at: 2026-06-28T14:47:16.149Z
