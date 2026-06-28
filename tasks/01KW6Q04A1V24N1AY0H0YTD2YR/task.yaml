@@ -43,7 +43,7 @@ description: |
 spec_ref: "@spec-workspace-coverage-state-presentation"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-spec-node-criterion-workspace-pages"
@@ -54,6 +54,14 @@ tags:
   - coverage
   - specs
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-spec-workspace-coverage-presentation/01kw6q04
+  captured_at: 2026-06-28T17:56:48.402Z
+  commit: 3bbde6254d09677d99863156817072b0d299637a
+  remote: null
+  remote_url: null
+  upstream_ref: feat/ui-redesign
 session_id: 01KW7M97EVSBMBK278AZ37VWZ9
 history:
   - author: Jacob Chapel
@@ -76,6 +84,26 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-06-28T17:27:09.519Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-spec-workspace-coverage-presentation/01kw6q04
+          captured_at: 2026-06-28T17:56:48.402Z
+          commit: 3bbde6254d09677d99863156817072b0d299637a
+          remote: null
+          remote_url: null
+          upstream_ref: feat/ui-redesign
+        previous: null
+      submitted_at:
+        new: 2026-06-28T17:56:48.410Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-06-28T17:56:48.418Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -135,5 +163,6 @@ resource_refs:
     sha256: b9b6f967f22a1477a312878cafc27cf04dc110474093fd6e1548975eedd6b177
 created_at: 2026-06-28T08:54:36.097Z
 started_at: 2026-06-28T17:27:09.518Z
+submitted_at: 2026-06-28T17:56:48.410Z
 todos: []
 automation: eligible
