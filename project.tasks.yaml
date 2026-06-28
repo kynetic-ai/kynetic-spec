@@ -33499,6 +33499,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-28T08:54:36.497Z
+  automation: eligible
 - _ulid: 01KW6Q052EJ7M5WHBF4W8AHSW8
   slugs:
     - task-spec-workspace-quality-verification

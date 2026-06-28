@@ -54,6 +54,14 @@ tags:
   - mutations
   - specs
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-06-28T08:56:26.531Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -89,3 +97,4 @@ resource_refs:
     sha256: b9b6f967f22a1477a312878cafc27cf04dc110474093fd6e1548975eedd6b177
 created_at: 2026-06-28T08:54:36.497Z
 todos: []
+automation: eligible
