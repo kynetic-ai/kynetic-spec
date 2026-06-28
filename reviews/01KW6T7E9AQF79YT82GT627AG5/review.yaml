@@ -188,6 +188,54 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-28T10:03:24.877Z
+  - _ulid: 01KW6W8CG5B6MNHXP6B76159A4
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW6TXK2PZPSW11T1EC2BKRK9
+    timestamp: 2026-06-28T10:26:29.509Z
+  - _ulid: 01KW6W8FFDRDF84WJJ51RMBYBN
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW6TXK2PZPSW11T1EC2BKRK9
+    timestamp: 2026-06-28T10:26:32.557Z
+  - _ulid: 01KW6W8JFBAZFZ5J351MCB0MEF
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW6TXPAN7NN2F22ZCEZ87X05
+    timestamp: 2026-06-28T10:26:35.628Z
+  - _ulid: 01KW6W8NDXNBFDAM1KETXQ9A9M
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW6TXPAN7NN2F22ZCEZ87X05
+    timestamp: 2026-06-28T10:26:38.653Z
+  - _ulid: 01KW6W8RDMHTPEYCKSC0X40B6M
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW6TXSJM0Y70QGY9X8W5V8JG
+    timestamp: 2026-06-28T10:26:41.716Z
+  - _ulid: 01KW6W8V8MEH2PEP29YCZRN56C
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW6TXSJM0Y70QGY9X8W5V8JG
+    timestamp: 2026-06-28T10:26:44.628Z
+  - _ulid: 01KW6W8Y87C7W8TT2VCBKVTWMS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW6TWHT0WNKYSFVJZHJAMCCB
+    timestamp: 2026-06-28T10:26:47.687Z
+  - _ulid: 01KW6W915T619EZMA9MEB89Y60
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW6TWHT0WNKYSFVJZHJAMCCB
+    timestamp: 2026-06-28T10:26:50.683Z
 examined_commit: 30f92fa025dac26ded72129e9b9d93b7bdd794ac
 external_links: []
 lifecycle_state: closed
@@ -218,7 +266,14 @@ threads:
           cases, error handling, test quality, cache/event integration, static mode, read-only
           behavior. Findings recorded separately."
         created_at: 2026-06-28T10:02:33.152Z
+      - _ulid: 01KW6W8Y0HJ0KG8KS7D7SVETG5
+        author: Jacob Chapel
+        body: "Acknowledged: this was the reviewer evidence log, with no code action requested. The
+          follow-up run completed the previously incomplete full npm test gate successfully."
+        created_at: 2026-06-28T10:26:47.441Z
     kind: nit
+    resolved_at: 2026-06-28T10:26:50.446Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KW6TXK2PZPSW11T1EC2BKRK9
     anchor:
       type: code
@@ -238,7 +293,15 @@ threads:
           getRelatedSessionsForItem builds sessions from tasks linked to the item, but the count
           helper hard-codes session to 0 and tests only cover task/plan counts."
         created_at: 2026-06-28T10:03:07.222Z
+      - _ulid: 01KW6W8C893HSSQ8HRT7NA5ZYV
+        author: Jacob Chapel
+        body: "Fixed in f8b7d74abf: node summaries now reuse the existing related-session lookup through a
+          per-context cache, so linked_work_counts.session matches the session linked-work group for
+          the same item. Added a daemon regression fixture with a session tied to the linked task."
+        created_at: 2026-06-28T10:26:29.256Z
     kind: blocker
+    resolved_at: 2026-06-28T10:26:32.323Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KW6TXPAN7NN2F22ZCEZ87X05
     anchor:
       type: code
@@ -258,7 +321,15 @@ threads:
           while the new tests at tests/web-ui/ws-cache-invalidation.test.ts:303 and :320 assert only
           task keys."
         created_at: 2026-06-28T10:03:10.550Z
+      - _ulid: 01KW6W8J86EXW3RTM6C30B1FR5
+        author: Jacob Chapel
+        body: "Fixed in f8b7d74abf: direct task file fallback invalidations now include
+          queryKeys.specWorkspace.all for project.tasks.yaml and folder-backed task files. Updated
+          the fallback file-event tests to assert the workspace invalidation."
+        created_at: 2026-06-28T10:26:35.398Z
     kind: blocker
+    resolved_at: 2026-06-28T10:26:38.387Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KW6TXSJM0Y70QGY9X8W5V8JG
     anchor:
       type: code
@@ -277,7 +348,15 @@ threads:
           plan changes. Evidence: only plan_resource_changed includes queryKeys.specWorkspace.all;
           all other plan events return just queryKeys.plans.lists()."
         created_at: 2026-06-28T10:03:13.877Z
+      - _ulid: 01KW6W8R5VR0E6A7JPWNS7XGN2
+        author: Jacob Chapel
+        body: "Fixed in f8b7d74abf: non-resource plans:updates events now invalidate
+          queryKeys.specWorkspace.all alongside plan lists. Added a targeted plan_updated test for
+          linked-plan projection freshness."
+        created_at: 2026-06-28T10:26:41.467Z
     kind: blocker
+    resolved_at: 2026-06-28T10:26:44.385Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -287,5 +366,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T10:03:24.876Z
 created_at: 2026-06-28T09:51:01.418Z
-updated_at: 2026-06-28T10:03:24.877Z
+updated_at: 2026-06-28T10:26:50.446Z
 notes: []
