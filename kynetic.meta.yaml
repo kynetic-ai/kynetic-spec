@@ -23563,6 +23563,19 @@ observations:
     resolved: false
     workflow_ref: "@01KW759M"
     created_at: 2026-06-28T13:06:41.852Z
+  - _ulid: 01KW78QDRZCZW0VJDZ3EER8A78
+    type: friction
+    content: Route/surface replacement reviews need an explicit neighboring-workflow regression pass. In
+      review @01KW77F1, the changed /specs tests and required npm test gate were clean, but manually
+      checking unchanged session-context E2E exposed that /items -> /specs replacement dropped the
+      spec related-sessions section and /sessions?spec_ref navigation. Future route replacement
+      reviews should search for old-surface E2E/spec workflows and run focused neighboring E2E when
+      URLs redirect or old components are removed.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect"
+    created_at: 2026-06-28T14:04:25.247Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
