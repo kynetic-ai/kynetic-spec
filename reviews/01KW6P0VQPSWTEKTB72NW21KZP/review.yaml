@@ -52,6 +52,19 @@ checks:
     runner: node resource reference scan
     created_at: 2026-06-28T08:38:53.723Z
     completed_at: 2026-06-28T08:38:53.723Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All six manual tasks declare resource_refs. Counts by task: projection API 7,
+      shell/navigation 5, node/criterion pages 6, coverage presentation 7, resolution panels 4,
+      quality verification 11. The refs are scoped to each task's UX docs/screenshots/reference
+      source needs."
+    name: task-scoped UX resources
+    required: true
+    runner: plan markdown inspection
+    created_at: 2026-06-28T08:38:59.532Z
+    completed_at: 2026-06-28T08:38:59.532Z
 events:
   - _ulid: 01KW6P0VQGVWBE9Q9DJ7VNHFD6
     actor: Jacob Chapel
@@ -94,6 +107,13 @@ events:
       status: pass
       name: markdown/resource_refs resolution
     timestamp: 2026-06-28T08:38:53.998Z
+  - _ulid: 01KW6P3HZYXBNV3Z8VNBBS6RJT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: task-scoped UX resources
+    timestamp: 2026-06-28T08:38:59.838Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -106,5 +126,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T08:37:31.510Z
-updated_at: 2026-06-28T08:38:53.723Z
+updated_at: 2026-06-28T08:38:59.532Z
 notes: []
