@@ -14888,7 +14888,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-28T17:27:34.448Z
+      updated_at: 2026-06-28T17:30:05.528Z
     integration:
       status: merged
       detail: integration:merged
@@ -14905,18 +14905,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-28T17:06:39.545Z
-      last_reconciled_at: 2026-06-28T17:29:47.389Z
+      last_reconciled_at: 2026-06-28T17:30:05.528Z
       created_at: 2026-06-28T16:32:47.817Z
-      updated_at: 2026-06-28T17:29:47.389Z
+      updated_at: 2026-06-28T17:30:05.528Z
     workspace_id: dispatch-workspace-01KW6Q03Z01M2F407CFXDDC2Y6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: e5bea5bee0d91c2ca3ace2156b1b87cb1ed72bea
-        last_seen_at: 2026-06-28T17:05:49.448Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-node-criterion-workspace-pages-01kw6q03-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-spec-node-criterion-workspace-pages/01kw6q03
