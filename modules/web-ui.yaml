@@ -7105,6 +7105,9 @@ features:
                   re-verify banners, and evidence captions using one shared token and label
                   system for the four API-facing presentation buckets. It never falls back to
                   the legacy boolean AC `covered` scan when state data is available.
+                status:
+                  maturity: draft
+                  implementation: in_progress
                 depends_on:
                   - "@coverage-state-presentation"
                   - "@coverage-state-api-cache"
