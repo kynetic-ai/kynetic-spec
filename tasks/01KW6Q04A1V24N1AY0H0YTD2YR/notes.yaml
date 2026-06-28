@@ -43,3 +43,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T18:19:28.702Z
+  - _ulid: 01KW7S1W9YKATBM84K51GKJNBJ
+    content: "Fix cycle 1: addressed all review threads. Fixed the re-verify banner Validate destination
+      by making /validate consume spec_ref/coverage/ac URL state, display a scoped Validate banner,
+      filter visible issues to the matching spec/criterion, and carry the same scope through
+      validation query keys/API client. Also accepted optional validation scope params on the daemon
+      route and added helper/API/E2E coverage for scoped Validate behavior. Re-verified ACs,
+      especially ac-reverify-banner, and reran gates: format:check; lint --quiet; focused oxlint;
+      typecheck; focused unit/API; focused Validate E2E; npm test; kspec validate
+      refs/alignment/completeness --warnings-ok."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T18:49:45.023Z
