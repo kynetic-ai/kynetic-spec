@@ -26,3 +26,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T10:03:26.955Z
+  - _ulid: 01KW6W9HRAF9EH5E6NP0KPAQG5
+    content: "Fix cycle 1: addressed all review threads. Fixed linked_work_counts.session by reusing the
+      existing related-session lookup through a per-context cache, added daemon coverage for a
+      session linked through the task, and expanded spec workspace invalidation for direct task-file
+      watcher events plus non-resource plan update events. Re-verified AC coverage around
+      linked-work definition and cache/event coherence. Gates passed: format:check, lint --quiet,
+      focused oxlint, typecheck, focused daemon/ws tests, full npm test, and kspec
+      refs/alignment/completeness validations with existing warning baselines."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T10:27:07.658Z
