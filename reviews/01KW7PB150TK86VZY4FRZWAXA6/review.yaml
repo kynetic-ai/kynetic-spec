@@ -13,6 +13,18 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-28T18:17:29.214Z
     completed_at: 2026-06-28T18:17:29.214Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: repo-wide oxlint reported 0 errors under --quiet; baseline warnings remain
+      outside the hard gate. Focused changed-file oxlint also passed with 0 warnings and 0 errors on
+      changed TS/test files."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-28T18:17:45.058Z
+    completed_at: 2026-06-28T18:17:45.058Z
 events:
   - _ulid: 01KW7PB14ZKSJ3GQZRCXDHJGV0
     actor: Jacob Chapel
@@ -34,6 +46,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-28T18:17:29.487Z
+  - _ulid: 01KW7Q79K6DRRMK10376GSP15C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-28T18:17:45.318Z
 examined_commit: 3bbde6254d09677d99863156817072b0d299637a
 external_links: []
 lifecycle_state: open
@@ -46,5 +65,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T18:02:19.168Z
-updated_at: 2026-06-28T18:17:29.214Z
+updated_at: 2026-06-28T18:17:45.058Z
 notes: []
