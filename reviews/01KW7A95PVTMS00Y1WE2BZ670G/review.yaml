@@ -88,6 +88,19 @@ checks:
     runner: kspec
     created_at: 2026-06-28T14:48:21.163Z
     completed_at: 2026-06-28T14:48:21.163Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run test:e2e -- tests/e2e/session-context.spec.ts -g 'spec detail lists
+      related sessions' verified the cycle-2 related-sessions fix. Broader run of items.spec.ts +
+      session-context.spec.ts had one unrelated pre-existing task-detail assertion mismatch,
+      captured as @01KW7B56."
+    name: focused e2e spec/session detail
+    required: false
+    runner: npm run test:e2e
+    created_at: 2026-06-28T14:48:27.375Z
+    completed_at: 2026-06-28T14:48:27.375Z
 events:
   - _ulid: 01KW7A95PVZY9GWP2VQZG60C7Y
     actor: Jacob Chapel
@@ -165,6 +178,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-28T14:48:21.449Z
+  - _ulid: 01KW7B829T37WR3PVQSTZ7G5G1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e spec/session detail
+    timestamp: 2026-06-28T14:48:27.706Z
 examined_commit: a35677900ee073d6bcc6e1661c95fd81b082e43f
 external_links: []
 lifecycle_state: open
@@ -207,5 +227,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-06-28T14:31:35.387Z
-updated_at: 2026-06-28T14:48:21.163Z
+updated_at: 2026-06-28T14:48:27.375Z
 notes: []
