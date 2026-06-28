@@ -6923,6 +6923,9 @@ features:
           stable URL. Row body activation expands; title/open activation navigates.
           Navigation uses SvelteKit `goto()` and reactive URL state, preserves
           expansion context across browser back/forward, and works without hover.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on:
           - "@ui-breadcrumb"
           - "@ui-view-header"
