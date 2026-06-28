@@ -1,0 +1,26 @@
+_ulid: 01KW6ZTTVA12QGWR3X8X39HSFY
+slugs: []
+title: Review unified spec workspace projection API (cycle 3)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KW6ZTTV9HZB6X0WZXSDE84TT
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-28T11:28:59.753Z
+examined_commit: b5106f14ba336db3056cd1d145e0755714f291ec
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KW6Q037Z2613K782P6FHEZZD"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-28T11:28:59.754Z
+updated_at: null
+notes: []
