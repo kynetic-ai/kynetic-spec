@@ -544,6 +544,7 @@ export async function fetchItem(ref: string): Promise<ItemDetail> {
 export async function fetchSpecWorkspaceRoot(params?: {
   limit?: number;
   offset?: number;
+  plan?: string;
 }): Promise<SpecWorkspaceRootProjection> {
   if (isStaticMode()) {
     return unwrapEnvelope(fetchSpecWorkspaceRootStatic(params));
@@ -552,6 +553,7 @@ export async function fetchSpecWorkspaceRoot(params?: {
   const url = new URL(`${API_BASE}/api/spec-workspace/root`);
   if (params?.limit !== undefined) url.searchParams.set("limit", String(params.limit));
   if (params?.offset !== undefined) url.searchParams.set("offset", String(params.offset));
+  if (params?.plan) url.searchParams.set("plan", params.plan);
 
   const response = await fetch(url.toString(), { headers: getProjectHeaders() });
   if (!response.ok) {

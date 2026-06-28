@@ -64,8 +64,8 @@
 	let expandedRefs = $derived(parseExpandedRefs($page.url.searchParams.get('expanded')));
 
 	const rootQuery = createQuery(() => ({
-		queryKey: queryKeys.specWorkspace.root({ limit: WORKSPACE_PAGE_SIZE }),
-		queryFn: () => fetchSpecWorkspaceRoot({ limit: WORKSPACE_PAGE_SIZE }),
+		queryKey: queryKeys.specWorkspace.root({ limit: WORKSPACE_PAGE_SIZE, plan: planFilter }),
+		queryFn: () => fetchSpecWorkspaceRoot({ limit: WORKSPACE_PAGE_SIZE, plan: planFilter }),
 		enabled: isProjectInitialized()
 	}));
 
@@ -593,20 +593,20 @@
 		>
 			<span class="min-w-0 truncate">Opened from plan <code class="rounded bg-muted px-1 py-0.5 text-xs">@{planFilter}</code></span>
 			<a href="{base}/specs" class="ml-auto shrink-0 text-xs text-primary hover:underline">Clear</a>
-			</div>
-		{/if}
+		</div>
+	{/if}
 
-		{#if expansionEvictedCount > 0}
-			<div
-				class="mb-4 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-100"
-				data-testid="expansion-eviction-notice"
-				role="status"
-			>
-				{expansionEvictedCount}
-				{expansionEvictedCount === 1 ? 'older expanded branch was' : 'older expanded branches were'}
-				dropped to keep the workspace responsive.
-			</div>
-		{/if}
+	{#if expansionEvictedCount > 0}
+		<div
+			class="mb-4 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-100"
+			data-testid="expansion-eviction-notice"
+			role="status"
+		>
+			{expansionEvictedCount}
+			{expansionEvictedCount === 1 ? 'older expanded branch was' : 'older expanded branches were'}
+			dropped to keep the workspace responsive.
+		</div>
+	{/if}
 
 	<div class="grid min-w-0 gap-4 xl:grid-cols-[minmax(20rem,28rem)_minmax(0,1fr)]">
 		<aside class="min-w-0 rounded-lg border border-border bg-card p-3" data-testid="spec-tree-container">

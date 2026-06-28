@@ -790,6 +790,7 @@ export function fetchCoverageStateUnmappedStatic(params?: {
 export function fetchSpecWorkspaceRootStatic(params?: {
   limit?: number;
   offset?: number;
+  plan?: string;
 }): ApiResponse<SpecWorkspaceRootProjection> {
   const snapshot = getSnapshot();
   const { offset, limit } = specWorkspacePaginationParams(params);
@@ -814,10 +815,13 @@ export function fetchSpecWorkspaceRootStatic(params?: {
     );
   }
   const children = staticChildren(snapshot);
-  const topLevel = children.get(undefined) ?? [];
+  const visibleItems = params?.plan
+    ? filterItems(snapshot.items, { plan: params.plan })
+    : snapshot.items;
+  const topLevel = params?.plan ? visibleItems : (children.get(undefined) ?? []);
   const byType: Record<string, number> = {};
   let acceptanceCriteria = 0;
-  for (const item of snapshot.items) {
+  for (const item of visibleItems) {
     byType[item.type] = (byType[item.type] ?? 0) + 1;
     acceptanceCriteria += item.acceptance_criteria?.length ?? 0;
   }
@@ -826,7 +830,7 @@ export function fetchSpecWorkspaceRootStatic(params?: {
     {
       kind: "root",
       corpus: {
-        items: snapshot.items.length,
+        items: visibleItems.length,
         acceptance_criteria: acceptanceCriteria,
         by_type: byType,
       },
