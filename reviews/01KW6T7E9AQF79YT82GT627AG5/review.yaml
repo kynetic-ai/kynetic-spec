@@ -144,6 +144,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-06-28T10:02:29.925Z
+  - _ulid: 01KW6TWJ1WZ9A19C1FNH3AGZPB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW6TWHT0WNKYSFVJZHJAMCCB
+    timestamp: 2026-06-28T10:02:33.404Z
 examined_commit: 30f92fa025dac26ded72129e9b9d93b7bdd794ac
 external_links: []
 lifecycle_state: open
@@ -153,8 +160,29 @@ subject:
   content_hash: ""
   ref: "@01KW6Q037Z2613K782P6FHEZZD"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW6TWHT0WNKYSFVJZHJAMCCB
+    entries:
+      - _ulid: 01KW6TWHT0BZ4QZVAKH2DKHFQ0
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: packages/daemon/src/routes/spec-workspace.ts,
+          packages/daemon/src/routes/session-related.ts, packages/daemon/src/server.ts,
+          packages/shared/src/api.ts, packages/web-ui/src/lib/api.ts,
+          packages/web-ui/src/lib/api-static.ts, packages/web-ui/src/lib/query/keys.ts,
+          packages/web-ui/src/lib/query/ws-invalidation.ts, tests/daemon-api/spec-workspace.test.ts,
+          tests/spec-workspace-static.test.ts, tests/web-ui/ws-cache-invalidation.test.ts,
+          tests/daemon-api/helpers.ts. Commands run: git diff/name-status/stat/check, kspec task
+          get, kspec item get, kspec review for-task/add/open, npm run format:check, npx oxlint
+          changed files, npm run lint -- --quiet, npm run typecheck, kspec validate
+          refs/alignment/completeness with --warnings-ok, npm test. Claims verified: worker claim
+          that projection uses coverage-state read model verified in route code and daemon tests;
+          static projection behavior verified in static tests; cache invalidation claim checked
+          against ws-invalidation tests and event vocabulary. Categories searched: correctness, edge
+          cases, error handling, test quality, cache/event integration, static mode, read-only
+          behavior. Findings recorded separately."
+        created_at: 2026-06-28T10:02:33.152Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-28T09:51:01.418Z
-updated_at: 2026-06-28T10:02:29.668Z
+updated_at: 2026-06-28T10:02:33.152Z
 notes: []
