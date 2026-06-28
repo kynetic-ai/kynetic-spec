@@ -67,3 +67,12 @@ resources:
     label: Spec workspace root tree hover
     path: handoff/shots/r3-spec-unified-1-tree-hover.png
     sha256: e09ec6a67209bfbba0d442920c828a3a980e212603f33a0a884a2a1f4b745893
+  - description: Module page with breadcrumb/header, feature sections, and linked-work strip.
+    bytes: 85305
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-unified-module
+    label: Spec workspace module page
+    path: handoff/shots/r3-spec-unified-2-module.png
+    sha256: 24178a66e6c07925ced6acdd8f537184b1c44bac0707a2452f3ebc66db71b6f9
