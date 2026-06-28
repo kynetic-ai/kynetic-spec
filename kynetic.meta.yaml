@@ -23647,6 +23647,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-28T20:56:31.416Z
+  - _ulid: 01KW82DSA0CE68KEBEE9Y78JYT
+    type: success
+    content: "Session reflection after @task-spec-workspace-resolution-panels: extracting a small pure
+      spec-workspace coverage resolution panel model made action visibility, dry-run summaries,
+      read-only behavior, stale conflict guidance, and dispatch-fix task refs easy to cover with
+      behavioral AC tests while keeping the Svelte route focused on rendering and mutation
+      orchestration."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KW82BT"
+    created_at: 2026-06-28T21:33:32.352Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
