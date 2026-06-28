@@ -90,6 +90,18 @@ checks:
     runner: kspec
     created_at: 2026-06-28T13:58:57.540Z
     completed_at: 2026-06-28T13:58:57.540Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Failed: tests/e2e/session-context.spec.ts:169 expected
+      getByTestId('spec-detail-panel').getByTestId('item-related-sessions') to be visible after
+      /items redirects to /specs, but the element was not found."
+    name: focused e2e session context
+    required: false
+    runner: npm run test:e2e -- tests/e2e/session-context.spec.ts -g spec detail lists related sessions
+    created_at: 2026-06-28T13:59:10.934Z
+    completed_at: 2026-06-28T13:59:10.934Z
 events:
   - _ulid: 01KW77F148N83FYB85DBDGVRM9
     actor: Jacob Chapel
@@ -160,6 +172,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-28T13:58:57.798Z
+  - _ulid: 01KW78DV2D1D6YDG30DKZG7HNE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: focused e2e session context
+    timestamp: 2026-06-28T13:59:11.181Z
 examined_commit: 19ad0f44ea3ecddcd0be3a8faeecc16f8ad7036f
 external_links: []
 lifecycle_state: open
@@ -172,5 +191,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T13:42:21.577Z
-updated_at: 2026-06-28T13:58:57.540Z
+updated_at: 2026-06-28T13:59:10.934Z
 notes: []
