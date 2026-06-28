@@ -16,6 +16,7 @@
 	import type {
 		SpecWorkspaceCriterionSummary,
 		SpecWorkspaceLinkedWorkGroup,
+		SpecWorkspaceLinkedWorkItem,
 		SpecWorkspaceNodeDetailProjection,
 		SpecWorkspaceNodeSummary
 	} from '@kynetic-ai/shared';
@@ -255,6 +256,19 @@
 		if (item.kind === 'review') return `${base}/reviews/${normalizeRef(item.ref)}`;
 		return `${base}/observations`;
 	}
+
+	function linkedWorkGroup(
+		groups: SpecWorkspaceLinkedWorkGroup[],
+		kind: SpecWorkspaceLinkedWorkItem['kind']
+	): SpecWorkspaceLinkedWorkGroup | undefined {
+		return groups.find((group) => group.kind === kind);
+	}
+
+	function nonSessionLinkedWorkGroups(
+		groups: SpecWorkspaceLinkedWorkGroup[]
+	): SpecWorkspaceLinkedWorkGroup[] {
+		return groups.filter((group) => group.kind !== 'session');
+	}
 </script>
 
 {#snippet loadingRows()}
@@ -426,7 +440,7 @@
 			</section>
 		{/if}
 
-		{@render linkedWorkSection(detail.linked_work)}
+		{@render linkedWorkSection(detail.linked_work, detail.node)}
 	</div>
 {/snippet}
 
@@ -438,9 +452,9 @@
 				reference={`${focusedCriterion.parent.ref} ${focusedCriterion.criterion.id}`}
 				title={`${focusedCriterion.parent.title} · ${focusedCriterion.criterion.id}`}
 				titleTestid="spec-title"
-					statusDomain={focusedCriterion.criterion.coverage?.presentation ? 'coverage' : undefined}
-					statusState={focusedCriterion.criterion.coverage?.presentation}
-					statusTestid="test-coverage-indicator"
+				statusDomain={focusedCriterion.criterion.coverage?.presentation ? 'coverage' : undefined}
+				statusState={focusedCriterion.criterion.coverage?.presentation}
+				statusTestid="test-coverage-indicator"
 				counts={[
 					{ label: 'siblings', value: focusedCriterion.siblings.length, testid: 'spec-ac-sibling-count' }
 				]}
@@ -480,17 +494,19 @@
 				</div>
 			</section>
 
-			{@render linkedWorkSection(focusedCriterion.linked_work)}
+			{@render linkedWorkSection(focusedCriterion.linked_work, focusedCriterion.parent)}
 		</div>
 	{/if}
 {/snippet}
 
-{#snippet linkedWorkSection(groups: SpecWorkspaceLinkedWorkGroup[])}
+{#snippet linkedWorkSection(groups: SpecWorkspaceLinkedWorkGroup[], node: SpecWorkspaceNodeSummary)}
+	{@const implementationGroups = nonSessionLinkedWorkGroups(groups)}
+	{@const sessionGroup = linkedWorkGroup(groups, 'session')}
 	<section class="min-w-0" data-testid="implementation-section">
 		<h2 class="mb-2 text-sm font-semibold">Implementation</h2>
-		{#if groups.some((group) => group.items.length > 0)}
+		{#if implementationGroups.some((group) => group.items.length > 0)}
 			<div class="min-w-0 space-y-3">
-				{#each groups as group (group.kind)}
+				{#each implementationGroups as group (group.kind)}
 					{#if group.items.length > 0}
 						<div class="min-w-0">
 							<h3 class="mb-1 text-xs font-medium uppercase tracking-normal text-muted-foreground">
@@ -519,6 +535,52 @@
 			</div>
 		{:else}
 			<p class="text-sm text-muted-foreground">No tasks linked to this spec item yet.</p>
+		{/if}
+	</section>
+
+	<section class="min-w-0" data-testid="item-related-sessions">
+		<div class="mb-2 flex min-w-0 items-center justify-between gap-3">
+			<h2 class="text-sm font-semibold">Sessions</h2>
+			<a
+				href="{base}/sessions?spec_ref={encodeURIComponent(node.ref)}"
+				class="shrink-0 rounded-md px-2 py-1 text-xs font-medium text-primary hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+				data-testid="item-related-sessions-view-all"
+			>
+				View all sessions
+			</a>
+		</div>
+
+		{#if sessionGroup?.unavailable}
+			<p class="rounded-md bg-destructive/10 p-3 text-sm text-destructive" data-testid="item-related-sessions-error">
+				{sessionGroup.unavailable.reason}
+			</p>
+		{:else if sessionGroup && sessionGroup.items.length > 0}
+			<div class="space-y-2">
+				{#each sessionGroup.items as session (session.ref)}
+					<a
+						href="{base}/sessions/{normalizeRef(session.ref)}"
+						class="flex min-w-0 items-center gap-3 rounded-md border border-border p-3 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+						data-testid="item-related-sessions-row"
+					>
+						{#if session.status}
+							<StatusBadge domain="session" state={session.status} testid="item-related-sessions-status-badge" />
+							<span class="sr-only">{session.status}</span>
+						{/if}
+						<div class="min-w-0 flex-1">
+							<div class="flex min-w-0 items-center gap-2">
+								<span class="truncate text-sm font-medium">{session.title ?? normalizeRef(session.ref)}</span>
+							</div>
+							{#if session.created_at}
+								<div class="text-xs text-muted-foreground">Started {session.created_at}</div>
+							{/if}
+						</div>
+					</a>
+				{/each}
+			</div>
+		{:else}
+			<p class="text-sm text-muted-foreground" data-testid="item-related-sessions-empty">
+				No sessions are linked to tasks for this spec item yet.
+			</p>
 		{/if}
 	</section>
 {/snippet}
