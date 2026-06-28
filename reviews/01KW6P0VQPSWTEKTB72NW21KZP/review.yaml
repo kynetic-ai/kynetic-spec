@@ -328,6 +328,15 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-06-28T08:40:02.692Z
+  - _ulid: 01KW6P5MXC99XY35X2S4FBT98X
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: comment
+    timestamp: 2026-06-28T08:40:08.364Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -338,7 +347,14 @@ subject:
   ref: "@plan-unified-spec-workspace"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: comment
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-06-28T08:40:08.364Z
 created_at: 2026-06-28T08:37:31.510Z
-updated_at: 2026-06-28T08:40:02.426Z
+updated_at: 2026-06-28T08:40:08.364Z
 notes: []
