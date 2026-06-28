@@ -7019,7 +7019,7 @@ features:
               unless a later approved plan designs them.
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
             depends_on:
               - "@unified-spec-workspace-data-projection"
               - "@ui-breadcrumb"
