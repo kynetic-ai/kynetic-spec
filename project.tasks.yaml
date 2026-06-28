@@ -33532,7 +33532,7 @@
   slugs: []
   title: Fix session-context E2E status label assertion
   type: bug
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 3
@@ -33545,4 +33545,5 @@
   created_at: 2026-06-28T14:46:53.972Z
   started_at: 2026-06-28T14:49:27.261Z
   submitted_at: 2026-06-28T15:03:03.347Z
+  completed_at: 2026-06-28T15:24:30.512Z
   automation: eligible

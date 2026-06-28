@@ -15,8 +15,11 @@ description: "During review of @01KW6Q03KGA93343F9SQJKSA0R, running npm run test
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at b5ac5f63. Updated session-context E2E related-session status
+  assertions to target the rendered badge text while preserving row count, duration, link, and
+  filtered-navigation checks.
 depends_on: []
 context: []
 priority: 3
@@ -75,8 +78,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-28T15:08:58.290Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at b5ac5f63. Updated session-context E2E related-session status assertions to
+          target the rendered badge text while preserving row count, duration, link, and
+          filtered-navigation checks.
+        previous: null
+      completed_at:
+        new: 2026-06-28T15:24:30.512Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-28T15:24:30.520Z
 created_at: 2026-06-28T14:46:53.972Z
 started_at: 2026-06-28T14:49:27.261Z
 submitted_at: 2026-06-28T15:03:03.347Z
+completed_at: 2026-06-28T15:24:30.512Z
 todos: []
 automation: eligible
