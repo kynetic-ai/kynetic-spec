@@ -165,6 +165,13 @@ events:
       kind: blocker
       thread_ulid: 01KW6TXPAN7NN2F22ZCEZ87X05
     timestamp: 2026-06-28T10:03:10.820Z
+  - _ulid: 01KW6TXSTCJ7AX3D7E7X9M07KX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW6TXSJM0Y70QGY9X8W5V8JG
+    timestamp: 2026-06-28T10:03:14.124Z
 examined_commit: 30f92fa025dac26ded72129e9b9d93b7bdd794ac
 external_links: []
 lifecycle_state: open
@@ -236,7 +243,26 @@ threads:
           task keys."
         created_at: 2026-06-28T10:03:10.550Z
     kind: blocker
+  - _ulid: 01KW6TXSJM0Y70QGY9X8W5V8JG
+    anchor:
+      type: code
+      commit: 30f92fa025dac26ded72129e9b9d93b7bdd794ac
+      line_end: 180
+      line_start: 178
+      path: packages/web-ui/src/lib/query/ws-invalidation.ts
+      side: head
+    entries:
+      - _ulid: 01KW6TXSJMCV25DEDR4K6MH6RN
+        author: Jacob Chapel
+        body: "MUST-FIX: non-resource plans:updates events invalidate only plan lists, but the workspace
+          projection embeds linked plan counts/items from derived_specs. Impact: a plan revision
+          that changes derived_specs/status/title can leave workspace linked-plan data stale even
+          though the handler subscribes to plans:updates, violating ac-cache-and-event-coherence for
+          plan changes. Evidence: only plan_resource_changed includes queryKeys.specWorkspace.all;
+          all other plan events return just queryKeys.plans.lists()."
+        created_at: 2026-06-28T10:03:13.877Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-28T09:51:01.418Z
-updated_at: 2026-06-28T10:03:10.550Z
+updated_at: 2026-06-28T10:03:13.877Z
 notes: []
