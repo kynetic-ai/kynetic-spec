@@ -33438,6 +33438,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-06-28T08:54:35.376Z
+  automation: eligible
 - _ulid: 01KW6Q03Z01M2F407CFXDDC2Y6
   slugs:
     - task-spec-node-criterion-workspace-pages
