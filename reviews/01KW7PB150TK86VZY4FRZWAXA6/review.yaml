@@ -151,6 +151,13 @@ events:
       kind: blocker
       thread_ulid: 01KW7Q9ANR1SK6JQ9H2QXGTVXK
     timestamp: 2026-06-28T18:18:52.310Z
+  - _ulid: 01KW7Q9VS87DBDKNQYCMHN9Q6D
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW7Q9VFBGMVP9J4RTC0WYGN2
+    timestamp: 2026-06-28T18:19:09.480Z
 examined_commit: 3bbde6254d09677d99863156817072b0d299637a
 external_links: []
 lifecycle_state: open
@@ -180,7 +187,32 @@ threads:
           view, so @spec-workspace-coverage-state-presentation ac-reverify-banner is not satisfied."
         created_at: 2026-06-28T18:18:51.961Z
     kind: blocker
+  - _ulid: 01KW7Q9VFBGMVP9J4RTC0WYGN2
+    entries:
+      - _ulid: 01KW7Q9VFB8R58H28EANA7BP9X
+        author: Jacob Chapel
+        body: "Review evidence log: Files read:
+          packages/web-ui/src/lib/spec-workspace/coverage-presentation.ts;
+          packages/web-ui/src/routes/specs/+page.svelte;
+          packages/web-ui/src/routes/validate/+page.svelte;
+          packages/web-ui/src/lib/components/SpecWorkspaceRows.svelte;
+          packages/web-ui/src/lib/api-static.ts; packages/web-ui/src/lib/query/ws-invalidation.ts;
+          packages/web-ui/src/lib/ds/status-tokens.ts;
+          tests/web-ui/spec-workspace-coverage-presentation.test.ts;
+          tests/spec-workspace-static.test.ts. Commands run: git diff/stat/name-status; kspec task
+          get; kspec item get for @spec-workspace-coverage-state-presentation and
+          @unified-spec-workspace-data-projection; rg searches for coverage_state_changed, Validate
+          params, and AC annotations; npm run format:check; npm run lint -- --quiet; npx oxlint
+          changed TS/test files; npm run typecheck; npm test; kspec validate
+          --refs/--alignment/--completeness --warnings-ok. Claims verified: four-bucket tokens and
+          local filtering are implemented through shared helpers; coverage_state_changed invalidates
+          coverage and specWorkspace keys; re-verify Validate link is not actually scoped because
+          the destination ignores its params. Categories searched: correctness, edge cases, error
+          handling/degraded state, test quality, integration, source-scanning tests. Shared/package
+          guidance neutrality: not applicable; no shared guidance surfaces touched."
+        created_at: 2026-06-28T18:19:09.163Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-28T18:02:19.168Z
-updated_at: 2026-06-28T18:18:51.961Z
+updated_at: 2026-06-28T18:19:09.163Z
 notes: []
