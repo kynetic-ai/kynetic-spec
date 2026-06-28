@@ -45,8 +45,12 @@ description: |
 spec_ref: "@unified-spec-workspace-navigation"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign at eda56f77c1e0 after review @01KW7G4W approved. Replaced
+  /specs with the page-tree workspace shell, preserving legacy ref links, node/criterion URLs,
+  independent expansion state, keyboard/touch controls, plan-filtered roots, static fallback, and
+  linked work/session sections.
 depends_on:
   - "@task-unified-spec-workspace-projection-api"
 context: []
@@ -343,6 +347,22 @@ history:
         previous: "@01KW7DSJ19WPJ1HDHXZBVNSA54"
     command: review-link
     timestamp: 2026-06-28T16:14:08.446Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign at eda56f77c1e0 after review @01KW7G4W approved. Replaced /specs
+          with the page-tree workspace shell, preserving legacy ref links, node/criterion URLs,
+          independent expansion state, keyboard/touch controls, plan-filtered roots, static
+          fallback, and linked work/session sections.
+        previous: null
+      completed_at:
+        new: 2026-06-28T16:31:51.897Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-28T16:31:51.909Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -387,5 +407,6 @@ resource_refs:
 created_at: 2026-06-28T08:54:35.376Z
 started_at: 2026-06-28T15:55:34.207Z
 submitted_at: 2026-06-28T16:09:55.884Z
+completed_at: 2026-06-28T16:31:51.897Z
 todos: []
 automation: eligible
