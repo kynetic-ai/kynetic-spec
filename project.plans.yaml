@@ -2100,7 +2100,8 @@ plans:
     slugs:
       - plan-unified-spec-workspace
     title: Unified Spec Workspace
-    status: draft
+    status: approved
+    approved_at: 2026-06-28T08:53:34.122Z
     branch: feat/ui-redesign
     derived_specs: []
     derived_tasks: []
