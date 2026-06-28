@@ -186,6 +186,22 @@ checks:
     runner: plan re-review
     created_at: 2026-06-28T08:39:56.740Z
     completed_at: 2026-06-28T08:39:56.740Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/data read: kspec-agents.md, stored plan markdown/json, plan resources.yaml,
+      plan-owned resources, prior reviews 01KW4VAF and 01KW4VWQ, plan-resource derive code/tests,
+      trait definitions. Commands run: plan get/import dry-run/resource list, validate
+      refs/alignment/completeness, node reference/coverage scans, file type checks, prerequisite
+      plan status checks. Categories searched: resource ownership, derived task resource
+      carry-forward, UX attachment/scoping, Svelte boundary, coverage vocabulary, AC coverage,
+      dependencies, refs, prior blockers."
+    name: review evidence log
+    required: true
+    runner: codex
+    created_at: 2026-06-28T08:40:02.426Z
+    completed_at: 2026-06-28T08:40:02.426Z
 events:
   - _ulid: 01KW6P0VQGVWBE9Q9DJ7VNHFD6
     actor: Jacob Chapel
@@ -305,6 +321,13 @@ events:
       status: pass
       name: prior approval-ready properties
     timestamp: 2026-06-28T08:39:56.992Z
+  - _ulid: 01KW6P5FC3WXZ6B6JQF82981BD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-06-28T08:40:02.692Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -317,5 +340,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T08:37:31.510Z
-updated_at: 2026-06-28T08:39:56.740Z
+updated_at: 2026-06-28T08:40:02.426Z
 notes: []
