@@ -184,6 +184,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-06-28T22:55:46.781Z
+  - _ulid: 01KW88E0RMKKYBXPB190SD0E3Q
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KW8735DEZ73DW274JGT9YJ60
+    timestamp: 2026-06-28T23:18:31.444Z
 examined_commit: 9ba0efbbd15db6303fae955a58757c9f50af9972
 external_links: []
 lifecycle_state: closed
@@ -213,6 +219,13 @@ threads:
           ac-spec-text-revert-action's requirement to handle stale-target conflicts by refreshing
           and explaining that the criterion changed."
         created_at: 2026-06-28T22:55:07.182Z
+      - _ulid: 01KW88E0FWKVN9383QGPGZZCCR
+        author: Jacob Chapel
+        body: "Fixed in 7fd9003b36: applyResolution now records the stale-target error and then refetches
+          the root, node, and focused criterion workspace queries via Promise.allSettled so the UI
+          both explains the changed criterion and refreshes after the failed mutation path that
+          emits no coverage_state_changed event."
+        created_at: 2026-06-28T23:18:31.163Z
     kind: blocker
   - _ulid: 01KW873JA5GC8Y58S9PZ8TGBHT
     anchor:
@@ -268,5 +281,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T22:55:46.781Z
 created_at: 2026-06-28T22:39:56.773Z
-updated_at: 2026-06-28T22:55:46.781Z
+updated_at: 2026-06-28T23:18:31.163Z
 notes: []
