@@ -13713,12 +13713,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-06-28T12:44:29.634Z
+      updated_at: 2026-06-28T12:44:39.451Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-06-28T12:44:29.634Z
+      updated_at: 2026-06-28T12:44:39.451Z
     integration:
       status: pending
       detail: null
@@ -13726,8 +13726,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: feat/ui-redesign
       target_commit: 1ee439998e583e57b4b5c43025473cb5290e97a2
-      updated_at: 2026-06-28T12:44:29.634Z
-    lifecycle_state: ready
+      updated_at: 2026-06-28T12:44:39.451Z
+    lifecycle_state: integrating
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW6Q03KGA93343F9SQJKSA0R
     task_ref: "@01KW6Q03KGA93343F9SQJKSA0R"
@@ -13735,16 +13735,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-06-28T11:46:12.677Z
-      last_reconciled_at: 2026-06-28T12:44:29.634Z
+      last_reconciled_at: 2026-06-28T12:44:39.451Z
       created_at: 2026-06-28T11:45:42.317Z
-      updated_at: 2026-06-28T12:44:29.634Z
+      updated_at: 2026-06-28T12:44:39.451Z
     workspace_id: dispatch-workspace-01KW6Q03KGA93343F9SQJKSA0R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
+        last_seen_at: 2026-06-28T12:44:39.451Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-unified-spec-workspace-shell-navigation-01kw6q03-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-unified-spec-workspace-shell-navigation/01kw6q03
-        head: 1ee439998e583e57b4b5c43025473cb5290e97a2
-        last_seen_at: 2026-06-28T11:45:42.317Z
+        head: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
+        last_seen_at: 2026-06-28T12:44:39.451Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-unified-spec-workspace-shell-navigation-01kw6q03
