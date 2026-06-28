@@ -53,3 +53,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-06-28T14:00:04.604Z
+  - _ulid: 01KW79ZFVKVP0024X0KQW1VE4G
+    content: "Fix cycle 2: restored the spec detail Sessions workflow in the /specs workspace. The
+      focused node/criterion page now renders session linked work as item-related-sessions rows and
+      preserves the View all sessions link to /sessions?spec_ref=<focused spec ref>. Re-verified the
+      review blocker with npm run test:e2e -- tests/e2e/session-context.spec.ts -g 'spec detail
+      lists related sessions'. Gates passed: npm run format:check, npm run lint -- --quiet, npm run
+      typecheck, npm test, kspec validate --refs --warnings-ok, kspec validate --alignment
+      --warnings-ok, and kspec validate --completeness --warnings-ok. Focused oxlint had no lintable
+      changed TS/test files because the fix only touched a Svelte route."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T14:26:18.099Z
