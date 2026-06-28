@@ -28625,3 +28625,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-28T11:28:59.754Z
     updated_at: 2026-06-28T11:44:05.121Z
+  - _ulid: 01KW748D9P8E6T3KJXWDZ9432T
+    slugs: []
+    title: Review page-tree workspace shell
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KW6Q03KGA93343F9SQJKSA0R"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-28T12:46:18.934Z
