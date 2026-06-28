@@ -2,7 +2,82 @@ _ulid: 01KW6WMF2AEKEGE3B5AQ2WHF0C
 slugs: []
 title: Review unified spec workspace projection API (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1126 files; all matched files use the correct format."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-28T10:47:07.257Z
+    completed_at: 2026-06-28T10:47:07.257Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo lint passed with 0 errors (existing warning baseline: 665 warnings). Focused
+      changed-file oxlint also passed with 0 warnings and 0 errors on 11 changed TS/test files."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-28T10:47:10.288Z
+    completed_at: 2026-06-28T10:47:10.288Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: npm run build:shared and tsc --noEmit completed with exit 0."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-28T10:47:13.351Z
+    completed_at: 2026-06-28T10:47:13.351Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2920 test suites passed; 11109 tests passed, 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KW6WJSMMWMKRM84EW15FX025/8bed4645c5bdfcea.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-28T10:47:16.433Z
+    completed_at: 2026-06-28T10:47:16.433Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --refs --warnings-ok exited 0 with existing reference warning
+      baseline."
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-06-28T10:47:19.604Z
+    completed_at: 2026-06-28T10:47:19.604Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --alignment --warnings-ok exited 0 with existing alignment warning
+      baseline."
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-06-28T10:47:22.715Z
+    completed_at: 2026-06-28T10:47:22.715Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: kspec validate --completeness --warnings-ok exited 0 with existing completeness
+      warning baseline."
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-06-28T10:47:25.746Z
+    completed_at: 2026-06-28T10:47:25.746Z
 events:
   - _ulid: 01KW6WMF293GSFNQD06ZWJCCYC
     actor: Jacob Chapel
@@ -17,17 +92,150 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-28T10:33:30.911Z
+  - _ulid: 01KW6XE5FHX1GVR3ZJ8GNS982R
+    actor: codex-pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-28T10:47:07.505Z
+  - _ulid: 01KW6XE8EG8DPM3NY4H46MQW48
+    actor: codex-pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-28T10:47:10.544Z
+  - _ulid: 01KW6XEBER7TSDHTF6T9KNXDY1
+    actor: codex-pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-28T10:47:13.624Z
+  - _ulid: 01KW6XEEE8YNAER4Y48TTVR2FZ
+    actor: codex-pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-28T10:47:16.680Z
+  - _ulid: 01KW6XEHK1RFCWQWJG009M6TSV
+    actor: codex-pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-28T10:47:19.905Z
+  - _ulid: 01KW6XEMJE78JDTG2GGSCH33G7
+    actor: codex-pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-28T10:47:22.958Z
+  - _ulid: 01KW6XEQH1JCNDMEX2S4J2XHAX
+    actor: codex-pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-28T10:47:25.985Z
+  - _ulid: 01KW6XETHYF7REEN116CJVF0JA
+    actor: codex-pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW6XETA7QF1DHP24GZYB3527
+    timestamp: 2026-06-28T10:47:29.086Z
+  - _ulid: 01KW6XEXCW1DN2Y9HC7F2EC4W0
+    actor: codex-pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW6XEX5TFGBD00MKY1CK166M
+    timestamp: 2026-06-28T10:47:31.996Z
+  - _ulid: 01KW6XF0B71C42D68JN2A2C93M
+    actor: codex-pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-28T10:47:35.015Z
+  - _ulid: 01KW6XF0B7T8E1N41JK3NC4TPF
+    actor: codex-pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-28T10:47:35.015Z
 examined_commit: f8b7d74abf7477b194213811564e2b758d4fef21
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KW6Q037Z2613K782P6FHEZZD"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KW6XETA7QF1DHP24GZYB3527
+    anchor:
+      type: code
+      commit: f8b7d74abf7477b194213811564e2b758d4fef21
+      line_end: 94
+      line_start: 80
+      path: packages/daemon/src/routes/spec-workspace.ts
+      side: head
+    entries:
+      - _ulid: 01KW6XETA7KRY788DXG3QDT8WE
+        author: codex-pr-reviewer
+        body: "MUST-FIX: The projection endpoints accept any non-negative `limit` and then use that value
+          directly for root and child slices. That means `/api/spec-workspace/root?limit=999999` or
+          a node request with the same limit can ask the backend/static path to return every visible
+          child in one response, which violates @unified-spec-workspace-data-projection's bounded
+          projection contract. Evidence: `parsePagination` validates only digits and returns the
+          caller value unchanged; `buildRootProjection` and `childSections` slice with
+          `pagination.offset + pagination.limit`, and the static helpers mirror the same uncapped
+          `params.limit` in `packages/web-ui/src/lib/api-static.ts` lines 780-839. Please enforce a
+          server/static maximum (or reject over-limit values with the documented validation shape)
+          and add regression coverage for over-limit requests."
+        created_at: 2026-06-28T10:47:28.839Z
+    kind: blocker
+  - _ulid: 01KW6XEX5TFGBD00MKY1CK166M
+    entries:
+      - _ulid: 01KW6XEX5T8EY6P0TEA519TWJV
+        author: codex-pr-reviewer
+        body: "Review evidence log: Files read: kspec-agents.md; task/spec context for
+          @01KW6Q037Z2613K782P6FHEZZD and @unified-spec-workspace-data-projection; previous review
+          @01KW6T7E9AQF79YT82GT627AG5; packages/daemon/src/routes/spec-workspace.ts;
+          packages/daemon/src/server.ts; packages/shared/src/api.ts; packages/web-ui/src/lib/api.ts;
+          packages/web-ui/src/lib/api-static.ts; packages/web-ui/src/lib/query/keys.ts;
+          packages/web-ui/src/lib/query/ws-invalidation.ts; tests/daemon-api/helpers.ts;
+          tests/daemon-api/spec-workspace.test.ts; tests/spec-workspace-static.test.ts;
+          tests/web-ui/ws-cache-invalidation.test.ts; related breadcrumb and coverage route context.
+          Commands run: git status --short --branch; git diff --stat/name-only/unified; kspec task
+          get; kspec item get; kspec review for-task/get/add/open; npm run format:check; npx oxlint
+          changed files; npm run lint -- --quiet; npm run typecheck; npm test; kspec validate
+          --refs/--alignment/--completeness --warnings-ok. Claims verified: fix-cycle session
+          linked-work counts are now backed by getRelatedSessionsForItem and covered by daemon test;
+          task/plan/session/coverage invalidation now includes specWorkspace keys in the relevant
+          paths. Categories searched: correctness, bounded pagination/edge cases, error handling,
+          static fallback behavior, linked-work definitions, cache/event coherence, test quality,
+          source-scanning tests, integration with existing route/envelope/cache patterns. Finding:
+          one blocker for uncapped projection pagination."
+        created_at: 2026-06-28T10:47:31.770Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex-pr-reviewer
+    role: reviewer
+    created_at: 2026-06-28T10:47:35.015Z
 created_at: 2026-06-28T10:33:05.354Z
-updated_at: 2026-06-28T10:33:30.669Z
+updated_at: 2026-06-28T10:47:35.015Z
 notes: []

@@ -33404,7 +33404,7 @@
   type: task
   spec_ref: "@unified-spec-workspace-data-projection"
   plan_ref: "@plan-unified-spec-workspace"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   priority: 1
@@ -33415,7 +33415,7 @@
     - specs
     - coverage
   review_ref: "@01KW6WMF2AEKEGE3B5AQ2WHF0C"
-  notes_count: 4
+  notes_count: 5
   todos_count: 0
   created_at: 2026-06-28T08:54:35.007Z
   started_at: 2026-06-28T10:09:35.852Z
