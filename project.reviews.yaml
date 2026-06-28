@@ -28668,7 +28668,7 @@ reviews:
     title: Review page-tree workspace shell (cycle 3)
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 5
+    check_count: 6
     examined_commit: a35677900ee073d6bcc6e1661c95fd81b082e43f
     lifecycle_state: open
     related_refs: []
@@ -28681,4 +28681,4 @@ reviews:
     unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-06-28T14:31:35.387Z
-    updated_at: 2026-06-28T14:48:03.282Z
+    updated_at: 2026-06-28T14:48:09.230Z
