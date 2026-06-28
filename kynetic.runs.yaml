@@ -76237,7 +76237,7 @@ runs:
     completed_at: 2026-06-28T14:04:41.373Z
   - _ulid: 01KW7A121TRH7MWFK87XWZQ7XV
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -76250,7 +76250,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T14:28:10.062Z
-        completed_at: 2026-06-28T14:28:10.062Z
+        completed_at: 2026-06-28T14:28:14.476Z
+        notes: "Friction points: the full npm test gate took 2582.2s and had quiet stretches, but this is
+          already tracked by @task-investigate-npm-test-teardown-hang-after-green-suite-run. Focused
+          changed-file lint with npx oxlint does not apply to Svelte-only route changes and reports
+          no files found; this was handled by repo lint/typecheck and noted in the task."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T14:28:14.476Z
+        completed_at: 2026-06-28T14:28:14.476Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T14:27:09.498Z
