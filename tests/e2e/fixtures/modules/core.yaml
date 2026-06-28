@@ -7,6 +7,11 @@ status:
   maturity: draft
   implementation: not_started
 description: Core functionality for **E2E testing**.
+acceptance_criteria:
+  - id: ac-module
+    given: a user opens the core module workspace page
+    when: they inspect the module scenario
+    then: the module-level criterion can be opened as its own page
 
 features:
   - _ulid: 01KF1645CBTRATXW2T6HJMVA00

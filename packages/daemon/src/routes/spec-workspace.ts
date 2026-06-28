@@ -421,7 +421,7 @@ async function loadProjectionContext(
   const cacheDomainState = cache?.getDomainState("items");
   const ctx = await initContext(projectPath, { syncMode: "skip" });
   const items =
-    ((cache && cacheDomainState === "ready" ? cache.getItemIndex() : null) as
+    ((cache && cacheDomainState === "ready" ? cache.getAllItemDetails() : null) as
       | LoadedSpecItem[]
       | null) ?? (await loadAllItems(ctx));
   const tasks =
