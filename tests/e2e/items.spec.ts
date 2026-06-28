@@ -48,6 +48,22 @@ async function firstFeatureUnderModule(page: Page): Promise<Locator> {
 }
 
 test.describe("Spec Workspace", () => {
+  // AC: @spec-node-criterion-workspace-pages ac-root-page
+  test("root specs page shows corpus summary, coverage summary, top-level rows, and no breadcrumb", async ({
+    page,
+  }) => {
+    await page.goto("/specs");
+
+    const detail = page.getByTestId("spec-detail-panel");
+    await expect(detail.getByTestId("spec-title")).toContainText("Specs");
+    await expect(detail.getByTestId("spec-corpus-items")).toBeVisible();
+    await expect(detail.getByTestId("spec-corpus-ac")).toBeVisible();
+    await expect(detail.getByTestId("root-coverage-summary")).toBeVisible();
+    await expect(detail.getByTestId("root-type-summary")).toContainText("module");
+    await expect(detail.getByTestId("root-top-level-rows")).toContainText("Core Module");
+    await expect(detail.getByTestId("breadcrumb")).toHaveCount(0);
+  });
+
   // AC: @web-dashboard ac-11
   // AC: @unified-spec-workspace-navigation ac-dual-gesture-row
   test("row body expands inline while title opens a focused node page", async ({ page }) => {
@@ -74,6 +90,7 @@ test.describe("Spec Workspace", () => {
 
   // AC: @unified-spec-workspace-navigation ac-stable-node-urls
   // AC: @unified-spec-workspace-navigation ac-existing-ref-links-compatible
+  // AC: @spec-node-criterion-workspace-pages ac-module-feature-requirement-pages
   // AC: @web-dashboard ac-12
   // AC: @markdown-ui-adoption ac-5
   test("stable node URLs and legacy ref URLs restore the focused workspace page", async ({
@@ -102,6 +119,12 @@ test.describe("Spec Workspace", () => {
     );
     await expect(detail.getByTestId("traits-section")).toBeVisible();
     await expect(detail.getByTestId("trait-chip").first()).toContainText("test-trait");
+    await expect(detail.getByTestId("linked-work-section")).toBeVisible();
+    await expect(detail.getByTestId("linked-work-group-task")).toContainText("Ready task");
+    await expect(detail.getByTestId("linked-work-group-plan")).toContainText(
+      "Active Implementation Plan",
+    );
+    await expect(detail.getByTestId("linked-work-group-review")).toContainText("unavailable");
 
     await page.reload();
     await expect(detail.getByTestId("spec-title")).toContainText("Test Feature");
@@ -112,13 +135,17 @@ test.describe("Spec Workspace", () => {
   });
 
   // AC: @unified-spec-workspace-navigation ac-stable-node-urls
+  // AC: @spec-node-criterion-workspace-pages ac-criterion-page
   test("criterion URLs are shareable and reload to the criterion page", async ({ page }) => {
     await page.goto("/specs?node=%40test-core&ac=ac-module");
 
     const detail = page.getByTestId("spec-detail-panel");
     await expect(detail.getByTestId("spec-title")).toContainText("Core Module");
+    await expect(detail.getByTestId("criterion-parent-context")).toContainText("Core Module");
     await expect(detail.getByRole("heading", { name: "Scenario" })).toBeVisible();
     await expect(detail.getByTestId("ac-given-full")).toContainText("core module workspace page");
+    await expect(detail.getByTestId("criterion-evidence-summary")).toBeVisible();
+    await expect(detail.getByTestId("criterion-siblings")).toContainText("ac-module");
 
     await page.reload();
     await expect(detail.getByRole("heading", { name: "Scenario" })).toBeVisible();
@@ -127,6 +154,7 @@ test.describe("Spec Workspace", () => {
 
   // AC: @web-dashboard ac-15
   // AC: @markdown-ui-adoption ac-6
+  // AC: @spec-node-criterion-workspace-pages ac-requirement-ac-list
   test("acceptance criterion rows expand with full scenario text and coverage state", async ({
     page,
   }) => {
@@ -150,9 +178,81 @@ test.describe("Spec Workspace", () => {
     await expect(coverageIndicator).toBeVisible();
     await expect(coverageIndicator).toHaveAttribute("data-status-domain", "coverage");
     await expect(coverageIndicator).toContainText(/Covered|Not Yet|Failing|Re-verify/);
+    await expect(acItem.getByTestId("ac-evidence-summary")).toBeVisible();
 
     await expandToggle.click();
     await expect(acItem.getByTestId("ac-when-full")).not.toBeVisible();
+  });
+
+  // AC: @spec-node-criterion-workspace-pages ac-requirement-ac-list
+  // AC: @spec-node-criterion-workspace-pages ac-empty-and-missing-sections
+  test("requirement pages render criterion rows and concise empty linked-work states", async ({
+    page,
+  }) => {
+    await page.goto("/specs?node=test-requirement");
+
+    const detail = page.getByTestId("spec-detail-panel");
+    await expect(detail.getByTestId("spec-title")).toContainText("Test Requirement");
+    await expect(detail.getByTestId("acceptance-criteria")).toBeVisible();
+    const acItem = detail.getByTestId("ac-item").first();
+    await expect(acItem).toContainText("ac-requirement");
+    await expect(acItem.getByTestId("ac-given")).toContainText(
+      "a user opens a requirement workspace page",
+    );
+    await expect(acItem.getByTestId("ac-open-page")).toHaveAttribute("href", /ac-requirement/);
+
+    await acItem.getByTestId("ac-expand-toggle").click();
+    await expect(acItem.getByTestId("ac-when-full")).toContainText(
+      "they inspect requirement criteria",
+    );
+    await expect(detail.getByTestId("linked-work-empty").first()).toContainText(
+      "No linked work entries are available",
+    );
+  });
+
+  // AC: @spec-node-criterion-workspace-pages ac-criterion-page
+  test("criterion pages show coverage evidence, parent context, siblings, and related work", async ({
+    page,
+  }) => {
+    await page.goto("/specs?node=test-feature&ac=ac-1");
+
+    const detail = page.getByTestId("spec-detail-panel");
+    await expect(detail.getByTestId("criterion-parent-context")).toContainText("Test Feature");
+    await expect(detail.getByTestId("criterion-coverage-state")).toBeVisible();
+    await expect(detail.getByTestId("criterion-evidence-summary")).toContainText("Latest run");
+    await expect(detail.getByTestId("criterion-evidence-empty")).toContainText(
+      "No coverage evidence",
+    );
+    await expect(detail.getByTestId("criterion-siblings")).toContainText("ac-2");
+    await expect(detail.getByTestId("linked-work-group-task")).toContainText("Ready task");
+    await expect(detail.getByTestId("linked-work-group-plan")).toContainText(
+      "Active Implementation Plan",
+    );
+  });
+
+  // AC: @spec-node-criterion-workspace-pages ac-linked-work-strip
+  test("linked work is grouped by entity class without opening a side sheet", async ({ page }) => {
+    await page.goto("/specs?node=test-feature");
+
+    const linkedWork = page.getByTestId("linked-work-section");
+    await expect(linkedWork).toBeVisible();
+    await expect(linkedWork.getByTestId("linked-work-group-task")).toContainText("Tasks");
+    await expect(linkedWork.getByTestId("linked-work-group-plan")).toContainText("Plans");
+    await expect(linkedWork.getByTestId("linked-work-group-session")).toContainText("Sessions");
+    await expect(linkedWork.getByTestId("reference-link").first()).toBeVisible();
+    await expect(page.locator('[data-testid="item-detail-sheet"]')).toHaveCount(0);
+  });
+
+  // AC: @spec-node-criterion-workspace-pages ac-read-navigation-scope
+  test("workspace pages do not expose partial spec CRUD controls", async ({ page }) => {
+    await page.goto("/specs?node=test-feature");
+
+    await expect(
+      page.getByRole("button", { name: /add criterion|edit node|reorder|create child/i }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("link", { name: /add criterion|edit node|reorder|create child/i }),
+    ).toHaveCount(0);
   });
 
   // AC: @unified-spec-workspace-navigation ac-touch-and-keyboard-open
