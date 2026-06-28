@@ -75833,7 +75833,7 @@ runs:
     completed_at: 2026-06-28T10:07:30.972Z
   - _ulid: 01KW6WBWBXVSW0S1DP8V7WA6YQ
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75859,7 +75859,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-06-28T10:30:27.540Z
-        completed_at: 2026-06-28T10:30:27.540Z
+        completed_at: 2026-06-28T10:30:42.755Z
+        notes: "Step 3 complete. Decisions: SKIP workflow active-run ambiguity because inbox @01KV8Q0W
+          already tracks stale active runs causing noisy workflow next errors; SKIP full npm test
+          quiet/hang concern because @task-investigate-npm-test-teardown-hang-after-green-suite-run
+          already tracks full-suite teardown/hang investigation; CAPTURE success for projection
+          summary/detail consistency because targeted searches found no existing item; CAPTURE
+          success for atomic review-thread reply/resolve batching because targeted searches found no
+          existing item and the pattern is concrete/repeatable."
+      - status: completed
+        step_index: 3
+        started_at: 2026-06-28T10:30:42.755Z
+        completed_at: 2026-06-28T10:30:42.755Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-28T10:28:24.062Z
