@@ -28791,11 +28791,11 @@ reviews:
       content_hash: ""
       ref: "@01KW6Q04A1V24N1AY0H0YTD2YR"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-06-28T18:55:53.775Z
-    updated_at: 2026-06-28T18:56:13.901Z
+    updated_at: 2026-06-28T20:54:41.512Z
   - _ulid: 01KW7Z4B5CTRQP88JEDYQR6CPQ
     slugs: []
     title: Review coverage state presentation workspace

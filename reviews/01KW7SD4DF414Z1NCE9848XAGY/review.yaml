@@ -17,6 +17,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-28T18:56:14.236Z
+  - _ulid: 01KW806ND85VEW2DY6ZGQ5P2MM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW806N383SG08VT2ZWN3693Z
+    timestamp: 2026-06-28T20:54:41.832Z
 examined_commit: 5bb8e3d32c1e62ce6906fa6fab794b22d8db6795
 external_links: []
 lifecycle_state: open
@@ -26,8 +33,16 @@ subject:
   content_hash: ""
   ref: "@01KW6Q04A1V24N1AY0H0YTD2YR"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW806N383SG08VT2ZWN3693Z
+    entries:
+      - _ulid: 01KW806N385D22698FC226M3HR
+        author: Jacob Chapel
+        body: Superseded by approved review @01KW7Z4B for the same submitted snapshot; closing this
+          duplicate open review record after task completion.
+        created_at: 2026-06-28T20:54:41.512Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-28T18:55:53.775Z
-updated_at: 2026-06-28T18:56:13.901Z
+updated_at: 2026-06-28T20:54:41.512Z
 notes: []
