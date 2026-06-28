@@ -23586,6 +23586,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-28T14:28:50.653Z
+  - _ulid: 01KW7DKVJ03HWQRHESSWJ51CSJ
+    type: success
+    content: For spec workspace projection regressions, pairing live daemon projection tests, static
+      snapshot projection tests, and one route-level E2E assertion made the fix easy to verify
+      across all shipped read paths without relying on implementation inspection.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-28T15:29:51.168Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
