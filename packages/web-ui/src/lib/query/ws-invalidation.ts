@@ -97,7 +97,7 @@ function getItemInvalidationKeys(event: BroadcastEvent): readonly (readonly unkn
           queryKeys.items.detail(data.item_ulid),
           queryKeys.coverage.item(data.item_ulid),
           queryKeys.coverage.criteriaForItem(data.item_ulid),
-          queryKeys.specWorkspace.node(data.item_ulid),
+          queryKeys.specWorkspace.nodePrefix(data.item_ulid),
         ]
       : []),
     queryKeys.items.lists(),
@@ -114,7 +114,7 @@ function getCoverageStateInvalidationKeys(event: BroadcastEvent): readonly (read
 
   if (refresh.project_summary !== false) {
     keys.push(queryKeys.coverage.summary());
-    keys.push(queryKeys.specWorkspace.root());
+    keys.push(queryKeys.specWorkspace.rootPrefix());
   }
 
   const items = Array.isArray(data.affected?.items) ? data.affected.items : [];
@@ -126,7 +126,7 @@ function getCoverageStateInvalidationKeys(event: BroadcastEvent): readonly (read
     if (refresh.item_detail !== false) {
       for (const ref of refs) {
         keys.push(queryKeys.coverage.item(ref));
-        keys.push(queryKeys.specWorkspace.node(ref));
+        keys.push(queryKeys.specWorkspace.nodePrefix(ref));
       }
     }
     if (refresh.criterion_detail !== false && Array.isArray(item.ac_ids)) {

@@ -204,7 +204,7 @@ describe("ws-invalidation targeted entity event handling", () => {
       queryKeys.items.detail("01ITEMTARGET0000000000000"),
       queryKeys.coverage.item("01ITEMTARGET0000000000000"),
       queryKeys.coverage.criteriaForItem("01ITEMTARGET0000000000000"),
-      queryKeys.specWorkspace.node("01ITEMTARGET0000000000000"),
+      queryKeys.specWorkspace.nodePrefix("01ITEMTARGET0000000000000"),
       queryKeys.items.lists(),
       queryKeys.specWorkspace.all,
       queryKeys.validation.all,
@@ -221,6 +221,7 @@ describe("ws-invalidation targeted entity event handling", () => {
   // AC: @coverage-state-events ac-event-topic
   // AC: @coverage-state-events ac-event-canonical-identity
   // AC: @unified-spec-workspace-data-projection ac-cache-and-event-coherence
+  // AC: @spec-workspace-coverage-resolution-panels ac-resolution-event-refresh
   it("refreshes precise coverage-state queries for coverage state item events", () => {
     setupWsInvalidation(mockQueryClient);
     const event = makeBroadcastEvent("items:updates", "coverage_state_changed", {
@@ -247,11 +248,11 @@ describe("ws-invalidation targeted entity event handling", () => {
 
     expect(invalidatedKeys(mockQueryClient)).toEqual([
       queryKeys.coverage.summary(),
-      queryKeys.specWorkspace.root(),
+      queryKeys.specWorkspace.rootPrefix(),
       queryKeys.coverage.item("01ITEMTARGET0000000000000"),
-      queryKeys.specWorkspace.node("01ITEMTARGET0000000000000"),
+      queryKeys.specWorkspace.nodePrefix("01ITEMTARGET0000000000000"),
       queryKeys.coverage.item("@coverage-api-widget"),
-      queryKeys.specWorkspace.node("@coverage-api-widget"),
+      queryKeys.specWorkspace.nodePrefix("@coverage-api-widget"),
       queryKeys.coverage.criterion("01ITEMTARGET0000000000000", "ac-covered"),
       queryKeys.specWorkspace.criterion("01ITEMTARGET0000000000000", "ac-covered"),
       queryKeys.coverage.criterion("01ITEMTARGET0000000000000", "ac-failing"),
@@ -262,6 +263,12 @@ describe("ws-invalidation targeted entity event handling", () => {
       queryKeys.specWorkspace.criterion("@coverage-api-widget", "ac-failing"),
       queryKeys.coverage.unmapped(),
     ]);
+    expect(queryKeys.specWorkspace.root({ limit: 50, plan: "@plan" }).slice(0, 2)).toEqual(
+      queryKeys.specWorkspace.rootPrefix(),
+    );
+    expect(queryKeys.specWorkspace.node("@coverage-api-widget", { limit: 50 }).slice(0, 3)).toEqual(
+      queryKeys.specWorkspace.nodePrefix("@coverage-api-widget"),
+    );
     expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
       queryKey: queryKeys.items.all,
     });

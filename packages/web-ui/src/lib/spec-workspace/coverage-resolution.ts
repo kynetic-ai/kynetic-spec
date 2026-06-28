@@ -116,6 +116,7 @@ export interface CoverageResolutionPanelModel {
 
 const READ_ONLY_GUIDANCE =
   "Resolution actions are disabled in read-only/static mode. Open a live daemon-backed workspace to store changes.";
+const STALE_TARGET_CODE = "coverage_resolution_stale_target";
 
 function hasFailedOrErroredResult(coverage: CoverageCriterionStateDetail): boolean {
   return coverage.latest_run_evidence.some(
@@ -228,6 +229,23 @@ export function coverageResolutionTarget(input: {
     item_ref: input.criterion.coverage?.item_ref ?? input.parentRef,
     ac_id: input.criterion.id,
   };
+}
+
+export function isStaleCoverageResolutionConflict(err: unknown): boolean {
+  if (!err || typeof err !== "object") return false;
+  const candidate = err as {
+    code?: unknown;
+    currentFingerprint?: unknown;
+    expectedCurrentFingerprint?: unknown;
+  };
+  if (candidate.code === STALE_TARGET_CODE) return true;
+  return (
+    typeof candidate.currentFingerprint === "string" &&
+    candidate.currentFingerprint.length > 0 &&
+    typeof candidate.expectedCurrentFingerprint === "string" &&
+    candidate.expectedCurrentFingerprint.length > 0 &&
+    candidate.currentFingerprint !== candidate.expectedCurrentFingerprint
+  );
 }
 
 export function resolutionEffectSummary(effect: CoverageResolutionEffect): string {

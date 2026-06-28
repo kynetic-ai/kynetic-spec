@@ -63,6 +63,7 @@
 	import {
 		buildCoverageResolutionPanelModel,
 		coverageResolutionTarget,
+		isStaleCoverageResolutionConflict,
 		resolutionEffectSummary,
 		storedResultMessage,
 		taskEffectsFromResolution
@@ -419,6 +420,14 @@
 		resolutionConflictFingerprint = null;
 	}
 
+	async function refreshResolutionQueries() {
+		await Promise.allSettled([
+			rootQuery.refetch(),
+			nodeQuery.refetch(),
+			...(focusedCriterionId ? [criterionQuery.refetch()] : [])
+		]);
+	}
+
 	async function previewResolution(
 		action: CoverageResolutionAction,
 		parentRef: string,
@@ -464,6 +473,9 @@
 			]);
 		} catch (err) {
 			recordResolutionError(err);
+			if (isStaleCoverageResolutionConflict(err)) {
+				await refreshResolutionQueries();
+			}
 		} finally {
 			resolutionApplying = false;
 		}
@@ -1312,7 +1324,7 @@
 			</div>
 
 			{#if rootCacheWarming}
-				<CacheWarmingBanner entityName="spec workspace" queryKey={queryKeys.specWorkspace.root()} />
+				<CacheWarmingBanner entityName="spec workspace" queryKey={queryKeys.specWorkspace.rootPrefix()} />
 			{:else if rootLoading && !root}
 				{@render loadingRows()}
 			{:else if rootError}

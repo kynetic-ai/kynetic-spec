@@ -7,6 +7,7 @@ import type {
 import {
   buildCoverageResolutionPanelModel,
   coverageResolutionTarget,
+  isStaleCoverageResolutionConflict,
   resolutionEffectSummary,
   storedResultMessage,
   taskEffectsFromResolution,
@@ -178,6 +179,28 @@ describe("spec workspace coverage resolution panels", () => {
       item_ref: "@item",
       ac_id: "ac-1",
     });
+  });
+
+  // AC: @spec-workspace-coverage-resolution-panels ac-spec-text-revert-action
+  it("detects stale spec-text revert conflicts so the workspace can refresh after explaining the change", () => {
+    expect(
+      isStaleCoverageResolutionConflict({
+        code: "coverage_resolution_stale_target",
+        currentFingerprint:
+          "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        expectedCurrentFingerprint:
+          "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      }),
+    ).toBe(true);
+    expect(
+      isStaleCoverageResolutionConflict({
+        code: "coverage_resolution_precondition_failed",
+        currentFingerprint:
+          "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        expectedCurrentFingerprint:
+          "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      }),
+    ).toBe(false);
   });
 
   // AC: @spec-workspace-coverage-resolution-panels ac-dispatch-fix-action
