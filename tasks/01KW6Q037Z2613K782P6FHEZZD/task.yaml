@@ -59,7 +59,7 @@ description: |
 spec_ref: "@unified-spec-workspace-data-projection"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -80,7 +80,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-unified-spec-workspace-projection-api/01kw6q03
-session_id: null
+session_id: 01KW6XRXGZFDHFHZVS6M4V629Y
 history:
   - author: Jacob Chapel
     changes:
@@ -196,6 +196,19 @@ history:
         previous: 01KW6V7MZ90BQ289MS8G1P02MJ
     command: review-verdict-needs-work
     timestamp: 2026-06-28T10:47:36.975Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KW6XRXGZFDHFHZVS6M4V629Y
+        previous: null
+      started_at:
+        new: 2026-06-28T10:54:12.267Z
+        previous: 2026-06-28T10:09:35.852Z
+    command: task-start
+    timestamp: 2026-06-28T10:54:12.268Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -254,7 +267,7 @@ resource_refs:
     recorded_at: 2026-06-28T08:54:35.006Z
     sha256: 168b0cc754d2622f560b813ca886152d7843511412790a4d8327ae04127fbe65
 created_at: 2026-06-28T08:54:35.007Z
-started_at: 2026-06-28T10:09:35.852Z
+started_at: 2026-06-28T10:54:12.267Z
 submitted_at: 2026-06-28T10:27:37.681Z
 todos: []
 automation: eligible
