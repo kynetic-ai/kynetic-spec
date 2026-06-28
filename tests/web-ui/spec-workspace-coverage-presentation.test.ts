@@ -139,6 +139,9 @@ describe("spec workspace coverage presentation", () => {
       causeLabels: ["Freshness unknown", "Spec text changed"],
       href: "/validate?spec_ref=%40requirement&coverage=re_verify",
     });
+    expect(buildReverifySummary(criteria, "@requirement", "/validate", "ac-1").href).toBe(
+      "/validate?spec_ref=%40requirement&coverage=re_verify&ac=ac-1",
+    );
   });
 
   // AC: @spec-workspace-coverage-state-presentation ac-failing-dominates-visual-priority

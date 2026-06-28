@@ -92,7 +92,7 @@ import {
  * Create a mock fetch Response returning JSON body.
  */
 function mockFetchJson(body: unknown, ok = true, status = 200) {
-  return vi.fn().mockResolvedValue({
+  return vi.fn<() => Promise<Response>>().mockResolvedValue({
     ok,
     status,
     json: () => Promise.resolve(body),
@@ -290,7 +290,7 @@ describe("live fetch envelope unwrapping", () => {
         verdict_count: 0,
         created_at: "2026-03-01T00:00:00.000Z",
       };
-      const fetchMock = vi.fn().mockResolvedValue({
+      const fetchMock = vi.fn<() => Promise<Response>>().mockResolvedValue({
         ok: true,
         status: 200,
         json: () => Promise.resolve(paginatedEnvelope([review], { total: 1, offset: 0, limit: 1 })),
@@ -461,6 +461,19 @@ describe("live fetch envelope unwrapping", () => {
       expect(result.valid).toBe(true);
       expect(result.schemaErrors).toEqual([]);
       expect(result.refErrors).toEqual([]);
+    });
+
+    it("fetchValidation includes scoped validate filters in the request URL", async () => {
+      const validation = { valid: true };
+      const fetchMock = mockFetchJson(detailEnvelope(validation));
+      globalThis.fetch = fetchMock;
+
+      await fetchValidation({ spec_ref: "@test-feature", coverage: "re_verify", ac: "ac-2" });
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        "http://localhost:3456/api/validate?spec_ref=%40test-feature&coverage=re_verify&ac=ac-2",
+        expect.objectContaining({ headers: expect.any(Object) }),
+      );
     });
 
     it("fetchAlignment unwraps detail envelope", async () => {

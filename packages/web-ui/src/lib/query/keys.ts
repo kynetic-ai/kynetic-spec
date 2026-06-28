@@ -42,7 +42,8 @@ export const queryKeys = {
 
   validation: {
     all: ["validation"] as const,
-    results: () => [...queryKeys.validation.all, "results"] as const,
+    results: (filters?: Record<string, unknown>) =>
+      [...queryKeys.validation.all, "results", filters] as const,
     alignment: () => [...queryKeys.validation.all, "alignment"] as const,
     aggregation: () => [...queryKeys.validation.all, "aggregation"] as const,
   },
