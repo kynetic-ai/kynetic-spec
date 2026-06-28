@@ -75789,7 +75789,7 @@ runs:
     completed_at: 2026-06-28T09:48:01.390Z
   - _ulid: 01KW6TZZKE8GBRW0F3HB66VKDT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75802,7 +75802,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T10:05:54.046Z
-        completed_at: 2026-06-28T10:05:54.046Z
+        completed_at: 2026-06-28T10:06:19.148Z
+        notes: "Identified high-confidence success: comparing the shared WebSocket event
+          vocabulary/reservations against web query invalidation code and tests is an effective
+          review pattern for event-driven UI data work. Friction candidates: review check/comment
+          shell payload ergonomics and long full-suite behavior; review payload ergonomics is
+          already tracked, full-suite behavior had too much uncertainty from one run to capture as
+          new work."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T10:06:19.148Z
+        completed_at: 2026-06-28T10:06:19.148Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-28T10:04:25.582Z
