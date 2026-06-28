@@ -54,7 +54,7 @@ tags:
   - coverage
   - specs
 vcs_refs: []
-review_ref: "@01KW7PB150TK86VZY4FRZWAXA6"
+review_ref: "@01KW7SD4DF414Z1NCE9848XAGY"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-spec-workspace-coverage-presentation/01kw6q04
@@ -162,6 +162,13 @@ history:
         previous: 2026-06-28T17:56:48.410Z
     command: task-submit
     timestamp: 2026-06-28T18:49:59.809Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KW7SD4DF414Z1NCE9848XAGY"
+        previous: "@01KW7PB150TK86VZY4FRZWAXA6"
+    command: review-link
+    timestamp: 2026-06-28T18:55:56.612Z
 resource_refs:
   - git_commit: null
     git_path: null
