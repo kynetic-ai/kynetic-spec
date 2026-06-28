@@ -2,7 +2,101 @@ _ulid: 01KW748D9P8E6T3KJXWDZ9432T
 slugs: []
 title: Review page-tree workspace shell
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: all matched files use correct format; 1126 files checked."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-28T13:02:46.987Z
+    completed_at: 2026-06-28T13:02:46.987Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with repo warning baseline: 665 warnings, 0 errors. Focused oxlint on changed
+      TS/test files also passed with 0 warnings, 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-28T13:02:50.158Z
+    completed_at: 2026-06-28T13:02:50.158Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 0 warnings and 0 errors on changed TypeScript/test files."
+    name: focused-lint
+    required: true
+    runner: npx oxlint packages/daemon/src/routes/spec-workspace.ts tests/e2e/items.spec.ts
+    created_at: 2026-06-28T13:02:53.232Z
+    completed_at: 2026-06-28T13:02:53.232Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: build:shared and tsc --noEmit completed successfully."
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-28T13:02:56.251Z
+    completed_at: 2026-06-28T13:02:56.251Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2920 suites passed; 11110 tests passed, 3 skipped; duration 2583.4s. Full log:
+      /tmp/kspec-test-cache/01KW746EBAW72ZKS15MR70GV2B/a6a21a5575a0ad98.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-28T13:02:59.296Z
+    completed_at: 2026-06-28T13:02:59.296Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing reference warning baseline: 6 warnings, exit 0 due to --warnings-ok."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-28T13:03:02.311Z
+    completed_at: 2026-06-28T13:03:02.311Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing alignment warning baseline: 55 warnings, exit 0 due to --warnings-ok."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-28T13:03:05.378Z
+    completed_at: 2026-06-28T13:03:05.378Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with existing completeness warning baseline: 331 warnings, exit 0 due to
+      --warnings-ok. Task AC annotations for @unified-spec-workspace-navigation and
+      @spec-workspace-delivery-quality were inspected manually."
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-28T13:03:08.341Z
+    completed_at: 2026-06-28T13:03:08.341Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: E2E build completed and Playwright ran 10 specs-route tests, 10 passed."
+    name: focused e2e specs route
+    required: false
+    runner: npm run test:e2e -- tests/e2e/items.spec.ts
+    created_at: 2026-06-28T13:03:11.354Z
+    completed_at: 2026-06-28T13:03:11.354Z
 events:
   - _ulid: 01KW748D9PBM12NW7B83TSF6CG
     actor: Jacob Chapel
@@ -17,17 +111,254 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-28T12:46:43.824Z
+  - _ulid: 01KW756JEEPVAAJNPMSKTXADP2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-28T13:02:47.246Z
+  - _ulid: 01KW756NHNSVXMNJVM49JQF7D7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-28T13:02:50.422Z
+  - _ulid: 01KW756RGHZMNKZM3XTGSC1BJV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-06-28T13:02:53.457Z
+  - _ulid: 01KW756VFMTTEYTY683R3S9D8T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-28T13:02:56.500Z
+  - _ulid: 01KW756YEGWNH1HH4W2J942BW7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-28T13:02:59.536Z
+  - _ulid: 01KW7571CRVMKNK9AGCK0TV7CY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-28T13:03:02.552Z
+  - _ulid: 01KW7574CY4WCZ05SK8G76Y2V9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-28T13:03:05.630Z
+  - _ulid: 01KW75779MQM6C77MJNJ0H5GF4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-28T13:03:08.596Z
+  - _ulid: 01KW757A84TJTBXGBK0H8W1MPY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e specs route
+    timestamp: 2026-06-28T13:03:11.620Z
+  - _ulid: 01KW757D9V5RHA3VACT9ZQAAEW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW757D1VEF38XTW5YWGY5HK0
+    timestamp: 2026-06-28T13:03:14.747Z
+  - _ulid: 01KW757GXETYMSY6BQBVKDPNEX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW757GJ6R6DSWNACYBRPP7JR
+    timestamp: 2026-06-28T13:03:18.447Z
+  - _ulid: 01KW757MNY6JKBYPSRHHRJ04VP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW757MC0QQ43SQNJK1HMVEEA
+    timestamp: 2026-06-28T13:03:22.302Z
+  - _ulid: 01KW757QZJ7A12PC15C2ZAJWBG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW757QQMAFWB3AXZKFQM87KR
+    timestamp: 2026-06-28T13:03:25.682Z
+  - _ulid: 01KW757V28RNQARNP9PSB305FA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW757TT3E5PE164GAKD5RRY7
+    timestamp: 2026-06-28T13:03:28.840Z
+  - _ulid: 01KW757Y5DNSF49RAADZQ83G4V
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW757XWVD2BCX1ADTY7ZV0SJ
+    timestamp: 2026-06-28T13:03:32.013Z
+  - _ulid: 01KW75818FBF3A1F3TCKVEZEBH
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-06-28T13:03:35.183Z
+  - _ulid: 01KW75818FF78G1RH57ESGFCYF
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-06-28T13:03:35.183Z
 examined_commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KW6Q03KGA93343F9SQJKSA0R"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KW757D1VEF38XTW5YWGY5HK0
+    anchor:
+      type: code
+      commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
+      line_end: 70
+      line_start: 63
+      path: tests/e2e/items.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KW757D1WME8KBCACN2GV3X5T
+        author: Jacob Chapel
+        body: "MUST-FIX: The @web-dashboard ac-12 annotation no longer proves the AC. The test only verifies
+          the title and linked-work count for a focused URL; it does not assert the description,
+          acceptance criteria, traits, or implementation status required by @web-dashboard ac-12,
+          and the previous markdown description assertion for @markdown-ui-adoption ac-5 was
+          removed. A regression in spec description/markdown/AC/status rendering would now pass."
+        created_at: 2026-06-28T13:03:14.492Z
+    kind: blocker
+  - _ulid: 01KW757GJ6R6DSWNACYBRPP7JR
+    anchor:
+      type: code
+      commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
+      line_end: 88
+      line_start: 80
+      path: tests/e2e/items.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KW757GJ64Y9P9TG7Z42BHGBN
+        author: Jacob Chapel
+        body: "MUST-FIX: The @web-dashboard ac-15 annotation is attached to a criterion-page deep-link test,
+          not the AC row expansion behavior. It never clicks ac-expand-toggle, never checks
+          collapsed/expanded Given/When/Then behavior, and never verifies the coverage indicator.
+          The old tests covered those behaviors; this rewrite reduces coverage and would pass if AC
+          row expansion or coverage display broke."
+        created_at: 2026-06-28T13:03:18.087Z
+    kind: blocker
+  - _ulid: 01KW757MC0QQ43SQNJK1HMVEEA
+    anchor:
+      type: code
+      commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
+      line_end: 49
+      line_start: 41
+      path: tests/e2e/items.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KW757MC0AP2M9TJ9GY6M66RD
+        author: Jacob Chapel
+        body: "MUST-FIX: The @unified-spec-workspace-navigation ac-dual-gesture-row test proves expand but
+          not collapse. The AC explicitly requires row body activation to expand or collapse inline;
+          the previous collapse assertion was removed, so a regression that prevents collapsing
+          expanded rows would pass."
+        created_at: 2026-06-28T13:03:21.984Z
+    kind: blocker
+  - _ulid: 01KW757QQMAFWB3AXZKFQM87KR
+    anchor:
+      type: code
+      commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
+      line_end: 138
+      line_start: 121
+      path: tests/e2e/items.spec.ts
+      side: head
+    entries:
+      - _ulid: 01KW757QQMZMW89XRPNBGZDSJ4
+        author: Jacob Chapel
+        body: "MUST-FIX: This @unified-spec-workspace-navigation ac-expansion-state-preserved test expands
+          both the module and feature before opening a page, but after browser back it only asserts
+          the module child container is visible. If the nested feature branch collapsed during
+          open/back navigation, this test would still pass, so it does not prove that the previously
+          expanded branches remain expanded."
+        created_at: 2026-06-28T13:03:25.428Z
+    kind: blocker
+  - _ulid: 01KW757TT3E5PE164GAKD5RRY7
+    anchor:
+      type: code
+      commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
+      line_end: 122
+      line_start: 116
+      path: packages/web-ui/src/routes/specs/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KW757TT4YN3075QGSJ2VKESK
+        author: Jacob Chapel
+        body: "MUST-FIX: Expansion-state eviction is silent. setExpandedRefs truncates the expanded ref set
+          to MAX_EXPANDED_REFS, but @unified-spec-workspace-navigation ac-expansion-state-preserved
+          only allows bounded-data eviction when it is explicitly indicated to the user. There is no
+          banner, status, or other indication that older expanded branches were dropped, so
+          expansion context can be lost across navigation without the required notice."
+        created_at: 2026-06-28T13:03:28.580Z
+    kind: blocker
+  - _ulid: 01KW757XWVD2BCX1ADTY7ZV0SJ
+    entries:
+      - _ulid: 01KW757XWVV0N3TEBMWY2GXEZG
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md,
+          packages/daemon/src/routes/spec-workspace.ts,
+          packages/web-ui/src/lib/components/SpecWorkspaceRows.svelte,
+          packages/web-ui/src/routes/specs/+page.svelte, tests/e2e/items.spec.ts,
+          tests/e2e/fixtures/modules/core.yaml, prior tests/e2e/items.spec.ts from base, related
+          specs @unified-spec-workspace-navigation, @spec-workspace-delivery-quality,
+          @web-dashboard, @markdown-ui-adoption, @plan-embedded-views. Commands run: git
+          diff/stat/log, kspec task get, kspec review add/open, kspec item get, kspec validate
+          refs/alignment/completeness, npm run format:check, npm run lint -- --quiet, npx oxlint
+          changed TS/test files, npm run typecheck, npm test, npm run test:e2e --
+          tests/e2e/items.spec.ts. Claims verified: URL updates use goto/anchors rather than history
+          APIs; submitted E2E tests pass; full test gate passes; AC annotations exist but several no
+          longer prove their ACs. Categories searched: correctness, edge cases, accessibility, test
+          quality, URL/state integration, static/API split, and regression coverage."
+        created_at: 2026-06-28T13:03:31.739Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-06-28T13:03:35.183Z
 created_at: 2026-06-28T12:46:18.934Z
-updated_at: 2026-06-28T12:46:43.570Z
+updated_at: 2026-06-28T13:03:35.183Z
 notes: []
