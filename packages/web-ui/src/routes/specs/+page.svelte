@@ -22,6 +22,7 @@
 	import { page } from '$app/stores';
 	import type { RefType } from '$lib/utils/reference';
 	import type {
+		CoverageBucketCounts,
 		SpecWorkspaceCriterionSummary,
 		SpecWorkspaceLinkedWorkGroup,
 		SpecWorkspaceLinkedWorkItem,
@@ -35,8 +36,19 @@
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
 	import SpecWorkspaceRows from '$lib/components/SpecWorkspaceRows.svelte';
 	import { StatusBadge, ViewHeader, type ViewHeaderCount } from '$lib/components/ds';
+	import { statusBadgeClass } from '$lib/ds/status-tokens';
 	import { createQuery } from '$lib/query/createQuery.svelte.js';
 	import { queryKeys } from '$lib/query/keys.js';
+	import {
+		buildCoverageReadiness,
+		buildCoverageRollup,
+		buildCoverageStateFilters,
+		buildReverifySummary,
+		filterCriteriaByCoverageState,
+		isCoverageFilterState,
+		presentationForCriterion,
+		type CoverageFilterState
+	} from '$lib/spec-workspace/coverage-presentation';
 	import {
 		fetchSpecWorkspaceCriterion,
 		fetchSpecWorkspaceNode,
@@ -65,6 +77,7 @@
 	});
 	let focusedCriterionId = $derived($page.url.searchParams.get('ac'));
 	let planFilter = $derived($page.url.searchParams.get('plan') ?? undefined);
+	let coverageFilter = $derived(parseCoverageFilter($page.url.searchParams.get('coverage')));
 	let expandedRefParts = $derived(parseExpandedRefParts($page.url.searchParams.get('expanded')));
 	let expansionEvictedByUrl = $derived(Math.max(0, expandedRefParts.length - MAX_EXPANDED_REFS));
 	let expansionEvictedByMutation = $derived(parseEvictedCount($page.url.searchParams.get(EXPANSION_EVICTED_PARAM)));
@@ -127,6 +140,10 @@
 		return Number.isFinite(count) && count > 0 ? Math.floor(count) : 0;
 	}
 
+	function parseCoverageFilter(value: string | null): CoverageFilterState {
+		return isCoverageFilterState(value) ? value : 'all';
+	}
+
 	function withWorkspaceState(updater: (url: URL) => void, options?: { replaceState?: boolean }) {
 		const url = new URL($page.url);
 		updater(url);
@@ -172,7 +189,18 @@
 			url.searchParams.delete('node');
 			url.searchParams.delete('ref');
 			url.searchParams.delete('ac');
+			url.searchParams.delete('coverage');
 		});
+	}
+
+	function setCoverageFilter(filter: CoverageFilterState) {
+		withWorkspaceState((url) => {
+			if (filter === 'all') {
+				url.searchParams.delete('coverage');
+			} else {
+				url.searchParams.set('coverage', filter);
+			}
+		}, { replaceState: true });
 	}
 
 	async function toggleNode(node: SpecWorkspaceNodeSummary) {
@@ -257,20 +285,6 @@
 		];
 	}
 
-	function coverageCountEntries(counts: {
-		covered: number;
-		failing: number;
-		not_yet: number;
-		re_verify: number;
-	}): Array<{ key: string; label: string; value: number }> {
-		return [
-			{ key: 'covered', label: 'Covered', value: counts.covered },
-			{ key: 'failing', label: 'Failing', value: counts.failing },
-			{ key: 'not_yet', label: 'Not yet', value: counts.not_yet },
-			{ key: 're_verify', label: 'Re-verify', value: counts.re_verify }
-		];
-	}
-
 	function statusState(node: SpecWorkspaceNodeSummary): string | undefined {
 		return typeof node.status === 'string' ? node.status : node.status?.implementation;
 	}
@@ -334,13 +348,11 @@
 {/snippet}
 
 {#snippet criterionCoverageBadge(criterion: SpecWorkspaceCriterionSummary)}
-	{#if criterion.coverage?.presentation}
-		<StatusBadge
-			domain="coverage"
-			state={criterion.coverage.presentation}
-			testid="test-coverage-indicator"
-		/>
-	{/if}
+	<StatusBadge
+		domain="coverage"
+		state={presentationForCriterion(criterion)}
+		testid="test-coverage-indicator"
+	/>
 {/snippet}
 
 {#snippet emptyState(message: string, testid = 'section-empty')}
@@ -352,8 +364,91 @@
 	</p>
 {/snippet}
 
+{#snippet coverageRollup(counts: CoverageBucketCounts, denominator: number, testid = 'coverage-rollup')}
+	{@const rollup = buildCoverageRollup(counts, denominator)}
+	<div class="min-w-0 space-y-2" data-testid={testid}>
+		<div
+			class="flex h-2.5 overflow-hidden rounded-full bg-muted"
+			aria-label={`Coverage rollup: ${rollup.denominator} criteria`}
+		>
+			{#each rollup.segments as segment (segment.state)}
+				<span
+					class={statusBadgeClass(segment.family)}
+					style={`width: ${segment.percent}%;`}
+					title={`${segment.label}: ${segment.count}`}
+				></span>
+			{/each}
+		</div>
+		<div class="grid min-w-0 gap-2 sm:grid-cols-2 xl:grid-cols-4">
+			{#each rollup.segments as segment (segment.state)}
+				<div class="min-w-0 rounded-md bg-muted/45 px-3 py-2" data-testid={`coverage-count-${segment.state}`}>
+					<div class="mb-1 flex min-w-0 items-center justify-between gap-2">
+						<StatusBadge
+							domain="coverage"
+							state={segment.state}
+							class="px-1.5 py-0 text-[10px]"
+						/>
+						<span class="shrink-0 text-xs text-muted-foreground">{segment.percent}%</span>
+					</div>
+					<p class="text-lg font-semibold">{segment.count}</p>
+				</div>
+			{/each}
+		</div>
+	</div>
+{/snippet}
+
+{#snippet coverageReadinessNotice(readiness: ReturnType<typeof buildCoverageReadiness>)}
+	{#if readiness.state !== 'ready'}
+		<div
+			class="rounded-md border border-border bg-muted/40 px-3 py-2 text-sm"
+			data-testid={`coverage-readiness-${readiness.state}`}
+			role="status"
+		>
+			<div class="flex min-w-0 flex-wrap items-center gap-2">
+				<Badge variant="outline" class="shrink-0">Coverage {readiness.state}</Badge>
+				<p class="min-w-0 text-muted-foreground">{readiness.message}</p>
+			</div>
+			{#if readiness.suggestion}
+				<p class="mt-1 text-xs text-muted-foreground">{readiness.suggestion}</p>
+			{/if}
+		</div>
+	{/if}
+{/snippet}
+
+{#snippet reverifyBanner(criteria: SpecWorkspaceCriterionSummary[], scopeRef: string, acId?: string)}
+	{@const summary = buildReverifySummary(criteria, scopeRef, `${base}/validate`, acId)}
+	{#if summary.count > 0}
+		<div
+			class="rounded-md border border-severity-warning/40 bg-severity-warning/10 px-3 py-2 text-sm"
+			data-testid="reverify-banner"
+			role="status"
+		>
+			<div class="flex min-w-0 flex-wrap items-center gap-2">
+				<StatusBadge domain="coverage" state="re_verify" />
+				<p class="min-w-0 font-medium">
+					{summary.count} {summary.count === 1 ? 'criterion needs' : 'criteria need'} re-verification.
+				</p>
+				<a
+					href={summary.href}
+					class="ml-auto shrink-0 rounded-md px-2 py-1 text-xs font-medium text-primary hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					data-testid="reverify-validate-link"
+				>
+					Open Validate
+				</a>
+			</div>
+			<p class="mt-1 text-xs text-muted-foreground" data-testid="reverify-cause-summary">
+				{summary.causeLabels.length > 0 ? summary.causeLabels.join(', ') : 'No secondary cause details reported.'}
+			</p>
+		</div>
+	{/if}
+{/snippet}
+
 {#snippet coverageSummary()}
 	{#if root}
+		{@const readiness = buildCoverageReadiness({
+			cacheWarming: rootCacheWarming,
+			unavailableSections: root.unavailable_sections
+		})}
 		<section class="min-w-0 rounded-md border border-border p-3" data-testid="root-coverage-summary">
 			<div class="mb-2 flex min-w-0 items-center justify-between gap-3">
 				<h2 class="text-sm font-semibold">Coverage Summary</h2>
@@ -361,13 +456,9 @@
 					{root.coverage_summary.denominator} criteria
 				</span>
 			</div>
-			<div class="grid min-w-0 gap-2 sm:grid-cols-2 xl:grid-cols-4">
-				{#each coverageCountEntries(root.coverage_summary.counts) as count (count.key)}
-					<div class="min-w-0 rounded-md bg-muted/45 px-3 py-2">
-						<p class="truncate text-xs text-muted-foreground">{count.label}</p>
-						<p class="text-lg font-semibold">{count.value}</p>
-					</div>
-				{/each}
+			<div class="space-y-3">
+				{@render coverageReadinessNotice(readiness)}
+				{@render coverageRollup(root.coverage_summary.counts, root.coverage_summary.denominator, 'root-coverage-rollup')}
 			</div>
 		</section>
 	{/if}
@@ -393,6 +484,13 @@
 		<p class="text-sm text-muted-foreground">
 			Explore the spec corpus from the tree or open a top-level row as a focused workspace page.
 		</p>
+
+		{#if rootCacheWarming}
+			{@render coverageReadinessNotice(buildCoverageReadiness({
+				cacheWarming: true,
+				unavailableSections: []
+			}))}
+		{/if}
 
 		{#if root}
 			{@render coverageSummary()}
@@ -445,6 +543,27 @@
 			actions={focusedActions}
 		/>
 
+		{@render coverageReadinessNotice(buildCoverageReadiness({
+			cacheWarming: false,
+			unavailableSections: detail.unavailable_sections
+		}))}
+
+		{#if detail.node.coverage && detail.node.coverage.denominator > 0}
+			<section class="min-w-0 rounded-md border border-border p-3" data-testid="node-coverage-summary">
+				<div class="mb-2 flex min-w-0 items-center justify-between gap-3">
+					<h2 class="text-sm font-semibold">Coverage Rollup</h2>
+					<span class="shrink-0 text-xs text-muted-foreground">
+						{detail.node.coverage.denominator} criteria
+					</span>
+				</div>
+				<div class="space-y-3">
+					{@render coverageRollup(detail.node.coverage.counts, detail.node.coverage.denominator, 'node-coverage-rollup')}
+				</div>
+			</section>
+		{/if}
+
+		{@render reverifyBanner(detail.acceptance_criteria, detail.node.ref)}
+
 		{#if detail.description}
 			<section
 				class="prose prose-sm max-w-none overflow-hidden text-muted-foreground dark:prose-invert"
@@ -479,10 +598,33 @@
 		{/if}
 
 		{#if detail.acceptance_criteria.length > 0}
+			{@const filters = buildCoverageStateFilters(detail.acceptance_criteria)}
+			{@const visibleCriteria = filterCriteriaByCoverageState(detail.acceptance_criteria, coverageFilter)}
 			<section class="min-w-0" data-testid="acceptance-criteria">
-				<h2 class="mb-2 text-sm font-semibold">Acceptance Criteria</h2>
+				<div class="mb-2 flex min-w-0 flex-wrap items-center justify-between gap-3">
+					<h2 class="text-sm font-semibold">Acceptance Criteria</h2>
+					<div class="flex min-w-0 flex-wrap gap-1" data-testid="coverage-filter-strip">
+						{#each filters as filter (filter.state)}
+							<button
+								type="button"
+								class={cn(
+									'inline-flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+									coverageFilter === filter.state
+										? 'border-primary bg-primary text-primary-foreground'
+										: 'border-border bg-background hover:bg-muted'
+								)}
+								aria-pressed={coverageFilter === filter.state}
+								data-testid={`coverage-filter-${filter.state}`}
+								onclick={() => setCoverageFilter(filter.state)}
+							>
+								<span>{filter.label}</span>
+								<span class="font-mono">{filter.count}</span>
+							</button>
+						{/each}
+					</div>
+				</div>
 				<div class="min-w-0 space-y-2">
-					{#each detail.acceptance_criteria as criterion (criterion.id)}
+					{#each visibleCriteria as criterion (criterion.id)}
 						{@const isExpanded = expandedCriteria.has(criterion.id)}
 						<div class="min-w-0 rounded-md border border-border" data-testid="ac-item">
 							<div class="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-1">
@@ -499,13 +641,11 @@
 										<span class="min-w-0 text-sm" data-testid="ac-given">
 											{@html renderInlineMarkdown(criterionLabel(criterion))}
 										</span>
-										{#if criterion.coverage?.presentation}
-											<StatusBadge
-												domain="coverage"
-												state={criterion.coverage.presentation}
-												class="shrink-0 px-1.5 py-0 text-[10px]"
-											/>
-										{/if}
+										<StatusBadge
+											domain="coverage"
+											state={presentationForCriterion(criterion)}
+											class="shrink-0 px-1.5 py-0 text-[10px]"
+										/>
 										<span class="shrink-0 text-xs text-muted-foreground" data-testid="ac-evidence-summary">
 											{criterionEvidenceLabel(criterion)}
 										</span>
@@ -543,6 +683,9 @@
 							{/if}
 						</div>
 					{/each}
+					{#if visibleCriteria.length === 0}
+						{@render emptyState('No acceptance criteria match this coverage filter.', 'acceptance-criteria-filter-empty')}
+					{/if}
 				</div>
 			</section>
 		{:else if detail.child_sections.length === 0}
@@ -589,14 +732,21 @@
 				reference={`${focusedCriterion.parent.ref} ${focusedCriterion.criterion.id}`}
 				title={`${focusedCriterion.parent.title} · ${focusedCriterion.criterion.id}`}
 				titleTestid="spec-title"
-				statusDomain={focusedCriterion.criterion.coverage?.presentation ? 'coverage' : undefined}
-				statusState={focusedCriterion.criterion.coverage?.presentation}
+				statusDomain="coverage"
+				statusState={presentationForCriterion(focusedCriterion.criterion)}
 				statusTestid="test-coverage-indicator"
 				counts={[
 					{ label: 'siblings', value: focusedCriterion.siblings.length, testid: 'spec-ac-sibling-count' }
 				]}
 				actions={focusedActions}
 			/>
+
+			{@render coverageReadinessNotice(buildCoverageReadiness({
+				cacheWarming: false,
+				unavailableSections: focusedCriterion.unavailable_sections
+			}))}
+
+			{@render reverifyBanner([focusedCriterion.criterion], focusedCriterion.parent.ref, focusedCriterion.criterion.id)}
 
 			<section
 				class="min-w-0 rounded-md border border-border bg-muted/30 p-3"
@@ -634,15 +784,13 @@
 			<section class="min-w-0 rounded-md border border-border p-3" data-testid="criterion-evidence-summary">
 				<div class="mb-2 flex min-w-0 flex-wrap items-center gap-2">
 					<h2 class="text-sm font-semibold">Coverage Evidence</h2>
-					{#if focusedCriterion.coverage?.presentation}
-						<span data-testid="criterion-coverage-state">
-							<StatusBadge
-								domain="coverage"
-								state={focusedCriterion.coverage.presentation}
-								testid="test-coverage-indicator"
-							/>
-						</span>
-					{/if}
+					<span data-testid="criterion-coverage-state">
+						<StatusBadge
+							domain="coverage"
+							state={presentationForCriterion(focusedCriterion.criterion)}
+							testid="test-coverage-indicator"
+						/>
+					</span>
 				</div>
 
 				<div class="grid min-w-0 gap-2 sm:grid-cols-3">
