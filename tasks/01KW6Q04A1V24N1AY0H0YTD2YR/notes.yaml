@@ -1,1 +1,22 @@
-notes: []
+notes:
+  - _ulid: 01KW7MDVJDQ3PMPB5P9B1E4GXR
+    content: >-
+      Approach: reuse the existing @kynetic-ai/shared spec workspace projection and web-ui
+      status-token coverage vocabulary, adding a small workspace coverage presentation layer instead
+      of client-side raw-list scans. Extend /specs to render segmented rollups, state chips/filters,
+      and re-verify summaries from projection counts and criterion coverage details; keep filtering
+      local to the current page and route it through existing goto() URL state. Reuse
+      queryKeys.specWorkspace/queryKeys.coverage and existing ws-invalidation coverage_state_changed
+      handling.
+
+      Edge cases: failing must outrank re-verify when mixed; zero-denominator coverage should not
+      pretend everything is covered; re-verify secondary causes should stay explanatory text only;
+      warming/unavailable coverage must not block non-coverage spec navigation.
+
+      Test plan: add behavioral helper/component tests for four-bucket tokens, rollup counts,
+      requirement filter behavior, re-verify banner summary/link shape, failing priority, no legacy
+      covered fallback, and warming/unavailable presentation; annotate existing
+      coverage_state_changed invalidation test for cache/event coherence.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T17:28:54.605Z
