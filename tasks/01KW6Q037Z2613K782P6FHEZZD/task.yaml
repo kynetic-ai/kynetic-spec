@@ -59,7 +59,7 @@ description: |
 spec_ref: "@unified-spec-workspace-data-projection"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on: []
 context: []
@@ -80,7 +80,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: feat/ui-redesign
-session_id: 01KW6QKGKRE3E0FDSKZVK6EKHR
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -129,6 +129,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-06-28T09:51:04.027Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KW6QKGKRE3E0FDSKZVK6EKHR
+    command: review-verdict-needs-work
+    timestamp: 2026-06-28T10:03:26.955Z
 resource_refs:
   - git_commit: null
     git_path: null
