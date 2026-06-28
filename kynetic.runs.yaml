@@ -76450,9 +76450,20 @@ runs:
     completed_at: 2026-06-28T15:27:09.100Z
   - _ulid: 01KW7DH4JZBYKPCSY2S3HQ2SES
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-06-28T15:28:22.111Z
+        completed_at: 2026-06-28T15:29:52.531Z
+        notes: "What worked well: targeted review feedback identified the exact legacy /specs?plan
+          regression. A layered test shape (daemon projection, static projection, and route E2E)
+          gave fast focused proof before the full gate run."
+      - status: completed
+        step_index: 1
+        started_at: 2026-06-28T15:29:52.531Z
+        completed_at: 2026-06-28T15:29:52.531Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T15:28:22.111Z
