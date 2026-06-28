@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KW7BAG7S6RN0SFGQ1WDDKQ89
+    content: "Approach: reuse the existing session-context E2E setup and adjust the failing task
+      related-sessions assertion to match the user-visible StatusBadge label. Edge cases: avoid
+      weakening the row/link assertions and keep the status check tied to the rendered
+      related-session row. Test plan: run the affected Playwright file after the focused edit; run
+      changed-file lint and relevant validation gates before submit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-06-28T14:49:47.513Z
