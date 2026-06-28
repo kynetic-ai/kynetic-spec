@@ -1,0 +1,26 @@
+_ulid: 01KW867CB5K6X8VG8ZGEHXXPQN
+slugs: []
+title: Review coverage resolution panels
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KW867CB4A0FBGR51EEM942PC
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-06-28T22:39:56.773Z
+examined_commit: 9ba0efbbd15db6303fae955a58757c9f50af9972
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KW6Q04PHJWHE0BAKF77QF68A"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-06-28T22:39:56.773Z
+updated_at: null
+notes: []
