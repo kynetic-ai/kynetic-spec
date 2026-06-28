@@ -231,4 +231,24 @@ describe("spec workspace static projections", () => {
       ]),
     );
   });
+
+  // AC: @spec-workspace-coverage-state-presentation ac-warming-and-unavailable-state
+  it("marks coverage unavailable when a static snapshot omits coverage state", () => {
+    const { coverage_state: _coverageState, ...snapshotWithoutCoverage } = snapshot;
+    modeState.snapshot = snapshotWithoutCoverage;
+
+    const root = fetchSpecWorkspaceRootStatic().data;
+    const node = fetchSpecWorkspaceNodeStatic("@static-requirement")?.data;
+    const criterion = fetchSpecWorkspaceCriterionStatic("@static-requirement", "ac-static")?.data;
+
+    expect(root.unavailable_sections).toContainEqual(
+      expect.objectContaining({ kind: "coverage", status: "unavailable" }),
+    );
+    expect(node?.unavailable_sections).toContainEqual(
+      expect.objectContaining({ kind: "coverage", status: "unavailable" }),
+    );
+    expect(criterion?.unavailable_sections).toContainEqual(
+      expect.objectContaining({ kind: "coverage", status: "unavailable" }),
+    );
+  });
 });

@@ -2519,6 +2519,12 @@ export interface ValidationResponse {
   traitCycles: TraitCycleError[];
 }
 
+export interface ValidationScopeFilters {
+  spec_ref?: string;
+  coverage?: string;
+  ac?: string;
+}
+
 /** Alias for backward compatibility with dashboard overview */
 export type ValidationResult = ValidationResponse;
 
@@ -2542,11 +2548,22 @@ export interface AlignmentResponse {
   warnings: AlignmentWarning[];
 }
 
+function appendValidationScope(path: string, filters: ValidationScopeFilters = {}): string {
+  const params = new URLSearchParams();
+  if (filters.spec_ref) params.set("spec_ref", filters.spec_ref);
+  if (filters.coverage) params.set("coverage", filters.coverage);
+  if (filters.ac) params.set("ac", filters.ac);
+  const query = params.toString();
+  return query ? `${path}?${query}` : path;
+}
+
 /**
  * Fetch validation results
  * AC: @ui-validation-view ac-1
  */
-export async function fetchValidation(): Promise<ValidationResponse> {
+export async function fetchValidation(
+  filters: ValidationScopeFilters = {},
+): Promise<ValidationResponse> {
   // AC: @api-contract ac-envelope — static returns envelope, unwrap identically to live
   if (isStaticMode()) {
     const data = unwrapEnvelope(fetchValidationStatic());
@@ -2562,7 +2579,7 @@ export async function fetchValidation(): Promise<ValidationResponse> {
     };
   }
 
-  const response = await fetch(`${API_BASE}/api/validate`, {
+  const response = await fetch(`${API_BASE}${appendValidationScope("/api/validate", filters)}`, {
     headers: getProjectHeaders(),
   });
   if (!response.ok) {

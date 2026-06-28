@@ -372,6 +372,26 @@ test.describe("Validation and Alignment View", () => {
       await expect(noIssues).toBeVisible();
       await expect(noIssues).toContainText("No issues found");
     });
+
+    // AC: @spec-workspace-coverage-state-presentation ac-reverify-banner
+    test("scopes validate results from spec workspace re-verify links", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      await setupValidateRoutes(page);
+
+      await page.goto("/validate?spec_ref=%40test-feature&coverage=re_verify&ac=ac-2");
+
+      await expect(page.getByTestId("validate-scope-banner")).toContainText(
+        "@test-feature · ac-2 · Re-verify",
+      );
+      await expect(page.getByTestId("issues-list")).toContainText("Issues (1)");
+      await expect(page.getByTestId("warning-issues")).toContainText("Warnings (1)");
+      await expect(page.getByTestId("warning-issues")).toContainText("@test-feature");
+      await expect(page.getByTestId("warning-issues")).toContainText("ac-2");
+      await expect(page.getByTestId("issues-list")).not.toContainText("@batch-exec");
+      await expect(page.getByTestId("issues-list")).not.toContainText("@some-feature");
+    });
   });
 
   test.describe("Loading State", () => {

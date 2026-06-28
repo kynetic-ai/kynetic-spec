@@ -5,11 +5,13 @@
 -->
 <script lang="ts">
 	// AC: @ui-validation-view ac-1
+	import { page } from '$app/stores';
 	import {
 		fetchValidation,
 		fetchValidationAggregation,
 		type ValidationResponse,
-		type CompletenessWarning
+		type CompletenessWarning,
+		type ValidationScopeFilters
 	} from '$lib/api';
 	import type { ValidationAggregation } from '@kynetic-ai/shared';
 	import { useQueryClient } from '@tanstack/svelte-query';
@@ -32,12 +34,41 @@
 
 	const queryClient = useQueryClient();
 
+	let validationSpecRef = $derived($page.url.searchParams.get('spec_ref')?.trim() || undefined);
+	let validationCoverage = $derived($page.url.searchParams.get('coverage')?.trim() || undefined);
+	let validationAc = $derived($page.url.searchParams.get('ac')?.trim() || undefined);
+	let validationScope = $derived.by((): ValidationScopeFilters => {
+		return {
+			...(validationSpecRef ? { spec_ref: validationSpecRef } : {}),
+			...(validationCoverage ? { coverage: validationCoverage } : {}),
+			...(validationAc ? { ac: validationAc } : {})
+		};
+	});
+
+	let hasValidationScope = $derived(Object.keys(validationScope).length > 0);
+	let validationScopeLabel = $derived.by(() => {
+		const parts: string[] = [];
+		if (validationScope.spec_ref) parts.push(validationScope.spec_ref);
+		if (validationScope.ac) parts.push(validationScope.ac);
+		if (validationScope.coverage) parts.push(coverageScopeLabel(validationScope.coverage));
+		return parts.join(' · ');
+	});
+
 	// --- TanStack Query: validation data ---
 	// AC: @ui-data-freshness ac-1 — createQuery caches; revisits render from cache
 	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
 	const validationQuery = createQuery(() => ({
-		queryKey: queryKeys.validation.results(),
-		queryFn: () => fetchValidation(),
+		queryKey: queryKeys.validation.results({
+			spec_ref: validationSpecRef,
+			coverage: validationCoverage,
+			ac: validationAc
+		}),
+		queryFn: () =>
+			fetchValidation({
+				...(validationSpecRef ? { spec_ref: validationSpecRef } : {}),
+				...(validationCoverage ? { coverage: validationCoverage } : {}),
+				...(validationAc ? { ac: validationAc } : {})
+			}),
 		enabled: isProjectInitialized(),
 	}));
 
@@ -55,24 +86,6 @@
 
 	// --- Derived counts ---
 	// AC: @ui-validation-view ac-1 — error count, warning count, valid item count
-
-	let errorCount = $derived.by(() => {
-		if (!validation) return 0;
-		return (
-			validation.schemaErrors.length +
-			validation.refErrors.length +
-			validation.traitCycles.length
-		);
-	});
-
-	let warningCount = $derived.by(() => {
-		if (!validation) return 0;
-		return (
-			validation.refWarnings.length +
-			validation.completenessWarnings.length +
-			validation.orphans.length
-		);
-	});
 
 	// Stats from server-side aggregation — replaces manual fetchItems/fetchTasks
 	let totalItemCount = $derived(aggregation?.entity_counts.items ?? 0);
@@ -163,7 +176,7 @@
 					severity: 'warning',
 					category: completenessLabel(w.type),
 					message: w.message,
-					detail: w.details ?? `${w.itemRef} — ${w.itemTitle}`
+					detail: `${w.itemRef} — ${w.itemTitle}${w.details ? ` — ${w.details}` : ''}`
 				});
 			}
 			for (const o of validation.orphans) {
@@ -190,9 +203,16 @@
 		return issues;
 	});
 
-	let errorIssues = $derived(groupedIssues.filter((i) => i.severity === 'error'));
-	let warningIssues = $derived(groupedIssues.filter((i) => i.severity === 'warning'));
-	let infoIssues = $derived(groupedIssues.filter((i) => i.severity === 'info'));
+	let scopedIssues = $derived.by(() => {
+		if (!hasValidationScope) return groupedIssues;
+		return groupedIssues.filter((issue) => issueMatchesScope(issue, validationScope));
+	});
+
+	let errorIssues = $derived(scopedIssues.filter((i) => i.severity === 'error'));
+	let warningIssues = $derived(scopedIssues.filter((i) => i.severity === 'warning'));
+	let infoIssues = $derived(scopedIssues.filter((i) => i.severity === 'info'));
+	let errorCount = $derived(errorIssues.length);
+	let warningCount = $derived(warningIssues.length);
 
 	function refreshAll() {
 		queryClient.invalidateQueries({ queryKey: queryKeys.validation.all });
@@ -219,6 +239,23 @@
 			stale_implementation: 'Stale Implementation'
 		};
 		return labels[type] ?? type;
+	}
+
+	function coverageScopeLabel(value: string): string {
+		const labels: Record<string, string> = {
+			covered: 'Covered',
+			failing: 'Failing',
+			not_yet: 'Not Yet',
+			re_verify: 'Re-verify'
+		};
+		return labels[value] ?? value.replaceAll('_', ' ');
+	}
+
+	function issueMatchesScope(issue: GroupedIssue, scope: ValidationScopeFilters): boolean {
+		const haystack = [issue.message, issue.detail, issue.category].filter(Boolean).join(' ');
+		if (scope.spec_ref && !haystack.includes(scope.spec_ref)) return false;
+		if (scope.ac && !haystack.includes(scope.ac)) return false;
+		return true;
 	}
 </script>
 
@@ -253,6 +290,21 @@
 			</button>
 		{/if}
 	</div>
+
+	{#if hasValidationScope}
+		<div
+			class="rounded-md border border-border bg-muted/40 px-3 py-2 text-sm"
+			data-testid="validate-scope-banner"
+			role="status"
+		>
+			<div class="flex min-w-0 flex-wrap items-center gap-2">
+				<Badge variant="outline" class="shrink-0">Scoped validation</Badge>
+				<p class="min-w-0 text-muted-foreground">
+					Showing validation issues for {validationScopeLabel}.
+				</p>
+			</div>
+		</div>
+	{/if}
 
 	<!-- Error banner -->
 	{#if error}
@@ -429,11 +481,11 @@
 
 		<!-- Issues List -->
 		<!-- AC: @ui-validation-view ac-1 — Issues list grouped by severity -->
-		{#if groupedIssues.length > 0}
+		{#if scopedIssues.length > 0}
 			<div class="space-y-4" data-testid="issues-list">
 				<h2 class="text-xl font-semibold flex items-center gap-2">
 					<FileWarning class="h-5 w-5" />
-					Issues ({groupedIssues.length})
+					Issues ({scopedIssues.length})
 				</h2>
 
 				<!-- Errors group -->
@@ -531,8 +583,12 @@
 				<CardContent class="py-8">
 					<div class="text-center text-muted-foreground">
 						<CheckCircle2 class="mx-auto h-12 w-12 mb-4 text-severity-success opacity-75" />
-						<p class="font-medium">No issues found</p>
-						<p class="text-sm">All validation checks passed.</p>
+						<p class="font-medium">
+							{hasValidationScope ? 'No scoped issues found' : 'No issues found'}
+						</p>
+						<p class="text-sm">
+							{hasValidationScope ? 'No validation issues match the current scope.' : 'All validation checks passed.'}
+						</p>
 					</div>
 				</CardContent>
 			</Card>

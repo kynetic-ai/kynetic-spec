@@ -5,6 +5,11 @@
 	} from '@kynetic-ai/shared';
 	import { Badge } from '$lib/components/ui/badge';
 	import StatusBadge from '$lib/components/ds/StatusBadge.svelte';
+	import { statusBadgeClass } from '$lib/ds/status-tokens';
+	import {
+		buildCoverageRollup,
+		coverageAttentionState
+	} from '$lib/spec-workspace/coverage-presentation';
 	import ChevronRight from 'lucide-svelte/icons/chevron-right';
 	import ExternalLink from 'lucide-svelte/icons/external-link';
 	import { cn } from '$lib/utils.js';
@@ -35,10 +40,7 @@
 
 	function coverageBucket(node: SpecWorkspaceNodeSummary): string | null {
 		if (!node.coverage || node.coverage.denominator === 0) return null;
-		if (node.coverage.counts.failing > 0) return 'failing';
-		if (node.coverage.counts.re_verify > 0) return 're_verify';
-		if (node.coverage.counts.not_yet > 0) return 'not_yet';
-		return 'covered';
+		return coverageAttentionState(node.coverage.counts, node.coverage.denominator);
 	}
 
 	function nodeStatus(node: SpecWorkspaceNodeSummary): string | null {
@@ -51,6 +53,30 @@
 		return detail.child_sections.flatMap((section) => section.nodes);
 	}
 </script>
+
+{#snippet rowCoverageRollup(node: SpecWorkspaceNodeSummary)}
+	{#if node.coverage && node.coverage.denominator > 0}
+		{@const rollup = buildCoverageRollup(node.coverage.counts, node.coverage.denominator)}
+		<div
+			class="hidden min-w-[6rem] max-w-28 shrink-0 space-y-1 sm:block"
+			data-testid="row-coverage-rollup"
+			aria-label={`Coverage rollup for ${node.title}: ${node.coverage.denominator} criteria`}
+		>
+			<div class="flex h-1.5 overflow-hidden rounded-full bg-muted">
+				{#each rollup.segments as segment (segment.state)}
+					<span
+						class={cn('h-full', statusBadgeClass(segment.family))}
+						style={`width: ${segment.percent}%;`}
+						title={`${segment.label}: ${segment.count}`}
+					></span>
+				{/each}
+			</div>
+			<p class="truncate text-[10px] text-muted-foreground">
+				{node.coverage.counts.covered}/{node.coverage.denominator} covered
+			</p>
+		</div>
+	{/if}
+{/snippet}
 
 {#snippet renderNode(node: SpecWorkspaceNodeSummary, depth: number)}
 	{@const isExpanded = expandedRefs.has(node.ref)}
@@ -105,6 +131,7 @@
 					{#if coverage}
 						<StatusBadge domain="coverage" state={coverage} class="shrink-0 px-1.5 py-0 text-[10px]" />
 					{/if}
+					{@render rowCoverageRollup(node)}
 					{#if status}
 						<StatusBadge domain="spec-implementation" state={status} class="hidden shrink-0 px-1.5 py-0 text-[10px] sm:inline-flex" />
 					{/if}

@@ -262,24 +262,34 @@ export function createValidationRoutes(_options: ValidationRouteOptions = {}) {
 
       // AC: @api-contract ac-20 - Run full validation
       // Note: validate() requires full context for deep schema/ref/completeness checks.
-      .get("/validate", async ({ projectContext }) => {
-        // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
-        // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
-        const ctx = await initContext(projectContext.path, { syncMode: "skip" });
+      .get(
+        "/validate",
+        async ({ projectContext }) => {
+          // AC: @multi-directory-daemon ac-1, ac-24 - Use project context from middleware
+          // AC: @shadow-lazy-read-sync ac-daemon-bypass — skip drift-check on daemon reads
+          const ctx = await initContext(projectContext.path, { syncMode: "skip" });
 
-        // AC: @api-contract ac-20 - Run validation and return ValidationResult
-        const result = await validate(ctx);
+          // AC: @api-contract ac-20 - Run validation and return ValidationResult
+          const result = await validate(ctx);
 
-        return wrapResponse({
-          valid: result.valid,
-          schemaErrors: result.schemaErrors,
-          refErrors: result.refErrors,
-          refWarnings: result.refWarnings,
-          orphans: result.orphans,
-          completenessWarnings: result.completenessWarnings,
-          traitCycles: result.traitCycleErrors,
-        });
-      })
+          return wrapResponse({
+            valid: result.valid,
+            schemaErrors: result.schemaErrors,
+            refErrors: result.refErrors,
+            refWarnings: result.refWarnings,
+            orphans: result.orphans,
+            completenessWarnings: result.completenessWarnings,
+            traitCycles: result.traitCycleErrors,
+          });
+        },
+        {
+          query: t.Object({
+            spec_ref: t.Optional(t.String()),
+            coverage: t.Optional(t.String()),
+            ac: t.Optional(t.String()),
+          }),
+        },
+      )
 
       // AC: @api-contract ac-21 - Get alignment stats and warnings
       // AC: @daemon-read-path ac-index-from-cache — build alignment/reference indexes from cached entity data

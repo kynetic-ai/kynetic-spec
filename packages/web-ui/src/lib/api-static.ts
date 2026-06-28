@@ -46,6 +46,7 @@ import type {
   SpecWorkspaceNodeDetailProjection,
   SpecWorkspaceNodeSummary,
   SpecWorkspaceRootProjection,
+  SpecWorkspaceUnavailableSection,
 } from "@kynetic-ai/shared";
 import type { ValidationResponse } from "$lib/api";
 import type {
@@ -433,6 +434,18 @@ function emptyCoverageSummary(): CoverageStateSummary {
     unmapped_result_count: 0,
     invalid_result_count: 0,
   };
+}
+
+function staticCoverageUnavailable(snapshot: KspecSnapshot): SpecWorkspaceUnavailableSection[] {
+  if (snapshot.coverage_state) return [];
+  return [
+    {
+      kind: "coverage",
+      status: "unavailable",
+      reason: "Coverage state is not included in this static snapshot.",
+      suggestion: "Use the live daemon workspace or export a snapshot with coverage state.",
+    },
+  ];
 }
 
 function staticItemRef(item: Pick<ExportedItem, "_ulid" | "slugs">): string {
@@ -839,7 +852,7 @@ export function fetchSpecWorkspaceRootStatic(params?: {
         .slice(offset, offset + limit)
         .map((item) => staticNodeSummary(snapshot, children, item)),
       pagination: { total, offset, limit, has_more: offset + limit < total },
-      unavailable_sections: [],
+      unavailable_sections: staticCoverageUnavailable(snapshot),
     },
     { total, offset, limit },
   );
@@ -887,7 +900,7 @@ export function fetchSpecWorkspaceNodeStatic(
       staticCriterionSummary(snapshot, item, ac),
     ),
     linked_work: staticLinkedWork(snapshot, item),
-    unavailable_sections: [],
+    unavailable_sections: staticCoverageUnavailable(snapshot),
   });
 }
 
@@ -917,7 +930,7 @@ export function fetchSpecWorkspaceCriterionStatic(
       staticCriterionSummary(snapshot, item, entry),
     ),
     linked_work: staticLinkedWork(snapshot, item),
-    unavailable_sections: [],
+    unavailable_sections: staticCoverageUnavailable(snapshot),
   });
 }
 
