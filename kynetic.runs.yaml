@@ -76294,7 +76294,7 @@ runs:
     completed_at: 2026-06-28T14:28:54.563Z
   - _ulid: 01KW7BB3SMHQKPPQK0DFDQ60XR
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -76309,7 +76309,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T14:51:08.098Z
-        completed_at: 2026-06-28T14:51:08.098Z
+        completed_at: 2026-06-28T14:51:12.391Z
+        notes: "Friction points: The new specs workspace preserved the plan-filter banner but dropped the
+          actual plan-filtered data path, and existing E2E only asserted the banner/URL rather than
+          tree contents. The broad focused E2E file run was interrupted by an unrelated
+          case-sensitive status-label assertion before reaching the cycle-2 spec-detail assertion.
+          Full npm test took about 43 minutes, so running it during review is rigorous but
+          expensive."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T14:51:12.391Z
+        completed_at: 2026-06-28T14:51:12.391Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T14:50:07.540Z
