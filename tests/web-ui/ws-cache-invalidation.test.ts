@@ -125,6 +125,7 @@ describe("ws-invalidation targeted entity event handling", () => {
   });
 
   // AC: @ui-targeted-event-consumption ac-1
+  // AC: @unified-spec-workspace-data-projection ac-cache-and-event-coherence
   it("refreshes only the affected task entity and task views for a task event", () => {
     setupWsInvalidation(mockQueryClient);
     const event = makeBroadcastEvent("tasks:updates", "task_updated", {
@@ -143,6 +144,7 @@ describe("ws-invalidation targeted entity event handling", () => {
       queryKeys.tasks.detail("@task-target"),
       queryKeys.tasks.lists(),
       queryKeys.tasks.summary(),
+      queryKeys.specWorkspace.all,
     ]);
     expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
       queryKey: queryKeys.items.all,
@@ -187,6 +189,7 @@ describe("ws-invalidation targeted entity event handling", () => {
 
   // AC: @ui-targeted-event-consumption ac-1
   // AC: @coverage-state-events ac-event-canonical-identity
+  // AC: @unified-spec-workspace-data-projection ac-cache-and-event-coherence
   it("refreshes affected item, validation, and coverage views for a spec-item event", () => {
     setupWsInvalidation(mockQueryClient);
     const event = makeBroadcastEvent("items:updates", "spec_item_changed", {
@@ -201,7 +204,9 @@ describe("ws-invalidation targeted entity event handling", () => {
       queryKeys.items.detail("01ITEMTARGET0000000000000"),
       queryKeys.coverage.item("01ITEMTARGET0000000000000"),
       queryKeys.coverage.criteriaForItem("01ITEMTARGET0000000000000"),
+      queryKeys.specWorkspace.node("01ITEMTARGET0000000000000"),
       queryKeys.items.lists(),
+      queryKeys.specWorkspace.all,
       queryKeys.validation.all,
       queryKeys.coverage.summary(),
     ]);
@@ -215,6 +220,7 @@ describe("ws-invalidation targeted entity event handling", () => {
 
   // AC: @coverage-state-events ac-event-topic
   // AC: @coverage-state-events ac-event-canonical-identity
+  // AC: @unified-spec-workspace-data-projection ac-cache-and-event-coherence
   it("refreshes precise coverage-state queries for coverage state item events", () => {
     setupWsInvalidation(mockQueryClient);
     const event = makeBroadcastEvent("items:updates", "coverage_state_changed", {
@@ -241,12 +247,19 @@ describe("ws-invalidation targeted entity event handling", () => {
 
     expect(invalidatedKeys(mockQueryClient)).toEqual([
       queryKeys.coverage.summary(),
+      queryKeys.specWorkspace.root(),
       queryKeys.coverage.item("01ITEMTARGET0000000000000"),
+      queryKeys.specWorkspace.node("01ITEMTARGET0000000000000"),
       queryKeys.coverage.item("@coverage-api-widget"),
+      queryKeys.specWorkspace.node("@coverage-api-widget"),
       queryKeys.coverage.criterion("01ITEMTARGET0000000000000", "ac-covered"),
+      queryKeys.specWorkspace.criterion("01ITEMTARGET0000000000000", "ac-covered"),
       queryKeys.coverage.criterion("01ITEMTARGET0000000000000", "ac-failing"),
+      queryKeys.specWorkspace.criterion("01ITEMTARGET0000000000000", "ac-failing"),
       queryKeys.coverage.criterion("@coverage-api-widget", "ac-covered"),
+      queryKeys.specWorkspace.criterion("@coverage-api-widget", "ac-covered"),
       queryKeys.coverage.criterion("@coverage-api-widget", "ac-failing"),
+      queryKeys.specWorkspace.criterion("@coverage-api-widget", "ac-failing"),
       queryKeys.coverage.unmapped(),
     ]);
     expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
@@ -258,6 +271,7 @@ describe("ws-invalidation targeted entity event handling", () => {
   });
 
   // AC: @ui-targeted-event-consumption ac-1
+  // AC: @unified-spec-workspace-data-projection ac-cache-and-event-coherence
   it("refreshes affected plan resource queries without touching other domains", () => {
     setupWsInvalidation(mockQueryClient);
     const event = makeBroadcastEvent("plans:updates", "plan_resource_changed", {
@@ -271,6 +285,7 @@ describe("ws-invalidation targeted entity event handling", () => {
     expect(invalidatedKeys(mockQueryClient)).toEqual([
       queryKeys.plans.detail("01PLANTARGET0000000000000"),
       queryKeys.plans.content("01PLANTARGET0000000000000"),
+      queryKeys.specWorkspace.all,
       queryKeys.plans.lists(),
     ]);
     expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
@@ -324,6 +339,7 @@ describe("ws-invalidation targeted entity event handling", () => {
   });
 
   // AC: @ui-targeted-event-consumption ac-4
+  // AC: @unified-spec-workspace-data-projection ac-cache-and-event-coherence
   it("maps non-daemon plan folder changes to a single immediate affected-plan refresh", () => {
     setupWsInvalidation(mockQueryClient);
     const event = makeBroadcastEvent("files:updates", "file_changed", {
@@ -336,6 +352,7 @@ describe("ws-invalidation targeted entity event handling", () => {
       queryKeys.plans.detail("01PLANTARGET0000000000000"),
       queryKeys.plans.content("01PLANTARGET0000000000000"),
       queryKeys.plans.lists(),
+      queryKeys.specWorkspace.all,
     ]);
     expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalledWith({
       queryKey: queryKeys.tasks.all,

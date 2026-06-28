@@ -70,13 +70,14 @@ function canonicalTaskRefs(data: Partial<TaskUpdatedEventData>): string[] {
 
 function getTaskInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
   if (event.event !== "task_updated") {
-    return taskViewInvalidationKeys();
+    return [...taskViewInvalidationKeys(), queryKeys.specWorkspace.all];
   }
 
   const refs = canonicalTaskRefs(event.data as Partial<TaskUpdatedEventData>);
   return uniqueKeys([
     ...refs.map((ref) => queryKeys.tasks.detail(ref)),
     ...taskViewInvalidationKeys(),
+    queryKeys.specWorkspace.all,
   ]);
 }
 
@@ -96,9 +97,11 @@ function getItemInvalidationKeys(event: BroadcastEvent): readonly (readonly unkn
           queryKeys.items.detail(data.item_ulid),
           queryKeys.coverage.item(data.item_ulid),
           queryKeys.coverage.criteriaForItem(data.item_ulid),
+          queryKeys.specWorkspace.node(data.item_ulid),
         ]
       : []),
     queryKeys.items.lists(),
+    queryKeys.specWorkspace.all,
     queryKeys.validation.all,
     queryKeys.coverage.summary(),
   ]);
@@ -111,6 +114,7 @@ function getCoverageStateInvalidationKeys(event: BroadcastEvent): readonly (read
 
   if (refresh.project_summary !== false) {
     keys.push(queryKeys.coverage.summary());
+    keys.push(queryKeys.specWorkspace.root());
   }
 
   const items = Array.isArray(data.affected?.items) ? data.affected.items : [];
@@ -122,12 +126,14 @@ function getCoverageStateInvalidationKeys(event: BroadcastEvent): readonly (read
     if (refresh.item_detail !== false) {
       for (const ref of refs) {
         keys.push(queryKeys.coverage.item(ref));
+        keys.push(queryKeys.specWorkspace.node(ref));
       }
     }
     if (refresh.criterion_detail !== false && Array.isArray(item.ac_ids)) {
       for (const ref of refs) {
         for (const acId of item.ac_ids) {
           keys.push(queryKeys.coverage.criterion(ref, acId));
+          keys.push(queryKeys.specWorkspace.criterion(ref, acId));
         }
       }
     }
@@ -137,7 +143,7 @@ function getCoverageStateInvalidationKeys(event: BroadcastEvent): readonly (read
     keys.push(queryKeys.coverage.unmapped());
   }
 
-  return keys.length > 0 ? uniqueKeys(keys) : [queryKeys.coverage.all];
+  return keys.length > 0 ? uniqueKeys(keys) : [queryKeys.coverage.all, queryKeys.specWorkspace.all];
 }
 
 function getReviewInvalidationKeys(event: BroadcastEvent): readonly (readonly unknown[])[] {
@@ -177,7 +183,11 @@ function getPlanInvalidationKeys(event: BroadcastEvent): readonly (readonly unkn
   const data = event.data as Partial<PlanResourceChangedEventData>;
   return uniqueKeys([
     ...(typeof data.plan_ulid === "string" && data.plan_ulid.length > 0
-      ? [queryKeys.plans.detail(data.plan_ulid), queryKeys.plans.content(data.plan_ulid)]
+      ? [
+          queryKeys.plans.detail(data.plan_ulid),
+          queryKeys.plans.content(data.plan_ulid),
+          queryKeys.specWorkspace.all,
+        ]
       : []),
     queryKeys.plans.lists(),
   ]);
@@ -225,7 +235,7 @@ function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonl
   }
 
   if (ref === "project.plans.yaml") {
-    return [queryKeys.plans.lists()];
+    return [queryKeys.plans.lists(), queryKeys.specWorkspace.all];
   }
 
   const planId = folderBackedEntityId(ref, "plans");
@@ -234,16 +244,23 @@ function getFileUpdateInvalidationKeys(event: BroadcastEvent): readonly (readonl
       queryKeys.plans.detail(planId),
       queryKeys.plans.content(planId),
       queryKeys.plans.lists(),
+      queryKeys.specWorkspace.all,
     ]);
   }
 
   if (ref.startsWith("modules/") || ref.endsWith(".spec.yaml")) {
-    return [queryKeys.items.lists(), queryKeys.validation.all, queryKeys.coverage.all];
+    return [
+      queryKeys.items.lists(),
+      queryKeys.specWorkspace.all,
+      queryKeys.validation.all,
+      queryKeys.coverage.all,
+    ];
   }
 
   if (ref === "kynetic.yaml" || ref.endsWith(".meta.yaml")) {
     return [
       queryKeys.items.all,
+      queryKeys.specWorkspace.all,
       queryKeys.settings.all,
       queryKeys.workflows.all,
       queryKeys.observations.all,
@@ -339,7 +356,7 @@ function getInvalidationKeys(
     }
 
     case "sessions":
-      return [queryKeys.sessions.all];
+      return [queryKeys.sessions.all, queryKeys.specWorkspace.all];
 
     case "files:updates":
       // File watcher broadcasts are the fallback path for direct on-disk edits.
@@ -365,13 +382,23 @@ function getInvalidationKeys(
  * AC: @ui-data-freshness ac-warming-auto-transition
  */
 const DOMAIN_QUERY_KEY_MAP: Record<string, readonly (readonly unknown[])[]> = {
-  tasks: [queryKeys.tasks.all, queryKeys.validation.all, queryKeys.sessionContext.all],
-  items: [queryKeys.items.all, queryKeys.validation.all, queryKeys.coverage.all],
+  tasks: [
+    queryKeys.tasks.all,
+    queryKeys.specWorkspace.all,
+    queryKeys.validation.all,
+    queryKeys.sessionContext.all,
+  ],
+  items: [
+    queryKeys.items.all,
+    queryKeys.specWorkspace.all,
+    queryKeys.validation.all,
+    queryKeys.coverage.all,
+  ],
   inbox: [queryKeys.inbox.all],
   triage: [queryKeys.inbox.all],
   reviews: [queryKeys.reviews.all],
-  plans: [queryKeys.plans.all],
-  sessions: [queryKeys.sessions.all],
+  plans: [queryKeys.plans.all, queryKeys.specWorkspace.all],
+  sessions: [queryKeys.sessions.all, queryKeys.specWorkspace.all],
   // "meta" domain covers settings, workflows, observations, automation, and session context
   meta: [
     queryKeys.settings.all,

@@ -42,6 +42,9 @@ import type {
   TaskStatusSummary,
   ActorIdentityConfig,
   BreadcrumbAncestor,
+  SpecWorkspaceCriterionDetailProjection,
+  SpecWorkspaceNodeDetailProjection,
+  SpecWorkspaceRootProjection,
 } from "@kynetic-ai/shared";
 import type { TriageRecord } from "./types/triage";
 import {
@@ -72,6 +75,9 @@ import {
   fetchValidationStatic,
   fetchAlignmentStatic,
   fetchWorkflowsStatic,
+  fetchSpecWorkspaceCriterionStatic,
+  fetchSpecWorkspaceNodeStatic,
+  fetchSpecWorkspaceRootStatic,
 } from "./api-static";
 import { DAEMON_API_BASE } from "./constants";
 
@@ -532,6 +538,70 @@ export async function fetchItem(ref: string): Promise<ItemDetail> {
     await handleResponseError(response);
   }
 
+  return unwrapEnvelope(await response.json());
+}
+
+export async function fetchSpecWorkspaceRoot(params?: {
+  limit?: number;
+  offset?: number;
+}): Promise<SpecWorkspaceRootProjection> {
+  if (isStaticMode()) {
+    return unwrapEnvelope(fetchSpecWorkspaceRootStatic(params));
+  }
+
+  const url = new URL(`${API_BASE}/api/spec-workspace/root`);
+  if (params?.limit !== undefined) url.searchParams.set("limit", String(params.limit));
+  if (params?.offset !== undefined) url.searchParams.set("offset", String(params.offset));
+
+  const response = await fetch(url.toString(), { headers: getProjectHeaders() });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return unwrapEnvelope(await response.json());
+}
+
+export async function fetchSpecWorkspaceNode(
+  ref: string,
+  params?: { limit?: number; offset?: number },
+): Promise<SpecWorkspaceNodeDetailProjection> {
+  if (isStaticMode()) {
+    const envelope = fetchSpecWorkspaceNodeStatic(ref, params);
+    if (!envelope) {
+      throw new Error(`Spec workspace node not found: ${ref}`);
+    }
+    return unwrapEnvelope(envelope);
+  }
+
+  const url = new URL(`${API_BASE}/api/spec-workspace/nodes/${encodeURIComponent(ref)}`);
+  if (params?.limit !== undefined) url.searchParams.set("limit", String(params.limit));
+  if (params?.offset !== undefined) url.searchParams.set("offset", String(params.offset));
+
+  const response = await fetch(url.toString(), { headers: getProjectHeaders() });
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
+  return unwrapEnvelope(await response.json());
+}
+
+export async function fetchSpecWorkspaceCriterion(
+  ref: string,
+  acId: string,
+): Promise<SpecWorkspaceCriterionDetailProjection> {
+  if (isStaticMode()) {
+    const envelope = fetchSpecWorkspaceCriterionStatic(ref, acId);
+    if (!envelope) {
+      throw new Error(`Spec workspace criterion not found: ${ref} ${acId}`);
+    }
+    return unwrapEnvelope(envelope);
+  }
+
+  const response = await fetch(
+    `${API_BASE}/api/spec-workspace/criteria/${encodeURIComponent(ref)}/${encodeURIComponent(acId)}`,
+    { headers: getProjectHeaders() },
+  );
+  if (!response.ok) {
+    await handleResponseError(response);
+  }
   return unwrapEnvelope(await response.json());
 }
 

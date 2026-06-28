@@ -70,6 +70,16 @@ export const queryKeys = {
     detail: (ref: string) => [...queryKeys.items.all, "detail", ref] as const,
   },
 
+  specWorkspace: {
+    all: ["specWorkspace"] as const,
+    root: (params?: Record<string, unknown>) =>
+      [...queryKeys.specWorkspace.all, "root", params] as const,
+    node: (ref: string, params?: Record<string, unknown>) =>
+      [...queryKeys.specWorkspace.all, "node", ref, params] as const,
+    criterion: (ref: string, acId: string) =>
+      [...queryKeys.specWorkspace.all, "criterion", ref, acId] as const,
+  },
+
   sessions: {
     all: ["sessions"] as const,
     lists: () => [...queryKeys.sessions.all, "list"] as const,
