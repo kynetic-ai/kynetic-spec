@@ -23,6 +23,81 @@
 > state consumption, accessibility, and static/read-only degradation are the
 > binding requirements.
 
+## Handoff Resources
+
+The exported Kynetic Spec web UI handoff is attached to this plan as
+plan-owned resources under `./resources/handoff/` so task workers inherit the
+same UX context when the plan is derived. These resources are behavioral
+references: use them for information architecture, interaction states,
+hierarchy, density, token intent, sample copy, and verification examples. Do
+**not** port the React reference source directly or treat screenshots as
+pixel-perfect styling.
+
+Primary UX docs:
+
+- [handoff README](./resources/handoff/docs/README.md) — package index and
+  fidelity caveats.
+- [product context](./resources/handoff/docs/00-product-context.md) — redesign
+  intent and caveats.
+- [spec workspace UX](./resources/handoff/docs/06-spec-workspace.md) — chosen
+  unified page+tree interaction model, row anatomy, page shapes, data notes,
+  and archived alternatives.
+- [coverage state UX](./resources/handoff/docs/07-coverage-states.md) — token,
+  precedence, rollup, and mixed-list rules. Interpret through the completed
+  four-bucket coverage-state engine for this plan.
+- [spec-state integration UX](./resources/handoff/docs/08-spec-states-integration.md)
+  — requirement filters, re-verify banners, rollups, stale/re-verify AC pages,
+  and resolution surface shape.
+- [Validate handoff](./resources/handoff/docs/09-validate.md) — downstream
+  filtered Validate destinations for re-verify and resolution flows.
+
+Screenshot resources that must inform implementation and browser proof:
+
+- [root tree hover](./resources/handoff/shots/r3-spec-unified-1-tree-hover.png)
+  — row-body expand plus title/open-page affordance.
+- [module page](./resources/handoff/shots/r3-spec-unified-2-module.png) and
+  [feature page](./resources/handoff/shots/r3-spec-unified-3-feature.png) —
+  node page header, child sections, and linked-work strip.
+- [requirement page](./resources/handoff/shots/r3-spec-unified-4-requirement.png)
+  — acceptance criteria as expandable scenario rows.
+- [AC page](./resources/handoff/shots/r3-spec-unified-5-ac.png) — focused
+  criterion page with scenario, evidence, and sibling navigation.
+- [five-state recommendation](./resources/handoff/shots/r3-coverage-4-five-state-alt.png)
+  — visual intent for collapsing stale/drifted into re-verify. For this plan,
+  implement current user-facing buckets: covered, failing, not yet, re-verify.
+- [stateful requirement page](./resources/handoff/shots/r3-spec-states-1-requirement.png),
+  [tree rollups](./resources/handoff/shots/r3-spec-states-2-tree-rollups.png),
+  and [stale AC detail](./resources/handoff/shots/r3-spec-states-3-stale-ac.png)
+  — filter chips, rollup bars, re-verify banner, evidence/diff/resolution
+  layout cues.
+
+Specific UX commitments carried into the tasks:
+
+- The primary `/specs` route is a unified page+tree workspace, not a sheet.
+- Row body activation expands inline; title/open activation navigates to a
+  stable node or AC page. Touch/keyboard users get explicit controls; hover is
+  enhancement only.
+- Node pages reuse the same child-row component as the root tree and preserve
+  branch expansion context across back/forward.
+- Requirement pages present ACs as readable scenario rows with state tokens,
+  count chips, and inline Given/When/Then bodies.
+- AC pages are shareable focus pages with parent context, scenario, evidence,
+  sibling navigation, and resolution panels when applicable.
+- Coverage visuals use one shared token system. Screenshot labels around
+  stale/drifted are reference causes; the implementation exposes them as
+  secondary re-verify explanations, not separate top-level UI states.
+- Browser proof must compare the implemented workflow against the attached
+  screenshots for interaction coverage, vertical flow completeness, and no
+  horizontal-scroll regressions.
+
+Attached reference source:
+
+- [spec workspace source](./resources/handoff/reference-src/wf3-spec-unified.jsx),
+  [spec-state source](./resources/handoff/reference-src/wf3-spec-states.jsx), and
+  [coverage-state source](./resources/handoff/reference-src/wf3-coverage-states.jsx)
+  are sample React wireframe code only. Use for interaction/sample-copy details;
+  implement in the existing SvelteKit conventions.
+
 ## Specs
 
 ```yaml
@@ -601,6 +676,14 @@ derive_from_specs: false
   priority: 1
   tags: [web-ui, daemon, api, specs, coverage]
   spec_ref: "@unified-spec-workspace-data-projection"
+  resource_refs:
+    - "./resources/handoff/docs/README.md"
+    - "./resources/handoff/docs/00-product-context.md"
+    - "./resources/handoff/docs/06-spec-workspace.md"
+    - "./resources/handoff/docs/07-coverage-states.md"
+    - "./resources/handoff/docs/08-spec-states-integration.md"
+    - "./resources/handoff/docs/09-validate.md"
+    - "./resources/handoff/shots/r3-spec-states-2-tree-rollups.png"
   description: |
     What:
     - Add the backend/shared/static projection needed by the unified spec workspace.
@@ -621,6 +704,10 @@ derive_from_specs: false
     pushing joins into the browser.
 
     How:
+    - UX resources: Read the spec workspace UX doc for the five page shapes and data
+      notes, the coverage-state docs for rollup/filter state semantics, and the tree
+      rollup screenshot for the exact kinds of backend-owned counts the client must not
+      derive from raw unbounded lists.
     - Inspect existing `packages/daemon/src/routes/items.ts`, coverage routes, shared API
       types, query keys, and `api-static.ts` before choosing the exact endpoint shape.
     - Prefer a small family under an existing daemon route namespace if that matches
@@ -658,6 +745,12 @@ derive_from_specs: false
   spec_ref: "@unified-spec-workspace-navigation"
   depends_on:
     - "@task-unified-spec-workspace-projection-api"
+  resource_refs:
+    - "./resources/handoff/docs/06-spec-workspace.md"
+    - "./resources/handoff/shots/r3-spec-unified-1-tree-hover.png"
+    - "./resources/handoff/shots/r3-spec-unified-2-module.png"
+    - "./resources/handoff/shots/r3-spec-unified-3-feature.png"
+    - "./resources/handoff/reference-src/wf3-spec-unified.jsx"
   description: |
     What:
     - Replace the current `/specs` tree + side-sheet route with the unified workspace shell.
@@ -675,6 +768,10 @@ derive_from_specs: false
     tree with a modal/sheet detail panel.
 
     How:
+    - UX resources: Use the root tree hover screenshot as the binding interaction
+      reference for row-body expand vs title/open navigation. Use the module/feature
+      screenshots to keep page-level children visually consistent with root rows. Hover
+      affordances from the screenshot must become explicit focus/touch controls too.
     - Reuse existing design-system primitives and the breadcrumb/view-header components
       from the foundations plan.
     - Keep expansion state bounded and project-scoped. If state is persisted outside the
@@ -701,6 +798,13 @@ derive_from_specs: false
   spec_ref: "@spec-node-criterion-workspace-pages"
   depends_on:
     - "@task-unified-spec-workspace-shell-navigation"
+  resource_refs:
+    - "./resources/handoff/docs/06-spec-workspace.md"
+    - "./resources/handoff/shots/r3-spec-unified-2-module.png"
+    - "./resources/handoff/shots/r3-spec-unified-3-feature.png"
+    - "./resources/handoff/shots/r3-spec-unified-4-requirement.png"
+    - "./resources/handoff/shots/r3-spec-unified-5-ac.png"
+    - "./resources/handoff/reference-src/wf3-spec-unified.jsx"
   description: |
     What:
     - Implement the root, node, requirement, and acceptance-criterion page bodies.
@@ -717,6 +821,10 @@ derive_from_specs: false
     to related work without losing context.
 
     How:
+    - UX resources: Use the module, feature, requirement, and AC screenshots as the
+      expected vertical workflow: root/module/feature headers, requirement AC rows with
+      expandable Given/When/Then bodies, and AC pages with scenario, evidence, siblings,
+      and stable breadcrumbs.
     - Reuse ReferenceLink, RelatedSessionsSection patterns where they fit, but avoid sheet
       dependence for primary discovery.
     - Keep linked-work inclusion rules aligned with the projection API task; do not add
@@ -740,6 +848,14 @@ derive_from_specs: false
   spec_ref: "@spec-workspace-coverage-state-presentation"
   depends_on:
     - "@task-spec-node-criterion-workspace-pages"
+  resource_refs:
+    - "./resources/handoff/docs/07-coverage-states.md"
+    - "./resources/handoff/docs/08-spec-states-integration.md"
+    - "./resources/handoff/shots/r3-coverage-4-five-state-alt.png"
+    - "./resources/handoff/shots/r3-spec-states-1-requirement.png"
+    - "./resources/handoff/shots/r3-spec-states-2-tree-rollups.png"
+    - "./resources/handoff/reference-src/wf3-coverage-states.jsx"
+    - "./resources/handoff/reference-src/wf3-spec-states.jsx"
   description: |
     What:
     - Add shared workspace coverage tokens, row/header rollups, state pills, requirement
@@ -756,6 +872,10 @@ derive_from_specs: false
     prove that the foundational backend work drives a coherent spec-reading workflow.
 
     How:
+    - UX resources: Use the five-state recommendation, requirement-state, and tree-rollup
+      screenshots for layout, density, and attention hierarchy. Translate any wireframe
+      stale/drifted labels into the current backend four-bucket model by showing them as
+      secondary re-verify causes, not separate top-level filters.
     - Build on existing `queryKeys.coverage`, `ws-invalidation.ts`, coverage API client
       helpers, and design-system status tokens.
     - Keep filters local to the current projected page or request an explicit scoped
@@ -781,6 +901,11 @@ derive_from_specs: false
   spec_ref: "@spec-workspace-coverage-resolution-panels"
   depends_on:
     - "@task-spec-workspace-coverage-presentation"
+  resource_refs:
+    - "./resources/handoff/docs/08-spec-states-integration.md"
+    - "./resources/handoff/docs/09-validate.md"
+    - "./resources/handoff/shots/r3-spec-states-3-stale-ac.png"
+    - "./resources/handoff/reference-src/wf3-spec-states.jsx"
   description: |
     What:
     - Add criterion-page and inline re-verify resolution panels that call the shared
@@ -798,6 +923,10 @@ derive_from_specs: false
     users encounter stale/re-verify criterion state.
 
     How:
+    - UX resources: Use the stale AC detail screenshot for panel placement, evidence/diff
+      hierarchy, and action-card layout. Map the wireframe's action language onto the
+      already-built resolution mutations: explicit re-verify, spec-text revert, and
+      dispatch-fix request.
     - Reuse existing coverage resolution request/response schemas and API client helpers.
     - Keep confirmation copy specific about what will be stored.
     - Prefer existing dialog/button primitives and structured error components.
@@ -821,6 +950,18 @@ derive_from_specs: false
   spec_ref: "@spec-workspace-delivery-quality"
   depends_on:
     - "@task-spec-workspace-resolution-panels"
+  resource_refs:
+    - "./resources/handoff/docs/06-spec-workspace.md"
+    - "./resources/handoff/docs/07-coverage-states.md"
+    - "./resources/handoff/docs/08-spec-states-integration.md"
+    - "./resources/handoff/shots/r3-spec-unified-1-tree-hover.png"
+    - "./resources/handoff/shots/r3-spec-unified-2-module.png"
+    - "./resources/handoff/shots/r3-spec-unified-3-feature.png"
+    - "./resources/handoff/shots/r3-spec-unified-4-requirement.png"
+    - "./resources/handoff/shots/r3-spec-unified-5-ac.png"
+    - "./resources/handoff/shots/r3-spec-states-1-requirement.png"
+    - "./resources/handoff/shots/r3-spec-states-2-tree-rollups.png"
+    - "./resources/handoff/shots/r3-spec-states-3-stale-ac.png"
   description: |
     What:
     - Complete the focused test/a11y/static/browser verification pass for the unified spec
@@ -839,6 +980,10 @@ derive_from_specs: false
     `/specs` surface.
 
     How:
+    - UX resources: Browser proof must explicitly walk the attached screenshot set and
+      record which implemented surface covers each reference: root tree hover/keyboard
+      equivalent, module/feature pages, requirement AC rows, AC page, stateful filters,
+      rollups, and stale/re-verify panel behavior.
     - Use existing test runner commands and project-local work-gate conventions.
     - Include screenshots or logs as task resources/notes when browser proof is manual.
     - If any spec-workspace behavior cannot be completed because an upstream API/design
