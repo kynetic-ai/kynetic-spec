@@ -23499,6 +23499,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-06-27T05:04:02.413Z
+  - _ulid: 01KW6V2MPKYAZAMG3Q9JB74QEW
+    type: success
+    content: During review of event-driven UI data work, cross-checking the shared WebSocket event
+      vocabulary/reservations against query invalidation mapping and tests exposed cache-coherence
+      gaps that route-level tests alone missed.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-28T10:05:52.724Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
