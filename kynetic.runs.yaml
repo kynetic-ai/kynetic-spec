@@ -76172,7 +76172,7 @@ runs:
     completed_at: 2026-06-28T13:40:02.457Z
   - _ulid: 01KW78H29BJDD55RHNRJWWZHC5
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -76209,7 +76209,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-06-28T14:03:24.567Z
-        completed_at: 2026-06-28T14:03:24.567Z
+        completed_at: 2026-06-28T14:03:42.137Z
+        notes: "Proposed improvement: add or refine reviewer guidance for route/surface replacement tasks to
+          explicitly search unchanged E2E suites and specs for workflows previously served by the
+          replaced surface, then run at least one focused neighboring E2E when the route redirects
+          or reuses an old URL. Benefit: catches regressions like missing spec related-sessions
+          navigation before approval. Rough scope: small guidance/process update, likely in
+          project-local review guidance rather than package-shipped text."
+      - status: completed
+        step_index: 4
+        started_at: 2026-06-28T14:03:42.137Z
+        completed_at: 2026-06-28T14:03:42.137Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-28T14:00:56.876Z
