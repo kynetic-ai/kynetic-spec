@@ -185,6 +185,13 @@ events:
       status: pass
       name: focused e2e spec/session detail
     timestamp: 2026-06-28T14:48:27.706Z
+  - _ulid: 01KW7B8VVWGN35QDGD3TER29XE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW7B8VM251GTJX7KYN3VB7EK
+    timestamp: 2026-06-28T14:48:53.884Z
 examined_commit: a35677900ee073d6bcc6e1661c95fd81b082e43f
 external_links: []
 lifecycle_state: open
@@ -225,7 +232,52 @@ threads:
           banner.
         created_at: 2026-06-28T14:47:16.149Z
     kind: blocker
+  - _ulid: 01KW7B8VM251GTJX7KYN3VB7EK
+    entries:
+      - _ulid: 01KW7B8VM2Q9M74XWYASXGA2AN
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: `kspec-agents.md`; `.agents/skills/svelte-5/SKILL.md`;
+          `.agents/skills/e2e/SKILL.md`; `packages/daemon/src/routes/spec-workspace.ts`;
+          `packages/web-ui/src/routes/specs/+page.svelte`;
+          `packages/web-ui/src/lib/components/SpecWorkspaceRows.svelte`;
+          `packages/web-ui/src/routes/items/+page.svelte`;
+          `packages/web-ui/src/routes/plans/+page.svelte`; `packages/web-ui/src/lib/api.ts`;
+          `packages/shared/src/api.ts`; `tests/e2e/items.spec.ts`;
+          `tests/e2e/session-context.spec.ts`; `tests/e2e/fixtures/modules/core.yaml`; previous
+          reviews `@01KW748D` and `@01KW77F149RRJC2X903EKCXQW6`.
+
+
+          Commands run: `kspec task get @01KW6Q03KGA93343F9SQJKSA0R`; `kspec item get
+          @unified-spec-workspace-navigation`; `kspec item get @web-dashboard`; `kspec item get
+          @spec-workspace-delivery-quality`; `kspec item get @ui-plans-view`; `git diff` against
+          `1ee439998e583e57b4b5c43025473cb5290e97a2` and prior cycle head
+          `19ad0f44ea3ecddcd0be3a8faeecc16f8ad7036f`; `rg` for AC annotations and URL/history usage;
+          `npm run format:check`; `npm run lint -- --quiet`; `npx oxlint
+          packages/daemon/src/routes/spec-workspace.ts tests/e2e/items.spec.ts`; `npm run
+          typecheck`; `npm test`; `kspec validate --refs --warnings-ok`; `kspec validate --alignment
+          --warnings-ok`; `kspec validate --completeness --warnings-ok`; `npm run test:e2e --
+          tests/e2e/items.spec.ts tests/e2e/session-context.spec.ts`; `npm run test:e2e --
+          tests/e2e/session-context.spec.ts -g 'spec detail lists related sessions'`; `kspec task
+          add ...` for unrelated E2E assertion task `@01KW7B56`.
+
+
+          Claims verified: cycle-2 related-sessions fix is present in code and the focused
+          Playwright spec-detail test passes. URL state mutation uses `goto()`/links with no direct
+          `history` calls. AC annotations for the new workspace are behavioral E2E assertions rather
+          than source-scanning tests.
+
+
+          Categories searched: correctness, legacy navigation compatibility, URL state/back
+          behavior, accessibility labels, E2E coverage quality, server projection/API contract,
+          Svelte reactivity, horizontal overflow risk, and integration with plan/session links.
+          Finding recorded: `/specs?plan=` regression.
+        created_at: 2026-06-28T14:48:53.635Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-28T14:31:35.387Z
-updated_at: 2026-06-28T14:48:27.375Z
+updated_at: 2026-06-28T14:48:53.635Z
 notes: []
