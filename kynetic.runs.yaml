@@ -75742,7 +75742,7 @@ runs:
     started_at: 2026-06-27T05:25:54.713Z
   - _ulid: 01KW6SXJ8FTZJ2YSDH0NVZ9JAN
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -75758,7 +75758,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-28T09:47:29.699Z
-        completed_at: 2026-06-28T09:47:29.699Z
+        completed_at: 2026-06-28T09:47:40.999Z
+        notes: "Identified candidates: (1) friction: task handoff resources were marked [OK] in the dispatch
+          prompt but the referenced handoff/docs paths were not present in the mutable worker
+          worktree, forcing fallback to plan/task excerpts; this is concrete and repeatable but
+          already tracked. (2) workflow ergonomics: kspec workflow list was not a command and
+          workflow show required an explicit run ref; this is also already covered by existing
+          workflow CLI ergonomics items. Success candidates: AC-driven daemon/static/invalidation
+          tests and reuse of existing coverage-state read model/ReferenceIndex/AlignmentIndex
+          patterns made the implementation straightforward, but this is not unique enough to capture
+          as a new durable observation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-28T09:47:40.999Z
+        completed_at: 2026-06-28T09:47:40.999Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-06-28T09:45:37.807Z
