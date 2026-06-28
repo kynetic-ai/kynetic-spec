@@ -156,6 +156,13 @@ events:
       status: pass
       name: focused validate e2e
     timestamp: 2026-06-28T20:53:02.750Z
+  - _ulid: 01KW80484BG0VGAN9BBGJSJGY6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW8047WB5T5MAY5RBM6R88R9
+    timestamp: 2026-06-28T20:53:22.699Z
 examined_commit: 5bb8e3d32c1e62ce6906fa6fab794b22d8db6795
 external_links: []
 lifecycle_state: open
@@ -165,8 +172,37 @@ subject:
   content_hash: ""
   ref: "@01KW6Q04A1V24N1AY0H0YTD2YR"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW8047WB5T5MAY5RBM6R88R9
+    entries:
+      - _ulid: 01KW8047WCX493ANFENY98A83A
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md; task @01KW6Q04A1V24N1AY0H0YTD2YR; spec
+          @spec-workspace-coverage-state-presentation; spec @unified-spec-workspace-data-projection;
+          previous review @01KW7PB1;
+          packages/web-ui/src/lib/spec-workspace/coverage-presentation.ts;
+          packages/web-ui/src/routes/specs/+page.svelte;
+          packages/web-ui/src/routes/validate/+page.svelte;
+          packages/web-ui/src/lib/components/SpecWorkspaceRows.svelte;
+          packages/web-ui/src/lib/api.ts; packages/web-ui/src/lib/api-static.ts;
+          packages/web-ui/src/lib/query/ws-invalidation.ts;
+          packages/daemon/src/routes/validation.ts; packages/daemon/src/routes/spec-workspace.ts;
+          tests/web-ui/spec-workspace-coverage-presentation.test.ts;
+          tests/spec-workspace-static.test.ts; tests/web-ui/api-envelope.test.ts;
+          tests/e2e/validate.spec.ts. Commands run: git diff/stat/name-only; git diff --check; rg AC
+          annotation searches; npm run format:check; npm run lint -- --quiet; npx oxlint changed
+          files; npm run typecheck; npm test; npm run test:e2e -- tests/e2e/validate.spec.ts; kspec
+          validate --refs/--alignment/--completeness --warnings-ok. Claims verified: prior re-verify
+          Validate-link blocker now has URL-state consumption, query keys/API request params, and
+          focused E2E coverage; coverage_state_changed invalidates coverage and specWorkspace
+          root/node/criterion query keys; workspace coverage presentation uses projection coverage
+          fields and not legacy covered boolean scans. Categories searched: correctness, AC
+          alignment, fix-cycle regression, edge cases for missing coverage/static snapshots/zero
+          denominators, test quality/source-scanning risk, event invalidation integration, and
+          build/lint/type/test gates. No blockers found."
+        created_at: 2026-06-28T20:53:22.444Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-28T20:35:57.228Z
-updated_at: 2026-06-28T20:53:02.494Z
+updated_at: 2026-06-28T20:53:22.444Z
 notes: []
