@@ -7017,6 +7017,9 @@ features:
               than hidden sheet accordions. This plan is a read/navigation plan: spec
               editing, add-AC flows, and broad spec CRUD are intentionally out of scope
               unless a later approved plan designs them.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on:
               - "@unified-spec-workspace-data-projection"
               - "@ui-breadcrumb"
