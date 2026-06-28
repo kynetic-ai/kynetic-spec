@@ -13,6 +13,20 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-28T22:53:34.137Z
     completed_at: 2026-06-28T22:53:34.137Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide lint passed with 0 errors (663 existing warnings). Focused changed-file lint
+      also passed: npx oxlint packages/web-ui/src/lib/api.ts
+      packages/web-ui/src/lib/spec-workspace/coverage-resolution.ts
+      packages/web-ui/src/routes/specs/+page.svelte tests/web-ui/coverage-resolution-api.test.ts
+      tests/web-ui/spec-workspace-coverage-resolution.test.ts reported 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-28T22:53:47.204Z
+    completed_at: 2026-06-28T22:53:47.204Z
 events:
   - _ulid: 01KW867CB4A0FBGR51EEM942PC
     actor: Jacob Chapel
@@ -34,6 +48,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-28T22:53:34.502Z
+  - _ulid: 01KW870QHQDY84D0M7CJBF784M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-28T22:53:47.447Z
 examined_commit: 9ba0efbbd15db6303fae955a58757c9f50af9972
 external_links: []
 lifecycle_state: open
@@ -46,5 +67,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T22:39:56.773Z
-updated_at: 2026-06-28T22:53:34.137Z
+updated_at: 2026-06-28T22:53:47.204Z
 notes: []
