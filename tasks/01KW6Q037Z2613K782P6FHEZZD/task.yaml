@@ -71,6 +71,7 @@ tags:
   - specs
   - coverage
 vcs_refs: []
+review_ref: "@01KW6T7E9AQF79YT82GT627AG5"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-unified-spec-workspace-projection-api/01kw6q03
@@ -121,6 +122,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-28T09:44:41.505Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KW6T7E9AQF79YT82GT627AG5"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-28T09:51:04.027Z
 resource_refs:
   - git_commit: null
     git_path: null
