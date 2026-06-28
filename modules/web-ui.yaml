@@ -6778,7 +6778,7 @@ features:
       payloads, captions, and resolution panels.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on:
       - "@ui-breadcrumb"
       - "@ui-view-header"
