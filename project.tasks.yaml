@@ -33404,7 +33404,7 @@
   type: task
   spec_ref: "@unified-spec-workspace-data-projection"
   plan_ref: "@plan-unified-spec-workspace"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 1
@@ -33419,7 +33419,7 @@
   todos_count: 0
   created_at: 2026-06-28T08:54:35.007Z
   started_at: 2026-06-28T10:09:35.852Z
-  submitted_at: 2026-06-28T09:44:41.504Z
+  submitted_at: 2026-06-28T10:27:37.681Z
   automation: eligible
 - _ulid: 01KW6Q03KGA93343F9SQJKSA0R
   slugs:
