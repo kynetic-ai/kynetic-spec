@@ -13858,11 +13858,11 @@ workspaces:
     canonical_branch: dispatch/task/task-unified-spec-workspace-shell-navigation/01kw6q03
     canonical_branch_head: 38042adb1c01d1833a7456df7e60d7c9936ad225
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-06-28T16:32:22.620Z
+      updated_at: 2026-06-28T16:38:35.960Z
     health:
       status: healthy
       issues: []
@@ -13876,17 +13876,17 @@ workspaces:
       target_branch: feat/ui-redesign
       target_commit: 1ee439998e583e57b4b5c43025473cb5290e97a2
       updated_at: 2026-06-28T16:32:22.620Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: feat/ui-redesign
     task_id: 01KW6Q03KGA93343F9SQJKSA0R
     task_ref: "@01KW6Q03KGA93343F9SQJKSA0R"
     task_slug: task-unified-spec-workspace-shell-navigation
     timestamps:
-      closed_at: null
+      closed_at: 2026-06-28T16:38:35.960Z
       last_active_at: 2026-06-28T16:13:21.351Z
       last_reconciled_at: 2026-06-28T16:37:45.022Z
       created_at: 2026-06-28T11:45:42.317Z
-      updated_at: 2026-06-28T16:37:45.022Z
+      updated_at: 2026-06-28T16:38:35.960Z
     workspace_id: dispatch-workspace-01KW6Q03KGA93343F9SQJKSA0R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
