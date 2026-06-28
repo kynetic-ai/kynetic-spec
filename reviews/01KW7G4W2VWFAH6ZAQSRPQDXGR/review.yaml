@@ -91,6 +91,18 @@ checks:
     runner: kspec
     created_at: 2026-06-28T16:30:26.355Z
     completed_at: 2026-06-28T16:30:26.355Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: tests/e2e/items.spec.ts -g 'Spec Workspace' ran 12/12 passed;
+      tests/e2e/plans.spec.ts -g 'View Specs link navigates to specs page filtered by plan' ran 1/1
+      passed. Both included production-style build:e2e."
+    name: focused e2e specs/plans
+    required: true
+    runner: npm run test:e2e
+    created_at: 2026-06-28T16:30:32.189Z
+    completed_at: 2026-06-28T16:30:32.189Z
 events:
   - _ulid: 01KW7G4W2VV9AZC7TDQJFB1TR7
     actor: Jacob Chapel
@@ -161,6 +173,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-06-28T16:30:26.617Z
+  - _ulid: 01KW7H2ZG86M4F151EX8QZA8E8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused e2e specs/plans
+    timestamp: 2026-06-28T16:30:32.457Z
 examined_commit: 38042adb1c01d1833a7456df7e60d7c9936ad225
 external_links: []
 lifecycle_state: open
@@ -173,5 +192,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T16:14:05.915Z
-updated_at: 2026-06-28T16:30:26.355Z
+updated_at: 2026-06-28T16:30:32.189Z
 notes: []
