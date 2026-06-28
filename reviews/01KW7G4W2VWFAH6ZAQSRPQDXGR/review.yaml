@@ -197,6 +197,13 @@ events:
       status: pass
       name: diff whitespace
     timestamp: 2026-06-28T16:30:38.229Z
+  - _ulid: 01KW7H3XHRENS2Z3A9DJ4ERCS4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW7H3X96S33KDVTPRDDE6T1J
+    timestamp: 2026-06-28T16:31:03.224Z
 examined_commit: 38042adb1c01d1833a7456df7e60d7c9936ad225
 external_links: []
 lifecycle_state: open
@@ -206,8 +213,52 @@ subject:
   content_hash: ""
   ref: "@01KW6Q03KGA93343F9SQJKSA0R"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW7H3X96S33KDVTPRDDE6T1J
+    entries:
+      - _ulid: 01KW7H3X97Z9J42RMHCEZXYPSK
+        author: Jacob Chapel
+        body: >-
+          Review evidence log:
+
+
+          Files read: kspec-agents.md; .agents/skills/svelte-5/SKILL.md;
+          packages/web-ui/src/routes/specs/+page.svelte;
+          packages/web-ui/src/lib/components/SpecWorkspaceRows.svelte;
+          packages/web-ui/src/lib/api.ts; packages/web-ui/src/lib/api-static.ts;
+          packages/web-ui/src/lib/query/keys.ts; packages/daemon/src/routes/spec-workspace.ts;
+          tests/e2e/items.spec.ts; tests/e2e/plans.spec.ts; tests/daemon-api/spec-workspace.test.ts;
+          tests/spec-workspace-static.test.ts; prior review @01KW7DSJ19WPJ1HDHXZBVNSA54; spec items
+          @unified-spec-workspace-navigation, @spec-workspace-delivery-quality, @web-dashboard,
+          @ui-url-panel-state.
+
+
+          Commands run: kspec task get; kspec review for-task/get/add/open; git diff
+          --stat/name-status/patch; rg searches for AC annotations, direct history APIs,
+          source-scanning tests, and old ItemTree/ItemDetail references; kspec validate
+          --refs/--alignment/--completeness --warnings-ok; npm run format:check; npm run lint --
+          --quiet; npx oxlint on changed TS/test files; npm run typecheck; npm test; git diff
+          --check; npm run test:e2e -- tests/e2e/items.spec.ts -g "Spec Workspace"; npm run test:e2e
+          -- tests/e2e/plans.spec.ts -g "View Specs link navigates to specs page filtered by plan".
+
+
+          Claims verified: prior cycle's missing @spec-workspace-delivery-quality
+          ac-url-state-via-goto annotation is now a behavioral E2E annotation in
+          tests/e2e/items.spec.ts; /specs URL mutations use SvelteKit goto() or links with no direct
+          history APIs; legacy /specs?ref= opens focused workspace pages; plan-filtered /specs?plan=
+          narrows tree contents; node/criterion URLs reload; expanded branches survive browser back;
+          row-body expand and title/open navigation are separate controls; keyboard users can reach
+          named expand/open controls; no page-level horizontal scroll at mobile width.
+
+
+          Categories searched: correctness, URL compatibility, accessibility/keyboard reachability,
+          mobile overflow, static export fallback, plan filtering, linked sessions/work, test
+          quality, source-scanning test shortcuts, direct history API regressions, AC coverage, and
+          integration with TanStack query/static API split. Shared/package guidance surfaces
+          touched: none. Findings: none.
+        created_at: 2026-06-28T16:31:02.951Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-28T16:14:05.915Z
-updated_at: 2026-06-28T16:30:37.961Z
+updated_at: 2026-06-28T16:31:02.951Z
 notes: []
