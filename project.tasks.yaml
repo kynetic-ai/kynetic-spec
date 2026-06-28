@@ -33528,3 +33528,18 @@
   todos_count: 0
   created_at: 2026-06-28T08:54:36.878Z
   automation: eligible
+- _ulid: 01KW7B56RMXJNRKW8TDRH6STZQ
+  slugs: []
+  title: Fix session-context E2E status label assertion
+  type: bug
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 3
+  tags:
+    - web-ui
+    - e2e
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-06-28T14:46:53.972Z
+  automation: eligible

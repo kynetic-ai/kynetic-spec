@@ -1,0 +1,29 @@
+_ulid: 01KW7B56RMXJNRKW8TDRH6STZQ
+slugs: []
+title: Fix session-context E2E status label assertion
+type: bug
+description: "During review of @01KW6Q03KGA93343F9SQJKSA0R, running npm run test:e2e --
+  tests/e2e/items.spec.ts tests/e2e/session-context.spec.ts failed before the spec-detail session
+  assertion. The failing test was tests/e2e/session-context.spec.ts:129 ('task detail lists related
+  sessions and links to filtered sessions view'): it expected row.first() to contain lowercase
+  'completed', but the task related-sessions UI renders the shared StatusBadge label 'Completed'
+  (received text: '● Completed session- 5m 0s Started 3mo'). The files involved in that task-detail
+  path were not changed by @01KW6Q03KGA93343F9SQJKSA0R, and the focused spec-detail test passed
+  separately with npm run test:e2e -- tests/e2e/session-context.spec.ts -g 'spec detail lists
+  related sessions'. Update the E2E assertion to match the accessible/user-visible status label or
+  assert the status badge state directly, then run the affected Playwright file."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - web-ui
+  - e2e
+vcs_refs: []
+created_at: 2026-06-28T14:46:53.972Z
+todos: []
+automation: eligible
