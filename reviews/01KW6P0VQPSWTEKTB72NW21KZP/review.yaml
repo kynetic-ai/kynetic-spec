@@ -2,7 +2,19 @@ _ulid: 01KW6P0VQPSWTEKTB72NW21KZP
 slugs: []
 title: "Plan re-review: Unified Spec Workspace (UX resources)"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Dry-run of /home/chapel/Projects/kynetic-spec/plans/ui-redesign-unified-spec-workspace.md
+      into @plan-unified-spec-workspace succeeded with no mutations; stored draft would update
+      content from source and derive was not run.
+    name: plan import dry-run
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-06-28T08:38:36.550Z
+    completed_at: 2026-06-28T08:38:36.550Z
 events:
   - _ulid: 01KW6P0VQGVWBE9Q9DJ7VNHFD6
     actor: Jacob Chapel
@@ -17,6 +29,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-28T08:38:30.994Z
+  - _ulid: 01KW6P2VHCRZRE9NW0TD6M3X50
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: plan import dry-run
+    timestamp: 2026-06-28T08:38:36.844Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -29,5 +48,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T08:37:31.510Z
-updated_at: 2026-06-28T08:38:30.709Z
+updated_at: 2026-06-28T08:38:36.550Z
 notes: []
