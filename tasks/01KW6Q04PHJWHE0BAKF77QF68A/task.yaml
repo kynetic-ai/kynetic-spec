@@ -42,8 +42,11 @@ description: |
 spec_ref: "@spec-workspace-coverage-resolution-panels"
 plan_ref: "@plan-unified-spec-workspace"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to feat/ui-redesign via detached reviewer merge helper at d923f64cdd3e.
+  Reviewed coverage resolution panels, API client wiring, stale-conflict refresh, and spec workspace
+  invalidation; all required review gates passed.
 depends_on:
   - "@task-spec-workspace-coverage-presentation"
 context: []
@@ -169,6 +172,21 @@ history:
         previous: "@01KW867CB5K6X8VG8ZGEHXXPQN"
     command: review-link
     timestamp: 2026-06-28T23:27:25.838Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to feat/ui-redesign via detached reviewer merge helper at d923f64cdd3e. Reviewed
+          coverage resolution panels, API client wiring, stale-conflict refresh, and spec workspace
+          invalidation; all required review gates passed.
+        previous: null
+      completed_at:
+        new: 2026-06-28T23:41:59.406Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-06-28T23:41:59.414Z
 resource_refs:
   - git_commit: null
     git_path: null
@@ -205,5 +223,6 @@ resource_refs:
 created_at: 2026-06-28T08:54:36.497Z
 started_at: 2026-06-28T23:00:36.576Z
 submitted_at: 2026-06-28T23:20:22.237Z
+completed_at: 2026-06-28T23:41:59.406Z
 todos: []
 automation: eligible
