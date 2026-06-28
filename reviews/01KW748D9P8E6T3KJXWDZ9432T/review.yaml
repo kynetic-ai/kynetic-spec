@@ -274,6 +274,12 @@ events:
     payload:
       thread_ulid: 01KW757QQMAFWB3AXZKFQM87KR
     timestamp: 2026-06-28T13:33:58.678Z
+  - _ulid: 01KW76ZVSXW5E5F2Y97M56SH4C
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KW757QQMAFWB3AXZKFQM87KR
+    timestamp: 2026-06-28T13:34:04.605Z
 examined_commit: 5aa1f6fffd8e953853b1be0dc984297c3a616f6a
 external_links: []
 lifecycle_state: closed
@@ -383,6 +389,8 @@ threads:
           both the module branch and nested feature branch remain visible after returning."
         created_at: 2026-06-28T13:33:58.395Z
     kind: blocker
+    resolved_at: 2026-06-28T13:34:04.359Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KW757TT3E5PE164GAKD5RRY7
     anchor:
       type: code
@@ -430,5 +438,5 @@ verdicts:
     role: reviewer
     created_at: 2026-06-28T13:03:35.183Z
 created_at: 2026-06-28T12:46:18.934Z
-updated_at: 2026-06-28T13:33:58.395Z
+updated_at: 2026-06-28T13:34:04.359Z
 notes: []
