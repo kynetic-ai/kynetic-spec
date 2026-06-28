@@ -78,6 +78,19 @@ checks:
     runner: code/test inspection
     created_at: 2026-06-28T08:39:05.329Z
     completed_at: 2026-06-28T08:39:05.329Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Handoff Resources says screenshots/reference source are behavioral references, not
+      pixel-perfect styling; lines around attached reference source say React wireframes are sample
+      code only and implementation must use existing SvelteKit conventions. Delivery quality ACs
+      require Svelte 5/TanStack/api-static/design-system conventions.
+    name: UX reference vs Svelte implementation boundary
+    required: true
+    runner: plan markdown inspection
+    created_at: 2026-06-28T08:39:10.941Z
+    completed_at: 2026-06-28T08:39:10.941Z
 events:
   - _ulid: 01KW6P0VQGVWBE9Q9DJ7VNHFD6
     actor: Jacob Chapel
@@ -134,6 +147,13 @@ events:
       status: pass
       name: resource_refs derivation semantics
     timestamp: 2026-06-28T08:39:05.604Z
+  - _ulid: 01KW6P3X2C27C68TCX287VNW1E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: UX reference vs Svelte implementation boundary
+    timestamp: 2026-06-28T08:39:11.180Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -146,5 +166,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T08:37:31.510Z
-updated_at: 2026-06-28T08:39:05.329Z
+updated_at: 2026-06-28T08:39:10.941Z
 notes: []
