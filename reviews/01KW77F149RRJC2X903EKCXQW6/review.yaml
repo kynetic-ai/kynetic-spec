@@ -186,6 +186,13 @@ events:
       kind: blocker
       thread_ulid: 01KW78EE7T80E2J93HKF4SRERK
     timestamp: 2026-06-28T13:59:31.062Z
+  - _ulid: 01KW78F1TCH6MRFHAVEKY8G1RB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW78F1JB8ZT6MEMX8H53CB4V
+    timestamp: 2026-06-28T13:59:50.860Z
 examined_commit: 19ad0f44ea3ecddcd0be3a8faeecc16f8ad7036f
 external_links: []
 lifecycle_state: open
@@ -222,7 +229,38 @@ threads:
           the selectors intentionally change while preserving the behavior."
         created_at: 2026-06-28T13:59:30.811Z
     kind: blocker
+  - _ulid: 01KW78F1JB8ZT6MEMX8H53CB4V
+    entries:
+      - _ulid: 01KW78F1JB2H1TPD20QBB6FREN
+        author: Jacob Chapel
+        body: "Review evidence log: Files read: kspec-agents.md;
+          packages/daemon/src/routes/spec-workspace.ts;
+          packages/web-ui/src/routes/specs/+page.svelte;
+          packages/web-ui/src/lib/components/SpecWorkspaceRows.svelte; tests/e2e/items.spec.ts;
+          tests/e2e/fixtures/modules/core.yaml; tests/e2e/session-context.spec.ts;
+          tests/e2e/file-watcher.spec.ts; tests/e2e/navigation.spec.ts;
+          packages/web-ui/src/routes/items/+page.svelte;
+          packages/web-ui/src/lib/components/ItemTree.svelte;
+          packages/web-ui/src/lib/components/ItemDetail.svelte. Commands run: git status --short
+          --branch; git diff --stat and file diffs against
+          1ee439998e583e57b4b5c43025473cb5290e97a2..19ad0f44ea3ecddcd0be3a8faeecc16f8ad7036f; kspec
+          task get @01KW6Q03KGA93343F9SQJKSA0R; kspec review get @01KW748D9P8E6T3KJXWDZ9432T; kspec
+          item get @unified-spec-workspace-navigation; kspec item get
+          @spec-workspace-delivery-quality; kspec item get @task-spec-session-context; rg
+          selector/history/AC/API searches; npm run test:e2e -- tests/e2e/session-context.spec.ts -g
+          'spec detail lists related sessions'; npm run format:check; npm run lint -- --quiet; npx
+          oxlint changed files; npm run typecheck; npm test; kspec validate --refs --warnings-ok;
+          kspec validate --alignment --warnings-ok; kspec validate --completeness --warnings-ok.
+          Claims verified: prior review fixes for dashboard detail/AC row/collapse/back/eviction
+          were checked in code and tests; URL-state changes use goto or links, not direct history
+          APIs; the related-sessions regression was reproduced in Playwright and tied to
+          @task-spec-session-context. Categories searched: correctness, regression risk,
+          accessibility controls, URL/back behavior, test quality, AC coverage, integration with
+          existing /items and session workflows, horizontal overflow. Shared/package guidance
+          surfaces touched: none."
+        created_at: 2026-06-28T13:59:50.603Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-28T13:42:21.577Z
-updated_at: 2026-06-28T13:59:30.811Z
+updated_at: 2026-06-28T13:59:50.603Z
 notes: []
