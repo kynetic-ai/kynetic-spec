@@ -13,6 +13,18 @@ checks:
     runner: npm run format:check
     created_at: 2026-06-28T17:23:11.862Z
     completed_at: 2026-06-28T17:23:11.862Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint completed with 0 errors under --quiet; reported existing warning baseline only.
+      Focused oxlint on packages/web-ui/src/routes/specs/+page.svelte and tests/e2e/items.spec.ts
+      found 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-28T17:23:22.963Z
+    completed_at: 2026-06-28T17:23:22.963Z
 events:
   - _ulid: 01KW7K6J7J42RK550E30H2J1PG
     actor: Jacob Chapel
@@ -34,6 +46,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-06-28T17:23:12.117Z
+  - _ulid: 01KW7M3QYN2TV8S7YP7WK3MEP5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-28T17:23:23.221Z
 examined_commit: e5bea5bee0d91c2ca3ace2156b1b87cb1ed72bea
 external_links: []
 lifecycle_state: open
@@ -46,5 +65,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-06-28T17:07:27.091Z
-updated_at: 2026-06-28T17:23:11.862Z
+updated_at: 2026-06-28T17:23:22.963Z
 notes: []
