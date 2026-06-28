@@ -179,6 +179,13 @@ events:
       status: fail
       name: focused e2e session context
     timestamp: 2026-06-28T13:59:11.181Z
+  - _ulid: 01KW78EEFPNC9G3JYGYHE42JVC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KW78EE7T80E2J93HKF4SRERK
+    timestamp: 2026-06-28T13:59:31.062Z
 examined_commit: 19ad0f44ea3ecddcd0be3a8faeecc16f8ad7036f
 external_links: []
 lifecycle_state: open
@@ -188,8 +195,34 @@ subject:
   content_hash: ""
   ref: "@01KW6Q03KGA93343F9SQJKSA0R"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW78EE7T80E2J93HKF4SRERK
+    anchor:
+      type: code
+      commit: 19ad0f44ea3ecddcd0be3a8faeecc16f8ad7036f
+      line_end: 523
+      line_start: 488
+      path: packages/web-ui/src/routes/specs/+page.svelte
+      side: head
+    entries:
+      - _ulid: 01KW78EE7V003JQYJ1MTT6J06Z
+        author: Jacob Chapel
+        body: "MUST-FIX: The replacement workspace no longer exposes the spec related-sessions section or
+          the spec-filtered 'View all sessions' navigation. @task-spec-session-context
+          ac-spec-detail-sessions and ac-session-list-spec-filter require spec detail views to list
+          related sessions and let users navigate to /sessions?spec_ref=@spec-slug. Because /items
+          now redirects to /specs, this route is the active spec detail surface, but
+          linkedWorkSection only renders generic per-session rows and no item-related-sessions
+          section or view-all affordance. I verified the regression by running npm run test:e2e --
+          tests/e2e/session-context.spec.ts -g 'spec detail lists related sessions': it fails at
+          tests/e2e/session-context.spec.ts:194 because
+          getByTestId('spec-detail-panel').getByTestId('item-related-sessions') is not found.
+          Impact: users lose the existing spec-to-sessions workflow after the route replacement.
+          Restore the Sessions section/view-all behavior in the workspace, and update tests only if
+          the selectors intentionally change while preserving the behavior."
+        created_at: 2026-06-28T13:59:30.811Z
+    kind: blocker
 verdicts: []
 created_at: 2026-06-28T13:42:21.577Z
-updated_at: 2026-06-28T13:59:10.934Z
+updated_at: 2026-06-28T13:59:30.811Z
 notes: []
