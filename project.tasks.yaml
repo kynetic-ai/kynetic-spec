@@ -33527,7 +33527,7 @@
   type: task
   spec_ref: "@spec-workspace-delivery-quality"
   plan_ref: "@plan-unified-spec-workspace"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-spec-workspace-resolution-panels"
@@ -33541,6 +33541,7 @@
   todos_count: 0
   created_at: 2026-06-28T08:54:36.878Z
   started_at: 2026-06-28T23:43:50.572Z
+  submitted_at: 2026-06-29T00:00:08.577Z
   automation: eligible
 - _ulid: 01KW7B56RMXJNRKW8TDRH6STZQ
   slugs: []
