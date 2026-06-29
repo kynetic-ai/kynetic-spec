@@ -77210,7 +77210,7 @@ runs:
     started_at: 2026-06-28T23:42:50.681Z
     completed_at: 2026-06-28T23:45:52.379Z
   - _ulid: 01KW8AVT7ACHS5W1RDBD083H79
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -77261,7 +77261,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-06-29T00:02:52.653Z
-        completed_at: 2026-06-29T00:02:52.653Z
+        completed_at: 2026-06-29T00:03:17.887Z
+        notes: "Captured success observation @01KW8AZP. No friction observation or inbox item created: npm
+          test teardown hang is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run, and the handoff-resource
+          path issue was incidental/low impact."
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-29T00:01:00.650Z
+    completed_at: 2026-06-29T00:03:17.887Z
