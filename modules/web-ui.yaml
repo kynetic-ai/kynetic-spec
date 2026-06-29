@@ -7295,7 +7295,7 @@ features:
               experience without leaving a preview-only half surface.
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
             depends_on:
               - "@ui-data-freshness"
               - "@ui-url-panel-state"
