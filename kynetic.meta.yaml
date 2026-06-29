@@ -23671,6 +23671,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect"
     created_at: 2026-06-28T23:45:30.364Z
+  - _ulid: 01KW8AZP14BKDS30E65CR3CCYC
+    type: success
+    content: For UI delivery-quality tasks, first map the delivery spec to existing behavioral coverage,
+      then add one daemon-backed vertical browser workflow as proof. This closes AC coverage with
+      low production-code risk and gives reviewers a clear screenshot-to-surface verification path.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-29T00:03:07.429Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
