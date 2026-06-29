@@ -153,6 +153,7 @@ const snapshot: KspecSnapshot = {
 
 describe("spec workspace static projections", () => {
   // AC: @unified-spec-workspace-data-projection ac-static-readonly-projection
+  // AC: @spec-workspace-delivery-quality ac-static-export-build
   // AC: @unified-spec-workspace-data-projection ac-bounded-root-projection
   // AC: @unified-spec-workspace-data-projection ac-node-detail-projection
   it("serves capped root and node projections from a static snapshot", () => {
@@ -206,6 +207,7 @@ describe("spec workspace static projections", () => {
 
   // AC: @unified-spec-workspace-data-projection ac-ac-detail-projection
   // AC: @unified-spec-workspace-data-projection ac-static-readonly-projection
+  // AC: @spec-workspace-delivery-quality ac-static-export-build
   it("serves criterion detail with static coverage evidence and unavailable dynamic classes", () => {
     modeState.snapshot = snapshot;
 
