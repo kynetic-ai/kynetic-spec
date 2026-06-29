@@ -28853,3 +28853,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-06-28T23:27:23.455Z
     updated_at: 2026-06-28T23:41:32.435Z
+  - _ulid: 01KW8B3K549D8AWPB3YBFV3N01
+    slugs: []
+    title: Review workspace quality verification
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 8ed3eadf14ee50ed81167ab4f645884c320edc73
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KW6Q052EJ7M5WHBF4W8AHSW8"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-06-29T00:05:15.556Z

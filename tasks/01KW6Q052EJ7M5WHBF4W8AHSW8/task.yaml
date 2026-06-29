@@ -59,6 +59,7 @@ tags:
   - accessibility
   - static
 vcs_refs: []
+review_ref: "@01KW8B3K549D8AWPB3YBFV3N01"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-spec-workspace-quality-verification/01kw6q05
@@ -109,6 +110,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-06-29T00:00:08.577Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KW8B3K549D8AWPB3YBFV3N01"
+        previous: null
+    command: review-link
+    timestamp: 2026-06-29T00:05:17.977Z
 resource_refs:
   - git_commit: null
     git_path: null
