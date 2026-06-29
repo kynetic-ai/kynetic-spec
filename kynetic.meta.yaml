@@ -23680,6 +23680,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-29T00:03:07.429Z
+  - _ulid: 01KW8C5F954DQ2YMJ9FG8QQ955
+    type: success
+    content: During detached review full-suite verification, wait through long quiet npm test intervals
+      when the runner process is still alive and prior output is green; checking the process tree
+      before interrupting avoided a false teardown-hang classification and produced clean aggregate
+      evidence (2926 suites passed, 11132 tests passed).
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-06-29T00:23:45.701Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
