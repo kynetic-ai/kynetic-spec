@@ -2,7 +2,105 @@ _ulid: 01KW8B3K549D8AWPB3YBFV3N01
 slugs: []
 title: Review workspace quality verification
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All matched files use the correct format. Finished in 431ms on 1131 files.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-06-29T00:20:01.742Z
+    completed_at: 2026-06-29T00:20:01.742Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint reported 0 errors with existing warning baseline; focused changed-file lint
+      reported 0 warnings and 0 errors for tests/e2e/items.spec.ts,
+      tests/spec-workspace-static.test.ts, tests/web-ui/coverage-resolution-api.test.ts,
+      tests/web-ui/ws-cache-invalidation.test.ts.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-06-29T00:20:04.841Z
+    completed_at: 2026-06-29T00:20:04.841Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and root tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-06-29T00:20:07.836Z
+    completed_at: 2026-06-29T00:20:07.836Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Test runner completed cleanly: 2926 suites passed; 11132 tests passed, 3 skipped; full
+      log /tmp/kspec-test-cache/01KW8B1Z30VBTRDP8NGWXKZ41T/6deba1c5197aedd8.log."
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-06-29T00:20:10.917Z
+    completed_at: 2026-06-29T00:20:10.917Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with existing reference warnings allowed by --warnings-ok. Schema OK;
+      references OK.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-06-29T00:20:14.034Z
+    completed_at: 2026-06-29T00:20:14.034Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with existing alignment warning baseline allowed by --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-06-29T00:20:17.238Z
+    completed_at: 2026-06-29T00:20:17.238Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with existing completeness warning baseline allowed by --warnings-ok.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-06-29T00:20:20.459Z
+    completed_at: 2026-06-29T00:20:20.459Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "E2E build completed successfully. Targeted Playwright workflow passed: 1 passed in 2.3s."
+    name: browser workflow proof
+    required: true
+    runner: npm run build:e2e; npx playwright test tests/e2e/items.spec.ts -g daemon-backed browser
+      workflow
+    created_at: 2026-06-29T00:20:23.454Z
+    completed_at: 2026-06-29T00:20:23.454Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Focused runner passed 16 suites / 50 tests covering changed static, coverage resolution
+      API, and WebSocket invalidation tests.
+    name: focused workspace tests
+    required: true
+    runner: npm test -- --run tests/spec-workspace-static.test.ts
+      tests/web-ui/coverage-resolution-api.test.ts tests/web-ui/ws-cache-invalidation.test.ts
+    created_at: 2026-06-29T00:20:26.754Z
+    completed_at: 2026-06-29T00:20:26.754Z
 events:
   - _ulid: 01KW8B3K54MGP6422TZVH8TTKS
     actor: Jacob Chapel
@@ -17,6 +115,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-06-29T00:05:34.802Z
+  - _ulid: 01KW8BYMT1XNJQ4YDS4SZP5Y3Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-06-29T00:20:01.985Z
+  - _ulid: 01KW8BYQV4TNEXKYA6H1X749EF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-06-29T00:20:05.092Z
+  - _ulid: 01KW8BYTSGGQVQT2M67KNZSJZ3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-06-29T00:20:08.112Z
+  - _ulid: 01KW8BYXRBFBQJD5WRFKKZGBFC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-06-29T00:20:11.147Z
+  - _ulid: 01KW8BZ0WAR05XVDE9MYFSN8GH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-06-29T00:20:14.346Z
+  - _ulid: 01KW8BZ3YS3QA8NZBBFXR4G579
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-06-29T00:20:17.497Z
+  - _ulid: 01KW8BZ7384NQNQ8TC42DFBSKY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-06-29T00:20:20.712Z
+  - _ulid: 01KW8BZA10CQAN9C06VVJW3WMP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: browser workflow proof
+    timestamp: 2026-06-29T00:20:23.712Z
+  - _ulid: 01KW8BZD9YEKATKEZ80DY9P4M9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused workspace tests
+    timestamp: 2026-06-29T00:20:27.070Z
+  - _ulid: 01KW8BZHBP4G8X6ZQRSAVBZFTN
+    actor: codex-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KW8BZH42TQJ9JN72MPSNYNWC
+    timestamp: 2026-06-29T00:20:31.222Z
 examined_commit: 8ed3eadf14ee50ed81167ab4f645884c320edc73
 external_links: []
 lifecycle_state: open
@@ -26,8 +194,26 @@ subject:
   content_hash: ""
   ref: "@01KW6Q052EJ7M5WHBF4W8AHSW8"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KW8BZH42TQJ9JN72MPSNYNWC
+    entries:
+      - _ulid: 01KW8BZH4206YR4M0VKZWRY2JF
+        author: codex-reviewer
+        body: "Review evidence log (non-finding): Files read: kspec-agents.md, task
+          @01KW6Q052EJ7M5WHBF4W8AHSW8, @spec-workspace-delivery-quality, tests/e2e/items.spec.ts,
+          tests/spec-workspace-static.test.ts, tests/web-ui/coverage-resolution-api.test.ts,
+          tests/web-ui/ws-cache-invalidation.test.ts, and relevant /specs URL mutation and
+          resolution-panel search results. Commands run: git diff/stat/name-only, rg searches for AC
+          annotations/source-scanning/URL mutation/resolution behavior, git diff --check,
+          format/lint/typecheck, kspec validations, focused npm tests, E2E build, targeted
+          Playwright workflow, full npm test. Claims verified: worker claim that tests are
+          behavioral and gates pass; full npm test completed cleanly rather than requiring hang
+          triage. Categories searched: correctness/spec alignment, test quality, source-scanning
+          risk, URL state integration, static/read-only behavior, WebSocket invalidation, browser
+          workflow coverage, horizontal-scroll regression, and generated/dirty-worktree risk."
+        created_at: 2026-06-29T00:20:30.978Z
+    kind: nit
 verdicts: []
 created_at: 2026-06-29T00:05:15.556Z
-updated_at: 2026-06-29T00:05:34.481Z
+updated_at: 2026-06-29T00:20:30.978Z
 notes: []
