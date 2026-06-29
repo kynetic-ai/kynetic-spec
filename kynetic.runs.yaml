@@ -77211,7 +77211,7 @@ runs:
     completed_at: 2026-06-28T23:45:52.379Z
   - _ulid: 01KW8AVT7ACHS5W1RDBD083H79
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77226,7 +77226,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-06-29T00:01:48.118Z
-        completed_at: 2026-06-29T00:01:48.118Z
+        completed_at: 2026-06-29T00:01:59.288Z
+        notes: "Friction: full npm test showed the known green-suite teardown hang pattern. Search found
+          existing tracking at @task-investigate-npm-test-teardown-hang-after-green-suite-run, so
+          this session should not create a duplicate. Minor incidental friction: handoff resources
+          are surfaced through kspec task/plan metadata rather than a plain handoff/ directory, but
+          the task metadata was sufficient and this did not block work."
+      - status: completed
+        step_index: 2
+        started_at: 2026-06-29T00:01:59.288Z
+        completed_at: 2026-06-29T00:01:59.288Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-06-29T00:01:00.650Z
