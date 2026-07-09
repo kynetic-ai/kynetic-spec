@@ -23690,6 +23690,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-06-29T00:23:45.701Z
+  - _ulid: 01KX2D50H0QVT5FZY08P7M0NF9
+    type: success
+    content: For session event normalization changes, pairing focused accumulator tests with display
+      parsing tests and reusing shared field extraction kept live and historical behavior aligned
+      while preserving phased tool-call behavior.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-09T03:01:14.400Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
