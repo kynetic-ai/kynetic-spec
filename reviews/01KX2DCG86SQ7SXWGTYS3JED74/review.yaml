@@ -159,6 +159,13 @@ events:
       status: pass
       name: focused terminal tool-call tests
     timestamp: 2026-07-09T03:18:53.905Z
+  - _ulid: 01KX2E5VNB5B48V5HJFJX3P4YV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KX2E5VDKBCCE4Q2CNWH513MA
+    timestamp: 2026-07-09T03:19:10.764Z
 examined_commit: f6ed97cca4a4458bbb9d622aebc37c6f3764de04
 external_links: []
 lifecycle_state: open
@@ -168,8 +175,31 @@ subject:
   content_hash: ""
   ref: "@01KX2BEE6D5RS57244NA7QG1J2"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KX2E5VDKBCCE4Q2CNWH513MA
+    entries:
+      - _ulid: 01KX2E5VDM46Y3GXFRFFNYKW79
+        author: Jacob Chapel
+        body: "Evidence log: Files read: src/agent-runtime/session-event-accumulator.ts;
+          src/agent-runtime/session-event-fields.ts;
+          packages/web-ui/src/lib/components/session/session-utils.ts;
+          packages/web-ui/src/lib/components/session/ToolCallView.svelte;
+          tests/session-event-accumulator.test.ts; tests/session-event-streaming.test.ts; relevant
+          existing tests in tests/web-ui-session-stream.test.ts. Commands run: kspec task get
+          @01KX2BEE6D5RS57244NA7QG1J2; kspec item get @ws-session-event-streaming; kspec item get
+          @trait-websocket-protocol; git diff dev...HEAD; rg AC annotations; npm test --
+          tests/session-event-accumulator.test.ts tests/session-event-streaming.test.ts --fresh; npm
+          run format:check; npm run lint -- --quiet; npx oxlint changed files; npm run typecheck;
+          npm test -- --fresh; kspec validate refs/alignment/completeness with --warnings-ok. Claims
+          verified: terminal initial completed/failed tool_call events emit live start+complete
+          without output, historical parser marks them terminal and sets resultSeq to the terminal
+          event seq, phased tool_call input/update tests still cover no duplicate/lost input.
+          Categories searched: correctness, edge cases around completed/failed and phased calls,
+          error handling/status mapping, test quality/AC annotations, integration with ToolCallView
+          output lookup. Shared/package guidance surfaces touched: none."
+        created_at: 2026-07-09T03:19:10.516Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-09T03:05:19.878Z
-updated_at: 2026-07-09T03:18:53.637Z
+updated_at: 2026-07-09T03:19:10.516Z
 notes: []
