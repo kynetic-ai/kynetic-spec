@@ -28877,7 +28877,7 @@ reviews:
     title: Review terminal ACP tool_call status
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 8
     examined_commit: f6ed97cca4a4458bbb9d622aebc37c6f3764de04
     lifecycle_state: open
     related_refs: []
@@ -28890,4 +28890,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-09T03:05:19.878Z
-    updated_at: 2026-07-09T03:05:48.584Z
+    updated_at: 2026-07-09T03:18:53.637Z
