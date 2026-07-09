@@ -15,3 +15,12 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-09T02:36:39.300Z
+  - _ulid: 01KX2C5YK6ZQWS2P8H1BBN6ARV
+    content: Implemented terminal initial ACP tool_call handling in the accumulator and historical
+      parser. One-shot completed/failed tool_call events now produce start+complete lifecycle events
+      for live consumers and terminal display blocks with resultSeq pointing at the original event
+      for HTTP playback/catch-up; phased tool_call input/update behavior remains covered by existing
+      tests.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-09T02:44:16.614Z
