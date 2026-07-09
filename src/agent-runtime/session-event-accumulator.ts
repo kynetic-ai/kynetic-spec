@@ -14,6 +14,12 @@
 
 import type { SessionUpdate } from "../acp/index.js";
 import type { SessionEventData } from "./session-event-types.js";
+import {
+  extractToolCallFields,
+  extractToolCallResult,
+  isPopulatedInput,
+  isTerminalToolCallStatus,
+} from "./session-event-fields.js";
 
 /** Maximum buffer size before forced flush (prevents unbounded memory growth). */
 const MAX_BUFFER_SIZE = 8 * 1024; // 8KB
@@ -189,14 +195,17 @@ export class SessionEventAccumulator {
         this.transitionMode(state, ctx, emit, "idle");
 
         // AC: @session-event-broadcast ac-tool-input-included
-        const toolCallId = update.toolCallId;
-        const toolName = update.title;
-        const toolInput = update.rawInput ?? null;
+        const fields = extractToolCallFields(update as unknown as Record<string, unknown>);
+        const result = extractToolCallResult(update as unknown as Record<string, unknown>);
+        const toolCallId = fields.toolCallId;
+        const toolName = fields.toolName;
+        const toolInput = fields.rawInput ?? null;
+        const startTime = Date.now();
 
         // Track for duration calculation
         state.activeToolCalls.set(toolCallId, {
           toolName,
-          startTime: Date.now(),
+          startTime,
         });
 
         emit({
@@ -206,33 +215,43 @@ export class SessionEventAccumulator {
           tool_name: toolName,
           tool_input: toolInput,
         } as SessionEventData);
+
+        // AC: @session-event-broadcast ac-terminal-tool-call-status
+        if (isTerminalToolCallStatus(result.status)) {
+          state.activeToolCalls.delete(toolCallId);
+          emit({
+            ...this.baseFields(ctx),
+            type: "tool_call_complete",
+            tool_call_id: toolCallId,
+            tool_name: toolName,
+            status: result.status,
+            duration_ms: Date.now() - startTime,
+          } as SessionEventData);
+        }
         break;
       }
 
       case "tool_call_update": {
-        const tcId = update.toolCallId;
+        const fields = extractToolCallFields(update as unknown as Record<string, unknown>);
+        const result = extractToolCallResult(update as unknown as Record<string, unknown>);
+        const tcId = fields.toolCallId;
         const tracked = state.activeToolCalls.get(tcId);
 
         // Emit tool_call_input when populated rawInput arrives (phased streaming)
         // AC: @ws-session-event-streaming ac-tool-input-update
-        if (
-          update.rawInput != null &&
-          typeof update.rawInput === "object" &&
-          Object.keys(update.rawInput as Record<string, unknown>).length > 0 &&
-          !(update.status === "completed" || update.status === "failed")
-        ) {
-          const toolName = tracked?.toolName ?? update.title ?? "";
+        if (isPopulatedInput(result.rawInput) && !isTerminalToolCallStatus(result.status)) {
+          const toolName = tracked?.toolName ?? fields.toolName;
           emit({
             ...this.baseFields(ctx),
             type: "tool_call_input",
             tool_call_id: tcId,
             tool_name: toolName,
-            tool_input: update.rawInput,
+            tool_input: result.rawInput,
           } as SessionEventData);
         }
 
         // Emit complete when status transitions to completed/failed
-        if (update.status && (update.status === "completed" || update.status === "failed")) {
+        if (isTerminalToolCallStatus(result.status)) {
           const durationMs = tracked ? Date.now() - tracked.startTime : 0;
           const toolName = tracked?.toolName ?? "";
           state.activeToolCalls.delete(tcId);
@@ -242,7 +261,7 @@ export class SessionEventAccumulator {
             type: "tool_call_complete",
             tool_call_id: tcId,
             tool_name: toolName,
-            status: update.status,
+            status: result.status,
             duration_ms: durationMs,
           } as SessionEventData);
         }

@@ -162,6 +162,10 @@ function extractToolCallResult(update: Record<string, unknown>): {
   return { rawOutput, status, isError, rawInput };
 }
 
+function isTerminalToolCallStatus(status: unknown): status is "completed" | "failed" {
+  return status === "completed" || status === "failed";
+}
+
 /**
  * Extract text content from an ACP SessionUpdate.
  *
@@ -271,15 +275,22 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
           }
         } else if (sessionUpdate === "tool_call") {
           const { toolCallId, toolName, rawInput } = extractToolCallFields(update);
+          const result = extractToolCallResult(update);
+          const terminalStatus = isTerminalToolCallStatus(result.status)
+            ? result.status
+            : undefined;
 
           const block: ToolCallBlock = {
             type: "tool_call",
             toolName,
             toolCallId,
             input: rawInput,
-            status: "running",
+            status: terminalStatus ?? "running",
             startedAt: event.ts,
+            completedAt: terminalStatus ? event.ts : undefined,
+            durationMs: terminalStatus ? 0 : undefined,
             seq: event.seq,
+            resultSeq: terminalStatus ? event.seq : undefined,
           };
 
           toolCalls.set(toolCallId, block);
@@ -294,7 +305,7 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
               existing.output = result.rawOutput;
               existing.resultSeq = event.seq;
             }
-            if (result.status === "completed" || result.status === "failed") {
+            if (isTerminalToolCallStatus(result.status)) {
               existing.status = result.status;
               existing.completedAt = event.ts;
               existing.durationMs = event.ts - existing.startedAt;

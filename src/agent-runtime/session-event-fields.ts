@@ -76,6 +76,13 @@ export function extractToolCallResult(update: Record<string, unknown>): {
 }
 
 /**
+ * Return true when a tool call status is terminal.
+ */
+export function isTerminalToolCallStatus(status: unknown): status is "completed" | "failed" {
+  return status === "completed" || status === "failed";
+}
+
+/**
  * Extract the tool name from event data, checking both direct fields
  * and _meta.claudeCode.toolName (used by older Claude Code adapters).
  */
