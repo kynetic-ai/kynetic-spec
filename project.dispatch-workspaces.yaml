@@ -705,12 +705,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-09T02:39:53.828Z
+      updated_at: 2026-07-09T02:40:03.212Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-09T02:39:53.828Z
+      updated_at: 2026-07-09T02:40:03.212Z
     integration:
       status: pending
       detail: null
@@ -718,7 +718,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: dev
-      updated_at: 2026-07-09T02:39:53.828Z
+      updated_at: 2026-07-09T02:40:03.212Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_id: 01KX2BEE6D5RS57244NA7QG1J2
@@ -727,9 +727,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: null
-      last_reconciled_at: 2026-07-09T02:39:53.828Z
+      last_reconciled_at: 2026-07-09T02:40:03.212Z
       created_at: 2026-07-09T02:39:53.828Z
-      updated_at: 2026-07-09T02:39:53.828Z
+      updated_at: 2026-07-09T02:40:03.212Z
     workspace_id: dispatch-workspace-01KX2BEE6D5RS57244NA7QG1J2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -738,5 +738,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-terminal-acp-tool-call-status/01kx2bee
         head: b5ac5f63daa9df98518b2da204bc3b103babd42d
-        last_seen_at: 2026-07-09T02:39:53.828Z
+        last_seen_at: 2026-07-09T02:40:03.212Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-terminal-acp-tool-call-status-01kx2bee
