@@ -131,8 +131,11 @@ description: >-
 spec_ref: "@session-event-broadcast"
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9 after approved review
+  @01KX2DCG. Implemented terminal initial ACP tool_call handling for completed/failed status in live
+  accumulator and historical session parsing, with AC-covered tests and all required gates passing.
 depends_on: []
 context: []
 priority: 2
@@ -192,8 +195,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-07-09T03:05:22.344Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9 after approved review @01KX2DCG.
+          Implemented terminal initial ACP tool_call handling for completed/failed status in live
+          accumulator and historical session parsing, with AC-covered tests and all required gates
+          passing.
+        previous: null
+      completed_at:
+        new: 2026-07-09T03:19:53.268Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-09T03:19:53.276Z
 created_at: 2026-07-09T02:31:26.156Z
 started_at: 2026-07-09T02:35:38.167Z
 submitted_at: 2026-07-09T02:58:44.025Z
+completed_at: 2026-07-09T03:19:53.268Z
 todos: []
 automation: eligible
