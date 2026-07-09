@@ -77323,7 +77323,7 @@ runs:
     completed_at: 2026-06-29T00:25:00.361Z
   - _ulid: 01KX2D2Q7HEA3A0CEWFTPVEW0T
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77337,7 +77337,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-09T03:00:59.248Z
-        completed_at: 2026-07-09T03:00:59.248Z
+        completed_at: 2026-07-09T03:01:13.342Z
+        notes: "Friction checked: the long full-suite quiet periods made it hard to tell whether the run was
+          stalled or still executing remaining suites. Coverage search found this is already tracked
+          by @task-investigate-npm-test-teardown-hang-after-green-suite-run and an existing
+          observation, so no duplicate capture."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-09T03:01:13.342Z
+        completed_at: 2026-07-09T03:01:13.342Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-09T02:59:59.345Z
