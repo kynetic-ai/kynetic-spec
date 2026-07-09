@@ -1145,7 +1145,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-09T03:23:24.670Z
+      updated_at: 2026-07-09T03:24:05.220Z
     integration:
       status: merged
       detail: integration:merged
@@ -1162,18 +1162,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-09T03:03:49.057Z
-      last_reconciled_at: 2026-07-09T03:23:24.670Z
+      last_reconciled_at: 2026-07-09T03:24:05.220Z
       created_at: 2026-07-09T02:39:53.828Z
-      updated_at: 2026-07-09T03:23:24.670Z
+      updated_at: 2026-07-09T03:24:05.220Z
     workspace_id: dispatch-workspace-01KX2BEE6D5RS57244NA7QG1J2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: f6ed97cca4a4458bbb9d622aebc37c6f3764de04
-        last_seen_at: 2026-07-09T03:03:10.374Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-terminal-acp-tool-call-status-01kx2bee-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-terminal-acp-tool-call-status/01kx2bee
