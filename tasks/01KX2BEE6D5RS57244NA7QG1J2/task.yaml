@@ -1,0 +1,146 @@
+_ulid: 01KX2BEE6D5RS57244NA7QG1J2
+slugs:
+  - task-terminal-acp-tool-call-status
+title: Handle terminal status on initial ACP tool_call events
+type: bug
+description: >-
+  Covers:
+
+  - @session-event-broadcast ac-terminal-tool-call-status
+
+  - @ws-session-event-streaming ac-terminal-tool-call-display-parity
+
+  - @ws-session-event-streaming ac-terminal-tool-call-output-sequence
+
+
+  Context:
+
+  Codex ACP can emit some tools, observed for `View Image`, as a single terminal `session.update`
+  event with `sessionUpdate: "tool_call"`, `status: "completed"`, `kind: "read"`, and no later
+  `tool_call_update`. Example observed in Hyphoria session `01KX1RJX5XMP9GHVY5KVDH8FJB`:
+
+
+  ```json
+
+  {
+    "sessionUpdate": "tool_call",
+    "toolCallId": "call_RWca6EEhgZukoqamdncEIEXk",
+    "status": "completed",
+    "kind": "read",
+    "title": "View Image /tmp/hyphoria-civitai-ui-qa/active-before-click-fixed.png"
+  }
+
+  ```
+
+
+  Current kspec behavior treats every `tool_call` as running and only completes on
+  `tool_call_update`/`tool_result`, so these calls can render as permanently running despite the raw
+  event being terminal.
+
+
+  What:
+
+  Teach kspec session event normalization and display parsing that a terminal `status` on the
+  initial `tool_call` event is authoritative. Such calls must render completed/failed in both
+  historical HTTP playback and live/WebSocket paths without requiring a later update.
+
+
+  Why:
+
+  ACP adapters/providers do not always split tool start and completion into separate events. kspec
+  must faithfully render terminal tool events from the stored session stream so reviewers do not
+  misdiagnose completed image-inspection calls as hung tool calls.
+
+
+  How:
+
+  - Inspect `src/agent-runtime/session-event-accumulator.ts` and update the `tool_call` handling so
+  a terminal `update.status` (`completed` or `failed`) emits start semantics followed by completion
+  semantics for the same tool call. Preserve session id, tool id, tool name, terminal status, and
+  the existing no-output-in-WebSocket behavior.
+
+  - Inspect `packages/web-ui/src/lib/components/session/session-utils.ts` and update historical
+  parsing so a `sessionUpdate: "tool_call"` block with terminal `status` is created as
+  completed/failed, with a usable `resultSeq`/output lookup sequence even when no separate result
+  event exists.
+
+  - Preserve the existing start-then-complete lifecycle for live events. A terminal initial
+  `tool_call` may create a running block transiently, but after the completion event is applied the
+  final display state must be terminal. Do not break ordinary phased calls: registration with empty
+  input, later `tool_call_input`, later completion must not duplicate blocks or lose input.
+
+  - Reuse shared field extraction in `src/agent-runtime/session-event-fields.ts` where appropriate;
+  avoid duplicating incompatible status extraction logic between live and historical paths.
+
+  - Add or update accumulator tests in `tests/session-event-accumulator.test.ts` for Codex-style
+  one-shot terminal `tool_call` events. Cover both `completed` and `failed`: no later
+  `tool_call_update`, kind `read`, title `View Image /tmp/example.png`, and assert emitted
+  start+completion lifecycle events have the same tool call id and no output payload.
+
+  - Add or update display parsing tests in `tests/session-event-streaming.test.ts` for one-shot
+  terminal `tool_call` events. Cover completed and failed final display state, no later update, and
+  `resultSeq`/output lookup sequence using the terminal event.
+
+
+  Files likely touched:
+
+  - `src/agent-runtime/session-event-accumulator.ts`
+
+  - `packages/web-ui/src/lib/components/session/session-utils.ts`
+
+  - `tests/session-event-accumulator.test.ts`
+
+  - `tests/session-event-streaming.test.ts`
+
+  - possibly `src/agent-runtime/session-event-fields.ts` if shared status helper extraction is
+  useful
+
+
+  Required verification:
+
+  - `npm test -- tests/session-event-accumulator.test.ts tests/session-event-streaming.test.ts
+  --fresh`
+
+  - `npm run format:check`
+
+  - `npm run lint -- --quiet`
+
+  - `npx oxlint <changed TypeScript/test files>`
+
+  - `npm run typecheck`
+
+  - `npm test -- --fresh`
+
+  - `kspec validate --refs --warnings-ok`
+
+  - `kspec validate --alignment --warnings-ok`
+
+  - `kspec validate --completeness --warnings-ok`
+
+
+  Non-goals:
+
+  - Do not rework all historical no-terminal tool-call patterns.
+
+  - Do not change Codex/ACP upstream behavior.
+
+  - Do not embed image/tool output directly into WebSocket completion events; keep output-on-demand
+  behavior.
+
+  - Do not modify Hyphoria product code.
+spec_ref: "@session-event-broadcast"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - sessions
+  - acp
+  - ui
+vcs_refs: []
+created_at: 2026-07-09T02:31:26.156Z
+todos: []
+automation: eligible

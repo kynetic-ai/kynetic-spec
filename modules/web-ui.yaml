@@ -5334,6 +5334,19 @@ features:
           regardless of whether events arrive via HTTP batch or individual WebSocket messages. The
           resulting DisplayBlocks are identical for the same event sequence.
         when: Tool call events are processed
+      - given: Session history, live catch-up, or live WebSocket events include a `tool_call` event whose
+          status is `completed` or `failed` and no later result/update event exists for the same
+          tool call id
+        id: ac-terminal-tool-call-display-parity
+        then: HTTP historical playback, HTTP catch-up, and WebSocket/live rendering all show the tool call
+          as completed or failed rather than running.
+        when: Events are parsed into display blocks
+      - given: A completed or failed tool call block was produced from an initial terminal `tool_call` event
+          with no later result/update event
+        id: ac-terminal-tool-call-output-sequence
+        then: The output lookup uses the terminal `tool_call` event sequence or its equivalent stored event
+          reference and does not require a separate result/update event to exist.
+        when: The user expands the block to view output
     tags: []
     requirements:
       - _ulid: 01KKSGSZ80XNJR06J3Y1GH0RZS
@@ -5414,6 +5427,13 @@ features:
             then: The deduplication logic handles both data formats correctly, identifying and merging phased
               tool_call events regardless of wrapping.
             when: Phased tool call deduplication runs on stored events
+          - given: An agent session update for a tool call contains a terminal status (`completed` or `failed`)
+              on the initial `tool_call` event rather than on a later `tool_call_update`
+            id: ac-terminal-tool-call-status
+            then: The daemon emits a tool-call start event and a terminal tool-call completion event for the
+              same tool call. The completion event includes the session id, tool call id, tool name,
+              and terminal status, and does not include tool output.
+            when: The daemon converts the session update into structured session lifecycle events
         tags: []
         created: 2026-03-15T19:50:40.640Z
         notes: []
