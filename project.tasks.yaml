@@ -33570,7 +33570,7 @@
   title: Handle terminal status on initial ACP tool_call events
   type: bug
   spec_ref: "@session-event-broadcast"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   priority: 2
@@ -33581,4 +33581,5 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-09T02:31:26.156Z
+  started_at: 2026-07-09T02:35:38.167Z
   automation: eligible
