@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KX2BR00435XK6WWHGEKV0Q12
+    content: "Approach: add terminal status recognition for initial ACP tool_call events, reusing shared
+      field extraction in the runtime path and matching the existing web parser mirror. The
+      accumulator will emit tool_call_start followed by tool_call_complete for completed/failed
+      initial calls with no output payload; normal phased tool_call -> tool_call_update
+      input/completion behavior remains unchanged. Historical parsing will create a single
+      completed/failed block and set resultSeq to the terminal event seq so output lookup does not
+      require a later update/result event. Edge cases: completed and failed one-shot calls,
+      kind=read/title-only View Image calls, no duplicate blocks, no output embedded in websocket
+      completion events, phased input updates still update in place. Test plan: add annotated
+      accumulator tests for @session-event-broadcast ac-terminal-tool-call-status and display
+      parsing tests for @ws-session-event-streaming ac-terminal-tool-call-display-parity plus
+      ac-terminal-tool-call-output-sequence."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-09T02:36:39.300Z
