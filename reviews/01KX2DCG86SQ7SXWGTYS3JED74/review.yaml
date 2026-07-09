@@ -1,0 +1,26 @@
+_ulid: 01KX2DCG86SQ7SXWGTYS3JED74
+slugs: []
+title: Review terminal ACP tool_call status
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KX2DCG86T15E6PFK9GNRBAAN
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-09T03:05:19.878Z
+examined_commit: f6ed97cca4a4458bbb9d622aebc37c6f3764de04
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KX2BEE6D5RS57244NA7QG1J2"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-09T03:05:19.878Z
+updated_at: null
+notes: []
