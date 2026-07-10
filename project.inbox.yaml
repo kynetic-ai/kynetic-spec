@@ -5165,10 +5165,10 @@ inbox:
     created_at: 2026-07-10T16:45:43.076Z
   - _ulid: 01KX6Z1J3VC5HWGDB8V57JT3GT
     text: Add first-class CLI mutation commands for layered agent runner configuration (for example
-      project runner env.set). Current  only validates; operators must manually edit , despite the
-      CLI-only metadata policy. Provide safe set/patch/unset operations with project-vs-system
-      scope, secret-boundary validation, effective-source diagnostics, atomic shadow commits, and
-      tests.
+      project runner env.set). Current kspec agent runners only validates; operators must manually
+      edit .kspec/project.runners.yaml despite the CLI-only metadata policy. Provide safe
+      set/patch/unset operations with project-vs-system scope, secret-boundary validation,
+      effective-source diagnostics, atomic shadow commits, and tests.
     tags:
       - runners
       - cli
