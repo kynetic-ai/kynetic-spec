@@ -5146,3 +5146,20 @@ inbox:
       - evidence
     added_by: Jacob Chapel
     created_at: 2026-07-10T16:37:03.748Z
+  - _ulid: 01KX6EQCS47GABYZHAR3448KVS
+    text: Make review resources immutable once a review is closed or archived so evidence supporting
+      checks and verdicts cannot be added, replaced, or removed after closure. Enforce the rule
+      consistently across CLI and daemon resource mutation routes, define whether reopening permits
+      mutation or requires a new review cycle, preserve read access and static export, and add
+      lifecycle-bound tests covering add/replace/remove before and after closure. Consider binding
+      check evidence to exact review resource ids and SHA-256 values so verdict provenance remains
+      auditable even across allowed pre-close replacements.
+    tags:
+      - bug
+      - reviews
+      - resources
+      - evidence
+      - integrity
+      - lifecycle
+    added_by: Jacob Chapel
+    created_at: 2026-07-10T16:45:43.076Z
