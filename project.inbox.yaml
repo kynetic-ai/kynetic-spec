@@ -5128,3 +5128,21 @@ inbox:
       - tech-debt
     added_by: Jacob Chapel
     created_at: 2026-06-25T20:29:33.836Z
+  - _ulid: 01KX6E7HM4T9Y98AKYJT49FMZR
+    text: Add a supported task resource CLI/API surface so a worker can attach validation evidence (for
+      example screenshots, logs, recordings, reports, or generated artifacts) directly to an
+      existing task, including while it is in progress. The operation should own and compute
+      resource metadata atomically, append without clobbering existing refs, enforce safe
+      paths/content hashes and lifecycle rules, expose the evidence through task detail/agent
+      context/static export, and avoid requiring raw task patch of provenance-bearing resource_refs.
+      Define visibility for an already-running dispatched agent and distinguish direct task-owned
+      uploads from attaching an existing plan resource.
+    tags:
+      - feature
+      - cli
+      - resources
+      - tasks
+      - agents
+      - evidence
+    added_by: Jacob Chapel
+    created_at: 2026-07-10T16:37:03.748Z
