@@ -106,6 +106,7 @@ agents:
     dispatch: []
     id: reviewer
     name: Reviewer Agent
+    runner: codex-reviewer
     skills:
       - review
       - review-gates
