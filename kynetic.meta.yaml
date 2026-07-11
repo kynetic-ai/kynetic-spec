@@ -342,6 +342,7 @@ agents:
     dispatch: []
     id: plan-reviewer
     name: Plan Reviewer
+    runner: codex-reviewer
     skills:
       - review-plan
       - review
