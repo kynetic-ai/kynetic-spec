@@ -278,6 +278,7 @@ agents:
       - on: task.pending_review
     id: pr-reviewer
     name: PR Reviewer
+    runner: codex-reviewer
     session:
       idle_grace_period_ms: 5000
       mode: auto_close
