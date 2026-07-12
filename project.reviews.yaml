@@ -28929,7 +28929,7 @@ reviews:
   - _ulid: 01KXC59S0Y7EAPD8GHAA54QGZV
     slugs: []
     title: "Plan re-review: Dispatch Lifecycle Pause Resume and Stop Controls"
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 1
     lifecycle_state: open
@@ -28939,8 +28939,8 @@ reviews:
       content_hash: ""
       ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 3
+    unresolved_blocker_count: 3
     verdict_count: 0
     created_at: 2026-07-12T21:56:26.270Z
-    updated_at: 2026-07-12T22:00:10.284Z
+    updated_at: 2026-07-12T22:00:48.194Z

@@ -33,6 +33,27 @@ events:
       status: pass
       name: batch probe
     timestamp: 2026-07-12T22:00:10.530Z
+  - _ulid: 01KXC5HJK46F10DF36YH7YPDP2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5HJAA5R9S7AJKDKJNYD0N
+    timestamp: 2026-07-12T22:00:41.828Z
+  - _ulid: 01KXC5HNT6Q52GCX788ZEFKRWG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5HNFNKT4BT7MZCR5DX0H6
+    timestamp: 2026-07-12T22:00:45.126Z
+  - _ulid: 01KXC5HS14GK2EM6P490MWKE3X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5HRT291QRZ6SXK5DS43J1
+    timestamp: 2026-07-12T22:00:48.420Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -42,8 +63,57 @@ subject:
   content_hash: ""
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXC5HJAA5R9S7AJKDKJNYD0N
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXC5HJAABQ7NRVYMGHZCFZ1N
+        author: Jacob Chapel
+        body: Atomicity and timeless behavioral language are still not closed.
+          ac-spawn-win-honors-selected-action specifies two actions/outcomes;
+          ac-task-interrupted-stop-recovers combines two triggers with reopening and isolation;
+          ac-controls-do-not-change-readiness enumerates five guarantees;
+          ac-evidence-survives-control combines six evidence classes; and
+          ac-reconstruction-uses-current-state contains non-promise commentary. Exact patches
+          @agent-dispatch-engine ac-11 and @cli-agent-commands ac-5 are compound too. Split focused
+          behavioral ACs and move mechanisms/non-promises to descriptions or task notes.
+        created_at: 2026-07-12T22:00:41.546Z
+    kind: blocker
+  - _ulid: 01KXC5HNFNKT4BT7MZCR5DX0H6
+    anchor:
+      type: structured
+      ref: "@task-dispatch-control-persistence"
+      section: description
+    entries:
+      - _ulid: 01KXC5HNFNQ2FEKW02Y5GCX12M
+        author: Jacob Chapel
+        body: Persistence ownership is not executable exactly. The named existing shadow lock helper
+          withDispatchShadowMutationLock is private at src/agent-runtime/workspace.ts:1758, so the
+          new parser cannot consume it. The task does not name the shared helper owner/extraction,
+          commit API, in-memory snapshot owner, or exact cache-domain/status invalidation bridge.
+          Freeze those owners and the watcher-to-store/status path.
+        created_at: 2026-07-12T22:00:44.789Z
+    kind: blocker
+  - _ulid: 01KXC5HRT291QRZ6SXK5DS43J1
+    anchor:
+      type: structured
+      field: ac-interrupted-stop-recovers
+      ref: "@dispatch-lifecycle-control-authority"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXC5HRT2Y4TC8YH8T7458CHV
+        author: Jacob Chapel
+        body: Crash recovery remains underspecified. pending_cleanup has only scope keys, not exact
+          invocation/session identities or cleanup phase. Startup reconstruction has no durable
+          source after volatile SessionRegistry loss, so targeted cleanup cannot be proven isolated.
+          Define pending-cleanup fields, durable reconstruction source, phase transitions, and
+          restart behavior.
+        created_at: 2026-07-12T22:00:48.194Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:56:26.270Z
-updated_at: 2026-07-12T22:00:10.284Z
+updated_at: 2026-07-12T22:00:48.194Z
 notes: []
