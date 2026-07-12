@@ -1,0 +1,26 @@
+_ulid: 01KXC59S0Y7EAPD8GHAA54QGZV
+slugs: []
+title: "Plan re-review: Dispatch Lifecycle Pause Resume and Stop Controls"
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXC59S0Y16DWP779GSJC3AS7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-12T21:56:26.270Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-12T21:56:26.270Z
+updated_at: null
+notes: []
