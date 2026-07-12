@@ -336,6 +336,16 @@ checks:
     required: true
     created_at: 2026-07-12T22:52:43.381Z
     completed_at: 2026-07-12T22:52:43.381Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Both status grammars, canonical mutation endpoint, legacy-compatible status endpoint,
+      force rules, exits, and current regression suite are explicit.
+    name: CLI safety grammar and endpoint compatibility
+    required: true
+    created_at: 2026-07-12T22:52:48.957Z
+    completed_at: 2026-07-12T22:52:48.957Z
 events:
   - _ulid: 01KXC88A643NZXBK7THJTVVV1C
     actor: Jacob Chapel
@@ -665,6 +675,13 @@ events:
       status: fail
       name: HTTP canonical and alias compatibility
     timestamp: 2026-07-12T22:52:43.625Z
+  - _ulid: 01KXC8H0NHCWAVQJ02017ZFFHF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: CLI safety grammar and endpoint compatibility
+    timestamp: 2026-07-12T22:52:49.201Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -893,5 +910,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:52:43.381Z
+updated_at: 2026-07-12T22:52:48.957Z
 notes: []
