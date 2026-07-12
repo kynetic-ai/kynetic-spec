@@ -169,6 +169,16 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-07-12T21:30:13.210Z
     completed_at: 2026-07-12T21:30:13.210Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-record review only; no code or tracked guidance was changed.
+    name: format
+    required: false
+    runner: npm run format:check
+    created_at: 2026-07-12T21:30:18.501Z
+    completed_at: 2026-07-12T21:30:18.501Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -449,6 +459,13 @@ events:
       status: pass
       name: kspec validate completeness baseline
     timestamp: 2026-07-12T21:30:13.464Z
+  - _ulid: 01KXC3SY89AR9GCTBD2EJWQJ1M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: format
+    timestamp: 2026-07-12T21:30:18.761Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -875,5 +892,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:30:13.210Z
+updated_at: 2026-07-12T21:30:18.501Z
 notes: []
