@@ -737,9 +737,16 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-12T23:23:01.954Z
+  - _ulid: 01KXCA9EPJ4YQDPPR7TWQVZQ4Z
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: closed
+      to: archived
+    timestamp: 2026-07-12T23:23:38.578Z
 examined_commit: null
 external_links: []
-lifecycle_state: closed
+lifecycle_state: archived
 related_refs: []
 subject:
   type: plan
@@ -825,5 +832,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-12T23:23:01.954Z
 created_at: 2026-07-12T23:17:14.275Z
-updated_at: 2026-07-12T23:23:01.954Z
+updated_at: 2026-07-12T23:23:38.232Z
 notes: []
