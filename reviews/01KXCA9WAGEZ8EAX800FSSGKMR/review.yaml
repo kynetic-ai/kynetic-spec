@@ -70,6 +70,60 @@ checks:
     runner: closure audit
     created_at: 2026-07-12T23:24:59.084Z
     completed_at: 2026-07-12T23:24:59.084Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 7 unrelated ambiguous refs for @observations and @spec-plan-import; no plan-local broken ref.
+    name: kspec validate refs baseline
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-12T23:25:19.947Z
+    completed_at: 2026-07-12T23:25:19.947Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment and completeness exit 0 with existing unrelated warnings.
+    name: kspec alignment and completeness baselines
+    required: true
+    runner: kspec validate
+    created_at: 2026-07-12T23:25:23.226Z
+    completed_at: 2026-07-12T23:25:23.226Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "88 tests passed across 21 suites: plan parser, CLI endpoint regression, public dispatch
+      API, and dispatch routes."
+    name: Current contract regression suites
+    required: true
+    runner: npm test focused
+    created_at: 2026-07-12T23:25:26.343Z
+    completed_at: 2026-07-12T23:25:26.343Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review; no implementation/guidance change reviewed. Unrelated user edits preserved.
+    name: Product implementation gates
+    required: false
+    runner: not run
+    created_at: 2026-07-12T23:25:31.082Z
+    completed_at: 2026-07-12T23:25:31.082Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No shared guidance change. Read full plan and four prior reviews; owning specs;
+      routes/engine; shadow transaction/watcher/cache; sessions; events; CLI/UI; direct tests.
+      Verified 77/60/15 counts, ownership, graph, paths, recovery, compatibility, endpoints, and
+      regressions.
+    name: Shared-guidance neutrality and evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:25:34.594Z
+    completed_at: 2026-07-12T23:25:34.594Z
 events:
   - _ulid: 01KXCA9WAFV77V90GH3TPH1WC7
     actor: codex
@@ -154,9 +208,60 @@ events:
       status: fail
       name: Primary ownership
     timestamp: 2026-07-12T23:24:59.341Z
+  - _ulid: 01KXCACHZJRDJRJVQR3N0BH6MV
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs baseline
+    timestamp: 2026-07-12T23:25:20.242Z
+  - _ulid: 01KXCACN481GM2BP3HC3P6KGPZ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec alignment and completeness baselines
+    timestamp: 2026-07-12T23:25:23.464Z
+  - _ulid: 01KXCACR70Z503T44E6MTKASYS
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Current contract regression suites
+    timestamp: 2026-07-12T23:25:26.624Z
+  - _ulid: 01KXCACWYB2S3349BGWBTYFPNX
+    actor: codex
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product implementation gates
+    timestamp: 2026-07-12T23:25:31.468Z
+  - _ulid: 01KXCAD07QX73Y16HADJ36YV2K
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality and evidence log
+    timestamp: 2026-07-12T23:25:34.839Z
+  - _ulid: 01KXCAD3720WZA666PWPJG8VH1
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-12T23:25:37.890Z
+  - _ulid: 01KXCAD372Z1EK1SHVMAZBRDTA
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-12T23:25:37.890Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -224,7 +329,14 @@ threads:
           exception or deliberate breaking sanitization and enumerate each exact 409 body.
         created_at: 2026-07-12T23:24:28.505Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-12T23:25:37.890Z
 created_at: 2026-07-12T23:23:52.528Z
-updated_at: 2026-07-12T23:24:59.084Z
+updated_at: 2026-07-12T23:25:37.890Z
 notes: []
