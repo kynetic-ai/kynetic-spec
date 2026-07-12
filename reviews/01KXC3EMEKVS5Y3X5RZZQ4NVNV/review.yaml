@@ -609,9 +609,25 @@ events:
     payload:
       thread_ulid: 01KXC3JD2JWHKE2QBHCA8GNZPS
     timestamp: 2026-07-12T21:32:13.543Z
+  - _ulid: 01KXC3XZZEGKNN8X443ZF68T91
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-12T21:32:31.599Z
+  - _ulid: 01KXC3XZZFGZ5ZDHM4Y3B2GVET
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-12T21:32:31.599Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -1055,7 +1071,14 @@ threads:
           overlap.
         created_at: 2026-07-12T21:28:18.153Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-12T21:32:31.598Z
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:32:13.286Z
+updated_at: 2026-07-12T21:32:31.599Z
 notes: []
