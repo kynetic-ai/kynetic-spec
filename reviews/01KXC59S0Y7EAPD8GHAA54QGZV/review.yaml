@@ -54,6 +54,27 @@ events:
       kind: blocker
       thread_ulid: 01KXC5HRT291QRZ6SXK5DS43J1
     timestamp: 2026-07-12T22:00:48.420Z
+  - _ulid: 01KXC5HYPN3K7DBQYVC8Q0A7VE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5HYE1NV9V05ZH6Z0668AN
+    timestamp: 2026-07-12T22:00:54.229Z
+  - _ulid: 01KXC5J1T74S4WR5N4MDKVENKA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5J1J95EQQB5GSG0VXFZ80
+    timestamp: 2026-07-12T22:00:57.415Z
+  - _ulid: 01KXC5J4X2DZPA7N9QRB9B00K3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5J4KP4G2210V22Y063VEM
+    timestamp: 2026-07-12T22:01:00.578Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -113,7 +134,49 @@ threads:
           restart behavior.
         created_at: 2026-07-12T22:00:48.194Z
     kind: blocker
+  - _ulid: 01KXC5HYE1NV9V05ZH6Z0668AN
+    anchor:
+      type: structured
+      ref: "@task-dispatch-lifecycle-events"
+      section: description
+    entries:
+      - _ulid: 01KXC5HYE21EX2AXBG6X5WRSZG
+        author: Jacob Chapel
+        body: "The closed event taxonomy is incomplete: action includes start and every applied attempt must
+          emit one corresponding event, but no start_applied identifier or mapping exists. Mapping
+          start to resume_applied contradicts the frozen verbs. Add an exact start mapping and
+          enumerate closed error_code values."
+        created_at: 2026-07-12T22:00:53.954Z
+    kind: blocker
+  - _ulid: 01KXC5J1J95EQQB5GSG0VXFZ80
+    anchor:
+      type: structured
+      ref: "@task-daemon-dispatch-lifecycle-api"
+      section: description
+    entries:
+      - _ulid: 01KXC5J1J99DMJR1Z4PN8AFGGW
+        author: Jacob Chapel
+        body: HTTP compatibility remains open. Existing dispatch, dispatch/start, dispatch/stop, and
+          dispatch/status routes are only called adapters/aliases; exact flat-versus-envelope
+          success/no-op/error fields and 409/500/503 translation are unspecified. Freeze every route
+          request/response/status plus error.code/details.
+        created_at: 2026-07-12T22:00:57.161Z
+    kind: blocker
+  - _ulid: 01KXC5J4KP4G2210V22Y063VEM
+    anchor:
+      type: structured
+      ref: "@task-cli-dispatch-lifecycle-controls"
+      section: description
+    entries:
+      - _ulid: 01KXC5J4KPBWMMN1HVRM7NJZN4
+        author: Jacob Chapel
+        body: "CLI safety conflicts with @trait-confirmation-prompt: the trait requires --force, while the
+          plan invents --yes without applying/amending the trait. It also omits
+          tests/cli-daemon-endpoint-regression.test.ts. Reconcile the flag and legacy-script
+          contract and include that existing suite."
+        created_at: 2026-07-12T22:01:00.278Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:56:26.270Z
-updated_at: 2026-07-12T22:00:48.194Z
+updated_at: 2026-07-12T22:01:00.278Z
 notes: []
