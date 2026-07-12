@@ -119,6 +119,111 @@ checks:
     runner: rg source audit
     created_at: 2026-07-12T22:26:17.488Z
     completed_at: 2026-07-12T22:26:17.488Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Patch task claims no behavioral closure and verification tasks are secondary, but
+      cross-scope ACs and spawn-win-stop are assigned to tasks that cannot implement the full
+      claimed behavior at their dependency point.
+    name: Behavioral AC primary ownership
+    required: true
+    runner: coverage/task dependency review
+    created_at: 2026-07-12T22:26:42.492Z
+    completed_at: 2026-07-12T22:26:42.492Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All global Create-list paths are currently absent and active-session-registry is correctly
+      Existing; however the dependent hard-stop task re-declares a prerequisite-created test as
+      Create and the required current SessionMetadata schema owner src/sessions/types.ts is omitted.
+    name: Path classification
+    required: true
+    runner: filesystem and source-owner audit
+    created_at: 2026-07-12T22:26:45.477Z
+    completed_at: 2026-07-12T22:26:45.477Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exactly 1 spec, 31 ACs, 15 explicit tasks, derive_from_specs:false, unique slugs, no
+      cycle, and no priority inversion.
+    name: Plan shape and dependency graph
+    required: true
+    runner: parsed graph audit
+    created_at: 2026-07-12T22:26:48.435Z
+    completed_at: 2026-07-12T22:26:48.435Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Three explicit secondary verification tasks cover engine restart/races, API/CLI
+      projection, and browser/accessibility with bounded files and deterministic fixtures.
+    name: Bounded verification slices
+    required: true
+    runner: manual task review
+    created_at: 2026-07-12T22:26:51.348Z
+    completed_at: 2026-07-12T22:26:51.348Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repository baseline currently has 7 unrelated ambiguous-reference errors (@observations
+      and @spec-plan-import); no plan refs were materialized because the plan remains draft.
+    name: kspec validate refs baseline
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-12T22:26:54.320Z
+    completed_at: 2026-07-12T22:26:54.320Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 55 existing warnings.
+    name: kspec validate alignment baseline
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-12T22:26:57.192Z
+    completed_at: 2026-07-12T22:26:57.192Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 332 existing warnings; plan ACs are not materialized while draft.
+    name: kspec validate completeness baseline
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-12T22:27:00.040Z
+    completed_at: 2026-07-12T22:27:00.040Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only closure review with no product/spec edits; unrelated user changes are present in
+      adapters/runners/session tests. Focused plan parser/import/derive tests were run instead.
+    name: Product quality gates
+    required: true
+    runner: format/lint/typecheck/full test
+    created_at: 2026-07-12T22:27:02.954Z
+    completed_at: 2026-07-12T22:27:02.954Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: full stored plan; prior review 01KXC59S0Y7EAPD8GHAA54QGZV; eight current
+      specs and three traits; plan parser/import/derive; dispatch route/CLI;
+      workspace/file-lock/shadow/cache/watcher; invocation/session/spawner; all listed UI consumers
+      and compatibility tests. Commands: plan/review/item/trait/search, rg, filesystem
+      classification, import dry-run, graph parser, three kspec validations, focused npm tests.
+      Claims checked: all prior closures, atomicity, transaction/recovery, event/API/CLI/UI,
+      ownership, path truth, 1+15 graph, bounded slices. Categories: correctness, edge/race/crash
+      recovery, compatibility, parser behavior, tests, integration."
+    name: Review evidence log
+    required: true
+    runner: manual evidence log
+    created_at: 2026-07-12T22:27:05.855Z
+    completed_at: 2026-07-12T22:27:05.855Z
 events:
   - _ulid: 01KXC6RGH4XC77F8D80NT105B8
     actor: codex
@@ -259,6 +364,69 @@ events:
       status: pass
       name: UI boolean consumer inventory
     timestamp: 2026-07-12T22:26:17.746Z
+  - _ulid: 01KXC716X81KEMVQGTGA773K0F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Behavioral AC primary ownership
+    timestamp: 2026-07-12T22:26:42.728Z
+  - _ulid: 01KXC719TE06SQ7D01QJHZXZYW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Path classification
+    timestamp: 2026-07-12T22:26:45.710Z
+  - _ulid: 01KXC71CQ5VZ612RAREPRBAM3S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan shape and dependency graph
+    timestamp: 2026-07-12T22:26:48.677Z
+  - _ulid: 01KXC71FJDWCP46W983CCJD0W5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Bounded verification slices
+    timestamp: 2026-07-12T22:26:51.597Z
+  - _ulid: 01KXC71JF21666YX3HTENQBKP6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate refs baseline
+    timestamp: 2026-07-12T22:26:54.562Z
+  - _ulid: 01KXC71N8AA127BGNXWXC7TA29
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment baseline
+    timestamp: 2026-07-12T22:26:57.418Z
+  - _ulid: 01KXC71R19XZS795FKCHJHAXBH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness baseline
+    timestamp: 2026-07-12T22:27:00.265Z
+  - _ulid: 01KXC71TX4E9DM3RM0VC0TEC51
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product quality gates
+    timestamp: 2026-07-12T22:27:03.204Z
+  - _ulid: 01KXC71XQ4NVMMQY6WYAVMZXK7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-07-12T22:27:06.084Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -418,5 +586,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:21:57.669Z
-updated_at: 2026-07-12T22:26:17.488Z
+updated_at: 2026-07-12T22:27:05.855Z
 notes: []
