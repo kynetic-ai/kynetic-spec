@@ -743,7 +743,7 @@ Add:
     How:
     - Use daemon API only; no direct store mutation from CLI.
     - Keep `start` as transition to running from stopped for compatibility and document resume as the paused-state verb.
-    - Require or accept sanitized reason according to API schema; preserve structured errors and semantic exit codes.
+    - Accept optional `--reason`; when omitted the server records the sanitized default `operator request`. Preserve structured errors and semantic exit codes.
     - Human output labels `draining` when paused with active work and lists active/queued/held counts and held canonical tasks.
     - JSON contains full API data with stable snake/camel convention matching existing command surface.
 
