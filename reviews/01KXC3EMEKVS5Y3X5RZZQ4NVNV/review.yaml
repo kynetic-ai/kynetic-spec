@@ -158,6 +158,17 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-07-12T21:30:07.568Z
     completed_at: 2026-07-12T21:30:07.568Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Command exited successfully with existing warnings: 284 missing own-AC coverage and 48
+      invalid annotations."
+    name: kspec validate completeness baseline
+    required: false
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-12T21:30:13.210Z
+    completed_at: 2026-07-12T21:30:13.210Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -431,6 +442,13 @@ events:
       status: pass
       name: kspec validate alignment baseline
     timestamp: 2026-07-12T21:30:07.829Z
+  - _ulid: 01KXC3SS2RGV8FB6AQCTM8NGPH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness baseline
+    timestamp: 2026-07-12T21:30:13.464Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -857,5 +875,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:30:07.568Z
+updated_at: 2026-07-12T21:30:13.210Z
 notes: []
