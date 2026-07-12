@@ -7,11 +7,244 @@ checks:
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: probe
-    name: batch probe
+    evidence: Read complete current 537-line stored plan; module @agent-integration; status draft.
+    name: Stored plan integrity
     required: true
-    created_at: 2026-07-12T22:00:10.284Z
-    completed_at: 2026-07-12T22:00:10.284Z
+    runner: kspec plan get/export
+    created_at: 2026-07-12T21:59:55.975Z
+    completed_at: 2026-07-12T21:59:55.975Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Parsed 1 spec, derive_from_specs=false, 15 manual tasks, no errors. Isolated approved-plan
+      derive dry-run created exactly 1 spec and 15 tasks, no generic task. Focused tests passed
+      73/73.
+    name: Plan parser and materialization
+    required: true
+    runner: parsePlanDocument + isolated derive
+    created_at: 2026-07-12T21:59:59.083Z
+    completed_at: 2026-07-12T21:59:59.083Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read all eight direct owners; exact @per-task-dispatch-drain-coalescing ac-5 replacement
+      is present.
+    name: Existing-spec conflict coverage
+    required: true
+    runner: kspec item get
+    created_at: 2026-07-12T22:00:02.271Z
+    completed_at: 2026-07-12T22:00:02.271Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Multiple new and patched ACs remain compound; one includes non-promise commentary.
+    name: AC atomicity and timelessness
+    required: true
+    runner: manual audit
+    created_at: 2026-07-12T22:00:05.221Z
+    completed_at: 2026-07-12T22:00:05.221Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Global and task transition outcomes are now frozen, including invalid/no-op behavior and
+      global gating.
+    name: Transition matrices
+    required: true
+    runner: manual matrix audit
+    created_at: 2026-07-12T22:00:08.382Z
+    completed_at: 2026-07-12T22:00:08.382Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Commit-first semantics exist, but pending-cleanup ownership fields and durable
+      reconstruction source are undefined.
+    name: Stop failure and crash recovery
+    required: true
+    runner: code/spec cross-check
+    created_at: 2026-07-12T22:00:11.429Z
+    completed_at: 2026-07-12T22:00:11.429Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Filename/schema/parser are named, but current lock helper is private and shared
+      helper/snapshot/cache invalidation ownership is not frozen.
+    name: Persistence owner lock watcher behavior
+    required: true
+    runner: code/spec cross-check
+    created_at: 2026-07-12T22:00:14.351Z
+    completed_at: 2026-07-12T22:00:14.351Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No applied event identifier for start; error codes and alias route response/error shapes
+      are incomplete.
+    name: Event and HTTP contracts
+    required: true
+    runner: registry/route cross-check
+    created_at: 2026-07-12T22:00:17.419Z
+    completed_at: 2026-07-12T22:00:17.419Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: --yes conflicts with confirmation trait --force and endpoint regression suite is omitted.
+    name: CLI safety and compatibility
+    required: true
+    runner: trait/source/test cross-check
+    created_at: 2026-07-12T22:00:20.567Z
+    completed_at: 2026-07-12T22:00:20.567Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan omits packages/web-ui/src/routes/tasks/board/+page.svelte.
+    name: UI dispatch_enabled inventory
+    required: true
+    runner: rg consumer audit
+    created_at: 2026-07-12T22:00:23.545Z
+    completed_at: 2026-07-12T22:00:23.545Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 28 new ACs have one implementation owner, but patch Covers duplicates existing
+      behavioral ACs.
+    name: AC to task ownership
+    required: true
+    runner: Covers graph
+    created_at: 2026-07-12T22:00:26.737Z
+    completed_at: 2026-07-12T22:00:26.737Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 15-task graph is acyclic; dependencies resolve; no priority inversion.
+    name: Dependency ordering
+    required: true
+    runner: parsed graph
+    created_at: 2026-07-12T22:00:29.845Z
+    completed_at: 2026-07-12T22:00:29.845Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verification is split into engine, API/CLI, and browser slices with explicit dependencies
+      and verification-only ownership.
+    name: Bounded verification slices
+    required: true
+    runner: manual scope audit
+    created_at: 2026-07-12T22:00:32.903Z
+    completed_at: 2026-07-12T22:00:32.903Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: New refs resolve; direct existing refs resolve; AC IDs unique.
+    name: Plan cross-reference resolution
+    required: true
+    runner: parser + item get
+    created_at: 2026-07-12T22:00:35.925Z
+    completed_at: 2026-07-12T22:00:35.925Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Existing baseline fails with 7 unrelated ambiguous refs; plan not derived.
+    name: kspec validate refs baseline
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-12T22:00:38.964Z
+    completed_at: 2026-07-12T22:00:38.964Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 45 orphan and 10 mismatch warnings.
+    name: kspec validate alignment baseline
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-12T22:00:42.091Z
+    completed_at: 2026-07-12T22:00:42.091Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 284 missing coverage and 48 invalid annotation warnings.
+    name: kspec validate completeness baseline
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-12T22:00:45.173Z
+    completed_at: 2026-07-12T22:00:45.173Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review; no product/guidance changes.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-12T22:00:48.413Z
+    completed_at: 2026-07-12T22:00:48.413Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review; no product/guidance changes.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-12T22:00:51.688Z
+    completed_at: 2026-07-12T22:00:51.688Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review; no product/guidance changes.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-12T22:00:54.907Z
+    completed_at: 2026-07-12T22:00:54.907Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review; focused parser/materialization tests were relevant.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-12T22:00:58.083Z
+    completed_at: 2026-07-12T22:00:58.083Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No package-shipped guidance changes.
+    name: Shared-guidance neutrality
+    required: true
+    runner: manual scope audit
+    created_at: 2026-07-12T22:01:01.271Z
+    completed_at: 2026-07-12T22:01:01.271Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read complete plan/prior review/direct specs and relevant parser, dispatch, session,
+      workspace lock, daemon route/cache/watcher, CLI trait/tests, web consumers/tests. Ran
+      parser/topology, isolated derive, focused 73-test run, ownership/path/consumer audits, and
+      validation variants.
+    name: Review evidence log
+    required: true
+    runner: reviewer investigation
+    created_at: 2026-07-12T22:01:04.451Z
+    completed_at: 2026-07-12T22:01:04.451Z
 events:
   - _ulid: 01KXC59S0Y16DWP779GSJC3AS7
     actor: Jacob Chapel
@@ -26,55 +259,230 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-12T21:56:44.015Z
-  - _ulid: 01KXC5GM125CWJSW32MFGM7GV0
+  - _ulid: 01KXC5FB6Z6RCTH00HN0T1KVTV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5FAZ02CQH18V1D7JS6GX2
+    timestamp: 2026-07-12T21:59:28.735Z
+  - _ulid: 01KXC5FE4N1KBEJQSE2J3KAVSV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5FDX3KQXYZ10MB40ZYDXZ
+    timestamp: 2026-07-12T21:59:31.733Z
+  - _ulid: 01KXC5FH2MX6QBFSWA8KV989SX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5FGVJQ3C5P2BRT6S7X14N
+    timestamp: 2026-07-12T21:59:34.740Z
+  - _ulid: 01KXC5FM483KTBWT2HAYE3TQFK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5FKWPZ17G9N94SSDNKTW3
+    timestamp: 2026-07-12T21:59:37.865Z
+  - _ulid: 01KXC5FQ3R6R0AJ9MK3EZX72GZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5FPW9ZNG80Y5DGC9QVY2X
+    timestamp: 2026-07-12T21:59:40.920Z
+  - _ulid: 01KXC5FT516NN9529NRTFQFAZQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5FSX1HMNQ4F8TKQ1P480H
+    timestamp: 2026-07-12T21:59:44.033Z
+  - _ulid: 01KXC5FX3SH5DF7HXR7R88GYWC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5FWWA31SS3AY958GNC64D
+    timestamp: 2026-07-12T21:59:47.065Z
+  - _ulid: 01KXC5G01PT06S7GZHQVTQFZ60
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5FZSS951AT4ZK0RRSFVPD
+    timestamp: 2026-07-12T21:59:50.070Z
+  - _ulid: 01KXC5G32P4XAJHAGMX3Q3KC0H
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5G2T3V6XRJN3P5PK50KSN
+    timestamp: 2026-07-12T21:59:53.174Z
+  - _ulid: 01KXC5G6295JFC7K1NFZVSKA9V
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
-      name: batch probe
-    timestamp: 2026-07-12T22:00:10.530Z
-  - _ulid: 01KXC5HJK46F10DF36YH7YPDP2
+      name: Stored plan integrity
+    timestamp: 2026-07-12T21:59:56.233Z
+  - _ulid: 01KXC5G92JZ9R340GPY8RBSVJT
     actor: Jacob Chapel
-    event_type: thread_created
+    event_type: check_added
     payload:
-      kind: blocker
-      thread_ulid: 01KXC5HJAA5R9S7AJKDKJNYD0N
-    timestamp: 2026-07-12T22:00:41.828Z
-  - _ulid: 01KXC5HNT6Q52GCX788ZEFKRWG
+      status: pass
+      name: Plan parser and materialization
+    timestamp: 2026-07-12T21:59:59.314Z
+  - _ulid: 01KXC5GC71RE2K6JV08RYED48Q
     actor: Jacob Chapel
-    event_type: thread_created
+    event_type: check_added
     payload:
-      kind: blocker
-      thread_ulid: 01KXC5HNFNKT4BT7MZCR5DX0H6
-    timestamp: 2026-07-12T22:00:45.126Z
-  - _ulid: 01KXC5HS14GK2EM6P490MWKE3X
+      status: pass
+      name: Existing-spec conflict coverage
+    timestamp: 2026-07-12T22:00:02.529Z
+  - _ulid: 01KXC5GF33JHNB3TTJ56PG84DW
     actor: Jacob Chapel
-    event_type: thread_created
+    event_type: check_added
     payload:
-      kind: blocker
-      thread_ulid: 01KXC5HRT291QRZ6SXK5DS43J1
-    timestamp: 2026-07-12T22:00:48.420Z
-  - _ulid: 01KXC5HYPN3K7DBQYVC8Q0A7VE
+      status: fail
+      name: AC atomicity and timelessness
+    timestamp: 2026-07-12T22:00:05.475Z
+  - _ulid: 01KXC5GJ5D8NWD6QXVNHCVR3XR
     actor: Jacob Chapel
-    event_type: thread_created
+    event_type: check_added
     payload:
-      kind: blocker
-      thread_ulid: 01KXC5HYE1NV9V05ZH6Z0668AN
-    timestamp: 2026-07-12T22:00:54.229Z
-  - _ulid: 01KXC5J1T74S4WR5N4MDKVENKA
+      status: pass
+      name: Transition matrices
+    timestamp: 2026-07-12T22:00:08.621Z
+  - _ulid: 01KXC5GN4VHMM78Y2MGPNNDPCP
     actor: Jacob Chapel
-    event_type: thread_created
+    event_type: check_added
     payload:
-      kind: blocker
-      thread_ulid: 01KXC5J1J95EQQB5GSG0VXFZ80
-    timestamp: 2026-07-12T22:00:57.415Z
-  - _ulid: 01KXC5J4X2DZPA7N9QRB9B00K3
+      status: fail
+      name: Stop failure and crash recovery
+    timestamp: 2026-07-12T22:00:11.675Z
+  - _ulid: 01KXC5GR0WYDFEBVPKD82RR8RP
     actor: Jacob Chapel
-    event_type: thread_created
+    event_type: check_added
     payload:
-      kind: blocker
-      thread_ulid: 01KXC5J4KP4G2210V22Y063VEM
-    timestamp: 2026-07-12T22:01:00.578Z
+      status: fail
+      name: Persistence owner lock watcher behavior
+    timestamp: 2026-07-12T22:00:14.620Z
+  - _ulid: 01KXC5GV00109VV3Y59MQJ1K46
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Event and HTTP contracts
+    timestamp: 2026-07-12T22:00:17.664Z
+  - _ulid: 01KXC5GY1YJKVQ8MHH33QT58TQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: CLI safety and compatibility
+    timestamp: 2026-07-12T22:00:20.798Z
+  - _ulid: 01KXC5H0Z2SP9NASV3MCPB1GN6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: UI dispatch_enabled inventory
+    timestamp: 2026-07-12T22:00:23.778Z
+  - _ulid: 01KXC5H439QZ74Q5XTQW6RRCFR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC to task ownership
+    timestamp: 2026-07-12T22:00:26.985Z
+  - _ulid: 01KXC5H75SS4TG1Y4RY3F1GJDV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-07-12T22:00:30.137Z
+  - _ulid: 01KXC5HA3Y1W5WTJZS4VX3M5BE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Bounded verification slices
+    timestamp: 2026-07-12T22:00:33.150Z
+  - _ulid: 01KXC5HD2FSSPFPD73SG8P3VE1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan cross-reference resolution
+    timestamp: 2026-07-12T22:00:36.175Z
+  - _ulid: 01KXC5HG28NAJGHT65KPATPQ59
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate refs baseline
+    timestamp: 2026-07-12T22:00:39.240Z
+  - _ulid: 01KXC5HK32RFDSEZXY00EWXG91
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment baseline
+    timestamp: 2026-07-12T22:00:42.339Z
+  - _ulid: 01KXC5HP7PF2DKTXZ5GHEHQ25P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness baseline
+    timestamp: 2026-07-12T22:00:45.558Z
+  - _ulid: 01KXC5HSDQMCGS6DCCF3PATR00
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: format
+    timestamp: 2026-07-12T22:00:48.823Z
+  - _ulid: 01KXC5HWFSXSDZ19EGEXSYGHY8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: lint
+    timestamp: 2026-07-12T22:00:51.961Z
+  - _ulid: 01KXC5HZM75MCCWFHTMJSMK98V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: typecheck
+    timestamp: 2026-07-12T22:00:55.175Z
+  - _ulid: 01KXC5J2Q2GTPDCJDYPBQZASQ4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-07-12T22:00:58.338Z
+  - _ulid: 01KXC5J5TBCXC09MR51JAN1EXW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality
+    timestamp: 2026-07-12T22:01:01.515Z
+  - _ulid: 01KXC5J8YEQV7EZWY1TR02MF1V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-07-12T22:01:04.719Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -85,98 +493,154 @@ subject:
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
 threads:
-  - _ulid: 01KXC5HJAA5R9S7AJKDKJNYD0N
+  - _ulid: 01KXC5FAZ02CQH18V1D7JS6GX2
     anchor:
       type: structured
       ref: "@dispatch-lifecycle-control-authority"
       section: acceptance_criteria
     entries:
-      - _ulid: 01KXC5HJAABQ7NRVYMGHZCFZ1N
+      - _ulid: 01KXC5FAZ189SQJC24GMCW0TXQ
         author: Jacob Chapel
         body: Atomicity and timeless behavioral language are still not closed.
-          ac-spawn-win-honors-selected-action specifies two actions/outcomes;
-          ac-task-interrupted-stop-recovers combines two triggers with reopening and isolation;
-          ac-controls-do-not-change-readiness enumerates five guarantees;
-          ac-evidence-survives-control combines six evidence classes; and
-          ac-reconstruction-uses-current-state contains non-promise commentary. Exact patches
-          @agent-dispatch-engine ac-11 and @cli-agent-commands ac-5 are compound too. Split focused
-          behavioral ACs and move mechanisms/non-promises to descriptions or task notes.
-        created_at: 2026-07-12T22:00:41.546Z
+          ac-spawn-win-honors-selected-action specifies two independently testable actions and
+          outcomes; ac-task-interrupted-stop-recovers combines daemon-start and retry triggers plus
+          scope reopening and unrelated-task isolation; ac-controls-do-not-change-readiness
+          enumerates five independently observable state guarantees; ac-evidence-survives-control
+          combines six evidence classes; and ac-reconstruction-uses-current-state contains a
+          non-assertion about not promising FIFO or retry timing. The exact patches are also
+          compound, especially @agent-dispatch-engine ac-11 and @cli-agent-commands ac-5. Split
+          focused behavioral ACs and move mechanism/non-promises to descriptions or task notes.
+        created_at: 2026-07-12T21:59:28.481Z
     kind: blocker
-  - _ulid: 01KXC5HNFNKT4BT7MZCR5DX0H6
+  - _ulid: 01KXC5FDX3KQXYZ10MB40ZYDXZ
     anchor:
       type: structured
       ref: "@task-dispatch-control-persistence"
       section: description
     entries:
-      - _ulid: 01KXC5HNFNQ2FEKW02Y5GCX12M
+      - _ulid: 01KXC5FDX3WXPG7X11N4G9KE58
         author: Jacob Chapel
-        body: Persistence ownership is not executable exactly. The named existing shadow lock helper
-          withDispatchShadowMutationLock is private at src/agent-runtime/workspace.ts:1758, so the
-          new parser cannot consume it. The task does not name the shared helper owner/extraction,
-          commit API, in-memory snapshot owner, or exact cache-domain/status invalidation bridge.
-          Freeze those owners and the watcher-to-store/status path.
-        created_at: 2026-07-12T22:00:44.789Z
+        body: The persistence/ownership contract is still not executable exactly. The plan says to acquire
+          the existing dispatch shadow mutation lock, but current withDispatchShadowMutationLock is
+          private to src/agent-runtime/workspace.ts:1758, so src/parser/dispatch-control.ts cannot
+          consume it. The task does not name the shared helper owner/extraction, commit helper API,
+          in-memory snapshot owner, or exact entity-cache domain/status-projection bridge. Current
+          CacheDomain has no dispatch-control or agent-status domain and the generic watcher only
+          forwards file changes. Freeze the reusable lock/commit owner and watcher-to-store/status
+          invalidation path.
+        created_at: 2026-07-12T21:59:31.491Z
     kind: blocker
-  - _ulid: 01KXC5HRT291QRZ6SXK5DS43J1
+  - _ulid: 01KXC5FGVJQ3C5P2BRT6S7X14N
     anchor:
       type: structured
       field: ac-interrupted-stop-recovers
       ref: "@dispatch-lifecycle-control-authority"
       section: acceptance_criteria
     entries:
-      - _ulid: 01KXC5HRT2Y4TC8YH8T7458CHV
+      - _ulid: 01KXC5FGVJ7X9ETSFKN3ERSCRT
         author: Jacob Chapel
-        body: Crash recovery remains underspecified. pending_cleanup has only scope keys, not exact
-          invocation/session identities or cleanup phase. Startup reconstruction has no durable
-          source after volatile SessionRegistry loss, so targeted cleanup cannot be proven isolated.
-          Define pending-cleanup fields, durable reconstruction source, phase transitions, and
-          restart behavior.
-        created_at: 2026-07-12T22:00:48.194Z
+        body: Crash recovery remains underspecified at the ownership boundary. pending_cleanup is only
+          described as entries keyed by global or task ULID, without exact invocation/session
+          identities and cleanup phase needed for targeted recovery. The plan says startup
+          reconstructs dispatch-owned active/session ownership but does not identify the durable
+          source or how it distinguishes still-live processes/sessions after volatile
+          SessionRegistry loss. Define pending-cleanup fields, durable reconstruction source, phase
+          transitions, and restart behavior for each resource.
+        created_at: 2026-07-12T21:59:34.514Z
     kind: blocker
-  - _ulid: 01KXC5HYE1NV9V05ZH6Z0668AN
+  - _ulid: 01KXC5FKWPZ17G9N94SSDNKTW3
     anchor:
       type: structured
       ref: "@task-dispatch-lifecycle-events"
       section: description
     entries:
-      - _ulid: 01KXC5HYE21EX2AXBG6X5WRSZG
+      - _ulid: 01KXC5FKWQGNNGNKHTRT6XHR6P
         author: Jacob Chapel
         body: "The closed event taxonomy is incomplete: action includes start and every applied attempt must
-          emit one corresponding event, but no start_applied identifier or mapping exists. Mapping
-          start to resume_applied contradicts the frozen verbs. Add an exact start mapping and
-          enumerate closed error_code values."
-        created_at: 2026-07-12T22:00:53.954Z
+          emit one corresponding event, but identifiers include pause_applied, resume_applied, and
+          stop_applied only. There is no start_applied identifier, and mapping start to
+          resume_applied contradicts the frozen verbs. Add an exact start mapping and enumerate the
+          closed error_code values."
+        created_at: 2026-07-12T21:59:37.623Z
     kind: blocker
-  - _ulid: 01KXC5J1J95EQQB5GSG0VXFZ80
+  - _ulid: 01KXC5FPW9ZNG80Y5DGC9QVY2X
     anchor:
       type: structured
       ref: "@task-daemon-dispatch-lifecycle-api"
       section: description
     entries:
-      - _ulid: 01KXC5J1J99DMJR1Z4PN8AFGGW
+      - _ulid: 01KXC5FPW9VTBAR8NN3ZRHXHE0
         author: Jacob Chapel
-        body: HTTP compatibility remains open. Existing dispatch, dispatch/start, dispatch/stop, and
-          dispatch/status routes are only called adapters/aliases; exact flat-versus-envelope
-          success/no-op/error fields and 409/500/503 translation are unspecified. Freeze every route
-          request/response/status plus error.code/details.
-        created_at: 2026-07-12T22:00:57.161Z
+        body: The HTTP compatibility contract is not closed for every existing route. The canonical
+          envelope/statuses are specified, but POST /api/agent/dispatch, POST /dispatch/start, POST
+          /dispatch/stop, and GET /dispatch/status are only called adapters or aliases. The plan
+          does not say whether they retain current flat fields, return the new envelope, or
+          translate new 409/500/503 failures. Freeze exact request, success/no-op, error status, and
+          response fields for each route, plus error.code/details shapes.
+        created_at: 2026-07-12T21:59:40.681Z
     kind: blocker
-  - _ulid: 01KXC5J4KP4G2210V22Y063VEM
+  - _ulid: 01KXC5FSX1HMNQ4F8TKQ1P480H
     anchor:
       type: structured
       ref: "@task-cli-dispatch-lifecycle-controls"
       section: description
     entries:
-      - _ulid: 01KXC5J4KPBWMMN1HVRM7NJZN4
+      - _ulid: 01KXC5FSX1QCNYH81R4YPJYMW0
         author: Jacob Chapel
-        body: "CLI safety conflicts with @trait-confirmation-prompt: the trait requires --force, while the
-          plan invents --yes without applying/amending the trait. It also omits
-          tests/cli-daemon-endpoint-regression.test.ts. Reconcile the flag and legacy-script
-          contract and include that existing suite."
-        created_at: 2026-07-12T22:01:00.278Z
+        body: Destructive CLI compatibility conflicts with the canonical trait and misses an existing
+          regression suite. @trait-confirmation-prompt defines --force for
+          destructive/non-interactive bypass, while the plan invents --yes and neither applies nor
+          amends that trait. The task also omits tests/cli-daemon-endpoint-regression.test.ts even
+          though endpoint selection is current dispatch CLI compatibility. Reconcile --force versus
+          --yes, legacy-script behavior, and include the existing suite.
+        created_at: 2026-07-12T21:59:43.778Z
+    kind: blocker
+  - _ulid: 01KXC5FWWA31SS3AY958GNC64D
+    anchor:
+      type: structured
+      ref: "@task-ui-dispatch-lifecycle-controls"
+      section: description
+    entries:
+      - _ulid: 01KXC5FWWAJ6SNH9QQQNNJPW02
+        author: Jacob Chapel
+        body: The dispatch_enabled consumer inventory is incomplete.
+          packages/web-ui/src/routes/tasks/board/+page.svelte imports AgentDispatchStatus, fetches
+          agent status, and passes it to ActiveFleetRow, whose visibility is gated by
+          dispatch_enabled. The prior review named this route, but the revised inventory omits it.
+          Add the board route and focused/browser coverage.
+        created_at: 2026-07-12T21:59:46.826Z
+    kind: blocker
+  - _ulid: 01KXC5FZSS951AT4ZK0RRSFVPD
+    anchor:
+      type: structured
+      ref: "@task-patch-dispatch-lifecycle-specs"
+      section: tasks
+    entries:
+      - _ulid: 01KXC5FZSS3GHX0WD6QAAVB0MZ
+        author: Jacob Chapel
+        body: One-primary-owner coverage is still violated. The spec-patch task uses a parser-visible Covers
+          list for behavioral ACs also claimed by implementation tasks, including CLI, daemon, UI,
+          event, and cleanup ACs. Coverage Ownership prose does not cancel duplicate claims. Recast
+          patch readback as materialization context/verification, leaving each behavioral AC with
+          one primary closure owner.
+        created_at: 2026-07-12T21:59:49.817Z
+    kind: blocker
+  - _ulid: 01KXC5G2T3V6XRJN3P5PK50KSN
+    anchor:
+      type: structured
+      ref: "@task-engine-global-hard-stop"
+      section: description
+    entries:
+      - _ulid: 01KXC5G2T33KWHR2QSC4KQZ53H
+        author: Jacob Chapel
+        body: The source/test inventory for session shutdown is factually wrong.
+          tests/session-registry.test.ts does not exist; the existing SessionRegistry behavioral
+          suite is tests/active-session-registry.test.ts, including closeAll behavior. Both stop
+          tasks name the nonexistent file. Use the existing suite or explicitly create a new file
+          while preserving existing regression coverage.
+        created_at: 2026-07-12T21:59:52.899Z
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:56:26.270Z
-updated_at: 2026-07-12T22:01:00.278Z
+updated_at: 2026-07-12T22:01:04.451Z
 notes: []
