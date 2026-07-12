@@ -115,6 +115,17 @@ checks:
     runner: task boundary review
     created_at: 2026-07-12T21:29:46.148Z
     completed_at: 2026-07-12T21:29:46.148Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All local spec/task refs parse; existing refs used by the plan were resolved with kspec
+      item get. Proposed parent defaults to stored @agent-integration module.
+    name: Plan cross-reference resolution
+    required: true
+    runner: parsePlanDocument + kspec item get
+    created_at: 2026-07-12T21:29:51.457Z
+    completed_at: 2026-07-12T21:29:51.457Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -360,6 +371,13 @@ events:
       status: fail
       name: Short-agent slicing and scope
     timestamp: 2026-07-12T21:29:46.406Z
+  - _ulid: 01KXC3S3V6ZZPJKX4QTJ3JBBYW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan cross-reference resolution
+    timestamp: 2026-07-12T21:29:51.718Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -786,5 +804,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:29:46.148Z
+updated_at: 2026-07-12T21:29:51.457Z
 notes: []
