@@ -957,6 +957,12 @@ events:
     payload:
       thread_ulid: 01KXC8EJYHKGF7J0G7BSX5Z5DQ
     timestamp: 2026-07-12T22:55:42.972Z
+  - _ulid: 01KXC8PG675Q0GSPD4WK4QZFA0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXC8ER2X4Q2D8XQMP87A8WHS
+    timestamp: 2026-07-12T22:55:48.935Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -1176,6 +1182,8 @@ threads:
           enumerate every new 409/500/503 case.
         created_at: 2026-07-12T22:51:34.877Z
     kind: blocker
+    resolved_at: 2026-07-12T22:55:48.669Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXC8EXKZJNVTRMXKYX461Y27
     anchor:
       type: structured
@@ -1200,5 +1208,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-12T22:54:54.973Z
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:55:42.714Z
+updated_at: 2026-07-12T22:55:48.669Z
 notes: []
