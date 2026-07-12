@@ -11,60 +11,239 @@ checks:
     name: Stored plan integrity
     required: true
     runner: kspec plan export / cmp
-    created_at: 2026-07-12T23:21:03.148Z
-    completed_at: 2026-07-12T23:21:03.148Z
+    created_at: 2026-07-12T23:20:16.552Z
+    completed_at: 2026-07-12T23:20:16.552Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: 1 spec, 77 ACs, derive_from_specs=false, 15 explicit tasks, zero errors/warnings, no
-      generic task.
+    evidence: Exactly 1 spec, 77 ACs, derive_from_specs=false, 15 explicit tasks, zero parser
+      errors/warnings, no generic task.
     name: Plan parser and materialization shape
     required: true
     runner: parsePlanDocument
-    created_at: 2026-07-12T23:21:07.114Z
-    completed_at: 2026-07-12T23:21:07.114Z
+    created_at: 2026-07-12T23:20:20.132Z
+    completed_at: 2026-07-12T23:20:20.132Z
   - status: fail
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: Compound cross-scope/outcome/surface ACs and two non-promise ACs remain.
+    evidence: Compound cross-scope/outcome/surface ACs and two non-promise ACs remain; blocker recorded.
     name: AC atomicity timelessness materializability
     required: true
     runner: manual
-    created_at: 2026-07-12T23:21:11.114Z
-    completed_at: 2026-07-12T23:21:11.114Z
+    created_at: 2026-07-12T23:20:23.242Z
+    completed_at: 2026-07-12T23:20:23.242Z
   - status: fail
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: Exactly 60 entries; three defer their contract to the plan instead of standalone spec text.
+    evidence: Count is exactly 60, but three entries defer their contract to the plan instead of
+      standalone spec text.
     name: Exact 60 patch entries standalone
     required: true
     runner: manual
-    created_at: 2026-07-12T23:21:14.588Z
-    completed_at: 2026-07-12T23:21:14.588Z
+    created_at: 2026-07-12T23:20:26.455Z
+    completed_at: 2026-07-12T23:20:26.455Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: Global/task applied, no-op, invalid, startup, shutdown, gating, and retry semantics explicit.
+    evidence: Global/task applied, no-op, invalid, startup, shutdown, gating, and retry semantics are
+      explicit.
     name: Transition matrices
     required: true
     runner: manual
-    created_at: 2026-07-12T23:21:17.990Z
-    completed_at: 2026-07-12T23:21:17.990Z
+    created_at: 2026-07-12T23:20:29.855Z
+    completed_at: 2026-07-12T23:20:29.855Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: Correct object path, rollback before unlock, committed-object publication, eventual single
+    evidence: Correct tree path; single exported transaction owner; rollback before unlock on
+      ordinary/verification failure; verified committed-object publication; deterministic eventual
       watcher delivery.
     name: Persistence shadow path rollback watcher delivery
     required: true
-    runner: source/plan audit
-    created_at: 2026-07-12T23:21:21.132Z
-    completed_at: 2026-07-12T23:21:21.132Z
+    runner: manual
+    created_at: 2026-07-12T23:20:33.290Z
+    completed_at: 2026-07-12T23:20:33.290Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Durable birth/member proofs, before/after checks, no signal for unverifiable groups, and
+      no completion while a group remains live/unverifiable.
+    name: Leader and live-group recovery safety
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:20:36.783Z
+    completed_at: 2026-07-12T23:20:36.783Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Canonical predicates improved, but compatibility invalid_transition response presence
+      remains unfrozen and conflicts with exact path/error preservation.
+    name: Closed error mapping all routes
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:20:40.642Z
+    completed_at: 2026-07-12T23:20:40.642Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Queued/agent/runner/resolved-adapter/no-engine/status bases are inventoried, but cwd
+      conflict preservation contradicts no-path/no-dynamic-error and invalid-transition 409 bodies
+      are ambiguous.
+    name: Exact legacy HTTP field presence
+    required: true
+    runner: source and route tests
+    created_at: 2026-07-12T23:20:44.754Z
+    completed_at: 2026-07-12T23:20:44.754Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Both status spellings preserve GET /api/agent/dispatch/status; mutations use canonical
+      control; force, host rejection, confirmation, exits, and help are explicit.
+    name: CLI grammar endpoint safety
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:20:48.546Z
+    completed_at: 2026-07-12T23:20:48.546Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Agents, dashboard, board, fleet, automation, API, websocket, static fallback,
+      accessibility, and active-work visibility covered.
+    name: UI boolean consumer inventory
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:20:52.228Z
+    completed_at: 2026-07-12T23:20:52.228Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 77 plan AC IDs are textually claimed exactly once, but several owners precede behavior
+      needed to close them.
+    name: Behavioral AC primary ownership
+    required: true
+    runner: Covers/dependency audit
+    created_at: 2026-07-12T23:20:56.724Z
+    completed_at: 2026-07-12T23:20:56.724Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1 spec/15 explicit tasks/no generic task; acyclic priority-monotone graph; three bounded
+      secondary verification slices.
+    name: Plan shape dependency graph short slices
+    required: true
+    runner: parser/topological audit
+    created_at: 2026-07-12T23:21:00.268Z
+    completed_at: 2026-07-12T23:21:00.268Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every explicit Existing path exists; every first-owner Create path is absent;
+      prerequisite-created tests are Existing-by-dependent-task.
+    name: Path classification
+    required: true
+    runner: filesystem inventory
+    created_at: 2026-07-12T23:21:04.127Z
+    completed_at: 2026-07-12T23:21:04.127Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Module, spec refs, task refs/dependencies, Covers IDs, exact-patch refs, and new AC IDs
+      resolve.
+    name: Plan cross-reference resolution
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:21:07.908Z
+    completed_at: 2026-07-12T23:21:07.908Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 7 unrelated ambiguous-ref errors remain for @observations and @spec-plan-import; no
+      plan-local broken ref found.
+    name: kspec validate refs baseline
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-12T23:21:11.684Z
+    completed_at: 2026-07-12T23:21:11.684Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 55 existing warnings.
+    name: kspec validate alignment baseline
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-12T23:21:14.995Z
+    completed_at: 2026-07-12T23:21:14.995Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with existing repository coverage warnings unrelated to this draft.
+    name: kspec validate completeness baseline
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-12T23:21:18.361Z
+    completed_at: 2026-07-12T23:21:18.361Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 88 tests passed across plan parser, CLI endpoint regression, public dispatch API, and
+      dispatch route suites (21 suites).
+    name: Current contract regression suites
+    required: true
+    runner: npm test focused
+    created_at: 2026-07-12T23:21:21.500Z
+    completed_at: 2026-07-12T23:21:21.500Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review; no implementation/guidance change reviewed. Unrelated user working-tree
+      edits were preserved.
+    name: Product format lint typecheck full suite
+    required: true
+    runner: not run
+    created_at: 2026-07-12T23:21:25.130Z
+    completed_at: 2026-07-12T23:21:25.130Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No package-shipped guidance surface or Kynetic-only instruction relocation is proposed.
+    name: Shared-guidance neutrality
+    required: true
+    runner: shared-guidance-neutrality
+    created_at: 2026-07-12T23:21:28.654Z
+    completed_at: 2026-07-12T23:21:28.654Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read full stored plan, all four prior closed reviews, owning specs, dispatch routes/engine
+      status, shadow lock/rollback/commit, watcher/cache, sessions, events, CLI, UI, and direct
+      tests. Verified 77/60/15 counts, ownership, graph, paths, recovery, compatibility, endpoints,
+      and focused regressions.
+    name: Review evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:21:32.493Z
+    completed_at: 2026-07-12T23:21:32.493Z
 events:
   - _ulid: 01KXC9XQD2BH75AMKB9VHY5630
     actor: codex
@@ -107,48 +286,160 @@ events:
       kind: blocker
       thread_ulid: 01KXCA2G0P8WT85PT0Y17BTPRY
     timestamp: 2026-07-12T23:19:50.846Z
-  - _ulid: 01KXCA4Q7G6P0MB86REY12HD4E
+  - _ulid: 01KXCA39NQKXVJKXT19777FA65
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Stored plan integrity
-    timestamp: 2026-07-12T23:21:03.472Z
-  - _ulid: 01KXCA4V35Z7VHHFMWH5ZJJ2E6
+    timestamp: 2026-07-12T23:20:16.823Z
+  - _ulid: 01KXCA3D4ZT8YXQ06TS21MHV9X
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Plan parser and materialization shape
-    timestamp: 2026-07-12T23:21:07.429Z
-  - _ulid: 01KXCA4Z0TTN3S1BPQG20JZY4A
+    timestamp: 2026-07-12T23:20:20.384Z
+  - _ulid: 01KXCA3G6381RRDNGYQA2GM9SS
     actor: codex
     event_type: check_added
     payload:
       status: fail
       name: AC atomicity timelessness materializability
-    timestamp: 2026-07-12T23:21:11.450Z
-  - _ulid: 01KXCA52ANGCB5RBJRS1T0G80S
+    timestamp: 2026-07-12T23:20:23.491Z
+  - _ulid: 01KXCA3KAZP8A5VDG3Y6R5PZNB
     actor: codex
     event_type: check_added
     payload:
       status: fail
       name: Exact 60 patch entries standalone
-    timestamp: 2026-07-12T23:21:14.837Z
-  - _ulid: 01KXCA55NEP2ZV2KW6GR2W9E48
+    timestamp: 2026-07-12T23:20:26.719Z
+  - _ulid: 01KXCA3PNPK9ADFS0E6HZQ8JR3
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Transition matrices
-    timestamp: 2026-07-12T23:21:18.254Z
-  - _ulid: 01KXCA58QN5PFSTCG69Z16H0M2
+    timestamp: 2026-07-12T23:20:30.134Z
+  - _ulid: 01KXCA3T09KS7WVYDKVX9YJF8A
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Persistence shadow path rollback watcher delivery
-    timestamp: 2026-07-12T23:21:21.398Z
+    timestamp: 2026-07-12T23:20:33.545Z
+  - _ulid: 01KXCA3XEVDK30KRCNPP9XSMN0
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Leader and live-group recovery safety
+    timestamp: 2026-07-12T23:20:37.083Z
+  - _ulid: 01KXCA4188XSPFSRRVMZYKANKZ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Closed error mapping all routes
+    timestamp: 2026-07-12T23:20:40.968Z
+  - _ulid: 01KXCA457BV25SJNMXH7F0KT8Y
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Exact legacy HTTP field presence
+    timestamp: 2026-07-12T23:20:45.035Z
+  - _ulid: 01KXCA48YEM14WHGF4CYRWDGFZ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: CLI grammar endpoint safety
+    timestamp: 2026-07-12T23:20:48.846Z
+  - _ulid: 01KXCA4CGX7T08Z6X0FNDS737G
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: UI boolean consumer inventory
+    timestamp: 2026-07-12T23:20:52.509Z
+  - _ulid: 01KXCA4GX6T530EC7PBTDN46QK
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Behavioral AC primary ownership
+    timestamp: 2026-07-12T23:20:56.999Z
+  - _ulid: 01KXCA4MDKD1Q2TV4JQ6FKYDFA
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan shape dependency graph short slices
+    timestamp: 2026-07-12T23:21:00.595Z
+  - _ulid: 01KXCA4R5R0T34JHTZMSS7N58F
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Path classification
+    timestamp: 2026-07-12T23:21:04.440Z
+  - _ulid: 01KXCA4VV48S8Y4M0DGYSHR64Q
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan cross-reference resolution
+    timestamp: 2026-07-12T23:21:08.196Z
+  - _ulid: 01KXCA4ZG475M351T1F15ARA4E
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs baseline
+    timestamp: 2026-07-12T23:21:11.940Z
+  - _ulid: 01KXCA52QH6EXQRBF1PHAMGJZV
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment baseline
+    timestamp: 2026-07-12T23:21:15.249Z
+  - _ulid: 01KXCA560J5HZDQ7H2B72SZWD2
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness baseline
+    timestamp: 2026-07-12T23:21:18.611Z
+  - _ulid: 01KXCA593BSP8JEJ99HNVJ9T9X
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Current contract regression suites
+    timestamp: 2026-07-12T23:21:21.771Z
+  - _ulid: 01KXCA5CNM9VNVF1FQB6AFG3RY
+    actor: codex
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product format lint typecheck full suite
+    timestamp: 2026-07-12T23:21:25.428Z
+  - _ulid: 01KXCA5G4AP2X4XTG6D2JPF3E1
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality
+    timestamp: 2026-07-12T23:21:28.970Z
+  - _ulid: 01KXCA5KTE6QMD59JYC3373XK9
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-07-12T23:21:32.750Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -230,5 +521,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T23:17:14.275Z
-updated_at: 2026-07-12T23:21:21.132Z
+updated_at: 2026-07-12T23:21:32.493Z
 notes: []
