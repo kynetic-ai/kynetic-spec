@@ -2,7 +2,116 @@ _ulid: 01KXCBVG9YE7XACTWKCYN9H12K
 slugs: []
 title: "Canonical final task-buildability review: Dispatch Lifecycle Pause Resume and Stop Controls"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Stored/source hash f2cbdfee926846fd55d63c78f48bddc712ee1dfbb50b469cb78d6d6269bf5985; 1
+      spec/82 ACs/15 tasks/derive=false/no diagnostics. Draft correctly blocks actual derive.
+    name: Parser stored-source materialization shape
+    required: true
+    runner: parsePlanDocument + import dry-run
+    created_at: 2026-07-12T23:52:10.706Z
+    completed_at: 2026-07-12T23:52:10.706Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read all 15 current bodies and all 9 original @01KX9FG7 Hyphoria bodies; current handoffs
+      are plan-dependent, repetitive, path/command-invalid, and generically tested.
+    name: Task buildability against Hyphoria
+    required: true
+    runner: full 15-task audit
+    created_at: 2026-07-12T23:52:13.745Z
+    completed_at: 2026-07-12T23:52:13.745Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Acyclic, priority-monotone; all 82 plan ACs claimed once. Prior dependency-point ownership
+      errors are corrected.
+    name: Graph one-owner implementation order
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:52:16.644Z
+    completed_at: 2026-07-12T23:52:16.644Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Patch task omits all 60 payloads; compound/vague event patch contracts still depend on
+      top-level prose.
+    name: Atomic AC standalone exact patches
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:52:19.690Z
+    completed_at: 2026-07-12T23:52:19.690Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Top-level prose explicitly freezes path-free cwd messages and exact invalid_transition 409
+      bodies for all three aliases; task self-containment fails separately.
+    name: Sanitized legacy HTTP contract
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:52:22.607Z
+    completed_at: 2026-07-12T23:52:22.607Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Malformed/omitted paths, invalid commands in all tasks, and 18 unrelated attached
+      resources totaling 859524 bytes.
+    name: Path command and resource gates
+    required: true
+    runner: filesystem/package/resource audit
+    created_at: 2026-07-12T23:52:25.596Z
+    completed_at: 2026-07-12T23:52:25.596Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 107 tests passed across 15 suites.
+    name: Focused parser import derive tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-12T23:52:28.541Z
+    completed_at: 2026-07-12T23:52:28.541Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Same 7 unrelated ambiguous @observations/@spec-plan-import refs as prior review; no
+      plan-local parser ref error.
+    name: kspec validate refs baseline
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-12T23:52:31.546Z
+    completed_at: 2026-07-12T23:52:31.546Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Both exit 0 with existing warnings.
+    name: kspec alignment completeness baselines
+    required: true
+    runner: kspec validate
+    created_at: 2026-07-12T23:52:34.530Z
+    completed_at: 2026-07-12T23:52:34.530Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No shared guidance change. Read full plan/tasks/prior review/eight
+      owners/routes/resources/all Hyphoria tasks; ran
+      parser/import/tests/graph/owner/path/command/resource/ref/alignment/completeness audits.
+    name: Evidence log and neutrality
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:52:37.632Z
+    completed_at: 2026-07-12T23:52:37.632Z
 events:
   - _ulid: 01KXCBVG9Y6AGTB28N23SHXR57
     actor: Jacob Chapel
@@ -59,9 +168,95 @@ events:
       kind: blocker
       thread_ulid: 01KXCBWYZHJ47ZJE5M805WRRRA
     timestamp: 2026-07-12T23:51:46.679Z
+  - _ulid: 01KXCBXPXZXAFWNMJKE9TT1NR4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Parser stored-source materialization shape
+    timestamp: 2026-07-12T23:52:10.943Z
+  - _ulid: 01KXCBXSX21MDBH1VMAC4WFM8M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task buildability against Hyphoria
+    timestamp: 2026-07-12T23:52:13.986Z
+  - _ulid: 01KXCBXWQCWMWD2TVP16W2CPWS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Graph one-owner implementation order
+    timestamp: 2026-07-12T23:52:16.876Z
+  - _ulid: 01KXCBXZPF3F4Y9RWG9B0GQ05P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Atomic AC standalone exact patches
+    timestamp: 2026-07-12T23:52:19.919Z
+  - _ulid: 01KXCBY2HTEFHXAGBMXCZ2P0M8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Sanitized legacy HTTP contract
+    timestamp: 2026-07-12T23:52:22.843Z
+  - _ulid: 01KXCBY5FC67K89X8VQERJVCVZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Path command and resource gates
+    timestamp: 2026-07-12T23:52:25.837Z
+  - _ulid: 01KXCBY8BAMM9JP1T3WVG2Q6K2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Focused parser import derive tests
+    timestamp: 2026-07-12T23:52:28.778Z
+  - _ulid: 01KXCBYB940C49ZE0D1TV1FR5K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs baseline
+    timestamp: 2026-07-12T23:52:31.780Z
+  - _ulid: 01KXCBYE6F9GJKSB7SWARWPK31
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec alignment completeness baselines
+    timestamp: 2026-07-12T23:52:34.767Z
+  - _ulid: 01KXCBYH813E83YSQ1KGEXAX7J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Evidence log and neutrality
+    timestamp: 2026-07-12T23:52:37.889Z
+  - _ulid: 01KXCBYM3EAWVKRRA07E5FR8QZ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-12T23:52:40.814Z
+  - _ulid: 01KXCBYM3EDEY406G4MRPW41FM
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-12T23:52:40.814Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -169,7 +364,14 @@ threads:
           task-verify-ui-lifecycle-browser."
         created_at: 2026-07-12T23:51:46.417Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-12T23:52:40.813Z
 created_at: 2026-07-12T23:50:58.622Z
-updated_at: 2026-07-12T23:51:46.417Z
+updated_at: 2026-07-12T23:52:40.814Z
 notes: []

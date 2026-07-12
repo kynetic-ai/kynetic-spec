@@ -29073,8 +29073,8 @@ reviews:
     title: "Canonical final task-buildability review: Dispatch Lifecycle Pause Resume and Stop Controls"
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 0
-    lifecycle_state: open
+    check_count: 10
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -29083,6 +29083,6 @@ reviews:
       shadow_commit: ""
     thread_count: 6
     unresolved_blocker_count: 6
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-07-12T23:50:58.622Z
-    updated_at: 2026-07-12T23:51:46.417Z
+    updated_at: 2026-07-12T23:52:40.814Z
