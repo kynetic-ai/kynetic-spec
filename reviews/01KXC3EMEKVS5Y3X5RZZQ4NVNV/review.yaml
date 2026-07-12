@@ -93,6 +93,17 @@ checks:
     runner: spec and runtime inspection
     created_at: 2026-07-12T21:29:35.368Z
     completed_at: 2026-07-12T21:29:35.368Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Canonical route schema and event identifiers are not frozen; destructive CLI confirmation
+      is undecided; multiple dispatch_enabled UI consumers are omitted.
+    name: API CLI UI event completeness
+    required: true
+    runner: current route/CLI/UI consumer audit
+    created_at: 2026-07-12T21:29:40.636Z
+    completed_at: 2026-07-12T21:29:40.636Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -324,6 +335,13 @@ events:
       status: fail
       name: Lifecycle and failure architecture
     timestamp: 2026-07-12T21:29:35.617Z
+  - _ulid: 01KXC3RS8WWP46Y4SCNDSPVBPD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: API CLI UI event completeness
+    timestamp: 2026-07-12T21:29:40.892Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -750,5 +768,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:29:35.368Z
+updated_at: 2026-07-12T21:29:40.636Z
 notes: []
