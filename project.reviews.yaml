@@ -28921,8 +28921,8 @@ reviews:
       content_hash: ""
       ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
       shadow_commit: ""
-    thread_count: 20
-    unresolved_blocker_count: 20
+    thread_count: 21
+    unresolved_blocker_count: 21
     verdict_count: 0
     created_at: 2026-07-12T21:24:08.275Z
-    updated_at: 2026-07-12T21:27:23.126Z
+    updated_at: 2026-07-12T21:27:28.467Z

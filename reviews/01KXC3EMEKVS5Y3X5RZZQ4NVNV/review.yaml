@@ -157,6 +157,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC3MJQPJJ63FPW0AA5JH5KA
     timestamp: 2026-07-12T21:27:23.375Z
+  - _ulid: 01KXC3MR63K25Y9MPBB1TJNYH9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3MQYJ53XT867SC4KA21QJ
+    timestamp: 2026-07-12T21:27:28.707Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -528,7 +535,25 @@ threads:
           backward-compatibility contract and point the task at exact existing suites.
         created_at: 2026-07-12T21:27:23.126Z
     kind: blocker
+  - _ulid: 01KXC3MQYJ53XT867SC4KA21QJ
+    anchor:
+      type: structured
+      ref: "@task-ui-dispatch-lifecycle-controls"
+      section: description
+    entries:
+      - _ulid: 01KXC3MQYKJXQ046XCDN8R24FN
+        author: Jacob Chapel
+        body: UI scope omits existing consumers that derive visibility from dispatch_enabled.
+          packages/web-ui/src/routes/+page.svelte, routes/tasks/board/+page.svelte,
+          routes/automation/+page.svelte, and lib/components/board/ActiveFleetRow.svelte consume
+          AgentDispatchStatus; ActiveFleetRow and the dashboard gate active work on
+          dispatch_enabled. Updating only the agents page can still hide active draining work or
+          mislabel paused and stopped state elsewhere. Add an exact consumer audit and required
+          updates and tests for every lifecycle-dependent surface, or explicitly preserve a
+          compatibility meaning that keeps each consumer correct.
+        created_at: 2026-07-12T21:27:28.467Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:27:23.126Z
+updated_at: 2026-07-12T21:27:28.467Z
 notes: []
