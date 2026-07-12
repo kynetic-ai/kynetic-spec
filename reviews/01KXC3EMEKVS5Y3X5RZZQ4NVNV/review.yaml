@@ -26,6 +26,17 @@ checks:
     runner: parsePlanDocument + isolated kspec plan derive --dry-run
     created_at: 2026-07-12T21:29:01.988Z
     completed_at: 2026-07-12T21:29:01.988Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified named engine ac-11 and CLI ac-5 conflict, plus omitted
+      @per-task-dispatch-drain-coalescing ac-5 which still preserves already-running drains on stop.
+    name: Existing-spec conflict coverage
+    required: true
+    runner: kspec search/item get
+    created_at: 2026-07-12T21:29:07.549Z
+    completed_at: 2026-07-12T21:29:07.549Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -215,6 +226,13 @@ events:
       status: fail
       name: Plan parser and materialization
     timestamp: 2026-07-12T21:29:02.241Z
+  - _ulid: 01KXC3QRYPT9D6DYZ7344XWDC0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Existing-spec conflict coverage
+    timestamp: 2026-07-12T21:29:07.798Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -641,5 +659,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:29:01.988Z
+updated_at: 2026-07-12T21:29:07.549Z
 notes: []
