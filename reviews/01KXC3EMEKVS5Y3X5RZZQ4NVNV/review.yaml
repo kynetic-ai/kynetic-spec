@@ -179,6 +179,16 @@ checks:
     runner: npm run format:check
     created_at: 2026-07-12T21:30:18.501Z
     completed_at: 2026-07-12T21:30:18.501Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-record review only; no code or tracked guidance was changed.
+    name: lint
+    required: false
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-12T21:30:23.680Z
+    completed_at: 2026-07-12T21:30:23.680Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -466,6 +476,13 @@ events:
       status: skipped
       name: format
     timestamp: 2026-07-12T21:30:18.761Z
+  - _ulid: 01KXC3T39RXQ8QD5YT7KRWQGZW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: lint
+    timestamp: 2026-07-12T21:30:23.928Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -892,5 +909,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:30:18.501Z
+updated_at: 2026-07-12T21:30:23.680Z
 notes: []

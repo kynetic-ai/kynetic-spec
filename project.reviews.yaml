@@ -28913,7 +28913,7 @@ reviews:
     title: "Plan review: Dispatch Lifecycle Pause Resume and Stop Controls"
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 16
+    check_count: 17
     lifecycle_state: open
     related_refs: []
     subject:
@@ -28925,4 +28925,4 @@ reviews:
     unresolved_blocker_count: 23
     verdict_count: 0
     created_at: 2026-07-12T21:24:08.275Z
-    updated_at: 2026-07-12T21:30:18.501Z
+    updated_at: 2026-07-12T21:30:23.680Z
