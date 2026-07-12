@@ -933,6 +933,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-12T22:54:54.973Z
+  - _ulid: 01KXC8NSQNQXVSFWSS6ZKX646G
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXC8E0MM57SASFVVXSAMKDZB
+    timestamp: 2026-07-12T22:55:25.941Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -1077,6 +1083,8 @@ threads:
           suppression, and active cancellation. Split these independently testable behaviors.
         created_at: 2026-07-12T22:51:10.868Z
     kind: blocker
+    resolved_at: 2026-07-12T22:55:25.700Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXC8E79YQ50S5234TRAT6EEQ
     anchor:
       type: structured
@@ -1168,5 +1176,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-12T22:54:54.973Z
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:54:54.973Z
+updated_at: 2026-07-12T22:55:25.700Z
 notes: []
