@@ -108,6 +108,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC3KDK1E5F6JVBCVEEARC7C
     timestamp: 2026-07-12T21:26:45.335Z
+  - _ulid: 01KXC3KK0KN11XGZVV4PF8NM89
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3KJS0ABEMFF3DY5MAPJCQ
+    timestamp: 2026-07-12T21:26:50.643Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -350,7 +357,28 @@ threads:
           task list.
         created_at: 2026-07-12T21:26:45.089Z
     kind: blocker
+  - _ulid: 01KXC3KJS0ABEMFF3DY5MAPJCQ
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXC3KJS1N3VQ65VVM62QFJQR
+        author: Jacob Chapel
+        body: The proposed contract is not atomic or consistently behavioral. For example
+          ac-global-stop-is-hard-and-durable independently asserts authority, ingress gating, queue
+          and retry deletion, cancellation, session closure, and completion ordering;
+          ac-task-stop-is-targeted-and-evidence-preserving combines selective scheduling removal,
+          selective cancellation, selective session closure, and four evidence classes;
+          ac-control-actions-are-idempotent-and-auditable combines persistence idempotency,
+          scheduler and cancellation idempotency, and event emission. Several ACs also expose
+          implementation mechanisms such as canonical ULIDs, serialized reconciliation and drain,
+          durable registry, pre-spawn gate, and FIFO bytes. Split independently testable outcomes
+          and move mechanism and rationale to task notes so each timeless AC maps to a focused
+          behavioral test.
+        created_at: 2026-07-12T21:26:50.401Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:26:45.089Z
+updated_at: 2026-07-12T21:26:50.401Z
 notes: []
