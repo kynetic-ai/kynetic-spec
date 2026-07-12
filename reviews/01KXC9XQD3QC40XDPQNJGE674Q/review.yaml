@@ -2,7 +2,69 @@ _ulid: 01KXC9XQD3QC40XDPQNJGE674Q
 slugs: []
 title: "Fresh closure review: Dispatch Lifecycle Pause Resume and Stop Controls"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Full stored plan read; export byte-matches source plan.
+    name: Stored plan integrity
+    required: true
+    runner: kspec plan export / cmp
+    created_at: 2026-07-12T23:21:03.148Z
+    completed_at: 2026-07-12T23:21:03.148Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1 spec, 77 ACs, derive_from_specs=false, 15 explicit tasks, zero errors/warnings, no
+      generic task.
+    name: Plan parser and materialization shape
+    required: true
+    runner: parsePlanDocument
+    created_at: 2026-07-12T23:21:07.114Z
+    completed_at: 2026-07-12T23:21:07.114Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Compound cross-scope/outcome/surface ACs and two non-promise ACs remain.
+    name: AC atomicity timelessness materializability
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:21:11.114Z
+    completed_at: 2026-07-12T23:21:11.114Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exactly 60 entries; three defer their contract to the plan instead of standalone spec text.
+    name: Exact 60 patch entries standalone
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:21:14.588Z
+    completed_at: 2026-07-12T23:21:14.588Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Global/task applied, no-op, invalid, startup, shutdown, gating, and retry semantics explicit.
+    name: Transition matrices
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:21:17.990Z
+    completed_at: 2026-07-12T23:21:17.990Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Correct object path, rollback before unlock, committed-object publication, eventual single
+      watcher delivery.
+    name: Persistence shadow path rollback watcher delivery
+    required: true
+    runner: source/plan audit
+    created_at: 2026-07-12T23:21:21.132Z
+    completed_at: 2026-07-12T23:21:21.132Z
 events:
   - _ulid: 01KXC9XQD2BH75AMKB9VHY5630
     actor: codex
@@ -45,6 +107,48 @@ events:
       kind: blocker
       thread_ulid: 01KXCA2G0P8WT85PT0Y17BTPRY
     timestamp: 2026-07-12T23:19:50.846Z
+  - _ulid: 01KXCA4Q7G6P0MB86REY12HD4E
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Stored plan integrity
+    timestamp: 2026-07-12T23:21:03.472Z
+  - _ulid: 01KXCA4V35Z7VHHFMWH5ZJJ2E6
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parser and materialization shape
+    timestamp: 2026-07-12T23:21:07.429Z
+  - _ulid: 01KXCA4Z0TTN3S1BPQG20JZY4A
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC atomicity timelessness materializability
+    timestamp: 2026-07-12T23:21:11.450Z
+  - _ulid: 01KXCA52ANGCB5RBJRS1T0G80S
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Exact 60 patch entries standalone
+    timestamp: 2026-07-12T23:21:14.837Z
+  - _ulid: 01KXCA55NEP2ZV2KW6GR2W9E48
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Transition matrices
+    timestamp: 2026-07-12T23:21:18.254Z
+  - _ulid: 01KXCA58QN5PFSTCG69Z16H0M2
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Persistence shadow path rollback watcher delivery
+    timestamp: 2026-07-12T23:21:21.398Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -126,5 +230,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T23:17:14.275Z
-updated_at: 2026-07-12T23:19:50.551Z
+updated_at: 2026-07-12T23:21:21.132Z
 notes: []
