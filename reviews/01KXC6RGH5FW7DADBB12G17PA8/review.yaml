@@ -2,7 +2,123 @@ _ulid: 01KXC6RGH5FW7DADBB12G17PA8
 slugs: []
 title: "Closure review: Dispatch Lifecycle Pause Resume and Stop Controls"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read all 533 stored content lines. Stored content matches
+      plans/dispatch-lifecycle-pause-resume-stop.md except the jq-added terminal newline; plan
+      remains draft at entity 01KXC2VXDEGGJ072X2CR4SJWZ2.
+    name: Stored plan integrity
+    required: true
+    runner: kspec plan get
+    created_at: 2026-07-12T22:25:51.083Z
+    completed_at: 2026-07-12T22:25:51.083Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Import dry-run parsed the current source under @agent-integration. Focused
+      parser/import/derive suites passed: 15 suites, 107 tests. Source inspection confirmed
+      derive_from_specs:false suppresses generic spec tasks while preserving manual tasks and
+      resolving local spec/task refs."
+    name: Plan parser and materialization
+    required: true
+    runner: kspec plan import --dry-run; npm test
+    created_at: 2026-07-12T22:25:53.965Z
+    completed_at: 2026-07-12T22:25:53.965Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Multiple plan-owned and patched ACs still combine scopes, triggers, outcomes, state
+      classes, or evidence classes; concrete IDs recorded in blocker thread.
+    name: AC atomicity and timelessness
+    required: true
+    runner: manual plan/spec review
+    created_at: 2026-07-12T22:25:56.801Z
+    completed_at: 2026-07-12T22:25:56.801Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Current watcher forwards file rename before commit; plan has no cross-process
+      committed-version gate or commit-failure rollback preventing early reload/publication.
+    name: Persistence lock commit snapshot watcher ownership
+    required: true
+    runner: source and plan review
+    created_at: 2026-07-12T22:25:59.645Z
+    completed_at: 2026-07-12T22:25:59.645Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Phases are enumerated, but durable record schema/path and PID/PGID reuse-safe process
+      identity are not defined; current SessionMetadataSchema has no process ownership fields.
+    name: Durable crash recovery ownership
+    required: true
+    runner: source and plan review
+    created_at: 2026-07-12T22:26:02.532Z
+    completed_at: 2026-07-12T22:26:02.532Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Global and task start/pause/resume/stop cells are complete, distinguish start from resume,
+      preserve no-op/invalid transitions, and keep task control subordinate to global authority.
+    name: Transition matrices
+    required: true
+    runner: manual matrix review
+    created_at: 2026-07-12T22:26:05.396Z
+    completed_at: 2026-07-12T22:26:05.396Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All six identifiers and applied/no-op/failed action mappings exist, but the promised
+      closed error_code set and failure-class mapping do not.
+    name: Event mappings and closed codes
+    required: true
+    runner: manual contract review
+    created_at: 2026-07-12T22:26:08.412Z
+    completed_at: 2026-07-12T22:26:08.412Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Canonical envelope is specified, but unified/start alias cwd errors and current
+      reason/status fields are omitted or contradicted; exact 500/503 translations and details
+      shapes remain open.
+    name: HTTP canonical and alias compatibility
+    required: true
+    runner: route/test source review
+    created_at: 2026-07-12T22:26:11.424Z
+    completed_at: 2026-07-12T22:26:11.424Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: --force and exit codes align with traits, but both existing status spellings and exact
+      command-to-endpoint mappings are absent; existing endpoint regression suite is omitted from
+      the task files/verification.
+    name: CLI safety and endpoint compatibility
+    required: true
+    runner: source/test/trait review
+    created_at: 2026-07-12T22:26:14.402Z
+    completed_at: 2026-07-12T22:26:14.402Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Inventory includes api, agents page/components, dashboard, tasks board, ActiveFleetRow,
+      automation page, DispatchTriggersSection, ws invalidation, and active/queued/held rendering.
+      rg found no additional dispatch_enabled consumer outside those listed paths.
+    name: UI boolean consumer inventory
+    required: true
+    runner: rg source audit
+    created_at: 2026-07-12T22:26:17.488Z
+    completed_at: 2026-07-12T22:26:17.488Z
 events:
   - _ulid: 01KXC6RGH4XC77F8D80NT105B8
     actor: codex
@@ -73,6 +189,76 @@ events:
       kind: blocker
       thread_ulid: 01KXC6YX101DWRT0CSMJQMPGD6
     timestamp: 2026-07-12T22:25:27.301Z
+  - _ulid: 01KXC6ZMPQPTB1PY55NCAK9JSW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Stored plan integrity
+    timestamp: 2026-07-12T22:25:51.320Z
+  - _ulid: 01KXC6ZQGFZGS17Y19VPTB2975
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parser and materialization
+    timestamp: 2026-07-12T22:25:54.191Z
+  - _ulid: 01KXC6ZT8ZX6RT9Y38EYH2GX9N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC atomicity and timelessness
+    timestamp: 2026-07-12T22:25:57.024Z
+  - _ulid: 01KXC6ZX298GMMECX92QJFQRMD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Persistence lock commit snapshot watcher ownership
+    timestamp: 2026-07-12T22:25:59.881Z
+  - _ulid: 01KXC6ZZW3TGK3NDQTV741X414
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Durable crash recovery ownership
+    timestamp: 2026-07-12T22:26:02.755Z
+  - _ulid: 01KXC702P4VQ6GHBDH33YCKD2E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Transition matrices
+    timestamp: 2026-07-12T22:26:05.636Z
+  - _ulid: 01KXC705MAEY7YMNRFS3JZ2BSW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Event mappings and closed codes
+    timestamp: 2026-07-12T22:26:08.650Z
+  - _ulid: 01KXC708JP9J6XFQCXQPJJFZR6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: HTTP canonical and alias compatibility
+    timestamp: 2026-07-12T22:26:11.670Z
+  - _ulid: 01KXC70BG4QD1C9P6GCGHV28C9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: CLI safety and endpoint compatibility
+    timestamp: 2026-07-12T22:26:14.660Z
+  - _ulid: 01KXC70EGJX2VDVPHW2ESYE9TA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: UI boolean consumer inventory
+    timestamp: 2026-07-12T22:26:17.746Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -232,5 +418,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:21:57.669Z
-updated_at: 2026-07-12T22:25:27.072Z
+updated_at: 2026-07-12T22:26:17.488Z
 notes: []
