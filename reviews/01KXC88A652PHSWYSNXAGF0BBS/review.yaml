@@ -287,6 +287,16 @@ checks:
     required: true
     created_at: 2026-07-12T22:52:15.089Z
     completed_at: 2026-07-12T22:52:15.089Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Global and task applied/no-op/invalid transitions, global gating, startup, shutdown, and
+      retry behavior are frozen.
+    name: Transition matrices
+    required: true
+    created_at: 2026-07-12T22:52:20.445Z
+    completed_at: 2026-07-12T22:52:20.445Z
 events:
   - _ulid: 01KXC88A643NZXBK7THJTVVV1C
     actor: Jacob Chapel
@@ -581,6 +591,13 @@ events:
       status: fail
       name: AC atomicity and timelessness
     timestamp: 2026-07-12T22:52:15.350Z
+  - _ulid: 01KXC8G4TY0KSA8FSKF11NF4K8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Transition matrices
+    timestamp: 2026-07-12T22:52:20.702Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -809,5 +826,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:52:15.089Z
+updated_at: 2026-07-12T22:52:20.445Z
 notes: []
