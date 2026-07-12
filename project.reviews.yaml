@@ -28983,17 +28983,18 @@ reviews:
   - _ulid: 01KXC9XQD3QC40XDPQNJGE674Q
     slugs: []
     title: "Fresh closure review: Dispatch Lifecycle Pause Resume and Stop Controls"
-    disposition: pending
+    disposition: changes_requested
     author: codex
     check_count: 0
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
       content_hash: ""
       ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 4
+    unresolved_blocker_count: 4
     verdict_count: 0
     created_at: 2026-07-12T23:17:14.275Z
+    updated_at: 2026-07-12T23:19:50.551Z

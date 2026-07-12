@@ -10,17 +10,121 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-12T23:17:14.275Z
+  - _ulid: 01KXCA20TTQ4YNACKEZ8BRMV67
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-07-12T23:19:35.003Z
+  - _ulid: 01KXCA24R00YRV26M3CJJBZQBV
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCA24DRBS37DHZ9ZFS881QW
+    timestamp: 2026-07-12T23:19:39.008Z
+  - _ulid: 01KXCA296S03CF47Y9527C0YBW
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCA28XY5XHYXMQBYD4BEVY4
+    timestamp: 2026-07-12T23:19:43.577Z
+  - _ulid: 01KXCA2CKGYA0ND5G63MCJ3E0G
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCA2C9WES34QVFYZEZ608JP
+    timestamp: 2026-07-12T23:19:47.056Z
+  - _ulid: 01KXCA2G9YQGR3J2ZWBB3T951Y
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCA2G0P8WT85PT0Y17BTPRY
+    timestamp: 2026-07-12T23:19:50.846Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXCA24DRBS37DHZ9ZFS881QW
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXCA24DSR98YW2XQV06ZNH9D
+        author: codex
+        body: The 77-AC expansion still fails atomic/timeless/materializable quality.
+          ac-pause-allows-active-completion asserts both natural completion and no session
+          cancellation across an unspecified global-or-task scope; ac-control-outcomes-are-auditable
+          combines applied, no-op, and failed branches; ac-failures-do-not-expose-raw-errors ranges
+          across every operator surface; and ac-reconstruction-does-not-promise-prior-fifo plus
+          ac-reconstruction-does-not-promise-prior-retry-timing are non-promises that cannot be
+          behaviorally proven. Split scopes/outcomes/surfaces and move non-promises to description
+          or implementation notes.
+        created_at: 2026-07-12T23:19:38.681Z
+    kind: blocker
+  - _ulid: 01KXCA28XY5XHYXMQBYD4BEVY4
+    anchor:
+      type: structured
+      ref: "@task-patch-dispatch-lifecycle-specs"
+      section: description
+    entries:
+      - _ulid: 01KXCA28XYPMQ8TMWMVBKFZXRM
+        author: codex
+        body: "Three of the 60 exact patches are not standalone after materialization:
+          @daemon-agent-dispatch ac-5 requires the plan's public-status table,
+          @dispatch-event-payload ac-dispatch-control-common-fields requires the common field set in
+          the plan, and @dispatch-event-payload ac-dispatch-control-error-codes requires the exact
+          closed enum in the plan. Inline the actual observable field/presence and enum contracts in
+          their owning specs, or reference a durable owning spec relationship."
+        created_at: 2026-07-12T23:19:43.294Z
+    kind: blocker
+  - _ulid: 01KXCA2C9WES34QVFYZEZ608JP
+    anchor:
+      type: structured
+      ref: "@task-dispatch-control-persistence"
+      section: tasks
+    entries:
+      - _ulid: 01KXCA2C9X7R81G6HDS9PE61MN
+        author: codex
+        body: Primary ownership is one-per-AC syntactically but not executable at each dependency point.
+          Persistence claims ac-controls-survive-restart, which requires scheduling-before-bootstrap
+          behavior despite implementing no engine actions. Global lifecycle claims
+          ac-pause-allows-active-completion although its scope includes task pause implemented
+          later. The API task claims ac-failures-do-not-expose-raw-errors across all operator
+          surfaces before the CLI task exists. Split by scope/surface or move each claim to an owner
+          that can behaviorally close it.
+        created_at: 2026-07-12T23:19:46.750Z
+    kind: blocker
+  - _ulid: 01KXCA2G0P8WT85PT0Y17BTPRY
+    anchor:
+      type: structured
+      ref: "@task-daemon-dispatch-lifecycle-api"
+      section: description
+    entries:
+      - _ulid: 01KXCA2G0QPSWJEHMHSJAPY4CW
+        author: codex
+        body: The legacy HTTP contract remains contradictory and incomplete. Current agent-dispatch routes
+          return cwd-conflict errors containing projectDir and engine cwd, and /dispatch/start also
+          includes complete status. The plan requires exact current error/cwd/project preservation
+          while also forbidding paths and dynamic error strings on compatibility routes; both cannot
+          hold. It also never freezes the body/presence rule for invalid_transition on
+          start-from-paused, including whether /dispatch/start includes error and complete status.
+          Choose an explicit compatibility exception or deliberate breaking sanitization and
+          enumerate each alias's exact 409 body.
+        created_at: 2026-07-12T23:19:50.551Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T23:17:14.275Z
-updated_at: null
+updated_at: 2026-07-12T23:19:50.551Z
 notes: []
