@@ -156,6 +156,155 @@ checks:
     runner: not run
     created_at: 2026-07-12T23:46:39.127Z
     completed_at: 2026-07-12T23:46:39.127Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Stored source matches exactly (sha256
+      f2cbdfee926846fd55d63c78f48bddc712ee1dfbb50b469cb78d6d6269bf5985). Parser: 1 spec, 82 ACs,
+      derive_from_specs=false, 15 manual tasks, no diagnostics; import dry-run exit 0."
+    name: Parser and stored-source integrity
+    required: true
+    runner: parsePlanDocument + plan import --dry-run
+    created_at: 2026-07-12T23:47:41.524Z
+    completed_at: 2026-07-12T23:47:41.524Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read all 15 complete task descriptions and all 9 original Hyphoria @01KX9FG7 tasks.
+      Current tasks remain plan-dependent, mechanically repetitive, command-invalid,
+      path-inaccurate, and generically tested. Actual derive remains correctly unavailable while
+      draft.
+    name: Materialized task buildability
+    required: true
+    runner: 15-task full rendered-body audit
+    created_at: 2026-07-12T23:47:44.514Z
+    completed_at: 2026-07-12T23:47:44.514Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 15-node graph is acyclic and priority-monotone. All 82 plan AC ids are claimed exactly
+      once; no missing or duplicate primary owner.
+    name: Graph and one-owner gates
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:47:47.479Z
+    completed_at: 2026-07-12T23:47:47.479Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Most former compounds were split, but patch task omits all 60 payloads and exact additions
+      retain compound/vague contracts whose branches or bounds live only in top-level prose.
+    name: Atomic AC and exact-patch gate
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:47:50.501Z
+    completed_at: 2026-07-12T23:47:50.501Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Prior dependency-point misowners were corrected: persistence no longer owns bootstrap
+      scheduling, global/task pause closures are separated, and raw-error closures are assigned by
+      API/CLI/UI surface."
+    name: Implementation-order behavioral ownership
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:47:53.382Z
+    completed_at: 2026-07-12T23:47:53.382Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Top-level contract chooses path-free cwd message sanitization and enumerates exact
+      invalid_transition 409 bodies/field presence for /dispatch, /dispatch/start, and
+      /dispatch/stop. Task self-containment fails separately.
+    name: Sanitized legacy HTTP and invalid-transition contract
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:47:56.331Z
+    completed_at: 2026-07-12T23:47:56.331Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Found a task ref used as a path, bare HeldTaskRow.svelte, event source modifications
+      omitted, UI consumers omitted, and at least one invalid verification command in every task.
+    name: Path ownership and verification commands
+    required: true
+    runner: filesystem/package-script audit
+    created_at: 2026-07-12T23:47:59.248Z
+    completed_at: 2026-07-12T23:47:59.248Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 18 attached resources totaling 859524 bytes are unrelated spec-workspace/coverage
+      wireframes and would add irrelevant plan-owned references.
+    name: Resource relevance
+    required: true
+    runner: kspec plan resource list
+    created_at: 2026-07-12T23:48:02.211Z
+    completed_at: 2026-07-12T23:48:02.211Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 107 tests passed across 15 suites for plan-document parser, CLI plan import, and CLI plan
+      derive.
+    name: Plan parser/import/derive regression suites
+    required: true
+    runner: npm test
+    created_at: 2026-07-12T23:48:05.142Z
+    completed_at: 2026-07-12T23:48:05.142Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 4 on the same 7 unrelated ambiguous @observations/@spec-plan-import refs recorded by
+      prior review; no plan-local parser ref error.
+    name: kspec validate refs baseline
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-12T23:48:08.134Z
+    completed_at: 2026-07-12T23:48:08.134Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment and completeness exit 0 with existing project warnings.
+    name: kspec alignment and completeness baselines
+    required: true
+    runner: kspec validate
+    created_at: 2026-07-12T23:48:11.112Z
+    completed_at: 2026-07-12T23:48:11.112Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No shared guidance change. Read full plan, all 15 tasks, prior review, eight owning specs,
+      routes/paths, resources, and all 9 Hyphoria tasks. Ran parser/import, focused 107-test suite,
+      graph/owner/path/command audits, resource list, refs/alignment/completeness. Checked
+      executability, AC quality, ownership, graph, paths, resources, compatibility, tests.
+    name: Shared-guidance neutrality and evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:48:15.543Z
+    completed_at: 2026-07-12T23:48:15.543Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review; no implementation or shared-guidance change. Unrelated worktree edits
+      preserved.
+    name: Product implementation gates
+    required: true
+    runner: not run
+    created_at: 2026-07-12T23:48:18.609Z
+    completed_at: 2026-07-12T23:48:18.609Z
 events:
   - _ulid: 01KXCBF8T0QAT8P02KPSW4KD3A
     actor: Jacob Chapel
@@ -368,9 +517,116 @@ events:
       kind: blocker
       thread_ulid: 01KXCBMGD8VNFZS2KC22VQSPS1
     timestamp: 2026-07-12T23:47:09.605Z
+  - _ulid: 01KXCBNG20MDWZQC1H8P06597X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Parser and stored-source integrity
+    timestamp: 2026-07-12T23:47:41.760Z
+  - _ulid: 01KXCBNK0C1F78P3X6YPX4BBCM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Materialized task buildability
+    timestamp: 2026-07-12T23:47:44.780Z
+  - _ulid: 01KXCBNNW8G7NKSA399TD3QPYW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Graph and one-owner gates
+    timestamp: 2026-07-12T23:47:47.720Z
+  - _ulid: 01KXCBNRTHGK3WQEW10YG8BPNK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Atomic AC and exact-patch gate
+    timestamp: 2026-07-12T23:47:50.737Z
+  - _ulid: 01KXCBNVNHAPTM2ZHF9A6NJFJC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Implementation-order behavioral ownership
+    timestamp: 2026-07-12T23:47:53.649Z
+  - _ulid: 01KXCBNYGJ9PFFK6K0QAZR094M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Sanitized legacy HTTP and invalid-transition contract
+    timestamp: 2026-07-12T23:47:56.562Z
+  - _ulid: 01KXCBP1BYTY588WV1WR6C8251
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Path ownership and verification commands
+    timestamp: 2026-07-12T23:47:59.486Z
+  - _ulid: 01KXCBP48JH5Y3PH2VTHX16R33
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Resource relevance
+    timestamp: 2026-07-12T23:48:02.450Z
+  - _ulid: 01KXCBP7416FZ2WE2B11M5KPBJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parser/import/derive regression suites
+    timestamp: 2026-07-12T23:48:05.377Z
+  - _ulid: 01KXCBPA2PG08AFDGHC0SD00RG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs baseline
+    timestamp: 2026-07-12T23:48:08.406Z
+  - _ulid: 01KXCBPCZ4YPCZV92VTMP35C3V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec alignment and completeness baselines
+    timestamp: 2026-07-12T23:48:11.364Z
+  - _ulid: 01KXCBPH92QR510ZDK3WJG5E4Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality and evidence log
+    timestamp: 2026-07-12T23:48:15.778Z
+  - _ulid: 01KXCBPM9FK6NPZN7X639GXGS0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product implementation gates
+    timestamp: 2026-07-12T23:48:18.863Z
+  - _ulid: 01KXCBPQ8JSA4VK6S3FYNA5A98
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-12T23:48:21.906Z
+  - _ulid: 01KXCBPQ8JY6C8YC098A98JCQT
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-12T23:48:21.906Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -614,6 +870,13 @@ verdicts:
     reviewer: codex
     role: reviewer
     created_at: 2026-07-12T23:46:42.399Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-12T23:48:21.906Z
 created_at: 2026-07-12T23:44:17.728Z
-updated_at: 2026-07-12T23:47:09.352Z
+updated_at: 2026-07-12T23:48:21.906Z
 notes: []
