@@ -244,6 +244,69 @@ checks:
     runner: manual
     created_at: 2026-07-12T23:21:32.493Z
     completed_at: 2026-07-12T23:21:32.493Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Birth/member proofs, before/after checks, no unverifiable signalling, no completion while
+      group lives.
+    name: Leader and live-group recovery safety
+    required: true
+    runner: source/plan audit
+    created_at: 2026-07-12T23:21:36.138Z
+    completed_at: 2026-07-12T23:21:36.138Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Canonical predicates improved; compatibility invalid_transition body/presence remains unfrozen.
+    name: Closed error mapping all routes
+    required: true
+    runner: wire audit
+    created_at: 2026-07-12T23:21:40.086Z
+    completed_at: 2026-07-12T23:21:40.086Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Current fields inventoried, but cwd/path preservation contradicts sanitization and
+      invalid-transition 409 bodies are ambiguous.
+    name: Exact legacy HTTP field presence
+    required: true
+    runner: source/tests
+    created_at: 2026-07-12T23:21:44.079Z
+    completed_at: 2026-07-12T23:21:44.079Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Both status spellings and endpoints, canonical mutations, force, host rejection,
+      confirmation, exits explicit.
+    name: CLI grammar endpoint safety
+    required: true
+    runner: source/tests
+    created_at: 2026-07-12T23:21:47.788Z
+    completed_at: 2026-07-12T23:21:47.788Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Agents, dashboard, board, fleet, automation, API, websocket, static and accessibility covered.
+    name: UI boolean consumer inventory
+    required: true
+    runner: source inventory
+    created_at: 2026-07-12T23:21:51.779Z
+    completed_at: 2026-07-12T23:21:51.779Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 77 textually claimed once, but several owners precede behavior needed to close them.
+    name: Behavioral AC primary ownership
+    required: true
+    runner: ownership audit
+    created_at: 2026-07-12T23:21:55.717Z
+    completed_at: 2026-07-12T23:21:55.717Z
 events:
   - _ulid: 01KXC9XQD2BH75AMKB9VHY5630
     actor: codex
@@ -440,6 +503,48 @@ events:
       status: pass
       name: Review evidence log
     timestamp: 2026-07-12T23:21:32.750Z
+  - _ulid: 01KXCA5QDJ1Z6F68XS3VSTQ6N8
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Leader and live-group recovery safety
+    timestamp: 2026-07-12T23:21:36.434Z
+  - _ulid: 01KXCA5VA951FMS9R7218ZWX9N
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Closed error mapping all routes
+    timestamp: 2026-07-12T23:21:40.425Z
+  - _ulid: 01KXCA5Z6FGQQ54TD36BFX72TA
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Exact legacy HTTP field presence
+    timestamp: 2026-07-12T23:21:44.399Z
+  - _ulid: 01KXCA62TXVMQHZV12EDDM7Q64
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: CLI grammar endpoint safety
+    timestamp: 2026-07-12T23:21:48.125Z
+  - _ulid: 01KXCA66PC2J1XVBYGGPK2DV80
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: UI boolean consumer inventory
+    timestamp: 2026-07-12T23:21:52.076Z
+  - _ulid: 01KXCA6AHZFB103N4MNAAV4EVC
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Behavioral AC primary ownership
+    timestamp: 2026-07-12T23:21:56.031Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -521,5 +626,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T23:17:14.275Z
-updated_at: 2026-07-12T23:21:32.493Z
+updated_at: 2026-07-12T23:21:55.717Z
 notes: []
