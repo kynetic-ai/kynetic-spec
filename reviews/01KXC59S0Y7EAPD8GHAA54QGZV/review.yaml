@@ -396,6 +396,56 @@ checks:
     runner: kspec validate --refs --warnings-ok
     created_at: 2026-07-12T22:02:20.665Z
     completed_at: 2026-07-12T22:02:20.665Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; existing 45 orphan and 10 mismatch warnings.
+    name: kspec validate alignment baseline
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-12T22:02:26.471Z
+    completed_at: 2026-07-12T22:02:26.471Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; existing 284 missing coverage and 48 invalid annotations.
+    name: kspec validate completeness baseline
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-12T22:02:29.353Z
+    completed_at: 2026-07-12T22:02:29.353Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-12T22:02:32.207Z
+    completed_at: 2026-07-12T22:02:32.207Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-12T22:02:35.046Z
+    completed_at: 2026-07-12T22:02:35.046Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-12T22:02:37.979Z
+    completed_at: 2026-07-12T22:02:37.979Z
 events:
   - _ulid: 01KXC59S0Y16DWP779GSJC3AS7
     actor: Jacob Chapel
@@ -760,6 +810,41 @@ events:
       status: skipped
       name: kspec validate refs baseline
     timestamp: 2026-07-12T22:02:20.886Z
+  - _ulid: 01KXC5MS0NCKBG62H9EG22JZQB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment baseline
+    timestamp: 2026-07-12T22:02:26.709Z
+  - _ulid: 01KXC5MVV4G84NMHFJRED320FS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness baseline
+    timestamp: 2026-07-12T22:02:29.604Z
+  - _ulid: 01KXC5MYM009NYVMEM2DMJ6S2C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: format
+    timestamp: 2026-07-12T22:02:32.448Z
+  - _ulid: 01KXC5N1CRB7APSPF9ZQKJ2XXX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: lint
+    timestamp: 2026-07-12T22:02:35.288Z
+  - _ulid: 01KXC5N481DAZZBV7SA6PJ5DHM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: typecheck
+    timestamp: 2026-07-12T22:02:38.209Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -960,5 +1045,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:56:26.270Z
-updated_at: 2026-07-12T22:02:20.665Z
+updated_at: 2026-07-12T22:02:37.979Z
 notes: []
