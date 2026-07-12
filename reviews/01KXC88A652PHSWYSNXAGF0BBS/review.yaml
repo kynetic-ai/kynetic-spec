@@ -395,6 +395,16 @@ checks:
     required: true
     created_at: 2026-07-12T22:53:25.701Z
     completed_at: 2026-07-12T22:53:25.701Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Three secondary slices are bounded to engine/restart, API/CLI, and browser/accessibility
+      and claim no closure.
+    name: Bounded verification slices
+    required: true
+    created_at: 2026-07-12T22:53:30.928Z
+    completed_at: 2026-07-12T22:53:30.928Z
 events:
   - _ulid: 01KXC88A643NZXBK7THJTVVV1C
     actor: Jacob Chapel
@@ -766,6 +776,13 @@ events:
       status: pass
       name: Plan shape and dependency graph
     timestamp: 2026-07-12T22:53:25.958Z
+  - _ulid: 01KXC8J9NS7GEGTZWBBCVGARK8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Bounded verification slices
+    timestamp: 2026-07-12T22:53:31.193Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -994,5 +1011,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:53:25.701Z
+updated_at: 2026-07-12T22:53:30.928Z
 notes: []
