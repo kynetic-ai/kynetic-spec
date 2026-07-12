@@ -1,14 +1,4 @@
 resources:
-  - description: Unified page/tree spec workspace behavior, row anatomy, page shapes, data notes,
-      archived alternatives, and open questions.
-    bytes: 5642
-    content_type: text/markdown
-    git_commit: null
-    git_path: null
-    id: handoff-spec-workspace
-    label: Spec workspace UX handoff
-    path: handoff/docs/06-spec-workspace.md
-    sha256: 9859180adb431b75189f3a8d5d89bcecec614ced1c8b0cd242e1d333552fb52e
   - description: Coverage-state token model, state precedence, rollup bar rules, mixed-list
       presentation, and re-verify recommendation.
     bytes: 5510
