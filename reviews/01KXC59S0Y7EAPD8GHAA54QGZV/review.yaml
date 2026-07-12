@@ -245,6 +245,57 @@ checks:
     runner: reviewer investigation
     created_at: 2026-07-12T22:01:04.451Z
     completed_at: 2026-07-12T22:01:04.451Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Complete 537-line stored plan read; module @agent-integration; draft.
+    name: Stored plan integrity
+    required: true
+    runner: plan get/export
+    created_at: 2026-07-12T22:01:34.774Z
+    completed_at: 2026-07-12T22:01:34.774Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1 spec, derive_from_specs=false, 15 tasks, no errors; derive dry-run exact; focused tests
+      73/73.
+    name: Plan parser and materialization
+    required: true
+    runner: parser + isolated derive
+    created_at: 2026-07-12T22:01:37.782Z
+    completed_at: 2026-07-12T22:01:37.782Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Eight direct specs read; per-task coalescing ac-5 replacement present.
+    name: Existing-spec conflict coverage
+    required: true
+    runner: item get
+    created_at: 2026-07-12T22:01:40.713Z
+    completed_at: 2026-07-12T22:01:40.713Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Multiple new and patched ACs remain compound; non-promise commentary remains.
+    name: AC atomicity and timelessness
+    required: true
+    runner: manual audit
+    created_at: 2026-07-12T22:01:43.577Z
+    completed_at: 2026-07-12T22:01:43.577Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Global/task invalid, no-op, applied outcomes and global gating are frozen.
+    name: Transition matrices
+    required: true
+    runner: manual audit
+    created_at: 2026-07-12T22:01:46.462Z
+    completed_at: 2026-07-12T22:01:46.462Z
 events:
   - _ulid: 01KXC59S0Y16DWP779GSJC3AS7
     actor: Jacob Chapel
@@ -504,6 +555,41 @@ events:
       kind: blocker
       thread_ulid: 01KXC5JG8VQCNNNA70VYZ042F8
     timestamp: 2026-07-12T22:01:12.459Z
+  - _ulid: 01KXC5K6HN014FXB63XFA41YDH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Stored plan integrity
+    timestamp: 2026-07-12T22:01:35.029Z
+  - _ulid: 01KXC5K9ERNC66YACQKK42KV74
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parser and materialization
+    timestamp: 2026-07-12T22:01:38.008Z
+  - _ulid: 01KXC5KCARTBBS1AB33448VESQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Existing-spec conflict coverage
+    timestamp: 2026-07-12T22:01:40.952Z
+  - _ulid: 01KXC5KF3VDP43M8W98Z16GNNS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC atomicity and timelessness
+    timestamp: 2026-07-12T22:01:43.803Z
+  - _ulid: 01KXC5KHXZ5GM6NZ3W9SV7G1KK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Transition matrices
+    timestamp: 2026-07-12T22:01:46.687Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -704,5 +790,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:56:26.270Z
-updated_at: 2026-07-12T22:01:12.219Z
+updated_at: 2026-07-12T22:01:46.462Z
 notes: []
