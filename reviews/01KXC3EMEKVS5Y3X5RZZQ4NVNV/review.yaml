@@ -115,6 +115,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC3KJS0ABEMFF3DY5MAPJCQ
     timestamp: 2026-07-12T21:26:50.643Z
+  - _ulid: 01KXC3KR8FET5R3TT208NVEBPV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3KR0MDCSMJAXFFB3CW8NW
+    timestamp: 2026-07-12T21:26:56.015Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -378,7 +385,25 @@ threads:
           behavioral test.
         created_at: 2026-07-12T21:26:50.401Z
     kind: blocker
+  - _ulid: 01KXC3KR0MDCSMJAXFFB3CW8NW
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: description
+    entries:
+      - _ulid: 01KXC3KR0NK93JTRNQMTYVM0AK
+        author: Jacob Chapel
+        body: The authority transition contract is internally inconsistent and incomplete. The lifecycle
+          matrix says stopped global dispatch can be changed only by explicit start or resume, while
+          the CLI task says start is the stopped-state verb and resume is the paused-state verb; the
+          new API otherwise exposes pause, resume, and stop plus compatibility start. There is no
+          state and action table for pause-from-stopped, resume-from-stopped, start-from-paused,
+          stop-from-paused, repeated actions, or task resume under each global state. Freeze allowed
+          transition, no-op, and error outcomes for every global and task action and use the same
+          table in API, CLI, UI disabled states, and idempotency tests.
+        created_at: 2026-07-12T21:26:55.765Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:26:50.401Z
+updated_at: 2026-07-12T21:26:55.765Z
 notes: []
