@@ -210,6 +210,24 @@ checks:
     runner: npm test
     created_at: 2026-07-12T21:30:34.743Z
     completed_at: 2026-07-12T21:30:34.743Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: full stored 900-line plan; kspec-agents.md;
+      plan/review/spec/review-gates/neutrality skills; src/parser/plan-document.ts;
+      src/cli/commands/plan.ts and agent.ts; src/agent-runtime/dispatch.ts, task-identity.ts,
+      session-registry.ts; packages/daemon/src/routes/agent-dispatch.ts; packages/web-ui API and
+      lifecycle consumers; relevant tests. Commands: plan export/get/import dry-run, isolated derive
+      dry-run, item get/search/list, parser coverage/graph script, validation variants. Categories:
+      product intent, exact spec conflicts, materialization, AC quality, dependencies,
+      persistence/restart/races/cancellation/session/workspace/events/API/CLI/UI, source/test
+      guidance, scope, and neutrality."
+    name: Review evidence log
+    required: false
+    runner: reviewer investigation
+    created_at: 2026-07-12T21:30:40.257Z
+    completed_at: 2026-07-12T21:30:40.257Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -518,6 +536,13 @@ events:
       status: skipped
       name: full test suite
     timestamp: 2026-07-12T21:30:34.997Z
+  - _ulid: 01KXC3TKGC2WM36R8G01NJ1DHK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-07-12T21:30:40.524Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -944,5 +969,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:30:34.743Z
+updated_at: 2026-07-12T21:30:40.257Z
 notes: []
