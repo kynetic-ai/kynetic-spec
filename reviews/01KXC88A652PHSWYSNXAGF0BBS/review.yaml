@@ -487,6 +487,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC8E79YQ50S5234TRAT6EEQ
     timestamp: 2026-07-12T22:51:17.958Z
+  - _ulid: 01KXC8ECZJZ7N62AYSYWAE3AF2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC8ECQWB26475Q1NMVCTZ8Z
+    timestamp: 2026-07-12T22:51:23.506Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -650,7 +657,23 @@ threads:
           post-commit delivery.
         created_at: 2026-07-12T22:51:17.695Z
     kind: blocker
+  - _ulid: 01KXC8ECQWB26475Q1NMVCTZ8Z
+    anchor:
+      type: structured
+      ref: "@task-engine-global-hard-stop"
+      section: description
+    entries:
+      - _ulid: 01KXC8ECQXJ9RKA3KXD5ZRY0GS
+        author: Jacob Chapel
+        body: Pending cleanup can clear dishonestly when a process leader is gone but its process group
+          survives. The plan receipts absent PID as not_found and advances after targets exit; its
+          surviving-group safeguard applies only after signalling, and only the leader birth token
+          is durable. On restart, live descendants can remain while cleanup settles. Require a safe
+          group-survival check that keeps cleanup identity_unverifiable, or persist enough member
+          birth identities to verify the surviving group.
+        created_at: 2026-07-12T22:51:23.261Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:51:17.695Z
+updated_at: 2026-07-12T22:51:23.261Z
 notes: []
