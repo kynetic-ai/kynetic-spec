@@ -37,6 +37,17 @@ checks:
     runner: kspec search/item get
     created_at: 2026-07-12T21:29:07.549Z
     completed_at: 2026-07-12T21:29:07.549Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Multiple proposed ACs combine independently testable persistence, queue, cancellation,
+      session, evidence, status, and event outcomes and expose implementation mechanisms.
+    name: AC atomicity and timelessness
+    required: true
+    runner: manual spec review
+    created_at: 2026-07-12T21:29:13.007Z
+    completed_at: 2026-07-12T21:29:13.007Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -233,6 +244,13 @@ events:
       status: fail
       name: Existing-spec conflict coverage
     timestamp: 2026-07-12T21:29:07.798Z
+  - _ulid: 01KXC3QY9QF2D40E5RMCTQ6WPW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC atomicity and timelessness
+    timestamp: 2026-07-12T21:29:13.271Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -659,5 +677,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:29:07.549Z
+updated_at: 2026-07-12T21:29:13.007Z
 notes: []
