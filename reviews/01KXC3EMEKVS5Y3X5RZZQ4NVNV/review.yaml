@@ -129,6 +129,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC3KXCDQBEHCY0QRSA36ABJ
     timestamp: 2026-07-12T21:27:01.503Z
+  - _ulid: 01KXC3M2ZZWYHS8RPT52009A6Y
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3M2R63YM0VZN32375MZTT
+    timestamp: 2026-07-12T21:27:07.007Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -429,7 +436,25 @@ threads:
           legal, how restart resumes targeted shutdown, and when a retry can report success.
         created_at: 2026-07-12T21:27:01.261Z
     kind: blocker
+  - _ulid: 01KXC3M2R63YM0VZN32375MZTT
+    anchor:
+      type: structured
+      ref: "@task-dispatch-control-persistence"
+      section: description
+    entries:
+      - _ulid: 01KXC3M2R6DA16VP21AWG21SH9
+        author: Jacob Chapel
+        body: This task is not standalone at the persistence source-of-truth boundary. It does not name the
+          durable filename, schema and export modules, manifest or project-state registration, cache
+          and watch invalidation behavior, lock and shadow-commit helper, or whether global and task
+          records share one file. Its Files section explicitly allows either src/parser or
+          src/agent-runtime. Current analogous state uses src/schema/dispatch-workspace.ts plus
+          src/parser/dispatch-workspaces.ts and a named shadow-mutation lock. Choose the exact
+          storage surface and mutation discipline so separate agents cannot invent incompatible
+          registries.
+        created_at: 2026-07-12T21:27:06.758Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:27:01.261Z
+updated_at: 2026-07-12T21:27:06.758Z
 notes: []
