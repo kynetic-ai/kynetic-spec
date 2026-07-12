@@ -59,6 +59,17 @@ checks:
     runner: parser-visible Covers map
     created_at: 2026-07-12T21:29:18.679Z
     completed_at: 2026-07-12T21:29:18.679Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The 13 manual tasks form an acyclic priority-monotone graph, but the generated
+      dependency-free generic implementation task bypasses the entire intended chain.
+    name: Dependency ordering
+    required: true
+    runner: manual graph + isolated derive
+    created_at: 2026-07-12T21:29:24.332Z
+    completed_at: 2026-07-12T21:29:24.332Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -269,6 +280,13 @@ events:
       status: fail
       name: AC to task coverage
     timestamp: 2026-07-12T21:29:18.940Z
+  - _ulid: 01KXC3R9BFZ2V8WCDD09KS0S9V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Dependency ordering
+    timestamp: 2026-07-12T21:29:24.592Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -695,5 +713,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:29:18.679Z
+updated_at: 2026-07-12T21:29:24.332Z
 notes: []
