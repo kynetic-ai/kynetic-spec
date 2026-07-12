@@ -14,3 +14,9 @@ notes:
       after canonical review 01KXC3EMEKVS5Y3X5RZZQ4NVNV
     author: Jacob Chapel
     created_at: 2026-07-12T21:48:35.127Z
+  - _ulid: 01KXC66C9R8W4VQS1M7XGGQQ38
+    content: "Second fresh revision closes all nine blockers from review 01KXC59S0Y7EAPD8GHAA54QGZV:
+      atomic ACs, executable persistence/recovery ownership, complete events/HTTP/CLI/UI
+      compatibility, unique behavioral ownership, and factual path inventory"
+    author: Jacob Chapel
+    created_at: 2026-07-12T22:12:03.512Z
