@@ -137,6 +137,17 @@ checks:
     runner: semantic scope review
     created_at: 2026-07-12T21:29:56.863Z
     completed_at: 2026-07-12T21:29:56.863Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-unrelated repository baseline currently has 7 duplicate-slug reference errors
+      (@observations and @spec-plan-import); not attributed to this draft review.
+    name: kspec validate refs baseline
+    required: false
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-12T21:30:02.069Z
+    completed_at: 2026-07-12T21:30:02.069Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -396,6 +407,13 @@ events:
       status: pass
       name: Shared-guidance neutrality
     timestamp: 2026-07-12T21:29:57.129Z
+  - _ulid: 01KXC3SE6YAYYYFPRP9BTSB1E1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate refs baseline
+    timestamp: 2026-07-12T21:30:02.334Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -822,5 +840,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:29:56.863Z
+updated_at: 2026-07-12T21:30:02.069Z
 notes: []
