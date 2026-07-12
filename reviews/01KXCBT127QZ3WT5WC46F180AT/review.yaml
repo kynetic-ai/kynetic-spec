@@ -1,0 +1,26 @@
+_ulid: 01KXCBT127QZ3WT5WC46F180AT
+slugs: []
+title: "Canonical task-buildability review: Dispatch Lifecycle Pause Resume and Stop Controls"
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXCBT127TJQS5F86CTJQEKGQ
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-12T23:50:10.247Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-12T23:50:10.247Z
+updated_at: null
+notes: []
