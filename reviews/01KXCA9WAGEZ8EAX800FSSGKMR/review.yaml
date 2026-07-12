@@ -10,17 +10,112 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-12T23:23:52.528Z
+  - _ulid: 01KXCAAHTTEGNWW1VNX93K4YJF
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-07-12T23:24:14.555Z
+  - _ulid: 01KXCAAP1GRTXB1FGPWATR82P1
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCAANSSAMRDHP2TBQ923M7C
+    timestamp: 2026-07-12T23:24:18.864Z
+  - _ulid: 01KXCAAS4NRMJY42V1R1YFX7H3
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCAARX0J9NCNER98W68HNQD
+    timestamp: 2026-07-12T23:24:22.038Z
+  - _ulid: 01KXCAAWA1E9XVCBVF6NHSC8K2
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCAAW0Z9ERX36X3S6XDTW27
+    timestamp: 2026-07-12T23:24:25.281Z
+  - _ulid: 01KXCAAZPMJ2RMZ6TQTMKGB92P
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCAAZES8CY4THJ4ZW413BVT
+    timestamp: 2026-07-12T23:24:28.756Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXCAANSSAMRDHP2TBQ923M7C
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXCAANSS9M1BQH1263TZPFFV
+        author: codex
+        body: The 77-AC expansion still fails atomic/timeless/materializable quality.
+          ac-pause-allows-active-completion bundles natural completion and no session cancellation
+          across unspecified global-or-task scope; ac-control-outcomes-are-auditable combines
+          applied/no-op/failed branches; ac-failures-do-not-expose-raw-errors ranges across every
+          operator surface; and the two reconstruction non-promise ACs cannot be behaviorally
+          proven. Split scopes/outcomes/surfaces and move non-promises to prose.
+        created_at: 2026-07-12T23:24:18.617Z
+    kind: blocker
+  - _ulid: 01KXCAARX0J9NCNER98W68HNQD
+    anchor:
+      type: structured
+      ref: "@task-patch-dispatch-lifecycle-specs"
+      section: description
+    entries:
+      - _ulid: 01KXCAARX07BZFT2F3N7YVSMQ1
+        author: codex
+        body: "Three of 60 exact patches are not standalone: @daemon-agent-dispatch ac-5 depends on the
+          plan's public-status table, while two @dispatch-event-payload ACs depend on the plan's
+          common field set and exact enum. Inline those durable contracts in the owning specs or
+          reference a durable owning spec relationship."
+        created_at: 2026-07-12T23:24:21.792Z
+    kind: blocker
+  - _ulid: 01KXCAAW0Z9ERX36X3S6XDTW27
+    anchor:
+      type: structured
+      ref: "@task-dispatch-control-persistence"
+      section: tasks
+    entries:
+      - _ulid: 01KXCAAW0Z4V1V66341ZXV3GD8
+        author: codex
+        body: One-per-AC textual ownership is not dependency-point executable. Persistence claims restart
+          scheduling before bootstrap despite implementing no engine action; global lifecycle claims
+          a global-or-task pause AC before task pause exists; API claims no raw errors across all
+          operator surfaces before CLI exists. Split by scope/surface or move claims to owners that
+          can close them behaviorally.
+        created_at: 2026-07-12T23:24:24.991Z
+    kind: blocker
+  - _ulid: 01KXCAAZES8CY4THJ4ZW413BVT
+    anchor:
+      type: structured
+      ref: "@task-daemon-dispatch-lifecycle-api"
+      section: description
+    entries:
+      - _ulid: 01KXCAAZES237Y0MH08SWMVS5R
+        author: codex
+        body: Legacy HTTP remains contradictory and incomplete. Current cwd-conflict errors contain project
+          and cwd paths, and /dispatch/start includes complete status. The plan requires exact
+          current preservation while forbidding paths/dynamic errors. It also does not freeze
+          invalid_transition 409 field presence for each alias. Choose an explicit compatibility
+          exception or deliberate breaking sanitization and enumerate each exact 409 body.
+        created_at: 2026-07-12T23:24:28.505Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T23:23:52.528Z
-updated_at: null
+updated_at: 2026-07-12T23:24:28.505Z
 notes: []
