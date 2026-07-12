@@ -25,3 +25,9 @@ notes:
       canonical --force, exact path classification, and unique behavioral closure owners"
     author: Jacob Chapel
     created_at: 2026-07-12T22:13:07.967Z
+  - _ulid: 01KXC7PC01GT66SA7F89FRYJ8J
+    content: Third revision closes watcher committed-publication, crash-safe process identity, closed
+      error mapping, exact HTTP alias compatibility, both CLI status routes, standalone ownership
+      sequencing, and dependency-relative path classification blockers
+    author: Jacob Chapel
+    created_at: 2026-07-12T22:38:16.065Z

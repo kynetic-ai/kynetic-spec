@@ -25,12 +25,14 @@ An absent task record means running subject to global authority. `pause` from ab
 ### Durable source of truth and recovery
 
 - Canonical file: `.kspec/dispatch-control.yaml`, schema owner `src/schema/dispatch-control.ts`, parser/store owner `src/parser/dispatch-control.ts`, exported by `src/schema/index.ts` and `src/parser/index.ts`.
-- Shape: version `1`, `global.authority`, optional global reason/actor/source/timestamps, `tasks` keyed by canonical ULID with mode/reason/actor/source/timestamps, and `pending_cleanup` entries keyed by `global` or task ULID.
+- Shape: version `1`, monotonically increasing `revision` (nonnegative integer), `global.authority`, optional global reason/actor/source/timestamps, `tasks` keyed by canonical ULID with mode/reason/actor/source/timestamps, and `pending_cleanup` entries keyed by `global` or task ULID. The committed publication token is `{revision, commit_oid}`; `revision` is stored in the YAML and `commit_oid` is the shadow worktree `HEAD` that contains those exact bytes.
 - `task-dispatch-control-persistence` creates `src/agent-runtime/dispatch-shadow-transaction.ts`. That module exports `withDispatchShadowTransaction(projectDir, operation, fn)` and `commitDispatchShadowTransaction(ctx, paths, message)`. It reuses the public `acquireFileLock` primitive from existing `src/parser/file-lock.ts` and the existing public `getDispatchShadowMutationLockPath` from `src/agent-runtime/workspace.ts`; it does not call or expose the private `withDispatchShadowMutationLock`. The transaction owner alone acquires that project lock, rolls back force-reclaimed dirty shadow state through existing `rollbackDirtyShadowWorktree`, re-reads every transaction input, writes all changed files atomically, invokes `commitIfShadow` once, and only after that commit publishes the validated dispatch-control snapshot. Lock order is dispatch-shadow lock first, then per-file `withFileLock` only inside parser writes; no caller may hold a parser file lock while acquiring the dispatch-shadow lock, and no engine/process/session wait occurs while either lock is held.
-- `src/parser/dispatch-control.ts` owns schema parsing and atomic file replacement but never commits or publishes. `src/agent-runtime/dispatch-shadow-transaction.ts` owns the commit. `src/agent-runtime/dispatch-control-store.ts` (Create, same persistence task) owns the last-valid in-memory snapshot and publishes only committed snapshots. Existing `packages/daemon/src/project-context.ts` owns chokidar source watching; existing `src/daemon/entity-cache.ts` owns cache-domain invalidation; `packages/daemon/src/server.ts` wires `dispatch-control.yaml` changes to `DispatchControlStore.reloadCommitted()` and invalidates both dispatch-control and agent-status projections. Watchers and cache code never write authority. Behavioral tests prove same-process and cross-process serialization, lock ordering, commit failure without publication, and watcher reload only after a committed file becomes visible.
+- `src/parser/dispatch-control.ts` owns schema parsing and atomic file replacement but never commits or publishes. `src/agent-runtime/dispatch-shadow-transaction.ts` owns the write/commit transaction and returns `{validatedSnapshot, revision, commit_oid}` only after `commitIfShadow` succeeds and a `git show <commit_oid>:.kspec/dispatch-control.yaml` re-read byte-for-byte parses to the same revision/snapshot. `src/agent-runtime/dispatch-control-store.ts` (Create, same persistence task) owns the last-valid snapshot and publication token. It publishes only that verified return value, never the pre-commit file.
+- Existing `packages/daemon/src/project-context.ts` remains the chokidar event owner, but for `dispatch-control.yaml` it must not broadcast, call the dispatch callback, or invalidate cache from watcher-supplied `content`. It forwards only a path notification plus the observed shadow `HEAD` to `packages/daemon/src/server.ts`; server calls `DispatchControlStore.reloadCommitted(observedHead)`. Reload acquires the exported dispatch-shadow lock, reads current `HEAD`, reads the file through `git show HEAD:.kspec/dispatch-control.yaml` (never the worktree), validates it, and publishes/invalidate/broadcasts only when `{revision, HEAD}` is newer than and differs from the store token. If the event arrived before commit, `HEAD`/revision still equal the published token, so reload is a no-op; the transaction owner explicitly calls the same verified publication path after commit, making self-write delivery independent of watcher timing. A later duplicate self-write watcher event is suppressed by token equality. An external committed change is accepted only when current `HEAD` contains a valid file and its revision is strictly greater; an external dirty/uncommitted write, stale/lower revision, unknown commit, parse failure, commit failure, or post-commit verification mismatch retains the prior snapshot and prior cache, emits no success publication, and marks `control_store_degraded` where corruption/verification failed. Force-reclaim rollback re-reads verified `HEAD`, restores the worktree to it, and republishes only if that committed token is valid; rollback bytes are never published directly. `src/daemon/entity-cache.ts` invalidates dispatch-control and agent-status only after store publication. Watchers/cache never write authority. Behavioral fault tests deterministically cover watcher-before-commit, commit-before-watcher, duplicate self event, external committed update, external dirty write, commit failure, verification mismatch, stale revision, malformed committed revision, and force-reclaim rollback; no test may accept an uncommitted or failed snapshot.
 - Missing legacy file migrates to `stopped` with no task controls. Version 1 loads exactly. Unknown versions, malformed data, duplicate/noncanonical task keys, or failed commit leave the last validated snapshot in force, reject mutations/startup scheduling, and report `control_store_degraded` with an actionable path; they never default to running.
-- Stop first commits `stopped` and one durable `pending_cleanup` entry. Each entry contains `cleanup_id` (ULID), `scope`, optional canonical `task_id`, `phase: "owned"|"signals_sent"|"sessions_closed"`, and immutable `targets[]`; every target contains dispatch `session_id`, canonical `task_id|null`, adapter child `pid|null`, process-group id `pgid|null`, and a durable invocation-record path relative to the project. `DispatchEngine` writes the `owned` entry from its active invocation records before cancelling anything. After idempotently signalling every still-live PID/PGID it commits `signals_sent`; after every durable session record is terminal/closed it commits `sessions_closed`; only a final transaction removes the entry. Per-target receipts record `signal: not_found|sent|exited` and `session: already_closed|closed`, so retries never infer success from a vanished in-memory registry.
-- `src/agent-runtime/invocation.ts` persists the dispatch-owned session/task/PID/PGID binding before reporting an invocation active and updates the durable invocation/session record on exit. On daemon startup `src/agent-runtime/dispatch-control-store.ts` loads cleanup entries before bootstrap, then `DispatchEngine` resolves targets from those durable identifiers and session records. A live matching PID/PGID is signalled again safely; a missing process is recorded `not_found`; a surviving session is closed through reconstructed session-store ownership rather than the volatile `SessionRegistry`; an already terminal session is receipted without mutation. Identity mismatch never signals a process and leaves cleanup pending with `cleanup_identity_mismatch`. Recovery is idempotent after every phase commit and remains proportional to one daemon's recorded targets. Cancellation/closure failure leaves authority stopped and the entry at its last committed phase; success clears it only after all target receipts settle.
+- Durable invocation ownership lives in existing `.kspec-sessions/{session_id}/session.yaml`; schema owner is existing `src/sessions/types.ts` and persistence owner is existing `src/sessions/store.ts`. Version-1 dispatch ownership adds `dispatch_ownership?: {invocation_id, session_id, task_id:null|string, agent_id, adapter, owner_instance_id, pid:null|integer, pgid:null|integer, process_start_ticks:null|string, process_identity_platform:"linux_proc_stat_v1"|"unverifiable", captured_at, exited_at?}`. `process_start_ticks` is Linux `/proc/<pid>/stat` field 22 parsed after the final `)`; `owner_instance_id` is the daemon-instance ULID and `invocation_id/session_id/task_id/agent_id/adapter` bind the process to the exact dispatch target. The invocation owner writes session metadata before spawn with null process fields, then after child spawn reads PID, PGID, and start ticks and durably updates metadata before the engine publishes the invocation as active or admits stop ownership. If this post-spawn durability step fails, the same still-live owner cancels/reaps its just-created child directly and never exposes it as recoverable active work.
+- Stop first commits `stopped` and one durable `pending_cleanup` entry. Each entry contains `cleanup_id` (ULID), `scope`, optional canonical `task_id`, `phase: "owned"|"signals_sent"|"sessions_closed"`, and immutable `targets[]`; every target copies the complete `dispatch_ownership` tuple plus the project-relative session metadata path. `DispatchEngine` writes `owned` from durable session ownership records before cancelling. Before any PID or process-group signal, the recovery/signalling helper re-reads session ownership, requires every copied ownership field to match, reads `/proc/<pid>/stat`, requires the same start ticks, and verifies the PGID still belongs to that verified PID. Only then may it signal the PID/PGID. Absent PID is receipted `not_found`; PID present with different start ticks, mismatched adapter/session/task/owner, reused PID/PGID, unreadable/malformed `/proc`, or a platform without equivalent birth verification is never signalled and remains pending with respectively `cleanup_identity_mismatch` or `cleanup_identity_unverifiable`. After signalling, it waits/rechecks the same birth identity: if leader exits but the verified process group survives, it may signal that group only while an originally verified member with a recorded birth token remains; otherwise cleanup stays pending/unverifiable. Never signal from PID/PGID alone.
+- After every verifiably owned target exits, commit `signals_sent`; after every durable session record is terminal/closed, commit `sessions_closed`; only a final transaction removes the entry. Per-target receipts use `signal: not_found|sent|exited|identity_mismatch|identity_unverifiable|group_survived` and `session: already_closed|closed|closure_failed`. On startup, cleanup loads before bootstrap and closes surviving sessions through `src/sessions/store.ts`, not volatile `SessionRegistry`. Recovery is idempotent after every phase commit. Cancellation timeout/failure, identity mismatch/unverifiable, surviving unverifiable group, or closure failure keeps stopped authority and pending cleanup; success clears only after all receipts settle.
 - Pause accepts/coalesces trigger intent; stop rejects it. Exact FIFO and retry deadlines are not durable promises. Resume/start reconstruct current eligible candidates and dedupe against active/queued canonical task identity.
 - A final ordered gate immediately before first process/session creation rechecks global and task authority. Control winning the gate creates neither process nor session. Spawn winning first is active: pause drains it; stop cancels it.
 
@@ -45,16 +47,26 @@ Add event domain `dispatch_control` to `src/schema/event-registry.ts` and `packa
 - `dispatch_control.noop`
 - `dispatch_control.failed`
 
-Payload fields: `scope: "global"|"task"`, `action: "start"|"pause"|"resume"|"stop"`, `authority: "stopped"|"running"|"paused"`, `projection: "stopped"|"running"|"paused"|"draining"`, `outcome: "applied"|"noop"|"failed"`, `task_id?: string`, `task_ref?: string`, `reason: string`, `actor: string`, `source: "cli"|"api"|"ui"|"daemon_startup"|"daemon_shutdown"|"recovery"`, `timestamp: string`, `error_code?: string`. Task scope requires canonical `task_id`; global scope forbids task identity. Reason defaults to `operator request`, trims/collapses whitespace, removes control characters, and truncates to 240 Unicode code points. Actor truncates to 120; task_ref to 200; error text is represented only by closed `error_code`. Prompts, secrets, terminal buffers, paths, and raw errors are forbidden.
+Payload fields: `scope: "global"|"task"`, `action: "start"|"pause"|"resume"|"stop"`, `authority: "stopped"|"running"|"paused"`, `projection: "stopped"|"running"|"paused"|"draining"`, `outcome: "applied"|"noop"|"failed"`, `task_id?: string`, `task_ref?: string`, `reason: string`, `actor: string`, `source: "cli"|"api"|"ui"|"daemon_startup"|"daemon_shutdown"|"recovery"`, `timestamp: string`, `error_code?: DispatchControlErrorCode`. `DispatchControlErrorCode` is the closed enum `validation_failed | task_not_found | task_identity_ambiguous | task_identity_mismatch | invalid_transition | control_store_unavailable | control_store_corrupt | control_commit_failed | cancellation_timeout | cancellation_failed | session_closure_failed | cleanup_identity_mismatch | cleanup_identity_unverifiable | internal_error`; no other string is schema-valid. Task scope requires canonical `task_id`; global scope forbids task identity. Reason defaults to `operator request`, trims/collapses whitespace, removes control characters, and truncates to 240 Unicode code points. Actor truncates to 120; task_ref to 200. Prompts, secrets, terminal buffers, paths, stack traces, exception messages, and raw errors are forbidden from events.
 
-Exact mapping is action-independent across `cli|api|ui|daemon_startup|daemon_shutdown|recovery`: applied start/pause/resume/stop emits respectively `start_applied|pause_applied|resume_applied|stop_applied`; every no-op action emits `noop` with its original action; every validation, transition, persistence, or cleanup failure emits `failed` with its original action. Each attempt emits exactly one event after the durable outcome is known. Invalid request shape/identity emits `failed` without mutation. A persistence failure emits `failed` against the prior authority. Post-commit cleanup failure emits `failed` with stopped authority and `cleanup_pending`. Events broadcast on topic `agents`; all six invalidate `queryKeys.agents.all`, while the automation event log also refreshes.
+Exact mapping is action-independent across `cli|api|ui|daemon_startup|daemon_shutdown|recovery`: applied start/pause/resume/stop emits respectively `start_applied|pause_applied|resume_applied|stop_applied`; every no-op emits `noop` with its original action and no `error_code`; every failure emits `failed` with its original action and exactly one closed code. The exhaustive failure map is: request/schema/reason/actor/task-identity-required validation → `validation_failed`, HTTP 400, CLI exit 1; no task resolution → `task_not_found`, 404, exit 3; multiple ref matches → `task_identity_ambiguous`, 409, exit 3; supplied ref/id disagreement or ownership tuple disagreement → `task_identity_mismatch`, 409, exit 3; matrix rejection → `invalid_transition`, 409, exit 3; store inaccessible/lock timeout/I/O unavailable → `control_store_unavailable`, 503, exit 3; malformed or unsupported committed control data → `control_store_corrupt`, 503, exit 3; shadow commit or committed-byte verification failure → `control_commit_failed`, 503, exit 3; bounded cancellation wait expires → `cancellation_timeout`, 500, exit 3; verified process signal/cancel fails → `cancellation_failed`, 500, exit 3; durable session close fails → `session_closure_failed`, 500, exit 3; recovery ownership/birth tuple mismatch including PID reuse → `cleanup_identity_mismatch`, 409, exit 3; birth identity cannot be verified or a surviving group has no verifiable recorded member → `cleanup_identity_unverifiable`, 503, exit 3; uncategorized implementation fault → `internal_error`, 500, exit 3. API `error.code` is the same enum; human `message/suggestion` is selected from a fixed server table and may not contain raw exceptions. Each attempt emits exactly one event after the durable outcome is known. Pre-commit failures use prior authority; post-commit cleanup failures use stopped authority and pending cleanup. Events broadcast on topic `agents`; all six invalidate `queryKeys.agents.all`, while the automation event log also refreshes.
 
 Canonical API:
 
 - `GET /api/agent/status`
 - `POST /api/agent/dispatch/control` body `{scope, action, task_ref?, task_id?, reason?}`
 
-Canonical `POST /api/agent/dispatch/control` and canonical `GET /api/agent/status` use the envelope: success/no-op is HTTP 200 and returns `{ok:true,data:{global_authority,projection,cleanup_state,active_count,queue_depth,held_count,held_tasks,task_controls,degraded_targets,outcome},error:null}`. Validation is 400, unresolved task 404, ambiguous/mismatched identity or invalid transition 409, durable store unavailable 503, and cancellation/closure failure 500. Errors return `{ok:false,data:<current status>,error:{code,message,suggestion,details?}}`; current status makes partial committed stop visible. Compatibility is frozen per existing route: `POST /api/agent/dispatch` accepts only `{action:"start"|"stop"}` and preserves HTTP 200 `{dispatch_enabled:boolean}` on success/no-op; invalid action/body remains HTTP 400 in the existing Elysia validation shape. `POST /api/agent/dispatch/start` preserves HTTP 200 `{started:boolean,reason?:string,status:<internal>}` and existing cwd-conflict HTTP 409 `{started:false,error:string}` / foreign-cwd HTTP 400 `{started:false,error:string}`. `POST /api/agent/dispatch/stop` preserves HTTP 200 `{stopped:boolean,reason?:string}`; post-commit cleanup failure is HTTP 500 with `{stopped:false,reason:"cleanup_pending"}`. `GET /api/agent/dispatch/status` preserves the existing unwrapped camelCase internal shape `{running,activeInvocations,queuedInvocations,invocations,degraded,degradedTargets}` and adds authority/projection/cleanup fields without removing old fields. `GET /api/agent/status` moves to the canonical envelope, with its former snake_case fields retained inside `data` for one compatibility cycle. No deprecation header is introduced in this plan; route comments and CLI help mark the four aliases deprecated. Existing `tests/daemon-api/agent-dispatch.test.ts`, `tests/daemon-agent-dispatch-routes.test.ts`, `tests/daemon-api/agent-runner-surfaces.test.ts`, `tests/daemon-automation-routes.test.ts`, `tests/e2e/agents.spec.ts`, and `tests/cli-daemon-endpoint-regression.test.ts` own exact compatibility assertions. Compatibility `dispatch_enabled`/`running` is true only for running authority; new clients use authority/projection, and active arrays remain visible while draining/stopped cleanup is pending.
+Canonical `POST /api/agent/dispatch/control` uses the envelope: success/no-op is HTTP 200 and returns `{ok:true,data:{global_authority,projection,cleanup_state,active_count,queue_depth,held_count,held_tasks,task_controls,degraded_targets,outcome},error:null}`; errors use the exhaustive status map above and `{ok:false,data:<current status>,error:{code,message,suggestion,details?}}`. `details` may contain only typed field names/canonical ids, never raw exceptions or paths.
+
+Compatibility adapters are frozen from current `packages/daemon/src/routes/agent-dispatch.ts` and tests, not replaced by the canonical envelope:
+
+- `GET /api/agent/status` remains HTTP 200 and remains the unwrapped public snake_case object with every current field at top level: `{dispatch_enabled,active_invocations:[{session_id,agent_id,task_ref,task_title,elapsed_ms}],queue_depth,agent_definitions:[{id,name,adapter,completed_sessions}],degraded:{active,reason,enteredAt},degraded_targets:[{branch,reason,enteredAt,kind}]}`. Add top-level `global_authority,projection,cleanup_state,held_count,held_tasks,task_controls`; do not move old fields into `data`. Store unavailable/corrupt cannot safely project status and returns canonical error envelope with 503; other status-mapping faults return canonical error envelope with 500.
+- `GET /api/agent/dispatch/status` remains HTTP 200 and unwrapped camelCase with every current field `{running,activeInvocations,queuedInvocations,invocations,queued,degraded,degradedTargets}` (including complete current invocation/queued item subfields), adding `globalAuthority,projection,cleanupState,heldCount,heldTasks,taskControls`. Store unavailable/corrupt returns `{running:false,activeInvocations:0,queuedInvocations:0,invocations:[],queued:[],degraded,degradedTargets,globalAuthority:"stopped",projection:"stopped",cleanupState:"unknown",heldCount:0,heldTasks:[],taskControls:[],error_code:<closed store code>}` with HTTP 503; internal mapping failure uses the same legacy shape plus `error_code:"internal_error"`, HTTP 500.
+- `POST /api/agent/dispatch` accepts exactly current `{action:"start"|"stop"}`. Start success is 200 `{dispatch_enabled:true}`; already-running same cwd is 200 `{dispatch_enabled:true,reason:"Already running"}`; foreign/relative cwd is 400 `{dispatch_enabled:false,error:<existing fixed cwd message>}`; same-project different-cwd conflict is 409 `{dispatch_enabled:true,error:<existing conflict message>}`. Stop success is 200 `{dispatch_enabled:false}`; no engine is 200 `{dispatch_enabled:false,reason:"No engine running"}`. New pre-commit store/corrupt/commit failures are 503 `{dispatch_enabled:<prior running compatibility boolean>,error_code:<closed code>}`; post-commit cancellation/closure failures are 500 `{dispatch_enabled:false,reason:"cleanup_pending",error_code:<closed code>}`. Invalid action/body remains the existing Elysia 400 validation shape.
+- `POST /api/agent/dispatch/start` has no body. Start success remains 200 `{started:true,status:<complete current internal engine status>}`; same-cwd no-op remains 200 `{started:false,reason:"Already running",status:<complete status>}`; foreign/relative cwd remains 400 `{started:false,error:<existing fixed cwd message>}`; different-cwd conflict remains 409 `{started:false,error:<existing conflict message>,status:<complete status>}`. New store/corrupt/commit failure is 503 `{started:false,error_code:<closed code>}`; internal start failure is 500 `{started:false,error_code:"internal_error"}`. Do not add `status` where the current 400 omits it.
+- `POST /api/agent/dispatch/stop` has no body. Success remains 200 `{stopped:true}`; no engine remains 200 `{stopped:false,reason:"No engine running"}`. New pre-commit store/corrupt/commit failure is 503 `{stopped:false,error_code:<closed code>}`; post-commit cancellation/closure failure is 500 `{stopped:false,reason:"cleanup_pending",error_code:<closed code>}`; internal failure is 500 `{stopped:false,error_code:"internal_error"}`.
+
+No deprecation header is introduced; comments/help may mark aliases deprecated. Exact regressions live in existing `tests/daemon-api/agent-dispatch.test.ts`, `tests/daemon-agent-dispatch-routes.test.ts`, `tests/daemon-api/agent-runner-surfaces.test.ts`, `tests/daemon-automation-routes.test.ts`, `tests/e2e/agents.spec.ts`, and `tests/cli-daemon-endpoint-regression.test.ts`. Compatibility booleans are true only for running authority, while active arrays remain visible during draining/pending cleanup.
 
 ### CLI safety and compatibility
 
@@ -66,6 +78,10 @@ Grammar:
 - `kspec agent dispatch stop [--reason TEXT] [--force] [--json]`
 - `kspec agent dispatch task pause|resume @task [--reason TEXT] [--json]`
 - `kspec agent dispatch task stop @task [--reason TEXT] [--force] [--json]`
+- `kspec agent status [--json]`
+- `kspec agent dispatch status [--json]`
+
+Routing is exact: all mutating lifecycle commands use canonical `POST /api/agent/dispatch/control`; neither start nor stop CLI calls a legacy mutation alias after this task. `kspec agent status` preserves its current detailed invocation/queue projection and calls legacy-compatible `GET /api/agent/dispatch/status`, then adds authority/projection/held/cleanup fields without removing current human or JSON fields. `kspec agent dispatch status` also calls `GET /api/agent/dispatch/status`, preserves its current loaded-agent augmentation and daemon-offline success projection, and adds the same lifecycle fields. The public `GET /api/agent/status` is reserved for web/public consumers. Tests must assert the exact URL chosen by each command and fail if a status command is silently routed to the public endpoint or a mutation command to a legacy alias.
 
 Interactive TTY hard stop without `--force` requires confirmation describing active cancellation and evidence preservation; decline exits 2 without request. `--force` suppresses the prompt. Non-interactive human stop without `--force` exits 1 with guidance. JSON never prompts and requires `--force`. Dispatch-owned contexts (`KSPEC_SESSION_ID`) reject global stop and task stop before prompting or HTTP with exit 3 even with `--force`, because an agent may not stop its host. Start/pause/resume do not confirm. Validation/usage exits 1; runtime/daemon/store/cancellation failures exit 3; success/no-op exits 0. Existing stop spelling remains hard stop, not graceful; help says “Hard-stop dispatch: cancel matching active invocations, close sessions, preserve evidence.” Pause help says active invocations finish naturally.
 
@@ -159,6 +175,14 @@ No task lifecycle mutation, exact durable FIFO, distributed scheduler, process c
       given: lifecycle authority is durable
       when: the daemon restarts
       then: the same authority governs scheduling before bootstrap
+    - id: ac-only-committed-control-is-visible
+      given: a dispatch-control worktree write is uncommitted, failed, stale, or invalid
+      when: a watcher or same-process publisher observes it
+      then: the last verified committed authority remains published
+    - id: ac-recovery-signals-only-verified-processes
+      given: stopped cleanup contains durable process ownership
+      when: recovery considers a process or process group signal
+      then: signalling occurs only after session ownership and process birth identity are verified
     - id: ac-final-gate-prevents-losing-spawn
       given: control wins ordering before process or session creation
       when: the candidate reaches the final start boundary
@@ -207,6 +231,10 @@ No task lifecycle mutation, exact durable FIFO, distributed scheduler, process c
       given: a lifecycle action is attempted
       when: its durable outcome is known
       then: one sanitized typed event records applied, no-op, or failed outcome
+    - id: ac-failures-use-closed-error-codes
+      given: a lifecycle action fails
+      when: its event, API result, and CLI result are projected
+      then: the failure uses the closed dispatch-control error code mapped to that failure class without exposing a raw error
     - id: ac-evidence-survives-control
       given: dispatch work is paused or stopped
       when: lifecycle control completes
@@ -239,6 +267,7 @@ The spec-patch task applies only this wording with `kspec item set` and `kspec i
 - Add `@dispatch-event-taxonomy ac-dispatch-control-domain`: **Given** a lifecycle outcome is emitted. **When** event type validation runs. **Then** the identifier is one of `dispatch_control.start_applied`, `dispatch_control.pause_applied`, `dispatch_control.resume_applied`, `dispatch_control.stop_applied`, `dispatch_control.noop`, or `dispatch_control.failed`.
 - Add `@dispatch-event-payload ac-dispatch-control-fields`: **Given** a dispatch-control event is emitted. **When** its payload is read. **Then** scope, action, authority, projection, outcome, reason, actor, source, and timestamp are present, and task scope also includes canonical task identity.
 - Add `@dispatch-event-payload ac-dispatch-control-sanitization`: **Given** lifecycle event inputs contain sensitive or oversized text. **When** the payload is created. **Then** bounded sanitized fields are emitted without prompts, secrets, terminal buffers, workspace paths, or raw errors.
+- Add `@dispatch-event-payload ac-dispatch-control-error-codes`: **Given** a dispatch-control failure is emitted. **When** payload validation and surface projection run. **Then** `error_code` is exactly one of `validation_failed`, `task_not_found`, `task_identity_ambiguous`, `task_identity_mismatch`, `invalid_transition`, `control_store_unavailable`, `control_store_corrupt`, `control_commit_failed`, `cancellation_timeout`, `cancellation_failed`, `session_closure_failed`, `cleanup_identity_mismatch`, `cleanup_identity_unverifiable`, or `internal_error`, and no raw error is present.
 - Add `@dispatch-workspace-cleanup-policy ac-controlled-evidence-protected`: **Given** dispatch evidence belongs to active, in-flight, paused-held, or stopped-pending-cleanup work. **When** a destructive cleanup surface evaluates it. **Then** lifecycle control alone does not make the evidence cleanup-eligible.
 
 ## Coverage Ownership
@@ -280,7 +309,7 @@ derive_from_specs: false
     How: Create the plan-owned requirement through derivation; use item set/ac set/ac add; preserve unlisted IDs, status, maturity, traits, metadata; no product code or YAML edits.
     Sources of Truth: Exact Existing-Spec Changes above and current item readback.
     Files: kspec shadow state only.
-    Required tests: exact readback of all nine owners; unchanged unlisted ACs; validation.
+    Required tests: exact readback of all eight owners; unchanged unlisted ACs; validation.
     Verification: kspec item get on every named owner; kspec validate --warnings-ok.
     Review handoff: list changed refs/IDs and confirm no product files.
 
@@ -291,13 +320,13 @@ derive_from_specs: false
   depends_on: ["@task-patch-dispatch-lifecycle-specs"]
   tags: [dispatch, schema, persistence]
   description: |
-    Covers: ac-task-control-uses-canonical-identity, ac-controls-survive-restart, ac-controls-do-not-change-readiness, ac-actions-are-idempotent.
+    Covers: ac-task-control-uses-canonical-identity, ac-controls-survive-restart, ac-only-committed-control-is-visible, ac-controls-do-not-change-readiness, ac-actions-are-idempotent.
     What: Implement version-1 `.kspec/dispatch-control.yaml` and its single parser/store authority exactly as frozen above.
     Why: No other slice can safely infer persistence, migration, locking, watcher, or corruption behavior.
     How: Create `src/agent-runtime/dispatch-shadow-transaction.ts` as the exported shared lock/commit owner and `src/agent-runtime/dispatch-control-store.ts` as snapshot owner; own schema/parser, index exports, watcher/cache mapping, atomic shadow-lock transaction, migration, corruption degradation, canonical ULID keys, and post-commit snapshot publication. Enforce the frozen lock order. Do not implement engine actions.
     Sources of Truth: Durable source of truth and recovery; `src/parser/yaml.ts`; dispatch shadow mutation discipline in `src/agent-runtime/workspace.ts`; `src/agent-runtime/task-identity.ts`.
     Files: Create `src/schema/dispatch-control.ts`, `src/parser/dispatch-control.ts`, `src/agent-runtime/dispatch-shadow-transaction.ts`, `src/agent-runtime/dispatch-control-store.ts`, and `tests/dispatch-control-store.test.ts`; update Existing `src/schema/index.ts`, `src/parser/index.ts`, `src/parser/file-lock.ts`, `src/agent-runtime/workspace.ts`, `packages/daemon/src/project-context.ts`, `packages/daemon/src/server.ts`, `src/daemon/entity-cache.ts`, `tests/daemon-entity-cache.test.ts`, and `tests/daemon-watcher-chokidar.test.ts`.
-    Required tests: missing/version1/unknown/malformed; canonical convergence/mismatch; atomic failure; lock concurrency; watcher invalidation; no readiness/degraded mutation.
+    Required tests: missing/version1/unknown/malformed; monotonic revision and canonical convergence/mismatch; atomic failure/lock concurrency; deterministic watcher-before-commit, commit-before-watcher, duplicate self event, external committed update, dirty external write, commit/verification failure, stale/malformed revision, and force-reclaim rollback; assert prior snapshot/cache remains and no uncommitted bytes publish; no readiness/degraded mutation.
     Verification: npm test -- tests/dispatch-control-store.test.ts tests/daemon-entity-cache.test.ts tests/daemon-watcher-chokidar.test.ts; npm run typecheck; npm run lint.
     Review handoff: persisted fixture, migration/corruption matrix, lock evidence.
 
@@ -308,7 +337,7 @@ derive_from_specs: false
   depends_on: ["@task-dispatch-control-persistence"]
   tags: [dispatch, engine]
   description: |
-    Covers: ac-global-pause-authority, ac-paused-work-does-not-start, ac-pause-allows-active-completion, ac-resume-reconciles-current-work, ac-resume-does-not-duplicate, ac-reconstruction-uses-current-state; @agent-dispatch-engine ac-resume-current-state.
+    Covers: ac-global-pause-authority, ac-pause-allows-active-completion, ac-resume-reconciles-current-work, ac-resume-does-not-duplicate, ac-reconstruction-uses-current-state; @agent-dispatch-engine ac-resume-current-state.
     What: Apply the complete global start/pause/resume matrix, startup loading, held/coalesced intent, and current-state reconstruction.
     Why: Start and resume must not be interchangeable and pause must not clear evidence or active sessions.
     How: Update `src/agent-runtime/dispatch.ts`; load control before bootstrap; cover event, watcher, bootstrap, reconciliation, post-invocation, retry, coalescing and degraded recovery; keep stop/cancellation out.
@@ -318,48 +347,14 @@ derive_from_specs: false
     Verification: npm test -- tests/agent-dispatch-engine.test.ts tests/dispatch-global-lifecycle.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts; typecheck; lint.
     Review handoff: matrix-to-test table and scheduling-ingress inventory.
 
-- title: Add final pre-spawn lifecycle gate
-  slug: task-final-pre-spawn-control-gate
-  priority: 1
-  spec_ref: "@dispatch-lifecycle-control-authority"
-  depends_on: ["@task-engine-global-lifecycle"]
-  tags: [dispatch, race]
-  description: |
-    Covers: ac-final-gate-prevents-losing-spawn, ac-spawn-win-pause-allows-completion, ac-spawn-win-stop-cancels-invocation; @agent-dispatch-engine ac-lifecycle-final-gate and ac-pause-active-natural-completion.
-    What: Add the last authority check before the first process/session creation boundary.
-    Why: Enqueue checks leave a dequeue-to-spawn race.
-    How: Modify `src/agent-runtime/dispatch.ts` and minimal invocation/session hooks; order control and spawn, preserve in-flight cleanup ownership, restore pause losers once and discard stop losers; no long lock across provisioning/execution.
-    Sources of Truth: race contract; `_spawnInvocation`/`runInvocation`/SessionRegistry current boundaries.
-    Files: `src/agent-runtime/dispatch.ts`; minimal `src/agent-runtime/invocation.ts`; create `tests/dispatch-spawn-control-race.test.ts`; update artifact tests.
-    Required tests: barrier-controlled pause/stop before gate and spawn before control; no timing sleeps; no protection gap.
-    Verification: npm test -- tests/dispatch-spawn-control-race.test.ts tests/dispatch-artifact-protection.test.ts; typecheck; lint.
-    Review handoff: exact irreversible boundary and deterministic traces.
-
-- title: Implement recoverable global hard stop
-  slug: task-engine-global-hard-stop
-  priority: 1
-  spec_ref: "@dispatch-lifecycle-control-authority"
-  depends_on: ["@task-final-pre-spawn-control-gate"]
-  tags: [dispatch, cancellation]
-  description: |
-    Covers: ac-stop-forbids-new-starts, ac-stop-cancels-active-work, ac-stop-closes-active-sessions, ac-stop-failure-remains-authoritative, ac-interrupted-stop-recovers; @agent-dispatch-engine ac-11 and @per-task-dispatch-drain-coalescing ac-5.
-    What: Implement commit-first global stop, pending-cleanup recovery, cancellation, session closure, shutdown reuse, and truthful status.
-    Why: Failure after authority commit must not reopen dispatch or claim success.
-    How: Update dispatch/session registry and `packages/daemon/src/routes/agent-dispatch.ts` shutdown wiring; persist stopped+pending first; idempotently clear matching scheduling state; retry cleanup on startup/stop; preserve files/workspaces. Do not own API serialization.
-    Sources of Truth: recovery contract; current DispatchEngine.stop and SessionRegistry.closeAll.
-    Files: Existing `src/agent-runtime/dispatch.ts`, `src/agent-runtime/invocation.ts`, `src/agent-runtime/session-registry.ts`, `src/sessions/store.ts`, `packages/daemon/src/routes/agent-dispatch.ts`, `tests/agent-dispatch-engine.test.ts`, and `tests/active-session-registry.test.ts`; Create `tests/dispatch-stop-recovery.test.ts`.
-    Required tests: commit failure; cancellation timeout; closure failure; crash after commit; startup recovery; repeated stop; no false success.
-    Verification: npm test -- tests/dispatch-stop-recovery.test.ts tests/active-session-registry.test.ts tests/agent-dispatch-engine.test.ts; typecheck; lint.
-    Review handoff: commit/cleanup state machine and fault-injection results.
-
 - title: Enforce canonical task pause and resume
   slug: task-engine-task-pause-resume
   priority: 2
   spec_ref: "@dispatch-lifecycle-control-authority"
-  depends_on: ["@task-final-pre-spawn-control-gate"]
+  depends_on: ["@task-engine-global-lifecycle"]
   tags: [dispatch, tasks]
   description: |
-    Covers: ac-task-control-is-isolated, ac-task-resume-obeys-global-authority.
+    Covers: ac-paused-work-does-not-start, ac-task-control-is-isolated, ac-task-resume-obeys-global-authority.
     What: Apply task pause/resume at every scheduling path using canonical identity.
     Why: A path-specific or slug-keyed hold can leak starts or block another task.
     How: Update dispatch scheduling paths; pause keeps matching active work natural; resume re-evaluates only current task and obeys global authority. Consume persistence identity contract without claiming it.
@@ -368,6 +363,40 @@ derive_from_specs: false
     Required tests: task A/B isolation; slug/ULID convergence; every ingress; resume under global pause/stop; coalesced held counts.
     Verification: npm test -- tests/dispatch-task-lifecycle.test.ts tests/dispatch-canonical-task-identity-integration.test.ts; typecheck; lint.
     Review handoff: canonical identity and ingress matrices.
+
+- title: Add final pre-spawn lifecycle gate
+  slug: task-final-pre-spawn-control-gate
+  priority: 2
+  spec_ref: "@dispatch-lifecycle-control-authority"
+  depends_on: ["@task-engine-task-pause-resume"]
+  tags: [dispatch, race]
+  description: |
+    Covers: ac-final-gate-prevents-losing-spawn, ac-spawn-win-pause-allows-completion; @agent-dispatch-engine ac-lifecycle-final-gate and ac-pause-active-natural-completion.
+    What: Add the last global-and-task authority check before the first process/session creation boundary and classify the ordering winner.
+    Why: Enqueue checks leave a dequeue-to-spawn race.
+    How: Modify Existing `src/agent-runtime/dispatch.ts` and the minimal Existing `src/agent-runtime/invocation.ts` hook; restore a pause loser once, discard a stop loser before creation, and when spawn wins return an active ownership handoff for the later hard-stop task. This task must not signal, cancel, close sessions, claim stop completion, or implement stop recovery. Until the dependent hard-stop task lands, a spawn-wins-stop fixture asserts only the active ownership handoff and committed no-new-start authority, not cancellation.
+    Sources of Truth: race contract; `_spawnInvocation`/`runInvocation`/SessionRegistry current boundaries.
+    Files: Existing `src/agent-runtime/dispatch.ts`, `src/agent-runtime/invocation.ts`, and `tests/dispatch-artifact-protection.test.ts`; Create `tests/dispatch-spawn-control-race.test.ts`.
+    Required tests: barrier-controlled global/task pause and stop before gate; spawn-before-pause natural completion; spawn-before-stop ownership handoff only; no timing sleeps; no protection gap.
+    Verification: npm test -- tests/dispatch-spawn-control-race.test.ts tests/dispatch-artifact-protection.test.ts; npm run typecheck; npm run lint.
+    Review handoff: exact irreversible boundary, ownership handoff, and deterministic traces.
+
+- title: Implement recoverable global hard stop
+  slug: task-engine-global-hard-stop
+  priority: 2
+  spec_ref: "@dispatch-lifecycle-control-authority"
+  depends_on: ["@task-final-pre-spawn-control-gate"]
+  tags: [dispatch, cancellation]
+  description: |
+    Covers: ac-stop-forbids-new-starts, ac-stop-cancels-active-work, ac-stop-closes-active-sessions, ac-stop-failure-remains-authoritative, ac-interrupted-stop-recovers, ac-recovery-signals-only-verified-processes, ac-spawn-win-stop-cancels-invocation; @agent-dispatch-engine ac-11 and @per-task-dispatch-drain-coalescing ac-5.
+    What: Implement commit-first global stop, crash-safe ownership, verified cancellation, session closure, shutdown reuse, and recovery.
+    Why: Failure after authority commit must not reopen dispatch or signal a reused/unowned process.
+    How: Extend the exact Existing session schema owner `src/sessions/types.ts` and persistence owner `src/sessions/store.ts`; update dispatch/invocation/session registry and shutdown wiring; durably bind adapter/session/task/daemon ownership plus Linux birth ticks before active publication; persist stopped+pending first; verify complete tuple before every signal; never signal unverifiable identity; retry cleanup on startup/stop. Do not own HTTP serialization.
+    Sources of Truth: durable ownership/recovery contract; current DispatchEngine.stop, SessionRegistry.closeAll, and session metadata store.
+    Files: Existing `src/agent-runtime/dispatch.ts`, `src/agent-runtime/invocation.ts`, `src/agent-runtime/session-registry.ts`, `src/sessions/types.ts`, `src/sessions/store.ts`, `packages/daemon/src/routes/agent-dispatch.ts`, `tests/agent-dispatch-engine.test.ts`, `tests/active-session-registry.test.ts`, and `tests/dispatch-spawn-control-race.test.ts`; Create `tests/dispatch-stop-recovery.test.ts`.
+    Required tests: pre/post-spawn ownership persistence failure; matching Linux birth token; absent process; PID/start-time reuse; adapter/session/task/owner mismatch; unreadable `/proc`; unsupported platform; leader exit with surviving verified/unverified group; cancellation timeout/failure; closure failure; crash after every phase; startup recovery; repeated stop; no signal for unverifiable targets; no false success.
+    Verification: npm test -- tests/dispatch-stop-recovery.test.ts tests/dispatch-spawn-control-race.test.ts tests/active-session-registry.test.ts tests/agent-dispatch-engine.test.ts; npm run typecheck; npm run lint.
+    Review handoff: session schema diff, process-identity decision table, signal trace, and cleanup fault results.
 
 - title: Implement recoverable targeted task hard stop
   slug: task-engine-task-hard-stop
@@ -381,7 +410,7 @@ derive_from_specs: false
     Why: Global closeAll or ref aliases violate task isolation.
     How: Add targeted active-controller/session ownership and close-by-canonical-task; commit task stopped+pending first; remove matching queue/retry/coalescing only; retry cleanup; resume reconstructs current state.
     Sources of Truth: task matrix/recovery; active invocation detail; SessionRegistry.
-    Files: Existing `src/agent-runtime/dispatch.ts`, `src/agent-runtime/session-registry.ts`, and `tests/active-session-registry.test.ts`; Create `tests/dispatch-task-lifecycle.test.ts`.
+    Files: Existing `src/agent-runtime/dispatch.ts`, `src/agent-runtime/session-registry.ts`, `src/sessions/types.ts`, `src/sessions/store.ts`, `tests/active-session-registry.test.ts`, `tests/dispatch-stop-recovery.test.ts`, and `tests/dispatch-task-lifecycle.test.ts` (created by prerequisite `@task-engine-task-pause-resume`).
     Required tests: A/B active and queued isolation; partial failure/restart recovery; repeated stop; evidence retained.
     Verification: npm test -- tests/dispatch-task-lifecycle.test.ts tests/active-session-registry.test.ts tests/dispatch-stop-recovery.test.ts; typecheck; lint.
     Review handoff: targeted ownership proof and unrelated-session assertions.
@@ -410,13 +439,13 @@ derive_from_specs: false
   depends_on: ["@task-engine-task-hard-stop"]
   tags: [dispatch, events]
   description: |
-    Covers: ac-control-outcomes-are-auditable; @dispatch-event-taxonomy ac-dispatch-control-domain; @dispatch-event-payload ac-dispatch-control-fields and ac-dispatch-control-sanitization.
+    Covers: ac-control-outcomes-are-auditable; @dispatch-event-taxonomy ac-dispatch-control-domain; @dispatch-event-payload ac-dispatch-control-fields, ac-dispatch-control-sanitization, and ac-dispatch-control-error-codes.
     What: Materialize the exact domain, six identifiers, payload schema, limits, defaults, and emission mapping.
     Why: Event consumers cannot invent identifiers or sanitization.
     How: Update registry/domain, payload schema, shared mirror, engine/control emission and daemon `agents` broadcast; applied/no-op/failed exactly once after outcome; no raw error.
     Sources of Truth: Events and wire contract; `src/schema/event-registry.ts`, `src/schema/event-payloads.ts`, `packages/shared/src/schemas.ts`.
     Files: those files; dispatch emitter; create `tests/dispatch-control-events.test.ts`; update event/schema/shared tests.
-    Required tests: all scope/action/outcomes; exact required/forbidden fields; Unicode limits; commit and cleanup failures; registry mirror.
+    Required tests: all scope/action/outcomes; exhaustive closed error enum with unknown strings rejected; exact required/forbidden fields and no raw error/stack/path; Unicode limits; every mapped commit, store, transition, identity, cancellation, closure, recovery, and internal failure; registry mirror.
     Verification: npm test -- tests/dispatch-control-events.test.ts tests/event-bus.test.ts; npm --prefix packages/shared test; typecheck; lint.
     Review handoff: registry diff and representative sanitized payloads.
 
@@ -432,9 +461,9 @@ derive_from_specs: false
     Why: Current implementation is in `packages/daemon`, and aliases expose divergent boolean shapes.
     How: Update `packages/daemon/src/routes/agent-dispatch.ts`; canonical POST `/api/agent/dispatch/control`; preserve listed aliases; status keeps active arrays visible; current status accompanies failures.
     Sources of Truth: canonical API section and current route file.
-    Files: `packages/daemon/src/routes/agent-dispatch.ts`, `tests/daemon-api/agent-dispatch.test.ts`; create no nonexistent daemon route test.
-    Required tests: every status/action/transition; methods/paths; 400/404/409/500/503; alias parity; identity mismatch; cleanup pending; compatibility booleans.
-    Verification: npm test -- tests/daemon-api/agent-dispatch.test.ts; typecheck; lint.
+    Files: Existing `packages/daemon/src/routes/agent-dispatch.ts`, `tests/daemon-api/agent-dispatch.test.ts`, `tests/daemon-agent-dispatch-routes.test.ts`, `tests/daemon-api/agent-runner-surfaces.test.ts`, `tests/daemon-automation-routes.test.ts`, and `tests/cli-daemon-endpoint-regression.test.ts`.
+    Required tests: canonical envelope and every action/transition; exact legacy field presence/absence, casing, nested invocation/queue/agent/degraded shapes, cwd 400, cwd conflict 409, current no-op reasons, Elysia invalid-body shape, and exact 500/503 adapters for every alias; closed code/status mapping; identity mismatch; cleanup pending; compatibility booleans and visible active arrays.
+    Verification: npm test -- tests/daemon-api/agent-dispatch.test.ts tests/daemon-agent-dispatch-routes.test.ts tests/daemon-api/agent-runner-surfaces.test.ts tests/daemon-automation-routes.test.ts tests/cli-daemon-endpoint-regression.test.ts; npm run typecheck; npm run lint.
     Review handoff: curl/request examples and alias parity table.
 
 - title: Add safe lifecycle CLI commands
@@ -444,14 +473,14 @@ derive_from_specs: false
   depends_on: ["@task-daemon-dispatch-lifecycle-api"]
   tags: [dispatch, cli]
   description: |
-    Covers: @cli-agent-commands ac-5, ac-lifecycle-verbs, ac-destructive-stop-confirmation, ac-task-control-canonicalization, ac-lifecycle-status-output.
+    Covers: ac-failures-use-closed-error-codes; @cli-agent-commands ac-5, ac-lifecycle-verbs, ac-destructive-stop-confirmation, ac-task-control-canonicalization, ac-lifecycle-status-output.
     What: Implement the exact grammar, hard-stop confirmation, noninteractive/JSON rules, dispatch-owned rejection, help and exits.
     Why: Existing stop becomes destructive and must be safe without breaking spelling.
-    How: Use daemon API only in `src/cli/commands/agent.ts`; canonical `--force` rules and exit codes exactly as frozen; default reason server-side; preserve hard stop aliases/help wording.
+    How: Use daemon API only in `src/cli/commands/agent.ts`; route every mutation to canonical control and both existing status commands to legacy-compatible dispatch status exactly as frozen; canonical `--force` rules and exit/code mappings; default reason server-side; preserve both status projections and hard-stop help wording.
     Sources of Truth: CLI safety section; semantic-exit-code trait; current command.
-    Files: `src/cli/commands/agent.ts`, `tests/cli-agent-commands.test.ts`, `tests/cli-agent.test.ts`; create `tests/cli-agent-dispatch-lifecycle.test.ts`.
-    Required tests: TTY confirm accept/decline; piped/JSON missing/with `--force`; global and task stop with `KSPEC_SESSION_ID`; canonical and legacy endpoint selection; human/JSON no-op/failure/status; help snapshots.
-    Verification: npm test -- tests/cli-agent-commands.test.ts tests/cli-agent.test.ts tests/cli-agent-dispatch-lifecycle.test.ts; typecheck; lint.
+    Files: Existing `src/cli/commands/agent.ts`, `tests/cli-agent-commands.test.ts`, `tests/cli-agent.test.ts`, and `tests/cli-daemon-endpoint-regression.test.ts`; Create `tests/cli-agent-dispatch-lifecycle.test.ts`.
+    Required tests: TTY confirm accept/decline; piped/JSON missing/with `--force`; global/task stop with `KSPEC_SESSION_ID`; exact URL/method assertions for every mutation, `kspec agent status`, and `kspec agent dispatch status`; both existing human/JSON status field sets plus lifecycle projection; daemon-offline dispatch-status compatibility; every closed API code to exit mapping with no raw error; no-op/failure/help snapshots.
+    Verification: npm test -- tests/cli-agent-commands.test.ts tests/cli-agent.test.ts tests/cli-agent-dispatch-lifecycle.test.ts tests/cli-daemon-endpoint-regression.test.ts; npm run typecheck; npm run lint.
     Review handoff: exact help/output/exit transcript.
 
 - title: Migrate all web lifecycle consumers
@@ -525,8 +554,8 @@ derive_from_specs: false
 
 ## Path Classification
 
-Every source/test path named in this plan is **Existing** unless its task marks it **Create**, uses the word `new`, or it appears in this Create list: `src/schema/dispatch-control.ts`, `src/parser/dispatch-control.ts`, `src/agent-runtime/dispatch-shadow-transaction.ts`, `src/agent-runtime/dispatch-control-store.ts`, `tests/dispatch-control-store.test.ts`, `tests/dispatch-global-lifecycle.test.ts`, `tests/dispatch-spawn-control-race.test.ts`, `tests/dispatch-stop-recovery.test.ts`, `tests/dispatch-task-lifecycle.test.ts`, `tests/dispatch-control-events.test.ts`, `tests/cli-agent-dispatch-lifecycle.test.ts`, `tests/e2e/dispatch-lifecycle.spec.ts`, `tests/dispatch-lifecycle-blackbox.test.ts`, and `tests/dispatch-lifecycle-surface-integration.test.ts`. `packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte` is **Create**. `tests/web-ui/` is an **Existing directory**, not a file. No other missing path is an implicit deliverable.
+Classification is evaluated at each task's dependency point, not only against today's tree. Every source/test path is **Existing** unless its first owning task marks it **Create**, uses the word `new`, or it appears in this first-owner Create list: persistence creates `src/schema/dispatch-control.ts`, `src/parser/dispatch-control.ts`, `src/agent-runtime/dispatch-shadow-transaction.ts`, `src/agent-runtime/dispatch-control-store.ts`, and `tests/dispatch-control-store.test.ts`; global lifecycle creates `tests/dispatch-global-lifecycle.test.ts`; task pause/resume creates `tests/dispatch-task-lifecycle.test.ts`; pre-spawn gate creates `tests/dispatch-spawn-control-race.test.ts`; global hard stop creates `tests/dispatch-stop-recovery.test.ts`; events creates `tests/dispatch-control-events.test.ts`; CLI creates `tests/cli-agent-dispatch-lifecycle.test.ts`; UI creates `packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte` and `tests/e2e/dispatch-lifecycle.spec.ts`; the three verification slices respectively create `tests/dispatch-lifecycle-blackbox.test.ts`, `tests/dispatch-lifecycle-surface-integration.test.ts`, and no additional browser file. Therefore `tests/dispatch-task-lifecycle.test.ts`, `tests/dispatch-spawn-control-race.test.ts`, `tests/dispatch-stop-recovery.test.ts`, and `tests/e2e/dispatch-lifecycle.spec.ts` are **Existing-by-that-task** in every dependent task that names them. Existing session ownership files are exactly `src/sessions/types.ts` and `src/sessions/store.ts`. `tests/web-ui/` is an **Existing directory**, not a file. No other missing path is an implicit deliverable.
 
 ## Implementation Order
 
-Exact spec patch → persistence → global lifecycle → race gate → global stop → task controls → evidence/events → API → CLI/UI → three bounded verification slices. Dependencies are acyclic and priorities never decrease. Import remains draft; do not approve, derive, or implement.
+Exact spec patch → persistence → global lifecycle → task pause/resume → race gate → global hard stop → targeted task hard stop → evidence/events → API → CLI/UI → three bounded verification slices. Each task is testable at its point: the race task returns stop ownership but does not cancel; global hard stop first owns verified cancellation; targeted stop then narrows that mechanism. Dependencies are acyclic and priorities never decrease. Import remains draft; do not approve, derive, or implement.

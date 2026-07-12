@@ -2143,7 +2143,7 @@ plans:
     derived_specs: []
     derived_tasks: []
     module_ref: "@agent-integration"
-    notes_count: 5
+    notes_count: 6
     resource_summary:
       count: 18
       total_bytes: 859524
