@@ -45,3 +45,7 @@ notes:
       closure review
     author: Jacob Chapel
     created_at: 2026-07-12T23:30:20.977Z
+  - _ulid: 01KXCAT1QECTEWW10NE3X1EW6T
+    content: Correct dependency-relative Create/Modify/Test classifications in rewritten handoffs
+    author: Jacob Chapel
+    created_at: 2026-07-12T23:32:42.350Z

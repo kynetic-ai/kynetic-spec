@@ -576,12 +576,15 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - None.
 
     #### Modify
+
     - None.
 
     #### Tests
+
     - Colocated focused tests named in **Required tests**.
 
     Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
@@ -596,7 +599,7 @@ derive_from_specs: false
     ### Verification
 
     - Run `kspec item get on every named owner` and expect exit 0 with every named suite passing.
-    - Run `kspec validate --warnings-ok.` and expect exit 0 with every named suite passing.
+    - Run `kspec validate --warnings-ok` and expect exit 0 with every named suite passing.
     - Run `git diff --check`; expect no whitespace errors.
     - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
 
@@ -664,12 +667,15 @@ derive_from_specs: false
     ### Files
 
     #### Create
-    - `src/schema/dispatch-control.ts`
 
-    #### Modify
+    - `src/schema/dispatch-control.ts`
     - `src/parser/dispatch-control.ts`
     - `src/agent-runtime/dispatch-shadow-transaction.ts`
     - `src/agent-runtime/dispatch-control-store.ts`
+    - `tests/dispatch-control-store.test.ts`
+
+    #### Modify
+
     - `src/schema/index.ts`
     - `src/parser/index.ts`
     - `src/parser/file-lock.ts`
@@ -679,7 +685,7 @@ derive_from_specs: false
     - `src/daemon/entity-cache.ts`
 
     #### Tests
-    - `tests/dispatch-control-store.test.ts`
+
     - `tests/daemon-entity-cache.test.ts`
     - `tests/daemon-watcher-chokidar.test.ts`
 
@@ -773,14 +779,16 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - `tests/dispatch-global-lifecycle.test.ts`
 
     #### Modify
+
     - `src/agent-runtime/dispatch.ts`
 
     #### Tests
+
     - `tests/agent-dispatch-engine.test.ts`
-    - `tests/dispatch-global-lifecycle.test.ts`
 
     Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
 
@@ -796,7 +804,7 @@ derive_from_specs: false
     ### Verification
 
     - Run `npm test -- tests/agent-dispatch-engine.test.ts tests/dispatch-global-lifecycle.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts` and expect exit 0 with every named suite passing.
-    - Run `typecheck` and expect exit 0 with every named suite passing.
+    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
     - Run `lint.` and expect exit 0 with every named suite passing.
     - Run `git diff --check`; expect no whitespace errors.
     - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
@@ -863,13 +871,16 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - `tests/dispatch-task-lifecycle.test.ts`
 
     #### Modify
+
     - `src/agent-runtime/dispatch.ts`
 
     #### Tests
-    - `tests/dispatch-task-lifecycle.test.ts`
+
+    - Colocated focused tests named in **Required tests**.
 
     Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
 
@@ -886,7 +897,7 @@ derive_from_specs: false
     ### Verification
 
     - Run `npm test -- tests/dispatch-task-lifecycle.test.ts tests/dispatch-canonical-task-identity-integration.test.ts` and expect exit 0 with every named suite passing.
-    - Run `typecheck` and expect exit 0 with every named suite passing.
+    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
     - Run `lint.` and expect exit 0 with every named suite passing.
     - Run `git diff --check`; expect no whitespace errors.
     - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
@@ -951,15 +962,17 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - `tests/dispatch-spawn-control-race.test.ts`
 
     #### Modify
+
     - `src/agent-runtime/dispatch.ts`
     - `src/agent-runtime/invocation.ts`
 
     #### Tests
+
     - `tests/dispatch-artifact-protection.test.ts`
-    - `tests/dispatch-spawn-control-race.test.ts`
 
     Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
 
@@ -1052,9 +1065,11 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - `tests/dispatch-stop-recovery.test.ts`
 
     #### Modify
+
     - `src/agent-runtime/dispatch.ts`
     - `src/agent-runtime/invocation.ts`
     - `src/agent-runtime/session-registry.ts`
@@ -1063,10 +1078,10 @@ derive_from_specs: false
     - `packages/daemon/src/routes/agent-dispatch.ts`
 
     #### Tests
+
     - `tests/agent-dispatch-engine.test.ts`
     - `tests/active-session-registry.test.ts`
     - `tests/dispatch-spawn-control-race.test.ts`
-    - `tests/dispatch-stop-recovery.test.ts`
 
     Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
 
@@ -1165,9 +1180,11 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - None.
 
     #### Modify
+
     - `src/agent-runtime/dispatch.ts`
     - `src/agent-runtime/session-registry.ts`
     - `src/sessions/types.ts`
@@ -1175,6 +1192,7 @@ derive_from_specs: false
     - `@task-engine-task-pause-resume`
 
     #### Tests
+
     - `tests/active-session-registry.test.ts`
     - `tests/dispatch-stop-recovery.test.ts`
     - `tests/dispatch-task-lifecycle.test.ts`
@@ -1192,7 +1210,7 @@ derive_from_specs: false
     ### Verification
 
     - Run `npm test -- tests/dispatch-task-lifecycle.test.ts tests/active-session-registry.test.ts tests/dispatch-stop-recovery.test.ts` and expect exit 0 with every named suite passing.
-    - Run `typecheck` and expect exit 0 with every named suite passing.
+    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
     - Run `lint.` and expect exit 0 with every named suite passing.
     - Run `git diff --check`; expect no whitespace errors.
     - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
@@ -1256,12 +1274,15 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - None.
 
     #### Modify
+
     - `src/agent-runtime/workspace.ts`
 
     #### Tests
+
     - `tests/dispatch-artifact-protection.test.ts`
     - `tests/dispatch-workspace-cleanup.test.ts`
 
@@ -1277,7 +1298,7 @@ derive_from_specs: false
     ### Verification
 
     - Run `npm test -- tests/dispatch-artifact-protection.test.ts tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts` and expect exit 0 with every named suite passing.
-    - Run `typecheck` and expect exit 0 with every named suite passing.
+    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
     - Run `lint.` and expect exit 0 with every named suite passing.
     - Run `git diff --check`; expect no whitespace errors.
     - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
@@ -1350,13 +1371,16 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - `tests/dispatch-control-events.test.ts`
 
     #### Modify
+
     - None.
 
     #### Tests
-    - `tests/dispatch-control-events.test.ts`
+
+    - Colocated focused tests named in **Required tests**.
 
     Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
 
@@ -1374,7 +1398,7 @@ derive_from_specs: false
 
     - Run `npm test -- tests/dispatch-control-events.test.ts tests/event-bus.test.ts` and expect exit 0 with every named suite passing.
     - Run `npm --prefix packages/shared test` and expect exit 0 with every named suite passing.
-    - Run `typecheck` and expect exit 0 with every named suite passing.
+    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
     - Run `lint.` and expect exit 0 with every named suite passing.
     - Run `git diff --check`; expect no whitespace errors.
     - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
@@ -1453,12 +1477,15 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - None.
 
     #### Modify
+
     - `packages/daemon/src/routes/agent-dispatch.ts`
 
     #### Tests
+
     - `tests/daemon-api/agent-dispatch.test.ts`
     - `tests/daemon-agent-dispatch-routes.test.ts`
     - `tests/daemon-api/agent-runner-surfaces.test.ts`
@@ -1554,16 +1581,18 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - `tests/cli-agent-dispatch-lifecycle.test.ts`
 
     #### Modify
+
     - `src/cli/commands/agent.ts`
 
     #### Tests
+
     - `tests/cli-agent-commands.test.ts`
     - `tests/cli-agent.test.ts`
     - `tests/cli-daemon-endpoint-regression.test.ts`
-    - `tests/cli-agent-dispatch-lifecycle.test.ts`
 
     Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
 
@@ -1656,15 +1685,17 @@ derive_from_specs: false
     ### Files
 
     #### Create
-    - `HeldTaskRow.svelte`
+
+    - `packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte`
     - `tests/e2e/dispatch-lifecycle.spec.ts`
 
     #### Modify
-    - None.
+
+    - `HeldTaskRow.svelte`
 
     #### Tests
+
     - `tests/web-ui/`
-    - `tests/e2e/dispatch-lifecycle.spec.ts`
 
     Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
 
@@ -1741,13 +1772,16 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - `tests/dispatch-lifecycle-blackbox.test.ts`
 
     #### Modify
+
     - None.
 
     #### Tests
-    - `tests/dispatch-lifecycle-blackbox.test.ts`
+
+    - Colocated focused tests named in **Required tests**.
 
     Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
 
@@ -1823,13 +1857,16 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - `tests/dispatch-lifecycle-surface-integration.test.ts`
 
     #### Modify
+
     - None.
 
     #### Tests
-    - `tests/dispatch-lifecycle-surface-integration.test.ts`
+
+    - Colocated focused tests named in **Required tests**.
 
     Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
 
@@ -1861,7 +1898,7 @@ derive_from_specs: false
   - dispatch
   - verification
   - accessibility
-  description: |
+  description: |-
     ### Covers
 
     - verification only.
@@ -1900,12 +1937,15 @@ derive_from_specs: false
     ### Files
 
     #### Create
+
     - None.
 
     #### Modify
+
     - None.
 
     #### Tests
+
     - `tests/e2e/dispatch-lifecycle.spec.ts`
 
     Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
