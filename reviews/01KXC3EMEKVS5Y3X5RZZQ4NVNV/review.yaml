@@ -150,6 +150,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC3MDCVJW2RR7QCFP9QTKF0
     timestamp: 2026-07-12T21:27:17.899Z
+  - _ulid: 01KXC3MJZFBWVV48RN8MMQYS71
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3MJQPJJ63FPW0AA5JH5KA
+    timestamp: 2026-07-12T21:27:23.375Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -503,7 +510,25 @@ threads:
           file path and provide a route, request, response, and error compatibility matrix.
         created_at: 2026-07-12T21:27:17.659Z
     kind: blocker
+  - _ulid: 01KXC3MJQPJJ63FPW0AA5JH5KA
+    anchor:
+      type: structured
+      ref: "@task-cli-dispatch-lifecycle-controls"
+      section: description
+    entries:
+      - _ulid: 01KXC3MJQPNXMQ3RQ32EMCRF6P
+        author: Jacob Chapel
+        body: CLI guidance omits the safety contract for newly destructive hard stop and names nonexistent
+          test sources. The project has @trait-confirmation-prompt for destructive operations, but
+          the plan provides no TTY confirmation, force or noninteractive behavior, decline exit
+          code, or compatibility decision for existing scripts. It also verifies
+          tests/agent-cli.test.ts and tests/agent-dispatch-cli.test.ts, while the authoritative
+          suites are tests/cli-agent-commands.test.ts and
+          tests/cli-daemon-endpoint-regression.test.ts. Decide the destructive confirmation and
+          backward-compatibility contract and point the task at exact existing suites.
+        created_at: 2026-07-12T21:27:23.126Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:27:17.659Z
+updated_at: 2026-07-12T21:27:23.126Z
 notes: []
