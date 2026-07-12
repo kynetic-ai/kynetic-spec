@@ -585,6 +585,12 @@ events:
     payload:
       thread_ulid: 01KXC3J1JHKVTRQDTKZCA4Q34W
     timestamp: 2026-07-12T21:31:51.655Z
+  - _ulid: 01KXC3WY3N93ENYN3J1CH2D93H
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXC3J4DY8B2KY03JBBFXAB69
+    timestamp: 2026-07-12T21:31:56.917Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -754,6 +760,8 @@ threads:
           path and provide a route/request/response/error compatibility matrix.
         created_at: 2026-07-12T21:26:02.943Z
     kind: blocker
+    resolved_at: 2026-07-12T21:31:56.662Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXC3J7A1M7JT2AEDSNYM2M8G
     anchor:
       type: structured
@@ -1025,5 +1033,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:31:51.411Z
+updated_at: 2026-07-12T21:31:56.662Z
 notes: []
