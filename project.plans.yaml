@@ -2145,7 +2145,7 @@ plans:
     module_ref: "@agent-integration"
     notes_count: 10
     resource_summary:
-      count: 14
-      total_bytes: 838348
+      count: 13
+      total_bytes: 834362
     source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-lifecycle-pause-resume-stop.md
     created_at: 2026-07-12T21:13:54.862Z

@@ -1,14 +1,4 @@
 resources:
-  - description: How coverage states integrate into spec pages, tree rollups, filter chips, banners, and
-      stale/re-verify AC pages.
-    bytes: 3986
-    content_type: text/markdown
-    git_commit: null
-    git_path: null
-    id: handoff-spec-states-integration
-    label: Spec workspace state integration UX handoff
-    path: handoff/docs/08-spec-states-integration.md
-    sha256: 1a280d3c6246e561c0d04400a6bfb1567ffd1cc7181ef2b9173acb9184e15493
   - description: Validate queue/matrix/AC-detail behavior that is downstream of spec workspace coverage
       and resolution links.
     bytes: 4970
