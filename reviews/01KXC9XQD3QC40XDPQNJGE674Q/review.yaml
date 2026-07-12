@@ -307,6 +307,68 @@ checks:
     runner: ownership audit
     created_at: 2026-07-12T23:21:55.717Z
     completed_at: 2026-07-12T23:21:55.717Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 1 spec/15 explicit tasks/no generic task; acyclic priority-monotone graph; three bounded
+      secondary verification slices.
+    name: Plan shape dependency graph short slices
+    required: true
+    runner: parser/topological
+    created_at: 2026-07-12T23:22:09.479Z
+    completed_at: 2026-07-12T23:22:09.479Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every Existing path exists; every first-owner Create path absent; dependent shared tests
+      correctly Existing-by-task.
+    name: Path classification
+    required: true
+    runner: filesystem
+    created_at: 2026-07-12T23:22:12.894Z
+    completed_at: 2026-07-12T23:22:12.894Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Module, specs, dependencies, Covers IDs, patch refs, and AC IDs resolve.
+    name: Plan cross-reference resolution
+    required: true
+    runner: kspec/parser
+    created_at: 2026-07-12T23:22:16.629Z
+    completed_at: 2026-07-12T23:22:16.629Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 7 unrelated ambiguous refs for @observations and @spec-plan-import; no plan-local broken ref.
+    name: kspec validate refs baseline
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-12T23:22:19.928Z
+    completed_at: 2026-07-12T23:22:19.928Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 55 existing warnings.
+    name: kspec validate alignment baseline
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-12T23:22:23.343Z
+    completed_at: 2026-07-12T23:22:23.343Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with existing unrelated coverage warnings.
+    name: kspec validate completeness baseline
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-12T23:22:27.129Z
+    completed_at: 2026-07-12T23:22:27.129Z
 events:
   - _ulid: 01KXC9XQD2BH75AMKB9VHY5630
     actor: codex
@@ -545,6 +607,48 @@ events:
       status: fail
       name: Behavioral AC primary ownership
     timestamp: 2026-07-12T23:21:56.031Z
+  - _ulid: 01KXCA6QYY9JVWGEEVG184557M
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan shape dependency graph short slices
+    timestamp: 2026-07-12T23:22:09.759Z
+  - _ulid: 01KXCA6VAD93SDA5JDMJYYBBR5
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Path classification
+    timestamp: 2026-07-12T23:22:13.197Z
+  - _ulid: 01KXCA6YZ4K2JST1KX0C3H6KV8
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan cross-reference resolution
+    timestamp: 2026-07-12T23:22:16.932Z
+  - _ulid: 01KXCA7255GZ12MXJQ30R7ZY4T
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs baseline
+    timestamp: 2026-07-12T23:22:20.197Z
+  - _ulid: 01KXCA75GHSTTRH4JGK5B9KN1V
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment baseline
+    timestamp: 2026-07-12T23:22:23.633Z
+  - _ulid: 01KXCA796RPPXKQ09SFNZCRCGQ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness baseline
+    timestamp: 2026-07-12T23:22:27.416Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -626,5 +730,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T23:17:14.275Z
-updated_at: 2026-07-12T23:21:55.717Z
+updated_at: 2026-07-12T23:22:27.129Z
 notes: []
