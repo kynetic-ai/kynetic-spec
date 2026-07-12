@@ -2,7 +2,74 @@ _ulid: 01KXCA9WAGEZ8EAX800FSSGKMR
 slugs: []
 title: "Canonical fresh closure review: Dispatch Lifecycle Pause Resume and Stop Controls"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Stored export matches source; parser: 1 spec/77 ACs/15 explicit tasks/derive=false/no
+      errors/no generic task; acyclic priority-monotone graph; all Existing/Create classifications
+      truthful."
+    name: Plan integrity shape graph paths
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:24:43.193Z
+    completed_at: 2026-07-12T23:24:43.193Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Compound/non-promise ACs remain; exactly 60 patch entries but three are plan-dependent
+      rather than standalone.
+    name: AC and exact-patch quality
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:24:46.290Z
+    completed_at: 2026-07-12T23:24:46.290Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Matrices complete; shadow object path corrected; rollback and verified publication
+      explicit; external watcher delivery and leader/live-group safety now closed.
+    name: Transition persistence watcher recovery
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:24:49.341Z
+    completed_at: 2026-07-12T23:24:49.341Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Canonical failure predicates improved, but exact legacy cwd/path preservation contradicts
+      sanitization and invalid-transition alias bodies are not frozen.
+    name: Closed errors and legacy HTTP
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:24:52.505Z
+    completed_at: 2026-07-12T23:24:52.505Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Both CLI status routes/endpoints and safety rules explicit; all boolean UI
+      consumers/static/accessibility surfaces inventoried.
+    name: CLI UI compatibility inventory
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:24:55.692Z
+    completed_at: 2026-07-12T23:24:55.692Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 77 plan ACs textually claimed once, but several owners cannot close required later
+      scope/surface behavior at their dependency point.
+    name: Primary ownership
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:24:59.084Z
+    completed_at: 2026-07-12T23:24:59.084Z
 events:
   - _ulid: 01KXCA9WAFV77V90GH3TPH1WC7
     actor: codex
@@ -45,6 +112,48 @@ events:
       kind: blocker
       thread_ulid: 01KXCAAZES8CY4THJ4ZW413BVT
     timestamp: 2026-07-12T23:24:28.756Z
+  - _ulid: 01KXCABE1NDP6GJRDR85X713GC
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan integrity shape graph paths
+    timestamp: 2026-07-12T23:24:43.446Z
+  - _ulid: 01KXCABH23S0J5WBN76JBAFZ0V
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC and exact-patch quality
+    timestamp: 2026-07-12T23:24:46.531Z
+  - _ulid: 01KXCABM1Z6TFBWA32S5N14KBR
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Transition persistence watcher recovery
+    timestamp: 2026-07-12T23:24:49.600Z
+  - _ulid: 01KXCABQ4TN9CE9Y5WA876PRQ6
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Closed errors and legacy HTTP
+    timestamp: 2026-07-12T23:24:52.762Z
+  - _ulid: 01KXCABT8CR3WCWDGS9NDYTX67
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: CLI UI compatibility inventory
+    timestamp: 2026-07-12T23:24:55.948Z
+  - _ulid: 01KXCABXJD5XGXNSCM8DH8QQFJ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Primary ownership
+    timestamp: 2026-07-12T23:24:59.341Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -117,5 +226,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T23:23:52.528Z
-updated_at: 2026-07-12T23:24:28.505Z
+updated_at: 2026-07-12T23:24:59.084Z
 notes: []
