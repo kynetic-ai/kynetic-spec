@@ -1,14 +1,4 @@
 resources:
-  - description: Coverage-state token model, state precedence, rollup bar rules, mixed-list
-      presentation, and re-verify recommendation.
-    bytes: 5510
-    content_type: text/markdown
-    git_commit: null
-    git_path: null
-    id: handoff-coverage-states
-    label: Coverage state model UX handoff
-    path: handoff/docs/07-coverage-states.md
-    sha256: 2663975b866d23cddc915a7ce73f4ac32ffbe495e4a6b77e124726537d40255c
   - description: How coverage states integrate into spec pages, tree rollups, filter chips, banners, and
       stale/re-verify AC pages.
     bytes: 3986
