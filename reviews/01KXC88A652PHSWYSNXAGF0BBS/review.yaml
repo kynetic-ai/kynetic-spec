@@ -501,6 +501,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC8EJYHKGF7J0G7BSX5Z5DQ
     timestamp: 2026-07-12T22:51:29.885Z
+  - _ulid: 01KXC8ERAKPQ2937VJ7DMBN9RH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC8ER2X4Q2D8XQMP87A8WHS
+    timestamp: 2026-07-12T22:51:35.123Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -695,7 +702,24 @@ threads:
           code/status projection for every canonical and compatibility surface.
         created_at: 2026-07-12T22:51:29.617Z
     kind: blocker
+  - _ulid: 01KXC8ER2X4Q2D8XQMP87A8WHS
+    anchor:
+      type: structured
+      ref: "@task-daemon-dispatch-lifecycle-api"
+      section: description
+    entries:
+      - _ulid: 01KXC8ER2XKN9M5BBV8VFZ3AJY
+        author: Jacob Chapel
+        body: The claimed exact legacy HTTP shapes disagree with current source. GET /api/agent/status
+          currently includes queued_invocations; resolved_adapter and optional runner on active and
+          queued entries; and resolved_adapter, optional runner, and runner_validation on agent
+          definitions. The frozen shape omits them. Current no-engine GET /api/agent/dispatch/status
+          omits queued, while the plan adds queued:[]. Mutation aliases also lack translations for
+          invalid_transition and cleanup identity outcomes. Preserve exact current presence and
+          enumerate every new 409/500/503 case.
+        created_at: 2026-07-12T22:51:34.877Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:51:29.617Z
+updated_at: 2026-07-12T22:51:34.877Z
 notes: []
