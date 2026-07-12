@@ -29039,7 +29039,7 @@ reviews:
     disposition: changes_requested
     author: Jacob Chapel
     check_count: 26
-    lifecycle_state: closed
+    lifecycle_state: archived
     related_refs: []
     subject:
       type: plan
@@ -29050,4 +29050,4 @@ reviews:
     unresolved_blocker_count: 6
     verdict_count: 2
     created_at: 2026-07-12T23:44:17.728Z
-    updated_at: 2026-07-12T23:49:44.721Z
+    updated_at: 2026-07-12T23:50:07.422Z
