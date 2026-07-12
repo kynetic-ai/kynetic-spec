@@ -101,6 +101,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC3K8C76K52ECGBJ8T859Y1
     timestamp: 2026-07-12T21:26:39.992Z
+  - _ulid: 01KXC3KDTQD2JR50EWQD074NZD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3KDK1E5F6JVBCVEEARC7C
+    timestamp: 2026-07-12T21:26:45.335Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -326,7 +333,24 @@ threads:
           replacement for ac-5 and include it in patch-task readback and coverage.
         created_at: 2026-07-12T21:26:39.751Z
     kind: blocker
+  - _ulid: 01KXC3KDK1E5F6JVBCVEEARC7C
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: tasks
+    entries:
+      - _ulid: 01KXC3KDK11KQTK6DZ6DPATTKW
+        author: Jacob Chapel
+        body: The stored document materializes an unintended generic task. A clean approved-plan dry-run
+          created @implement-dispatch-lifecycle-control-authority in addition to all 13 manual tasks
+          because derive_from_specs is omitted and defaults to enabled. That task has no staged
+          dependencies and can claim the entire 12-AC requirement before the spec patch or
+          persistence work. Set the task derivation mode so the plan creates the new spec plus only
+          the intentionally sliced manual tasks, then re-run derive dry-run and document the exact
+          task list.
+        created_at: 2026-07-12T21:26:45.089Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:26:39.751Z
+updated_at: 2026-07-12T21:26:45.089Z
 notes: []
