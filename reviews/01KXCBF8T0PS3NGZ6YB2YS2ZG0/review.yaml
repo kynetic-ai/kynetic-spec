@@ -2,7 +2,160 @@ _ulid: 01KXCBF8T0PS3NGZ6YB2YS2ZG0
 slugs: []
 title: "Canonical task-buildability review: Dispatch Lifecycle Pause Resume and Stop Controls"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Stored content exactly equals plans/dispatch-lifecycle-pause-resume-stop.md (sha256
+      f2cbdfee926846fd55d63c78f48bddc712ee1dfbb50b469cb78d6d6269bf5985). Parser reports 1 spec, 82
+      ACs, derive_from_specs=false, 15 manual tasks, no errors/warnings; import dry-run exits 0.
+    name: Parser and stored-source integrity
+    required: true
+    runner: parsePlanDocument + plan import --dry-run
+    created_at: 2026-07-12T23:45:57.621Z
+    completed_at: 2026-07-12T23:45:57.621Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read all 15 complete YAML-rendered descriptions and all 9 original Hyphoria @01KX9FG7 task
+      bodies. Current tasks remain plan-dependent, mechanically repetitive, command-invalid,
+      path-inaccurate, and generically tested. Actual derive remains correctly unavailable while
+      plan is draft.
+    name: Materialized task buildability
+    required: true
+    runner: 15-task full rendered-body audit
+    created_at: 2026-07-12T23:46:00.763Z
+    completed_at: 2026-07-12T23:46:00.763Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 15-node dependency graph is acyclic and priority-monotone. All 82 plan AC ids are claimed
+      exactly once by a primary task; no missing or duplicate primary owner.
+    name: Graph and one-owner gates
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:46:04.386Z
+    completed_at: 2026-07-12T23:46:04.386Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Most former compound plan ACs were split, but the patch handoff omits all 60 payloads and
+      exact existing-spec additions still include compound/vague contracts whose branch details or
+      bounds live only in top-level prose.
+    name: Atomic AC and exact-patch gate
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:46:08.347Z
+    completed_at: 2026-07-12T23:46:08.347Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Prior dependency-point misowners were corrected: persistence no longer owns bootstrap
+      scheduling, global/task pause closures are separated, and raw-error closures are assigned by
+      API/CLI/UI surface. Numeric owner and dependency gates pass."
+    name: Implementation-order behavioral ownership
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:46:11.594Z
+    completed_at: 2026-07-12T23:46:11.594Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Top-level contract explicitly chooses path-free cwd message breaking sanitization and
+      enumerates exact invalid_transition 409 bodies/field presence for /dispatch, /dispatch/start,
+      and /dispatch/stop. Task self-containment is separately failing.
+    name: Sanitized legacy HTTP and invalid-transition contract
+    required: true
+    runner: closure audit
+    created_at: 2026-07-12T23:46:14.891Z
+    completed_at: 2026-07-12T23:46:14.891Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Dependency-relative Create/Modify checks found @task-engine-task-pause-resume used as a
+      path, bare HeldTaskRow.svelte, event source modifications omitted, UI consumer files omitted,
+      and at least one invalid verification command in every task.
+    name: Path ownership and verification commands
+    required: true
+    runner: filesystem/package-script audit
+    created_at: 2026-07-12T23:46:18.024Z
+    completed_at: 2026-07-12T23:46:18.024Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 18 attached resources totaling 859,524 bytes are unrelated spec-workspace/coverage
+      wireframes and would add irrelevant plan-owned references to task handoffs.
+    name: Resource relevance
+    required: true
+    runner: kspec plan resource list
+    created_at: 2026-07-12T23:46:21.168Z
+    completed_at: 2026-07-12T23:46:21.168Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 107 tests passed across 15 suites from tests/plan-document-parser.test.ts,
+      tests/cli-plan-import.test.ts, and tests/cli-plan-derive.test.ts.
+    name: Plan parser/import/derive regression suites
+    required: true
+    runner: npm test
+    created_at: 2026-07-12T23:46:24.870Z
+    completed_at: 2026-07-12T23:46:24.870Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 4 on the same 7 unrelated ambiguous @observations/@spec-plan-import refs recorded by
+      prior review; no plan-local parser ref error.
+    name: kspec validate refs baseline
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-12T23:46:28.784Z
+    completed_at: 2026-07-12T23:46:28.784Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment and completeness exit 0 with existing project warnings.
+    name: kspec alignment and completeness baselines
+    required: true
+    runner: kspec validate
+    created_at: 2026-07-12T23:46:32.121Z
+    completed_at: 2026-07-12T23:46:32.121Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No shared/package guidance change. Files read: full stored/source plan, all 15 task
+      descriptions, prior review 01KXCA9WAGEZ8EAX800FSSGKMR, eight owning specs, route/task/path
+      inventories, all 9 Hyphoria reference tasks. Commands: parser/import dry-run, focused plan
+      tests, graph/owner/path scripts, resource list, refs/alignment/completeness. Categories: task
+      executability, AC quality, ownership, graph, paths, commands, resources, compatibility,
+      tests."
+    name: Shared-guidance neutrality and evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-12T23:46:36.050Z
+    completed_at: 2026-07-12T23:46:36.050Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-only review; no implementation or shared-guidance change. Unrelated working-tree
+      edits were preserved.
+    name: Product implementation gates
+    required: true
+    runner: not run
+    created_at: 2026-07-12T23:46:39.127Z
+    completed_at: 2026-07-12T23:46:39.127Z
 events:
   - _ulid: 01KXCBF8T0QAT8P02KPSW4KD3A
     actor: Jacob Chapel
@@ -10,17 +163,301 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-12T23:44:17.728Z
+  - _ulid: 01KXCBHJXWAJ92S0MB90MV5Q7Q
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-07-12T23:45:33.629Z
+  - _ulid: 01KXCBHPRAZPK4TZ09CD2KEKWV
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBHPG6Z173NXAG8XC7V1BS
+    timestamp: 2026-07-12T23:45:37.546Z
+  - _ulid: 01KXCBHSV8QXZRBVMNR3JN0T0K
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBHSK8AGH3G3GGJT1M3W8V
+    timestamp: 2026-07-12T23:45:40.712Z
+  - _ulid: 01KXCBHWZBF8QNJ7KFQY48WKGV
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBHWP10PSAZ7DG8BRNQY09
+    timestamp: 2026-07-12T23:45:43.915Z
+  - _ulid: 01KXCBJ0KBF5SQFE929Y8NT4Y5
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBJ07MF6DQQ6E0YHBW7WKN
+    timestamp: 2026-07-12T23:45:47.627Z
+  - _ulid: 01KXCBJ4CD5WKAB4C7PCKMJV5C
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBJ4228FJ15NS6XQYNWCCV
+    timestamp: 2026-07-12T23:45:51.501Z
+  - _ulid: 01KXCBJ7G4VXDH9TA39VJ2PF21
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBJ787YQ8MJ4ZQBK2WFZZM
+    timestamp: 2026-07-12T23:45:54.692Z
+  - _ulid: 01KXCBJAKQT4THMTF7F6NK69HC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Parser and stored-source integrity
+    timestamp: 2026-07-12T23:45:57.879Z
+  - _ulid: 01KXCBJDPDG1F9C86VFZ949C21
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Materialized task buildability
+    timestamp: 2026-07-12T23:46:01.037Z
+  - _ulid: 01KXCBJH9DW2G28BADN9A72GQV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Graph and one-owner gates
+    timestamp: 2026-07-12T23:46:04.717Z
+  - _ulid: 01KXCBJN3D789PZD34X5KBH0BJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Atomic AC and exact-patch gate
+    timestamp: 2026-07-12T23:46:08.621Z
+  - _ulid: 01KXCBJR95FSYD40VJPA8T121F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Implementation-order behavioral ownership
+    timestamp: 2026-07-12T23:46:11.877Z
+  - _ulid: 01KXCBJVEXCCMXRTXZNFGFTQ3D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Sanitized legacy HTTP and invalid-transition contract
+    timestamp: 2026-07-12T23:46:15.133Z
+  - _ulid: 01KXCBJYH1JCW8KJC2CXAHB241
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Path ownership and verification commands
+    timestamp: 2026-07-12T23:46:18.273Z
+  - _ulid: 01KXCBK1MSEE6ZW3MXP4GKGMN0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Resource relevance
+    timestamp: 2026-07-12T23:46:21.465Z
+  - _ulid: 01KXCBK598TKPSVJ17QEMYAR63
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan parser/import/derive regression suites
+    timestamp: 2026-07-12T23:46:25.192Z
+  - _ulid: 01KXCBK93WPW42YKZVR0PT07F8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs baseline
+    timestamp: 2026-07-12T23:46:29.116Z
+  - _ulid: 01KXCBKC9H6DFCNSGEYM8W339Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec alignment and completeness baselines
+    timestamp: 2026-07-12T23:46:32.369Z
+  - _ulid: 01KXCBKG5120HAHWYBJSYZ4A68
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality and evidence log
+    timestamp: 2026-07-12T23:46:36.321Z
+  - _ulid: 01KXCBKK4EXKKV5SZSK8YE2801
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product implementation gates
+    timestamp: 2026-07-12T23:46:39.374Z
+  - _ulid: 01KXCBKP2ZNWN6X756NKWMCVM6
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-12T23:46:42.399Z
+  - _ulid: 01KXCBKP2ZEYKJXQZ4SRD8ZR3A
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-12T23:46:42.399Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXCBHPG6Z173NXAG8XC7V1BS
+    anchor:
+      type: structured
+      ref: "@task-engine-global-lifecycle"
+      section: description
+    entries:
+      - _ulid: 01KXCBHPG6DMM4Z6Z2GSYWSH60
+        author: codex
+        body: "All 15 rendered task bodies fail the required Hyphoria-style standalone-handoff gate. They
+          contain 133 repetitions of shared scaffold sentences (inventory every ingress, keep
+          source-of-truth ownership, deterministic barriers, preserve unrelated behavior, do not
+          approve/derive, negative-boundary assertion, generic review handoff) instead of
+          task-specific execution detail. Direct comparison with every task under Hyphoria plan
+          @01KX9FG7Y7W1MT9T6MRQX0W26D shows the missing bar: those tasks name concrete operations,
+          local authorities, exact edge cases, files, and task-specific evidence. Affected: all 15
+          task slugs. Rewrite each description for its own subsystem and remove boilerplate that is
+          irrelevant to that task (for example race/failure-trace language on metadata-only and UI
+          tasks)."
+        created_at: 2026-07-12T23:45:37.286Z
+    kind: blocker
+  - _ulid: 01KXCBHSK8AGH3G3GGJT1M3W8V
+    anchor:
+      type: structured
+      ref: "@task-patch-dispatch-lifecycle-specs"
+      section: description
+    entries:
+      - _ulid: 01KXCBHSK8A4KYE5NSSWF2BTT2
+        author: codex
+        body: "The exact-spec-patch handoff is still not standalone. It does not contain the 60 exact
+          description/AC payloads; it directs the worker to 'Exact Existing-Spec Changes above' and
+          'Plan decision', so the derived task still requires top-level plan prose. It also says
+          both 'Create the new requirement only through plan derivation' and 'Do not approve or
+          derive this plan', instructions a post-derive task cannot coherently execute. In addition,
+          exact patches such as @dispatch-event-payload ac-dispatch-control-common-fields combine
+          base fields, task/global identity branches, and failure-only error_code in one AC, while
+          ac-dispatch-control-field-bounds leaves the actual bounds only in plan prose. Affected:
+          task-patch-dispatch-lifecycle-specs, task-dispatch-lifecycle-events, and
+          task-daemon-dispatch-lifecycle-api. Inline exact durable patches in the patch task and
+          split/freeze independently testable contracts."
+        created_at: 2026-07-12T23:45:40.457Z
+    kind: blocker
+  - _ulid: 01KXCBHWP10PSAZ7DG8BRNQY09
+    anchor:
+      type: structured
+      ref: "@task-dispatch-lifecycle-events"
+      section: tasks
+    entries:
+      - _ulid: 01KXCBHWP1G867KHHR9R12EMR6
+        author: codex
+        body: "The path/command gate fails. Every one of the 15 tasks contains at least one invalid
+          verification command: examples include the pseudo-command `kspec item get on every named
+          owner`, nonexistent `npm run lint.`/`lint.`, test filenames with a trailing period, and
+          `npm --prefix packages/web-ui test.`. Path ownership is also malformed:
+          task-dispatch-lifecycle-events says Modify: None although it must change
+          src/schema/event-registry.ts, src/schema/event-payloads.ts, and
+          packages/shared/src/schemas.ts; task-engine-task-hard-stop lists
+          @task-engine-task-pause-resume as a file; task-ui-dispatch-lifecycle-controls both creates
+          the full HeldTaskRow path and lists bare HeldTaskRow.svelte as Modify while omitting the
+          actual API/routes/components named only in top-level prose. Correct every command and give
+          each task a truthful dependency-point Create/Modify/Test inventory."
+        created_at: 2026-07-12T23:45:43.617Z
+    kind: blocker
+  - _ulid: 01KXCBJ07MF6DQQ6E0YHBW7WKN
+    anchor:
+      type: structured
+      ref: "@task-daemon-dispatch-lifecycle-api"
+      section: description
+    entries:
+      - _ulid: 01KXCBJ07MX9VGFSK1VQTEWP7C
+        author: codex
+        body: "The prior legacy-HTTP product decision is now unambiguous in top-level prose: the cwd
+          messages are deliberately sanitized and exact invalid_transition 409 bodies are enumerated
+          for all three aliases. But the rendered API handoff does not carry those contracts; it
+          merely says 'Plan decision: canonical API section' and 'implement the exact ... bodies'.
+          The events task similarly omits the closed enum/field limits, and the UI task omits the
+          mixed-version fallback and complete consumer inventory. A fresh worker cannot build or
+          test these tasks without reopening the parent plan. Affected:
+          task-daemon-dispatch-lifecycle-api, task-dispatch-lifecycle-events,
+          task-cli-dispatch-lifecycle-controls, task-ui-dispatch-lifecycle-controls,
+          task-verify-api-cli-projection, and task-verify-ui-lifecycle-browser. Inline the
+          route-specific tables/mappings or point to durable owning specs that contain them
+          exactly."
+        created_at: 2026-07-12T23:45:47.252Z
+    kind: blocker
+  - _ulid: 01KXCBJ4228FJ15NS6XQYNWCCV
+    anchor:
+      type: structured
+      ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+      section: resources
+    entries:
+      - _ulid: 01KXCBJ422SQ1QGQ6Q4WTTY7H1
+        author: codex
+        body: The stored plan has 18 attached resources (859,524 bytes) that are unrelated
+          spec-workspace/coverage-state wireframe docs, screenshots, and React sources. They have no
+          dispatch-lifecycle relevance, yet plan derivation records plan-owned resource references
+          on derived tasks by default. This is irrelevant handoff noise and conflicts with the task
+          bodies' vague 'Plan decision' resource pointers. Detach the unrelated resources and
+          attach/reference only concrete dispatch-lifecycle sources required by a specific task.
+        created_at: 2026-07-12T23:45:51.170Z
+    kind: blocker
+  - _ulid: 01KXCBJ787YQ8MJ4ZQBK2WFZZM
+    anchor:
+      type: structured
+      ref: "@task-ui-dispatch-lifecycle-controls"
+      section: tasks
+    entries:
+      - _ulid: 01KXCBJ78710X2A3826F59F6FE
+        author: codex
+        body: "Required-test sections remain generic rather than executable. The UI task lists only state
+          labels, 'all consumer visibility', 'errors', and 'keyboard/live region', then runs `npm
+          --prefix packages/web-ui test`, whose current script executes three unrelated legacy
+          suites and no lifecycle test. task-protect-held-dispatch-evidence says 'every destructive
+          surface' without enumerating them, and the three verification tasks use broad nouns
+          instead of exact fixtures/assertions; two also pass nonexistent filenames ending in a
+          period. Affected: task-protect-held-dispatch-evidence,
+          task-ui-dispatch-lifecycle-controls, task-verify-engine-restart-races,
+          task-verify-api-cli-projection, and task-verify-ui-lifecycle-browser. Name exact
+          behavioral cases, fixtures, expected observations, and commands that execute the owned
+          tests."
+        created_at: 2026-07-12T23:45:54.439Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-12T23:46:42.399Z
 created_at: 2026-07-12T23:44:17.728Z
-updated_at: null
+updated_at: 2026-07-12T23:46:42.399Z
 notes: []
