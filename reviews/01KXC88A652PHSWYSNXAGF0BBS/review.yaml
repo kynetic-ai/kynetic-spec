@@ -917,9 +917,25 @@ events:
       status: pass
       name: Shared-guidance neutrality
     timestamp: 2026-07-12T22:54:25.590Z
+  - _ulid: 01KXC8MVFXG6QS984Y9MFJSCF9
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-12T22:54:54.973Z
+  - _ulid: 01KXC8MVFXSG6C2MNW3FSP30C7
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-12T22:54:54.973Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -1143,7 +1159,14 @@ threads:
           point. Split idempotency by action scope or move closure after all actions exist.
         created_at: 2026-07-12T22:51:40.543Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-12T22:54:54.973Z
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:54:25.320Z
+updated_at: 2026-07-12T22:54:54.973Z
 notes: []
