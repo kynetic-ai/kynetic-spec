@@ -483,6 +483,27 @@ events:
       status: pass
       name: Review evidence log
     timestamp: 2026-07-12T22:01:04.719Z
+  - _ulid: 01KXC5JAEP3ZYVM9QXRBNSPQYJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5JA6ETV9PF4V53A2E92Y1
+    timestamp: 2026-07-12T22:01:06.262Z
+  - _ulid: 01KXC5JDJ2HKBWR2QQSRWQ9Z5X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5JDAEBVWKRECWQY536JHM
+    timestamp: 2026-07-12T22:01:09.442Z
+  - _ulid: 01KXC5JGGB0389A1X5ZBK0TM8B
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC5JG8VQCNNNA70VYZ042F8
+    timestamp: 2026-07-12T22:01:12.459Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -640,7 +661,48 @@ threads:
           while preserving existing regression coverage.
         created_at: 2026-07-12T21:59:52.899Z
     kind: blocker
+  - _ulid: 01KXC5JA6ETV9PF4V53A2E92Y1
+    anchor:
+      type: structured
+      ref: "@task-ui-dispatch-lifecycle-controls"
+      section: description
+    entries:
+      - _ulid: 01KXC5JA6EN7VCNPP8WQ6Y9V75
+        author: Jacob Chapel
+        body: UI inventory omits packages/web-ui/src/routes/tasks/board/+page.svelte, which fetches
+          AgentDispatchStatus and passes it to ActiveFleetRow where visibility is gated by
+          dispatch_enabled. Add the board route and focused/browser coverage.
+        created_at: 2026-07-12T22:01:05.998Z
+    kind: blocker
+  - _ulid: 01KXC5JDAEBVWKRECWQY536JHM
+    anchor:
+      type: structured
+      ref: "@task-patch-dispatch-lifecycle-specs"
+      section: tasks
+    entries:
+      - _ulid: 01KXC5JDAE87AR1JFYMX0PK5XK
+        author: Jacob Chapel
+        body: One-primary-owner coverage is still violated. The spec-patch task uses parser-visible Covers
+          entries for CLI, daemon, UI, event, and cleanup ACs also claimed by implementation tasks.
+          Recast patch readback as materialization context/verification so each behavioral AC has
+          one closure owner.
+        created_at: 2026-07-12T22:01:09.198Z
+    kind: blocker
+  - _ulid: 01KXC5JG8VQCNNNA70VYZ042F8
+    anchor:
+      type: structured
+      ref: "@task-engine-global-hard-stop"
+      section: description
+    entries:
+      - _ulid: 01KXC5JG8VMYT8MTSW4V1NV8ZX
+        author: Jacob Chapel
+        body: The session shutdown test path is wrong. tests/session-registry.test.ts does not exist; the
+          current behavioral suite is tests/active-session-registry.test.ts. Both stop tasks name
+          the nonexistent file. Use the existing suite or explicitly create a new one while
+          preserving existing regression coverage.
+        created_at: 2026-07-12T22:01:12.219Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:56:26.270Z
-updated_at: 2026-07-12T22:01:04.451Z
+updated_at: 2026-07-12T22:01:12.219Z
 notes: []
