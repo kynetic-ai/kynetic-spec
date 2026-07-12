@@ -1,13 +1,4 @@
 resources:
-  - description: Module page with breadcrumb/header, feature sections, and linked-work strip.
-    bytes: 85305
-    content_type: image/png
-    git_commit: null
-    git_path: null
-    id: shot-spec-unified-module
-    label: Spec workspace module page
-    path: handoff/shots/r3-spec-unified-2-module.png
-    sha256: 24178a66e6c07925ced6acdd8f537184b1c44bac0707a2452f3ebc66db71b6f9
   - description: Feature page showing nested sub-feature/requirement sections with same row model.
     bytes: 87303
     content_type: image/png
