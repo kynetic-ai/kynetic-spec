@@ -136,6 +136,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC3M2R63YM0VZN32375MZTT
     timestamp: 2026-07-12T21:27:07.007Z
+  - _ulid: 01KXC3M8A1NA82CA1GXQBPZ1AA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3M81VN3F04T5EJ5Q45KNC
+    timestamp: 2026-07-12T21:27:12.449Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -454,7 +461,25 @@ threads:
           registries.
         created_at: 2026-07-12T21:27:06.758Z
     kind: blocker
+  - _ulid: 01KXC3M81VN3F04T5EJ5Q45KNC
+    anchor:
+      type: structured
+      ref: "@task-dispatch-lifecycle-events"
+      section: description
+    entries:
+      - _ulid: 01KXC3M81VM06JEH7KJ8BK53T6
+        author: Jacob Chapel
+        body: The event contract is not materializable as an authoritative closed taxonomy. Existing
+          event-registry code enumerates exact dotted event identifiers and maps each identifier to
+          an exact payload schema, but the plan never names the new event identifier or identifiers,
+          domain, registry entry, payload schema file, websocket event name, or reason sanitization
+          limits. Saying closed dispatch-control taxonomy plus an action field permits incompatible
+          designs. Specify the exact identifiers, schema mapping, envelope versus payload timestamp
+          ownership, actor and source enums, no-op encoding, and reason normalization and truncation
+          contract.
+        created_at: 2026-07-12T21:27:12.187Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:27:06.758Z
+updated_at: 2026-07-12T21:27:12.187Z
 notes: []
