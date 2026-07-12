@@ -3,3 +3,9 @@ notes:
     content: Freeze omitted lifecycle reason as sanitized operator request default
     author: Jacob Chapel
     created_at: 2026-07-12T21:14:53.253Z
+  - _ulid: 01KXC4QQ016NCT1Z6433XZPWNS
+    content: "Close canonical review 01KXC3EMEKVS5Y3X5RZZQ4NVNV blockers: exact conflicts, atomic ACs,
+      frozen lifecycle/recovery/persistence/event/API/CLI/UI contracts, single AC owners, and three
+      bounded verification slices; derive_from_specs=false prevents a generic task"
+    author: Jacob Chapel
+    created_at: 2026-07-12T21:46:34.369Z
