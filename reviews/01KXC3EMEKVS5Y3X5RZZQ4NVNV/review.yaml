@@ -81,6 +81,18 @@ checks:
     runner: source and test path audit
     created_at: 2026-07-12T21:29:29.967Z
     completed_at: 2026-07-12T21:29:29.967Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Transition table is incomplete and start/resume semantics conflict. Persisted-stop
+      followed by cancellation/session failure or daemon crash has no durable recovery/status
+      contract.
+    name: Lifecycle and failure architecture
+    required: true
+    runner: spec and runtime inspection
+    created_at: 2026-07-12T21:29:35.368Z
+    completed_at: 2026-07-12T21:29:35.368Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -305,6 +317,13 @@ events:
       status: fail
       name: Standalone task context
     timestamp: 2026-07-12T21:29:30.227Z
+  - _ulid: 01KXC3RM4106G5P357CF3ZDH92
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Lifecycle and failure architecture
+    timestamp: 2026-07-12T21:29:35.617Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -731,5 +750,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:29:29.967Z
+updated_at: 2026-07-12T21:29:35.368Z
 notes: []
