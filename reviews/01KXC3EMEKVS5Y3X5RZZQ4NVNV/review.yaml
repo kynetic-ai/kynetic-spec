@@ -94,6 +94,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC3JD2JWHKE2QBHCA8GNZPS
     timestamp: 2026-07-12T21:26:12.046Z
+  - _ulid: 01KXC3K8KR3W9Q9GW9XZPP6R3Y
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3K8C76K52ECGBJ8T859Y1
+    timestamp: 2026-07-12T21:26:39.992Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -302,7 +309,24 @@ threads:
           dependencies and non-overlapping Covers ownership.
         created_at: 2026-07-12T21:26:11.794Z
     kind: blocker
+  - _ulid: 01KXC3K8C76K52ECGBJ8T859Y1
+    anchor:
+      type: structured
+      field: ac-5
+      ref: "@per-task-dispatch-drain-coalescing"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXC3K8C7QTT6QTT2FHV29AWN
+        author: Jacob Chapel
+        body: The exact conflict patch is incomplete. Current @per-task-dispatch-drain-coalescing ac-5 says
+          stop cancels coalescing timers while already-running drains complete normally under the
+          existing shutdown behavior. The plan changes stop to hard cancellation and says no
+          scheduling path may survive, but neither Existing Spec Changes nor the patch task replaces
+          this AC. Derivation would therefore leave two authoritative stop contracts. Add an exact
+          replacement for ac-5 and include it in patch-task readback and coverage.
+        created_at: 2026-07-12T21:26:39.751Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:26:11.794Z
+updated_at: 2026-07-12T21:26:39.751Z
 notes: []
