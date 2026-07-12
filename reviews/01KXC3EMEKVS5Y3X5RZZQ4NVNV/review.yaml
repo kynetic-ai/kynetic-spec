@@ -164,6 +164,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC3MQYJ53XT867SC4KA21QJ
     timestamp: 2026-07-12T21:27:28.707Z
+  - _ulid: 01KXC3MXGDPZTS6N30TCF4MREC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3MX8JZ6PHWCJQFBPSN0NC
+    timestamp: 2026-07-12T21:27:34.158Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -553,7 +560,24 @@ threads:
           compatibility meaning that keeps each consumer correct.
         created_at: 2026-07-12T21:27:28.467Z
     kind: blocker
+  - _ulid: 01KXC3MX8JZ6PHWCJQFBPSN0NC
+    anchor:
+      type: structured
+      ref: "@task-verify-dispatch-lifecycle-e2e"
+      section: description
+    entries:
+      - _ulid: 01KXC3MX8JZW9J9MPGRPH3SE9S
+        author: Jacob Chapel
+        body: The final verification task is not a short-agent slice. It simultaneously creates daemon
+          restart fixtures, deterministic engine race barriers, CLI integration, Playwright UI
+          coverage, cleanup and spawn call-site audits, cross-surface status and event parity, and
+          runs every full gate. This is several independently reviewable failure domains and
+          duplicates earlier task test obligations. Split it into bounded restart and race
+          invariants, cleanup and evidence recovery, and cross-surface contract and E2E slices with
+          explicit dependencies and non-overlapping Covers ownership.
+        created_at: 2026-07-12T21:27:33.906Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:27:28.467Z
+updated_at: 2026-07-12T21:27:33.906Z
 notes: []
