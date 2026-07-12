@@ -296,6 +296,56 @@ checks:
     runner: manual audit
     created_at: 2026-07-12T22:01:46.462Z
     completed_at: 2026-07-12T22:01:46.462Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Pending cleanup ownership fields and durable reconstruction source undefined.
+    name: Stop failure and crash recovery
+    required: true
+    runner: code/spec cross-check
+    created_at: 2026-07-12T22:01:51.839Z
+    completed_at: 2026-07-12T22:01:51.839Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Lock is private; shared helper/snapshot/cache invalidation ownership not frozen.
+    name: Persistence owner lock watcher behavior
+    required: true
+    runner: code/spec cross-check
+    created_at: 2026-07-12T22:01:54.778Z
+    completed_at: 2026-07-12T22:01:54.778Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No applied start event; error codes and alias response/error shapes incomplete.
+    name: Event and HTTP contracts
+    required: true
+    runner: registry/route cross-check
+    created_at: 2026-07-12T22:01:57.668Z
+    completed_at: 2026-07-12T22:01:57.668Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: --yes conflicts with --force trait; endpoint regression suite omitted.
+    name: CLI safety and compatibility
+    required: true
+    runner: trait/path cross-check
+    created_at: 2026-07-12T22:02:00.471Z
+    completed_at: 2026-07-12T22:02:00.471Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Task board route omitted.
+    name: UI dispatch_enabled inventory
+    required: true
+    runner: consumer audit
+    created_at: 2026-07-12T22:02:03.593Z
+    completed_at: 2026-07-12T22:02:03.593Z
 events:
   - _ulid: 01KXC59S0Y16DWP779GSJC3AS7
     actor: Jacob Chapel
@@ -590,6 +640,41 @@ events:
       status: pass
       name: Transition matrices
     timestamp: 2026-07-12T22:01:46.687Z
+  - _ulid: 01KXC5KQ6G5F3HYYE216EV5N8R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Stop failure and crash recovery
+    timestamp: 2026-07-12T22:01:52.080Z
+  - _ulid: 01KXC5KT2NY2BCP3N7Q2XAHDRQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Persistence owner lock watcher behavior
+    timestamp: 2026-07-12T22:01:55.030Z
+  - _ulid: 01KXC5KWW1AFK6FPY9TD802ATH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Event and HTTP contracts
+    timestamp: 2026-07-12T22:01:57.889Z
+  - _ulid: 01KXC5KZME2R2QM7CAGDMTP6RF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: CLI safety and compatibility
+    timestamp: 2026-07-12T22:02:00.718Z
+  - _ulid: 01KXC5M2NPHB1Y1TG8AZ9GBX34
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: UI dispatch_enabled inventory
+    timestamp: 2026-07-12T22:02:03.830Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -790,5 +875,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:56:26.270Z
-updated_at: 2026-07-12T22:01:46.462Z
+updated_at: 2026-07-12T22:02:03.593Z
 notes: []
