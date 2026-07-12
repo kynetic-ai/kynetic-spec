@@ -423,6 +423,15 @@ checks:
     required: true
     created_at: 2026-07-12T22:53:41.728Z
     completed_at: 2026-07-12T22:53:41.728Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with --warnings-ok; existing repository coverage warnings are unrelated to this draft.
+    name: kspec validate completeness baseline
+    required: true
+    created_at: 2026-07-12T22:53:47.224Z
+    completed_at: 2026-07-12T22:53:47.224Z
 events:
   - _ulid: 01KXC88A643NZXBK7THJTVVV1C
     actor: Jacob Chapel
@@ -815,6 +824,13 @@ events:
       status: pass
       name: kspec validate alignment baseline
     timestamp: 2026-07-12T22:53:41.970Z
+  - _ulid: 01KXC8JSJQ9VGFB4XQ75DTKXE8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness baseline
+    timestamp: 2026-07-12T22:53:47.479Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -1043,5 +1059,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:53:41.728Z
+updated_at: 2026-07-12T22:53:47.224Z
 notes: []
