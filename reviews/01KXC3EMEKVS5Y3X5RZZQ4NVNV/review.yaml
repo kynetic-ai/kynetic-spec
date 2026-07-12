@@ -199,6 +199,17 @@ checks:
     runner: npm run typecheck
     created_at: 2026-07-12T21:30:29.148Z
     completed_at: 2026-07-12T21:30:29.148Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-record review only; focused parser and isolated derive rehearsal were the
+      materialization checks.
+    name: full test suite
+    required: false
+    runner: npm test
+    created_at: 2026-07-12T21:30:34.743Z
+    completed_at: 2026-07-12T21:30:34.743Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -500,6 +511,13 @@ events:
       status: skipped
       name: typecheck
     timestamp: 2026-07-12T21:30:29.407Z
+  - _ulid: 01KXC3TE3NYATWTW5Y6SF22EFQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-07-12T21:30:34.997Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -926,5 +944,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:30:29.148Z
+updated_at: 2026-07-12T21:30:34.743Z
 notes: []
