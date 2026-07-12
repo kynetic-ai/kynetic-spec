@@ -319,9 +319,58 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-12T23:46:42.399Z
+  - _ulid: 01KXCBKYN2N4BGCJV34QZEF9Y2
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: closed
+      to: open
+    timestamp: 2026-07-12T23:46:51.170Z
+  - _ulid: 01KXCBM1NSF8FHE4YQY7H1R6XX
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBM1DJTTV9KT3ZKSGPNXY3
+    timestamp: 2026-07-12T23:46:54.265Z
+  - _ulid: 01KXCBM4NYD5FC382S071HGMHJ
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBM4EEN86Q0R87XJ1NBYZX
+    timestamp: 2026-07-12T23:46:57.342Z
+  - _ulid: 01KXCBM7RH69GJCX31DWZXAWCA
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBM7GK0MNG98RH50XN2ZHB
+    timestamp: 2026-07-12T23:47:00.497Z
+  - _ulid: 01KXCBMAV6KCR91NCJ5KNNY7K2
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBMAJF0WZ4XAPSSVCRVFVZ
+    timestamp: 2026-07-12T23:47:03.654Z
+  - _ulid: 01KXCBMDQG9TV8640JE91HA2EJ
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBMDFRPGX4775RSY8XPV43
+    timestamp: 2026-07-12T23:47:06.608Z
+  - _ulid: 01KXCBMGN5MG8747MFQCD48VXB
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCBMGD8VNFZS2KC22VQSPS1
+    timestamp: 2026-07-12T23:47:09.605Z
 examined_commit: null
 external_links: []
-lifecycle_state: closed
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
@@ -450,6 +499,113 @@ threads:
           tests."
         created_at: 2026-07-12T23:45:54.439Z
     kind: blocker
+  - _ulid: 01KXCBM1DJTTV9KT3ZKSGPNXY3
+    anchor:
+      type: structured
+      ref: "@task-engine-global-lifecycle"
+      section: description
+    entries:
+      - _ulid: 01KXCBM1DJE18R3BBA27YYAFH4
+        author: codex
+        body: "All 15 rendered task bodies fail the required Hyphoria-style standalone-handoff gate. They
+          contain 133 repetitions of shared scaffold sentences instead of task-specific execution
+          detail. Direct comparison with every task under Hyphoria plan @01KX9FG7Y7W1MT9T6MRQX0W26D
+          shows the missing bar: those tasks name concrete operations, local authorities, exact edge
+          cases, files, and task-specific evidence. Affected: all 15 task slugs. Rewrite each
+          description for its own subsystem and remove boilerplate irrelevant to that task,
+          including race-trace language on metadata-only and UI tasks."
+        created_at: 2026-07-12T23:46:54.002Z
+    kind: blocker
+  - _ulid: 01KXCBM4EEN86Q0R87XJ1NBYZX
+    anchor:
+      type: structured
+      ref: "@task-patch-dispatch-lifecycle-specs"
+      section: description
+    entries:
+      - _ulid: 01KXCBM4EEV9D1VZSTKAACAYZA
+        author: codex
+        body: "The exact-spec-patch handoff is still not standalone. It omits the 60 exact description/AC
+          payloads and directs the worker to Exact Existing-Spec Changes above and Plan decision, so
+          the derived task requires top-level plan prose. It also says both create the requirement
+          through plan derivation and do not derive this plan. Exact patches such as
+          @dispatch-event-payload ac-dispatch-control-common-fields still combine base fields,
+          task/global identity branches, and failure-only error_code, while
+          ac-dispatch-control-field-bounds leaves actual bounds only in plan prose. Affected:
+          task-patch-dispatch-lifecycle-specs, task-dispatch-lifecycle-events,
+          task-daemon-dispatch-lifecycle-api."
+        created_at: 2026-07-12T23:46:57.102Z
+    kind: blocker
+  - _ulid: 01KXCBM7GK0MNG98RH50XN2ZHB
+    anchor:
+      type: structured
+      ref: "@task-dispatch-lifecycle-events"
+      section: tasks
+    entries:
+      - _ulid: 01KXCBM7GK2Y9XP3FKZKGD50C7
+        author: codex
+        body: "The path/command gate fails. Every task has at least one invalid verification command: the
+          pseudo-command kspec item get on every named owner, nonexistent npm run lint. or lint.,
+          test filenames ending in a period, or npm --prefix packages/web-ui test. Path ownership is
+          malformed too: the events task says Modify None although it must change three schema
+          files; task-engine-task-hard-stop lists @task-engine-task-pause-resume as a file; the UI
+          task creates a full HeldTaskRow path then lists bare HeldTaskRow.svelte as Modify while
+          omitting actual consumers. Correct every command and give each task truthful
+          dependency-point Create/Modify/Test paths."
+        created_at: 2026-07-12T23:47:00.243Z
+    kind: blocker
+  - _ulid: 01KXCBMAJF0WZ4XAPSSVCRVFVZ
+    anchor:
+      type: structured
+      ref: "@task-daemon-dispatch-lifecycle-api"
+      section: description
+    entries:
+      - _ulid: 01KXCBMAJF6ZG8D823E8RSRD4R
+        author: codex
+        body: "The prior legacy-HTTP decision is unambiguous in top-level prose: cwd messages are
+          deliberately sanitized and exact invalid_transition 409 bodies are enumerated for all
+          three aliases. But the API handoff does not carry them; it only cites the canonical API
+          plan section. Events similarly omit the closed enum/limits, and UI omits the mixed-version
+          fallback and complete consumer inventory. Affected: task-daemon-dispatch-lifecycle-api,
+          task-dispatch-lifecycle-events, task-cli-dispatch-lifecycle-controls,
+          task-ui-dispatch-lifecycle-controls, task-verify-api-cli-projection,
+          task-verify-ui-lifecycle-browser. Inline the route tables/mappings or point to durable
+          owning specs containing them exactly."
+        created_at: 2026-07-12T23:47:03.375Z
+    kind: blocker
+  - _ulid: 01KXCBMDFRPGX4775RSY8XPV43
+    anchor:
+      type: structured
+      ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+      section: resources
+    entries:
+      - _ulid: 01KXCBMDFRCESCGKQV3AM83M78
+        author: codex
+        body: The stored plan has 18 attached resources totaling 859524 bytes that are unrelated
+          spec-workspace/coverage-state wireframe docs, screenshots, and React sources. Derivation
+          records plan-owned resource references on tasks by default. Detach these irrelevant
+          resources and attach or reference only concrete dispatch-lifecycle sources required by a
+          specific task.
+        created_at: 2026-07-12T23:47:06.360Z
+    kind: blocker
+  - _ulid: 01KXCBMGD8VNFZS2KC22VQSPS1
+    anchor:
+      type: structured
+      ref: "@task-ui-dispatch-lifecycle-controls"
+      section: tasks
+    entries:
+      - _ulid: 01KXCBMGD85KHHSCFP7X2VXPY4
+        author: codex
+        body: "Required-test sections remain generic rather than executable. The UI task lists state labels,
+          all consumer visibility, errors, and keyboard/live region, then runs npm --prefix
+          packages/web-ui test, whose current script executes three unrelated legacy suites and no
+          lifecycle test. The evidence task says every destructive surface without enumerating them,
+          and the three verification tasks use broad nouns instead of exact fixtures/assertions; two
+          also name nonexistent files ending in a period. Affected:
+          task-protect-held-dispatch-evidence, task-ui-dispatch-lifecycle-controls,
+          task-verify-engine-restart-races, task-verify-api-cli-projection,
+          task-verify-ui-lifecycle-browser."
+        created_at: 2026-07-12T23:47:09.352Z
+    kind: blocker
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -459,5 +615,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-12T23:46:42.399Z
 created_at: 2026-07-12T23:44:17.728Z
-updated_at: 2026-07-12T23:46:42.399Z
+updated_at: 2026-07-12T23:47:09.352Z
 notes: []
