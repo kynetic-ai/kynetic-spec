@@ -473,6 +473,13 @@ events:
       status: pass
       name: Review evidence log
     timestamp: 2026-07-12T22:51:10.350Z
+  - _ulid: 01KXC8E0WWXD65R8P4PJTWKB01
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC8E0MM57SASFVVXSAMKDZB
+    timestamp: 2026-07-12T22:51:11.132Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -598,7 +605,26 @@ threads:
           all relevant actions exist.
         created_at: 2026-07-12T22:49:48.588Z
     kind: blocker
+  - _ulid: 01KXC8E0MM57SASFVVXSAMKDZB
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXC8E0MMA9FQ637VFP0X3YQF
+        author: Jacob Chapel
+        body: Atomicity remains unresolved from every historical cycle. ac-paused-work-does-not-start
+          combines global and task scopes; ac-task-interrupted-stop-recovers combines daemon-start
+          and retry triggers plus scope reopening and unrelated-task isolation;
+          ac-controls-do-not-change-readiness asserts five independently observable state classes;
+          ac-actions-are-idempotent ranges across every action and scope;
+          ac-control-outcomes-are-auditable combines applied, no-op, and failed outcomes;
+          ac-evidence-survives-control asserts six evidence classes; and the proposed
+          @per-task-dispatch-drain-coalescing ac-5 combines timer cancellation, pending-drain
+          suppression, and active cancellation. Split these independently testable behaviors.
+        created_at: 2026-07-12T22:51:10.868Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:51:10.106Z
+updated_at: 2026-07-12T22:51:10.868Z
 notes: []
