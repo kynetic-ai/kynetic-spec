@@ -17,6 +17,83 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-12T21:24:39.350Z
+  - _ulid: 01KXC3HF3VZ1X84V5AC4W3K2ZE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3HEW8X43RTMN5D9W5HCDZ
+    timestamp: 2026-07-12T21:25:41.115Z
+  - _ulid: 01KXC3HK40RS6VVRVPX5175KCF
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3HJWKQA4HERSG5E2B460K
+    timestamp: 2026-07-12T21:25:45.216Z
+  - _ulid: 01KXC3HP1PG52PEG5KEC7R51W6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3HNT72SJ28RH0K4ZTP5D8
+    timestamp: 2026-07-12T21:25:48.214Z
+  - _ulid: 01KXC3HRYMPZ4VBWW93TYBW9FW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3HRQ8X4VPSMPYRVV40WRN
+    timestamp: 2026-07-12T21:25:51.188Z
+  - _ulid: 01KXC3HVVM75691BGNGF8H5Y59
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3HVKY5B8A7MZKFVPFZXGF
+    timestamp: 2026-07-12T21:25:54.164Z
+  - _ulid: 01KXC3HYWATPSXYD3PCJG7DD75
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3HYMDMHYNPJRFHXDYQV8J
+    timestamp: 2026-07-12T21:25:57.259Z
+  - _ulid: 01KXC3J1SMF9HBQQH13GEE0PXK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3J1JHKVTRQDTKZCA4Q34W
+    timestamp: 2026-07-12T21:26:00.244Z
+  - _ulid: 01KXC3J4NE2E23M2T19W2QCF2S
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3J4DY8B2KY03JBBFXAB69
+    timestamp: 2026-07-12T21:26:03.182Z
+  - _ulid: 01KXC3J7HQD0Z4FSAXYT61P7D3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3J7A1M7JT2AEDSNYM2M8G
+    timestamp: 2026-07-12T21:26:06.135Z
+  - _ulid: 01KXC3JAE5756SBTGY6A42121Q
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3JA6H3MV7YK9JV10A0NH4
+    timestamp: 2026-07-12T21:26:09.093Z
+  - _ulid: 01KXC3JDAE4R39KHJHQJ56BGYY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC3JD2JWHKE2QBHCA8GNZPS
+    timestamp: 2026-07-12T21:26:12.046Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +103,206 @@ subject:
   content_hash: ""
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXC3HEW8X43RTMN5D9W5HCDZ
+    anchor:
+      type: structured
+      field: ac-5
+      ref: "@per-task-dispatch-drain-coalescing"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXC3HEW9CJH2Q52WY16KB85G
+        author: Jacob Chapel
+        body: The exact conflict patch is incomplete. Current @per-task-dispatch-drain-coalescing ac-5 says
+          stop cancels coalescing timers while already-running drains complete normally under the
+          existing shutdown behavior. The plan changes stop to hard cancellation and says no
+          scheduling path may survive, but neither Existing Spec Changes nor the patch task replaces
+          this AC. Derivation would therefore leave two authoritative stop contracts. Add an exact
+          replacement for ac-5 and include it in patch-task readback/coverage.
+        created_at: 2026-07-12T21:25:40.873Z
+    kind: blocker
+  - _ulid: 01KXC3HJWKQA4HERSG5E2B460K
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: tasks
+    entries:
+      - _ulid: 01KXC3HJWK2114QB2X5MAFHP4A
+        author: Jacob Chapel
+        body: The stored document materializes an unintended generic task. A clean approved-plan dry-run
+          created @implement-dispatch-lifecycle-control-authority in addition to all 13 manual tasks
+          because derive_from_specs is omitted and defaults to enabled. That task has no staged
+          dependencies and can claim the entire 12-AC requirement before the spec patch or
+          persistence work. Set the task derivation mode so the plan creates the new spec plus only
+          the intentionally sliced manual tasks, then re-run derive dry-run and document the exact
+          task list.
+        created_at: 2026-07-12T21:25:44.979Z
+    kind: blocker
+  - _ulid: 01KXC3HNT72SJ28RH0K4ZTP5D8
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXC3HNT7ACEH9YEKG19AYSBG
+        author: Jacob Chapel
+        body: The proposed contract is not atomic or consistently behavioral. For example
+          ac-global-stop-is-hard-and-durable independently asserts authority, ingress gating,
+          queue/retry deletion, cancellation, session closure, and completion ordering;
+          ac-task-stop-is-targeted-and-evidence-preserving combines selective scheduling removal,
+          selective cancellation, selective session closure, and four evidence classes;
+          ac-control-actions-are-idempotent-and-auditable combines persistence idempotency,
+          scheduler/cancellation idempotency, and event emission. Several ACs also expose
+          implementation mechanisms such as canonical ULIDs, serialized reconciliation/drain,
+          durable registry, pre-spawn gate, and FIFO bytes. Split independently testable outcomes
+          and move mechanism/rationale to task notes so each timeless AC maps to a focused
+          behavioral test.
+        created_at: 2026-07-12T21:25:47.975Z
+    kind: blocker
+  - _ulid: 01KXC3HRQ8X4VPSMPYRVV40WRN
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: description
+    entries:
+      - _ulid: 01KXC3HRQ8ZXQ0Y61JEYVZXMX5
+        author: Jacob Chapel
+        body: The authority transition contract is internally inconsistent and incomplete. The lifecycle
+          matrix says stopped global dispatch can be changed only by explicit start/resume, while
+          the CLI task says start is the stopped-state verb and resume is the paused-state verb; the
+          new API otherwise exposes pause/resume/stop plus compatibility start. There is no
+          state/action table for pause-from-stopped, resume-from-stopped, start-from-paused,
+          stop-from-paused, repeated actions, or task resume under each global state. Freeze allowed
+          transition, no-op, and error outcomes for every global and task action and use the same
+          table in API, CLI, UI disabled states, and idempotency tests.
+        created_at: 2026-07-12T21:25:50.952Z
+    kind: blocker
+  - _ulid: 01KXC3HVKY5B8A7MZKFVPFZXGF
+    anchor:
+      type: structured
+      field: ac-global-stop-is-hard-and-durable
+      ref: "@dispatch-lifecycle-control-authority"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXC3HVKYR98ZPTX1ABC9A4XS
+        author: Jacob Chapel
+        body: Hard-stop failure and crash recovery are not specified. The implementation order persists
+          stopped before aborting, but current SessionRegistry close is synchronous best-effort and
+          clears handles even when requestClose throws. If cancellation, session closure, timeout,
+          or daemon death occurs after the durable write, the only durable authority is stopped
+          while active work may remain; the plan has no incomplete-stop state, retry marker, restart
+          cleanup rule, or truthful status projection for that condition. Define the durable and
+          observable outcome for every failure boundary, including whether stopped-plus-active is
+          legal, how restart resumes targeted shutdown, and when a retry can report success.
+        created_at: 2026-07-12T21:25:53.918Z
+    kind: blocker
+  - _ulid: 01KXC3HYMDMHYNPJRFHXDYQV8J
+    anchor:
+      type: structured
+      ref: "@task-dispatch-control-persistence"
+      section: description
+    entries:
+      - _ulid: 01KXC3HYMD2D09X9Z5ERJTEBSW
+        author: Jacob Chapel
+        body: This task is not standalone at the persistence source-of-truth boundary. It does not name the
+          durable filename, schema/export modules, manifest or project-state registration,
+          cache/watch invalidation behavior, lock and shadow-commit helper, or whether global and
+          task records share one file. Its Files section explicitly allows either src/parser or
+          src/agent-runtime. Current analogous state uses src/schema/dispatch-workspace.ts plus
+          src/parser/dispatch-workspaces.ts and a named shadow-mutation lock. Choose the exact
+          storage surface and mutation discipline so separate agents cannot invent incompatible
+          registries.
+        created_at: 2026-07-12T21:25:57.006Z
+    kind: blocker
+  - _ulid: 01KXC3J1JHKVTRQDTKZCA4Q34W
+    anchor:
+      type: structured
+      ref: "@task-dispatch-lifecycle-events"
+      section: description
+    entries:
+      - _ulid: 01KXC3J1JH51KM79B261BYM1VS
+        author: Jacob Chapel
+        body: The event contract is not materializable as an authoritative closed taxonomy. Existing
+          event-registry code enumerates exact dotted event identifiers and maps each identifier to
+          an exact payload schema, but the plan never names the new event identifier or identifiers,
+          domain, registry entry, payload schema file, websocket event name, or reason sanitization
+          limits. Saying closed dispatch-control taxonomy plus an action field permits incompatible
+          designs. Specify the exact identifiers, schema mapping, envelope versus payload timestamp
+          ownership, actor/source enums, no-op encoding, and reason normalization/truncation
+          contract.
+        created_at: 2026-07-12T21:26:00.017Z
+    kind: blocker
+  - _ulid: 01KXC3J4DY8B2KY03JBBFXAB69
+    anchor:
+      type: structured
+      ref: "@task-daemon-dispatch-lifecycle-api"
+      section: description
+    entries:
+      - _ulid: 01KXC3J4DZARJX7N1WZZCMAV3M
+        author: Jacob Chapel
+        body: The daemon source/test guidance is factually wrong and the wire contract remains
+          underspecified. The authoritative route is packages/daemon/src/routes/agent-dispatch.ts,
+          not src/daemon/routes/agent-dispatch.ts. Current routes include POST /api/agent/dispatch,
+          legacy /dispatch/start and /dispatch/stop, internal /dispatch/status, and public /status.
+          The task does not freeze the canonical method/path, compatibility behavior and response
+          fields for each existing route, HTTP statuses, or exact field naming. Correct the file
+          path and provide a route/request/response/error compatibility matrix.
+        created_at: 2026-07-12T21:26:02.943Z
+    kind: blocker
+  - _ulid: 01KXC3J7A1M7JT2AEDSNYM2M8G
+    anchor:
+      type: structured
+      ref: "@task-cli-dispatch-lifecycle-controls"
+      section: description
+    entries:
+      - _ulid: 01KXC3J7A2SZZMADB12HZFZA04
+        author: Jacob Chapel
+        body: CLI guidance omits the safety contract for newly destructive hard stop and names nonexistent
+          test sources. The project has @trait-confirmation-prompt for destructive operations, but
+          the plan provides no TTY confirmation, --force/noninteractive behavior, decline exit code,
+          or compatibility decision for existing scripts. It also verifies tests/agent-cli.test.ts
+          and tests/agent-dispatch-cli.test.ts, while the authoritative suites are
+          tests/cli-agent-commands.test.ts and tests/cli-daemon-endpoint-regression.test.ts. Decide
+          the destructive confirmation/backward-compat contract and point the task at exact existing
+          suites.
+        created_at: 2026-07-12T21:26:05.890Z
+    kind: blocker
+  - _ulid: 01KXC3JA6H3MV7YK9JV10A0NH4
+    anchor:
+      type: structured
+      ref: "@task-ui-dispatch-lifecycle-controls"
+      section: description
+    entries:
+      - _ulid: 01KXC3JA6H6HD11NHM0CJ2ZS0J
+        author: Jacob Chapel
+        body: UI scope omits existing consumers that derive visibility from dispatch_enabled.
+          packages/web-ui/src/routes/+page.svelte, routes/tasks/board/+page.svelte,
+          routes/automation/+page.svelte, and lib/components/board/ActiveFleetRow.svelte consume
+          AgentDispatchStatus; ActiveFleetRow and the dashboard gate active work on
+          dispatch_enabled. Updating only the agents page can still hide active draining work or
+          mislabel paused/stopped state elsewhere. Add an exact consumer audit and required
+          updates/tests for every lifecycle-dependent surface, or explicitly preserve a
+          compatibility meaning that keeps each consumer correct.
+        created_at: 2026-07-12T21:26:08.849Z
+    kind: blocker
+  - _ulid: 01KXC3JD2JWHKE2QBHCA8GNZPS
+    anchor:
+      type: structured
+      ref: "@task-verify-dispatch-lifecycle-e2e"
+      section: description
+    entries:
+      - _ulid: 01KXC3JD2JKQDC0510KRBCTAJA
+        author: Jacob Chapel
+        body: The final verification task is not a short-agent slice. It simultaneously creates daemon
+          restart fixtures, deterministic engine race barriers, CLI integration, Playwright UI
+          coverage, cleanup and spawn call-site audits, cross-surface status/event parity, and runs
+          every full gate. This is several independently reviewable failure domains and duplicates
+          earlier task test obligations. Split it into bounded restart/race invariants,
+          cleanup/evidence recovery, and cross-surface contract/E2E slices with explicit
+          dependencies and non-overlapping Covers ownership.
+        created_at: 2026-07-12T21:26:11.794Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:24:39.040Z
+updated_at: 2026-07-12T21:26:11.794Z
 notes: []
