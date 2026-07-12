@@ -543,6 +543,12 @@ events:
       status: pass
       name: Review evidence log
     timestamp: 2026-07-12T21:30:40.524Z
+  - _ulid: 01KXC3VSKPDWN7BKS7BMF3Z29K
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXC3HEW8X43RTMN5D9W5HCDZ
+    timestamp: 2026-07-12T21:31:19.542Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -570,6 +576,8 @@ threads:
           replacement for ac-5 and include it in patch-task readback/coverage.
         created_at: 2026-07-12T21:25:40.873Z
     kind: blocker
+    resolved_at: 2026-07-12T21:31:19.284Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXC3HJWKQA4HERSG5E2B460K
     anchor:
       type: structured
@@ -969,5 +977,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:30:40.257Z
+updated_at: 2026-07-12T21:31:19.284Z
 notes: []
