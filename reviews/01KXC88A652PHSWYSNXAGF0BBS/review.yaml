@@ -17,6 +17,48 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-12T22:50:00.984Z
+  - _ulid: 01KXC8CS07X0AWCF8BNAHN509P
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC8CRQSJ9K49XRQDHR0C2GJ
+    timestamp: 2026-07-12T22:50:30.280Z
+  - _ulid: 01KXC8CW2RDGWT3S0GAQRKFBBQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC8CVTXZZX6FNE3AZ2X2S98
+    timestamp: 2026-07-12T22:50:33.432Z
+  - _ulid: 01KXC8CZ8QFDSKE7RMRPN669Z2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC8CZ082NKJRSQ9SZ1BNGQ0
+    timestamp: 2026-07-12T22:50:36.695Z
+  - _ulid: 01KXC8D26X5WJCD7DJS1PP6J0W
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC8D1ZAVQC4G6FZZQCRV0YK
+    timestamp: 2026-07-12T22:50:39.709Z
+  - _ulid: 01KXC8D55YMGYEX7JAFC9DFMV6
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC8D4YBCK7E4KF9YYSTR0CB
+    timestamp: 2026-07-12T22:50:42.750Z
+  - _ulid: 01KXC8D891ER2FW06WB3X9BXV4
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC8D80KQTDAVRCW9JABKXDE
+    timestamp: 2026-07-12T22:50:45.921Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +68,123 @@ subject:
   content_hash: ""
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXC8CRQSJ9K49XRQDHR0C2GJ
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXC8CRQS7CV9B44Z9CQ0W9K0
+        author: Jacob Chapel
+        body: Atomicity remains unresolved from every historical cycle. ac-paused-work-does-not-start
+          combines global and task scopes; ac-task-interrupted-stop-recovers combines daemon-start
+          and retry triggers plus scope reopening and unrelated-task isolation;
+          ac-controls-do-not-change-readiness asserts five independently observable state classes;
+          ac-actions-are-idempotent ranges across every action and scope;
+          ac-control-outcomes-are-auditable combines applied, no-op, and failed outcomes;
+          ac-evidence-survives-control asserts six evidence classes; and the proposed
+          @per-task-dispatch-drain-coalescing ac-5 combines timer cancellation, pending-drain
+          suppression, and active cancellation. These are independently testable behaviors, so the
+          required atomic timeless AC gate still fails. Split them and move mechanism or
+          non-promises to plan/task prose.
+        created_at: 2026-07-12T22:50:30.009Z
+    kind: blocker
+  - _ulid: 01KXC8CVTXZZX6FNE3AZ2X2S98
+    anchor:
+      type: structured
+      ref: "@task-dispatch-control-persistence"
+      section: description
+    entries:
+      - _ulid: 01KXC8CVTXEW4HW6T4QQKSK49F
+        author: Jacob Chapel
+        body: The committed publication contract is still not executable. First, the frozen command git show
+          <commit_oid>:.kspec/dispatch-control.yaml names a path that does not exist in the shadow
+          commit tree; git -C .kspec ls-tree HEAD shows project files at the tree root, so the
+          object path is dispatch-control.yaml. Second, existing rollbackDirtyShadowWorktree runs
+          only after a force-reclaimed lock. A normal commitIfShadow or post-commit verification
+          failure therefore releases the lock with dirty replacement bytes, and the next ordinary
+          lock acquisition does not roll them back. Third, an external process can generate the
+          watcher event before commit and then move HEAD without another filesystem event; a
+          process-local post-commit store publication does not notify the daemon store. Freeze the
+          correct Git tree path, rollback-before-unlock for every failed commit or verification, and
+          a daemon-visible post-commit notification/retry mechanism for external writers.
+        created_at: 2026-07-12T22:50:33.181Z
+    kind: blocker
+  - _ulid: 01KXC8CZ082NKJRSQ9SZ1BNGQ0
+    anchor:
+      type: structured
+      ref: "@task-engine-global-hard-stop"
+      section: description
+    entries:
+      - _ulid: 01KXC8CZ08ZG7WFYYFSWBYWZC2
+        author: Jacob Chapel
+        body: Pending cleanup can still clear dishonestly when a process leader is gone but its process
+          group survives. The plan receipts an absent PID as not_found and advances to signals_sent
+          after targets exit. Its surviving-group safeguard applies only after signalling, and the
+          durable ownership tuple records only the leader birth token. On restart, a dead leader
+          with live descendants can therefore be treated as settled even though unverified work
+          remains. Require a safe group-survival check and keep cleanup pending as
+          identity_unverifiable, or durably record enough member birth identities to verify the
+          surviving group; never let not_found alone settle a target whose recorded PGID may still
+          be live.
+        created_at: 2026-07-12T22:50:36.424Z
+    kind: blocker
+  - _ulid: 01KXC8D1ZAVQC4G6FZZQCRV0YK
+    anchor:
+      type: structured
+      ref: "@task-dispatch-lifecycle-events"
+      section: description
+    entries:
+      - _ulid: 01KXC8D1ZBWJ2S5305WFZZJ903
+        author: Jacob Chapel
+        body: DispatchControlErrorCode is closed syntactically but its failure map is not exhaustive and
+          single-valued. The map assigns ownership tuple disagreement to task_identity_mismatch,
+          then assigns recovery ownership tuple mismatch to cleanup_identity_mismatch. Ownership
+          tuples exist only in cleanup/recovery, so the same failure class has two codes. The legacy
+          adapter sections also omit several mapped outcomes, including invalid_transition on start
+          from paused and cleanup_identity_mismatch or cleanup_identity_unverifiable on stop
+          recovery. Define disjoint failure predicates and one status/code projection for every
+          canonical and compatibility surface so each failed attempt has exactly one code.
+        created_at: 2026-07-12T22:50:39.467Z
+    kind: blocker
+  - _ulid: 01KXC8D4YBCK7E4KF9YYSTR0CB
+    anchor:
+      type: structured
+      ref: "@task-daemon-dispatch-lifecycle-api"
+      section: description
+    entries:
+      - _ulid: 01KXC8D4YB28ZNZWJV0C7XHZ8C
+        author: Jacob Chapel
+        body: The claimed exact legacy HTTP shapes still disagree with current source. Current GET
+          /api/agent/status includes queued_invocations; resolved_adapter and optional runner on
+          active and queued entries; and resolved_adapter, optional runner, and runner_validation on
+          agent definitions. The frozen shape omits all of those fields. Current no-engine GET
+          /api/agent/dispatch/status omits queued, while the proposed legacy fallback adds queued:[]
+          in addition to the named lifecycle additions. Mutation aliases also lack explicit
+          translations for invalid_transition and cleanup identity outcomes. Preserve every current
+          field and presence/absence case from packages/daemon/src/routes/agent-dispatch.ts and its
+          tests, then enumerate every new 409/500/503 translation per route.
+        created_at: 2026-07-12T22:50:42.507Z
+    kind: blocker
+  - _ulid: 01KXC8D80KQTDAVRCW9JABKXDE
+    anchor:
+      type: structured
+      ref: "@task-dispatch-control-persistence"
+      section: tasks
+    entries:
+      - _ulid: 01KXC8D80KEQV91PVAY61Q6QWZ
+        author: Jacob Chapel
+        body: Primary ownership sequencing still requires future behavior. task-dispatch-control-persistence
+          explicitly does not implement engine actions, yet it claims ac-actions-are-idempotent,
+          whose outcome covers repeated valid lifecycle actions and their side effects across
+          global/task start, pause, resume, and stop. Those actions and cleanup side effects land in
+          later engine tasks, so this task cannot close or behaviorally test the AC at its
+          dependency point. Split idempotency by owning action scope or move closure to a task after
+          all relevant actions exist.
+        created_at: 2026-07-12T22:50:45.651Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:50:00.731Z
+updated_at: 2026-07-12T22:50:45.651Z
 notes: []
