@@ -494,6 +494,13 @@ events:
       kind: blocker
       thread_ulid: 01KXC8ECQWB26475Q1NMVCTZ8Z
     timestamp: 2026-07-12T22:51:23.506Z
+  - _ulid: 01KXC8EK6XZRFRXMWQ2AE1DX44
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXC8EJYHKGF7J0G7BSX5Z5DQ
+    timestamp: 2026-07-12T22:51:29.885Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -673,7 +680,22 @@ threads:
           birth identities to verify the surviving group.
         created_at: 2026-07-12T22:51:23.261Z
     kind: blocker
+  - _ulid: 01KXC8EJYHKGF7J0G7BSX5Z5DQ
+    anchor:
+      type: structured
+      ref: "@task-dispatch-lifecycle-events"
+      section: description
+    entries:
+      - _ulid: 01KXC8EJYHHX58RZ75PXRM206T
+        author: Jacob Chapel
+        body: DispatchControlErrorCode is closed syntactically but the failure map is not single-valued.
+          Ownership tuple disagreement maps to task_identity_mismatch, while recovery ownership
+          tuple mismatch maps to cleanup_identity_mismatch. Legacy adapters also omit
+          invalid_transition and cleanup identity outcomes. Define disjoint predicates and one
+          code/status projection for every canonical and compatibility surface.
+        created_at: 2026-07-12T22:51:29.617Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:51:23.261Z
+updated_at: 2026-07-12T22:51:29.617Z
 notes: []
