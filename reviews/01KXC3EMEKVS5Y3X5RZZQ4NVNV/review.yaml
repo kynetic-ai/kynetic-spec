@@ -70,6 +70,17 @@ checks:
     runner: manual graph + isolated derive
     created_at: 2026-07-12T21:29:24.332Z
     completed_at: 2026-07-12T21:29:24.332Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Persistence storage location and mutation helper are not fixed; daemon task names wrong
+      source path; CLI task names nonexistent test files; event wire identifiers are unspecified.
+    name: Standalone task context
+    required: true
+    runner: source and test path audit
+    created_at: 2026-07-12T21:29:29.967Z
+    completed_at: 2026-07-12T21:29:29.967Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -287,6 +298,13 @@ events:
       status: fail
       name: Dependency ordering
     timestamp: 2026-07-12T21:29:24.592Z
+  - _ulid: 01KXC3REVKZ6NK0FAA0ZHNBCGJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Standalone task context
+    timestamp: 2026-07-12T21:29:30.227Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -713,5 +731,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:29:24.332Z
+updated_at: 2026-07-12T21:29:29.967Z
 notes: []
