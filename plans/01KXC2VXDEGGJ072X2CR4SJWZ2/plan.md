@@ -130,6 +130,22 @@ No task lifecycle mutation, exact durable FIFO, distributed scheduler, process c
       given: a task control is released while global authority is not running
       when: the task is re-evaluated
       then: no invocation starts
+    - id: ac-task-stop-cancels-matching-work
+      given: one canonical task has an active dispatch-owned invocation
+      when: stop cleanup completes for that task
+      then: the matching invocation is cancelled and unrelated invocations are not cancelled
+    - id: ac-task-stop-closes-matching-session
+      given: one canonical task has an active dispatch-owned session
+      when: stop cleanup completes for that task
+      then: the matching session is closed and unrelated sessions are not closed
+    - id: ac-task-stop-failure-remains-authoritative
+      given: stopped task authority committed and its cleanup failed
+      when: status is requested
+      then: that task remains stopped with pending cleanup and no success outcome
+    - id: ac-task-interrupted-stop-recovers
+      given: stopped task authority has pending cleanup after interruption
+      when: the daemon starts or task stop is retried
+      then: matching cleanup resumes without reopening that task or affecting unrelated tasks
     - id: ac-controls-survive-restart
       given: lifecycle authority is durable
       when: the daemon restarts
@@ -245,7 +261,29 @@ derive_from_specs: false
   spec_ref: "@dispatch-lifecycle-control-authority"
   tags: [dispatch, specs]
   description: |
-    Covers: every AC listed in Exact Existing-Spec Changes; this task is their sole closure owner.
+    Covers:
+    - @agent-dispatch-engine ac-11
+    - @agent-dispatch-engine ac-lifecycle-final-gate
+    - @agent-dispatch-engine ac-pause-active-natural-completion
+    - @agent-dispatch-engine ac-resume-current-state
+    - @per-task-dispatch-drain-coalescing ac-5
+    - @cli-agent-commands ac-5
+    - @cli-agent-commands ac-lifecycle-verbs
+    - @cli-agent-commands ac-destructive-stop-confirmation
+    - @cli-agent-commands ac-task-control-canonicalization
+    - @cli-agent-commands ac-lifecycle-status-output
+    - @daemon-agent-dispatch ac-5
+    - @daemon-agent-dispatch ac-6
+    - @daemon-agent-dispatch ac-control-identity-validation
+    - @daemon-agent-dispatch ac-control-failure-status
+    - @ui-agent-dispatch ac-2
+    - @ui-agent-dispatch ac-3
+    - @ui-agent-dispatch ac-hard-stop-confirmation
+    - @ui-agent-dispatch ac-live-accessible-status
+    - @dispatch-event-taxonomy ac-dispatch-control-domain
+    - @dispatch-event-payload ac-dispatch-control-fields
+    - @dispatch-event-payload ac-dispatch-control-sanitization
+    - @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected
     What: Materialize the exact replacement/addition text through kspec CLI before product work.
     Why: Current stop contracts conflict, including @per-task-dispatch-drain-coalescing ac-5.
     How: Create the plan-owned requirement through derivation; use item set/ac set/ac add; preserve unlisted IDs, status, maturity, traits, metadata; no product code or YAML edits.
@@ -347,7 +385,7 @@ derive_from_specs: false
   depends_on: ["@task-engine-task-pause-resume", "@task-engine-global-hard-stop"]
   tags: [dispatch, cancellation, tasks]
   description: |
-    Covers: task-scoped application of ac-stop-cancels-active-work, ac-stop-closes-active-sessions, ac-stop-failure-remains-authoritative, ac-interrupted-stop-recovers.
+    Covers: ac-task-stop-cancels-matching-work, ac-task-stop-closes-matching-session, ac-task-stop-failure-remains-authoritative, ac-task-interrupted-stop-recovers.
     What: Stop one canonical task without disturbing unrelated work.
     Why: Global closeAll or ref aliases violate task isolation.
     How: Add targeted active-controller/session ownership and close-by-canonical-task; commit task stopped+pending first; remove matching queue/retry/coalescing only; retry cleanup; resume reconstructs current state.

@@ -9,3 +9,8 @@ notes:
       bounded verification slices; derive_from_specs=false prevents a generic task"
     author: Jacob Chapel
     created_at: 2026-07-12T21:46:34.369Z
+  - _ulid: 01KXC4VCXQDJJF38YENQX31W87
+    content: Finalize atomic task-stop AC ownership and enumerate every exact existing-spec Covers ref
+      after canonical review 01KXC3EMEKVS5Y3X5RZZQ4NVNV
+    author: Jacob Chapel
+    created_at: 2026-07-12T21:48:35.127Z
