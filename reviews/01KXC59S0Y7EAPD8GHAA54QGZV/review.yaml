@@ -346,6 +346,56 @@ checks:
     runner: consumer audit
     created_at: 2026-07-12T22:02:03.593Z
     completed_at: 2026-07-12T22:02:03.593Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Patch Covers duplicates behavioral ACs claimed by implementation tasks.
+    name: AC to task ownership
+    required: true
+    runner: Covers graph
+    created_at: 2026-07-12T22:02:08.928Z
+    completed_at: 2026-07-12T22:02:08.928Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 15-task graph acyclic; dependencies resolve; no priority inversion.
+    name: Dependency ordering
+    required: true
+    runner: parsed graph
+    created_at: 2026-07-12T22:02:11.976Z
+    completed_at: 2026-07-12T22:02:11.976Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Engine, API/CLI, browser slices are separate with verification-only ownership.
+    name: Bounded verification slices
+    required: true
+    runner: manual audit
+    created_at: 2026-07-12T22:02:14.990Z
+    completed_at: 2026-07-12T22:02:14.990Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: New and direct existing refs resolve; AC IDs unique.
+    name: Plan cross-reference resolution
+    required: true
+    runner: parser + item get
+    created_at: 2026-07-12T22:02:17.783Z
+    completed_at: 2026-07-12T22:02:17.783Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Existing 7 unrelated ambiguous-ref errors; plan not derived.
+    name: kspec validate refs baseline
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-12T22:02:20.665Z
+    completed_at: 2026-07-12T22:02:20.665Z
 events:
   - _ulid: 01KXC59S0Y16DWP779GSJC3AS7
     actor: Jacob Chapel
@@ -675,6 +725,41 @@ events:
       status: fail
       name: UI dispatch_enabled inventory
     timestamp: 2026-07-12T22:02:03.830Z
+  - _ulid: 01KXC5M7X31DFH9HSMJXM2PKJV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: AC to task ownership
+    timestamp: 2026-07-12T22:02:09.187Z
+  - _ulid: 01KXC5MAVFVRRPF5YEV8Q9WCPZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency ordering
+    timestamp: 2026-07-12T22:02:12.207Z
+  - _ulid: 01KXC5MDSXGDWAN2GEB2P3ZK19
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Bounded verification slices
+    timestamp: 2026-07-12T22:02:15.229Z
+  - _ulid: 01KXC5MGGYBZSTWH52Q3NR7A1F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan cross-reference resolution
+    timestamp: 2026-07-12T22:02:18.014Z
+  - _ulid: 01KXC5MKANKB6HP3B7PB0H2C18
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate refs baseline
+    timestamp: 2026-07-12T22:02:20.886Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -875,5 +960,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:56:26.270Z
-updated_at: 2026-07-12T22:02:03.593Z
+updated_at: 2026-07-12T22:02:20.665Z
 notes: []
