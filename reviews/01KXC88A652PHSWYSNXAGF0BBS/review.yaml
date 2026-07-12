@@ -376,6 +376,16 @@ checks:
     required: true
     created_at: 2026-07-12T22:53:14.780Z
     completed_at: 2026-07-12T22:53:14.780Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every explicit Existing path exists; every first-owner Create path is absent; dependent
+      shared tests are Existing-by-that-task.
+    name: Path classification
+    required: true
+    created_at: 2026-07-12T22:53:20.413Z
+    completed_at: 2026-07-12T22:53:20.413Z
 events:
   - _ulid: 01KXC88A643NZXBK7THJTVVV1C
     actor: Jacob Chapel
@@ -733,6 +743,13 @@ events:
       status: pass
       name: Dependency ordering
     timestamp: 2026-07-12T22:53:15.025Z
+  - _ulid: 01KXC8HZCH3RASCDYVC7ZGWG7H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Path classification
+    timestamp: 2026-07-12T22:53:20.658Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -961,5 +978,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T22:48:04.037Z
-updated_at: 2026-07-12T22:53:14.780Z
+updated_at: 2026-07-12T22:53:20.413Z
 notes: []
