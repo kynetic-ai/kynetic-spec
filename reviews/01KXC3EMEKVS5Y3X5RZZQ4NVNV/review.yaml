@@ -15,6 +15,17 @@ checks:
     runner: kspec plan export + sha256
     created_at: 2026-07-12T21:28:56.499Z
     completed_at: 2026-07-12T21:28:56.499Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Parser returned 1 spec, 13 manual tasks, zero parse errors. Isolated derive created 14
+      tasks because implicit @implement-dispatch-lifecycle-control-authority was also generated.
+    name: Plan parser and materialization
+    required: true
+    runner: parsePlanDocument + isolated kspec plan derive --dry-run
+    created_at: 2026-07-12T21:29:01.988Z
+    completed_at: 2026-07-12T21:29:01.988Z
 events:
   - _ulid: 01KXC3EMEK2FZXG66YSZRM0RAC
     actor: Jacob Chapel
@@ -197,6 +208,13 @@ events:
       status: pass
       name: Stored plan integrity
     timestamp: 2026-07-12T21:28:56.754Z
+  - _ulid: 01KXC3QKH16EPTGVR7F694TX56
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Plan parser and materialization
+    timestamp: 2026-07-12T21:29:02.241Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -623,5 +641,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-12T21:24:08.275Z
-updated_at: 2026-07-12T21:28:56.499Z
+updated_at: 2026-07-12T21:29:01.988Z
 notes: []
