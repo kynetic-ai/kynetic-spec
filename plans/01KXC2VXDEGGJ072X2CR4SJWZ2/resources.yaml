@@ -1,14 +1,4 @@
 resources:
-  - description: Validate queue/matrix/AC-detail behavior that is downstream of spec workspace coverage
-      and resolution links.
-    bytes: 4970
-    content_type: text/markdown
-    git_commit: null
-    git_path: null
-    id: handoff-validate
-    label: Validate workspace handoff
-    path: handoff/docs/09-validate.md
-    sha256: 2830449d6fddf9a71b6b08b50519ec9efa3fe9ddeac831d04ca5157bf743fa64
   - description: Root Specs tree showing expand-inline row behavior and hover-title open-page affordance.
     bytes: 73982
     content_type: image/png
