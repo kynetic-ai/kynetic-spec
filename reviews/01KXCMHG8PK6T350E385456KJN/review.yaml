@@ -16,6 +16,18 @@ checks:
     runner: historical review audit
     created_at: 2026-07-13T02:23:33.683Z
     completed_at: 2026-07-13T02:23:33.683Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Source and stored bytes are identical: SHA-256
+      e269e4dbd63be822e26ead67f284748a4445b79a7c72a959feba8b2de6069472; 171085 bytes. Dry-run: 1
+      spec, 82 ACs, 20 tasks, derive false, zero diagnostics."
+    name: Source stored identity and parser
+    required: true
+    runner: plan parser/import
+    created_at: 2026-07-13T02:23:38.985Z
+    completed_at: 2026-07-13T02:23:38.985Z
 events:
   - _ulid: 01KXCMHG8PY3H38JQT5FDYA7TW
     actor: codex
@@ -37,6 +49,13 @@ events:
       status: pass
       name: Historical closure gates
     timestamp: 2026-07-13T02:23:33.925Z
+  - _ulid: 01KXCMK273DV0X0DJJKT49Q2V9
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Source stored identity and parser
+    timestamp: 2026-07-13T02:23:39.236Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -49,5 +68,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:22:48.086Z
-updated_at: 2026-07-13T02:23:33.683Z
+updated_at: 2026-07-13T02:23:38.985Z
 notes: []
