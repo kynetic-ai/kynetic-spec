@@ -11,17 +11,75 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-13T01:47:48.871Z
+  - _ulid: 01KXCJKQYAT9YMHZ8WDSAF52HW
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-07-13T01:49:04.331Z
+  - _ulid: 01KXCJKTXAVVPY8KJE4AG0BSHM
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCJKTP15RF034BXFWP633R7
+    timestamp: 2026-07-13T01:49:07.370Z
+  - _ulid: 01KXCJKXR0YCQ9VQN2MPJAKCKZ
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCJKXGQS9G1N15CRP16XYG4
+    timestamp: 2026-07-13T01:49:10.272Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXCJKTP15RF034BXFWP633R7
+    anchor:
+      type: structured
+      ref: "@task-engine-global-lifecycle"
+      section: description
+    entries:
+      - _ulid: 01KXCJKTP1X3GM5W8TS9XDHA67
+        author: codex
+        body: "Cleanup scope is still contradictory. Top-level CleanupState explicitly aggregates global and
+          task entries (global-first, then task entries), and the task matrix says global start may
+          admit unrelated tasks while task-scoped cleanup remains. But this handoff requires global
+          cleanup to equal {status:idle,entries:[]} and rejects start/pause/resume whenever global
+          cleanup has any entry; API, CLI, UI, and browser handoffs likewise key global retry-only
+          behavior from aggregate pending/failed status. Define matching-scope guards: global
+          actions inspect the global entry only, task actions inspect that task nested entry, and
+          add the stopped-global plus unrelated-task-cleanup row to every surface, alias, and
+          verification matrix."
+        created_at: 2026-07-13T01:49:07.137Z
+    kind: blocker
+  - _ulid: 01KXCJKXGQS9G1N15CRP16XYG4
+    anchor:
+      type: structured
+      ref: "@task-daemon-dispatch-lifecycle-api"
+      section: description
+    entries:
+      - _ulid: 01KXCJKXGQ1ZN3SS065CH9J5PD
+        author: codex
+        body: The closed wire schema is not reproduced consistently enough for standalone consumers. The
+          binding schema permits a failed aggregate with error_code only on entries whose latest
+          attempt failed, but CLI, UI, API/CLI verification, and browser handoffs shorten this to
+          error_code required only for failed, allowing incompatible validators and omitting the
+          at-least-one failed-entry refinement. Public status is also snake-case while the UI model
+          is explicitly camel-case, yet UI/browser handoffs do not define public-response
+          normalization and current fetchAgentStatus returns response JSON directly. Freeze the
+          failed-entry refinement everywhere and specify the snake-to-camel normalization boundary.
+        created_at: 2026-07-13T01:49:10.039Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-13T01:47:48.871Z
-updated_at: null
+updated_at: 2026-07-13T01:49:10.039Z
 notes: []
