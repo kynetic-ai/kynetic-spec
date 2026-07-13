@@ -49,6 +49,18 @@ checks:
     runner: AC ownership audit
     created_at: 2026-07-13T02:23:49.864Z
     completed_at: 2026-07-13T02:23:49.864Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Engine, persistence, task control, stop recovery, API, legacy aliases, CLI, UI, and all
+      verification slices select global-only or matching task/T cleanup; aggregate state remains
+      observability only.
+    name: Matching-scope cleanup gating
+    required: true
+    runner: matrix and consumer audit
+    created_at: 2026-07-13T02:23:55.347Z
+    completed_at: 2026-07-13T02:23:55.347Z
 events:
   - _ulid: 01KXCMHG8PY3H38JQT5FDYA7TW
     actor: codex
@@ -91,6 +103,13 @@ events:
       status: pass
       name: 82 exact one-owner ACs
     timestamp: 2026-07-13T02:23:50.107Z
+  - _ulid: 01KXCMKJ60ESSDA9MV7HE00C4R
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Matching-scope cleanup gating
+    timestamp: 2026-07-13T02:23:55.584Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -103,5 +122,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:22:48.086Z
-updated_at: 2026-07-13T02:23:49.864Z
+updated_at: 2026-07-13T02:23:55.347Z
 notes: []
