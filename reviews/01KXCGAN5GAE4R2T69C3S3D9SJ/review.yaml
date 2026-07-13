@@ -10,17 +10,127 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-13T01:09:09.423Z
+  - _ulid: 01KXCGHCCK2W4XVXQZBNBCAJAC
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-07-13T01:12:49.811Z
+  - _ulid: 01KXCGHFGKJWHSYA519BPKG311
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCGHF8PACZYBPGF6AVE3KGA
+    timestamp: 2026-07-13T01:12:53.011Z
+  - _ulid: 01KXCGHJJ2KGWPA7DYACNWTB4S
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCGHJAVAT2BSR1CT5E7W3B0
+    timestamp: 2026-07-13T01:12:56.130Z
+  - _ulid: 01KXCGHNHFP8WAS36NY7RGQ3QN
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCGHN9S1CSY9VVPYGA3XD93
+    timestamp: 2026-07-13T01:12:59.183Z
+  - _ulid: 01KXCGHRM3HR0B8ZDZ5V5VN7Y9
+    actor: codex
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCGHRC9S97GVQKVHCNNCAKH
+    timestamp: 2026-07-13T01:13:02.339Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
   content_hash: ""
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXCGHF8PACZYBPGF6AVE3KGA
+    anchor:
+      type: structured
+      ref: "@task-daemon-dispatch-lifecycle-api"
+      section: description
+    entries:
+      - _ulid: 01KXCGHF8P916TM86NV787V5R7
+        author: codex
+        body: "The lifecycle additions still lack an executable wire schema. The task names
+          cleanup_state/cleanupState, held_tasks/heldTasks, and task_controls/taskControls but never
+          defines the cleanup-state enum, the exact held-task and task-control object
+          fields/types/presence rules, or the exact field that carries the canonical task ULID in
+          canonical mutation data. Direct source inspection shows no existing lifecycle type to
+          inherit, so API, CLI JSON/status, UI, and cross-surface fixtures can invent incompatible
+          shapes. Define these lifecycle schemas verbatim for canonical control, public status,
+          internal status, and error/status projections. Affected:
+          task-daemon-dispatch-lifecycle-api, task-cli-dispatch-lifecycle-controls,
+          task-ui-dispatch-lifecycle-controls, task-verify-api-cli-projection,
+          task-verify-ui-lifecycle-browser."
+        created_at: 2026-07-13T01:12:52.758Z
+    kind: blocker
+  - _ulid: 01KXCGHJAVAT2BSR1CT5E7W3B0
+    anchor:
+      type: structured
+      ref: "@dispatch-lifecycle-control-authority"
+      section: description
+    entries:
+      - _ulid: 01KXCGHJAV8TB39VRE2H1XWQW3
+        author: codex
+        body: "Cleanup-pending transition behavior is contradictory and incomplete. The global matrix says
+          start from stopped transitions to running, while the UI matrix says
+          stopped/cleanup_pending hides Start and exposes only Retry hard stop; no
+          engine/API/CLI/event task says what a direct start or resume does while cleanup is
+          pending, which code/body/event results, or proves scheduling cannot reopen around live
+          cleanup. Freeze this state/action row throughout the contracts. Affected:
+          task-engine-global-lifecycle, task-engine-stop-recovery,
+          task-daemon-dispatch-lifecycle-api, task-cli-dispatch-lifecycle-controls,
+          task-ui-dispatch-lifecycle-controls, task-verify-api-cli-projection,
+          task-verify-ui-lifecycle-browser."
+        created_at: 2026-07-13T01:12:55.899Z
+    kind: blocker
+  - _ulid: 01KXCGHN9S1CSY9VVPYGA3XD93
+    anchor:
+      type: structured
+      ref: "@task-verify-ui-lifecycle-browser"
+      section: description
+    entries:
+      - _ulid: 01KXCGHN9T8CJPB9C200C46P2R
+        author: codex
+        body: "The browser command exists and accepts a file filter, but its verification is incomplete and
+          fixture prose is inaccurate. `npm run test:e2e -- tests/e2e/dispatch-lifecycle.spec.ts`
+          selects only the new file while Files also modifies tests/e2e/agents.spec.ts and
+          tests/e2e/static-mode.spec.ts. test-base.ts uses
+          acquirePlaywrightFixtureResources/startPlaywrightFixtureDaemon wrappers rather than
+          directly owning createTestDaemonProject/startTestDaemon, and static-mode.spec.ts fulfills
+          **/health with HTTP 503 rather than rejecting it. Correct the fixture and run all modified
+          E2E specs or remove them; a three-file filter remains bounded. Affected:
+          task-verify-ui-lifecycle-browser."
+        created_at: 2026-07-13T01:12:58.938Z
+    kind: blocker
+  - _ulid: 01KXCGHRC9S97GVQKVHCNNCAKH
+    anchor:
+      type: structured
+      ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+      section: dependencies
+    entries:
+      - _ulid: 01KXCGHRC904A99FMMKF1J4G1A
+        author: codex
+        body: "The required repository reference gate remains red: `kspec validate --refs --warnings-ok`
+          exits 4 on seven ambiguous references involving @observations and @spec-plan-import. The
+          plan parses cleanly and direct plan refs resolve, but the user-required all-gates-green
+          closure condition is not met. Approval must wait for a green refs gate or an explicitly
+          authorized non-required disposition."
+        created_at: 2026-07-13T01:13:02.089Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-13T01:09:09.424Z
-updated_at: null
+updated_at: 2026-07-13T01:13:02.089Z
 notes: []
