@@ -468,7 +468,7 @@ The spec-patch task applies only this wording with `kspec item set` and `kspec i
 - Add `@cli-agent-commands ac-lifecycle-status-held-count`: **Given** lifecycle status is printed. **When** human or JSON output is rendered. **Then** held count is present.
 - Replace `@daemon-agent-dispatch ac-5`: **Given** `GET /api/agent/status` is called. **When** lifecycle state is available. **Then** the response preserves top-level `dispatch_enabled`, `active_invocations`, `queued_invocations`, `queue_depth`, `agent_definitions`, `degraded`, and `degraded_targets`; preserves each active item’s `session_id,agent_id,task_ref,task_title,elapsed_ms,resolved_adapter`, each queued item’s `agent_id,task_ref,task_title,wait_ms,resolved_adapter`, each agent definition’s `id,name,adapter,resolved_adapter,completed_sessions`, and each degraded target’s `branch,reason,enteredAt,kind`; includes `runner` only where currently configured and `runner_validation:{status,diagnostics[]}` only where current resolution emits it.
 - Add `@daemon-agent-dispatch ac-public-status-lifecycle-additions`: **Given** `GET /api/agent/status` is called. **When** lifecycle state is available. **Then** lifecycle additions are appended at top level.
-- Replace `@daemon-agent-dispatch ac-6`: **Given** a localhost client posts a valid lifecycle control. **When** transition processing succeeds. **Then** the response returns resulting status.
+- Replace `@daemon-agent-dispatch ac-6`: **Given** a localhost client posts a valid lifecycle control. **When** transition processing succeeds. **Then** `POST /api/agent/dispatch/control` returns HTTP 200 with `{ok:true,data:{global_authority,projection,cleanup_state,active_count,queue_depth,held_count,held_tasks,task_controls,degraded_targets,outcome},error:null}`.
 - Add `@daemon-agent-dispatch ac-control-error-current-status`: **Given** a localhost lifecycle control fails. **When** the API responds. **Then** its structured error includes current status.
 - Add `@daemon-agent-dispatch ac-control-missing-identity`: **Given** a task-scoped control omits task identity. **When** validation runs. **Then** the request is rejected.
 - Add `@daemon-agent-dispatch ac-control-ref-canonicalization`: **Given** a task-scoped control carries one uniquely resolvable ref. **When** identity is resolved. **Then** the ref is canonicalized to its task ULID.
@@ -493,7 +493,7 @@ The spec-patch task applies only this wording with `kspec item set` and `kspec i
 - Add `@dispatch-event-taxonomy ac-dispatch-control-domain`: **Given** a lifecycle outcome is emitted. **When** event type validation runs. **Then** the identifier is one of `dispatch_control.start_applied`, `dispatch_control.pause_applied`, `dispatch_control.resume_applied`, `dispatch_control.stop_applied`, `dispatch_control.noop`, or `dispatch_control.failed`.
 - Add `@dispatch-event-payload ac-dispatch-control-common-fields`: **Given** a dispatch-control event is emitted. **When** its payload is read. **Then** it contains `scope,action,authority,projection,outcome,reason,actor,source,timestamp`; task scope also contains canonical `task_id` and may contain `task_ref`, while global scope contains neither task identity field; only failed outcomes contain `error_code`.
 - Add `@dispatch-event-payload ac-dispatch-control-task-identity`: **Given** a task-scoped dispatch-control event is emitted. **When** its payload is read. **Then** canonical task identity is present.
-- Add `@dispatch-event-payload ac-dispatch-control-field-bounds`: **Given** lifecycle event text exceeds a declared bound. **When** the payload is created. **Then** the field is truncated to that bound.
+- Add `@dispatch-event-payload ac-dispatch-control-field-bounds`: **Given** `reason`, `actor`, or `task_ref` exceeds its declared bound. **When** the payload is created. **Then** control characters are removed, whitespace is normalized, `reason` is at most 240 Unicode code points, `actor` is at most 120, and `task_ref` is at most 200.
 - Add `@dispatch-event-payload ac-dispatch-control-no-prompts`: **Given** lifecycle event input contains a prompt. **When** the payload is created. **Then** the prompt is absent.
 - Add `@dispatch-event-payload ac-dispatch-control-no-secrets`: **Given** lifecycle event input contains a secret. **When** the payload is created. **Then** the secret is absent.
 - Add `@dispatch-event-payload ac-dispatch-control-no-terminal-buffer`: **Given** lifecycle event input contains terminal-buffer text. **When** the payload is created. **Then** terminal-buffer text is absent.
@@ -525,1460 +525,1057 @@ The spec-patch task applies only this wording with `kspec item set` and `kspec i
 
 Secondary tasks consume prerequisite contracts and do not claim their ACs.
 
+## Coverage Ownership
+
+Every @dispatch-lifecycle-control-authority AC has one primary behavior owner; patch and verification tasks claim no behavioral closure.
+
+| Owner | Primary closure |
+| --- | --- |
+| task-dispatch-control-persistence | ac-task-control-uses-canonical-identity; ac-controls-survive-restart; ac-uncommitted-control-is-not-visible; ac-failed-control-write-is-not-visible; ac-stale-control-is-not-visible; ac-invalid-control-is-not-visible; ac-external-commit-is-eventually-visible; ac-controls-do-not-change-readiness; ac-controls-do-not-change-degraded-targets |
+| task-engine-global-lifecycle | ac-global-pause-authority; ac-global-paused-work-does-not-start; ac-global-pause-allows-active-completion; ac-global-pause-keeps-active-session-open; ac-resume-reconciles-held-work; ac-resume-reconciles-eligible-work; ac-repeated-resume-does-not-duplicate; ac-concurrent-resume-does-not-duplicate; ac-paused-reconstruction-uses-current-state; ac-stopped-reconstruction-uses-current-state; ac-global-start-is-idempotent; ac-global-pause-is-idempotent; ac-global-resume-is-idempotent |
+| task-engine-task-pause-resume | ac-task-paused-work-does-not-start; ac-task-pause-allows-active-completion; ac-task-pause-keeps-active-session-open; ac-task-control-preserves-unrelated-task-control; ac-task-control-preserves-global-authority; ac-task-resume-obeys-global-authority; ac-task-pause-is-idempotent; ac-task-resume-is-idempotent |
+| task-final-pre-spawn-control-gate | ac-final-gate-prevents-process-creation; ac-final-gate-prevents-session-creation; ac-spawn-win-pause-allows-completion; ac-spawn-win-stop-cancels-invocation |
+| task-engine-stop-recovery | ac-stop-forbids-new-starts; ac-stop-cancels-active-work; ac-stop-closes-active-sessions; ac-task-stop-cancels-matching-work; ac-task-stop-preserves-unrelated-invocations; ac-task-stop-closes-matching-session; ac-task-stop-preserves-unrelated-sessions; ac-task-stop-failure-retains-stopped-authority; ac-task-stop-failure-reports-pending-cleanup; ac-task-stop-failure-reports-no-success; ac-task-interrupted-stop-recovers-on-startup; ac-task-interrupted-stop-recovers-on-retry; ac-recovery-requires-session-ownership; ac-recovery-requires-process-birth; ac-missing-leader-live-group-remains-pending; ac-unverified-live-group-is-not-signalled; ac-live-group-prevents-cleanup-completion; ac-stop-failure-retains-stopped-authority; ac-stop-failure-reports-pending-cleanup; ac-stop-failure-reports-no-success; ac-interrupted-stop-recovers-on-startup; ac-interrupted-stop-recovers-on-retry; ac-global-stop-is-idempotent; ac-task-stop-is-idempotent |
+| task-dispatch-lifecycle-events | ac-applied-control-is-auditable; ac-noop-control-is-auditable; ac-failed-control-is-auditable; ac-failure-events-use-closed-error-codes |
+| task-daemon-dispatch-lifecycle-api | ac-status-reports-authority; ac-status-reports-projection; ac-status-reports-active-count; ac-status-reports-queued-count; ac-status-reports-held-count; ac-status-reports-held-task-identity; ac-status-reports-held-task-scope; ac-status-reports-held-task-mode; ac-status-reports-held-task-reason; ac-failure-api-uses-closed-error-codes; ac-api-failures-do-not-expose-raw-errors |
+| task-cli-dispatch-lifecycle-controls | ac-failure-cli-uses-closed-error-codes; ac-cli-failures-do-not-expose-raw-errors |
+| task-ui-dispatch-lifecycle-controls | ac-ui-failures-do-not-expose-raw-errors |
+| task-protect-controlled-dispatch-evidence | ac-session-evidence-survives-control; ac-branch-evidence-survives-control; ac-workspace-evidence-survives-control; ac-worktree-evidence-survives-control; ac-snapshot-evidence-survives-control; ac-audit-evidence-survives-control |
+
 ## Tasks
 
 derive_from_specs: false
 
 ```yaml
-- title: Patch dispatch lifecycle owning specs exactly
-  slug: task-patch-dispatch-lifecycle-specs
+- title: Patch dispatch engine and coalescing specs exactly
+  slug: task-patch-dispatch-engine-coalescing-specs
   priority: 1
-  spec_ref: '@dispatch-lifecycle-control-authority'
-  tags:
-  - dispatch
-  - specs
+  spec_ref: "@agent-dispatch-engine"
+  tags: [dispatch, specs, engine]
   description: |
     ### Covers
 
-    - process-only exact spec text/materialization.
-    - claims no behavioral AC closure.
+    - @agent-dispatch-engine ac-11, ac-final-gate-global-control, ac-final-gate-task-control, ac-pause-active-natural-completion, ac-pause-does-not-close-session, ac-resume-current-task-state, ac-resume-current-dispatch-rules
+    - @per-task-dispatch-drain-coalescing ac-5, ac-stop-prevents-pending-drain-start, ac-stop-cancels-active-invocation
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** Exact Existing-Spec Changes above and current item readback.
-    - **Architecture boundary:** Create the new requirement only through plan derivation. Read every target owner before mutation; apply each exact description/AC payload; preserve every unlisted id, status, maturity, trait, note, and source link; then compare before/after JSON field by field.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Metadata only: use kspec item ac set/add, never direct .kspec edits. Do not create or derive @dispatch-lifecycle-control-authority; plan materialization creates that requirement. Preserve all unlisted fields.
 
-    ### What
+    ### Deliverable
 
-    Apply the plan-owned requirement and every exact existing-spec patch before behavioral implementation begins. This task changes kspec metadata only.
+    Apply exactly these complete payloads:
+    - Set @agent-dispatch-engine ac-11 — Given global stop authority is committed. When hard-stop cleanup is incomplete. Then dispatch does not report stop success.
+    - Add @agent-dispatch-engine ac-final-gate-global-control — Given a candidate remains eligible after dequeue. When it reaches the final creation boundary. Then current global control determines whether creation is permitted.
+    - Add @agent-dispatch-engine ac-final-gate-task-control — Given a candidate remains eligible after dequeue. When it reaches the final creation boundary. Then its canonical-task control determines whether creation is permitted.
+    - Add @agent-dispatch-engine ac-pause-active-natural-completion — Given an invocation is active in a scope. When that scope is paused. Then the invocation may finish naturally.
+    - Add @agent-dispatch-engine ac-pause-does-not-close-session — Given a session belongs to an active invocation. When its scope is paused. Then pause does not close the session.
+    - Add @agent-dispatch-engine ac-resume-current-task-state — Given a scope is paused. When it resumes. Then current task state is re-evaluated before work starts.
+    - Add @agent-dispatch-engine ac-resume-current-dispatch-rules — Given a scope is paused. When it resumes. Then current dispatch rules are re-evaluated before work starts.
+    - Set @per-task-dispatch-drain-coalescing ac-5 — Given per-task coalescing timers are pending. When matching stop authority commits. Then matching timers are cancelled.
+    - Add @per-task-dispatch-drain-coalescing ac-stop-prevents-pending-drain-start — Given a matching pending drain exists. When stop authority commits. Then that drain does not start work.
+    - Add @per-task-dispatch-drain-coalescing ac-stop-cancels-active-invocation — Given a matching invocation is active. When hard-stop cleanup runs. Then that invocation is cancelled.
 
-    **Boundary:** Materialize the exact replacement/addition text through kspec CLI before product work.
+    ### Implementation
 
-    ### Why
-
-    The current owners contain contradictory stop semantics; later workers need durable standalone contracts, not references to this plan. Current stop contracts conflict, including @per-task-dispatch-drain-coalescing ac-5.
-
-    ### How
-
-    1. Create the new requirement only through plan derivation. Read every target owner before mutation; apply each exact description/AC payload; preserve every unlisted id, status, maturity, trait, note, and source link; then compare before/after JSON field by field.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Read both owners before and after mutation; account for each changed field. No source, test, plan, review, or resource changes.
 
     ### Files
 
-    #### Create
+    - Create: none.
+    - Modify: none.
+    - Tests: none.
 
-    - None.
+    ### Behavioral tests
 
-    #### Modify
-
-    - None.
-
-    #### Tests
-
-    - Colocated focused tests named in **Required tests**.
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - exact readback of all eight owners.
-    - unchanged unlisted ACs.
-    - validation.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Make a nonmutating ten-row readback of item, id, operation, Given, When, and Then; prove neighboring ACs/metadata are unchanged.
 
     ### Verification
 
-    - Run `kspec item get on every named owner` and expect exit 0 with every named suite passing.
-    - Run `kspec validate --warnings-ok` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - kspec item get @agent-dispatch-engine
+    - kspec item get @per-task-dispatch-drain-coalescing
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave list changed refs/IDs and confirm no product files.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
-- title: Define durable dispatch control schema and store
+    Supply the ten-row readback and confirm metadata-only scope.
+
+- title: Patch dispatch CLI specs exactly
+  slug: task-patch-dispatch-cli-specs
+  priority: 1
+  spec_ref: "@cli-agent-commands"
+  tags: [dispatch, specs, cli]
+  description: |
+    ### Covers
+
+    - @cli-agent-commands description, ac-5, ac-start-reports-authority, ac-pause-reports-authority, ac-resume-reports-authority, ac-lifecycle-command-reports-projection, ac-declined-stop-sends-no-request, ac-declined-stop-exit, ac-task-control-canonicalization, ac-lifecycle-status-authority, ac-lifecycle-status-projection, ac-lifecycle-status-active-count, ac-lifecycle-status-queued-count, ac-lifecycle-status-held-count
+
+    ### Required context
+
+    Metadata only. Set the description with kspec item set; use item ac set/add for the exact payloads. Do not derive this draft.
+
+    ### Deliverable
+
+    Set description: The kspec agent family lists and runs agents and exposes durable global and canonical-task dispatch start, pause, resume, hard-stop, and status controls.
+    - Set ac-5 — Given dispatch-owned hard-stop cleanup is incomplete. When kspec agent dispatch stop reports its result. Then the command does not report stopped success.
+    - Add ac-start-reports-authority — Given the daemon is available. When start is requested from stopped authority. Then the command reports running authority.
+    - Add ac-pause-reports-authority — Given the daemon is available. When pause is requested from running authority. Then the command reports paused authority.
+    - Add ac-resume-reports-authority — Given the daemon is available. When resume is requested from paused authority. Then the command reports running authority.
+    - Add ac-lifecycle-command-reports-projection — Given a lifecycle command succeeds. When output is rendered. Then the command reports the resulting projection.
+    - Add ac-declined-stop-sends-no-request — Given a user invokes hard stop interactively. When confirmation is declined. Then no stop request is sent.
+    - Add ac-declined-stop-exit — Given a user declines interactive hard stop. When the command exits. Then it exits as user-cancelled.
+    - Add ac-task-control-canonicalization — Given a task control command names a resolvable task. When it is accepted. Then the result identifies the canonical task ULID.
+    - Add ac-lifecycle-status-authority — Given lifecycle status is printed. When human or JSON output is rendered. Then authority is present.
+    - Add ac-lifecycle-status-projection — Given lifecycle status is printed. When human or JSON output is rendered. Then projection is present.
+    - Add ac-lifecycle-status-active-count — Given lifecycle status is printed. When human or JSON output is rendered. Then active count is present.
+    - Add ac-lifecycle-status-queued-count — Given lifecycle status is printed. When human or JSON output is rendered. Then queued count is present.
+    - Add ac-lifecycle-status-held-count — Given lifecycle status is printed. When human or JSON output is rendered. Then held count is present.
+
+    ### Implementation
+
+    Apply text verbatim and read the full owner back. No CLI implementation belongs here.
+
+    ### Files
+
+    - Create: none.
+    - Modify: none.
+    - Tests: none.
+
+    ### Behavioral tests
+
+    Read back one description, one replacement, and twelve additions without altering state.
+
+    ### Verification
+
+    - kspec item get @cli-agent-commands
+    - git diff --check
+
+    ### Reviewer handoff
+
+    Provide the fourteen-row exact text matrix and metadata-only confirmation.
+
+- title: Patch daemon dispatch API specs exactly
+  slug: task-patch-dispatch-api-specs
+  priority: 1
+  spec_ref: "@daemon-agent-dispatch"
+  tags: [dispatch, specs, api]
+  description: |
+    ### Covers
+
+    - @daemon-agent-dispatch ac-5, ac-public-status-lifecycle-additions, ac-6, ac-control-error-current-status, ac-control-missing-identity, ac-control-ref-canonicalization, ac-control-identity-mismatch, ac-control-failure-no-success, ac-cleanup-failure-no-success
+
+    ### Required context
+
+    Metadata only; the daemon API task implements the contract later.
+
+    ### Deliverable
+
+    - Set ac-5 — Given GET /api/agent/status is called. When lifecycle state is available. Then the response preserves dispatch_enabled, active_invocations, queued_invocations, queue_depth, agent_definitions, degraded, degraded_targets; active session_id/agent_id/task_ref/task_title/elapsed_ms/resolved_adapter; queued agent_id/task_ref/task_title/wait_ms/resolved_adapter; definitions id/name/adapter/resolved_adapter/completed_sessions; targets branch/reason/enteredAt/kind; runner only when configured; runner_validation only where current resolution emits it.
+    - Add ac-public-status-lifecycle-additions — Given GET /api/agent/status is called. When lifecycle state is available. Then lifecycle additions are appended at top level.
+    - Set ac-6 — Given a localhost client posts a valid lifecycle control. When transition processing succeeds. Then POST /api/agent/dispatch/control returns HTTP 200 with ok true, data containing global_authority, projection, cleanup_state, active_count, queue_depth, held_count, held_tasks, task_controls, degraded_targets, outcome, and error null.
+    - Add ac-control-error-current-status — Given a localhost lifecycle control fails. When the API responds. Then its structured error includes current status.
+    - Add ac-control-missing-identity — Given a task-scoped control omits task identity. When validation runs. Then the request is rejected.
+    - Add ac-control-ref-canonicalization — Given a task-scoped control carries one uniquely resolvable ref. When identity is resolved. Then the ref is canonicalized to its task ULID.
+    - Add ac-control-identity-mismatch — Given supplied task identity fields disagree. When identity is resolved. Then the request has no effect.
+    - Add ac-control-failure-no-success — Given lifecycle persistence fails. When the API responds. Then it does not report success.
+    - Add ac-cleanup-failure-no-success — Given stop cleanup fails. When the API responds. Then it does not report success.
+
+    ### Implementation
+
+    Apply only these nine payloads; preserve Elysia validation and all unlisted compatibility ACs.
+
+    ### Files
+
+    - Create: none.
+    - Modify: none.
+    - Tests: none.
+
+    ### Behavioral tests
+
+    Read back a nine-row table and verify ac-6 retains the full envelope instead of vague success text.
+
+    ### Verification
+
+    - kspec item get @daemon-agent-dispatch
+    - git diff --check
+
+    ### Reviewer handoff
+
+    Supply exact stored payloads and confirm no route/test edits.
+
+- title: Patch dispatch UI specs exactly
+  slug: task-patch-dispatch-ui-specs
+  priority: 1
+  spec_ref: "@ui-agent-dispatch"
+  tags: [dispatch, specs, ui]
+  description: |
+    ### Covers
+
+    - @ui-agent-dispatch ac-2, ac-status-projection, ac-status-active-work-visible, ac-status-queued-work-visible, ac-status-held-work-visible, ac-3, ac-stopped-actions-valid, ac-control-separated-from-degraded, ac-control-separated-from-blocked, ac-hard-stop-confirmation-cancellation, ac-hard-stop-confirmation-evidence, ac-hard-stop-confirmation-cancelled, ac-lifecycle-controls-labelled, ac-lifecycle-focus-retained, ac-lifecycle-live-update
+
+    ### Required context
+
+    Metadata only. AC wording stays product-facing and contains no component paths.
+
+    ### Deliverable
+
+    - Set ac-2 — Given lifecycle status is available. When the agents view renders. Then it shows durable authority.
+    - Add ac-status-projection — Given lifecycle status is available. When the agents view renders. Then it shows lifecycle projection.
+    - Add ac-status-active-work-visible — Given active work exists during draining or cleanup. When the agents view renders. Then active work remains visible.
+    - Add ac-status-queued-work-visible — Given queued work exists. When the agents view renders. Then queued work is visible.
+    - Add ac-status-held-work-visible — Given held work exists. When the agents view renders. Then held work is visible.
+    - Set ac-3 — Given global authority is paused. When the agents view renders. Then it offers only transitions valid from paused authority.
+    - Add ac-stopped-actions-valid — Given global authority is stopped. When the agents view renders. Then it offers only transitions valid from stopped authority.
+    - Add ac-control-separated-from-degraded — Given administrative lifecycle control and degraded state coexist. When the agents view renders. Then they are labelled separately.
+    - Add ac-control-separated-from-blocked — Given administrative lifecycle control and blocked state coexist. When the agents view renders. Then they are labelled separately.
+    - Add ac-hard-stop-confirmation-cancellation — Given a writable operator selects hard stop. When confirmation is shown. Then it explains active cancellation.
+    - Add ac-hard-stop-confirmation-evidence — Given a writable operator selects hard stop. When confirmation is shown. Then it explains evidence preservation.
+    - Add ac-hard-stop-confirmation-cancelled — Given hard-stop confirmation is shown. When the operator cancels it. Then no request is sent.
+    - Add ac-lifecycle-controls-labelled — Given lifecycle controls render. When assistive technology reads them. Then each control has an accessible label.
+    - Add ac-lifecycle-focus-retained — Given a lifecycle control initiated a refresh. When the refresh completes. Then focus returns to that control.
+    - Add ac-lifecycle-live-update — Given lifecycle status changes. When the view refreshes. Then a polite live status update is emitted.
+
+    ### Implementation
+
+    Apply and read back these fifteen payloads only.
+
+    ### Files
+
+    - Create: none.
+    - Modify: none.
+    - Tests: none.
+
+    ### Behavioral tests
+
+    Readback distinguishes authority/projection, three visibility cases, control states, confirmation, labels, focus, and live updates.
+
+    ### Verification
+
+    - kspec item get @ui-agent-dispatch
+    - git diff --check
+
+    ### Reviewer handoff
+
+    Supply fifteen exact rows and metadata-only confirmation.
+
+- title: Patch dispatch event payload specs exactly
+  slug: task-patch-dispatch-events-specs
+  priority: 1
+  spec_ref: "@dispatch-event-taxonomy"
+  tags: [dispatch, specs, events]
+  description: |
+    ### Covers
+
+    - @dispatch-event-taxonomy ac-dispatch-control-domain
+    - @dispatch-event-payload ac-dispatch-control-common-fields, ac-dispatch-control-task-identity, ac-dispatch-control-field-bounds, ac-dispatch-control-no-prompts, ac-dispatch-control-no-secrets, ac-dispatch-control-no-terminal-buffer, ac-dispatch-control-no-workspace-path, ac-dispatch-control-no-raw-input-error, ac-dispatch-control-error-codes, ac-dispatch-control-no-raw-error
+
+    ### Required context
+
+    Metadata only. The complete identifier, payload, sanitizer, and closed-code contract must appear here, not by reference to parent prose.
+
+    ### Deliverable
+
+    - Add @dispatch-event-taxonomy ac-dispatch-control-domain — Given a lifecycle outcome is emitted. When event type validation runs. Then the identifier is one of dispatch_control.start_applied, dispatch_control.pause_applied, dispatch_control.resume_applied, dispatch_control.stop_applied, dispatch_control.noop, or dispatch_control.failed.
+    - Add @dispatch-event-payload ac-dispatch-control-common-fields — Given a dispatch-control event is emitted. When its payload is read. Then it contains scope, action, authority, projection, outcome, reason, actor, source, timestamp; task scope contains canonical task_id and may contain task_ref; global scope contains neither; only failed outcomes contain error_code.
+    - Add ac-dispatch-control-task-identity — Given a task-scoped dispatch-control event is emitted. When its payload is read. Then canonical task identity is present.
+    - Add ac-dispatch-control-field-bounds — Given reason, actor, or task_ref exceeds its bound. When the payload is created. Then control characters are removed, whitespace is normalized, reason is at most 240 Unicode code points, actor 120, and task_ref 200.
+    - Add ac-dispatch-control-no-prompts — Given lifecycle event input contains a prompt. When the payload is created. Then the prompt is absent.
+    - Add ac-dispatch-control-no-secrets — Given lifecycle event input contains a secret. When the payload is created. Then the secret is absent.
+    - Add ac-dispatch-control-no-terminal-buffer — Given lifecycle event input contains terminal-buffer text. When the payload is created. Then terminal-buffer text is absent.
+    - Add ac-dispatch-control-no-workspace-path — Given lifecycle event input contains a workspace path. When the payload is created. Then the workspace path is absent.
+    - Add ac-dispatch-control-no-raw-input-error — Given lifecycle event input contains a raw error. When the payload is created. Then the raw error is absent.
+    - Add ac-dispatch-control-error-codes — Given a dispatch-control failure is emitted. When payload validation runs. Then error_code is exactly validation_failed, task_not_found, task_identity_ambiguous, task_identity_mismatch, invalid_transition, control_store_unavailable, control_store_corrupt, control_commit_failed, cancellation_timeout, cancellation_failed, session_closure_failed, cleanup_ownership_mismatch, cleanup_process_birth_mismatch, cleanup_leader_missing_group_alive, cleanup_identity_unverifiable, cleanup_group_unverifiable, or internal_error; every other string is rejected.
+    - Add ac-dispatch-control-no-raw-error — Given a dispatch-control failure is emitted. When its payload is read. Then no raw error is present.
+
+    ### Implementation
+
+    Add each AC to the stated owner; do not change product code.
+
+    ### Files
+
+    - Create: none.
+    - Modify: none.
+    - Tests: none.
+
+    ### Behavioral tests
+
+    Nonmutating readback covers six identifiers, presence rules, exact bounds, five forbidden classes, and all 17 codes.
+
+    ### Verification
+
+    - kspec item get @dispatch-event-taxonomy
+    - kspec item get @dispatch-event-payload
+    - git diff --check
+
+    ### Reviewer handoff
+
+    Supply enum/bounds and eleven-payload readbacks.
+
+- title: Patch dispatch workspace cleanup spec exactly
+  slug: task-patch-dispatch-workspace-cleanup-spec
+  priority: 1
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  tags: [dispatch, specs, cleanup]
+  description: |
+    ### Covers
+
+    - @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected
+
+    ### Required context
+
+    Metadata only; cleanup code follows in its own task.
+
+    ### Deliverable
+
+    Add ac-controlled-evidence-protected — Given dispatch evidence belongs to active, in-flight, paused-held, or stopped-pending-cleanup work. When a destructive cleanup surface evaluates it. Then lifecycle control alone does not make the evidence cleanup-eligible.
+
+    ### Implementation
+
+    Add the one AC, preserve all existing cleanup policy, then read it back.
+
+    ### Files
+
+    - Create: none.
+    - Modify: none.
+    - Tests: none.
+
+    ### Behavioral tests
+
+    Readback distinguishes lifecycle protection from terminal/integration eligibility.
+
+    ### Verification
+
+    - kspec item get @dispatch-workspace-cleanup-policy
+    - git diff --check
+
+    ### Reviewer handoff
+
+    Provide the complete payload and metadata-only confirmation.
+
+- title: Define durable dispatch control persistence and committed publication
   slug: task-dispatch-control-persistence
   priority: 1
-  spec_ref: '@dispatch-lifecycle-control-authority'
+  spec_ref: "@dispatch-lifecycle-control-authority"
   depends_on:
-  - '@task-patch-dispatch-lifecycle-specs'
-  tags:
-  - dispatch
-  - schema
-  - persistence
+    - "@task-patch-dispatch-engine-coalescing-specs"
+  tags: [dispatch, persistence, schema]
   description: |
     ### Covers
 
-    - `ac-task-control-uses-canonical-identity` — primary behavioral closure for this task.
-    - `ac-uncommitted-control-is-not-visible` — primary behavioral closure for this task.
-    - `ac-failed-control-write-is-not-visible` — primary behavioral closure for this task.
-    - `ac-stale-control-is-not-visible` — primary behavioral closure for this task.
-    - `ac-invalid-control-is-not-visible` — primary behavioral closure for this task.
-    - `ac-external-commit-is-eventually-visible` — primary behavioral closure for this task.
-    - `ac-controls-do-not-change-readiness` — primary behavioral closure for this task.
-    - `ac-controls-do-not-change-degraded-targets` — primary behavioral closure for this task.
+    - ac-task-control-uses-canonical-identity
+    - ac-controls-survive-restart
+    - ac-uncommitted-control-is-not-visible
+    - ac-failed-control-write-is-not-visible
+    - ac-stale-control-is-not-visible
+    - ac-invalid-control-is-not-visible
+    - ac-external-commit-is-eventually-visible
+    - ac-controls-do-not-change-readiness
+    - ac-controls-do-not-change-degraded-targets
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** Durable source of truth and recovery.
-    - **Plan decision:** `src/parser/yaml.ts`.
-    - **Plan decision:** dispatch shadow mutation discipline in `src/agent-runtime/workspace.ts`.
-    - **Plan decision:** `src/agent-runtime/task-identity.ts`.
-    - **Architecture boundary:** Keep parser writes, shadow commit, committed-object verification, and in-memory publication as separate ordered stages. The shadow transaction owns the exported project lock; the parser never commits; the store publishes only `{revision,commit_oid}` verified from `git show`. Missing legacy state yields stopped. Watcher delivery must coalesce pre-commit events without losing a later valid external commit.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    The canonical document is .kspec/dispatch-control.yaml: version 1, nonnegative monotonic revision, global authority stopped/running/paused, task records keyed only by canonical ULID, and pending_cleanup keyed by global/task ULID. Its published token is revision plus the shadow HEAD commit oid. src/schema/dispatch-control.ts owns Zod shape; src/parser/dispatch-control.ts owns parse/atomic replace; src/agent-runtime/dispatch-shadow-transaction.ts owns commit; src/agent-runtime/dispatch-control-store.ts owns memory publication.
 
-    ### What
+    ### Deliverable
 
-    Implement the durable version-1 control document, committed-object transaction, validated snapshot store, watcher reload, and cache publication boundary. Do not add scheduling behavior.
+    A store that only publishes a byte-for-byte parsed dispatch-control.yaml from a verified committed Git object. Missing file is stopped/no controls; corruption never defaults to running.
 
-    **Boundary:** Implement version-1 `.kspec/dispatch-control.yaml` and its single parser/store authority exactly as frozen above.
+    ### Implementation
 
-    ### Why
-
-    Every engine, API, and UI slice depends on one authority that never publishes dirty or failed bytes and never defaults corruption to running. No other slice can safely infer persistence, migration, locking, watcher, or corruption behavior.
-
-    ### How
-
-    1. Keep parser writes, shadow commit, committed-object verification, and in-memory publication as separate ordered stages. The shadow transaction owns the exported project lock; the parser never commits; the store publishes only `{revision,commit_oid}` verified from `git show`. Missing legacy state yields stopped. Watcher delivery must coalesce pre-commit events without losing a later valid external commit.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Use acquireFileLock and getDispatchShadowMutationLockPath, never private withDispatchShadowMutationLock. Acquire shadow lock before parser file locks; no engine/process/session wait may occur while locked. Capture pre_head, reclaim dirty state with rollbackDirtyShadowWorktree, write atomically, call commitIfShadow once, then verify git show HEAD:dispatch-control.yaml parses to the proposed snapshot. False/throw/verification failure resets to pre_head and reloads/publishes only its valid snapshot. project-context records watcher event/observed HEAD but never watcher content; reloadCommitted rereads git show HEAD under the same lock, retains one coalesced pre-commit event reread, publishes a newer valid head once, and suppresses self-event duplicates. entity-cache invalidates only after publication.
 
     ### Files
 
-    #### Create
+    - Create: src/schema/dispatch-control.ts
+    - Create: src/parser/dispatch-control.ts
+    - Create: src/agent-runtime/dispatch-shadow-transaction.ts
+    - Create: src/agent-runtime/dispatch-control-store.ts
+    - Create: tests/dispatch-control-store.test.ts
+    - Modify: src/schema/index.ts
+    - Modify: src/parser/index.ts
+    - Modify: src/parser/file-lock.ts
+    - Modify: src/agent-runtime/workspace.ts
+    - Modify: packages/daemon/src/project-context.ts
+    - Modify: src/daemon/entity-cache.ts
+    - Modify: tests/daemon-entity-cache.test.ts
+    - Modify: tests/daemon-watcher-chokidar.test.ts
 
-    - `src/schema/dispatch-control.ts`
-    - `src/parser/dispatch-control.ts`
-    - `src/agent-runtime/dispatch-shadow-transaction.ts`
-    - `src/agent-runtime/dispatch-control-store.ts`
-    - `tests/dispatch-control-store.test.ts`
+    ### Behavioral tests
 
-    #### Modify
-
-    - `src/schema/index.ts`
-    - `src/parser/index.ts`
-    - `src/parser/file-lock.ts`
-    - `src/agent-runtime/workspace.ts`
-    - `packages/daemon/src/project-context.ts`
-    - `packages/daemon/src/server.ts`
-    - `src/daemon/entity-cache.ts`
-
-    #### Tests
-
-    - `tests/daemon-entity-cache.test.ts`
-    - `tests/daemon-watcher-chokidar.test.ts`
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - missing/version1/unknown/malformed.
-    - monotonic revision and canonical convergence/mismatch.
-    - repeated identical record mutation creates no second revision/commit while distinct mutations each create one revision/commit.
-    - atomic failure/lock concurrency.
-    - deterministic watcher-before-external-commit, watcher-before-abort, watcher-before-rollback, commit-before-watcher, duplicate self event, external committed update, dirty external write, ordinary commit false/throw, post-commit verification failure, stale/malformed revision, and force-reclaim rollback.
-    - assert prior snapshot/cache remains, no uncommitted bytes publish, and every valid external committed HEAD is eventually delivered once.
-    - no readiness/degraded mutation.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Test missing/version-1/unknown/malformed, canonical keys, monotonic revisions, commit false/throw, verification rollback, and force reclaim. Use barriers for watcher-before-external-commit/abort/rollback, commit-before-watcher, self duplicate, dirty write, stale/malformed commit, and valid external commit; every valid newer committed head publishes once and no dirty bytes publish.
 
     ### Verification
 
-    - Run `npm test -- tests/dispatch-control-store.test.ts tests/daemon-entity-cache.test.ts tests/daemon-watcher-chokidar.test.ts` and expect exit 0 with every named suite passing.
-    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
-    - Run `npm run lint.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/dispatch-control-store.test.ts tests/daemon-entity-cache.test.ts tests/daemon-watcher-chokidar.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave persisted fixture, migration/corruption matrix, lock evidence.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
-- title: Implement global start pause resume authority
+    Supply commit/rollback, lock-order, and watcher barrier tables. State that scheduling/cancellation are not owned here.
+
+- title: Implement global lifecycle authority and coalesced reconstruction
   slug: task-engine-global-lifecycle
   priority: 1
-  spec_ref: '@dispatch-lifecycle-control-authority'
+  spec_ref: "@dispatch-lifecycle-control-authority"
   depends_on:
-  - '@task-dispatch-control-persistence'
-  tags:
-  - dispatch
-  - engine
+    - "@task-dispatch-control-persistence"
+  tags: [dispatch, engine, lifecycle]
   description: |
     ### Covers
 
-    - `ac-global-pause-authority` — primary behavioral closure for this task.
-    - `ac-global-paused-work-does-not-start` — primary behavioral closure for this task.
-    - `ac-resume-reconciles-held-work` — primary behavioral closure for this task.
-    - `ac-resume-reconciles-eligible-work` — primary behavioral closure for this task.
-    - `ac-repeated-resume-does-not-duplicate` — primary behavioral closure for this task.
-    - `ac-concurrent-resume-does-not-duplicate` — primary behavioral closure for this task.
-    - `ac-paused-reconstruction-uses-current-state` — primary behavioral closure for this task.
-    - `ac-stopped-reconstruction-uses-current-state` — primary behavioral closure for this task.
-    - `ac-global-start-is-idempotent` — primary behavioral closure for this task.
-    - `ac-global-pause-is-idempotent` — primary behavioral closure for this task.
-    - `ac-global-resume-is-idempotent` — primary behavioral closure for this task.
-    - @agent-dispatch-engine ac-resume-current-task-state.
-    - `ac-resume-current-dispatch-rules` — primary behavioral closure for this task.
-    - `ac-controls-survive-restart` — primary behavioral closure for this task.
-    - `ac-global-pause-allows-active-completion` — primary behavioral closure for this task.
-    - `ac-global-pause-keeps-active-session-open` — primary behavioral closure for this task.
+    - ac-global-pause-authority
+    - ac-global-paused-work-does-not-start
+    - ac-global-pause-allows-active-completion
+    - ac-global-pause-keeps-active-session-open
+    - ac-resume-reconciles-held-work
+    - ac-resume-reconciles-eligible-work
+    - ac-repeated-resume-does-not-duplicate
+    - ac-concurrent-resume-does-not-duplicate
+    - ac-paused-reconstruction-uses-current-state
+    - ac-stopped-reconstruction-uses-current-state
+    - ac-global-start-is-idempotent
+    - ac-global-pause-is-idempotent
+    - ac-global-resume-is-idempotent
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** global matrix, queue/recovery contract.
-    - **Plan decision:** @per-task-dispatch-drain-coalescing.
-    - **Architecture boundary:** Wire the store into every global scheduling ingress: startup bootstrap, events, watcher reconciliation, retries, post-invocation reconciliation, coalescing, and degraded recovery. Reconstruct from current authoritative task/rule state; historical FIFO and retry deadlines are intentionally outside the contract. Recheck dedupe by canonical task identity.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Start leaves stopped; resume leaves paused; invalid transitions are not substitutions. Pause blocks starts but lets active work/session finish. Stop admission/cancellation belongs later.
 
-    ### What
+    ### Deliverable
 
-    Implement global start, pause, and resume behavior after the durable store exists. This task owns global scheduling semantics but no task-scoped pause and no hard-stop cancellation.
+    Apply authority at bootstrap, events, coalescing, retries, reconciliation, post-invocation, and degraded recovery; reconstruct current task/rule state with canonical dedupe.
 
-    **Boundary:** Apply the complete global start/pause/resume matrix, startup loading, held/coalesced intent, and current-state reconstruction.
+    ### Implementation
 
-    ### Why
-
-    Global authority must be loaded before bootstrap, and start/resume must retain distinct transition semantics while pause drains existing work. Start and resume must not be interchangeable and pause must not clear evidence or active sessions.
-
-    ### How
-
-    1. Wire the store into every global scheduling ingress: startup bootstrap, events, watcher reconciliation, retries, post-invocation reconciliation, coalescing, and degraded recovery. Reconstruct from current authoritative task/rule state; historical FIFO and retry deadlines are intentionally outside the contract. Recheck dedupe by canonical task identity.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Load authority before bootstrap. Running accepts/coalesces intent; paused holds it; stopped starts none. Start/resume rebuild current candidates and dedupe active/queued canonical task ids. Serialize drain/reconcile work. Do not replay historical FIFO/retry deadlines and do not implement hard stop.
 
     ### Files
 
-    #### Create
+    - Create: tests/dispatch-global-lifecycle.test.ts
+    - Modify: src/agent-runtime/dispatch.ts
+    - Modify: src/agent-runtime/bootstrap.ts
+    - Modify: tests/agent-dispatch-engine.test.ts
+    - Modify: tests/dispatch-runtime-bootstrap-contract.test.ts
 
-    - `tests/dispatch-global-lifecycle.test.ts`
+    ### Behavioral tests
 
-    #### Modify
-
-    - `src/agent-runtime/dispatch.ts`
-
-    #### Tests
-
-    - `tests/agent-dispatch-engine.test.ts`
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - every start/pause/resume matrix cell.
-    - repeated and concurrent start/pause/resume prove one action-side-effect sequence at this dependency point.
-    - daemon startup stopped/paused/running.
-    - held count coalescing.
-    - no active cancellation on pause.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Cover all start/pause/resume matrix cells, three startup authorities, all ingress, held work, active natural completion/open session, changed current task/rule state, and repeated/concurrent dedupe with barriers.
 
     ### Verification
 
-    - Run `npm test -- tests/agent-dispatch-engine.test.ts tests/dispatch-global-lifecycle.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts` and expect exit 0 with every named suite passing.
-    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
-    - Run `lint.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/dispatch-global-lifecycle.test.ts tests/agent-dispatch-engine.test.ts tests/dispatch-runtime-bootstrap-contract.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave matrix-to-test table and scheduling-ingress inventory.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
+    Provide matrix/ingress evidence; task scope, final gate, and cancellation remain later work.
+
 - title: Enforce canonical task pause and resume
   slug: task-engine-task-pause-resume
   priority: 2
-  spec_ref: '@dispatch-lifecycle-control-authority'
+  spec_ref: "@dispatch-lifecycle-control-authority"
   depends_on:
-  - '@task-engine-global-lifecycle'
-  tags:
-  - dispatch
-  - tasks
+    - "@task-engine-global-lifecycle"
+  tags: [dispatch, engine, tasks]
   description: |
     ### Covers
 
-    - `ac-task-paused-work-does-not-start` — primary behavioral closure for this task.
-    - `ac-task-control-preserves-unrelated-task-control` — primary behavioral closure for this task.
-    - `ac-task-control-preserves-global-authority` — primary behavioral closure for this task.
-    - `ac-task-resume-obeys-global-authority` — primary behavioral closure for this task.
-    - `ac-task-pause-is-idempotent` — primary behavioral closure for this task.
-    - `ac-task-resume-is-idempotent` — primary behavioral closure for this task.
-    - `ac-task-pause-allows-active-completion` — primary behavioral closure for this task.
-    - `ac-task-pause-keeps-active-session-open` — primary behavioral closure for this task.
+    - ac-task-paused-work-does-not-start
+    - ac-task-pause-allows-active-completion
+    - ac-task-pause-keeps-active-session-open
+    - ac-task-control-preserves-unrelated-task-control
+    - ac-task-control-preserves-global-authority
+    - ac-task-resume-obeys-global-authority
+    - ac-task-pause-is-idempotent
+    - ac-task-resume-is-idempotent
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** task matrix.
-    - **Plan decision:** `src/agent-runtime/task-identity.ts`.
-    - **Plan decision:** current dedupe/exclusivity.
-    - **Architecture boundary:** Resolve refs to canonical ULIDs before reading/writing controls. Apply task holds at enqueue, dequeue/retry, reconciliation, watcher/event, and post-invocation paths. Active task work finishes naturally and its session remains open. Resume reevaluates current state but cannot bypass global paused/stopped authority.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Absent task record means running subject to global. Pause absent creates paused; pause paused is no-op; pause stopped is invalid. Resume removes paused/stopped; resume absent is no-op. Identity is canonical ULID, never a slug alias.
 
-    ### What
+    ### Deliverable
 
-    Add canonical-task pause and resume across every scheduling ingress while preserving global authority and unrelated tasks.
+    Task scope applies at every scheduling ingress without changing another task/global authority.
 
-    **Boundary:** Apply task pause/resume at every scheduling path using canonical identity.
+    ### Implementation
 
-    ### Why
-
-    A slug-keyed or single-ingress implementation can leak work or let one task control another. A path-specific or slug-keyed hold can leak starts or block another task.
-
-    ### How
-
-    1. Resolve refs to canonical ULIDs before reading/writing controls. Apply task holds at enqueue, dequeue/retry, reconciliation, watcher/event, and post-invocation paths. Active task work finishes naturally and its session remains open. Resume reevaluates current state but cannot bypass global paused/stopped authority.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Resolve identity before control lookup/write; apply at enqueue, coalesced expiry, dequeue/retry, bootstrap/reconcile, event/watcher, and post-invocation. Held task work resumes from current state only if global authority permits it; active task work/session completes naturally.
 
     ### Files
 
-    #### Create
+    - Create: tests/dispatch-task-lifecycle.test.ts
+    - Modify: src/agent-runtime/dispatch.ts
+    - Modify: src/agent-runtime/task-identity.ts
+    - Modify: tests/dispatch-canonical-task-identity-integration.test.ts
+    - Modify: tests/dispatch-task-identity.test.ts
 
-    - `tests/dispatch-task-lifecycle.test.ts`
+    ### Behavioral tests
 
-    #### Modify
-
-    - `src/agent-runtime/dispatch.ts`
-
-    #### Tests
-
-    - Colocated focused tests named in **Required tests**.
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - task A/B isolation.
-    - slug/ULID convergence.
-    - every ingress.
-    - repeated/concurrent task pause and resume prove one action-side-effect sequence.
-    - resume under global pause/stop.
-    - coalesced held counts.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Use A/B and slug/ULID fixtures across every ingress, repeated/concurrent pause/resume, global paused/stopped, active session completion, and unrelated controls.
 
     ### Verification
 
-    - Run `npm test -- tests/dispatch-task-lifecycle.test.ts tests/dispatch-canonical-task-identity-integration.test.ts` and expect exit 0 with every named suite passing.
-    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
-    - Run `lint.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/dispatch-task-lifecycle.test.ts tests/dispatch-canonical-task-identity-integration.test.ts tests/dispatch-task-identity.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave canonical identity and ingress matrices.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
-- title: Add final pre-spawn lifecycle gate
+    Provide A/B ingress and canonicalization evidence; hard stop is excluded.
+
+- title: Add final ordered lifecycle gate before creation
   slug: task-final-pre-spawn-control-gate
   priority: 2
-  spec_ref: '@dispatch-lifecycle-control-authority'
+  spec_ref: "@dispatch-lifecycle-control-authority"
   depends_on:
-  - '@task-engine-task-pause-resume'
-  tags:
-  - dispatch
-  - race
+    - "@task-engine-task-pause-resume"
+  tags: [dispatch, race, engine]
   description: |
     ### Covers
 
-    - `ac-final-gate-prevents-process-creation` — primary behavioral closure for this task.
-    - `ac-final-gate-prevents-session-creation` — primary behavioral closure for this task.
-    - `ac-spawn-win-pause-allows-completion` — primary behavioral closure for this task.
-    - @agent-dispatch-engine ac-final-gate-global-control.
-    - `ac-final-gate-task-control` — primary behavioral closure for this task.
-    - `ac-pause-active-natural-completion` — primary behavioral closure for this task.
-    - `ac-pause-does-not-close-session` — primary behavioral closure for this task.
+    - ac-final-gate-prevents-process-creation
+    - ac-final-gate-prevents-session-creation
+    - ac-spawn-win-pause-allows-completion
+    - ac-spawn-win-stop-cancels-invocation
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** race contract.
-    - **Plan decision:** `_spawnInvocation`/`runInvocation`/SessionRegistry current boundaries.
-    - **Architecture boundary:** Place a deterministic barrier at the actual irreversible boundary shared by `_spawnInvocation`, `runInvocation`, and session creation. A pause winner restores held intent once; a stop winner discards it before artifacts exist. A spawn winner becomes active and exposes ownership for the later hard-stop task.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Queue checks cannot close the dequeue-to-create race. The gate is immediately before shared process/session creation; control winner creates neither, spawn winner becomes durable active ownership.
 
-    ### What
+    ### Deliverable
 
-    Add one ordered global-and-task authority gate immediately before the first process or session creation. Return a durable ownership handoff when creation wins; do not implement cancellation.
+    One deterministic final global/task check returning held, discarded, or active ownership handoff.
 
-    **Boundary:** Add the last global-and-task authority check before the first process/session creation boundary and classify the ordering winner.
+    ### Implementation
 
-    ### Why
-
-    Earlier queue checks cannot close the dequeue-to-spawn race. Enqueue checks leave a dequeue-to-spawn race.
-
-    ### How
-
-    1. Place a deterministic barrier at the actual irreversible boundary shared by `_spawnInvocation`, `runInvocation`, and session creation. A pause winner restores held intent once; a stop winner discards it before artifacts exist. A spawn winner becomes active and exposes ownership for the later hard-stop task.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Put the gate in the common invocation path. Pause winning restores held intent once; stop winning discards pre-artifact; spawn winning publishes the in-flight/active handoff for recovery. Use no timing-based ordering.
 
     ### Files
 
-    #### Create
+    - Create: tests/dispatch-spawn-control-race.test.ts
+    - Modify: src/agent-runtime/dispatch.ts
+    - Modify: src/agent-runtime/invocation.ts
+    - Modify: tests/dispatch-artifact-protection.test.ts
 
-    - `tests/dispatch-spawn-control-race.test.ts`
+    ### Behavioral tests
 
-    #### Modify
-
-    - `src/agent-runtime/dispatch.ts`
-    - `src/agent-runtime/invocation.ts`
-
-    #### Tests
-
-    - `tests/dispatch-artifact-protection.test.ts`
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - barrier-controlled global/task pause and stop before gate.
-    - spawn-before-pause natural completion.
-    - spawn-before-stop ownership handoff only.
-    - no timing sleeps.
-    - no protection gap.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Barrier global/task pause and stop before creation; assert zero process/session creations on control win, one durable handoff on spawn win, and no protection gap.
 
     ### Verification
 
-    - Run `npm test -- tests/dispatch-spawn-control-race.test.ts tests/dispatch-artifact-protection.test.ts` and expect exit 0 with every named suite passing.
-    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
-    - Run `npm run lint.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/dispatch-spawn-control-race.test.ts tests/dispatch-artifact-protection.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave exact irreversible boundary, ownership handoff, and deterministic traces.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
-- title: Implement recoverable global hard stop
-  slug: task-engine-global-hard-stop
+    Provide boundary location and four barrier traces; no cancellation claim.
+
+- title: Implement verified stop recovery for global and task scopes
+  slug: task-engine-stop-recovery
   priority: 2
-  spec_ref: '@dispatch-lifecycle-control-authority'
+  spec_ref: "@dispatch-lifecycle-control-authority"
   depends_on:
-  - '@task-final-pre-spawn-control-gate'
-  tags:
-  - dispatch
-  - cancellation
+    - "@task-final-pre-spawn-control-gate"
+  tags: [dispatch, recovery, cancellation]
   description: |
     ### Covers
 
-    - `ac-stop-forbids-new-starts` — primary behavioral closure for this task.
-    - `ac-stop-cancels-active-work` — primary behavioral closure for this task.
-    - `ac-stop-closes-active-sessions` — primary behavioral closure for this task.
-    - `ac-stop-failure-retains-stopped-authority` — primary behavioral closure for this task.
-    - `ac-stop-failure-reports-pending-cleanup` — primary behavioral closure for this task.
-    - `ac-stop-failure-reports-no-success` — primary behavioral closure for this task.
-    - `ac-interrupted-stop-recovers-on-startup` — primary behavioral closure for this task.
-    - `ac-interrupted-stop-recovers-on-retry` — primary behavioral closure for this task.
-    - `ac-recovery-requires-session-ownership` — primary behavioral closure for this task.
-    - `ac-recovery-requires-process-birth` — primary behavioral closure for this task.
-    - `ac-missing-leader-live-group-remains-pending` — primary behavioral closure for this task.
-    - `ac-unverified-live-group-is-not-signalled` — primary behavioral closure for this task.
-    - `ac-live-group-prevents-cleanup-completion` — primary behavioral closure for this task.
-    - `ac-spawn-win-stop-cancels-invocation` — primary behavioral closure for this task.
-    - `ac-global-stop-is-idempotent` — primary behavioral closure for this task.
-    - @agent-dispatch-engine ac-11.
-    - @per-task-dispatch-drain-coalescing ac-5.
-    - `ac-stop-prevents-pending-drain-start` — primary behavioral closure for this task.
-    - `ac-stop-cancels-active-invocation` — primary behavioral closure for this task.
+    - ac-stop-forbids-new-starts
+    - ac-stop-cancels-active-work
+    - ac-stop-closes-active-sessions
+    - ac-task-stop-cancels-matching-work
+    - ac-task-stop-preserves-unrelated-invocations
+    - ac-task-stop-closes-matching-session
+    - ac-task-stop-preserves-unrelated-sessions
+    - ac-task-stop-failure-retains-stopped-authority
+    - ac-task-stop-failure-reports-pending-cleanup
+    - ac-task-stop-failure-reports-no-success
+    - ac-task-interrupted-stop-recovers-on-startup
+    - ac-task-interrupted-stop-recovers-on-retry
+    - ac-recovery-requires-session-ownership
+    - ac-recovery-requires-process-birth
+    - ac-missing-leader-live-group-remains-pending
+    - ac-unverified-live-group-is-not-signalled
+    - ac-live-group-prevents-cleanup-completion
+    - ac-stop-failure-retains-stopped-authority
+    - ac-stop-failure-reports-pending-cleanup
+    - ac-stop-failure-reports-no-success
+    - ac-interrupted-stop-recovers-on-startup
+    - ac-interrupted-stop-recovers-on-retry
+    - ac-global-stop-is-idempotent
+    - ac-task-stop-is-idempotent
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** durable ownership/recovery contract.
-    - **Plan decision:** current DispatchEngine.stop, SessionRegistry.closeAll, and session metadata store.
-    - **Architecture boundary:** Persist ownership before active publication, including daemon owner, invocation/session/task/agent/adapter tuple, leader birth token, PGID, and captured group-member proofs. Commit stopped plus `owned` cleanup before signalling. Revalidate ownership and Linux `/proc` birth/group evidence before and after signals. Advance phases only after proven group exit and durable session closure; otherwise remain stopped with cleanup pending.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Durable session dispatch_ownership contains invocation_id, session_id, task_id nullable, agent_id, adapter, owner_instance_id, pid nullable, pgid nullable, process_start_ticks nullable, process_identity_platform linux_proc_stat_v1/unverifiable, captured_at, exited_at optional, and immutable group_members pid/start-ticks proofs. Start ticks are Linux /proc/<pid>/stat field 22 after the final right parenthesis. pending_cleanup has cleanup_id, scope, optional canonical task_id, phase owned/signals_sent/sessions_closed, immutable targets, and project-relative session metadata paths.
 
-    ### What
+    ### Deliverable
 
-    Implement global commit-first hard stop, durable process-group ownership, cancellation, session closure, phase recovery, and graceful-shutdown reuse.
+    Commit-first hard stop/recovery for both scopes: stopped commits before signal, verified ownership is required for every signal, cleanup is removed only after group exit and durable session closure.
 
-    **Boundary:** Implement commit-first global stop, crash-safe ownership, verified cancellation, session closure, shutdown reuse, and recovery.
+    ### Implementation
 
-    ### Why
-
-    A crash after committing stopped authority must neither reopen dispatch nor signal an unrelated or PID-reused process. Failure after authority commit must not reopen dispatch or signal a reused/unowned process.
-
-    ### How
-
-    1. Persist ownership before active publication, including daemon owner, invocation/session/task/agent/adapter tuple, leader birth token, PGID, and captured group-member proofs. Commit stopped plus `owned` cleanup before signalling. Revalidate ownership and Linux `/proc` birth/group evidence before and after signals. Advance phases only after proven group exit and durable session closure; otherwise remain stopped with cleanup pending.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Persist null ownership before spawn then PID/PGID/birth/member proof before active publication; failed post-spawn durability cancels/reaps directly. Re-read tuple before signal: tuple mismatch is cleanup_ownership_mismatch, birth/PID reuse is cleanup_process_birth_mismatch, unreadable evidence is cleanup_identity_unverifiable. Missing leader is not not_found until recorded PGID is proven empty. Linux group signal requires enumerating /proc numeric stats and a matching immutable member proof; live verified leaderless group is cleanup_leader_missing_group_alive, live unproven/unsupported group is cleanup_group_unverifiable. PID/PGID alone never proves ownership. Advance owned to signals_sent only after every leader/PGID is proven exited; close via src/sessions/store.ts, then sessions_closed/remove. Timeout, signal/close failure, mismatch, or live/unverifiable group remains stopped/pending. Global selects all; task selects matching canonical id and preserves unrelated active/queued/retry/session/control/cleanup state.
 
     ### Files
 
-    #### Create
+    - Create: tests/dispatch-stop-recovery.test.ts
+    - Modify: src/agent-runtime/dispatch.ts
+    - Modify: src/agent-runtime/invocation.ts
+    - Modify: src/agent-runtime/session-registry.ts
+    - Modify: src/agent-runtime/bootstrap.ts
+    - Modify: src/sessions/types.ts
+    - Modify: src/sessions/store.ts
+    - Modify: tests/active-session-registry.test.ts
+    - Modify: tests/agent-dispatch-engine.test.ts
+    - Modify: tests/dispatch-spawn-control-race.test.ts
 
-    - `tests/dispatch-stop-recovery.test.ts`
+    ### Behavioral tests
 
-    #### Modify
-
-    - `src/agent-runtime/dispatch.ts`
-    - `src/agent-runtime/invocation.ts`
-    - `src/agent-runtime/session-registry.ts`
-    - `src/sessions/types.ts`
-    - `src/sessions/store.ts`
-    - `packages/daemon/src/routes/agent-dispatch.ts`
-
-    #### Tests
-
-    - `tests/agent-dispatch-engine.test.ts`
-    - `tests/active-session-registry.test.ts`
-    - `tests/dispatch-spawn-control-race.test.ts`
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - pre/post-spawn ownership persistence failure.
-    - matching Linux birth token.
-    - absent leader plus empty group.
-    - PID/start-time reuse.
-    - each adapter/session/task/owner tuple mismatch.
-    - unreadable `/proc`.
-    - unsupported platform.
-    - absent leader with surviving strongly verified group.
-    - absent leader with surviving unverifiable group.
-    - no cleanup completion while any group lives.
-    - cancellation timeout/failure.
-    - closure failure.
-    - crash after every phase.
-    - startup recovery.
-    - repeated/concurrent global stop proves one stop-side-effect sequence plus cleanup retry.
-    - no signal for unverifiable targets.
-    - no false success.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Cover durability failure, tuple/PID reuse, unreadable proc, unsupported platform, leaderless empty/verified-live/unverifiable-live groups, timeout/signal/close failure, every phase crash/restart, global and A/B task scope, repeated/concurrent stop, and graceful shutdown. No live group may complete cleanup; no failure returns stop success.
 
     ### Verification
 
-    - Run `npm test -- tests/dispatch-stop-recovery.test.ts tests/dispatch-spawn-control-race.test.ts tests/active-session-registry.test.ts tests/agent-dispatch-engine.test.ts` and expect exit 0 with every named suite passing.
-    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
-    - Run `npm run lint.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/dispatch-stop-recovery.test.ts tests/dispatch-spawn-control-race.test.ts tests/active-session-registry.test.ts tests/agent-dispatch-engine.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave session schema diff, process-identity decision table, signal trace, and cleanup fault results.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
-- title: Implement recoverable targeted task hard stop
-  slug: task-engine-task-hard-stop
-  priority: 2
-  spec_ref: '@dispatch-lifecycle-control-authority'
-  depends_on:
-  - '@task-engine-task-pause-resume'
-  - '@task-engine-global-hard-stop'
-  tags:
-  - dispatch
-  - cancellation
-  - tasks
-  description: |
-    ### Covers
+    Provide ownership schema, phase table, Linux proof matrix, and A/B recovery traces.
 
-    - `ac-task-stop-cancels-matching-work` — primary behavioral closure for this task.
-    - `ac-task-stop-preserves-unrelated-invocations` — primary behavioral closure for this task.
-    - `ac-task-stop-closes-matching-session` — primary behavioral closure for this task.
-    - `ac-task-stop-preserves-unrelated-sessions` — primary behavioral closure for this task.
-    - `ac-task-stop-failure-retains-stopped-authority` — primary behavioral closure for this task.
-    - `ac-task-stop-failure-reports-pending-cleanup` — primary behavioral closure for this task.
-    - `ac-task-stop-failure-reports-no-success` — primary behavioral closure for this task.
-    - `ac-task-interrupted-stop-recovers-on-startup` — primary behavioral closure for this task.
-    - `ac-task-interrupted-stop-recovers-on-retry` — primary behavioral closure for this task.
-    - `ac-task-stop-is-idempotent` — primary behavioral closure for this task.
-
-    ### Resources / Required context
-
-    - **Plan decision:** task matrix/recovery.
-    - **Plan decision:** active invocation detail.
-    - **Plan decision:** SessionRegistry.
-    - **Architecture boundary:** Select targets only from durable canonical-task ownership. Commit the task stopped record and its immutable cleanup targets first. Remove matching queued/retry/coalesced intent only; close matching sessions only. Retry the same cleanup record after interruption, and let resume reconstruct current eligible state subject to global authority.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
-
-    ### What
-
-    Reuse the verified hard-stop mechanism for one canonical task while leaving every unrelated invocation, queue entry, retry, session, and control untouched.
-
-    **Boundary:** Stop one canonical task without disturbing unrelated work.
-
-    ### Why
-
-    Global `closeAll` and alias-based matching violate task isolation. Global closeAll or ref aliases violate task isolation.
-
-    ### How
-
-    1. Select targets only from durable canonical-task ownership. Commit the task stopped record and its immutable cleanup targets first. Remove matching queued/retry/coalesced intent only; close matching sessions only. Retry the same cleanup record after interruption, and let resume reconstruct current eligible state subject to global authority.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
-
-    ### Files
-
-    #### Create
-
-    - None.
-
-    #### Modify
-
-    - `src/agent-runtime/dispatch.ts`
-    - `src/agent-runtime/session-registry.ts`
-    - `src/sessions/types.ts`
-    - `src/sessions/store.ts`
-    - `@task-engine-task-pause-resume`
-
-    #### Tests
-
-    - `tests/active-session-registry.test.ts`
-    - `tests/dispatch-stop-recovery.test.ts`
-    - `tests/dispatch-task-lifecycle.test.ts`
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - A/B active and queued isolation.
-    - partial failure/restart recovery.
-    - repeated/concurrent task stop proves one task-stop side-effect sequence plus cleanup retry.
-    - evidence retained.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
-
-    ### Verification
-
-    - Run `npm test -- tests/dispatch-task-lifecycle.test.ts tests/active-session-registry.test.ts tests/dispatch-stop-recovery.test.ts` and expect exit 0 with every named suite passing.
-    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
-    - Run `lint.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
-
-    ### Review handoff
-
-    - Leave targeted ownership proof and unrelated-session assertions.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
 - title: Protect controlled dispatch evidence from cleanup
-  slug: task-protect-held-dispatch-evidence
+  slug: task-protect-controlled-dispatch-evidence
   priority: 2
-  spec_ref: '@dispatch-workspace-cleanup-policy'
+  spec_ref: "@dispatch-workspace-cleanup-policy"
   depends_on:
-  - '@task-engine-task-hard-stop'
-  tags:
-  - dispatch
-  - cleanup
+    - "@task-patch-dispatch-workspace-cleanup-spec"
+    - "@task-engine-stop-recovery"
+  tags: [dispatch, cleanup, evidence]
   description: |
     ### Covers
 
-    - `ac-session-evidence-survives-control` — primary behavioral closure for this task.
-    - `ac-branch-evidence-survives-control` — primary behavioral closure for this task.
-    - `ac-workspace-evidence-survives-control` — primary behavioral closure for this task.
-    - `ac-worktree-evidence-survives-control` — primary behavioral closure for this task.
-    - `ac-snapshot-evidence-survives-control` — primary behavioral closure for this task.
-    - `ac-audit-evidence-survives-control` — primary behavioral closure for this task.
-    - @dispatch-workspace-cleanup-policy ac-controlled-evidence-protected.
+    - ac-session-evidence-survives-control
+    - ac-branch-evidence-survives-control
+    - ac-workspace-evidence-survives-control
+    - ac-worktree-evidence-survives-control
+    - ac-snapshot-evidence-survives-control
+    - ac-audit-evidence-survives-control
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** cleanup spec and current artifact protection implementation.
-    - **Architecture boundary:** Feed canonical active, gate-in-flight, paused-held, and stopped-pending identities into every destructive worker/reviewer/root/worktree/branch/record cleanup decision. Preserve existing terminal/integration eligibility as the independent deletion authority.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Protection uses canonical active, final-gate in-flight, paused-held, and stopped-pending-cleanup task identities. Lifecycle control never independently grants cleanup eligibility.
 
-    ### What
+    ### Deliverable
 
-    Extend centralized cleanup eligibility so lifecycle control alone never deletes dispatch evidence.
+    All destructive workspace cleanup decisions receive protection and reject overlapping controlled evidence.
 
-    **Boundary:** Feed active, in-flight, paused-held, and stopped-pending identities into centralized cleanup protection.
+    ### Implementation
 
-    ### Why
-
-    Paused, in-flight, or cleanup-pending work may have no live process but still owns review and recovery evidence. No active process does not mean evidence is disposable.
-
-    ### How
-
-    1. Feed canonical active, gate-in-flight, paused-held, and stopped-pending identities into every destructive worker/reviewer/root/worktree/branch/record cleanup decision. Preserve existing terminal/integration eligibility as the independent deletion authority.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Thread protection through workspace registry evaluation, physical reap, worktree removal, branch deletion, remote branch deletion, abandoned classification, and terminal reconciliation in src/agent-runtime/workspace.ts. Preserve unrelated terminal/integrated cleanup and block ambiguous ownership from blind deletion.
 
     ### Files
 
-    #### Create
+    - Create: tests/dispatch-controlled-evidence-protection.test.ts
+    - Modify: src/agent-runtime/workspace.ts
+    - Modify: tests/dispatch-artifact-protection.test.ts
+    - Modify: tests/dispatch-workspace-cleanup.test.ts
+    - Modify: tests/dispatch-workspace-cleanup-completion.test.ts
+    - Modify: tests/dispatch-workspace-terminal-reconciliation.test.ts
 
-    - None.
+    ### Behavioral tests
 
-    #### Modify
-
-    - `src/agent-runtime/workspace.ts`
-
-    #### Tests
-
-    - `tests/dispatch-artifact-protection.test.ts`
-    - `tests/dispatch-workspace-cleanup.test.ts`
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - every destructive surface.
-    - removal after independent eligibility.
-    - corrupt/unknown policy unchanged.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Run each protected lifecycle state through every listed destructive surface; assert session, branch, workspace/worktree, snapshot, audit preservation and unchanged unrelated terminal cleanup.
 
     ### Verification
 
-    - Run `npm test -- tests/dispatch-artifact-protection.test.ts tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-registry.test.ts` and expect exit 0 with every named suite passing.
-    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
-    - Run `lint.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/dispatch-controlled-evidence-protection.test.ts tests/dispatch-artifact-protection.test.ts tests/dispatch-workspace-cleanup.test.ts tests/dispatch-workspace-cleanup-completion.test.ts tests/dispatch-workspace-terminal-reconciliation.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave cleanup-surface matrix.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
-- title: Register and emit lifecycle control events
+    Provide destructive-surface/protected-state matrix.
+
+- title: Register, sanitize, and emit dispatch lifecycle events
   slug: task-dispatch-lifecycle-events
   priority: 2
-  spec_ref: '@dispatch-event-taxonomy'
+  spec_ref: "@dispatch-event-taxonomy"
   depends_on:
-  - '@task-engine-task-hard-stop'
-  tags:
-  - dispatch
-  - events
+    - "@task-patch-dispatch-events-specs"
+    - "@task-engine-stop-recovery"
+  tags: [dispatch, events, schema]
   description: |
     ### Covers
 
-    - `ac-failure-events-use-closed-error-codes` — primary behavioral closure for this task.
-    - @dispatch-event-taxonomy ac-dispatch-control-domain.
-    - @dispatch-event-payload ac-dispatch-control-common-fields.
-    - `ac-dispatch-control-task-identity` — primary behavioral closure for this task.
-    - `ac-dispatch-control-field-bounds` — primary behavioral closure for this task.
-    - `ac-dispatch-control-no-prompts` — primary behavioral closure for this task.
-    - `ac-dispatch-control-no-secrets` — primary behavioral closure for this task.
-    - `ac-dispatch-control-no-terminal-buffer` — primary behavioral closure for this task.
-    - `ac-dispatch-control-no-workspace-path` — primary behavioral closure for this task.
-    - `ac-dispatch-control-no-raw-input-error` — primary behavioral closure for this task.
-    - `ac-dispatch-control-error-codes` — primary behavioral closure for this task.
-    - `ac-dispatch-control-no-raw-error` — primary behavioral closure for this task.
-    - `ac-applied-control-is-auditable` — primary behavioral closure for this task.
-    - `ac-noop-control-is-auditable` — primary behavioral closure for this task.
-    - `ac-failed-control-is-auditable` — primary behavioral closure for this task.
+    - ac-applied-control-is-auditable
+    - ac-noop-control-is-auditable
+    - ac-failed-control-is-auditable
+    - ac-failure-events-use-closed-error-codes
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** Events and wire contract.
-    - **Plan decision:** `src/schema/event-registry.ts`, `src/schema/event-payloads.ts`, `packages/shared/src/schemas.ts`.
-    - **Architecture boundary:** Mirror registry and payload schemas across core/shared packages. Emit only after the durable outcome is known: one applied event, one no-op event, or one failed event with exactly one closed code. Broadcast on `agents` and invalidate agent/event-log queries.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Identifiers are dispatch_control.pause_applied/start_applied/resume_applied/stop_applied/noop/failed. Payload is scope global/task, action start/pause/resume/stop, authority stopped/running/paused, projection stopped/running/paused/draining, outcome applied/noop/failed, reason, actor, source cli/api/ui/daemon_startup/daemon_shutdown/recovery, timestamp, task_id/task_ref only for task, and failure-only error_code. Codes are validation_failed, task_not_found, task_identity_ambiguous, task_identity_mismatch, invalid_transition, control_store_unavailable, control_store_corrupt, control_commit_failed, cancellation_timeout, cancellation_failed, session_closure_failed, cleanup_ownership_mismatch, cleanup_process_birth_mismatch, cleanup_leader_missing_group_alive, cleanup_identity_unverifiable, cleanup_group_unverifiable, internal_error.
 
-    ### What
+    ### Deliverable
 
-    Register the dispatch-control domain, six identifiers, closed payload/error vocabulary, sanitization, and exactly-once outcome emission.
+    One typed sanitized outcome emitter: applied uses matching applied id; noop has no error_code; failed has exactly one closed code only after durable outcome is known.
 
-    **Boundary:** Materialize the exact domain, six identifiers, payload schema, limits, defaults, and emission mapping.
+    ### Implementation
 
-    ### Why
-
-    API, CLI, UI, and automation consumers need one stable audit contract and must never receive prompts, secrets, paths, terminal buffers, or raw errors. Event consumers cannot invent identifiers or sanitization.
-
-    ### How
-
-    1. Mirror registry and payload schemas across core/shared packages. Emit only after the durable outcome is known: one applied event, one no-op event, or one failed event with exactly one closed code. Broadcast on `agents` and invalidate agent/event-log queries.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Register domain/types in both schema owners, normalize default reason operator request/control removal/whitespace, bound reason 240 Unicode code points, actor 120, task_ref 200, and omit raw errors/prompts/secrets/terminal buffers/workspace paths. Emit agents topic. UI owner invalidates queryKeys.agents.all and refreshes automation event log.
 
     ### Files
 
-    #### Create
+    - Create: tests/dispatch-control-events.test.ts
+    - Modify: src/schema/event-registry.ts
+    - Modify: src/schema/event-payloads.ts
+    - Modify: packages/shared/src/schemas.ts
+    - Modify: packages/shared/src/websocket.ts
+    - Modify: src/agent-runtime/dispatch.ts
+    - Modify: tests/event-registry.test.ts
+    - Modify: tests/event-payloads.test.ts
+    - Modify: tests/event-bus.test.ts
 
-    - `tests/dispatch-control-events.test.ts`
+    ### Behavioral tests
 
-    #### Modify
-
-    - None.
-
-    #### Tests
-
-    - Colocated focused tests named in **Required tests**.
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - all scope/action/outcomes.
-    - exhaustive closed error enum with unknown strings rejected.
-    - exact required/forbidden fields and no raw error/stack/path.
-    - Unicode limits.
-    - every mapped commit, store, transition, identity, cancellation, closure, recovery, and internal failure.
-    - registry mirror.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Assert all identifiers, presence/absence, full enum rejection, bounds/redactions, and exactly one applied/noop/failed event per durable result.
 
     ### Verification
 
-    - Run `npm test -- tests/dispatch-control-events.test.ts tests/event-bus.test.ts` and expect exit 0 with every named suite passing.
-    - Run `npm --prefix packages/shared test` and expect exit 0 with every named suite passing.
-    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
-    - Run `lint.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/dispatch-control-events.test.ts tests/event-registry.test.ts tests/event-payloads.test.ts tests/event-bus.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave registry diff and representative sanitized payloads.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
-- title: Add canonical lifecycle API and status projection
+    Provide identifier, enum, sanitizer, and durable-result tables.
+
+- title: Add canonical lifecycle API and compatibility adapters
   slug: task-daemon-dispatch-lifecycle-api
   priority: 2
-  spec_ref: '@daemon-agent-dispatch'
+  spec_ref: "@daemon-agent-dispatch"
   depends_on:
-  - '@task-dispatch-lifecycle-events'
-  - '@task-protect-held-dispatch-evidence'
-  tags:
-  - dispatch
-  - daemon
-  - api
+    - "@task-patch-dispatch-api-specs"
+    - "@task-dispatch-lifecycle-events"
+    - "@task-protect-controlled-dispatch-evidence"
+  tags: [dispatch, daemon, api]
   description: |
     ### Covers
 
-    - `ac-status-reports-authority` — primary behavioral closure for this task.
-    - `ac-status-reports-projection` — primary behavioral closure for this task.
-    - `ac-status-reports-active-count` — primary behavioral closure for this task.
-    - `ac-status-reports-queued-count` — primary behavioral closure for this task.
-    - `ac-status-reports-held-count` — primary behavioral closure for this task.
-    - `ac-status-reports-held-task-identity` — primary behavioral closure for this task.
-    - `ac-status-reports-held-task-scope` — primary behavioral closure for this task.
-    - `ac-status-reports-held-task-mode` — primary behavioral closure for this task.
-    - `ac-status-reports-held-task-reason` — primary behavioral closure for this task.
-    - `ac-failure-api-uses-closed-error-codes` — primary behavioral closure for this task.
-    - @daemon-agent-dispatch ac-5.
-    - `ac-public-status-lifecycle-additions` — primary behavioral closure for this task.
-    - `ac-6` — primary behavioral closure for this task.
-    - `ac-control-error-current-status` — primary behavioral closure for this task.
-    - `ac-control-missing-identity` — primary behavioral closure for this task.
-    - `ac-control-ref-canonicalization` — primary behavioral closure for this task.
-    - `ac-control-identity-mismatch` — primary behavioral closure for this task.
-    - `ac-control-failure-no-success` — primary behavioral closure for this task.
-    - `ac-cleanup-failure-no-success` — primary behavioral closure for this task.
-    - `ac-api-failures-do-not-expose-raw-errors` — primary behavioral closure for this task.
+    - ac-status-reports-authority
+    - ac-status-reports-projection
+    - ac-status-reports-active-count
+    - ac-status-reports-queued-count
+    - ac-status-reports-held-count
+    - ac-status-reports-held-task-identity
+    - ac-status-reports-held-task-scope
+    - ac-status-reports-held-task-mode
+    - ac-status-reports-held-task-reason
+    - ac-failure-api-uses-closed-error-codes
+    - ac-api-failures-do-not-expose-raw-errors
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** canonical API section and current route file.
-    - **Architecture boundary:** Canonicalize task identity before mutation and return current status on canonical errors. Preserve each legacy route independently, including engine-present/no-engine omissions. Apply the deliberate path-free cwd-message correction. Implement the exact invalid-transition 409 bodies for all three mutation aliases; do not infer a generic adapter shape.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Canonical GET /api/agent/status and POST /api/agent/dispatch/control body scope/action/task_ref optional/task_id optional/reason optional. Success/noop HTTP 200 is {ok:true,data:{global_authority,projection,cleanup_state,active_count,queue_depth,held_count,held_tasks,task_controls,degraded_targets,outcome},error:null}; errors are {ok:false,data:<current status>,error:{code,message,suggestion,details optional}} with typed fields/ids only. Error map: validation 400; not-found 404; identity mismatch/ambiguous/invalid transition/ownership/birth/verified-live-group 409; unavailable/corrupt/commit/unverifiable identity/group 503; timeout/cancellation/closure/internal 500.
 
-    ### What
+    ### Deliverable
 
-    Add the canonical control endpoint and one status mapper, then adapt every legacy HTTP route with frozen field-presence and error-body rules.
+    Canonical control/status plus additive POST /api/agent/dispatch, /start, /stop and GET /api/agent/dispatch/status adapters.
 
-    **Boundary:** Implement exact methods, paths, envelopes, errors, canonicalization, compatibility aliases and one status mapper.
+    ### Implementation
 
-    ### Why
-
-    The daemon currently exposes several incompatible boolean/status shapes; accidental normalization would break clients or hide active work. Current implementation is in `packages/daemon`, and aliases expose divergent boolean shapes.
-
-    ### How
-
-    1. Canonicalize task identity before mutation and return current status on canonical errors. Preserve each legacy route independently, including engine-present/no-engine omissions. Apply the deliberate path-free cwd-message correction. Implement the exact invalid-transition 409 bodies for all three mutation aliases; do not infer a generic adapter shape.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Preserve public status dispatch_enabled, active_invocations session_id/agent_id/task_ref/task_title/elapsed_ms/resolved_adapter, queued_invocations agent_id/task_ref/task_title/wait_ms/resolved_adapter, queue_depth, agent_definitions id/name/adapter/resolved_adapter/completed_sessions, degraded/degraded_targets and conditional runner/runner_validation; append lifecycle fields. Internal status preserves engine-present and no-engine shape without adding queued to no-engine; append camel-case lifecycle fields/error_code. Preserve existing success/no-op/Elysia 400 alias shapes. Cwd errors are only Invalid dispatch working directory and Dispatch is already running for another project. Exact invalid 409: dispatch {dispatch_enabled:<current-running-boolean>,error:"Invalid dispatch lifecycle transition",error_code:"invalid_transition"}; start {started:false,error:"Invalid dispatch lifecycle transition",status:<complete current status>,error_code:"invalid_transition"}; stop {stopped:false,reason:"invalid_transition",error_code:"invalid_transition"}. Precommit 503 uses route base plus code; postcommit cleanup maps 409/500/503 and route base plus cleanup_pending/error_code.
 
     ### Files
 
-    #### Create
+    - Create: tests/daemon-agent-dispatch-lifecycle.test.ts
+    - Modify: packages/daemon/src/routes/agent-dispatch.ts
+    - Modify: packages/daemon/src/server.ts
+    - Modify: packages/shared/src/api.ts
+    - Modify: tests/daemon-api/agent-dispatch.test.ts
+    - Modify: tests/daemon-agent-dispatch-routes.test.ts
 
-    - None.
+    ### Behavioral tests
 
-    #### Modify
-
-    - `packages/daemon/src/routes/agent-dispatch.ts`
-
-    #### Tests
-
-    - `tests/daemon-api/agent-dispatch.test.ts`
-    - `tests/daemon-agent-dispatch-routes.test.ts`
-    - `tests/daemon-api/agent-runner-surfaces.test.ts`
-    - `tests/daemon-automation-routes.test.ts`
-    - `tests/cli-daemon-endpoint-regression.test.ts`
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - canonical envelope and every action/transition.
-    - exact legacy field presence/absence, casing, nested invocation/queue/agent/degraded shapes, cwd 400, cwd conflict 409, current no-op reasons, Elysia invalid-body shape, and exact 500/503 adapters for every alias.
-    - closed code/status mapping.
-    - identity mismatch.
-    - cleanup pending.
-    - compatibility booleans and visible active arrays.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Deep-equality every compatibility shape/presence rule, canonical envelope, all error codes/statuses, sanitized cwd, exact 409 bodies, pre/postcommit distinction, and raw-field absence.
 
     ### Verification
 
-    - Run `npm test -- tests/daemon-api/agent-dispatch.test.ts tests/daemon-agent-dispatch-routes.test.ts tests/daemon-api/agent-runner-surfaces.test.ts tests/daemon-automation-routes.test.ts tests/cli-daemon-endpoint-regression.test.ts` and expect exit 0 with every named suite passing.
-    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
-    - Run `npm run lint.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/daemon-agent-dispatch-lifecycle.test.ts tests/daemon-api/agent-dispatch.test.ts tests/daemon-agent-dispatch-routes.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave curl/request examples and alias parity table.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
+    Provide canonical/alias field/status fixtures and forbidden-field matrix.
+
 - title: Add safe lifecycle CLI commands
   slug: task-cli-dispatch-lifecycle-controls
   priority: 3
-  spec_ref: '@cli-agent-commands'
+  spec_ref: "@cli-agent-commands"
   depends_on:
-  - '@task-daemon-dispatch-lifecycle-api'
-  tags:
-  - dispatch
-  - cli
+    - "@task-patch-dispatch-cli-specs"
+    - "@task-daemon-dispatch-lifecycle-api"
+  tags: [dispatch, cli, safety]
   description: |
     ### Covers
 
-    - `ac-failure-cli-uses-closed-error-codes` — primary behavioral closure for this task.
-    - @cli-agent-commands ac-5.
-    - `ac-start-reports-authority` — primary behavioral closure for this task.
-    - `ac-pause-reports-authority` — primary behavioral closure for this task.
-    - `ac-resume-reports-authority` — primary behavioral closure for this task.
-    - `ac-lifecycle-command-reports-projection` — primary behavioral closure for this task.
-    - `ac-declined-stop-sends-no-request` — primary behavioral closure for this task.
-    - `ac-declined-stop-exit` — primary behavioral closure for this task.
-    - `ac-task-control-canonicalization` — primary behavioral closure for this task.
-    - `ac-lifecycle-status-authority` — primary behavioral closure for this task.
-    - `ac-lifecycle-status-projection` — primary behavioral closure for this task.
-    - `ac-lifecycle-status-active-count` — primary behavioral closure for this task.
-    - `ac-lifecycle-status-queued-count` — primary behavioral closure for this task.
-    - `ac-lifecycle-status-held-count` — primary behavioral closure for this task.
-    - `ac-cli-failures-do-not-expose-raw-errors` — primary behavioral closure for this task.
+    - ac-failure-cli-uses-closed-error-codes
+    - ac-cli-failures-do-not-expose-raw-errors
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** CLI safety section.
-    - **Plan decision:** semantic-exit-code trait.
-    - **Plan decision:** current command.
-    - **Architecture boundary:** Send every mutation only to the canonical endpoint. Keep both status commands on the legacy-compatible dispatch status endpoint and preserve their distinct existing output. Reject dispatch-owned stop before prompt/network. JSON never prompts and requires force; noninteractive human mode gives guidance; map every closed server code without raw text.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Grammar: kspec agent dispatch start/pause/resume [--reason TEXT] [--json]; kspec agent dispatch stop [--reason TEXT] [--force] [--json]; kspec agent dispatch task pause|resume @task [--reason TEXT] [--json]; kspec agent dispatch task stop @task [--reason TEXT] [--force] [--json]; kspec agent status [--json]; kspec agent dispatch status [--json]. Mutations use only POST /api/agent/dispatch/control; both status commands use only GET /api/agent/dispatch/status and append lifecycle fields to current projection.
 
-    ### What
+    ### Deliverable
 
-    Implement lifecycle grammar, daemon-only routing, hard-stop confirmation, dispatch-host protection, output projection, and semantic exits.
+    Parser/routing, human/JSON output, confirmation, and exits for all global/task controls.
 
-    **Boundary:** Implement the exact grammar, hard-stop confirmation, noninteractive/JSON rules, dispatch-owned rejection, help and exits.
+    ### Implementation
 
-    ### Why
-
-    Hard stop becomes destructive; scripts and humans need safe confirmation without changing established command spellings or status projections. Existing stop becomes destructive and must be safe without breaking spelling.
-
-    ### How
-
-    1. Send every mutation only to the canonical endpoint. Keep both status commands on the legacy-compatible dispatch status endpoint and preserve their distinct existing output. Reject dispatch-owned stop before prompt/network. JSON never prompts and requires force; noninteractive human mode gives guidance; map every closed server code without raw text.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    TTY stop without force prompts about cancellation/evidence; decline makes no request/exits 2. Force suppresses prompt. Noninteractive human stop without force exits 1 with guidance; JSON never prompts and requires force. KSPEC_SESSION_ID rejects global/task stop before prompt/HTTP even with force, exit 3. Start/pause/resume do not confirm. Usage/validation exit 1; success/noop 0; daemon/store/cancellation/recovery/task lookup 3. Render fixed codes/messages, no raw path/error.
 
     ### Files
 
-    #### Create
+    - Create: tests/cli-agent-dispatch-lifecycle.test.ts
+    - Modify: src/cli/commands/agent.ts
+    - Modify: src/cli/exit-codes.ts
+    - Modify: src/cli/output.ts
+    - Modify: tests/cli-agent-commands.test.ts
+    - Modify: tests/cli-agent.test.ts
 
-    - `tests/cli-agent-dispatch-lifecycle.test.ts`
+    ### Behavioral tests
 
-    #### Modify
-
-    - `src/cli/commands/agent.ts`
-
-    #### Tests
-
-    - `tests/cli-agent-commands.test.ts`
-    - `tests/cli-agent.test.ts`
-    - `tests/cli-daemon-endpoint-regression.test.ts`
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - TTY confirm accept/decline.
-    - piped/JSON missing/with `--force`.
-    - global/task stop with `KSPEC_SESSION_ID`.
-    - exact URL/method assertions for every mutation, `kspec agent status`, and `kspec agent dispatch status`.
-    - both existing human/JSON status field sets plus lifecycle projection.
-    - daemon-offline dispatch-status compatibility.
-    - every closed API code to exit mapping with no raw error.
-    - no-op/failure/help snapshots.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Assert exact grammar/URL, all TTY/force/JSON/dispatch-owned branches, decline no-request, exits, canonical task id, status route/preservation, cleanup/error output, and sanitization.
 
     ### Verification
 
-    - Run `npm test -- tests/cli-agent-commands.test.ts tests/cli-agent.test.ts tests/cli-agent-dispatch-lifecycle.test.ts tests/cli-daemon-endpoint-regression.test.ts` and expect exit 0 with every named suite passing.
-    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
-    - Run `npm run lint.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/cli-agent-dispatch-lifecycle.test.ts tests/cli-agent-commands.test.ts tests/cli-agent.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave exact help/output/exit transcript.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
-- title: Migrate all web lifecycle consumers
+    Supply command/route/exit and prompt-transcript tables.
+
+- title: Migrate every lifecycle UI consumer and control
   slug: task-ui-dispatch-lifecycle-controls
   priority: 3
-  spec_ref: '@ui-agent-dispatch'
+  spec_ref: "@ui-agent-dispatch"
   depends_on:
-  - '@task-daemon-dispatch-lifecycle-api'
-  tags:
-  - dispatch
-  - ui
-  - accessibility
+    - "@task-patch-dispatch-ui-specs"
+    - "@task-daemon-dispatch-lifecycle-api"
+  tags: [dispatch, ui, accessibility]
   description: |
     ### Covers
 
-    - @ui-agent-dispatch ac-2.
-    - `ac-status-projection` — primary behavioral closure for this task.
-    - `ac-status-active-work-visible` — primary behavioral closure for this task.
-    - `ac-status-queued-work-visible` — primary behavioral closure for this task.
-    - `ac-status-held-work-visible` — primary behavioral closure for this task.
-    - `ac-3` — primary behavioral closure for this task.
-    - `ac-stopped-actions-valid` — primary behavioral closure for this task.
-    - `ac-control-separated-from-degraded` — primary behavioral closure for this task.
-    - `ac-control-separated-from-blocked` — primary behavioral closure for this task.
-    - `ac-hard-stop-confirmation-cancellation` — primary behavioral closure for this task.
-    - `ac-hard-stop-confirmation-evidence` — primary behavioral closure for this task.
-    - `ac-hard-stop-confirmation-cancelled` — primary behavioral closure for this task.
-    - `ac-lifecycle-controls-labelled` — primary behavioral closure for this task.
-    - `ac-lifecycle-focus-retained` — primary behavioral closure for this task.
-    - `ac-lifecycle-live-update` — primary behavioral closure for this task.
-    - `ac-ui-failures-do-not-expose-raw-errors` — primary behavioral closure for this task.
+    - ac-ui-failures-do-not-expose-raw-errors
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** UI inventory/migration and API/event prerequisites.
-    - **Architecture boundary:** Update the API contract and every listed dashboard, board, fleet, automation, and agent component. Use exact mixed-version fallback. Keep active/queued/held evidence visible. Confirm stop but not pause; restore focus; announce updates politely; support static read-only, narrow widths, keyboard use, and reduced motion.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Inventory: packages/web-ui/src/lib/api.ts; packages/web-ui/src/routes/agents/+page.svelte; packages/web-ui/src/lib/components/agents/DispatchStatus.svelte, ActiveInvocationRow.svelte, QueuedInvocationRow.svelte, HeldTaskRow.svelte; packages/web-ui/src/lib/query/ws-invalidation.ts; packages/web-ui/src/routes/+page.svelte; packages/web-ui/src/routes/tasks/board/+page.svelte; packages/web-ui/src/lib/components/board/ActiveFleetRow.svelte; packages/web-ui/src/routes/automation/+page.svelte; packages/web-ui/src/lib/components/automation/DispatchTriggersSection.svelte and EventLogSection.svelte. Authority/projection is primary; absent maps dispatch_enabled true to running/false to stopped, except false plus active work retains active work and labels legacy unknown/stopping. Static mode is stopped, zero/empty/read-only.
 
-    ### What
+    ### Deliverable
 
-    Migrate every inventoried web consumer from dispatch booleans to authority/projection, add global/task controls and held rows, and preserve accessible live behavior.
+    Every consumer consistently projects lifecycle evidence and valid controls; agents events invalidate queryKeys.agents.all and refresh the automation event log.
 
-    **Boundary:** Migrate every inventoried boolean consumer and add global/task controls, held rows and accessible live status.
+    ### Implementation
 
-    ### Why
-
-    Current boolean consumers can hide active work whenever dispatch is false and can conflate administrative control with degraded or blocked state. Existing pages hide active work when dispatch_enabled is false.
-
-    ### How
-
-    1. Update the API contract and every listed dashboard, board, fleet, automation, and agent component. Use exact mixed-version fallback. Keep active/queued/held evidence visible. Confirm stop but not pause; restore focus; announce updates politely; support static read-only, narrow widths, keyboard use, and reduced motion.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Update every listed consumer. Separate authority/projection from degraded/blocked. Show active/queued/held evidence. Render only matrix-valid controls. Pause never confirms; hard stop explains cancellation/evidence and cancel sends no request. Ensure accessible labels, polite live status, focus returns to invoking control, keyboard/narrow/reduced-motion support, and only sanitized failures.
 
     ### Files
 
-    #### Create
+    - Create: packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte
+    - Create: tests/web-ui/dispatch-lifecycle-controls.test.ts
+    - Modify: packages/web-ui/src/lib/api.ts
+    - Modify: packages/web-ui/src/routes/agents/+page.svelte
+    - Modify: packages/web-ui/src/lib/components/agents/DispatchStatus.svelte
+    - Modify: packages/web-ui/src/lib/components/agents/ActiveInvocationRow.svelte
+    - Modify: packages/web-ui/src/lib/components/agents/QueuedInvocationRow.svelte
+    - Modify: packages/web-ui/src/lib/query/ws-invalidation.ts
+    - Modify: packages/web-ui/src/routes/+page.svelte
+    - Modify: packages/web-ui/src/routes/tasks/board/+page.svelte
+    - Modify: packages/web-ui/src/lib/components/board/ActiveFleetRow.svelte
+    - Modify: packages/web-ui/src/routes/automation/+page.svelte
+    - Modify: packages/web-ui/src/lib/components/automation/DispatchTriggersSection.svelte
+    - Modify: packages/web-ui/src/lib/components/automation/EventLogSection.svelte
+    - Modify: tests/web-ui/ws-cache-invalidation.test.ts
+    - Modify: tests/web-ui/fleet-buffer.test.ts
 
-    - `packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte`
-    - `tests/e2e/dispatch-lifecycle.spec.ts`
+    ### Behavioral tests
 
-    #### Modify
-
-    - `HeldTaskRow.svelte`
-
-    #### Tests
-
-    - `tests/web-ui/`
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - running/paused/draining/stopped/cleanup pending.
-    - old payload fallback.
-    - all consumer visibility.
-    - static mode.
-    - errors.
-    - keyboard/live region.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Cover running/paused/draining/stopped/pending cleanup, legacy/no-authority, false-with-active, static, each inventory page, controls/task controls, confirm cancel, error, focus, keyboard, live region, and no raw failure text.
 
     ### Verification
 
-    - Run `npm --prefix packages/web-ui test` and expect exit 0 with every named suite passing.
-    - Run `npm run typecheck` and expect exit 0 with every named suite passing.
-    - Run `npm run lint.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/web-ui/dispatch-lifecycle-controls.test.ts tests/web-ui/ws-cache-invalidation.test.ts tests/web-ui/fleet-buffer.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave consumer checklist and component screenshots.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
-- title: Verify engine restart and race black boxes
+    Supply consumer inventory, fallback fixtures, control matrix, accessibility/invalidation evidence.
+
+- title: Verify lifecycle engine restart and race behavior
   slug: task-verify-engine-restart-races
   priority: 3
-  spec_ref: '@dispatch-lifecycle-control-authority'
+  spec_ref: "@dispatch-lifecycle-control-authority"
   depends_on:
-  - '@task-engine-task-hard-stop'
-  - '@task-protect-held-dispatch-evidence'
-  tags:
-  - dispatch
-  - verification
+    - "@task-engine-stop-recovery"
+    - "@task-protect-controlled-dispatch-evidence"
+  tags: [dispatch, verification, engine]
   description: |
     ### Covers
 
-    - verification only.
-    - consumes engine/recovery/race contracts without claiming closure.
+    Verification only; implementation ownership does not move.
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** matrices and prerequisite tests.
-    - **Architecture boundary:** Use deterministic fake adapters and explicit barriers, never sleeps. Exercise daemon/engine boundaries with persisted control and session records. Inventory each ingress and cleanup surface and prove the integrated result against the frozen matrices.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Join persisted control, watcher reload, admission, final gate, recovery, and protection using deterministic adapters/barriers only.
 
-    ### What
+    ### Deliverable
 
-    Add black-box lifecycle tests across engine restart, gate races, reconstruction, cleanup recovery, and evidence protection. No production behavior belongs here.
+    A black-box restart/race suite; no production behavior change.
 
-    **Boundary:** Add bounded daemon/engine black-box restart, race, reconstruction, and evidence scenarios.
+    ### Implementation
 
-    ### Why
-
-    Unit slices can each pass while a cross-boundary scheduling ingress or crash phase still bypasses authority. Unit owners may miss cross-path bypasses.
-
-    ### How
-
-    1. Use deterministic fake adapters and explicit barriers, never sleeps. Exercise daemon/engine boundaries with persisted control and session records. Inventory each ingress and cleanup surface and prove the integrated result against the frozen matrices.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Add fixtures for paused/stopped bootstrap, watcher-before-commit/abort/rollback, stale state reconstruction, concurrent resume, control/final-gate ordering, each cleanup phase crash, A/B recovery, and evidence protection.
 
     ### Files
 
-    #### Create
+    - Create: tests/dispatch-lifecycle-blackbox.test.ts
+    - Modify: tests/dispatch-control-store.test.ts
+    - Modify: tests/dispatch-global-lifecycle.test.ts
+    - Modify: tests/dispatch-stop-recovery.test.ts
+    - Modify: tests/dispatch-controlled-evidence-protection.test.ts
 
-    - `tests/dispatch-lifecycle-blackbox.test.ts`
+    ### Behavioral tests
 
-    #### Modify
-
-    - None.
-
-    #### Tests
-
-    - Colocated focused tests named in **Required tests**.
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - paused/stopped restart.
-    - pending cleanup crash.
-    - task/global races.
-    - stale eligibility.
-    - no duplicate.
-    - evidence.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Assert token/authority/projection/count/phase/process/session/evidence outcomes; fail on zero/twice external publication, blocked scope start, duplicate active task, or evidence deletion.
 
     ### Verification
 
-    - Run `npm test -- tests/dispatch-lifecycle-blackbox.test.ts tests/dispatch-spawn-control-race.test.ts tests/dispatch-artifact-protection.test.ts.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/dispatch-lifecycle-blackbox.test.ts tests/dispatch-control-store.test.ts tests/dispatch-global-lifecycle.test.ts tests/dispatch-stop-recovery.test.ts tests/dispatch-controlled-evidence-protection.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave restart/race boundary matrix.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
-- title: Verify API and CLI lifecycle projection
+    Provide scenario/barrier evidence and no ownership reassignment.
+
+- title: Verify API and CLI lifecycle projection end to end
   slug: task-verify-api-cli-projection
   priority: 3
-  spec_ref: '@daemon-agent-dispatch'
+  spec_ref: "@daemon-agent-dispatch"
   depends_on:
-  - '@task-cli-dispatch-lifecycle-controls'
-  - '@task-verify-engine-restart-races'
-  tags:
-  - dispatch
-  - verification
-  - cli
+    - "@task-cli-dispatch-lifecycle-controls"
+    - "@task-verify-engine-restart-races"
+  tags: [dispatch, verification, api, cli]
   description: |
     ### Covers
 
-    - verification only.
-    - consumes API/CLI/status contracts without claiming closure.
+    Verification only; API, CLI, and event tasks remain behavior owners.
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** API and CLI frozen contracts.
-    - **Architecture boundary:** Use daemon helpers with explicit cwd and ephemeral endpoint. Compare exact JSON/human projections, route-specific 409/500/503 bodies, confirmation behavior, and one applied/no-op/failed event per durable result.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    One daemon fixture with explicit cwd/ephemeral endpoint must drive canonical control, three aliases, public/internal status, CLI human/JSON, and events.
 
-    ### What
+    ### Deliverable
 
-    Drive canonical API, every legacy alias, both CLI status commands, mutation commands, and emitted events from shared fixtures.
+    Exact cross-surface fixtures, not field-only smoke tests.
 
-    **Boundary:** Compare canonical API, aliases, human CLI, JSON CLI and events from one fixture.
+    ### Implementation
 
-    ### Why
-
-    Compatibility wrappers can diverge in casing, omissions, current-status projection, error codes, and exit handling despite green owner tests. Compatibility adapters and exit handling can diverge.
-
-    ### How
-
-    1. Use daemon helpers with explicit cwd and ephemeral endpoint. Compare exact JSON/human projections, route-specific 409/500/503 bodies, confirmation behavior, and one applied/no-op/failed event per durable result.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Cover global/task matrices, canonical task identity, all code/status pairs, compatibility deep equality/presence, sanitized cwd, exact invalid 409s, cleanup pending, CLI routing/force/decline/exits, and applied/noop/failed events.
 
     ### Files
 
-    #### Create
+    - Create: tests/dispatch-lifecycle-surface-integration.test.ts
+    - Modify: tests/daemon-agent-dispatch-lifecycle.test.ts
+    - Modify: tests/cli-agent-dispatch-lifecycle.test.ts
+    - Modify: tests/dispatch-control-events.test.ts
 
-    - `tests/dispatch-lifecycle-surface-integration.test.ts`
+    ### Behavioral tests
 
-    #### Modify
-
-    - None.
-
-    #### Tests
-
-    - Colocated focused tests named in **Required tests**.
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - all matrix cells, aliases, invalid identity, store/cancellation failure, applied/no-op/failed event mapping.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Every fixture asserts canonical code/status, alias shape, CLI exit/message/JSON code, event outcome, and forbidden-field absence.
 
     ### Verification
 
-    - Run `npm test -- tests/dispatch-lifecycle-surface-integration.test.ts tests/daemon-api/agent-dispatch.test.ts tests/cli-agent-dispatch-lifecycle.test.ts.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm test -- tests/dispatch-lifecycle-surface-integration.test.ts tests/daemon-agent-dispatch-lifecycle.test.ts tests/cli-agent-dispatch-lifecycle.test.ts tests/dispatch-control-events.test.ts
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave cross-surface fixture table.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
-- title: Verify lifecycle UI in real browser
+    Supply one response/exit/event comparison table.
+
+- title: Verify lifecycle UI behavior in a real browser
   slug: task-verify-ui-lifecycle-browser
   priority: 3
-  spec_ref: '@ui-agent-dispatch'
+  spec_ref: "@ui-agent-dispatch"
   depends_on:
-  - '@task-ui-dispatch-lifecycle-controls'
-  - '@task-verify-api-cli-projection'
-  tags:
-  - dispatch
-  - verification
-  - accessibility
-  description: |-
+    - "@task-ui-dispatch-lifecycle-controls"
+    - "@task-verify-api-cli-projection"
+  tags: [dispatch, verification, ui, accessibility]
+  description: |
     ### Covers
 
-    - verification only.
-    - consumes UI contracts without claiming closure.
+    Verification only; UI AC ownership remains with task-ui-dispatch-lifecycle-controls.
 
-    ### Resources / Required context
+    ### Required context
 
-    - **Plan decision:** UI inventory and accessibility contract.
-    - **Architecture boundary:** Use the E2E-managed daemon and deterministic local fixtures. Inspect the accessibility tree, keyboard order, live region, focus after mutation, reduced-motion behavior, and horizontal/vertical reachability for every inventoried page. Do not contact providers.
-    - **Dependency contract:** prerequisite tasks own their declared artifacts and semantics; consume those public contracts rather than duplicating their source of truth.
+    Use E2E-managed daemon/local fixtures only. Cover agents, dashboard, board, fleet, automation triggers/event log at desktop/narrow viewports.
 
-    ### What
+    ### Deliverable
 
-    Prove all lifecycle UI consumers in a real browser at desktop and narrow viewports, including accessibility and static mode.
+    Focused Playwright lifecycle browser regression without provider work.
 
-    **Boundary:** Run focused browser/accessibility scenarios for all inventoried UI consumers.
+    ### Implementation
 
-    ### Why
-
-    Component tests cannot establish focus return, live announcements, confirmation cancellation, responsive reachability, or cross-page evidence visibility. Component tests cannot prove focus, announcements, confirmation, narrow layout, or cross-page visibility.
-
-    ### How
-
-    1. Use the E2E-managed daemon and deterministic local fixtures. Inspect the accessibility tree, keyboard order, live region, focus after mutation, reduced-motion behavior, and horizontal/vertical reachability for every inventoried page. Do not contact providers.
-    2. Inventory every named ingress, consumer, or destructive surface before editing; record each as changed, preserved, or not applicable.
-    3. Keep source-of-truth ownership at this task boundary. Do not duplicate prerequisite semantics or let dependent tasks retroactively make this slice pass.
-    4. Use deterministic barriers or injected failures for race and recovery behavior; timing sleeps and success-only fixtures are not acceptable.
-    5. Preserve all unrelated task readiness, degraded-target, session, workspace, and compatibility behavior unless this task explicitly owns it.
-
-    ### Non-goals / Do not
-
-    - Do not approve or derive this plan, modify unrelated specs, or broaden product scope.
-    - Do not claim ACs assigned to a dependent task; leave an explicit typed integration seam instead.
-    - Do not expose raw exceptions, secrets, terminal buffers, workspace paths, or dynamic error strings.
+    Add running/paused/draining/stopped/pending-cleanup, legacy, and static fixtures; test evidence visibility, valid controls, confirmation cancel, mutation error, keyboard/focus/live region/reduced motion, and reachability. Do not change product UI here.
 
     ### Files
 
-    #### Create
+    - Create: tests/e2e/dispatch-lifecycle.spec.ts
+    - Modify: tests/e2e/agents.spec.ts
+    - Modify: tests/e2e/static-mode.spec.ts
 
-    - None.
+    ### Behavioral tests
 
-    #### Modify
-
-    - None.
-
-    #### Tests
-
-    - `tests/e2e/dispatch-lifecycle.spec.ts`
-
-    Path classifications are dependency-relative: a file created by a prerequisite is **Modify** here.
-
-    ### Required tests
-
-    - running/draining/paused/stopped/pending cleanup.
-    - stop cancel/confirm.
-    - pause.
-    - mutation error.
-    - dashboard/fleet/automation visibility.
-    - static read-only.
-    - Assert the negative boundary: behavior owned by later tasks is not accidentally implemented or reported as complete.
+    Assert active/queued/held visibility on every consumer, no request after cancel, static read-only, accessible labels, focus return, sanitized error, and no narrow viewport horizontal overflow.
 
     ### Verification
 
-    - Run `npm run test:e2e -- --grep "dispatch lifecycle"` and expect exit 0 with every named suite passing.
-    - Run `npm --prefix packages/web-ui test.` and expect exit 0 with every named suite passing.
-    - Run `git diff --check`; expect no whitespace errors.
-    - Distinguish failures introduced by this task from documented baseline warnings; do not waive new failures as baseline.
+    - npm run typecheck
+    - npm run lint
+    - git diff --check
 
-    ### Review handoff
+    ### Reviewer handoff
 
-    - Leave screenshots, accessibility tree, focus and viewport evidence.
-    - Include the exact commands and exit results, the changed/create path list, and a requirement-to-test matrix.
-    - Include deterministic race/failure traces where applicable and explain why each proves the lifecycle boundary rather than only a helper.
-    - State explicitly which dependent behavior this task does **not** own and whether any baseline warning remained unchanged.
+    Provide scenario name, fixture/viewport/accessibility matrix, focus/live-region proof, and console/page-error outcome.
 ```
 
 ## Path Classification
 
-Classification is evaluated at each task's dependency point, not only against today's tree. Every source/test path is **Existing** unless its first owning task marks it **Create**, uses the word `new`, or it appears in this first-owner Create list: persistence creates `src/schema/dispatch-control.ts`, `src/parser/dispatch-control.ts`, `src/agent-runtime/dispatch-shadow-transaction.ts`, `src/agent-runtime/dispatch-control-store.ts`, and `tests/dispatch-control-store.test.ts`; global lifecycle creates `tests/dispatch-global-lifecycle.test.ts`; task pause/resume creates `tests/dispatch-task-lifecycle.test.ts`; pre-spawn gate creates `tests/dispatch-spawn-control-race.test.ts`; global hard stop creates `tests/dispatch-stop-recovery.test.ts`; events creates `tests/dispatch-control-events.test.ts`; CLI creates `tests/cli-agent-dispatch-lifecycle.test.ts`; UI creates `packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte` and `tests/e2e/dispatch-lifecycle.spec.ts`; the three verification slices respectively create `tests/dispatch-lifecycle-blackbox.test.ts`, `tests/dispatch-lifecycle-surface-integration.test.ts`, and no additional browser file. Therefore `tests/dispatch-task-lifecycle.test.ts`, `tests/dispatch-spawn-control-race.test.ts`, `tests/dispatch-stop-recovery.test.ts`, and `tests/e2e/dispatch-lifecycle.spec.ts` are **Existing-by-that-task** in every dependent task that names them. Existing session ownership files are exactly `src/sessions/types.ts` and `src/sessions/store.ts`. `tests/web-ui/` is an **Existing directory**, not a file. No other missing path is an implicit deliverable.
+At each dependency point, Create belongs only to its first owner: task-dispatch-control-persistence creates src/schema/dispatch-control.ts, src/parser/dispatch-control.ts, src/agent-runtime/dispatch-shadow-transaction.ts, src/agent-runtime/dispatch-control-store.ts, tests/dispatch-control-store.test.ts; task-engine-global-lifecycle creates tests/dispatch-global-lifecycle.test.ts; task-engine-task-pause-resume creates tests/dispatch-task-lifecycle.test.ts; task-final-pre-spawn-control-gate creates tests/dispatch-spawn-control-race.test.ts; task-engine-stop-recovery creates tests/dispatch-stop-recovery.test.ts; task-protect-controlled-dispatch-evidence creates tests/dispatch-controlled-evidence-protection.test.ts; task-dispatch-lifecycle-events creates tests/dispatch-control-events.test.ts; task-daemon-dispatch-lifecycle-api creates tests/daemon-agent-dispatch-lifecycle.test.ts; task-cli-dispatch-lifecycle-controls creates tests/cli-agent-dispatch-lifecycle.test.ts; task-ui-dispatch-lifecycle-controls creates packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte and tests/web-ui/dispatch-lifecycle-controls.test.ts; task-verify-engine-restart-races creates tests/dispatch-lifecycle-blackbox.test.ts; task-verify-api-cli-projection creates tests/dispatch-lifecycle-surface-integration.test.ts; task-verify-ui-lifecycle-browser creates tests/e2e/dispatch-lifecycle.spec.ts. Every other listed path exists at that dependency point.
 
 ## Implementation Order
 
-Exact spec patch → persistence → global lifecycle → task pause/resume → race gate → global hard stop → targeted task hard stop → evidence/events → API → CLI/UI → three bounded verification slices. Each task is testable at its point: the race task returns stop ownership but does not cancel; global hard stop first owns verified cancellation; targeted stop then narrows that mechanism. Dependencies are acyclic and priorities never decrease. Import remains draft; do not approve, derive, or implement.
+The six spec patches are independent metadata prerequisites, never one giant gate. Persistence follows engine/coalescing; global lifecycle follows persistence; task pause/resume, final gate, then shared stop recovery follow. Cleanup protection/events/API use only declared predecessors; CLI/UI follow API; the three verification tasks follow completed behaviors. Import remains draft and derive_from_specs false. Do not approve, derive, dispatch, or mutate kspec state, reviews, or resources from this revision.
+
