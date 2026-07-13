@@ -87,6 +87,18 @@ checks:
     runner: source and contract audit
     created_at: 2026-07-13T02:21:12.206Z
     completed_at: 2026-07-13T02:21:12.206Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 20 nodes, 24 edges, no cycles/unresolved dependencies/priority inversions; 93 path rows =
+      19 Creates + 74 Modifies with zero anomalies; zero resources; draft, null branch, no derived
+      specs/tasks.
+    name: Graph priority paths resources materialization
+    required: true
+    runner: deterministic audit
+    created_at: 2026-07-13T02:21:17.613Z
+    completed_at: 2026-07-13T02:21:17.613Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -150,6 +162,13 @@ events:
       status: pass
       name: Persistence recovery events compatibility
     timestamp: 2026-07-13T02:21:12.443Z
+  - _ulid: 01KXCMER4T939WP55RJ3KM66H7
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Graph priority paths resources materialization
+    timestamp: 2026-07-13T02:21:17.850Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -162,5 +181,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:21:12.206Z
+updated_at: 2026-07-13T02:21:17.613Z
 notes: []
