@@ -198,6 +198,17 @@ checks:
     runner: targeted kspec audit
     created_at: 2026-07-13T02:21:47.888Z
     completed_at: 2026-07-13T02:21:47.888Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 4 on exactly seven unchanged pre-existing ambiguous @observations/@spec-plan-import
+      references; explicitly non-required and isolated by user direction.
+    name: Repository refs baseline
+    required: false
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-13T02:21:50.155Z
+    completed_at: 2026-07-13T02:21:50.155Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -324,6 +335,13 @@ events:
       status: pass
       name: Plan-local refs and isolated baseline
     timestamp: 2026-07-13T02:21:48.136Z
+  - _ulid: 01KXCMFQY694SKXMS0QCS6887Q
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Repository refs baseline
+    timestamp: 2026-07-13T02:21:50.406Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -336,5 +354,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:21:47.888Z
+updated_at: 2026-07-13T02:21:50.155Z
 notes: []
