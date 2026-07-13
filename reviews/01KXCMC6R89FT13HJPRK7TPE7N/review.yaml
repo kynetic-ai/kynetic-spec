@@ -220,6 +220,17 @@ checks:
     runner: kspec validate and npm test
     created_at: 2026-07-13T02:21:53.458Z
     completed_at: 2026-07-13T02:21:53.458Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No implementation, shared guidance, or spec materialization was reviewed. Focused tests
+      plus the full E2E build/type compilation ran; unrelated dirty user edits were preserved.
+    name: Product format lint typecheck full suite
+    required: false
+    runner: plan-only review
+    created_at: 2026-07-13T02:21:55.483Z
+    completed_at: 2026-07-13T02:21:55.483Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -360,6 +371,13 @@ events:
       status: pass
       name: Alignment completeness and focused tests
     timestamp: 2026-07-13T02:21:53.715Z
+  - _ulid: 01KXCMFX4SYYZ4EWSJZR5RHT1X
+    actor: codex
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product format lint typecheck full suite
+    timestamp: 2026-07-13T02:21:55.737Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -372,5 +390,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:21:53.458Z
+updated_at: 2026-07-13T02:21:55.483Z
 notes: []
