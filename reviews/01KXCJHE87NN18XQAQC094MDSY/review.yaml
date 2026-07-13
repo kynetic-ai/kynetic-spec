@@ -252,6 +252,58 @@ checks:
     runner: 82-AC audit
     created_at: 2026-07-13T01:51:05.737Z
     completed_at: 2026-07-13T01:51:05.737Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "93 rows: 19 absent singly owned Creates and 74 valid Modifies; zero anomalies."
+    name: Path and create ownership
+    required: true
+    runner: filesystem/ancestry audit
+    created_at: 2026-07-13T01:51:21.097Z
+    completed_at: 2026-07-13T01:51:21.097Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 20 read; matching-scope and schema-normalization ambiguities leave affected handoffs
+      non-standalone.
+    name: Hyphoria-quality standalone handoffs
+    required: true
+    runner: manual 20-task audit
+    created_at: 2026-07-13T01:51:24.125Z
+    completed_at: 2026-07-13T01:51:24.125Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Only the new spec is owned; shared wrappers and fulfilled 503 fallback are accurate;
+      one-file filter is supported.
+    name: Playwright ownership fixture and bounded command
+    required: true
+    runner: E2E source audit
+    created_at: 2026-07-13T01:51:27.179Z
+    completed_at: 2026-07-13T01:51:27.179Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All named commands resolve to current scripts and helpers; focused commands are bounded.
+    name: Executable verification commands
+    required: true
+    runner: package/source audit
+    created_at: 2026-07-13T01:51:30.073Z
+    completed_at: 2026-07-13T01:51:30.073Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Zero resources and zero bytes.
+    name: Resource relevance
+    required: true
+    runner: plan resource list
+    created_at: 2026-07-13T01:51:33.175Z
+    completed_at: 2026-07-13T01:51:33.175Z
 events:
   - _ulid: 01KXCJHE875NTZ1XGNPAD15814
     actor: codex
@@ -441,6 +493,41 @@ events:
       status: pass
       name: One-owner AC coverage
     timestamp: 2026-07-13T01:51:05.968Z
+  - _ulid: 01KXCJQXQYD1203DNX29DKQKTE
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Path and create ownership
+    timestamp: 2026-07-13T01:51:21.342Z
+  - _ulid: 01KXCJR0NWA27D25H1BWHWMVHH
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Hyphoria-quality standalone handoffs
+    timestamp: 2026-07-13T01:51:24.348Z
+  - _ulid: 01KXCJR3NMTYP4QZS4YGABB1E2
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Playwright ownership fixture and bounded command
+    timestamp: 2026-07-13T01:51:27.412Z
+  - _ulid: 01KXCJR6G69S4HNDDEH0RHQYT7
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Executable verification commands
+    timestamp: 2026-07-13T01:51:30.310Z
+  - _ulid: 01KXCJR9H29BA3N6VZ5DWNDD82
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Resource relevance
+    timestamp: 2026-07-13T01:51:33.410Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -490,5 +577,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-13T01:47:48.871Z
-updated_at: 2026-07-13T01:51:05.737Z
+updated_at: 2026-07-13T01:51:33.175Z
 notes: []
