@@ -172,6 +172,17 @@ checks:
     runner: kspec validate --refs --warnings-ok
     created_at: 2026-07-13T02:24:42.927Z
     completed_at: 2026-07-13T02:24:42.927Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No implementation, shared guidance, or spec materialization was reviewed. Focused tests
+      plus the full E2E build/type compilation ran; unrelated dirty user edits were preserved.
+    name: Product format lint typecheck full suite
+    required: false
+    runner: plan-only review
+    created_at: 2026-07-13T02:24:48.624Z
+    completed_at: 2026-07-13T02:24:48.624Z
 events:
   - _ulid: 01KXCMHG8PY3H38JQT5FDYA7TW
     actor: codex
@@ -284,6 +295,13 @@ events:
       status: fail
       name: Repository refs baseline
     timestamp: 2026-07-13T02:24:43.192Z
+  - _ulid: 01KXCMN6740SP6GTVZD4Q779RA
+    actor: codex
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product format lint typecheck full suite
+    timestamp: 2026-07-13T02:24:48.868Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -296,5 +314,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:22:48.086Z
-updated_at: 2026-07-13T02:24:42.927Z
+updated_at: 2026-07-13T02:24:48.624Z
 notes: []
