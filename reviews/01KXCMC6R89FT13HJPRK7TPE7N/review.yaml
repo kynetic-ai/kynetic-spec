@@ -231,6 +231,20 @@ checks:
     runner: plan-only review
     created_at: 2026-07-13T02:21:55.483Z
     completed_at: 2026-07-13T02:21:55.483Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No shared/package guidance surface is changed or relocated, so direction-1/direction-2
+      regeneration is not triggered. Files read include full plan, 20 tasks, prior reviews, existing
+      specs/traits, engine/store/session/event/API/CLI/UI/E2E owners and helpers; categories covered
+      correctness, atomicity, boundaries, recovery, compatibility, tests, paths, resources, and
+      accessibility.
+    name: Shared-guidance neutrality and evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-13T02:21:58.621Z
+    completed_at: 2026-07-13T02:21:58.621Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -378,6 +392,13 @@ events:
       status: skipped
       name: Product format lint typecheck full suite
     timestamp: 2026-07-13T02:21:55.737Z
+  - _ulid: 01KXCMG06GY76GZH1FXAEGQ89C
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality and evidence log
+    timestamp: 2026-07-13T02:21:58.864Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -390,5 +411,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:21:55.483Z
+updated_at: 2026-07-13T02:21:58.621Z
 notes: []
