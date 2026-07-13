@@ -297,6 +297,115 @@ checks:
     runner: kspec validate --refs --warnings-ok
     created_at: 2026-07-13T01:45:31.655Z
     completed_at: 2026-07-13T01:45:31.655Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All named npm, kspec, lint, typecheck, git diff, and Playwright commands resolve to
+      current scripts/helpers; focused commands are bounded.
+    name: Executable verification commands
+    required: true
+    runner: package/source audit
+    created_at: 2026-07-13T01:46:24.425Z
+    completed_at: 2026-07-13T01:46:24.425Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Draft, null branch, no derived specs/tasks, module @agent-integration, derive false, 20
+      explicit tasks.
+    name: Draft materialization state
+    required: true
+    runner: plan/parser audit
+    created_at: 2026-07-13T01:46:27.345Z
+    completed_at: 2026-07-13T01:46:27.345Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Legacy fields, runner conditionals, queued omission, Elysia 400, path-free cwd errors,
+      alias identity absence, and pre/postcommit mappings are preserved.
+    name: Sanitized legacy compatibility
+    required: true
+    runner: source/test/plan audit
+    created_at: 2026-07-13T01:46:30.212Z
+    completed_at: 2026-07-13T01:46:30.212Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Module and eight patch owners resolve; related contracts and traits inspected; no
+      duplicate authority or unhandled trait conflict.
+    name: Spec hierarchy neighborhood and traits
+    required: true
+    runner: kspec audit
+    created_at: 2026-07-13T01:46:33.094Z
+    completed_at: 2026-07-13T01:46:33.094Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All plan spec_ref, depends_on, parent/materialization, and Covers refs resolve; global
+      refs failure is exactly seven documented unrelated ambiguities.
+    name: Plan-local references and baseline isolation
+    required: true
+    runner: targeted kspec audit
+    created_at: 2026-07-13T01:46:37.117Z
+    completed_at: 2026-07-13T01:46:37.117Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Both exit 0 with warnings-ok; existing 55 alignment and 332 completeness warnings are
+      unrelated.
+    name: kspec validate alignment and completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-07-13T01:46:40.065Z
+    completed_at: 2026-07-13T01:46:40.065Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 143 of 143 tests passed across 27 suites.
+    name: Focused parser and compatibility tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-13T01:46:43.083Z
+    completed_at: 2026-07-13T01:46:43.083Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No implementation, materialization, or shared guidance changed; focused tests ran and
+      unrelated dirty edits were preserved.
+    name: Product format lint typecheck full suite
+    required: false
+    runner: plan-only review
+    created_at: 2026-07-13T01:46:46.126Z
+    completed_at: 2026-07-13T01:46:46.126Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No shared/package guidance change; preservation and regeneration checks are not triggered.
+    name: Shared-guidance neutrality
+    required: true
+    runner: manual
+    created_at: 2026-07-13T01:46:49.155Z
+    completed_at: 2026-07-13T01:46:49.155Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read full 1704-line plan, all 20 tasks, all historical gates, current API CLI UI E2E
+      schemas and fixtures, eight spec owners, and parser; ran hash, parser/import, counts, graph,
+      owner, path, resource, state, validation, shadow, source, and 143-test audits.
+    name: Review evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-13T01:46:52.125Z
+    completed_at: 2026-07-13T01:46:52.125Z
 events:
   - _ulid: 01KXCJ52BXG5BEQ2TEYZVKK4XV
     actor: codex
@@ -530,6 +639,85 @@ events:
       status: fail
       name: kspec validate refs repository baseline
     timestamp: 2026-07-13T01:45:31.888Z
+  - _ulid: 01KXCJEW0KP3C5H297PGNQKJSS
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Executable verification commands
+    timestamp: 2026-07-13T01:46:24.659Z
+  - _ulid: 01KXCJEYVN286RPB3NY7B00BEY
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Draft materialization state
+    timestamp: 2026-07-13T01:46:27.573Z
+  - _ulid: 01KXCJF1NR16WFNDVM122P5G48
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Sanitized legacy compatibility
+    timestamp: 2026-07-13T01:46:30.456Z
+  - _ulid: 01KXCJF4F7X24S0RF09KPD52BJ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec hierarchy neighborhood and traits
+    timestamp: 2026-07-13T01:46:33.319Z
+  - _ulid: 01KXCJF8E5KR1CQN3YP3E020MQ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan-local references and baseline isolation
+    timestamp: 2026-07-13T01:46:37.381Z
+  - _ulid: 01KXCJFB9DM1YZ7F46C2YJWG5B
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment and completeness
+    timestamp: 2026-07-13T01:46:40.301Z
+  - _ulid: 01KXCJFE84SNCHEBDNVJNCS9SW
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Focused parser and compatibility tests
+    timestamp: 2026-07-13T01:46:43.332Z
+  - _ulid: 01KXCJFH70FY154YK1DJTBEA7S
+    actor: codex
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product format lint typecheck full suite
+    timestamp: 2026-07-13T01:46:46.368Z
+  - _ulid: 01KXCJFM5WY4YCM9R3ZC030HGR
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality
+    timestamp: 2026-07-13T01:46:49.404Z
+  - _ulid: 01KXCJFQ1SGRBXGC2ZHGP3JAC2
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-07-13T01:46:52.345Z
+  - _ulid: 01KXCJFSWPV7V2WAXDHERG10RM
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-13T01:46:55.254Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: closed
@@ -588,6 +776,13 @@ verdicts:
     reviewer: codex
     role: reviewer
     created_at: 2026-07-13T01:45:19.340Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-13T01:46:55.254Z
 created_at: 2026-07-13T01:41:03.485Z
-updated_at: 2026-07-13T01:45:31.655Z
+updated_at: 2026-07-13T01:46:55.254Z
 notes: []
