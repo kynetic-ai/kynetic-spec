@@ -357,6 +357,60 @@ checks:
     runner: kspec validate --refs --warnings-ok
     created_at: 2026-07-13T01:52:04.162Z
     completed_at: 2026-07-13T01:52:04.162Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Both exit 0 with warnings-ok; existing 55 alignment and 332 completeness warnings are
+      unrelated.
+    name: kspec validate alignment and completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-07-13T01:52:21.753Z
+    completed_at: 2026-07-13T01:52:21.753Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 143 of 143 tests passed across 27 suites.
+    name: Focused parser and compatibility tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-13T01:52:24.902Z
+    completed_at: 2026-07-13T01:52:24.902Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No implementation, materialization, or shared guidance changed; focused tests ran and
+      unrelated dirty edits were preserved.
+    name: Product format lint typecheck full suite
+    required: false
+    runner: plan-only review
+    created_at: 2026-07-13T01:52:28.049Z
+    completed_at: 2026-07-13T01:52:28.049Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No shared/package guidance change; preservation and regeneration are not triggered.
+    name: Shared-guidance neutrality
+    required: true
+    runner: manual
+    created_at: 2026-07-13T01:52:31.116Z
+    completed_at: 2026-07-13T01:52:31.116Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read full plan, all 20 tasks, historical gates, current API CLI UI E2E schemas and
+      fixtures, eight owners, and parser; ran hash, parser, counts, graph, ownership, path,
+      resource, state, validation, shadow, source, and 143-test audits.
+    name: Review evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-13T01:52:34.094Z
+    completed_at: 2026-07-13T01:52:34.094Z
 events:
   - _ulid: 01KXCJHE875NTZ1XGNPAD15814
     actor: codex
@@ -616,9 +670,60 @@ events:
       status: fail
       name: kspec validate refs repository baseline
     timestamp: 2026-07-13T01:52:04.378Z
+  - _ulid: 01KXCJSS06A2JPEV28H62FWJK2
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment and completeness
+    timestamp: 2026-07-13T01:52:22.023Z
+  - _ulid: 01KXCJSW1Z6RV0DYD1E7N2V1QQ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Focused parser and compatibility tests
+    timestamp: 2026-07-13T01:52:25.151Z
+  - _ulid: 01KXCJSZ3VXSAMKHFDMYE7M6XY
+    actor: codex
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product format lint typecheck full suite
+    timestamp: 2026-07-13T01:52:28.283Z
+  - _ulid: 01KXCJT23V4ZTCMRB8J863JM62
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality
+    timestamp: 2026-07-13T01:52:31.355Z
+  - _ulid: 01KXCJT50SD186QMMP7VH4YJ7F
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-07-13T01:52:34.329Z
+  - _ulid: 01KXCJT7XXHADS2NK19NPSYGPX
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-13T01:52:37.309Z
+  - _ulid: 01KXCJT7XXDZH1VGT8947QVAZS
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-13T01:52:37.309Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -663,7 +768,14 @@ threads:
           failed-entry refinement everywhere and specify the snake-to-camel normalization boundary.
         created_at: 2026-07-13T01:49:10.039Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-13T01:52:37.309Z
 created_at: 2026-07-13T01:47:48.871Z
-updated_at: 2026-07-13T01:52:04.162Z
+updated_at: 2026-07-13T01:52:37.309Z
 notes: []
