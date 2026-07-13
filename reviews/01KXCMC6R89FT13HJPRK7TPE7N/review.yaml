@@ -99,6 +99,18 @@ checks:
     runner: deterministic audit
     created_at: 2026-07-13T02:21:17.613Z
     completed_at: 2026-07-13T02:21:17.613Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read all 20 descriptions end-to-end. Each contains scoped context, exact files, behavioral
+      fixtures/cases, executable verification commands, dependencies, and reviewer handoff without
+      requiring chat history.
+    name: All 20 standalone task bodies
+    required: true
+    runner: manual buildability audit
+    created_at: 2026-07-13T02:21:22.714Z
+    completed_at: 2026-07-13T02:21:22.714Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -169,6 +181,13 @@ events:
       status: pass
       name: Graph priority paths resources materialization
     timestamp: 2026-07-13T02:21:17.850Z
+  - _ulid: 01KXCMEX4WFW5XQ3H5014TQGNV
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: All 20 standalone task bodies
+    timestamp: 2026-07-13T02:21:22.972Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -181,5 +200,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:21:17.613Z
+updated_at: 2026-07-13T02:21:22.714Z
 notes: []
