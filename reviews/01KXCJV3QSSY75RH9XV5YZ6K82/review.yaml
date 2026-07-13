@@ -110,6 +110,50 @@ checks:
     runner: E2E and package audit
     created_at: 2026-07-13T01:54:46.381Z
     completed_at: 2026-07-13T01:54:46.381Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every plan ref resolves; repository refs failure is exactly seven documented unrelated
+      ambiguities and is not claimed green.
+    name: Plan-local refs and isolated baseline
+    required: true
+    runner: targeted kspec audit
+    created_at: 2026-07-13T01:55:04.773Z
+    completed_at: 2026-07-13T01:55:04.773Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 4 on seven pre-existing ambiguities; recorded non-required.
+    name: Repository refs baseline
+    required: false
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-13T01:55:07.818Z
+    completed_at: 2026-07-13T01:55:07.818Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment and completeness exit 0 with warnings-ok; 143 of 143 focused tests pass across
+      27 suites.
+    name: Validation and focused tests
+    required: true
+    runner: kspec validate and npm test
+    created_at: 2026-07-13T01:55:10.835Z
+    completed_at: 2026-07-13T01:55:10.835Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No shared guidance change. Read full 1704-line plan, all tasks, historical gates, direct
+      API CLI UI E2E schemas/helpers and owners; ran parser, counts, graph, paths, validation,
+      shadow, source, and tests.
+    name: Neutrality and evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-13T01:55:13.714Z
+    completed_at: 2026-07-13T01:55:13.714Z
 events:
   - _ulid: 01KXCJV3QS22B5ZJ0WK5HF4T6X
     actor: codex
@@ -208,9 +252,53 @@ events:
       status: pass
       name: Playwright ownership fixtures commands
     timestamp: 2026-07-13T01:54:46.620Z
+  - _ulid: 01KXCJYR5N9TV3KJ1SPPVXPGX0
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan-local refs and isolated baseline
+    timestamp: 2026-07-13T01:55:05.014Z
+  - _ulid: 01KXCJYV4JHY8TPYMGQD6JXPKE
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Repository refs baseline
+    timestamp: 2026-07-13T01:55:08.050Z
+  - _ulid: 01KXCJYY3G67G86A4AM0VJ5GYB
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Validation and focused tests
+    timestamp: 2026-07-13T01:55:11.088Z
+  - _ulid: 01KXCJZ0WF37TM47ZGHK1XFJ1J
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Neutrality and evidence log
+    timestamp: 2026-07-13T01:55:13.935Z
+  - _ulid: 01KXCJZ3SN43415D1X1CCGD496
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-13T01:55:16.917Z
+  - _ulid: 01KXCJZ3SNB536T0RF0MCSV0KY
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-13T01:55:16.917Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -249,7 +337,14 @@ threads:
           every consumer and fixture.
         created_at: 2026-07-13T01:53:43.971Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-13T01:55:16.917Z
 created_at: 2026-07-13T01:53:05.785Z
-updated_at: 2026-07-13T01:54:46.381Z
+updated_at: 2026-07-13T01:55:16.917Z
 notes: []
