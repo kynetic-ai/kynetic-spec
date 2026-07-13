@@ -136,6 +136,18 @@ checks:
     runner: targeted kspec audit
     created_at: 2026-07-13T02:21:33.694Z
     completed_at: 2026-07-13T02:21:33.694Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read all 20 descriptions end-to-end. Each contains scoped context, exact files, behavioral
+      fixtures/cases, executable verification commands, dependencies, and reviewer handoff without
+      requiring chat history.
+    name: All 20 standalone task bodies
+    required: true
+    runner: manual buildability audit
+    created_at: 2026-07-13T02:21:36.800Z
+    completed_at: 2026-07-13T02:21:36.800Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -227,6 +239,13 @@ events:
       status: pass
       name: Plan-local refs and isolated baseline
     timestamp: 2026-07-13T02:21:33.926Z
+  - _ulid: 01KXCMFAX18DERE9QMZDNJ5FR7
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: All 20 standalone task bodies
+    timestamp: 2026-07-13T02:21:37.057Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -239,5 +258,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:21:33.694Z
+updated_at: 2026-07-13T02:21:36.800Z
 notes: []
