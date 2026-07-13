@@ -4,7 +4,18 @@ slugs:
 title: "Canonical final closure review: Dispatch Lifecycle Pause Resume and Stop Controls
   (post-01KXCJV3 revision)"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read all prior closure cycles through @01KXCJV3; every historical blocker was rechecked
+      against the current 1710-line plan and direct source/spec/test evidence.
+    name: Historical closure gates
+    required: true
+    runner: historical review audit
+    created_at: 2026-07-13T02:20:40.637Z
+    completed_at: 2026-07-13T02:20:40.637Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -19,6 +30,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-13T02:20:12.270Z
+  - _ulid: 01KXCMDM19ZNB9G6FYYJDFASM7
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Historical closure gates
+    timestamp: 2026-07-13T02:20:40.874Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -31,5 +49,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:20:12.026Z
+updated_at: 2026-07-13T02:20:40.637Z
 notes: []
