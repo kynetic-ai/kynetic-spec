@@ -147,6 +147,20 @@ checks:
     runner: kspec validate and npm test
     created_at: 2026-07-13T02:24:32.399Z
     completed_at: 2026-07-13T02:24:32.399Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No shared/package guidance surface is changed or relocated, so direction-1/direction-2
+      regeneration is not triggered. Files read include full plan, 20 tasks, prior reviews, existing
+      specs/traits, engine/store/session/event/API/CLI/UI/E2E owners and helpers; categories covered
+      correctness, atomicity, boundaries, recovery, compatibility, tests, paths, resources, and
+      accessibility.
+    name: Shared-guidance neutrality and evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-13T02:24:37.767Z
+    completed_at: 2026-07-13T02:24:37.767Z
 events:
   - _ulid: 01KXCMHG8PY3H38JQT5FDYA7TW
     actor: codex
@@ -245,6 +259,13 @@ events:
       status: pass
       name: Alignment completeness and focused tests
     timestamp: 2026-07-13T02:24:32.644Z
+  - _ulid: 01KXCMMVKCDH65W1W89JDM67QP
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality and evidence log
+    timestamp: 2026-07-13T02:24:37.996Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -257,5 +278,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:22:48.086Z
-updated_at: 2026-07-13T02:24:32.399Z
+updated_at: 2026-07-13T02:24:37.767Z
 notes: []
