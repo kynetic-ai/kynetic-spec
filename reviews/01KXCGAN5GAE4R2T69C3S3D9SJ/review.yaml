@@ -264,6 +264,127 @@ checks:
     runner: manual
     created_at: 2026-07-13T01:13:09.960Z
     completed_at: 2026-07-13T01:13:09.960Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Stored/source byte-identical SHA-256
+      93ab70815341cadbabcd9af7398ca1b9a7fc906478e3f60b9a861a3aa2ee363d; 1 spec, 82 ACs, 20 manual
+      tasks, derive false, zero diagnostics; import dry-run exit 0.
+    name: Stored plan integrity and parser materialization
+    required: true
+    runner: parsePlanDocument plus import dry-run
+    created_at: 2026-07-13T01:13:29.615Z
+    completed_at: 2026-07-13T01:13:29.615Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Six patch tasks inline 10 engine/coalescing + 14 CLI + 9 API + 15 UI + 17 event + 1
+      cleanup = 66 exact operations.
+    name: Exact 66 spec operations
+    required: true
+    runner: payload audit
+    created_at: 2026-07-13T01:13:32.636Z
+    completed_at: 2026-07-13T01:13:32.636Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 82 separately identified new ACs; event identity/error presence and bounds/normalizers are
+      split into the stated 17 operations with no duplicate IDs.
+    name: Atomic behavioral ACs
+    required: true
+    runner: spec audit
+    created_at: 2026-07-13T01:13:35.619Z
+    completed_at: 2026-07-13T01:13:35.619Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Stopped/start conflicts with stopped/cleanup_pending UI; direct start/resume outcome,
+      mapping, event, and no-reopen proof during pending cleanup are unspecified.
+    name: Transition and cleanup-state contract
+    required: true
+    runner: matrix audit
+    created_at: 2026-07-13T01:13:38.563Z
+    completed_at: 2026-07-13T01:13:38.563Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shadow path/locks/rollback/commit verification/watcher reread and durable
+      ownership/birth/member/group/phase recovery are task-local and source-consistent.
+    name: Persistence watcher and recovery architecture
+    required: true
+    runner: source and contract audit
+    created_at: 2026-07-13T01:13:41.535Z
+    completed_at: 2026-07-13T01:13:41.535Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Six identifiers, payload rules, sanitizers, 17-code enum, disjoint predicates,
+      applied/noop/failed timing, agents topic, and invalidation ownership are inlined.
+    name: Event contract and closed errors
+    required: true
+    runner: task-local audit
+    created_at: 2026-07-13T01:13:44.500Z
+    completed_at: 2026-07-13T01:13:44.500Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Legacy tables/messages/UI matrices are inlined, but cleanup/held/control shapes, canonical
+      task-id placement, and cleanup-pending direct transitions remain undefined.
+    name: Exhaustive API CLI UI lifecycle contracts
+    required: true
+    runner: standalone surface audit
+    created_at: 2026-07-13T01:13:47.648Z
+    completed_at: 2026-07-13T01:13:47.648Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 20 nodes; no cycles, unresolved local dependency, or priority inversion.
+    name: Graph priority and dependency resolution
+    required: true
+    runner: parsed graph audit
+    created_at: 2026-07-13T01:13:50.638Z
+    completed_at: 2026-07-13T01:13:50.638Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 82/82 claimed exactly once; restart, canonical identity, and spawn-winner cancellation now
+      belong to executable owners at dependency points.
+    name: One-owner AC coverage and dependency-point ownership
+    required: true
+    runner: 82-AC Covers audit
+    created_at: 2026-07-13T01:13:53.464Z
+    completed_at: 2026-07-13T01:13:53.464Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "95 rows: 19 absent singly owned Create paths; 76 Modify paths exist or have creator
+      ancestry; zero anomalies."
+    name: Path and create ownership
+    required: true
+    runner: filesystem and ancestry audit
+    created_at: 2026-07-13T01:13:56.314Z
+    completed_at: 2026-07-13T01:13:56.314Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 20 bodies read; most prior blockers close, but surface lifecycle schemas and browser
+      fixture/selection remain non-standalone.
+    name: Hyphoria-quality standalone task shape
+    required: true
+    runner: manual 20-task audit
+    created_at: 2026-07-13T01:13:59.093Z
+    completed_at: 2026-07-13T01:13:59.093Z
 events:
   - _ulid: 01KXCGAN5FJPW0QETB3P6N08TM
     actor: codex
@@ -476,6 +597,83 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-13T01:13:13.116Z
+  - _ulid: 01KXCGJKFPFXE0HV78NJWT60V6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Stored plan integrity and parser materialization
+    timestamp: 2026-07-13T01:13:29.846Z
+  - _ulid: 01KXCGJPEKGY805AAS3ZYDVEMR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Exact 66 spec operations
+    timestamp: 2026-07-13T01:13:32.883Z
+  - _ulid: 01KXCGJSBJ9VYQ71H58FZZM4V3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Atomic behavioral ACs
+    timestamp: 2026-07-13T01:13:35.858Z
+  - _ulid: 01KXCGJW7PG9AB2ARTH2K0HQBB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Transition and cleanup-state contract
+    timestamp: 2026-07-13T01:13:38.806Z
+  - _ulid: 01KXCGJZ4HCA1HN95BX47T6E3D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Persistence watcher and recovery architecture
+    timestamp: 2026-07-13T01:13:41.777Z
+  - _ulid: 01KXCGK21GMQS818CGK03EZN9F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Event contract and closed errors
+    timestamp: 2026-07-13T01:13:44.752Z
+  - _ulid: 01KXCGK53F9CCJYJDQ7J99YXWR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Exhaustive API CLI UI lifecycle contracts
+    timestamp: 2026-07-13T01:13:47.887Z
+  - _ulid: 01KXCGK80ZQE9V60VFTECN2M8N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Graph priority and dependency resolution
+    timestamp: 2026-07-13T01:13:50.879Z
+  - _ulid: 01KXCGKASTEYTRB3G0J5FBJ0HC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: One-owner AC coverage and dependency-point ownership
+    timestamp: 2026-07-13T01:13:53.722Z
+  - _ulid: 01KXCGKDJ99QTCT28B05D121W3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Path and create ownership
+    timestamp: 2026-07-13T01:13:56.553Z
+  - _ulid: 01KXCGKG9CGRKFWA9FE9Z5Q2C7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Hyphoria-quality standalone task shape
+    timestamp: 2026-07-13T01:13:59.341Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -574,5 +772,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-13T01:13:13.116Z
 created_at: 2026-07-13T01:09:09.424Z
-updated_at: 2026-07-13T01:13:13.116Z
+updated_at: 2026-07-13T01:13:59.093Z
 notes: []
