@@ -1,14 +1,4 @@
 resources:
-  - description: React wireframe source for coverage-state integration details only; target
-      implementation remains Svelte.
-    bytes: 20358
-    content_type: application/octet-stream
-    git_commit: null
-    git_path: null
-    id: src-spec-states
-    label: Spec state integration wireframe source
-    path: handoff/reference-src/wf3-spec-states.jsx
-    sha256: b9b6f967f22a1477a312878cafc27cf04dc110474093fd6e1548975eedd6b177
   - description: React wireframe source for coverage token names, glyphs, and edge-case comments; target
       implementation remains Svelte.
     bytes: 22407
