@@ -2,7 +2,268 @@ _ulid: 01KXCGAN5GAE4R2T69C3S3D9SJ
 slugs: []
 title: "Fresh canonical closure review: Dispatch Lifecycle Pause Resume and Stop Controls (post-01KXCE0)"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Stored content and source are byte-identical SHA-256
+      93ab70815341cadbabcd9af7398ca1b9a7fc906478e3f60b9a861a3aa2ee363d. Parser: 1 spec, 82 ACs, 20
+      manual tasks, derive_from_specs false, zero errors/warnings; import dry-run exits 0."
+    name: Stored plan integrity and parser materialization
+    required: true
+    runner: parsePlanDocument plus import dry-run
+    created_at: 2026-07-13T01:12:01.258Z
+    completed_at: 2026-07-13T01:12:01.258Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Six independent priority-1 patch tasks inline exactly 66 operations: engine/coalescing
+      10, CLI 14 including description, API 9, UI 15, events 17, cleanup 1."
+    name: Exact 66 spec operations
+    required: true
+    runner: manual payload/readback audit
+    created_at: 2026-07-13T01:12:04.159Z
+    completed_at: 2026-07-13T01:12:04.159Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: New requirement has 82 separately identified observable ACs; event identity/error presence
+      and three bounds/normalizers are split into the stated 17 exact event operations with no
+      duplicate IDs.
+    name: Atomic behavioral ACs
+    required: true
+    runner: 82-new-AC plus exact-patch audit
+    created_at: 2026-07-13T01:12:07.124Z
+    completed_at: 2026-07-13T01:12:07.124Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Authority-only stopped/start row conflicts with stopped/cleanup_pending UI row; direct
+      start/resume behavior, code/body/event, and no-reopen proof during pending cleanup are
+      unspecified.
+    name: Transition and cleanup-state contract
+    required: true
+    runner: matrix/task-local audit
+    created_at: 2026-07-13T01:12:10.127Z
+    completed_at: 2026-07-13T01:12:10.127Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Correct shadow object path, public lock helpers, private-helper boundary, pre_head
+      rollback, committed-object verification, coalesced watcher reread, durable
+      ownership/birth/member proof, leaderless-group handling, and three-phase cleanup are
+      task-local and source-consistent.
+    name: Persistence watcher and recovery architecture
+    required: true
+    runner: source and task contract audit
+    created_at: 2026-07-13T01:12:13.262Z
+    completed_at: 2026-07-13T01:12:13.262Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Six identifiers, common/identity/error presence, sanitizers/bounds, 17-code closed enum,
+      exhaustive disjoint predicate map, applied/noop/failed timing, agents topic, and UI
+      invalidation ownership are inlined.
+    name: Event contract and closed errors
+    required: true
+    runner: task-local contract audit
+    created_at: 2026-07-13T01:12:16.317Z
+    completed_at: 2026-07-13T01:12:16.317Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Legacy tables, CLI messages, and UI matrices are inlined, but lifecycle
+      cleanup/held/control shapes and canonical task-id placement remain undefined and
+      cleanup-pending direct transitions are missing.
+    name: Exhaustive API CLI UI lifecycle contracts
+    required: true
+    runner: standalone surface audit
+    created_at: 2026-07-13T01:12:19.347Z
+    completed_at: 2026-07-13T01:12:19.347Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 20 nodes, no cycles, no unresolved local dependency, and no priority inversion.
+    name: Graph priority and dependency resolution
+    required: true
+    runner: parsed 20-node graph audit
+    created_at: 2026-07-13T01:12:22.327Z
+    completed_at: 2026-07-13T01:12:22.327Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 82 new-spec ACs are claimed exactly once. Restart scheduling belongs to global
+      lifecycle, canonical applied identity to task control, and spawn-winner stop cancellation to
+      stop recovery at executable dependency points.
+    name: One-owner AC coverage and dependency-point ownership
+    required: true
+    runner: 82-AC Covers/ancestry audit
+    created_at: 2026-07-13T01:12:25.328Z
+    completed_at: 2026-07-13T01:12:25.328Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "95 file rows audited: 19 Create paths are absent and singly owned; all 76 Modify paths
+      exist at baseline or have their creator in dependency ancestry; no create/modify anomaly."
+    name: Path and create ownership
+    required: true
+    runner: filesystem plus graph ancestry audit
+    created_at: 2026-07-13T01:12:28.354Z
+    completed_at: 2026-07-13T01:12:28.354Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 20 bodies were read. Most prior scaffold/task-local blockers are closed, but
+      API/CLI/UI verification still depends on undefined lifecycle row schemas and browser
+      fixture/selection claims are not exact.
+    name: Hyphoria-quality standalone task shape
+    required: true
+    runner: manual 20-task end-to-end audit
+    created_at: 2026-07-13T01:12:31.568Z
+    completed_at: 2026-07-13T01:12:31.568Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: npm script is `npm run build:e2e && npx playwright test`; Playwright help confirms
+      positional file filters and `--list` selected 46 tests from one existing file. Planned command
+      is supported and bounded but omits two E2E files the task modifies and misstates
+      fixture/static routing.
+    name: Browser command support and bounded selection
+    required: true
+    runner: npm/Playwright CLI plus fixture source audit
+    created_at: 2026-07-13T01:12:35.388Z
+    completed_at: 2026-07-13T01:12:35.388Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No resources declared; resource_summary count and bytes are zero.
+    name: Resource relevance
+    required: true
+    runner: kspec plan resource list
+    created_at: 2026-07-13T01:12:39.806Z
+    completed_at: 2026-07-13T01:12:39.806Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan remains draft with no derived specs/tasks, null branch, one stored module, derive
+      false, and 20 explicit manual tasks. Existing derive regression proves derive false creates
+      manual tasks without a generic implementation task.
+    name: Draft one-owner create-path materialization state
+    required: true
+    runner: plan get parser and derive contract tests
+    created_at: 2026-07-13T01:12:43.592Z
+    completed_at: 2026-07-13T01:12:43.592Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Current dynamic cwd/project messages and endpoint shapes were read directly; plan
+      deliberately freezes path-free replacements while preserving legacy field presence, no-engine
+      queued omission, native Elysia 400 details, three invalid-transition bodies, and
+      precommit/postcleanup distinctions.
+    name: Sanitized legacy compatibility
+    required: true
+    runner: current source tests plus plan table audit
+    created_at: 2026-07-13T01:12:48.226Z
+    completed_at: 2026-07-13T01:12:48.226Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Stored module @agent-integration resolves and contains dispatch event contracts; all eight
+      existing patch owners resolve; no duplicate lifecycle authority was found; destructive CLI
+      behavior is explicitly covered without applying the over-broad confirmation trait to the
+      entire agent command family.
+    name: Spec hierarchy neighborhood and traits
+    required: true
+    runner: kspec item/search/trait audit
+    created_at: 2026-07-13T01:12:51.584Z
+    completed_at: 2026-07-13T01:12:51.584Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 4: seven existing ambiguous refs for @observations and @spec-plan-import. No
+      plan-parser or direct plan-ref diagnostic, but required repository gate is not green."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-13T01:12:54.722Z
+    completed_at: 2026-07-13T01:12:54.722Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment and completeness exit 0 with --warnings-ok; existing 55 and 332 warnings are
+      unrelated to this unmaterialized draft.
+    name: kspec validate alignment and completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-07-13T01:12:57.787Z
+    completed_at: 2026-07-13T01:12:57.787Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 143 tests passed across 27 suites for plan parser/import/derive, CLI endpoint regression,
+      daemon public API, and dispatch routes.
+    name: Focused parser and compatibility tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-13T01:13:00.916Z
+    completed_at: 2026-07-13T01:13:00.916Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No implementation, shared guidance, or spec materialization was reviewed; focused
+      current-contract tests ran and unrelated dirty edits were preserved.
+    name: Product format lint typecheck full suite
+    required: true
+    runner: plan-only review
+    created_at: 2026-07-13T01:13:04.023Z
+    completed_at: 2026-07-13T01:13:04.023Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No shared/package guidance surface is changed or relocated; direction-1/direction-2
+      preservation and regeneration are not triggered.
+    name: Shared-guidance neutrality
+    required: true
+    runner: manual
+    created_at: 2026-07-13T01:13:07.028Z
+    completed_at: 2026-07-13T01:13:07.028Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read AGENTS plus required include, governing review/spec/plan/gate skills, full 1679-line
+      plan, all 20 task bodies, all historical gate names and prior 01KXCE0 threads, current spec
+      owners, routes, CLI endpoints, UI consumers, helper/Playwright fixtures, package scripts, and
+      materialization tests. Ran hashes, parser/import, exact operation,
+      graph/owner/path/resource/state, validation, browser CLI, source inventory, and 143-test
+      audits across correctness, atomicity, recovery, surfaces, compatibility, tests, paths,
+      resources, and neutrality.
+    name: Review evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-13T01:13:09.960Z
+    completed_at: 2026-07-13T01:13:09.960Z
 events:
   - _ulid: 01KXCGAN5FJPW0QETB3P6N08TM
     actor: codex
@@ -10,44 +271,214 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-13T01:09:09.423Z
-  - _ulid: 01KXCGHCCK2W4XVXQZBNBCAJAC
+  - _ulid: 01KXCGFENTYBHSHV77Z8MV5AS5
     actor: codex
     event_type: lifecycle_change
     payload:
       from: draft
       to: open
-    timestamp: 2026-07-13T01:12:49.811Z
-  - _ulid: 01KXCGHFGKJWHSYA519BPKG311
+    timestamp: 2026-07-13T01:11:46.618Z
+  - _ulid: 01KXCGFHKZ8HHAPGM7VMF6DQB3
     actor: codex
     event_type: thread_created
     payload:
       kind: blocker
-      thread_ulid: 01KXCGHF8PACZYBPGF6AVE3KGA
-    timestamp: 2026-07-13T01:12:53.011Z
-  - _ulid: 01KXCGHJJ2KGWPA7DYACNWTB4S
+      thread_ulid: 01KXCGFHBXMWGHG180DSDK6F6Q
+    timestamp: 2026-07-13T01:11:49.631Z
+  - _ulid: 01KXCGFMNNYPVGZVXCG32P3819
     actor: codex
     event_type: thread_created
     payload:
       kind: blocker
-      thread_ulid: 01KXCGHJAVAT2BSR1CT5E7W3B0
-    timestamp: 2026-07-13T01:12:56.130Z
-  - _ulid: 01KXCGHNHFP8WAS36NY7RGQ3QN
+      thread_ulid: 01KXCGFME6MYJASS9FQ31M9S73
+    timestamp: 2026-07-13T01:11:52.757Z
+  - _ulid: 01KXCGFQGK82MS13R48W51BTH3
     actor: codex
     event_type: thread_created
     payload:
       kind: blocker
-      thread_ulid: 01KXCGHN9S1CSY9VVPYGA3XD93
-    timestamp: 2026-07-13T01:12:59.183Z
-  - _ulid: 01KXCGHRM3HR0B8ZDZ5V5VN7Y9
+      thread_ulid: 01KXCGFQ9B6NEAW5RQ8KV9FC4Z
+    timestamp: 2026-07-13T01:11:55.667Z
+  - _ulid: 01KXCGFTAE4PK7FX5Y3X2DH92N
     actor: codex
     event_type: thread_created
     payload:
       kind: blocker
-      thread_ulid: 01KXCGHRC9S97GVQKVHCNNCAKH
-    timestamp: 2026-07-13T01:13:02.339Z
+      thread_ulid: 01KXCGFT30JHYPM5JK3B33G9XS
+    timestamp: 2026-07-13T01:11:58.542Z
+  - _ulid: 01KXCGFX6MZ08XFSZ6PBMCMS4M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Stored plan integrity and parser materialization
+    timestamp: 2026-07-13T01:12:01.492Z
+  - _ulid: 01KXCGG023WQWGCV88D6Q41Z5W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Exact 66 spec operations
+    timestamp: 2026-07-13T01:12:04.419Z
+  - _ulid: 01KXCGG2YDP6TEKWTE5G6STJD4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Atomic behavioral ACs
+    timestamp: 2026-07-13T01:12:07.373Z
+  - _ulid: 01KXCGG5WBSB8R8NW74CQG0TP3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Transition and cleanup-state contract
+    timestamp: 2026-07-13T01:12:10.379Z
+  - _ulid: 01KXCGG8XXRT511NE584WW7W8D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Persistence watcher and recovery architecture
+    timestamp: 2026-07-13T01:12:13.501Z
+  - _ulid: 01KXCGGBX53BW3AKPXZRQYJBBV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Event contract and closed errors
+    timestamp: 2026-07-13T01:12:16.549Z
+  - _ulid: 01KXCGGEWB8R19AGFRC8FBDMFX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Exhaustive API CLI UI lifecycle contracts
+    timestamp: 2026-07-13T01:12:19.595Z
+  - _ulid: 01KXCGGHRXQ7F2BM41B5FSW7E0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Graph priority and dependency resolution
+    timestamp: 2026-07-13T01:12:22.557Z
+  - _ulid: 01KXCGGMPQB9P0N7ACGDHTKE6N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: One-owner AC coverage and dependency-point ownership
+    timestamp: 2026-07-13T01:12:25.559Z
+  - _ulid: 01KXCGGQN3V1253RBBVYM3KRYK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Path and create ownership
+    timestamp: 2026-07-13T01:12:28.579Z
+  - _ulid: 01KXCGGV0KHKQD89FWV2D01W90
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Hyphoria-quality standalone task shape
+    timestamp: 2026-07-13T01:12:32.020Z
+  - _ulid: 01KXCGGYKGGTC76VPYW60EPBTV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Browser command support and bounded selection
+    timestamp: 2026-07-13T01:12:35.696Z
+  - _ulid: 01KXCGH2WA2RGVCKV7681KXTR2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Resource relevance
+    timestamp: 2026-07-13T01:12:40.074Z
+  - _ulid: 01KXCGH6JKAP72D927WB9XYBM6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Draft one-owner create-path materialization state
+    timestamp: 2026-07-13T01:12:43.859Z
+  - _ulid: 01KXCGHB2SEEW73ZV9Q8C2ZCVG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Sanitized legacy compatibility
+    timestamp: 2026-07-13T01:12:48.473Z
+  - _ulid: 01KXCGHEC212F02CPX3258AJAN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec hierarchy neighborhood and traits
+    timestamp: 2026-07-13T01:12:51.842Z
+  - _ulid: 01KXCGHHDRD6MGRHVXXNWAZS3E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs
+    timestamp: 2026-07-13T01:12:54.968Z
+  - _ulid: 01KXCGHMDQ1DDZ8P99AD02XSZA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment and completeness
+    timestamp: 2026-07-13T01:12:58.039Z
+  - _ulid: 01KXCGHQF76ZP28XPQJ4QA6MBB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Focused parser and compatibility tests
+    timestamp: 2026-07-13T01:13:01.159Z
+  - _ulid: 01KXCGHTGW7M7X3FBAB3D8P8R7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product format lint typecheck full suite
+    timestamp: 2026-07-13T01:13:04.284Z
+  - _ulid: 01KXCGHXEHFBRN34HBMBB4JHPC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality
+    timestamp: 2026-07-13T01:13:07.281Z
+  - _ulid: 01KXCGJ09756RNMV8HM0A0B83P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-07-13T01:13:10.183Z
+  - _ulid: 01KXCGJ34WBK6BGNYTGPZ61F29
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-13T01:13:13.116Z
+  - _ulid: 01KXCGJ34WMPY2SE6JCR0NRT53
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-13T01:13:13.116Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -55,82 +486,93 @@ subject:
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
 threads:
-  - _ulid: 01KXCGHF8PACZYBPGF6AVE3KGA
+  - _ulid: 01KXCGFHBXMWGHG180DSDK6F6Q
     anchor:
       type: structured
       ref: "@task-daemon-dispatch-lifecycle-api"
       section: description
     entries:
-      - _ulid: 01KXCGHF8P916TM86NV787V5R7
+      - _ulid: 01KXCGFHBX8WJCX6K90R13SSVB
         author: codex
         body: "The lifecycle additions still lack an executable wire schema. The task names
           cleanup_state/cleanupState, held_tasks/heldTasks, and task_controls/taskControls but never
           defines the cleanup-state enum, the exact held-task and task-control object
           fields/types/presence rules, or the exact field that carries the canonical task ULID in
           canonical mutation data. Direct source inspection shows no existing lifecycle type to
-          inherit, so API, CLI JSON/status, UI, and cross-surface fixtures can invent incompatible
-          shapes. Define these lifecycle schemas verbatim for canonical control, public status,
-          internal status, and error/status projections. Affected:
-          task-daemon-dispatch-lifecycle-api, task-cli-dispatch-lifecycle-controls,
-          task-ui-dispatch-lifecycle-controls, task-verify-api-cli-projection,
-          task-verify-ui-lifecycle-browser."
-        created_at: 2026-07-13T01:12:52.758Z
+          inherit (packages/web-ui/src/lib/api.ts currently stops at
+          dispatch_enabled/active/queued/definitions), so API, CLI JSON/status, UI, and
+          cross-surface fixtures can invent incompatible shapes while satisfying the prose. Define
+          these lifecycle schemas verbatim for canonical control, public status, internal status,
+          and error/status projections. Affected: task-daemon-dispatch-lifecycle-api,
+          task-cli-dispatch-lifecycle-controls, task-ui-dispatch-lifecycle-controls,
+          task-verify-api-cli-projection, task-verify-ui-lifecycle-browser."
+        created_at: 2026-07-13T01:11:49.373Z
     kind: blocker
-  - _ulid: 01KXCGHJAVAT2BSR1CT5E7W3B0
+  - _ulid: 01KXCGFME6MYJASS9FQ31M9S73
     anchor:
       type: structured
       ref: "@dispatch-lifecycle-control-authority"
       section: description
     entries:
-      - _ulid: 01KXCGHJAV8TB39VRE2H1XWQW3
+      - _ulid: 01KXCGFME6YVSY5PYJ2BBB025F
         author: codex
         body: "Cleanup-pending transition behavior is contradictory and incomplete. The global matrix says
           start from stopped transitions to running, while the UI matrix says
           stopped/cleanup_pending hides Start and exposes only Retry hard stop; no
-          engine/API/CLI/event task says what a direct start or resume does while cleanup is
-          pending, which code/body/event results, or proves scheduling cannot reopen around live
-          cleanup. Freeze this state/action row throughout the contracts. Affected:
+          engine/API/CLI/event task says what a direct start or resume request does while cleanup is
+          pending, which status/code/body/event results, or proves that scheduling cannot reopen
+          around live cleanup. Freeze this state/action row and propagate it through the task-local
+          engine, API, CLI, UI, event, and verification contracts. Affected:
           task-engine-global-lifecycle, task-engine-stop-recovery,
           task-daemon-dispatch-lifecycle-api, task-cli-dispatch-lifecycle-controls,
           task-ui-dispatch-lifecycle-controls, task-verify-api-cli-projection,
           task-verify-ui-lifecycle-browser."
-        created_at: 2026-07-13T01:12:55.899Z
+        created_at: 2026-07-13T01:11:52.518Z
     kind: blocker
-  - _ulid: 01KXCGHN9S1CSY9VVPYGA3XD93
+  - _ulid: 01KXCGFQ9B6NEAW5RQ8KV9FC4Z
     anchor:
       type: structured
       ref: "@task-verify-ui-lifecycle-browser"
       section: description
     entries:
-      - _ulid: 01KXCGHN9T8CJPB9C200C46P2R
+      - _ulid: 01KXCGFQ9BF330XK1GZZP90132
         author: codex
-        body: "The browser command exists and accepts a file filter, but its verification is incomplete and
-          fixture prose is inaccurate. `npm run test:e2e -- tests/e2e/dispatch-lifecycle.spec.ts`
-          selects only the new file while Files also modifies tests/e2e/agents.spec.ts and
-          tests/e2e/static-mode.spec.ts. test-base.ts uses
+        body: "The browser command exists and Playwright accepts a file filter, but the exact task
+          verification is incomplete and its fixture description is factually inaccurate. `npm run
+          test:e2e -- tests/e2e/dispatch-lifecycle.spec.ts` selects only the new file, while Files
+          also modifies tests/e2e/agents.spec.ts and tests/e2e/static-mode.spec.ts, so those changed
+          suites are never executed. Source inspection also shows test-base.ts owns
           acquirePlaywrightFixtureResources/startPlaywrightFixtureDaemon wrappers rather than
-          directly owning createTestDaemonProject/startTestDaemon, and static-mode.spec.ts fulfills
-          **/health with HTTP 503 rather than rejecting it. Correct the fixture and run all modified
-          E2E specs or remove them; a three-file filter remains bounded. Affected:
-          task-verify-ui-lifecycle-browser."
-        created_at: 2026-07-13T01:12:58.938Z
+          createTestDaemonProject/startTestDaemon directly, and static-mode.spec.ts fulfills
+          **/health with HTTP 503 rather than rejecting the route. Correct the fixture contract and
+          run all modified E2E specs (or remove them from the task); the three-file filter remains
+          bounded. Affected: task-verify-ui-lifecycle-browser."
+        created_at: 2026-07-13T01:11:55.435Z
     kind: blocker
-  - _ulid: 01KXCGHRC9S97GVQKVHCNNCAKH
+  - _ulid: 01KXCGFT30JHYPM5JK3B33G9XS
     anchor:
       type: structured
       ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
       section: dependencies
     entries:
-      - _ulid: 01KXCGHRC904A99FMMKF1J4G1A
+      - _ulid: 01KXCGFT30YYTV52V79GAZ24MW
         author: codex
         body: "The required repository reference gate remains red: `kspec validate --refs --warnings-ok`
           exits 4 on seven ambiguous references involving @observations and @spec-plan-import. The
-          plan parses cleanly and direct plan refs resolve, but the user-required all-gates-green
-          closure condition is not met. Approval must wait for a green refs gate or an explicitly
-          authorized non-required disposition."
-        created_at: 2026-07-13T01:13:02.089Z
+          parsed plan itself has zero diagnostics and all direct plan refs resolve, so no rendered
+          task slug causes this failure, but the user-required all-gates-green closure condition is
+          not met. Approval must wait for the repository refs gate to pass or for an explicitly
+          authorized non-required disposition; this review cannot silently clear it."
+        created_at: 2026-07-13T01:11:58.304Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-13T01:13:13.116Z
 created_at: 2026-07-13T01:09:09.424Z
-updated_at: 2026-07-13T01:13:02.089Z
+updated_at: 2026-07-13T01:13:13.116Z
 notes: []
