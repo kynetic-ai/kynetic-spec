@@ -1,11 +1,1 @@
-resources:
-  - description: React wireframe source for coverage token names, glyphs, and edge-case comments; target
-      implementation remains Svelte.
-    bytes: 22407
-    content_type: application/octet-stream
-    git_commit: null
-    git_path: null
-    id: src-coverage-states
-    label: Coverage state wireframe source
-    path: handoff/reference-src/wf3-coverage-states.jsx
-    sha256: 906f3d6b60776618d102a6fb49e7e3f18fcee7eb5dfbd1d75537fd07ffc6dbad
+resources: []
