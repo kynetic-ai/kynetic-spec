@@ -159,6 +159,19 @@ checks:
     runner: kspec validate and npm test
     created_at: 2026-07-13T02:21:39.142Z
     completed_at: 2026-07-13T02:21:39.142Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All named current paths/helpers resolve; 143/143 focused tests passed across 27 suites.
+      npm run test:e2e -- --list tests/e2e/static-mode.spec.ts built successfully and selected 5
+      tests in one file; lifecycle browser task creates only its bounded new spec and uses the
+      current isolated fixture wrappers and fulfilled 503 static fallback.
+    name: Commands fixtures and Playwright
+    required: true
+    runner: test and fixture audit
+    created_at: 2026-07-13T02:21:42.223Z
+    completed_at: 2026-07-13T02:21:42.223Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -264,6 +277,13 @@ events:
       status: pass
       name: Alignment completeness and focused tests
     timestamp: 2026-07-13T02:21:39.403Z
+  - _ulid: 01KXCMFG6TV0MNKNVRK49KFRJT
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Commands fixtures and Playwright
+    timestamp: 2026-07-13T02:21:42.490Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -276,5 +296,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:21:39.142Z
+updated_at: 2026-07-13T02:21:42.223Z
 notes: []
