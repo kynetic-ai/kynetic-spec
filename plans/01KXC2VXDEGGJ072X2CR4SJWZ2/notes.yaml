@@ -71,3 +71,8 @@ notes:
     content: Finalize cleanup-idle guards in CLI spec patch and canonical task resume owner
     author: Jacob Chapel
     created_at: 2026-07-13T01:31:05.742Z
+  - _ulid: 01KXCKEQG6JE6TT5CVN0THPJPB
+    content: "Close review 01KXCJV3 blockers: matching-scope cleanup gating, exact per-entry failure
+      schema, and public-snake to UI-camel normalization"
+    author: Jacob Chapel
+    created_at: 2026-07-13T02:03:48.614Z
