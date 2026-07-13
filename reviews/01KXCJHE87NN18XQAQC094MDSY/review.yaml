@@ -144,6 +144,60 @@ checks:
     runner: E2E source audit
     created_at: 2026-07-13T01:50:15.259Z
     completed_at: 2026-07-13T01:50:15.259Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read all checks and blockers in 11 closed or archived cycles through @01KXCGPT and
+      retested them.
+    name: Historical review gates
+    required: true
+    runner: kspec review audit
+    created_at: 2026-07-13T01:50:25.624Z
+    completed_at: 2026-07-13T01:50:25.624Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Stored equals source; SHA-256
+      ad63966a96a30c1cd986336e6cf19a2d6023cd702323a67490d66b1026b02c5e; 1 spec, 82 ACs, 20 tasks,
+      derive false, zero diagnostics; dry-run passes.
+    name: Stored plan integrity and parser materialization
+    required: true
+    runner: parser/import
+    created_at: 2026-07-13T01:50:28.581Z
+    completed_at: 2026-07-13T01:50:28.581Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 10 plus 14 plus 9 plus 15 plus 17 plus 1 equals 66.
+    name: Exact 66 spec operations
+    required: true
+    runner: payload audit
+    created_at: 2026-07-13T01:50:31.569Z
+    completed_at: 2026-07-13T01:50:31.569Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 82 unique separately identified behavioral ACs; no duplicate IDs.
+    name: Atomic behavioral ACs
+    required: true
+    runner: spec audit
+    created_at: 2026-07-13T01:50:34.434Z
+    completed_at: 2026-07-13T01:50:34.434Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Aggregate CleanupState includes task entries while global handoffs guard on any entry
+      despite the unrelated-task-cleanup start exception.
+    name: Cleanup transition and matching-scope contract
+    required: true
+    runner: matrix audit
+    created_at: 2026-07-13T01:50:37.550Z
+    completed_at: 2026-07-13T01:50:37.550Z
 events:
   - _ulid: 01KXCJHE875NTZ1XGNPAD15814
     actor: codex
@@ -263,6 +317,41 @@ events:
       status: pass
       name: Playwright ownership fixture and bounded command
     timestamp: 2026-07-13T01:50:15.521Z
+  - _ulid: 01KXCJP7K0WWBAKXZE5BS7CD9V
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Historical review gates
+    timestamp: 2026-07-13T01:50:25.889Z
+  - _ulid: 01KXCJPAE0DW50VZH6KV6T4F1C
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Stored plan integrity and parser materialization
+    timestamp: 2026-07-13T01:50:28.800Z
+  - _ulid: 01KXCJPDBKACAPHPAMGV9BFHD7
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Exact 66 spec operations
+    timestamp: 2026-07-13T01:50:31.795Z
+  - _ulid: 01KXCJPG55Y85Z33XFS6EQAWS6
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Atomic behavioral ACs
+    timestamp: 2026-07-13T01:50:34.661Z
+  - _ulid: 01KXCJPK7ETHZPVQGPHXSB3Y46
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Cleanup transition and matching-scope contract
+    timestamp: 2026-07-13T01:50:37.806Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -312,5 +401,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-13T01:47:48.871Z
-updated_at: 2026-07-13T01:50:15.259Z
+updated_at: 2026-07-13T01:50:37.550Z
 notes: []
