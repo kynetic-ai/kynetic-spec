@@ -465,7 +465,7 @@ The spec-patch task applies only this wording with `kspec item set` and `kspec i
 - Add `@per-task-dispatch-drain-coalescing ac-stop-cancels-active-invocation`: **Given** a matching invocation is active. **When** hard-stop cleanup runs. **Then** that invocation is cancelled.
 - `@cli-agent-commands` description: The `kspec agent` family lists and runs agents and exposes durable global and canonical-task dispatch start, pause, resume, hard-stop, and status controls.
 - `@cli-agent-commands ac-5`: **Given** dispatch-owned hard-stop cleanup is incomplete. **When** `kspec agent dispatch stop` reports its result. **Then** the command does not report stopped success.
-- Add `@cli-agent-commands ac-start-reports-authority`: **Given** the daemon is available. **When** start is requested from stopped authority. **Then** the command reports running authority.
+- Add `@cli-agent-commands ac-start-reports-authority`: **Given** the daemon is available with stopped authority and idle cleanup. **When** start is requested. **Then** the command reports running authority.
 - Add `@cli-agent-commands ac-pause-reports-authority`: **Given** the daemon is available. **When** pause is requested from running authority. **Then** the command reports paused authority.
 - Add `@cli-agent-commands ac-resume-reports-authority`: **Given** the daemon is available. **When** resume is requested from paused authority. **Then** the command reports running authority.
 - Add `@cli-agent-commands ac-lifecycle-command-reports-projection`: **Given** a lifecycle command succeeds. **When** output is rendered. **Then** the command reports the resulting projection.
@@ -617,7 +617,7 @@ derive_from_specs: false
 
     Set description: The kspec agent family lists and runs agents and exposes durable global and canonical-task dispatch start, pause, resume, hard-stop, and status controls.
     - Set ac-5 — Given dispatch-owned hard-stop cleanup is incomplete. When kspec agent dispatch stop reports its result. Then the command does not report stopped success.
-    - Add ac-start-reports-authority — Given the daemon is available. When start is requested from stopped authority. Then the command reports running authority.
+    - Add ac-start-reports-authority — Given the daemon is available with stopped authority and idle cleanup. When start is requested. Then the command reports running authority.
     - Add ac-pause-reports-authority — Given the daemon is available. When pause is requested from running authority. Then the command reports paused authority.
     - Add ac-resume-reports-authority — Given the daemon is available. When resume is requested from paused authority. Then the command reports running authority.
     - Add ac-lifecycle-command-reports-projection — Given a lifecycle command succeeds. When output is rendered. Then the command reports the resulting projection.
@@ -1000,7 +1000,7 @@ derive_from_specs: false
 
     ### Required context
 
-    Absent task record means running subject to global. Pause absent creates paused; pause paused is no-op; pause stopped is invalid. Resume removes paused/stopped; resume absent is no-op. Identity is canonical ULID, never a slug alias.
+    Absent task record means running subject to global. Pause absent creates paused; pause paused is no-op; pause stopped is invalid. Resume removes paused and removes stopped only when nested cleanup is idle; resume from stopped/pending-or-failed is invalid_transition with no mutation/start; resume absent is no-op. Identity is canonical ULID, never a slug alias.
 
     ### Deliverable
 
@@ -1008,7 +1008,7 @@ derive_from_specs: false
 
     ### Implementation
 
-    Resolve a submitted ref to its canonical ULID before any control lookup or successful write; the applied response/event uses that ULID. Apply task authority at enqueue, coalesced expiry, dequeue/retry, bootstrap/reconcile, event/watcher, and post-invocation. Held task work resumes from current state only if global authority permits it; active task work/session completes naturally.
+    Resolve a submitted ref to its canonical ULID before any control lookup or successful write; the applied response/event uses that ULID. Apply task authority at enqueue, coalesced expiry, dequeue/retry, bootstrap/reconcile, event/watcher, and post-invocation. Guard task resume on nested cleanup idle and leave matching pending/failed records unchanged; stop recovery later owns retry/removal. Held task work resumes from current state only if global authority permits it; active task work/session completes naturally.
 
     ### Files
 
@@ -1020,7 +1020,7 @@ derive_from_specs: false
 
     ### Behavioral tests
 
-    In tests/dispatch-task-lifecycle.test.ts create `createTaskLifecycleHarness`, `holdTaskIngress`, and `recordTaskStart`. Use task A/B plus A's slug and ULID: apply pause with the slug, assert one durable key/returned canonical A ULID, then release each enqueue/coalesced-expiry/dequeue-retry/bootstrap-reconcile/event-watcher/post-invocation barrier and assert A never starts while B follows its independent control/global authority. Race repeated pause/resume calls at `holdTaskIngress`, verify one canonical active A at most, and prove an active A session remains open after pause. Repeat resume while global paused and stopped and observe no start.
+    In tests/dispatch-task-lifecycle.test.ts create `createTaskLifecycleHarness`, `holdTaskIngress`, and `recordTaskStart`. Use task A/B plus A's slug and ULID: apply pause with the slug, assert one durable key/returned canonical A ULID, then release each enqueue/coalesced-expiry/dequeue-retry/bootstrap-reconcile/event-watcher/post-invocation barrier and assert A never starts while B follows its independent control/global authority. Race repeated pause/resume calls at `holdTaskIngress`, verify one canonical active A at most, and prove an active A session remains open after pause. Repeat resume while global paused and stopped and observe no start. Seed stopped/idle and stopped/pending-or-failed task records: idle resume removes only A; pending/failed resume returns invalid_transition, preserves A's record, records zero A starts, and leaves B unchanged.
 
     ### Verification
 
