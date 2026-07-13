@@ -2,7 +2,257 @@ _ulid: 01KXCE0PPVJSF4WDWZC8WHK4PJ
 slugs: []
 title: "Canonical comprehensive re-review: Dispatch Lifecycle Pause Resume and Stop Controls"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Stored export and plans/dispatch-lifecycle-pause-resume-stop.md share SHA-256
+      adb5c8ac9b0ea4851f45123a15773e1c4e32200652103f52449c71e78af069d7. Parser reports 1 spec, 82
+      ACs, 19 tasks, derive_from_specs false, zero errors or warnings; import dry-run exits 0.
+    name: Stored parser materialization shape
+    required: true
+    runner: parsePlanDocument plus import dry-run
+    created_at: 2026-07-13T00:31:26.158Z
+    completed_at: 2026-07-13T00:31:26.158Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read all 19 parsed task bodies and all task bodies from Hyphoria
+      01KX9FG7Y7W1MT9T6MRQX0W26D plus recent 01KX55K45VYESY5CS24C9HMENA and
+      01KX3W9ZXWJ8ZJZC0EMRFE242T. Production and patch bodies are materially improved, but surface
+      and verification handoffs remain plan-dependent or non-executable as recorded.
+    name: All rendered task bodies against Hyphoria
+    required: true
+    runner: manual 19-task comparison
+    created_at: 2026-07-13T00:31:29.203Z
+    completed_at: 2026-07-13T00:31:29.203Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exact Existing-Spec Changes contains 60 entries. Six independent priority-1 patch tasks
+      inline all 60 payloads: engine/coalescing 10, CLI 14 including description, API 9, UI 15,
+      events 11, cleanup 1. No monolithic patch dependency gate."
+    name: Exact 60 patches in six focused tasks
+    required: true
+    runner: exact payload count and task audit
+    created_at: 2026-07-13T00:31:32.163Z
+    completed_at: 2026-07-13T00:31:32.163Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan-owned ACs are substantially split, but dispatch-event-payload common-fields and
+      field-bounds patches still combine independently testable presence branches, fields, limits,
+      and transforms; task-identity is duplicated inside common-fields.
+    name: Atomic testable ACs
+    required: true
+    runner: spec and patch audit
+    created_at: 2026-07-13T00:31:35.098Z
+    completed_at: 2026-07-13T00:31:35.098Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Correct shadow object path, public lock primitives, rollback-before-unlock,
+      committed-object verification, coalesced watcher reread, session ownership schema/store, birth
+      tokens, group-member proofs, leaderless group safety, phase recovery, and stopped-plus-pending
+      semantics are frozen in task-local persistence/recovery handoffs.
+    name: Historical persistence and recovery architecture
+    required: true
+    runner: source and contract audit
+    created_at: 2026-07-13T00:31:38.008Z
+    completed_at: 2026-07-13T00:31:38.008Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Events omits failure predicate mapping; API omits complete legacy route/status body
+      tables; CLI omits exact per-code messages and the existing endpoint regression owner; UI omits
+      its exact state/action matrix. Each relies on top-level plan prose.
+    name: Task-local events API CLI UI contracts
+    required: true
+    runner: standalone handoff audit
+    created_at: 2026-07-13T00:31:41.898Z
+    completed_at: 2026-07-13T00:31:41.898Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 19-node graph is acyclic, all dependencies resolve locally or to existing refs, and no
+      higher-priority task depends on a lower-priority task.
+    name: Graph and priority
+    required: true
+    runner: parsed graph audit
+    created_at: 2026-07-13T00:31:44.826Z
+    completed_at: 2026-07-13T00:31:44.826Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 82 new-spec AC ids are claimed exactly once with no missing or duplicate textual
+      primary owner. Patch and verification tasks make no competing new-spec closure claim.
+    name: Textual one-owner coverage
+    required: true
+    runner: 82-AC Covers map
+    created_at: 2026-07-13T00:31:47.850Z
+    completed_at: 2026-07-13T00:31:47.850Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Persistence claims restart scheduling and applied canonical identity behavior owned by
+      later global/task tasks; final-gate task claims stop cancellation while explicitly disclaiming
+      cancellation and preceding stop recovery.
+    name: Implementation-order behavioral ownership
+    required: true
+    runner: dependency-point owner audit
+    created_at: 2026-07-13T00:31:50.798Z
+    completed_at: 2026-07-13T00:31:50.798Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every baseline Modify path exists, every Create path is currently absent, every created
+      path has one owner, and every later Modify of a created path has that owner in dependency
+      ancestry. UI inventory matches current dispatch_enabled consumers.
+    name: Path and create ownership
+    required: true
+    runner: filesystem plus ancestor audit
+    created_at: 2026-07-13T00:31:53.677Z
+    completed_at: 2026-07-13T00:31:53.677Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Named npm test, lint, typecheck, and git commands are valid, but
+      task-verify-ui-lifecycle-browser never invokes test:e2e for its created Playwright suite, CLI
+      omits tests/cli-daemon-endpoint-regression.test.ts despite changing asserted endpoints, and
+      three verification slices lack exact per-case setup and observations.
+    name: Executable verification commands and behavioral cases
+    required: true
+    runner: package script and task test audit
+    created_at: 2026-07-13T00:31:56.515Z
+    completed_at: 2026-07-13T00:31:56.515Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan has zero attached resources and resource_summary count 0; all 18 unrelated prior
+      resources are gone.
+    name: Resource relevance
+    required: true
+    runner: kspec plan resource list
+    created_at: 2026-07-13T00:31:59.512Z
+    completed_at: 2026-07-13T00:31:59.512Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan remains draft with no derived specs or tasks. derive_from_specs false suppresses the
+      generic implement-dispatch-lifecycle-control-authority task.
+    name: Draft and no generic task state
+    required: true
+    runner: plan get plus parser
+    created_at: 2026-07-13T00:32:02.419Z
+    completed_at: 2026-07-13T00:32:02.419Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan explicitly chooses path-free cwd messages, preserves current field presence including
+      no-engine queued omission, freezes all three invalid_transition 409 bodies, and distinguishes
+      precommit from postcommit cleanup errors. Task-local API and CLI handoff gaps fail separately.
+    name: Sanitized legacy compatibility decision
+    required: true
+    runner: top-level compatibility audit
+    created_at: 2026-07-13T00:32:05.293Z
+    completed_at: 2026-07-13T00:32:05.293Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Parent agent-integration resolves and already contains dispatch engine, event, action, and
+      workspace contracts. Eight patched owners resolve; no duplicate lifecycle authority spec was
+      found; no applicable trait conflict identified.
+    name: Spec hierarchy and neighborhood
+    required: true
+    runner: kspec item and search audit
+    created_at: 2026-07-13T00:32:08.202Z
+    completed_at: 2026-07-13T00:32:08.202Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 4 on the same 7 unrelated ambiguous references for observations and spec-plan-import.
+      No plan-local parser or direct-ref error found, but the required repository reference gate is
+      not green.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-13T00:32:11.167Z
+    completed_at: 2026-07-13T00:32:11.167Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Alignment and completeness both exit 0 with warnings-ok; existing 55 alignment and 332
+      completeness warnings are unrelated to this unmaterialized draft.
+    name: kspec alignment and completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-07-13T00:32:14.032Z
+    completed_at: 2026-07-13T00:32:14.032Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 143 tests passed across 27 suites covering plan parser/import/derive, CLI daemon endpoint
+      regression, daemon public dispatch API, and daemon dispatch routes.
+    name: Focused parser and compatibility tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-13T00:32:16.930Z
+    completed_at: 2026-07-13T00:32:16.930Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No implementation, package guidance, spec materialization, or product file change was
+      reviewed. Focused parser and current-contract suites were run; unrelated dirty worktree edits
+      were preserved.
+    name: Product format lint typecheck full suite
+    required: false
+    runner: plan-only review
+    created_at: 2026-07-13T00:32:20.000Z
+    completed_at: 2026-07-13T00:32:20.000Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No shared or package guidance surface is changed or relocated by this plan.
+    name: Shared-guidance neutrality
+    required: true
+    runner: manual
+    created_at: 2026-07-13T00:32:22.992Z
+    completed_at: 2026-07-13T00:32:22.992Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Read AGENTS and kspec-agents, applicable skills, complete stored plan and 19 rendered
+      tasks, all prior closure reviews, eight current spec owners, parser and relevant runtime route
+      lock session CLI UI sources, Hyphoria reference plus two recent plans. Ran hash,
+      parser/import, 60-patch, graph/owner/path/resource, validation, package-script, source
+      inventory, and 143-test audits. Categories: architecture, atomicity, persistence, recovery,
+      events, API, CLI, UI, compatibility, tests, graph, paths, resources, neutrality."
+    name: Review evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-13T00:32:25.961Z
+    completed_at: 2026-07-13T00:32:25.961Z
 events:
   - _ulid: 01KXCE0PPV9FHBFR1Y21GMC6GW
     actor: Jacob Chapel
@@ -73,6 +323,153 @@ events:
       kind: blocker
       thread_ulid: 01KXCE41BHN8SCKHF18RRTMFCN
     timestamp: 2026-07-13T00:30:35.593Z
+  - _ulid: 01KXCE5K6S6F99ZZDTC67ZWB3T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Stored parser materialization shape
+    timestamp: 2026-07-13T00:31:26.425Z
+  - _ulid: 01KXCE5P54ZHJHZ2BSY2Z4426V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: All rendered task bodies against Hyphoria
+    timestamp: 2026-07-13T00:31:29.444Z
+  - _ulid: 01KXCE5S1MXP52DWA0C5E10HXM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Exact 60 patches in six focused tasks
+    timestamp: 2026-07-13T00:31:32.404Z
+  - _ulid: 01KXCE5VX70HZFB9Y3HGCMYZNK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Atomic testable ACs
+    timestamp: 2026-07-13T00:31:35.335Z
+  - _ulid: 01KXCE5YR5D6B80RAEWEZH8WSY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Historical persistence and recovery architecture
+    timestamp: 2026-07-13T00:31:38.245Z
+  - _ulid: 01KXCE62HXBBFFE9ZDSNC5WB44
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Task-local events API CLI UI contracts
+    timestamp: 2026-07-13T00:31:42.141Z
+  - _ulid: 01KXCE65EY0FAKJ4DXMP6C8HB8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Graph and priority
+    timestamp: 2026-07-13T00:31:45.118Z
+  - _ulid: 01KXCE68BRKW9X6Y9DKJ8RBBRM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Textual one-owner coverage
+    timestamp: 2026-07-13T00:31:48.088Z
+  - _ulid: 01KXCE6B7FW18APKH793V0GS3X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Implementation-order behavioral ownership
+    timestamp: 2026-07-13T00:31:51.023Z
+  - _ulid: 01KXCE6E13D1PN93SG8QCBE43Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Path and create ownership
+    timestamp: 2026-07-13T00:31:53.891Z
+  - _ulid: 01KXCE6GTAXYQMQ66VWWXP6888
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Executable verification commands and behavioral cases
+    timestamp: 2026-07-13T00:31:56.746Z
+  - _ulid: 01KXCE6KR6A3GDDQWX5KMC59HY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Resource relevance
+    timestamp: 2026-07-13T00:31:59.750Z
+  - _ulid: 01KXCE6PK182GHPEM4RAXD8SCW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Draft and no generic task state
+    timestamp: 2026-07-13T00:32:02.657Z
+  - _ulid: 01KXCE6SC7A4M5W6NRAX3PQBFG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Sanitized legacy compatibility decision
+    timestamp: 2026-07-13T00:32:05.511Z
+  - _ulid: 01KXCE6W7KMH85C5N3SRZFKPBN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec hierarchy and neighborhood
+    timestamp: 2026-07-13T00:32:08.435Z
+  - _ulid: 01KXCE6Z4TJHR8B9WBV7DXCFW7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs
+    timestamp: 2026-07-13T00:32:11.418Z
+  - _ulid: 01KXCE71Y85CVBS9WT2AE1BMK3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec alignment and completeness
+    timestamp: 2026-07-13T00:32:14.280Z
+  - _ulid: 01KXCE74RF55SCX71KV5MPEQRD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Focused parser and compatibility tests
+    timestamp: 2026-07-13T00:32:17.167Z
+  - _ulid: 01KXCE77RFRVCRGXSYJWA9ZDAW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product format lint typecheck full suite
+    timestamp: 2026-07-13T00:32:20.239Z
+  - _ulid: 01KXCE7ANPB73DVA6S5GPR6G9G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality
+    timestamp: 2026-07-13T00:32:23.222Z
+  - _ulid: 01KXCE7DKMM8V59B71B9CPBEHE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-07-13T00:32:26.228Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -233,5 +630,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-13T00:28:46.171Z
-updated_at: 2026-07-13T00:30:35.377Z
+updated_at: 2026-07-13T00:32:25.961Z
 notes: []
