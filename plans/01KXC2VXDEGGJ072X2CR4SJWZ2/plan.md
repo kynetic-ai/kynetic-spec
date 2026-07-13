@@ -505,28 +505,6 @@ The spec-patch task applies only this wording with `kspec item set` and `kspec i
 
 ## Coverage Ownership
 
-| Contract | Primary closure owner |
-| --- | --- |
-| exact existing-spec text/materialization process (no behavioral closure) | `task-patch-dispatch-lifecycle-specs` |
-| durable authority, canonical identity, record revision transaction idempotency only | `task-dispatch-control-persistence` |
-| global matrix pause/resume and reconstruction | `task-engine-global-lifecycle` |
-| final race gate | `task-final-pre-spawn-control-gate` |
-| global hard stop and recovery | `task-engine-global-hard-stop` |
-| task pause/resume isolation | `task-engine-task-pause-resume` |
-| targeted task stop/recovery | `task-engine-task-hard-stop` |
-| evidence cleanup protection | `task-protect-held-dispatch-evidence` |
-| event taxonomy/payload | `task-dispatch-lifecycle-events` |
-| API/status wire contract | `task-daemon-dispatch-lifecycle-api` |
-| CLI grammar/safety | `task-cli-dispatch-lifecycle-controls` |
-| UI consumers/accessibility | `task-ui-dispatch-lifecycle-controls` |
-| restart/race black-box verification | `task-verify-engine-restart-races` |
-| API/CLI projection verification | `task-verify-api-cli-projection` |
-| browser/accessibility verification | `task-verify-ui-lifecycle-browser` |
-
-Secondary tasks consume prerequisite contracts and do not claim their ACs.
-
-## Coverage Ownership
-
 Every @dispatch-lifecycle-control-authority AC has one primary behavior owner; patch and verification tasks claim no behavioral closure.
 
 | Owner | Primary closure |
