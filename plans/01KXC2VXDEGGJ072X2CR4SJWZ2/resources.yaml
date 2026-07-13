@@ -1,13 +1,4 @@
 resources:
-  - description: Requirement page with coverage-state filter chips, state rows, and re-verify banner reference.
-    bytes: 88486
-    content_type: image/png
-    git_commit: null
-    git_path: null
-    id: shot-spec-state-requirement
-    label: Spec state requirement page
-    path: handoff/shots/r3-spec-states-1-requirement.png
-    sha256: 9ef6b5a3f22a847abb9f5ff832b6e9132706ab0e38298bbc91aa3c394d649e71
   - description: Tree rollup state presentation reference for row/header segmented bars.
     bytes: 86524
     content_type: image/png
