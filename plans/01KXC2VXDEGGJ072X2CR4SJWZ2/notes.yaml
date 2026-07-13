@@ -62,3 +62,8 @@ notes:
       and executable verification blockers
     author: Jacob Chapel
     created_at: 2026-07-13T00:52:35.771Z
+  - _ulid: 01KXCHBPQ7G67A9QDPGNZQDJ87
+    content: "Close review 01KXCGPT: freeze lifecycle row schemas and cleanup-pending transitions;
+      correct bounded Playwright fixture verification; document refs baseline"
+    author: Jacob Chapel
+    created_at: 2026-07-13T01:27:12.359Z
