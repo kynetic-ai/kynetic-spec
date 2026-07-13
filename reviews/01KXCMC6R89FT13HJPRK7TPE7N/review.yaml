@@ -435,9 +435,16 @@ events:
       status: skipped
       name: Product format lint typecheck full suite
     timestamp: 2026-07-13T02:22:09.582Z
+  - _ulid: 01KXCMGWBHH2NNF6YTXN59E004
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: archived
+    timestamp: 2026-07-13T02:22:27.697Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
-lifecycle_state: open
+lifecycle_state: archived
 related_refs: []
 subject:
   type: plan
@@ -447,5 +454,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:22:09.311Z
+updated_at: 2026-07-13T02:22:27.464Z
 notes: []
