@@ -209,6 +209,17 @@ checks:
     runner: kspec validate --refs --warnings-ok
     created_at: 2026-07-13T02:21:50.155Z
     completed_at: 2026-07-13T02:21:50.155Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec alignment and completeness exit 0 with warnings-ok; focused parser/import/derive and
+      current API/CLI compatibility suite passed 143 tests across 27 suites.
+    name: Alignment completeness and focused tests
+    required: true
+    runner: kspec validate and npm test
+    created_at: 2026-07-13T02:21:53.458Z
+    completed_at: 2026-07-13T02:21:53.458Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -342,6 +353,13 @@ events:
       status: fail
       name: Repository refs baseline
     timestamp: 2026-07-13T02:21:50.406Z
+  - _ulid: 01KXCMFV5KSTDTPWWN5B7WCNQ4
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Alignment completeness and focused tests
+    timestamp: 2026-07-13T02:21:53.715Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -354,5 +372,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:21:50.155Z
+updated_at: 2026-07-13T02:21:53.458Z
 notes: []
