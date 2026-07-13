@@ -3,7 +3,59 @@ slugs: []
 title: "Fresh canonical closure review: Dispatch Lifecycle Pause Resume and Stop Controls
   (post-01KXCGPT revision)"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 11 prior closed or archived cycles through @01KXCGPT were read and retested.
+    name: Historical review gates
+    required: true
+    runner: kspec review audit
+    created_at: 2026-07-13T01:54:02.369Z
+    completed_at: 2026-07-13T01:54:02.369Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Stored equals source SHA-256
+      ad63966a96a30c1cd986336e6cf19a2d6023cd702323a67490d66b1026b02c5e; 1 spec, 82 ACs, 20 tasks,
+      derive false, zero diagnostics, dry-run passes.
+    name: Parser and materialization
+    required: true
+    runner: parser/import
+    created_at: 2026-07-13T01:54:05.471Z
+    completed_at: 2026-07-13T01:54:05.471Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 10 plus 14 plus 9 plus 15 plus 17 plus 1 equals 66.
+    name: Exact 66 operations
+    required: true
+    runner: payload audit
+    created_at: 2026-07-13T01:54:08.567Z
+    completed_at: 2026-07-13T01:54:08.567Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 82 unique AC IDs; 82 claims; zero missing or duplicate owners.
+    name: 82 exact one-owner ACs
+    required: true
+    runner: AC ownership audit
+    created_at: 2026-07-13T01:54:11.586Z
+    completed_at: 2026-07-13T01:54:11.586Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Aggregate cleanup entries conflict with the explicit matching-scope global-start exception.
+    name: Cleanup transition scope
+    required: true
+    runner: matrix audit
+    created_at: 2026-07-13T01:54:14.676Z
+    completed_at: 2026-07-13T01:54:14.676Z
 events:
   - _ulid: 01KXCJV3QS22B5ZJ0WK5HF4T6X
     actor: codex
@@ -32,6 +84,41 @@ events:
       kind: blocker
       thread_ulid: 01KXCJW9137VN4WSQY8Z476411
     timestamp: 2026-07-13T01:53:44.207Z
+  - _ulid: 01KXCJWV77AFQG0Z4BJ1M9HHN1
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Historical review gates
+    timestamp: 2026-07-13T01:54:02.599Z
+  - _ulid: 01KXCJWY910D587G5MCYS5EAJ4
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Parser and materialization
+    timestamp: 2026-07-13T01:54:05.729Z
+  - _ulid: 01KXCJX1955VY7XZYPCJJMD4A3
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Exact 66 operations
+    timestamp: 2026-07-13T01:54:08.805Z
+  - _ulid: 01KXCJX47P67BDKHKB8JYEWDAZ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: 82 exact one-owner ACs
+    timestamp: 2026-07-13T01:54:11.830Z
+  - _ulid: 01KXCJX77R9T2M2B760RW2BHW9
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Cleanup transition scope
+    timestamp: 2026-07-13T01:54:14.904Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -75,5 +162,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-13T01:53:05.785Z
-updated_at: 2026-07-13T01:53:43.971Z
+updated_at: 2026-07-13T01:54:14.676Z
 notes: []
