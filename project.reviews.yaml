@@ -29092,7 +29092,7 @@ reviews:
     disposition: pending
     author: Jacob Chapel
     check_count: 0
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
@@ -29103,3 +29103,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-13T00:28:46.171Z
+    updated_at: 2026-07-13T00:29:18.176Z
