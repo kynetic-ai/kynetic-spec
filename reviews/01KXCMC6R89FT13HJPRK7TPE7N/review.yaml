@@ -148,6 +148,17 @@ checks:
     runner: manual buildability audit
     created_at: 2026-07-13T02:21:36.800Z
     completed_at: 2026-07-13T02:21:36.800Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec alignment and completeness exit 0 with warnings-ok; focused parser/import/derive and
+      current API/CLI compatibility suite passed 143 tests across 27 suites.
+    name: Alignment completeness and focused tests
+    required: true
+    runner: kspec validate and npm test
+    created_at: 2026-07-13T02:21:39.142Z
+    completed_at: 2026-07-13T02:21:39.142Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -246,6 +257,13 @@ events:
       status: pass
       name: All 20 standalone task bodies
     timestamp: 2026-07-13T02:21:37.057Z
+  - _ulid: 01KXCMFD6B3EVK57CP6ED4MFZE
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Alignment completeness and focused tests
+    timestamp: 2026-07-13T02:21:39.403Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -258,5 +276,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:21:36.800Z
+updated_at: 2026-07-13T02:21:39.142Z
 notes: []
