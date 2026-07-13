@@ -277,6 +277,26 @@ checks:
     runner: manual
     created_at: 2026-07-13T01:45:16.102Z
     completed_at: 2026-07-13T01:45:16.102Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Zero resources and zero bytes.
+    name: Resource relevance
+    required: true
+    runner: plan resource list
+    created_at: 2026-07-13T01:45:28.739Z
+    completed_at: 2026-07-13T01:45:28.739Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 4 on exactly seven pre-existing ambiguities; isolated and not claimed green.
+    name: kspec validate refs repository baseline
+    required: false
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-13T01:45:31.655Z
+    completed_at: 2026-07-13T01:45:31.655Z
 events:
   - _ulid: 01KXCJ52BXG5BEQ2TEYZVKK4XV
     actor: codex
@@ -496,6 +516,20 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-13T01:45:19.341Z
+  - _ulid: 01KXCJD5MVD0RTQP340XM3BPJS
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Resource relevance
+    timestamp: 2026-07-13T01:45:28.987Z
+  - _ulid: 01KXCJD8FG9P0SKH3ZN99BA9T8
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs repository baseline
+    timestamp: 2026-07-13T01:45:31.888Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: closed
@@ -555,5 +589,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-13T01:45:19.340Z
 created_at: 2026-07-13T01:41:03.485Z
-updated_at: 2026-07-13T01:45:19.341Z
+updated_at: 2026-07-13T01:45:31.655Z
 notes: []
