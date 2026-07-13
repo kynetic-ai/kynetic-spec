@@ -198,6 +198,60 @@ checks:
     runner: matrix audit
     created_at: 2026-07-13T01:50:37.550Z
     completed_at: 2026-07-13T01:50:37.550Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Failed-entry error_code refinement and public-snake to UI-camel normalization remain
+      inconsistent or unspecified.
+    name: Exact lifecycle row schemas and casing boundary
+    required: true
+    runner: surface schema audit
+    created_at: 2026-07-13T01:50:53.221Z
+    completed_at: 2026-07-13T01:50:53.221Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Lock, rollback, commit verification, watcher reread, ownership/birth/group proof, phase
+      recovery, and explicit reopen are task-local.
+    name: Persistence publication and recovery architecture
+    required: true
+    runner: source/contract audit
+    created_at: 2026-07-13T01:50:56.362Z
+    completed_at: 2026-07-13T01:50:56.362Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Six identifiers, 17 codes, mappings, timing, bounds, forbidden data, topic, and
+      invalidation are inlined.
+    name: Event taxonomy errors and sanitization
+    required: true
+    runner: task-local audit
+    created_at: 2026-07-13T01:50:59.466Z
+    completed_at: 2026-07-13T01:50:59.466Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 20 nodes, 24 local edges, no cycle, missing dependency, or priority inversion.
+    name: Graph priority dependency resolution
+    required: true
+    runner: graph audit
+    created_at: 2026-07-13T01:51:02.554Z
+    completed_at: 2026-07-13T01:51:02.554Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 82 of 82 new ACs claimed exactly once; patch and verification tasks claim no behavioral
+      closure.
+    name: One-owner AC coverage
+    required: true
+    runner: 82-AC audit
+    created_at: 2026-07-13T01:51:05.737Z
+    completed_at: 2026-07-13T01:51:05.737Z
 events:
   - _ulid: 01KXCJHE875NTZ1XGNPAD15814
     actor: codex
@@ -352,6 +406,41 @@ events:
       status: fail
       name: Cleanup transition and matching-scope contract
     timestamp: 2026-07-13T01:50:37.806Z
+  - _ulid: 01KXCJQ2H0DV20K4K16C51M0KG
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Exact lifecycle row schemas and casing boundary
+    timestamp: 2026-07-13T01:50:53.472Z
+  - _ulid: 01KXCJQ5K073YXPXAPDNFGQWXM
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Persistence publication and recovery architecture
+    timestamp: 2026-07-13T01:50:56.608Z
+  - _ulid: 01KXCJQ8KVYSWD3REC5R5VQVBM
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Event taxonomy errors and sanitization
+    timestamp: 2026-07-13T01:50:59.707Z
+  - _ulid: 01KXCJQBMK9HHWHGKHERJQJ7P9
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Graph priority dependency resolution
+    timestamp: 2026-07-13T01:51:02.803Z
+  - _ulid: 01KXCJQEQGR05AV48Y3RDK4ZD8
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: One-owner AC coverage
+    timestamp: 2026-07-13T01:51:05.968Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -401,5 +490,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-13T01:47:48.871Z
-updated_at: 2026-07-13T01:50:37.550Z
+updated_at: 2026-07-13T01:51:05.737Z
 notes: []
