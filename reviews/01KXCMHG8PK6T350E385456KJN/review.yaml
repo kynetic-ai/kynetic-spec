@@ -124,6 +124,18 @@ checks:
     runner: test and fixture audit
     created_at: 2026-07-13T02:24:21.880Z
     completed_at: 2026-07-13T02:24:21.880Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Module, eight patched owners, and all task spec_ref/depends_on/Covers refs resolve
+      locally. Repository refs failure remains exactly the seven authorized unrelated ambiguities
+      and adds no plan-local row.
+    name: Plan-local refs and isolated baseline
+    required: true
+    runner: targeted kspec audit
+    created_at: 2026-07-13T02:24:27.157Z
+    completed_at: 2026-07-13T02:24:27.157Z
 events:
   - _ulid: 01KXCMHG8PY3H38JQT5FDYA7TW
     actor: codex
@@ -208,6 +220,13 @@ events:
       status: pass
       name: Commands fixtures and Playwright
     timestamp: 2026-07-13T02:24:22.111Z
+  - _ulid: 01KXCMMH843E11VWWZFWRR66ZY
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan-local refs and isolated baseline
+    timestamp: 2026-07-13T02:24:27.396Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -220,5 +239,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:22:48.086Z
-updated_at: 2026-07-13T02:24:21.880Z
+updated_at: 2026-07-13T02:24:27.157Z
 notes: []
