@@ -17,6 +17,62 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-13T00:29:18.398Z
+  - _ulid: 01KXCE3C6E3DBYRVXCNXS5TPSS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCE3BYVTKM3DW3C0AS84JYQ
+    timestamp: 2026-07-13T00:30:13.710Z
+  - _ulid: 01KXCE3F806K5X7QZ7SKCFEVDS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCE3F0KS7YW2PCXJ54VCTKF
+    timestamp: 2026-07-13T00:30:16.832Z
+  - _ulid: 01KXCE3J8YNFK90W4KFJBWVAD3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCE3J1NTTBV4HDM5NXNCYBH
+    timestamp: 2026-07-13T00:30:19.934Z
+  - _ulid: 01KXCE3NYZ2YK4K1V4Y55SSTPW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCE3NQX3CSKGN8V7HCH71V9
+    timestamp: 2026-07-13T00:30:23.711Z
+  - _ulid: 01KXCE3RX37R89B85TAWRDZ3PJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCE3RNTDKM10R2D37XWGTVM
+    timestamp: 2026-07-13T00:30:26.723Z
+  - _ulid: 01KXCE3VTPQKXY958S1RQ93SSQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCE3VK49HGB5XHJP5E7HM62
+    timestamp: 2026-07-13T00:30:29.718Z
+  - _ulid: 01KXCE3YR7E1HMWD90RV727E8C
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCE3YH1P0CG34SM1YPGDD3M
+    timestamp: 2026-07-13T00:30:32.711Z
+  - _ulid: 01KXCE41J9CSW3FNGKEACY9BAE
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXCE41BHN8SCKHF18RRTMFCN
+    timestamp: 2026-07-13T00:30:35.593Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -26,8 +82,156 @@ subject:
   content_hash: ""
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXCE3BYVTKM3DW3C0AS84JYQ
+    anchor:
+      type: structured
+      ref: "@task-dispatch-control-persistence"
+      section: tasks
+    entries:
+      - _ulid: 01KXCE3BYVAKPN041ZJQT11V9B
+        author: Jacob Chapel
+        body: "Primary ownership is still not executable at the owning task dependency point.
+          task-dispatch-control-persistence claims ac-controls-survive-restart although it
+          explicitly disclaims scheduling and does not modify bootstrap, while
+          task-engine-global-lifecycle owns loading authority before bootstrap. It also claims
+          ac-task-control-uses-canonical-identity although canonical ref resolution and application
+          are implemented later by task-engine-task-pause-resume. These ACs cannot receive
+          behavioral closure in the persistence task. Move each primary claim and its required tests
+          to the task that owns the observable behavior, or change dependencies and scope so the
+          named owner can actually close it. Affected: task-dispatch-control-persistence,
+          task-engine-global-lifecycle, task-engine-task-pause-resume."
+        created_at: 2026-07-13T00:30:13.467Z
+    kind: blocker
+  - _ulid: 01KXCE3F0KS7YW2PCXJ54VCTKF
+    anchor:
+      type: structured
+      ref: "@task-final-pre-spawn-control-gate"
+      section: tasks
+    entries:
+      - _ulid: 01KXCE3F0K97E266MMJV4608V2
+        author: Jacob Chapel
+        body: "task-final-pre-spawn-control-gate claims ac-spawn-win-stop-cancels-invocation, but its
+          handoff explicitly says no cancellation claim, it does not depend on stop recovery, and it
+          owns only the final gate and durable active handoff. Cancellation is implemented later by
+          task-engine-stop-recovery. The current owner cannot implement or behaviorally test the AC
+          at its dependency point. Move the cancellation AC to task-engine-stop-recovery or split
+          the gate handoff outcome from the later cancellation outcome. Affected:
+          task-final-pre-spawn-control-gate, task-engine-stop-recovery."
+        created_at: 2026-07-13T00:30:16.595Z
+    kind: blocker
+  - _ulid: 01KXCE3J1NTTBV4HDM5NXNCYBH
+    anchor:
+      type: structured
+      ref: "@dispatch-event-payload"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXCE3J1NA73Z9MHV0RSNZ3TB
+        author: Jacob Chapel
+        body: "Two exact event patches still fail the atomic independently-testable AC gate.
+          ac-dispatch-control-common-fields combines the base field set, task versus global identity
+          presence, and failed-only error_code behavior, while ac-dispatch-control-task-identity
+          duplicates part of that branch. ac-dispatch-control-field-bounds combines three
+          independent maximum lengths with control-character removal and whitespace normalization.
+          Split these into one observable assertion per field or presence branch and update the
+          exact patch and Covers mappings. Affected: task-patch-dispatch-events-specs,
+          task-dispatch-lifecycle-events."
+        created_at: 2026-07-13T00:30:19.701Z
+    kind: blocker
+  - _ulid: 01KXCE3NQX3CSKGN8V7HCH71V9
+    anchor:
+      type: structured
+      ref: "@task-dispatch-lifecycle-events"
+      section: description
+    entries:
+      - _ulid: 01KXCE3NQXNB8VXCS9XQVM80XK
+        author: Jacob Chapel
+        body: "The event handoff is not task-local for failure semantics. It inlines the 17 allowed codes,
+          identifiers, bounds, and redactions, but it does not inline the disjoint failure-class to
+          error_code mapping; that mapping exists only in top-level plan prose. A fresh worker
+          cannot determine which code to emit for each identity, store, commit, cancellation,
+          closure, and recovery failure from this task alone. Inline the exhaustive predicate map
+          and exact applied, noop, and failed emission cases. Affected:
+          task-dispatch-lifecycle-events, task-verify-api-cli-projection."
+        created_at: 2026-07-13T00:30:23.485Z
+    kind: blocker
+  - _ulid: 01KXCE3RNTDKM10R2D37XWGTVM
+    anchor:
+      type: structured
+      ref: "@task-daemon-dispatch-lifecycle-api"
+      section: description
+    entries:
+      - _ulid: 01KXCE3RNTDESREGPMYRN5QNS4
+        author: Jacob Chapel
+        body: "The API handoff still depends on top-level plan prose for exact compatibility behavior. It
+          says to preserve existing success, no-op, and Elysia 400 alias shapes and refers to route
+          bases, but it does not inline the complete POST dispatch, start, and stop 200, 400,
+          cwd-conflict, no-engine, precommit, and postcommit bodies or the engine-present and
+          no-engine status tables. The user-required task-local API contract therefore cannot be
+          deep-equality implemented from the task body alone. Inline every route and status row,
+          including conditional field presence and sanitized path-free exceptions. Affected:
+          task-daemon-dispatch-lifecycle-api, task-verify-api-cli-projection."
+        created_at: 2026-07-13T00:30:26.491Z
+    kind: blocker
+  - _ulid: 01KXCE3VK49HGB5XHJP5E7HM62
+    anchor:
+      type: structured
+      ref: "@task-cli-dispatch-lifecycle-controls"
+      section: description
+    entries:
+      - _ulid: 01KXCE3VK4RDQTF9SRASZ16QQJ
+        author: Jacob Chapel
+        body: "The CLI handoff is incomplete and its file inventory misses an existing regression owner. It
+          requires all mutations to move from legacy start and stop endpoints to POST api agent
+          dispatch control, but tests/cli-daemon-endpoint-regression.test.ts currently asserts the
+          legacy start and stop URLs and is absent from Files and Verification, so the planned
+          implementation would leave a known failing suite. The task also says fixed human and JSON
+          messages without enumerating the exact message and suggestion for each closed error code.
+          Add the endpoint regression suite and inline the command, endpoint, prompt, output,
+          error-message, and exit table. Affected: task-cli-dispatch-lifecycle-controls,
+          task-verify-api-cli-projection."
+        created_at: 2026-07-13T00:30:29.476Z
+    kind: blocker
+  - _ulid: 01KXCE3YH1P0CG34SM1YPGDD3M
+    anchor:
+      type: structured
+      ref: "@task-ui-dispatch-lifecycle-controls"
+      section: description
+    entries:
+      - _ulid: 01KXCE3YH1VNACK2DNDE3VDCW7
+        author: Jacob Chapel
+        body: "The UI handoff has the correct consumer inventory and mixed-version fallback, but its control
+          contract is still plan-dependent: render only matrix-valid controls does not state the
+          global and task action matrix or the enabled, hidden, confirmation, and pending-cleanup
+          behavior for each authority and projection. Those exact decisions live only above the task
+          block. Inline the per-state control and evidence table so every listed consumer can be
+          implemented and tested without reopening parent prose. Affected:
+          task-ui-dispatch-lifecycle-controls, task-verify-ui-lifecycle-browser."
+        created_at: 2026-07-13T00:30:32.481Z
+    kind: blocker
+  - _ulid: 01KXCE41BHN8SCKHF18RRTMFCN
+    anchor:
+      type: structured
+      ref: "@task-verify-engine-restart-races"
+      section: tasks
+    entries:
+      - _ulid: 01KXCE41BHPBKYQNN1JGT49BSC
+        author: Jacob Chapel
+        body: "The three verification slices are bounded by domain but still fall below the direct Hyphoria
+          standalone-test bar. task-verify-engine-restart-races and task-verify-api-cli-projection
+          aggregate scenario nouns without exact fixture construction, barrier ordering, or per-case
+          expected observations. task-verify-ui-lifecycle-browser omits the executable Playwright
+          command entirely even though it creates tests/e2e/dispatch-lifecycle.spec.ts; it names no
+          exact test fixture, selector, daemon setup, or state-to-control expectations. Direct
+          comparators were Hyphoria plans 01KX9FG7Y7W1MT9T6MRQX0W26D, 01KX55K45VYESY5CS24C9HMENA,
+          and 01KX3W9ZXWJ8ZJZC0EMRFE242T, whose tasks include exact authorities, cases, sources,
+          commands, and evidence. Expand each slice with concrete setup and assertions and add npm
+          run test:e2e -- tests/e2e/dispatch-lifecycle.spec.ts to the browser verification.
+          Affected: task-verify-engine-restart-races, task-verify-api-cli-projection,
+          task-verify-ui-lifecycle-browser."
+        created_at: 2026-07-13T00:30:35.377Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-13T00:28:46.171Z
-updated_at: 2026-07-13T00:29:18.176Z
+updated_at: 2026-07-13T00:30:35.377Z
 notes: []
