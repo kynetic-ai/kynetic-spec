@@ -1,14 +1,4 @@
 resources:
-  - description: AC detail reference for stale/re-verify explanation, diff, evidence, and resolution
-      action cards.
-    bytes: 82671
-    content_type: image/png
-    git_commit: null
-    git_path: null
-    id: shot-spec-state-stale-ac
-    label: Stale/re-verify AC detail
-    path: handoff/shots/r3-spec-states-3-stale-ac.png
-    sha256: 164f12153268332a70fb6e26efd50d2f17df4dd13e00b15c1ccbf0310f50ee36
   - description: React wireframe source for interaction details and sample copy only; target
       implementation remains Svelte.
     bytes: 22921
