@@ -304,6 +304,59 @@ checks:
     runner: plan resource list
     created_at: 2026-07-13T01:51:33.175Z
     completed_at: 2026-07-13T01:51:33.175Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Draft, null branch, no derived work, module @agent-integration, derive false, 20 explicit
+      tasks.
+    name: Draft materialization state
+    required: true
+    runner: plan/parser audit
+    created_at: 2026-07-13T01:51:51.348Z
+    completed_at: 2026-07-13T01:51:51.348Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Legacy fields, runner conditionals, queued omission, Elysia 400, path-free cwd errors,
+      identity absence, and failure mappings are preserved.
+    name: Sanitized legacy compatibility
+    required: true
+    runner: source/test/plan audit
+    created_at: 2026-07-13T01:51:54.687Z
+    completed_at: 2026-07-13T01:51:54.687Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Module and eight patch owners resolve; related contracts and traits inspected; no
+      duplicate authority or trait conflict.
+    name: Spec hierarchy neighborhood and traits
+    required: true
+    runner: kspec audit
+    created_at: 2026-07-13T01:51:57.952Z
+    completed_at: 2026-07-13T01:51:57.952Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All plan refs resolve; global refs failure is exactly seven documented unrelated ambiguities.
+    name: Plan-local references and baseline isolation
+    required: true
+    runner: targeted kspec audit
+    created_at: 2026-07-13T01:52:01.078Z
+    completed_at: 2026-07-13T01:52:01.078Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 4 on exactly seven pre-existing ambiguities; isolated and not claimed green.
+    name: kspec validate refs repository baseline
+    required: false
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-13T01:52:04.162Z
+    completed_at: 2026-07-13T01:52:04.162Z
 events:
   - _ulid: 01KXCJHE875NTZ1XGNPAD15814
     actor: codex
@@ -528,6 +581,41 @@ events:
       status: pass
       name: Resource relevance
     timestamp: 2026-07-13T01:51:33.410Z
+  - _ulid: 01KXCJRVASN0GJMS1QJD74VTF1
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Draft materialization state
+    timestamp: 2026-07-13T01:51:51.641Z
+  - _ulid: 01KXCJRYJ6QYJ7R7461MHA4HCP
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Sanitized legacy compatibility
+    timestamp: 2026-07-13T01:51:54.950Z
+  - _ulid: 01KXCJS1QTRN9QFPKV2TETYSF6
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec hierarchy neighborhood and traits
+    timestamp: 2026-07-13T01:51:58.202Z
+  - _ulid: 01KXCJS4SMS1WQW6465QB7YFQT
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan-local references and baseline isolation
+    timestamp: 2026-07-13T01:52:01.332Z
+  - _ulid: 01KXCJS7RT4W9QN17D0J5857KN
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs repository baseline
+    timestamp: 2026-07-13T01:52:04.378Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -577,5 +665,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-13T01:47:48.871Z
-updated_at: 2026-07-13T01:51:33.175Z
+updated_at: 2026-07-13T01:52:04.162Z
 notes: []
