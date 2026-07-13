@@ -882,9 +882,16 @@ events:
         content_hash: ""
       decision: request_changes
     timestamp: 2026-07-13T01:15:09.500Z
+  - _ulid: 01KXCGPR8SAQD4BW13JSDBNNE7
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: closed
+      to: archived
+    timestamp: 2026-07-13T01:15:45.817Z
 examined_commit: null
 external_links: []
-lifecycle_state: closed
+lifecycle_state: archived
 related_refs: []
 subject:
   type: plan
@@ -987,5 +994,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-13T01:15:09.500Z
 created_at: 2026-07-13T01:09:09.424Z
-updated_at: 2026-07-13T01:15:09.500Z
+updated_at: 2026-07-13T01:15:45.523Z
 notes: []

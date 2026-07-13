@@ -29111,7 +29111,7 @@ reviews:
     disposition: changes_requested
     author: codex
     check_count: 44
-    lifecycle_state: closed
+    lifecycle_state: archived
     related_refs: []
     subject:
       type: plan
@@ -29122,4 +29122,4 @@ reviews:
     unresolved_blocker_count: 4
     verdict_count: 2
     created_at: 2026-07-13T01:09:09.424Z
-    updated_at: 2026-07-13T01:15:09.500Z
+    updated_at: 2026-07-13T01:15:45.523Z
