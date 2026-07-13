@@ -1,0 +1,26 @@
+_ulid: 01KXCGPTWQFCY4PSJJC2X7V90R
+slugs: []
+title: "Canonical closure review: Dispatch Lifecycle Pause Resume and Stop Controls (post-01KXCE0)"
+author: codex
+checks: []
+events:
+  - _ulid: 01KXCGPTWQG6VKXSQTET9CCXZ7
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-13T01:15:48.503Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-13T01:15:48.503Z
+updated_at: null
+notes: []
