@@ -29222,3 +29222,23 @@ reviews:
     verdict_count: 0
     created_at: 2026-07-13T02:19:54.504Z
     updated_at: 2026-07-13T02:22:27.464Z
+  - _ulid: 01KXCMHG8PK6T350E385456KJN
+    slugs:
+      - canonical-final-closure-review-dispatch-lifecycle-post-01kxcjv3-clean
+    title: "Canonical final closure review: Dispatch Lifecycle Pause Resume and Stop Controls
+      (post-01KXCJV3 revision, clean)"
+    disposition: pending
+    author: codex
+    check_count: 0
+    examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-13T02:22:48.086Z
