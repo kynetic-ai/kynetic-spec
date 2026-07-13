@@ -28,6 +28,16 @@ checks:
     runner: plan parser/import
     created_at: 2026-07-13T02:20:45.769Z
     completed_at: 2026-07-13T02:20:45.769Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Six independent patches contain exactly 10 + 14 + 9 + 15 + 17 + 1 = 66 operations.
+    name: Exact 66 operations
+    required: true
+    runner: payload audit
+    created_at: 2026-07-13T02:20:50.889Z
+    completed_at: 2026-07-13T02:20:50.889Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -56,6 +66,13 @@ events:
       status: pass
       name: Source stored identity and parser
     timestamp: 2026-07-13T02:20:46.012Z
+  - _ulid: 01KXCMDY1TY9RGPRN0P0H1MECC
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Exact 66 operations
+    timestamp: 2026-07-13T02:20:51.130Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -68,5 +85,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:20:45.769Z
+updated_at: 2026-07-13T02:20:50.889Z
 notes: []
