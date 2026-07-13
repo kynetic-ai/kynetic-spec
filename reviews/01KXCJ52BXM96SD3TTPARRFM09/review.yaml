@@ -13,8 +13,8 @@ checks:
     name: Historical review gates
     required: true
     runner: kspec review audit
-    created_at: 2026-07-13T01:42:20.600Z
-    completed_at: 2026-07-13T01:42:20.600Z
+    created_at: 2026-07-13T01:43:37.465Z
+    completed_at: 2026-07-13T01:43:37.465Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -25,8 +25,8 @@ checks:
     name: Stored plan integrity and parser materialization
     required: true
     runner: parser/import
-    created_at: 2026-07-13T01:42:23.618Z
-    completed_at: 2026-07-13T01:42:23.618Z
+    created_at: 2026-07-13T01:43:40.639Z
+    completed_at: 2026-07-13T01:43:40.639Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -35,8 +35,8 @@ checks:
     name: Exact 66 spec operations
     required: true
     runner: payload audit
-    created_at: 2026-07-13T01:42:27.844Z
-    completed_at: 2026-07-13T01:42:27.844Z
+    created_at: 2026-07-13T01:43:43.643Z
+    completed_at: 2026-07-13T01:43:43.643Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -45,8 +45,8 @@ checks:
     name: Atomic behavioral ACs
     required: true
     runner: spec audit
-    created_at: 2026-07-13T01:42:31.819Z
-    completed_at: 2026-07-13T01:42:31.819Z
+    created_at: 2026-07-13T01:43:46.629Z
+    completed_at: 2026-07-13T01:43:46.629Z
   - status: fail
     applies_to_version:
       type: entity_version
@@ -56,8 +56,8 @@ checks:
     name: Cleanup transition and matching-scope contract
     required: true
     runner: matrix audit
-    created_at: 2026-07-13T01:42:35.873Z
-    completed_at: 2026-07-13T01:42:35.873Z
+    created_at: 2026-07-13T01:43:49.660Z
+    completed_at: 2026-07-13T01:43:49.660Z
   - status: fail
     applies_to_version:
       type: entity_version
@@ -68,8 +68,8 @@ checks:
     name: Exact lifecycle row schemas and casing boundary
     required: true
     runner: surface schema audit
-    created_at: 2026-07-13T01:42:39.464Z
-    completed_at: 2026-07-13T01:42:39.464Z
+    created_at: 2026-07-13T01:43:52.746Z
+    completed_at: 2026-07-13T01:43:52.746Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -80,8 +80,8 @@ checks:
     name: Persistence publication and recovery architecture
     required: true
     runner: source/contract audit
-    created_at: 2026-07-13T01:42:42.596Z
-    completed_at: 2026-07-13T01:42:42.596Z
+    created_at: 2026-07-13T01:43:55.746Z
+    completed_at: 2026-07-13T01:43:55.746Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -91,8 +91,8 @@ checks:
     name: Event taxonomy errors and sanitization
     required: true
     runner: task-local audit
-    created_at: 2026-07-13T01:42:45.829Z
-    completed_at: 2026-07-13T01:42:45.829Z
+    created_at: 2026-07-13T01:43:58.768Z
+    completed_at: 2026-07-13T01:43:58.768Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -101,8 +101,8 @@ checks:
     name: Graph priority dependency resolution
     required: true
     runner: graph audit
-    created_at: 2026-07-13T01:42:48.989Z
-    completed_at: 2026-07-13T01:42:48.989Z
+    created_at: 2026-07-13T01:44:01.924Z
+    completed_at: 2026-07-13T01:44:01.924Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -112,8 +112,8 @@ checks:
     name: One-owner AC coverage
     required: true
     runner: 82-AC audit
-    created_at: 2026-07-13T01:42:52.049Z
-    completed_at: 2026-07-13T01:42:52.049Z
+    created_at: 2026-07-13T01:44:04.918Z
+    completed_at: 2026-07-13T01:44:04.918Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -123,8 +123,8 @@ checks:
     name: Path and create ownership
     required: true
     runner: filesystem/ancestry audit
-    created_at: 2026-07-13T01:42:55.162Z
-    completed_at: 2026-07-13T01:42:55.162Z
+    created_at: 2026-07-13T01:44:07.996Z
+    completed_at: 2026-07-13T01:44:07.996Z
   - status: fail
     applies_to_version:
       type: entity_version
@@ -134,156 +134,19 @@ checks:
     name: Hyphoria-quality standalone handoffs
     required: true
     runner: manual 20-task audit
-    created_at: 2026-07-13T01:42:58.225Z
-    completed_at: 2026-07-13T01:42:58.225Z
+    created_at: 2026-07-13T01:44:11.071Z
+    completed_at: 2026-07-13T01:44:11.071Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: Browser task creates only tests/e2e/dispatch-lifecycle.spec.ts, imports shared
-      test/expect, accurately names acquire/start/run wrappers and fulfilled 503 static fallback,
-      and uses the supported single-file npm Playwright filter.
+    evidence: Browser task creates only tests/e2e/dispatch-lifecycle.spec.ts, accurately names shared
+      fixture wrappers and fulfilled 503 fallback, and uses the supported single-file filter.
     name: Playwright ownership fixture and bounded command
     required: true
     runner: E2E source audit
-    created_at: 2026-07-13T01:43:01.195Z
-    completed_at: 2026-07-13T01:43:01.195Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: All named npm, kspec, lint, typecheck, git diff, and Playwright commands resolve to
-      current scripts/helpers; focused commands are bounded.
-    name: Executable verification commands
-    required: true
-    runner: package/source audit
-    created_at: 2026-07-13T01:43:04.257Z
-    completed_at: 2026-07-13T01:43:04.257Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: resource_summary is zero resources and zero bytes.
-    name: Resource relevance
-    required: true
-    runner: plan resource list
-    created_at: 2026-07-13T01:43:07.447Z
-    completed_at: 2026-07-13T01:43:07.447Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: Plan remains draft with null branch, no derived specs/tasks, stored module
-      @agent-integration, derive false, and 20 explicit manual tasks.
-    name: Draft materialization state
-    required: true
-    runner: plan/parser audit
-    created_at: 2026-07-13T01:43:10.470Z
-    completed_at: 2026-07-13T01:43:10.470Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: Legacy field presence, runner conditionals, no-engine queued omission, native Elysia 400,
-      fixed path-free cwd errors, alias identities, and pre/postcommit mappings are explicitly
-      preserved.
-    name: Sanitized legacy compatibility
-    required: true
-    runner: source/test/plan audit
-    created_at: 2026-07-13T01:43:13.497Z
-    completed_at: 2026-07-13T01:43:13.497Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: Module and eight patch owners resolve; related dispatch contracts and trait catalog
-      inspected; no duplicate authority or unhandled trait conflict found.
-    name: Spec hierarchy neighborhood and traits
-    required: true
-    runner: kspec audit
-    created_at: 2026-07-13T01:43:16.562Z
-    completed_at: 2026-07-13T01:43:16.562Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: All plan spec_ref, depends_on, parent/materialization, and Covers owners resolve. The
-      global refs failure is exactly the seven documented unrelated ambiguous references and is not
-      claimed green.
-    name: Plan-local references and baseline isolation
-    required: true
-    runner: targeted kspec audit
-    created_at: 2026-07-13T01:43:19.518Z
-    completed_at: 2026-07-13T01:43:19.518Z
-  - status: fail
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: Exit 4 on exactly seven pre-existing @observations/@spec-plan-import ambiguities
-      documented by the plan; recorded as non-required isolated baseline.
-    name: kspec validate refs repository baseline
-    required: true
-    runner: kspec validate --refs --warnings-ok
-    created_at: 2026-07-13T01:43:22.361Z
-    completed_at: 2026-07-13T01:43:22.361Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: Both commands exit 0 with warnings-ok; existing 55 alignment and 332 completeness warnings
-      are unrelated to the unmaterialized draft.
-    name: kspec validate alignment and completeness
-    required: true
-    runner: kspec validate
-    created_at: 2026-07-13T01:43:25.283Z
-    completed_at: 2026-07-13T01:43:25.283Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: "143 of 143 tests passed across 27 suites: parser/import/derive, CLI endpoint regression,
-      daemon public API, and dispatch routes."
-    name: Focused parser and compatibility tests
-    required: true
-    runner: npm test
-    created_at: 2026-07-13T01:43:28.201Z
-    completed_at: 2026-07-13T01:43:28.201Z
-  - status: skipped
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: No implementation, spec materialization, or shared guidance changed; focused
-      current-contract tests ran and unrelated dirty code edits were preserved.
-    name: Product format lint typecheck full suite
-    required: true
-    runner: plan-only review
-    created_at: 2026-07-13T01:43:31.128Z
-    completed_at: 2026-07-13T01:43:31.128Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: Plan changes no shared/package guidance surface; direction-1/direction-2 preservation and
-      regeneration are not triggered.
-    name: Shared-guidance neutrality
-    required: true
-    runner: manual
-    created_at: 2026-07-13T01:43:34.053Z
-    completed_at: 2026-07-13T01:43:34.053Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: Read full 1704-line plan and all 20 tasks, historical gates, current API/CLI/UI/E2E
-      schemas and fixtures, eight spec owners, parser/materialization code,
-      graph/paths/resources/state. Ran hashes, parser/import, counts, graph/owner/path audits,
-      validations, shadow status, source inventory, and 143 focused tests across correctness,
-      recovery, compatibility, tests, paths, and baseline isolation.
-    name: Review evidence log
-    required: true
-    runner: manual
-    created_at: 2026-07-13T01:43:37.037Z
-    completed_at: 2026-07-13T01:43:37.037Z
+    created_at: 2026-07-13T01:44:14.153Z
+    completed_at: 2026-07-13T01:44:14.153Z
 events:
   - _ulid: 01KXCJ52BXG5BEQ2TEYZVKK4XV
     actor: codex
@@ -291,221 +154,121 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-13T01:41:03.485Z
-  - _ulid: 01KXCJ74YMS61C9XKTZ8XQ8KM8
+  - _ulid: 01KXCJ8TBGFCDMVTQQSF02N5BG
     actor: codex
     event_type: lifecycle_change
     payload:
       from: draft
       to: open
-    timestamp: 2026-07-13T01:42:11.668Z
-  - _ulid: 01KXCJ77YGJ5J0AKDSA92RXK5F
+    timestamp: 2026-07-13T01:43:06.352Z
+  - _ulid: 01KXCJ8XD2BDGDTKPSXQXPWYN5
     actor: codex
     event_type: thread_created
     payload:
       kind: blocker
-      thread_ulid: 01KXCJ77PYJD27RTXJN99MKV0K
-    timestamp: 2026-07-13T01:42:14.736Z
-  - _ulid: 01KXCJ7AXWP3YRCBS9CYHGWVFZ
+      thread_ulid: 01KXCJ8X5FBZ36W7418SP3NZNF
+    timestamp: 2026-07-13T01:43:09.474Z
+  - _ulid: 01KXCJ91AVPMK6Y0AD0FNMAK8D
     actor: codex
     event_type: thread_created
     payload:
       kind: blocker
-      thread_ulid: 01KXCJ7ANC8S1T7WVBEWZCBVGN
-    timestamp: 2026-07-13T01:42:17.789Z
-  - _ulid: 01KXCJ7DXBDV5QGFWCD0B4J2QG
+      thread_ulid: 01KXCJ913804KQZBTAKR779Z4S
+    timestamp: 2026-07-13T01:43:13.499Z
+  - _ulid: 01KXCJ9RZZJ69907WGPSFCR99F
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Historical review gates
-    timestamp: 2026-07-13T01:42:20.843Z
-  - _ulid: 01KXCJ7GVYM3AE19PFC078PS8F
+    timestamp: 2026-07-13T01:43:37.727Z
+  - _ulid: 01KXCJ9W2DW62VX3Y6J4WN0Z0P
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Stored plan integrity and parser materialization
-    timestamp: 2026-07-13T01:42:23.870Z
-  - _ulid: 01KXCJ7MZFN09BVECBE2VNS1G7
+    timestamp: 2026-07-13T01:43:40.877Z
+  - _ulid: 01KXCJ9Z0NKC8FAWZFCYJVXH1W
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Exact 66 spec operations
-    timestamp: 2026-07-13T01:42:28.079Z
-  - _ulid: 01KXCJ7RX0NKXY0F5KHBQPEX0V
+    timestamp: 2026-07-13T01:43:43.893Z
+  - _ulid: 01KXCJA1XFNCKN0DB4GS4Z87V9
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Atomic behavioral ACs
-    timestamp: 2026-07-13T01:42:32.096Z
-  - _ulid: 01KXCJ7WTKRYJ0EXN0WGW50C6T
+    timestamp: 2026-07-13T01:43:46.863Z
+  - _ulid: 01KXCJA4WDGSENG2CQ6S6S6XP0
     actor: codex
     event_type: check_added
     payload:
       status: fail
       name: Cleanup transition and matching-scope contract
-    timestamp: 2026-07-13T01:42:36.115Z
-  - _ulid: 01KXCJ80BVQ83V8GKSM3408H8Y
+    timestamp: 2026-07-13T01:43:49.901Z
+  - _ulid: 01KXCJA7XDXTG8XQ4MEHYXVVJN
     actor: codex
     event_type: check_added
     payload:
       status: fail
       name: Exact lifecycle row schemas and casing boundary
-    timestamp: 2026-07-13T01:42:39.739Z
-  - _ulid: 01KXCJ83D713SNYAF92XKSY0A0
+    timestamp: 2026-07-13T01:43:53.005Z
+  - _ulid: 01KXCJAAVHVP7FYMY31ANWV5KM
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Persistence publication and recovery architecture
-    timestamp: 2026-07-13T01:42:42.855Z
-  - _ulid: 01KXCJ86HTW4J4XVSPH0Z8T9JV
+    timestamp: 2026-07-13T01:43:56.017Z
+  - _ulid: 01KXCJADRXVT24HN2S01QRQZKP
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Event taxonomy errors and sanitization
-    timestamp: 2026-07-13T01:42:46.074Z
-  - _ulid: 01KXCJ89MQARHZFE7YEXEXTZ0G
+    timestamp: 2026-07-13T01:43:59.005Z
+  - _ulid: 01KXCJAGVXXZW3ETEG87SEMD4E
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Graph priority dependency resolution
-    timestamp: 2026-07-13T01:42:49.239Z
-  - _ulid: 01KXCJ8CMCV6ZE4Y705THG0ZSH
+    timestamp: 2026-07-13T01:44:02.173Z
+  - _ulid: 01KXCJAKTEH5A0DHY7K12ZJ6ZW
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: One-owner AC coverage
-    timestamp: 2026-07-13T01:42:52.300Z
-  - _ulid: 01KXCJ8FNM9XE4MVT41E8PYX1M
+    timestamp: 2026-07-13T01:44:05.198Z
+  - _ulid: 01KXCJAPSVQKXP83XKSV0JZM8Y
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Path and create ownership
-    timestamp: 2026-07-13T01:42:55.412Z
-  - _ulid: 01KXCJ8JMJFX3ZSWT5R76HM9A5
+    timestamp: 2026-07-13T01:44:08.251Z
+  - _ulid: 01KXCJASS79Y6XW2V6YMSAMC8J
     actor: codex
     event_type: check_added
     payload:
       status: fail
       name: Hyphoria-quality standalone handoffs
-    timestamp: 2026-07-13T01:42:58.450Z
-  - _ulid: 01KXCJ8NHWMYVSS7RAX59DBMKS
+    timestamp: 2026-07-13T01:44:11.303Z
+  - _ulid: 01KXCJAWSEYY3F3WXGBY2DKZSD
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: Playwright ownership fixture and bounded command
-    timestamp: 2026-07-13T01:43:01.436Z
-  - _ulid: 01KXCJ8RJ1TN5FVDAPBBZVM040
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: Executable verification commands
-    timestamp: 2026-07-13T01:43:04.513Z
-  - _ulid: 01KXCJ8VNSP47Z9SXQ7ZFY1E6X
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: Resource relevance
-    timestamp: 2026-07-13T01:43:07.705Z
-  - _ulid: 01KXCJ8YKGSWV6V6MRWXZAGJPE
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: Draft materialization state
-    timestamp: 2026-07-13T01:43:10.704Z
-  - _ulid: 01KXCJ91NBH1B6GF21YQHPZTTV
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: Sanitized legacy compatibility
-    timestamp: 2026-07-13T01:43:13.835Z
-  - _ulid: 01KXCJ94J4BQYTZ1XZKK1H1B8R
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: Spec hierarchy neighborhood and traits
-    timestamp: 2026-07-13T01:43:16.804Z
-  - _ulid: 01KXCJ97E28N4HSPG1QDH0GB2C
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: Plan-local references and baseline isolation
-    timestamp: 2026-07-13T01:43:19.746Z
-  - _ulid: 01KXCJ9A6WVW9H6FRPJYC19DQK
-    actor: codex
-    event_type: check_added
-    payload:
-      status: fail
-      name: kspec validate refs repository baseline
-    timestamp: 2026-07-13T01:43:22.588Z
-  - _ulid: 01KXCJ9D2JC8GS5DHTKX7KAD79
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: kspec validate alignment and completeness
-    timestamp: 2026-07-13T01:43:25.522Z
-  - _ulid: 01KXCJ9FXD5Y18SFMKTW7HS54D
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: Focused parser and compatibility tests
-    timestamp: 2026-07-13T01:43:28.429Z
-  - _ulid: 01KXCJ9JSACS0SHT2MN2C0MCXF
-    actor: codex
-    event_type: check_added
-    payload:
-      status: skipped
-      name: Product format lint typecheck full suite
-    timestamp: 2026-07-13T01:43:31.370Z
-  - _ulid: 01KXCJ9NM6VDBCA8KJTAQDG045
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: Shared-guidance neutrality
-    timestamp: 2026-07-13T01:43:34.278Z
-  - _ulid: 01KXCJ9RHNGS6XEPV4J0TEWXVZ
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: Review evidence log
-    timestamp: 2026-07-13T01:43:37.269Z
-  - _ulid: 01KXCJ9VGNT7J3VDBDK901MDWF
-    actor: codex
-    event_type: verdict_submitted
-    payload:
-      applies_to_version:
-        type: entity_version
-        content_hash: ""
-      decision: request_changes
-    timestamp: 2026-07-13T01:43:40.309Z
-  - _ulid: 01KXCJ9VGN47JA8N7ZGWJNVDSJ
-    actor: codex
-    event_type: lifecycle_change
-    payload:
-      from: open
-      to: closed
-    timestamp: 2026-07-13T01:43:40.309Z
+    timestamp: 2026-07-13T01:44:14.382Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
-lifecycle_state: closed
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
@@ -513,13 +276,13 @@ subject:
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
 threads:
-  - _ulid: 01KXCJ77PYJD27RTXJN99MKV0K
+  - _ulid: 01KXCJ8X5FBZ36W7418SP3NZNF
     anchor:
       type: structured
       ref: "@task-engine-global-lifecycle"
       section: description
     entries:
-      - _ulid: 01KXCJ77PYC35K1H9V7K55W17B
+      - _ulid: 01KXCJ8X5F5HC1Z2B8QM3BHPDH
         author: codex
         body: "Cleanup scope is still contradictory. Top-level CleanupState explicitly aggregates global and
           task entries (global-first, then task entries), and the task matrix says global start may
@@ -531,15 +294,15 @@ threads:
           an implementer follows. Define matching-scope cleanup guards: global actions inspect the
           global entry only, task actions inspect that task nested entry, and add the stopped-global
           plus unrelated-task-cleanup row to every surface/alias/verification matrix."
-        created_at: 2026-07-13T01:42:14.494Z
+        created_at: 2026-07-13T01:43:09.231Z
     kind: blocker
-  - _ulid: 01KXCJ7ANC8S1T7WVBEWZCBVGN
+  - _ulid: 01KXCJ913804KQZBTAKR779Z4S
     anchor:
       type: structured
       ref: "@task-daemon-dispatch-lifecycle-api"
       section: description
     entries:
-      - _ulid: 01KXCJ7ANCYSR25K27X6X9FECK
+      - _ulid: 01KXCJ9138EC9W71HBP174ZJ5Y
         author: codex
         body: The closed wire schema is not reproduced consistently enough for standalone consumers. The
           binding schema permits a failed aggregate with error_code only on entries whose latest
@@ -551,16 +314,9 @@ threads:
           response JSON directly. Freeze the exact failed-entry refinement in API, CLI, UI, and both
           verification tasks, and specify the snake-to-camel normalization boundary so
           deep-equality/casing-rejection fixtures cannot diverge.
-        created_at: 2026-07-13T01:42:17.516Z
+        created_at: 2026-07-13T01:43:13.257Z
     kind: blocker
-verdicts:
-  - applies_to_version:
-      type: entity_version
-      content_hash: ""
-    decision: request_changes
-    reviewer: codex
-    role: reviewer
-    created_at: 2026-07-13T01:43:40.309Z
+verdicts: []
 created_at: 2026-07-13T01:41:03.485Z
-updated_at: 2026-07-13T01:43:40.309Z
+updated_at: 2026-07-13T01:44:14.153Z
 notes: []

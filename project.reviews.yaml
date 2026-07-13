@@ -29147,9 +29147,9 @@ reviews:
       revision)"
     disposition: changes_requested
     author: codex
-    check_count: 25
+    check_count: 13
     examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
-    lifecycle_state: closed
+    lifecycle_state: open
     related_refs: []
     subject:
       type: plan
@@ -29158,6 +29158,6 @@ reviews:
       shadow_commit: ""
     thread_count: 2
     unresolved_blocker_count: 2
-    verdict_count: 1
+    verdict_count: 0
     created_at: 2026-07-13T01:41:03.485Z
-    updated_at: 2026-07-13T01:43:40.309Z
+    updated_at: 2026-07-13T01:44:14.153Z
