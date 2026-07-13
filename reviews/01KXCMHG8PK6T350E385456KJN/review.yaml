@@ -161,6 +161,17 @@ checks:
     runner: manual
     created_at: 2026-07-13T02:24:37.767Z
     completed_at: 2026-07-13T02:24:37.767Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 4 on exactly seven unchanged pre-existing ambiguous @observations/@spec-plan-import
+      references; explicitly non-required and isolated by user direction.
+    name: Repository refs baseline
+    required: false
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-13T02:24:42.927Z
+    completed_at: 2026-07-13T02:24:42.927Z
 events:
   - _ulid: 01KXCMHG8PY3H38JQT5FDYA7TW
     actor: codex
@@ -266,6 +277,13 @@ events:
       status: pass
       name: Shared-guidance neutrality and evidence log
     timestamp: 2026-07-13T02:24:37.996Z
+  - _ulid: 01KXCMN0NQFMQCFPZKRFFFCMT0
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Repository refs baseline
+    timestamp: 2026-07-13T02:24:43.192Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -278,5 +296,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:22:48.086Z
-updated_at: 2026-07-13T02:24:37.767Z
+updated_at: 2026-07-13T02:24:42.927Z
 notes: []
