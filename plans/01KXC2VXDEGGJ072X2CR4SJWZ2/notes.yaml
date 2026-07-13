@@ -57,3 +57,8 @@ notes:
     content: Remove stale ownership table after task split
     author: Jacob Chapel
     created_at: 2026-07-13T00:18:35.243Z
+  - _ulid: 01KXCFCASVJ9ZZAWCJCHBFSCXZ
+    content: Close review 01KXCE0 dependency ownership, event atomicity, task-local surface contracts,
+      and executable verification blockers
+    author: Jacob Chapel
+    created_at: 2026-07-13T00:52:35.771Z
