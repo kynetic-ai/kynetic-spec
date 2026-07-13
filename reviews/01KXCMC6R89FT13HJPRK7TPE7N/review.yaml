@@ -74,6 +74,19 @@ checks:
     runner: surface schema audit
     created_at: 2026-07-13T02:21:06.716Z
     completed_at: 2026-07-13T02:21:06.716Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified task-local committed-object publication, rollback/watcher delivery, restart
+      admission, durable process/session/group ownership, phased recovery, six events, 17 error
+      mappings, canonical and legacy HTTP rows, CLI prompts/exits, evidence protection, and
+      Playwright coverage.
+    name: Persistence recovery events compatibility
+    required: true
+    runner: source and contract audit
+    created_at: 2026-07-13T02:21:12.206Z
+    completed_at: 2026-07-13T02:21:12.206Z
 events:
   - _ulid: 01KXCMC6R7BGHHSE3A1267BH6Z
     actor: codex
@@ -130,6 +143,13 @@ events:
       status: pass
       name: Exact schemas and casing boundaries
     timestamp: 2026-07-13T02:21:06.965Z
+  - _ulid: 01KXCMEJVVSZBB98XQSD7DEGBJ
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Persistence recovery events compatibility
+    timestamp: 2026-07-13T02:21:12.443Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -142,5 +162,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:19:54.504Z
-updated_at: 2026-07-13T02:21:06.716Z
+updated_at: 2026-07-13T02:21:12.206Z
 notes: []
