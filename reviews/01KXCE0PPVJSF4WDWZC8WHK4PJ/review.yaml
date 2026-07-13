@@ -82,6 +82,82 @@ checks:
     runner: parsed graph audit
     created_at: 2026-07-13T00:32:38.375Z
     completed_at: 2026-07-13T00:32:38.375Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 82 new-spec ACs are claimed exactly once; no missing or duplicate textual primary owner.
+    name: Textual one-owner coverage
+    required: true
+    runner: 82-AC Covers map
+    created_at: 2026-07-13T00:32:58.585Z
+    completed_at: 2026-07-13T00:32:58.585Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Persistence claims restart scheduling and canonical applied identity owned later; final
+      gate claims stop cancellation while preceding and disclaiming recovery cancellation.
+    name: Implementation-order behavioral ownership
+    required: true
+    runner: dependency-point audit
+    created_at: 2026-07-13T00:33:01.612Z
+    completed_at: 2026-07-13T00:33:01.612Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All baseline Modify paths exist; Create paths are absent and singly owned; every later
+      Modify has the creator in dependency ancestry. UI inventory matches current consumers.
+    name: Path and create ownership
+    required: true
+    runner: filesystem plus ancestor audit
+    created_at: 2026-07-13T00:33:04.554Z
+    completed_at: 2026-07-13T00:33:04.554Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Browser verification never runs test:e2e, CLI omits the endpoint regression suite it must
+      change, and three verification slices lack exact per-case setup and observations.
+    name: Executable commands and behavioral cases
+    required: true
+    runner: package script and task audit
+    created_at: 2026-07-13T00:33:07.421Z
+    completed_at: 2026-07-13T00:33:07.421Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Zero attached resources; prior unrelated resources are gone.
+    name: Resource relevance
+    required: true
+    runner: plan resource list
+    created_at: 2026-07-13T00:33:10.301Z
+    completed_at: 2026-07-13T00:33:10.301Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan remains draft with no derived work; derive false suppresses the generic
+      implementation task.
+    name: Draft and no generic task state
+    required: true
+    runner: plan get plus parser
+    created_at: 2026-07-13T00:33:13.160Z
+    completed_at: 2026-07-13T00:33:13.160Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Top-level plan freezes path-free cwd messages, current field presence, no-engine queued
+      omission, three exact invalid-transition bodies, and precommit versus cleanup errors.
+      Task-local gaps fail separately.
+    name: Sanitized legacy compatibility decision
+    required: true
+    runner: compatibility audit
+    created_at: 2026-07-13T00:33:16.055Z
+    completed_at: 2026-07-13T00:33:16.055Z
 events:
   - _ulid: 01KXCE0PPV9FHBFR1Y21GMC6GW
     actor: Jacob Chapel
@@ -201,6 +277,55 @@ events:
       status: pass
       name: Graph and priority
     timestamp: 2026-07-13T00:32:38.605Z
+  - _ulid: 01KXCE8DEHCYE92GD5Q0V5MZWZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Textual one-owner coverage
+    timestamp: 2026-07-13T00:32:58.833Z
+  - _ulid: 01KXCE8GD0DJHRTYVV8SNXQBZW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Implementation-order behavioral ownership
+    timestamp: 2026-07-13T00:33:01.856Z
+  - _ulid: 01KXCE8K868826N73DZ68C6H67
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Path and create ownership
+    timestamp: 2026-07-13T00:33:04.774Z
+  - _ulid: 01KXCE8P1XMTSGBJ30RNPTABVB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Executable commands and behavioral cases
+    timestamp: 2026-07-13T00:33:07.645Z
+  - _ulid: 01KXCE8RVVTW79G8D3NGM1ND9R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Resource relevance
+    timestamp: 2026-07-13T00:33:10.523Z
+  - _ulid: 01KXCE8VP59BZ8199KWHZP50C2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Draft and no generic task state
+    timestamp: 2026-07-13T00:33:13.413Z
+  - _ulid: 01KXCE8YGBJ2GWCJJDCP6ZA2EP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Sanitized legacy compatibility decision
+    timestamp: 2026-07-13T00:33:16.299Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -361,5 +486,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-13T00:28:46.171Z
-updated_at: 2026-07-13T00:32:38.375Z
+updated_at: 2026-07-13T00:33:16.055Z
 notes: []
