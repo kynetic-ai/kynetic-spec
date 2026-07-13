@@ -1,14 +1,4 @@
 resources:
-  - description: Coverage visual recommendation; use four current UI buckets plus secondary re-verify
-      causes in this plan.
-    bytes: 85159
-    content_type: image/png
-    git_commit: null
-    git_path: null
-    id: shot-coverage-five-state
-    label: Coverage five-state recommendation
-    path: handoff/shots/r3-coverage-4-five-state-alt.png
-    sha256: a514d69630262ec638f66900b27fc8ceccd6b52d5cf8b50b3be72cf0b9450e63
   - description: Requirement page with coverage-state filter chips, state rows, and re-verify banner reference.
     bytes: 88486
     content_type: image/png
