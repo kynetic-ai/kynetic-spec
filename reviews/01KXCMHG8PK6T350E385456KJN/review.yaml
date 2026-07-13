@@ -61,6 +61,19 @@ checks:
     runner: matrix and consumer audit
     created_at: 2026-07-13T02:23:55.347Z
     completed_at: 2026-07-13T02:23:55.347Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every consumer freezes per-entry pending/failed status, failed-entry error_code required,
+      pending-entry error_code forbidden, failed aggregate at least one failed entry, and mixed
+      pending+failed support. Public snake_case is normalized only in web api.ts to UI camelCase;
+      CLI/internal hybrid casing is explicitly separate.
+    name: Exact schemas and casing boundaries
+    required: true
+    runner: surface schema audit
+    created_at: 2026-07-13T02:24:00.748Z
+    completed_at: 2026-07-13T02:24:00.748Z
 events:
   - _ulid: 01KXCMHG8PY3H38JQT5FDYA7TW
     actor: codex
@@ -110,6 +123,13 @@ events:
       status: pass
       name: Matching-scope cleanup gating
     timestamp: 2026-07-13T02:23:55.584Z
+  - _ulid: 01KXCMKQEX5WQGM9XT1JP3XDX3
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Exact schemas and casing boundaries
+    timestamp: 2026-07-13T02:24:00.989Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -122,5 +142,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:22:48.086Z
-updated_at: 2026-07-13T02:23:55.347Z
+updated_at: 2026-07-13T02:24:00.748Z
 notes: []
