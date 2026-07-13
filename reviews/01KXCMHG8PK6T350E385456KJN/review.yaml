@@ -302,9 +302,25 @@ events:
       status: skipped
       name: Product format lint typecheck full suite
     timestamp: 2026-07-13T02:24:48.868Z
+  - _ulid: 01KXCMNPT5ZESJQV99PY0Y3XXJ
+    actor: codex
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-07-13T02:25:05.862Z
+  - _ulid: 01KXCMNPT60Q8E8BKAW6CDP563
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-13T02:25:05.862Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -312,7 +328,14 @@ subject:
   ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: codex
+    role: reviewer
+    created_at: 2026-07-13T02:25:05.861Z
 created_at: 2026-07-13T02:22:48.086Z
-updated_at: 2026-07-13T02:24:48.624Z
+updated_at: 2026-07-13T02:25:05.862Z
 notes: []
