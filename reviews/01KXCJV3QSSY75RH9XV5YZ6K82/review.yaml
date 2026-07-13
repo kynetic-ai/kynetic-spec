@@ -56,6 +56,60 @@ checks:
     runner: matrix audit
     created_at: 2026-07-13T01:54:14.676Z
     completed_at: 2026-07-13T01:54:14.676Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Canonical identity fields are mostly exact, but failed-entry refinement and public-snake
+      to UI-camel normalization diverge.
+    name: Exact schemas and canonical identity
+    required: true
+    runner: surface audit
+    created_at: 2026-07-13T01:54:33.913Z
+    completed_at: 2026-07-13T01:54:33.913Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Publication, watcher, ownership, recovery phases, closed events/errors, sanitization, and
+      legacy aliases are source-consistent and task-local.
+    name: Persistence recovery events compatibility
+    required: true
+    runner: source/contract audit
+    created_at: 2026-07-13T01:54:37.004Z
+    completed_at: 2026-07-13T01:54:37.004Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 20 nodes, 24 edges, no cycles or inversions; 19 Creates plus 74 Modifies with zero
+      anomalies; zero resources; draft and unmaterialized.
+    name: Graph priority path resource state
+    required: true
+    runner: deterministic audit
+    created_at: 2026-07-13T01:54:40.158Z
+    completed_at: 2026-07-13T01:54:40.158Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 20 read; two cross-surface ambiguities keep affected handoffs non-standalone.
+    name: Hyphoria standalone handoffs
+    required: true
+    runner: manual 20-task audit
+    created_at: 2026-07-13T01:54:43.153Z
+    completed_at: 2026-07-13T01:54:43.153Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Only new spec owned; shared wrappers and fulfilled 503 accurate; supported bounded file
+      filter; all named commands resolve.
+    name: Playwright ownership fixtures commands
+    required: true
+    runner: E2E and package audit
+    created_at: 2026-07-13T01:54:46.381Z
+    completed_at: 2026-07-13T01:54:46.381Z
 events:
   - _ulid: 01KXCJV3QS22B5ZJ0WK5HF4T6X
     actor: codex
@@ -119,6 +173,41 @@ events:
       status: fail
       name: Cleanup transition scope
     timestamp: 2026-07-13T01:54:14.904Z
+  - _ulid: 01KXCJXT1Q0Z26Y5H4D36DCWGK
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Exact schemas and canonical identity
+    timestamp: 2026-07-13T01:54:34.167Z
+  - _ulid: 01KXCJXX27E624MKW0FJWYXTE5
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Persistence recovery events compatibility
+    timestamp: 2026-07-13T01:54:37.255Z
+  - _ulid: 01KXCJY04CJQBW9KW1EB19Q2G6
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Graph priority path resource state
+    timestamp: 2026-07-13T01:54:40.396Z
+  - _ulid: 01KXCJY3295EDFZQBPGJ1QE7TB
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: Hyphoria standalone handoffs
+    timestamp: 2026-07-13T01:54:43.401Z
+  - _ulid: 01KXCJY66WRDBM87TW8WW5EK6V
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: Playwright ownership fixtures commands
+    timestamp: 2026-07-13T01:54:46.620Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -162,5 +251,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-13T01:53:05.785Z
-updated_at: 2026-07-13T01:54:14.676Z
+updated_at: 2026-07-13T01:54:46.381Z
 notes: []
