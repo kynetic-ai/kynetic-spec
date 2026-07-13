@@ -38,6 +38,17 @@ checks:
     runner: payload audit
     created_at: 2026-07-13T02:23:44.448Z
     completed_at: 2026-07-13T02:23:44.448Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 82 unique AC IDs; 82 primary claims; zero missing or duplicate owners; atomicity and
+      dependency-point ownership rechecked.
+    name: 82 exact one-owner ACs
+    required: true
+    runner: AC ownership audit
+    created_at: 2026-07-13T02:23:49.864Z
+    completed_at: 2026-07-13T02:23:49.864Z
 events:
   - _ulid: 01KXCMHG8PY3H38JQT5FDYA7TW
     actor: codex
@@ -73,6 +84,13 @@ events:
       status: pass
       name: Exact 66 operations
     timestamp: 2026-07-13T02:23:44.701Z
+  - _ulid: 01KXCMKCTVG8VAEQGXJQV3W83F
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: 82 exact one-owner ACs
+    timestamp: 2026-07-13T02:23:50.107Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -85,5 +103,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-13T02:22:48.086Z
-updated_at: 2026-07-13T02:23:44.448Z
+updated_at: 2026-07-13T02:23:49.864Z
 notes: []
