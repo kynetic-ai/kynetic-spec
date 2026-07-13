@@ -385,6 +385,128 @@ checks:
     runner: manual 20-task audit
     created_at: 2026-07-13T01:13:59.093Z
     completed_at: 2026-07-13T01:13:59.093Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Script forwards positional filters and is supported/bounded, but planned filter omits two
+      modified E2E specs and fixture/static routing prose is inaccurate.
+    name: Browser command support and bounded selection
+    required: true
+    runner: npm and Playwright CLI/source audit
+    created_at: 2026-07-13T01:14:30.378Z
+    completed_at: 2026-07-13T01:14:30.378Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No resources; count 0 and bytes 0.
+    name: Resource relevance
+    required: true
+    runner: kspec plan resource list
+    created_at: 2026-07-13T01:14:33.416Z
+    completed_at: 2026-07-13T01:14:33.416Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Draft, no derived specs/tasks, null branch, module stored, derive false, 20 explicit
+      tasks; regression tests prove no generic task.
+    name: Draft and materialization state
+    required: true
+    runner: plan get parser and derive tests
+    created_at: 2026-07-13T01:14:36.369Z
+    completed_at: 2026-07-13T01:14:36.369Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Path-free cwd correction is explicit while legacy field presence, no-engine queued
+      omission, Elysia 400, invalid-transition bodies, and pre/postcommit distinctions are
+      preserved.
+    name: Sanitized legacy compatibility
+    required: true
+    runner: source tests and plan audit
+    created_at: 2026-07-13T01:14:39.329Z
+    completed_at: 2026-07-13T01:14:39.329Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Module and eight patch owners resolve; related dispatch contracts exist; no duplicate
+      lifecycle authority or applicable unhandled trait conflict found.
+    name: Spec hierarchy neighborhood and traits
+    required: true
+    runner: kspec item search trait audit
+    created_at: 2026-07-13T01:14:42.285Z
+    completed_at: 2026-07-13T01:14:42.285Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 4 on seven existing ambiguous @observations/@spec-plan-import refs; no plan-local
+      diagnostic, but required repository gate is red.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-13T01:14:45.297Z
+    completed_at: 2026-07-13T01:14:45.297Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Both exit 0 with warnings-ok; existing 55 and 332 warnings are unrelated.
+    name: kspec validate alignment and completeness
+    required: true
+    runner: kspec validate
+    created_at: 2026-07-13T01:14:48.383Z
+    completed_at: 2026-07-13T01:14:48.383Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 143/143 tests passed across 27 suites for parser/import/derive, CLI endpoint regression,
+      daemon API, and dispatch routes.
+    name: Focused parser and compatibility tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-13T01:14:51.394Z
+    completed_at: 2026-07-13T01:14:51.394Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No implementation/shared guidance/spec materialization reviewed; focused tests ran and
+      unrelated dirty edits were preserved.
+    name: Product format lint typecheck full suite
+    required: true
+    runner: plan-only review
+    created_at: 2026-07-13T01:14:54.503Z
+    completed_at: 2026-07-13T01:14:54.503Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No shared/package guidance surface changes or relocations; neutrality
+      preservation/regeneration not triggered.
+    name: Shared-guidance neutrality
+    required: true
+    runner: manual
+    created_at: 2026-07-13T01:14:57.512Z
+    completed_at: 2026-07-13T01:14:57.512Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Read governing instructions/skills, full 1679-line plan, all 20 tasks, historical gates
+      and 01KXCE0 threads, owners/routes/CLI/UI/helpers/Playwright/scripts/materialization tests.
+      Ran hash/parser/import/66-op/graph/owner/path/resource/state/validation/browser/source and
+      143-test audits across all required categories.
+    name: Review evidence log
+    required: true
+    runner: manual
+    created_at: 2026-07-13T01:15:00.449Z
+    completed_at: 2026-07-13T01:15:00.449Z
 events:
   - _ulid: 01KXCGAN5FJPW0QETB3P6N08TM
     actor: codex
@@ -674,6 +796,83 @@ events:
       status: fail
       name: Hyphoria-quality standalone task shape
     timestamp: 2026-07-13T01:13:59.341Z
+  - _ulid: 01KXCGMETVVCTYF71S0Y7W4DDA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: Browser command support and bounded selection
+    timestamp: 2026-07-13T01:14:30.619Z
+  - _ulid: 01KXCGMHSDQ9YV5MBMHQ97H2XH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Resource relevance
+    timestamp: 2026-07-13T01:14:33.645Z
+  - _ulid: 01KXCGMMPJXDVETNCC8TMSFN8R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Draft and materialization state
+    timestamp: 2026-07-13T01:14:36.626Z
+  - _ulid: 01KXCGMQJQ16MNA6X66PBMFF2M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Sanitized legacy compatibility
+    timestamp: 2026-07-13T01:14:39.575Z
+  - _ulid: 01KXCGMTEYB2VJ7JFYK1QYRRVE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec hierarchy neighborhood and traits
+    timestamp: 2026-07-13T01:14:42.526Z
+  - _ulid: 01KXCGMXCVCA1NRX5T8E20K7KF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs
+    timestamp: 2026-07-13T01:14:45.531Z
+  - _ulid: 01KXCGN0DKVTM04M7RG3YNJABQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment and completeness
+    timestamp: 2026-07-13T01:14:48.627Z
+  - _ulid: 01KXCGN3C93SDR77H6RF4K31EA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Focused parser and compatibility tests
+    timestamp: 2026-07-13T01:14:51.657Z
+  - _ulid: 01KXCGN6D4WQ8D2H98ATRJD92Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: Product format lint typecheck full suite
+    timestamp: 2026-07-13T01:14:54.756Z
+  - _ulid: 01KXCGN9B0AFETENX0SMEBVF2T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Shared-guidance neutrality
+    timestamp: 2026-07-13T01:14:57.760Z
+  - _ulid: 01KXCGNC71ZGT1SEQAEG9JXBZY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: Review evidence log
+    timestamp: 2026-07-13T01:15:00.705Z
 examined_commit: null
 external_links: []
 lifecycle_state: closed
@@ -772,5 +971,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-13T01:13:13.116Z
 created_at: 2026-07-13T01:09:09.424Z
-updated_at: 2026-07-13T01:13:59.093Z
+updated_at: 2026-07-13T01:15:00.449Z
 notes: []
