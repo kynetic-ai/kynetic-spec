@@ -29149,7 +29149,7 @@ reviews:
     author: codex
     check_count: 37
     examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
-    lifecycle_state: closed
+    lifecycle_state: archived
     related_refs: []
     subject:
       type: plan
@@ -29160,4 +29160,4 @@ reviews:
     unresolved_blocker_count: 2
     verdict_count: 2
     created_at: 2026-07-13T01:41:03.485Z
-    updated_at: 2026-07-13T01:46:55.254Z
+    updated_at: 2026-07-13T01:47:46.053Z
