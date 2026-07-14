@@ -109,8 +109,12 @@ description: >
 spec_ref: "@ui-agent-dispatch"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review @01KXH7FDK7PTN4YWYB40T5KJNW. Exact fifteen-row @ui-agent-dispatch
+  metadata patch verified; all required gates passed. Canonical branch was already integrated at
+  plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx, so the supported detached
+  merge helper completed as a no-op.
 depends_on: []
 context: []
 priority: 1
@@ -177,8 +181,25 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-07-14T21:10:43.318Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review @01KXH7FDK7PTN4YWYB40T5KJNW. Exact fifteen-row @ui-agent-dispatch metadata
+          patch verified; all required gates passed. Canonical branch was already integrated at
+          plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx, so the supported
+          detached merge helper completed as a no-op.
+        previous: null
+      completed_at:
+        new: 2026-07-14T21:26:49.497Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-14T21:26:49.506Z
 created_at: 2026-07-14T19:47:11.736Z
 started_at: 2026-07-14T20:58:19.100Z
 submitted_at: 2026-07-14T21:03:46.569Z
+completed_at: 2026-07-14T21:26:49.497Z
 todos: []
 automation: eligible
