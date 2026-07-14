@@ -33863,6 +33863,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:19.422Z
+  automation: eligible
 - _ulid: 01KXH2PT5BATGSN8TNY7W7NE55
   slugs:
     - task-cli-dispatch-lifecycle-controls
