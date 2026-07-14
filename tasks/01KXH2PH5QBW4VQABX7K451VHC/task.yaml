@@ -104,7 +104,7 @@ description: >
 spec_ref: "@cli-agent-commands"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -114,6 +114,7 @@ tags:
   - specs
   - cli
 vcs_refs: []
+session_id: 01KXH59AZTPME9MQSQFHN0SJNB
 history:
   - author: Jacob Chapel
     changes:
@@ -122,6 +123,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-07-14T20:11:49.020Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KXH59AZTPME9MQSQFHN0SJNB
+        previous: null
+      started_at:
+        new: 2026-07-14T20:33:15.990Z
+        previous: null
+    command: task-start
+    timestamp: 2026-07-14T20:33:15.990Z
 created_at: 2026-07-14T19:47:10.647Z
+started_at: 2026-07-14T20:33:15.990Z
 todos: []
 automation: eligible
