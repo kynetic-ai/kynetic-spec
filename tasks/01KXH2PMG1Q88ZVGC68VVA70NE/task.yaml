@@ -71,5 +71,14 @@ tags:
   - specs
   - cleanup
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-07-14T20:11:54.398Z
 created_at: 2026-07-14T19:47:14.049Z
 todos: []
+automation: eligible
