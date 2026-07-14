@@ -77586,9 +77586,20 @@ runs:
     completed_at: 2026-07-14T21:04:40.850Z
   - _ulid: 01KXH81N438TCYWQ88CYAAA0WQ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-14T21:20:38.019Z
+        completed_at: 2026-07-14T21:22:03.368Z
+        notes: Completed mandatory baseline searches across observations, inbox, and tasks. Broad output
+          already exposed two same-day candidates; narrowed them with direct metadata reads after
+          keyword search returned no exact text matches.
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-14T21:22:03.368Z
+        completed_at: 2026-07-14T21:22:03.368Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-14T21:20:38.019Z
