@@ -29303,7 +29303,7 @@ reviews:
     title: Review task-patch-dispatch-cli-specs
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 11
     examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
     lifecycle_state: open
     related_refs: []
@@ -29316,4 +29316,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-14T20:43:35.989Z
-    updated_at: 2026-07-14T20:43:47.959Z
+    updated_at: 2026-07-14T20:58:39.348Z
