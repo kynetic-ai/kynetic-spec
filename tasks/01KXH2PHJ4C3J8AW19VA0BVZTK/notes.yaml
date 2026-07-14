@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KXH64474Z2TJEV8KM8NZXYQH
+    content: "Approach: apply the task's exact nine acceptance-criterion payloads to
+      @daemon-agent-dispatch in one atomic batch, replacing ac-5/ac-6 and adding seven named
+      criteria while preserving every unlisted AC and trait. Edge cases: retain the complete
+      status/control envelopes, conditional canonical task identity, closed cleanup row invariants,
+      and failure paths that cannot report success. Verification: exact nine-row CLI readback,
+      unchanged repository diff, and the task-specified metadata validations; no code or tests are
+      in scope."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-14T20:47:01.860Z
