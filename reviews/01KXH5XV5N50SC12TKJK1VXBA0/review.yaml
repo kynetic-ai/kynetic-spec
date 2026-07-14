@@ -165,6 +165,105 @@ checks:
     runner: npm run typecheck
     created_at: 2026-07-14T20:59:08.668Z
     completed_at: 2026-07-14T20:59:08.668Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run: 2789/2789 suites passed; 10581 passed and 3 intentional skips out of 10584
+      tests; duration 2712.9s."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-14T20:59:36.736Z
+    completed_at: 2026-07-14T20:59:36.736Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Documented plan baseline exception: command exits 4 on exactly seven pre-existing
+      ambiguous references—task 01KF4WVWF7BXCMP188Z3P1EPQP spec_ref @observations; task
+      01KKFERFKHQ6RMSZ76HKMQMV1F meta_ref @spec-plan-import; and five meta.yaml implements refs to
+      @observations. @cli-agent-commands resolves cleanly and this patch introduces no reference."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-14T20:59:39.827Z
+    completed_at: 2026-07-14T20:59:39.827Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema and references OK; 59 repository baseline warnings accepted by documented
+      --warnings-ok policy.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-14T20:59:42.885Z
+    completed_at: 2026-07-14T20:59:42.885Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema and references OK. Repository baseline completeness warnings remain. This
+      task is the approved metadata-only pre-implementation spec patch and explicitly owns no
+      implementation tests; future CLI implementation and verification tasks own behavioral AC
+      tests.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-14T20:59:45.990Z
+    completed_at: 2026-07-14T20:59:45.990Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exact programmatic comparison passed: requested description matches; ac-5 replacement and
+      twelve additions match all Given/When/Then payloads in order; 30 total owner ACs with 30
+      unique IDs; plan has 20 intended derived tasks and this patch task appears once."
+    name: exact metadata readback
+    required: false
+    runner: kspec item get @cli-agent-commands --json + jq
+    created_at: 2026-07-14T20:59:49.030Z
+    completed_at: 2026-07-14T20:59:49.030Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; detached code snapshot is clean and canonical branch equals integration target,
+      confirming metadata-only scope.
+    name: git diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-14T20:59:52.084Z
+    completed_at: 2026-07-14T20:59:52.084Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No changed TypeScript or test files; not applicable.
+    name: focused lint
+    required: false
+    runner: npx oxlint changed TypeScript or test files
+    created_at: 2026-07-14T20:59:55.234Z
+    completed_at: 2026-07-14T20:59:55.234Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/data read: empty target...HEAD code diff; task @01KXH2PH5QBW4VQABX7K451VHC; plan
+      exact CLI patch block; full @cli-agent-commands owner; no prior reviews. Commands: git
+      status/rev/merge-base/diff/log/diff-check; kspec task/item/plan/review lookups; exact jq
+      matrix; format/lint/typecheck/fresh tests; refs/alignment/completeness validation. Claims
+      verified: all 14 exact rows, uniqueness, unrelated AC preservation, no extra derivation,
+      metadata-only scope, exact seven-reference baseline. Categories searched: correctness, spec
+      quality, uniqueness and edge cases, error behavior, security and data exposure, test
+      integrity, integration, lifecycle scope; no findings. Shared/package surfaces touched: none,
+      so neutrality directions 1/2 and regeneration are not applicable."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-07-14T20:59:58.311Z
+    completed_at: 2026-07-14T20:59:58.311Z
 events:
   - _ulid: 01KXH5XV5M03A4G12B1M2FSG16
     actor: Jacob Chapel
@@ -277,6 +376,62 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-07-14T20:59:08.902Z
+  - _ulid: 01KXH6V5MQRQPE6WV0V6P04SFY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-14T20:59:36.983Z
+  - _ulid: 01KXH6V8NDVWQ95MMXWV4A1S7F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate refs
+    timestamp: 2026-07-14T20:59:40.078Z
+  - _ulid: 01KXH6VBMPP6Y6DF6CHNZ8T7HB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-14T20:59:43.127Z
+  - _ulid: 01KXH6VENPEMSKQYXGZCP9SF6Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-14T20:59:46.231Z
+  - _ulid: 01KXH6VHNQC7BFT1FPDNMKME4S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: exact metadata readback
+    timestamp: 2026-07-14T20:59:49.303Z
+  - _ulid: 01KXH6VMMCDZP710R8G17Q93Q1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-14T20:59:52.332Z
+  - _ulid: 01KXH6VQPFJ3Y10XYC24A7MZKF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: focused lint
+    timestamp: 2026-07-14T20:59:55.471Z
+  - _ulid: 01KXH6VTR7B497WNK3AHHVPDWH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-14T20:59:58.599Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -289,5 +444,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T20:43:35.989Z
-updated_at: 2026-07-14T20:59:08.668Z
+updated_at: 2026-07-14T20:59:58.311Z
 notes: []
