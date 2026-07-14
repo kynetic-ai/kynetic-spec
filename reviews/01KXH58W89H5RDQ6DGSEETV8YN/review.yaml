@@ -7,11 +7,144 @@ checks:
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: batch path verified
-    name: batch smoke
-    required: false
-    created_at: 2026-07-14T20:35:22.759Z
-    completed_at: 2026-07-14T20:35:22.759Z
+    evidence: Stored draft parsed as 10 explicit tasks; local dependency graph is acyclic and proposed
+      task slugs are distinct within the plan.
+    name: stored plan parse and slug uniqueness
+    required: true
+    runner: kspec plan get + plan parser
+    created_at: 2026-07-14T20:35:01.333Z
+    completed_at: 2026-07-14T20:35:01.333Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Numeric existing AC ranges resolve, but documentation child requirements are omitted;
+      @user-documentation has no ACs; proposed CLI/status ACs are absent or compound.
+    name: existing spec and AC alignment
+    required: true
+    runner: kspec item get / item list / refs
+    created_at: 2026-07-14T20:35:04.928Z
+    completed_at: 2026-07-14T20:35:04.928Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Tasks 1–3 introduce timeout/process control, destructive workspace operations, root safety
+      semantics, and completion of a 50-AC remote-sync feature beyond what accurate documentation
+      requires.
+    name: scope proportionality
+    required: true
+    runner: manual source/spec comparison
+    created_at: 2026-07-14T20:35:08.067Z
+    completed_at: 2026-07-14T20:35:08.067Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Tasks 5–8 use or modify the guide and dispatch-workspace docs test before Task 4;
+      overlapping shared files are unsafely parallel; active lifecycle-control plan work is not
+      gated.
+    name: task standalone buildability and dependency ordering
+    required: true
+    runner: task graph + filesystem/help inspection
+    created_at: 2026-07-14T20:35:11.164Z
+    completed_at: 2026-07-14T20:35:11.164Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All claimed current source/test files exist and current help correctly lacks workspace
+      commands; however Tasks 5–8 invoke/extend tests and docs created only by an undeclared Task 4
+      prerequisite.
+    name: file test and command existence
+    required: true
+    runner: rg --files + kspec help + package scripts
+    created_at: 2026-07-14T20:35:14.469Z
+    completed_at: 2026-07-14T20:35:14.469Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Manifest universe omits tracked package/contributor markdown and cannot represent virtual
+      CLI-help surfaces with its required path-only record shape.
+    name: whole-document inventory closure
+    required: true
+    runner: git ls-files '*.md'
+    created_at: 2026-07-14T20:35:17.812Z
+    completed_at: 2026-07-14T20:35:17.812Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Planned package template edits are source-owned and explicitly keep Kynetic branch names,
+      agent ids, quality gates, and review policy in AGENTS.md/project meta/project-local skills;
+      direction 1 and direction 2 are stated. Regeneration commands are included.
+    name: shared guidance neutrality
+    required: true
+    runner: shared-guidance-neutrality semantic review
+    created_at: 2026-07-14T20:35:21.114Z
+    completed_at: 2026-07-14T20:35:21.114Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "npm test -- tests/plan-document-parser.test.ts tests/scaffold-project-config.test.ts
+      tests/web-ui-docs-rendering.test.ts tests/web-ui-docs-search.test.ts: cached result 61 suites
+      / 296 tests passed."
+    name: focused parser scaffold and docs tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-14T20:35:25.004Z
+    completed_at: 2026-07-14T20:35:25.004Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Exit 4: seven ambiguous-reference errors involving duplicate @observations and
+      @spec-plan-import slugs."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-14T20:35:31.780Z
+    completed_at: 2026-07-14T20:35:31.780Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 60 baseline warnings; relevant warning confirms Dispatch Workspace Cleanup
+      Policy is implemented while pending tasks make it in_progress.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-14T20:35:34.967Z
+    completed_at: 2026-07-14T20:35:34.967Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with baseline warnings; no derived plan state was created or modified.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-14T20:35:38.091Z
+    completed_at: 2026-07-14T20:35:38.091Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: stored plan; AGENTS.md/kspec-agents.md; relevant docs, schemas,
+      config/bootstrap/workspace/dispatch/CLI/daemon/scaffold/gitignore/template/release/test
+      sources; tracked markdown inventory. Commands: plan/item/task/refs/search/help, git
+      ls-files/status, rg/sed, focused npm test, three kspec validation modes. Claims verified:
+      schema defaults/enums, missing workspace CLI and stale runtime suggestion, invalid
+      trigger/filters examples, release-note auto omission, current setup/upgrade scaffolds, active
+      lifecycle-control graph. Categories: correctness, AC atomicity/coverage, dependencies, scope,
+      commands/files/tests, inventory, neutrality, validation."
+    name: review evidence log
+    required: true
+    runner: canonical plan review pass
+    created_at: 2026-07-14T20:35:41.407Z
+    completed_at: 2026-07-14T20:35:41.407Z
 events:
   - _ulid: 01KXH58W89EQ6VJAFA27Z25S37
     actor: Jacob Chapel
@@ -19,20 +152,146 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-14T20:32:08.969Z
-  - _ulid: 01KXH5EPHSFMKGY8A4W3DF4V2Q
+  - _ulid: 01KXH5D7PFD8J2PVQEEZGM14PA
     actor: Jacob Chapel
     event_type: lifecycle_change
     payload:
       from: draft
       to: open
-    timestamp: 2026-07-14T20:35:19.737Z
-  - _ulid: 01KXH5ESRW6B0NY6KJAX3PMP89
+    timestamp: 2026-07-14T20:34:31.759Z
+  - _ulid: 01KXH5DB7PV9BGJBR3B05VC2ZR
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXH5DAZCKZDG1R2FQXEWEY0G
+    timestamp: 2026-07-14T20:34:35.382Z
+  - _ulid: 01KXH5DESQZPX3AEVRQ2JZRWMJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXH5DEHGMXJ0DYQB0YZ8JYJG
+    timestamp: 2026-07-14T20:34:39.031Z
+  - _ulid: 01KXH5DKSM79XX9PA413FTYXJY
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXH5DKGS09DYQJ61DRMACVNM
+    timestamp: 2026-07-14T20:34:44.148Z
+  - _ulid: 01KXH5DQ5YMRECPKHW8CZA17ZN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXH5DPY73RNKBX2R94YQAM4V
+    timestamp: 2026-07-14T20:34:47.614Z
+  - _ulid: 01KXH5DTRX8CGF3NKP6QN53W4J
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXH5DTFN49PB0TQFX70CY7HK
+    timestamp: 2026-07-14T20:34:51.293Z
+  - _ulid: 01KXH5DYFMPT5ZMV6QR1ZFPMCS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXH5DY6VWNNENP52ANV478NC
+    timestamp: 2026-07-14T20:34:55.092Z
+  - _ulid: 01KXH5E1MPWRH7NZ6C21Z0AN5N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXH5E1B5G53X5RR8PGMEBXS2
+    timestamp: 2026-07-14T20:34:58.326Z
+  - _ulid: 01KXH5E524YJD6R01X4PM2EQ8X
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
-      name: batch smoke
-    timestamp: 2026-07-14T20:35:23.036Z
+      name: stored plan parse and slug uniqueness
+    timestamp: 2026-07-14T20:35:01.828Z
+  - _ulid: 01KXH5E8B064F3E910SQ98069R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: existing spec and AC alignment
+    timestamp: 2026-07-14T20:35:05.184Z
+  - _ulid: 01KXH5EBCW7V6ZX44PFWHZ31PZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: scope proportionality
+    timestamp: 2026-07-14T20:35:08.316Z
+  - _ulid: 01KXH5EEF3Z5ABNXFV27DENQNK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: task standalone buildability and dependency ordering
+    timestamp: 2026-07-14T20:35:11.459Z
+  - _ulid: 01KXH5EHNGJ1MJPCPDTS94V4P0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: file test and command existence
+    timestamp: 2026-07-14T20:35:14.736Z
+  - _ulid: 01KXH5EMXC5NBT07E2WPGKPQCQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: whole-document inventory closure
+    timestamp: 2026-07-14T20:35:18.060Z
+  - _ulid: 01KXH5ER4SAJPFY3BN924Y1134
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: shared guidance neutrality
+    timestamp: 2026-07-14T20:35:21.369Z
+  - _ulid: 01KXH5EVZS1E3GC488WGRF2Q6Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused parser scaffold and docs tests
+    timestamp: 2026-07-14T20:35:25.305Z
+  - _ulid: 01KXH5F2J21940DKEMCP2JK1MG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate refs
+    timestamp: 2026-07-14T20:35:32.034Z
+  - _ulid: 01KXH5F5P7DKTEPQRZ6FBCPC7R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-14T20:35:35.239Z
+  - _ulid: 01KXH5F8QEFFHWY655EFJM6REM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-14T20:35:38.350Z
+  - _ulid: 01KXH5FBYJ0FGWSJF9SNHWSSF9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-14T20:35:41.650Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -42,8 +301,144 @@ subject:
   content_hash: ""
   ref: "@plan-documentation-completeness-and-dispatch-workspaces"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXH5DAZCKZDG1R2FQXEWEY0G
+    anchor:
+      type: structured
+      field: scope_boundaries
+      ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+      section: implementation_notes
+    entries:
+      - _ulid: 01KXH5DAZE0JYXVA2DV19H27Z6
+        author: Jacob Chapel
+        body: MUST-FIX — The product prerequisites are not proportional to a documentation-correction plan.
+          Task 1 mixes potentially necessary authoring/redaction work with a new 600-second
+          timeout/process-group contract and shell preflight; Task 2 adds four workspace commands,
+          destructive reset/cleanup semantics, root-overlap validation, and retention projection;
+          Task 3 requires completion of the entire 50-AC in-progress remote-sync feature. Accurate
+          docs can remove the nonexistent reset suggestion, document current limitations, and
+          label/omit in-progress remote-sync behavior—the plan itself permits that alternative in
+          Task 9. Retain only implementation that blocks a specific accurate public statement, and
+          move or defer the remaining product hardening.
+        created_at: 2026-07-14T20:34:35.118Z
+    kind: blocker
+  - _ulid: 01KXH5DEHGMXJ0DYQB0YZ8JYJG
+    anchor:
+      type: structured
+      ref: "@task-document-dispatch-workspace-configuration"
+      section: description
+    entries:
+      - _ulid: 01KXH5DEHHZE37PJV230QBAZG3
+        author: Jacob Chapel
+        body: MUST-FIX — Documentation ownership and AC coverage bypass the existing documentation
+          hierarchy. @user-documentation is a module with no ACs, while @docs-guides-section
+          ac-1..ac-3, @docs-concepts-section ac-1..ac-2, @docs-troubleshooting-section ac-1..ac-3,
+          @docs-navigation-shape ac-1..ac-2, @docs-search ac-1..ac-3, @docs-reachability, and
+          @readme-landing-page already own the behaviors this plan changes. Tasks 4–7 link only
+          dispatch implementation specs, and Tasks 8–10 claim non-existent module-level 'full
+          surface/closure' ACs. Add exact existing documentation AC references (and only genuinely
+          missing new ACs) so every new page, index, search/render change, and README change has a
+          real behavioral owner and test mapping.
+        created_at: 2026-07-14T20:34:38.769Z
+    kind: blocker
+  - _ulid: 01KXH5DKGS09DYQJ61DRMACVNM
+    anchor:
+      type: structured
+      ref: "@task-document-dispatch-bootstrap-recovery"
+      section: dependencies
+    entries:
+      - _ulid: 01KXH5DKGSHR2Z1Z9W8TM99XRM
+        author: Jacob Chapel
+        body: MUST-FIX — The intra-plan graph permits tasks to consume files before they exist and creates
+          parallel write conflicts. Task 5 extends tests/dispatch-workspace-docs.test.ts and edits
+          the overview without depending on Task 4, which creates that test and also edits the
+          overview. Tasks 6 and 7 modify docs/guides/configuring-dispatch-workspaces.md and extend
+          the same test without depending on Task 4. Task 8 modifies the runner
+          guide/overview/assignment page and the same test in parallel with Tasks 4 and 7, and
+          promises a canonical guide link before Task 4. Task 5 also requires links to
+          troubleshooting pages that Tasks 6/7 create while Task 7 depends on Task 5. Reassign
+          shared-file ownership or add an acyclic serialization chain so every file, link target,
+          test, and command exists before use.
+        created_at: 2026-07-14T20:34:43.865Z
+    kind: blocker
+  - _ulid: 01KXH5DPY73RNKBX2R94YQAM4V
+    anchor:
+      type: structured
+      ref: "@task-add-dispatch-workspace-operator-surface"
+      section: dependencies
+    entries:
+      - _ulid: 01KXH5DPY7T2GYTAZVRY5NC3JC
+        author: Jacob Chapel
+        body: MUST-FIX — The plan ignores an active overlapping task graph.
+          @plan-dispatch-lifecycle-pause-resume-and-stop-controls is active on its own plan branch
+          and has pending tasks changing src/agent-runtime/dispatch.ts, bootstrap.ts, workspace.ts,
+          src/cli/commands/agent.ts, the daemon dispatch route, cleanup behavior, and CLI/public
+          projections. In particular @task-patch-dispatch-workspace-cleanup-spec will add
+          ac-controlled-evidence-protected and @task-protect-controlled-dispatch-evidence changes
+          workspace cleanup, so this plan's 'all cleanup ACs' snapshot is already incomplete. Gate
+          these tasks on that plan being integrated (or explicitly depend on all required merged
+          prerequisites and refresh the audit afterward); cross-plan task dependencies alone do not
+          make plan-branch code available on dev.
+        created_at: 2026-07-14T20:34:47.367Z
+    kind: blocker
+  - _ulid: 01KXH5DTFN49PB0TQFX70CY7HK
+    anchor:
+      type: structured
+      ref: "@task-add-dispatch-workspace-operator-surface"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXH5DTFNDEPFHGMCW1E13CQB
+        author: Jacob Chapel
+        body: MUST-FIX — Proposed ACs are incomplete and non-atomic. Task 2 never supplies IDs/text for the
+          promised @cli-agent-commands ACs; ac-operator-inspection combines list/show, many field
+          families, and secret omission; ac-dispatch-root-exclusive-ownership combines destructive
+          ownership with protected-root overlap validation; guarded reset and operator cleanup hide
+          confirmation/force/refusal/no-mutation behavior behind vague 'prerequisites
+          hold'/'existing policy' wording. Task 1's output-redaction AC combines persisted and
+          displayed surfaces, and Task 3 adds a large status projection (effective mode, remote,
+          interval, failures, deferral, next action) without any proposed AC. Replace 'all
+          artifact-protection ACs' and 'corresponding ACs' with exact IDs, split independently
+          testable outcomes, and cover every new CLI/error/status behavior before implementation.
+        created_at: 2026-07-14T20:34:50.997Z
+    kind: blocker
+  - _ulid: 01KXH5DY6VWNNENP52ANV478NC
+    anchor:
+      type: structured
+      ref: "@task-whole-public-doc-consistency-sweep"
+      section: description
+    entries:
+      - _ulid: 01KXH5DY6VFW97TMBZ8S1R26JT
+        author: Jacob Chapel
+        body: MUST-FIX — The inventory cannot prove whole-document closure as specified. It requires a path
+          for every entry but also includes virtual CLI-help snapshots, which have no repository
+          path. Its enumerated globs omit tracked documentation surfaces such as
+          packages/web-ui/README.md and
+          .github/ISSUE_TEMPLATE/maintainer-approved-issues-and-features.md, and it does not state
+          an inclusion/exclusion rule for AGENTS.md, CLAUDE.md, .claude skills, project-local
+          skills, or fixture markdown even though it says no existing file may be silently omitted.
+          Define a deterministic tracked-surface universe, explicit exclusion records/reasons, and a
+          surface kind/command identifier for non-file help/scaffold surfaces; then make the
+          completeness test compare against that universe.
+        created_at: 2026-07-14T20:34:54.811Z
+    kind: blocker
+  - _ulid: 01KXH5E1B5G53X5RR8PGMEBXS2
+    anchor:
+      type: structured
+      ref: "@task-documentation-drift-gates-and-final-validation"
+      section: verification
+    entries:
+      - _ulid: 01KXH5E1B5EXSS4T7MXZJ6V63A
+        author: Jacob Chapel
+        body: "MUST-FIX — The plan's required validation command is known red. `kspec validate --refs
+          --warnings-ok` currently exits 4 with seven ambiguous-reference errors (@observations and
+          @spec-plan-import), so `kspec validate --warnings-ok` in Tasks 1–3, 9, and 10 cannot pass
+          and the final task's allowance to record an unrelated baseline failure conflicts with this
+          repository's required refs gate. Do not absorb unrelated fixes into documentation work:
+          add a real prerequisite for restoring the refs gate or narrow the release-ready claim and
+          verification policy consistently with project gates."
+        created_at: 2026-07-14T20:34:58.021Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-14T20:32:08.969Z
-updated_at: 2026-07-14T20:35:22.759Z
+updated_at: 2026-07-14T20:35:41.407Z
 notes: []
