@@ -105,6 +105,28 @@ checks:
     runner: manual scan of plan for spec patches
     created_at: 2026-07-14T21:10:09.244Z
     completed_at: 2026-07-14T21:10:09.244Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Deterministic Public-Surface Universe section (plan lines 20-38) defines the manifest as
+      the declared universe. (1) Tracked Markdown starts from exact sorted 'git ls-files \"*.md\"'
+      (140 files verified); every result must have one record. (2) Explicit classifications:
+      active-public (including packages/web-ui/README.md and
+      .github/ISSUE_TEMPLATE/maintainer-approved-issues-and-features.md), historical
+      (docs/history/**), internal-eval (agents-eval-scenarios.md, prime-mock.md), source-template
+      (templates/agents-sections/**, templates/skills/**), generated (kspec-agents.md +
+      .agents/.factory rendered package-core skills), internal-agent-guidance (AGENTS.md, CLAUDE.md,
+      .claude/**, project-local .agents/.factory), fixture (tests/**/fixtures/**/*.md). (3) Non-file
+      surfaces use kind+id without path: cli-help (recursively discovered from Commander tree),
+      scaffold (setup/upgrade), generated-artifact (plugin/search/web-rendered), documentation-test.
+      (4) The completeness test independently derives each set and compares. Path-only record shape
+      is no longer required for non-file surfaces."
+    name: prior Codex blocker closure — whole-inventory closure
+    required: true
+    runner: git ls-files comparison vs manifest universe definition
+    created_at: 2026-07-14T21:10:15.255Z
+    completed_at: 2026-07-14T21:10:15.255Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -161,6 +183,13 @@ events:
       status: pass
       name: prior Codex blocker closure — incomplete/non-atomic proposed ACs
     timestamp: 2026-07-14T21:10:09.503Z
+  - _ulid: 01KXH7EN7TTPPZSDEV5NTBXWJF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior Codex blocker closure — whole-inventory closure
+    timestamp: 2026-07-14T21:10:15.546Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -173,5 +202,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:10:09.244Z
+updated_at: 2026-07-14T21:10:15.255Z
 notes: []
