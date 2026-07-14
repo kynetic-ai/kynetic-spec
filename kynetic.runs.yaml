@@ -77586,7 +77586,7 @@ runs:
     completed_at: 2026-07-14T21:04:40.850Z
   - _ulid: 01KXH81N438TCYWQ88CYAAA0WQ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77599,7 +77599,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-14T21:22:03.368Z
-        completed_at: 2026-07-14T21:22:03.368Z
+        completed_at: 2026-07-14T21:22:08.853Z
+        notes: "High-confidence session patterns: (1) atomic batch plus programmatic exact AC comparison
+          produced a reliable metadata-only handoff; (2) the first immediate readback appeared stale
+          while the atomic writer was still completing, requiring polling and authoritative reread.
+          Both are concrete and repeatable across sibling dispatch spec patches."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-14T21:22:08.853Z
+        completed_at: 2026-07-14T21:22:08.853Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-14T21:20:38.019Z
