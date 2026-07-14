@@ -390,9 +390,25 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-14T21:11:52.519Z
+  - _ulid: 01KXH7J2KE8M577K950445P48E
+    actor: claude-plan-review@kynetic
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-07-14T21:12:07.534Z
+  - _ulid: 01KXH7J2KEJ5QJQ49SFF9M7TGH
+    actor: claude-plan-review@kynetic
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-14T21:12:07.534Z
 examined_commit: null
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -400,7 +416,14 @@ subject:
   ref: "@plan-documentation-completeness-and-dispatch-workspaces"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: claude-plan-review@kynetic
+    role: reviewer
+    created_at: 2026-07-14T21:12:07.533Z
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:11:52.147Z
+updated_at: 2026-07-14T21:12:07.534Z
 notes: []
