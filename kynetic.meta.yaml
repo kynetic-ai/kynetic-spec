@@ -23738,6 +23738,16 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-14T20:29:44.930Z
+  - _ulid: 01KXH69E6N87KVKX7M2ZTCC6K5
+    type: friction
+    content: Immediately after a successful atomic kspec spec batch, `kspec item get` briefly returned
+      the pre-commit cached spec while a subsequent mutation already saw the committed new AC ID.
+      Read-after-write cache coherence should prevent contradictory CLI results or expose a
+      committed-read option.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-14T20:49:55.925Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
