@@ -66,6 +66,13 @@ events:
       kind: question
       thread_ulid: 01KXH5P9K6114Q62GQA6SDDWZ2
     timestamp: 2026-07-14T20:39:28.957Z
+  - _ulid: 01KXH5PWE7ZMJMGH9P64M3J0QC
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXH5PW52BMVD418MB7QGB63T
+    timestamp: 2026-07-14T20:39:47.911Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -236,7 +243,28 @@ threads:
           obvious provenance owner."
         created_at: 2026-07-14T20:39:28.614Z
     kind: question
+  - _ulid: 01KXH5PW52BMVD418MB7QGB63T
+    anchor:
+      type: structured
+      ref: "@task-correct-adjacent-public-guidance"
+      section: description
+    entries:
+      - _ulid: 01KXH5PW52JN9BFY8MA32RQ1VF
+        author: "@claude"
+        body: "Missed drift: docs/concepts/agents-and-dispatch.md:20 says 'kspec ships with four built-in
+          agent definitions: a task worker ..., a PR reviewer ..., a primary dev ..., and a plan
+          reviewer ...'. This is technically accurate (src/cli/commands/setup-defaults.ts seeds all
+          four ids) but the framing implies package-shipped, when in reality they are scaffolded by
+          'kspec setup' and projects can rename them — the AC
+          @default-project-agents-and-conventions ac-task-worker-agent describes the scaffold path,
+          not 'ships with'. Task 8's overview-correction scope ('Correct dispatch overview,
+          assignment troubleshooting, and package agent template statements to distinguish worker
+          default automation filters from reviewer and arbitrary event rules') would naturally
+          include rephrasing this to 'kspec setup scaffolds default agent definitions'. Task 9's
+          inventory would also catch it. Worth flagging explicitly so it isn't missed."
+        created_at: 2026-07-14T20:39:47.618Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:39:28.614Z
+updated_at: 2026-07-14T20:39:47.618Z
 notes: []
