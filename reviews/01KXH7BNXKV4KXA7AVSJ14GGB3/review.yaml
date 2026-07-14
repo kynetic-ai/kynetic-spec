@@ -221,6 +221,23 @@ checks:
     runner: shared-guidance-neutrality semantic review (both directions)
     created_at: 2026-07-14T21:11:09.960Z
     completed_at: 2026-07-14T21:11:09.960Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified each load-bearing factual claim against current state: (1) CLI surface—kspec
+      agent dispatch exposes only start/stop/status/watch; (2) @dispatch-remote-branch-sync
+      Implementation: in_progress; (3) @plan-dispatch-lifecycle-pause-resume-and-stop-controls is
+      [active] with 20 tasks; (4) the @observations ambiguous-reference is still present (slug maps
+      to two items 01KF1XFBK0... and 01KJ51SSZ2...), matching the plan's baseline-evidence
+      characterization; (5) all 12 documentation spec refs resolve and every claimed AC ID exists;
+      (6) 140 tracked markdown files match the 'git ls-files *.md' universe the manifest starts
+      from. The plan's factual claims about limitations and current state are accurate."
+    name: factual limitations verified against integrated source
+    required: true
+    runner: kspec item get + kspec help + kspec plan list
+    created_at: 2026-07-14T21:11:31.614Z
+    completed_at: 2026-07-14T21:11:31.614Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -319,6 +336,13 @@ events:
       status: pass
       name: shared-guidance package neutrality
     timestamp: 2026-07-14T21:11:10.227Z
+  - _ulid: 01KXH7GZTD6E8CSDH5TDVMS120
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: factual limitations verified against integrated source
+    timestamp: 2026-07-14T21:11:31.917Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -331,5 +355,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:11:09.960Z
+updated_at: 2026-07-14T21:11:31.614Z
 notes: []
