@@ -29341,7 +29341,7 @@ reviews:
     title: "Plan re-review (closure): Documentation Completeness and Dispatch Workspaces"
     disposition: pending
     author: "@claude"
-    check_count: 14
+    check_count: 15
     lifecycle_state: open
     related_refs: []
     subject:
@@ -29353,7 +29353,7 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-14T21:08:37.939Z
-    updated_at: 2026-07-14T21:11:43.932Z
+    updated_at: 2026-07-14T21:11:52.147Z
   - _ulid: 01KXH7FDK7PTN4YWYB40T5KJNW
     slugs: []
     title: Review patch dispatch UI specs exactly

@@ -250,6 +250,27 @@ checks:
     runner: kspec validate --alignment --warnings-ok + kspec validate --completeness --warnings-ok
     created_at: 2026-07-14T21:11:43.932Z
     completed_at: 2026-07-14T21:11:43.932Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: stored plan @plan-documentation-completeness-and-dispatch-workspaces (full
+      export, 347 lines); prior review 01KXH58W89H5RDQ6DGSEETV8YN (canonical Codex, 7 blockers, 12
+      checks); prior review 01KXH5HDNG7HNDXW09GHH4QPH1 (Claude pass 2, 4 blockers + 4 questions + 2
+      nits, 10 checks). Commands: kspec plan get/export/import --dry-run, kspec item get + item ac
+      list on all 12 referenced specs, kspec validate --refs/--alignment/--completeness
+      --warnings-ok, kspec agent dispatch --help, kspec help agent, kspec plan list, git ls-files
+      '*.md'. Claims verified: CLI surface, remote-sync in_progress status, lifecycle plan active
+      state, all 12 spec refs, all claimed AC IDs, 140-file tracked-md universe, refs baseline
+      state. Categories: closure of all 7 canonical blockers, closure of 4+4+2 Claude pass-2
+      findings, proportionality, ownership, dependency graph, overlap, inventory, baseline, package
+      neutrality, parser buildability, factual limitations, unsupported-command guard, remote-sync
+      labeling. No new findings introduced; no preference-only requirements added."
+    name: review evidence log
+    required: true
+    runner: closure re-review pass
+    created_at: 2026-07-14T21:11:52.147Z
+    completed_at: 2026-07-14T21:11:52.147Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -362,6 +383,13 @@ events:
       status: pass
       name: kspec validate — alignment and completeness
     timestamp: 2026-07-14T21:11:44.310Z
+  - _ulid: 01KXH7HKY7ZNBAWM5VMSQ80P8Q
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-14T21:11:52.519Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -374,5 +402,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:11:43.932Z
+updated_at: 2026-07-14T21:11:52.147Z
 notes: []
