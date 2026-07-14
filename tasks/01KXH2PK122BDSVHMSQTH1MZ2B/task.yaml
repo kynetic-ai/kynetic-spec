@@ -138,7 +138,7 @@ description: >
 spec_ref: "@dispatch-event-taxonomy"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -148,6 +148,14 @@ tags:
   - specs
   - events
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-patch-dispatch-events-specs/01kxh2pk
+  captured_at: 2026-07-14T21:20:04.701Z
+  commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+  remote: null
+  remote_url: null
+  upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
 session_id: 01KXH7GN7B18GVX8HB9NQYT5N9
 history:
   - author: Jacob Chapel
@@ -170,7 +178,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-07-14T21:14:07.214Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-patch-dispatch-events-specs/01kxh2pk
+          captured_at: 2026-07-14T21:20:04.701Z
+          commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+          remote: null
+          remote_url: null
+          upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+        previous: null
+      submitted_at:
+        new: 2026-07-14T21:20:04.707Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-07-14T21:20:04.708Z
 created_at: 2026-07-14T19:47:12.546Z
 started_at: 2026-07-14T21:14:07.213Z
+submitted_at: 2026-07-14T21:20:04.707Z
 todos: []
 automation: eligible
