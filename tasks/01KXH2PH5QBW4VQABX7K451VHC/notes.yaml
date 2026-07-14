@@ -8,3 +8,34 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-14T20:33:34.561Z
+  - _ulid: 01KXH5J1MWZY8XFCF2VR2HX4PQ
+    content: "Completed exact metadata patch; no code, files, tests, or derivation
+      changed.\\n\\nFourteen-row readback (row | Given | When | Then):\\ndescription | — | — | The
+      kspec agent family lists and runs agents and exposes durable global and canonical-task
+      dispatch start, pause, resume, hard-stop, and status controls.\\nac-5 | dispatch-owned
+      hard-stop cleanup is incomplete | kspec agent dispatch stop reports its result | the command
+      does not report stopped success\\nac-start-reports-authority | the daemon is available with
+      stopped authority and idle cleanup | start is requested | the command reports running
+      authority\\nac-pause-reports-authority | the daemon is available | pause is requested from
+      running authority | the command reports paused authority\\nac-resume-reports-authority | the
+      daemon is available | resume is requested from paused authority | the command reports running
+      authority\\nac-lifecycle-command-reports-projection | a lifecycle command succeeds | output is
+      rendered | the command reports the resulting projection\\nac-declined-stop-sends-no-request |
+      a user invokes hard stop interactively | confirmation is declined | no stop request is
+      sent\\nac-declined-stop-exit | a user declines interactive hard stop | the command exits | it
+      exits as user-cancelled\\nac-task-control-canonicalization | a task control command names a
+      resolvable task | it is accepted | the result identifies the canonical task
+      ULID\\nac-lifecycle-status-authority | lifecycle status is printed | human or JSON output is
+      rendered | authority is present\\nac-lifecycle-status-projection | lifecycle status is printed
+      | human or JSON output is rendered | projection is present\\nac-lifecycle-status-active-count
+      | lifecycle status is printed | human or JSON output is rendered | active count is
+      present\\nac-lifecycle-status-queued-count | lifecycle status is printed | human or JSON
+      output is rendered | queued count is present\\nac-lifecycle-status-held-count | lifecycle
+      status is printed | human or JSON output is rendered | held count is
+      present\\n\\nVerification: exact programmatic readback 14/14; git diff --check passed; clean
+      task branch. Alignment and completeness validation exited 0 with repository baseline warnings.
+      Reference validation retained exactly the plan-documented seven ambiguous-reference errors and
+      introduced none in the changed owner."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-14T20:37:09.404Z
