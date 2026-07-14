@@ -77719,7 +77719,7 @@ runs:
     completed_at: 2026-07-14T21:31:05.830Z
   - _ulid: 01KXH9MA4Y0DR4FYF62ZW62FSW
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77764,7 +77764,17 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-07-14T21:53:47.364Z
-        completed_at: 2026-07-14T21:53:47.364Z
+        completed_at: 2026-07-14T21:53:51.771Z
+        notes: "Proposed improvement (medium): add a regression task to make reviewer role-entry rendering
+          validate that the configured adapter-specific entrypoint is actually installed/available,
+          align setup defaults and project configuration with the shipped core review/merge skills,
+          and add dispatch/setup tests proving unavailable pr-review fails fast or resolves to the
+          supported review entrypoint. This prevents prompts from instructing agents to execute a
+          nonexistent skill and removes manual fallback composition."
+      - status: completed
+        step_index: 4
+        started_at: 2026-07-14T21:53:51.771Z
+        completed_at: 2026-07-14T21:53:51.771Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-14T21:48:17.950Z
