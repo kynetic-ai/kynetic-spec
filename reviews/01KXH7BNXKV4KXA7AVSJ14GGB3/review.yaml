@@ -203,6 +203,24 @@ checks:
     runner: kspec item get @dispatch-remote-branch-sync + plan prose inspection
     created_at: 2026-07-14T21:11:03.816Z
     completed_at: 2026-07-14T21:11:03.816Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan line 17 keeps Kynetic-only branch names, agent ids, quality gates,
+      generated-artifact policy, and review policy in AGENTS.md/project meta/project-local skills.
+      Plan line 18 scopes documentation tests to structured facts/links/examples/ownership/generated
+      output and forbids broad string deny-lists as the primary neutrality proof. Task 5 explicitly
+      runs a 'semantic shared-guidance-neutrality review in both directions: no Kynetic policy
+      becomes universal, and local policy removed from package text still has a local owner' (line
+      222), regenerates tracked .agents/.factory outputs and kspec-agents.md twice and requires the
+      second run to be clean (lines 227-229), and the Review handoff requires a separate
+      package-neutrality judgment (line 233). Direction 1 and Direction 2 are both satisfied."
+    name: shared-guidance package neutrality
+    required: true
+    runner: shared-guidance-neutrality semantic review (both directions)
+    created_at: 2026-07-14T21:11:09.960Z
+    completed_at: 2026-07-14T21:11:09.960Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -294,6 +312,13 @@ events:
       status: pass
       name: incomplete remote-sync not presented as complete
     timestamp: 2026-07-14T21:11:04.089Z
+  - _ulid: 01KXH7GAMKYC8FGJDTR25TAHMF
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: shared-guidance package neutrality
+    timestamp: 2026-07-14T21:11:10.227Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -306,5 +331,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:11:03.816Z
+updated_at: 2026-07-14T21:11:09.960Z
 notes: []
