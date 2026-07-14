@@ -77719,7 +77719,7 @@ runs:
     completed_at: 2026-07-14T21:31:05.830Z
   - _ulid: 01KXH9MA4Y0DR4FYF62ZW62FSW
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77744,9 +77744,27 @@ runs:
           gate as pass; (4) the reflect skill documents kspec workflow show without the required
           run-ref, causing an avoidable failed lookup."
       - status: completed
+        exit_confirmed: true
         step_index: 2
         started_at: 2026-07-14T21:49:22.909Z
-        completed_at: 2026-07-14T21:49:22.909Z
+        completed_at: 2026-07-14T21:53:47.364Z
+        notes: "Coverage search completed across specs, tasks, inbox, and observations. Already tracked:
+          shadow-only detached-review diff friction (@01KN7VFQS5ZQVTCV7ESFV66BFN,
+          @01KN8TSZPQ57JX1N691EGQ15PQ); metadata-only full-suite gate cost (inbox
+          @01KTYQ1RGVV40MBJA9XJKHAWBY and related observations); workflow show run-ref mismatch
+          (pending task @01KKBD52ND0SRD9WXYT6ZXZ776 plus multiple inbox/observations); exact
+          spec-patch structured comparison success (@01KXH6HD0SWEXB6R140X1H7VYH). Validation
+          baseline is explicitly documented by the approved plan, so no duplicate capture. Untracked
+          candidate: the dispatched prompt rendered -review although no pr-review skill exists in
+          templates/skills/manifest.yaml or rendered skills; current pr-reviewer instead has
+          review/review-gates/merge, while src/cli/commands/setup-defaults.ts still seeds
+          skills:[pr-review]. Existing @dispatch-role-workflow-entry-contract ac-4 requires
+          missing/invalid role entrypoints to fail fast, and its implementation task is completed,
+          so this appears to be a regression rather than a new spec gap."
+      - status: completed
+        step_index: 3
+        started_at: 2026-07-14T21:53:47.364Z
+        completed_at: 2026-07-14T21:53:47.364Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-14T21:48:17.950Z
