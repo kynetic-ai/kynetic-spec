@@ -77456,7 +77456,7 @@ runs:
     completed_at: 2026-07-14T20:29:53.413Z
   - _ulid: 01KXH6DHDKXFQ13FRXRG61T41V
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77469,7 +77469,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-14T20:53:00.606Z
-        completed_at: 2026-07-14T20:53:00.606Z
+        completed_at: 2026-07-14T20:53:33.475Z
+        notes: "High-confidence friction: daemon-backed item readback can briefly lag a successful spec
+          batch; already captured as @01KXH69E6N87KVKX7M2ZTCC6K5. High-confidence success: exact
+          spec patch tasks use one atomic metadata batch plus exact programmatic row/ID readback and
+          a full reviewer note; confirmed in three sibling task records
+          (@01KXH2PGSYNRA5HYC3VFK1FTPP, @01KXH2PH5QBW4VQABX7K451VHC, @01KXH2PHJ4C3J8AW19VA0BVZTK).
+          No other concrete systemic candidates identified."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-14T20:53:33.475Z
+        completed_at: 2026-07-14T20:53:33.475Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-14T20:52:10.292Z
