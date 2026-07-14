@@ -77719,7 +77719,7 @@ runs:
     completed_at: 2026-07-14T21:31:05.830Z
   - _ulid: 01KXH9MA4Y0DR4FYF62ZW62FSW
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77734,7 +77734,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-14T21:49:18.047Z
-        completed_at: 2026-07-14T21:49:18.047Z
+        completed_at: 2026-07-14T21:49:22.909Z
+        notes: "Friction: (1) the dispatch prompt named a -review entrypoint that was not
+          installed/discoverable in this snapshot, requiring manual composition of kspec-review,
+          review-gates, and kspec-merge; (2) spec-only shadow-state work had an empty code diff and
+          no obvious task-scoped metadata diff, so the reviewer had to reconstruct the change from
+          current readback plus task/plan prose; (3) the required refs command exits 4 on a
+          documented repository baseline, forcing a manual baseline comparison while recording the
+          gate as pass; (4) the reflect skill documents kspec workflow show without the required
+          run-ref, causing an avoidable failed lookup."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-14T21:49:22.909Z
+        completed_at: 2026-07-14T21:49:22.909Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-14T21:48:17.950Z
