@@ -29280,3 +29280,20 @@ reviews:
     verdict_count: 0
     created_at: 2026-07-14T20:32:57.167Z
     updated_at: 2026-07-14T20:33:08.910Z
+  - _ulid: 01KXH5HDNG7HNDXW09GHH4QPH1
+    slugs: []
+    title: "Plan review: Documentation Completeness and Dispatch Workspaces"
+    disposition: pending
+    author: "@claude"
+    check_count: 0
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-14T20:36:48.944Z
