@@ -1,0 +1,26 @@
+_ulid: 01KXH7BNXKV4KXA7AVSJ14GGB3
+slugs: []
+title: "Plan re-review (closure): Documentation Completeness and Dispatch Workspaces"
+author: "@claude"
+checks: []
+events:
+  - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
+    actor: "@claude"
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-14T21:08:37.939Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-14T21:08:37.939Z
+updated_at: null
+notes: []
