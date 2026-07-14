@@ -27,6 +27,21 @@ checks:
     runner: manual-source-inspection
     created_at: 2026-07-14T20:40:21.183Z
     completed_at: 2026-07-14T20:40:21.183Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All spec refs resolve: @user-documentation, @agent-definition-schema (16 own ACs),
+      @agent-dispatch-engine (28 own ACs), @dispatch-runtime-bootstrap-contract (13 own ACs),
+      @dispatch-workspace-configuration (8 own ACs), @dispatch-workspace-registry (14 own ACs +
+      extras), @dispatch-workspace-cleanup-policy (6 own ACs + extras), @dispatch-remote-branch-sync
+      (implemented: in_progress), @cli-agent-commands (18 own ACs). All 'Covers:' AC ranges resolve
+      to existing IDs. Task spec_ref fields point to valid specs."
+    name: Spec and AC reference validity
+    required: true
+    runner: manual-kspec-item-get
+    created_at: 2026-07-14T20:40:27.993Z
+    completed_at: 2026-07-14T20:40:27.993Z
 events:
   - _ulid: 01KXH5HDNGQ9DX8AQ2KG68KS5Z
     actor: "@claude"
@@ -111,6 +126,13 @@ events:
       status: pass
       name: Factual accuracy — known facts vs source code
     timestamp: 2026-07-14T20:40:21.497Z
+  - _ulid: 01KXH5R3WDCTYGFBASJRBAJ49K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Spec and AC reference validity
+    timestamp: 2026-07-14T20:40:28.301Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -321,5 +343,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:40:21.183Z
+updated_at: 2026-07-14T20:40:27.993Z
 notes: []
