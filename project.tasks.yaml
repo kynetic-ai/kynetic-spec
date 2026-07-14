@@ -33623,6 +33623,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:10.647Z
+  automation: eligible
 - _ulid: 01KXH2PHJ4C3J8AW19VA0BVZTK
   slugs:
     - task-patch-dispatch-api-specs

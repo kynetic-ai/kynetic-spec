@@ -114,5 +114,14 @@ tags:
   - specs
   - cli
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-07-14T20:11:49.020Z
 created_at: 2026-07-14T19:47:10.647Z
 todos: []
+automation: eligible
