@@ -1,0 +1,26 @@
+_ulid: 01KXH7G6DBP8RRS39VKMPWE28M
+slugs: []
+title: "Plan review: Documentation Completeness and Dispatch Workspaces (fresh canonical closure)"
+author: codex
+checks: []
+events:
+  - _ulid: 01KXH7G6DAHFXJRMCMN9VBG73C
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-14T21:11:05.898Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-14T21:11:05.899Z
+updated_at: null
+notes: []
