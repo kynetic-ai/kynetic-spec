@@ -1,0 +1,173 @@
+resources:
+  - description: Index for the web UI wireframe handoff; explains docs, screenshots, and fidelity caveats.
+    bytes: 4108
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-readme
+    label: Wireframe export README
+    path: handoff/docs/README.md
+    sha256: df9cb368a535357f7a137ebc94524c52b021e35e49bf643f4579ce213cf8570b
+  - description: Overall redesign context, decision history, source inventory, and caveats for
+      interpreting wireframes.
+    bytes: 5916
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-product-context
+    label: Product context
+    path: handoff/docs/00-product-context.md
+    sha256: acf72703d28c755e7925ed10cd8604814d4b640d609bdd9c4b93823f53701719
+  - description: Unified page/tree spec workspace behavior, row anatomy, page shapes, data notes,
+      archived alternatives, and open questions.
+    bytes: 5642
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-spec-workspace
+    label: Spec workspace UX handoff
+    path: handoff/docs/06-spec-workspace.md
+    sha256: 9859180adb431b75189f3a8d5d89bcecec614ced1c8b0cd242e1d333552fb52e
+  - description: Coverage-state token model, state precedence, rollup bar rules, mixed-list
+      presentation, and re-verify recommendation.
+    bytes: 5510
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-coverage-states
+    label: Coverage state model UX handoff
+    path: handoff/docs/07-coverage-states.md
+    sha256: 2663975b866d23cddc915a7ce73f4ac32ffbe495e4a6b77e124726537d40255c
+  - description: How coverage states integrate into spec pages, tree rollups, filter chips, banners, and
+      stale/re-verify AC pages.
+    bytes: 3986
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-spec-states-integration
+    label: Spec workspace state integration UX handoff
+    path: handoff/docs/08-spec-states-integration.md
+    sha256: 1a280d3c6246e561c0d04400a6bfb1567ffd1cc7181ef2b9173acb9184e15493
+  - description: Validate queue/matrix/AC-detail behavior that is downstream of spec workspace coverage
+      and resolution links.
+    bytes: 4970
+    content_type: text/markdown
+    git_commit: null
+    git_path: null
+    id: handoff-validate
+    label: Validate workspace handoff
+    path: handoff/docs/09-validate.md
+    sha256: 2830449d6fddf9a71b6b08b50519ec9efa3fe9ddeac831d04ca5157bf743fa64
+  - description: Root Specs tree showing expand-inline row behavior and hover-title open-page affordance.
+    bytes: 73982
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-unified-tree
+    label: Spec workspace root tree hover
+    path: handoff/shots/r3-spec-unified-1-tree-hover.png
+    sha256: e09ec6a67209bfbba0d442920c828a3a980e212603f33a0a884a2a1f4b745893
+  - description: Module page with breadcrumb/header, feature sections, and linked-work strip.
+    bytes: 85305
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-unified-module
+    label: Spec workspace module page
+    path: handoff/shots/r3-spec-unified-2-module.png
+    sha256: 24178a66e6c07925ced6acdd8f537184b1c44bac0707a2452f3ebc66db71b6f9
+  - description: Feature page showing nested sub-feature/requirement sections with same row model.
+    bytes: 87303
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-unified-feature
+    label: Spec workspace feature page
+    path: handoff/shots/r3-spec-unified-3-feature.png
+    sha256: 3a05d1f3fd5c4b50dac693f864913dd1f5240ea43147511b1d6dfb2b3c91fbc6
+  - description: Requirement page with acceptance criteria as expandable rows and scenario bodies.
+    bytes: 94546
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-unified-requirement
+    label: Spec workspace requirement page
+    path: handoff/shots/r3-spec-unified-4-requirement.png
+    sha256: 1ef96bf177177d55cf0bd0f395598712439e2786f54244b0d01b35b2422ef2bd
+  - description: Acceptance-criterion page with scenario, evidence, sibling navigation, and focused URL shape.
+    bytes: 79730
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-unified-ac
+    label: Spec workspace AC page
+    path: handoff/shots/r3-spec-unified-5-ac.png
+    sha256: ee9a4739f54fd1f65695fd99e5924287a205635f1b57e9b9303ce2573620a622
+  - description: Coverage visual recommendation; use four current UI buckets plus secondary re-verify
+      causes in this plan.
+    bytes: 85159
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-coverage-five-state
+    label: Coverage five-state recommendation
+    path: handoff/shots/r3-coverage-4-five-state-alt.png
+    sha256: a514d69630262ec638f66900b27fc8ceccd6b52d5cf8b50b3be72cf0b9450e63
+  - description: Requirement page with coverage-state filter chips, state rows, and re-verify banner reference.
+    bytes: 88486
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-state-requirement
+    label: Spec state requirement page
+    path: handoff/shots/r3-spec-states-1-requirement.png
+    sha256: 9ef6b5a3f22a847abb9f5ff832b6e9132706ab0e38298bbc91aa3c394d649e71
+  - description: Tree rollup state presentation reference for row/header segmented bars.
+    bytes: 86524
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-state-rollups
+    label: Spec state tree rollups
+    path: handoff/shots/r3-spec-states-2-tree-rollups.png
+    sha256: 168b0cc754d2622f560b813ca886152d7843511412790a4d8327ae04127fbe65
+  - description: AC detail reference for stale/re-verify explanation, diff, evidence, and resolution
+      action cards.
+    bytes: 82671
+    content_type: image/png
+    git_commit: null
+    git_path: null
+    id: shot-spec-state-stale-ac
+    label: Stale/re-verify AC detail
+    path: handoff/shots/r3-spec-states-3-stale-ac.png
+    sha256: 164f12153268332a70fb6e26efd50d2f17df4dd13e00b15c1ccbf0310f50ee36
+  - description: React wireframe source for interaction details and sample copy only; target
+      implementation remains Svelte.
+    bytes: 22921
+    content_type: application/octet-stream
+    git_commit: null
+    git_path: null
+    id: src-spec-unified
+    label: Spec workspace wireframe source
+    path: handoff/reference-src/wf3-spec-unified.jsx
+    sha256: d596e911ae0d524e7eae58bdf0574086dca875f571c61cddf62b54287f87ecb4
+  - description: React wireframe source for coverage-state integration details only; target
+      implementation remains Svelte.
+    bytes: 20358
+    content_type: application/octet-stream
+    git_commit: null
+    git_path: null
+    id: src-spec-states
+    label: Spec state integration wireframe source
+    path: handoff/reference-src/wf3-spec-states.jsx
+    sha256: b9b6f967f22a1477a312878cafc27cf04dc110474093fd6e1548975eedd6b177
+  - description: React wireframe source for coverage token names, glyphs, and edge-case comments; target
+      implementation remains Svelte.
+    bytes: 22407
+    content_type: application/octet-stream
+    git_commit: null
+    git_path: null
+    id: src-coverage-states
+    label: Coverage state wireframe source
+    path: handoff/reference-src/wf3-coverage-states.jsx
+    sha256: 906f3d6b60776618d102a6fb49e7e3f18fcee7eb5dfbd1d75537fd07ffc6dbad
