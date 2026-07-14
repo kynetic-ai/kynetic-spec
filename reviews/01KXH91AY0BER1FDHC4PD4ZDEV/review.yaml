@@ -2,7 +2,123 @@ _ulid: 01KXH91AY0BER1FDHC4PD4ZDEV
 slugs: []
 title: Review patch dispatch workspace cleanup spec exactly
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1038 files with no formatting drift."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-14T21:53:44.239Z
+    completed_at: 2026-07-14T21:53:44.239Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors. The 703 warnings are the repository baseline; no TypeScript or test
+      files changed, so focused changed-file lint was not applicable.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-14T21:53:47.550Z
+    completed_at: 2026-07-14T21:53:47.550Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed after building packages/shared and running tsc --noEmit.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-14T21:53:50.798Z
+    completed_at: 2026-07-14T21:53:50.798Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run passed: 2789/2789 suites, 10581 passed tests, 3 skipped, 0 failed. Duration
+      2753.5s."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-14T21:53:53.992Z
+    completed_at: 2026-07-14T21:53:53.992Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Documented plan baseline retained exactly: command exits 4 on seven pre-existing
+      ambiguous refs only — @observations in one task spec_ref and five module implements, plus
+      @spec-plan-import in one task meta_ref. No changed-plan reference error was added."
+    name: kspec validate refs
+    required: false
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-14T21:53:57.199Z
+    completed_at: 2026-07-14T21:53:57.199Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed with the accepted repository warning baseline: 45 orphaned specs and 10 status
+      mismatches."
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-14T21:54:00.381Z
+    completed_at: 2026-07-14T21:54:00.381Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with accepted repository warnings. The new AC is intentionally metadata-only here;
+      dependent @task-protect-controlled-dispatch-evidence owns behavioral implementation and tests.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-14T21:54:03.628Z
+    completed_at: 2026-07-14T21:54:03.628Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Not applicable: detached branch delta contains no changed TypeScript or test files."
+    name: focused lint
+    required: false
+    runner: npx oxlint <changed-ts-or-test-files>
+    created_at: 2026-07-14T21:54:06.700Z
+    completed_at: 2026-07-14T21:54:06.700Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Spec readback contains exactly id ac-controlled-evidence-protected with the required
+      Given, When, Then payload. Shadow commit 63081e83c4 adds only those four spec lines plus
+      normal task note/index metadata; all 14 prior cleanup-policy criteria remain, for 15 total.
+    name: exact metadata patch
+    required: false
+    runner: kspec item get and shadow history inspection
+    created_at: 2026-07-14T21:54:09.820Z
+    completed_at: 2026-07-14T21:54:09.820Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: AGENTS.md, kspec-agents.md, all named review/task/spec/merge/gate skills,
+      task/spec/plan readbacks, shadow commit 63081e83c4, related cleanup tests and workspace
+      annotations. Commands run: git diff/status/log/show/diff-check, kspec task/item/plan/review
+      lookups, all three kspec validations, format, lint, typecheck, fresh full tests, AC annotation
+      searches. Claims verified: exact four-line AC payload; preservation of the prior 14 ACs;
+      metadata-only code branch; future behavioral test owner. Categories searched: correctness,
+      edge states, error/security applicability, test quality, integration, scope drift. Findings:
+      none. Shared/package guidance surfaces touched: none, so shared-guidance neutrality directions
+      and generated-artifact refresh are not applicable."
+    name: review evidence log
+    required: false
+    runner: reviewer
+    created_at: 2026-07-14T21:54:12.927Z
+    completed_at: 2026-07-14T21:54:12.927Z
 events:
   - _ulid: 01KXH91AY0C34ZE8XRD235QJP9
     actor: Jacob Chapel
@@ -17,6 +133,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-14T21:38:10.745Z
+  - _ulid: 01KXH9Y91SP073K4WVYGZA1VTQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-14T21:53:44.505Z
+  - _ulid: 01KXH9YC8N4XY6YV7R06GA9Z5A
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-14T21:53:47.797Z
+  - _ulid: 01KXH9YFE0AD48FNQEGG0BEV8P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-14T21:53:51.040Z
+  - _ulid: 01KXH9YJJF54VCCF9V71FGVBBC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-14T21:53:54.255Z
+  - _ulid: 01KXH9YNQ2TVV9SFM9QJZSQ5HJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate refs
+    timestamp: 2026-07-14T21:53:57.474Z
+  - _ulid: 01KXH9YRS8GMWW4CFX6JWKS2WN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-14T21:54:00.616Z
+  - _ulid: 01KXH9YVYRBC76FJ9ND4A2RBVM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-14T21:54:03.864Z
+  - _ulid: 01KXH9YYZ9E1RV5GVV2JC3P3HV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: focused lint
+    timestamp: 2026-07-14T21:54:06.953Z
+  - _ulid: 01KXH9Z20BQSRGFDTYS33K180J
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: exact metadata patch
+    timestamp: 2026-07-14T21:54:10.059Z
+  - _ulid: 01KXH9Z52F9SRXPGF8T811AEHQ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-14T21:54:13.199Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -29,5 +215,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:37:56.160Z
-updated_at: 2026-07-14T21:38:10.467Z
+updated_at: 2026-07-14T21:54:12.927Z
 notes: []
