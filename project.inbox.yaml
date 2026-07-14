@@ -5250,3 +5250,15 @@ inbox:
       - review
     added_by: Jacob Chapel
     created_at: 2026-07-14T21:30:55.145Z
+  - _ulid: 01KXHA7PWNCAC9W4A38FG7TMZM
+    text: "Reflection: reconcile dispatch reviewer role-entry rendering with the review skills actually
+      configured for the selected agent. This review prompt mandated `$pr-review`, but `kspec meta
+      get @pr-reviewer` lists only `review`, `review-gates`, `merge`, and
+      `shared-guidance-neutrality`, and no pr-review skill exists in the rendered catalog. Update
+      entrypoint resolution to select an installed/configured review skill or fail preflight with
+      actionable guidance, and add a focused dispatch prompt regression proving reviewer prompts
+      never name unavailable skills."
+    tags:
+      - reflection
+    added_by: Jacob Chapel
+    created_at: 2026-07-14T21:58:53.589Z
