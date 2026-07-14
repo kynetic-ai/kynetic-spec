@@ -1,1 +1,16 @@
-notes: []
+notes:
+  - _ulid: 01KXH8PHJJVWS8NTN0G90R02VS
+    content: "Approach: add a strict version-1 dispatch-control schema and duplicate-aware YAML parser;
+      reuse
+      acquireFileLock/getDispatchShadowMutationLockPath/rollbackDirtyShadowWorktree/commitIfShadow
+      for a shadow-lock-first transaction; publish only snapshots re-read from git show; coalesce
+      watcher reloads by committed HEAD/token; notify cache listeners only after publication. Edge
+      cases: missing file defaults stopped, unknown/malformed/duplicate/noncanonical records,
+      stale/equal revisions, dirty external bytes, commit false/throw, post-commit verification
+      mismatch, forced lock reclaim, watcher-before-commit/abort/rollback, self-event duplicates.
+      Test plan: behavioral temp-git harness with annotated tests for the five owned ACs plus
+      schema/lock/rollback barriers; focused daemon watcher/cache tests for committed-only
+      invalidation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-14T21:32:02.514Z
