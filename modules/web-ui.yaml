@@ -4163,21 +4163,67 @@ features:
           Each agent shows name, triggers, active invocation count, and completed count
         when: |
           Agent definitions exist in meta
-      - given: |
-          The dispatch engine is running
+      - given: lifecycle status is available
         id: ac-2
-        then: |
-          Dispatch status shows as running with a stop button, and active invocations
-          show task ref, elapsed time, and link to session stream
-        when: |
-          The agents page renders
-      - given: |
-          The dispatch engine is stopped
+        then: it shows durable authority
+        when: the agents view renders
+      - given: global authority is paused
         id: ac-3
-        then: |
-          Dispatch status shows as stopped with no active invocations
-        when: |
-          The agents page renders
+        then: it offers only transitions valid from paused authority
+        when: the agents view renders
+      - given: lifecycle status is available
+        id: ac-status-projection
+        then: it shows lifecycle projection
+        when: the agents view renders
+      - given: active work exists during draining or cleanup
+        id: ac-status-active-work-visible
+        then: active work remains visible
+        when: the agents view renders
+      - given: queued work exists
+        id: ac-status-queued-work-visible
+        then: queued work is visible
+        when: the agents view renders
+      - given: held work exists
+        id: ac-status-held-work-visible
+        then: held work is visible
+        when: the agents view renders
+      - given: global authority is stopped
+        id: ac-stopped-actions-valid
+        then: it offers Start when no global-scope cleanup entry exists and Retry hard stop only when a
+          global-scope entry is pending or failed, regardless of unrelated task entries
+        when: the agents view renders
+      - given: administrative lifecycle control and degraded state coexist
+        id: ac-control-separated-from-degraded
+        then: they are labelled separately
+        when: the agents view renders
+      - given: administrative lifecycle control and blocked state coexist
+        id: ac-control-separated-from-blocked
+        then: they are labelled separately
+        when: the agents view renders
+      - given: a writable operator selects hard stop
+        id: ac-hard-stop-confirmation-cancellation
+        then: it explains active cancellation
+        when: confirmation is shown
+      - given: a writable operator selects hard stop
+        id: ac-hard-stop-confirmation-evidence
+        then: it explains evidence preservation
+        when: confirmation is shown
+      - given: hard-stop confirmation is shown
+        id: ac-hard-stop-confirmation-cancelled
+        then: no request is sent
+        when: the operator cancels it
+      - given: lifecycle controls render
+        id: ac-lifecycle-controls-labelled
+        then: each control has an accessible label
+        when: assistive technology reads them
+      - given: a lifecycle control initiated a refresh
+        id: ac-lifecycle-focus-retained
+        then: focus returns to that control
+        when: the refresh completes
+      - given: lifecycle status changes
+        id: ac-lifecycle-live-update
+        then: a polite live status update is emitted
+        when: the view refreshes
     tags: []
     created: 2026-03-05T01:30:02.782Z
     notes:
