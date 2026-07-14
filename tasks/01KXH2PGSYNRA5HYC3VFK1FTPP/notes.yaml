@@ -10,3 +10,49 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-14T20:23:11.251Z
+  - _ulid: 01KXH4YNYBPSPKNPDQZ9HFHKNM
+    content: >-
+      Completed exact metadata patch. Ten-row readback (item | id | op | Given | When | Then):
+
+      @agent-dispatch-engine | ac-11 | set | global stop authority is committed | hard-stop cleanup
+      is incomplete | dispatch does not report stop success
+
+      @agent-dispatch-engine | ac-final-gate-global-control | add | a candidate remains eligible
+      after dequeue | it reaches the final creation boundary | current global control determines
+      whether creation is permitted
+
+      @agent-dispatch-engine | ac-final-gate-task-control | add | a candidate remains eligible after
+      dequeue | it reaches the final creation boundary | its canonical-task control determines
+      whether creation is permitted
+
+      @agent-dispatch-engine | ac-pause-active-natural-completion | add | an invocation is active in
+      a scope | that scope is paused | the invocation may finish naturally
+
+      @agent-dispatch-engine | ac-pause-does-not-close-session | add | a session belongs to an
+      active invocation | its scope is paused | pause does not close the session
+
+      @agent-dispatch-engine | ac-resume-current-task-state | add | a scope is paused | it resumes |
+      current task state is re-evaluated before work starts
+
+      @agent-dispatch-engine | ac-resume-current-dispatch-rules | add | a scope is paused | it
+      resumes | current dispatch rules are re-evaluated before work starts
+
+      @per-task-dispatch-drain-coalescing | ac-5 | set | per-task coalescing timers are pending |
+      matching stop authority commits | matching timers are cancelled
+
+      @per-task-dispatch-drain-coalescing | ac-stop-prevents-pending-drain-start | add | a matching
+      pending drain exists | stop authority commits | that drain does not start work
+
+      @per-task-dispatch-drain-coalescing | ac-stop-cancels-active-invocation | add | a matching
+      invocation is active | hard-stop cleanup runs | that invocation is cancelled
+
+      Neighbor/metadata proof: engine 31→37 ACs with the original 31 IDs preserved; coalescing 9→11
+      with the original 9 IDs preserved. ULIDs, slugs, titles, types, maturity, descriptions, tags,
+      relationships, tests, traits, creation timestamps, notes, and all unlisted AC payloads matched
+      the before-read. Scope remained metadata-only; no source, test, plan, review, resource, or
+      branch-file changes. Gates: git diff --check pass; alignment pass; completeness pass; refs
+      produced exactly the plan-documented seven pre-existing ambiguous refs and no changed-owner
+      ref errors; shadow status healthy.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-14T20:26:34.827Z
