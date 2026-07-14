@@ -73,6 +73,13 @@ events:
       kind: nit
       thread_ulid: 01KXH5PW52BMVD418MB7QGB63T
     timestamp: 2026-07-14T20:39:47.911Z
+  - _ulid: 01KXH5Q4DDTZZ052B62ZB933SK
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXH5Q40YP34VEG3SGPRM8EA0
+    timestamp: 2026-07-14T20:39:56.078Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -264,7 +271,24 @@ threads:
           inventory would also catch it. Worth flagging explicitly so it isn't missed."
         created_at: 2026-07-14T20:39:47.618Z
     kind: nit
+  - _ulid: 01KXH5Q40YP34VEG3SGPRM8EA0
+    anchor:
+      type: structured
+      ref: "@task-document-dispatch-workspace-lifecycle"
+      section: description
+    entries:
+      - _ulid: 01KXH5Q410K2PWP5ZCKD1A9PK1
+        author: "@claude"
+        body: "Optional dependency consideration: Task 5 (lifecycle concept) currently depends on Tasks 2
+          and 3, not Task 1. The page documents registry lifecycle including bootstrap-state fields.
+          Task 1 adds the per-agent bootstrap CLI surface and the runner-env-separation guarantee.
+          Even though Task 5 is conceptual, the bootstrap state description will be more accurate if
+          Task 1's CLI surface is final. Consider adding Task 1 as a soft dependency. Not blocking —
+          current deps are defensible because the lifecycle concept doesn't reference bootstrap
+          authoring commands."
+        created_at: 2026-07-14T20:39:55.680Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:39:47.618Z
+updated_at: 2026-07-14T20:39:55.680Z
 notes: []
