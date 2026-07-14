@@ -112,6 +112,7 @@ tags:
   - specs
   - engine
 vcs_refs: []
+review_ref: "@01KXH5ABAF05ZP1MFS2T0XYJ2R"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-patch-dispatch-engine-coalescing-specs/01kxh2pg
@@ -162,6 +163,13 @@ history:
         previous: null
     command: task-submit
     timestamp: 2026-07-14T20:26:38.391Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXH5ABAF05ZP1MFS2T0XYJ2R"
+        previous: null
+    command: review-link
+    timestamp: 2026-07-14T20:32:59.581Z
 created_at: 2026-07-14T19:47:10.270Z
 started_at: 2026-07-14T20:22:52.202Z
 submitted_at: 2026-07-14T20:26:38.390Z

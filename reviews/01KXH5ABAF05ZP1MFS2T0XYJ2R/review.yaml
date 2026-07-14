@@ -1,0 +1,26 @@
+_ulid: 01KXH5ABAF05ZP1MFS2T0XYJ2R
+slugs: []
+title: Review patch dispatch engine and coalescing specs exactly
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXH5ABAES1SJJTYX9Y94H4GV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-14T20:32:57.167Z
+examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PGSYNRA5HYC3VFK1FTPP"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-14T20:32:57.167Z
+updated_at: null
+notes: []
