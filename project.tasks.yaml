@@ -33841,6 +33841,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:18.963Z
+  automation: eligible
 - _ulid: 01KXH2PSQY6GK4S66S4TB6JVV3
   slugs:
     - task-daemon-dispatch-lifecycle-api
