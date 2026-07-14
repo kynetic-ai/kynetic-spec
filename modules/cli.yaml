@@ -10775,10 +10775,8 @@ features:
       - cli-agent-commands
     title: CLI Agent Commands
     type: feature
-    description: |
-      New kspec agent command family for managing and running agents.
-      Includes list, run (one-shot), dispatch start/stop, and status.
-      One-shot invocations use the same session model as dispatched agents.
+    description: The kspec agent family lists and runs agents and exposes durable global and
+      canonical-task dispatch start, pause, resume, hard-stop, and status controls.
     status:
       maturity: draft
       implementation: in_progress
@@ -10825,14 +10823,10 @@ features:
           dispatching agents per their rules
         when: |
           kspec agent dispatch start is run
-      - given: |
-          The dispatch engine is running
+      - given: dispatch-owned hard-stop cleanup is incomplete
         id: ac-5
-        then: |
-          The dispatch engine stops accepting new triggers, waits for
-          active invocations to complete, then shuts down
-        when: |
-          kspec agent dispatch stop is run
+        then: the command does not report stopped success
+        when: kspec agent dispatch stop reports its result
       - given: |
           Agent invocations are running or queued
         id: ac-6
@@ -10920,6 +10914,54 @@ features:
         then: watch exits immediately with code 3 and prints an actionable error explaining the subscribe
           failure with guidance to verify daemon/logs or restart kspec serve
         when: the command receives the subscribe acknowledgement
+      - given: the daemon is available with stopped authority and idle cleanup
+        id: ac-start-reports-authority
+        then: the command reports running authority
+        when: start is requested
+      - given: the daemon is available
+        id: ac-pause-reports-authority
+        then: the command reports paused authority
+        when: pause is requested from running authority
+      - given: the daemon is available
+        id: ac-resume-reports-authority
+        then: the command reports running authority
+        when: resume is requested from paused authority
+      - given: a lifecycle command succeeds
+        id: ac-lifecycle-command-reports-projection
+        then: the command reports the resulting projection
+        when: output is rendered
+      - given: a user invokes hard stop interactively
+        id: ac-declined-stop-sends-no-request
+        then: no stop request is sent
+        when: confirmation is declined
+      - given: a user declines interactive hard stop
+        id: ac-declined-stop-exit
+        then: it exits as user-cancelled
+        when: the command exits
+      - given: a task control command names a resolvable task
+        id: ac-task-control-canonicalization
+        then: the result identifies the canonical task ULID
+        when: it is accepted
+      - given: lifecycle status is printed
+        id: ac-lifecycle-status-authority
+        then: authority is present
+        when: human or JSON output is rendered
+      - given: lifecycle status is printed
+        id: ac-lifecycle-status-projection
+        then: projection is present
+        when: human or JSON output is rendered
+      - given: lifecycle status is printed
+        id: ac-lifecycle-status-active-count
+        then: active count is present
+        when: human or JSON output is rendered
+      - given: lifecycle status is printed
+        id: ac-lifecycle-status-queued-count
+        then: queued count is present
+        when: human or JSON output is rendered
+      - given: lifecycle status is printed
+        id: ac-lifecycle-status-held-count
+        then: held count is present
+        when: human or JSON output is rendered
     tags: []
     created: 2026-03-02T01:22:20.001Z
     notes: []
