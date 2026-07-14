@@ -33759,6 +33759,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:16.882Z
+  automation: eligible
 - _ulid: 01KXH2PQYHEB5566BQW2C7SHTF
   slugs:
     - task-final-pre-spawn-control-gate
