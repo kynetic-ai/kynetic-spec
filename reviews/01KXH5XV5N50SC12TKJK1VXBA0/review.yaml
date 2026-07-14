@@ -1,0 +1,26 @@
+_ulid: 01KXH5XV5N50SC12TKJK1VXBA0
+slugs: []
+title: Review task-patch-dispatch-cli-specs
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXH5XV5M03A4G12B1M2FSG16
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-14T20:43:35.989Z
+examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PH5QBW4VQABX7K451VHC"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-14T20:43:35.989Z
+updated_at: null
+notes: []
