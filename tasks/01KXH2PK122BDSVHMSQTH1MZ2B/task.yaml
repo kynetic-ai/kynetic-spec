@@ -138,7 +138,7 @@ description: >
 spec_ref: "@dispatch-event-taxonomy"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on: []
 context: []
@@ -148,6 +148,7 @@ tags:
   - specs
   - events
 vcs_refs: []
+session_id: 01KXH7GN7B18GVX8HB9NQYT5N9
 history:
   - author: Jacob Chapel
     changes:
@@ -156,6 +157,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-07-14T20:11:52.271Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KXH7GN7B18GVX8HB9NQYT5N9
+        previous: null
+      started_at:
+        new: 2026-07-14T21:14:07.213Z
+        previous: null
+    command: task-start
+    timestamp: 2026-07-14T21:14:07.214Z
 created_at: 2026-07-14T19:47:12.546Z
+started_at: 2026-07-14T21:14:07.213Z
 todos: []
 automation: eligible
