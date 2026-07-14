@@ -655,22 +655,23 @@ features:
               task_id, status, and timestamp
             when: |
               An agent invocation starts, completes, or fails
-          - given: |
-              GET /api/agent/status is called
+          - given: GET /api/agent/status is called
             id: ac-5
-            then: |
-              Returns JSON with active invocations array, queue depth number,
-              dispatch_enabled boolean, and agent_definitions array
-            when: |
-              The dispatch engine is running
-          - given: |
-              POST /api/agent/dispatch is called with action start or stop
+            then: the response preserves dispatch_enabled, active_invocations, queued_invocations, queue_depth,
+              agent_definitions, degraded, degraded_targets; active
+              session_id/agent_id/task_ref/task_title/elapsed_ms/resolved_adapter; queued
+              agent_id/task_ref/task_title/wait_ms/resolved_adapter; definitions
+              id/name/adapter/resolved_adapter/completed_sessions; targets
+              branch/reason/enteredAt/kind; runner only when configured; runner_validation only
+              where current resolution emits it.
+            when: lifecycle state is available
+          - given: a localhost client posts a valid lifecycle control
             id: ac-6
-            then: |
-              The dispatch engine starts or stops and returns JSON with the
-              new dispatch_enabled state
-            when: |
-              The request is from localhost
+            then: POST /api/agent/dispatch/control returns HTTP 200 with
+              `{ok:true,data:{global_authority,projection,cleanup_state,active_count,queue_depth,held_count,held_tasks,task_controls,degraded_targets,outcome,task_id?,task_ref?},error:null}`,
+              with canonical task identity present only for task scope and all lifecycle rows
+              conforming to the closed schemas defined by this plan.
+            when: transition processing succeeds
           - given: |
               The daemon is not running
             id: ac-7
@@ -684,6 +685,36 @@ features:
             then: The daemon broadcasts each text chunk on the agents WebSocket topic with type
               agent_text_chunk, session_id, agent_id, task_id, text, and timestamp
             when: The agent produces text output (agent_message_chunk events)
+          - given: GET /api/agent/status is called
+            id: ac-public-status-lifecycle-additions
+            then: it appends the plan's closed snake-case cleanup_state with exact per-entry
+              pending/failed/error-code invariants, ordered canonical-ULID held_tasks, and ordered
+              no-duplicate canonical-ULID task_controls at top level.
+            when: lifecycle state is available
+          - given: a localhost lifecycle control fails
+            id: ac-control-error-current-status
+            then: its structured error includes current status.
+            when: the API responds
+          - given: a task-scoped control omits task identity
+            id: ac-control-missing-identity
+            then: the request is rejected.
+            when: validation runs
+          - given: a task-scoped control carries one uniquely resolvable ref
+            id: ac-control-ref-canonicalization
+            then: the ref is canonicalized to its task ULID.
+            when: identity is resolved
+          - given: supplied task identity fields disagree
+            id: ac-control-identity-mismatch
+            then: the request has no effect.
+            when: identity is resolved
+          - given: lifecycle persistence fails
+            id: ac-control-failure-no-success
+            then: it does not report success.
+            when: the API responds
+          - given: stop cleanup fails
+            id: ac-cleanup-failure-no-success
+            then: it does not report success.
+            when: the API responds
         tags: []
         created: 2026-03-02T01:22:20.058Z
         notes: []
