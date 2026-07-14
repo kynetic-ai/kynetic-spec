@@ -2140,6 +2140,7 @@ plans:
       - plan-dispatch-lifecycle-pause-resume-and-stop-controls
     title: Dispatch Lifecycle Pause Resume and Stop Controls
     status: draft
+    branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     derived_specs: []
     derived_tasks: []
     module_ref: "@agent-integration"
