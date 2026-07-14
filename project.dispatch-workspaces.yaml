@@ -1506,12 +1506,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-14T20:30:28.607Z
+      updated_at: 2026-07-14T20:31:00.714Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-14T20:30:28.607Z
+      updated_at: 2026-07-14T20:31:00.714Z
     integration:
       status: pending
       detail: null
@@ -1519,7 +1519,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
-      updated_at: 2026-07-14T20:30:28.607Z
+      updated_at: 2026-07-14T20:31:00.714Z
     lifecycle_state: integrating
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PGSYNRA5HYC3VFK1FTPP
@@ -1528,16 +1528,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-14T20:21:22.509Z
-      last_reconciled_at: 2026-07-14T20:30:28.607Z
+      last_reconciled_at: 2026-07-14T20:31:00.714Z
       created_at: 2026-07-14T20:20:45.074Z
-      updated_at: 2026-07-14T20:30:28.607Z
+      updated_at: 2026-07-14T20:31:00.714Z
     workspace_id: dispatch-workspace-01KXH2PGSYNRA5HYC3VFK1FTPP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+        last_seen_at: 2026-07-14T20:31:00.714Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-patch-dispatch-engine-coalescing-specs-01kxh2pg-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-patch-dispatch-engine-coalescing-specs/01kxh2pg
         head: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
-        last_seen_at: 2026-07-14T20:20:45.074Z
+        last_seen_at: 2026-07-14T20:31:00.714Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-patch-dispatch-engine-coalescing-specs-01kxh2pg
