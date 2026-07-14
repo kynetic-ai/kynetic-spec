@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KXH6VEZTAQT6D0S6ZJE31X3K
+    content: "Approach: atomically patch only the fifteen named acceptance criteria on
+      @ui-agent-dispatch, replacing ac-2/ac-3 and adding thirteen exact IDs while preserving every
+      unlisted field and AC. Edge cases: distinguish durable authority from lifecycle projection,
+      keep active/queued/held work visible, scope stopped actions to global cleanup entries rather
+      than unrelated task entries, and preserve separate degraded/blocked, confirmation,
+      accessibility, focus, and live-update contracts. Verification: exact fifteen-row owner
+      readback, metadata-only git checks, and targeted kspec validation; no files or tests are in
+      scope."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-14T20:59:46.555Z
