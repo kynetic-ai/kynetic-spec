@@ -33905,6 +33905,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:21.638Z
+  automation: eligible
 - _ulid: 01KXH2PWH4C8T1X1BWHN9FWWDR
   slugs:
     - task-verify-engine-publication-admission
