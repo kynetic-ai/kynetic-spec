@@ -29285,7 +29285,7 @@ reviews:
     title: "Plan review: Documentation Completeness and Dispatch Workspaces"
     disposition: changes_requested
     author: "@claude"
-    check_count: 5
+    check_count: 6
     lifecycle_state: draft
     related_refs: []
     subject:
@@ -29297,4 +29297,4 @@ reviews:
     unresolved_blocker_count: 4
     verdict_count: 0
     created_at: 2026-07-14T20:36:48.944Z
-    updated_at: 2026-07-14T20:41:08.990Z
+    updated_at: 2026-07-14T20:41:15.472Z

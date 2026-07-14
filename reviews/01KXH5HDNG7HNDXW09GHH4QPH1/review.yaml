@@ -98,6 +98,26 @@ checks:
     runner: manual-package-json-check
     created_at: 2026-07-14T20:41:08.990Z
     completed_at: 2026-07-14T20:41:08.990Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Every AC referenced in 'Covers:' lines maps to an existing spec AC. Spot-checked: Task 1
+      covers @dispatch-runtime-bootstrap-contract ac-1..6 + 11..13 and @agent-definition-schema
+      ac-9,10,12 (all exist). Task 2 covers @dispatch-workspace-configuration ac-2..4,6..8,
+      @dispatch-workspace-registry ac-3..10,14, @dispatch-workspace-cleanup-policy ac-1..6 +
+      artifact-protection ACs, @cli-agent-commands ac-9 (all exist). Task 3 covers
+      @dispatch-remote-branch-sync all + @agent-dispatch-engine ac-8,19,25 (all exist). Task 4-7
+      cover @dispatch-workspace-{configuration,registry,cleanup-policy},
+      @dispatch-runtime-bootstrap-contract, @dispatch-remote-branch-sync ACs (all exist). Tasks 8-10
+      cover @user-documentation, @agent-definition-schema, @agent-dispatch-engine,
+      @dispatch-workspace-configuration ACs (all exist). New ACs to be added by Tasks 1 and 2 are
+      listed verbatim in task bodies."
+    name: Coverage completeness
+    required: true
+    runner: manual-AC-mapping
+    created_at: 2026-07-14T20:41:15.472Z
+    completed_at: 2026-07-14T20:41:15.472Z
 events:
   - _ulid: 01KXH5HDNGQ9DX8AQ2KG68KS5Z
     actor: "@claude"
@@ -210,6 +230,13 @@ events:
       status: pass
       name: Verification commands resolve
     timestamp: 2026-07-14T20:41:09.237Z
+  - _ulid: 01KXH5SJ726WAB5X2G60M8QWAY
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Coverage completeness
+    timestamp: 2026-07-14T20:41:15.747Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -420,5 +447,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:41:08.990Z
+updated_at: 2026-07-14T20:41:15.472Z
 notes: []
