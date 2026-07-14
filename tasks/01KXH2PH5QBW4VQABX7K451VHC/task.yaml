@@ -104,7 +104,7 @@ description: >
 spec_ref: "@cli-agent-commands"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -114,6 +114,14 @@ tags:
   - specs
   - cli
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-patch-dispatch-cli-specs/01kxh2ph
+  captured_at: 2026-07-14T20:37:15.769Z
+  commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+  remote: null
+  remote_url: null
+  upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
 session_id: 01KXH59AZTPME9MQSQFHN0SJNB
 history:
   - author: Jacob Chapel
@@ -136,7 +144,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-07-14T20:33:15.990Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-patch-dispatch-cli-specs/01kxh2ph
+          captured_at: 2026-07-14T20:37:15.769Z
+          commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+          remote: null
+          remote_url: null
+          upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+        previous: null
+      submitted_at:
+        new: 2026-07-14T20:37:15.777Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-07-14T20:37:15.777Z
 created_at: 2026-07-14T19:47:10.647Z
 started_at: 2026-07-14T20:33:15.990Z
+submitted_at: 2026-07-14T20:37:15.777Z
 todos: []
 automation: eligible
