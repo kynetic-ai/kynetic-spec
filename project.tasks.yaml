@@ -33779,6 +33779,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:17.585Z
+  automation: eligible
 - _ulid: 01KXH2PRCMKX5GBDNJ60PPBCHS
   slugs:
     - task-engine-stop-recovery
