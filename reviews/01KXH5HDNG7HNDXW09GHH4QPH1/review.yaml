@@ -52,6 +52,13 @@ events:
       kind: question
       thread_ulid: 01KXH5N838G849PTCR1A538R0E
     timestamp: 2026-07-14T20:38:54.682Z
+  - _ulid: 01KXH5P05FPG2K4N8ZJXP0Y0SV
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KXH5NZM26039DSNGTTQ70QWW
+    timestamp: 2026-07-14T20:39:18.959Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -181,7 +188,28 @@ threads:
           re-auditing the whole matrix each pass."
         created_at: 2026-07-14T20:38:54.313Z
     kind: question
+  - _ulid: 01KXH5NZM26039DSNGTTQ70QWW
+    anchor:
+      type: structured
+      ref: "@task-add-dispatch-workspace-operator-surface"
+      section: description
+    entries:
+      - _ulid: 01KXH5NZM24CBK79MGSPG2MTM6
+        author: "@claude"
+        body: "Sanitized status projection in list/show is described in depth (canonical task/workspace
+          identity, resolved target and branch provenance, role worktree paths/modes, lifecycle,
+          role bootstrap summary/invalidation reasons, integration, health issues/suggestions,
+          cleanup status, timestamps) but the spec AC text proposed for @dispatch-workspace-registry
+          ac-operator-inspection only asserts 'sanitized lifecycle, bootstrap, integration, health,
+          cleanup, ownership, and timestamp state is returned without bootstrap output'. The AC list
+          does not match the projection description: provenance/branch lineage and role worktree
+          paths/modes are in the body but missing from the AC. Either trim the body to match the AC
+          or expand the AC to enumerate the projection fields. Also, 'sanitized' is implementation
+          speak — the AC should describe the observable outcome (no bootstrap command output is
+          included)."
+        created_at: 2026-07-14T20:39:18.403Z
+    kind: question
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:38:54.313Z
+updated_at: 2026-07-14T20:39:18.403Z
 notes: []
