@@ -87,6 +87,24 @@ checks:
     runner: kspec plan list + plan preconditions inspection
     created_at: 2026-07-14T21:10:03.306Z
     completed_at: 2026-07-14T21:10:03.306Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "No ## Specs section is proposed (plan-shape note line 7; derive_from_specs: false). The
+      'Spec text and AC policy' Implementation Note (lines 341-343) states 'No spec patch is
+      proposed' and that 'Product AC proposals from the first draft—timeout/process group, reset
+      prerequisites, cleanup policy restatements, status projection, and runner schema wording—are
+      removed rather than rewritten because their product work is deferred.' The policy further
+      requires that any later approved spec patch appear verbatim in its task body with readback.
+      The four Claude-pass-2 AC-text blockers (process-group leak, tautological guarded-reset,
+      circular cleanup-policy restatement, runner-schema leak) are all resolved by removal of the
+      offending ACs."
+    name: prior Codex blocker closure — incomplete/non-atomic proposed ACs
+    required: true
+    runner: manual scan of plan for spec patches
+    created_at: 2026-07-14T21:10:09.244Z
+    completed_at: 2026-07-14T21:10:09.244Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -136,6 +154,13 @@ events:
       status: pass
       name: prior Codex blocker closure — overlapping lifecycle plan graph
     timestamp: 2026-07-14T21:10:03.562Z
+  - _ulid: 01KXH7EFAZWQH4QR0TX8G7PGXN
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior Codex blocker closure — incomplete/non-atomic proposed ACs
+    timestamp: 2026-07-14T21:10:09.503Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -148,5 +173,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:10:03.306Z
+updated_at: 2026-07-14T21:10:09.244Z
 notes: []
