@@ -127,6 +127,25 @@ checks:
     runner: git ls-files comparison vs manifest universe definition
     created_at: 2026-07-14T21:10:15.255Z
     completed_at: 2026-07-14T21:10:15.255Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Task 7 'Baseline validation policy' (lines 306-310) explicitly states kspec validate
+      --refs --warnings-ok is run 'only to capture/compare project baseline evidence,' names the
+      seven ambiguous-reference errors involving duplicate @observations and @spec-plan-import
+      slugs, states 'This plan neither fixes nor absorbs them,' requires 'no new/changed refs errors
+      and an exact captured diff against that baseline,' and says 'it must not claim the refs gate
+      or project-wide validation is green.' Verification line 326 annotates the refs run as
+      'baseline evidence comparison; not an expected green completion gate until external ambiguity
+      cleanup lands.' Completion claim (line 347) reinforces that project-wide green/release-ready
+      is not a completion condition. Verified: the @observations ambiguity is still present as a
+      warning; the plan's framing matches observed state."
+    name: prior Codex blocker closure — known-red refs validation command
+    required: true
+    runner: kspec validate --refs --warnings-ok + plan baseline policy inspection
+    created_at: 2026-07-14T21:10:21.525Z
+    completed_at: 2026-07-14T21:10:21.525Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -190,6 +209,13 @@ events:
       status: pass
       name: prior Codex blocker closure — whole-inventory closure
     timestamp: 2026-07-14T21:10:15.546Z
+  - _ulid: 01KXH7EVBSNKCC732RSMK0DRF5
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior Codex blocker closure — known-red refs validation command
+    timestamp: 2026-07-14T21:10:21.817Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -202,5 +228,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:10:15.255Z
+updated_at: 2026-07-14T21:10:21.525Z
 notes: []

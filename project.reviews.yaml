@@ -29341,7 +29341,7 @@ reviews:
     title: "Plan re-review (closure): Documentation Completeness and Dispatch Workspaces"
     disposition: pending
     author: "@claude"
-    check_count: 7
+    check_count: 8
     lifecycle_state: open
     related_refs: []
     subject:
@@ -29353,4 +29353,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-14T21:08:37.939Z
-    updated_at: 2026-07-14T21:10:15.255Z
+    updated_at: 2026-07-14T21:10:21.525Z
