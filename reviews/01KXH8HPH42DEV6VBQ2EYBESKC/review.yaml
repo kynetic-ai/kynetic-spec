@@ -44,6 +44,19 @@ checks:
     runner: npm test -- --fresh
     created_at: 2026-07-14T21:45:03.560Z
     completed_at: 2026-07-14T21:45:03.560Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Baseline regression check passed: raw command exited 4 with exactly the plan-documented
+      seven pre-existing ambiguous-reference errors (five @observations implements, one
+      @observations task spec_ref, one @spec-plan-import task meta_ref); neither changed owner
+      introduced a reference error."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-14T21:45:09.490Z
+    completed_at: 2026-07-14T21:45:09.490Z
 events:
   - _ulid: 01KXH8HPH42TE97AEPTYJ9KACX
     actor: Jacob Chapel
@@ -86,6 +99,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-07-14T21:45:03.832Z
+  - _ulid: 01KXH9EJCH5MXC41FARZ6F6732
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-14T21:45:09.778Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -98,5 +118,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:29:23.748Z
-updated_at: 2026-07-14T21:45:03.560Z
+updated_at: 2026-07-14T21:45:09.490Z
 notes: []
