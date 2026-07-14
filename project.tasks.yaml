@@ -33799,6 +33799,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:18.036Z
+  automation: eligible
 - _ulid: 01KXH2PRVHHSQ14WR16A5KHTJT
   slugs:
     - task-protect-controlled-dispatch-evidence
