@@ -4217,7 +4217,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-14T21:55:33.228Z
+      updated_at: 2026-07-14T22:00:33.689Z
     integration:
       status: merged
       detail: integration:merged
@@ -4234,18 +4234,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-14T21:35:22.424Z
-      last_reconciled_at: 2026-07-14T21:59:35.627Z
+      last_reconciled_at: 2026-07-14T22:00:33.689Z
       created_at: 2026-07-14T21:23:08.855Z
-      updated_at: 2026-07-14T21:59:35.627Z
+      updated_at: 2026-07-14T22:00:33.689Z
     workspace_id: dispatch-workspace-01KXH2PMG1Q88ZVGC68VVA70NE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
-        last_seen_at: 2026-07-14T21:33:29.844Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-patch-dispatch-workspace-cleanup-spec-01kxh2pm-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-patch-dispatch-workspace-cleanup-spec/01kxh2pm
