@@ -18,3 +18,28 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-14T20:49:55.501Z
+  - _ulid: 01KXH6BVQAQQVJ7FQJDERQJPTS
+    content: |-
+      Completed exact metadata patch; no route, source, test, or code-branch files changed.
+
+      Nine-row exact readback (id | Given | When | Then):
+      - ac-5 | GET /api/agent/status is called | lifecycle state is available | the response preserves dispatch_enabled, active_invocations, queued_invocations, queue_depth, agent_definitions, degraded, degraded_targets; active session_id/agent_id/task_ref/task_title/elapsed_ms/resolved_adapter; queued agent_id/task_ref/task_title/wait_ms/resolved_adapter; definitions id/name/adapter/resolved_adapter/completed_sessions; targets branch/reason/enteredAt/kind; runner only when configured; runner_validation only where current resolution emits it.
+      - ac-public-status-lifecycle-additions | GET /api/agent/status is called | lifecycle state is available | it appends the plan's closed snake-case cleanup_state with exact per-entry pending/failed/error-code invariants, ordered canonical-ULID held_tasks, and ordered no-duplicate canonical-ULID task_controls at top level.
+      - ac-6 | a localhost client posts a valid lifecycle control | transition processing succeeds | POST /api/agent/dispatch/control returns HTTP 200 with `{ok:true,data:{global_authority,projection,cleanup_state,active_count,queue_depth,held_count,held_tasks,task_controls,degraded_targets,outcome,task_id?,task_ref?},error:null}`, with canonical task identity present only for task scope and all lifecycle rows conforming to the closed schemas defined by this plan.
+      - ac-control-error-current-status | a localhost lifecycle control fails | the API responds | its structured error includes current status.
+      - ac-control-missing-identity | a task-scoped control omits task identity | validation runs | the request is rejected.
+      - ac-control-ref-canonicalization | a task-scoped control carries one uniquely resolvable ref | identity is resolved | the ref is canonicalized to its task ULID.
+      - ac-control-identity-mismatch | supplied task identity fields disagree | identity is resolved | the request has no effect.
+      - ac-control-failure-no-success | lifecycle persistence fails | the API responds | it does not report success.
+      - ac-cleanup-failure-no-success | stop cleanup fails | the API responds | it does not report success.
+
+      Verification:
+      - Exact programmatic comparison: 9/9 rows exact; 15 total IDs in expected order, preserving all six unlisted compatibility ACs.
+      - kspec validate --alignment --warnings-ok: pass (baseline warnings only).
+      - kspec validate --completeness --warnings-ok: pass (baseline warnings only).
+      - kspec validate --refs --warnings-ok: exits 4 on exactly the plan-documented seven pre-existing ambiguous refs (@observations x6, @spec-plan-import x1); no changed-plan refs added.
+      - git diff --check: pass; git status clean.
+      - npm format/lint/type/test gates: not applicable because this task changed metadata only and explicitly requires no files/tests.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-14T20:51:15.307Z
