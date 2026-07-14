@@ -8,3 +8,30 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-14T21:25:59.917Z
+  - _ulid: 01KXH8DPJ08X11H7VC7DV6NKGM
+    content: >-
+      Completed exact metadata patch; no component, source, test, plan, or code-branch files
+      changed.
+
+
+      Exact readback:
+
+      - id: ac-controlled-evidence-protected
+
+      - Given: dispatch evidence belongs to active, in-flight, paused-held, or
+      stopped-pending-cleanup work
+
+      - When: a destructive cleanup surface evaluates it
+
+      - Then: lifecycle control alone does not make the evidence cleanup-eligible
+
+
+      Preserved all 14 prior cleanup-policy criteria; readback now contains 15. Verification: git
+      diff --check passed; alignment and completeness validation passed with accepted warnings.
+      Reference validation retained exactly the plan-documented seven pre-existing
+      ambiguous-reference errors (@observations: one task spec_ref plus five module implements;
+      @spec-plan-import: one task meta_ref), with no new changed-plan reference error. Code quality
+      gates were not applicable because the assigned branch has no file changes.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-14T21:27:12.704Z
