@@ -3047,12 +3047,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-14T21:05:49.581Z
+      updated_at: 2026-07-14T21:06:41.805Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-14T21:05:49.581Z
+      updated_at: 2026-07-14T21:06:41.805Z
     integration:
       status: pending
       detail: null
@@ -3060,8 +3060,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
-      updated_at: 2026-07-14T21:05:49.581Z
-    lifecycle_state: ready
+      updated_at: 2026-07-14T21:06:41.805Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PJ7RY9B9MQNHBFWN96QB
     task_ref: "@01KXH2PJ7RY9B9MQNHBFWN96QB"
@@ -3069,16 +3069,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-14T20:57:03.846Z
-      last_reconciled_at: 2026-07-14T21:05:49.581Z
+      last_reconciled_at: 2026-07-14T21:06:41.805Z
       created_at: 2026-07-14T20:55:54.024Z
-      updated_at: 2026-07-14T21:05:49.581Z
+      updated_at: 2026-07-14T21:06:41.805Z
     workspace_id: dispatch-workspace-01KXH2PJ7RY9B9MQNHBFWN96QB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+        last_seen_at: 2026-07-14T21:06:41.805Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-patch-dispatch-ui-specs-01kxh2pj-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-patch-dispatch-ui-specs/01kxh2pj
         head: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
-        last_seen_at: 2026-07-14T20:55:54.024Z
+        last_seen_at: 2026-07-14T21:06:41.805Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-patch-dispatch-ui-specs-01kxh2pj
