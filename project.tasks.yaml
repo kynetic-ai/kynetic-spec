@@ -33947,6 +33947,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:23.074Z
+  automation: eligible
 - _ulid: 01KXH2PXT88X9MSC62MQVY2CV4
   slugs:
     - task-verify-api-cli-projection
