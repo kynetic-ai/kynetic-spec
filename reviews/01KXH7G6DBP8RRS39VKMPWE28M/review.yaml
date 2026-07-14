@@ -7,142 +7,133 @@ checks:
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: Stored content read end to end; source differs only by jq-added terminal newline; dry-run
-      parsed seven unique task-only entries with derive_from_specs false and no specs or derived
-      state.
+    evidence: Stored content read end to end; dry-run parsed seven unique task-only entries with
+      derive_from_specs false and no specs or derived state.
     name: stored plan completeness and importability
     required: true
     runner: kspec plan get + plan import --dry-run
-    created_at: 2026-07-14T21:13:35.442Z
-    completed_at: 2026-07-14T21:13:35.442Z
+    created_at: 2026-07-14T21:14:01.867Z
+    completed_at: 2026-07-14T21:14:01.867Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
     evidence: All seven tasks are documentation, documentation tests/fixtures, source-owned guidance,
-      generated docs outputs, or non-behavioral scaffold comments. The prior timeout, process-group,
-      workspace command/reset/cleanup, status projection, and remote-sync implementation work is
-      explicitly excluded.
+      generated docs outputs, or non-behavioral scaffold comments; all prior product-expansion work
+      is explicitly excluded.
     name: scope proportionality
     required: true
     runner: manual plan/source comparison
-    created_at: 2026-07-14T21:13:39.549Z
-    completed_at: 2026-07-14T21:13:39.549Z
+    created_at: 2026-07-14T21:14:06.982Z
+    completed_at: 2026-07-14T21:14:06.982Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: "Every Covers ref and AC id resolves to current owners: docs section requirements,
-      navigation/search/reachability/release, README, setup-scaffold defaults, and auto CLI docs.
-      user-documentation remains correctly identified as an AC-less module and is not claimed."
+    evidence: Every Covers ref and AC id resolves to current documentation, README, setup-scaffold, or
+      auto-CLI owners; user-documentation is correctly identified as an AC-less module and is not
+      claimed.
     name: existing documentation spec and AC ownership
     required: true
     runner: kspec item get + Covers mapping
-    created_at: 2026-07-14T21:13:43.817Z
-    completed_at: 2026-07-14T21:13:43.817Z
+    created_at: 2026-07-14T21:14:12.950Z
+    completed_at: 2026-07-14T21:14:12.950Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: Seven-task graph is the linear acyclic chain T1→T2→T3→T4→T5→T6→T7. Shared tests are
-      created before modification; guide, concept/overview, and recovery targets are ordered; each
-      prose/index slice has one owner; later audit excludes prior owners.
+    evidence: Seven-task graph is the linear acyclic chain T1→T2→T3→T4→T5→T6→T7. Shared tests, link
+      targets, prose, indexes, and later excluded slices have ordered single ownership.
     name: dependency file test and link serialization
     required: true
     runner: YAML parse + graph/file ownership analysis
-    created_at: 2026-07-14T21:13:47.797Z
-    completed_at: 2026-07-14T21:13:47.797Z
+    created_at: 2026-07-14T21:14:17.537Z
+    completed_at: 2026-07-14T21:14:17.537Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: Lifecycle plan is active on
-      plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx with unfinished
-      runtime/API/CLI/UI work. Revised tasks edit no such product surfaces, and Task 1 blocks before
-      branch creation until relevant changes are actually merged into the integration target and
-      facts are refreshed.
+    evidence: The lifecycle plan remains active with unfinished runtime/API/CLI/UI work. Revised tasks
+      edit no such product surfaces, and Task 1 blocks before branch creation until relevant changes
+      are merged and facts refreshed.
     name: active lifecycle plan non-overlap and freshness gate
     required: true
     runner: plan/task/branch/worktree inspection
-    created_at: 2026-07-14T21:13:51.619Z
-    completed_at: 2026-07-14T21:13:51.619Z
+    created_at: 2026-07-14T21:14:22.944Z
+    completed_at: 2026-07-14T21:14:22.944Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
     evidence: No Specs section, spec patch, Given/When/Then proposal, or product implementation task
       remains. Prior timeout/process group, reset prerequisites, cleanup restatement, status
-      projection, runner-schema, and remote-sync completion proposals are explicitly removed; a
-      newly discovered documentation gap requires separate approval.
+      projection, runner-schema, and remote-sync completion proposals are explicitly removed.
     name: deferred product AC proposal removal
     required: true
     runner: stored plan review
-    created_at: 2026-07-14T21:13:55.660Z
-    completed_at: 2026-07-14T21:13:55.660Z
+    created_at: 2026-07-14T21:14:48.067Z
+    completed_at: 2026-07-14T21:14:48.067Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
     evidence: "All 140 tracked Markdown files classify with zero residue: 48 active-public, 2
       historical, 2 internal-eval, 23 source-template, 33 generated package-core outputs, 27
-      internal-agent-guidance, and 5 fixtures. IDs are repository-relative paths and exclusions
-      require reasons."
+      internal-agent-guidance, and 5 fixtures."
     name: tracked Markdown inventory universe
     required: true
     runner: git ls-files '*.md' classification audit
-    created_at: 2026-07-14T21:14:01.462Z
-    completed_at: 2026-07-14T21:14:01.462Z
+    created_at: 2026-07-14T21:14:52.128Z
+    completed_at: 2026-07-14T21:14:52.128Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: The plan independently derives the full exported Commander tree (244 current help nodes),
+    evidence: The plan independently derives the exported Commander tree (244 current help nodes),
       stable setup/upgrade scaffold ids, plugin/search/web generated destinations and source/build
-      owners, plus the enumerated documentation-test gate classes; missing, extra, duplicate,
-      unpaired, and omitted records are rejected.
+      owners, and enumerated documentation-test gate classes; omissions/extras/duplicates/unpaired
+      records fail.
     name: non-file inventory universe
     required: true
     runner: CLI tree + scripts/tests inspection
-    created_at: 2026-07-14T21:14:08.088Z
-    completed_at: 2026-07-14T21:14:08.088Z
+    created_at: 2026-07-14T21:14:56.068Z
+    completed_at: 2026-07-14T21:14:56.068Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
     evidence: Each task states What, Files, Required content/tests, Verification, Review handoff, exact
-      Covers refs, and dependencies. Current existing paths resolve and declared creates are absent.
-      Package sources are conditional, source-owned, regeneration-backed, and explicitly subject to
-      both neutrality directions.
+      Covers refs, and dependencies. Existing paths resolve and declared creates are absent. Package
+      edits are conditional, source-owned, regenerated, and reviewed in both neutrality directions.
     name: task standalone executability and package neutrality
     required: true
     runner: manual seven-task handoff review
-    created_at: 2026-07-14T21:14:12.952Z
-    completed_at: 2026-07-14T21:14:12.952Z
+    created_at: 2026-07-14T21:15:00.274Z
+    completed_at: 2026-07-14T21:15:00.274Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: One guide, one concept, two symptom-first recovery pages, all section indexes, seven
-      non-doc public surfaces, remaining active docs, historical/excluded dispositions,
-      rendered/search output, and final browser validation are all assigned exactly once and
-      sufficient for the requested full factual pass without style-only churn.
+    evidence: One guide, one concept, two symptom-first recovery pages, all indexes, seven non-doc
+      public surfaces, remaining active docs, excluded dispositions, rendered/search output, and
+      final browser validation are assigned exactly once without style-only churn.
     name: information architecture and full public-doc coverage
     required: true
     runner: docs tree + inventory ownership review
-    created_at: 2026-07-14T21:14:18.686Z
-    completed_at: 2026-07-14T21:14:18.686Z
+    created_at: 2026-07-14T21:15:04.403Z
+    completed_at: 2026-07-14T21:15:04.403Z
   - status: pass
     applies_to_version:
       type: entity_version
       content_hash: ""
-    evidence: Planned gates compare schemas, defaults, enums, command-tree help, links, anchors,
-      examples, inventory ownership, rendering, search, and generated convergence. Broad tone/style
-      and package-neutrality deny-list scanning are explicitly forbidden as primary proof.
+    evidence: Planned gates compare schemas, defaults, enums, command help, links, anchors, examples,
+      inventory ownership, rendering, search, and generated convergence; broad tone/style and
+      neutrality deny-list scanning are forbidden as primary proof.
     name: structured documentation test proportionality
     required: true
     runner: manual test-plan review
-    created_at: 2026-07-14T21:14:23.130Z
-    completed_at: 2026-07-14T21:14:23.130Z
+    created_at: 2026-07-14T21:15:12.328Z
+    completed_at: 2026-07-14T21:15:12.328Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -152,84 +143,8 @@ checks:
     name: focused parser scaffold and docs tests
     required: true
     runner: npm test
-    created_at: 2026-07-14T21:14:29.480Z
-    completed_at: 2026-07-14T21:14:29.480Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: Fresh exit 0 with current baseline warnings; no plan-derived state was created.
-    name: kspec validate alignment
-    required: true
-    runner: kspec validate --alignment --warnings-ok
-    created_at: 2026-07-14T21:14:35.785Z
-    completed_at: 2026-07-14T21:14:35.785Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: Fresh exit 0 with current baseline warnings; no new plan coverage or reference regression
-      was introduced.
-    name: kspec validate completeness
-    required: true
-    runner: kspec validate --completeness --warnings-ok
-    created_at: 2026-07-14T21:14:41.868Z
-    completed_at: 2026-07-14T21:14:41.868Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: "Fresh command exits 4 with exactly seven disclosed unrelated ambiguity errors: six
-      @observations occurrences and one @spec-plan-import occurrence. The plan requires exact
-      no-new/no-changed comparison and expressly forbids claiming refs or project-wide validation
-      green."
-    name: seven-ref ambiguity baseline handling
-    required: true
-    runner: kspec validate --refs --warnings-ok + exact comparison
-    created_at: 2026-07-14T21:14:46.726Z
-    completed_at: 2026-07-14T21:14:46.726Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: "Direction 1: package text must remain universal and tests do not substitute string scans
-      for judgment. Direction 2: removed Kynetic policy stays in AGENTS.md, project meta, or local
-      skills. Source ownership and agents/skills/plugin regeneration/convergence are required."
-    name: shared guidance neutrality
-    required: true
-    runner: shared-guidance-neutrality semantic review
-    created_at: 2026-07-14T21:14:51.156Z
-    completed_at: 2026-07-14T21:14:51.156Z
-  - status: pass
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: "Files read: complete stored/source plan, both prior reviews, AGENTS.md, kspec-agents.md,
-      docs/spec owners, lifecycle plan/task state, tracked Markdown classifications, docs/build
-      scripts, package scripts, relevant test paths, branches/worktrees. Commands:
-      plan/review/item/task/search/help/import dry-run, git status/worktree/diff/ls-files,
-      filesystem/path checks, focused npm test, three validation modes. Claims verified: all prior
-      blockers, exact AC refs, seven-task graph, no active-plan file overlap, 140-file and non-file
-      universes, current missing workspace CLI, remote-sync in_progress status, neutrality,
-      importability. Categories: scope, correctness, dependencies, AC ownership, inventory,
-      commands/files/tests, integration, validation."
-    name: review evidence log
-    required: true
-    runner: fresh canonical closure review
-    created_at: 2026-07-14T21:14:55.124Z
-    completed_at: 2026-07-14T21:14:55.124Z
-  - status: fail
-    applies_to_version:
-      type: entity_version
-      content_hash: ""
-    evidence: "External non-required baseline remains red: exit 4 with the same seven unrelated
-      ambiguous-reference errors. This review does not represent that gate as passing and approval
-      does not imply project-wide green."
-    name: project-wide refs validation baseline
-    required: false
-    runner: kspec validate --refs --warnings-ok
-    created_at: 2026-07-14T21:14:59.621Z
-    completed_at: 2026-07-14T21:14:59.621Z
+    created_at: 2026-07-14T21:15:16.422Z
+    completed_at: 2026-07-14T21:15:16.422Z
 events:
   - _ulid: 01KXH7G6DAHFXJRMCMN9VBG73C
     actor: codex
@@ -237,139 +152,97 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-14T21:11:05.898Z
-  - _ulid: 01KXH7MMF69JN224M8P7V2B54Q
+  - _ulid: 01KXH7NEJQ715C8NQQPMEAHDKA
     actor: codex
     event_type: lifecycle_change
     payload:
       from: draft
       to: open
-    timestamp: 2026-07-14T21:13:31.366Z
-  - _ulid: 01KXH7MRR9BSFDVKE8RWS6J8HD
+    timestamp: 2026-07-14T21:13:58.103Z
+  - _ulid: 01KXH7NK9JCWSDQ7005G14Q818
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: stored plan completeness and importability
-    timestamp: 2026-07-14T21:13:35.753Z
-  - _ulid: 01KXH7MWSN6J6TSTQZP8TG07MZ
+    timestamp: 2026-07-14T21:14:02.930Z
+  - _ulid: 01KXH7NQK16Y5QRC473KAWWF1W
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: scope proportionality
-    timestamp: 2026-07-14T21:13:39.893Z
-  - _ulid: 01KXH7N0YAB6WJA6V70ENCA9MB
+    timestamp: 2026-07-14T21:14:07.329Z
+  - _ulid: 01KXH7NXV2544ZZV6T2931R7SX
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: existing documentation spec and AC ownership
-    timestamp: 2026-07-14T21:13:44.138Z
-  - _ulid: 01KXH7N4SZ9G9ZNN8NZZS02AJ6
+    timestamp: 2026-07-14T21:14:13.730Z
+  - _ulid: 01KXH7P1W8BQGJT2RPTJ98THZ6
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: dependency file test and link serialization
-    timestamp: 2026-07-14T21:13:48.095Z
-  - _ulid: 01KXH7N8HW61N0882FBGJ6YR10
+    timestamp: 2026-07-14T21:14:17.865Z
+  - _ulid: 01KXH7P77T9VJQD0B2M4PEP41V
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: active lifecycle plan non-overlap and freshness gate
-    timestamp: 2026-07-14T21:13:51.932Z
-  - _ulid: 01KXH7NCH7ADV3T4Y4R0SDH5JQ
+    timestamp: 2026-07-14T21:14:23.355Z
+  - _ulid: 01KXH7PZNMMET04022R3CP6S9P
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: deferred product AC proposal removal
-    timestamp: 2026-07-14T21:13:56.007Z
-  - _ulid: 01KXH7NJC598CJGC9Q68XECX00
+    timestamp: 2026-07-14T21:14:48.372Z
+  - _ulid: 01KXH7Q3MXQHWKBW9KPTEDBCKD
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: tracked Markdown inventory universe
-    timestamp: 2026-07-14T21:14:01.989Z
-  - _ulid: 01KXH7NRST7CTPN4HT41TDX13Q
+    timestamp: 2026-07-14T21:14:52.445Z
+  - _ulid: 01KXH7Q7G3C4BH3WTR2MAVFTZB
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: non-file inventory universe
-    timestamp: 2026-07-14T21:14:08.570Z
-  - _ulid: 01KXH7NXDFA80RW9ZPFR0ABEJ3
+    timestamp: 2026-07-14T21:14:56.387Z
+  - _ulid: 01KXH7QBKKKERF4YCK0MTZGWSY
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: task standalone executability and package neutrality
-    timestamp: 2026-07-14T21:14:13.295Z
-  - _ulid: 01KXH7P2ZZA4AXBFX234CV7EV1
+    timestamp: 2026-07-14T21:15:00.595Z
+  - _ulid: 01KXH7QFNP03ZHY899339KAQ1H
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: information architecture and full public-doc coverage
-    timestamp: 2026-07-14T21:14:19.007Z
-  - _ulid: 01KXH7P7XKFDCNEBVB79QXVMX2
+    timestamp: 2026-07-14T21:15:04.758Z
+  - _ulid: 01KXH7QQCZJ8SKDJEX0GR5WDY2
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: structured documentation test proportionality
-    timestamp: 2026-07-14T21:14:24.051Z
-  - _ulid: 01KXH7PDR6E9X8A5E00XV1NVV5
+    timestamp: 2026-07-14T21:15:12.671Z
+  - _ulid: 01KXH7QVE0BT2QKWKQN94P2ZR8
     actor: codex
     event_type: check_added
     payload:
       status: pass
       name: focused parser scaffold and docs tests
-    timestamp: 2026-07-14T21:14:30.022Z
-  - _ulid: 01KXH7PKQXZJPJ3JYVBT5YQF28
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: kspec validate alignment
-    timestamp: 2026-07-14T21:14:36.157Z
-  - _ulid: 01KXH7PSS7B2YSCRYR15CE68XM
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: kspec validate completeness
-    timestamp: 2026-07-14T21:14:42.343Z
-  - _ulid: 01KXH7PYCQ77P6187SE937NNSK
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: seven-ref ambiguity baseline handling
-    timestamp: 2026-07-14T21:14:47.063Z
-  - _ulid: 01KXH7Q2PP7BQMHN135K1JWQET
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: shared guidance neutrality
-    timestamp: 2026-07-14T21:14:51.478Z
-  - _ulid: 01KXH7Q6HYW4BG0ZC7B91TDAYJ
-    actor: codex
-    event_type: check_added
-    payload:
-      status: pass
-      name: review evidence log
-    timestamp: 2026-07-14T21:14:55.422Z
-  - _ulid: 01KXH7QB1B8Y6T497W1D6XS20K
-    actor: codex
-    event_type: check_added
-    payload:
-      status: fail
-      name: project-wide refs validation baseline
-    timestamp: 2026-07-14T21:15:00.011Z
+    timestamp: 2026-07-14T21:15:16.801Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -382,5 +255,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:11:05.899Z
-updated_at: 2026-07-14T21:14:59.621Z
+updated_at: 2026-07-14T21:15:16.422Z
 notes: []
