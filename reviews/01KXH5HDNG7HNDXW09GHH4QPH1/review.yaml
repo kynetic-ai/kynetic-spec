@@ -81,6 +81,23 @@ checks:
     runner: manual-graph-analysis
     created_at: 2026-07-14T20:41:00.570Z
     completed_at: 2026-07-14T20:41:00.570Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All verification commands map to real npm scripts in package.json: npm test (line 54),
+      npm run lint (oxlint, line 63), npm run typecheck (line 66), npm run build:docs-search (line
+      45), npm run build:web-ui (line 46), npm run test:e2e (line 58), npm run format:check (oxfmt,
+      line 65). kspec commands (kspec validate, kspec agents generate, kspec skill render, kspec
+      item get, kspec meta --help) all exist. 'npm run build:plugin' referenced by Tasks 8 and 10 —
+      verified present in package.json. Command 'kspec agent dispatch workspace --help' referenced
+      by Task 2 verification will only resolve after Task 2 lands (correctly deferred to that
+      task)."
+    name: Verification commands resolve
+    required: true
+    runner: manual-package-json-check
+    created_at: 2026-07-14T20:41:08.990Z
+    completed_at: 2026-07-14T20:41:08.990Z
 events:
   - _ulid: 01KXH5HDNGQ9DX8AQ2KG68KS5Z
     actor: "@claude"
@@ -186,6 +203,13 @@ events:
       status: pass
       name: Dependency graph acyclicity and ordering
     timestamp: 2026-07-14T20:41:00.821Z
+  - _ulid: 01KXH5SBVNP9PTX5K0FCG54G8K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Verification commands resolve
+    timestamp: 2026-07-14T20:41:09.237Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -396,5 +420,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:41:00.570Z
+updated_at: 2026-07-14T20:41:08.990Z
 notes: []
