@@ -2,7 +2,31 @@ _ulid: 01KXH5HDNG7HNDXW09GHH4QPH1
 slugs: []
 title: "Plan review: Documentation Completeness and Dispatch Workspaces"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All Binding Audit 'known facts' verified against source: bash -lc
+      (src/agent-runtime/bootstrap.ts:80), 4000-char tail (bootstrap.ts:115), tracked-change guard
+      command (bootstrap.ts:102), worktree_root default .kspec-worktrees (src/parser/config.ts:565),
+      publication_mode enum pull_request/manual_merge/auto (config.ts:179), sync_interval default 60
+      (config.ts:570), remote_sync null means runtime detection (config.ts:571), step defaults
+      idempotent/allow_tracked_changes/reviewer_rerun_allowed all default false (config.ts:804-806),
+      runtime suggestion for nonexistent 'kspec dispatch workspace reset'
+      (src/agent-runtime/workspace.ts:1052,1054,1065), schema uses on/filter not trigger/filters
+      (src/schema/meta.ts:51-52), runner docs use legacy trigger/filters
+      (docs/guides/configuring-agent-runners.md:34-37 and 206-210), RELEASE_NOTES.md omits auto
+      (line 358-359), base_branch resolution order remote HEAD → current branch → main
+      (workspace.ts:530-580), project-before-agent ordering (bootstrap.ts:165),
+      KSPEC_DISPATCH_BOOTSTRAP_ROLE/SOURCE/STEP env vars (bootstrap.ts:334-336),
+      DAEMON_RUNTIME_MODE_ENV_KEYS import (bootstrap.ts:7), CLI has only start/stop/status/watch
+      with no workspace subcommand (verified via kspec agent dispatch --help)."
+    name: Factual accuracy — known facts vs source code
+    required: true
+    runner: manual-source-inspection
+    created_at: 2026-07-14T20:40:21.183Z
+    completed_at: 2026-07-14T20:40:21.183Z
 events:
   - _ulid: 01KXH5HDNGQ9DX8AQ2KG68KS5Z
     actor: "@claude"
@@ -80,6 +104,13 @@ events:
       kind: nit
       thread_ulid: 01KXH5Q40YP34VEG3SGPRM8EA0
     timestamp: 2026-07-14T20:39:56.078Z
+  - _ulid: 01KXH5QX7S797BKCTP4RAJAKFP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Factual accuracy — known facts vs source code
+    timestamp: 2026-07-14T20:40:21.497Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -290,5 +321,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:39:55.680Z
+updated_at: 2026-07-14T20:40:21.183Z
 notes: []
