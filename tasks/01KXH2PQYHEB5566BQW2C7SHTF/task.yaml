@@ -1,0 +1,101 @@
+_ulid: 01KXH2PQYHEB5566BQW2C7SHTF
+slugs:
+  - task-final-pre-spawn-control-gate
+title: Add final ordered lifecycle gate before creation
+type: task
+description: >
+  ### Covers
+
+
+  - ac-final-gate-prevents-process-creation
+
+  - ac-final-gate-prevents-session-creation
+
+  - ac-spawn-win-pause-allows-completion
+
+
+  ### Required context
+
+
+  Queue checks cannot close the dequeue-to-create race. The gate is immediately before shared
+  process/session creation and independently requires global authority running with no global-scope
+  cleanup entry plus no matching `scope:"task",task_id:T` hold/cleanup; unrelated task cleanup never
+  denies T. Aggregate cleanup counts/arrays are not predicates. A control winner creates neither; a
+  spawn winner becomes durable active ownership.
+
+
+  ### Deliverable
+
+
+  One deterministic final global/task check that either denies creation or hands a spawn winner to
+  durable active ownership. It does not cancel, signal, close, or recover a spawn winner; stop
+  recovery owns those outcomes.
+
+
+  ### Implementation
+
+
+  Put the gate in the common invocation path immediately before the first process/session artifact.
+  Pause winning restores held intent once; stop winning denies and discards pre-artifact; spawn
+  winning publishes the in-flight/active handoff containing the canonical
+  invocation/session/task/process identity for recovery. Use no timing-based ordering and do not
+  perform cancellation here.
+
+
+  ### Files
+
+
+  - Create: tests/dispatch-spawn-control-race.test.ts
+
+  - Modify: src/agent-runtime/dispatch.ts
+
+  - Modify: src/agent-runtime/invocation.ts
+
+  - Modify: tests/dispatch-artifact-protection.test.ts
+
+
+  ### Behavioral tests
+
+
+  In tests/dispatch-spawn-control-race.test.ts create `createSpawnGateHarness`,
+  `beforeCreateBarrier`, and `artifactRecorder`. For global pause, task pause, global stop, and task
+  stop: pause at `beforeCreateBarrier`, commit control, release, and assert
+  `artifactRecorder.processes===0`, `artifactRecorder.sessions===0`, and the documented
+  held/discarded result. For spawn win, release creation first, record exactly one durable active
+  handoff before applying pause/stop, and assert this task only exposes the handoff plus natural
+  completion for pause. A later recovery test consumes the handoff and proves stop cancellation.
+
+
+  ### Verification
+
+
+  - npm test -- tests/dispatch-spawn-control-race.test.ts tests/dispatch-artifact-protection.test.ts
+
+  - npm run typecheck
+
+  - npm run lint
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Provide the boundary location and six barrier traces; explicitly state that the active-handoff
+  trace is consumed by stop recovery and this task has no cancellation claim.
+spec_ref: "@dispatch-lifecycle-control-authority"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-engine-task-pause-resume"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - race
+  - engine
+vcs_refs: []
+created_at: 2026-07-14T19:47:17.585Z
+todos: []

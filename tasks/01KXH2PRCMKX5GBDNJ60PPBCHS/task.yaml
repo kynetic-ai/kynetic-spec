@@ -1,0 +1,182 @@
+_ulid: 01KXH2PRCMKX5GBDNJ60PPBCHS
+slugs:
+  - task-engine-stop-recovery
+title: Implement verified stop recovery for global and task scopes
+type: task
+description: >
+  ### Covers
+
+
+  - ac-stop-forbids-new-starts
+
+  - ac-stop-cancels-active-work
+
+  - ac-stop-closes-active-sessions
+
+  - ac-task-stop-cancels-matching-work
+
+  - ac-task-stop-preserves-unrelated-invocations
+
+  - ac-task-stop-closes-matching-session
+
+  - ac-task-stop-preserves-unrelated-sessions
+
+  - ac-task-stop-failure-retains-stopped-authority
+
+  - ac-task-stop-failure-reports-pending-cleanup
+
+  - ac-task-stop-failure-reports-no-success
+
+  - ac-task-interrupted-stop-recovers-on-startup
+
+  - ac-task-interrupted-stop-recovers-on-retry
+
+  - ac-recovery-requires-session-ownership
+
+  - ac-recovery-requires-process-birth
+
+  - ac-missing-leader-live-group-remains-pending
+
+  - ac-unverified-live-group-is-not-signalled
+
+  - ac-live-group-prevents-cleanup-completion
+
+  - ac-spawn-win-stop-cancels-invocation
+
+  - ac-stop-failure-retains-stopped-authority
+
+  - ac-stop-failure-reports-pending-cleanup
+
+  - ac-stop-failure-reports-no-success
+
+  - ac-interrupted-stop-recovers-on-startup
+
+  - ac-interrupted-stop-recovers-on-retry
+
+  - ac-global-stop-is-idempotent
+
+  - ac-task-stop-is-idempotent
+
+
+  ### Required context
+
+
+  Durable session dispatch_ownership contains invocation_id, session_id, task_id nullable, agent_id,
+  adapter, owner_instance_id, pid nullable, pgid nullable, process_start_ticks nullable,
+  process_identity_platform linux_proc_stat_v1/unverifiable, captured_at, exited_at optional, and
+  immutable group_members pid/start-ticks proofs. Start ticks are Linux /proc/<pid>/stat field 22
+  after the final right parenthesis. pending_cleanup has cleanup_id, scope, optional canonical
+  task_id, phase owned/signals_sent/sessions_closed, immutable targets, and project-relative session
+  metadata paths. Projection adds per-entry `status:"pending"|"failed"`: pending forbids error_code;
+  failed requires its mapped error_code. Aggregate idle has no entries; pending is non-empty/all
+  pending; failed is non-empty/at least one failed and may contain other pending entries. Global
+  actions/retry inspect only global scope; task T actions/retry inspect only task scope/T. Other
+  scopes never change that mutation, although global authority independently gates work creation.
+  Successful final matching removal leaves that scope stopped/idle; aggregate status may remain
+  non-idle because unrelated entries remain.
+
+
+  ### Deliverable
+
+
+  Commit-first hard stop/recovery for both scopes: stopped commits before signal, verified ownership
+  is required for every signal, cleanup is removed only after group exit and durable session
+  closure.
+
+
+  ### Implementation
+
+
+  Persist null ownership before spawn then PID/PGID/birth/member proof before active publication;
+  failed post-spawn durability cancels/reaps directly. Re-read tuple before signal: tuple mismatch
+  is cleanup_ownership_mismatch, birth/PID reuse is cleanup_process_birth_mismatch, unreadable
+  evidence is cleanup_identity_unverifiable. Missing leader is not not_found until recorded PGID is
+  proven empty. Linux group signal requires enumerating /proc numeric stats and a matching immutable
+  member proof; live verified leaderless group is cleanup_leader_missing_group_alive, live
+  unproven/unsupported group is cleanup_group_unverifiable. PID/PGID alone never proves ownership.
+  Advance owned to signals_sent only after every leader/PGID is proven exited; close via
+  src/sessions/store.ts, then sessions_closed/remove. Timeout, signal/close failure, mismatch, or
+  live/unverifiable group remains stopped/pending. Global selects all; task selects matching
+  canonical id and preserves unrelated active/queued/retry/session/control/cleanup state.
+
+
+  ### Files
+
+
+  - Create: tests/dispatch-stop-recovery.test.ts
+
+  - Modify: src/agent-runtime/dispatch.ts
+
+  - Modify: src/agent-runtime/invocation.ts
+
+  - Modify: src/agent-runtime/session-registry.ts
+
+  - Modify: src/agent-runtime/bootstrap.ts
+
+  - Modify: src/sessions/types.ts
+
+  - Modify: src/sessions/store.ts
+
+  - Modify: tests/active-session-registry.test.ts
+
+  - Modify: tests/agent-dispatch-engine.test.ts
+
+  - Modify: tests/dispatch-spawn-control-race.test.ts
+
+
+  ### Behavioral tests
+
+
+  In tests/dispatch-stop-recovery.test.ts create `createStopRecoveryHarness`, `recoveryBarrier`,
+  `procEvidenceFixture`, and `sessionCloseRecorder`; extend
+  tests/dispatch-spawn-control-race.test.ts only to consume its named spawn-winner handoff. Per
+  case: (1) persist the exact ownership/cleanup phase fixture, (2) stop at the named
+  `recoveryBarrier`, (3) trigger stop, startup recovery, or retry, (4) release the barrier, and (5)
+  observe durable authority, exact CleanupState, signal receipts, sessionCloseRecorder, and
+  unrelated A/B state. Cases are post-spawn durability failure → direct reap/no active handoff;
+  tuple mismatch/PID reuse → 409 failed/no signal; unreadable proc → 503 failed/no signal;
+  unsupported platform or unproven live group → 503 failed/no signal; leaderless empty group →
+  pending progression then idle after removal; leaderless verified-live group → 409 failed/no
+  completion; timeout/signal/close failure → mapped 500 failed/no success; each
+  owned/signals_sent/sessions_closed crash → pending and startup resumes next safe phase;
+  spawn-winner then stop → matching invocation cancelled; global and task A stop preserve B
+  invocation/session/control; repeated/concurrent stop is one cleanup entry; direct global
+  start/pause/resume and matching task pause/resume during pending/failed return invalid_transition
+  with no write/start/event other than one failed outcome; successful retry leaves stopped/idle and
+  only a later start/resume reopens; graceful shutdown takes global stop. No live group may complete
+  cleanup and no failure reports success.
+
+
+  ### Verification
+
+
+  - npm test -- tests/dispatch-stop-recovery.test.ts tests/dispatch-spawn-control-race.test.ts
+  tests/active-session-registry.test.ts tests/agent-dispatch-engine.test.ts
+
+  - npm run typecheck
+
+  - npm run lint
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Provide ownership schema, phase table, Linux proof matrix, and A/B recovery traces.
+spec_ref: "@dispatch-lifecycle-control-authority"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-final-pre-spawn-control-gate"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - recovery
+  - cancellation
+vcs_refs: []
+created_at: 2026-07-14T19:47:18.036Z
+todos: []

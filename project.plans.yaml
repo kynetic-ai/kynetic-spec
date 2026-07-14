@@ -2139,11 +2139,32 @@ plans:
     slugs:
       - plan-dispatch-lifecycle-pause-resume-and-stop-controls
     title: Dispatch Lifecycle Pause Resume and Stop Controls
-    status: approved
+    status: active
     approved_at: 2026-07-14T19:46:24.344Z
     branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@dispatch-lifecycle-control-authority"
+    derived_tasks:
+      - "@task-patch-dispatch-engine-coalescing-specs"
+      - "@task-patch-dispatch-cli-specs"
+      - "@task-patch-dispatch-api-specs"
+      - "@task-patch-dispatch-ui-specs"
+      - "@task-patch-dispatch-events-specs"
+      - "@task-patch-dispatch-workspace-cleanup-spec"
+      - "@task-dispatch-control-persistence"
+      - "@task-engine-global-lifecycle"
+      - "@task-engine-task-pause-resume"
+      - "@task-final-pre-spawn-control-gate"
+      - "@task-engine-stop-recovery"
+      - "@task-protect-controlled-dispatch-evidence"
+      - "@task-dispatch-lifecycle-events"
+      - "@task-daemon-dispatch-lifecycle-api"
+      - "@task-cli-dispatch-lifecycle-controls"
+      - "@task-ui-dispatch-lifecycle-controls"
+      - "@task-verify-engine-publication-admission"
+      - "@task-verify-engine-restart-races"
+      - "@task-verify-api-cli-projection"
+      - "@task-verify-ui-lifecycle-browser"
     module_ref: "@agent-integration"
     notes_count: 17
     resource_summary:

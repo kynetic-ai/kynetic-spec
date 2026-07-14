@@ -1,0 +1,63 @@
+_ulid: 01KXH2PXT88X9MSC62MQVY2CV4
+slugs:
+  - task-verify-api-cli-projection
+title: Verify API and CLI lifecycle projection end to end
+type: task
+description: |
+  ### Covers
+
+  Verification only; API, CLI, and event tasks remain behavior owners.
+
+  ### Required context
+
+  Use one named daemon fixture built with tests/helpers/daemon.ts `createTestDaemonProject` and `startTestDaemon` (register its stop at fixture creation), tests/helpers/daemon-fetch.ts `boundedDaemonFetch`, tests/helpers/cli.ts `kspec` with explicit cwd, and event capture in the new test file. Add `createSurfaceDaemonFixture`, `requestSurface`, `runSurfaceCli`, `captureSurfaceEvents`, and `injectLifecycleFailure` to tests/dispatch-lifecycle-surface-integration.test.ts; these are the only new helpers. The fixture has an ephemeral endpoint, a project cwd, and a canonical task/slug pair.
+
+  Exact surface schemas differ only at named boundaries. Public API wire is snake_case. Internal/CLI has camelCase top-level lifecycle names but intentionally snake_case nested rows and does not share the UI converter. UI API helpers convert public wire to camelCase recursively: CleanupEntry `cleanup_id,task_id,error_code` -> `cleanupId,taskId,errorCode`; HeldTask `task_id,task_ref,controlled_at,updated_at` -> `taskId,taskRef,controlledAt,updatedAt`; TaskControl applies those mappings plus `cleanup_state` -> `cleanupState`; root `global_authority,cleanup_state,active_count,queue_depth,held_count,held_tasks,task_controls,degraded_targets` -> `globalAuthority,cleanupState,activeCount,queueDepth,heldCount,heldTasks,taskControls,degradedTargets`. CleanupState idle is empty; pending is non-empty/all entries status pending with no error code; failed is non-empty/at least one entry status failed, every failed entry has an error code, and pending entries have none. Entries are exact `{cleanup_id,scope,task_id?,status,phase,error_code?}` on wire/CLI and corresponding camelCase in UI; canonical identity, closed codes, order, uniqueness, nested matching-task, and held-count invariants apply. Matching-scope actions filter global only or task/T only; unrelated scopes never alter a mutation, but global authority independently gates starts. Task requests may carry slug/ref, canonical task identity appears only for task scope.
+
+  ### Deliverable
+
+  Exact cross-surface fixtures, not field-only smoke tests.
+
+  ### Implementation
+
+  Repeat only these cross-surface subsets: canonical global start/pause/resume/stop and task pause/resume/stop; slug input returning canonical task ID; full idle, all-pending, all-failed, and mixed failed-plus-pending cleanup rows; exact public snake/internal-CLI hybrid/UI camel conversion and semantic round trip; malformed aggregate/entry/error conditional, mixed-case, order, duplicate, count rejection; stopped global plus unrelated task cleanup permits start but denies that task; global cleanup does not prevent task metadata mutation but prevents work start; all seventeen failures; matching-scope invalid transitions and retries; alias rows proving global aliases inspect global scope only; endpoint/prompt/session branches; matching events. Do not re-test persistence barriers.
+
+  ### Files
+
+  - Create: tests/dispatch-lifecycle-surface-integration.test.ts
+  - Modify: tests/daemon-agent-dispatch-lifecycle.test.ts
+  - Modify: tests/cli-agent-dispatch-lifecycle.test.ts
+  - Modify: tests/dispatch-control-events.test.ts
+
+  ### Behavioral tests
+
+  Per case: seed the fixture state, optionally call `injectLifecycleFailure`, issue `requestSurface` or `runSurfaceCli`, capture the endpoint request/event, and assert HTTP status/body or CLI stdout/stderr/exit plus event identifier/code and forbidden path/raw fields. A failed assertion must identify the fixture state, route/command, expected fields, and injected code.
+
+  ### Verification
+
+  - npm test -- tests/dispatch-lifecycle-surface-integration.test.ts tests/daemon-agent-dispatch-lifecycle.test.ts tests/cli-agent-dispatch-lifecycle.test.ts tests/dispatch-control-events.test.ts
+  - npm run typecheck
+  - npm run lint
+  - git diff --check
+
+  ### Reviewer handoff
+
+  Supply one response/exit/event comparison table.
+spec_ref: "@daemon-agent-dispatch"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-cli-dispatch-lifecycle-controls"
+  - "@task-verify-engine-restart-races"
+context: []
+priority: 3
+tags:
+  - dispatch
+  - verification
+  - api
+  - cli
+vcs_refs: []
+created_at: 2026-07-14T19:47:23.592Z
+todos: []

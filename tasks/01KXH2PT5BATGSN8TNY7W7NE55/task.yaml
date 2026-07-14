@@ -1,0 +1,92 @@
+_ulid: 01KXH2PT5BATGSN8TNY7W7NE55
+slugs:
+  - task-cli-dispatch-lifecycle-controls
+title: Add safe lifecycle CLI commands
+type: task
+description: |
+  ### Covers
+
+  - ac-failure-cli-uses-closed-error-codes
+  - ac-cli-failures-do-not-expose-raw-errors
+
+  ### Required context
+
+  Grammar is exact: `kspec agent dispatch start [--reason TEXT] [--json]`; `kspec agent dispatch pause [--reason TEXT] [--json]`; `kspec agent dispatch resume [--reason TEXT] [--json]`; `kspec agent dispatch stop [--reason TEXT] [--force] [--json]`; `kspec agent dispatch task pause|resume @task [--reason TEXT] [--json]`; `kspec agent dispatch task stop @task [--reason TEXT] [--force] [--json]`; `kspec agent status [--json]`; and `kspec agent dispatch status [--json]`. Every mutation POSTs only `/api/agent/dispatch/control`; neither start nor stop may call `/api/agent/dispatch`, `/start`, or `/stop`. Both status commands GET only `/api/agent/dispatch/status`, never public `/api/agent/status`.
+
+  CLI consumes only internal GET `/api/agent/dispatch/status`; it does not import/share the UI public-response converter. Its exact schema has camelCase top-level `cleanupState/heldTasks/taskControls` and intentionally snake_case nested rows. `cleanupState` is `{status:"idle",entries:[]}` or `{status:"pending"|"failed",entries:[{cleanup_id,scope:"global"|"task",task_id?,status:"pending"|"failed",phase:"owned"|"signals_sent"|"sessions_closed",error_code?}]}`. Idle requires empty entries; pending requires non-empty/all pending entries and forbids every error_code; failed requires non-empty/at least one failed entry, requires error_code on each failed entry, and forbids it on pending entries. IDs are canonical; task_id is required iff task scope; the cleanup-code subset is exact; entries are global-first then task_id/cleanup_id sorted with unique cleanup/scope-owner identity. `heldTasks` is canonical-task-id-sorted unique rows `{task_id,task_ref:null|string,title:null|string,scope:"global"|"task",mode:"paused"|"stopped",reason,actor,source:"cli"|"api"|"ui"|"daemon_startup"|"daemon_shutdown"|"recovery",controlled_at,updated_at}`. `taskControls` is canonical-task-id-sorted unique rows with the same identity/ref/title/mode/reason/actor/source/timestamps plus nested `cleanup_state` containing no entry or exactly its matching task entry. `heldCount === heldTasks.length`. Canonical task mutation JSON requires canonical `data.task_id` and nullable `data.task_ref`; global mutation JSON forbids both; legacy aliases expose neither.
+
+  Success/noop exits 0. Human mutation success is exactly `Dispatch <action>: <authority> (<projection>)`; a task success appends ` for <canonical-task-id>`. JSON success/noop is exactly `{ok:true,data:<canonical control data>,error:null}`. `kspec agent status` and `kspec agent dispatch status` preserve their current detailed invocation/queue human and JSON projection and append authority/globalAuthority, projection, cleanupState, activeCount, queuedInvocations, heldCount, heldTasks, and taskControls using the internal-status casing; human output appends `Authority: <authority>`, `Projection: <projection>`, `Active: <active-count>`, `Queued: <queued-count>`, `Held: <held-count>`, and `Cleanup: <cleanupState.status>`. No status output removes an existing field. Gating filters matching scope: global commands/aliases inspect only global entries; task T commands only task/T entries; counts/arrays never gate. Stopped with only task entries permits global start, while those matching tasks remain denied. Direct global start/pause/resume with global pending/failed or matching task pause/resume with task pending/failed returns fixed invalid_transition; stop retries only matching scope. Task metadata mutation may succeed during global cleanup but starts no work until global authority permits it.
+
+  Human failures use exactly `Error: <message>` then `Suggestion: <suggestion>`; JSON failures use exactly `{ok:false,data:null,error:{code:<code>,message:<message>,suggestion:<suggestion>}}`. The closed mapping is:
+
+  | Code | Human/JSON message | Suggestion | Exit |
+  | --- | --- | --- | --- |
+  | validation_failed | Invalid dispatch lifecycle request. | Check the command options and try again. | 1 |
+  | task_not_found | Task not found. | Verify the task reference with `kspec task get`. | 3 |
+  | task_identity_ambiguous | Task reference is ambiguous. | Use a canonical task ULID. | 3 |
+  | task_identity_mismatch | Task identity does not match the resolved task. | Provide one matching task reference or task ID. | 3 |
+  | invalid_transition | Dispatch lifecycle transition is not valid from the current authority. | Check dispatch status and choose a valid action. | 3 |
+  | control_store_unavailable | Dispatch control storage is unavailable. | Retry after the daemon can access the control store. | 3 |
+  | control_store_corrupt | Dispatch control storage is corrupt. | Repair the dispatch control record before retrying. | 3 |
+  | control_commit_failed | Dispatch control change could not be committed. | Retry; if it persists, inspect shadow-branch health. | 3 |
+  | cancellation_timeout | Dispatch cancellation timed out. | Retry hard stop after active work settles. | 3 |
+  | cancellation_failed | Dispatch cancellation failed. | Retry hard stop and inspect daemon logs. | 3 |
+  | session_closure_failed | Dispatch session closure failed. | Retry hard stop after the session store is available. | 3 |
+  | cleanup_ownership_mismatch | Dispatch cleanup ownership could not be verified. | Do not retry blindly; inspect the matching session evidence. | 3 |
+  | cleanup_process_birth_mismatch | Dispatch process identity changed before cleanup. | Do not signal the process; inspect the matching session evidence. | 3 |
+  | cleanup_leader_missing_group_alive | Dispatch cleanup found a live verified process group. | Retry hard stop after the process group exits. | 3 |
+  | cleanup_identity_unverifiable | Dispatch cleanup identity cannot be verified. | Restore readable ownership evidence before retrying. | 3 |
+  | cleanup_group_unverifiable | Dispatch cleanup group cannot be verified. | Do not signal the group; restore verification evidence before retrying. | 3 |
+  | internal_error | Dispatch lifecycle command failed. | Retry; if it persists, inspect daemon logs. | 3 |
+
+  TTY hard stop without --force asks exactly `Hard-stop dispatch? Active matching invocations will be cancelled and session, branch, workspace, worktree, snapshot, and audit evidence will be preserved. [y/N]`. Decline prints `Hard stop cancelled.`, sends no request, and exits 2. --force sends no prompt. A non-interactive human invocation without --force prints `Error: Hard stop requires --force when stdin is not a TTY.` then `Suggestion: Re-run with --force.` and exits 1; JSON never prompts and has the same --force requirement. When KSPEC_SESSION_ID is nonempty, global or task stop fails before prompt/HTTP with `Error: A dispatch-owned session cannot hard-stop its host.` then `Suggestion: Run this command outside the dispatch-owned session.`, exit 3, even with --force. Start/pause/resume never prompt. Help calls stop `Hard-stop dispatch: cancel matching active invocations, close sessions, preserve evidence.` and pause `Pause dispatch: active invocations finish naturally.`
+
+  ### Deliverable
+
+  Parser/routing, human/JSON output, confirmation, and exits for all global/task controls.
+
+  ### Implementation
+
+  Implement the grammar, endpoint routing, exact output table, confirmation order, force/TTY/JSON behavior, and KSPEC_SESSION_ID preflight. Validation/usage exits 1; every runtime/daemon/store/cancellation/recovery/task lookup code uses the table and exits 3. Never interpolate a response path, cwd, raw exception, or daemon error string.
+
+  ### Files
+
+  - Create: tests/cli-agent-dispatch-lifecycle.test.ts
+  - Modify: src/cli/commands/agent.ts
+  - Modify: src/cli/exit-codes.ts
+  - Modify: src/cli/output.ts
+  - Modify: tests/cli-agent-commands.test.ts
+  - Modify: tests/cli-agent.test.ts
+  - Modify: tests/cli-daemon-endpoint-regression.test.ts
+
+  ### Behavioral tests
+
+  In tests/cli-agent-dispatch-lifecycle.test.ts create `runLifecycleCli`, `recordLifecycleRequest`, and `withTtyInput`; use tests/helpers/cli.ts `kspec` with an explicit cwd and sanitized environment. For every command grammar row assert canonical POST body or internal-status GET, then deep-equal every cleanupState/HeldTask/TaskControl field, ordering, count, conditional task identity, exit/stdout/stderr/JSON against the tables; malformed/duplicate/unsorted rows fail closed rather than render. Inject each closed code through the daemon fixture and assert exact message/suggestion/code/exit and no raw response text. Exercise pending/failed global and task prohibited actions with no second request, retry-stop failure, retry success to idle, then a separate successful reopen. Exercise accepted/declined TTY stop, non-TTY no-force, JSON no-force, --force, and KSPEC_SESSION_ID before-request rejection. In tests/cli-daemon-endpoint-regression.test.ts extend its existing helpers: every mutation must record POST `/api/agent/dispatch/control`; both status commands must record GET `/api/agent/dispatch/status`; assert no legacy mutation or public-status request was recorded.
+
+  ### Verification
+
+  - npm test -- tests/cli-agent-dispatch-lifecycle.test.ts tests/cli-agent-commands.test.ts tests/cli-agent.test.ts tests/cli-daemon-endpoint-regression.test.ts
+  - npm run typecheck
+  - npm run lint
+  - git diff --check
+
+  ### Reviewer handoff
+
+  Supply command/body/route, closed-code message/suggestion/exit, prompt transcript, KSPEC_SESSION_ID preflight, and endpoint-regression request tables.
+spec_ref: "@cli-agent-commands"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-patch-dispatch-cli-specs"
+  - "@task-daemon-dispatch-lifecycle-api"
+context: []
+priority: 3
+tags:
+  - dispatch
+  - cli
+  - safety
+vcs_refs: []
+created_at: 2026-07-14T19:47:19.851Z
+todos: []

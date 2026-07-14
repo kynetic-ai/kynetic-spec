@@ -1,0 +1,137 @@
+_ulid: 01KXH2PNTWN26FWG82XJ1FYT5P
+slugs:
+  - task-engine-global-lifecycle
+title: Implement global lifecycle authority and coalesced reconstruction
+type: task
+description: >
+  ### Covers
+
+
+  - ac-controls-survive-restart
+
+  - ac-global-pause-authority
+
+  - ac-global-paused-work-does-not-start
+
+  - ac-global-pause-allows-active-completion
+
+  - ac-global-pause-keeps-active-session-open
+
+  - ac-resume-reconciles-held-work
+
+  - ac-resume-reconciles-eligible-work
+
+  - ac-repeated-resume-does-not-duplicate
+
+  - ac-concurrent-resume-does-not-duplicate
+
+  - ac-paused-reconstruction-uses-current-state
+
+  - ac-stopped-reconstruction-uses-current-state
+
+  - ac-controls-do-not-change-readiness
+
+  - ac-controls-do-not-change-degraded-targets
+
+  - ac-global-start-is-idempotent
+
+  - ac-global-pause-is-idempotent
+
+  - ac-global-resume-is-idempotent
+
+
+  ### Required context
+
+
+  Top-level CleanupState aggregates every scope and is observability only. Global transitions derive
+  `globalCleanupEntries = entries.filter(scope === "global")`: start leaves stopped when that subset
+  is empty even if task entries exist; while that subset is pending/failed, start/pause/resume are
+  invalid_transition and global stop alone retries it. The stopped/no-global-entry plus
+  unrelated-task-entry row starts globally, reconciles once, and still denies each matching task at
+  task/final admission. Aggregate counts/arrays are never gating predicates. Pause blocks starts but
+  lets active work/session finish. Stop admission/cancellation belongs later.
+
+
+  ### Deliverable
+
+
+  Apply authority at bootstrap, events, coalescing, retries, reconciliation, post-invocation, and
+  degraded recovery; reconstruct current task/rule state with canonical dedupe.
+
+
+  ### Implementation
+
+
+  Load persisted authority and cleanup before every bootstrap scheduling ingress. Running
+  accepts/coalesces intent; paused holds it; stopped starts none. Reject start/pause/resume only
+  while `globalCleanupEntries` is non-empty, without calling reconciliation; never use aggregate
+  `entries.length`. Start with unrelated task cleanup is valid, rebuilds current candidates once,
+  and the matching task gate denies those tasks. Start/resume rebuild current candidates only after
+  the applicable matching-scope guard and dedupe active/queued canonical task ids. Serialize
+  drain/reconcile work. Lifecycle controls do not mutate task readiness or degraded targets. Do not
+  replay historical FIFO/retry deadlines and do not implement hard stop.
+
+
+  ### Files
+
+
+  - Create: tests/dispatch-global-lifecycle.test.ts
+
+  - Modify: src/agent-runtime/dispatch.ts
+
+  - Modify: src/agent-runtime/bootstrap.ts
+
+  - Modify: tests/agent-dispatch-engine.test.ts
+
+  - Modify: tests/dispatch-runtime-bootstrap-contract.test.ts
+
+
+  ### Behavioral tests
+
+
+  In tests/dispatch-global-lifecycle.test.ts create `createGlobalLifecycleHarness`, `holdIngress`,
+  and `recordCandidateStart`. For each global matrix cell, including stopped/idle and
+  stopped/pending-or-failed separately, mutate authority through the store, release the exact
+  bootstrap/enqueue/coalesced-expiry/dequeue-retry/reconcile/post-invocation barrier, and observe
+  authority/projection/active/held count and `recordCandidateStart`. Bootstrap stopped, paused, and
+  running separately; assert only running schedules after persisted cleanup/control reads complete.
+  Direct start/pause/resume against pending and failed cleanup must return invalid_transition and
+  leave writes, reconciliation, process/session recorders at zero. Change authoritative task/rule
+  state while paused, then resume and assert current-state reconstruction rather than replay. Race
+  two resume calls behind `holdIngress` and assert one active canonical task. Snapshot
+  readiness/degraded targets before every transition and assert byte-for-byte equality after it.
+
+
+  ### Verification
+
+
+  - npm test -- tests/dispatch-global-lifecycle.test.ts tests/agent-dispatch-engine.test.ts
+  tests/dispatch-runtime-bootstrap-contract.test.ts
+
+  - npm run typecheck
+
+  - npm run lint
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Provide matrix/ingress evidence; task scope, final gate, and cancellation remain later work.
+spec_ref: "@dispatch-lifecycle-control-authority"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-dispatch-control-persistence"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - engine
+  - lifecycle
+vcs_refs: []
+created_at: 2026-07-14T19:47:15.420Z
+todos: []

@@ -33586,3 +33586,389 @@
   submitted_at: 2026-07-09T02:58:44.025Z
   completed_at: 2026-07-09T03:19:53.268Z
   automation: eligible
+- _ulid: 01KXH2PGSYNRA5HYC3VFK1FTPP
+  slugs:
+    - task-patch-dispatch-engine-coalescing-specs
+  title: Patch dispatch engine and coalescing specs exactly
+  type: task
+  spec_ref: "@agent-dispatch-engine"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - specs
+    - engine
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:10.270Z
+- _ulid: 01KXH2PH5QBW4VQABX7K451VHC
+  slugs:
+    - task-patch-dispatch-cli-specs
+  title: Patch dispatch CLI specs exactly
+  type: task
+  spec_ref: "@cli-agent-commands"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - specs
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:10.647Z
+- _ulid: 01KXH2PHJ4C3J8AW19VA0BVZTK
+  slugs:
+    - task-patch-dispatch-api-specs
+  title: Patch daemon dispatch API specs exactly
+  type: task
+  spec_ref: "@daemon-agent-dispatch"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - specs
+    - api
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:11.044Z
+- _ulid: 01KXH2PJ7RY9B9MQNHBFWN96QB
+  slugs:
+    - task-patch-dispatch-ui-specs
+  title: Patch dispatch UI specs exactly
+  type: task
+  spec_ref: "@ui-agent-dispatch"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - specs
+    - ui
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:11.736Z
+- _ulid: 01KXH2PK122BDSVHMSQTH1MZ2B
+  slugs:
+    - task-patch-dispatch-events-specs
+  title: Patch dispatch event payload specs exactly
+  type: task
+  spec_ref: "@dispatch-event-taxonomy"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - specs
+    - events
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:12.546Z
+- _ulid: 01KXH2PMG1Q88ZVGC68VVA70NE
+  slugs:
+    - task-patch-dispatch-workspace-cleanup-spec
+  title: Patch dispatch workspace cleanup spec exactly
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  priority: 1
+  tags:
+    - dispatch
+    - specs
+    - cleanup
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:14.049Z
+- _ulid: 01KXH2PN5478NZ5EGN1395724C
+  slugs:
+    - task-dispatch-control-persistence
+  title: Define durable dispatch control persistence and committed publication
+  type: task
+  spec_ref: "@dispatch-lifecycle-control-authority"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-patch-dispatch-engine-coalescing-specs"
+  priority: 1
+  tags:
+    - dispatch
+    - persistence
+    - schema
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:14.724Z
+- _ulid: 01KXH2PNTWN26FWG82XJ1FYT5P
+  slugs:
+    - task-engine-global-lifecycle
+  title: Implement global lifecycle authority and coalesced reconstruction
+  type: task
+  spec_ref: "@dispatch-lifecycle-control-authority"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-dispatch-control-persistence"
+  priority: 1
+  tags:
+    - dispatch
+    - engine
+    - lifecycle
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:15.420Z
+- _ulid: 01KXH2PQ8JGAF4V4MYPN15TD1H
+  slugs:
+    - task-engine-task-pause-resume
+  title: Enforce canonical task pause and resume
+  type: task
+  spec_ref: "@dispatch-lifecycle-control-authority"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-engine-global-lifecycle"
+  priority: 2
+  tags:
+    - dispatch
+    - engine
+    - tasks
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:16.882Z
+- _ulid: 01KXH2PQYHEB5566BQW2C7SHTF
+  slugs:
+    - task-final-pre-spawn-control-gate
+  title: Add final ordered lifecycle gate before creation
+  type: task
+  spec_ref: "@dispatch-lifecycle-control-authority"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-engine-task-pause-resume"
+  priority: 2
+  tags:
+    - dispatch
+    - race
+    - engine
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:17.585Z
+- _ulid: 01KXH2PRCMKX5GBDNJ60PPBCHS
+  slugs:
+    - task-engine-stop-recovery
+  title: Implement verified stop recovery for global and task scopes
+  type: task
+  spec_ref: "@dispatch-lifecycle-control-authority"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-final-pre-spawn-control-gate"
+  priority: 2
+  tags:
+    - dispatch
+    - recovery
+    - cancellation
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:18.036Z
+- _ulid: 01KXH2PRVHHSQ14WR16A5KHTJT
+  slugs:
+    - task-protect-controlled-dispatch-evidence
+  title: Protect controlled dispatch evidence from cleanup
+  type: task
+  spec_ref: "@dispatch-workspace-cleanup-policy"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-patch-dispatch-workspace-cleanup-spec"
+    - "@task-engine-stop-recovery"
+  priority: 2
+  tags:
+    - dispatch
+    - cleanup
+    - evidence
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:18.513Z
+- _ulid: 01KXH2PS9K1Z5BKY2ZHR30WJ8Y
+  slugs:
+    - task-dispatch-lifecycle-events
+  title: Register, sanitize, and emit dispatch lifecycle events
+  type: task
+  spec_ref: "@dispatch-event-taxonomy"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-patch-dispatch-events-specs"
+    - "@task-engine-stop-recovery"
+  priority: 2
+  tags:
+    - dispatch
+    - events
+    - schema
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:18.963Z
+- _ulid: 01KXH2PSQY6GK4S66S4TB6JVV3
+  slugs:
+    - task-daemon-dispatch-lifecycle-api
+  title: Add canonical lifecycle API and compatibility adapters
+  type: task
+  spec_ref: "@daemon-agent-dispatch"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-patch-dispatch-api-specs"
+    - "@task-dispatch-lifecycle-events"
+    - "@task-protect-controlled-dispatch-evidence"
+  priority: 2
+  tags:
+    - dispatch
+    - daemon
+    - api
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:19.422Z
+- _ulid: 01KXH2PT5BATGSN8TNY7W7NE55
+  slugs:
+    - task-cli-dispatch-lifecycle-controls
+  title: Add safe lifecycle CLI commands
+  type: task
+  spec_ref: "@cli-agent-commands"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-patch-dispatch-cli-specs"
+    - "@task-daemon-dispatch-lifecycle-api"
+  priority: 3
+  tags:
+    - dispatch
+    - cli
+    - safety
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:19.851Z
+- _ulid: 01KXH2PVX606KVK5C4ERCB8WTY
+  slugs:
+    - task-ui-dispatch-lifecycle-controls
+  title: Migrate every lifecycle UI consumer and control
+  type: task
+  spec_ref: "@ui-agent-dispatch"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-patch-dispatch-ui-specs"
+    - "@task-daemon-dispatch-lifecycle-api"
+  priority: 3
+  tags:
+    - dispatch
+    - ui
+    - accessibility
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:21.638Z
+- _ulid: 01KXH2PWH4C8T1X1BWHN9FWWDR
+  slugs:
+    - task-verify-engine-publication-admission
+  title: Verify committed publication and admission boundaries
+  type: task
+  spec_ref: "@dispatch-lifecycle-control-authority"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-final-pre-spawn-control-gate"
+  priority: 3
+  tags:
+    - dispatch
+    - verification
+    - engine
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:22.276Z
+- _ulid: 01KXH2PXA2YQJEGTQ3A3H9N4FQ
+  slugs:
+    - task-verify-engine-restart-races
+  title: Verify lifecycle engine restart, recovery, and evidence behavior
+  type: task
+  spec_ref: "@dispatch-lifecycle-control-authority"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-verify-engine-publication-admission"
+    - "@task-engine-stop-recovery"
+    - "@task-protect-controlled-dispatch-evidence"
+  priority: 3
+  tags:
+    - dispatch
+    - verification
+    - engine
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:23.074Z
+- _ulid: 01KXH2PXT88X9MSC62MQVY2CV4
+  slugs:
+    - task-verify-api-cli-projection
+  title: Verify API and CLI lifecycle projection end to end
+  type: task
+  spec_ref: "@daemon-agent-dispatch"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cli-dispatch-lifecycle-controls"
+    - "@task-verify-engine-restart-races"
+  priority: 3
+  tags:
+    - dispatch
+    - verification
+    - api
+    - cli
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:23.592Z
+- _ulid: 01KXH2PY7C0W6GDQAFZN12HMC4
+  slugs:
+    - task-verify-ui-lifecycle-browser
+  title: Verify lifecycle UI behavior in a real browser
+  type: task
+  spec_ref: "@ui-agent-dispatch"
+  plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-ui-dispatch-lifecycle-controls"
+    - "@task-verify-api-cli-projection"
+  priority: 3
+  tags:
+    - dispatch
+    - verification
+    - ui
+    - accessibility
+  notes_count: 0
+  todos_count: 0
+  created_at: 2026-07-14T19:47:24.012Z

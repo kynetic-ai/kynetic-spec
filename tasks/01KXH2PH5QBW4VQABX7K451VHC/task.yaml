@@ -1,0 +1,118 @@
+_ulid: 01KXH2PH5QBW4VQABX7K451VHC
+slugs:
+  - task-patch-dispatch-cli-specs
+title: Patch dispatch CLI specs exactly
+type: task
+description: >
+  ### Covers
+
+
+  - @cli-agent-commands description, ac-5, ac-start-reports-authority, ac-pause-reports-authority,
+  ac-resume-reports-authority, ac-lifecycle-command-reports-projection,
+  ac-declined-stop-sends-no-request, ac-declined-stop-exit, ac-task-control-canonicalization,
+  ac-lifecycle-status-authority, ac-lifecycle-status-projection, ac-lifecycle-status-active-count,
+  ac-lifecycle-status-queued-count, ac-lifecycle-status-held-count
+
+
+  ### Required context
+
+
+  Metadata only. Set the description with kspec item set; use item ac set/add for the exact
+  payloads. Do not derive this draft.
+
+
+  ### Deliverable
+
+
+  Set description: The kspec agent family lists and runs agents and exposes durable global and
+  canonical-task dispatch start, pause, resume, hard-stop, and status controls.
+
+  - Set ac-5 — Given dispatch-owned hard-stop cleanup is incomplete. When kspec agent dispatch stop
+  reports its result. Then the command does not report stopped success.
+
+  - Add ac-start-reports-authority — Given the daemon is available with stopped authority and idle
+  cleanup. When start is requested. Then the command reports running authority.
+
+  - Add ac-pause-reports-authority — Given the daemon is available. When pause is requested from
+  running authority. Then the command reports paused authority.
+
+  - Add ac-resume-reports-authority — Given the daemon is available. When resume is requested from
+  paused authority. Then the command reports running authority.
+
+  - Add ac-lifecycle-command-reports-projection — Given a lifecycle command succeeds. When output is
+  rendered. Then the command reports the resulting projection.
+
+  - Add ac-declined-stop-sends-no-request — Given a user invokes hard stop interactively. When
+  confirmation is declined. Then no stop request is sent.
+
+  - Add ac-declined-stop-exit — Given a user declines interactive hard stop. When the command exits.
+  Then it exits as user-cancelled.
+
+  - Add ac-task-control-canonicalization — Given a task control command names a resolvable task.
+  When it is accepted. Then the result identifies the canonical task ULID.
+
+  - Add ac-lifecycle-status-authority — Given lifecycle status is printed. When human or JSON output
+  is rendered. Then authority is present.
+
+  - Add ac-lifecycle-status-projection — Given lifecycle status is printed. When human or JSON
+  output is rendered. Then projection is present.
+
+  - Add ac-lifecycle-status-active-count — Given lifecycle status is printed. When human or JSON
+  output is rendered. Then active count is present.
+
+  - Add ac-lifecycle-status-queued-count — Given lifecycle status is printed. When human or JSON
+  output is rendered. Then queued count is present.
+
+  - Add ac-lifecycle-status-held-count — Given lifecycle status is printed. When human or JSON
+  output is rendered. Then held count is present.
+
+
+  ### Implementation
+
+
+  Apply text verbatim and read the full owner back. No CLI implementation belongs here.
+
+
+  ### Files
+
+
+  - Create: none.
+
+  - Modify: none.
+
+  - Tests: none.
+
+
+  ### Behavioral tests
+
+
+  Read back one description, one replacement, and twelve additions without altering state.
+
+
+  ### Verification
+
+
+  - kspec item get @cli-agent-commands
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Provide the fourteen-row exact text matrix and metadata-only confirmation.
+spec_ref: "@cli-agent-commands"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - specs
+  - cli
+vcs_refs: []
+created_at: 2026-07-14T19:47:10.647Z
+todos: []

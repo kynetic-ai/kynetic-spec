@@ -1,0 +1,116 @@
+_ulid: 01KXH2PGSYNRA5HYC3VFK1FTPP
+slugs:
+  - task-patch-dispatch-engine-coalescing-specs
+title: Patch dispatch engine and coalescing specs exactly
+type: task
+description: >
+  ### Covers
+
+
+  - @agent-dispatch-engine ac-11, ac-final-gate-global-control, ac-final-gate-task-control,
+  ac-pause-active-natural-completion, ac-pause-does-not-close-session, ac-resume-current-task-state,
+  ac-resume-current-dispatch-rules
+
+  - @per-task-dispatch-drain-coalescing ac-5, ac-stop-prevents-pending-drain-start,
+  ac-stop-cancels-active-invocation
+
+
+  ### Required context
+
+
+  Metadata only: use kspec item ac set/add, never direct .kspec edits. Do not create or derive
+  @dispatch-lifecycle-control-authority; plan materialization creates that requirement. Preserve all
+  unlisted fields.
+
+
+  ### Deliverable
+
+
+  Apply exactly these complete payloads:
+
+  - Set @agent-dispatch-engine ac-11 — Given global stop authority is committed. When hard-stop
+  cleanup is incomplete. Then dispatch does not report stop success.
+
+  - Add @agent-dispatch-engine ac-final-gate-global-control — Given a candidate remains eligible
+  after dequeue. When it reaches the final creation boundary. Then current global control determines
+  whether creation is permitted.
+
+  - Add @agent-dispatch-engine ac-final-gate-task-control — Given a candidate remains eligible after
+  dequeue. When it reaches the final creation boundary. Then its canonical-task control determines
+  whether creation is permitted.
+
+  - Add @agent-dispatch-engine ac-pause-active-natural-completion — Given an invocation is active in
+  a scope. When that scope is paused. Then the invocation may finish naturally.
+
+  - Add @agent-dispatch-engine ac-pause-does-not-close-session — Given a session belongs to an
+  active invocation. When its scope is paused. Then pause does not close the session.
+
+  - Add @agent-dispatch-engine ac-resume-current-task-state — Given a scope is paused. When it
+  resumes. Then current task state is re-evaluated before work starts.
+
+  - Add @agent-dispatch-engine ac-resume-current-dispatch-rules — Given a scope is paused. When it
+  resumes. Then current dispatch rules are re-evaluated before work starts.
+
+  - Set @per-task-dispatch-drain-coalescing ac-5 — Given per-task coalescing timers are pending.
+  When matching stop authority commits. Then matching timers are cancelled.
+
+  - Add @per-task-dispatch-drain-coalescing ac-stop-prevents-pending-drain-start — Given a matching
+  pending drain exists. When stop authority commits. Then that drain does not start work.
+
+  - Add @per-task-dispatch-drain-coalescing ac-stop-cancels-active-invocation — Given a matching
+  invocation is active. When hard-stop cleanup runs. Then that invocation is cancelled.
+
+
+  ### Implementation
+
+
+  Read both owners before and after mutation; account for each changed field. No source, test, plan,
+  review, or resource changes.
+
+
+  ### Files
+
+
+  - Create: none.
+
+  - Modify: none.
+
+  - Tests: none.
+
+
+  ### Behavioral tests
+
+
+  Make a nonmutating ten-row readback of item, id, operation, Given, When, and Then; prove
+  neighboring ACs/metadata are unchanged.
+
+
+  ### Verification
+
+
+  - kspec item get @agent-dispatch-engine
+
+  - kspec item get @per-task-dispatch-drain-coalescing
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Supply the ten-row readback and confirm metadata-only scope.
+spec_ref: "@agent-dispatch-engine"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - specs
+  - engine
+vcs_refs: []
+created_at: 2026-07-14T19:47:10.270Z
+todos: []

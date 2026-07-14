@@ -1,0 +1,96 @@
+_ulid: 01KXH2PXA2YQJEGTQ3A3H9N4FQ
+slugs:
+  - task-verify-engine-restart-races
+title: Verify lifecycle engine restart, recovery, and evidence behavior
+type: task
+description: >
+  ### Covers
+
+
+  Verification only; implementation ownership does not move.
+
+
+  ### Required context
+
+
+  Join only spawn-winner recovery and controlled-evidence protection using deterministic
+  adapters/barriers. Cleanup assertions use explicit per-entry pending/failed status and conditional
+  error code; global retry selects global entries and task T retry selects only task/T, preserving
+  unrelated entries and aggregate observability. This verification task creates no production
+  helper: tests/dispatch-lifecycle-blackbox.test.ts defines `createBlackBoxLifecycleHarness`,
+  `recoveryBarrier`, and `evidenceDeletionRecorder`; admission/publication barriers are in the
+  prerequisite task.
+
+
+  ### Deliverable
+
+
+  A black-box restart/race suite; no production behavior change.
+
+
+  ### Implementation
+
+
+  Add black-box fixtures for spawn-winner stop, each cleanup phase crash, A/B recovery, and evidence
+  protection. The fixture writes only through public store/engine entry points and records
+  authority/projection/counts, process/session artifacts, cleanup phase, and destructive-cleanup
+  attempts.
+
+
+  ### Files
+
+
+  - Create: tests/dispatch-lifecycle-blackbox.test.ts
+
+  - Modify: tests/dispatch-stop-recovery.test.ts
+
+  - Modify: tests/dispatch-controlled-evidence-protection.test.ts
+
+
+  ### Behavioral tests
+
+
+  Execute four short cases with the exact trigger → barrier → mutation → observation → outcome: (1)
+  durable spawn winner → stop cleanup recoveryBarrier → release → matching cancellation and session
+  closure; (2) owned/signals_sent/sessions_closed crash fixture → recoveryBarrier → daemon restart →
+  release → next safe phase, stopped/pending until complete; (3) task A stop with task B active →
+  recoveryBarrier → release → B invocation/session/control unchanged; (4)
+  active/in-flight/held/pending-cleanup evidence → each destructive surface →
+  evidenceDeletionRecorder → no deletion while unrelated terminal cleanup proceeds.
+
+
+  ### Verification
+
+
+  - npm test -- tests/dispatch-lifecycle-blackbox.test.ts tests/dispatch-stop-recovery.test.ts
+  tests/dispatch-controlled-evidence-protection.test.ts
+
+  - npm run typecheck
+
+  - npm run lint
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Provide scenario/barrier evidence and no ownership reassignment.
+spec_ref: "@dispatch-lifecycle-control-authority"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-verify-engine-publication-admission"
+  - "@task-engine-stop-recovery"
+  - "@task-protect-controlled-dispatch-evidence"
+context: []
+priority: 3
+tags:
+  - dispatch
+  - verification
+  - engine
+vcs_refs: []
+created_at: 2026-07-14T19:47:23.074Z
+todos: []

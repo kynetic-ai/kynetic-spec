@@ -1,0 +1,123 @@
+_ulid: 01KXH2PJ7RY9B9MQNHBFWN96QB
+slugs:
+  - task-patch-dispatch-ui-specs
+title: Patch dispatch UI specs exactly
+type: task
+description: >
+  ### Covers
+
+
+  - @ui-agent-dispatch ac-2, ac-status-projection, ac-status-active-work-visible,
+  ac-status-queued-work-visible, ac-status-held-work-visible, ac-3, ac-stopped-actions-valid,
+  ac-control-separated-from-degraded, ac-control-separated-from-blocked,
+  ac-hard-stop-confirmation-cancellation, ac-hard-stop-confirmation-evidence,
+  ac-hard-stop-confirmation-cancelled, ac-lifecycle-controls-labelled, ac-lifecycle-focus-retained,
+  ac-lifecycle-live-update
+
+
+  ### Required context
+
+
+  Metadata only. AC wording stays product-facing and contains no component paths.
+
+
+  ### Deliverable
+
+
+  - Set ac-2 — Given lifecycle status is available. When the agents view renders. Then it shows
+  durable authority.
+
+  - Add ac-status-projection — Given lifecycle status is available. When the agents view renders.
+  Then it shows lifecycle projection.
+
+  - Add ac-status-active-work-visible — Given active work exists during draining or cleanup. When
+  the agents view renders. Then active work remains visible.
+
+  - Add ac-status-queued-work-visible — Given queued work exists. When the agents view renders. Then
+  queued work is visible.
+
+  - Add ac-status-held-work-visible — Given held work exists. When the agents view renders. Then
+  held work is visible.
+
+  - Set ac-3 — Given global authority is paused. When the agents view renders. Then it offers only
+  transitions valid from paused authority.
+
+  - Add ac-stopped-actions-valid — Given global authority is stopped. When the agents view renders.
+  Then it offers Start when no global-scope cleanup entry exists and Retry hard stop only when a
+  global-scope entry is pending or failed, regardless of unrelated task entries.
+
+  - Add ac-control-separated-from-degraded — Given administrative lifecycle control and degraded
+  state coexist. When the agents view renders. Then they are labelled separately.
+
+  - Add ac-control-separated-from-blocked — Given administrative lifecycle control and blocked state
+  coexist. When the agents view renders. Then they are labelled separately.
+
+  - Add ac-hard-stop-confirmation-cancellation — Given a writable operator selects hard stop. When
+  confirmation is shown. Then it explains active cancellation.
+
+  - Add ac-hard-stop-confirmation-evidence — Given a writable operator selects hard stop. When
+  confirmation is shown. Then it explains evidence preservation.
+
+  - Add ac-hard-stop-confirmation-cancelled — Given hard-stop confirmation is shown. When the
+  operator cancels it. Then no request is sent.
+
+  - Add ac-lifecycle-controls-labelled — Given lifecycle controls render. When assistive technology
+  reads them. Then each control has an accessible label.
+
+  - Add ac-lifecycle-focus-retained — Given a lifecycle control initiated a refresh. When the
+  refresh completes. Then focus returns to that control.
+
+  - Add ac-lifecycle-live-update — Given lifecycle status changes. When the view refreshes. Then a
+  polite live status update is emitted.
+
+
+  ### Implementation
+
+
+  Apply and read back these fifteen payloads only.
+
+
+  ### Files
+
+
+  - Create: none.
+
+  - Modify: none.
+
+  - Tests: none.
+
+
+  ### Behavioral tests
+
+
+  Readback distinguishes authority/projection, three visibility cases, control states, confirmation,
+  labels, focus, and live updates.
+
+
+  ### Verification
+
+
+  - kspec item get @ui-agent-dispatch
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Supply fifteen exact rows and metadata-only confirmation.
+spec_ref: "@ui-agent-dispatch"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - specs
+  - ui
+vcs_refs: []
+created_at: 2026-07-14T19:47:11.736Z
+todos: []

@@ -1,0 +1,152 @@
+_ulid: 01KXH2PK122BDSVHMSQTH1MZ2B
+slugs:
+  - task-patch-dispatch-events-specs
+title: Patch dispatch event payload specs exactly
+type: task
+description: >
+  ### Covers
+
+
+  - @dispatch-event-taxonomy ac-dispatch-control-domain
+
+  - @dispatch-event-payload ac-dispatch-control-common-fields,
+  ac-dispatch-control-task-canonical-identity, ac-dispatch-control-global-identity-absence,
+  ac-dispatch-control-failure-error-code-presence, ac-dispatch-control-reason-bound,
+  ac-dispatch-control-actor-bound, ac-dispatch-control-task-ref-bound,
+  ac-dispatch-control-whitespace-normalization, ac-dispatch-control-control-character-removal,
+  ac-dispatch-control-no-prompts, ac-dispatch-control-no-secrets,
+  ac-dispatch-control-no-terminal-buffer, ac-dispatch-control-no-workspace-path,
+  ac-dispatch-control-no-raw-input-error, ac-dispatch-control-error-codes,
+  ac-dispatch-control-no-raw-error
+
+
+  ### Required context
+
+
+  Metadata only. The complete identifier, payload, sanitizer, and closed-code contract must appear
+  here, not by reference to parent prose.
+
+
+  ### Deliverable
+
+
+  - Add @dispatch-event-taxonomy ac-dispatch-control-domain — Given a lifecycle outcome is emitted.
+  When event type validation runs. Then the identifier is one of dispatch_control.start_applied,
+  dispatch_control.pause_applied, dispatch_control.resume_applied, dispatch_control.stop_applied,
+  dispatch_control.noop, or dispatch_control.failed.
+
+  - Add @dispatch-event-payload ac-dispatch-control-common-fields — Given a dispatch-control event
+  is emitted. When its payload is read. Then it contains scope, action, authority, projection,
+  outcome, reason, actor, source, timestamp.
+
+  - Add @dispatch-event-payload ac-dispatch-control-task-canonical-identity — Given a task-scoped
+  dispatch-control event is emitted. When its payload is read. Then canonical task_id is present and
+  task_ref may be present.
+
+  - Add @dispatch-event-payload ac-dispatch-control-global-identity-absence — Given a global-scoped
+  dispatch-control event is emitted. When its payload is read. Then neither task_id nor task_ref is
+  present.
+
+  - Add @dispatch-event-payload ac-dispatch-control-failure-error-code-presence — Given a
+  dispatch-control event is emitted. When its payload is read. Then error_code is present only for a
+  failed outcome.
+
+  - Add @dispatch-event-payload ac-dispatch-control-reason-bound — Given reason exceeds 240 Unicode
+  code points. When the payload is created. Then reason is at most 240 Unicode code points.
+
+  - Add @dispatch-event-payload ac-dispatch-control-actor-bound — Given actor exceeds 120 Unicode
+  code points. When the payload is created. Then actor is at most 120 Unicode code points.
+
+  - Add @dispatch-event-payload ac-dispatch-control-task-ref-bound — Given task_ref exceeds 200
+  Unicode code points. When the payload is created. Then task_ref is at most 200 Unicode code
+  points.
+
+  - Add @dispatch-event-payload ac-dispatch-control-whitespace-normalization — Given reason, actor,
+  or task_ref contains repeated or leading/trailing whitespace. When the payload is created. Then
+  that field has collapsed internal whitespace and no leading or trailing whitespace.
+
+  - Add @dispatch-event-payload ac-dispatch-control-control-character-removal — Given reason, actor,
+  or task_ref contains a control character. When the payload is created. Then that field contains no
+  control character.
+
+  - Add ac-dispatch-control-no-prompts — Given lifecycle event input contains a prompt. When the
+  payload is created. Then the prompt is absent.
+
+  - Add ac-dispatch-control-no-secrets — Given lifecycle event input contains a secret. When the
+  payload is created. Then the secret is absent.
+
+  - Add ac-dispatch-control-no-terminal-buffer — Given lifecycle event input contains
+  terminal-buffer text. When the payload is created. Then terminal-buffer text is absent.
+
+  - Add ac-dispatch-control-no-workspace-path — Given lifecycle event input contains a workspace
+  path. When the payload is created. Then the workspace path is absent.
+
+  - Add ac-dispatch-control-no-raw-input-error — Given lifecycle event input contains a raw error.
+  When the payload is created. Then the raw error is absent.
+
+  - Add ac-dispatch-control-error-codes — Given a dispatch-control failure is emitted. When payload
+  validation runs. Then error_code is exactly validation_failed, task_not_found,
+  task_identity_ambiguous, task_identity_mismatch, invalid_transition, control_store_unavailable,
+  control_store_corrupt, control_commit_failed, cancellation_timeout, cancellation_failed,
+  session_closure_failed, cleanup_ownership_mismatch, cleanup_process_birth_mismatch,
+  cleanup_leader_missing_group_alive, cleanup_identity_unverifiable, cleanup_group_unverifiable, or
+  internal_error; every other string is rejected.
+
+  - Add ac-dispatch-control-no-raw-error — Given a dispatch-control failure is emitted. When its
+  payload is read. Then no raw error is present.
+
+
+  ### Implementation
+
+
+  Add each AC to the stated owner; do not change product code.
+
+
+  ### Files
+
+
+  - Create: none.
+
+  - Modify: none.
+
+  - Tests: none.
+
+
+  ### Behavioral tests
+
+
+  Nonmutating readback has seventeen added-payload rows: one identifier-domain payload; four
+  mutually exclusive common/identity/error-code presence payloads; five independently bounded or
+  normalized payloads; five forbidden-input payloads; one closed-code-enum payload; and one
+  raw-error-absence payload. Verify the operation total shown in Patch accounting.
+
+
+  ### Verification
+
+
+  - kspec item get @dispatch-event-taxonomy
+
+  - kspec item get @dispatch-event-payload
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Supply the seventeen exact payload rows and the 66-operation accounting reconciliation.
+spec_ref: "@dispatch-event-taxonomy"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - specs
+  - events
+vcs_refs: []
+created_at: 2026-07-14T19:47:12.546Z
+todos: []

@@ -7638,6 +7638,350 @@ modules:
             supersedes: null
             author: "@claude"
             created_at: 2026-06-01T16:48:05.273Z
+      - _ulid: 01KXH2PGQDNN9NBE8D1TE54DNB
+        slugs:
+          - dispatch-lifecycle-control-authority
+        title: Dispatch Lifecycle Control Authority
+        type: requirement
+        description: Durable administrative dispatch authority controls whether global or canonical-task
+          work may start without changing task readiness or evidence ownership.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: global authority is running
+            id: ac-global-pause-authority
+            then: global authority is paused
+            when: global pause succeeds
+          - given: global authority is paused
+            id: ac-global-paused-work-does-not-start
+            then: no new invocation starts
+            when: eligible work is evaluated
+          - given: one canonical task authority is paused
+            id: ac-task-paused-work-does-not-start
+            then: no new invocation starts for that task
+            when: eligible work for that task is evaluated
+          - given: an invocation is active when global authority is paused
+            id: ac-global-pause-allows-active-completion
+            then: it may finish naturally
+            when: the invocation continues
+          - given: an invocation is active when its canonical task authority is paused
+            id: ac-task-pause-allows-active-completion
+            then: it may finish naturally
+            when: the invocation continues
+          - given: a session belongs to an active invocation when global authority is paused
+            id: ac-global-pause-keeps-active-session-open
+            then: pause does not close that session
+            when: pause is applied
+          - given: a session belongs to an active invocation when its canonical task authority is paused
+            id: ac-task-pause-keeps-active-session-open
+            then: pause does not close that session
+            when: pause is applied
+          - given: a paused scope contains held work
+            id: ac-resume-reconciles-held-work
+            then: current authoritative work is re-evaluated
+            when: that scope resumes
+          - given: a paused scope contains currently eligible work
+            id: ac-resume-reconciles-eligible-work
+            then: current authoritative work is re-evaluated
+            when: that scope resumes
+          - given: resume is repeated
+            id: ac-repeated-resume-does-not-duplicate
+            then: each canonical task has at most one active invocation
+            when: eligible work is drained
+          - given: resume is concurrent
+            id: ac-concurrent-resume-does-not-duplicate
+            then: each canonical task has at most one active invocation
+            when: eligible work is drained
+          - given: stop authority has committed for a scope
+            id: ac-stop-forbids-new-starts
+            then: no new invocation starts in that scope
+            when: work is evaluated
+          - given: dispatch-owned invocations are active in a stopped scope
+            id: ac-stop-cancels-active-work
+            then: those invocations are cancelled
+            when: stop cleanup completes
+          - given: dispatch-owned sessions are active in a stopped scope
+            id: ac-stop-closes-active-sessions
+            then: those sessions are closed
+            when: stop cleanup completes
+          - given: one canonical task is controlled
+            id: ac-task-control-preserves-unrelated-task-control
+            then: unrelated tasks remain governed by their own controls
+            when: unrelated tasks are evaluated
+          - given: one canonical task is controlled
+            id: ac-task-control-preserves-global-authority
+            then: unrelated tasks remain governed by global authority
+            when: unrelated tasks are evaluated
+          - given: multiple refs denote one task
+            id: ac-task-control-uses-canonical-identity
+            then: one control record exists for its canonical ULID
+            when: task control is applied
+          - given: a task control is released while global authority is not running
+            id: ac-task-resume-obeys-global-authority
+            then: no invocation starts
+            when: the task is re-evaluated
+          - given: one canonical task has an active dispatch-owned invocation
+            id: ac-task-stop-cancels-matching-work
+            then: the matching invocation is cancelled
+            when: stop cleanup completes for that task
+          - given: an unrelated dispatch-owned invocation is active
+            id: ac-task-stop-preserves-unrelated-invocations
+            then: the unrelated invocation remains active
+            when: stop cleanup completes for another canonical task
+          - given: one canonical task has an active dispatch-owned session
+            id: ac-task-stop-closes-matching-session
+            then: the matching session is closed
+            when: stop cleanup completes for that task
+          - given: an unrelated dispatch-owned session is active
+            id: ac-task-stop-preserves-unrelated-sessions
+            then: the unrelated session remains open
+            when: stop cleanup completes for another canonical task
+          - given: stopped task authority committed and its cleanup failed
+            id: ac-task-stop-failure-retains-stopped-authority
+            then: that task remains stopped
+            when: status is requested
+          - given: stopped task authority committed and its cleanup failed
+            id: ac-task-stop-failure-reports-pending-cleanup
+            then: pending cleanup is reported
+            when: status is requested
+          - given: stopped task authority committed and its cleanup failed
+            id: ac-task-stop-failure-reports-no-success
+            then: no success outcome is reported
+            when: status is requested
+          - given: stopped task authority has pending cleanup after interruption
+            id: ac-task-interrupted-stop-recovers-on-startup
+            then: matching cleanup resumes without reopening that task
+            when: the daemon starts
+          - given: stopped task authority has pending cleanup after interruption
+            id: ac-task-interrupted-stop-recovers-on-retry
+            then: matching cleanup resumes without affecting unrelated tasks
+            when: task stop is retried
+          - given: lifecycle authority is durable
+            id: ac-controls-survive-restart
+            then: the same authority governs scheduling before bootstrap
+            when: the daemon restarts
+          - given: a dispatch-control worktree write is uncommitted
+            id: ac-uncommitted-control-is-not-visible
+            then: the last verified committed authority remains published
+            when: a watcher observes it
+          - given: a dispatch-control transaction fails
+            id: ac-failed-control-write-is-not-visible
+            then: the last verified committed authority remains published
+            when: same-process publication is considered
+          - given: a committed dispatch-control revision is stale
+            id: ac-stale-control-is-not-visible
+            then: the last verified newer authority remains published
+            when: committed reload is performed
+          - given: committed dispatch-control data is invalid
+            id: ac-invalid-control-is-not-visible
+            then: the last verified committed authority remains published
+            when: committed reload is performed
+          - given: a watcher path event precedes an external valid commit
+            id: ac-external-commit-is-eventually-visible
+            then: the newer committed authority is published exactly once
+            when: the writer settles
+          - given: stopped cleanup contains durable process ownership
+            id: ac-recovery-requires-session-ownership
+            then: signalling occurs only after session ownership is verified
+            when: recovery considers a signal
+          - given: stopped cleanup contains durable process ownership
+            id: ac-recovery-requires-process-birth
+            then: signalling occurs only after process birth identity is verified
+            when: recovery considers a signal
+          - given: the recorded leader is absent and its recorded process group is alive
+            id: ac-missing-leader-live-group-remains-pending
+            then: cleanup remains pending
+            when: durable group-member ownership cannot be verified
+          - given: the recorded leader is absent and its recorded process group is alive
+            id: ac-unverified-live-group-is-not-signalled
+            then: the group is not signalled
+            when: durable group-member ownership cannot be verified
+          - given: a recorded process group remains alive
+            id: ac-live-group-prevents-cleanup-completion
+            then: cleanup is not marked complete
+            when: cleanup completion is evaluated
+          - given: control wins ordering before process creation
+            id: ac-final-gate-prevents-process-creation
+            then: no process is created
+            when: the candidate reaches the final start boundary
+          - given: control wins ordering before session creation
+            id: ac-final-gate-prevents-session-creation
+            then: no session is created
+            when: the candidate reaches the final start boundary
+          - given: spawn wins ordering before a control
+            id: ac-spawn-win-pause-allows-completion
+            then: the active invocation may finish naturally
+            when: pause is applied
+          - given: spawn wins ordering before a control
+            id: ac-spawn-win-stop-cancels-invocation
+            then: the active invocation is cancelled
+            when: stop cleanup completes
+          - given: task readiness state exists
+            id: ac-controls-do-not-change-readiness
+            then: task readiness state remains unchanged
+            when: lifecycle control changes
+          - given: degraded target state exists
+            id: ac-controls-do-not-change-degraded-targets
+            then: degraded target state remains unchanged
+            when: lifecycle control changes
+          - given: stopped authority committed and cleanup failed
+            id: ac-stop-failure-retains-stopped-authority
+            then: stopped authority is reported
+            when: status is requested
+          - given: stopped authority committed and cleanup failed
+            id: ac-stop-failure-reports-pending-cleanup
+            then: pending cleanup is reported
+            when: status is requested
+          - given: stopped authority committed and cleanup failed
+            id: ac-stop-failure-reports-no-success
+            then: no success outcome is reported
+            when: status is requested
+          - given: stopped authority has pending cleanup after interruption
+            id: ac-interrupted-stop-recovers-on-startup
+            then: cleanup resumes without reopening scheduling
+            when: the daemon starts
+          - given: stopped authority has pending cleanup after interruption
+            id: ac-interrupted-stop-recovers-on-retry
+            then: cleanup resumes without reopening scheduling
+            when: stop is retried
+          - given: paused in-memory scheduling data was lost
+            id: ac-paused-reconstruction-uses-current-state
+            then: candidates are reconstructed from current authoritative state
+            when: running becomes permitted
+          - given: stopped in-memory scheduling data was lost
+            id: ac-stopped-reconstruction-uses-current-state
+            then: candidates are reconstructed from current authoritative state
+            when: running becomes permitted
+          - given: lifecycle status is requested
+            id: ac-status-reports-authority
+            then: durable authority is reported
+            when: the response is produced
+          - given: lifecycle status is requested
+            id: ac-status-reports-projection
+            then: the running, paused, draining, or stopped projection is reported
+            when: the response is produced
+          - given: active work exists
+            id: ac-status-reports-active-count
+            then: the active count is reported
+            when: lifecycle status is requested
+          - given: queued work exists
+            id: ac-status-reports-queued-count
+            then: the queued count is reported
+            when: lifecycle status is requested
+          - given: held work exists
+            id: ac-status-reports-held-count
+            then: the held count is reported
+            when: lifecycle status is requested
+          - given: canonical tasks are held
+            id: ac-status-reports-held-task-identity
+            then: each held canonical identity is reported
+            when: lifecycle status is requested
+          - given: canonical tasks are held
+            id: ac-status-reports-held-task-scope
+            then: each held task scope is reported
+            when: lifecycle status is requested
+          - given: canonical tasks are held
+            id: ac-status-reports-held-task-mode
+            then: each held task mode is reported
+            when: lifecycle status is requested
+          - given: canonical tasks are held
+            id: ac-status-reports-held-task-reason
+            then: each held task sanitized reason is reported
+            when: lifecycle status is requested
+          - given: global start has already succeeded
+            id: ac-global-start-is-idempotent
+            then: the observable result equals one successful start
+            when: global start is repeated
+          - given: global pause has already succeeded
+            id: ac-global-pause-is-idempotent
+            then: the observable result equals one successful pause
+            when: global pause is repeated
+          - given: global resume has already succeeded
+            id: ac-global-resume-is-idempotent
+            then: the observable result equals one successful resume
+            when: global resume is repeated
+          - given: global stop has already committed
+            id: ac-global-stop-is-idempotent
+            then: the observable result equals one successful stop plus any pending cleanup retry
+            when: global stop is repeated
+          - given: task pause has already succeeded
+            id: ac-task-pause-is-idempotent
+            then: the observable result equals one successful task pause
+            when: pause is repeated for that canonical task
+          - given: task resume has already succeeded
+            id: ac-task-resume-is-idempotent
+            then: the observable result equals one successful task resume
+            when: resume is repeated for that canonical task
+          - given: task stop has already committed
+            id: ac-task-stop-is-idempotent
+            then: the observable result equals one successful task stop plus any pending cleanup retry
+            when: stop is repeated for that canonical task
+          - given: a lifecycle action is applied
+            id: ac-applied-control-is-auditable
+            then: one sanitized typed applied event is emitted
+            when: its durable outcome is known
+          - given: a lifecycle action is a no-op
+            id: ac-noop-control-is-auditable
+            then: one sanitized typed no-op event is emitted
+            when: its durable outcome is known
+          - given: a lifecycle action fails
+            id: ac-failed-control-is-auditable
+            then: one sanitized typed failed event is emitted
+            when: its durable outcome is known
+          - given: a lifecycle action fails
+            id: ac-failure-events-use-closed-error-codes
+            then: the event uses the closed code mapped to that failure class
+            when: its event is projected
+          - given: a lifecycle action fails
+            id: ac-failure-api-uses-closed-error-codes
+            then: the API uses the closed code mapped to that failure class
+            when: its API result is projected
+          - given: a lifecycle action fails
+            id: ac-failure-cli-uses-closed-error-codes
+            then: the CLI uses the closed code mapped to that failure class
+            when: its CLI result is projected
+          - given: a lifecycle action fails
+            id: ac-api-failures-do-not-expose-raw-errors
+            then: no raw error is exposed
+            when: the canonical API reports it
+          - given: a lifecycle action fails
+            id: ac-cli-failures-do-not-expose-raw-errors
+            then: no raw error is exposed
+            when: the CLI reports it
+          - given: a lifecycle action fails
+            id: ac-ui-failures-do-not-expose-raw-errors
+            then: no raw error is exposed
+            when: the web UI reports it
+          - given: dispatch work is controlled
+            id: ac-session-evidence-survives-control
+            then: session evidence remains available under existing cleanup policy
+            when: lifecycle control completes
+          - given: dispatch work is controlled
+            id: ac-branch-evidence-survives-control
+            then: branch evidence remains available under existing cleanup policy
+            when: lifecycle control completes
+          - given: dispatch work is controlled
+            id: ac-workspace-evidence-survives-control
+            then: workspace evidence remains available under existing cleanup policy
+            when: lifecycle control completes
+          - given: dispatch work is controlled
+            id: ac-worktree-evidence-survives-control
+            then: worktree evidence remains available under existing cleanup policy
+            when: lifecycle control completes
+          - given: dispatch work is controlled
+            id: ac-snapshot-evidence-survives-control
+            then: snapshot evidence remains available under existing cleanup policy
+            when: lifecycle control completes
+          - given: dispatch work is controlled
+            id: ac-audit-evidence-survives-control
+            then: audit evidence remains available under existing cleanup policy
+            when: lifecycle control completes
+        tags: []
+        created: 2026-07-14T19:47:10.189Z
+        notes: []
     created: 2026-02-15T00:39:20.586Z
     notes: []
 requirements:

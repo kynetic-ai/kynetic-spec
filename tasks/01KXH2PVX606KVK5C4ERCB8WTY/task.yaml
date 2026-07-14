@@ -1,0 +1,89 @@
+_ulid: 01KXH2PVX606KVK5C4ERCB8WTY
+slugs:
+  - task-ui-dispatch-lifecycle-controls
+title: Migrate every lifecycle UI consumer and control
+type: task
+description: |
+  ### Covers
+
+  - ac-ui-failures-do-not-expose-raw-errors
+
+  ### Required context
+
+  Inventory: packages/web-ui/src/lib/api.ts; packages/web-ui/src/routes/agents/+page.svelte; packages/web-ui/src/lib/components/agents/DispatchStatus.svelte, ActiveInvocationRow.svelte, QueuedInvocationRow.svelte, HeldTaskRow.svelte; packages/web-ui/src/lib/query/ws-invalidation.ts; packages/web-ui/src/routes/+page.svelte; packages/web-ui/src/routes/tasks/board/+page.svelte; packages/web-ui/src/lib/components/board/ActiveFleetRow.svelte; packages/web-ui/src/routes/automation/+page.svelte; packages/web-ui/src/lib/components/automation/DispatchTriggersSection.svelte and EventLogSection.svelte. Authority is always separately labelled from projection and from degraded/blocked state. Absent authority maps dispatch_enabled true to running and false to stopped; false with active work keeps active evidence visible and labels the projection `Legacy unknown/stopping`. Static mode is stopped with zero counts, empty controls, and read-only buttons.
+
+  `packages/web-ui/src/lib/api.ts` exclusively parses/validates public snake_case and returns camelCase UI types; components consume camelCase only. Exact mapping: CleanupState status/entries stay status/entries; CleanupEntry `cleanup_id,scope,task_id,status,phase,error_code` -> `cleanupId,scope,taskId,status,phase,errorCode`; HeldTask `task_id,task_ref,title,scope,mode,reason,actor,source,controlled_at,updated_at` -> `taskId,taskRef,title,scope,mode,reason,actor,source,controlledAt,updatedAt`; TaskControl maps `task_id,task_ref,title,mode,reason,actor,source,controlled_at,updated_at,cleanup_state` -> `taskId,taskRef,title,mode,reason,actor,source,controlledAt,updatedAt,cleanupState`, recursively. Root `global_authority,cleanup_state,active_count,queue_depth,held_count,held_tasks,task_controls,degraded_targets` -> `globalAuthority,cleanupState,activeCount,queueDepth,heldCount,heldTasks,taskControls,degradedTargets`. Idle requires empty entries; pending requires non-empty/all pending and no errorCode; failed requires non-empty/at least one failed, errorCode on every failed entry and none on pending entries. CleanupErrorCode is exactly `cancellation_timeout|cancellation_failed|session_closure_failed|cleanup_ownership_mismatch|cleanup_process_birth_mismatch|cleanup_leader_missing_group_alive|cleanup_identity_unverifiable|cleanup_group_unverifiable|internal_error`; IDs/order/uniqueness/count invariants remain exact. Mixed snake/camel or malformed conditional combinations fail closed. Route fixtures use wire snake_case; API-helper assertions deep-equal camelCase converted models and round-trip-equivalent semantics. Task requests send wire `task_ref`; accepted wire task data returns `task_id/task_ref`, converted to UI `taskId/taskRef`; global responses contain neither.
+
+  Global actions are exactly:
+
+  | Authority / projection | Badge and evidence | Visible enabled actions | Hidden or disabled actions |
+  | --- | --- | --- | --- |
+  | stopped / stopped, cleanup idle | `Stopped`; zero/returned active, queued, and held evidence remains visible | Start | Pause, Resume, Hard stop hidden |
+  | running / running | `Running`; active, queued, and held evidence visible | Pause; Hard stop | Start and Resume hidden |
+  | paused / paused | `Paused`; held evidence visible | Resume; Hard stop | Start and Pause hidden |
+  | paused / draining | `Paused — draining`; active and held evidence visible until active reaches zero | Resume; Hard stop | Start and Pause hidden |
+  | stopped / global-scope cleanup pending or failed | `Stopped — cleanup pending` or `Stopped — cleanup failed`; aggregate active/held/cleanup evidence remains visible | Retry hard stop | Start, Pause, Resume hidden; Retry hard stop uses hard-stop confirmation |
+  | stopped / no global-scope entry but unrelated task cleanup exists | `Stopped`; aggregate task cleanup evidence remains visible | Start | Global Retry, Pause, Resume hidden; matching task remains denied |
+
+  Matching-scope controls are exact. Global actions inspect only global-scope entries: stopped with only unrelated task entries shows Start, not global Retry, and matching tasks remain held. Task T actions inspect only task/T entries and remain configurable while global authority is paused/stopped/has cleanup; mutation may change T metadata but never starts work until the independent global gate permits. Absent record shows Pause task and Hard-stop task; paused shows Resume task and Hard-stop task; stopped/no matching entry shows Resume task; stopped/matching pending-or-failed shows Retry hard stop and hides Resume task. Counts/aggregate arrays never determine action visibility. A stale-button 409 refreshes unchanged evidence. Successful retry renders the matching control idle without auto-resume. Hard-stop task uses confirmation; pause/resume never confirm. Static mode renders applicable controls disabled and makes no request.
+
+  Hard stop confirmation has role dialog, accessible name `Confirm hard stop`, text `Active matching invocations will be cancelled. Session, branch, workspace, worktree, snapshot, and audit evidence will be preserved.`, Confirm and Cancel buttons; Cancel makes no request. Status changes use a polite atomic live region; mutations keep focus on the invoking control after success/error refresh and errors show only the fixed mapped message/suggestion. Add stable test IDs `dispatch-authority`, `dispatch-projection`, `dispatch-active-count`, `dispatch-queued-count`, `dispatch-held-count`, `dispatch-action-start`, `dispatch-action-pause`, `dispatch-action-resume`, `dispatch-action-stop`, `dispatch-confirm-dialog`, `dispatch-confirm-cancel`, `dispatch-live-status`, and `held-task-<canonical-ulid>`.
+
+  ### Deliverable
+
+  Every consumer consistently projects lifecycle evidence and valid controls; agents events invalidate queryKeys.agents.all and refresh the automation event log.
+
+  ### Implementation
+
+  Update every listed consumer and implement the global/task tables verbatim. Separate authority/projection from degraded/blocked; show active/queued/held evidence in every specified view. Implement the named test IDs, dialog role/name, labels, polite live status, focus restoration, keyboard operation, narrow layout, reduced-motion-safe indicators, agents topic invalidation through queryKeys.agents.all, and automation event-log refresh. Only sanitized mapped failures may render.
+
+  ### Files
+
+  - Create: packages/web-ui/src/lib/components/agents/HeldTaskRow.svelte
+  - Create: tests/web-ui/dispatch-lifecycle-controls.test.ts
+  - Modify: packages/web-ui/src/lib/api.ts
+  - Modify: packages/web-ui/src/routes/agents/+page.svelte
+  - Modify: packages/web-ui/src/lib/components/agents/DispatchStatus.svelte
+  - Modify: packages/web-ui/src/lib/components/agents/ActiveInvocationRow.svelte
+  - Modify: packages/web-ui/src/lib/components/agents/QueuedInvocationRow.svelte
+  - Modify: packages/web-ui/src/lib/query/ws-invalidation.ts
+  - Modify: packages/web-ui/src/routes/+page.svelte
+  - Modify: packages/web-ui/src/routes/tasks/board/+page.svelte
+  - Modify: packages/web-ui/src/lib/components/board/ActiveFleetRow.svelte
+  - Modify: packages/web-ui/src/routes/automation/+page.svelte
+  - Modify: packages/web-ui/src/lib/components/automation/DispatchTriggersSection.svelte
+  - Modify: packages/web-ui/src/lib/components/automation/EventLogSection.svelte
+  - Modify: tests/web-ui/ws-cache-invalidation.test.ts
+  - Modify: tests/web-ui/fleet-buffer.test.ts
+
+  ### Behavioral tests
+
+  In tests/web-ui/dispatch-lifecycle-controls.test.ts create `lifecycleStatusFixture`, `renderLifecycleConsumer`, and `recordControlRequest`. Feed exact public snake_case idle/all-pending/all-failed/mixed rows through packages/web-ui/src/lib/api.ts and deep-equal exact camelCase UI CleanupEntry/HeldTask/TaskControl/root models; assert semantic round trip and rejection of mixed casing plus every malformed entry/aggregate/error conditional, duplicate/order/count/ID case. Components must expose only camelCase properties and canonical taskId keys/test IDs. Assert matching-scope global/task action rows, global-start-with-task-cleanup, task-mutation-under-global-cleanup/no-start, retry behavior, accessibility, fallback/static, invalidation, and sanitized errors.
+
+  ### Verification
+
+  - npm test -- tests/web-ui/dispatch-lifecycle-controls.test.ts tests/web-ui/ws-cache-invalidation.test.ts tests/web-ui/fleet-buffer.test.ts
+  - npm run typecheck
+  - npm run lint
+  - git diff --check
+
+  ### Reviewer handoff
+
+  Supply consumer inventory, fallback fixtures, control matrix, accessibility/invalidation evidence.
+spec_ref: "@ui-agent-dispatch"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-patch-dispatch-ui-specs"
+  - "@task-daemon-dispatch-lifecycle-api"
+context: []
+priority: 3
+tags:
+  - dispatch
+  - ui
+  - accessibility
+vcs_refs: []
+created_at: 2026-07-14T19:47:21.638Z
+todos: []

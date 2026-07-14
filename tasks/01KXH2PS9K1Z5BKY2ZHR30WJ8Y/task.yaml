@@ -1,0 +1,135 @@
+_ulid: 01KXH2PS9K1Z5BKY2ZHR30WJ8Y
+slugs:
+  - task-dispatch-lifecycle-events
+title: Register, sanitize, and emit dispatch lifecycle events
+type: task
+description: >
+  ### Covers
+
+
+  - ac-applied-control-is-auditable
+
+  - ac-noop-control-is-auditable
+
+  - ac-failed-control-is-auditable
+
+  - ac-failure-events-use-closed-error-codes
+
+
+  ### Required context
+
+
+  Identifiers are exactly dispatch_control.pause_applied, dispatch_control.start_applied,
+  dispatch_control.resume_applied, dispatch_control.stop_applied, dispatch_control.noop, and
+  dispatch_control.failed. Every payload always has scope global/task, action
+  start/pause/resume/stop, authority stopped/running/paused, projection
+  stopped/running/paused/draining, outcome applied/noop/failed, reason, actor, source
+  cli/api/ui/daemon_startup/daemon_shutdown/recovery, and timestamp. Task scope has canonical
+  task_id and optional task_ref; global scope has neither. reason defaults to `operator request`,
+  removes control characters, collapses/trims whitespace, and is at most 240 Unicode code points;
+  actor is at most 120 and task_ref 200 after the same removal/normalization. Prompts, secrets,
+  terminal buffers, workspace paths, raw input errors, and raw failure errors are absent.
+
+
+  The failure predicate is exhaustive and closed: request validation -> validation_failed; missing
+  task -> task_not_found; multiple resolved tasks -> task_identity_ambiguous; submitted ref/id
+  disagreement -> task_identity_mismatch; matrix rejection -> invalid_transition; lock/store
+  I/O/timeout -> control_store_unavailable; malformed committed control object ->
+  control_store_corrupt; commit false/throw or committed-object verification failure ->
+  control_commit_failed; bounded cancellation wait -> cancellation_timeout; verified signal failure
+  -> cancellation_failed; durable session close failure -> session_closure_failed; copied versus
+  current ownership tuple mismatch -> cleanup_ownership_mismatch; leader birth-token mismatch or PID
+  reuse -> cleanup_process_birth_mismatch; leader absent with a safely verified owned live group ->
+  cleanup_leader_missing_group_alive; unreadable/malformed ownership or birth proof ->
+  cleanup_identity_unverifiable; unsupported platform or live group without an immutable matching
+  member proof -> cleanup_group_unverifiable; every uncategorized fault -> internal_error. No
+  predicate overlaps another.
+
+
+  ### Deliverable
+
+
+  One typed sanitized outcome emitter: applied start/pause/resume/stop uses its matching `*_applied`
+  identifier and no error_code; an idempotent result uses `dispatch_control.noop` and no error_code;
+  every failed predicate above uses `dispatch_control.failed` with exactly its mapped code after the
+  durable outcome is known.
+
+
+  ### Implementation
+
+
+  Register domain/types in both schema owners. Implement the predicate-to-code table above in a
+  closed `DispatchControlErrorCode` mapper shared by every emission site; reject unknown code
+  strings at schema validation. Emit exactly once after a committed applied/noop/failed outcome,
+  never before commit or during retry observation. Emit on `agents`; the UI owner invalidates
+  queryKeys.agents.all and refreshes the automation event log.
+
+
+  ### Files
+
+
+  - Create: tests/dispatch-control-events.test.ts
+
+  - Modify: src/schema/event-registry.ts
+
+  - Modify: src/schema/event-payloads.ts
+
+  - Modify: packages/shared/src/schemas.ts
+
+  - Modify: packages/shared/src/websocket.ts
+
+  - Modify: src/agent-runtime/dispatch.ts
+
+  - Modify: tests/event-registry.test.ts
+
+  - Modify: tests/event-payloads.test.ts
+
+  - Modify: tests/event-bus.test.ts
+
+
+  ### Behavioral tests
+
+
+  In tests/dispatch-control-events.test.ts create `captureDispatchControlEvents` and
+  `emitOutcomeFixture`. Drive one applied start/pause/resume/stop, one noop, and each of the
+  seventeen failure predicates. For each, capture identifier, full payload, and event count: assert
+  the exact identifier/outcome/code mapping, one event only after the fixture's commit barrier,
+  global/task identity presence rules, all five sanitization/bound cases, all forbidden classes, and
+  rejection of every non-enum code. Existing event-registry/payload/bus tests assert cross-schema
+  registration and agents-topic publication.
+
+
+  ### Verification
+
+
+  - npm test -- tests/dispatch-control-events.test.ts tests/event-registry.test.ts
+  tests/event-payloads.test.ts tests/event-bus.test.ts
+
+  - npm run typecheck
+
+  - npm run lint
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Provide identifier, enum, sanitizer, and durable-result tables.
+spec_ref: "@dispatch-event-taxonomy"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-patch-dispatch-events-specs"
+  - "@task-engine-stop-recovery"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - events
+  - schema
+vcs_refs: []
+created_at: 2026-07-14T19:47:18.963Z
+todos: []

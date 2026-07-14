@@ -1,0 +1,93 @@
+_ulid: 01KXH2PSQY6GK4S66S4TB6JVV3
+slugs:
+  - task-daemon-dispatch-lifecycle-api
+title: Add canonical lifecycle API and compatibility adapters
+type: task
+description: |
+  ### Covers
+
+  - ac-status-reports-authority
+  - ac-status-reports-projection
+  - ac-status-reports-active-count
+  - ac-status-reports-queued-count
+  - ac-status-reports-held-count
+  - ac-status-reports-held-task-identity
+  - ac-status-reports-held-task-scope
+  - ac-status-reports-held-task-mode
+  - ac-status-reports-held-task-reason
+  - ac-failure-api-uses-closed-error-codes
+  - ac-api-failures-do-not-expose-raw-errors
+
+  ### Required context
+
+  Canonical routes are GET /api/agent/status and POST /api/agent/dispatch/control with `{scope,action,task_ref?,task_id?,reason?}`. Canonical success/noop is HTTP 200 `{ok:true,data:{global_authority,projection,cleanup_state,active_count,queue_depth,held_count,held_tasks,task_controls,degraded_targets,outcome,task_id?,task_ref?},error:null}`. Canonical failure is `{ok:false,data:<complete current lifecycle status>,error:{code,message,suggestion,details?}}`, where details contains typed field names/canonical IDs only. Codes/statuses are validation_failed 400; task_not_found 404; task_identity_ambiguous, task_identity_mismatch, invalid_transition, cleanup_ownership_mismatch, cleanup_process_birth_mismatch, cleanup_leader_missing_group_alive 409; control_store_unavailable, control_store_corrupt, control_commit_failed, cleanup_identity_unverifiable, cleanup_group_unverifiable 503; cancellation_timeout, cancellation_failed, session_closure_failed, internal_error 500.
+
+  Inline public wire schema (do not infer it from parent prose): `CleanupState = {status:"idle",entries:[]} | {status:"pending"|"failed",entries:CleanupEntryStatus[]}`; `CleanupEntryStatus = {cleanup_id:string,scope:"global"|"task",task_id?:string,status:"pending"|"failed",phase:"owned"|"signals_sent"|"sessions_closed",error_code?:CleanupErrorCode}`. Canonical ULIDs are required and task_id is required iff task scope. Idle requires empty entries. Pending requires non-empty/all entry status pending, each forbidding error_code. Failed requires non-empty/at least one entry status failed; every failed entry requires error_code and every pending entry forbids it. CleanupErrorCode is exactly cancellation_timeout/cancellation_failed/session_closure_failed/cleanup_ownership_mismatch/cleanup_process_birth_mismatch/cleanup_leader_missing_group_alive/cleanup_identity_unverifiable/cleanup_group_unverifiable/internal_error. Entries are global-first then task_id/cleanup_id sorted, with no duplicate cleanup_id or scope/task owner. `HeldTask = {task_id:string,task_ref:string|null,title:string|null,scope:"global"|"task",mode:"paused"|"stopped",reason:string,actor:string,source:"cli"|"api"|"ui"|"daemon_startup"|"daemon_shutdown"|"recovery",controlled_at:string,updated_at:string}`. `TaskControl` has the same task_id/ref/title/mode/reason/actor/source/timestamps plus `cleanup_state:CleanupState`; its nested entries are empty or the one matching task entry. held_tasks and task_controls are arrays sorted by canonical task_id with no duplicates; held_count equals held_tasks.length.
+
+  Matching-scope gating is exact: global transitions and legacy global aliases filter only `scope:"global"`; task T transitions filter only `scope:"task",task_id:T`; aggregate arrays/counts are observability only. Task metadata mutations are allowed despite global cleanup, but work creation still requires independent running global authority and empty global-scope cleanup. Thus stopped global with only unrelated task cleanup permits global start and reconciliation while matching task admission remains denied.
+
+  Request identity is global with no task fields or task with at least one task_ref/task_id; aliases resolve before mutation, both fields must agree, and canonical mutation data adds required `task_id` and nullable `task_ref` only for task scope. Global mutation data forbids them; error data is current status and carries no request alias; legacy aliases add no identity. While matching global cleanup is pending/failed, global start/pause/resume return canonical 409 invalid_transition; unrelated task cleanup does not. While matching task cleanup is pending/failed, task pause/resume do the same; global/other-task cleanup does not alter the task record. Stop retries only matching scope. Successful cleanup removes only that entry and only a later start/task resume can reopen work, subject to global authority.
+
+  Public GET /api/agent/status HTTP 200 is unwrapped and always keeps dispatch_enabled, active_invocations[] `{session_id,agent_id,task_ref,task_title,elapsed_ms,resolved_adapter}`, queued_invocations[] `{agent_id,task_ref,task_title,wait_ms,resolved_adapter}`, queue_depth, agent_definitions[] `{id,name,adapter,resolved_adapter,completed_sessions}`, degraded `{active,reason,enteredAt}`, and degraded_targets[] `{branch,reason,enteredAt,kind}`. Active/queued rows add runner only when configured; definitions add runner only when configured and runner_validation `{status,diagnostics[]}` only when current resolution emits it; diagnostics retain current reason/message/details? presence. It appends global_authority, projection, cleanup_state, held_count, held_tasks, task_controls. Store unavailable/corrupt is canonical 503; status-mapping failure is canonical 500.
+
+  Internal GET /api/agent/dispatch/status has these exact bases before appending globalAuthority, projection, cleanupState, heldCount, heldTasks, taskControls: engine-present 200 `{running,activeInvocations,queuedInvocations,invocations,queued,degraded,degradedTargets}` with invocation `{invocationId,sessionId,agentId,agentName,taskRef,elapsedMs,resolvedAdapter,runner}` and queued `{agentId,agentName,taskRef,waitMs,runner,adapter}` (taskRef/runner/adapter are omitted when undefined by JSON); no-engine 200 `{running:false,activeInvocations:0,queuedInvocations:0,invocations:[],degraded:{active:false,reason:"",enteredAt:null},degradedTargets:[]}` and omits queued. Its 500/503 bodies use the same respective engine-present/no-engine base plus lifecycle additions and error_code; degraded/degradedTargets remain present and no-engine/error never invents queued.
+
+  Mutation aliases retain these complete HTTP response rows. Native Elysia invalid-body 400 remains its current validation-details body, unwrapped and otherwise unchanged. Both cwd errors are path-free: validation 400 error is exactly `Invalid dispatch working directory`; conflict 409 error is exactly `Dispatch is already running for another project`.
+
+  | Route | 200 success/no-op rows | 400/409 legacy rows | 500/503 translation rows |
+  | --- | --- | --- | --- |
+  | POST /api/agent/dispatch | start `{dispatch_enabled:true}`; same-cwd no-op `{dispatch_enabled:true,reason:"Already running"}`; stop `{dispatch_enabled:false}`; no-engine stop `{dispatch_enabled:false,reason:"No engine running"}` | cwd 400 `{dispatch_enabled:false,error:"Invalid dispatch working directory"}`; conflict 409 `{dispatch_enabled:true,error:"Dispatch is already running for another project"}`; invalid transition 409 `{dispatch_enabled:<current-running-boolean>,error:"Invalid dispatch lifecycle transition",error_code:"invalid_transition"}` | pre-commit 503 `{dispatch_enabled:<prior-running>,error_code:<control_store_unavailable|control_store_corrupt|control_commit_failed>}`; post-commit cleanup 409/500/503 `{dispatch_enabled:false,reason:"cleanup_pending",error_code:<mapped cleanup code>}`; other 500 `{dispatch_enabled:<prior-running>,error_code:"internal_error"}` |
+  | POST /api/agent/dispatch/start | `{started:true,status:<complete current internal status>}`; same-cwd no-op `{started:false,reason:"Already running",status:<complete current internal status>}` | cwd 400 `{started:false,error:"Invalid dispatch working directory"}` with no status; conflict 409 `{started:false,error:"Dispatch is already running for another project",status:<complete current internal status>}`; invalid transition 409 `{started:false,error:"Invalid dispatch lifecycle transition",status:<complete current internal status>,error_code:"invalid_transition"}` | pre-commit 503 `{started:false,error_code:<control_store_unavailable|control_store_corrupt|control_commit_failed>}`; post-commit cleanup 409/500/503 `{started:false,error_code:<mapped cleanup code>}`; other 500 `{started:false,error_code:"internal_error"}` |
+  | POST /api/agent/dispatch/stop | `{stopped:true}`; no-engine `{stopped:false,reason:"No engine running"}` | invalid transition 409 `{stopped:false,reason:"invalid_transition",error_code:"invalid_transition"}` | pre-commit 503 `{stopped:false,error_code:<control_store_unavailable|control_store_corrupt|control_commit_failed>}`; post-commit cleanup 409/500/503 `{stopped:false,reason:"cleanup_pending",error_code:<mapped cleanup code>}`; other 500 `{stopped:false,error_code:"internal_error"}` |
+
+  Raw exceptions, stacks, project paths, cwd paths, and dynamic error strings are forbidden in every canonical and alias response. The only mutation 409 error strings are the two fixed cwd messages or the exact invalid-transition bodies above.
+
+  ### Deliverable
+
+  Canonical control/status plus additive POST /api/agent/dispatch, POST /api/agent/dispatch/start, POST /api/agent/dispatch/stop, and GET /api/agent/dispatch/status adapters, all deep-equal to the rows above.
+
+  ### Implementation
+
+  Implement the tables verbatim in packages/daemon/src/routes/agent-dispatch.ts and packages/shared/src/api.ts. Route identity resolves ref/id before a successful task-scoped control and returns the canonical ULID in canonical data/status. Preserve no-engine omission of queued, every conditional runner field, native Elysia invalid-body details, every no-op reason, and complete start status. Do not route API errors through raw Error text.
+
+  ### Files
+
+  - Create: tests/daemon-agent-dispatch-lifecycle.test.ts
+  - Modify: packages/daemon/src/routes/agent-dispatch.ts
+  - Modify: packages/daemon/src/server.ts
+  - Modify: packages/shared/src/api.ts
+  - Modify: tests/daemon-api/agent-dispatch.test.ts
+  - Modify: tests/daemon-agent-dispatch-routes.test.ts
+
+  ### Behavioral tests
+
+  In tests/daemon-agent-dispatch-lifecycle.test.ts create `createLifecycleRouteFixture`, `requestLifecycleRoute`, and `captureLifecycleEvents`; use existing in-process route helpers. Add shared serializer/Zod/type fixtures for idle, all-pending, all-failed, and mixed failed-plus-pending CleanupState plus full HeldTask/TaskControl rows; accept exact valid rows and reject pending-with-error, failed-entry-without-error, failed aggregate with no failed entry, idle-with-entry, unknown/mixed-case fields, bad IDs/order/duplicates/count. Deep-equal matching-scope global/task transition responses, including global start with unrelated task cleanup, task mutation under global cleanup with zero start, and alias global-scope-only gating. Retain all canonical codes, complete alias rows, forbidden fields, and native Elysia validation.
+
+  ### Verification
+
+  - npm test -- tests/daemon-agent-dispatch-lifecycle.test.ts tests/daemon-api/agent-dispatch.test.ts tests/daemon-agent-dispatch-routes.test.ts
+  - npm run typecheck
+  - npm run lint
+  - git diff --check
+
+  ### Reviewer handoff
+
+  Provide canonical/alias field/status fixtures and forbidden-field matrix.
+spec_ref: "@daemon-agent-dispatch"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-patch-dispatch-api-specs"
+  - "@task-dispatch-lifecycle-events"
+  - "@task-protect-controlled-dispatch-evidence"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - daemon
+  - api
+vcs_refs: []
+created_at: 2026-07-14T19:47:19.422Z
+todos: []

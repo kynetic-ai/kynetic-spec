@@ -1,0 +1,104 @@
+_ulid: 01KXH2PRVHHSQ14WR16A5KHTJT
+slugs:
+  - task-protect-controlled-dispatch-evidence
+title: Protect controlled dispatch evidence from cleanup
+type: task
+description: >
+  ### Covers
+
+
+  - ac-session-evidence-survives-control
+
+  - ac-branch-evidence-survives-control
+
+  - ac-workspace-evidence-survives-control
+
+  - ac-worktree-evidence-survives-control
+
+  - ac-snapshot-evidence-survives-control
+
+  - ac-audit-evidence-survives-control
+
+
+  ### Required context
+
+
+  Protection uses canonical active, final-gate in-flight, paused-held, and stopped-pending-cleanup
+  task identities. Lifecycle control never independently grants cleanup eligibility.
+
+
+  ### Deliverable
+
+
+  All destructive workspace cleanup decisions receive protection and reject overlapping controlled
+  evidence.
+
+
+  ### Implementation
+
+
+  Thread protection through workspace registry evaluation, physical reap, worktree removal, branch
+  deletion, remote branch deletion, abandoned classification, and terminal reconciliation in
+  src/agent-runtime/workspace.ts. Preserve unrelated terminal/integrated cleanup and block ambiguous
+  ownership from blind deletion.
+
+
+  ### Files
+
+
+  - Create: tests/dispatch-controlled-evidence-protection.test.ts
+
+  - Modify: src/agent-runtime/workspace.ts
+
+  - Modify: tests/dispatch-artifact-protection.test.ts
+
+  - Modify: tests/dispatch-workspace-cleanup.test.ts
+
+  - Modify: tests/dispatch-workspace-cleanup-completion.test.ts
+
+  - Modify: tests/dispatch-workspace-terminal-reconciliation.test.ts
+
+
+  ### Behavioral tests
+
+
+  Run each protected lifecycle state through every listed destructive surface; assert session,
+  branch, workspace/worktree, snapshot, audit preservation and unchanged unrelated terminal cleanup.
+
+
+  ### Verification
+
+
+  - npm test -- tests/dispatch-controlled-evidence-protection.test.ts
+  tests/dispatch-artifact-protection.test.ts tests/dispatch-workspace-cleanup.test.ts
+  tests/dispatch-workspace-cleanup-completion.test.ts
+  tests/dispatch-workspace-terminal-reconciliation.test.ts
+
+  - npm run typecheck
+
+  - npm run lint
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Provide destructive-surface/protected-state matrix.
+spec_ref: "@dispatch-workspace-cleanup-policy"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-patch-dispatch-workspace-cleanup-spec"
+  - "@task-engine-stop-recovery"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - cleanup
+  - evidence
+vcs_refs: []
+created_at: 2026-07-14T19:47:18.513Z
+todos: []

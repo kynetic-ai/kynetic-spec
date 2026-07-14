@@ -1,0 +1,63 @@
+_ulid: 01KXH2PHJ4C3J8AW19VA0BVZTK
+slugs:
+  - task-patch-dispatch-api-specs
+title: Patch daemon dispatch API specs exactly
+type: task
+description: |
+  ### Covers
+
+  - @daemon-agent-dispatch ac-5, ac-public-status-lifecycle-additions, ac-6, ac-control-error-current-status, ac-control-missing-identity, ac-control-ref-canonicalization, ac-control-identity-mismatch, ac-control-failure-no-success, ac-cleanup-failure-no-success
+
+  ### Required context
+
+  Metadata only; the daemon API task implements the contract later.
+
+  ### Deliverable
+
+  - Set ac-5 — Given GET /api/agent/status is called. When lifecycle state is available. Then the response preserves dispatch_enabled, active_invocations, queued_invocations, queue_depth, agent_definitions, degraded, degraded_targets; active session_id/agent_id/task_ref/task_title/elapsed_ms/resolved_adapter; queued agent_id/task_ref/task_title/wait_ms/resolved_adapter; definitions id/name/adapter/resolved_adapter/completed_sessions; targets branch/reason/enteredAt/kind; runner only when configured; runner_validation only where current resolution emits it.
+  - Add ac-public-status-lifecycle-additions — Given GET /api/agent/status is called. When lifecycle state is available. Then it appends the plan's closed snake-case cleanup_state with exact per-entry pending/failed/error-code invariants, ordered canonical-ULID held_tasks, and ordered no-duplicate canonical-ULID task_controls at top level.
+  - Set ac-6 — Given a localhost client posts a valid lifecycle control. When transition processing succeeds. Then POST /api/agent/dispatch/control returns HTTP 200 with `{ok:true,data:{global_authority,projection,cleanup_state,active_count,queue_depth,held_count,held_tasks,task_controls,degraded_targets,outcome,task_id?,task_ref?},error:null}`, with canonical task identity present only for task scope and all lifecycle rows conforming to the closed schemas defined by this plan.
+  - Add ac-control-error-current-status — Given a localhost lifecycle control fails. When the API responds. Then its structured error includes current status.
+  - Add ac-control-missing-identity — Given a task-scoped control omits task identity. When validation runs. Then the request is rejected.
+  - Add ac-control-ref-canonicalization — Given a task-scoped control carries one uniquely resolvable ref. When identity is resolved. Then the ref is canonicalized to its task ULID.
+  - Add ac-control-identity-mismatch — Given supplied task identity fields disagree. When identity is resolved. Then the request has no effect.
+  - Add ac-control-failure-no-success — Given lifecycle persistence fails. When the API responds. Then it does not report success.
+  - Add ac-cleanup-failure-no-success — Given stop cleanup fails. When the API responds. Then it does not report success.
+
+  ### Implementation
+
+  Apply only these nine payloads; preserve Elysia validation and all unlisted compatibility ACs.
+
+  ### Files
+
+  - Create: none.
+  - Modify: none.
+  - Tests: none.
+
+  ### Behavioral tests
+
+  Read back a nine-row table and verify ac-6 retains the full envelope, conditional canonical task identity, and closed row schemas instead of vague success text.
+
+  ### Verification
+
+  - kspec item get @daemon-agent-dispatch
+  - git diff --check
+
+  ### Reviewer handoff
+
+  Supply exact stored payloads and confirm no route/test edits.
+spec_ref: "@daemon-agent-dispatch"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - specs
+  - api
+vcs_refs: []
+created_at: 2026-07-14T19:47:11.044Z
+todos: []

@@ -1,0 +1,141 @@
+_ulid: 01KXH2PN5478NZ5EGN1395724C
+slugs:
+  - task-dispatch-control-persistence
+title: Define durable dispatch control persistence and committed publication
+type: task
+description: >
+  ### Covers
+
+
+  - ac-uncommitted-control-is-not-visible
+
+  - ac-failed-control-write-is-not-visible
+
+  - ac-stale-control-is-not-visible
+
+  - ac-invalid-control-is-not-visible
+
+  - ac-external-commit-is-eventually-visible
+
+
+  ### Required context
+
+
+  The canonical document is .kspec/dispatch-control.yaml: version 1, nonnegative monotonic revision,
+  global authority stopped/running/paused, task records keyed only by canonical ULID, and
+  pending_cleanup keyed by global/task ULID. Its published token is revision plus the shadow HEAD
+  commit oid. Projection preserves every scope in aggregate CleanupState but exposes per-entry
+  status: pending forbids error_code; failed requires mapped error_code; aggregate idle is empty,
+  pending is non-empty/all pending, and failed is non-empty/at-least-one failed with any other
+  entries pending or failed under their own rule. Global selectors filter only global; task T
+  selectors only task/T; store aggregate counts/arrays are never transition predicates.
+  src/schema/dispatch-control.ts owns Zod shape; src/parser/dispatch-control.ts owns parse/atomic
+  replace; src/agent-runtime/dispatch-shadow-transaction.ts owns commit;
+  src/agent-runtime/dispatch-control-store.ts owns memory publication.
+
+
+  ### Deliverable
+
+
+  A durable canonical schema/parser/transaction/store that only publishes a byte-for-byte parsed
+  dispatch-control.yaml from a verified committed Git object. Missing file reads as stopped/no
+  controls; unknown, malformed, duplicate, or noncanonical durable records are rejected and
+  corruption never defaults to running. This task does not admit work, schedule bootstrap,
+  canonicalize an applied task command, or cancel an invocation.
+
+
+  ### Implementation
+
+
+  Use acquireFileLock and getDispatchShadowMutationLockPath, never private
+  withDispatchShadowMutationLock. Acquire shadow lock before parser file locks; no
+  engine/process/session wait may occur while locked. Capture pre_head, reclaim dirty state with
+  rollbackDirtyShadowWorktree, write atomically, call commitIfShadow once, then verify git show
+  HEAD:dispatch-control.yaml parses to the proposed snapshot. False/throw/verification failure
+  resets to pre_head and reloads/publishes only its valid snapshot. project-context records watcher
+  event/observed HEAD but never watcher content; reloadCommitted rereads git show HEAD under the
+  same lock, retains one coalesced pre-commit event reread, publishes a newer valid head once, and
+  suppresses self-event duplicates. entity-cache invalidates only after publication.
+
+
+  ### Files
+
+
+  - Create: src/schema/dispatch-control.ts
+
+  - Create: src/parser/dispatch-control.ts
+
+  - Create: src/agent-runtime/dispatch-shadow-transaction.ts
+
+  - Create: src/agent-runtime/dispatch-control-store.ts
+
+  - Create: tests/dispatch-control-store.test.ts
+
+  - Modify: src/schema/index.ts
+
+  - Modify: src/parser/index.ts
+
+  - Modify: src/parser/file-lock.ts
+
+  - Modify: src/agent-runtime/workspace.ts
+
+  - Modify: packages/daemon/src/project-context.ts
+
+  - Modify: src/daemon/entity-cache.ts
+
+  - Modify: tests/daemon-entity-cache.test.ts
+
+  - Modify: tests/daemon-watcher-chokidar.test.ts
+
+
+  ### Behavioral tests
+
+
+  In tests/dispatch-control-store.test.ts create `createDispatchControlStoreHarness`,
+  `commitBarrier`, and `publicationRecorder`. Test
+  missing/version-1/unknown/malformed/duplicate/noncanonical durable keys and monotonic revisions.
+  For each named barrier, trigger the mutation, hold the writer at the stated boundary, observe
+  `publicationRecorder.tokens`, release the barrier, and assert the outcome:
+  watcher-before-external-commit publishes no dirty bytes then exactly one newer
+  `{revision,commit_oid}`; watcher-before-abort and watcher-before-rollback retain the prior token;
+  commit-before-watcher and duplicate self event publish once; stale/malformed committed revisions
+  retain the newer verified token; ordinary false/throw and committed-object verification failure
+  restore `pre_head`; force reclaim rolls back dirty worktree state. No case calls a dispatch
+  admission or bootstrap path.
+
+
+  ### Verification
+
+
+  - npm test -- tests/dispatch-control-store.test.ts tests/daemon-entity-cache.test.ts
+  tests/daemon-watcher-chokidar.test.ts
+
+  - npm run typecheck
+
+  - npm run lint
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Supply commit/rollback, schema-rejection, lock-order, and watcher barrier tables. State that
+  restart scheduling, canonical applied identity, final-gate denial, and cancellation are
+  intentionally not owned here.
+spec_ref: "@dispatch-lifecycle-control-authority"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-patch-dispatch-engine-coalescing-specs"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - persistence
+  - schema
+vcs_refs: []
+created_at: 2026-07-14T19:47:14.724Z
+todos: []

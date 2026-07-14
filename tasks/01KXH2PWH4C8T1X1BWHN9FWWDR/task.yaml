@@ -1,0 +1,101 @@
+_ulid: 01KXH2PWH4C8T1X1BWHN9FWWDR
+slugs:
+  - task-verify-engine-publication-admission
+title: Verify committed publication and admission boundaries
+type: task
+description: >
+  ### Covers
+
+
+  Verification only; persistence, global lifecycle, task control, and final-gate ownership do not
+  move.
+
+
+  ### Required context
+
+
+  tests/dispatch-lifecycle-publication-admission.test.ts creates
+  `createPublicationAdmissionHarness`, `writerSettledBarrier`, `admissionBarrier`, `spawnBarrier`,
+  and `publicationRecorder`; it drives public store/engine entry points only. Cleanup entries carry
+  explicit pending/failed status with error forbidden/required per entry; aggregate failed permits
+  mixed pending entries. Admission filters global scope plus matching task/T independently and never
+  aggregate counts/arrays.
+
+
+  ### Deliverable
+
+
+  A short deterministic suite for committed publication, restart admission, reconstruction, resume
+  dedupe, and pre-spawn denial.
+
+
+  ### Implementation
+
+
+  Add cases with trigger → barrier → mutation → observation → outcome: (1) watcher event →
+  writerSettledBarrier before external commit → commit → publicationRecorder → exactly one newer
+  token and no precommit publication; (2) watcher event → barrier → abort and rollback independently
+  → recorder → prior token/authority retained; (3) paused/stopped bootstrap → admissionBarrier
+  before bootstrap scheduling → release → no start, while running starts only after persisted load;
+  include stopped with only task cleanup → global start/reconcile once → matching task denied; (4)
+  task/rules change while paused → admissionBarrier → resume → current candidate only; include
+  global cleanup plus task metadata resume → record changes but zero starts; (5) two resume calls →
+  admissionBarrier → release → at most one canonical active task; (6) global/task pause or stop →
+  spawnBarrier before creation → commit → release → zero artifacts. Assert per-entry status/error
+  invariants, mixed aggregate, authority/count/token/artifact values.
+
+
+  ### Files
+
+
+  - Create: tests/dispatch-lifecycle-publication-admission.test.ts
+
+  - Modify: tests/dispatch-control-store.test.ts
+
+  - Modify: tests/dispatch-global-lifecycle.test.ts
+
+  - Modify: tests/dispatch-spawn-control-race.test.ts
+
+
+  ### Behavioral tests
+
+
+  Fail on dirty publication, zero/twice external publication, a blocked-scope start, duplicate
+  active canonical task, or a pre-spawn artifact.
+
+
+  ### Verification
+
+
+  - npm test -- tests/dispatch-lifecycle-publication-admission.test.ts
+  tests/dispatch-control-store.test.ts tests/dispatch-global-lifecycle.test.ts
+  tests/dispatch-spawn-control-race.test.ts
+
+  - npm run typecheck
+
+  - npm run lint
+
+  - git diff --check
+
+
+  ### Reviewer handoff
+
+
+  Supply six trigger/barrier/mutation/observation traces and state that recovery/evidence tests are
+  in the dependent task.
+spec_ref: "@dispatch-lifecycle-control-authority"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-final-pre-spawn-control-gate"
+context: []
+priority: 3
+tags:
+  - dispatch
+  - verification
+  - engine
+vcs_refs: []
+created_at: 2026-07-14T19:47:22.276Z
+todos: []

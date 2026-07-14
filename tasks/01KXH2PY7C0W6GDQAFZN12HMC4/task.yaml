@@ -1,0 +1,61 @@
+_ulid: 01KXH2PY7C0W6GDQAFZN12HMC4
+slugs:
+  - task-verify-ui-lifecycle-browser
+title: Verify lifecycle UI behavior in a real browser
+type: task
+description: |
+  ### Covers
+
+  Verification only; UI AC ownership remains with task-ui-dispatch-lifecycle-controls.
+
+  ### Required context
+
+  Import only existing Playwright `test`/`expect` from tests/e2e/fixtures/test-base.ts. That test-scoped fixture calls `acquirePlaywrightFixtureResources` to create/copy the isolated project and reserve its dynamic port, calls `startPlaywrightFixtureDaemon` with cleanup registered before readiness, and wraps startup/body/teardown in `runPlaywrightFixtureBody`; the spec neither calls createTestDaemonProject/startTestDaemon nor starts/stops an ambient daemon. tests/e2e/dispatch-lifecycle.spec.ts creates local `routeLifecycleStatus`, `routeLifecycleControl`, and `routeStaticSnapshot` helpers before navigation. Cover `/agents`, `/`, `/tasks/board`, `/automation` and the fleet/trigger/event-log components at 1440x900 and 390x844.
+
+  Browser route fixtures return public snake_case only. Cleanup entries are `{cleanup_id,scope,task_id?,status:"pending"|"failed",phase,error_code?}`: idle requires empty; pending non-empty/all pending/no error_code; failed non-empty/at least one failed, error_code on every failed and none on pending. HeldTask and TaskControl use the exact public snake_case fields, closed codes, canonical IDs, order, uniqueness, nested matching-task, and count invariants. `packages/web-ui/src/lib/api.ts` converts before components render: cleanup_id/task_id/error_code -> cleanupId/taskId/errorCode; task_id/task_ref/controlled_at/updated_at -> taskId/taskRef/controlledAt/updatedAt; cleanup_state -> cleanupState; root global_authority/cleanup_state/active_count/queue_depth/held_count/held_tasks/task_controls/degraded_targets -> globalAuthority/cleanupState/activeCount/queueDepth/heldCount/heldTasks/taskControls/degradedTargets. DOM components consume camelCase only. Task requests use wire task_ref; captured wire success uses task_id/task_ref and DOM uses taskId/taskRef; global data has neither.
+
+  ### Deliverable
+
+  Focused Playwright lifecycle browser regression without provider work.
+
+  ### Implementation
+
+  Add route fixtures for running/running, paused/paused, paused/draining, stopped/idle, stopped/global-pending, stopped/global-failed, stopped with only unrelated task cleanup, mixed failed-plus-pending aggregate, task stopped/idle, task stopped/pending-or-failed, global cleanup plus task metadata mutation/no work start, legacy false-with-active, and static stopped. Live status/control route fixtures return complete public snake_case; assertions prove camelCase component use and reject mixed casing/malformed conditional rows. The unrelated-task row exposes global Start while denying matching task work; global-cleanup row permits task metadata mutation while denying creation. Static health fulfills HTTP 503 and snapshot exactly. Do not change product UI or existing E2E specs here.
+
+  ### Files
+
+  - Create: tests/e2e/dispatch-lifecycle.spec.ts
+
+  ### Behavioral tests
+
+  Desktop cases: on `/agents`, assert test IDs dispatch-authority/projection/active/queued/held counts, exact cleanup entry evidence, canonical task row identity, and every table-valid action; pending/failed global exposes only Retry hard stop, task pending/failed hides Resume task, retry failure retains evidence, retry success shows stopped/idle without auto-start/resume, and a stale prohibited action returns mapped 409 then refreshes. Assert `getByRole('dialog', {name:'Confirm hard stop'})`, Cancel, then captured control request count zero; confirm once and assert POST body scope/action/submitted task ref plus canonical response identity. Force a mapped error and assert only mapped message/suggestion. On `/`, `/tasks/board`, and `/automation`, assert active/queued/held or lifecycle evidence remains visible in the named consumer, DispatchTriggersSection, and EventLogSection. Task-row cases use `held-task-<canonical-ulid>` and role buttons for Pause task/Resume task/Hard-stop task. Keyboard Space/Enter activates the invoking button, focus returns to it after refresh, and `dispatch-live-status` has `aria-live="polite"` with the changed state. Narrow cases repeat agents/board/automation at 390x844, assert no horizontal overflow (`document.documentElement.scrollWidth <= window.innerWidth`), visible controls/rows, and reduced-motion-safe status (no required animation assertion). Static case observes the 503 health fallback plus fulfilled snapshot, asserts all applicable role buttons are disabled/read-only, and captures no POST. Every case records console/page errors.
+
+  ### Verification
+
+  - npm run test:e2e -- tests/e2e/dispatch-lifecycle.spec.ts
+  - npm test -- tests/web-ui/dispatch-lifecycle-controls.test.ts tests/web-ui/ws-cache-invalidation.test.ts tests/web-ui/fleet-buffer.test.ts
+  - npm run typecheck
+  - npm run lint
+  - git diff --check
+
+  ### Reviewer handoff
+
+  Provide scenario name, fixture/viewport/accessibility matrix, focus/live-region proof, and console/page-error outcome.
+spec_ref: "@ui-agent-dispatch"
+plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-ui-dispatch-lifecycle-controls"
+  - "@task-verify-api-cli-projection"
+context: []
+priority: 3
+tags:
+  - dispatch
+  - verification
+  - ui
+  - accessibility
+vcs_refs: []
+created_at: 2026-07-14T19:47:24.012Z
+todos: []
