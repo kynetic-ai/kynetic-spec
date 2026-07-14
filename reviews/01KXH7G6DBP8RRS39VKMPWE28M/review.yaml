@@ -2,7 +2,65 @@ _ulid: 01KXH7G6DBP8RRS39VKMPWE28M
 slugs: []
 title: "Plan review: Documentation Completeness and Dispatch Workspaces (fresh canonical closure)"
 author: codex
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Stored content read end to end; dry-run parsed seven unique task-only entries with
+      derive_from_specs false and no specs or derived state.
+    name: stored plan completeness and importability
+    required: true
+    runner: kspec plan get + plan import --dry-run
+    created_at: 2026-07-14T21:14:01.867Z
+    completed_at: 2026-07-14T21:14:01.867Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All seven tasks are documentation, documentation tests/fixtures, source-owned guidance,
+      generated docs outputs, or non-behavioral scaffold comments; all prior product-expansion work
+      is explicitly excluded.
+    name: scope proportionality
+    required: true
+    runner: manual plan/source comparison
+    created_at: 2026-07-14T21:14:06.982Z
+    completed_at: 2026-07-14T21:14:06.982Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every Covers ref and AC id resolves to current documentation, README, setup-scaffold, or
+      auto-CLI owners; user-documentation is correctly identified as an AC-less module and is not
+      claimed.
+    name: existing documentation spec and AC ownership
+    required: true
+    runner: kspec item get + Covers mapping
+    created_at: 2026-07-14T21:14:12.950Z
+    completed_at: 2026-07-14T21:14:12.950Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Seven-task graph is the linear acyclic chain T1→T2→T3→T4→T5→T6→T7. Shared tests, link
+      targets, prose, indexes, and later excluded slices have ordered single ownership.
+    name: dependency file test and link serialization
+    required: true
+    runner: YAML parse + graph/file ownership analysis
+    created_at: 2026-07-14T21:14:17.537Z
+    completed_at: 2026-07-14T21:14:17.537Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: The lifecycle plan remains active with unfinished runtime/API/CLI/UI work. Revised tasks
+      edit no such product surfaces, and Task 1 blocks before branch creation until relevant changes
+      are merged and facts refreshed.
+    name: active lifecycle plan non-overlap and freshness gate
+    required: true
+    runner: plan/task/branch/worktree inspection
+    created_at: 2026-07-14T21:14:22.944Z
+    completed_at: 2026-07-14T21:14:22.944Z
 events:
   - _ulid: 01KXH7G6DAHFXJRMCMN9VBG73C
     actor: codex
@@ -10,9 +68,51 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-14T21:11:05.898Z
+  - _ulid: 01KXH7NEJQ715C8NQQPMEAHDKA
+    actor: codex
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-07-14T21:13:58.103Z
+  - _ulid: 01KXH7NK9JCWSDQ7005G14Q818
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: stored plan completeness and importability
+    timestamp: 2026-07-14T21:14:02.930Z
+  - _ulid: 01KXH7NQK16Y5QRC473KAWWF1W
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: scope proportionality
+    timestamp: 2026-07-14T21:14:07.329Z
+  - _ulid: 01KXH7NXV2544ZZV6T2931R7SX
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: existing documentation spec and AC ownership
+    timestamp: 2026-07-14T21:14:13.730Z
+  - _ulid: 01KXH7P1W8BQGJT2RPTJ98THZ6
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: dependency file test and link serialization
+    timestamp: 2026-07-14T21:14:17.865Z
+  - _ulid: 01KXH7P77T9VJQD0B2M4PEP41V
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: active lifecycle plan non-overlap and freshness gate
+    timestamp: 2026-07-14T21:14:23.355Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: plan
@@ -22,5 +122,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:11:05.899Z
-updated_at: null
+updated_at: 2026-07-14T21:14:22.944Z
 notes: []
