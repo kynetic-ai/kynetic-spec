@@ -1,1 +1,12 @@
-notes: []
+notes:
+  - _ulid: 01KXH7PWWXTWF3TC9JFWWXSWZ0
+    content: "Approach: add the exact approved plan rows to the two existing spec owners using one
+      atomic kspec batch (1 taxonomy AC + 16 payload ACs). Edge cases preserved literally:
+      task/global identity exclusivity, failed-only error_code, Unicode code-point bounds,
+      whitespace/control sanitization, forbidden sensitive/raw inputs, and the closed 17-code
+      failure enum. Verification: nonmutating exact seventeen-row readback, 66-operation plan
+      accounting reconciliation, repository validation baseline comparison, and git diff --check; no
+      product code or tests are in scope for this metadata-only task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-14T21:14:45.533Z
