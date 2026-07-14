@@ -1,1 +1,10 @@
-notes: []
+notes:
+  - _ulid: 01KXH8BFFCKNDH9K5TD52B6NSA
+    content: "Approach: add exactly one acceptance criterion to @dispatch-workspace-cleanup-policy
+      through the kspec CLI, preserving all 14 existing criteria and existing traits. Edge cases:
+      retain distinct lifecycle protection versus terminal/integration cleanup eligibility; avoid
+      code, test, plan, or code-branch file changes. Test plan: exact criterion readback,
+      criterion-count/readback comparison, git diff --check, and required kspec validation gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-14T21:25:59.917Z

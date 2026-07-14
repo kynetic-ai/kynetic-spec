@@ -9171,6 +9171,10 @@ features:
                     id: ac-preservation-diagnostics-opt-in
                     then: A preservation diagnostic identifies the cleanup surface, artifact, and preservation reason
                     when: Cleanup preserves a protected dispatch artifact
+                  - given: dispatch evidence belongs to active, in-flight, paused-held, or stopped-pending-cleanup work
+                    id: ac-controlled-evidence-protected
+                    then: lifecycle control alone does not make the evidence cleanup-eligible
+                    when: a destructive cleanup surface evaluates it
                 tags: []
                 requirements:
                   - _ulid: 01KKK7R64BHWCKAV51ESXQ0NAZ
