@@ -2,7 +2,19 @@ _ulid: 01KXH7BNXKV4KXA7AVSJ14GGB3
 slugs: []
 title: "Plan re-review (closure): Documentation Completeness and Dispatch Workspaces"
 author: "@claude"
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Dry-run parsed the document as a task-only plan: 0 derived specs, 0 derived tasks. Seven
+      explicit task objects parsed from the YAML block; plan parser accepts the derive_from_specs:
+      false shape with no ## Specs section."
+    name: "plan parser buildability (task-only, derive_from_specs: false)"
+    required: true
+    runner: kspec plan import --dry-run
+    created_at: 2026-07-14T21:09:20.540Z
+    completed_at: 2026-07-14T21:09:20.540Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -17,6 +29,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-14T21:08:56.199Z
+  - _ulid: 01KXH7CZRPN4FDZ8WK9E5F3TZ0
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: "plan parser buildability (task-only, derive_from_specs: false)"
+    timestamp: 2026-07-14T21:09:20.790Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -29,5 +48,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:08:55.914Z
+updated_at: 2026-07-14T21:09:20.540Z
 notes: []
