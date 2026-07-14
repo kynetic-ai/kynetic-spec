@@ -42,6 +42,28 @@ checks:
     runner: manual-kspec-item-get
     created_at: 2026-07-14T20:40:27.993Z
     completed_at: 2026-07-14T20:40:27.993Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 'Modify: <path>' files exist: src/parser/config.ts, src/schema/meta.ts,
+      src/agent-runtime/bootstrap.ts, src/agent-runtime/workspace.ts, src/agent-runtime/dispatch.ts,
+      src/schema/dispatch-workspace.ts, src/parser/dispatch-workspaces.ts, src/parser/gitignore.ts,
+      src/cli/commands/{meta,agent,setup,upgrade}.ts,
+      docs/concepts/{agents-and-dispatch,agent-runners,index}.md,
+      docs/guides/{index,configuring-agent-runners}.md,
+      docs/troubleshooting/{index,dispatch-refuses-to-assign}.md,
+      templates/agents-sections/06-agent-dispatch-mode.md, RELEASE_NOTES.md, and 21 test files. All
+      'Create: <path>' files correctly do not exist yet. New test files
+      (tests/dispatch-workspace-cli.test.ts, tests/dispatch-workspace-docs.test.ts,
+      tests/public-documentation-inventory.test.ts,
+      tests/fixtures/public-documentation-surfaces.json) are explicitly created by their owning
+      tasks."
+    name: File path validity
+    required: true
+    runner: manual-filesystem-check
+    created_at: 2026-07-14T20:40:35.795Z
+    completed_at: 2026-07-14T20:40:35.795Z
 events:
   - _ulid: 01KXH5HDNGQ9DX8AQ2KG68KS5Z
     actor: "@claude"
@@ -133,6 +155,13 @@ events:
       status: pass
       name: Spec and AC reference validity
     timestamp: 2026-07-14T20:40:28.301Z
+  - _ulid: 01KXH5RBM7J1Y2N6WHBD79JG44
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: File path validity
+    timestamp: 2026-07-14T20:40:36.231Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -343,5 +372,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:40:27.993Z
+updated_at: 2026-07-14T20:40:35.795Z
 notes: []
