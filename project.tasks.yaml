@@ -33884,6 +33884,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:19.851Z
+  automation: eligible
 - _ulid: 01KXH2PVX606KVK5C4ERCB8WTY
   slugs:
     - task-ui-dispatch-lifecycle-controls
