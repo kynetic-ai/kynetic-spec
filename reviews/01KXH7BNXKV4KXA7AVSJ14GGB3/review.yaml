@@ -146,6 +146,27 @@ checks:
     runner: kspec validate --refs --warnings-ok + plan baseline policy inspection
     created_at: 2026-07-14T21:10:21.525Z
     completed_at: 2026-07-14T21:10:21.525Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All four blockers in pass 2 were AC-text issues on the now-removed proposed ACs, resolved
+      by removal. Questions: (a) plan-shape risk—plan-shape note (line 7) and Spec text and AC
+      policy (lines 341-343) document the omit-## Specs rationale and the verbatim-with-readback
+      policy for any later approved patch; (b) old Task 3 scope (~50-AC remote-sync completion)—that
+      task no longer exists; the remote-sync feature is explicitly out of scope (line 11); (c)
+      sanitized status projection AC mismatch—AC removed; (d) Task 1 non-concrete test files—Task 1
+      Files (lines 62-65) now names tests/fixtures/public-documentation-surfaces.json,
+      tests/public-documentation-inventory.test.ts, tests/dispatch-workspace-docs.test.ts
+      explicitly. Nits: (a) 'kspec ships with four built-in agents' drift—Task 3 (line 144)
+      explicitly replaces it with 'kspec setup scaffolds default agent definitions'; (b) Task 5
+      lifecycle-concept dependency on Task 1—the new chain Task 1→2→3 means Task 3 transitively
+      depends on Task 1, resolving the soft-dependency suggestion."
+    name: prior Claude-pass-2 closure — questions and nits
+    required: true
+    runner: manual cross-reference vs review 01KXH5HDNG7HNDXW09GHH4QPH1
+    created_at: 2026-07-14T21:10:47.894Z
+    completed_at: 2026-07-14T21:10:47.894Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -216,6 +237,13 @@ events:
       status: pass
       name: prior Codex blocker closure — known-red refs validation command
     timestamp: 2026-07-14T21:10:21.817Z
+  - _ulid: 01KXH7FN2N0XYP3KPAHHH5FXA1
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior Claude-pass-2 closure — questions and nits
+    timestamp: 2026-07-14T21:10:48.150Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -228,5 +256,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:10:21.525Z
+updated_at: 2026-07-14T21:10:47.894Z
 notes: []
