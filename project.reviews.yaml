@@ -29293,8 +29293,8 @@ reviews:
       content_hash: ""
       ref: "@plan-documentation-completeness-and-dispatch-workspaces"
       shadow_commit: ""
-    thread_count: 7
+    thread_count: 8
     unresolved_blocker_count: 4
     verdict_count: 0
     created_at: 2026-07-14T20:36:48.944Z
-    updated_at: 2026-07-14T20:39:18.403Z
+    updated_at: 2026-07-14T20:39:28.614Z

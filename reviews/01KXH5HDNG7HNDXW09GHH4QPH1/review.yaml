@@ -59,6 +59,13 @@ events:
       kind: question
       thread_ulid: 01KXH5NZM26039DSNGTTQ70QWW
     timestamp: 2026-07-14T20:39:18.959Z
+  - _ulid: 01KXH5P9XX1CHGK6HC992MTPVY
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KXH5P9K6114Q62GQA6SDDWZ2
+    timestamp: 2026-07-14T20:39:28.957Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -209,7 +216,27 @@ threads:
           included)."
         created_at: 2026-07-14T20:39:18.403Z
     kind: question
+  - _ulid: 01KXH5P9K6114Q62GQA6SDDWZ2
+    anchor:
+      type: structured
+      ref: "@task-close-bootstrap-public-contract"
+      section: description
+    entries:
+      - _ulid: 01KXH5P9K602C0PFTFKC4ZHYT6
+        author: "@claude"
+        body: "Task 1 'Files: Modify focused tests' lists 'the existing bootstrap/runner environment test
+          files selected by implementation' — this is the only test reference that is not concrete.
+          The runner-env-separation AC the task introduces clearly belongs in
+          tests/agent-runner-env.test.ts (already references @runner-environment-secret-boundaries
+          with 50+ AC annotations) and tests/dispatch-runtime-bootstrap-contract.test.ts (line 13
+          already imports DAEMON_RUNTIME_MODE_ENV_KEYS). Name these files explicitly so the worker
+          and reviewer don't have to re-derive them. Same review applies to Task 2's 'modify focused
+          workspace config/registry/cleanup/provenance tests' — name
+          tests/dispatch-workspace-branch-provenance.test.ts explicitly since it exists and is the
+          obvious provenance owner."
+        created_at: 2026-07-14T20:39:28.614Z
+    kind: question
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:39:18.403Z
+updated_at: 2026-07-14T20:39:28.614Z
 notes: []
