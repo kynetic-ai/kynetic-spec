@@ -11,3 +11,66 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-14T20:59:46.555Z
+  - _ulid: 01KXH72FA0EJXBHHWAA6Y8QDTM
+    content: >-
+      Completed exact metadata patch; no component, source, test, plan, or code-branch files
+      changed.
+
+
+      Fifteen-row exact readback (id | Given | When | Then):
+
+      ac-2 | lifecycle status is available | the agents view renders | it shows durable authority
+
+      ac-status-projection | lifecycle status is available | the agents view renders | it shows
+      lifecycle projection
+
+      ac-status-active-work-visible | active work exists during draining or cleanup | the agents
+      view renders | active work remains visible
+
+      ac-status-queued-work-visible | queued work exists | the agents view renders | queued work is
+      visible
+
+      ac-status-held-work-visible | held work exists | the agents view renders | held work is
+      visible
+
+      ac-3 | global authority is paused | the agents view renders | it offers only transitions valid
+      from paused authority
+
+      ac-stopped-actions-valid | global authority is stopped | the agents view renders | it offers
+      Start when no global-scope cleanup entry exists and Retry hard stop only when a global-scope
+      entry is pending or failed, regardless of unrelated task entries
+
+      ac-control-separated-from-degraded | administrative lifecycle control and degraded state
+      coexist | the agents view renders | they are labelled separately
+
+      ac-control-separated-from-blocked | administrative lifecycle control and blocked state coexist
+      | the agents view renders | they are labelled separately
+
+      ac-hard-stop-confirmation-cancellation | a writable operator selects hard stop | confirmation
+      is shown | it explains active cancellation
+
+      ac-hard-stop-confirmation-evidence | a writable operator selects hard stop | confirmation is
+      shown | it explains evidence preservation
+
+      ac-hard-stop-confirmation-cancelled | hard-stop confirmation is shown | the operator cancels
+      it | no request is sent
+
+      ac-lifecycle-controls-labelled | lifecycle controls render | assistive technology reads them |
+      each control has an accessible label
+
+      ac-lifecycle-focus-retained | a lifecycle control initiated a refresh | the refresh completes
+      | focus returns to that control
+
+      ac-lifecycle-live-update | lifecycle status changes | the view refreshes | a polite live
+      status update is emitted
+
+
+      Verification: exact owner readback shows the untouched ac-1 plus all fifteen requested rows
+      once; git diff --check passed and the task branch is clean. Alignment and completeness
+      validation passed with repository baseline warnings. Reference validation retained exactly the
+      plan-documented seven ambiguous-reference errors and introduced no changed-owner error. npm
+      format/lint/type/test gates are not applicable because this metadata-only task explicitly
+      changes no repository files or tests.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-14T21:03:36.256Z
