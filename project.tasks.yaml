@@ -33642,6 +33642,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:11.044Z
+  automation: eligible
 - _ulid: 01KXH2PJ7RY9B9MQNHBFWN96QB
   slugs:
     - task-patch-dispatch-ui-specs
