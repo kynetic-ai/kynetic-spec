@@ -78,6 +78,17 @@ checks:
     runner: kspec
     created_at: 2026-07-14T21:45:20.950Z
     completed_at: 2026-07-14T21:45:20.950Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exited 0; detached code snapshot is clean and canonical branch equals integration target
+      at 0fceed5aa3a2.
+    name: git diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-14T21:45:26.402Z
+    completed_at: 2026-07-14T21:45:26.402Z
 events:
   - _ulid: 01KXH8HPH42TE97AEPTYJ9KACX
     actor: Jacob Chapel
@@ -141,6 +152,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-14T21:45:21.212Z
+  - _ulid: 01KXH9F2WFZXPCQNZP0DM49SAN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-14T21:45:26.671Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -153,5 +171,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:29:23.748Z
-updated_at: 2026-07-14T21:45:20.950Z
+updated_at: 2026-07-14T21:45:26.402Z
 notes: []
