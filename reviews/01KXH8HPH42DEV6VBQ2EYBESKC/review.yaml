@@ -102,6 +102,17 @@ checks:
     runner: kspec item get
     created_at: 2026-07-14T21:45:32.012Z
     completed_at: 2026-07-14T21:45:32.012Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Approved plan reconciliation is exact: engine/coalescing 10 + CLI 14 + API 9 + UI 15 +
+      events 17 + cleanup 1 = 66."
+    name: patch accounting
+    required: true
+    runner: kspec plan get
+    created_at: 2026-07-14T21:45:37.541Z
+    completed_at: 2026-07-14T21:45:37.541Z
 events:
   - _ulid: 01KXH8HPH42TE97AEPTYJ9KACX
     actor: Jacob Chapel
@@ -179,6 +190,13 @@ events:
       status: pass
       name: exact spec readback
     timestamp: 2026-07-14T21:45:32.258Z
+  - _ulid: 01KXH9FDRJJJDCP6ER8TWR2SYB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: patch accounting
+    timestamp: 2026-07-14T21:45:37.810Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -191,5 +209,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:29:23.748Z
-updated_at: 2026-07-14T21:45:32.012Z
+updated_at: 2026-07-14T21:45:37.541Z
 notes: []
