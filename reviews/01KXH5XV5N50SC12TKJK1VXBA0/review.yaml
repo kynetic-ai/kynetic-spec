@@ -133,6 +133,16 @@ checks:
     runner: manual review
     created_at: 2026-07-14T20:58:39.348Z
     completed_at: 2026-07-14T20:58:39.348Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; all 1038 checked files formatted.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-14T20:58:51.610Z
+    completed_at: 2026-07-14T20:58:51.610Z
 events:
   - _ulid: 01KXH5XV5M03A4G12B1M2FSG16
     actor: Jacob Chapel
@@ -224,6 +234,13 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-14T20:58:39.589Z
+  - _ulid: 01KXH6SSJPJDKMVRP2GS4BQ6HD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-14T20:58:51.862Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -236,5 +253,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T20:43:35.989Z
-updated_at: 2026-07-14T20:58:39.348Z
+updated_at: 2026-07-14T20:58:51.610Z
 notes: []
