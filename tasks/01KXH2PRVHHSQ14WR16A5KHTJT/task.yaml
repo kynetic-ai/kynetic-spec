@@ -100,5 +100,14 @@ tags:
   - cleanup
   - evidence
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-07-14T20:12:02.362Z
 created_at: 2026-07-14T19:47:18.513Z
 todos: []
+automation: eligible
