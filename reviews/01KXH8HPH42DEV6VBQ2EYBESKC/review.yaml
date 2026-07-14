@@ -89,6 +89,19 @@ checks:
     runner: git diff --check
     created_at: 2026-07-14T21:45:26.402Z
     completed_at: 2026-07-14T21:45:26.402Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Readback contains exactly 17 approved rows: 1 ac-dispatch-control-domain on
+      @dispatch-event-taxonomy and 16 ac-dispatch-control-* rows on @dispatch-event-payload.
+      Wording, identity exclusivity, bounds, normalization, forbidden fields, 17-code enum, and
+      raw-error absence match the task deliverable."
+    name: exact spec readback
+    required: true
+    runner: kspec item get
+    created_at: 2026-07-14T21:45:32.012Z
+    completed_at: 2026-07-14T21:45:32.012Z
 events:
   - _ulid: 01KXH8HPH42TE97AEPTYJ9KACX
     actor: Jacob Chapel
@@ -159,6 +172,13 @@ events:
       status: pass
       name: git diff check
     timestamp: 2026-07-14T21:45:26.671Z
+  - _ulid: 01KXH9F8B2D3CN7E7HY2RGFYZP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: exact spec readback
+    timestamp: 2026-07-14T21:45:32.258Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -171,5 +191,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:29:23.748Z
-updated_at: 2026-07-14T21:45:26.402Z
+updated_at: 2026-07-14T21:45:32.012Z
 notes: []
