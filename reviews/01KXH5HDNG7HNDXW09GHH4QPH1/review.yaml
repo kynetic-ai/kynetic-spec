@@ -334,9 +334,25 @@ events:
       status: pass
       name: Product-scope vs prose-only separation
     timestamp: 2026-07-14T20:42:11.664Z
+  - _ulid: 01KXH5VQ6NAQY2KRZ69YAEHSHP
+    actor: claude-plan-review@kynetic
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-14T20:42:26.389Z
+  - _ulid: 01KXH5VQ6NVYJR24CHN7V17HZV
+    actor: claude-plan-review@kynetic
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: closed
+    timestamp: 2026-07-14T20:42:26.389Z
 examined_commit: null
 external_links: []
-lifecycle_state: draft
+lifecycle_state: closed
 related_refs: []
 subject:
   type: plan
@@ -542,7 +558,14 @@ threads:
           authoring commands."
         created_at: 2026-07-14T20:39:55.680Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: claude-plan-review@kynetic
+    role: reviewer
+    created_at: 2026-07-14T20:42:26.388Z
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:42:11.414Z
+updated_at: 2026-07-14T20:42:26.389Z
 notes: []

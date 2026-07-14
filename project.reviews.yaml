@@ -29286,7 +29286,7 @@ reviews:
     disposition: changes_requested
     author: "@claude"
     check_count: 10
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -29295,6 +29295,6 @@ reviews:
       shadow_commit: ""
     thread_count: 10
     unresolved_blocker_count: 4
-    verdict_count: 0
+    verdict_count: 1
     created_at: 2026-07-14T20:36:48.944Z
-    updated_at: 2026-07-14T20:42:11.414Z
+    updated_at: 2026-07-14T20:42:26.389Z
