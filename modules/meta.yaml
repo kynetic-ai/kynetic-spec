@@ -4522,6 +4522,12 @@ modules:
               Both are evaluated independently without interference
             when: |
               The event is processed
+          - given: a lifecycle outcome is emitted
+            id: ac-dispatch-control-domain
+            then: the identifier is one of dispatch_control.start_applied, dispatch_control.pause_applied,
+              dispatch_control.resume_applied, dispatch_control.stop_applied, dispatch_control.noop,
+              or dispatch_control.failed
+            when: event type validation runs
         tags: []
         requirements:
           - _ulid: 01KKZPVC0PEWSBP6ERKJ95PMH1
@@ -4586,6 +4592,76 @@ modules:
                   invocation's canonical identifier)
                 when: |
                   A consumer reads the payload
+              - given: a dispatch-control event is emitted
+                id: ac-dispatch-control-common-fields
+                then: it contains scope, action, authority, projection, outcome, reason, actor, source, timestamp
+                when: its payload is read
+              - given: a task-scoped dispatch-control event is emitted
+                id: ac-dispatch-control-task-canonical-identity
+                then: canonical task_id is present and task_ref may be present
+                when: its payload is read
+              - given: a global-scoped dispatch-control event is emitted
+                id: ac-dispatch-control-global-identity-absence
+                then: neither task_id nor task_ref is present
+                when: its payload is read
+              - given: a dispatch-control event is emitted
+                id: ac-dispatch-control-failure-error-code-presence
+                then: error_code is present only for a failed outcome
+                when: its payload is read
+              - given: reason exceeds 240 Unicode code points
+                id: ac-dispatch-control-reason-bound
+                then: reason is at most 240 Unicode code points
+                when: the payload is created
+              - given: actor exceeds 120 Unicode code points
+                id: ac-dispatch-control-actor-bound
+                then: actor is at most 120 Unicode code points
+                when: the payload is created
+              - given: task_ref exceeds 200 Unicode code points
+                id: ac-dispatch-control-task-ref-bound
+                then: task_ref is at most 200 Unicode code points
+                when: the payload is created
+              - given: reason, actor, or task_ref contains repeated or leading/trailing whitespace
+                id: ac-dispatch-control-whitespace-normalization
+                then: that field has collapsed internal whitespace and no leading or trailing whitespace
+                when: the payload is created
+              - given: reason, actor, or task_ref contains a control character
+                id: ac-dispatch-control-control-character-removal
+                then: that field contains no control character
+                when: the payload is created
+              - given: lifecycle event input contains a prompt
+                id: ac-dispatch-control-no-prompts
+                then: the prompt is absent
+                when: the payload is created
+              - given: lifecycle event input contains a secret
+                id: ac-dispatch-control-no-secrets
+                then: the secret is absent
+                when: the payload is created
+              - given: lifecycle event input contains terminal-buffer text
+                id: ac-dispatch-control-no-terminal-buffer
+                then: terminal-buffer text is absent
+                when: the payload is created
+              - given: lifecycle event input contains a workspace path
+                id: ac-dispatch-control-no-workspace-path
+                then: the workspace path is absent
+                when: the payload is created
+              - given: lifecycle event input contains a raw error
+                id: ac-dispatch-control-no-raw-input-error
+                then: the raw error is absent
+                when: the payload is created
+              - given: a dispatch-control failure is emitted
+                id: ac-dispatch-control-error-codes
+                then: error_code is exactly validation_failed, task_not_found, task_identity_ambiguous,
+                  task_identity_mismatch, invalid_transition, control_store_unavailable,
+                  control_store_corrupt, control_commit_failed, cancellation_timeout,
+                  cancellation_failed, session_closure_failed, cleanup_ownership_mismatch,
+                  cleanup_process_birth_mismatch, cleanup_leader_missing_group_alive,
+                  cleanup_identity_unverifiable, cleanup_group_unverifiable, or internal_error;
+                  every other string is rejected
+                when: payload validation runs
+              - given: a dispatch-control failure is emitted
+                id: ac-dispatch-control-no-raw-error
+                then: no raw error is present
+                when: its payload is read
             tags: []
             created: 2026-03-18T05:31:44.534Z
             notes:
