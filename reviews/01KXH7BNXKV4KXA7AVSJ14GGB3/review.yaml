@@ -185,6 +185,24 @@ checks:
     runner: kspec agent dispatch --help + kspec help agent grep
     created_at: 2026-07-14T21:10:53.654Z
     completed_at: 2026-07-14T21:10:53.654Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Verified @dispatch-remote-branch-sync Implementation: in_progress (consistent with plan
+      line 13). Plan line 13 states schema presence is not proof of support, that remote-sync prose
+      must describe only behavior confirmed on the fresh integrated branch, must label incomplete
+      behavior as experimental/limited/unavailable, and that 'this plan does not make the feature
+      complete.' Task 2 (line 105) requires the guide to 'describe remote sync only to the proven
+      integrated boundary and visibly label incomplete/experimental or unavailable behavior. Do not
+      claim @dispatch-remote-branch-sync complete.' Task 4 (line 180) requires labeling incomplete
+      remote-sync cases and routing unsupported recovery to safe observation/escalation. The feature
+      is consistently described as a limitation, not a supported surface."
+    name: incomplete remote-sync not presented as complete
+    required: true
+    runner: kspec item get @dispatch-remote-branch-sync + plan prose inspection
+    created_at: 2026-07-14T21:11:03.816Z
+    completed_at: 2026-07-14T21:11:03.816Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -269,6 +287,13 @@ events:
       status: pass
       name: no unsupported workspace command presented as supported
     timestamp: 2026-07-14T21:10:53.916Z
+  - _ulid: 01KXH7G4MSG8VNX6R6ZA3ER5HB
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: incomplete remote-sync not presented as complete
+    timestamp: 2026-07-14T21:11:04.089Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -281,5 +306,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:10:53.654Z
+updated_at: 2026-07-14T21:11:03.816Z
 notes: []
