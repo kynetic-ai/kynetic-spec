@@ -7721,6 +7721,9 @@ modules:
         type: requirement
         description: Durable administrative dispatch authority controls whether global or canonical-task
           work may start without changing task readiness or evidence ownership.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
