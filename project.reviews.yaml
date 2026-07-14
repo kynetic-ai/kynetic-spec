@@ -29359,7 +29359,7 @@ reviews:
     title: Review patch dispatch UI specs exactly
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 9
     examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
     lifecycle_state: open
     related_refs: []
@@ -29368,11 +29368,11 @@ reviews:
       content_hash: ""
       ref: "@01KXH2PJ7RY9B9MQNHBFWN96QB"
       shadow_commit: ""
-    thread_count: 0
+    thread_count: 1
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-14T21:10:40.487Z
-    updated_at: 2026-07-14T21:10:59.838Z
+    updated_at: 2026-07-14T21:25:58.755Z
   - _ulid: 01KXH7G6DBP8RRS39VKMPWE28M
     slugs: []
     title: "Plan review: Documentation Completeness and Dispatch Workspaces (fresh canonical closure)"

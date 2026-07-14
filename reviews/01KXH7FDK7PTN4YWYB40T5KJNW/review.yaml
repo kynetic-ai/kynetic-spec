@@ -2,7 +2,105 @@ _ulid: 01KXH7FDK7PTN4YWYB40T5KJNW
 slugs: []
 title: Review patch dispatch UI specs exactly
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; all 1,038 files formatted.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-14T21:25:29.982Z
+    completed_at: 2026-07-14T21:25:29.982Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; 0 errors. 703 repository-baseline warnings. No changed TypeScript or test files,
+      so focused changed-file lint is not applicable.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-14T21:25:33.106Z
+    completed_at: 2026-07-14T21:25:33.106Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 after shared package build and tsc --noEmit.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-14T21:25:36.382Z
+    completed_at: 2026-07-14T21:25:36.382Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; 2,789 suites passed, 10,581 tests passed, 3 skipped, 0 failed.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-14T21:25:39.527Z
+    completed_at: 2026-07-14T21:25:39.527Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Baseline-qualified pass: raw exit 4 contains exactly the approved plan baseline of seven
+      ambiguous references (one @observations task spec_ref, one @spec-plan-import task meta_ref,
+      five @observations module implements); no @ui-agent-dispatch or changed-plan reference error."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-14T21:25:42.795Z
+    completed_at: 2026-07-14T21:25:42.795Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema/references OK, repository-baseline alignment warnings accepted by --warnings-ok.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-14T21:25:46.108Z
+    completed_at: 2026-07-14T21:25:46.108Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema/references OK. Existing coverage warnings remain baseline; this metadata
+      prerequisite explicitly assigns behavioral implementation/coverage to dependent UI
+      implementation and browser verification tasks.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-14T21:25:49.284Z
+    completed_at: 2026-07-14T21:25:49.284Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All fifteen requested IDs and Given/When/Then values exactly match the approved plan.
+      Untouched ac-1, title, description, draft/in_progress status, and empty traits remain intact;
+      no component paths appear.
+    name: exact spec readback
+    required: true
+    runner: kspec item get @ui-agent-dispatch --json
+    created_at: 2026-07-14T21:25:52.316Z
+    completed_at: 2026-07-14T21:25:52.316Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check passed; canonical task branch, integration target, and detached HEAD all
+      point to 0fceed5aa3a2; no code/file diff and no changed TS/test files.
+    name: metadata-only branch state
+    required: true
+    runner: git diff --check and target...HEAD inspection
+    created_at: 2026-07-14T21:25:55.564Z
+    completed_at: 2026-07-14T21:25:55.564Z
 events:
   - _ulid: 01KXH7FDK6KRJTANX896VMXMYW
     actor: Jacob Chapel
@@ -17,6 +115,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-14T21:11:00.097Z
+  - _ulid: 01KXH8AJF8V9369KEKATTJ0NXX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-14T21:25:30.216Z
+  - _ulid: 01KXH8ANHM9Y8YMNZGJRJJZA2V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-14T21:25:33.364Z
+  - _ulid: 01KXH8ARS37DY80W099F6SP7WX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-14T21:25:36.675Z
+  - _ulid: 01KXH8AVTP6GJFNKB2PFXCYTF3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-14T21:25:39.798Z
+  - _ulid: 01KXH8AYZXZDPVJATYJ2BWQPRR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-14T21:25:43.037Z
+  - _ulid: 01KXH8B28CAQ8ZJ63XW5MA9QAS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-14T21:25:46.380Z
+  - _ulid: 01KXH8B5AVBNGEJFZTTJGGD6P0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-14T21:25:49.531Z
+  - _ulid: 01KXH8B89PE7BE50STQ6B697RM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: exact spec readback
+    timestamp: 2026-07-14T21:25:52.566Z
+  - _ulid: 01KXH8BBF4A30VHWHAD596XB7S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: metadata-only branch state
+    timestamp: 2026-07-14T21:25:55.812Z
+  - _ulid: 01KXH8BENNWJVXY2493EBGXZYZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXH8BEB37MWEBDX7ACPBJD05
+    timestamp: 2026-07-14T21:25:59.093Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -26,8 +194,31 @@ subject:
   content_hash: ""
   ref: "@01KXH2PJ7RY9B9MQNHBFWN96QB"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXH8BEB37MWEBDX7ACPBJD05
+    anchor:
+      type: structured
+      field: cycle-1
+      ref: "@01KXH2PJ7RY9B9MQNHBFWN96QB"
+      section: review_evidence
+    entries:
+      - _ulid: 01KXH8BEB3P5JHEA1707JQ12VC
+        author: Jacob Chapel
+        body: "Review evidence log (not a finding). Files/surfaces read: detached Git diff/history,
+          @ui-agent-dispatch exact JSON readback, task handoff/notes, approved plan UI patch and
+          lifecycle decisions, kspec agent instructions, review/merge/task/spec/gate skills.
+          Commands run: git status/log/diff/diff --check; kspec task get, item get, plan get, review
+          history, shadow status; format, lint, typecheck, full npm test;
+          refs/alignment/completeness validation. Claims verified: the fifteen AC payloads exactly
+          match the plan; metadata-only/no code diff; documented seven-reference baseline unchanged;
+          full quality suite passes. Categories searched: correctness, lifecycle edge-state
+          distinctions, matching-scope stopped actions, error/confirmation behavior,
+          accessibility/focus/live updates, test ownership/quality, integration and metadata scope.
+          Findings: none. Shared/package guidance surfaces touched: none, so neutrality directions
+          and generated-artifact refresh are not applicable."
+        created_at: 2026-07-14T21:25:58.755Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-14T21:10:40.487Z
-updated_at: 2026-07-14T21:10:59.838Z
+updated_at: 2026-07-14T21:25:58.755Z
 notes: []
