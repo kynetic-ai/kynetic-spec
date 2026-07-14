@@ -1648,11 +1648,11 @@ workspaces:
     canonical_branch: dispatch/task/task-patch-dispatch-engine-coalescing-specs/01kxh2pg
     canonical_branch_head: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-07-14T20:55:40.538Z
+      updated_at: 2026-07-14T21:02:47.399Z
     health:
       status: healthy
       issues: []
@@ -1666,17 +1666,17 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
       updated_at: 2026-07-14T20:55:40.538Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PGSYNRA5HYC3VFK1FTPP
     task_ref: "@01KXH2PGSYNRA5HYC3VFK1FTPP"
     task_slug: task-patch-dispatch-engine-coalescing-specs
     timestamps:
-      closed_at: null
+      closed_at: 2026-07-14T21:02:47.399Z
       last_active_at: 2026-07-14T20:31:43.888Z
       last_reconciled_at: 2026-07-14T20:57:27.946Z
       created_at: 2026-07-14T20:20:45.074Z
-      updated_at: 2026-07-14T20:57:27.946Z
+      updated_at: 2026-07-14T21:02:47.399Z
     workspace_id: dispatch-workspace-01KXH2PGSYNRA5HYC3VFK1FTPP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
