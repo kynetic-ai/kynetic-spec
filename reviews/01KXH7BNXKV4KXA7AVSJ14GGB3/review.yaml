@@ -71,6 +71,22 @@ checks:
     runner: task graph + file ownership matrix
     created_at: 2026-07-14T21:09:38.555Z
     completed_at: 2026-07-14T21:09:38.555Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Plan line 14 states @plan-dispatch-lifecycle-pause-resume-and-stop-controls owns dispatch
+      runtime/cleanup/status/API/CLI/UI on its own plan branch and that no task below edits those
+      product surfaces. Verified the lifecycle plan is [active] with 20 tasks. Task 1 carries
+      explicit Preconditions (lines 55-56) requiring confirmation that the lifecycle plan's relevant
+      changes are merged into this plan's integration target before any task branch is created;
+      block-if-not language is explicit and states 'cross-plan task completion alone is not branch
+      integration evidence.' This is the correct gating pattern.
+    name: prior Codex blocker closure — overlapping lifecycle plan graph
+    required: true
+    runner: kspec plan list + plan preconditions inspection
+    created_at: 2026-07-14T21:10:03.306Z
+    completed_at: 2026-07-14T21:10:03.306Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -113,6 +129,13 @@ events:
       status: pass
       name: prior Codex blocker closure — intra-plan graph and file ownership
     timestamp: 2026-07-14T21:09:38.822Z
+  - _ulid: 01KXH7E9HARHHM1ZKWD5Y8HH1K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior Codex blocker closure — overlapping lifecycle plan graph
+    timestamp: 2026-07-14T21:10:03.562Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -125,5 +148,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:09:38.555Z
+updated_at: 2026-07-14T21:10:03.306Z
 notes: []
