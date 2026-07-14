@@ -10,3 +10,89 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-14T21:14:45.533Z
+  - _ulid: 01KXH808SSV8Q8ZV0H2BWSJYBP
+    content: >-
+      Completed exact metadata patch; no product, test, plan, or code-branch files changed.
+
+
+      Seventeen-row exact readback:
+
+      @dispatch-event-taxonomy | ac-dispatch-control-domain | Given: a lifecycle outcome is emitted
+      | When: event type validation runs | Then: the identifier is one of
+      dispatch_control.start_applied, dispatch_control.pause_applied,
+      dispatch_control.resume_applied, dispatch_control.stop_applied, dispatch_control.noop, or
+      dispatch_control.failed
+
+      @dispatch-event-payload | ac-dispatch-control-common-fields | Given: a dispatch-control event
+      is emitted | When: its payload is read | Then: it contains scope, action, authority,
+      projection, outcome, reason, actor, source, timestamp
+
+      @dispatch-event-payload | ac-dispatch-control-task-canonical-identity | Given: a task-scoped
+      dispatch-control event is emitted | When: its payload is read | Then: canonical task_id is
+      present and task_ref may be present
+
+      @dispatch-event-payload | ac-dispatch-control-global-identity-absence | Given: a global-scoped
+      dispatch-control event is emitted | When: its payload is read | Then: neither task_id nor
+      task_ref is present
+
+      @dispatch-event-payload | ac-dispatch-control-failure-error-code-presence | Given: a
+      dispatch-control event is emitted | When: its payload is read | Then: error_code is present
+      only for a failed outcome
+
+      @dispatch-event-payload | ac-dispatch-control-reason-bound | Given: reason exceeds 240 Unicode
+      code points | When: the payload is created | Then: reason is at most 240 Unicode code points
+
+      @dispatch-event-payload | ac-dispatch-control-actor-bound | Given: actor exceeds 120 Unicode
+      code points | When: the payload is created | Then: actor is at most 120 Unicode code points
+
+      @dispatch-event-payload | ac-dispatch-control-task-ref-bound | Given: task_ref exceeds 200
+      Unicode code points | When: the payload is created | Then: task_ref is at most 200 Unicode
+      code points
+
+      @dispatch-event-payload | ac-dispatch-control-whitespace-normalization | Given: reason, actor,
+      or task_ref contains repeated or leading/trailing whitespace | When: the payload is created |
+      Then: that field has collapsed internal whitespace and no leading or trailing whitespace
+
+      @dispatch-event-payload | ac-dispatch-control-control-character-removal | Given: reason,
+      actor, or task_ref contains a control character | When: the payload is created | Then: that
+      field contains no control character
+
+      @dispatch-event-payload | ac-dispatch-control-no-prompts | Given: lifecycle event input
+      contains a prompt | When: the payload is created | Then: the prompt is absent
+
+      @dispatch-event-payload | ac-dispatch-control-no-secrets | Given: lifecycle event input
+      contains a secret | When: the payload is created | Then: the secret is absent
+
+      @dispatch-event-payload | ac-dispatch-control-no-terminal-buffer | Given: lifecycle event
+      input contains terminal-buffer text | When: the payload is created | Then: terminal-buffer
+      text is absent
+
+      @dispatch-event-payload | ac-dispatch-control-no-workspace-path | Given: lifecycle event input
+      contains a workspace path | When: the payload is created | Then: the workspace path is absent
+
+      @dispatch-event-payload | ac-dispatch-control-no-raw-input-error | Given: lifecycle event
+      input contains a raw error | When: the payload is created | Then: the raw error is absent
+
+      @dispatch-event-payload | ac-dispatch-control-error-codes | Given: a dispatch-control failure
+      is emitted | When: payload validation runs | Then: error_code is exactly validation_failed,
+      task_not_found, task_identity_ambiguous, task_identity_mismatch, invalid_transition,
+      control_store_unavailable, control_store_corrupt, control_commit_failed, cancellation_timeout,
+      cancellation_failed, session_closure_failed, cleanup_ownership_mismatch,
+      cleanup_process_birth_mismatch, cleanup_leader_missing_group_alive,
+      cleanup_identity_unverifiable, cleanup_group_unverifiable, or internal_error; every other
+      string is rejected
+
+      @dispatch-event-payload | ac-dispatch-control-no-raw-error | Given: a dispatch-control failure
+      is emitted | When: its payload is read | Then: no raw error is present
+
+
+      Patch accounting reconciles to the approved 66-operation total: engine/coalescing 10 + CLI 14
+      + API 9 + UI 15 + events 17 + cleanup 1 = 66. Machine comparison reported exact_match=true and
+      row_count=17. Alignment and completeness validations passed with warnings allowed. Reference
+      validation reproduced exactly the plan-documented seven pre-existing ambiguous-reference
+      errors (five @observations implements, one @observations task spec_ref, one @spec-plan-import
+      task meta_ref) and introduced none. git diff --check passed; the task branch remains clean
+      because kspec metadata auto-commits on the shadow branch.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-14T21:19:52.634Z
