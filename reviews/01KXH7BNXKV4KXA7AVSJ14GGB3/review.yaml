@@ -53,6 +53,24 @@ checks:
     runner: kspec item get + item ac list
     created_at: 2026-07-14T21:09:32.456Z
     completed_at: 2026-07-14T21:09:32.456Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Seven-task graph is a linear chain: 1→2→3→4→5→6→7, all depends_on refs resolve, no
+      cycles. Shared test tests/dispatch-workspace-docs.test.ts is created by Task 1 and modified
+      serially by Tasks 2, 3, 4, then Task 7 (after all content).
+      tests/public-documentation-inventory.test.ts is created by Task 1, modified by Task 6, then
+      Task 7. No prose file is owned by two tasks. Task 6 explicitly does not modify
+      tests/dispatch-workspace-docs.test.ts or any Task 2-5 owned prose file (line 258).
+      Implementation Notes 'Slice and ownership order' (lines 334-339) documents the serialization
+      contract and states a correction exposed during Task 7 returns to the declared file owner
+      rather than creating a parallel write."
+    name: prior Codex blocker closure — intra-plan graph and file ownership
+    required: true
+    runner: task graph + file ownership matrix
+    created_at: 2026-07-14T21:09:38.555Z
+    completed_at: 2026-07-14T21:09:38.555Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -88,6 +106,13 @@ events:
       status: pass
       name: prior Codex blocker closure — exact existing docs AC ownership
     timestamp: 2026-07-14T21:09:32.713Z
+  - _ulid: 01KXH7DHC6M2ETMK82BYSVJK3K
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior Codex blocker closure — intra-plan graph and file ownership
+    timestamp: 2026-07-14T21:09:38.822Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -100,5 +125,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:09:32.456Z
+updated_at: 2026-07-14T21:09:38.555Z
 notes: []
