@@ -101,6 +101,19 @@ checks:
     runner: git diff --check
     created_at: 2026-07-14T20:50:40.078Z
     completed_at: 2026-07-14T20:50:40.078Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command reproduced exactly the plan-documented seven pre-existing ambiguous references and
+      no changed-owner errors. Task commit touched only modules/cli.yaml; plan Baseline Reference
+      Validation explicitly treats the unchanged seven-row set as a non-regression and forbids
+      unrelated cleanup.
+    name: kspec validate refs
+    required: false
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-14T20:51:23.938Z
+    completed_at: 2026-07-14T20:51:23.938Z
 events:
   - _ulid: 01KXH5ABAES1SJJTYX9Y94H4GV
     actor: Jacob Chapel
@@ -185,6 +198,13 @@ events:
       kind: nit
       thread_ulid: 01KXH6B8GYCJ34DGVH0PTEB38G
     timestamp: 2026-07-14T20:50:55.911Z
+  - _ulid: 01KXH6C4E14KNAAT084GRCSNPH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate refs
+    timestamp: 2026-07-14T20:51:24.226Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -216,5 +236,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-14T20:32:57.167Z
-updated_at: 2026-07-14T20:50:55.646Z
+updated_at: 2026-07-14T20:51:23.938Z
 notes: []
