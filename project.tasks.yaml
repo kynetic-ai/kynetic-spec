@@ -33969,6 +33969,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:23.592Z
+  automation: eligible
 - _ulid: 01KXH2PY7C0W6GDQAFZN12HMC4
   slugs:
     - task-verify-ui-lifecycle-browser
