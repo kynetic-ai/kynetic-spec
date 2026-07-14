@@ -1,0 +1,26 @@
+_ulid: 01KXH8HPH42DEV6VBQ2EYBESKC
+slugs: []
+title: Review task-patch-dispatch-events-specs
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXH8HPH42TE97AEPTYJ9KACX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-14T21:29:23.748Z
+examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PK122BDSVHMSQTH1MZ2B"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-14T21:29:23.748Z
+updated_at: null
+notes: []
