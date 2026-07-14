@@ -143,6 +143,28 @@ checks:
     runner: npm run format:check
     created_at: 2026-07-14T20:58:51.610Z
     completed_at: 2026-07-14T20:58:51.610Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; 0 errors. The 703 reported warnings are the repo-wide baseline. Focused
+      changed-file lint is not applicable because the code diff contains no TypeScript or test
+      files.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-14T20:59:05.493Z
+    completed_at: 2026-07-14T20:59:05.493Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 after shared build and tsc --noEmit.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-14T20:59:08.668Z
+    completed_at: 2026-07-14T20:59:08.668Z
 events:
   - _ulid: 01KXH5XV5M03A4G12B1M2FSG16
     actor: Jacob Chapel
@@ -241,6 +263,20 @@ events:
       status: pass
       name: format
     timestamp: 2026-07-14T20:58:51.862Z
+  - _ulid: 01KXH6T74WV36PK3284CF8J34H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-14T20:59:05.756Z
+  - _ulid: 01KXH6TA76X8A5A4WK7EXBQKKN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-14T20:59:08.902Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -253,5 +289,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T20:43:35.989Z
-updated_at: 2026-07-14T20:58:51.610Z
+updated_at: 2026-07-14T20:59:08.668Z
 notes: []
