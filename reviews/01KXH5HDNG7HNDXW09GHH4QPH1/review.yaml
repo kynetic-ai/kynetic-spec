@@ -137,6 +137,23 @@ checks:
     runner: manual-docs-tree-analysis
     created_at: 2026-07-14T20:41:35.738Z
     completed_at: 2026-07-14T20:41:35.738Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Plan-shape decision documented and supported: 'derive_from_specs: false' is parsed by
+      src/parser/plan-document.ts:322 and handled by src/cli/commands/plan.ts:726
+      (shouldDeriveFromSpecs = deriveFromSpecs !== false). Plan import will succeed without ##
+      Specs. The omission rationale ('existing-spec changes are applied by the owning prerequisite
+      tasks') is internally consistent — the new ACs are described in Task 1 and Task 2 bodies and
+      the workers will run 'kspec item ac add' to amend specs. The risk that workers paraphrase or
+      skip AC additions is recorded as a separate question thread, but the parser/CLI mechanics are
+      valid."
+    name: Plan-shape and spec-omission rationale
+    required: true
+    runner: manual-parser-capability-check
+    created_at: 2026-07-14T20:41:44.194Z
+    completed_at: 2026-07-14T20:41:44.194Z
 events:
   - _ulid: 01KXH5HDNGQ9DX8AQ2KG68KS5Z
     actor: "@claude"
@@ -263,6 +280,13 @@ events:
       status: pass
       name: Information architecture decisions
     timestamp: 2026-07-14T20:41:36.013Z
+  - _ulid: 01KXH5TE8SFQCYY18D9SV5ZMGQ
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Plan-shape and spec-omission rationale
+    timestamp: 2026-07-14T20:41:44.474Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -473,5 +497,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:41:35.738Z
+updated_at: 2026-07-14T20:41:44.194Z
 notes: []
