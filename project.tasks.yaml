@@ -33604,6 +33604,7 @@
   notes_count: 0
   todos_count: 0
   created_at: 2026-07-14T19:47:10.270Z
+  automation: eligible
 - _ulid: 01KXH2PH5QBW4VQABX7K451VHC
   slugs:
     - task-patch-dispatch-cli-specs
