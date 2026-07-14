@@ -8569,8 +8569,7 @@ reviews:
     updated_at: 2026-03-29T00:59:15.845Z
   - _ulid: 01KMVJ8QGEZTKRG0P3X7RM1MBV
     slugs: []
-    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle
-      2)
+    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle 2)
     disposition: changes_requested
     author: Test User
     check_count: 1
@@ -8589,8 +8588,7 @@ reviews:
     updated_at: 2026-03-29T01:25:47.473Z
   - _ulid: 01KMVKBBSJCVHNCZXBBYMBVKHY
     slugs: []
-    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle
-      3)
+    title: Review fix-dispatch-shadow-mutation-lock-contention-and-leak-between-daemon-and-agents (cycle 3)
     disposition: approved
     author: Test User
     check_count: 2
@@ -10709,8 +10707,7 @@ reviews:
     updated_at: 2026-04-02T05:40:34.899Z
   - _ulid: 01KN6BXRNZ0CCDAPDPENT8ZHPG
     slugs: []
-    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup
-      tests
+    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup tests
     disposition: changes_requested
     author: Jacob Chapel
     check_count: 2
@@ -10748,8 +10745,7 @@ reviews:
     updated_at: 2026-04-02T06:54:51.621Z
   - _ulid: 01KN6EPC97A6JH0QZVVSG9PHHM
     slugs: []
-    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup
-      tests (cycle 2)
+    title: Review stabilize flaky full-suite failures in dispatch workspace config and enhanced setup tests (cycle 2)
     disposition: approved
     author: Jacob Chapel
     check_count: 4
@@ -16373,8 +16369,7 @@ reviews:
     updated_at: 2026-04-22T09:15:15.636Z
   - _ulid: 01KPT7RHHNR05B655W4Y00CF4H
     slugs: []
-    title: "Plan re-review: Portable Skill File References and Detached Reviewer Merge Foundation (cycle
-      2)"
+    title: "Plan re-review: Portable Skill File References and Detached Reviewer Merge Foundation (cycle 2)"
     disposition: approved
     author: Jacob Chapel
     check_count: 5
@@ -29106,8 +29101,7 @@ reviews:
     updated_at: 2026-07-13T00:34:02.984Z
   - _ulid: 01KXCGAN5GAE4R2T69C3S3D9SJ
     slugs: []
-    title: "Fresh canonical closure review: Dispatch Lifecycle Pause Resume and Stop Controls
-      (post-01KXCE0)"
+    title: "Fresh canonical closure review: Dispatch Lifecycle Pause Resume and Stop Controls (post-01KXCE0)"
     disposition: changes_requested
     author: codex
     check_count: 44
@@ -29143,8 +29137,7 @@ reviews:
     updated_at: 2026-07-13T01:18:51.737Z
   - _ulid: 01KXCJ52BXM96SD3TTPARRFM09
     slugs: []
-    title: "Canonical closure review: Dispatch Lifecycle Pause Resume and Stop Controls (post-01KXCGPT
-      revision)"
+    title: "Canonical closure review: Dispatch Lifecycle Pause Resume and Stop Controls (post-01KXCGPT revision)"
     disposition: changes_requested
     author: codex
     check_count: 37
@@ -29163,8 +29156,7 @@ reviews:
     updated_at: 2026-07-13T01:47:46.053Z
   - _ulid: 01KXCJHE87NN18XQAQC094MDSY
     slugs: []
-    title: "Canonical closure review: Dispatch Lifecycle Pause Resume and Stop Controls (post-01KXCGPT
-      revision, clean)"
+    title: "Canonical closure review: Dispatch Lifecycle Pause Resume and Stop Controls (post-01KXCGPT revision, clean)"
     disposition: changes_requested
     author: codex
     check_count: 38
@@ -29183,8 +29175,7 @@ reviews:
     updated_at: 2026-07-13T01:53:02.971Z
   - _ulid: 01KXCJV3QSSY75RH9XV5YZ6K82
     slugs: []
-    title: "Fresh canonical closure review: Dispatch Lifecycle Pause Resume and Stop Controls
-      (post-01KXCGPT revision)"
+    title: "Fresh canonical closure review: Dispatch Lifecycle Pause Resume and Stop Controls (post-01KXCGPT revision)"
     disposition: changes_requested
     author: codex
     check_count: 14
@@ -29204,8 +29195,7 @@ reviews:
   - _ulid: 01KXCMC6R89FT13HJPRK7TPE7N
     slugs:
       - canonical-final-closure-review-dispatch-lifecycle-post-01kxcjv3
-    title: "Canonical final closure review: Dispatch Lifecycle Pause Resume and Stop Controls
-      (post-01KXCJV3 revision)"
+    title: "Canonical final closure review: Dispatch Lifecycle Pause Resume and Stop Controls (post-01KXCJV3 revision)"
     disposition: pending
     author: codex
     check_count: 22
@@ -29225,8 +29215,7 @@ reviews:
   - _ulid: 01KXCMHG8PK6T350E385456KJN
     slugs:
       - canonical-final-closure-review-dispatch-lifecycle-post-01kxcjv3-clean
-    title: "Canonical final closure review: Dispatch Lifecycle Pause Resume and Stop Controls
-      (post-01KXCJV3 revision, clean)"
+    title: "Canonical final closure review: Dispatch Lifecycle Pause Resume and Stop Controls (post-01KXCJV3 revision, clean)"
     disposition: approved
     author: codex
     check_count: 15
@@ -29354,3 +29343,21 @@ reviews:
     verdict_count: 0
     created_at: 2026-07-14T21:08:37.939Z
     updated_at: 2026-07-14T21:10:21.525Z
+  - _ulid: 01KXH7FDK7PTN4YWYB40T5KJNW
+    slugs: []
+    title: Review patch dispatch UI specs exactly
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXH2PJ7RY9B9MQNHBFWN96QB"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-14T21:10:40.487Z
