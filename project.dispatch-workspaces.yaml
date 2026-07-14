@@ -1175,7 +1175,7 @@ workspaces:
         head: f6ed97cca4a4458bbb9d622aebc37c6f3764de04
         last_seen_at: 2026-07-09T03:03:10.374Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-terminal-acp-tool-call-status-01kx2bee
-  - active_role: worker
+  - active_role: null
     base_branch_point: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
     bootstrap:
       status: succeeded
@@ -1506,12 +1506,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-14T20:20:45.074Z
+      updated_at: 2026-07-14T20:30:15.232Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-14T20:21:22.509Z
+      updated_at: 2026-07-14T20:30:15.232Z
     integration:
       status: pending
       detail: null
@@ -1519,8 +1519,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
-      updated_at: 2026-07-14T20:20:45.074Z
-    lifecycle_state: active
+      updated_at: 2026-07-14T20:30:15.232Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PGSYNRA5HYC3VFK1FTPP
     task_ref: "@01KXH2PGSYNRA5HYC3VFK1FTPP"
@@ -1528,9 +1528,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-14T20:21:22.509Z
-      last_reconciled_at: 2026-07-14T20:21:22.509Z
+      last_reconciled_at: 2026-07-14T20:30:15.232Z
       created_at: 2026-07-14T20:20:45.074Z
-      updated_at: 2026-07-14T20:21:22.509Z
+      updated_at: 2026-07-14T20:30:15.232Z
     workspace_id: dispatch-workspace-01KXH2PGSYNRA5HYC3VFK1FTPP
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
