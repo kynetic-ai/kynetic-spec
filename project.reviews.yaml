@@ -29322,7 +29322,7 @@ reviews:
     title: Review task-patch-dispatch-api-specs
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 10
     examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
     lifecycle_state: open
     related_refs: []
@@ -29335,7 +29335,7 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-14T21:00:32.576Z
-    updated_at: 2026-07-14T21:00:45.652Z
+    updated_at: 2026-07-14T21:19:07.189Z
   - _ulid: 01KXH7BNXKV4KXA7AVSJ14GGB3
     slugs: []
     title: "Plan re-review (closure): Documentation Completeness and Dispatch Workspaces"
