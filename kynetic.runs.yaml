@@ -77669,9 +77669,21 @@ runs:
     completed_at: 2026-07-14T21:24:50.377Z
   - _ulid: 01KXH8EE1GNSSMHK0XR6V8X5B2
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-14T21:27:36.752Z
+        completed_at: 2026-07-14T21:28:36.840Z
+        notes: Completed mandatory baseline inventory via kspec meta observations list, kspec inbox list,
+          and kspec tasks list. Existing state is extensive (1,704 tasks plus large
+          observation/inbox catalogs), so candidate-specific kspec searches will be used before any
+          capture.
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-14T21:28:36.840Z
+        completed_at: 2026-07-14T21:28:36.840Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-14T21:27:36.752Z
