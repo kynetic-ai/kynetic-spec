@@ -64,6 +64,23 @@ checks:
     runner: manual-filesystem-check
     created_at: 2026-07-14T20:40:35.795Z
     completed_at: 2026-07-14T20:40:35.795Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Dependency graph is acyclic and well-ordered. P1 implementation tasks (1,2,3) have no
+      deps among each other and can run in parallel. P1 docs tasks (4,5,6,7) correctly depend on
+      their implementation prereqs: Task 4 depends on 1,2,3; Task 5 on 2,3; Task 6 on 1,2; Task 7 on
+      2,3,5. P2 Task 8 depends on 1,2. P2 Task 9 depends on 4,5,6,7,8 (transitively covers 1,2,3 via
+      4/5/7). P2 Task 10 depends on 9. Priority alignment correct — no P1 depends on a P2. Verified
+      that Task 8 (correcting publication_mode drift in RELEASE_NOTES) does not need Task 3 as a
+      prereq since the 'auto' enum already exists in src/parser/config.ts:179 — only the docs are
+      stale."
+    name: Dependency graph acyclicity and ordering
+    required: true
+    runner: manual-graph-analysis
+    created_at: 2026-07-14T20:41:00.570Z
+    completed_at: 2026-07-14T20:41:00.570Z
 events:
   - _ulid: 01KXH5HDNGQ9DX8AQ2KG68KS5Z
     actor: "@claude"
@@ -162,6 +179,13 @@ events:
       status: pass
       name: File path validity
     timestamp: 2026-07-14T20:40:36.231Z
+  - _ulid: 01KXH5S3MNHZZ239J6XJN7XRNP
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: Dependency graph acyclicity and ordering
+    timestamp: 2026-07-14T20:41:00.821Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -372,5 +396,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:40:35.795Z
+updated_at: 2026-07-14T20:41:00.570Z
 notes: []
