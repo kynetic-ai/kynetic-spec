@@ -32,6 +32,27 @@ checks:
     runner: manual scope comparison vs canonical review 01KXH58W89H5RDQ6DGSEETV8YN
     created_at: 2026-07-14T21:09:26.509Z
     completed_at: 2026-07-14T21:09:26.509Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Every task carries exact existing AC refs that resolve: Task 1 @docs-section-taxonomy
+      ac-1,ac-2 + @auto-cli-docs ac-1,ac-3,ac-4,ac-5; Task 2 @docs-guides-section ac-1,ac-2,ac-3;
+      Task 3 @docs-concepts-section ac-1,ac-2 + @default-project-agents-and-conventions
+      ac-task-worker-agent,ac-pr-reviewer-agent,ac-primary-dev-agent,ac-plan-reviewer-agent; Task 4
+      @docs-troubleshooting-section ac-1,ac-2,ac-3; Task 5 @readme-landing-page ac-1,ac-2 +
+      @docs-release-notes-availability ac-1,ac-2 + @default-project-agents-and-conventions
+      ac-agents-md-reflects-defaults; Task 6 @docs-getting-started-section ac-1,ac-2,ac-3 +
+      @docs-section-taxonomy ac-1,ac-2 + @docs-release-notes-availability ac-1,ac-2; Task 7
+      @docs-navigation-shape ac-1,ac-2 + @docs-search ac-1,ac-2,ac-3 + @docs-reachability
+      ac-1,ac-2,ac-3 + @auto-cli-docs ac-1,ac-3,ac-4,ac-5. All 12 specs and every claimed AC ID
+      verified to exist via kspec item get. Plan-shape note (line 7) explicitly states
+      @user-documentation is a module with no ACs and is not claimed as an AC owner."
+    name: prior Codex blocker closure — exact existing docs AC ownership
+    required: true
+    runner: kspec item get + item ac list
+    created_at: 2026-07-14T21:09:32.456Z
+    completed_at: 2026-07-14T21:09:32.456Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -60,6 +81,13 @@ events:
       status: pass
       name: prior Codex blocker closure — scope proportionality
     timestamp: 2026-07-14T21:09:26.777Z
+  - _ulid: 01KXH7DBD9TFCGE3ZA4XZXD5G7
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: prior Codex blocker closure — exact existing docs AC ownership
+    timestamp: 2026-07-14T21:09:32.713Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -72,5 +100,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:09:26.509Z
+updated_at: 2026-07-14T21:09:32.456Z
 notes: []
