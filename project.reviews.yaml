@@ -29410,3 +29410,21 @@ reviews:
     verdict_count: 0
     created_at: 2026-07-14T21:29:23.748Z
     updated_at: 2026-07-14T21:29:37.192Z
+  - _ulid: 01KXH91AY0BER1FDHC4PD4ZDEV
+    slugs: []
+    title: Review patch dispatch workspace cleanup spec exactly
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXH2PMG1Q88ZVGC68VVA70NE"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-14T21:37:56.160Z
