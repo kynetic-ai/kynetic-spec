@@ -77669,7 +77669,7 @@ runs:
     completed_at: 2026-07-14T21:24:50.377Z
   - _ulid: 01KXH8EE1GNSSMHK0XR6V8X5B2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77683,7 +77683,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-14T21:28:36.840Z
-        completed_at: 2026-07-14T21:28:36.840Z
+        completed_at: 2026-07-14T21:30:27.186Z
+        notes: "High-confidence friction: a newly created CLI task review stored subject.shadow_commit and
+          subject.content_hash as empty strings; every required check and verdict therefore bound to
+          entity_version.content_hash empty, defeating the implemented task-subject freshness
+          contract. Search found @review-subject-bindings ac-4 and
+          @review-verdicts-and-resolution-lifecycle ac-1/ac-5 require real entity hashes;
+          @task-bind-cli-plan-review-subject-versions fixed plan reviews but explicitly left
+          task/spec behavior unchanged. No existing task/inbox/observation specifically tracks
+          unbound task reviews. Existing metadata-only gate cost is already tracked by @01KV3WHP,
+          @01KV3XQW, @01KV6XMC, and @01KVXPANC. Existing ambiguous-reference friction matches
+          @01KJDQ11. Safe no-op integration is already covered by @detached-reviewer-merge-helper.
+          No unique success capture needed."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-14T21:30:27.186Z
+        completed_at: 2026-07-14T21:30:27.186Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-14T21:27:36.752Z
