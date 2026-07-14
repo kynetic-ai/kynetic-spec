@@ -225,9 +225,25 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-14T21:45:52.111Z
+  - _ulid: 01KXH9H4SYYC6XD9HR1FT6H3BY
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: approve
+    timestamp: 2026-07-14T21:46:34.174Z
+  - _ulid: 01KXH9H4SYM5RS36HKR05ZKJ58
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-14T21:46:34.174Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -235,7 +251,14 @@ subject:
   ref: "@01KXH2PK122BDSVHMSQTH1MZ2B"
   shadow_commit: ""
 threads: []
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: approve
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-14T21:46:34.174Z
 created_at: 2026-07-14T21:29:23.748Z
-updated_at: 2026-07-14T21:45:51.825Z
+updated_at: 2026-07-14T21:46:34.174Z
 notes: []
