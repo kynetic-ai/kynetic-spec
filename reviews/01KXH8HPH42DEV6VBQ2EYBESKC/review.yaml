@@ -13,6 +13,17 @@ checks:
     runner: npm run format:check
     created_at: 2026-07-14T21:44:46.879Z
     completed_at: 2026-07-14T21:44:46.879Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 703 repository-baseline warnings. No TypeScript or test files changed, so
+      focused changed-file lint is not applicable.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-14T21:44:52.289Z
+    completed_at: 2026-07-14T21:44:52.289Z
 events:
   - _ulid: 01KXH8HPH42TE97AEPTYJ9KACX
     actor: Jacob Chapel
@@ -34,6 +45,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-07-14T21:44:47.146Z
+  - _ulid: 01KXH9E1J8GT5VSY6DM7R7TZ94
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-14T21:44:52.552Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -46,5 +64,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:29:23.748Z
-updated_at: 2026-07-14T21:44:46.879Z
+updated_at: 2026-07-14T21:44:52.289Z
 notes: []
