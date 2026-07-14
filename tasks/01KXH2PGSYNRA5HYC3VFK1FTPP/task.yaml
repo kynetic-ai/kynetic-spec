@@ -102,8 +102,13 @@ description: >
 spec_ref: "@agent-dispatch-engine"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Approved review 01KXH5ABAF05ZP1MFS2T0XYJ2R. Verified the atomic metadata batch
+  applies exactly two AC replacements and eight AC additions across @agent-dispatch-engine and
+  @per-task-dispatch-drain-coalescing, with all neighboring ACs and unlisted metadata unchanged.
+  Detached merge helper confirmed the canonical branch was already integrated at
+  plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx (no-op).
 depends_on: []
 context: []
 priority: 1
@@ -170,8 +175,26 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-07-14T20:32:59.581Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Approved review 01KXH5ABAF05ZP1MFS2T0XYJ2R. Verified the atomic metadata batch applies exactly
+          two AC replacements and eight AC additions across @agent-dispatch-engine and
+          @per-task-dispatch-drain-coalescing, with all neighboring ACs and unlisted metadata
+          unchanged. Detached merge helper confirmed the canonical branch was already integrated at
+          plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx (no-op).
+        previous: null
+      completed_at:
+        new: 2026-07-14T20:52:18.734Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-14T20:52:18.742Z
 created_at: 2026-07-14T19:47:10.270Z
 started_at: 2026-07-14T20:22:52.202Z
 submitted_at: 2026-07-14T20:26:38.390Z
+completed_at: 2026-07-14T20:52:18.734Z
 todos: []
 automation: eligible

@@ -33593,7 +33593,7 @@
   type: task
   spec_ref: "@agent-dispatch-engine"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -33607,6 +33607,7 @@
   created_at: 2026-07-14T19:47:10.270Z
   started_at: 2026-07-14T20:22:52.202Z
   submitted_at: 2026-07-14T20:26:38.390Z
+  completed_at: 2026-07-14T20:52:18.734Z
   automation: eligible
 - _ulid: 01KXH2PH5QBW4VQABX7K451VHC
   slugs:
