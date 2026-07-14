@@ -1,0 +1,26 @@
+_ulid: 01KXH58W89H5RDQ6DGSEETV8YN
+slugs: []
+title: "Plan review: Documentation Completeness and Dispatch Workspaces (canonical pass 1)"
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXH58W89EQ6VJAFA27Z25S37
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-14T20:32:08.969Z
+examined_commit: null
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: plan
+  content_hash: ""
+  ref: "@plan-documentation-completeness-and-dispatch-workspaces"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-14T20:32:08.969Z
+updated_at: null
+notes: []
