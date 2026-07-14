@@ -119,5 +119,14 @@ tags:
   - specs
   - ui
 vcs_refs: []
+history:
+  - author: Jacob Chapel
+    changes:
+      automation:
+        new: eligible
+        previous: null
+    command: task-set
+    timestamp: 2026-07-14T20:11:51.694Z
 created_at: 2026-07-14T19:47:11.736Z
 todos: []
+automation: eligible
