@@ -17,6 +17,13 @@ events:
       kind: blocker
       thread_ulid: 01KXH5JE5KX7EN68YNCAMG1WDH
     timestamp: 2026-07-14T20:37:22.575Z
+  - _ulid: 01KXH5K0C0JCKGMQ6SE0Y71KZK
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXH5K02M94QEQCNYCYMP4S6V
+    timestamp: 2026-07-14T20:37:40.864Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -46,7 +53,27 @@ threads:
           the adapter after timeout') — surface those observables in the AC, not the OS mechanism."
         created_at: 2026-07-14T20:37:22.228Z
     kind: blocker
+  - _ulid: 01KXH5K02M94QEQCNYCYMP4S6V
+    anchor:
+      type: structured
+      field: ac-guarded-target-reset
+      ref: "@dispatch-workspace-configuration"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXH5K02N577N89MR4SMNCD3M
+        author: "@claude"
+        body: "Proposed AC is compound and tautological — not independently testable. The 'When: guarded
+          reset prerequisites hold' clause does not enumerate the prerequisites, so a reviewer
+          cannot tell what is being asserted without reading the task body. The task body lists five
+          prerequisites (no active/in-flight invocation, non-terminal task, no unresolved
+          merge/integration result, clean canonical worker branch, --reason/--force requirement).
+          Either (a) move the prerequisite list into the AC 'When' so the AC is self-contained, or
+          (b) split into one AC per prerequisite refusal path so each can be tested independently.
+          As written, the AC reads as 'when reset is allowed, reset is allowed', which is not a
+          verifiable contract."
+        created_at: 2026-07-14T20:37:40.565Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:37:22.228Z
+updated_at: 2026-07-14T20:37:40.565Z
 notes: []
