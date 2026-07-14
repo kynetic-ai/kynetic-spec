@@ -31,6 +31,13 @@ events:
       kind: blocker
       thread_ulid: 01KXH5KG4JJDXB1NHKFPYFFTZ7
     timestamp: 2026-07-14T20:37:57.331Z
+  - _ulid: 01KXH5MAYVZF3QHDMWGCC0ARMP
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXH5MAKX3M52KK1JNWHD5XKQ
+    timestamp: 2026-07-14T20:38:24.475Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -100,7 +107,26 @@ threads:
           a test."
         created_at: 2026-07-14T20:37:57.011Z
     kind: blocker
+  - _ulid: 01KXH5MAKX3M52KK1JNWHD5XKQ
+    anchor:
+      type: structured
+      field: ac-bootstrap-runner-env-separation
+      ref: "@dispatch-runtime-bootstrap-contract"
+      section: acceptance_criteria
+    entries:
+      - _ulid: 01KXH5MAKX7AJ0BETZ69B746V9
+        author: "@claude"
+        body: Proposed AC 'runner env and secret bindings are not applied to bootstrap' partially leaks the
+          runner-config schema ('env', 'secret bindings') as if those were user-observable
+          natural-language concepts. Per /kspec:writing-specs, schema field names like
+          env.inherit/pass/set/secrets should not appear in ACs. Rewrite in behavioral terms, e.g.
+          'the bootstrap subprocess does not receive the agent's named-runner environment additions
+          or secret values; those values are only visible to the later adapter-process spawn
+          boundary'. The task body already describes the correct behavior in those terms — the AC
+          text should match.
+        created_at: 2026-07-14T20:38:24.125Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:37:57.011Z
+updated_at: 2026-07-14T20:38:24.125Z
 notes: []
