@@ -113,6 +113,27 @@ checks:
     runner: kspec plan get
     created_at: 2026-07-14T21:45:37.541Z
     completed_at: 2026-07-14T21:45:37.541Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files/surfaces read: AGENTS.md, kspec-agents.md,
+      kspec-review/review-gates/kspec-merge/kspec-task-work/kspec-writing-specs/work-gates skills;
+      detached Git comparison; @dispatch-event-taxonomy and @dispatch-event-payload via kspec item
+      get; approved plan exact-change, patch-accounting, task, and downstream event-owner sections.
+      Commands run: git status/log/diff/diff --check; kspec task get/review for-task/plan get/item
+      get/validate refs/alignment/completeness; npm run format:check; npm run lint -- --quiet; npm
+      run typecheck; npm test -- --fresh. Claims verified: 17 exact rows (1+16), closed 17-code
+      enum, forbidden sensitive/raw fields, no product/test/code changes, and 10+14+9+15+17+1=66.
+      Categories searched: correctness, boundary/Unicode normalization, identity and error
+      conditionality, security/data exposure, spec testability, downstream integration/ownership,
+      metadata scope; no findings. Shared-guidance neutrality: not applicable because only project
+      shadow specs changed."
+    name: review evidence log
+    required: false
+    runner: manual analytical review
+    created_at: 2026-07-14T21:45:51.825Z
+    completed_at: 2026-07-14T21:45:51.825Z
 events:
   - _ulid: 01KXH8HPH42TE97AEPTYJ9KACX
     actor: Jacob Chapel
@@ -197,6 +218,13 @@ events:
       status: pass
       name: patch accounting
     timestamp: 2026-07-14T21:45:37.810Z
+  - _ulid: 01KXH9FVQF31ZK7WM2WW3R8KD7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-14T21:45:52.111Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -209,5 +237,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:29:23.748Z
-updated_at: 2026-07-14T21:45:37.541Z
+updated_at: 2026-07-14T21:45:51.825Z
 notes: []
