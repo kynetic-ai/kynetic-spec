@@ -45,6 +45,13 @@ events:
       kind: question
       thread_ulid: 01KXH5MXZ5S1WPY09ZJC3TBD27
     timestamp: 2026-07-14T20:38:44.298Z
+  - _ulid: 01KXH5N8ETB0SGT2BME30EDE6X
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KXH5N838G849PTCR1A538R0E
+    timestamp: 2026-07-14T20:38:54.682Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -153,7 +160,28 @@ threads:
           workflow risk."
         created_at: 2026-07-14T20:38:43.942Z
     kind: question
+  - _ulid: 01KXH5N838G849PTCR1A538R0E
+    anchor:
+      type: structured
+      ref: "@task-finish-dispatch-remote-sync-contract"
+      section: description
+    entries:
+      - _ulid: 01KXH5N83993A13VA2723KJ5D1
+        author: "@claude"
+        body: "Task 3 scope is unusually large for a single task: @dispatch-remote-branch-sync has ~50
+          acceptance criteria, the task description says 'audit every AC against
+          src/agent-runtime/dispatch.ts, workspace integration/cleanup paths, daemon status routes,
+          CLI status, and focused tests; implement missing behavior or tighten incorrect stale
+          tests', and verification references five test files (the largest is 2842 lines). One
+          worker attempt at this may end in needs_work purely on scope. Consider splitting by
+          concern: (a) status projection completeness, (b) sync mechanics (push/pull/ff/divergence),
+          (c) cleanup integration and target-set lifecycle. Each can carry its own behavioral test
+          matrix. If you keep it as one task, expand the 'Required tests' bullet to enumerate which
+          ACs each test file owns so the worker can run focused verifications rather than
+          re-auditing the whole matrix each pass."
+        created_at: 2026-07-14T20:38:54.313Z
+    kind: question
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:38:43.942Z
+updated_at: 2026-07-14T20:38:54.313Z
 notes: []
