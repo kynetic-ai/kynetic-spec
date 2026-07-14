@@ -38,6 +38,13 @@ events:
       kind: blocker
       thread_ulid: 01KXH5MAKX3M52KK1JNWHD5XKQ
     timestamp: 2026-07-14T20:38:24.475Z
+  - _ulid: 01KXH5MYAAVARJ9R39AH70YK9W
+    actor: "@claude"
+    event_type: thread_created
+    payload:
+      kind: question
+      thread_ulid: 01KXH5MXZ5S1WPY09ZJC3TBD27
+    timestamp: 2026-07-14T20:38:44.298Z
 examined_commit: null
 external_links: []
 lifecycle_state: draft
@@ -126,7 +133,27 @@ threads:
           text should match.
         created_at: 2026-07-14T20:38:24.125Z
     kind: blocker
+  - _ulid: 01KXH5MXZ5S1WPY09ZJC3TBD27
+    anchor:
+      type: structured
+      ref: "@task-close-bootstrap-public-contract"
+      section: description
+    entries:
+      - _ulid: 01KXH5MXZ6JQG4S83DTDKX3Z51
+        author: "@claude"
+        body: "Plan-shape risk: this plan intentionally omits ## Specs and relies on workers running 'kspec
+          item ac add' during Tasks 1 and 2 to amend existing owners. The plan note explains this.
+          However, the plan document is the durable record of which ACs should be added; if the
+          worker forgets or paraphrases, the spec system silently drifts from the plan. Two options
+          to harden this: (1) include a ## Specs section that amends existing specs (the import
+          parser supports this if entries carry a 'slug' matching an existing spec — verify or
+          document this), or (2) add a note to the Implementation Notes section stating explicitly
+          that worker-added ACs MUST match the task body verbatim and reviewer must verify via
+          'kspec item get <spec>' after task completion. As written, this is a real but recoverable
+          workflow risk."
+        created_at: 2026-07-14T20:38:43.942Z
+    kind: question
 verdicts: []
 created_at: 2026-07-14T20:36:48.944Z
-updated_at: 2026-07-14T20:38:24.125Z
+updated_at: 2026-07-14T20:38:43.942Z
 notes: []
