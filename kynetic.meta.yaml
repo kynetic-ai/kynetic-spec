@@ -23745,9 +23745,23 @@ observations:
       Read-after-write cache coherence should prevent contradictory CLI results or expose a
       committed-read option.
     author: Jacob Chapel
+    resolution: Duplicate of earlier observation @01KXH54FK2HAA0V0QNR2GFA1CP, which already captures
+      immediate stale CLI readback after successful atomic metadata batches and the need for
+      authoritative post-write synchronization.
+    resolved: true
+    resolved_at: 2026-07-14T20:54:16.563Z
+    resolved_by: Jacob Chapel
+    created_at: 2026-07-14T20:49:55.925Z
+  - _ulid: 01KXH6HD0SWEXB6R140X1H7VYH
+    type: success
+    content: For exact spec-only patch tasks, one atomic kspec batch followed by a programmatic
+      comparison of every requested Given/When/Then payload and the complete AC ID sequence produced
+      a drift-resistant reviewer handoff while proving unlisted compatibility ACs remained intact.
+      The same pattern is evidenced across the dispatch engine, CLI, and daemon API patch tasks.
+    author: Jacob Chapel
     resolution: null
     resolved: false
-    created_at: 2026-07-14T20:49:55.925Z
+    created_at: 2026-07-14T20:54:16.857Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
