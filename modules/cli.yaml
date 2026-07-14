@@ -8651,14 +8651,10 @@ features:
           invocation is skipped, and a note is added to the task
         when: |
           The dispatch engine attempts to spawn the agent
-      - given: |
-          The dispatch engine is stopped (daemon shutdown or explicit stop)
+      - given: global stop authority is committed
         id: ac-11
-        then: |
-          Running agents receive graceful cancel signals and all sessions
-          are closed before the engine reports shutdown complete
-        when: |
-          Active agent invocations exist
+        then: dispatch does not report stop success
+        when: hard-stop cleanup is incomplete
       - given: |
           Multiple agents are running concurrently (max_concurrent > 1)
         id: ac-12
@@ -8773,6 +8769,30 @@ features:
         id: ac-stop-awaits-reconciliation
         then: No in-flight reconciliation pass continues mutating dispatch state after stop has returned
         when: Stop completes
+      - given: a candidate remains eligible after dequeue
+        id: ac-final-gate-global-control
+        then: current global control determines whether creation is permitted
+        when: it reaches the final creation boundary
+      - given: a candidate remains eligible after dequeue
+        id: ac-final-gate-task-control
+        then: its canonical-task control determines whether creation is permitted
+        when: it reaches the final creation boundary
+      - given: an invocation is active in a scope
+        id: ac-pause-active-natural-completion
+        then: the invocation may finish naturally
+        when: that scope is paused
+      - given: a session belongs to an active invocation
+        id: ac-pause-does-not-close-session
+        then: pause does not close the session
+        when: its scope is paused
+      - given: a scope is paused
+        id: ac-resume-current-task-state
+        then: current task state is re-evaluated before work starts
+        when: it resumes
+      - given: a scope is paused
+        id: ac-resume-current-dispatch-rules
+        then: current dispatch rules are re-evaluated before work starts
+        when: it resumes
     tags: []
     features:
       - _ulid: 01KKFY93PW5HZ7V21GGJMMZENW
@@ -10493,12 +10513,10 @@ features:
               0 disables coalescing and preserves the current immediate-drain behavior for backward
               compatibility.
             when: The engine is constructed
-          - given: The dispatch engine is stopped while per-task coalescing timers are pending
+          - given: per-task coalescing timers are pending
             id: ac-5
-            then: All pending coalescing timers are cancelled and no further drains are scheduled.
-              Already-running drains complete normally per existing shutdown behavior (ac-11 of
-              @agent-dispatch-engine).
-            when: stop() is called
+            then: matching timers are cancelled
+            when: matching stop authority commits
           - given: A single task state change event arrives with no subsequent events for the same task
             id: ac-6
             then: The drain proceeds normally after the coalescing delay. The only observable difference from
@@ -10526,6 +10544,14 @@ features:
               ordering, not dispatch timing — drains that bypass coalescing delay are still
               triggered immediately but wait for any in-progress drain to complete before executing.
             when: A drain is already in progress
+          - given: a matching pending drain exists
+            id: ac-stop-prevents-pending-drain-start
+            then: that drain does not start work
+            when: stop authority commits
+          - given: a matching invocation is active
+            id: ac-stop-cancels-active-invocation
+            then: that invocation is cancelled
+            when: hard-stop cleanup runs
         tags:
           - dispatch
           - mvp
