@@ -167,6 +167,24 @@ checks:
     runner: manual cross-reference vs review 01KXH5HDNG7HNDXW09GHH4QPH1
     created_at: 2026-07-14T21:10:47.894Z
     completed_at: 2026-07-14T21:10:47.894Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Verified kspec agent dispatch has only start/stop/status/watch; no
+      list/show/reset/cleanup. Plan line 12 states this fact and forbids inventing such commands.
+      Task 2 (line 104) requires the page to state no reset/list/show/cleanup command exists and to
+      route recovery to status/config correction/retry or escalation. Task 4 (line 181) requires the
+      same plainly, forbids metadata edits / deleting managed paths / manual worktree mutations, and
+      scopes the stale nonexistent-reset-suggestion removal to documentation owned here
+      (product/runtime sites reported as follow-up). Task 4 Required tests (line 187) assert
+      unsupported reset strings are not presented as runnable recovery. No page in this plan is
+      permitted to present an unsupported workspace command as a procedure.
+    name: no unsupported workspace command presented as supported
+    required: true
+    runner: kspec agent dispatch --help + kspec help agent grep
+    created_at: 2026-07-14T21:10:53.654Z
+    completed_at: 2026-07-14T21:10:53.654Z
 events:
   - _ulid: 01KXH7BNXKD3BDCCRM3WX4QNX0
     actor: "@claude"
@@ -244,6 +262,13 @@ events:
       status: pass
       name: prior Claude-pass-2 closure — questions and nits
     timestamp: 2026-07-14T21:10:48.150Z
+  - _ulid: 01KXH7FTPWSSRF3PHYNS27DW6A
+    actor: "@claude"
+    event_type: check_added
+    payload:
+      status: pass
+      name: no unsupported workspace command presented as supported
+    timestamp: 2026-07-14T21:10:53.916Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -256,5 +281,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:08:37.939Z
-updated_at: 2026-07-14T21:10:47.894Z
+updated_at: 2026-07-14T21:10:53.654Z
 notes: []
