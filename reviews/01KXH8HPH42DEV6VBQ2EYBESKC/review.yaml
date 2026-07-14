@@ -2,7 +2,17 @@ _ulid: 01KXH8HPH42DEV6VBQ2EYBESKC
 slugs: []
 title: Review task-patch-dispatch-events-specs
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1,038 matched files formatted correctly.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-14T21:44:46.879Z
+    completed_at: 2026-07-14T21:44:46.879Z
 events:
   - _ulid: 01KXH8HPH42TE97AEPTYJ9KACX
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-14T21:29:37.492Z
+  - _ulid: 01KXH9DW9AA4ZKSPZ6TZ5TQFTX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-14T21:44:47.146Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:29:23.748Z
-updated_at: 2026-07-14T21:29:37.192Z
+updated_at: 2026-07-14T21:44:46.879Z
 notes: []
