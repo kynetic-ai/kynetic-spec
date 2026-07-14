@@ -29266,7 +29266,7 @@ reviews:
     title: Review patch dispatch engine and coalescing specs exactly
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 9
     examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
     lifecycle_state: open
     related_refs: []
@@ -29279,7 +29279,7 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-14T20:32:57.167Z
-    updated_at: 2026-07-14T20:33:08.910Z
+    updated_at: 2026-07-14T20:50:40.078Z
   - _ulid: 01KXH5HDNG7HNDXW09GHH4QPH1
     slugs: []
     title: "Plan review: Documentation Completeness and Dispatch Workspaces"

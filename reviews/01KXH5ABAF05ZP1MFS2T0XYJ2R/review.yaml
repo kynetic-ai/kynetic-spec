@@ -2,7 +2,105 @@ _ulid: 01KXH5ABAF05ZP1MFS2T0XYJ2R
 slugs: []
 title: Review patch dispatch engine and coalescing specs exactly
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1038 checked files formatted; exit 0.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-14T20:50:14.277Z
+    completed_at: 2026-07-14T20:50:14.277Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 errors; 703 repository baseline warnings. Focused changed-file lint N/A because task
+      changed metadata only and no TS/test files.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-14T20:50:17.587Z
+    completed_at: 2026-07-14T20:50:17.587Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and tsc --noEmit passed; exit 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-14T20:50:20.843Z
+    completed_at: 2026-07-14T20:50:20.843Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run: 2789/2789 suites passed; 10581 passed, 3 skipped of 10584; exit 0."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-14T20:50:24.025Z
+    completed_at: 2026-07-14T20:50:24.025Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Command reproduced exactly the plan-documented seven pre-existing ambiguous references and
+      no changed-owner errors. Task commit touched only modules/cli.yaml; plan Baseline Reference
+      Validation explicitly treats unchanged seven-row set as non-regression and forbids unrelated
+      cleanup.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-14T20:50:27.332Z
+    completed_at: 2026-07-14T20:50:27.332Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with documented repository warnings; exit 0.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-14T20:50:30.537Z
+    completed_at: 2026-07-14T20:50:30.537Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with repository coverage warnings; exit 0. This exact metadata prerequisite
+      intentionally adds specs before dependent implementation/test tasks.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-14T20:50:33.711Z
+    completed_at: 2026-07-14T20:50:33.711Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All ten item/id/Given/When/Then rows match exactly. Parsed after-state deep-equals batch
+      parent plus exactly 2 sets and 8 adds; engine 31->37, coalescing 9->11; all neighboring ACs
+      and non-requested fields unchanged.
+    name: metadata exactness
+    required: true
+    runner: kspec item get plus shadow parent comparison
+    created_at: 2026-07-14T20:50:36.961Z
+    completed_at: 2026-07-14T20:50:36.961Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Detached code snapshot clean; canonical branch and integration target both at 0fceed5aa3;
+      no branch-file changes.
+    name: git diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-14T20:50:40.078Z
+    completed_at: 2026-07-14T20:50:40.078Z
 events:
   - _ulid: 01KXH5ABAES1SJJTYX9Y94H4GV
     actor: Jacob Chapel
@@ -17,6 +115,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-14T20:33:09.153Z
+  - _ulid: 01KXH6A0C9XH8DRNQHAQB2K27T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-14T20:50:14.537Z
+  - _ulid: 01KXH6A3KTHSZE324SDMYZY24S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-14T20:50:17.850Z
+  - _ulid: 01KXH6A6SC8CR031P419XFX0MY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-14T20:50:21.100Z
+  - _ulid: 01KXH6A9X3NH1S32TXX5FSCR7D
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-14T20:50:24.291Z
+  - _ulid: 01KXH6AD5SCSFAP3XQERZRVMF4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: kspec validate refs
+    timestamp: 2026-07-14T20:50:27.641Z
+  - _ulid: 01KXH6AG86P5KRPMTHZ8R1C0E5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-14T20:50:30.790Z
+  - _ulid: 01KXH6AKBNP77DGX30D4YHJEC3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-14T20:50:33.973Z
+  - _ulid: 01KXH6APH228PWRA347NQ2RYZR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: metadata exactness
+    timestamp: 2026-07-14T20:50:37.218Z
+  - _ulid: 01KXH6ASJ3ZG6Z2HF4FXXJND9B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-14T20:50:40.323Z
 examined_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
 external_links: []
 lifecycle_state: open
@@ -29,5 +190,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T20:32:57.167Z
-updated_at: 2026-07-14T20:33:08.910Z
+updated_at: 2026-07-14T20:50:40.078Z
 notes: []
