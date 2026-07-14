@@ -33639,7 +33639,7 @@
   type: task
   spec_ref: "@daemon-agent-dispatch"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   priority: 1
@@ -33653,6 +33653,7 @@
   created_at: 2026-07-14T19:47:11.044Z
   started_at: 2026-07-14T20:46:39.748Z
   submitted_at: 2026-07-14T20:51:16.325Z
+  completed_at: 2026-07-14T21:19:50.923Z
   automation: eligible
 - _ulid: 01KXH2PJ7RY9B9MQNHBFWN96QB
   slugs:
