@@ -145,6 +145,78 @@ checks:
     runner: npm test
     created_at: 2026-07-14T21:15:16.422Z
     completed_at: 2026-07-14T21:15:16.422Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh exit 0 with current baseline warnings; no plan-derived state was created.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-14T21:15:35.360Z
+    completed_at: 2026-07-14T21:15:35.360Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh exit 0 with current baseline warnings; no plan-derived state was created.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-14T21:15:39.904Z
+    completed_at: 2026-07-14T21:15:39.904Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh command exits 4 with exactly seven disclosed unrelated ambiguity errors: six
+      @observations occurrences and one @spec-plan-import occurrence. The plan requires exact
+      no-new/no-changed comparison and forbids claiming refs or project-wide validation green."
+    name: seven-ref ambiguity baseline handling
+    required: true
+    runner: kspec validate --refs --warnings-ok + exact comparison
+    created_at: 2026-07-14T21:15:44.494Z
+    completed_at: 2026-07-14T21:15:44.494Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Direction 1 keeps package text universal and judgment-based; direction 2 preserves Kynetic
+      policy in AGENTS.md, project meta, or local skills. Source ownership and agents/skills/plugin
+      regeneration/convergence are required.
+    name: shared guidance neutrality
+    required: true
+    runner: shared-guidance-neutrality semantic review
+    created_at: 2026-07-14T21:15:49.396Z
+    completed_at: 2026-07-14T21:15:49.396Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: complete stored/source plan, both prior reviews, AGENTS.md, kspec-agents.md,
+      spec owners, lifecycle plan/task state, tracked Markdown categories, docs/build/package
+      scripts, tests, branches/worktrees. Commands: plan/review/item/task/search/help/import
+      dry-run, git status/worktree/diff/ls-files, path checks, focused npm test, three validation
+      modes. Claims verified: every prior blocker, exact AC refs, seven-task graph, active-plan
+      non-overlap, 140-file/non-file universes, missing workspace CLI, remote-sync in_progress,
+      neutrality, importability. Categories: scope, correctness, dependencies, ownership, inventory,
+      commands/files/tests, integration, validation."
+    name: review evidence log
+    required: true
+    runner: fresh canonical closure review
+    created_at: 2026-07-14T21:15:54.810Z
+    completed_at: 2026-07-14T21:15:54.810Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "External non-required baseline remains red: exit 4 with the same seven unrelated
+      ambiguous-reference errors. Approval does not imply project-wide green."
+    name: project-wide refs validation baseline
+    required: false
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-14T21:15:59.426Z
+    completed_at: 2026-07-14T21:15:59.426Z
 events:
   - _ulid: 01KXH7G6DAHFXJRMCMN9VBG73C
     actor: codex
@@ -243,6 +315,48 @@ events:
       status: pass
       name: focused parser scaffold and docs tests
     timestamp: 2026-07-14T21:15:16.801Z
+  - _ulid: 01KXH7RDWVAJZZ17JYS0VPGEMA
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-14T21:15:35.707Z
+  - _ulid: 01KXH7RJAEMSPV9Z0AGKXP4CVF
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-14T21:15:40.239Z
+  - _ulid: 01KXH7RPSD154ARW5XW9Q0KKPN
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: seven-ref ambiguity baseline handling
+    timestamp: 2026-07-14T21:15:44.813Z
+  - _ulid: 01KXH7RVK7PQVS9PPAE6FR06XX
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: shared guidance neutrality
+    timestamp: 2026-07-14T21:15:49.735Z
+  - _ulid: 01KXH7S0W5NFAB2RSP6GP302RW
+    actor: codex
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-14T21:15:55.141Z
+  - _ulid: 01KXH7S5NZQAWH1DX95QS9MT72
+    actor: codex
+    event_type: check_added
+    payload:
+      status: fail
+      name: project-wide refs validation baseline
+    timestamp: 2026-07-14T21:16:00.063Z
 examined_commit: null
 external_links: []
 lifecycle_state: open
@@ -255,5 +369,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-14T21:11:05.899Z
-updated_at: 2026-07-14T21:15:16.422Z
+updated_at: 2026-07-14T21:15:59.426Z
 notes: []
