@@ -141,6 +141,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-15T15:12:22.676Z
+  - _ulid: 01KXK5EK7A4HYM6QQEKQQH7R04
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXK5EJZ6K2G0BR9745QXAHX2
+    timestamp: 2026-07-15T15:13:45.194Z
 examined_commit: 676182f47b0680e3e8a60d8ab068fafe4fc0a4a1
 external_links: []
 lifecycle_state: open
@@ -150,8 +157,32 @@ subject:
   content_hash: ""
   ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXK5EJZ6K2G0BR9745QXAHX2
+    anchor:
+      type: code
+      commit: 676182f47b0680e3e8a60d8ab068fafe4fc0a4a1
+      line_end: 4265
+      line_start: 4262
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXK5EJZ650CXV3TP7Y3XYWH0
+        author: Jacob Chapel
+        body: MUST-FIX — A failed ownership handoff decrements the active count of a different invocation.
+          creationAdmitted becomes true as soon as _admitInvocationCreation returns (lines
+          4112-4114), before _publishPersistedInvocationOwnership increments activeCount. When
+          agent.dispatched persistence fails, _failInvocationOwnership only removes the reservation,
+          but this common finally block still decrements activeCount. With one already-active
+          invocation for the same agent and max_concurrent greater than one, the failed second spawn
+          changes the count from 1 to 0, so status violates ac-status-reports-active-count and the
+          scheduler can over-admit later work. The current failure-path test starts with no other
+          active invocation, so the fallback-to-1 decrement masks this regression. Track whether
+          ownership was actually published, and add a behavioral test with another active
+          invocation.
+        created_at: 2026-07-15T15:13:44.935Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-15T14:57:18.810Z
-updated_at: 2026-07-15T15:12:22.413Z
+updated_at: 2026-07-15T15:13:44.935Z
 notes: []
