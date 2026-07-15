@@ -195,3 +195,29 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T18:30:32.571Z
+  - _ulid: 01KXKJ0EMC3915JBDT9H80XR52
+    content: "Fix cycle 5 complete in 0898f3a8e0; all five cycle-5 threads replied to and
+      resolved.\\n\\nOwnership schema: immutable
+      invocation/session/task/agent/adapter/owner/PID/PGID/start-ticks/platform/captured-at identity
+      is persisted before ACP initialization; group_members may only gain same-PGID PID/start-tick
+      proofs, and exited_at is written only after verified full-group extinction.\\n\\nPhase table:
+      owned verifies the durable tuple plus leader/member birth evidence, signals the verified
+      group, and waits for the entire group to disappear; signals_sent durably closes the session;
+      sessions_closed removes the matching cleanup. Any unreadable/non-disappearance proc evidence,
+      live group, timeout, signal failure, or close failure leaves stopped authority with
+      pending/failed cleanup.\\n\\nLinux proof matrix: ENOENT/ESRCH means a process disappeared
+      during enumeration; EACCES/EIO/parse failure is cleanup_identity_unverifiable with no signal;
+      matching leader PID/start-ticks/PGID plus immutable members permits group signal; resistant
+      descendants force SIGKILL and must exit before exited_at; leaderless/unproved live groups
+      remain incomplete.\\n\\nA/B and idempotency traces: task A cleanup still preserves task B
+      invocation/session/control; completed A/global cleanup with retained in-memory ownership is
+      excluded after durable session closure, so the next stop is noop and emits no second signal.
+      Rejecting and hanging ACP initialization publish recoverable ownership immediately, respond to
+      stop abort, and verified-reap before failure completion.\\n\\nVerification: format check
+      passed; repo lint 0 errors and focused lint 0 warnings/errors; typecheck passed; focused 59
+      suites/218 tests passed; fresh full npm test passed 2,805 suites/10,706 tests with 3 skipped;
+      refs/alignment/completeness validations passed at existing warning baselines; git diff hygiene
+      passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T18:53:13.228Z
