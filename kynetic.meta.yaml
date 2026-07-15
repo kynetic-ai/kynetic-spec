@@ -23795,8 +23795,12 @@ observations:
       adversarial probes are an effective review technique for persistence and concurrency
       invariants that ordinary happy-path suites may miss.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of @01KVX17N, which already records that isolated temp-repository behavioral
+      probes expose state/history edge cases missed by submitted tests. Identified during
+      post-capture verification of the reflection result.
+    resolved: true
+    resolved_at: 2026-07-15T03:43:39.840Z
+    resolved_by: Jacob Chapel
     created_at: 2026-07-15T03:42:47.718Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
