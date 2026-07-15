@@ -7841,3 +7841,80 @@ workspaces:
         head: 5f77a5ccc7b8d2f2ea48581d08f06797c0ea56c3
         last_seen_at: 2026-07-15T15:09:12.111Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/stabilize-daemon-command-api-overlap-timing-test-01kxk05h
+  - active_role: null
+    base_branch_point: 958c482d258844ba156717bd1878a5e821263488
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-protect-controlled-dispatch-evidence/01kxh2pr
+    canonical_branch_head: 958c482d258844ba156717bd1878a5e821263488
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-07-15T22:24:20.888Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-07-15T22:24:20.888Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+      target_commit: 958c482d258844ba156717bd1878a5e821263488
+      updated_at: 2026-07-15T22:24:20.888Z
+    lifecycle_state: ready
+    resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+    task_id: 01KXH2PRVHHSQ14WR16A5KHTJT
+    task_ref: "@01KXH2PRVHHSQ14WR16A5KHTJT"
+    task_slug: task-protect-controlled-dispatch-evidence
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-07-15T22:24:20.888Z
+      created_at: 2026-07-15T22:24:20.888Z
+      updated_at: 2026-07-15T22:24:20.888Z
+    workspace_id: dispatch-workspace-01KXH2PRVHHSQ14WR16A5KHTJT
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-protect-controlled-dispatch-evidence/01kxh2pr
+        head: 958c482d258844ba156717bd1878a5e821263488
+        last_seen_at: 2026-07-15T22:24:20.888Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-protect-controlled-dispatch-evidence-01kxh2pr
