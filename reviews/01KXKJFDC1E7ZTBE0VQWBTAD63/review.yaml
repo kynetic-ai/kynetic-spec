@@ -197,6 +197,13 @@ events:
       kind: blocker
       thread_ulid: 01KXKKS3CYMAMGEVVGAB3X4X61
     timestamp: 2026-07-15T19:24:09.759Z
+  - _ulid: 01KXKKS9DH62R5M70FV6CBM638
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKKS95AM60CXDAS9SHD2K24
+    timestamp: 2026-07-15T19:24:15.665Z
 examined_commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
 external_links: []
 lifecycle_state: open
@@ -268,7 +275,26 @@ threads:
           cannot be verified and terminated."
         created_at: 2026-07-15T19:24:09.502Z
     kind: blocker
+  - _ulid: 01KXKKS95AM60CXDAS9SHD2K24
+    anchor:
+      type: code
+      commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
+      line_end: 199
+      line_start: 178
+      path: src/schema/dispatch-control.ts
+      side: head
+    entries:
+      - _ulid: 01KXKKS95A6HY0RSVGH1QFW264
+        author: Jacob Chapel
+        body: "MUST-FIX: persisted task-scoped cleanup is not validated to contain only targets whose
+          task_id matches the cleanup key. DispatchControlSchema.safeParse accepted a canonical
+          task-A pending_cleanup entry containing a task-B target, and recovery processes every
+          target under the key without a scope filter. A schema-valid persisted state can therefore
+          make startup or retry for task A signal task B, violating the task-scope isolation ACs.
+          Add cross-field validation and behavioral recovery coverage."
+        created_at: 2026-07-15T19:24:15.402Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-15T19:01:23.457Z
-updated_at: 2026-07-15T19:24:09.502Z
+updated_at: 2026-07-15T19:24:15.402Z
 notes: []
