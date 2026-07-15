@@ -42,3 +42,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T11:32:52.283Z
+  - _ulid: 01KXJTGB26AVC3M1HM9V9NRAD3
+    content: "Fix cycle 1: addressed both blockers in b11cce869a. The single ordered authority decision
+      now occurs only at runInvocation's adjacent pre-artifact boundary. Control-winning global/task
+      pause/stop traces run the real invocation path and prove zero persisted sessions and zero
+      adapter spawns; existing dispatch test doubles now invoke the same boundary contract.
+      Re-verified all three task ACs and six traces. Gates: format, repo/focused lint, typecheck,
+      targeted 233-test dispatch set, full npm test (10,655 passed, 3 skipped),
+      refs/alignment/completeness validation, and diff hygiene all pass. Spawn-first stop still only
+      exposes the durable handoff for later stop recovery; this task makes no cancellation claim."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T12:02:28.038Z
