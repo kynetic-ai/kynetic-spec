@@ -4723,11 +4723,11 @@ workspaces:
     canonical_branch: dispatch/task/task-dispatch-control-persistence/01kxh2pn
     canonical_branch_head: 28d119244e0fbb34183f7c72b3d179e2b7c7a178
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-07-15T04:26:23.330Z
+      updated_at: 2026-07-15T04:29:39.522Z
     health:
       status: healthy
       issues: []
@@ -4741,17 +4741,17 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
       updated_at: 2026-07-15T04:26:23.330Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PN5478NZ5EGN1395724C
     task_ref: "@01KXH2PN5478NZ5EGN1395724C"
     task_slug: task-dispatch-control-persistence
     timestamps:
-      closed_at: null
+      closed_at: 2026-07-15T04:29:39.522Z
       last_active_at: 2026-07-15T04:05:38.089Z
       last_reconciled_at: 2026-07-15T04:28:48.449Z
       created_at: 2026-07-14T21:28:45.399Z
-      updated_at: 2026-07-15T04:28:48.449Z
+      updated_at: 2026-07-15T04:29:39.522Z
     workspace_id: dispatch-workspace-01KXH2PN5478NZ5EGN1395724C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
