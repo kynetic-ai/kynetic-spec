@@ -375,6 +375,54 @@ events:
         content_hash: ""
       decision: request_changes
     timestamp: 2026-07-15T06:02:34.994Z
+  - _ulid: 01KXJ5Z1QQS7EMMFP123CKPH61
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ5WRNCGS76JTYHQQ07CB60
+    timestamp: 2026-07-15T06:03:29.911Z
+  - _ulid: 01KXJ5Z4WHRKVW9C1GC6247JNF
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ5WRNCGS76JTYHQQ07CB60
+    timestamp: 2026-07-15T06:03:33.137Z
+  - _ulid: 01KXJ5Z7ZZWPRAAHK4ZB47HHK7
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ5WVTVEE4ADSYEG2SXY2Q2
+    timestamp: 2026-07-15T06:03:36.319Z
+  - _ulid: 01KXJ5ZB1W49Q5KQT10DM2X3N0
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ5WVTVEE4ADSYEG2SXY2Q2
+    timestamp: 2026-07-15T06:03:39.452Z
+  - _ulid: 01KXJ5ZE60K86WPJW0SXMVKXGN
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ5WYZR43JCD4PM2ZG2HH77
+    timestamp: 2026-07-15T06:03:42.656Z
+  - _ulid: 01KXJ5ZH8CCEC9BYMF1C9ES5G6
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ5WYZR43JCD4PM2ZG2HH77
+    timestamp: 2026-07-15T06:03:45.804Z
+  - _ulid: 01KXJ5ZMA3NGCT88RBMG8GYPGN
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ5X26J3KDW2TRMA008E71D
+    timestamp: 2026-07-15T06:03:48.931Z
+  - _ulid: 01KXJ5ZQB1BJ6KXZ43VXRHR3E9
+    actor: pr-reviewer
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ5X26J3KDW2TRMA008E71D
+    timestamp: 2026-07-15T06:03:52.034Z
 examined_commit: 083c00449470af0010a00d01db548583b51e03d9
 external_links: []
 lifecycle_state: closed
@@ -497,7 +545,14 @@ threads:
           barriers/matrix cells. Add deterministic behavioral barrier/matrix coverage required by
           the task handoff."
         created_at: 2026-07-15T06:02:15.084Z
+      - _ulid: 01KXJ5Z1FC1X3EZ0HZ78Z2VEW3
+        author: Jacob Chapel
+        body: Administrative duplicate created while retrying a delayed atomic batch; canonical thread is
+          01KXJ5T7VZ8JJBYSTYT3YTPG57. No additional worker action.
+        created_at: 2026-07-15T06:03:29.644Z
     kind: blocker
+    resolved_at: 2026-07-15T06:03:32.887Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXJ5WVTVEE4ADSYEG2SXY2Q2
     anchor:
       type: code
@@ -520,7 +575,14 @@ threads:
           changes current authoritative eligibility/rules or explicitly loses stale in-memory
           scheduling data and proves only the current canonical candidate is started."
         created_at: 2026-07-15T06:02:18.331Z
+      - _ulid: 01KXJ5Z7RM1H34C2CZ9EJKGQ73
+        author: Jacob Chapel
+        body: Administrative duplicate created while retrying a delayed atomic batch; canonical thread is
+          01KXJ5TC3X14VNXSEVPB62JBQZ. No additional worker action.
+        created_at: 2026-07-15T06:03:36.084Z
     kind: blocker
+    resolved_at: 2026-07-15T06:03:39.205Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXJ5WYZR43JCD4PM2ZG2HH77
     anchor:
       type: code
@@ -542,7 +604,14 @@ threads:
           degraded target with stable reason/timestamp, apply the lifecycle action, and deep-compare
           it afterward."
         created_at: 2026-07-15T06:02:21.560Z
+      - _ulid: 01KXJ5ZDY1YP0KRBA1F62866JG
+        author: Jacob Chapel
+        body: Administrative duplicate created while retrying a delayed atomic batch; canonical thread is
+          01KXJ5TFPFA7SP7JHJMW60ESJ2. No additional worker action.
+        created_at: 2026-07-15T06:03:42.401Z
     kind: blocker
+    resolved_at: 2026-07-15T06:03:45.574Z
+    resolved_by: pr-reviewer
   - _ulid: 01KXJ5X26J3KDW2TRMA008E71D
     entries:
       - _ulid: 01KXJ5X26JJMXHAK12ERPB0QNT
@@ -562,7 +631,14 @@ threads:
           blockers above; no additional production-code finding after a second pass. Shared/package
           guidance surfaces were not touched, so neutrality checks were not applicable."
         created_at: 2026-07-15T06:02:24.850Z
+      - _ulid: 01KXJ5ZM2P3V2X75NH5D19AE5D
+        author: Jacob Chapel
+        body: Administrative duplicate created while retrying a delayed atomic batch; canonical thread is
+          01KXJ5TJS2636D3BC8AQ85BEJE. No additional worker action.
+        created_at: 2026-07-15T06:03:48.694Z
     kind: nit
+    resolved_at: 2026-07-15T06:03:51.780Z
+    resolved_by: pr-reviewer
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -579,5 +655,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T06:02:34.994Z
 created_at: 2026-07-15T05:42:49.065Z
-updated_at: 2026-07-15T06:02:34.994Z
+updated_at: 2026-07-15T06:03:51.780Z
 notes: []
