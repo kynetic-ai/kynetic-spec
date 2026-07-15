@@ -23952,6 +23952,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-15T17:56:48.106Z
+  - _ulid: 01KXKJ7EHK82XGAKTECDHKMJTP
+    type: success
+    content: "For process-ownership and recovery changes, behavioral tests with real OS process trees
+      caught correctness gaps that injected runtimes missed: leader exit did not prove group exit,
+      resistant descendants required SIGKILL escalation, and rejected or hanging initialization had
+      to retain the spawned handle. Encoding those exact process-tree cases first produced direct
+      evidence that exited_at is published only after full group extinction."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-15T18:57:02.516Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
