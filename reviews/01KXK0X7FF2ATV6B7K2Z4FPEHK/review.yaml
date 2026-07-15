@@ -191,6 +191,18 @@ checks:
     runner: npm test -- --fresh changed dispatch suites
     created_at: 2026-07-15T14:12:48.749Z
     completed_at: 2026-07-15T14:12:48.749Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Mapped 16 selected lifecycle AC annotations to six behavioral
+      trigger/barrier/mutation/outcome traces. No implementation-source scanning; final-gate
+      process/session proof is backed by the real-invocation spawn-control suite.
+    name: AC behavioral coverage
+    required: true
+    runner: manual AC audit
+    created_at: 2026-07-15T14:12:54.600Z
+    completed_at: 2026-07-15T14:12:54.600Z
 events:
   - _ulid: 01KXK0X7FC15P6FZTBVDW8NP5M
     actor: Jacob Chapel
@@ -324,6 +336,13 @@ events:
       status: pass
       name: focused dispatch suites
     timestamp: 2026-07-15T14:12:49.011Z
+  - _ulid: 01KXK1Z6EDBGDPRFF52Q7KTN8P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC behavioral coverage
+    timestamp: 2026-07-15T14:12:54.861Z
 examined_commit: 7a9cd4210598526f56874770c264c7edf86b49ee
 external_links: []
 lifecycle_state: open
@@ -336,5 +355,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T13:54:21.807Z
-updated_at: 2026-07-15T14:12:48.749Z
+updated_at: 2026-07-15T14:12:54.600Z
 notes: []
