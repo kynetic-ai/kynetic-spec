@@ -282,6 +282,12 @@ events:
     payload:
       thread_ulid: 01KXKQ9AY1AQG5292XDEPA5RXC
     timestamp: 2026-07-15T20:48:31.407Z
+  - _ulid: 01KXKRKRS2SE5B5PBSA4YY0CNM
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKQ9AY1AQG5292XDEPA5RXC
+    timestamp: 2026-07-15T20:48:37.666Z
 examined_commit: e01006b3649db63d24a187d39e6ba73be8476358
 external_links: []
 lifecycle_state: closed
@@ -438,6 +444,8 @@ threads:
           diff hygiene, and the fresh full suite: 2,805 suites / 10,715 passing tests / 3 skipped."
         created_at: 2026-07-15T20:48:31.154Z
     kind: nit
+    resolved_at: 2026-07-15T20:48:37.415Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -447,5 +455,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T20:25:48.677Z
 created_at: 2026-07-15T20:01:28.703Z
-updated_at: 2026-07-15T20:48:31.154Z
+updated_at: 2026-07-15T20:48:37.415Z
 notes: []
