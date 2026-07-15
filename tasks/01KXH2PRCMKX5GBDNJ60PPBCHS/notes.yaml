@@ -275,3 +275,21 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T20:30:51.697Z
+  - _ulid: 01KXKRMSEHMJGMXQ8FV9JGHJCK
+    content: "Fix cycle 7 complete in 601531c687; all four blocker threads and the evidence thread were
+      replied to and resolved. Stop collection now treats late-member proof persistence as
+      recoverable evidence failure: it freezes the last durable tuple, commits stopped authority for
+      both global and task scopes, materializes failed cleanup, and refuses to signal the unproved
+      member. Post-SIGTERM process-group observation failures map to cleanup_identity_unverifiable.
+      Publication-admission fixtures now include schema-valid targets arrays and validate every
+      memory-store commit with DispatchControlSchema. Added direct leaderless-empty-group recovery
+      proof through no signal, durable exited_at, session closure, phase completion, and idle
+      removal. Ownership schema and phase table remain unchanged; Linux proof still requires
+      immutable PID/start-tick member evidence, and A/B scope isolation remains intact.
+      Verification: format passed; repo lint 0 errors; focused lint 0 warnings/errors; typecheck
+      passed; focused 56 suites/225 tests passed; refs/alignment/completeness validations passed at
+      existing warning baselines; diff hygiene passed; fresh full npm test passed 2,805 suites /
+      10,715 tests with 3 skipped."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T20:49:11.121Z
