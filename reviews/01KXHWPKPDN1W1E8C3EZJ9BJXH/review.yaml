@@ -2,7 +2,108 @@ _ulid: 01KXHWPKPDN1W1E8C3EZJ9BJXH
 slugs: []
 title: Review task-dispatch-control-persistence
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1043 files matched formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T03:36:58.696Z
+    completed_at: 2026-07-15T03:36:58.696Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo lint: 0 errors. Focused npx oxlint over all 13 changed TypeScript/test files: 0
+      errors; 8 warnings are pre-existing mock-typing warnings in
+      tests/daemon-watcher-chokidar.test.ts, and the newly added mocks are typed."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T03:37:03.356Z
+    completed_at: 2026-07-15T03:37:03.356Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T03:37:06.472Z
+    completed_at: 2026-07-15T03:37:06.472Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2794 suites passed; 10606 tests passed; 3 skipped; no failures.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-15T03:37:09.589Z
+    completed_at: 2026-07-15T03:37:09.589Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema OK and References OK; 6 allowed deprecated-reference warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-15T03:37:12.702Z
+    completed_at: 2026-07-15T03:37:12.702Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-15T03:37:16.080Z
+    completed_at: 2026-07-15T03:37:16.080Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository warning baseline; all five ACs owned by this task have
+      behavioral annotations in tests/dispatch-control-store.test.ts.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-15T03:37:19.448Z
+    completed_at: 2026-07-15T03:37:19.448Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base-to-head diff check passed and review worktree remained clean.
+    name: git diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-15T03:37:22.659Z
+    completed_at: 2026-07-15T03:37:22.659Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all 13 changed files plus surrounding file-lock, shadow commit, workspace
+      rollback, project registration, and watcher/cache integration code. Commands: base-to-head
+      diff/log/status, task/spec/plan/review lookups, AC annotation search, format/lint/focused
+      lint/typecheck/full tests, three kspec validations, diff check, and an isolated temp-git
+      equal-revision probe. Claim verified: committed dirty bytes are not published and all
+      submitted gates pass; independent probe disproved safe handling of same-revision forks.
+      Categories searched: correctness, monotonic/stale edge cases, rollback/error paths,
+      security/schema validation, test integrity, lock ordering, daemon/cache integration.
+      Shared/package guidance surfaces touched: none."
+    name: review evidence log
+    required: false
+    runner: manual review plus behavioral probe
+    created_at: 2026-07-15T03:37:25.863Z
+    completed_at: 2026-07-15T03:37:25.863Z
 events:
   - _ulid: 01KXHWPKP6PYC5P2W8T05GZ2QV
     actor: Jacob Chapel
@@ -17,6 +118,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T03:21:50.993Z
+  - _ulid: 01KXHXJRTCZRQJD5WE71JJJPXE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T03:36:58.956Z
+  - _ulid: 01KXHXJXBT9D38QPC6NVT4SB4K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T03:37:03.610Z
+  - _ulid: 01KXHXK0D79511ET8TEWEENN07
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T03:37:06.727Z
+  - _ulid: 01KXHXK3ECCS58S2WFZ5TSC1A3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T03:37:09.836Z
+  - _ulid: 01KXHXK6G260B5NS5M4Q734F2E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T03:37:12.962Z
+  - _ulid: 01KXHXK9SAB1BM9H5J6STN6QCE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T03:37:16.330Z
+  - _ulid: 01KXHXKD443H9T9J84W8BAMCFV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T03:37:19.748Z
+  - _ulid: 01KXHXKG6RRRFT8W3AKT3ZEE0X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-15T03:37:22.904Z
+  - _ulid: 01KXHXKKB6MCRC2J5ZBK8T2N4E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-15T03:37:26.118Z
 examined_commit: 1716ac35c1764b2963e326c76fb18097ac07d030
 external_links: []
 lifecycle_state: open
@@ -29,5 +193,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T03:21:36.205Z
-updated_at: 2026-07-15T03:21:50.694Z
+updated_at: 2026-07-15T03:37:25.863Z
 notes: []
