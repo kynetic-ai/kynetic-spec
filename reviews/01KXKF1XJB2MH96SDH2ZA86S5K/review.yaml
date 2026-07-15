@@ -2,7 +2,17 @@ _ulid: 01KXKF1XJB2MH96SDH2ZA86S5K
 slugs: []
 title: Review verified stop recovery (cycle 5)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1048 matched files use correct formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T18:18:51.738Z
+    completed_at: 2026-07-15T18:18:51.738Z
 events:
   - _ulid: 01KXKF1XHYVZK2KZT59VVBPBJT
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T18:01:47.961Z
+  - _ulid: 01KXKG1HRD2T2Q51CAPNPWG0M1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T18:18:52.045Z
 examined_commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T18:01:35.563Z
-updated_at: 2026-07-15T18:01:47.696Z
+updated_at: 2026-07-15T18:18:51.738Z
 notes: []
