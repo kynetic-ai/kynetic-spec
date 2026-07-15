@@ -7289,11 +7289,11 @@ workspaces:
     canonical_branch: dispatch/task/task-verify-engine-publication-admission/01kxh2pw
     canonical_branch_head: 7a9cd4210598526f56874770c264c7edf86b49ee
     cleanup:
-      status: scheduled
+      status: completed
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-07-15T14:15:52.836Z
+      updated_at: 2026-07-15T14:22:35.617Z
     health:
       status: healthy
       issues: []
@@ -7307,17 +7307,17 @@ workspaces:
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: c5e0b9a6b4afdd17021bf37f2732d620152f40de
       updated_at: 2026-07-15T14:15:52.836Z
-    lifecycle_state: closing
+    lifecycle_state: closed
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PWH4C8T1X1BWHN9FWWDR
     task_ref: "@01KXH2PWH4C8T1X1BWHN9FWWDR"
     task_slug: task-verify-engine-publication-admission
     timestamps:
-      closed_at: null
+      closed_at: 2026-07-15T14:22:35.617Z
       last_active_at: 2026-07-15T13:52:26.201Z
       last_reconciled_at: 2026-07-15T14:22:05.135Z
       created_at: 2026-07-15T13:22:09.343Z
-      updated_at: 2026-07-15T14:22:05.135Z
+      updated_at: 2026-07-15T14:22:35.617Z
     workspace_id: dispatch-workspace-01KXH2PWH4C8T1X1BWHN9FWWDR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
