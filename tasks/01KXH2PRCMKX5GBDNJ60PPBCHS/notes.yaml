@@ -141,3 +141,20 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T17:20:27.605Z
+  - _ulid: 01KXKD72Q3JVAX4X09Z6PDF4Z2
+    content: "Fix cycle 4 approach: address all four blockers with behavioral regressions first.
+      Generalize the verified spawned-agent reap path so normal invocation finalization also waits
+      for observed exit, escalating the process group to SIGKILL after the bounded grace period
+      before persisting exited_at. During stop collection, retain the active admission identity but
+      prefer the latest durable tuple when every immutable identity field matches, including
+      closed/exited sessions, so late verified group-member proofs are frozen without accepting
+      ownership reassignment. Split startup recovery coverage into explicit global and task cleanup
+      keys, and add a true repeated global stop case alongside task idempotency. Test plan:
+      resistant ACP normal completion proves the OS child is gone before exited_at is published;
+      completion-window late child proves stop uses the durable proof; global phase checkpoints
+      prove stopped scheduling and safe resumption; concurrent global/task stop each prove one
+      cleanup identity and one applied plus retry/noop outcome. Re-verify all stop ACs and full
+      project gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T17:29:27.523Z
