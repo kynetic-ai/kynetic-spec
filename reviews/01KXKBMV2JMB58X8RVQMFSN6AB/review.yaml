@@ -251,6 +251,12 @@ events:
     payload:
       thread_ulid: 01KXKCPAG9ZVKDRHZEG43XBNE0
     timestamp: 2026-07-15T17:51:02.878Z
+  - _ulid: 01KXKEESHKTVB90B3WG51RR555
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKCPAG9ZVKDRHZEG43XBNE0
+    timestamp: 2026-07-15T17:51:08.851Z
 examined_commit: 29569d9efb5bc4674f7a7e830f6aa7f1c36fe716
 external_links: []
 lifecycle_state: closed
@@ -383,6 +389,8 @@ threads:
           noop outcomes. Task idempotency remains a separate task-scoped test."
         created_at: 2026-07-15T17:51:02.593Z
     kind: blocker
+    resolved_at: 2026-07-15T17:51:08.576Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXKCPDTSB43NNX4N3R4WZW3H
     entries:
       - _ulid: 01KXKCPDTSYXM0QME1104T5V4A
@@ -429,5 +437,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T17:20:25.481Z
 created_at: 2026-07-15T17:02:01.298Z
-updated_at: 2026-07-15T17:51:02.593Z
+updated_at: 2026-07-15T17:51:08.576Z
 notes: []
