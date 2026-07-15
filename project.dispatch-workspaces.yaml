@@ -7329,7 +7329,7 @@ workspaces:
         head: 7a9cd4210598526f56874770c264c7edf86b49ee
         last_seen_at: 2026-07-15T13:51:33.062Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-engine-publication-admission-01kxh2pw
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
     bootstrap:
       status: succeeded
@@ -7828,9 +7828,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-15T15:09:57.966Z
-      last_reconciled_at: 2026-07-15T15:32:02.802Z
+      last_reconciled_at: 2026-07-15T15:34:55.070Z
       created_at: 2026-07-15T14:46:10.069Z
-      updated_at: 2026-07-15T15:32:02.802Z
+      updated_at: 2026-07-15T15:34:55.070Z
     workspace_id: dispatch-workspace-01KXK05HK3EEZ79AGT0FHZ868M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
