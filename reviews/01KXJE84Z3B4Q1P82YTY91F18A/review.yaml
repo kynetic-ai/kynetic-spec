@@ -2,7 +2,101 @@ _ulid: 01KXJE84Z3B4Q1P82YTY91F18A
 slugs: []
 title: Review canonical task pause and resume
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1045 checked files matched formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T08:46:17.504Z
+    completed_at: 2026-07-15T08:46:17.504Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint reported 0 errors; focused oxlint on all 3 changed files reported 0 warnings and
+      0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T08:46:20.972Z
+    completed_at: 2026-07-15T08:46:20.972Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and TypeScript no-emit check passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T08:46:24.086Z
+    completed_at: 2026-07-15T08:46:24.086Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh suite: 10,642 passed, 3 skipped, 1 failed. New
+      tests/dispatch-task-lifecycle.test.ts failed at line 219 because concurrent pause returned
+      noop for the first call. Focused 40/40 and three isolated fresh reruns passed, confirming
+      intermittent ordering dependence."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T08:46:27.351Z
+    completed_at: 2026-07-15T08:46:27.351Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with the existing warning baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T08:46:30.626Z
+    completed_at: 2026-07-15T08:46:30.626Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with the existing warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T08:46:33.989Z
+    completed_at: 2026-07-15T08:46:33.989Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; all nine task-owned AC annotations resolve.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T08:46:37.398Z
+    completed_at: 2026-07-15T08:46:37.398Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "dispatch.ts, task-identity.ts, and dispatch-task-lifecycle.test.ts: 0 warnings, 0 errors."
+    name: focused-lint
+    required: true
+    runner: npx oxlint
+    created_at: 2026-07-15T08:46:40.647Z
+    completed_at: 2026-07-15T08:46:40.647Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in base-to-head diff.
+    name: git diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-15T08:46:43.994Z
+    completed_at: 2026-07-15T08:46:43.994Z
 events:
   - _ulid: 01KXJE84Z3P56FTX9S87K03RHX
     actor: Jacob Chapel
@@ -17,17 +111,233 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T08:28:29.524Z
+  - _ulid: 01KXJF94PRDR3EPFJ1330TFXQR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T08:46:17.816Z
+  - _ulid: 01KXJF9814QPZRWETJP8KEP4W3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T08:46:21.220Z
+  - _ulid: 01KXJF9B48FDRB5JJRP2ZEH8NP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T08:46:24.392Z
+  - _ulid: 01KXJF9E8379YSB8BH86ZX9JMB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full test suite
+    timestamp: 2026-07-15T08:46:27.587Z
+  - _ulid: 01KXJF9HFDAXHCJHHB78YBCNMZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T08:46:30.893Z
+  - _ulid: 01KXJF9MS0GVX7Z28X33KYZWYC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T08:46:34.272Z
+  - _ulid: 01KXJF9R4GPKPN22MM66Y0JA41
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T08:46:37.712Z
+  - _ulid: 01KXJF9V7DD27RXFRDDN8M57K4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-15T08:46:40.877Z
+  - _ulid: 01KXJF9YHBR5NGVX9YKJTZD36P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-15T08:46:44.267Z
+  - _ulid: 01KXJFA1QRGK5T7PWE08XHHZ7Y
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJFA1EWWXKJ01D223KHH0XH
+    timestamp: 2026-07-15T08:46:47.544Z
+  - _ulid: 01KXJFA4XRV1CRHS7R1KTAVAWK
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJFA4MEW84FNZX288C7WPCP
+    timestamp: 2026-07-15T08:46:50.808Z
+  - _ulid: 01KXJFA83XF7DXYQ7S68F7766K
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJFA7WDFXW3JQ01NA0C17S7
+    timestamp: 2026-07-15T08:46:54.077Z
+  - _ulid: 01KXJFABD3SYXH7NH8V1RTCYYZ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJFAB2KB1DVY7957YNF22DV
+    timestamp: 2026-07-15T08:46:57.443Z
+  - _ulid: 01KXJFAEPK43R53MQPMZQB6TD7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXJFAEEN3WNFW1T9FCJXK1QA
+    timestamp: 2026-07-15T08:47:00.819Z
+  - _ulid: 01KXJFAHSSMKGNW44YFYKPKQ2K
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-15T08:47:03.993Z
+  - _ulid: 01KXJFAHSS7DDCMNM36QXMKR8N
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-15T08:47:03.993Z
 examined_commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXH2PQ8JGAF4V4MYPN15TD1H"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXJFA1EWWXKJ01D223KHH0XH
+    anchor:
+      type: code
+      commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
+      line_end: 227
+      line_start: 209
+      path: tests/dispatch-task-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJFA1EWPMG0VJC3S6RK77ZB
+        author: Jacob Chapel
+        body: "MUST-FIX: This concurrency test assumes the slug call deterministically acquires the
+          lifecycle mutex first. Both calls perform independent asynchronous identity loads before
+          locking, so Promise.all preserves result positions but does not establish lock order. The
+          fresh full suite observed the task-id call win, making first=noop and failing line 219; it
+          can also change which reason metadata is durable. Assert one applied plus one noop without
+          assigning the winner, and test sanitization separately or establish an explicit ordering
+          barrier. Evidence: focused runs passed, while npm test -- --fresh failed here with first
+          outcome noop."
+        created_at: 2026-07-15T08:46:47.260Z
+    kind: blocker
+  - _ulid: 01KXJFA4MEW84FNZX288C7WPCP
+    anchor:
+      type: code
+      commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
+      line_end: 262
+      line_start: 234
+      path: tests/dispatch-task-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJFA4MEQVX06GSXX77RKZ9F
+        author: Jacob Chapel
+        body: "MUST-FIX: The test title and task handoff claim bootstrap, retry, and post-invocation
+          coverage, but this body never starts with a precommitted task pause, runs a failed
+          invocation retry timer, or crosses a post-invocation barrier. Repeated direct calls to
+          _serializedDrain only prove the common end-state drain. A regression in any named caller
+          could still pass. Add the deterministic per-ingress barrier cases required by the task
+          handoff, including bootstrap, retry wake-up, and post-invocation re-evaluation."
+        created_at: 2026-07-15T08:46:50.510Z
+    kind: blocker
+  - _ulid: 01KXJFA7WDFXW3JQ01NA0C17S7
+    anchor:
+      type: code
+      commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
+      line_end: 265
+      line_start: 239
+      path: tests/dispatch-task-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJFA7WD60RNDMJD55T0YBVV
+        author: Jacob Chapel
+        body: "MUST-FIX: This does not prove ac-task-control-preserves-unrelated-task-control. Task B is
+          pending when engine.start runs, so B is recorded as started before task A is paused. The
+          final toContain(B) assertion therefore passes even if pausing A also pauses B. Make B
+          become eligible after A is paused and assert a post-pause B start, or directly verify B
+          has no control record in addition to behavioral admission."
+        created_at: 2026-07-15T08:46:53.837Z
+    kind: blocker
+  - _ulid: 01KXJFAB2KB1DVY7957YNF22DV
+    anchor:
+      type: code
+      commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
+      line_end: 303
+      line_start: 270
+      path: tests/dispatch-task-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJFAB2KZFFBS0WCRVSF7W2G
+        author: Jacob Chapel
+        body: "MUST-FIX: The ac-task-pause-allows-active-completion annotation is not behaviorally proven.
+          Manually inserting activeCount and activeInvocationDetails creates bookkeeping, not an
+          abortable running invocation; the immediate count assertion would still pass if pause
+          aborted real work. Run an invocation behind a completion barrier, pause its canonical
+          task, then release the barrier and prove completion. The existing registered-session
+          assertion can continue to cover the session-open AC."
+        created_at: 2026-07-15T08:46:57.107Z
+    kind: blocker
+  - _ulid: 01KXJFAEEN3WNFW1T9FCJXK1QA
+    entries:
+      - _ulid: 01KXJFAEENMWM8VSZSRPW198DH
+        author: Jacob Chapel
+        body: "Evidence log — Files read: full base-to-head diff for src/agent-runtime/dispatch.ts,
+          src/agent-runtime/task-identity.ts, tests/dispatch-task-lifecycle.test.ts; surrounding
+          dispatch drain, retry, bootstrap, publication, cleanup-store/schema, identity resolver,
+          and global lifecycle tests; task, spec, and plan context. Commands run: focused 40-test
+          suite, three isolated fresh lifecycle reruns, fresh full npm suite, format, repo/focused
+          lint, typecheck, diff check, refs/alignment/completeness validation. Claims verified:
+          canonical slug/id converge on one ULID and one store write when the test winner matches
+          its assumption; matching cleanup blocks stopped resume; global and task-A/B state are
+          independently keyed. Worker all-tests-pass claim was disproved by the fresh full run.
+          Categories searched: correctness, task/global cleanup isolation, concurrency/idempotency,
+          bootstrap/retry/post-invocation edges, error handling, test integrity, and integration.
+          Shared/package guidance surfaces touched: none; neutrality review not applicable."
+        created_at: 2026-07-15T08:47:00.565Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-15T08:47:03.993Z
 created_at: 2026-07-15T08:28:16.739Z
-updated_at: 2026-07-15T08:28:29.273Z
+updated_at: 2026-07-15T08:47:03.993Z
 notes: []
