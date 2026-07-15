@@ -203,6 +203,26 @@ checks:
     runner: manual AC audit
     created_at: 2026-07-15T14:12:54.600Z
     completed_at: 2026-07-15T14:12:54.600Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all 4 changed tests; dispatch.ts lifecycle start, actions, reconstruction and
+      final admission; dispatch-control-store.ts publication/projection; invocation.ts final
+      artifact boundary; task, spec, and plan. Commands: git diff/log/status/diff-check; focused and
+      full fresh tests; format; repo/focused lint; typecheck; refs/alignment/completeness
+      validation; annotation/source-scan searches. Claims verified: worker counts reproduced
+      exactly; publication token remains prior before commit and advances once; paused/stopped
+      bootstrap admits zero; matching-scope cleanup filtering and mixed aggregate invariants;
+      concurrent resume yields applied/noop and one active canonical task; pause/stop before final
+      gate yields zero artifacts. Categories: correctness, concurrency and boundary ordering,
+      error/rollback handling, test integrity, security/input scope, integration. Shared-guidance
+      neutrality N/A because only tests changed."
+    name: review evidence log
+    required: true
+    runner: manual adversarial review
+    created_at: 2026-07-15T14:13:00.327Z
+    completed_at: 2026-07-15T14:13:00.327Z
 events:
   - _ulid: 01KXK0X7FC15P6FZTBVDW8NP5M
     actor: Jacob Chapel
@@ -343,6 +363,13 @@ events:
       status: pass
       name: AC behavioral coverage
     timestamp: 2026-07-15T14:12:54.861Z
+  - _ulid: 01KXK1ZC11WXDJKAHR3XPJ58Y0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-15T14:13:00.577Z
 examined_commit: 7a9cd4210598526f56874770c264c7edf86b49ee
 external_links: []
 lifecycle_state: open
@@ -355,5 +382,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T13:54:21.807Z
-updated_at: 2026-07-15T14:12:54.600Z
+updated_at: 2026-07-15T14:13:00.327Z
 notes: []
