@@ -202,6 +202,12 @@ events:
     payload:
       thread_ulid: 01KXKG43X3FVQ2E51MCKY6K2Y5
     timestamp: 2026-07-15T18:52:09.638Z
+  - _ulid: 01KXKHYP8RQF9SFS4A2KW0VVS2
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKG4A9AYNJV077EV5FHNAT7
+    timestamp: 2026-07-15T18:52:15.512Z
 examined_commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
 external_links: []
 lifecycle_state: closed
@@ -266,6 +272,13 @@ threads:
           completed-cleanup knowledge or exclude already-verified retained ownership, and add
           sequential tests with a real activeInvocationOwnership entry."
         created_at: 2026-07-15T18:20:22.698Z
+      - _ulid: 01KXKHYP0XWPJRNVGVNSBF9NYM
+        author: Jacob Chapel
+        body: "Fixed in 0898f3a8e0: stop collection now removes retained ownership when the matching durable
+          session is closed or carries exited_at, preventing completed cleanup from being recreated.
+          Added sequential global and task stop regressions with retained activeInvocationOwnership;
+          the second call is noop with no extra signal."
+        created_at: 2026-07-15T18:52:15.261Z
     kind: blocker
   - _ulid: 01KXKG4GQ0Y1ZDE95GH3W2Z1C1
     anchor:
@@ -342,5 +355,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T18:21:27.777Z
 created_at: 2026-07-15T18:01:35.563Z
-updated_at: 2026-07-15T18:52:09.378Z
+updated_at: 2026-07-15T18:52:15.261Z
 notes: []
