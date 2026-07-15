@@ -220,6 +220,12 @@ events:
     payload:
       thread_ulid: 01KXKG4GQ0Y1ZDE95GH3W2Z1C1
     timestamp: 2026-07-15T18:52:27.236Z
+  - _ulid: 01KXKHZ7680DW94P6BX2TD6REC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKG4GQ0Y1ZDE95GH3W2Z1C1
+    timestamp: 2026-07-15T18:52:32.841Z
 examined_commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
 external_links: []
 lifecycle_state: closed
@@ -324,6 +330,8 @@ threads:
           both verified-reap SIGTERM-resistant children and record exited_at."
         created_at: 2026-07-15T18:52:26.974Z
     kind: blocker
+    resolved_at: 2026-07-15T18:52:32.581Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXKG4PXC7274PNRZ6HV1WJQA
     anchor:
       type: code
@@ -376,5 +384,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T18:21:27.777Z
 created_at: 2026-07-15T18:01:35.563Z
-updated_at: 2026-07-15T18:52:26.974Z
+updated_at: 2026-07-15T18:52:32.581Z
 notes: []
