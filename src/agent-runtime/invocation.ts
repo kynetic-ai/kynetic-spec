@@ -100,7 +100,7 @@ function parseLinuxProcStat(pid: number, content: string): LinuxProcEvidence {
   const processStartTicks = fields[19];
   if (
     !Number.isInteger(pgid) ||
-    pgid <= 0 ||
+    pgid < 0 ||
     !processStartTicks ||
     !/^\d+$/.test(processStartTicks)
   ) {
@@ -109,8 +109,14 @@ function parseLinuxProcStat(pid: number, content: string): LinuxProcEvidence {
   return { pid, pgid, processStartTicks };
 }
 
-async function readLinuxProcEvidence(pid: number): Promise<LinuxProcEvidence> {
-  return parseLinuxProcStat(pid, await fsPromises.readFile(`/proc/${pid}/stat`, "utf8"));
+async function readLinuxProcEvidence(pid: number): Promise<LinuxProcEvidence | null> {
+  try {
+    return parseLinuxProcStat(pid, await fsPromises.readFile(`/proc/${pid}/stat`, "utf8"));
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === "ENOENT" || code === "ESRCH") return null;
+    throw error;
+  }
 }
 
 async function listLinuxProcessGroup(pgid: number): Promise<LinuxProcEvidence[]> {
@@ -118,7 +124,7 @@ async function listLinuxProcessGroup(pgid: number): Promise<LinuxProcEvidence[]>
   const evidence = await Promise.all(
     entries
       .filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name))
-      .map((entry) => readLinuxProcEvidence(Number(entry.name)).catch(() => null)),
+      .map((entry) => readLinuxProcEvidence(Number(entry.name))),
   );
   return evidence.filter((entry): entry is LinuxProcEvidence => entry?.pgid === pgid);
 }
@@ -146,6 +152,9 @@ async function captureSpawnOwnership(
     };
   }
   const leader = await readLinuxProcEvidence(pid);
+  if (!leader || leader.pgid <= 0) {
+    throw new Error("Spawned adapter leader disappeared before ownership was persisted");
+  }
   const members = await listLinuxProcessGroup(leader.pgid);
   if (!members.some((member) => member.pid === pid)) {
     throw new Error("Spawned adapter leader disappeared before ownership was persisted");
@@ -729,6 +738,20 @@ async function waitForSpawnedAgentExit(agent: SpawnedAgent, timeoutMs?: number):
   });
 }
 
+async function waitForSpawnedAgentGroupExit(
+  agent: SpawnedAgent,
+  timeoutMs?: number,
+): Promise<boolean> {
+  const pid = agent.process.pid;
+  if (process.platform !== "linux" || !pid) return waitForSpawnedAgentExit(agent, timeoutMs);
+  const deadline = timeoutMs === undefined ? undefined : Date.now() + timeoutMs;
+  while (true) {
+    if ((await listLinuxProcessGroup(pid)).length === 0) return true;
+    if (deadline !== undefined && Date.now() > deadline) return false;
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+}
+
 /**
  * Reap a spawned child before publishing or releasing its process ownership.
  *
@@ -747,14 +770,15 @@ async function reapSpawnedAgent(agent: SpawnedAgent | null): Promise<null> {
     // Exit observation below is authoritative; a failed graceful signal still
     // proceeds to bounded forceful escalation.
   }
-  if (await waitForSpawnedAgentExit(agent, OWNERSHIP_FAILURE_TERMINATION_GRACE_MS)) return null;
+  if (await waitForSpawnedAgentGroupExit(agent, OWNERSHIP_FAILURE_TERMINATION_GRACE_MS))
+    return null;
 
   try {
     agent.kill("SIGKILL");
   } catch {
     // If the process raced to exit, the state/event checks below will observe it.
   }
-  await waitForSpawnedAgentExit(agent);
+  await waitForSpawnedAgentGroupExit(agent);
   return null;
 }
 
@@ -1016,7 +1040,11 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       return;
     }
     const leader = await readLinuxProcEvidence(owned.pid);
-    if (leader.pgid !== owned.pgid || leader.processStartTicks !== owned.process_start_ticks)
+    if (
+      !leader ||
+      leader.pgid !== owned.pgid ||
+      leader.processStartTicks !== owned.process_start_ticks
+    )
       return;
     const members = await listLinuxProcessGroup(owned.pgid);
     const updated = await mutateSessionDispatchOwnership(sessionsDir, sessionId, (current) => {
@@ -1112,38 +1140,46 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // (synthesized by the resolver), so the spawner consumes it verbatim
     // without re-overlaying session-id mid-flight.
     // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
-    state.agent = await spawnAndInitialize(adapter, {
-      cwd: contract.cwd,
-      env: invocationEnv,
-      extraArgs: [...extraArgs],
-      // Runner-backed invocations turn off host process.env inheritance so
-      // the runner's env.inherit/pass/set policy is the only source of host
-      // env in the child.
-      // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
-      inheritParentEnv: contract.inheritParentEnv,
-      // Pass the resolved redactor so adapter stderr cannot leak resolved
-      // secret values to operator-visible output.
-      // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
-      redact,
-      clientOptions: {
-        methodTimeouts: {
-          "session/prompt": promptRequestTimeoutMs,
+    const publishSpawnedOwnership = async (spawned: SpawnedAgent): Promise<void> => {
+      state.agent = spawned;
+      if (!createHandoff || ownershipPublished) return;
+      const ownership = await captureSpawnOwnership(createHandoff, spawned.process);
+      const persisted = await updateSessionDispatchOwnership(sessionsDir, sessionId, ownership);
+      if (!persisted) throw new Error("Spawned session ownership could not be persisted");
+      durableOwnership = ownership;
+      await onOwnershipPersisted?.(ownership);
+      ownershipPublished = true;
+    };
+    try {
+      const initializedAgent = await spawnAndInitialize(adapter, {
+        cwd: contract.cwd,
+        env: invocationEnv,
+        extraArgs: [...extraArgs],
+        // Runner-backed invocations turn off host process.env inheritance so
+        // the runner's env.inherit/pass/set policy is the only source of host
+        // env in the child.
+        // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+        inheritParentEnv: contract.inheritParentEnv,
+        // Pass the resolved redactor so adapter stderr cannot leak resolved
+        // secret values to operator-visible output.
+        // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+        redact,
+        onSpawn: publishSpawnedOwnership,
+        initializationSignal: abortSignal,
+        clientOptions: {
+          methodTimeouts: {
+            "session/prompt": promptRequestTimeoutMs,
+          },
         },
-      },
-    });
-
-    if (createHandoff) {
-      try {
-        const ownership = await captureSpawnOwnership(createHandoff, state.agent.process);
-        const persisted = await updateSessionDispatchOwnership(sessionsDir, sessionId, ownership);
-        if (!persisted) throw new Error("Spawned session ownership could not be persisted");
-        durableOwnership = ownership;
-        await onOwnershipPersisted?.(ownership);
-        ownershipPublished = true;
-      } catch (error) {
+      });
+      state.agent = initializedAgent;
+      // Test doubles and third-party wrappers may not yet invoke onSpawn.
+      await publishSpawnedOwnership(initializedAgent);
+    } catch (error) {
+      if (createHandoff && state.agent) {
         state.agent = await reapSpawnedAgent(state.agent);
-        throw error;
       }
+      throw error;
     }
 
     // ─── Create ACP session ───────────────────────────────────────────────

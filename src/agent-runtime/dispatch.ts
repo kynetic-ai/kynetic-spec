@@ -884,7 +884,7 @@ function parseLinuxProcessEvidence(pid: number, content: string): DispatchProces
   const processStartTicks = fields[19];
   if (
     !Number.isInteger(pgid) ||
-    pgid <= 0 ||
+    pgid < 0 ||
     !processStartTicks ||
     !/^\d+$/.test(processStartTicks)
   ) {
@@ -897,7 +897,8 @@ async function readLinuxProcessEvidence(pid: number): Promise<DispatchProcessEvi
   try {
     return parseLinuxProcessEvidence(pid, await fsPromises.readFile(`/proc/${pid}/stat`, "utf8"));
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === "ENOENT" || code === "ESRCH") return null;
     throw error;
   }
 }
@@ -907,7 +908,7 @@ async function listLinuxProcessGroup(pgid: number): Promise<DispatchProcessEvide
   const evidence = await Promise.all(
     entries
       .filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name))
-      .map((entry) => readLinuxProcessEvidence(Number(entry.name)).catch(() => null)),
+      .map((entry) => readLinuxProcessEvidence(Number(entry.name))),
   );
   return evidence.filter((entry): entry is DispatchProcessEvidence => entry?.pgid === pgid);
 }
@@ -1882,6 +1883,10 @@ export class DispatchEngine {
         // only when the immutable ownership tuple is unchanged; otherwise keep
         // the retained target so recovery rejects the reassignment as a mismatch.
         if (!isDeepStrictEqual(retainedIdentity, durableIdentity)) continue;
+        if (ownership.exited_at || metadata?.status !== "active") {
+          targets.delete(sessionId);
+          continue;
+        }
       } else if (ownership.exited_at || metadata?.status !== "active") {
         continue;
       }

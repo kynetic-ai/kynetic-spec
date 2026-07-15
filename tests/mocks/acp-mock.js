@@ -35,11 +35,13 @@
  * - MOCK_ACP_RESIST_TERMINATION: If true, ignore SIGTERM and keep the process
  *     alive after stdin closes so process-reap escalation can be tested.
  * - MOCK_ACP_PID_FILE: Write this mock process's PID to the given file.
+ * - MOCK_ACP_INITIALIZE_MODE: "reject" rejects initialization; "hang" never responds.
+ * - MOCK_ACP_RESISTANT_DESCENDANT_PID_FILE: Spawn a same-group child that ignores SIGTERM.
  */
 
 import * as fs from "node:fs";
 import * as readline from "node:readline";
-import { execSync } from "node:child_process";
+import { execSync, spawn } from "node:child_process";
 
 // ─── State ───────────────────────────────────────────────────────────────────
 
@@ -79,6 +81,8 @@ const sendNonMeaningfulOnly = process.env.MOCK_ACP_SEND_NON_MEANINGFUL_ONLY === 
 const customUpdateType = process.env.MOCK_ACP_CUSTOM_UPDATE_TYPE;
 const resistTermination = process.env.MOCK_ACP_RESIST_TERMINATION === "true";
 const pidFile = process.env.MOCK_ACP_PID_FILE;
+const initializeMode = process.env.MOCK_ACP_INITIALIZE_MODE;
+const resistantDescendantPidFile = process.env.MOCK_ACP_RESISTANT_DESCENDANT_PID_FILE;
 
 if (pidFile) {
   fs.writeFileSync(pidFile, String(process.pid));
@@ -88,6 +92,19 @@ if (resistTermination) {
   process.on("SIGTERM", () => {
     // Intentionally resist graceful termination. SIGKILL remains uncatchable.
   });
+}
+
+if (resistantDescendantPidFile) {
+  const descendant = spawn(
+    process.execPath,
+    [
+      "-e",
+      "process.on('SIGTERM',()=>{});require('node:fs').writeFileSync(process.argv[1],String(process.pid));setInterval(()=>{},1000)",
+      resistantDescendantPidFile,
+    ],
+    { stdio: "ignore" },
+  );
+  descendant.unref();
 }
 
 // ─── JSON-RPC Helpers ────────────────────────────────────────────────────────
@@ -408,6 +425,11 @@ async function handleMessage(line) {
 
     switch (msg.method) {
       case "initialize":
+        if (initializeMode === "reject") {
+          sendError(msg.id, -32000, "Injected initialization failure");
+          break;
+        }
+        if (initializeMode === "hang") break;
         await handleInitialize(msg.id, msg.params);
         break;
       case "session/new":

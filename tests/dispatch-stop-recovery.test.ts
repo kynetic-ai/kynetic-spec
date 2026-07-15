@@ -366,6 +366,23 @@ describe("verified dispatch hard-stop recovery", () => {
     expect(harness.signals).toEqual([]);
   });
 
+  // AC: @dispatch-lifecycle-control-authority ac-unverified-live-group-is-not-signalled
+  it("rejects unreadable process-group member evidence without signalling", async () => {
+    const harness = await createStopRecoveryHarness();
+    await harness.seedOwnership(1, harness.taskA);
+    harness.runtime.listProcessGroup = async () => {
+      const error = new Error("injected /proc member read failure") as NodeJS.ErrnoException;
+      error.code = "EACCES";
+      throw error;
+    };
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).rejects.toMatchObject({
+      code: "cleanup_identity_unverifiable",
+    });
+    expect(harness.signals).toEqual([]);
+    expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("failed");
+  });
+
   // AC: @dispatch-lifecycle-control-authority ac-missing-leader-live-group-remains-pending
   // AC: @dispatch-lifecycle-control-authority ac-live-group-prevents-cleanup-completion
   it("distinguishes a proved live leaderless group and leaves cleanup unfinished", async () => {
@@ -637,6 +654,23 @@ describe("verified dispatch hard-stop recovery", () => {
     expect(harness.signals).toHaveLength(1);
   });
 
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-is-idempotent
+  it("keeps a completed sequential task stop noop while ownership is retained", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    harness.retainActiveOwnership(target);
+
+    await expect(
+      harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA }),
+    ).resolves.toMatchObject({ outcome: "applied" });
+    const signalCount = harness.signals.length;
+    await expect(
+      harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA }),
+    ).resolves.toMatchObject({ outcome: "noop" });
+    expect(harness.signals).toHaveLength(signalCount);
+    expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
+  });
+
   // AC: @dispatch-lifecycle-control-authority ac-global-stop-is-idempotent
   it("coalesces repeated global stop into one cleanup identity", async () => {
     const harness = await createStopRecoveryHarness();
@@ -656,6 +690,23 @@ describe("verified dispatch hard-stop recovery", () => {
     await expect(first).resolves.toMatchObject({ outcome: "applied" });
     await expect(second).resolves.toMatchObject({ outcome: "noop" });
     expect(harness.signals).toHaveLength(1);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-global-stop-is-idempotent
+  it("keeps a completed sequential global stop noop while ownership is retained", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    harness.retainActiveOwnership(target);
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).resolves.toMatchObject({
+      outcome: "applied",
+    });
+    const signalCount = harness.signals.length;
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).resolves.toMatchObject({
+      outcome: "noop",
+    });
+    expect(harness.signals).toHaveLength(signalCount);
+    expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
   });
 
   // AC: @dispatch-lifecycle-control-authority ac-spawn-win-stop-cancels-invocation
