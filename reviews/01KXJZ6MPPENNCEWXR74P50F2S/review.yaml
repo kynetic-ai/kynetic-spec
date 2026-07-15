@@ -198,6 +198,13 @@ events:
       kind: blocker
       thread_ulid: 01KXK0D9VMJ08G9DQP2FCQTC59
     timestamp: 2026-07-15T13:45:40.210Z
+  - _ulid: 01KXK0DW10EAZ90T9GNDM48X96
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXK0DVRA5MSKF810J0056C87
+    timestamp: 2026-07-15T13:45:58.560Z
 examined_commit: 3a9909c4870a49f5f3ac174716edfca067852055
 external_links: []
 lifecycle_state: open
@@ -311,7 +318,26 @@ threads:
           behavioral admission assertion and add the missing recovery-boundary cases.
         created_at: 2026-07-15T13:45:39.956Z
     kind: blocker
+  - _ulid: 01KXK0DVRA5MSKF810J0056C87
+    entries:
+      - _ulid: 01KXK0DVRANFMA6YN3X2XK1H2R
+        author: pr-reviewer
+        body: "Review evidence log — Files read: every submitted file
+          (src/agent-runtime/{dispatch,invocation,session-registry}.ts,
+          src/schema/dispatch-control.ts, src/sessions/{store,types}.ts, and all ten changed tests),
+          plus surrounding invocation/cleanup code, task/spec/plan binding decisions, and AC
+          annotations. Commands run: git diff/log/status/diff-check; kspec task/item/plan/review
+          lookups; refs/alignment/completeness validation; format, repo/focused lint, typecheck;
+          fresh full suite; two fresh daemon-command-api reruns; focused stop-recovery/race/registry
+          tests. Claims independently verified: durable tuple persistence and phase retry flow were
+          traced against real session-finalization writes; all stop AC annotation tokens were
+          searched and the forbids-new-starts test body was compared to its AC. Categories searched:
+          correctness, crash/retry edges, I/O and signal/closure errors, process identity safety,
+          concurrency/admission, test quality, integration, and shared-surface scope. Shared/package
+          guidance surfaces touched: none."
+        created_at: 2026-07-15T13:45:58.282Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-15T13:24:33.110Z
-updated_at: 2026-07-15T13:45:39.956Z
+updated_at: 2026-07-15T13:45:58.282Z
 notes: []
