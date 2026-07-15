@@ -23897,6 +23897,22 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-15T14:44:38.654Z
+  - _ulid: 01KXKB6CF10WAX7PK0YHMX3EHS
+    type: friction
+    content: Production child-process termination semantics are duplicated and can drift from the
+      verified cleanup contract. In @task-engine-stop-recovery, agent invocation cleanup used
+      synchronous best-effort SIGTERM and released ownership without observing exit, while bounded
+      SIGTERM-to-SIGKILL observed-exit primitives existed only in test-side daemon helpers from
+      @task-implement-bounded-process-stop-primitives. A shared production-owned termination
+      primitive (including process-group signalling, signalCode exit detection, bounded escalation,
+      and verified exit before success) should be evaluated for agent spawner/invocation and other
+      production child owners so safety does not depend on each call site reimplementing the
+      contract.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-15T16:54:07.585Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
