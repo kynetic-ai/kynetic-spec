@@ -245,6 +245,12 @@ events:
     payload:
       thread_ulid: 01KXKCP78KKM52ARC32YVMGVV2
     timestamp: 2026-07-15T17:50:57.106Z
+  - _ulid: 01KXKEEKPY497XJQ01N0M6SEHV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKCPAG9ZVKDRHZEG43XBNE0
+    timestamp: 2026-07-15T17:51:02.878Z
 examined_commit: 29569d9efb5bc4674f7a7e830f6aa7f1c36fe716
 external_links: []
 lifecycle_state: closed
@@ -370,6 +376,12 @@ threads:
           global one-cleanup/one-success-plus-retry behavior) rather than claiming both scopes from
           this task-only test.
         created_at: 2026-07-15T17:20:18.441Z
+      - _ulid: 01KXKEEKE1AJ3Q49T40TR1SAVS
+        author: Jacob Chapel
+        body: "Fixed in eabcdee53e: added a real repeated global stop test using applyGlobalLifecycleAction
+          twice across a recovery barrier, asserting one cleanup identity, one signal, applied then
+          noop outcomes. Task idempotency remains a separate task-scoped test."
+        created_at: 2026-07-15T17:51:02.593Z
     kind: blocker
   - _ulid: 01KXKCPDTSB43NNX4N3R4WZW3H
     entries:
@@ -417,5 +429,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T17:20:25.481Z
 created_at: 2026-07-15T17:02:01.298Z
-updated_at: 2026-07-15T17:50:56.834Z
+updated_at: 2026-07-15T17:51:02.593Z
 notes: []
