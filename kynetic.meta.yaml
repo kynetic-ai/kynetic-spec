@@ -23885,6 +23885,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-15T13:19:59.751Z
+  - _ulid: 01KXK3S9KYZZJPQWKWY6TACHMP
+    type: success
+    content: "Durable lifecycle fix cycles benefit from two complementary verification layers:
+      fault-injection tests at each persistence/publication/cleanup boundary prove local recovery
+      invariants, while a fresh full-suite run catches cross-suite fixture activation leaks that
+      focused tests cannot see. In @task-engine-stop-recovery, focused stop-recovery tests passed,
+      but the full suite exposed parser-only fake-worktree fixtures accidentally activating the
+      durable dispatch store; requiring authentic linked-worktree evidence fixed the regression."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-15T14:44:38.654Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
