@@ -29815,7 +29815,7 @@ reviews:
     title: Review verified stop recovery (cycle 7)
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 9
     examined_commit: e01006b3649db63d24a187d39e6ba73be8476358
     lifecycle_state: open
     related_refs: []
@@ -29828,4 +29828,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-15T20:01:28.703Z
-    updated_at: 2026-07-15T20:01:41.570Z
+    updated_at: 2026-07-15T20:24:17.768Z

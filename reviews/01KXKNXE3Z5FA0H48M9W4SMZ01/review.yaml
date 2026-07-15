@@ -2,7 +2,104 @@ _ulid: 01KXKNXE3Z5FA0H48M9W4SMZ01
 slugs: []
 title: Review verified stop recovery (cycle 7)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: oxfmt checked 1048 files with no formatting differences."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T20:23:51.572Z
+    completed_at: 2026-07-15T20:23:51.572Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors and the existing 702-warning repo baseline. Focused oxlint over all
+      20 changed TS/JS files reported 0 errors and 6 warnings, all on unchanged lines in
+      tests/active-session-registry.test.ts.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T20:23:54.814Z
+    completed_at: 2026-07-15T20:23:54.814Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed shared package build and tsc --noEmit.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T20:23:57.993Z
+    completed_at: 2026-07-15T20:23:57.993Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed 2805/2805 suites; 10711 tests passed and 3 skipped. Duration 2741.8s. Log:
+      /tmp/kspec-test-cache/01KXKNRVR4D81GTGJHHQWS2J2N/4f2123b7e190d5cb.log"
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-15T20:24:01.216Z
+    completed_at: 2026-07-15T20:24:01.216Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 6 existing deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-15T20:24:04.353Z
+    completed_at: 2026-07-15T20:24:04.353Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with the 55-warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-15T20:24:07.472Z
+    completed_at: 2026-07-15T20:24:07.472Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with the 329-warning baseline. Target spec has no inherited traits; all task-owned
+      stop/recovery AC annotations were located and behaviorally inspected.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-15T20:24:10.595Z
+    completed_at: 2026-07-15T20:24:10.595Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed 63 suites / 249 tests across stop recovery, spawn race, session registry,
+      invocation, dispatch engine, and control store; publication admission separately passed 2
+      suites / 13 tests fresh.
+    name: focused stop recovery tests
+    required: false
+    runner: npm test -- focused changed suites --fresh
+    created_at: 2026-07-15T20:24:13.764Z
+    completed_at: 2026-07-15T20:24:13.764Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed against c5e0b9a6...e01006b3; detached review snapshot restored clean after
+      temporary behavioral probes.
+    name: diff hygiene
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-15T20:24:17.768Z
+    completed_at: 2026-07-15T20:24:17.768Z
 events:
   - _ulid: 01KXKNXE3YYWCRV72111HKY4D5
     actor: Jacob Chapel
@@ -17,6 +114,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T20:01:41.849Z
+  - _ulid: 01KXKQ6DRP2Y0E3DNG4YV1MZJF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T20:23:51.830Z
+  - _ulid: 01KXKQ6GXHG2KK49WVFQ8ZE6ZC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T20:23:55.057Z
+  - _ulid: 01KXKQ6M17YK036V3YPXSTNWRR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T20:23:58.247Z
+  - _ulid: 01KXKQ6Q5KHYZ3TM5ES7GH6PT6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T20:24:01.459Z
+  - _ulid: 01KXKQ6T8QR84TH4CFXATBAJX6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T20:24:04.631Z
+  - _ulid: 01KXKQ6X948ZE07TM2552E58CH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T20:24:07.716Z
+  - _ulid: 01KXKQ70B50A6NE99ANSZ87BSM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T20:24:10.853Z
+  - _ulid: 01KXKQ73DTM3C2VKQV3K8JMJM7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused stop recovery tests
+    timestamp: 2026-07-15T20:24:14.010Z
+  - _ulid: 01KXKQ77B8G79YD49DHV73ME2E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-07-15T20:24:18.024Z
 examined_commit: e01006b3649db63d24a187d39e6ba73be8476358
 external_links: []
 lifecycle_state: open
@@ -29,5 +189,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T20:01:28.703Z
-updated_at: 2026-07-15T20:01:41.570Z
+updated_at: 2026-07-15T20:24:17.768Z
 notes: []
