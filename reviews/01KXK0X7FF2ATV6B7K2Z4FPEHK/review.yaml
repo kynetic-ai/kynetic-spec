@@ -11,8 +11,113 @@ checks:
     name: format
     required: true
     runner: npm run format:check
-    created_at: 2026-07-15T14:11:47.976Z
-    completed_at: 2026-07-15T14:11:47.976Z
+    created_at: 2026-07-15T14:11:12.490Z
+    completed_at: 2026-07-15T14:11:12.490Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo lint: 0 errors with existing 702-warning baseline. Focused oxlint on all 4 changed
+      test files: 0 warnings, 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T14:11:17.009Z
+    completed_at: 2026-07-15T14:11:17.009Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T14:11:21.488Z
+    completed_at: 2026-07-15T14:11:21.488Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run: 2802 suites passed; 10668 tests passed; 3 skipped; 0 failed."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T14:11:26.386Z
+    completed_at: 2026-07-15T14:11:26.386Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed: schema and references OK; 6 accepted baseline deprecation warnings."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-15T14:11:30.478Z
+    completed_at: 2026-07-15T14:11:30.478Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed under warnings policy; 55 repository baseline alignment warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-15T14:11:34.728Z
+    completed_at: 2026-07-15T14:11:34.728Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed under warnings policy; changed dispatch lifecycle AC annotations resolve
+      and repository baseline warnings remain accepted.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-15T14:11:39.671Z
+    completed_at: 2026-07-15T14:11:39.671Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 10 suites and 67 tests passed across publication/admission, control store, global
+      lifecycle, and spawn-control race tests.
+    name: focused dispatch suites
+    required: true
+    runner: npm test -- --fresh <4 changed suites>
+    created_at: 2026-07-15T14:11:44.025Z
+    completed_at: 2026-07-15T14:11:44.025Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Mapped 16 selected lifecycle AC annotations to six behavioral
+      trigger/barrier/mutation/outcome traces. No implementation-source scanning; final-gate
+      process/session proof is backed by the real-invocation spawn-control suite.
+    name: AC behavioral coverage
+    required: true
+    runner: manual AC audit
+    created_at: 2026-07-15T14:11:49.870Z
+    completed_at: 2026-07-15T14:11:49.870Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all 4 changed tests; dispatch.ts lifecycle start, actions, reconstruction and
+      final admission; dispatch-control-store.ts publication/projection; invocation.ts final
+      artifact boundary; task, spec, and plan. Commands: git diff/log/status/diff-check; focused and
+      full fresh tests; format; repo/focused lint; typecheck; refs/alignment/completeness
+      validation; annotation/source-scan searches. Claims verified: worker counts reproduced
+      exactly; publication token remains prior before commit and advances once; paused/stopped
+      bootstrap admits zero; matching-scope cleanup filtering and mixed aggregate invariants;
+      concurrent resume yields applied/noop and one active canonical task; pause/stop before final
+      gate yields zero artifacts. Categories: correctness, concurrency and boundary ordering,
+      error/rollback handling, test integrity, security/input scope, integration. Shared-guidance
+      neutrality N/A because only tests changed."
+    name: review evidence log
+    required: true
+    runner: manual adversarial review
+    created_at: 2026-07-15T14:11:55.897Z
+    completed_at: 2026-07-15T14:11:55.897Z
 events:
   - _ulid: 01KXK0X7FC15P6FZTBVDW8NP5M
     actor: Jacob Chapel
@@ -27,13 +132,76 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T13:54:36.059Z
-  - _ulid: 01KXK1X5EADJF44P2DVS5B3VWX
+  - _ulid: 01KXK1W2QY82E5VPJBVHS722WD
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: format
-    timestamp: 2026-07-15T14:11:48.298Z
+    timestamp: 2026-07-15T14:11:12.766Z
+  - _ulid: 01KXK1W76D6H9CAD00FJD1MFW6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T14:11:17.328Z
+  - _ulid: 01KXK1WBKR37806KM99PE7SAYN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T14:11:21.848Z
+  - _ulid: 01KXK1WGCVQVHXZKZ2Z1MGZA84
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T14:11:26.747Z
+  - _ulid: 01KXK1WMCS61R2CNFQ2Y89YB4Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T14:11:30.841Z
+  - _ulid: 01KXK1WRP0WHY2KNKRAPRSDC75
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T14:11:35.232Z
+  - _ulid: 01KXK1WXBZDHJ30JXET98JXHHK
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T14:11:40.031Z
+  - _ulid: 01KXK1X1NG7X9YC2B46XYEPDJT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch suites
+    timestamp: 2026-07-15T14:11:44.432Z
+  - _ulid: 01KXK1X7ESHRQWM2AJHJAEJ6JR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: AC behavioral coverage
+    timestamp: 2026-07-15T14:11:50.361Z
+  - _ulid: 01KXK1XD70XGKZ33DGJFBS3ZMD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-15T14:11:56.256Z
 examined_commit: 7a9cd4210598526f56874770c264c7edf86b49ee
 external_links: []
 lifecycle_state: open
@@ -46,5 +214,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T13:54:21.807Z
-updated_at: 2026-07-15T14:11:47.976Z
+updated_at: 2026-07-15T14:11:55.897Z
 notes: []
