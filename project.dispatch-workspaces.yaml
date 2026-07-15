@@ -7147,12 +7147,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-15T13:50:45.803Z
+      updated_at: 2026-07-15T13:51:33.062Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-15T13:50:45.803Z
+      updated_at: 2026-07-15T13:51:33.062Z
     integration:
       status: pending
       detail: null
@@ -7160,7 +7160,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: c5e0b9a6b4afdd17021bf37f2732d620152f40de
-      updated_at: 2026-07-15T13:50:45.803Z
+      updated_at: 2026-07-15T13:51:33.062Z
     lifecycle_state: integrating
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PWH4C8T1X1BWHN9FWWDR
@@ -7169,16 +7169,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-15T13:22:57.304Z
-      last_reconciled_at: 2026-07-15T13:50:45.803Z
+      last_reconciled_at: 2026-07-15T13:51:33.062Z
       created_at: 2026-07-15T13:22:09.343Z
-      updated_at: 2026-07-15T13:50:45.803Z
+      updated_at: 2026-07-15T13:51:33.062Z
     workspace_id: dispatch-workspace-01KXH2PWH4C8T1X1BWHN9FWWDR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 7a9cd4210598526f56874770c264c7edf86b49ee
+        last_seen_at: 2026-07-15T13:51:33.062Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-engine-publication-admission-01kxh2pw-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-verify-engine-publication-admission/01kxh2pw
-        head: c5e0b9a6b4afdd17021bf37f2732d620152f40de
-        last_seen_at: 2026-07-15T13:22:09.343Z
+        head: 7a9cd4210598526f56874770c264c7edf86b49ee
+        last_seen_at: 2026-07-15T13:51:33.062Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-engine-publication-admission-01kxh2pw
