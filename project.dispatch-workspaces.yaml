@@ -6819,3 +6819,80 @@ workspaces:
         head: 3a9909c4870a49f5f3ac174716edfca067852055
         last_seen_at: 2026-07-15T13:21:00.798Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-engine-stop-recovery-01kxh2pr
+  - active_role: null
+    base_branch_point: c5e0b9a6b4afdd17021bf37f2732d620152f40de
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-verify-engine-publication-admission/01kxh2pw
+    canonical_branch_head: c5e0b9a6b4afdd17021bf37f2732d620152f40de
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-07-15T13:22:09.343Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-07-15T13:22:09.343Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+      target_commit: c5e0b9a6b4afdd17021bf37f2732d620152f40de
+      updated_at: 2026-07-15T13:22:09.343Z
+    lifecycle_state: ready
+    resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+    task_id: 01KXH2PWH4C8T1X1BWHN9FWWDR
+    task_ref: "@01KXH2PWH4C8T1X1BWHN9FWWDR"
+    task_slug: task-verify-engine-publication-admission
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-07-15T13:22:09.343Z
+      created_at: 2026-07-15T13:22:09.343Z
+      updated_at: 2026-07-15T13:22:09.343Z
+    workspace_id: dispatch-workspace-01KXH2PWH4C8T1X1BWHN9FWWDR
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-verify-engine-publication-admission/01kxh2pw
+        head: c5e0b9a6b4afdd17021bf37f2732d620152f40de
+        last_seen_at: 2026-07-15T13:22:09.343Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-engine-publication-admission-01kxh2pw
