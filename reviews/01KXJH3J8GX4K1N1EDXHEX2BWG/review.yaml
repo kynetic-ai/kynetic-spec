@@ -2,7 +2,90 @@ _ulid: 01KXJH3J8GX4K1N1EDXHEX2BWG
 slugs: []
 title: Review canonical task pause and resume (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1045 files matched formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T09:34:56.773Z
+    completed_at: 2026-07-15T09:34:56.773Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint reported 0 errors with the existing 702-warning baseline; focused oxlint on all
+      3 changed files reported 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T09:34:59.861Z
+    completed_at: 2026-07-15T09:34:59.861Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and TypeScript no-emit check passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T09:35:02.931Z
+    completed_at: 2026-07-15T09:35:02.931Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh full run passed: 2,798 suites; 10,648 tests passed and 3 skipped. Focused fresh
+      lifecycle/identity surface also passed 45/45."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T09:35:06.114Z
+    completed_at: 2026-07-15T09:35:06.114Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with 6 documented baseline warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T09:35:09.231Z
+    completed_at: 2026-07-15T09:35:09.231Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with the repository warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T09:35:12.155Z
+    completed_at: 2026-07-15T09:35:12.155Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with the repository warning baseline;
+      all nine task-owned AC annotations resolve.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T09:35:15.023Z
+    completed_at: 2026-07-15T09:35:15.023Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in the integration-base-to-head diff.
+    name: git diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-15T09:35:18.044Z
+    completed_at: 2026-07-15T09:35:18.044Z
 events:
   - _ulid: 01KXJH3J8FFSVWP2JDAGT1DTHG
     actor: Jacob Chapel
@@ -17,6 +100,83 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T09:18:25.391Z
+  - _ulid: 01KXJJ27FNY234YQPRM19S6485
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T09:34:57.013Z
+  - _ulid: 01KXJJ2AFY7FB8BJK7T50Z41MR
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T09:35:00.095Z
+  - _ulid: 01KXJJ2DK8NQ5A5BXHTCQWHH11
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T09:35:03.272Z
+  - _ulid: 01KXJJ2GKN71BEAX8X1ETHN2WJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T09:35:06.357Z
+  - _ulid: 01KXJJ2KMDE0VXCZB7GXSF2RJW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T09:35:09.453Z
+  - _ulid: 01KXJJ2PG0RHMXFHS9Q48G5CV1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T09:35:12.384Z
+  - _ulid: 01KXJJ2SA16XCX8WG4PV6NKA3V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T09:35:15.265Z
+  - _ulid: 01KXJJ2W7TVMK3V0DF71ZDY4TB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-15T09:35:18.266Z
+  - _ulid: 01KXJJ2Z7DWF6CYAF059GKZ41X
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJJ2YYHCRGVP96MGS0J0P6G
+    timestamp: 2026-07-15T09:35:21.325Z
+  - _ulid: 01KXJJ328JCSXB6YB543GBKJ6S
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJJ321A6H77AJHJCSZ5SFFK
+    timestamp: 2026-07-15T09:35:24.434Z
+  - _ulid: 01KXJJ35BP3FT9VZ0VXQFNEAB7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXJJ353ZRCFY84KRCH4XXBDV
+    timestamp: 2026-07-15T09:35:27.606Z
 examined_commit: a3e2d4f32e56b2735e3d65a0131676a15c35642e
 external_links: []
 lifecycle_state: open
@@ -26,8 +186,74 @@ subject:
   content_hash: ""
   ref: "@01KXH2PQ8JGAF4V4MYPN15TD1H"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXJJ2YYHCRGVP96MGS0J0P6G
+    anchor:
+      type: code
+      commit: a3e2d4f32e56b2735e3d65a0131676a15c35642e
+      line_end: 471
+      line_start: 466
+      path: tests/dispatch-task-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJJ2YYHST8JWXSX0JVV1TMQ
+        author: Jacob Chapel
+        body: "MUST-FIX: The ac-task-pause-allows-active-completion annotation still does not prove that
+          pause leaves an invocation un-aborted. The runInvocation mock ignores
+          InvocationOptions.abortSignal and waits only on its own barrier, so it completes after
+          release even if applyTaskLifecycleAction regresses to abort the real invocation. Impact:
+          task pause could cancel active work while this AC-tagged test remains green. Evidence: the
+          focused 45/45 and full 10,648-test runs pass with this non-abort-aware mock. Capture the
+          invocation options and make the barrier reject on abort or explicitly assert the active
+          invocation signal remains un-aborted through pause."
+        created_at: 2026-07-15T09:35:21.041Z
+    kind: blocker
+  - _ulid: 01KXJJ321A6H77AJHJCSZ5SFFK
+    anchor:
+      type: code
+      commit: a3e2d4f32e56b2735e3d65a0131676a15c35642e
+      line_end: 488
+      line_start: 473
+      path: tests/dispatch-task-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJJ321ANAF33Y499FJ8GVGP
+        author: Jacob Chapel
+        body: "MUST-FIX: The ac-task-pause-keeps-active-session-open annotation checks an unrelated registry
+          entry, not the session belonging to the running task-A invocation. _spawnInvocation
+          generates a preSessionId for its active tracking record, while the test independently
+          registers the literal active-a; therefore a regression that closes only the matching
+          active invocation session would leave active-a untouched and this test would pass. Impact:
+          pause could close the actual task session without detection. Evidence: lines 474-488 never
+          capture the runInvocation sessionId or associate active-a with the active record. Capture
+          the generated invocation session identity, register/assert that exact session, and verify
+          its close callback is not invoked."
+        created_at: 2026-07-15T09:35:24.202Z
+    kind: blocker
+  - _ulid: 01KXJJ353ZRCFY84KRCH4XXBDV
+    entries:
+      - _ulid: 01KXJJ353Z7YDSRRT0P8JNBMF0
+        author: Jacob Chapel
+        body: "Evidence log — Files read: full base-to-head diff for src/agent-runtime/dispatch.ts,
+          src/agent-runtime/task-identity.ts, and tests/dispatch-task-lifecycle.test.ts; fix-cycle
+          diff; surrounding queue evaluation/drain/retry/post-invocation/publication logic, dispatch
+          control store/schema, identity resolver, prior review, task/spec/plan context. Commands
+          run: fresh focused 45-test surface, fresh full npm suite, format, repo/focused lint,
+          typecheck, diff check, refs/alignment/completeness validation, git status. Claims
+          verified: canonical slug/id converge on one ULID and one durable write; matching cleanup
+          blocks stopped resume; task A/B and global authority stay isolated;
+          bootstrap/reconcile/retry/post-invocation barriers now exercise distinct paths; full suite
+          claim verified at 10,648 passed and 3 skipped. Prior findings verified: concurrency
+          ordering, ingress separation, and post-pause B admission are fixed; active
+          invocation/session coverage remains insufficient as recorded separately. Categories
+          searched: correctness, concurrency/idempotency, cleanup scoping, canonical identity,
+          edge/error paths, test integrity, security/input validation, and integration.
+          Shared/package guidance surfaces touched: none; neutrality checks and generated-artifact
+          refresh are not applicable. Codex skill attempt made no changes because its configured
+          model was unavailable."
+        created_at: 2026-07-15T09:35:27.359Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-15T09:18:12.240Z
-updated_at: 2026-07-15T09:18:25.096Z
+updated_at: 2026-07-15T09:35:27.359Z
 notes: []
