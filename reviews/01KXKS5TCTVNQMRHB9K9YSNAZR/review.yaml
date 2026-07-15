@@ -2,7 +2,92 @@ _ulid: 01KXKS5TCTVNQMRHB9K9YSNAZR
 slugs: []
 title: Review verified stop recovery (cycle 8)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: Prettier verified all 1048 files."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T21:15:40.700Z
+    completed_at: 2026-07-15T21:15:40.700Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 0 errors. Focused npx oxlint over all 20 changed TypeScript/test files also
+      had 0 errors; its 6 warnings are on unchanged active-session-registry lines.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T21:15:44.418Z
+    completed_at: 2026-07-15T21:15:44.418Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed shared build and TypeScript typecheck.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T21:15:47.909Z
+    completed_at: 2026-07-15T21:15:47.909Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 2805/2805 suites; 10715 tests passed, 3 skipped, 0 failed. Duration 2886.3s. Full
+      log /tmp/kspec-test-cache/01KXKRWG2ZQQ148GSMD1H8P2JX/e203fd66f57f89e5.log."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T21:15:52.636Z
+    completed_at: 2026-07-15T21:15:52.636Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 6 existing warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-15T21:15:56.229Z
+    completed_at: 2026-07-15T21:15:56.229Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 55 baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-15T21:15:59.685Z
+    completed_at: 2026-07-15T21:15:59.685Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 329 baseline warnings. The target spec has no inherited traits; all 25
+      task-owned AC annotations were found in behavioral tests.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-15T21:16:03.342Z
+    completed_at: 2026-07-15T21:16:03.342Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed against
+      c5e0b9a6b4afdd17021bf37f2732d620152f40de...601531c6873db117f3bd91aa48d0c0961e1c71d4; detached
+      snapshot remained clean.
+    name: diff hygiene
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-15T21:16:06.913Z
+    completed_at: 2026-07-15T21:16:06.913Z
 events:
   - _ulid: 01KXKS5TCSTX7Z2C5ZGY927ED2
     actor: Jacob Chapel
@@ -17,17 +102,153 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T20:58:41.612Z
+  - _ulid: 01KXKT5A1A2B6XM49442GWCR7V
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T21:15:40.970Z
+  - _ulid: 01KXKT5DNDWGRG2DT7D5CSS19S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T21:15:44.685Z
+  - _ulid: 01KXKT5H2J6CQ4VXMVCRP95RSP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T21:15:48.178Z
+  - _ulid: 01KXKT5NPHJX2QVM9TMRYPG51H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T21:15:52.913Z
+  - _ulid: 01KXKT5S6BN61P25XBNNKCABE6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T21:15:56.491Z
+  - _ulid: 01KXKT5WJR72YS9Y48FKQ8J7BM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T21:15:59.960Z
+  - _ulid: 01KXKT605SRQ0SEHRDHAMY7FHH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T21:16:03.641Z
+  - _ulid: 01KXKT63MCY3KX22Q8XBEGYRRV
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-07-15T21:16:07.180Z
+  - _ulid: 01KXKT673YSFTE3TD7WD3YHKX2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKT66TE9DHAMY46R4DJZGXR
+    timestamp: 2026-07-15T21:16:10.750Z
+  - _ulid: 01KXKT6AHERNRFASH2KF4BDF1F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXKT6A911XHWKXF2Z6W2SFYQ
+    timestamp: 2026-07-15T21:16:14.254Z
+  - _ulid: 01KXKT6DWJZ5SPQFM1MAF19BGQ
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-15T21:16:17.682Z
+  - _ulid: 01KXKT6DWJT2VK7XKMY3M6C511
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-15T21:16:17.682Z
 examined_commit: 601531c6873db117f3bd91aa48d0c0961e1c71d4
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXKT66TE9DHAMY46R4DJZGXR
+    anchor:
+      type: code
+      commit: 601531c6873db117f3bd91aa48d0c0961e1c71d4
+      line_end: 305
+      line_start: 268
+      path: src/sessions/store.ts
+      side: head
+    entries:
+      - _ulid: 01KXKT66TFGY7VD0TN7K2497X3
+        author: Jacob Chapel
+        body: "MUST-FIX — the new per-session ownership lock serializes only mutateSessionDispatchOwnership
+          calls, while closeSession and other metadata mutators still perform independent
+          read/modify/whole-file writes. Reproduction against this head: start closeSession on a
+          1,000,000-line event log, wait 10 ms, persist ownership with exited_at, then await close;
+          3/3 runs ended with status=completed but dispatch_ownership.exited_at=null. Because
+          _collectStopTargets prefers session.yaml ownership and consults the ownership archive only
+          when metadata itself is missing, a normal close racing verified exit publication can erase
+          the durable exit proof and make restart/stop recovery rediscover a finished invocation as
+          unresolved. Serialize all session metadata read-modify-writes with ownership mutation, or
+          merge the latest ownership before every metadata write, and add a behavioral concurrency
+          regression test."
+        created_at: 2026-07-15T21:16:10.447Z
+    kind: blocker
+  - _ulid: 01KXKT6A911XHWKXF2Z6W2SFYQ
+    entries:
+      - _ulid: 01KXKT6A91JQ9C7CGJM90ME1D0
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: every changed file in the 20-file diff, including
+          dispatch.ts, invocation.ts, session-registry.ts, spawner.ts, dispatch-control schema,
+          sessions store/types, all added stop-recovery/publication tests, and surrounding
+          session/recovery code. Commands run: git diff/stat/name/status/check;
+          task/spec/prior-review lookups; format, repo and focused lint, typecheck, fresh full
+          suite, refs/alignment/completeness validation, AC annotation search, and a direct
+          compiled-code concurrency probe. Claims verified: all four cycle-7 fixes are present and
+          their focused tests pass; all 25 task-owned AC annotations are behavioral and the spec has
+          no inherited traits; no source-scanning tests were added. Categories searched:
+          correctness, concurrency/edge cases, error mapping, process-identity security, test
+          quality, and integration/restart behavior. Shared/package guidance surfaces touched: none,
+          so the neutrality checklist and artifact regeneration checks do not apply. One blocker was
+          found after completing the broader search."
+        created_at: 2026-07-15T21:16:13.985Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-15T21:16:17.682Z
 created_at: 2026-07-15T20:58:29.146Z
-updated_at: 2026-07-15T20:58:41.352Z
+updated_at: 2026-07-15T21:16:17.682Z
 notes: []

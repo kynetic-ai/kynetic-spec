@@ -33827,7 +33827,7 @@
   type: task
   spec_ref: "@dispatch-lifecycle-control-authority"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-final-pre-spawn-control-gate"
@@ -33837,7 +33837,7 @@
     - recovery
     - cancellation
   review_ref: "@01KXKS5TCTVNQMRHB9K9YSNAZR"
-  notes_count: 24
+  notes_count: 25
   todos_count: 0
   created_at: 2026-07-14T19:47:18.036Z
   started_at: 2026-07-15T20:30:18.516Z

@@ -29832,19 +29832,19 @@ reviews:
   - _ulid: 01KXKS5TCTVNQMRHB9K9YSNAZR
     slugs: []
     title: Review verified stop recovery (cycle 8)
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
-    check_count: 0
+    check_count: 8
     examined_commit: 601531c6873db117f3bd91aa48d0c0961e1c71d4
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
       content_hash: ""
       ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
-    verdict_count: 0
+    thread_count: 2
+    unresolved_blocker_count: 1
+    verdict_count: 1
     created_at: 2026-07-15T20:58:29.146Z
-    updated_at: 2026-07-15T20:58:41.352Z
+    updated_at: 2026-07-15T21:16:17.682Z

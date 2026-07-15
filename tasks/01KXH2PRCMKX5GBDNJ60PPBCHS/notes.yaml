@@ -293,3 +293,8 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T20:49:11.121Z
+  - _ulid: 01KXKT6G3J88FMNA6QRMKT4HRF
+    content: "[FIX_CYCLE: 8] Review verdict: changes_requested by pr-reviewer"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T21:16:19.954Z
