@@ -183,6 +183,13 @@ events:
       kind: blocker
       thread_ulid: 01KXKKRQXR9QGV1E2F7ZSZ5HCN
     timestamp: 2026-07-15T19:23:58.009Z
+  - _ulid: 01KXKKRXXM0MC902PW5S5E7ZEW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKKRXND7RKRD4PMQ2EZZRAT
+    timestamp: 2026-07-15T19:24:03.892Z
 examined_commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
 external_links: []
 lifecycle_state: open
@@ -214,7 +221,27 @@ threads:
           before closing and therefore does not model runtime ordering."
         created_at: 2026-07-15T19:23:57.752Z
     kind: blocker
+  - _ulid: 01KXKKRXND7RKRD4PMQ2EZZRAT
+    anchor:
+      type: code
+      commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
+      line_end: 1963
+      line_start: 1944
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXKKRXNDSKHXRYV19H3DC3AN
+        author: Jacob Chapel
+        body: "MUST-FIX: the live-member refresh can replace task-A ownership with concurrently reassigned
+          task-B ownership. The mutation callback returns null on immutable identity mismatch, but
+          mutateSessionDispatchOwnership returns the unchanged metadata for null; this return then
+          adopts refreshed.dispatch_ownership without rechecking the task selector. A behavioral
+          probe reassigned the durable session from A to B during listProcessGroup; task-A stop
+          returned applied and signaled task B's PGID. This violates task isolation and immutable
+          cleanup-target requirements."
+        created_at: 2026-07-15T19:24:03.629Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-15T19:01:23.457Z
-updated_at: 2026-07-15T19:23:57.752Z
+updated_at: 2026-07-15T19:24:03.629Z
 notes: []
