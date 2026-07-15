@@ -228,6 +228,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-15T20:25:48.678Z
+  - _ulid: 01KXKRJ62Q7ANSSS7FSY39CA0E
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKQ8XD89SS08MWP2RN97ZZ6
+    timestamp: 2026-07-15T20:47:45.751Z
 examined_commit: e01006b3649db63d24a187d39e6ba73be8476358
 external_links: []
 lifecycle_state: closed
@@ -259,6 +265,14 @@ threads:
           stopped and materialize/report failed pending cleanup even when target-proof collection or
           refresh persistence fails.'
         created_at: 2026-07-15T20:25:13.384Z
+      - _ulid: 01KXKRJ5TVGGN79N4PZFNSP8AB
+        author: Jacob Chapel
+        body: "Fixed in 601531c687: late-member proof persistence failures now freeze the last durable
+          ownership tuple instead of escaping target collection, so global and task stop authority
+          commits first, recovery persists failed cleanup, and the unproved member is never
+          signalled. Added behavioral coverage for both scopes with an unwritable session
+          directory."
+        created_at: 2026-07-15T20:47:45.499Z
     kind: blocker
   - _ulid: 01KXKQ90N97E0VDK7BKEDN1DZC
     anchor:
@@ -353,5 +367,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T20:25:48.677Z
 created_at: 2026-07-15T20:01:28.703Z
-updated_at: 2026-07-15T20:25:48.678Z
+updated_at: 2026-07-15T20:47:45.499Z
 notes: []
