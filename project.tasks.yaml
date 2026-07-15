@@ -33731,7 +33731,7 @@
   type: task
   spec_ref: "@dispatch-lifecycle-control-authority"
   plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-patch-dispatch-engine-coalescing-specs"
@@ -33744,7 +33744,7 @@
   notes_count: 5
   todos_count: 0
   created_at: 2026-07-14T19:47:14.724Z
-  started_at: 2026-07-14T21:30:41.927Z
+  started_at: 2026-07-15T03:46:21.387Z
   submitted_at: 2026-07-15T03:16:42.914Z
   automation: eligible
 - _ulid: 01KXH2PNTWN26FWG82XJ1FYT5P
