@@ -49,6 +49,18 @@ checks:
     runner: npm test
     created_at: 2026-07-15T13:44:11.059Z
     completed_at: 2026-07-15T13:44:11.059Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Focused recovery/race/registry run passed: 12 suites, 40 tests, including
+      dispatch-stop-recovery (14), dispatch-spawn-control-race (6), and active-session-registry
+      (20)."
+    name: focused stop recovery tests
+    required: false
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T13:44:17.197Z
+    completed_at: 2026-07-15T13:44:17.197Z
 events:
   - _ulid: 01KXJZ6MP81VH8XP0PBHA1ZPGN
     actor: Jacob Chapel
@@ -91,6 +103,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-07-15T13:44:11.310Z
+  - _ulid: 01KXK0ASDQE21Z2G5DJFC3FWWQ
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused stop recovery tests
+    timestamp: 2026-07-15T13:44:17.593Z
 examined_commit: 3a9909c4870a49f5f3ac174716edfca067852055
 external_links: []
 lifecycle_state: open
@@ -103,5 +122,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T13:24:33.110Z
-updated_at: 2026-07-15T13:44:11.059Z
+updated_at: 2026-07-15T13:44:17.197Z
 notes: []
