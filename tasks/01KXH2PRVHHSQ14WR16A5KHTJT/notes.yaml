@@ -19,3 +19,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T22:27:34.212Z
+  - _ulid: 01KXKYZQEBTZHJYPGZE77TB40W
+    content: Implemented centralized controlled-evidence classification in workspace cleanup. The
+      protection snapshot now unions active/final-gate identities with paused task controls and
+      every task identity named by stopped pending cleanup (including global cleanup targets). Reap,
+      reviewer snapshot cleanup, artifact reconciliation, local/remote branch deletion paths, and
+      terminal self-heal consult that classification; degraded lifecycle state blocks blind
+      deletion. Durable fallback reads committed dispatch-control state when no live store is
+      registered. Added a state-by-surface matrix plus physical
+      worker/reviewer/local-branch/remote-branch/registry preservation tests and a positive
+      unrelated terminal cleanup case. Focused matrix currently passes 68 tests across the five task
+      suites.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T22:40:00.972Z
