@@ -2,7 +2,110 @@ _ulid: 01KXJ85ATC5CAWKPVFXF57NHZ4
 slugs: []
 title: Review global lifecycle authority and coalesced reconstruction (cycle 3)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1044 checked files matched formatting; exit 0.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T06:59:21.254Z
+    completed_at: 2026-07-15T06:59:21.254Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint exited 0 with 0 errors and 702 baseline warnings; focused oxlint on all 7
+      changed TypeScript/test files found 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T06:59:24.418Z
+    completed_at: 2026-07-15T06:59:24.418Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings and 0 errors across all 7 changed TypeScript/test files.
+    name: focused-lint
+    required: true
+    runner: npx oxlint <changed TypeScript/test files>
+    created_at: 2026-07-15T06:59:27.634Z
+    completed_at: 2026-07-15T06:59:27.634Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed; exit 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T06:59:30.711Z
+    completed_at: 2026-07-15T06:59:30.711Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Forced uncached run: 2796/2796 suites passed; 10,631 tests passed and 3
+      repository-skipped; exit 0."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T06:59:33.790Z
+    completed_at: 2026-07-15T06:59:33.790Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 50/50 suites and 215/215 focused lifecycle/store/engine/bootstrap tests passed; exit 0.
+    name: focused lifecycle tests
+    required: true
+    runner: npm test -- --fresh <4 focused files>
+    created_at: 2026-07-15T06:59:36.771Z
+    completed_at: 2026-07-15T06:59:36.771Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok exited 0 with 6 repository baseline warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T06:59:40.610Z
+    completed_at: 2026-07-15T06:59:40.610Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok exited 0 with repository baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T06:59:43.567Z
+    completed_at: 2026-07-15T06:59:43.567Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok exited 0 with repository baseline warnings;
+      all 16 task-owned AC annotations were located and semantically inspected.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T06:59:46.580Z
+    completed_at: 2026-07-15T06:59:46.580Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base-to-head diff check passed; exit 0.
+    name: diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-15T06:59:49.533Z
+    completed_at: 2026-07-15T06:59:49.533Z
 events:
   - _ulid: 01KXJ85ATCFP4PJE4KJ0H6G298
     actor: Jacob Chapel
@@ -17,17 +120,167 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T06:42:06.118Z
+  - _ulid: 01KXJ95AS1SJKAGVN0BC755Y54
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T06:59:21.505Z
+  - _ulid: 01KXJ95DVM0T0X44PQVGD4YJFP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T06:59:24.660Z
+  - _ulid: 01KXJ95H0CMQ5TS2AHE59RJK58
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-15T06:59:27.884Z
+  - _ulid: 01KXJ95M0KGBAJ23N5EWNEWQ1B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T06:59:30.963Z
+  - _ulid: 01KXJ95Q0X5SZX5BHDWDJ00P1R
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T06:59:34.045Z
+  - _ulid: 01KXJ95SXTNRK92VZE7756XMC2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-15T06:59:37.018Z
+  - _ulid: 01KXJ95XNKVMVY6WCCQY9A7J60
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T06:59:40.851Z
+  - _ulid: 01KXJ960J8NT3708NV1YKD28VH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T06:59:43.816Z
+  - _ulid: 01KXJ963FN4F272VRNDDDJ1QX8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T06:59:46.805Z
+  - _ulid: 01KXJ966CDPT52YQWN91SQT6HN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-15T06:59:49.773Z
+  - _ulid: 01KXJ969CS3AE9AK8GX6VY60PS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJ9695ATWJBVCNHNZEP2VNA
+    timestamp: 2026-07-15T06:59:52.857Z
+  - _ulid: 01KXJ96CDNREEMFJZC31BSTJW2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXJ96C610Q9JKG3AK5HV5X3K
+    timestamp: 2026-07-15T06:59:55.957Z
+  - _ulid: 01KXJ96FC6C335XF202B363KAT
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-15T06:59:58.982Z
+  - _ulid: 01KXJ96FC64128N994YQSHKECE
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-15T06:59:58.982Z
 examined_commit: b0a8a2e844526cf3cdf5ba9d85c596f1d6ac9b5f
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXH2PNTWN26FWG82XJ1FYT5P"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXJ9695ATWJBVCNHNZEP2VNA
+    anchor:
+      type: code
+      commit: b0a8a2e844526cf3cdf5ba9d85c596f1d6ac9b5f
+      line_end: 4159
+      line_start: 4155
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXJ9695A11GK8EWWJZXKVJQC
+        author: Jacob Chapel
+        body: "MUST-FIX — External paused/stopped-to-running publication reconstruction is launched with a
+          void expression and no rejection handler. If _reconstructCurrentCandidates() fails while
+          loading current tasks/meta or draining, the rejection escapes the synchronous store
+          listener and terminates Node as an unhandled rejection. Evidence: an exact tsx
+          reproduction constructed the engine with a lifecycle store, published paused then running,
+          forced _reconstructCurrentCandidates() to reject, and the process exited 1 with the stack
+          at dispatch.ts:4157 and Mutex.runExclusive. Impact: a valid externally committed
+          resume/start can crash the dispatch daemon instead of containing and reporting a
+          reconstruction failure. Track/handle this promise with deterministic error reporting and
+          add a behavioral regression that forces reconstruction failure on an external running
+          publication."
+        created_at: 2026-07-15T06:59:52.618Z
+    kind: blocker
+  - _ulid: 01KXJ96C610Q9JKG3AK5HV5X3K
+    entries:
+      - _ulid: 01KXJ96C61D3Q2N7V0MAN69H9C
+        author: Jacob Chapel
+        body: "Review evidence log (informational; no separate worker action). Files read: every changed
+          production/test file; surrounding scheduler, queue, invocation, store, bootstrap, schema,
+          task/spec/plan, and both prior reviews. Commands run: complete base-to-head and fix-cycle
+          diffs, task/item/plan/review lookups, AC annotation searches, focused source/context
+          reads, focused 215-test run, uncached full npm test, format, repo/focused lint, typecheck,
+          diff check, three kspec validation modes, and an exact external-publication rejection
+          reproduction. Claims verified: all three cycle-2 blocker fixes; committed authority
+          bootstrap; stale/current reconstruction; complete named ingress and transition coverage;
+          worker full-suite count. Categories searched: correctness/concurrency, lifecycle matrix
+          and edge cases, error handling, security/sanitization, test quality/AC proof, and
+          scheduler/store integration. Finding: one production error-path blocker above.
+          Shared/package guidance surfaces were not touched, so shared-guidance neutrality checks
+          were not applicable."
+        created_at: 2026-07-15T06:59:55.713Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-15T06:59:58.982Z
 created_at: 2026-07-15T06:41:52.972Z
-updated_at: 2026-07-15T06:42:05.862Z
+updated_at: 2026-07-15T06:59:58.982Z
 notes: []
