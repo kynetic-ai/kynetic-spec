@@ -79478,7 +79478,7 @@ runs:
     completed_at: 2026-07-15T18:57:11.823Z
   - _ulid: 01KXKKWS4983CZHBAGG8WXB2X1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79491,7 +79491,23 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T19:27:06.457Z
-        completed_at: 2026-07-15T19:27:06.457Z
+        completed_at: 2026-07-15T19:28:26.893Z
+        notes: "High-confidence candidates: (1) tiny targeted runtime probes caught semantic
+          stop/reassignment bugs despite a green full suite; already covered by success observations
+          @01KMQ9ZH1T8NP9MK26CG9FRKPT and @01KMR8XS8ZT8VYCVB6EYMJCVVR. (2) Full npm test took
+          2775.2s in detached review; already tracked by inbox @01KRZ4B354B8V09P72KDMPGRXB. (3)
+          Dispatch prompt required unavailable pr-review entrypoint; exact duplicate inbox
+          @01KXHA7PWNCAC9W4A38FG7TMZM. (4) Mandatory unfiltered reflection baseline produced
+          truncated output; already tracked by @01KXJ4K3PYK1CZ1WAPP13W2H66 and
+          @01KXKES4VASTE1Q6N8J234F8GF. (5) workflow show requires a run ref and omits step content;
+          already tracked by @01KPWDWXK003P1DBR5WE0HEPT7 and task @01KKBD55V7YZ70F6SHZZ9JB9GM. (6)
+          Review checks/comments defaulted to the human author while verdict used pr-reviewer;
+          already tracked by @01KW75DQHW60S75MX678NYJQH7. No unique high-confidence candidate
+          remains."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T19:28:26.893Z
+        completed_at: 2026-07-15T19:28:26.893Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T19:26:10.057Z
