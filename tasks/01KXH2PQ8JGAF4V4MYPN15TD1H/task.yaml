@@ -107,8 +107,12 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged approved canonical task pause/resume implementation into
+  plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at 686972c67309. Canonical
+  ULID controls, scoped cleanup transitions, held-work reconstruction, A/B and global isolation,
+  idempotency, and active invocation/session preservation are verified; all required gates passed.
 depends_on:
   - "@task-engine-global-lifecycle"
 context: []
@@ -290,8 +294,26 @@ history:
         previous: "@01KXJH3J8GX4K1N1EDXHEX2BWG"
     command: review-link
     timestamp: 2026-07-15T10:05:07.359Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged approved canonical task pause/resume implementation into
+          plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at 686972c67309.
+          Canonical ULID controls, scoped cleanup transitions, held-work reconstruction, A/B and
+          global isolation, idempotency, and active invocation/session preservation are verified;
+          all required gates passed.
+        previous: null
+      completed_at:
+        new: 2026-07-15T10:22:26.598Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-15T10:22:26.607Z
 created_at: 2026-07-14T19:47:16.882Z
 started_at: 2026-07-15T09:42:46.067Z
 submitted_at: 2026-07-15T09:57:41.760Z
+completed_at: 2026-07-15T10:22:26.598Z
 todos: []
 automation: eligible
