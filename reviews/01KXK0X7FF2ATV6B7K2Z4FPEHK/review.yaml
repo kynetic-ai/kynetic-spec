@@ -118,6 +118,17 @@ checks:
     runner: manual adversarial review
     created_at: 2026-07-15T14:11:55.897Z
     completed_at: 2026-07-15T14:11:55.897Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo lint: 0 errors with existing 702-warning baseline. Focused oxlint on all 4 changed
+      test files: 0 warnings, 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T14:12:13.834Z
+    completed_at: 2026-07-15T14:12:13.834Z
 events:
   - _ulid: 01KXK0X7FC15P6FZTBVDW8NP5M
     actor: Jacob Chapel
@@ -202,6 +213,13 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-15T14:11:56.256Z
+  - _ulid: 01KXK1XYP5TX60ZA6EX5ZQ5S80
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T14:12:14.149Z
 examined_commit: 7a9cd4210598526f56874770c264c7edf86b49ee
 external_links: []
 lifecycle_state: open
@@ -214,5 +232,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T13:54:21.807Z
-updated_at: 2026-07-15T14:11:55.897Z
+updated_at: 2026-07-15T14:12:13.834Z
 notes: []
