@@ -172,6 +172,27 @@ events:
       status: pass
       name: diff check
     timestamp: 2026-07-15T05:19:51.468Z
+  - _ulid: 01KXJ3H4X2JDT1J1RQBEE6R9YH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJ3H4MQD8YHQ7G44ZE33NH4
+    timestamp: 2026-07-15T05:20:57.250Z
+  - _ulid: 01KXJ3H848E93HGRPJRWBKWED3
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJ3H7W4QF2394CN44H23VSB
+    timestamp: 2026-07-15T05:21:00.552Z
+  - _ulid: 01KXJ3HB9N8NVPZY0YBPKWYF2A
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXJ3HB1VKDCK2BKC145GZGR0
+    timestamp: 2026-07-15T05:21:03.797Z
 examined_commit: d5d15f65da86478548640f87d028f1b869a2db6b
 external_links: []
 lifecycle_state: open
@@ -181,8 +202,76 @@ subject:
   content_hash: ""
   ref: "@01KXH2PNTWN26FWG82XJ1FYT5P"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXJ3H4MQD8YHQ7G44ZE33NH4
+    anchor:
+      type: code
+      commit: d5d15f65da86478548640f87d028f1b869a2db6b
+      line_end: 2608
+      line_start: 2577
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXJ3H4MQXM97DQB31RSMHTD3
+        author: Jacob Chapel
+        body: 'MUST-FIX — A committed pause can lose to a drain that already passed the entry check.
+          `_drainQueues` checks global authority only before awaiting task loading/pruning, while
+          its dequeue loop is conditioned only on `this.running`; it therefore selects and starts a
+          queued candidate after authority changes to paused. Impact: paused global authority does
+          not reliably prevent new invocation starts at the task-owned
+          dequeue/coalesced/retry/reconcile barriers. Evidence: I held
+          `_pruneIneligibleQueueEntries`, published paused authority, released the barrier, and
+          observed `{authority:"paused", starts:[taskId], queueDepth:0}`. Add a current-authority
+          check at the serialized dequeue/admission point (preserving the later task’s final
+          pre-spawn ownership) and a behavioral barrier test that fails on any recorded candidate
+          start.'
+        created_at: 2026-07-15T05:20:56.983Z
+    kind: blocker
+  - _ulid: 01KXJ3H7W4QF2394CN44H23VSB
+    anchor:
+      type: code
+      commit: d5d15f65da86478548640f87d028f1b869a2db6b
+      line_end: 1500
+      line_start: 1470
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXJ3H7W4134V31BWK4FC058B
+        author: Jacob Chapel
+        body: 'MUST-FIX — The transition matrix is evaluated from the cached publication before the store
+          transaction, then the precomputed `next` authority is written over whatever committed
+          snapshot `mutate` actually loads. If an external commit advances running → stopped before
+          publication delivery, a concurrent pause applies paused over stopped instead of returning
+          `invalid_transition`. Impact: a durable stop can be overwritten by a stale lifecycle
+          action, so committed authority is not authoritative under watcher/publication lag.
+          Evidence: with engine publication at running and the mutation callback receiving committed
+          revision 2/stopped, `applyGlobalLifecycleAction("pause")` returned applied and committed
+          paused. Evaluate cleanup and the transition matrix against the transaction callback’s
+          `snapshot` (and return the transaction-derived outcome), with a deterministic
+          stale-publication/concurrent-commit test.'
+        created_at: 2026-07-15T05:21:00.292Z
+    kind: blocker
+  - _ulid: 01KXJ3HB1VKDCK2BKC145GZGR0
+    entries:
+      - _ulid: 01KXJ3HB1VRZNKNCND290JBKRE
+        author: Jacob Chapel
+        body: "Review evidence log (informational; no worker action requested). Files read:
+          src/agent-runtime/bootstrap.ts, dispatch-control-store.ts, dispatch.ts,
+          schema/dispatch-control.ts; tests/agent-dispatch-engine.test.ts,
+          dispatch-global-lifecycle.test.ts, dispatch-runtime-bootstrap-contract.test.ts;
+          task/spec/plan and surrounding scheduler/store code. Commands run: full base-to-head diff
+          and context reads; task/spec/plan/review lookups; AC annotation search; two deterministic
+          node/tsx race reproductions; npm run format:check; npm run lint -- --quiet; focused oxlint
+          on all changed files; npm run typecheck; npm test -- --fresh; three kspec validate modes;
+          git diff --check. Claims verified: worker’s 10,618-pass full-suite count, persisted
+          paused/stopped bootstrap gating, current-state resume reconstruction, cleanup-scope
+          filtering, and idempotent local actions. Categories searched: correctness/concurrency,
+          lifecycle edge cases, transition/error handling, test quality/AC proof, store/scheduler
+          integration, and security/input sanitization. Findings: two correctness races above; no
+          additional findings after a second pass."
+        created_at: 2026-07-15T05:21:03.547Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-15T05:03:33.461Z
-updated_at: 2026-07-15T05:19:51.221Z
+updated_at: 2026-07-15T05:21:03.547Z
 notes: []
