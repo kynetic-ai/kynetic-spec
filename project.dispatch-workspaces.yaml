@@ -4726,12 +4726,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-15T04:04:50.728Z
+      updated_at: 2026-07-15T04:05:03.588Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-15T04:04:50.728Z
+      updated_at: 2026-07-15T04:05:03.588Z
     integration:
       status: pending
       detail: null
@@ -4739,8 +4739,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
-      updated_at: 2026-07-15T04:04:50.728Z
-    lifecycle_state: ready
+      updated_at: 2026-07-15T04:05:03.588Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PN5478NZ5EGN1395724C
     task_ref: "@01KXH2PN5478NZ5EGN1395724C"
@@ -4748,16 +4748,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-15T03:45:08.160Z
-      last_reconciled_at: 2026-07-15T04:04:50.728Z
+      last_reconciled_at: 2026-07-15T04:05:03.588Z
       created_at: 2026-07-14T21:28:45.399Z
-      updated_at: 2026-07-15T04:04:50.728Z
+      updated_at: 2026-07-15T04:05:03.588Z
     workspace_id: dispatch-workspace-01KXH2PN5478NZ5EGN1395724C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 28d119244e0fbb34183f7c72b3d179e2b7c7a178
+        last_seen_at: 2026-07-15T04:05:03.588Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-control-persistence-01kxh2pn-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-dispatch-control-persistence/01kxh2pn
-        head: 1716ac35c1764b2963e326c76fb18097ac07d030
-        last_seen_at: 2026-07-15T03:44:35.066Z
+        head: 28d119244e0fbb34183f7c72b3d179e2b7c7a178
+        last_seen_at: 2026-07-15T04:05:03.588Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-control-persistence-01kxh2pn
