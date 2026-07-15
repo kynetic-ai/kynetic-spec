@@ -23933,8 +23933,11 @@ observations:
       baseline should use a bounded or indexed summary, or a search-oriented duplicate check that
       remains complete at project scale.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of existing friction observation @01KXJ4K3, which already tracks unfiltered
+      session-reflect-loop inventory truncation and recommends a bounded or targeted baseline.
+    resolved: true
+    resolved_at: 2026-07-15T17:24:41.416Z
+    resolved_by: Jacob Chapel
     created_at: 2026-07-15T17:24:03.151Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
