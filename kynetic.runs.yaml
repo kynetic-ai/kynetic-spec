@@ -78681,7 +78681,7 @@ runs:
     started_at: 2026-07-15T10:23:29.161Z
   - _ulid: 01KXJPXG7220S85KPBTWHSCNY2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78694,7 +78694,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T11:02:20.915Z
-        completed_at: 2026-07-15T11:02:20.915Z
+        completed_at: 2026-07-15T11:02:24.740Z
+        notes: "High-confidence findings: the long-running/lingering full-suite friction is already tracked
+          by @task-investigate-npm-test-teardown-hang-after-green-suite-run. A distinct success
+          pattern emerged: deterministic pre-create race barriers plus the full scheduler-flow
+          integration test exposed a hidden per-agent concurrency reservation regression."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T11:02:24.740Z
+        completed_at: 2026-07-15T11:02:24.740Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T10:59:44.994Z
