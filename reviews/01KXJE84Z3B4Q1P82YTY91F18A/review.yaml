@@ -425,6 +425,36 @@ events:
         content_hash: ""
       decision: request_changes
     timestamp: 2026-07-15T08:48:56.382Z
+  - _ulid: 01KXJFF5NG99XTHJK3AJSZ92W0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJFD7TCPBQP3ETKCHBCDJB3
+    timestamp: 2026-07-15T08:49:35.408Z
+  - _ulid: 01KXJFF8ND9QHZMHDB3X8M2TZN
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJFDAZ7J83A5T4VGVS5KN2Y
+    timestamp: 2026-07-15T08:49:38.477Z
+  - _ulid: 01KXJFFBP0Z3DYC0N3HVDWM95G
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJFDDZ1640AP6QBJCXZKWTT
+    timestamp: 2026-07-15T08:49:41.568Z
+  - _ulid: 01KXJFFENADSZ4GAN07DDEE0WM
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJFDGYWNTK3ZTTMSC2T64WH
+    timestamp: 2026-07-15T08:49:44.618Z
+  - _ulid: 01KXJFFHKDD1EZVG3164A862WQ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJFDKWTVCQ05XAF9G2CKGYC
+    timestamp: 2026-07-15T08:49:47.629Z
 examined_commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
 external_links: []
 lifecycle_state: closed
@@ -551,6 +581,8 @@ threads:
           outcome noop."
         created_at: 2026-07-15T08:48:32.076Z
     kind: blocker
+    resolved_at: 2026-07-15T08:49:35.139Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJFDAZ7J83A5T4VGVS5KN2Y
     anchor:
       type: code
@@ -570,6 +602,8 @@ threads:
           handoff, including bootstrap, retry wake-up, and post-invocation re-evaluation."
         created_at: 2026-07-15T08:48:35.303Z
     kind: blocker
+    resolved_at: 2026-07-15T08:49:38.230Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJFDDZ1640AP6QBJCXZKWTT
     anchor:
       type: code
@@ -588,6 +622,8 @@ threads:
           has no control record in addition to behavioral admission."
         created_at: 2026-07-15T08:48:38.369Z
     kind: blocker
+    resolved_at: 2026-07-15T08:49:41.341Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJFDGYWNTK3ZTTMSC2T64WH
     anchor:
       type: code
@@ -607,6 +643,8 @@ threads:
           assertion can continue to cover the session-open AC."
         created_at: 2026-07-15T08:48:41.436Z
     kind: blocker
+    resolved_at: 2026-07-15T08:49:44.357Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJFDKWTVCQ05XAF9G2CKGYC
     entries:
       - _ulid: 01KXJFDKWT84A6CEM3F3P75Y6Z
@@ -625,6 +663,8 @@ threads:
           neutrality review not applicable."
         created_at: 2026-07-15T08:48:44.442Z
     kind: nit
+    resolved_at: 2026-07-15T08:49:47.407Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -641,5 +681,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T08:48:56.382Z
 created_at: 2026-07-15T08:28:16.739Z
-updated_at: 2026-07-15T08:48:56.382Z
+updated_at: 2026-07-15T08:49:47.407Z
 notes: []
