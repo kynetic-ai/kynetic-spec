@@ -149,13 +149,15 @@ describe("dispatch cleanup projection", () => {
       },
     };
 
-    expect(projectDispatchCleanupState(snapshot)).toMatchObject({
+    const aggregate = projectDispatchCleanupState(snapshot);
+    expect(aggregate).toMatchObject({
       status: "failed",
       entries: [
-        { scope: "global", status: "failed" },
+        { scope: "global", status: "failed", error_code: "cancellation_failed" },
         { scope: "task", status: "pending" },
       ],
     });
+    expect(aggregate.entries[1]).not.toHaveProperty("error_code");
     expect(projectDispatchCleanupState(snapshot, { scope: "global" }).entries).toHaveLength(1);
     expect(projectDispatchCleanupState(snapshot, { scope: "task", task_id: taskId })).toEqual({
       status: "pending",
@@ -476,6 +478,8 @@ describe("DispatchControlStore committed publication", () => {
       "utf-8",
     );
     const watcherReload = harness.store.reloadCommitted(before.token.commit_oid);
+    expect(harness.store.getPublication()).toEqual(before);
+    expect(harness.recorder.tokens()).toEqual([before.token]);
     git(harness.specDir, "add", "dispatch-control.yaml");
     git(harness.specDir, "commit", "-m", "external control");
     await releaseWriter();
@@ -483,8 +487,10 @@ describe("DispatchControlStore committed publication", () => {
     await watcherReload;
     await harness.store.reloadCommitted(git(harness.specDir, "rev-parse", "HEAD"));
 
-    expect(harness.store.getPublication().snapshot.global.authority).toBe("paused");
-    expect(harness.recorder.tokens()).toHaveLength(2);
+    const after = harness.store.getPublication();
+    expect(after.snapshot).toMatchObject({ revision: 2, global: { authority: "paused" } });
+    expect(after.token).not.toEqual(before.token);
+    expect(harness.recorder.tokens()).toEqual([before.token, after.token]);
   });
 
   it("retains the prior token when a watcher event precedes an external abort", async () => {
