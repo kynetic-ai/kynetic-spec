@@ -4762,7 +4762,7 @@ workspaces:
         head: 28d119244e0fbb34183f7c72b3d179e2b7c7a178
         last_seen_at: 2026-07-15T04:05:03.588Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-control-persistence-01kxh2pn
-  - active_role: worker
+  - active_role: null
     base_branch_point: a7b0e99bd62ee1504a1bf89ab39eb9c44840b883
     bootstrap:
       status: succeeded
@@ -5236,12 +5236,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-15T05:35:30.103Z
+      updated_at: 2026-07-15T05:39:58.078Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-15T05:35:30.103Z
+      updated_at: 2026-07-15T05:39:58.078Z
     integration:
       status: pending
       detail: null
@@ -5249,8 +5249,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: a7b0e99bd62ee1504a1bf89ab39eb9c44840b883
-      updated_at: 2026-07-15T05:35:30.103Z
-    lifecycle_state: active
+      updated_at: 2026-07-15T05:39:58.078Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PNTWN26FWG82XJ1FYT5P
     task_ref: "@01KXH2PNTWN26FWG82XJ1FYT5P"
@@ -5258,9 +5258,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-15T05:27:20.527Z
-      last_reconciled_at: 2026-07-15T05:35:30.103Z
+      last_reconciled_at: 2026-07-15T05:39:58.078Z
       created_at: 2026-07-15T04:25:42.114Z
-      updated_at: 2026-07-15T05:35:30.103Z
+      updated_at: 2026-07-15T05:39:58.078Z
     workspace_id: dispatch-workspace-01KXH2PNTWN26FWG82XJ1FYT5P
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
