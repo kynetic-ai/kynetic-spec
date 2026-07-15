@@ -34,6 +34,17 @@ checks:
     runner: npm run typecheck
     created_at: 2026-07-15T10:20:46.942Z
     completed_at: 2026-07-15T10:20:46.942Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Independent fresh full run passed: 2,798 suites; 10,648 tests passed and 3 skipped. Fresh
+      focused lifecycle/identity surface also passed 45/45."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T10:20:52.344Z
+    completed_at: 2026-07-15T10:20:52.344Z
 events:
   - _ulid: 01KXJKSD0ZQDAKBGEZX7RWQX24
     actor: Jacob Chapel
@@ -69,6 +80,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-07-15T10:20:47.176Z
+  - _ulid: 01KXJMPAFCFR9H60H0M6YMT6FE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T10:20:52.588Z
 examined_commit: 23e100fa34ddbd33fdc371fe4408e77fa7fb00f0
 external_links: []
 lifecycle_state: open
@@ -81,5 +99,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T10:05:04.928Z
-updated_at: 2026-07-15T10:20:46.942Z
+updated_at: 2026-07-15T10:20:52.344Z
 notes: []
