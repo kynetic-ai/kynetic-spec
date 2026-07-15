@@ -233,6 +233,12 @@ events:
     payload:
       thread_ulid: 01KXKCP42WT6KHB2BZ1Q9W72VP
     timestamp: 2026-07-15T17:50:45.578Z
+  - _ulid: 01KXKEE8PBYEEDX9N5V5WB72NV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKCP78KKM52ARC32YVMGVV2
+    timestamp: 2026-07-15T17:50:51.595Z
 examined_commit: 29569d9efb5bc4674f7a7e830f6aa7f1c36fe716
 external_links: []
 lifecycle_state: closed
@@ -330,6 +336,13 @@ threads:
           annotate a global-key pending-cleanup startup case that asserts global scheduling remains
           stopped while the matching phase resumes.
         created_at: 2026-07-15T17:20:15.123Z
+      - _ulid: 01KXKEE8DJMJ7GMMYP7GYFZJ2P
+        author: Jacob Chapel
+        body: "Fixed in eabcdee53e: split startup phase coverage by scope. The global case now persists
+          pending_cleanup.global for owned, signals_sent, and sessions_closed and verifies global
+          authority remains stopped through recovery; the task case separately proves task authority
+          while global remains running."
+        created_at: 2026-07-15T17:50:51.314Z
     kind: blocker
   - _ulid: 01KXKCPAG9ZVKDRHZEG43XBNE0
     anchor:
@@ -396,5 +409,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T17:20:25.481Z
 created_at: 2026-07-15T17:02:01.298Z
-updated_at: 2026-07-15T17:50:45.299Z
+updated_at: 2026-07-15T17:50:51.314Z
 notes: []
