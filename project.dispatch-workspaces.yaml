@@ -5792,3 +5792,80 @@ workspaces:
         head: 23e100fa34ddbd33fdc371fe4408e77fa7fb00f0
         last_seen_at: 2026-07-15T10:02:32.797Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-engine-task-pause-resume-01kxh2pq
+  - active_role: null
+    base_branch_point: 686972c67309dd36131f260a77af0d47471b70e1
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-final-pre-spawn-control-gate/01kxh2pq
+    canonical_branch_head: 686972c67309dd36131f260a77af0d47471b70e1
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-07-15T10:22:54.755Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-07-15T10:22:54.755Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+      target_commit: 686972c67309dd36131f260a77af0d47471b70e1
+      updated_at: 2026-07-15T10:22:54.755Z
+    lifecycle_state: ready
+    resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+    task_id: 01KXH2PQYHEB5566BQW2C7SHTF
+    task_ref: "@01KXH2PQYHEB5566BQW2C7SHTF"
+    task_slug: task-final-pre-spawn-control-gate
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-07-15T10:22:54.755Z
+      created_at: 2026-07-15T10:22:54.755Z
+      updated_at: 2026-07-15T10:22:54.755Z
+    workspace_id: dispatch-workspace-01KXH2PQYHEB5566BQW2C7SHTF
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-final-pre-spawn-control-gate/01kxh2pq
+        head: 686972c67309dd36131f260a77af0d47471b70e1
+        last_seen_at: 2026-07-15T10:22:54.755Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-final-pre-spawn-control-gate-01kxh2pq
