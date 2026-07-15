@@ -221,6 +221,78 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-15T13:46:15.741Z
+  - _ulid: 01KXK3B45QFZ3K0SJNGT7ZBWMA
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXK0CK6P2VC7SVMR0FNV923H
+    timestamp: 2026-07-15T14:36:54.327Z
+  - _ulid: 01KXK3B7731RMH12TQAGRMGMR1
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXK0CK6P2VC7SVMR0FNV923H
+    timestamp: 2026-07-15T14:36:57.443Z
+  - _ulid: 01KXK3BAGC6GRM58Y0BKGQCZ67
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXK0CS5GV6TT1WAQRR1Q03NS
+    timestamp: 2026-07-15T14:37:00.812Z
+  - _ulid: 01KXK3BDE7RTDPKCHPTXTV17RT
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXK0CS5GV6TT1WAQRR1Q03NS
+    timestamp: 2026-07-15T14:37:03.815Z
+  - _ulid: 01KXK3BGEX1YVKSVJTRB2YCGJ6
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXK0CYMN9Z5FX9VQYTD6G2CX
+    timestamp: 2026-07-15T14:37:06.909Z
+  - _ulid: 01KXK3BKGBJPYA7Y47RGWMQJBA
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXK0CYMN9Z5FX9VQYTD6G2CX
+    timestamp: 2026-07-15T14:37:10.028Z
+  - _ulid: 01KXK3BPMC95QZ4WDQE2N9BX9T
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXK0D4FCEBJ2KQVFN5EMGT8K
+    timestamp: 2026-07-15T14:37:13.228Z
+  - _ulid: 01KXK3BSYYVJGVYR64Z8CCM3VS
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXK0D4FCEBJ2KQVFN5EMGT8K
+    timestamp: 2026-07-15T14:37:16.638Z
+  - _ulid: 01KXK3BWXSR50VFJ48B0VS7NWH
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXK0D9VMJ08G9DQP2FCQTC59
+    timestamp: 2026-07-15T14:37:19.673Z
+  - _ulid: 01KXK3BZYGCYSFSFKW143GJ7A0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXK0D9VMJ08G9DQP2FCQTC59
+    timestamp: 2026-07-15T14:37:22.768Z
+  - _ulid: 01KXK3C393BDYK2W73YWV49CZX
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXK0DVRA5MSKF810J0056C87
+    timestamp: 2026-07-15T14:37:26.179Z
+  - _ulid: 01KXK3C6B43C44NVDZR37ENM0M
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXK0DVRA5MSKF810J0056C87
+    timestamp: 2026-07-15T14:37:29.316Z
 examined_commit: 3a9909c4870a49f5f3ac174716edfca067852055
 external_links: []
 lifecycle_state: closed
@@ -250,7 +322,16 @@ threads:
           cleanup. Add failure release/cleanup for this boundary and a behavioral fault-injection
           test.
         created_at: 2026-07-15T13:45:16.758Z
+      - _ulid: 01KXK3B3XRPEA6Y0DTCKPNM5NP
+        author: Jacob Chapel
+        body: "Fixed in 676182f47b: agent.dispatched persistence is now inside the ownership failure
+          boundary; pre-publication failures durably close the null-identity session before
+          releasing admission. A concurrent dispatch stop integration test proves the reservation
+          resolves without spawning or hanging."
+        created_at: 2026-07-15T14:36:54.069Z
     kind: blocker
+    resolved_at: 2026-07-15T14:36:57.194Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXK0CS5GV6TT1WAQRR1Q03NS
     anchor:
       type: code
@@ -272,7 +353,15 @@ threads:
           Propagate/retain the hard-stop failure and test engine.stop with an injected recovery
           failure.
         created_at: 2026-07-15T13:45:22.864Z
+      - _ulid: 01KXK3BA905HA2639B04X2H68R
+        author: Jacob Chapel
+        body: "Fixed in 676182f47b: engine.stop retains and propagates the verified hard-stop error before
+          any generic controller abort or session closure. The new graceful-shutdown test injects
+          cancellation timeout and verifies stopped/failed state with no closure fallthrough."
+        created_at: 2026-07-15T14:37:00.576Z
     kind: blocker
+    resolved_at: 2026-07-15T14:37:03.562Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXK0CYMN9Z5FX9VQYTD6G2CX
     anchor:
       type: code
@@ -293,7 +382,16 @@ threads:
           allowed exit observation recoverable without weakening identity checks and cover an
           owned-phase crash after the invocation records exited_at.
         created_at: 2026-07-15T13:45:28.469Z
+      - _ulid: 01KXK3BG75228YK4ZWDJY98CCM
+        author: Jacob Chapel
+        body: "Fixed in 676182f47b: recovery still deep-compares every immutable identity field but
+          explicitly accepts the single legal enrichment from absent exited_at to a recorded exit.
+          Serialized ownership mutation preserves member proofs, and an owned-phase startup test now
+          covers exit recorded before phase advancement."
+        created_at: 2026-07-15T14:37:06.661Z
     kind: blocker
+    resolved_at: 2026-07-15T14:37:09.790Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXK0D4FCEBJ2KQVFN5EMGT8K
     anchor:
       type: code
@@ -313,7 +411,17 @@ threads:
           indefinitely. Implement the live-owner member-proof refresh and add a behavioral
           late-child stop test.
         created_at: 2026-07-15T13:45:34.444Z
+      - _ulid: 01KXK3BPCMJFXCBWDWBYQPEP6A
+        author: Jacob Chapel
+        body: "Fixed in 676182f47b: the live owner refreshes same-group member proofs after ACP session
+          creation and each completed turn, and stop performs a final verified-leader refresh before
+          freezing cleanup targets. Session ownership writes are serialized so exit observation
+          cannot discard refreshed proofs. A late-child hard-stop test verifies successful proof
+          binding and signalling."
+        created_at: 2026-07-15T14:37:12.980Z
     kind: blocker
+    resolved_at: 2026-07-15T14:37:16.303Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXK0D9VMJ08G9DQP2FCQTC59
     anchor:
       type: code
@@ -333,7 +441,16 @@ threads:
           the production defects in this review through. Replace the false AC coverage with a
           behavioral admission assertion and add the missing recovery-boundary cases.
         created_at: 2026-07-15T13:45:39.956Z
+      - _ulid: 01KXK3BWPRE5XZJBFC4XHK3DG6
+        author: Jacob Chapel
+        body: "Fixed in 676182f47b: the false annotation was removed from the active-cleanup test and
+          attached to the existing behavioral bootstrap matrix that presents an eligible pending
+          task and proves zero candidate starts under stopped authority. Added reservation-failure,
+          graceful-stop failure, exited-at recovery, and late-child behavioral cases."
+        created_at: 2026-07-15T14:37:19.448Z
     kind: blocker
+    resolved_at: 2026-07-15T14:37:22.542Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXK0DVRA5MSKF810J0056C87
     entries:
       - _ulid: 01KXK0DVRANFMA6YN3X2XK1H2R
@@ -352,7 +469,15 @@ threads:
           concurrency/admission, test quality, integration, and shared-surface scope. Shared/package
           guidance surfaces touched: none."
         created_at: 2026-07-15T13:45:58.282Z
+      - _ulid: 01KXK3C31KM3KWTE7MYDKZQMAM
+        author: Jacob Chapel
+        body: Acknowledged the evidence log. Re-verification for 676182f47b includes format, repo and
+          focused lint, typecheck, focused recovery/race/API tests, all three kspec validations, and
+          the full 2,803-suite test run.
+        created_at: 2026-07-15T14:37:25.939Z
     kind: nit
+    resolved_at: 2026-07-15T14:37:29.059Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -362,5 +487,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T13:46:15.737Z
 created_at: 2026-07-15T13:24:33.110Z
-updated_at: 2026-07-15T13:46:15.741Z
+updated_at: 2026-07-15T14:37:29.059Z
 notes: []
