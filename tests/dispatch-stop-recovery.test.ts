@@ -514,6 +514,142 @@ describe("verified dispatch hard-stop recovery", () => {
     expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
   });
 
+  // AC: @dispatch-lifecycle-control-authority ac-live-group-prevents-cleanup-completion
+  it("retains live ownership after session closure until process exit is recorded", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    harness.retainActiveOwnership(target);
+    await closeSession(
+      path.join(harness.projectDir, ".kspec-sessions"),
+      target.session_id,
+      "completed",
+      "fixture runtime completion window",
+    );
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).resolves.toMatchObject({
+      outcome: "applied",
+      authority: "stopped",
+    });
+
+    expect(harness.signals).toEqual([target.pgid]);
+    expect(harness.sessions.closed).toEqual([target.session_id]);
+    expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-preserves-unrelated-invocations
+  it("rejects durable task reassignment during member refresh without signalling", async () => {
+    const harness = await createStopRecoveryHarness();
+    const taskAOwner = await harness.seedOwnership(1, harness.taskA);
+    const taskBOwner: DispatchOwnership = {
+      ...taskAOwner,
+      invocation_id: testUlid("INVK", 2),
+      task_id: harness.taskB,
+      pid: taskAOwner.pid! + 1,
+      pgid: taskAOwner.pgid! + 1,
+      process_start_ticks: "99002",
+      group_members: [{ pid: taskAOwner.pid! + 1, process_start_ticks: "99002" }],
+    };
+    harness.proc.evidence.set(taskBOwner.pid!, {
+      pid: taskBOwner.pid!,
+      pgid: taskBOwner.pgid!,
+      processStartTicks: taskBOwner.process_start_ticks!,
+    });
+    harness.proc.evidence.set(taskAOwner.pid! + 100, {
+      pid: taskAOwner.pid! + 100,
+      pgid: taskAOwner.pgid!,
+      processStartTicks: "99100",
+    });
+    let reassigned = false;
+    harness.runtime.listProcessGroup = async (pgid) => {
+      if (!reassigned && pgid === taskAOwner.pgid) {
+        reassigned = true;
+        await updateSessionDispatchOwnership(
+          path.join(harness.projectDir, ".kspec-sessions"),
+          taskAOwner.session_id,
+          taskBOwner,
+        );
+      }
+      return [...harness.proc.evidence.values()].filter((entry) => entry.pgid === pgid);
+    };
+
+    await expect(
+      harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA }),
+    ).rejects.toMatchObject({ code: "cleanup_ownership_mismatch" });
+
+    expect(harness.signals).toEqual([]);
+    expect(harness.proc.evidence.has(taskBOwner.pid!)).toBe(true);
+    expect(harness.engine.getLifecycleStatus().cleanupState).toMatchObject({
+      status: "failed",
+      entries: [{ task_id: harness.taskA, error_code: "cleanup_ownership_mismatch" }],
+    });
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-pending-cleanup
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-no-success
+  it("materializes corrupt restart ownership as failed unsignalled cleanup", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    await fs.writeFile(
+      path.join(harness.projectDir, ".kspec-sessions", target.session_id, "session.yaml"),
+      "not: [valid",
+    );
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).rejects.toMatchObject({
+      code: "cleanup_identity_unverifiable",
+    });
+
+    expect(harness.signals).toEqual([]);
+    expect(harness.engine.getLifecycleStatus()).toMatchObject({
+      globalAuthority: "stopped",
+      cleanupState: {
+        status: "failed",
+        entries: [{ status: "failed", error_code: "cleanup_identity_unverifiable" }],
+      },
+    });
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-preserves-unrelated-invocations
+  it("rejects a persisted task cleanup whose target belongs to another task", async () => {
+    const harness = await createStopRecoveryHarness();
+    const taskBTarget = await harness.seedOwnership(2, harness.taskB);
+    const current = harness.store.getPublication().snapshot;
+    await harness.store.mutate("seed-invalid-task-cleanup", () => ({
+      ...current,
+      revision: current.revision + 1,
+      tasks: {
+        [harness.taskA]: {
+          mode: "stopped",
+          reason: "fixture",
+          actor: "test",
+          source: "recovery",
+          controlled_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      },
+      pending_cleanup: {
+        [harness.taskA]: {
+          cleanup_id: testUlid("CLNP", 8),
+          status: "pending",
+          phase: "owned",
+          targets: [
+            {
+              ...taskBTarget,
+              session_metadata_path: `.kspec-sessions/${taskBTarget.session_id}/session.yaml`,
+            },
+          ],
+        },
+      },
+    }));
+
+    await expect(harness.engine.start()).resolves.toBeUndefined();
+    expect(harness.signals).toEqual([]);
+    expect(harness.proc.evidence.has(taskBTarget.pid!)).toBe(true);
+    expect(harness.engine.getLifecycleStatus().cleanupState).toMatchObject({
+      status: "failed",
+      entries: [{ task_id: harness.taskA, error_code: "cleanup_ownership_mismatch" }],
+    });
+  });
+
   // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-no-success
   it("propagates verified hard-stop failure from graceful engine shutdown", async () => {
     const harness = await createStopRecoveryHarness();

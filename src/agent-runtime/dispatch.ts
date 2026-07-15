@@ -116,6 +116,7 @@ import { matchesAutomationFilter } from "../schema/task.js";
 import type { DispatchOwnership, SessionTrigger } from "../sessions/types.js";
 import {
   closeSession as closeStoredSession,
+  getArchivedSessionDispatchOwnership,
   getSession,
   listSessions,
   mutateSessionDispatchOwnership,
@@ -1864,7 +1865,11 @@ export class DispatchEngine {
     }
     for (const sessionId of sessions) {
       const metadata = await getSession(sessionsDir, sessionId);
-      let ownership = metadata?.dispatch_ownership;
+      let ownership =
+        metadata?.dispatch_ownership ??
+        (metadata === null
+          ? await getArchivedSessionDispatchOwnership(sessionsDir, sessionId)
+          : undefined);
       if (!ownership) continue;
       const retained = retainedBySession.get(sessionId);
       if (retained) {
@@ -1883,12 +1888,24 @@ export class DispatchEngine {
         // only when the immutable ownership tuple is unchanged; otherwise keep
         // the retained target so recovery rejects the reassignment as a mismatch.
         if (!isDeepStrictEqual(retainedIdentity, durableIdentity)) continue;
-        if (ownership.exited_at || metadata?.status !== "active") {
+        if (ownership.exited_at) {
           targets.delete(sessionId);
           continue;
         }
-      } else if (ownership.exited_at || metadata?.status !== "active") {
-        continue;
+      } else {
+        if (ownership.exited_at) continue;
+        // A failed pre-spawn handoff can leave a closed session containing only
+        // the intentional null ownership reservation. It never owned a process
+        // and therefore is not a stop target. Once PID/birth proof exists, a
+        // non-active status without exited_at is a real completion/restart
+        // window and must remain eligible for verified recovery.
+        if (
+          ownership.pid === null &&
+          ownership.pgid === null &&
+          ownership.process_start_ticks === null
+        ) {
+          continue;
+        }
       }
       if (selector.scope === "task" && ownership.task_id !== selector.taskId) continue;
       if (!ownership.exited_at) {
@@ -1960,7 +1977,15 @@ export class DispatchEngine {
         return { ...current, group_members: [...currentKnown.values()] };
       },
     );
-    return refreshed?.dispatch_ownership ?? ownership;
+    const refreshedOwnership = refreshed?.dispatch_ownership;
+    if (!refreshedOwnership) return ownership;
+    const {
+      group_members: _refreshedMembers,
+      exited_at: _refreshedExit,
+      ...refreshedIdentity
+    } = refreshedOwnership;
+    const { group_members: _ownedMembers, exited_at: _ownedExit, ...ownedIdentity } = ownership;
+    return isDeepStrictEqual(refreshedIdentity, ownedIdentity) ? refreshedOwnership : ownership;
   }
 
   private _lifecycleMetadata(context: GlobalLifecycleActionContext) {
@@ -2135,6 +2160,12 @@ export class DispatchEngine {
   private async _recoverPendingCleanup(key: string): Promise<void> {
     const current = this.lifecyclePublication.snapshot.pending_cleanup[key];
     if (!current || !this.lifecycleStore) return;
+    if (key !== "global" && current.targets.some((target) => target.task_id !== key)) {
+      throw new DispatchCleanupError(
+        "cleanup_ownership_mismatch",
+        "Task cleanup contains ownership from another canonical task",
+      );
+    }
     if (current.phase === "owned") {
       for (const target of current.targets) await this._cancelVerifiedTarget(target);
       await this._advanceCleanupPhase(key, "signals_sent");
@@ -2246,6 +2277,7 @@ export class DispatchEngine {
       }
     }
     if (members.length === 0) {
+      await this._recordVerifiedTargetExit(target);
       this.invocationAbortControllersById.get(target.invocation_id)?.abort();
       return;
     }
@@ -2276,7 +2308,33 @@ export class DispatchEngine {
         "Dispatch process group did not exit before the cleanup timeout",
       );
     }
+    await this._recordVerifiedTargetExit(target);
     this.invocationAbortControllersById.get(target.invocation_id)?.abort();
+  }
+
+  private async _recordVerifiedTargetExit(target: DispatchCleanupTarget): Promise<void> {
+    const sessionsDir = path.join(this.projectDir, ".kspec-sessions");
+    const { session_metadata_path: _path, ...expected } = target;
+    const updated = await mutateSessionDispatchOwnership(
+      sessionsDir,
+      target.session_id,
+      (current) => {
+        if (!current) return null;
+        const { exited_at: _currentExit, ...currentIdentity } = current;
+        const { exited_at: _expectedExit, ...expectedIdentity } = expected;
+        if (!isDeepStrictEqual(currentIdentity, expectedIdentity)) return null;
+        return current.exited_at ? null : { ...current, exited_at: new Date().toISOString() };
+      },
+    );
+    const persisted = updated?.dispatch_ownership;
+    const { exited_at: _persistedExit, ...persistedIdentity } = persisted ?? {};
+    const { exited_at: _expectedExit, ...expectedIdentity } = expected;
+    if (!persisted?.exited_at || !isDeepStrictEqual(persistedIdentity, expectedIdentity)) {
+      throw new DispatchCleanupError(
+        "cleanup_ownership_mismatch",
+        "Verified dispatch process exit could not be persisted to its ownership envelope",
+      );
+    }
   }
 
   private async _advanceCleanupPhase(

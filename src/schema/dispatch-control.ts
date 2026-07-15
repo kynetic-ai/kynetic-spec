@@ -194,6 +194,17 @@ const PendingCleanupRecordSchema = z
           message: "Duplicate cleanup_id",
         });
       }
+      if (key !== "global") {
+        for (const [index, target] of entry.targets.entries()) {
+          if (target.task_id !== key) {
+            ctx.addIssue({
+              code: "custom",
+              path: [key, "targets", index, "task_id"],
+              message: "Task cleanup targets must match their canonical task key",
+            });
+          }
+        }
+      }
       cleanupIds.add(entry.cleanup_id);
     }
   });

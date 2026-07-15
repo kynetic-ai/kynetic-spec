@@ -9,6 +9,7 @@
  * Storage structure:
  *   .kspec-sessions/{session-id}/
  *     session.yaml      # Metadata
+ *     dispatch-ownership.yaml # Last valid dispatch process ownership envelope
  *     events.jsonl      # Append-only event log
  */
 
@@ -26,6 +27,7 @@ import {
   type SessionMetadataInput,
   SessionMetadataSchema,
   type DispatchOwnership,
+  DispatchOwnershipSchema,
   type SessionStatus,
   type TaskBudget,
   TaskBudgetSchema,
@@ -41,6 +43,7 @@ import {
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const METADATA_FILE = "session.yaml";
+const DISPATCH_OWNERSHIP_FILE = "dispatch-ownership.yaml";
 const EVENTS_FILE = "events.jsonl";
 const BUDGET_FILE = "budget.json";
 const BLOBS_DIR = "blobs";
@@ -116,6 +119,49 @@ export function getSessionDir(sessionsDir: string, sessionId: string): string {
  */
 export function getSessionMetadataPath(sessionsDir: string, sessionId: string): string {
   return path.join(getSessionDir(sessionsDir, sessionId), METADATA_FILE);
+}
+
+function getSessionDispatchOwnershipPath(sessionsDir: string, sessionId: string): string {
+  return path.join(getSessionDir(sessionsDir, sessionId), DISPATCH_OWNERSHIP_FILE);
+}
+
+async function writeSessionDispatchOwnershipArchive(
+  sessionsDir: string,
+  sessionId: string,
+  ownership: DispatchOwnership,
+): Promise<void> {
+  const archivePath = getSessionDispatchOwnershipPath(sessionsDir, sessionId);
+  const temporaryPath = `${archivePath}.${process.pid}-${randomUUID()}.tmp`;
+  try {
+    await fsPromises.writeFile(
+      temporaryPath,
+      YAML.stringify(DispatchOwnershipSchema.parse(ownership), {
+        indent: 2,
+        lineWidth: 100,
+        sortMapEntries: false,
+      }),
+      "utf-8",
+    );
+    await fsPromises.rename(temporaryPath, archivePath);
+  } finally {
+    await fsPromises.rm(temporaryPath, { force: true }).catch(() => {});
+  }
+}
+
+/** Read the last valid ownership envelope independently of mutable session metadata. */
+export async function getArchivedSessionDispatchOwnership(
+  sessionsDir: string,
+  sessionId: string,
+): Promise<DispatchOwnership | null> {
+  try {
+    const content = await fsPromises.readFile(
+      getSessionDispatchOwnershipPath(sessionsDir, sessionId),
+      "utf-8",
+    );
+    return DispatchOwnershipSchema.parse(YAML.parse(content));
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -200,6 +246,9 @@ export async function createSession(
     sortMapEntries: false,
   });
   await fsPromises.writeFile(metadataPath, content, "utf-8");
+  if (validated.dispatch_ownership) {
+    await writeSessionDispatchOwnershipArchive(sessionsDir, input.id, validated.dispatch_ownership);
+  }
 
   // AC: @session-branch-worktree ac-commit-boundaries — commit on session create
   await commitAtLifecycleBoundary(sessionsDir, `session: create (${input.id})`);
@@ -245,6 +294,7 @@ export async function mutateSessionDispatchOwnership(
     const temporaryPath = `${metadataPath}.ownership-${process.pid}-${randomUUID()}.tmp`;
     await fsPromises.writeFile(temporaryPath, content, "utf-8");
     await fsPromises.rename(temporaryPath, metadataPath);
+    await writeSessionDispatchOwnershipArchive(sessionsDir, sessionId, ownership);
     await commitAtLifecycleBoundary(sessionsDir, `session: ownership (${sessionId})`);
     return updated;
   } finally {

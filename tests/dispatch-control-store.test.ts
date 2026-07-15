@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import * as YAML from "yaml";
 import {
   DispatchControlStore,
   projectDispatchCleanupState,
@@ -126,6 +127,43 @@ describe("dispatch control parsing", () => {
     const id = testUlid("CLN", 1);
     const raw = `version: 1\nrevision: 1\nglobal: { authority: stopped }\ntasks: {}\npending_cleanup:\n  global: { cleanup_id: ${id}, status: pending, phase: owned, targets: [] }\n  ${testUlid("TSK", 1)}: { cleanup_id: ${id}, status: pending, phase: owned, targets: [] }\n`;
     expect(() => parseDispatchControl(raw)).toThrow();
+  });
+
+  it("rejects task-scoped cleanup targets owned by another canonical task", () => {
+    const taskA = testUlid("TSK", 1);
+    const taskB = testUlid("TSK", 2);
+    const sessionId = testUlid("SES", 1);
+    const invalid = {
+      ...control(1, "running"),
+      pending_cleanup: {
+        [taskA]: {
+          cleanup_id: testUlid("CLN", 4),
+          status: "pending",
+          phase: "owned",
+          targets: [
+            {
+              invocation_id: testUlid("INV", 1),
+              session_id: sessionId,
+              task_id: taskB,
+              agent_id: "worker",
+              adapter: "mock-acp",
+              owner_instance_id: testUlid("OWN", 1),
+              pid: 40001,
+              pgid: 40001,
+              process_start_ticks: "90001",
+              process_identity_platform: "linux_proc_stat_v1",
+              captured_at: new Date().toISOString(),
+              group_members: [{ pid: 40001, process_start_ticks: "90001" }],
+              session_metadata_path: `.kspec-sessions/${sessionId}/session.yaml`,
+            },
+          ],
+        },
+      },
+    };
+
+    expect(() => parseDispatchControl(YAML.stringify(invalid))).toThrow(
+      "Task cleanup targets must match their canonical task key",
+    );
   });
 });
 
