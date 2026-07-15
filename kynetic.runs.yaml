@@ -78481,9 +78481,21 @@ runs:
     completed_at: 2026-07-15T08:54:07.249Z
   - _ulid: 01KXJGT7ASJZKZCCXXWY9HPPQ3
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T09:13:06.137Z
+        completed_at: 2026-07-15T09:13:26.255Z
+        notes: "Worked well: anchored review threads gave exact behavioral gaps; a fresh full-suite run
+          exposed the mutex-winner-dependent assertion that focused runs missed; reusing the
+          established global-lifecycle real-invocation harness produced deterministic task-scope
+          bootstrap, retry, reconciliation, post-invocation, and active-completion tests."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T09:13:26.255Z
+        completed_at: 2026-07-15T09:13:26.255Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T09:13:06.137Z
