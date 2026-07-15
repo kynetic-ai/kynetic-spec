@@ -23913,6 +23913,29 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-15T16:54:07.585Z
+  - _ulid: 01KXKCX5KKT496V2AF91RYCP2D
+    type: success
+    content: For process-ownership and termination changes, adversarial executable probes against real
+      child-process behavior are an effective review gate beyond the test suite. In review cycle 4
+      of @01KXH2PRCMKX5GBDNJ60PPBCHS, targeted probes demonstrated a live process after durable
+      exited_at and a stop path that emitted no signal even though the fresh full suite passed
+      10,694 tests; the probes directly exposed correctness gaps in lifecycle synchronization.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-15T17:24:02.804Z
+  - _ulid: 01KXKCX5YF14ZZKD2817SKGJ3G
+    type: friction
+    content: The autonomous session-reflect-loop mandates unfiltered kspec meta observations list, kspec
+      inbox list, and kspec tasks list as its duplicate baseline. In a mature project these produced
+      hundreds of thousands of tokens and truncated output, so the baseline cannot be inspected
+      reliably; the workflow needed additional targeted kspec search queries. The reflection
+      baseline should use a bounded or indexed summary, or a search-oriented duplicate check that
+      remains complete at project scale.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-15T17:24:03.151Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
