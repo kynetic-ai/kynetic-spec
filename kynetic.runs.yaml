@@ -79053,9 +79053,20 @@ runs:
     completed_at: 2026-07-15T14:44:46.634Z
   - _ulid: 01KXK4ZQCVV5E6EAAMZQTSSADM
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T15:05:37.947Z
+        completed_at: 2026-07-15T15:06:38.883Z
+        notes: "Baseline completed: searched all observations, inbox items, and tasks before identifying
+          candidates. Existing state is extensive, so all candidates require targeted keyword
+          searches before capture."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T15:06:38.883Z
+        completed_at: 2026-07-15T15:06:38.883Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T15:05:37.947Z
