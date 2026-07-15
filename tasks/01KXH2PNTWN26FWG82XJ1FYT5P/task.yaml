@@ -122,7 +122,7 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-dispatch-control-persistence"
@@ -142,7 +142,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-engine-global-lifecycle/01kxh2pn
-session_id: null
+session_id: 01KXJ9SW9ETH5N5CP712E3447X
 history:
   - author: Jacob Chapel
     changes:
@@ -315,8 +315,21 @@ history:
         previous: 01KXJ6C6X8P5ZMQKWBT313Z9CY
     command: review-verdict-needs-work
     timestamp: 2026-07-15T07:00:01.003Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KXJ9SW9ETH5N5CP712E3447X
+        previous: null
+      started_at:
+        new: 2026-07-15T07:12:09.820Z
+        previous: 2026-07-15T06:12:04.938Z
+    command: task-start
+    timestamp: 2026-07-15T07:12:09.821Z
 created_at: 2026-07-14T19:47:15.420Z
-started_at: 2026-07-15T06:12:04.938Z
+started_at: 2026-07-15T07:12:09.820Z
 submitted_at: 2026-07-15T06:33:31.714Z
 todos: []
 automation: eligible
