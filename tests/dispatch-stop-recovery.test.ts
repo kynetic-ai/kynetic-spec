@@ -207,6 +207,12 @@ export async function createStopRecoveryHarness() {
     signals,
     runtime,
     seedOwnership,
+    retainActiveOwnership(ownership: DispatchOwnership) {
+      const retained = engine as unknown as {
+        activeInvocationOwnership: Map<string, DispatchOwnership>;
+      };
+      retained.activeInvocationOwnership.set(ownership.invocation_id, ownership);
+    },
     setGroupExits(value: boolean) {
       groupExits = value;
     },
@@ -459,6 +465,38 @@ describe("verified dispatch hard-stop recovery", () => {
     expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
   });
 
+  it("freezes the latest durable late-child proof during retained completion cleanup", async () => {
+    const harness = await createStopRecoveryHarness();
+    const initial = await harness.seedOwnership(1, harness.taskA);
+    harness.retainActiveOwnership(initial);
+    const childPid = initial.pid! + 100;
+    const durable = {
+      ...initial,
+      group_members: [...initial.group_members, { pid: childPid, process_start_ticks: "123456" }],
+      exited_at: new Date().toISOString(),
+    };
+    harness.proc.evidence.clear();
+    await updateSessionDispatchOwnership(
+      path.join(harness.projectDir, ".kspec-sessions"),
+      initial.session_id,
+      durable,
+    );
+    await closeSession(
+      path.join(harness.projectDir, ".kspec-sessions"),
+      initial.session_id,
+      "completed",
+      "fixture completion window",
+    );
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).resolves.toMatchObject({
+      outcome: "applied",
+      authority: "stopped",
+    });
+
+    expect(harness.signals).toEqual([]);
+    expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
+  });
+
   // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-no-success
   it("propagates verified hard-stop failure from graceful engine shutdown", async () => {
     const harness = await createStopRecoveryHarness();
@@ -476,10 +514,9 @@ describe("verified dispatch hard-stop recovery", () => {
     });
   });
 
-  // AC: @dispatch-lifecycle-control-authority ac-interrupted-stop-recovers-on-startup
   // AC: @dispatch-lifecycle-control-authority ac-task-interrupted-stop-recovers-on-startup
   it.each(["owned", "signals_sent", "sessions_closed"] as const)(
-    "resumes a %s crash checkpoint on startup without reopening authority",
+    "resumes a task %s crash checkpoint on startup without reopening task authority",
     async (phase) => {
       const harness = await createStopRecoveryHarness();
       const target = await harness.seedOwnership(1, harness.taskA);
@@ -488,7 +525,7 @@ describe("verified dispatch hard-stop recovery", () => {
       await harness.store.mutate("seed-crash", () => ({
         ...current,
         revision: current.revision + 1,
-        global: { authority: "stopped" },
+        global: { authority: "running" },
         tasks: {
           [harness.taskA]: {
             mode: "stopped",
@@ -515,8 +552,43 @@ describe("verified dispatch hard-stop recovery", () => {
       }));
 
       await harness.engine.start();
-      expect(harness.store.getPublication().snapshot.global.authority).toBe("stopped");
+      expect(harness.store.getPublication().snapshot.global.authority).toBe("running");
       expect(harness.store.getPublication().snapshot.tasks[harness.taskA]?.mode).toBe("stopped");
+      expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
+      expect(harness.signals.length).toBe(phase === "owned" ? 1 : 0);
+      expect(harness.sessions.closed.length).toBe(phase === "sessions_closed" ? 0 : 1);
+    },
+  );
+
+  // AC: @dispatch-lifecycle-control-authority ac-interrupted-stop-recovers-on-startup
+  it.each(["owned", "signals_sent", "sessions_closed"] as const)(
+    "resumes a global %s crash checkpoint on startup without reopening global authority",
+    async (phase) => {
+      const harness = await createStopRecoveryHarness();
+      const target = await harness.seedOwnership(1, harness.taskA);
+      const current = harness.store.getPublication().snapshot;
+      await harness.store.mutate("seed-global-crash", () => ({
+        ...current,
+        revision: current.revision + 1,
+        global: { authority: "stopped" },
+        pending_cleanup: {
+          global: {
+            cleanup_id: testUlid("CLNP", 2),
+            status: "pending",
+            phase,
+            targets: [
+              {
+                ...target,
+                session_metadata_path: `.kspec-sessions/${target.session_id}/session.yaml`,
+              },
+            ],
+          },
+        },
+      }));
+
+      await harness.engine.start();
+
+      expect(harness.store.getPublication().snapshot.global.authority).toBe("stopped");
       expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
       expect(harness.signals.length).toBe(phase === "owned" ? 1 : 0);
       expect(harness.sessions.closed.length).toBe(phase === "sessions_closed" ? 0 : 1);
@@ -544,9 +616,8 @@ describe("verified dispatch hard-stop recovery", () => {
     });
   });
 
-  // AC: @dispatch-lifecycle-control-authority ac-global-stop-is-idempotent
   // AC: @dispatch-lifecycle-control-authority ac-task-stop-is-idempotent
-  it("coalesces repeated global and task stop into one cleanup identity per scope", async () => {
+  it("coalesces repeated task stop into one cleanup identity", async () => {
     const harness = await createStopRecoveryHarness();
     await harness.seedOwnership(1, harness.taskA);
     const barrier = recoveryBarrier();
@@ -558,6 +629,27 @@ describe("verified dispatch hard-stop recovery", () => {
     await barrier.entered;
     const cleanupId = harness.engine.getLifecycleStatus().cleanupState.entries[0]?.cleanup_id;
     const second = harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA });
+    expect(harness.engine.getLifecycleStatus().cleanupState.entries).toHaveLength(1);
+    expect(harness.engine.getLifecycleStatus().cleanupState.entries[0]?.cleanup_id).toBe(cleanupId);
+    barrier.release();
+    await expect(first).resolves.toMatchObject({ outcome: "applied" });
+    await expect(second).resolves.toMatchObject({ outcome: "noop" });
+    expect(harness.signals).toHaveLength(1);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-global-stop-is-idempotent
+  it("coalesces repeated global stop into one cleanup identity", async () => {
+    const harness = await createStopRecoveryHarness();
+    await harness.seedOwnership(1, harness.taskA);
+    const barrier = recoveryBarrier();
+    harness.runtime.waitForProcessGroupExit = async () => {
+      await barrier.wait();
+      return true;
+    };
+    const first = harness.engine.applyGlobalLifecycleAction("stop");
+    await barrier.entered;
+    const cleanupId = harness.engine.getLifecycleStatus().cleanupState.entries[0]?.cleanup_id;
+    const second = harness.engine.applyGlobalLifecycleAction("stop");
     expect(harness.engine.getLifecycleStatus().cleanupState.entries).toHaveLength(1);
     expect(harness.engine.getLifecycleStatus().cleanupState.entries[0]?.cleanup_id).toBe(cleanupId);
     barrier.release();

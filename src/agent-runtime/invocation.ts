@@ -686,16 +686,13 @@ async function getConsecutiveFailureCount(
   return consecutiveFailures;
 }
 
-/**
- * Dispose a spawned agent, terminating the process if running.
- * AC: @agent-invocation-lifecycle ac-8
- */
-function disposeAgent(agent: SpawnedAgent | null): null {
+function disposeUnownedAgent(agent: SpawnedAgent | null): null {
   if (agent) {
     try {
       agent.kill("SIGTERM");
     } catch {
-      // Best-effort termination
+      // Invocations outside dispatch ownership retain their historical
+      // best-effort disposal contract and publish no process-exit evidence.
     }
   }
   return null;
@@ -733,15 +730,15 @@ async function waitForSpawnedAgentExit(agent: SpawnedAgent, timeoutMs?: number):
 }
 
 /**
- * Reap a child whose durable ownership could not be published.
+ * Reap a spawned child before publishing or releasing its process ownership.
  *
- * Ownership admission must remain reserved until process exit is observed:
- * once durable publication fails there may be no recoverable PID proof for a
- * later stop. Give the process a bounded graceful window, escalate the entire
- * spawned process group to SIGKILL, and then wait for the unambiguous exit
- * event before the caller releases that reservation or records exited_at.
+ * Give the process a bounded graceful window, escalate the entire spawned
+ * process group to SIGKILL, and then wait for the unambiguous exit event. This
+ * is required both when durable publication fails (there may be no recoverable
+ * PID proof for a later stop) and during normal finalization (exited_at is
+ * authoritative recovery evidence and cannot be persisted optimistically).
  */
-async function reapUnpublishedAgent(agent: SpawnedAgent | null): Promise<null> {
+async function reapSpawnedAgent(agent: SpawnedAgent | null): Promise<null> {
   if (!agent) return null;
 
   try {
@@ -1144,7 +1141,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         await onOwnershipPersisted?.(ownership);
         ownershipPublished = true;
       } catch (error) {
-        state.agent = await reapUnpublishedAgent(state.agent);
+        state.agent = await reapSpawnedAgent(state.agent);
         throw error;
       }
     }
@@ -1786,8 +1783,14 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       }
     }
 
-    // Terminate agent process
-    state.agent = disposeAgent(state.agent);
+    if (durableOwnership) {
+      // Terminate and observe dispatch-owned process exit before publishing exited_at.
+      // AC: @dispatch-lifecycle-control-authority ac-stop-cancels-active-work
+      // AC: @dispatch-lifecycle-control-authority ac-live-group-prevents-cleanup-completion
+      state.agent = await reapSpawnedAgent(state.agent);
+    } else {
+      state.agent = disposeUnownedAgent(state.agent);
+    }
 
     if (durableOwnership) {
       const ownershipAtExit = durableOwnership;

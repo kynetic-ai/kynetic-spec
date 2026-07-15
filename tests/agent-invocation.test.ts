@@ -340,6 +340,57 @@ describe("runInvocation: agent.dispatched event payload", { timeout: 120_000 }, 
     expect(aliveWhenOwnershipReleased).toBe(false);
     expect(() => process.kill(childPid!, 0)).toThrow();
   });
+
+  // AC: @agent-invocation-lifecycle ac-8
+  it("observes resistant process exit before publishing normal invocation exit", async () => {
+    const pidFile = path.join(testDir, "resistant-normal-acp.pid");
+    registerMockAdapter({
+      MOCK_ACP_RESIST_TERMINATION: "true",
+      MOCK_ACP_PID_FILE: pidFile,
+    });
+    const agent = makeTestAgent({ adapter: "mock-acp" });
+    const sessionId = testUlid("SESS", 11);
+    const handoff = {
+      invocationId: testUlid("INVK", 11),
+      sessionId,
+      taskId: null,
+      agentId: agent.id,
+      adapter: "mock-acp",
+      ownerInstanceId: testUlid("OWNR", 11),
+    };
+    let childPid: number | undefined;
+
+    onTestFinished(() => {
+      if (childPid === undefined) return;
+      try {
+        process.kill(-childPid, "SIGKILL");
+      } catch {
+        // Expected after normal invocation finalization has reaped the group.
+      }
+    });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir,
+      sessionId,
+      cwd: process.cwd(),
+      prompt: "Complete normally before resistant adapter exit",
+      trigger: "task.ready",
+      runnerRegistry: { runners: {} },
+      beforeCreate: async () => handoff,
+      onOwnershipPersisted: (ownership) => {
+        childPid = ownership.pid ?? undefined;
+      },
+    });
+
+    expect(result.outcome).toBe("success");
+    expect(Number(await fs.readFile(pidFile, "utf8"))).toBe(childPid);
+    expect(() => process.kill(childPid!, 0)).toThrow();
+    expect(await storeModule.getSession(sessionsDir, sessionId)).toMatchObject({
+      dispatch_ownership: { exited_at: expect.any(String) },
+    });
+  });
 });
 
 // ─── ac-unknown-runner-blocks-before-spawn / before-prompt ───────────────────

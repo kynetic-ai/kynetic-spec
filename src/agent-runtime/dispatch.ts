@@ -1848,8 +1848,10 @@ export class DispatchEngine {
     const sessionsDir = path.join(this.projectDir, ".kspec-sessions");
     const sessions = await listSessions(sessionsDir);
     const targets = new Map<string, DispatchCleanupTarget>();
+    const retainedBySession = new Map<string, DispatchOwnership>();
     for (const ownership of this.activeInvocationOwnership.values()) {
       if (selector.scope === "task" && ownership.task_id !== selector.taskId) continue;
+      retainedBySession.set(ownership.session_id, ownership);
       targets.set(ownership.session_id, {
         ...ownership,
         session_metadata_path: path.posix.join(
@@ -1862,9 +1864,31 @@ export class DispatchEngine {
     for (const sessionId of sessions) {
       const metadata = await getSession(sessionsDir, sessionId);
       let ownership = metadata?.dispatch_ownership;
-      if (!ownership || ownership.exited_at || metadata?.status !== "active") continue;
+      if (!ownership) continue;
+      const retained = retainedBySession.get(sessionId);
+      if (retained) {
+        const {
+          group_members: _retainedMembers,
+          exited_at: _retainedExit,
+          ...retainedIdentity
+        } = retained;
+        const {
+          group_members: _durableMembers,
+          exited_at: _durableExit,
+          ...durableIdentity
+        } = ownership;
+        // The retained map proves this invocation is still inside the engine's
+        // active cleanup window. Prefer its latest durable member/exit evidence
+        // only when the immutable ownership tuple is unchanged; otherwise keep
+        // the retained target so recovery rejects the reassignment as a mismatch.
+        if (!isDeepStrictEqual(retainedIdentity, durableIdentity)) continue;
+      } else if (ownership.exited_at || metadata?.status !== "active") {
+        continue;
+      }
       if (selector.scope === "task" && ownership.task_id !== selector.taskId) continue;
-      ownership = await this._refreshLiveGroupMemberProof(sessionsDir, ownership);
+      if (!ownership.exited_at) {
+        ownership = await this._refreshLiveGroupMemberProof(sessionsDir, ownership);
+      }
       targets.set(sessionId, {
         ...ownership,
         session_metadata_path: path.posix.join(".kspec-sessions", sessionId, "session.yaml"),
