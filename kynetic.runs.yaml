@@ -79708,7 +79708,7 @@ runs:
     completed_at: 2026-07-15T21:46:21.794Z
   - _ulid: 01KXKXPN2HF1287655WYB6S2DY
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79724,7 +79724,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T22:18:22.708Z
-        completed_at: 2026-07-15T22:18:22.708Z
+        completed_at: 2026-07-15T22:18:45.435Z
+        notes: "Friction: (1) a kspec batch containing review checks/comment completed with blank output and
+          an immediate review readback showed no mutations; rerunning individually later revealed
+          the original batch had also committed, creating duplicate checks/evidence threads. Batch
+          mutation acknowledgement/read-after-write was not trustworthy. (2) the reflect skill
+          documents 'kspec workflow show' without a run ref, but the CLI requires run-ref even with
+          one active workflow. (3) mandatory fresh full review tests took 3309.6 seconds after
+          focused coverage passed in 47.2 seconds, making high-confidence review latency
+          substantial. (4) task/spec context and prior-cycle history required several
+          large/truncated reads; there is no obvious compact task-review context view for current
+          description, latest notes, and prior blockers."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T22:18:45.435Z
+        completed_at: 2026-07-15T22:18:45.435Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T22:17:35.058Z
