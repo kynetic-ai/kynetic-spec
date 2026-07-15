@@ -227,6 +227,12 @@ events:
     payload:
       thread_ulid: 01KXKCP42WT6KHB2BZ1Q9W72VP
     timestamp: 2026-07-15T17:50:39.896Z
+  - _ulid: 01KXKEE2TAQ8NV9QX5CYHAXY7K
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKCP42WT6KHB2BZ1Q9W72VP
+    timestamp: 2026-07-15T17:50:45.578Z
 examined_commit: 29569d9efb5bc4674f7a7e830f6aa7f1c36fe716
 external_links: []
 lifecycle_state: closed
@@ -303,6 +309,8 @@ threads:
           stale target and fails mismatch. Added a late-child completion-window regression."
         created_at: 2026-07-15T17:50:39.626Z
     kind: blocker
+    resolved_at: 2026-07-15T17:50:45.299Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXKCP78KKM52ARC32YVMGVV2
     anchor:
       type: code
@@ -388,5 +396,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T17:20:25.481Z
 created_at: 2026-07-15T17:02:01.298Z
-updated_at: 2026-07-15T17:50:39.626Z
+updated_at: 2026-07-15T17:50:45.299Z
 notes: []
