@@ -1,1 +1,19 @@
-notes: []
+notes:
+  - _ulid: 01KXJW3FH4P53GREQ310X3PZAE
+    content: "Approach: extend the existing lifecycle mutex/final-create handoff and Zod-backed dispatch
+      control store. Persist a strict dispatch_ownership envelope with null process identity before
+      spawn, then PID/PGID/Linux start-tick and immutable member proof before active publication;
+      enrich SessionRegistry for scoped closure. Global/task stop atomically commits stopped
+      authority plus one immutable cleanup entry, then a shared phase driver verifies the persisted
+      session tuple and /proc birth/group evidence before signalling, closes sessions through
+      sessions/store.ts, and removes only completed matching cleanup. Startup and idempotent retry
+      run that same driver. Edge cases: post-spawn ownership-write failure direct reap; tuple/birth
+      mismatch; unreadable/unsupported identity; leaderless empty/live groups; unproven members;
+      signal timeout/failure; session-close failure; phase crashes; concurrent repeat stop;
+      global/task A-B isolation; spawn-winner stop. Test plan: create behavioral
+      tests/dispatch-stop-recovery.test.ts with injectable process/session recorders and durable
+      fixtures for all 25 owned ACs, plus targeted spawn-race and registry assertions; run focused
+      and full project gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T12:30:23.780Z
