@@ -298,3 +298,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T21:16:19.954Z
+  - _ulid: 01KXKTM1X1HNZ0MXYY7Y4QHV7H
+    content: "Fix cycle 8 approach: add a behavioral concurrency regression that overlaps durable
+      session closure with exited_at ownership publication and proves both terminal status and the
+      latest ownership survive. Unify every session metadata read-modify-write under the existing
+      per-session mutation lock so close/update/ownership/archive operations cannot overwrite one
+      another. Re-read all stop/recovery ACs, preserve immutable ownership validation, and run
+      focused plus full project gates before resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T21:23:44.161Z
