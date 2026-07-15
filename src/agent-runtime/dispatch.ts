@@ -94,7 +94,11 @@ import {
   type DispatchCleanupState,
   type DispatchControl,
 } from "../schema/dispatch-control.js";
-import { normalizeTaskIdentity, buildTaskRefResolver } from "./task-identity.js";
+import {
+  normalizeTaskIdentity,
+  buildTaskRefResolver,
+  requireCanonicalTaskIdentity,
+} from "./task-identity.js";
 import type { AgentDispatchRule, AgentDispatchFilter } from "../schema/meta.js";
 import { matchesAutomationFilter } from "../schema/task.js";
 import type { SessionTrigger } from "../sessions/types.js";
@@ -911,6 +915,7 @@ export interface DispatchEngineOptions {
 }
 
 export type GlobalLifecycleAction = "start" | "pause" | "resume";
+export type TaskLifecycleAction = "pause" | "resume";
 
 export interface GlobalLifecycleActionResult {
   outcome: "applied" | "noop";
@@ -921,6 +926,18 @@ export interface GlobalLifecycleActionContext {
   reason?: string;
   actor?: string;
   source?: "cli" | "api" | "ui" | "daemon_startup" | "daemon_shutdown" | "recovery";
+}
+
+export interface TaskLifecycleActionContext extends GlobalLifecycleActionContext {
+  taskId?: string;
+  taskRef?: string;
+}
+
+export interface TaskLifecycleActionResult {
+  outcome: "applied" | "noop";
+  taskId: string;
+  taskRef: string;
+  mode: "paused" | "stopped" | null;
 }
 
 export class DispatchLifecycleTransitionError extends Error {
@@ -1522,6 +1539,113 @@ export class DispatchEngine {
         (result.outcome === "applied" || publishedAuthority !== "running")
       ) {
         await this._reconstructCurrentCandidates();
+      }
+      return result;
+    });
+  }
+
+  /** Apply task pause/resume against the canonical task's committed authority. */
+  async applyTaskLifecycleAction(
+    action: TaskLifecycleAction,
+    context: TaskLifecycleActionContext,
+  ): Promise<TaskLifecycleActionResult> {
+    const identity = await requireCanonicalTaskIdentity(this.projectDir, {
+      taskId: context.taskId,
+      taskRef: context.taskRef,
+      source: `dispatch/task-${action}`,
+    });
+    return this.lifecycleMutex.runExclusive(async () => {
+      if (!this.lifecycleStore) {
+        throw new Error("Task lifecycle controls require a shadow dispatch-control store");
+      }
+      let result: TaskLifecycleActionResult | undefined;
+      this.localLifecycleMutation = true;
+      try {
+        const timestamp = new Date().toISOString();
+        const reason = this._sanitizeLifecycleText(context.reason ?? "operator request", 240);
+        const actor = this._sanitizeLifecycleText(context.actor ?? "dispatch-engine", 120);
+        await this.lifecycleStore.mutate(
+          `dispatch-task-${action}-${identity.taskId}`,
+          (snapshot) => {
+            const current = snapshot.tasks[identity.taskId];
+            const cleanup = projectDispatchCleanupState(snapshot, {
+              scope: "task",
+              task_id: identity.taskId,
+            });
+
+            if (action === "pause") {
+              if (current?.mode === "stopped") {
+                throw new DispatchLifecycleTransitionError(
+                  `Cannot pause stopped task dispatch for ${identity.taskId}`,
+                );
+              }
+              if (current?.mode === "paused") {
+                result = {
+                  outcome: "noop",
+                  taskId: identity.taskId,
+                  taskRef: identity.displayRef,
+                  mode: "paused",
+                };
+                return null;
+              }
+              result = {
+                outcome: "applied",
+                taskId: identity.taskId,
+                taskRef: identity.displayRef,
+                mode: "paused",
+              };
+              return {
+                ...snapshot,
+                revision: snapshot.revision + 1,
+                tasks: {
+                  ...snapshot.tasks,
+                  [identity.taskId]: {
+                    mode: "paused",
+                    reason,
+                    actor,
+                    source: context.source ?? "api",
+                    controlled_at: timestamp,
+                    updated_at: timestamp,
+                  },
+                },
+              };
+            }
+
+            if (current?.mode === "stopped" && cleanup.entries.length > 0) {
+              throw new DispatchLifecycleTransitionError(
+                `Cannot resume task dispatch for ${identity.taskId} while matching cleanup is ${cleanup.status}`,
+              );
+            }
+            if (!current) {
+              result = {
+                outcome: "noop",
+                taskId: identity.taskId,
+                taskRef: identity.displayRef,
+                mode: null,
+              };
+              return null;
+            }
+
+            const tasks = { ...snapshot.tasks };
+            delete tasks[identity.taskId];
+            result = {
+              outcome: "applied",
+              taskId: identity.taskId,
+              taskRef: identity.displayRef,
+              mode: null,
+            };
+            return { ...snapshot, revision: snapshot.revision + 1, tasks };
+          },
+        );
+      } finally {
+        this.localLifecycleMutation = false;
+      }
+
+      if (!result) {
+        throw new Error("Task lifecycle mutation completed without a transition result");
+      }
+      if (action === "resume" && result.outcome === "applied") {
+        await this._reconstructReleasedTaskCandidates();
       }
       return result;
     });
@@ -4155,14 +4279,20 @@ export class DispatchEngine {
   }
 
   private _acceptLifecyclePublication(publication: DispatchControlPublication): void {
-    const previous = this.lifecyclePublication.snapshot.global.authority;
+    const previousSnapshot = this.lifecyclePublication.snapshot;
+    const previous = previousSnapshot.global.authority;
     this.lifecyclePublication = publication;
     if (!this.lifecycleStarted || this.localLifecycleMutation) return;
     const next = publication.snapshot.global.authority;
     const reconstruction = this.lifecycleMutex
       .runExclusive(async () => {
+        const releasedTask = Object.keys(previousSnapshot.tasks).some(
+          (taskId) => publication.snapshot.tasks[taskId] === undefined,
+        );
         if (next === "running" && previous !== "running" && this._globalSchedulingPermitted()) {
           await this._reconstructCurrentCandidates();
+        } else if (releasedTask) {
+          await this._reconstructReleasedTaskCandidates();
         }
       })
       .catch((err) => {
@@ -4178,6 +4308,12 @@ export class DispatchEngine {
     for (const timer of this.coalesceTimers.values()) clearTimeout(timer);
     this.coalesceTimers.clear();
     this.queues.clear();
+    await this._evaluateAllTasks({ skipIfActive: true });
+    await this._serializedDrain();
+  }
+
+  private async _reconstructReleasedTaskCandidates(): Promise<void> {
+    if (!this.lifecycleStarted || !this._globalSchedulingPermitted()) return;
     await this._evaluateAllTasks({ skipIfActive: true });
     await this._serializedDrain();
   }

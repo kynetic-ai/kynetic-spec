@@ -85,6 +85,17 @@ export interface TaskIdentityRejection extends TaskIdentityOutcomeBase {
 
 export type TaskIdentityResolution = TaskIdentityResolved | TaskIdentityRejection;
 
+/** Strict control-boundary failure for task identity canonicalization. */
+export class TaskIdentityResolutionError extends Error {
+  readonly code: TaskIdentityRejectionCode | "task-identity-unavailable";
+
+  constructor(code: TaskIdentityRejectionCode | "task-identity-unavailable", message: string) {
+    super(message);
+    this.name = "TaskIdentityResolutionError";
+    this.code = code;
+  }
+}
+
 /**
  * A task-scoped input to canonicalize. Either field may be absent; at least one
  * resolvable identifier is required for a successful resolution.
@@ -318,6 +329,28 @@ export async function resolveCanonicalTaskIdentity(
     return null;
   }
   return normalizeTaskIdentity(input, buildTaskRefResolver(tasks));
+}
+
+/**
+ * Resolve task identity for a mutation boundary where proceeding leniently is
+ * unsafe. Unlike event ingestion, lifecycle control must never look up or
+ * write authority under an unresolved alias.
+ */
+export async function requireCanonicalTaskIdentity(
+  projectDir: string,
+  input: TaskIdentityInput,
+): Promise<CanonicalTaskIdentity> {
+  const resolution = await resolveCanonicalTaskIdentity(projectDir, input);
+  if (resolution === null) {
+    throw new TaskIdentityResolutionError(
+      "task-identity-unavailable",
+      `[${input.source}] task identity could not be loaded; rejecting before control lookup.`,
+    );
+  }
+  if (!resolution.ok) {
+    throw new TaskIdentityResolutionError(resolution.code, resolution.diagnostic);
+  }
+  return resolution.identity;
 }
 
 /**
