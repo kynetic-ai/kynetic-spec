@@ -11,3 +11,19 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T10:27:00.151Z
+  - _ulid: 01KXJPWJY8K8G8D03DDF9KC7PD
+    content: "Implemented final boundary at runInvocation immediately before createSession; dispatch
+      memoizes one lifecycleMutex-ordered decision so mocks and the common path share the same
+      winner. Global pause/task pause deny with held requeue; global stop/task stop or matching
+      cleanup deny with discard; unrelated task cleanup is ignored. A spawn winner publishes
+      invocation/session/task/agent/adapter active handoff before later control and this task
+      performs no cancellation. Six barrier traces: global pause→held/0 artifacts, task
+      pause→held/0, global stop→discarded/0, task stop→discarded/0, spawn→handoff→global
+      pause→natural completion, spawn→handoff→task stop→handoff remains for stop recovery. Added
+      pre-gate agent-slot reservation accounting so scheduler ordering/concurrency remain intact.
+      Verification: format, repo/focused lint, typecheck, targeted lifecycle/race/scheduler tests,
+      full npm test (10,655 passed, 3 skipped), refs/alignment/completeness validations all pass
+      with warnings allowed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T10:59:15.017Z
