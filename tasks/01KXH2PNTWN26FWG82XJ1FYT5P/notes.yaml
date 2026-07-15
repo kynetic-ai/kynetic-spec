@@ -91,3 +91,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T07:00:01.003Z
+  - _ulid: 01KXJ9Y4RBANPVE8EAVW1Z0Q2D
+    content: "Fix cycle 3 approach: handle externally triggered lifecycle reconstruction as a tracked
+      in-flight promise, report any rejection through a stable dispatch error message, and await
+      tracked publication work during engine shutdown. Add a behavioral regression that publishes
+      paused-to-running authority, forces reconstruction to reject, and verifies deterministic
+      containment/reporting rather than an unhandled rejection. Re-read all 16 task-owned ACs; no
+      spec or plan mutation is needed because this is error-path hardening within the existing
+      reconstruction contract. Re-run focused lifecycle tests, full suite, format/lint/typecheck,
+      diff check, and all kspec validation gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T07:12:54.539Z
