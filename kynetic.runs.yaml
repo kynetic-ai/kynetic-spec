@@ -78524,7 +78524,7 @@ runs:
     completed_at: 2026-07-15T09:15:13.446Z
   - _ulid: 01KXJJ6E0A5FVKRH0WNN8VPYA1
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78563,7 +78563,20 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-07-15T09:40:25.362Z
-        completed_at: 2026-07-15T09:40:25.362Z
+        completed_at: 2026-07-15T09:40:29.523Z
+        notes: "Two untracked/partially tracked proposals: (1) Small: extend kspec-reflect meaningful-work
+          gating to treat durable review activity (new review/checks/verdict and task transition) as
+          substantive session work even with a clean code tree and no completed task; this avoids
+          skipping useful reviewer reflection while retaining the empty-session guard. (2) Medium:
+          make the project Codex review skill detect an unavailable configured model and retry with
+          an account-supported/default Codex model while preserving reasoning/sandbox settings and
+          reporting the selected model; this prevents supplemental review from silently disappearing
+          on ChatGPT-backed CLI accounts. Existing workflow-show and full-suite concerns require no
+          new capture."
+      - status: completed
+        step_index: 4
+        started_at: 2026-07-15T09:40:29.523Z
+        completed_at: 2026-07-15T09:40:29.523Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T09:37:14.762Z
