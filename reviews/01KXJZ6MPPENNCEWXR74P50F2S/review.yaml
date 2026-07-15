@@ -61,6 +61,16 @@ checks:
     runner: npm test -- --fresh
     created_at: 2026-07-15T13:44:17.197Z
     completed_at: 2026-07-15T13:44:17.197Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok exited 0 with 6 deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T13:44:24.281Z
+    completed_at: 2026-07-15T13:44:24.281Z
 events:
   - _ulid: 01KXJZ6MP81VH8XP0PBHA1ZPGN
     actor: Jacob Chapel
@@ -110,6 +120,13 @@ events:
       status: pass
       name: focused stop recovery tests
     timestamp: 2026-07-15T13:44:17.593Z
+  - _ulid: 01KXK0B070QYG25JTCMP3QGV1H
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T13:44:24.545Z
 examined_commit: 3a9909c4870a49f5f3ac174716edfca067852055
 external_links: []
 lifecycle_state: open
@@ -122,5 +139,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T13:24:33.110Z
-updated_at: 2026-07-15T13:44:17.197Z
+updated_at: 2026-07-15T13:44:24.281Z
 notes: []
