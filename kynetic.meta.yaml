@@ -23853,6 +23853,25 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-15T11:02:40.487Z
+  - _ulid: 01KXJTPAFDCM1BEJHNKT386KQ0
+    type: friction
+    content: Dispatch tests mock runInvocation across many suites without a shared contract-preserving
+      helper. Lifecycle hooks such as beforeCreate can be bypassed silently, producing false
+      active-state assumptions and broad local mock repairs when the real boundary changes. Consider
+      a test helper that invokes lifecycle hooks at the simulated artifact boundary.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-15T12:05:44.045Z
+  - _ulid: 01KXJTPASHJMMY0D7Z7X5PM88V
+    type: success
+    content: Deterministic barriers placed inside the real common pre-artifact path made concurrency AC
+      coverage sensitive to hook removal or relocation while proving both persisted session and
+      adapter-process absence. Reuse this real-boundary barrier pattern for ordering races.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-15T12:05:44.369Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
