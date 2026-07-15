@@ -126,8 +126,12 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at
+  a7b0e99bd62e. Added strict versioned dispatch-control persistence, shadow-locked verified commits,
+  committed-only publication and watcher reloads, paired cache invalidation, and behavioral coverage
+  including the equal-revision divergence fix.
 depends_on:
   - "@task-patch-dispatch-engine-coalescing-specs"
 context: []
@@ -286,9 +290,26 @@ history:
         previous: "@01KXHWPKPDN1W1E8C3EZJ9BJXH"
     command: review-link
     timestamp: 2026-07-15T04:07:35.001Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at a7b0e99bd62e.
+          Added strict versioned dispatch-control persistence, shadow-locked verified commits,
+          committed-only publication and watcher reloads, paired cache invalidation, and behavioral
+          coverage including the equal-revision divergence fix.
+        previous: null
+      completed_at:
+        new: 2026-07-15T04:23:52.568Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-15T04:23:52.578Z
 prior_status: null
 created_at: 2026-07-14T19:47:14.724Z
 started_at: 2026-07-15T03:46:21.387Z
 submitted_at: 2026-07-15T04:02:07.069Z
+completed_at: 2026-07-15T04:23:52.568Z
 todos: []
 automation: eligible
