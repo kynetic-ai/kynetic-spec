@@ -77957,7 +77957,7 @@ runs:
     completed_at: 2026-07-15T04:04:32.035Z
   - _ulid: 01KXJ0A2KQ2RDSF4RXTB6PMEMZ
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77984,9 +77984,21 @@ runs:
           batch required:false did not express --no-required, so two intended optional checks became
           required."
       - status: completed
+        exit_confirmed: true
         step_index: 2
         started_at: 2026-07-15T04:25:41.115Z
-        completed_at: 2026-07-15T04:25:41.115Z
+        completed_at: 2026-07-15T04:27:54.582Z
+        notes: Coverage search complete across specs, tasks, inbox, and observations via kspec search.
+          Review-history alias sensitivity is already tracked exactly by inbox @01KV9D9W (and
+          overlaps @01KRE7H4). Workflow-show run-ref friction is already covered by pending task
+          @01KKBD52 and multiple duplicate inbox/observation records. Per-file fresh-test output is
+          intentional and implemented by completed task @01KNTB8Y. No source currently tracks batch
+          required:false, but the command schema uses the separate --no-required flag, so this is
+          low-confidence caller syntax rather than a capture candidate.
+      - status: completed
+        step_index: 3
+        started_at: 2026-07-15T04:27:54.582Z
+        completed_at: 2026-07-15T04:27:54.582Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T04:24:39.799Z
