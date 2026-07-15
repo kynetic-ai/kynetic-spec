@@ -288,6 +288,12 @@ events:
     payload:
       thread_ulid: 01KXKQ9AY1AQG5292XDEPA5RXC
     timestamp: 2026-07-15T20:48:37.666Z
+  - _ulid: 01KXKRM2CW8QYD39PBFQJQRVJB
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKQ97S9131PDWAM0PECY4MM
+    timestamp: 2026-07-15T20:48:47.516Z
 examined_commit: e01006b3649db63d24a187d39e6ba73be8476358
 external_links: []
 lifecycle_state: closed
@@ -414,6 +420,12 @@ threads:
           signal, durable exited_at publication, session closure, phase completion, and final idle
           cleanup removal."
         created_at: 2026-07-15T20:48:20.040Z
+      - _ulid: 01KXKRM24MK2TAW4TP7XFQHDAQ
+        author: Jacob Chapel
+        body: "Fixed in 601531c687: added direct owned-phase leaderless-empty-group coverage proving no
+          signal, durable exited_at publication, session closure, phase completion, and final idle
+          cleanup removal."
+        created_at: 2026-07-15T20:48:47.252Z
     kind: blocker
     resolved_at: 2026-07-15T20:48:25.582Z
     resolved_by: Jacob Chapel
@@ -455,5 +467,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T20:25:48.677Z
 created_at: 2026-07-15T20:01:28.703Z
-updated_at: 2026-07-15T20:48:37.415Z
+updated_at: 2026-07-15T20:48:47.252Z
 notes: []
