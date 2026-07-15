@@ -79708,9 +79708,23 @@ runs:
     completed_at: 2026-07-15T21:46:21.794Z
   - _ulid: 01KXKXPN2HF1287655WYB6S2DY
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T22:17:35.058Z
+        completed_at: 2026-07-15T22:18:22.708Z
+        notes: "Worked well: (1) reading the full task diff before notes prevented anchoring; (2) computing
+          the live merge base separated unrelated already-integrated publication work from this
+          task; (3) durable per-cycle review records made all eight prior blocker resolutions
+          independently auditable; (4) focused process/recovery tests gave fast signal before the
+          mandatory fresh full suite; (5) the detached-review merge helper safely integrated and
+          verified the target without branch checkout improvisation."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T22:18:22.708Z
+        completed_at: 2026-07-15T22:18:22.708Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T22:17:35.058Z
