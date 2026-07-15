@@ -381,6 +381,41 @@ events:
       status: pass
       name: git diff check
     timestamp: 2026-07-15T08:48:04.403Z
+  - _ulid: 01KXJFD827G1NXQKA2KJ51F5SS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJFD7TCPBQP3ETKCHBCDJB3
+    timestamp: 2026-07-15T08:48:32.328Z
+  - _ulid: 01KXJFDB7610NZC7PVP9VYXGRQ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJFDAZ7J83A5T4VGVS5KN2Y
+    timestamp: 2026-07-15T08:48:35.558Z
+  - _ulid: 01KXJFDE6DPDP0KBCYXQAZ3V28
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJFDDZ1640AP6QBJCXZKWTT
+    timestamp: 2026-07-15T08:48:38.605Z
+  - _ulid: 01KXJFDH65TPWZYYK6MQK97ZAS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJFDGYWNTK3ZTTMSC2T64WH
+    timestamp: 2026-07-15T08:48:41.669Z
+  - _ulid: 01KXJFDM3SFNZTR5SG8Q13G5BX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXJFDKWTVCQ05XAF9G2CKGYC
+    timestamp: 2026-07-15T08:48:44.666Z
 examined_commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
 external_links: []
 lifecycle_state: closed
@@ -486,6 +521,101 @@ threads:
           Shared/package guidance surfaces touched: none; neutrality review not applicable."
         created_at: 2026-07-15T08:47:00.565Z
     kind: nit
+  - _ulid: 01KXJFD7TCPBQP3ETKCHBCDJB3
+    anchor:
+      type: code
+      commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
+      line_end: 227
+      line_start: 209
+      path: tests/dispatch-task-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJFD7TC7VW8QW9C0X0BAD61
+        author: Jacob Chapel
+        body: "MUST-FIX: This concurrency test assumes the slug call deterministically acquires the
+          lifecycle mutex first. Both calls perform independent asynchronous identity loads before
+          locking, so Promise.all preserves result positions but does not establish lock order. The
+          fresh full suite observed the task-id call win, making first=noop and failing line 219; it
+          can also change which reason metadata is durable. Assert one applied plus one noop without
+          assigning the winner, and test sanitization separately or establish an explicit ordering
+          barrier. Evidence: focused runs passed, while npm test -- --fresh failed here with first
+          outcome noop."
+        created_at: 2026-07-15T08:48:32.076Z
+    kind: blocker
+  - _ulid: 01KXJFDAZ7J83A5T4VGVS5KN2Y
+    anchor:
+      type: code
+      commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
+      line_end: 262
+      line_start: 234
+      path: tests/dispatch-task-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJFDAZ79K2AEWJCDCW7QTVA
+        author: Jacob Chapel
+        body: "MUST-FIX: The test title and task handoff claim bootstrap, retry, and post-invocation
+          coverage, but this body never starts with a precommitted task pause, runs a failed
+          invocation retry timer, or crosses a post-invocation barrier. Repeated direct calls to
+          _serializedDrain only prove the common end-state drain. A regression in any named caller
+          could still pass. Add the deterministic per-ingress barrier cases required by the task
+          handoff, including bootstrap, retry wake-up, and post-invocation re-evaluation."
+        created_at: 2026-07-15T08:48:35.303Z
+    kind: blocker
+  - _ulid: 01KXJFDDZ1640AP6QBJCXZKWTT
+    anchor:
+      type: code
+      commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
+      line_end: 265
+      line_start: 239
+      path: tests/dispatch-task-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJFDDZ11MG7DN8WP84XHEE5
+        author: Jacob Chapel
+        body: "MUST-FIX: This does not prove ac-task-control-preserves-unrelated-task-control. Task B is
+          pending when engine.start runs, so B is recorded as started before task A is paused. The
+          final toContain(B) assertion therefore passes even if pausing A also pauses B. Make B
+          become eligible after A is paused and assert a post-pause B start, or directly verify B
+          has no control record in addition to behavioral admission."
+        created_at: 2026-07-15T08:48:38.369Z
+    kind: blocker
+  - _ulid: 01KXJFDGYWNTK3ZTTMSC2T64WH
+    anchor:
+      type: code
+      commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
+      line_end: 303
+      line_start: 270
+      path: tests/dispatch-task-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJFDGYWQN47WW7RA0E3204P
+        author: Jacob Chapel
+        body: "MUST-FIX: The ac-task-pause-allows-active-completion annotation is not behaviorally proven.
+          Manually inserting activeCount and activeInvocationDetails creates bookkeeping, not an
+          abortable running invocation; the immediate count assertion would still pass if pause
+          aborted real work. Run an invocation behind a completion barrier, pause its canonical
+          task, then release the barrier and prove completion. The existing registered-session
+          assertion can continue to cover the session-open AC."
+        created_at: 2026-07-15T08:48:41.436Z
+    kind: blocker
+  - _ulid: 01KXJFDKWTVCQ05XAF9G2CKGYC
+    entries:
+      - _ulid: 01KXJFDKWT84A6CEM3F3P75Y6Z
+        author: Jacob Chapel
+        body: "Evidence log — Files read: full base-to-head diff for dispatch.ts, task-identity.ts, and
+          dispatch-task-lifecycle.test.ts; surrounding drain, retry, bootstrap, publication, cleanup
+          store/schema, identity resolver, and global lifecycle tests; task, spec, and plan context.
+          Commands run: focused 40-test suite, three isolated fresh lifecycle reruns, fresh full npm
+          suite, format, repo/focused lint, typecheck, diff check, refs/alignment/completeness
+          validation. Claims verified: canonical slug/id converge on one ULID and one store write
+          when the test winner matches its assumption; matching cleanup blocks stopped resume;
+          global and task-A/B state are independently keyed. Worker all-tests-pass claim was
+          disproved by the fresh full run. Categories searched: correctness, task/global cleanup
+          isolation, concurrency/idempotency, bootstrap/retry/post-invocation edges, error handling,
+          test integrity, and integration. Shared/package guidance surfaces touched: none;
+          neutrality review not applicable."
+        created_at: 2026-07-15T08:48:44.442Z
+    kind: nit
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -495,5 +625,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T08:47:03.993Z
 created_at: 2026-07-15T08:28:16.739Z
-updated_at: 2026-07-15T08:48:04.152Z
+updated_at: 2026-07-15T08:48:44.442Z
 notes: []
