@@ -78922,7 +78922,7 @@ runs:
     started_at: 2026-07-15T13:16:21.308Z
     completed_at: 2026-07-15T13:20:16.156Z
   - _ulid: 01KXK0G8B71DXCH6QF8SMVBHHC
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -78951,7 +78951,10 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-07-15T13:49:51.494Z
-        completed_at: 2026-07-15T13:49:51.494Z
+        completed_at: 2026-07-15T13:50:09.013Z
+        notes: Capture step completed with zero new records. Existing observations @01KXHQ9T, @01KXJQ2V,
+          @01KXJTPAS, and @01KNPJXXG already cover all high-confidence session learnings.
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T13:47:16.711Z
+    completed_at: 2026-07-15T13:50:09.013Z
