@@ -78763,7 +78763,7 @@ runs:
     started_at: 2026-07-15T11:23:49.151Z
     completed_at: 2026-07-15T11:29:52.562Z
   - _ulid: 01KXJTHMKQRMS0SD84WE84KQH9
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -78811,7 +78811,12 @@ runs:
       - status: completed
         step_index: 5
         started_at: 2026-07-15T12:05:15.152Z
-        completed_at: 2026-07-15T12:05:15.152Z
+        completed_at: 2026-07-15T12:05:50.541Z
+        notes: Captured one friction observation for contract-preserving runInvocation test doubles and one
+          success observation for deterministic barriers through the real pre-artifact boundary. No
+          task or inbox item was created because implementation scope should be triaged from the
+          systemic observations.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T12:03:10.583Z
+    completed_at: 2026-07-15T12:05:50.541Z
