@@ -359,7 +359,8 @@ describe("dispatch engine degraded state", () => {
 
     let resolveInvocation!: (result: any) => void;
     const invocationStarted = new Promise<void>((resolve) => {
-      vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+      vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
+        await options.beforeCreate?.();
         resolve();
         return await new Promise((innerResolve) => {
           resolveInvocation = innerResolve;

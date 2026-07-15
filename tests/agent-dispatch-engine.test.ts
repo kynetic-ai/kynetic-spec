@@ -2503,10 +2503,13 @@ describe("Dispatch runner resolution preflight", () => {
       const runInvocationGate = new Promise<void>((resolve) => {
         releaseRunInvocation = resolve;
       });
-      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
-        await runInvocationGate;
-        return { session: {} as any, outcome: "success", durationMs: 1 };
-      });
+      const runSpy = vi
+        .spyOn(invocationModule, "runInvocation")
+        .mockImplementation(async (options) => {
+          await options.beforeCreate?.();
+          await runInvocationGate;
+          return { session: {} as any, outcome: "success", durationMs: 1 };
+        });
 
       const engine = new DispatchEngine({
         projectDir: testDir,
@@ -3203,7 +3206,8 @@ describe("Active fleet cleanup on invocation completion", () => {
     const statusDuringSecondInvocation: Array<ReturnType<DispatchEngine["getStatus"]>> = [];
     let invocationCount = 0;
 
-    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
+      await options.beforeCreate?.();
       invocationCount++;
       if (invocationCount === 2) {
         // During the second invocation (spawned by drain), check if the first
@@ -3320,11 +3324,15 @@ describe("Active fleet cleanup on invocation completion", () => {
     });
     const runSpy = vi
       .spyOn(invocationModule, "runInvocation")
-      .mockImplementationOnce(async () => {
+      .mockImplementationOnce(async (options) => {
+        await options.beforeCreate?.();
         await quietInvocationGate;
         return { session: {} as never, outcome: "success", durationMs: 1 };
       })
-      .mockRejectedValueOnce(new Error("early failure"));
+      .mockImplementationOnce(async (options) => {
+        await options.beforeCreate?.();
+        throw new Error("early failure");
+      });
 
     const quietEngine = new DispatchEngine({
       projectDir: testDir,

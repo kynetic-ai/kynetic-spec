@@ -616,11 +616,12 @@ describe("dispatch canonical task identity: scheduler", { timeout: 60_000 }, () 
       reason: null,
       metadata: null,
     });
-    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
-      session: {} as never,
-      outcome: "success",
-      durationMs: 1,
-    });
+    const runSpy = vi
+      .spyOn(invocationModule, "runInvocation")
+      .mockImplementation(async (options) => {
+        await options.beforeCreate?.();
+        return { session: {} as never, outcome: "success", durationMs: 1 };
+      });
 
     const events: InvocationEvent[] = [];
     const engine = new DispatchEngine({

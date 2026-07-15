@@ -14,6 +14,7 @@ import type {
 import { createMissingDispatchControl } from "../src/schema/dispatch-control.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
+import * as spawnerModule from "../src/agents/spawner.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
 import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
 import {
@@ -92,7 +93,7 @@ export function artifactRecorder() {
 type SpawnGateHarness = Awaited<ReturnType<typeof createSpawnGateHarness>>;
 const harnesses: SpawnGateHarness[] = [];
 
-export async function createSpawnGateHarness() {
+export async function createSpawnGateHarness(options: { realInvocation?: boolean } = {}) {
   const projectDir = await createTempDir("dispatch-spawn-gate-");
   initGitRepo(projectDir);
   const taskId = testUlid("TASK", 1);
@@ -205,24 +206,51 @@ export async function createSpawnGateHarness() {
     _admitInvocationCreation: (input: unknown) => Promise<invocationModule.InvocationCreateHandoff>;
   };
   const admitInvocationCreation = internal._admitInvocationCreation.bind(engine);
+  let markAdmissionSettled!: () => void;
+  const admissionSettled = new Promise<void>((resolve) => {
+    markAdmissionSettled = resolve;
+  });
   vi.spyOn(internal, "_admitInvocationCreation").mockImplementation(async (input) => {
     await beforeCreate.wait();
-    return admitInvocationCreation(input);
+    try {
+      return await admitInvocationCreation(input);
+    } finally {
+      markAdmissionSettled();
+    }
   });
+  if (options.realInvocation) {
+    vi.spyOn(spawnerModule, "spawnAndInitialize").mockImplementation(async () => {
+      artifacts.processes++;
+      throw new Error("adapter spawn must remain unreachable when lifecycle control wins");
+    });
+  }
   let completedNaturally = false;
   let observedAbort = false;
-  vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
-    const handoff = await options.beforeCreate?.();
-    if (!handoff) throw new Error("dispatch invocation omitted the final create gate");
-    artifacts.handoffs.push(handoff);
-    artifacts.sessions++;
-    artifacts.processes++;
-    if (options.abortSignal?.aborted) observedAbort = true;
-    await completion.wait();
-    if (options.abortSignal?.aborted) observedAbort = true;
-    completedNaturally = !observedAbort;
-    return { session: {} as never, outcome: "success", durationMs: 1, turnCount: 1 };
-  });
+  if (!options.realInvocation) {
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (invocationOptions) => {
+      const handoff = await invocationOptions.beforeCreate?.();
+      if (!handoff) throw new Error("dispatch invocation omitted the final create gate");
+      artifacts.handoffs.push(handoff);
+      artifacts.sessions++;
+      artifacts.processes++;
+      if (invocationOptions.abortSignal?.aborted) observedAbort = true;
+      await completion.wait();
+      if (invocationOptions.abortSignal?.aborted) observedAbort = true;
+      completedNaturally = !observedAbort;
+      return { session: {} as never, outcome: "success", durationMs: 1, turnCount: 1 };
+    });
+  }
+
+  const refreshPersistedSessionCount = async () => {
+    const sessionsDir = path.join(projectDir, ".kspec-sessions");
+    artifacts.sessions = await fs
+      .readdir(sessionsDir)
+      .then((entries) => entries.length)
+      .catch((error: NodeJS.ErrnoException) => {
+        if (error.code === "ENOENT") return 0;
+        throw error;
+      });
+  };
 
   const harness = {
     projectDir,
@@ -232,6 +260,8 @@ export async function createSpawnGateHarness() {
     beforeCreate,
     completion,
     artifacts,
+    admissionSettled,
+    refreshPersistedSessionCount,
     get completedNaturally() {
       return completedNaturally;
     },
@@ -285,7 +315,7 @@ describe("final ordered dispatch create gate", () => {
   it.each(["global", "task"] as const)(
     "%s pause wins before creation and restores one held candidate",
     async (scope) => {
-      const harness = await createSpawnGateHarness();
+      const harness = await createSpawnGateHarness({ realInvocation: true });
       await harness.engine.start();
       await harness.beforeCreate.entered;
 
@@ -296,7 +326,9 @@ describe("final ordered dispatch create gate", () => {
       }
       harness.beforeCreate.release();
 
+      await harness.admissionSettled;
       await vi.waitFor(() => expect(harness.engine.getLifecycleStatus().heldCount).toBe(1));
+      await harness.refreshPersistedSessionCount();
       expect(harness.artifacts).toMatchObject({ processes: 0, sessions: 0, handoffs: [] });
       expect(harness.engine.getLifecycleStatus()).toMatchObject({ activeCount: 0, queueDepth: 1 });
     },
@@ -307,14 +339,15 @@ describe("final ordered dispatch create gate", () => {
   it.each(["global", "task"] as const)(
     "%s stop wins before creation and discards the candidate",
     async (scope) => {
-      const harness = await createSpawnGateHarness();
+      const harness = await createSpawnGateHarness({ realInvocation: true });
       await harness.engine.start();
       await harness.beforeCreate.entered;
 
       harness.store.commit(stopSnapshot(harness, scope));
       harness.beforeCreate.release();
 
-      await vi.waitFor(() => expect(harness.engine.getStatus().activeInvocations).toBe(0));
+      await harness.admissionSettled;
+      await harness.refreshPersistedSessionCount();
       expect(harness.artifacts).toMatchObject({ processes: 0, sessions: 0, handoffs: [] });
       expect(harness.engine.getLifecycleStatus()).toMatchObject({ activeCount: 0, queueDepth: 0 });
     },

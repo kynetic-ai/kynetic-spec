@@ -469,6 +469,7 @@ describe("canonical task pause and resume", () => {
     const runInvocation = vi
       .spyOn(invocationModule, "runInvocation")
       .mockImplementation(async (options) => {
+        await options.beforeCreate?.();
         invocationSessionId = options.sessionId;
         invocationAbortSignal = options.abortSignal;
         if (!invocationSessionId || !invocationAbortSignal || !options.sessionRegistry) {
@@ -497,8 +498,11 @@ describe("canonical task pause and resume", () => {
         return { session: {} as never, outcome: "success", durationMs: 1 };
       });
     await harness.engine.start();
-    await vi.waitFor(() => expect(runInvocation).toHaveBeenCalledOnce());
-    expect(invocationSessionId).toBeDefined();
+    await vi.waitFor(() => {
+      expect(runInvocation).toHaveBeenCalledOnce();
+      expect(invocationSessionId).toBeDefined();
+      expect(harness.engine.getStatus().activeInvocations).toBe(1);
+    });
 
     await harness.engine.applyTaskLifecycleAction("pause", { taskRef: "@task-alpha" });
 

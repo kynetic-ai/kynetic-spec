@@ -3559,11 +3559,6 @@ export class DispatchEngine {
           try {
             markInvocationStarted();
             await markActivePromise;
-            // Start the one-shot ordered gate here so mocked invocation
-            // implementations observe the same active handoff. runInvocation
-            // awaits the memoized result again at its adjacent pre-artifact
-            // boundary; no second authority decision occurs.
-            await beforeCreate();
             invocationResult = await runInvocation(options);
             // Reset retry count on success
             entry.retryCount = 0;

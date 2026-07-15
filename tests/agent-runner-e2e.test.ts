@@ -890,14 +890,17 @@ describe(
       const invocationCompletion = new Promise<void>((r) => {
         releaseInvocations = r;
       });
-      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => {
-        await invocationCompletion;
-        return {
-          session: { id: `mock-session-${Date.now()}` } as never,
-          outcome: "success",
-          durationMs: 1,
-        };
-      });
+      const runSpy = vi
+        .spyOn(invocationModule, "runInvocation")
+        .mockImplementation(async (options) => {
+          await options.beforeCreate?.();
+          await invocationCompletion;
+          return {
+            session: { id: `mock-session-${Date.now()}` } as never,
+            outcome: "success",
+            durationMs: 1,
+          };
+        });
 
       const engine = new DispatchEngine({
         projectDir: testDir,
