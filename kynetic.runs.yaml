@@ -79431,7 +79431,7 @@ runs:
     completed_at: 2026-07-15T18:25:31.836Z
   - _ulid: 01KXKJ274CPXZAV57ZXNG5986S
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79444,7 +79444,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T18:55:04.004Z
-        completed_at: 2026-07-15T18:55:04.004Z
+        completed_at: 2026-07-15T18:56:27.128Z
+        notes: "High-confidence candidates: (1) success — real OS process-tree probes exposed
+          leader-vs-group lifetime bugs that mocked recovery runtimes missed, and the resulting
+          resistant-descendant/reject/hang regressions directly verified the fix; targeted searches
+          found no equivalent observation. (2) friction — reflection-loop unbounded inventory output
+          was truncated; already tracked by @01KXJ4K3, @01KXKCX5Y, @01KXJRJXA, and @01KSDZFN, so
+          skip. (3) friction — workflow show docs omit required run ref; already tracked by
+          @01KKBD52/@01KKBD55 and many observations/inbox items, so skip. (4) full-suite tail
+          duration/hang concern is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run, so skip. No other
+          high-confidence systemic candidates."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T18:56:27.128Z
+        completed_at: 2026-07-15T18:56:27.128Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T18:54:11.084Z
