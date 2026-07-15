@@ -4247,7 +4247,7 @@ workspaces:
         head: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
         last_seen_at: 2026-07-14T21:33:29.844Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-patch-dispatch-workspace-cleanup-spec-01kxh2pm
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
     bootstrap:
       status: succeeded
@@ -4749,9 +4749,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-15T04:05:38.089Z
-      last_reconciled_at: 2026-07-15T04:26:23.330Z
+      last_reconciled_at: 2026-07-15T04:28:40.163Z
       created_at: 2026-07-14T21:28:45.399Z
-      updated_at: 2026-07-15T04:26:23.330Z
+      updated_at: 2026-07-15T04:28:40.163Z
     workspace_id: dispatch-workspace-01KXH2PN5478NZ5EGN1395724C
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
