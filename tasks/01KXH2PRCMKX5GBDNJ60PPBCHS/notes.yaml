@@ -91,3 +91,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T15:21:32.944Z
+  - _ulid: 01KXK7VK6PD9MH8STNW1YN8RQP
+    content: "Fix cycle 2 complete in 251aa4437d + d0a782d62c. Active-count cleanup now distinguishes
+      admitted creation from successfully published ownership, so a failed second dispatched-event
+      handoff cannot decrement another active invocation. Published ownership remains available
+      through invocation completion, allowing global/task stop to freeze the strict durable tuple
+      and report missing/corrupt session metadata as cleanup_identity_unverifiable with stopped
+      authority, failed cleanup, no signal, and no success. Updated the rebased
+      publication-admission behavioral fixture to honor the ownership callback contract. All three
+      review threads replied/resolved. Verification: format passed; repo lint 0 errors; focused lint
+      0 warnings/errors; typecheck passed; focused 42 tests passed; refs/alignment/completeness
+      validations passed at existing warning baselines; fresh full npm test passed 2,805 suites /
+      10,693 tests with 3 skipped."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T15:55:48.310Z
