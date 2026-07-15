@@ -23939,6 +23939,19 @@ observations:
     resolved_at: 2026-07-15T17:24:41.416Z
     resolved_by: Jacob Chapel
     created_at: 2026-07-15T17:24:03.151Z
+  - _ulid: 01KXKES4VASTE1Q6N8J234F8GF
+    type: friction
+    content: The autonomous session-reflect-loop mandatory baseline lists every observation, inbox item,
+      and task before candidate keywords exist. In a mature repository this produced roughly 265k
+      tokens of observation output plus 427 inbox and 1,705 task rows, which was truncated and
+      therefore weakened the duplicate-detection guarantee. Identify high-confidence candidates
+      first and run targeted kspec search queries, or provide a bounded machine-readable index for
+      the baseline.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-15T17:56:48.106Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
