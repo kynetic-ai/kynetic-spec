@@ -23844,6 +23844,15 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-15T06:36:54.876Z
+  - _ulid: 01KXJQ2VK7RJKPXF3NKQJ3D5JT
+    type: success
+    content: Pairing deterministic pre-create race barriers with the full scheduler-flow integration
+      test exposed a hidden per-agent concurrency reservation regression when active publication
+      moved to the final gate.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-15T11:02:40.487Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
