@@ -1,0 +1,26 @@
+_ulid: 01KXHZAQJ8PRHNQV6YSHPP3R7Q
+slugs: []
+title: Review task-dispatch-control-persistence (cycle 2)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXHZAQJ7QRC4RNSX48E7772X
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-15T04:07:32.680Z
+examined_commit: 28d119244e0fbb34183f7c72b3d179e2b7c7a178
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PN5478NZ5EGN1395724C"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-15T04:07:32.680Z
+updated_at: null
+notes: []
