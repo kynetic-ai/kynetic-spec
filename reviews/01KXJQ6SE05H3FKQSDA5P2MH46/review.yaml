@@ -228,6 +228,12 @@ events:
     payload:
       thread_ulid: 01KXJR73J9ASXFXF92V1GF14GK
     timestamp: 2026-07-15T12:02:19.380Z
+  - _ulid: 01KXJTG7QZDHM68PK0SQS95TNW
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJR73J9ASXFXF92V1GF14GK
+    timestamp: 2026-07-15T12:02:24.639Z
 examined_commit: 3d1318853ad804fec1fc61d256c036851b77c0a2
 external_links: []
 lifecycle_state: closed
@@ -295,6 +301,8 @@ threads:
           removing invocation.ts's hook makes the barrier fail instead of passing via dispatch."
         created_at: 2026-07-15T12:02:19.153Z
     kind: blocker
+    resolved_at: 2026-07-15T12:02:24.348Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -304,5 +312,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T11:22:31.733Z
 created_at: 2026-07-15T11:04:49.344Z
-updated_at: 2026-07-15T12:02:19.153Z
+updated_at: 2026-07-15T12:02:24.348Z
 notes: []
