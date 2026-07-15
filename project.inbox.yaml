@@ -5271,3 +5271,26 @@ inbox:
       - reflection
     added_by: Jacob Chapel
     created_at: 2026-07-15T10:00:57.941Z
+  - _ulid: 01KXJRJX6CQG8C1FKC713940H8
+    text: "Reflection: count durable reviewer activity as meaningful session work. A detached reviewer
+      can create and close a review, record checks and blocker threads, submit request_changes, and
+      transition a task from pending_review to needs_work while leaving a clean worktree, no new
+      commit, and no completed task. The current kspec-reflect meaningful-work gate classifies that
+      substantive session as empty. Extend session introspection/guidance to treat current-session
+      review verdicts and task lifecycle transitions as meaningful, with a request_changes reviewer
+      regression."
+    tags:
+      - reflection
+    added_by: Jacob Chapel
+    created_at: 2026-07-15T11:28:54.988Z
+  - _ulid: 01KXJRJXACV51XFQDFG39GQ80W
+    text: "Reflection: replace the session-reflect-loop workflow's unbounded baseline dumps with bounded
+      duplicate discovery. In this repository, mandatory `kspec meta observations list`, `kspec
+      inbox list`, and `kspec tasks list` produced an observations result over 264k tokens plus
+      1,704 tasks and was truncated, so the baseline could not reliably establish coverage. Use a
+      bounded index/summary or candidate-keyword `kspec search` strategy across all sources, and add
+      a large-repository regression proving reflection does not materialize every entity."
+    tags:
+      - reflection
+    added_by: Jacob Chapel
+    created_at: 2026-07-15T11:28:55.116Z
