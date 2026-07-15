@@ -4,6 +4,7 @@ export * from "./agent-data-sections.js";
 export * from "./alignment.js";
 export * from "./config.js";
 export * from "./dispatch-workspaces.js";
+export * from "./dispatch-control.js";
 export * from "./assess.js";
 export * from "./entity-local-resources.js";
 export * from "./entity-storage-compatibility.js";

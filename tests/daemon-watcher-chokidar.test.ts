@@ -87,7 +87,7 @@ describe("KspecWatcher Chokidar-only monitoring", () => {
   // AC: @daemon-file-monitoring ac-4
   // AC: @daemon-file-monitoring ac-5
   it("starts with Chokidar, ignores nested .kspec loop paths, and delivers YAML changes", async () => {
-    const changeHandler = vi.fn();
+    const changeHandler = vi.fn<(file: string, content: string) => void>();
     const errorHandler = vi.fn();
 
     const { KspecWatcher } = await import("../packages/daemon/src/watcher");
@@ -131,6 +131,33 @@ describe("KspecWatcher Chokidar-only monitoring", () => {
     });
     expect(errorHandler).not.toHaveBeenCalled();
 
+    await watcher.stop();
+  });
+
+  it("delivers dispatch-control changes at the canonical watcher boundary", async () => {
+    const changeHandler = vi.fn<(file: string, content: string) => void>();
+    const dispatchControlPath = join(kspecDir, "dispatch-control.yaml");
+    await writeFile(
+      dispatchControlPath,
+      "version: 1\nrevision: 1\nglobal: { authority: stopped }\ntasks: {}\npending_cleanup: {}\n",
+    );
+    const { KspecWatcher } = await import("../packages/daemon/src/watcher");
+    const watcher = new KspecWatcher({
+      kspecDir,
+      onFileChange: changeHandler,
+      onError: vi.fn<(error: Error, file?: string) => void>(),
+    });
+    (watcher as unknown as { debounceMs: number }).debounceMs = 0;
+    await watcher.start();
+
+    mockState.latestWatcher?.emitChange(dispatchControlPath);
+
+    await vi.waitFor(() => {
+      expect(changeHandler).toHaveBeenCalledWith(
+        dispatchControlPath,
+        expect.stringContaining("revision: 1"),
+      );
+    });
     await watcher.stop();
   });
 

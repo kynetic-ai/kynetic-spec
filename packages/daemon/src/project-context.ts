@@ -9,12 +9,16 @@
 
 import { existsSync } from "fs";
 import { mkdir, readFile, rm, writeFile } from "fs/promises";
+import { execFile } from "node:child_process";
 import { isAbsolute, join, normalize, relative } from "path";
+import { promisify } from "node:util";
 import { parse as parseYaml } from "yaml";
 import { watch as chokidarWatch, type FSWatcher as ChokidarWatcher } from "chokidar";
 import { KspecWatcher } from "./watcher.js";
 import { SessionWatcher } from "./session-watcher.js";
 import type { PubSubManager } from "./websocket/pubsub.js";
+
+const execFileAsync = promisify(execFile);
 
 /**
  * Optional callback for file change events from the watcher.
@@ -33,6 +37,11 @@ export type CacheInvalidationCallback = (
   file: string,
   content?: string,
 ) => void;
+
+export type DispatchControlFileCallback = (
+  projectPath: string,
+  observedHead: string | null,
+) => void | Promise<void>;
 
 export interface ProjectContext {
   path: string;
@@ -176,6 +185,7 @@ export class ProjectContextManager {
   private fileChangeCallback: FileChangeCallback | null = null;
   /** Optional callback for cache invalidation on file changes. AC: @daemon-entity-cache ac-watcher-invalidation */
   private cacheInvalidationCallback: CacheInvalidationCallback | null = null;
+  private dispatchControlFileCallback: DispatchControlFileCallback | null = null;
   /** Optional callback invoked when a project is unregistered (from any path). AC: @daemon-entity-cache ac-unregister-cleanup */
   private unregisterCallback: ((projectPath: string) => void) | null = null;
 
@@ -203,6 +213,30 @@ export class ProjectContextManager {
    */
   setCacheInvalidationCallback(callback: CacheInvalidationCallback | null): void {
     this.cacheInvalidationCallback = callback;
+  }
+
+  setDispatchControlFileCallback(callback: DispatchControlFileCallback | null): void {
+    this.dispatchControlFileCallback = callback;
+  }
+
+  private async notifyDispatchControlFileEvent(
+    projectPath: string,
+    kspecDir: string,
+  ): Promise<void> {
+    if (!this.dispatchControlFileCallback) return;
+    let observedHead: string | null = null;
+    try {
+      const result = await execFileAsync("git", ["rev-parse", "HEAD"], {
+        cwd: kspecDir,
+        env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+        encoding: "utf-8",
+      });
+      observedHead = result.stdout.toString().trim();
+    } catch {
+      // The committed reload owns degraded-state reporting. A null observation
+      // makes it capture HEAD again under the dispatch-shadow lock.
+    }
+    await this.dispatchControlFileCallback(projectPath, observedHead);
   }
 
   /**
@@ -256,6 +290,13 @@ export class ProjectContextManager {
             return;
           }
 
+          if (relative(kspecDir, file) === "dispatch-control.yaml") {
+            void this.notifyDispatchControlFileEvent(normalizedPath, kspecDir).catch((error) => {
+              console.error("[dispatch-control] Failed committed reload:", error);
+            });
+            return;
+          }
+
           // AC: @multi-directory-daemon ac-17 - File changes trigger events scoped to project
           if (this.pubsub) {
             const relativePath = relative(kspecDir, file);
@@ -281,6 +322,13 @@ export class ProjectContextManager {
         // AC: @daemon-entity-cache ac-watcher-invalidation — file deletion/rename invalidates cache
         onFileRemoved: (file) => {
           if (this.isHealthProbePath(normalizedPath, file)) {
+            return;
+          }
+
+          if (relative(kspecDir, file) === "dispatch-control.yaml") {
+            void this.notifyDispatchControlFileEvent(normalizedPath, kspecDir).catch((error) => {
+              console.error("[dispatch-control] Failed committed removal reload:", error);
+            });
             return;
           }
 
