@@ -29432,7 +29432,7 @@ reviews:
   - _ulid: 01KXHWPKPDN1W1E8C3EZJ9BJXH
     slugs: []
     title: Review task-dispatch-control-persistence
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 9
     examined_commit: 1716ac35c1764b2963e326c76fb18097ac07d030
@@ -29443,8 +29443,8 @@ reviews:
       content_hash: ""
       ref: "@task-dispatch-control-persistence"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-07-15T03:21:36.205Z
-    updated_at: 2026-07-15T03:37:25.863Z
+    updated_at: 2026-07-15T03:37:38.596Z
