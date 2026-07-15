@@ -325,6 +325,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-15T16:25:34.042Z
+  - _ulid: 01KXKAZW8BEG4AKPE4MENYFPJH
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXK9HH8B54VC5SZEPX6Z0NVD
+    timestamp: 2026-07-15T16:50:34.380Z
 examined_commit: d0a782d62c75b2bebc992c39495d2a8079f7ca52
 external_links: []
 lifecycle_state: closed
@@ -363,6 +369,15 @@ threads:
           agent.dispatched before spawn and explicitly proves spawn never occurred, so it does not
           cover this path."
         created_at: 2026-07-15T16:25:15.787Z
+      - _ulid: 01KXKAZW0EJACM1CDHFT5RGD5Y
+        author: Jacob Chapel
+        body: "Fixed in 29569d9efb: post-spawn ownership publication failure now awaits observed child exit
+          before releasing the handoff or recording exited_at. The reap sends process-group SIGTERM,
+          waits a bounded one-second grace period, escalates to process-group SIGKILL, and waits for
+          the child exit event. Added a real ACP child regression that ignores SIGTERM and survives
+          closed stdio; it proves onOwnershipFailed runs only after the PID has exited and no active
+          handoff remains."
+        created_at: 2026-07-15T16:50:34.126Z
     kind: blocker
   - _ulid: 01KXK9HMJ73H686MBAHF98K650
     entries:
@@ -389,5 +404,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T16:25:34.042Z
 created_at: 2026-07-15T16:06:31.826Z
-updated_at: 2026-07-15T16:25:34.042Z
+updated_at: 2026-07-15T16:50:34.126Z
 notes: []
