@@ -78960,9 +78960,22 @@ runs:
     completed_at: 2026-07-15T13:50:09.013Z
   - _ulid: 01KXK24TDFPAZB446VVFAQM9M7
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T14:15:59.151Z
+        completed_at: 2026-07-15T14:16:59.310Z
+        notes: "Worked well: the detached reviewer flow kept review, approval, merge, and task completion
+          auditable; focused dispatch suites gave fast boundary confidence before the full gate;
+          independent reproduction exactly matched the worker claim (67 focused tests, 10,668
+          full-suite passes); the supported merge helper advanced the plan branch cleanly and
+          ancestry verification confirmed integration without mutating the detached snapshot."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T14:16:59.310Z
+        completed_at: 2026-07-15T14:16:59.310Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T14:15:59.151Z
