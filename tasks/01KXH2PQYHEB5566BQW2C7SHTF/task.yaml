@@ -86,7 +86,7 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-engine-task-pause-resume"
@@ -101,11 +101,11 @@ review_ref: "@01KXJQ6SE05H3FKQSDA5P2MH46"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-final-pre-spawn-control-gate/01kxh2pq
-  captured_at: 2026-07-15T10:59:25.098Z
-  commit: 3d1318853ad804fec1fc61d256c036851b77c0a2
-  remote: null
-  remote_url: null
-  upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+  captured_at: 2026-07-15T12:02:31.616Z
+  commit: b11cce869aef9cf53d25ef33b9ba0706b12aba71
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/task-final-pre-spawn-control-gate/01kxh2pq
 session_id: 01KXJRPYCK2NPG1V6HVSR6DSMX
 history:
   - author: Jacob Chapel
@@ -178,8 +178,35 @@ history:
         previous: 2026-07-15T10:24:46.977Z
     command: task-start
     timestamp: 2026-07-15T11:32:26.735Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-final-pre-spawn-control-gate/01kxh2pq
+          captured_at: 2026-07-15T12:02:31.616Z
+          commit: b11cce869aef9cf53d25ef33b9ba0706b12aba71
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-final-pre-spawn-control-gate/01kxh2pq
+        previous:
+          review_url: null
+          branch: dispatch/task/task-final-pre-spawn-control-gate/01kxh2pq
+          captured_at: 2026-07-15T10:59:25.098Z
+          commit: 3d1318853ad804fec1fc61d256c036851b77c0a2
+          remote: null
+          remote_url: null
+          upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+      submitted_at:
+        new: 2026-07-15T12:02:31.621Z
+        previous: 2026-07-15T10:59:25.103Z
+    command: task-submit
+    timestamp: 2026-07-15T12:02:31.622Z
 created_at: 2026-07-14T19:47:17.585Z
 started_at: 2026-07-15T11:32:26.735Z
-submitted_at: 2026-07-15T10:59:25.103Z
+submitted_at: 2026-07-15T12:02:31.621Z
 todos: []
 automation: eligible
