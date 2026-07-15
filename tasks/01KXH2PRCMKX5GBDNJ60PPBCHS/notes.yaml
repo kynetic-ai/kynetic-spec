@@ -44,3 +44,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T13:46:18.087Z
+  - _ulid: 01KXK0THAF82TPX1ZEE1PE72HR
+    content: "Fix cycle 1 approach: close all five blockers with behavioral coverage first. Add
+      fault-injection tests for agent.dispatched append failure releasing the reserved ownership
+      handoff, engine.stop propagating verified recovery failure, owned-phase recovery after
+      exited_at, late-child group-member proof refresh, and stopped-authority admission with an
+      eligible candidate. Production changes will preserve immutable birth/ownership identity while
+      allowing exited_at enrichment, continuously refresh same-group member proofs during live
+      ownership, and prevent graceful shutdown from falling through to unverified controller
+      disposal. Re-verify every stop AC plus full project gates before resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T13:52:53.583Z
