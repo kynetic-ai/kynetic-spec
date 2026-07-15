@@ -78764,7 +78764,7 @@ runs:
     completed_at: 2026-07-15T11:29:52.562Z
   - _ulid: 01KXJTHMKQRMS0SD84WE84KQH9
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78795,7 +78795,16 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-07-15T12:05:07.561Z
-        completed_at: 2026-07-15T12:05:07.561Z
+        completed_at: 2026-07-15T12:05:11.412Z
+        notes: "Proposed improvement: record systemic friction around scattered runInvocation mocks and the
+          lack of a contract-preserving test helper. A shared helper could invoke beforeCreate at
+          the simulated artifact boundary and reduce future false active-state assumptions. Also
+          record the deterministic real-boundary barrier pattern as a success worth reusing for
+          concurrency ACs."
+      - status: completed
+        step_index: 4
+        started_at: 2026-07-15T12:05:11.412Z
+        completed_at: 2026-07-15T12:05:11.412Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T12:03:10.583Z
