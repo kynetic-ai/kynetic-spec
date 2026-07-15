@@ -116,3 +116,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T03:38:00.698Z
+  - _ulid: 01KXHY58J4M82R8MAP49H24TDJ
+    content: "Fix cycle 1 approach: add behavioral coverage for (1) an equal-revision divergent external
+      commit remaining unpublished and being rejected as a mutation base, and (2) an equal-revision
+      byte-equivalent snapshot at a later unrelated shadow HEAD remaining a valid mutation base.
+      Reuse the verified in-memory publication as the comparison source; compare the full validated
+      snapshots when revisions are equal, preserve lower-revision rejection, and avoid changing
+      watcher publication semantics. Re-run the focused dispatch-control tests first, then all
+      repository gates before resolving the review thread and resubmitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T03:47:04.901Z
