@@ -463,32 +463,53 @@ describe("canonical task pause and resume", () => {
     mockInvocationInfrastructure(harness.projectDir);
     const invocationBarrier = holdTaskIngress();
     let completed = false;
+    let invocationSessionId: string | undefined;
+    let invocationAbortSignal: AbortSignal | undefined;
+    let closeReason: string | null = null;
     const runInvocation = vi
       .spyOn(invocationModule, "runInvocation")
-      .mockImplementation(async () => {
-        await invocationBarrier.wait();
+      .mockImplementation(async (options) => {
+        invocationSessionId = options.sessionId;
+        invocationAbortSignal = options.abortSignal;
+        if (!invocationSessionId || !invocationAbortSignal || !options.sessionRegistry) {
+          throw new Error("expected dispatch invocation lifecycle options");
+        }
+        options.sessionRegistry.register(invocationSessionId, {
+          sendPrompt: async () => undefined,
+          getState: () => "idle",
+          requestClose: (reason) => {
+            closeReason = reason;
+          },
+        });
+        await new Promise<void>((resolve, reject) => {
+          const onAbort = () => {
+            invocationAbortSignal?.removeEventListener("abort", onAbort);
+            reject(new Error("active task A invocation was aborted"));
+          };
+          invocationAbortSignal.addEventListener("abort", onAbort, { once: true });
+          void invocationBarrier.wait().then(() => {
+            invocationAbortSignal?.removeEventListener("abort", onAbort);
+            resolve();
+          }, reject);
+        });
         completed = true;
+        options.sessionRegistry.unregister(invocationSessionId);
         return { session: {} as never, outcome: "success", durationMs: 1 };
       });
-    let closeReason: string | null = null;
-    harness.engine.sessionRegistry.register("active-a", {
-      sendPrompt: async () => undefined,
-      getState: () => "idle",
-      requestClose: (reason) => {
-        closeReason = reason;
-      },
-    });
     await harness.engine.start();
     await vi.waitFor(() => expect(runInvocation).toHaveBeenCalledOnce());
+    expect(invocationSessionId).toBeDefined();
 
     await harness.engine.applyTaskLifecycleAction("pause", { taskRef: "@task-alpha" });
 
     expect(harness.engine.getStatus().activeInvocations).toBe(1);
-    expect(harness.engine.sessionRegistry.get("active-a")).toBeDefined();
+    expect(invocationAbortSignal?.aborted).toBe(false);
+    expect(harness.engine.sessionRegistry.get(invocationSessionId!)).toBeDefined();
     expect(closeReason).toBeNull();
     invocationBarrier.release();
     await vi.waitFor(() => expect(harness.engine.getStatus().activeInvocations).toBe(0));
     expect(completed).toBe(true);
+    expect(harness.engine.sessionRegistry.get(invocationSessionId!)).toBeUndefined();
   });
 
   it("allows task metadata control during global cleanup without releasing work", async () => {
