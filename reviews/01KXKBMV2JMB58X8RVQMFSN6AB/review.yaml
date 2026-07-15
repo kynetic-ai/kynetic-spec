@@ -2,7 +2,92 @@ _ulid: 01KXKBMV2JMB58X8RVQMFSN6AB
 slugs: []
 title: Review verified stop recovery (cycle 4)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; all 1048 matched files use the configured formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T17:19:41.020Z
+    completed_at: 2026-07-15T17:19:41.020Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with 0 errors and 702 repository-baseline warnings. Focused oxlint across all 18
+      changed TypeScript files exited 0; its six warnings are on unchanged pre-existing lines in
+      tests/active-session-registry.test.ts, with no warnings in the submitted diff.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T17:19:44.548Z
+    completed_at: 2026-07-15T17:19:44.548Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; shared package build and TypeScript no-emit checking passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T17:19:48.779Z
+    completed_at: 2026-07-15T17:19:48.779Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh run passed: 2805/2805 suites; 10694 passed and 3 skipped of 10697 tests; duration
+      2577.6s. Log: /tmp/kspec-test-cache/01KXKBBWPCXH23PCEXEJ6DGRNB/c0fab5300961929a.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T17:19:52.164Z
+    completed_at: 2026-07-15T17:19:52.164Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; schema and references passed with the six existing deprecated-reference warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-15T17:19:55.533Z
+    completed_at: 2026-07-15T17:19:55.533Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 at the existing 55-warning alignment baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-15T17:19:58.829Z
+    completed_at: 2026-07-15T17:19:58.829Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 at the existing 329-warning completeness baseline. Task annotations were
+      independently compared to the covered ACs; two global annotations do not prove their claimed
+      scope and are recorded as blockers.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-15T17:20:02.003Z
+    completed_at: 2026-07-15T17:20:02.003Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 for c5e0b9a6b4af..29569d9efb5b with no whitespace errors.
+    name: diff hygiene
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-15T17:20:05.292Z
+    completed_at: 2026-07-15T17:20:05.292Z
 events:
   - _ulid: 01KXKBMV2GXXYKZ7MN0MPKQ67X
     actor: Jacob Chapel
@@ -17,17 +102,257 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T17:02:29.727Z
+  - _ulid: 01KXKCN67TEYF5JF925HYRB5YE
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T17:19:41.306Z
+  - _ulid: 01KXKCN9N5PMPZCY08EDMYS2T9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T17:19:44.805Z
+  - _ulid: 01KXKCNDSJBFY0RZTBZMVPT7DP
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T17:19:49.042Z
+  - _ulid: 01KXKCNH4V7NXCB8Q0VZJ7E1DY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T17:19:52.476Z
+  - _ulid: 01KXKCNMCKEZRWC2YNWX1RBKSM
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T17:19:55.795Z
+  - _ulid: 01KXKCNQK58BQEAPS27XYKE8A6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T17:19:59.077Z
+  - _ulid: 01KXKCNTPE2J1CTGTT1A7E3J3G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T17:20:02.254Z
+  - _ulid: 01KXKCNXX17KZW41NG1EEQVDP5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-07-15T17:20:05.537Z
+  - _ulid: 01KXKCP12HPRPNAVE2W9FA0BZ3
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKCP0TCMCAQK6KYQSQ1X0XB
+    timestamp: 2026-07-15T17:20:08.785Z
+  - _ulid: 01KXKCP4B3QN98NFXM3A95GGR6
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKCP42WT6KHB2BZ1Q9W72VP
+    timestamp: 2026-07-15T17:20:12.131Z
+  - _ulid: 01KXKCP7GE0597M5P9059EH6MV
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKCP78KKM52ARC32YVMGVV2
+    timestamp: 2026-07-15T17:20:15.374Z
+  - _ulid: 01KXKCPASC6PQK2ZSJ56FNPSZ4
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKCPAG9ZVKDRHZEG43XBNE0
+    timestamp: 2026-07-15T17:20:18.732Z
+  - _ulid: 01KXKCPE3BB5F308RFHGG49TXB
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXKCPDTSB43NNX4N3R4WZW3H
+    timestamp: 2026-07-15T17:20:22.124Z
+  - _ulid: 01KXKCPHC9XZZ9PAT2581JNJGK
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-15T17:20:25.481Z
+  - _ulid: 01KXKCPHC9TA30MH6DCN418AEQ
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-15T17:20:25.481Z
 examined_commit: 29569d9efb5bc4674f7a7e830f6aa7f1c36fe716
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXKCP0TCMCAQK6KYQSQ1X0XB
+    anchor:
+      type: code
+      commit: 29569d9efb5bc4674f7a7e830f6aa7f1c36fe716
+      line_end: 1797
+      line_start: 1789
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KXKCP0TC38C9HRX0FM4K5C06
+        author: pr-reviewer
+        body: "MUST-FIX — Normal invocation cleanup records exited_at without observing process exit.
+          disposeAgent only sends best-effort SIGTERM and destroys streams, but lines 1792-1797
+          immediately persist exited_at. Recovery then treats that field as authoritative at
+          dispatch.ts:2178-2180 and returns before reading or signalling the process group. I
+          reproduced this with the submitted resistant ACP mock: runInvocation returned success,
+          session metadata was completed with exited_at, and process.kill(pid, 0) still proved the
+          child alive. A second engine probe with that live group returned an applied global stop,
+          emitted zero signals, and removed cleanup as idle. This violates
+          ac-stop-cancels-active-work and ac-live-group-prevents-cleanup-completion and can orphan
+          an adapter permanently. Persist exited_at only after observed exit (with bounded
+          escalation/recovery semantics), and add a normal-completion resistant-child stop
+          regression."
+        created_at: 2026-07-15T17:20:08.524Z
+    kind: blocker
+  - _ulid: 01KXKCP42WT6KHB2BZ1Q9W72VP
+    anchor:
+      type: code
+      commit: 29569d9efb5bc4674f7a7e830f6aa7f1c36fe716
+      line_end: 1865
+      line_start: 1851
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXKCP42WGV17W7W78AT6E9NP
+        author: pr-reviewer
+        body: "MUST-FIX — Stop collection can freeze a stale ownership tuple during natural completion.
+          activeInvocationOwnership is populated only from the initial publication, while later
+          group-member refreshes replace only the durable session/local ownership. After
+          runInvocation closes the session and stamps exit, dispatch awaits workspace-idle work
+          before deleting the active map entry; during that real window lines 1851-1860 seed the
+          stale tuple, and line 1865 skips the newer durable tuple because the session is
+          closed/exited. The immutable target then differs in group_members and every recovery
+          attempt fails cleanup_ownership_mismatch. I reproduced this state with an initial active
+          tuple containing the leader and a closed durable tuple containing a late verified child:
+          global stop persisted failed owned cleanup with cleanup_ownership_mismatch. Prefer the
+          latest verified durable tuple for retained active ownership even after session closure, or
+          keep the active map synchronized, and add the completion/late-child race regression."
+        created_at: 2026-07-15T17:20:11.868Z
+    kind: blocker
+  - _ulid: 01KXKCP78KKM52ARC32YVMGVV2
+    anchor:
+      type: code
+      commit: 29569d9efb5bc4674f7a7e830f6aa7f1c36fe716
+      line_end: 523
+      line_start: 479
+      path: tests/dispatch-stop-recovery.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXKCP78KTWM27CZT6S2DMFS0
+        author: pr-reviewer
+        body: MUST-FIX — The test annotated for ac-interrupted-stop-recovers-on-startup does not exercise
+          global pending-cleanup recovery. Its fixture sets global authority to stopped but creates
+          only pending_cleanup[taskA] and a stopped task record, so every recovered phase is
+          task-scoped; only the task AC is proved. Project review policy requires each own AC
+          annotation to be attached to a test that actually proves that AC. Add or correctly
+          annotate a global-key pending-cleanup startup case that asserts global scheduling remains
+          stopped while the matching phase resumes.
+        created_at: 2026-07-15T17:20:15.123Z
+    kind: blocker
+  - _ulid: 01KXKCPAG9ZVKDRHZEG43XBNE0
+    anchor:
+      type: code
+      commit: 29569d9efb5bc4674f7a7e830f6aa7f1c36fe716
+      line_end: 566
+      line_start: 547
+      path: tests/dispatch-stop-recovery.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXKCPAG91X0NW001XYGDAK2D
+        author: pr-reviewer
+        body: MUST-FIX — The test annotated for ac-global-stop-is-idempotent never invokes global stop.
+          Despite the title claiming both scopes, lines 557 and 560 call applyTaskLifecycleAction
+          twice, so the task case is proved but the global AC is not. Add a global
+          repeated/concurrent stop case (or attach the annotation to a test that fully asserts the
+          global one-cleanup/one-success-plus-retry behavior) rather than claiming both scopes from
+          this task-only test.
+        created_at: 2026-07-15T17:20:18.441Z
+    kind: blocker
+  - _ulid: 01KXKCPDTSB43NNX4N3R4WZW3H
+    entries:
+      - _ulid: 01KXKCPDTSYXM0QME1104T5V4A
+        author: pr-reviewer
+        body: >-
+          Review evidence log
+
+
+          Files read: all 19 changed files —
+          src/agent-runtime/{dispatch.ts,invocation.ts,session-registry.ts},
+          src/schema/dispatch-control.ts, src/sessions/{store.ts,types.ts}, all 12 changed
+          TypeScript tests, and tests/mocks/acp-mock.js — plus interacting src/agents/spawner.ts,
+          src/acp/{client,framing}.ts, dispatch-control-store/session close paths, task/spec
+          context, and all three prior review cycles.
+
+
+          Commands run: git status/log/diff/diff --check and exact line inspection; kspec
+          task/item/review lookups; format, repo/focused lint, typecheck, fresh full tests, all
+          three validation modes; AC/source-scan searches; a real resistant-ACP normal-completion
+          probe; a live-group stop probe; and a stale active-vs-durable ownership probe.
+
+
+          Claims verified: the cycle-3 post-publication failure now waits for real exit and its
+          resistant-child test passes; the earlier reservation, active-count, unreadable-metadata,
+          exit-enrichment, late-child, and shutdown-propagation fixes remain present. Fresh full
+          suite passed 2805 suites / 10694 tests with 3 skipped. Worker claim of verified exit
+          ownership is disproved on the normal completion path, and two global AC annotations do not
+          exercise global scope.
+
+
+          Categories searched: correctness, process lifecycle, PID/PGID signal safety, ownership
+          races, recovery/idempotency, global/task isolation, error handling, schema compatibility,
+          security, integration, test quality, and source-scanning prohibition. Four blocker threads
+          recorded. Shared/package guidance surfaces changed: none, so neutrality/render checks are
+          not applicable.
+        created_at: 2026-07-15T17:20:21.849Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-15T17:20:25.481Z
 created_at: 2026-07-15T17:02:01.298Z
-updated_at: 2026-07-15T17:02:29.480Z
+updated_at: 2026-07-15T17:20:25.481Z
 notes: []
