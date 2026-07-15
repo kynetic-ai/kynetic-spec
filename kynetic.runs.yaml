@@ -79708,7 +79708,7 @@ runs:
     completed_at: 2026-07-15T21:46:21.794Z
   - _ulid: 01KXKXPN2HF1287655WYB6S2DY
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79754,7 +79754,25 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-07-15T22:22:12.259Z
-        completed_at: 2026-07-15T22:22:12.259Z
+        completed_at: 2026-07-15T22:22:26.638Z
+        notes: "Two untracked/partially tracked proposals remain. (1) Batch mutation reliability (medium):
+          make kspec batch emit a structured per-command result, wait until committed state is
+          readable before exit, and add a regression test covering multiple review check/comment
+          mutations plus an immediate review get. This prevents ambiguous blank success and
+          duplicate evidence when a reviewer retries. It should extend or cross-reference existing
+          review-helper/batch observations rather than duplicate their broader scope. (2) Compact
+          fix-cycle review context (medium): add a task/review summary mode that returns current
+          task intent and submission commit, latest notes, current review, prior-cycle
+          blocker/resolution summaries, and orientation diff metadata without dumping full
+          histories. This reduces truncation and manual multi-command assembly while preserving
+          links to full records. The workflow-show and full-suite latency frictions need no new
+          capture because they are already tracked. No new success observation proposed; the
+          effective practices were established review workflow behavior rather than a novel systemic
+          pattern."
+      - status: completed
+        step_index: 4
+        started_at: 2026-07-15T22:22:26.638Z
+        completed_at: 2026-07-15T22:22:26.638Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T22:17:35.058Z
