@@ -29641,7 +29641,7 @@ reviews:
   - _ulid: 01KXJZ6MPPENNCEWXR74P50F2S
     slugs: []
     title: Review verified stop recovery for global and task scopes
-    disposition: pending
+    disposition: changes_requested
     author: Jacob Chapel
     check_count: 8
     examined_commit: 3a9909c4870a49f5f3ac174716edfca067852055
@@ -29652,8 +29652,8 @@ reviews:
       content_hash: ""
       ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
       shadow_commit: ""
-    thread_count: 0
-    unresolved_blocker_count: 0
+    thread_count: 1
+    unresolved_blocker_count: 1
     verdict_count: 0
     created_at: 2026-07-15T13:24:33.110Z
-    updated_at: 2026-07-15T13:44:36.114Z
+    updated_at: 2026-07-15T13:45:16.758Z
