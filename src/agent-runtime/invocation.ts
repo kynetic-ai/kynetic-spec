@@ -21,6 +21,7 @@
  */
 
 import * as path from "node:path";
+import * as fsPromises from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
@@ -47,9 +48,16 @@ import {
   injectEnvForAdapter,
   getSession,
   listSessions,
+  mutateSessionDispatchOwnership,
   removeEnvForAdapter,
+  updateSessionDispatchOwnership,
 } from "../sessions/store.js";
-import type { SessionEventInput, SessionMetadata, SessionTrigger } from "../sessions/types.js";
+import type {
+  DispatchOwnership,
+  SessionEventInput,
+  SessionMetadata,
+  SessionTrigger,
+} from "../sessions/types.js";
 import type { SessionHandle, SessionRegistry, SessionState } from "./session-registry.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -72,6 +80,103 @@ export const DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS = 120;
  * AC: @multi-turn-session-lifecycle ac-17
  */
 export const DEFAULT_MAX_PROMPT_QUEUE_DEPTH = 64;
+
+const OWNERSHIP_FAILURE_TERMINATION_GRACE_MS = 1_000;
+
+interface LinuxProcEvidence {
+  pid: number;
+  pgid: number;
+  processStartTicks: string;
+}
+
+function parseLinuxProcStat(pid: number, content: string): LinuxProcEvidence {
+  const close = content.lastIndexOf(")");
+  if (close < 0) throw new Error(`Invalid /proc/${pid}/stat process identity`);
+  const fields = content
+    .slice(close + 2)
+    .trim()
+    .split(/\s+/);
+  const pgid = Number(fields[2]);
+  const processStartTicks = fields[19];
+  if (
+    !Number.isInteger(pgid) ||
+    pgid < 0 ||
+    !processStartTicks ||
+    !/^\d+$/.test(processStartTicks)
+  ) {
+    throw new Error(`Invalid /proc/${pid}/stat process identity`);
+  }
+  return { pid, pgid, processStartTicks };
+}
+
+async function readLinuxProcEvidence(pid: number): Promise<LinuxProcEvidence | null> {
+  try {
+    return parseLinuxProcStat(pid, await fsPromises.readFile(`/proc/${pid}/stat`, "utf8"));
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === "ENOENT" || code === "ESRCH") return null;
+    throw error;
+  }
+}
+
+async function listLinuxProcessGroup(pgid: number): Promise<LinuxProcEvidence[]> {
+  const entries = await fsPromises.readdir("/proc", { withFileTypes: true });
+  const evidence = await Promise.all(
+    entries
+      .filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name))
+      .map((entry) => readLinuxProcEvidence(Number(entry.name))),
+  );
+  return evidence.filter((entry): entry is LinuxProcEvidence => entry?.pgid === pgid);
+}
+
+async function captureSpawnOwnership(
+  handoff: InvocationCreateHandoff,
+  processHandle: SpawnedAgent["process"],
+): Promise<DispatchOwnership> {
+  const pid = processHandle.pid;
+  if (!pid) throw new Error("Spawned adapter did not expose a process id");
+  if (process.platform !== "linux") {
+    return {
+      invocation_id: handoff.invocationId,
+      session_id: handoff.sessionId,
+      task_id: handoff.taskId,
+      agent_id: handoff.agentId,
+      adapter: handoff.adapter,
+      owner_instance_id: handoff.ownerInstanceId,
+      pid,
+      pgid: pid,
+      process_start_ticks: null,
+      process_identity_platform: "unverifiable",
+      captured_at: new Date().toISOString(),
+      group_members: [],
+    };
+  }
+  const leader = await readLinuxProcEvidence(pid);
+  if (!leader || leader.pgid <= 0) {
+    throw new Error("Spawned adapter leader disappeared before ownership was persisted");
+  }
+  const members = await listLinuxProcessGroup(leader.pgid);
+  if (!members.some((member) => member.pid === pid)) {
+    throw new Error("Spawned adapter leader disappeared before ownership was persisted");
+  }
+  return {
+    invocation_id: handoff.invocationId,
+    session_id: handoff.sessionId,
+    task_id: handoff.taskId,
+    agent_id: handoff.agentId,
+    adapter: handoff.adapter,
+    owner_instance_id: handoff.ownerInstanceId,
+    pid,
+    pgid: leader.pgid,
+    process_start_ticks: leader.processStartTicks,
+    process_identity_platform: "linux_proc_stat_v1",
+    captured_at: new Date().toISOString(),
+    group_members: members.map((member) => ({
+      pid: member.pid,
+      process_start_ticks: member.processStartTicks,
+    })),
+  };
+}
 
 /**
  * Default idle grace period in milliseconds.
@@ -346,6 +451,10 @@ export interface InvocationOptions {
    * caller; a denied hook throws before either artifact exists.
    */
   beforeCreate?: () => Promise<InvocationCreateHandoff>;
+  /** Publish active ownership only after the process proof is durable. */
+  onOwnershipPersisted?: (ownership: DispatchOwnership) => void | Promise<void>;
+  /** Resolve an admitted handoff that failed before durable ownership publication. */
+  onOwnershipFailed?: (handoff: InvocationCreateHandoff) => void;
 }
 
 /** Identity handed from final dispatch admission to active ownership. */
@@ -355,6 +464,7 @@ export interface InvocationCreateHandoff {
   taskId: string | null;
   agentId: string;
   adapter: string;
+  ownerInstanceId: string;
 }
 
 export type InvocationCreateDenial = "held" | "discarded";
@@ -585,18 +695,90 @@ async function getConsecutiveFailureCount(
   return consecutiveFailures;
 }
 
-/**
- * Dispose a spawned agent, terminating the process if running.
- * AC: @agent-invocation-lifecycle ac-8
- */
-function disposeAgent(agent: SpawnedAgent | null): null {
+function disposeUnownedAgent(agent: SpawnedAgent | null): null {
   if (agent) {
     try {
       agent.kill("SIGTERM");
     } catch {
-      // Best-effort termination
+      // Invocations outside dispatch ownership retain their historical
+      // best-effort disposal contract and publish no process-exit evidence.
     }
   }
+  return null;
+}
+
+function spawnedAgentExited(agent: SpawnedAgent): boolean {
+  return agent.process.exitCode !== null || agent.process.signalCode !== null;
+}
+
+async function waitForSpawnedAgentExit(agent: SpawnedAgent, timeoutMs?: number): Promise<boolean> {
+  if (spawnedAgentExited(agent)) return true;
+
+  return new Promise<boolean>((resolve) => {
+    let settled = false;
+    let timer: NodeJS.Timeout | undefined;
+
+    const finish = (exited: boolean): void => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      agent.process.off("exit", onExit);
+      resolve(exited);
+    };
+    const onExit = (): void => finish(true);
+
+    agent.process.once("exit", onExit);
+    if (spawnedAgentExited(agent)) {
+      finish(true);
+      return;
+    }
+    if (timeoutMs !== undefined) {
+      timer = setTimeout(() => finish(false), timeoutMs);
+    }
+  });
+}
+
+async function waitForSpawnedAgentGroupExit(
+  agent: SpawnedAgent,
+  timeoutMs?: number,
+): Promise<boolean> {
+  const pid = agent.process.pid;
+  if (process.platform !== "linux" || !pid) return waitForSpawnedAgentExit(agent, timeoutMs);
+  const deadline = timeoutMs === undefined ? undefined : Date.now() + timeoutMs;
+  while (true) {
+    if ((await listLinuxProcessGroup(pid)).length === 0) return true;
+    if (deadline !== undefined && Date.now() > deadline) return false;
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+}
+
+/**
+ * Reap a spawned child before publishing or releasing its process ownership.
+ *
+ * Give the process a bounded graceful window, escalate the entire spawned
+ * process group to SIGKILL, and then wait for the unambiguous exit event. This
+ * is required both when durable publication fails (there may be no recoverable
+ * PID proof for a later stop) and during normal finalization (exited_at is
+ * authoritative recovery evidence and cannot be persisted optimistically).
+ */
+async function reapSpawnedAgent(agent: SpawnedAgent | null): Promise<null> {
+  if (!agent) return null;
+
+  try {
+    agent.kill("SIGTERM");
+  } catch {
+    // Exit observation below is authoritative; a failed graceful signal still
+    // proceeds to bounded forceful escalation.
+  }
+  if (await waitForSpawnedAgentGroupExit(agent, OWNERSHIP_FAILURE_TERMINATION_GRACE_MS))
+    return null;
+
+  try {
+    agent.kill("SIGKILL");
+  } catch {
+    // If the process raced to exit, the state/event checks below will observe it.
+  }
+  await waitForSpawnedAgentGroupExit(agent);
   return null;
 }
 
@@ -640,6 +822,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     idleGracePeriodMs = 0,
     sessionMode = "auto_close",
     idleTimeoutMs,
+    onOwnershipPersisted,
+    onOwnershipFailed,
   } = options;
 
   // Canonical task identity for persisted session metadata and session event
@@ -840,40 +1024,112 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   // This is the common, final pre-artifact boundary. Keep it adjacent to
   // createSession: everything above is pure/preflight work, while everything
   // below may create durable session state or an adapter process.
-  await options.beforeCreate?.();
+  const createHandoff = await options.beforeCreate?.();
+  let ownershipPublished = false;
+  let durableOwnership: DispatchOwnership | null = null;
+  const refreshDurableGroupMembers = async (): Promise<void> => {
+    const owned = durableOwnership;
+    if (
+      !owned ||
+      owned.exited_at ||
+      owned.process_identity_platform !== "linux_proc_stat_v1" ||
+      owned.pid === null ||
+      owned.pgid === null ||
+      owned.process_start_ticks === null
+    ) {
+      return;
+    }
+    const leader = await readLinuxProcEvidence(owned.pid);
+    if (
+      !leader ||
+      leader.pgid !== owned.pgid ||
+      leader.processStartTicks !== owned.process_start_ticks
+    )
+      return;
+    const members = await listLinuxProcessGroup(owned.pgid);
+    const updated = await mutateSessionDispatchOwnership(sessionsDir, sessionId, (current) => {
+      if (
+        !current ||
+        current.exited_at ||
+        current.invocation_id !== owned.invocation_id ||
+        current.owner_instance_id !== owned.owner_instance_id ||
+        current.pid !== owned.pid ||
+        current.pgid !== owned.pgid ||
+        current.process_start_ticks !== owned.process_start_ticks
+      ) {
+        return null;
+      }
+      const known = new Map(current.group_members.map((member) => [member.pid, member]));
+      for (const member of members) {
+        if (!known.has(member.pid)) {
+          known.set(member.pid, {
+            pid: member.pid,
+            process_start_ticks: member.processStartTicks,
+          });
+        }
+      }
+      if (known.size === current.group_members.length) return null;
+      return { ...current, group_members: [...known.values()] };
+    });
+    if (updated?.dispatch_ownership) durableOwnership = updated.dispatch_ownership;
+  };
 
   // ─── Create session ───────────────────────────────────────────────────────
   // AC: @agent-invocation-lifecycle ac-1
   // AC: @runner-resolution-and-preflight ac-session-metadata-records-runner
-  const session = await createSession(sessionsDir, {
-    id: sessionId,
-    agent_type: adapterId,
-    agent_id: agent.id,
-    trigger,
-    // Canonical task identity is the persisted task_id; the display ref is kept
-    // separate. AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
-    task_id: canonicalTaskId,
-    task_ref: displayTaskRef,
-    // Conditionally include runner so legacy invocations omit the field.
-    ...(contract.runnerId ? { runner: contract.runnerId } : {}),
-  });
-
-  // ─── Log agent.dispatched event ───────────────────────────────────────────
-  // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
-  await appendSessionEvent({
-    type: "agent.dispatched",
-    data: {
+  let session: SessionMetadata;
+  try {
+    session = await createSession(sessionsDir, {
+      id: sessionId,
+      agent_type: adapterId,
+      agent_id: agent.id,
+      trigger,
+      // Canonical task identity is the persisted task_id; the display ref is kept
+      // separate. AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
       task_id: canonicalTaskId,
       task_ref: displayTaskRef,
-      agent_id: agent.id,
-      adapter: adapterId,
-      trigger,
-      // runner is present only when a named runner resolved the invocation.
+      // Conditionally include runner so legacy invocations omit the field.
       ...(contract.runnerId ? { runner: contract.runnerId } : {}),
-    },
-  });
+      ...(createHandoff
+        ? {
+            dispatch_ownership: {
+              invocation_id: createHandoff.invocationId,
+              session_id: createHandoff.sessionId,
+              task_id: createHandoff.taskId,
+              agent_id: createHandoff.agentId,
+              adapter: createHandoff.adapter,
+              owner_instance_id: createHandoff.ownerInstanceId,
+              pid: null,
+              pgid: null,
+              process_start_ticks: null,
+              process_identity_platform: "unverifiable" as const,
+              captured_at: new Date().toISOString(),
+              group_members: [],
+            },
+          }
+        : {}),
+    });
+  } catch (error) {
+    if (createHandoff) onOwnershipFailed?.(createHandoff);
+    throw error;
+  }
 
   try {
+    // ─── Log agent.dispatched event ───────────────────────────────────────────
+    // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+    await appendSessionEvent({
+      type: "agent.dispatched",
+      data: {
+        task_id: canonicalTaskId,
+        task_ref: displayTaskRef,
+        agent_id: agent.id,
+        adapter: adapterId,
+        trigger,
+        // runner is present only when a named runner resolved the invocation.
+        ...(contract.runnerId ? { runner: contract.runnerId } : {}),
+      },
+    });
+
     // ─── Inject KSPEC_SESSION_ID ──────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-2
     const injectionResult = await injectEnvForAdapter(adapterId, sessionId);
@@ -884,25 +1140,47 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // (synthesized by the resolver), so the spawner consumes it verbatim
     // without re-overlaying session-id mid-flight.
     // AC: @runner-invocation-semantics ac-session-env-injected-through-runner
-    state.agent = await spawnAndInitialize(adapter, {
-      cwd: contract.cwd,
-      env: invocationEnv,
-      extraArgs: [...extraArgs],
-      // Runner-backed invocations turn off host process.env inheritance so
-      // the runner's env.inherit/pass/set policy is the only source of host
-      // env in the child.
-      // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
-      inheritParentEnv: contract.inheritParentEnv,
-      // Pass the resolved redactor so adapter stderr cannot leak resolved
-      // secret values to operator-visible output.
-      // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
-      redact,
-      clientOptions: {
-        methodTimeouts: {
-          "session/prompt": promptRequestTimeoutMs,
+    const publishSpawnedOwnership = async (spawned: SpawnedAgent): Promise<void> => {
+      state.agent = spawned;
+      if (!createHandoff || ownershipPublished) return;
+      const ownership = await captureSpawnOwnership(createHandoff, spawned.process);
+      const persisted = await updateSessionDispatchOwnership(sessionsDir, sessionId, ownership);
+      if (!persisted) throw new Error("Spawned session ownership could not be persisted");
+      durableOwnership = ownership;
+      await onOwnershipPersisted?.(ownership);
+      ownershipPublished = true;
+    };
+    try {
+      const initializedAgent = await spawnAndInitialize(adapter, {
+        cwd: contract.cwd,
+        env: invocationEnv,
+        extraArgs: [...extraArgs],
+        // Runner-backed invocations turn off host process.env inheritance so
+        // the runner's env.inherit/pass/set policy is the only source of host
+        // env in the child.
+        // AC: @runner-environment-secret-boundaries ac-env-inheritance-policy-applied
+        inheritParentEnv: contract.inheritParentEnv,
+        // Pass the resolved redactor so adapter stderr cannot leak resolved
+        // secret values to operator-visible output.
+        // AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
+        redact,
+        onSpawn: publishSpawnedOwnership,
+        initializationSignal: abortSignal,
+        clientOptions: {
+          methodTimeouts: {
+            "session/prompt": promptRequestTimeoutMs,
+          },
         },
-      },
-    });
+      });
+      state.agent = initializedAgent;
+      // Test doubles and third-party wrappers may not yet invoke onSpawn.
+      await publishSpawnedOwnership(initializedAgent);
+    } catch (error) {
+      if (createHandoff && state.agent) {
+        state.agent = await reapSpawnedAgent(state.agent);
+      }
+      throw error;
+    }
 
     // ─── Create ACP session ───────────────────────────────────────────────
     // AC: @runner-process-invocation-inputs ac-runner-cwd-is-invocation-only
@@ -910,6 +1188,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       cwd: contract.cwd,
       mcpServers: [],
     });
+    await refreshDurableGroupMembers().catch(() => undefined);
 
     // ─── Log agent.started event ──────────────────────────────────────────
     await appendSessionEvent({
@@ -928,7 +1207,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // guaranteed to run for cleanup.
     // AC: @active-session-registry ac-1, ac-2
     if (sessionRegistry) {
-      sessionRegistry.register(sessionId, sessionHandle);
+      sessionRegistry.register(sessionId, sessionHandle, {
+        taskId: canonicalTaskId ?? null,
+        invocationId: createHandoff?.invocationId ?? null,
+      });
     }
 
     // ─── Stall watchdog state ──────────────────────────────────────────────
@@ -1064,6 +1346,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         }
 
         turnCount++;
+        await refreshDurableGroupMembers().catch(() => undefined);
         lastStopReason = promptResult.stopReason;
         const turnDurationMs = Date.now() - turnStartTime;
 
@@ -1246,6 +1529,18 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       turnCount,
     };
   } catch (err) {
+    if (createHandoff && !ownershipPublished) {
+      // Close the null-identity reservation before releasing its admission.
+      // A concurrent hard stop that was awaiting the reservation must never
+      // mistake this never-published session for a signalable process owner.
+      await closeSession(
+        sessionsDir,
+        sessionId,
+        "failed",
+        "Invocation failed before process ownership publication",
+      ).catch(() => null);
+      onOwnershipFailed?.(createHandoff);
+    }
     const durationMs = Date.now() - startTime;
 
     // AC: @multi-turn-session-lifecycle ac-15, ac-16
@@ -1524,8 +1819,22 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       }
     }
 
-    // Terminate agent process
-    state.agent = disposeAgent(state.agent);
+    if (durableOwnership) {
+      // Terminate and observe dispatch-owned process exit before publishing exited_at.
+      // AC: @dispatch-lifecycle-control-authority ac-stop-cancels-active-work
+      // AC: @dispatch-lifecycle-control-authority ac-live-group-prevents-cleanup-completion
+      state.agent = await reapSpawnedAgent(state.agent);
+    } else {
+      state.agent = disposeUnownedAgent(state.agent);
+    }
+
+    if (durableOwnership) {
+      const ownershipAtExit = durableOwnership;
+      await mutateSessionDispatchOwnership(sessionsDir, sessionId, (current) => ({
+        ...(current ?? ownershipAtExit),
+        exited_at: new Date().toISOString(),
+      })).catch(() => null);
+    }
 
     // Restore env injection
     await removeEnvForAdapter(adapterId, state.previousEnvValue);

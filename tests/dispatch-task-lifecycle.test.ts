@@ -469,7 +469,23 @@ describe("canonical task pause and resume", () => {
     const runInvocation = vi
       .spyOn(invocationModule, "runInvocation")
       .mockImplementation(async (options) => {
-        await options.beforeCreate?.();
+        const handoff = await options.beforeCreate?.();
+        if (handoff) {
+          await options.onOwnershipPersisted?.({
+            invocation_id: handoff.invocationId,
+            session_id: handoff.sessionId,
+            task_id: handoff.taskId,
+            agent_id: handoff.agentId,
+            adapter: handoff.adapter,
+            owner_instance_id: handoff.ownerInstanceId,
+            pid: process.pid,
+            pgid: process.pid,
+            process_start_ticks: "1",
+            process_identity_platform: "linux_proc_stat_v1",
+            captured_at: new Date().toISOString(),
+            group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+          });
+        }
         invocationSessionId = options.sessionId;
         invocationAbortSignal = options.abortSignal;
         if (!invocationSessionId || !invocationAbortSignal || !options.sessionRegistry) {
@@ -526,6 +542,7 @@ describe("canonical task pause and resume", () => {
           cleanup_id: testUlid("CLN", 8),
           status: "pending",
           phase: "owned",
+          targets: [],
         },
       },
     });
@@ -701,6 +718,7 @@ describe("canonical task pause and resume", () => {
             cleanup_id: testUlid("CLN", 1),
             status,
             phase: "owned",
+            targets: [],
             ...(status === "failed" ? { error_code: "cancellation_failed" as const } : {}),
           },
         },

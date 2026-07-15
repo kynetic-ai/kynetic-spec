@@ -44,6 +44,10 @@ export interface SpawnAgentOptions {
    * AC: @runner-environment-secret-boundaries ac-diagnostics-redact-secrets
    */
   redact?: (text: string) => string;
+  /** Called immediately after spawn, before ACP initialization begins. */
+  onSpawn?: (agent: SpawnedAgent) => void | Promise<void>;
+  /** Cancels an in-flight ACP initialization without losing the child handle. */
+  initializationSignal?: AbortSignal;
 }
 
 /**
@@ -283,9 +287,31 @@ export async function spawnAndInitialize(
   const agent = spawnAgent(adapter, options);
 
   try {
+    await options.onSpawn?.(agent);
+    let removeAbortListener: (() => void) | undefined;
+    const initializationAborted = options.initializationSignal
+      ? new Promise<never>((_, reject) => {
+          const signal = options.initializationSignal!;
+          const abort = () => reject(new Error("Agent initialization aborted"));
+          if (signal.aborted) {
+            abort();
+            return;
+          }
+          signal.addEventListener("abort", abort, { once: true });
+          removeAbortListener = () => signal.removeEventListener("abort", abort);
+        })
+      : null;
     // Race initialization against spawn errors — if the command doesn't exist,
     // the 'error' event fires before initialize() can complete.
-    await Promise.race([agent.client.initialize(), agent.spawnError]);
+    try {
+      await Promise.race([
+        agent.client.initialize(),
+        agent.spawnError,
+        ...(initializationAborted ? [initializationAborted] : []),
+      ]);
+    } finally {
+      removeAbortListener?.();
+    }
     return agent;
   } catch (err) {
     // Clean up on initialization failure

@@ -21,8 +21,11 @@ import {
 } from "../src/parser/dispatch-control.js";
 import { acquireFileLock } from "../src/parser/file-lock.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
-import type { DispatchControl } from "../src/schema/dispatch-control.js";
-import { createMissingDispatchControl } from "../src/schema/dispatch-control.js";
+import {
+  createMissingDispatchControl,
+  DispatchControlSchema,
+  type DispatchControl,
+} from "../src/schema/dispatch-control.js";
 import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
@@ -131,9 +134,10 @@ class AdmissionControlStore implements DispatchLifecycleAuthorityStore {
   }
 
   commit(snapshot: DispatchControl): void {
+    const validated = DispatchControlSchema.parse(snapshot);
     this.publication = {
-      snapshot,
-      token: { revision: snapshot.revision, commit_oid: `memory-${snapshot.revision}` },
+      snapshot: validated,
+      token: { revision: validated.revision, commit_oid: `memory-${validated.revision}` },
     };
     this.listener?.(this.publication);
   }
@@ -287,8 +291,23 @@ async function createPublicationAdmissionHarness(
   vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
     if (gateSpawn) await spawn.arrive();
     const handoff = await options.beforeCreate?.();
+    if (!handoff) throw new Error("publication admission fixture omitted ownership handoff");
+    await options.onOwnershipPersisted?.({
+      invocation_id: handoff.invocationId,
+      session_id: handoff.sessionId,
+      task_id: handoff.taskId,
+      agent_id: handoff.agentId,
+      adapter: handoff.adapter,
+      owner_instance_id: handoff.ownerInstanceId,
+      pid: process.pid,
+      pgid: process.pid,
+      process_start_ticks: "1",
+      process_identity_platform: "linux_proc_stat_v1",
+      captured_at: new Date().toISOString(),
+      group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+    });
     artifacts.count++;
-    artifacts.starts.push({ taskId: handoff?.taskId ?? null, agentId: handoff?.agentId ?? "" });
+    artifacts.starts.push({ taskId: handoff.taskId, agentId: handoff.agentId });
     await completion.arrive();
     return { session: {} as never, outcome: "success", durationMs: 1, turnCount: 1 };
   });
@@ -323,6 +342,11 @@ afterEach(async () => {
     harnesses.splice(0).map(async (harness) => {
       harness.spawn.release();
       harness.completion.release();
+      await vi.waitFor(() => {
+        if (harness.engine.getLifecycleStatus().activeCount !== 0) {
+          throw new Error("fixture invocation is still active");
+        }
+      });
       await harness.engine.stop().catch(() => undefined);
       await cleanupTempDir(harness.rootDir);
     }),
@@ -452,6 +476,7 @@ describe("committed publication and admission boundaries", () => {
           cleanup_id: testUlid("CLN", 1),
           status: "pending",
           phase: "owned",
+          targets: [],
         },
       },
     });
@@ -521,11 +546,13 @@ describe("committed publication and admission boundaries", () => {
           status: "failed",
           phase: "owned",
           error_code: "cancellation_failed",
+          targets: [],
         },
         [harness.taskB]: {
           cleanup_id: testUlid("CLN", 3),
           status: "pending",
           phase: "owned",
+          targets: [],
         },
       },
     });
