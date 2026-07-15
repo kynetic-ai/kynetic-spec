@@ -455,6 +455,66 @@ events:
     payload:
       thread_ulid: 01KXJFDKWTVCQ05XAF9G2CKGYC
     timestamp: 2026-07-15T08:49:47.629Z
+  - _ulid: 01KXJGRA74G9D23BBJAFRR2VSK
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJFA1EWWXKJ01D223KHH0XH
+    timestamp: 2026-07-15T09:12:03.556Z
+  - _ulid: 01KXJGRDCWQDX35WT6123N06X3
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJFA1EWWXKJ01D223KHH0XH
+    timestamp: 2026-07-15T09:12:06.812Z
+  - _ulid: 01KXJGRGAT2DG204VZ02MD181Z
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJFA4MEW84FNZX288C7WPCP
+    timestamp: 2026-07-15T09:12:09.818Z
+  - _ulid: 01KXJGRK7KSH2JCP14CSH01D3X
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJFA4MEW84FNZX288C7WPCP
+    timestamp: 2026-07-15T09:12:12.787Z
+  - _ulid: 01KXJGRP5CWMK22X9NSF4GMPJY
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJFA7WDFXW3JQ01NA0C17S7
+    timestamp: 2026-07-15T09:12:15.788Z
+  - _ulid: 01KXJGRS34TMGG7GFMM37B1YWB
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJFA7WDFXW3JQ01NA0C17S7
+    timestamp: 2026-07-15T09:12:18.788Z
+  - _ulid: 01KXJGRW69QSDFZ6NW8JCN8C7A
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJFAB2KB1DVY7957YNF22DV
+    timestamp: 2026-07-15T09:12:21.961Z
+  - _ulid: 01KXJGRZB582BYYPKM7B1M6925
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJFAB2KB1DVY7957YNF22DV
+    timestamp: 2026-07-15T09:12:25.189Z
+  - _ulid: 01KXJGS2JK5ZHZX2C24FXKY953
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJFAEEN3WNFW1T9FCJXK1QA
+    timestamp: 2026-07-15T09:12:28.499Z
+  - _ulid: 01KXJGS5SSACVPDGYJQ8FYQDDN
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJFAEEN3WNFW1T9FCJXK1QA
+    timestamp: 2026-07-15T09:12:31.801Z
 examined_commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
 external_links: []
 lifecycle_state: closed
@@ -485,7 +545,14 @@ threads:
           barrier. Evidence: focused runs passed, while npm test -- --fresh failed here with first
           outcome noop."
         created_at: 2026-07-15T08:46:47.260Z
+      - _ulid: 01KXJGR9XBR7HP93YN9VX0XYCW
+        author: Jacob Chapel
+        body: "Fixed in a3e2d4f32e: concurrent pause now asserts one applied plus one noop independent of
+          mutex winner, with identical sanitized metadata on both calls."
+        created_at: 2026-07-15T09:12:03.242Z
     kind: blocker
+    resolved_at: 2026-07-15T09:12:06.586Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJFA4MEW84FNZX288C7WPCP
     anchor:
       type: code
@@ -504,7 +571,14 @@ threads:
           could still pass. Add the deterministic per-ingress barrier cases required by the task
           handoff, including bootstrap, retry wake-up, and post-invocation re-evaluation."
         created_at: 2026-07-15T08:46:50.510Z
+      - _ulid: 01KXJGRG3992YGFEW36C1N0TAY
+        author: Jacob Chapel
+        body: "Fixed in a3e2d4f32e: added distinct behavioral cases for precommitted bootstrap authority,
+          retry wake-up, reconcile entry, and post-invocation re-evaluation barriers."
+        created_at: 2026-07-15T09:12:09.577Z
     kind: blocker
+    resolved_at: 2026-07-15T09:12:12.549Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJFA7WDFXW3JQ01NA0C17S7
     anchor:
       type: code
@@ -522,7 +596,14 @@ threads:
           become eligible after A is paused and assert a post-pause B start, or directly verify B
           has no control record in addition to behavioral admission."
         created_at: 2026-07-15T08:46:53.837Z
+      - _ulid: 01KXJGRNXQR6FWEEYP8ESNCRSJ
+        author: Jacob Chapel
+        body: "Fixed in a3e2d4f32e: task B now becomes pending only after task A is paused; the test proves
+          a post-pause B start and no B control record while global authority remains running."
+        created_at: 2026-07-15T09:12:15.543Z
     kind: blocker
+    resolved_at: 2026-07-15T09:12:18.529Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJFAB2KB1DVY7957YNF22DV
     anchor:
       type: code
@@ -541,7 +622,15 @@ threads:
           task, then release the barrier and prove completion. The existing registered-session
           assertion can continue to cover the session-open AC."
         created_at: 2026-07-15T08:46:57.107Z
+      - _ulid: 01KXJGRVYA3HN1KJ4DJKP5QYC5
+        author: Jacob Chapel
+        body: "Fixed in a3e2d4f32e: the test now runs a real invocation behind a completion barrier, pauses
+          task A while active, releases it, and proves natural completion while the registered
+          session remains open."
+        created_at: 2026-07-15T09:12:21.706Z
     kind: blocker
+    resolved_at: 2026-07-15T09:12:24.929Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJFAEEN3WNFW1T9FCJXK1QA
     entries:
       - _ulid: 01KXJFAEENMWM8VSZSRPW198DH
@@ -559,7 +648,14 @@ threads:
           bootstrap/retry/post-invocation edges, error handling, test integrity, and integration.
           Shared/package guidance surfaces touched: none; neutrality review not applicable."
         created_at: 2026-07-15T08:47:00.565Z
+      - _ulid: 01KXJGS2ABQM607RYP5VAWR6FG
+        author: Jacob Chapel
+        body: Acknowledged. Re-ran the focused lifecycle surface fresh and started a full fresh suite after
+          replacing the intermittent ordering assertion.
+        created_at: 2026-07-15T09:12:28.235Z
     kind: nit
+    resolved_at: 2026-07-15T09:12:31.555Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJFD7TCPBQP3ETKCHBCDJB3
     anchor:
       type: code
@@ -681,5 +777,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T08:48:56.382Z
 created_at: 2026-07-15T08:28:16.739Z
-updated_at: 2026-07-15T08:49:47.407Z
+updated_at: 2026-07-15T09:12:31.555Z
 notes: []
