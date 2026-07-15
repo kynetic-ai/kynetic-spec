@@ -79600,9 +79600,21 @@ runs:
     completed_at: 2026-07-15T20:52:03.506Z
   - _ulid: 01KXKT8P85CWBGMVCNJC3P5J6Z
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T21:17:31.781Z
+        completed_at: 2026-07-15T21:18:03.652Z
+        notes: "Worked well: read every changed file before worker notes; independently verified prior-cycle
+          claims; ran all project gates; used a minimal compiled-code concurrency probe after the
+          green suites, which reproduced the stale ownership write 3/3 times; recorded checks,
+          anchored finding, evidence log, and verdict atomically with kspec batch."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T21:18:03.652Z
+        completed_at: 2026-07-15T21:18:03.652Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T21:17:31.781Z
