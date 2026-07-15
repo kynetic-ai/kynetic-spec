@@ -15,6 +15,9 @@ import type {
 import { createMissingDispatchControl } from "../src/schema/dispatch-control.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import { initContext, resolveTaskDataManager } from "../src/parser/index.js";
+import * as invocationModule from "../src/agent-runtime/invocation.js";
+import * as workspaceModule from "../src/agent-runtime/workspace.js";
+import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
 import {
   cleanupTempDir,
   createTempDir,
@@ -24,6 +27,7 @@ import {
 } from "./helpers/cli.js";
 
 ensureSplitBackendRegistered();
+const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 
 class MemoryControlStore implements DispatchLifecycleAuthorityStore {
   private publication: DispatchControlPublication;
@@ -96,7 +100,12 @@ const harnesses: TaskLifecycleHarness[] = [];
 
 async function createTaskLifecycleHarness(
   authority: "stopped" | "running" | "paused" = "running",
-  options: { coalesceWindowMs?: number; taskAStatus?: "pending" | "completed" } = {},
+  options: {
+    coalesceWindowMs?: number;
+    taskAStatus?: "pending" | "completed";
+    taskBStatus?: "pending" | "completed";
+    recordTaskStarts?: boolean;
+  } = {},
 ) {
   const projectDir = await createTempDir("dispatch-task-lifecycle-");
   initGitRepo(projectDir);
@@ -147,7 +156,7 @@ async function createTaskLifecycleHarness(
       created_at: new Date().toISOString(),
     });
   writeTask(taskA, options.taskAStatus ?? "pending");
-  writeTask(taskB, "pending");
+  writeTask(taskB, options.taskBStatus ?? "pending");
   const loadTask = async (taskId: string) => {
     const ctx = await initContext(projectDir);
     return (await resolveTaskDataManager(ctx).loadAllTasks(ctx)).find(
@@ -158,20 +167,26 @@ async function createTaskLifecycleHarness(
   const engine = new DispatchEngine({
     projectDir,
     specDir: projectDir,
+    kspecCliPath: MOCK_KSPEC_CLI,
     reconcileIntervalMs: 0,
     coalesceWindowMs: options.coalesceWindowMs ?? 0,
     lifecycleStore: store,
   });
   const starts: string[] = [];
-  vi.spyOn(
-    engine as unknown as {
-      _spawnInvocation: (agent: unknown, entry: { change: { taskId: string } }) => Promise<boolean>;
-    },
-    "_spawnInvocation",
-  ).mockImplementation(async (_agent, entry) => {
-    starts.push(entry.change.taskId);
-    return true;
-  });
+  if (options.recordTaskStarts !== false) {
+    vi.spyOn(
+      engine as unknown as {
+        _spawnInvocation: (
+          agent: unknown,
+          entry: { change: { taskId: string } },
+        ) => Promise<boolean>;
+      },
+      "_spawnInvocation",
+    ).mockImplementation(async (_agent, entry) => {
+      starts.push(entry.change.taskId);
+      return true;
+    });
+  }
   const harness = { projectDir, taskA, taskB, store, engine, starts, writeTask, loadTask };
   harnesses.push(harness);
   return harness;
@@ -187,6 +202,50 @@ function holdTaskIngress() {
 
 function recordTaskStart(harness: TaskLifecycleHarness): string[] {
   return harness.starts.slice();
+}
+
+function mockInvocationInfrastructure(projectDir: string) {
+  const metadata = {
+    workspaceId: "task-lifecycle-workspace",
+    taskRef: "@task-alpha",
+    taskSlug: "task-alpha",
+    canonicalBranch: "dispatch/task/task-alpha/test",
+    canonicalBranchHead: "abc123",
+    integrationTargetBranch: "dev",
+    publicationMode: "manual_merge",
+    lifecycleState: "ready",
+    activeRole: null,
+    workerWorktreeDir: projectDir,
+    reviewerWorktreeDir: null,
+    bootstrap: {
+      status: "ready",
+      lastRole: "worker",
+      roleStates: {
+        worker: { status: "ready", steps: [], invalidationReasons: [] },
+        reviewer: { status: "not_run", steps: [], invalidationReasons: [] },
+      },
+    },
+  };
+  const provisioned = {
+    cwd: projectDir,
+    metadataPath: path.join(projectDir, ".kspec-dispatch-workspace.json"),
+    metadata: metadata as never,
+  };
+  vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+    exists: true,
+    healthy: true,
+    reason: null,
+    metadata: metadata as never,
+  });
+  vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry").mockResolvedValue();
+  vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts").mockResolvedValue();
+  vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceLifecycle").mockResolvedValue();
+  vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue(provisioned);
+  vi.spyOn(workspaceModule, "markDispatchWorkspaceActive").mockResolvedValue(provisioned);
+  vi.spyOn(workspaceModule, "markDispatchWorkspaceIdle").mockResolvedValue(provisioned);
+  vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+    metadata: metadata as never,
+  });
 }
 
 afterEach(async () => {
@@ -206,18 +265,23 @@ describe("canonical task pause and resume", () => {
     const harness = await createTaskLifecycleHarness("running", { taskAStatus: "completed" });
     await harness.engine.start();
 
-    const [first, second] = await Promise.all([
+    const results = await Promise.all([
       harness.engine.applyTaskLifecycleAction("pause", {
         taskRef: "@task-alpha",
         reason: "  hold alpha\u0000 now ",
         actor: "operator",
         source: "cli",
       }),
-      harness.engine.applyTaskLifecycleAction("pause", { taskId: harness.taskA }),
+      harness.engine.applyTaskLifecycleAction("pause", {
+        taskId: harness.taskA,
+        reason: "  hold alpha\u0000 now ",
+        actor: "operator",
+        source: "cli",
+      }),
     ]);
 
-    expect(first).toMatchObject({ outcome: "applied", taskId: harness.taskA });
-    expect(second).toMatchObject({ outcome: "noop", taskId: harness.taskA });
+    expect(results.map((result) => result.outcome).toSorted()).toEqual(["applied", "noop"]);
+    expect(results.every((result) => result.taskId === harness.taskA)).toBe(true);
     expect(Object.keys(harness.store.getPublication().snapshot.tasks)).toEqual([harness.taskA]);
     expect(harness.store.getPublication().snapshot.tasks[harness.taskA]).toMatchObject({
       mode: "paused",
@@ -231,10 +295,11 @@ describe("canonical task pause and resume", () => {
   // AC: @dispatch-lifecycle-control-authority ac-task-paused-work-does-not-start
   // AC: @dispatch-lifecycle-control-authority ac-task-control-preserves-unrelated-task-control
   // AC: @dispatch-lifecycle-control-authority ac-task-control-preserves-global-authority
-  it("holds task A across event, coalesced, retry, reconcile, and post-invocation drains while B remains independent", async () => {
+  it("holds task A across event and coalesced drains", async () => {
     const harness = await createTaskLifecycleHarness("running", {
       coalesceWindowMs: 5,
       taskAStatus: "completed",
+      taskBStatus: "completed",
     });
     await harness.engine.start();
     await harness.engine.applyTaskLifecycleAction("pause", { taskRef: "@task-alpha" });
@@ -251,27 +316,160 @@ describe("canonical task pause and resume", () => {
     });
     const internal = harness.engine as unknown as {
       coalesceTimers: Map<string, ReturnType<typeof setTimeout>>;
-      _reconcile: () => Promise<void>;
-      _serializedDrain: () => Promise<void>;
-      _evaluateAllTasks: (options: { skipIfActive: boolean }) => Promise<number>;
     };
     await vi.waitFor(() => expect(internal.coalesceTimers.size).toBe(0));
-    await internal._reconcile();
-    await internal._serializedDrain();
-    await internal._evaluateAllTasks({ skipIfActive: true });
-    await internal._serializedDrain();
 
-    expect(recordTaskStart(harness)).toContain(harness.taskB);
     expect(recordTaskStart(harness)).not.toContain(harness.taskA);
     expect(harness.engine.getLifecycleStatus().heldTaskIds).toContain(harness.taskA);
     expect(harness.store.getPublication().snapshot.global.authority).toBe("running");
   });
 
+  it("loads a precommitted task A pause before bootstrap scheduling", async () => {
+    const harness = await createTaskLifecycleHarness("running", { taskBStatus: "completed" });
+    const timestamp = new Date().toISOString();
+    harness.store.publish({
+      ...control("running"),
+      revision: 2,
+      tasks: {
+        [harness.taskA]: {
+          mode: "paused",
+          controlled_at: timestamp,
+          updated_at: timestamp,
+        },
+      },
+    });
+
+    await harness.engine.start();
+
+    expect(recordTaskStart(harness)).toEqual([]);
+    expect(harness.engine.getLifecycleStatus().heldTaskIds).toContain(harness.taskA);
+  });
+
+  it("admits task B after task A is paused without changing global authority", async () => {
+    const harness = await createTaskLifecycleHarness("running", {
+      taskAStatus: "completed",
+      taskBStatus: "completed",
+    });
+    await harness.engine.start();
+    await harness.engine.applyTaskLifecycleAction("pause", { taskRef: "@task-alpha" });
+    harness.writeTask(harness.taskB, "pending");
+    const taskB = await harness.loadTask(harness.taskB);
+
+    await harness.engine.handleStateChange({
+      taskId: harness.taskB,
+      taskRef: "@task-beta",
+      fromStatus: "completed",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: taskB,
+    });
+
+    expect(recordTaskStart(harness)).toEqual([harness.taskB]);
+    expect(harness.store.getPublication().snapshot.tasks[harness.taskB]).toBeUndefined();
+    expect(harness.store.getPublication().snapshot.global.authority).toBe("running");
+  });
+
+  it("rechecks task A authority after reconciliation crosses its entry barrier", async () => {
+    const harness = await createTaskLifecycleHarness("running", {
+      taskAStatus: "completed",
+      taskBStatus: "completed",
+    });
+    await harness.engine.start();
+    harness.writeTask(harness.taskA, "pending");
+    const barrier = holdTaskIngress();
+    const internal = harness.engine as unknown as {
+      _evaluateAllTasks: (options: { skipIfActive: boolean }) => Promise<number>;
+      _reconcile: () => Promise<void>;
+    };
+    const evaluateCurrent = internal._evaluateAllTasks.bind(harness.engine);
+    vi.spyOn(internal, "_evaluateAllTasks").mockImplementationOnce(async (options) => {
+      await barrier.wait();
+      return evaluateCurrent(options);
+    });
+
+    const reconciling = internal._reconcile();
+    await vi.waitFor(() => expect(internal._evaluateAllTasks).toHaveBeenCalledOnce());
+    await harness.engine.applyTaskLifecycleAction("pause", { taskRef: "@task-alpha" });
+    barrier.release();
+    await reconciling;
+
+    expect(recordTaskStart(harness)).toEqual([]);
+    expect(harness.engine.getLifecycleStatus().heldTaskIds).toContain(harness.taskA);
+  });
+
+  it("keeps a failed task A retry held when its pause commits before wake-up", async () => {
+    const harness = await createTaskLifecycleHarness("running", {
+      taskBStatus: "completed",
+      recordTaskStarts: false,
+    });
+    mockInvocationInfrastructure(harness.projectDir);
+    const runInvocation = vi
+      .spyOn(invocationModule, "runInvocation")
+      .mockRejectedValue(new Error("transient task lifecycle retry"));
+
+    await harness.engine.start();
+    await vi.waitFor(() => expect(runInvocation).toHaveBeenCalledOnce());
+    await vi.waitFor(() => expect(harness.engine.getLifecycleStatus().queueDepth).toBe(1));
+    await harness.engine.applyTaskLifecycleAction("pause", { taskRef: "@task-alpha" });
+    await new Promise((resolve) => setTimeout(resolve, 1_100));
+
+    expect(runInvocation).toHaveBeenCalledOnce();
+    expect(harness.engine.getLifecycleStatus().heldTaskIds).toContain(harness.taskA);
+  });
+
+  it("rechecks task A authority at the post-invocation barrier", async () => {
+    const harness = await createTaskLifecycleHarness("running", {
+      taskBStatus: "completed",
+      recordTaskStarts: false,
+    });
+    mockInvocationInfrastructure(harness.projectDir);
+    const invocationBarrier = holdTaskIngress();
+    const runInvocation = vi
+      .spyOn(invocationModule, "runInvocation")
+      .mockImplementation(async () => {
+        await invocationBarrier.wait();
+        return { session: {} as never, outcome: "success", durationMs: 1 };
+      });
+
+    await harness.engine.start();
+    await vi.waitFor(() => expect(runInvocation).toHaveBeenCalledOnce());
+    const evaluationBarrier = holdTaskIngress();
+    const internal = harness.engine as unknown as {
+      _evaluateAllTasks: (options: { skipIfActive: boolean }) => Promise<number>;
+    };
+    const evaluateCurrent = internal._evaluateAllTasks.bind(harness.engine);
+    vi.spyOn(internal, "_evaluateAllTasks").mockImplementationOnce(async (options) => {
+      await evaluationBarrier.wait();
+      return evaluateCurrent(options);
+    });
+
+    invocationBarrier.release();
+    await vi.waitFor(() => expect(internal._evaluateAllTasks).toHaveBeenCalledOnce());
+    await harness.engine.applyTaskLifecycleAction("pause", { taskRef: "@task-alpha" });
+    evaluationBarrier.release();
+    await vi.waitFor(() => expect(harness.engine.getLifecycleStatus().heldCount).toBe(1));
+
+    expect(runInvocation).toHaveBeenCalledOnce();
+    expect(harness.engine.getLifecycleStatus().heldTaskIds).toContain(harness.taskA);
+  });
+
   // AC: @dispatch-lifecycle-control-authority ac-task-pause-allows-active-completion
   // AC: @dispatch-lifecycle-control-authority ac-task-pause-keeps-active-session-open
   it("does not cancel active task A work or close its session when A is paused", async () => {
-    const harness = await createTaskLifecycleHarness("running", { taskAStatus: "completed" });
-    await harness.engine.start();
+    const harness = await createTaskLifecycleHarness("running", {
+      taskBStatus: "completed",
+      recordTaskStarts: false,
+    });
+    mockInvocationInfrastructure(harness.projectDir);
+    const invocationBarrier = holdTaskIngress();
+    let completed = false;
+    const runInvocation = vi
+      .spyOn(invocationModule, "runInvocation")
+      .mockImplementation(async () => {
+        await invocationBarrier.wait();
+        completed = true;
+        return { session: {} as never, outcome: "success", durationMs: 1 };
+      });
     let closeReason: string | null = null;
     harness.engine.sessionRegistry.register("active-a", {
       sendPrompt: async () => undefined,
@@ -280,27 +478,17 @@ describe("canonical task pause and resume", () => {
         closeReason = reason;
       },
     });
-    const internal = harness.engine as unknown as {
-      activeCount: Map<string, number>;
-      activeInvocationDetails: Map<string, Record<string, unknown>>;
-    };
-    internal.activeCount.set("worker", 1);
-    internal.activeInvocationDetails.set("active-a", {
-      invocationId: "active-a",
-      sessionId: "active-a",
-      agentId: "worker",
-      agentName: "Worker",
-      taskId: harness.taskA,
-      taskRef: "@task-alpha",
-      startedAtMs: Date.now(),
-      resolvedAdapter: "mock-acp",
-    });
+    await harness.engine.start();
+    await vi.waitFor(() => expect(runInvocation).toHaveBeenCalledOnce());
 
     await harness.engine.applyTaskLifecycleAction("pause", { taskRef: "@task-alpha" });
 
     expect(harness.engine.getStatus().activeInvocations).toBe(1);
     expect(harness.engine.sessionRegistry.get("active-a")).toBeDefined();
     expect(closeReason).toBeNull();
+    invocationBarrier.release();
+    await vi.waitFor(() => expect(harness.engine.getStatus().activeInvocations).toBe(0));
+    expect(completed).toBe(true);
   });
 
   it("allows task metadata control during global cleanup without releasing work", async () => {
