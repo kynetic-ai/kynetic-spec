@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KXJ0GYGNEQ2T3N2E6J2JHB0T
+    content: "Approach: integrate the committed DispatchControlStore into DispatchEngine startup and all
+      scheduling ingresses, keeping engine process-running state separate from durable global
+      authority. Serialize lifecycle mutations/reconstruction with the existing serialized drain
+      discipline; rebuild queues from current task/rule state on start/resume and dedupe by
+      canonical task ULID across queued/in-flight/active work. Use matching global cleanup
+      projection only for transition guards, and preserve task readiness/degraded-target state. Edge
+      cases: traditional-layout test fixtures remain explicitly legacy-running; stopped/paused
+      bootstrap, pending/failed global cleanup, unrelated task cleanup, repeated/concurrent actions,
+      stale held work, coalesced timers/retries/post-invocation/degraded recovery, and
+      active-session completion under pause. Test plan: add behavioral global lifecycle
+      harness/tests with standalone AC annotations for all 16 owned criteria, then focused
+      regressions in engine/bootstrap contract tests before full gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T04:28:24.982Z
