@@ -79388,9 +79388,20 @@ runs:
     completed_at: 2026-07-15T17:56:55.787Z
   - _ulid: 01KXKG8TCENPGEVMR7AZVP57B1
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T18:22:50.254Z
+        completed_at: 2026-07-15T18:23:48.373Z
+        notes: Baseline completed across observations, inbox, and tasks. The stores are large (observations
+          output exceeded 5,600 lines; 1,705 tasks), so candidate-specific kspec search queries will
+          be used before any capture.
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T18:23:48.373Z
+        completed_at: 2026-07-15T18:23:48.373Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T18:22:50.254Z
