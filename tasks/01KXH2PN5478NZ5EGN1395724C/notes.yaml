@@ -127,3 +127,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T03:47:04.901Z
+  - _ulid: 01KXHZ0RMTFAQ4Q3ZFJFSQB0E3
+    content: "Fix cycle 1: addressed the equal-revision fork blocker in commit 28d119244e. Full
+      validated snapshot equality now distinguishes harmless unrelated shadow commits from divergent
+      same-revision control state; divergent state cannot seed a later mutation. Added behavioral
+      coverage for both cases and re-verified all five task-owned ACs. Gates: focused 194 tests
+      pass; full suite 2794 suites / 10608 passed / 3 skipped; format, repo lint, focused lint (0
+      warnings/errors), typecheck, refs, alignment, completeness, and git diff checks pass."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T04:02:06.107Z

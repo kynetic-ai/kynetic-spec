@@ -126,7 +126,7 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-patch-dispatch-engine-coalescing-specs"
@@ -140,12 +140,12 @@ vcs_refs: []
 review_ref: "@01KXHWPKPDN1W1E8C3EZJ9BJXH"
 submission_linkage:
   review_url: null
-  branch: dev
-  captured_at: 2026-07-15T03:16:42.908Z
-  commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+  branch: dispatch/task/task-dispatch-control-persistence/01kxh2pn
+  captured_at: 2026-07-15T04:02:07.060Z
+  commit: 28d119244e0fbb34183f7c72b3d179e2b7c7a178
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
-  upstream_ref: refs/heads/dev
+  upstream_ref: refs/heads/dispatch/task/task-dispatch-control-persistence/01kxh2pn
 session_id: 01KXHY1KV6GG12VQSR4CAHPV6R
 history:
   - author: Jacob Chapel
@@ -252,9 +252,36 @@ history:
         previous: 2026-07-14T21:30:41.927Z
     command: task-start
     timestamp: 2026-07-15T03:46:21.388Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-dispatch-control-persistence/01kxh2pn
+          captured_at: 2026-07-15T04:02:07.060Z
+          commit: 28d119244e0fbb34183f7c72b3d179e2b7c7a178
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-dispatch-control-persistence/01kxh2pn
+        previous:
+          review_url: null
+          branch: dev
+          captured_at: 2026-07-15T03:16:42.908Z
+          commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+      submitted_at:
+        new: 2026-07-15T04:02:07.069Z
+        previous: 2026-07-15T03:16:42.914Z
+    command: task-submit
+    timestamp: 2026-07-15T04:02:07.069Z
 prior_status: null
 created_at: 2026-07-14T19:47:14.724Z
 started_at: 2026-07-15T03:46:21.387Z
-submitted_at: 2026-07-15T03:16:42.914Z
+submitted_at: 2026-07-15T04:02:07.069Z
 todos: []
 automation: eligible
