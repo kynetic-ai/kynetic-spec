@@ -7334,7 +7334,7 @@ workspaces:
         head: 7a9cd4210598526f56874770c264c7edf86b49ee
         last_seen_at: 2026-07-15T13:51:33.062Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-verify-engine-publication-admission-01kxh2pw
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
     bootstrap:
       status: succeeded
@@ -7816,7 +7816,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-15T15:09:12.111Z
+      updated_at: 2026-07-15T15:09:57.966Z
     integration:
       status: pending
       detail: null
@@ -7832,10 +7832,10 @@ workspaces:
     task_slug: stabilize-daemon-command-api-overlap-timing-test
     timestamps:
       closed_at: null
-      last_active_at: 2026-07-15T14:46:46.163Z
-      last_reconciled_at: 2026-07-15T15:09:12.111Z
+      last_active_at: 2026-07-15T15:09:57.966Z
+      last_reconciled_at: 2026-07-15T15:09:57.966Z
       created_at: 2026-07-15T14:46:10.069Z
-      updated_at: 2026-07-15T15:09:36.480Z
+      updated_at: 2026-07-15T15:09:57.966Z
     workspace_id: dispatch-workspace-01KXK05HK3EEZ79AGT0FHZ868M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
