@@ -75,3 +75,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T06:12:18.185Z
+  - _ulid: 01KXJ7P0BFHWENKQKGTZ5R6ARD
+    content: "Fix cycle 2: addressed all three canonical review blockers in commit b0a8a2e844. Added
+      deterministic behavioral coverage for the complete global transition matrix and every required
+      scheduling ingress, including real retry and post-invocation paths; repaired stopped
+      current-state reconstruction proof; and seeded a non-empty degraded target for preservation
+      coverage. Re-verified all 16 task-owned AC annotations. Focused tests: 215/215. Uncached full
+      suite: 2,796/2,796 suites, 10,631 passed, 3 expected skips. Format, repo/focused lint,
+      typecheck, diff check, refs, alignment, and completeness all exit 0."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T06:33:30.735Z

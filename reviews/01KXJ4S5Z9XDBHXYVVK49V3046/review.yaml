@@ -423,6 +423,54 @@ events:
     payload:
       thread_ulid: 01KXJ5X26J3KDW2TRMA008E71D
     timestamp: 2026-07-15T06:03:52.034Z
+  - _ulid: 01KXJ7N8V4CBYPFEVBCX49S03D
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ5T7VZ8JJBYSTYT3YTPG57
+    timestamp: 2026-07-15T06:33:06.660Z
+  - _ulid: 01KXJ7NBSXXGYZQDXYNJSSCH2R
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ5T7VZ8JJBYSTYT3YTPG57
+    timestamp: 2026-07-15T06:33:09.693Z
+  - _ulid: 01KXJ7NEPY6RRYAAP3S3H1BQBT
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ5TC3X14VNXSEVPB62JBQZ
+    timestamp: 2026-07-15T06:33:12.670Z
+  - _ulid: 01KXJ7NHPVT7JA6ZB2SQD79EVC
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ5TC3X14VNXSEVPB62JBQZ
+    timestamp: 2026-07-15T06:33:15.739Z
+  - _ulid: 01KXJ7NMS1TVWTH5R8ZMCR0X18
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ5TFPFA7SP7JHJMW60ESJ2
+    timestamp: 2026-07-15T06:33:18.881Z
+  - _ulid: 01KXJ7NQR88BSCKE3EK0YPQYG8
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ5TFPFA7SP7JHJMW60ESJ2
+    timestamp: 2026-07-15T06:33:21.928Z
+  - _ulid: 01KXJ7NVW74P3YE18AZ3KSXBGD
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ5TJS2636D3BC8AQ85BEJE
+    timestamp: 2026-07-15T06:33:26.151Z
+  - _ulid: 01KXJ7NZ3SX4CEKE4AACAA3W4R
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ5TJS2636D3BC8AQ85BEJE
+    timestamp: 2026-07-15T06:33:29.465Z
 examined_commit: 083c00449470af0010a00d01db548583b51e03d9
 external_links: []
 lifecycle_state: closed
@@ -456,7 +504,17 @@ threads:
           barriers/matrix cells. Add deterministic behavioral barrier/matrix coverage required by
           the task handoff."
         created_at: 2026-07-15T06:00:52.351Z
+      - _ulid: 01KXJ7N8K09G1TF0ND30DFFTW7
+        author: Jacob Chapel
+        body: "Fixed in b0a8a2e844: expanded the behavioral harness and added deterministic coverage for
+          event enqueue, coalesced expiry, dequeue admission, real retry wake-up, reconciliation
+          after its entry guard, real post-invocation re-evaluation, and degraded recovery. Added
+          the missing paused start and stopped idle pause/resume transition rows; pending and failed
+          cleanup remain separate cases."
+        created_at: 2026-07-15T06:33:06.399Z
     kind: blocker
+    resolved_at: 2026-07-15T06:33:09.452Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJ5TC3X14VNXSEVPB62JBQZ
     anchor:
       type: code
@@ -479,7 +537,15 @@ threads:
           changes current authoritative eligibility/rules (or explicitly loses stale in-memory
           scheduling data) and proves only the current canonical candidate is started."
         created_at: 2026-07-15T06:00:56.701Z
+      - _ulid: 01KXJ7NEFEXBXZX1A65MT4QZ64
+        author: Jacob Chapel
+        body: "Fixed in b0a8a2e844: the stopped reconstruction test now bootstraps with one held task,
+          changes that authoritative task to completed, adds a different current eligible task,
+          starts global dispatch, and proves only the new canonical task starts."
+        created_at: 2026-07-15T06:33:12.430Z
     kind: blocker
+    resolved_at: 2026-07-15T06:33:15.496Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJ5TFPFA7SP7JHJMW60ESJ2
     anchor:
       type: code
@@ -501,7 +567,15 @@ threads:
           degraded target with stable reason/timestamp, apply the lifecycle action, and deep-compare
           it afterward."
         created_at: 2026-07-15T06:01:00.367Z
+      - _ulid: 01KXJ7NMJ1CAXPRJ6264H731ZX
+        author: Jacob Chapel
+        body: "Fixed in b0a8a2e844: the preservation test now seeds a non-empty degraded target with reason
+          and timestamp before start, snapshots it, applies start twice, and deep-compares the full
+          target afterward alongside task readiness."
+        created_at: 2026-07-15T06:33:18.657Z
     kind: blocker
+    resolved_at: 2026-07-15T06:33:21.671Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJ5TJS2636D3BC8AQ85BEJE
     entries:
       - _ulid: 01KXJ5TJS2NQNCPCFFR67JBJ2C
@@ -521,7 +595,13 @@ threads:
           blockers above; no additional production-code finding after a second pass. Shared/package
           guidance surfaces were not touched, so neutrality checks were not applicable."
         created_at: 2026-07-15T06:01:03.522Z
+      - _ulid: 01KXJ7NVM41HGTWZP24TSZNQ0N
+        author: Jacob Chapel
+        body: Acknowledged the informational evidence log; no additional action was requested.
+        created_at: 2026-07-15T06:33:25.892Z
     kind: nit
+    resolved_at: 2026-07-15T06:33:29.145Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJ5WRNCGS76JTYHQQ07CB60
     anchor:
       type: code
@@ -655,5 +735,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T06:02:34.994Z
 created_at: 2026-07-15T05:42:49.065Z
-updated_at: 2026-07-15T06:03:51.780Z
+updated_at: 2026-07-15T06:33:29.145Z
 notes: []
