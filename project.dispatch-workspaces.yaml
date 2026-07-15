@@ -6816,7 +6816,7 @@ workspaces:
         head: 3a9909c4870a49f5f3ac174716edfca067852055
         last_seen_at: 2026-07-15T13:50:43.280Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-engine-stop-recovery-01kxh2pr
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: c5e0b9a6b4afdd17021bf37f2732d620152f40de
     bootstrap:
       status: succeeded
@@ -7315,9 +7315,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-15T13:52:26.201Z
-      last_reconciled_at: 2026-07-15T14:15:52.836Z
+      last_reconciled_at: 2026-07-15T14:21:45.839Z
       created_at: 2026-07-15T13:22:09.343Z
-      updated_at: 2026-07-15T14:15:52.836Z
+      updated_at: 2026-07-15T14:21:45.839Z
     workspace_id: dispatch-workspace-01KXH2PWH4C8T1X1BWHN9FWWDR
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
