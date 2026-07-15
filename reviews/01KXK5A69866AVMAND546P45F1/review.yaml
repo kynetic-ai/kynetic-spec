@@ -162,6 +162,12 @@ events:
       kind: nit
       thread_ulid: 01KXK67VBK61EXRDTS6RQX37CR
     timestamp: 2026-07-15T15:27:32.980Z
+  - _ulid: 01KXK68RQYRR0TFP98SP51HFC1
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXK67VBK61EXRDTS6RQX37CR
+    timestamp: 2026-07-15T15:28:02.814Z
 examined_commit: 5f77a5ccc7b8d2f2ea48581d08f06797c0ea56c3
 external_links: []
 lifecycle_state: open
@@ -188,7 +194,9 @@ threads:
           shared-guidance neutrality checks are not applicable."
         created_at: 2026-07-15T15:27:32.723Z
     kind: nit
+    resolved_at: 2026-07-15T15:28:02.549Z
+    resolved_by: Jacob Chapel
 verdicts: []
 created_at: 2026-07-15T15:11:20.872Z
-updated_at: 2026-07-15T15:27:32.723Z
+updated_at: 2026-07-15T15:28:02.549Z
 notes: []
