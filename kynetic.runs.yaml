@@ -78273,7 +78273,7 @@ runs:
     completed_at: 2026-07-15T06:37:06.040Z
   - _ulid: 01KXJ9G18FTC86GWFEACEJRPZS
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78290,7 +78290,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T07:05:49.225Z
-        completed_at: 2026-07-15T07:05:49.225Z
+        completed_at: 2026-07-15T07:06:07.223Z
+        notes: "Friction: the batched review-record write exceeded the first command-yield window and
+          exposed only an in-progress session. Retrying before polling the original session to
+          completion replayed the batch, creating duplicate checks, verdicts, and threads that then
+          required manual administrative resolution. The underlying systemic concern is ambiguous
+          retry semantics/non-idempotent review writes for long-running batch commands. A secondary
+          observation is that the uncached full suite took about 44 minutes in this environment;
+          treat that as a possible one-off until existing tracking and prior runtime evidence are
+          checked, not as an automatic new item."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T07:06:07.223Z
+        completed_at: 2026-07-15T07:06:07.223Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T07:05:12.207Z
