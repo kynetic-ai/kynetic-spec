@@ -23964,6 +23964,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-15T18:57:02.516Z
+  - _ulid: 01KXKRSY3937EQXKYJHC0TYY3M
+    type: friction
+    content: Schema-backed in-memory test stores can admit impossible snapshots when their commit
+      helpers bypass the production Zod schema. In dispatch lifecycle tests, cleanup entries without
+      targets caused startup recovery to throw while start swallowed the error, leaving annotated
+      tests falsely green. Test doubles for schema-backed persistence should validate every
+      committed snapshot through the production schema.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-15T20:51:59.721Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
