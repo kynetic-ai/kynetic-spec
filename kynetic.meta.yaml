@@ -23811,6 +23811,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-15T04:58:28.797Z
+  - _ulid: 01KXJ4K3PYK1CZ1WAPP13W2H66
+    type: friction
+    content: The autonomous session-reflect-loop mandates unfiltered listings of all observations, inbox
+      items, and tasks before evaluation. In a mature repository this produced over one million
+      characters of output and was truncated, making the required duplicate-prevention baseline both
+      expensive and incomplete. Prefer a bounded/count-first or targeted-query baseline that still
+      searches every source without dumping every record.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-15T05:39:30.142Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
