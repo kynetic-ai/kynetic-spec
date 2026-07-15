@@ -139,6 +139,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-15T18:19:31.435Z
+  - _ulid: 01KXKG447VBZETBDHMG8KQX3JH
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKG43X3FVQ2E51MCKY6K2Y5
+    timestamp: 2026-07-15T18:20:16.507Z
 examined_commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
 external_links: []
 lifecycle_state: open
@@ -148,8 +155,31 @@ subject:
   content_hash: ""
   ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXKG43X3FVQ2E51MCKY6K2Y5
+    anchor:
+      type: code
+      commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
+      line_end: 757
+      line_start: 750
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KXKG43X39V688BEWMX0KE3MZ
+        author: Jacob Chapel
+        body: "MUST-FIX — normal finalization proves only the ACP leader exited, not that the owned process
+          group exited. reapSpawnedAgent returns as soon as waitForSpawnedAgentExit observes the
+          leader, so SIGKILL is skipped when a descendant survives group SIGTERM; the caller can
+          then persist exited_at, which recovery treats as terminal evidence. Reproduction: a
+          detached leader spawned a SIGTERM-ignoring descendant; after group SIGTERM,
+          leaderExited=true while descendantAlive=true and groupAlive=true. Impact: cleanup can
+          complete and later discard recovery evidence while the owned group remains live, violating
+          ac-live-group-prevents-cleanup-completion and the cancellation guarantees. Verify
+          process-group extinction and escalate surviving members before publishing exited_at; cover
+          a resistant descendant behaviorally."
+        created_at: 2026-07-15T18:20:16.163Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-15T18:01:35.563Z
-updated_at: 2026-07-15T18:19:31.117Z
+updated_at: 2026-07-15T18:20:16.163Z
 notes: []
