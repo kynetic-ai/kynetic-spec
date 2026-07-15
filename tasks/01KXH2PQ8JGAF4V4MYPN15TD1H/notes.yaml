@@ -32,3 +32,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T08:47:06.057Z
+  - _ulid: 01KXJGS13N5XR0MSZQD9738KGF
+    content: "Fix cycle 1: addressed all review findings in a3e2d4f32e. Made concurrent pause assertions
+      independent of mutex winner; added deterministic behavioral coverage for precommitted
+      bootstrap authority, retry wake-up, reconcile entry, post-invocation re-evaluation, and
+      post-pause task B admission; replaced synthetic active bookkeeping with a real barrier-held
+      invocation that completes after task pause while its session remains open. Re-verified all
+      nine assigned ACs. Focused fresh surface: 45/45 passed. Full fresh suite: 10,648 passed, 3
+      skipped. Format, repo/focused lint, typecheck, refs, alignment, completeness, and diff checks
+      passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T09:12:26.997Z
