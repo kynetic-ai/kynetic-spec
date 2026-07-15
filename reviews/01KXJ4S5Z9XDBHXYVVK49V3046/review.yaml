@@ -2,7 +2,28 @@ _ulid: 01KXJ4S5Z9XDBHXYVVK49V3046
 slugs: []
 title: Review global lifecycle authority and coalesced reconstruction (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1044 files matched formatting; exit 0.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T06:01:05.307Z
+    completed_at: 2026-07-15T06:01:05.307Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint exited 0 with 0 errors and 702 baseline warnings; focused oxlint on all 7
+      changed TypeScript/test files found 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T06:01:08.466Z
+    completed_at: 2026-07-15T06:01:08.466Z
 events:
   - _ulid: 01KXJ4S5Z9QGADRN2VF3CATXGE
     actor: Jacob Chapel
@@ -17,6 +38,20 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T05:43:04.761Z
+  - _ulid: 01KXJ5TMS00NRW7FWQ8PH39Q8S
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T06:01:05.568Z
+  - _ulid: 01KXJ5TQVF5RNDE0DD9YP01SY9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T06:01:08.719Z
 examined_commit: 083c00449470af0010a00d01db548583b51e03d9
 external_links: []
 lifecycle_state: open
@@ -29,5 +64,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T05:42:49.065Z
-updated_at: 2026-07-15T05:43:04.474Z
+updated_at: 2026-07-15T06:01:08.466Z
 notes: []
