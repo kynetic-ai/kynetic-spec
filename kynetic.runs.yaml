@@ -78923,7 +78923,7 @@ runs:
     completed_at: 2026-07-15T13:20:16.156Z
   - _ulid: 01KXK0G8B71DXCH6QF8SMVBHHC
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78936,7 +78936,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T13:48:10.708Z
-        completed_at: 2026-07-15T13:48:10.708Z
+        completed_at: 2026-07-15T13:49:47.200Z
+        notes: Evaluated candidates against existing state. Deterministic real-Git writer barriers duplicate
+          success @01KXHQ9T. Pre-create public-boundary barriers duplicate @01KXJQ2V and @01KXJTPAS.
+          Long full-suite progress uncertainty duplicates friction @01KNPJXXG. The omitted
+          split-backend registration was a one-off harness setup mistake, not a systemic pattern. No
+          unique high-confidence candidate passed the capture gate.
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T13:49:47.200Z
+        completed_at: 2026-07-15T13:49:47.200Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T13:47:16.711Z
