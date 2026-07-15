@@ -6633,12 +6633,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-15T13:20:46.012Z
+      updated_at: 2026-07-15T13:21:00.798Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-15T13:20:46.012Z
+      updated_at: 2026-07-15T13:21:00.798Z
     integration:
       status: pending
       detail: null
@@ -6646,8 +6646,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: c5e0b9a6b4afdd17021bf37f2732d620152f40de
-      updated_at: 2026-07-15T13:20:46.012Z
-    lifecycle_state: ready
+      updated_at: 2026-07-15T13:21:00.798Z
+    lifecycle_state: integrating
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PRCMKX5GBDNJ60PPBCHS
     task_ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
@@ -6655,16 +6655,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-15T12:27:23.508Z
-      last_reconciled_at: 2026-07-15T13:20:46.012Z
+      last_reconciled_at: 2026-07-15T13:21:00.798Z
       created_at: 2026-07-15T12:26:52.580Z
-      updated_at: 2026-07-15T13:20:46.012Z
+      updated_at: 2026-07-15T13:21:00.798Z
     workspace_id: dispatch-workspace-01KXH2PRCMKX5GBDNJ60PPBCHS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 3a9909c4870a49f5f3ac174716edfca067852055
+        last_seen_at: 2026-07-15T13:21:00.798Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-engine-stop-recovery-01kxh2pr-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-engine-stop-recovery/01kxh2pr
-        head: c5e0b9a6b4afdd17021bf37f2732d620152f40de
-        last_seen_at: 2026-07-15T12:26:52.580Z
+        head: 3a9909c4870a49f5f3ac174716edfca067852055
+        last_seen_at: 2026-07-15T13:21:00.798Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-engine-stop-recovery-01kxh2pr
