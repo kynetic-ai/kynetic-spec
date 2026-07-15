@@ -146,6 +146,13 @@ events:
       kind: blocker
       thread_ulid: 01KXKG43X3FVQ2E51MCKY6K2Y5
     timestamp: 2026-07-15T18:20:16.507Z
+  - _ulid: 01KXKG4AK2DGXDD8QHJHHDZYMA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKG4A9AYNJV077EV5FHNAT7
+    timestamp: 2026-07-15T18:20:23.010Z
 examined_commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
 external_links: []
 lifecycle_state: open
@@ -179,7 +186,30 @@ threads:
           a resistant descendant behaviorally."
         created_at: 2026-07-15T18:20:16.163Z
     kind: blocker
+  - _ulid: 01KXKG4A9AYNJV077EV5FHNAT7
+    anchor:
+      type: code
+      commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
+      line_end: 1862
+      line_start: 1852
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXKG4A9AV28YWW4K9804VNNX
+        author: Jacob Chapel
+        body: "MUST-FIX — a completed stop is not idempotent while the invocation owner remains in
+          activeInvocationOwnership. After the first cleanup removes its pending entry,
+          _collectStopTargets re-adds the retained owner; stopped authority plus a nonempty target
+          list makes the next stop create a fresh cleanup and report applied. Reproduction against
+          DispatchEngine: sequential global stops returned applied at revisions 5 and 9, with one
+          signal and idle cleanup after each. The second call must be a no-op or the same pending
+          retry, and the task-scoped collector has the same issue. Impact: repeated stop duplicates
+          cleanup lifecycle side effects and violates both stop-idempotency ACs. Preserve
+          completed-cleanup knowledge or exclude already-verified retained ownership, and add
+          sequential tests with a real activeInvocationOwnership entry."
+        created_at: 2026-07-15T18:20:22.698Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-15T18:01:35.563Z
-updated_at: 2026-07-15T18:20:16.163Z
+updated_at: 2026-07-15T18:20:22.698Z
 notes: []
