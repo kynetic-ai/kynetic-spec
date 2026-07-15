@@ -79251,9 +79251,25 @@ runs:
     completed_at: 2026-07-15T16:28:47.432Z
   - _ulid: 01KXKB2E3FA98JJCH70ZB1878Q
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T16:51:58.191Z
+        completed_at: 2026-07-15T16:53:34.120Z
+        notes: "Worked well: the reviewer supplied an anchored, executable resistant-child reproduction;
+          writing the same-boundary real-process regression first made the failure observable before
+          implementation. The task branch/review-thread workflow kept the fix narrow and auditable,
+          and onTestFinished cleanup prevented the adversarial fixture from leaking. Friction:
+          production child termination semantics were duplicated and inconsistent—invocation dispose
+          used best-effort SIGTERM while robust observed-exit/SIGKILL escalation existed only in
+          other/test-side helpers—allowing a safety claim to pass focused tests until adversarial
+          review."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T16:53:34.120Z
+        completed_at: 2026-07-15T16:53:34.120Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T16:51:58.191Z
