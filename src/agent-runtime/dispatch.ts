@@ -1002,6 +1002,8 @@ export class DispatchEngine {
   private reconcileTimer: ReturnType<typeof setInterval> | null = null;
   /** All in-flight reconciliation promises so stop() can await every one. */
   private inFlightReconciles = new Set<Promise<void>>();
+  /** Externally published lifecycle reconstruction work owned by the engine. */
+  private inFlightLifecycleReconstructions = new Set<Promise<void>>();
   /** Per-task coalescing timers. AC: @per-task-dispatch-drain-coalescing ac-1 */
   private coalesceTimers: Map<string, ReturnType<typeof setTimeout>> = new Map();
   /** Whether a drain is currently in progress. AC: @per-task-dispatch-drain-coalescing ac-8 */
@@ -1411,6 +1413,11 @@ export class DispatchEngine {
     if (this.inFlightReconciles.size > 0) {
       await Promise.allSettled(Array.from(this.inFlightReconciles));
       this.inFlightReconciles.clear();
+    }
+
+    if (this.inFlightLifecycleReconstructions.size > 0) {
+      await Promise.allSettled(Array.from(this.inFlightLifecycleReconstructions));
+      this.inFlightLifecycleReconstructions.clear();
     }
 
     // Clear queues BEFORE awaiting invocations so completion handlers
@@ -4152,11 +4159,19 @@ export class DispatchEngine {
     this.lifecyclePublication = publication;
     if (!this.lifecycleStarted || this.localLifecycleMutation) return;
     const next = publication.snapshot.global.authority;
-    void this.lifecycleMutex.runExclusive(async () => {
-      if (next === "running" && previous !== "running" && this._globalSchedulingPermitted()) {
-        await this._reconstructCurrentCandidates();
-      }
-    });
+    const reconstruction = this.lifecycleMutex
+      .runExclusive(async () => {
+        if (next === "running" && previous !== "running" && this._globalSchedulingPermitted()) {
+          await this._reconstructCurrentCandidates();
+        }
+      })
+      .catch((err) => {
+        console.error("[dispatch] Lifecycle publication reconstruction error:", err);
+      })
+      .finally(() => {
+        this.inFlightLifecycleReconstructions.delete(reconstruction);
+      });
+    this.inFlightLifecycleReconstructions.add(reconstruction);
   }
 
   private async _reconstructCurrentCandidates(): Promise<void> {

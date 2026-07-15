@@ -618,6 +618,28 @@ describe("global dispatch lifecycle authority", () => {
     await harness.engine.stop();
   });
 
+  it("contains and reports failed reconstruction from an external running publication", async () => {
+    const harness = await createGlobalLifecycleHarness("paused");
+    await harness.engine.start();
+    const reconstructionError = new Error("external reconstruction failed");
+    const internal = harness.engine as unknown as {
+      _reconstructCurrentCandidates: () => Promise<void>;
+    };
+    vi.spyOn(internal, "_reconstructCurrentCandidates").mockRejectedValueOnce(reconstructionError);
+    const reportError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    harness.store.publish(control("running", 2));
+
+    await vi.waitFor(() =>
+      expect(reportError).toHaveBeenCalledWith(
+        "[dispatch] Lifecycle publication reconstruction error:",
+        reconstructionError,
+      ),
+    );
+    expect(harness.engine.getLifecycleStatus().globalAuthority).toBe("running");
+    await harness.engine.stop();
+  });
+
   // AC: @dispatch-lifecycle-control-authority ac-concurrent-resume-does-not-duplicate
   it("serializes concurrent resumes into one canonical candidate start", async () => {
     const harness = await createGlobalLifecycleHarness("paused");
