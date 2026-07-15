@@ -78343,9 +78343,20 @@ runs:
     completed_at: 2026-07-15T07:09:19.945Z
   - _ulid: 01KXJAXTS1EY2SAN566TZ15ZZA
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T07:30:12.897Z
+        completed_at: 2026-07-15T07:31:06.327Z
+        notes: "Baseline completed in parallel: queried all current observations, inbox items, and tasks
+          before identifying reflection candidates. Targeted search will be used for any concrete
+          candidate before capture."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T07:31:06.327Z
+        completed_at: 2026-07-15T07:31:06.327Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T07:30:12.897Z
