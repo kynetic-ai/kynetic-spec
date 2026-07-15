@@ -122,7 +122,7 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-dispatch-control-persistence"
@@ -142,7 +142,7 @@ submission_linkage:
   remote: null
   remote_url: null
   upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
-session_id: 01KXJ0CVF1VTG1VS4JM1RT5ZBK
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -191,6 +191,16 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-07-15T05:03:36.172Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KXJ0CVF1VTG1VS4JM1RT5ZBK
+    command: review-verdict-needs-work
+    timestamp: 2026-07-15T05:21:22.488Z
 created_at: 2026-07-14T19:47:15.420Z
 started_at: 2026-07-15T04:26:54.206Z
 submitted_at: 2026-07-15T04:54:09.732Z
