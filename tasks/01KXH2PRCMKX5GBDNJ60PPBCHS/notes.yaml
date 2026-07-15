@@ -123,3 +123,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T16:33:16.614Z
+  - _ulid: 01KXKB11X53ZP2PYZAZK87S5MT
+    content: "Fix cycle 3 complete in 29569d9efb. Replaced the SIGTERM-only post-spawn publication
+      failure cleanup with verified reap: hold admission, observe child exit, escalate the process
+      group to SIGKILL after a bounded one-second grace period, then release ownership and record
+      exited_at. Added a real resistant ACP child regression proving actual OS exit and no active
+      handoff before onOwnershipFailed. Replied to and resolved the blocker and evidence-log
+      threads. Re-verified all stop/recovery AC behavior. Gates: format passed; repo lint 0 errors;
+      focused lint 0 warnings/errors; typecheck passed; focused recovery/invocation/engine suite
+      passed 206 tests; refs/alignment/completeness validations passed at existing warning
+      baselines; fresh full npm test passed 2,805 suites / 10,694 tests with 3 skipped."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T16:51:12.933Z
