@@ -155,6 +155,13 @@ events:
       kind: blocker
       thread_ulid: 01KXK5ERAP4K75MGT83Y4NSKY4
     timestamp: 2026-07-15T15:13:50.678Z
+  - _ulid: 01KXK5F96SKV256QGGMCDG5YYD
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXK5F8Y3J0SC498CRJKYZAC3
+    timestamp: 2026-07-15T15:14:07.705Z
 examined_commit: 676182f47b0680e3e8a60d8ab068fafe4fc0a4a1
 external_links: []
 lifecycle_state: open
@@ -212,7 +219,26 @@ threads:
           behavioral coverage for missing/corrupt metadata."
         created_at: 2026-07-15T15:13:50.422Z
     kind: blocker
+  - _ulid: 01KXK5F8Y3J0SC498CRJKYZAC3
+    entries:
+      - _ulid: 01KXK5F8Y33V7ZCJ71V4QEJBST
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: full diff and surrounding context for
+          src/agent-runtime/{dispatch,invocation,session-registry}.ts,
+          src/schema/dispatch-control.ts, src/sessions/{store,types}.ts, and all 11 changed test
+          files including dispatch-stop-recovery and dispatch-spawn-control-race. Commands run: git
+          diff/log/status; kspec task/item/review lookups; all three kspec validate modes; format,
+          repo/focused lint, typecheck, fresh full tests; AC-annotation comparison; and an isolated
+          tsx behavioral reproduction. Claims verified: independently confirmed each of the five
+          prior-cycle fixes (reservation release, propagated hard-stop errors, legal exited_at
+          observation, refreshed group proofs, eligible stopped-scope candidate) in implementation
+          and tests. Categories searched: correctness, concurrency and boundaries, error
+          handling/recovery, process-signal safety, test quality/AC coverage, and integration.
+          Findings: two blocker threads above. Shared/package guidance surfaces touched: none, so
+          neutrality/render checks are not applicable."
+        created_at: 2026-07-15T15:14:07.427Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-15T14:57:18.810Z
-updated_at: 2026-07-15T15:13:50.422Z
+updated_at: 2026-07-15T15:14:07.427Z
 notes: []
