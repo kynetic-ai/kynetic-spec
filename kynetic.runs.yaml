@@ -79095,7 +79095,7 @@ runs:
     completed_at: 2026-07-15T15:08:35.444Z
   - _ulid: 01KXK6CNBAFVFS01ETXYDTPTEX
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79113,7 +79113,22 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T15:30:47.434Z
-        completed_at: 2026-07-15T15:30:47.434Z
+        completed_at: 2026-07-15T15:31:10.225Z
+        notes: "Friction points: (1) Dispatch named a -review workflow entrypoint, but no pr-review skill
+          was installed/listed in the snapshot; the reviewer had to reconstruct the intended flow
+          from kspec-review and review-gates. (2) Review records have no informational
+          evidence-log/note surface, so a clean review log had to be stored as a nit thread and
+          immediately resolved. (3) The required fresh full suite took 2,617.4 seconds, far beyond
+          the project guidance's approximate 150-second expectation, making review latency very high
+          even though all tests passed. (4) kspec batch accepted a review check with required=false
+          but persisted it as required=true, so optional-check semantics were not preserved. (5)
+          Completeness warns that an automation-eligible maintenance task has no spec_ref even
+          though task guidance permits direct internal/cleanup tasks; this creates noisy policy
+          tension for reviewer-created flaky-test tasks."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T15:31:10.225Z
+        completed_at: 2026-07-15T15:31:10.225Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T15:30:10.410Z
