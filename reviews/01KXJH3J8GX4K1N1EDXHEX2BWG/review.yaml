@@ -193,6 +193,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-15T09:35:41.347Z
+  - _ulid: 01KXJKAAP11F0WRZHSKT1B1CXM
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJJ2YYHCRGVP96MGS0J0P6G
+    timestamp: 2026-07-15T09:56:51.009Z
 examined_commit: a3e2d4f32e56b2735e3d65a0131676a15c35642e
 external_links: []
 lifecycle_state: closed
@@ -223,6 +229,12 @@ threads:
           invocation options and make the barrier reject on abort or explicitly assert the active
           invocation signal remains un-aborted through pause."
         created_at: 2026-07-15T09:35:21.041Z
+      - _ulid: 01KXJKAADTNJN43K9VZ9W1YQDR
+        author: Jacob Chapel
+        body: "Fixed in 23e100fa34: the active runInvocation mock now captures dispatch's AbortSignal,
+          rejects if it is aborted, and explicitly verifies the signal remains un-aborted through
+          task pause before allowing natural completion."
+        created_at: 2026-07-15T09:56:50.739Z
     kind: blocker
   - _ulid: 01KXJJ321A6H77AJHJCSZ5SFFK
     anchor:
@@ -278,5 +290,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T09:35:41.347Z
 created_at: 2026-07-15T09:18:12.240Z
-updated_at: 2026-07-15T09:35:41.347Z
+updated_at: 2026-07-15T09:56:50.739Z
 notes: []
