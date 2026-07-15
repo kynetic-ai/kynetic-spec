@@ -14,6 +14,18 @@ checks:
     runner: npm run format:check
     created_at: 2026-07-15T15:11:19.928Z
     completed_at: 2026-07-15T15:11:19.928Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint passed with 0 errors. Focused oxlint on every changed TypeScript/test file
+      reported 0 errors and 6 warnings, all on unchanged pre-existing lines in
+      tests/active-session-registry.test.ts.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T15:11:32.714Z
+    completed_at: 2026-07-15T15:11:32.714Z
 events:
   - _ulid: 01KXK4GFYTQ3TGFYWF9R14C5JS
     actor: Jacob Chapel
@@ -35,6 +47,13 @@ events:
       status: pass
       name: format
     timestamp: 2026-07-15T15:11:20.201Z
+  - _ulid: 01KXK5AJ3P5P9QA6BDBWX2B3D5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T15:11:32.982Z
 examined_commit: 676182f47b0680e3e8a60d8ab068fafe4fc0a4a1
 external_links: []
 lifecycle_state: open
@@ -47,5 +66,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T14:57:18.810Z
-updated_at: 2026-07-15T15:11:19.928Z
+updated_at: 2026-07-15T15:11:32.714Z
 notes: []
