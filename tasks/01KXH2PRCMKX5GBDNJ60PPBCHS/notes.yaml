@@ -111,3 +111,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T16:25:36.486Z
+  - _ulid: 01KXKA06T69EFZQYD5T703HDBE
+    content: "Fix cycle 3 approach: replace the synchronous SIGTERM-only ownership-publication failure
+      path with an awaited reap that observes child exit, escalates to process-group SIGKILL after a
+      bounded grace period, and only then releases the admission handoff or records exited_at. Add a
+      behavioral regression using a real ACP child that ignores SIGTERM: inject failure from the
+      post-spawn ownership publication callback, assert SIGKILL escalation caused actual OS process
+      exit, assert no active handoff was published, and verify failure cleanup occurs only after
+      exit. Re-read all stop/recovery ACs and re-run focused plus full project gates before
+      resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T16:33:16.614Z
