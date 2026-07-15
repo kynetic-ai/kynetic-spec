@@ -35,3 +35,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T05:21:22.488Z
+  - _ulid: 01KXJ42MMNKD7VYG8YB1F0S5A8
+    content: "Fix cycle 1 approach: add deterministic behavioral regressions for (1) pause committing
+      while a serialized drain is held after its entry check and (2) a newer committed stopped
+      snapshot arriving before cached publication delivery. Reuse the lifecycle harness and store
+      transaction callback. Move global transition/cleanup evaluation into the committed mutation
+      callback with a transaction-level no-write result for idempotent actions, and recheck global
+      authority at dequeue/admission after async barriers while preserving queued work. Re-verify
+      all 16 task-owned ACs and full project gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T05:30:30.421Z
