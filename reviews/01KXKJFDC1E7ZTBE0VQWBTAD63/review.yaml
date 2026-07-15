@@ -190,6 +190,13 @@ events:
       kind: blocker
       thread_ulid: 01KXKKRXND7RKRD4PMQ2EZZRAT
     timestamp: 2026-07-15T19:24:03.892Z
+  - _ulid: 01KXKKS3MY01ZF5P1CQTWVBV24
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKKS3CYMAMGEVVGAB3X4X61
+    timestamp: 2026-07-15T19:24:09.759Z
 examined_commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
 external_links: []
 lifecycle_state: open
@@ -241,7 +248,27 @@ threads:
           cleanup-target requirements."
         created_at: 2026-07-15T19:24:03.629Z
     kind: blocker
+  - _ulid: 01KXKKS3CYMAMGEVVGAB3X4X61
+    anchor:
+      type: code
+      commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
+      line_end: 1868
+      line_start: 1865
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXKKS3CYXJXAH2168K06M6B5
+        author: Jacob Chapel
+        body: "MUST-FIX: unreadable or corrupt durable session metadata is silently skipped when recovering
+          active ownership after daemon restart. With no in-memory retained owner, a behavioral
+          probe seeded durable ownership, corrupted session.yaml, and invoked global stop; stop
+          returned applied with idle cleanup and no signal while the modeled process evidence
+          remained live. Existing corrupt-metadata tests retain the owner in memory and do not cover
+          this restart/orphan path. The stop contract forbids reporting success when live ownership
+          cannot be verified and terminated."
+        created_at: 2026-07-15T19:24:09.502Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-15T19:01:23.457Z
-updated_at: 2026-07-15T19:24:03.629Z
+updated_at: 2026-07-15T19:24:09.502Z
 notes: []
