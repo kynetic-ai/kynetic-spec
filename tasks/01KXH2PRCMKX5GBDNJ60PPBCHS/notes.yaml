@@ -56,3 +56,22 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T13:52:53.583Z
+  - _ulid: 01KXK3DEW5MY8AJD2PX4EFKFDX
+    content: "Fix cycle 1 complete in 676182f47b; all five blocker threads and the evidence-log thread
+      were replied to and resolved. Ownership schema remains the strict durable tuple, now updated
+      through serialized read-modify-write so live group-member proof and exited_at cannot overwrite
+      each other. Phase safety: owned accepts only absent-to-present exited_at enrichment while
+      every identity field remains equal; signals_sent still requires verified group exit;
+      sessions_closed still precedes removal. Linux proof: verified live leader may bind newly
+      observed same-PGID members after ACP creation/turns and immediately before cleanup freeze;
+      mismatched/unreadable/unproved evidence remains unsignalled and pending/failed. A/B scoped
+      preservation behavior remains unchanged. Added behavioral coverage for dispatched-event
+      reservation failure with concurrent stop, graceful engine.stop failure propagation,
+      owned-phase exit recovery, late-child proof binding, and actual stopped-authority admission.
+      Verification: format check passed; repo lint 0 errors; focused lint 0 warnings/errors;
+      typecheck passed; focused recovery/race/registry/engine/API tests passed;
+      refs/alignment/completeness validations exited 0; full npm test passed 2,803 suites / 10,675
+      tests with 3 skipped."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T14:38:10.821Z
