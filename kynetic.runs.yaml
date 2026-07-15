@@ -78425,7 +78425,7 @@ runs:
     completed_at: 2026-07-15T08:24:16.925Z
   - _ulid: 01KXJFHD1BCSA8RZZ0TVNCC3MT
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78442,7 +78442,24 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T08:53:33.276Z
-        completed_at: 2026-07-15T08:53:33.276Z
+        completed_at: 2026-07-15T08:53:47.988Z
+        notes: "High-confidence friction: (1) retrying an apparently stalled atomic review write duplicated
+          checks, blocker threads, and verdicts, forcing administrative cleanup; systemic and
+          already covered by @01KXJ7W7B. (2) npm test required about 42.8 minutes with long quiet
+          intervals and exposed an order-sensitive failure that isolated reruns did not reproduce;
+          the long-tail/teardown feedback problem is already covered by @01KM4A3W025YNGAGH5JT6483HZ.
+          (3) reflection workflow inspection required an explicit run ref despite the skill example;
+          already covered by @01KR293G and related workflow-show records. (4) mandatory unfiltered
+          reflection listings were too large and truncated; already covered by @01KXJ4K3.
+          High-confidence success: reading the diff before notes, auditing each AC literally, and
+          running the fresh full suite caught false-positive behavioral tests and a suite-only
+          failure before merge; the broader strict-review/test-quality pattern is already covered by
+          @01KFCXQH. The specific suite ordering failure is one-off evidence and not independently
+          capture-worthy."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T08:53:47.988Z
+        completed_at: 2026-07-15T08:53:47.988Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T08:50:48.492Z
