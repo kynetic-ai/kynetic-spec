@@ -21,8 +21,11 @@ import {
 } from "../src/parser/dispatch-control.js";
 import { acquireFileLock } from "../src/parser/file-lock.js";
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
-import type { DispatchControl } from "../src/schema/dispatch-control.js";
-import { createMissingDispatchControl } from "../src/schema/dispatch-control.js";
+import {
+  createMissingDispatchControl,
+  DispatchControlSchema,
+  type DispatchControl,
+} from "../src/schema/dispatch-control.js";
 import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
@@ -131,9 +134,10 @@ class AdmissionControlStore implements DispatchLifecycleAuthorityStore {
   }
 
   commit(snapshot: DispatchControl): void {
+    const validated = DispatchControlSchema.parse(snapshot);
     this.publication = {
-      snapshot,
-      token: { revision: snapshot.revision, commit_oid: `memory-${snapshot.revision}` },
+      snapshot: validated,
+      token: { revision: validated.revision, commit_oid: `memory-${validated.revision}` },
     };
     this.listener?.(this.publication);
   }
@@ -472,6 +476,7 @@ describe("committed publication and admission boundaries", () => {
           cleanup_id: testUlid("CLN", 1),
           status: "pending",
           phase: "owned",
+          targets: [],
         },
       },
     });
@@ -541,11 +546,13 @@ describe("committed publication and admission boundaries", () => {
           status: "failed",
           phase: "owned",
           error_code: "cancellation_failed",
+          targets: [],
         },
         [harness.taskB]: {
           cleanup_id: testUlid("CLN", 3),
           status: "pending",
           phase: "owned",
+          targets: [],
         },
       },
     });

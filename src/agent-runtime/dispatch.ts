@@ -1958,25 +1958,37 @@ export class DispatchEngine {
       }
     }
     if (known.size === ownership.group_members.length) return ownership;
-    const refreshed = await mutateSessionDispatchOwnership(
-      sessionsDir,
-      ownership.session_id,
-      (current) => {
-        if (!current || current.exited_at) return null;
-        const {
-          group_members: _currentMembers,
-          exited_at: _currentExit,
-          ...currentIdentity
-        } = current;
-        const { group_members: _ownedMembers, exited_at: _ownedExit, ...ownedIdentity } = ownership;
-        if (!isDeepStrictEqual(currentIdentity, ownedIdentity)) return null;
-        const currentKnown = new Map(current.group_members.map((member) => [member.pid, member]));
-        for (const member of known.values()) {
-          if (!currentKnown.has(member.pid)) currentKnown.set(member.pid, member);
-        }
-        return { ...current, group_members: [...currentKnown.values()] };
-      },
-    );
+    let refreshed: Awaited<ReturnType<typeof mutateSessionDispatchOwnership>>;
+    try {
+      refreshed = await mutateSessionDispatchOwnership(
+        sessionsDir,
+        ownership.session_id,
+        (current) => {
+          if (!current || current.exited_at) return null;
+          const {
+            group_members: _currentMembers,
+            exited_at: _currentExit,
+            ...currentIdentity
+          } = current;
+          const {
+            group_members: _ownedMembers,
+            exited_at: _ownedExit,
+            ...ownedIdentity
+          } = ownership;
+          if (!isDeepStrictEqual(currentIdentity, ownedIdentity)) return null;
+          const currentKnown = new Map(current.group_members.map((member) => [member.pid, member]));
+          for (const member of known.values()) {
+            if (!currentKnown.has(member.pid)) currentKnown.set(member.pid, member);
+          }
+          return { ...current, group_members: [...currentKnown.values()] };
+        },
+      );
+    } catch {
+      // Stop authority must still commit if a newly observed member proof cannot
+      // be persisted. Freezing the last durable tuple makes recovery reject the
+      // unproved live member without signalling it.
+      return ownership;
+    }
     const refreshedOwnership = refreshed?.dispatch_ownership;
     if (!refreshedOwnership) return ownership;
     const {
@@ -2302,7 +2314,16 @@ export class DispatchEngine {
     } catch {
       throw new DispatchCleanupError("cancellation_failed", "Dispatch process cancellation failed");
     }
-    if (!(await this.stopRecoveryRuntime.waitForProcessGroupExit(target.pgid, 5_000))) {
+    let exited: boolean;
+    try {
+      exited = await this.stopRecoveryRuntime.waitForProcessGroupExit(target.pgid, 5_000);
+    } catch {
+      throw new DispatchCleanupError(
+        "cleanup_identity_unverifiable",
+        "Dispatch process-group exit could not be verified",
+      );
+    }
+    if (!exited) {
       throw new DispatchCleanupError(
         "cancellation_timeout",
         "Dispatch process group did not exit before the cleanup timeout",

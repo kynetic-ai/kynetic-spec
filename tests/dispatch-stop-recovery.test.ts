@@ -383,6 +383,90 @@ describe("verified dispatch hard-stop recovery", () => {
     expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("failed");
   });
 
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-retains-stopped-authority
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-pending-cleanup
+  // AC: @dispatch-lifecycle-control-authority ac-unverified-live-group-is-not-signalled
+  it.each(["global", "task"] as const)(
+    "commits stopped %s authority when a late member proof cannot be persisted",
+    async (scope) => {
+      const harness = await createStopRecoveryHarness();
+      const target = await harness.seedOwnership(1, harness.taskA);
+      harness.proc.evidence.set(target.pid! + 1, {
+        pid: target.pid! + 1,
+        pgid: target.pgid!,
+        processStartTicks: "late-member",
+      });
+      const sessionDir = path.join(harness.projectDir, ".kspec-sessions", target.session_id);
+      await fs.chmod(sessionDir, 0o500);
+      try {
+        const stopping =
+          scope === "global"
+            ? harness.engine.applyGlobalLifecycleAction("stop")
+            : harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA });
+        await expect(stopping).rejects.toMatchObject({ code: "cleanup_group_unverifiable" });
+      } finally {
+        await fs.chmod(sessionDir, 0o700);
+      }
+
+      expect(harness.signals).toEqual([]);
+      expect(harness.engine.getLifecycleStatus()).toMatchObject({
+        ...(scope === "global" ? { globalAuthority: "stopped" } : {}),
+        cleanupState: {
+          status: "failed",
+          entries: [{ status: "failed", error_code: "cleanup_group_unverifiable" }],
+        },
+      });
+      if (scope === "task") {
+        expect(harness.store.getPublication().snapshot.tasks[harness.taskA]?.mode).toBe("stopped");
+      }
+    },
+  );
+
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-pending-cleanup
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-no-success
+  it("maps unreadable process-group exit evidence to the closed identity failure", async () => {
+    const harness = await createStopRecoveryHarness();
+    await harness.seedOwnership(1, harness.taskA);
+    harness.runtime.waitForProcessGroupExit = async () => {
+      const error = new Error("injected wait /proc read failure") as NodeJS.ErrnoException;
+      error.code = "EACCES";
+      throw error;
+    };
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).rejects.toMatchObject({
+      code: "cleanup_identity_unverifiable",
+    });
+    expect(harness.engine.getLifecycleStatus()).toMatchObject({
+      globalAuthority: "stopped",
+      cleanupState: {
+        status: "failed",
+        entries: [{ status: "failed", error_code: "cleanup_identity_unverifiable" }],
+      },
+    });
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-stop-closes-active-sessions
+  // AC: @dispatch-lifecycle-control-authority ac-live-group-prevents-cleanup-completion
+  it("completes leaderless empty-group recovery without signalling", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    harness.proc.evidence.delete(target.pid!);
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).resolves.toMatchObject({
+      outcome: "applied",
+      authority: "stopped",
+    });
+
+    expect(harness.signals).toEqual([]);
+    expect(harness.sessions.closed).toEqual([target.session_id]);
+    expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
+    await expect(
+      getSession(path.join(harness.projectDir, ".kspec-sessions"), target.session_id),
+    ).resolves.toMatchObject({
+      dispatch_ownership: { exited_at: expect.any(String) },
+    });
+  });
+
   // AC: @dispatch-lifecycle-control-authority ac-missing-leader-live-group-remains-pending
   // AC: @dispatch-lifecycle-control-authority ac-live-group-prevents-cleanup-completion
   it("distinguishes a proved live leaderless group and leaves cleanup unfinished", async () => {
