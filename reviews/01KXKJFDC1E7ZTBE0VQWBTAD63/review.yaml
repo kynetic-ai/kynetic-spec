@@ -211,9 +211,25 @@ events:
       kind: nit
       thread_ulid: 01KXKKSRCCEK61N7CBSYRZGYFF
     timestamp: 2026-07-15T19:24:31.252Z
+  - _ulid: 01KXKKTH0JA1XZHXG4FBMY3P9B
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-15T19:24:56.210Z
+  - _ulid: 01KXKKTH0JZJBXBSDVK719T3P6
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-15T19:24:56.210Z
 examined_commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -321,7 +337,14 @@ threads:
           tests were removed."
         created_at: 2026-07-15T19:24:30.988Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-15T19:24:56.200Z
 created_at: 2026-07-15T19:01:23.457Z
-updated_at: 2026-07-15T19:24:30.988Z
+updated_at: 2026-07-15T19:24:56.210Z
 notes: []
