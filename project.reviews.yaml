@@ -29675,3 +29675,21 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-15T13:54:05.259Z
+  - _ulid: 01KXK0X7FF2ATV6B7K2Z4FPEHK
+    slugs: []
+    title: Review verify committed publication and admission boundaries
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 7a9cd4210598526f56874770c264c7edf86b49ee
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXH2PWH4C8T1X1BWHN9FWWDR"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-15T13:54:21.807Z
