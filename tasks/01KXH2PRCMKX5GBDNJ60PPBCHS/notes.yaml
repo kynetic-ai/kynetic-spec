@@ -237,3 +237,24 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T19:31:42.861Z
+  - _ulid: 01KXKNETYS18D2J0NF3WFVSHNK
+    content: "Fix cycle 6 complete in e01006b364; all four blocker threads and the evidence thread were
+      replied to and resolved. Completion window: verified PID/PGID/birth/member ownership remains a
+      stop target until exited_at is durably present, regardless of session status; successful
+      verified stop now persists exited_at before closure, while null pre-spawn reservations remain
+      excluded. Refresh isolation: member-proof refresh revalidates the full immutable identity
+      before adopting returned ownership, so concurrent A-to-B reassignment yields
+      cleanup_ownership_mismatch and no signal. Restart corruption: each ownership mutation
+      maintains a last-valid dispatch-ownership archive; corrupt canonical metadata can therefore
+      materialize the immutable target, but signalling still requires canonical tuple
+      re-verification and fails cleanup_identity_unverifiable without success. Task isolation: the
+      Zod record rejects targets whose task_id differs from the canonical cleanup key, and recovery
+      repeats the guard before any signal. Phase table remains owned -> verified group exit plus
+      durable exited_at -> signals_sent -> durable session close -> sessions_closed -> removal.
+      Linux proof matrix and A/B preservation are unchanged. Verification: format passed; repo lint
+      0 errors; focused lint 0 warnings/errors; typecheck passed; focused 58 suites/235 tests
+      passed; fresh full npm test passed 2,805 suites/10,711 tests with 3 skipped;
+      refs/alignment/completeness validations and diff hygiene passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T19:53:30.329Z
