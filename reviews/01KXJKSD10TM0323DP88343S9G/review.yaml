@@ -76,6 +76,17 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-07-15T10:21:08.872Z
     completed_at: 2026-07-15T10:21:08.872Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "src/agent-runtime/dispatch.ts, src/agent-runtime/task-identity.ts, and
+      tests/dispatch-task-lifecycle.test.ts: 0 warnings, 0 errors."
+    name: focused-lint
+    required: true
+    runner: npx oxlint
+    created_at: 2026-07-15T10:21:14.411Z
+    completed_at: 2026-07-15T10:21:14.411Z
 events:
   - _ulid: 01KXJKSD0ZQDAKBGEZX7RWQX24
     actor: Jacob Chapel
@@ -139,6 +150,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-15T10:21:09.140Z
+  - _ulid: 01KXJMQ00GZ2C69CX2X9P2BXHA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-15T10:21:14.640Z
 examined_commit: 23e100fa34ddbd33fdc371fe4408e77fa7fb00f0
 external_links: []
 lifecycle_state: open
@@ -151,5 +169,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T10:05:04.928Z
-updated_at: 2026-07-15T10:21:08.872Z
+updated_at: 2026-07-15T10:21:14.411Z
 notes: []
