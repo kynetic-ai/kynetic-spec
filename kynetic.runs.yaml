@@ -78822,7 +78822,7 @@ runs:
     completed_at: 2026-07-15T12:05:50.541Z
   - _ulid: 01KXJVX5JYNPNFMDBWJWY0SYRH
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78845,7 +78845,17 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-07-15T12:29:42.464Z
-        completed_at: 2026-07-15T12:29:42.464Z
+        completed_at: 2026-07-15T12:29:54.001Z
+        notes: "Coverage search: full-suite teardown/performance is tracked by @01KM4A3W025YNGAGH5JT6483HZ;
+          the missing $pr-review surface is covered by @pr-review-skill, @01KFR82G, @01KKFY9, and
+          inbox @01KXHA7P; workflow run-ref/documentation mismatch is tracked by
+          @01KKBD52ND0SRD9WXYT6ZXZ776 and @01KXJKHVTNZHY72RH1N6XQM1A0; scattered runInvocation mock
+          drift is tracked by friction observation @01KXJTPAFDCM1BEJHNKT386KQ0; the deterministic
+          barrier success is already @01KXJQ2VK7RJKPXF3NKQJ3D5JT."
+      - status: completed
+        step_index: 3
+        started_at: 2026-07-15T12:29:54.001Z
+        completed_at: 2026-07-15T12:29:54.001Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T12:26:56.990Z
