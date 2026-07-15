@@ -29505,3 +29505,21 @@ reviews:
     verdict_count: 2
     created_at: 2026-07-15T05:42:49.065Z
     updated_at: 2026-07-15T06:33:29.145Z
+  - _ulid: 01KXJ85ATC5CAWKPVFXF57NHZ4
+    slugs: []
+    title: Review global lifecycle authority and coalesced reconstruction (cycle 3)
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: b0a8a2e844526cf3cdf5ba9d85c596f1d6ac9b5f
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXH2PNTWN26FWG82XJ1FYT5P"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-15T06:41:52.972Z
