@@ -77826,7 +77826,7 @@ runs:
     completed_at: 2026-07-14T21:59:02.104Z
   - _ulid: 01KXHQ507YTCYTV85S0HHF97VE
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77839,7 +77839,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T01:45:01.382Z
-        completed_at: 2026-07-15T01:45:01.382Z
+        completed_at: 2026-07-15T01:46:54.323Z
+        notes: "High-confidence findings: (1) global reference validation can block publication of otherwise
+          verified task work; already covered by this session's observation @01KXHNHD and existing
+          slug-uniqueness tracking. (2) workflow show requiring an explicit run ref is systemic but
+          already covered by pending task @01KKBD52 and multiple inbox/observation records. (3)
+          deterministic commit barriers with a real temporary Git shadow worktree made
+          committed-publication race behavior reproducible; targeted searches for 'commit barrier'
+          and 'publication token' found no existing tracking of this success pattern."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T01:46:54.323Z
+        completed_at: 2026-07-15T01:46:54.323Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T01:44:36.350Z
