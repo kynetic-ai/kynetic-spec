@@ -78876,7 +78876,7 @@ runs:
     completed_at: 2026-07-15T12:30:18.198Z
   - _ulid: 01KXJYQMDWN626CSCSBH34JQD8
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78890,7 +78890,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T13:19:02.245Z
-        completed_at: 2026-07-15T13:19:02.245Z
+        completed_at: 2026-07-15T13:19:06.563Z
+        notes: "Worked well: a strict injectable stop-recovery runtime plus durable fixture helpers made the
+          Linux ownership safety matrix behaviorally testable, including tuple mismatch, PID reuse,
+          unreadable evidence, unsupported identity, leaderless empty/live groups, signal timeout,
+          session-close failure, and crash resumption. Focused suites caught contract fallout before
+          the full 10,670-test gate. Friction: distributed runInvocation mocks required repairs
+          across several suites; the full suite took about 45 minutes; reflect guidance omitted the
+          required workflow run ref."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T13:19:06.563Z
+        completed_at: 2026-07-15T13:19:06.563Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T13:16:21.308Z
