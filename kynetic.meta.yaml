@@ -23762,6 +23762,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-14T20:54:16.857Z
+  - _ulid: 01KXHNHDNB7RTRJ3PQ3PRBXPCY
+    type: friction
+    content: "Dispatch task quality gates are blocked by unrelated global reference ambiguities:
+      @observations and @spec-plan-import resolve to duplicate items, so kspec validate --refs fails
+      even when the task's own refs and alignment are valid. Validation needs either scoped
+      baselining or prompt resolution of duplicate canonical slugs."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-15T01:16:26.155Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
