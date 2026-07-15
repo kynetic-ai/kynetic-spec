@@ -205,6 +205,12 @@ events:
     payload:
       thread_ulid: 01KXJJ2YYHCRGVP96MGS0J0P6G
     timestamp: 2026-07-15T09:56:56.714Z
+  - _ulid: 01KXJKANNKKGS7WY8FM3WK9X0R
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJJ321A6H77AJHJCSZ5SFFK
+    timestamp: 2026-07-15T09:57:02.259Z
 examined_commit: a3e2d4f32e56b2735e3d65a0131676a15c35642e
 external_links: []
 lifecycle_state: closed
@@ -265,6 +271,12 @@ threads:
           the generated invocation session identity, register/assert that exact session, and verify
           its close callback is not invoked."
         created_at: 2026-07-15T09:35:24.202Z
+      - _ulid: 01KXJKANE7ZKEN2M8QHM2BSM59
+        author: Jacob Chapel
+        body: "Fixed in 23e100fa34: the mock captures the generated InvocationOptions.sessionId, registers
+          that exact ID in the supplied session registry, asserts its close callback is not invoked
+          by pause, and verifies natural unregistration after completion."
+        created_at: 2026-07-15T09:57:02.023Z
     kind: blocker
   - _ulid: 01KXJJ353ZRCFY84KRCH4XXBDV
     entries:
@@ -298,5 +310,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T09:35:41.347Z
 created_at: 2026-07-15T09:18:12.240Z
-updated_at: 2026-07-15T09:56:56.457Z
+updated_at: 2026-07-15T09:57:02.023Z
 notes: []
