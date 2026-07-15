@@ -86,7 +86,7 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-final-pre-spawn-control-gate"
@@ -97,6 +97,14 @@ tags:
   - verification
   - engine
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-verify-engine-publication-admission/01kxh2pw
+  captured_at: 2026-07-15T13:46:45.959Z
+  commit: 7a9cd4210598526f56874770c264c7edf86b49ee
+  remote: null
+  remote_url: null
+  upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
 session_id: 01KXJZ3J4R6S2WXN0X0GJV4EX8
 history:
   - author: Jacob Chapel
@@ -119,7 +127,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-07-15T13:23:39.469Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-verify-engine-publication-admission/01kxh2pw
+          captured_at: 2026-07-15T13:46:45.959Z
+          commit: 7a9cd4210598526f56874770c264c7edf86b49ee
+          remote: null
+          remote_url: null
+          upstream_ref: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
+        previous: null
+      submitted_at:
+        new: 2026-07-15T13:46:45.964Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-07-15T13:46:45.964Z
 created_at: 2026-07-14T19:47:22.276Z
 started_at: 2026-07-15T13:23:39.468Z
+submitted_at: 2026-07-15T13:46:45.964Z
 todos: []
 automation: eligible
