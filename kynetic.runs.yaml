@@ -78064,7 +78064,7 @@ runs:
     started_at: 2026-07-15T04:54:42.333Z
     completed_at: 2026-07-15T04:58:45.388Z
   - _ulid: 01KXJ3MJJ2PZ4ZTESWAQAXGCB5
-    status: active
+    status: completed
     current_step: 5
     initiated_by: Jacob Chapel
     step_results:
@@ -78117,10 +78117,13 @@ runs:
         completed_at: 2026-07-15T05:25:56.918Z
         notes: No untracked proposal requires discussion or approval. Applying the reflection rule to avoid
           duplicate tracking.
-      - status: completed
+      - status: skipped
         step_index: 5
         started_at: 2026-07-15T05:25:56.918Z
-        completed_at: 2026-07-15T05:25:56.918Z
+        completed_at: 2026-07-15T05:26:01.108Z
+        notes: Skipped capture because search confirmed all high-confidence insights are already tracked or
+          are task-specific findings already recorded in the active fix cycle.
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T05:22:49.538Z
+    completed_at: 2026-07-15T05:26:01.108Z
