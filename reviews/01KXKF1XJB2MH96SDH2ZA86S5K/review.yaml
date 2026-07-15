@@ -167,6 +167,13 @@ events:
       kind: blocker
       thread_ulid: 01KXKG4PXC7274PNRZ6HV1WJQA
     timestamp: 2026-07-15T18:20:35.904Z
+  - _ulid: 01KXKG5HVRZYPEWC0PW8VABRC7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXKG5HJ5EEXJVWT78BFV1QXB
+    timestamp: 2026-07-15T18:21:03.224Z
 examined_commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
 external_links: []
 lifecycle_state: open
@@ -268,7 +275,28 @@ threads:
           reads.
         created_at: 2026-07-15T18:20:35.628Z
     kind: blocker
+  - _ulid: 01KXKG5HJ5EEXJVWT78BFV1QXB
+    entries:
+      - _ulid: 01KXKG5HJ7QNQK2FFH5B81KPNT
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: every changed file (src/agent-runtime/dispatch.ts,
+          invocation.ts, session-registry.ts; src/schema/dispatch-control.ts; src/sessions/store.ts
+          and types.ts; all 13 changed test/mock files), plus surrounding src/agents/spawner.ts and
+          prior-cycle review records. Commands run: git status/log/diff/diff-check; kspec
+          task/item/review queries; AC-annotation searches; kspec validate
+          refs/alignment/completeness; npm run format:check; repo-wide and focused oxlint; npm run
+          typecheck; npm test -- --fresh; three executable lifecycle probes for resistant
+          descendants, sequential stop idempotency with retained active ownership, and rejected ACP
+          initialization with a SIGTERM-resistant child. Claims verified: the cycle-4 durable-tuple
+          selection and separate global startup/idempotency annotations are present, and normal
+          cleanup now waits for leader exit; the descendant probe shows that claim is incomplete at
+          process-group scope. Categories searched: correctness, process identity, spawn/stop races,
+          repeated/concurrent controls, failure recovery, error propagation, test quality and AC
+          coverage, integration, and security/data exposure. Findings: four blocker threads; no
+          source-scanning tests; no shared/package guidance surfaces changed."
+        created_at: 2026-07-15T18:21:02.919Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-15T18:01:35.563Z
-updated_at: 2026-07-15T18:20:35.628Z
+updated_at: 2026-07-15T18:21:02.919Z
 notes: []
