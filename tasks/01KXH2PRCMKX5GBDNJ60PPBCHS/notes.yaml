@@ -80,3 +80,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T15:14:34.682Z
+  - _ulid: 01KXK5WW0GA0P60GE4S3KYBGE7
+    content: "Fix cycle 2 approach: add behavioral regressions for (1) a failed second ownership
+      publication while another invocation for the same agent remains active, proving active_count
+      stays unchanged, and (2) missing and corrupt active-session metadata during global/task stop,
+      proving stopped authority plus durable failed cleanup with no signal and no success.
+      Production changes will distinguish admitted creation from published active ownership, and
+      materialize unreadable active-session candidates as unsignalled cleanup failures rather than
+      skipping them. Re-verify all stop ACs and full project gates before resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T15:21:32.944Z
