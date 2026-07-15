@@ -178,6 +178,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-15T15:14:31.850Z
+  - _ulid: 01KXK7TKTPVW8T60RAYAFJCMBY
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXK5EJZ6K2G0BR9745QXAHX2
+    timestamp: 2026-07-15T15:55:16.182Z
 examined_commit: 676182f47b0680e3e8a60d8ab068fafe4fc0a4a1
 external_links: []
 lifecycle_state: closed
@@ -211,6 +217,12 @@ threads:
           ownership was actually published, and add a behavioral test with another active
           invocation.
         created_at: 2026-07-15T15:13:44.935Z
+      - _ulid: 01KXK7TKJC6CRQ6H65YP7JSH4A
+        author: Jacob Chapel
+        body: "Fixed in 251aa4437d: final active-count cleanup is now gated by successful ownership
+          publication, not admission. Added a two-invocation behavioral regression where the second
+          agent.dispatched write fails and the first remains reported active."
+        created_at: 2026-07-15T15:55:15.915Z
     kind: blocker
   - _ulid: 01KXK5ERAP4K75MGT83Y4NSKY4
     anchor:
@@ -263,5 +275,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T15:14:31.849Z
 created_at: 2026-07-15T14:57:18.810Z
-updated_at: 2026-07-15T15:14:31.850Z
+updated_at: 2026-07-15T15:55:15.915Z
 notes: []
