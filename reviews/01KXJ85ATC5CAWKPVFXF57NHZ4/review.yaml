@@ -106,6 +106,109 @@ checks:
     runner: git diff --check
     created_at: 2026-07-15T06:59:49.533Z
     completed_at: 2026-07-15T06:59:49.533Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1044 checked files matched formatting; exit 0.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T07:00:41.782Z
+    completed_at: 2026-07-15T07:00:41.782Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint exited 0 with 0 errors and 702 baseline warnings; focused oxlint on all 7
+      changed TypeScript/test files found 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T07:00:44.826Z
+    completed_at: 2026-07-15T07:00:44.826Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings and 0 errors across all 7 changed TypeScript/test files.
+    name: focused-lint
+    required: false
+    runner: npx oxlint changed files
+    created_at: 2026-07-15T07:00:47.762Z
+    completed_at: 2026-07-15T07:00:47.762Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed; exit 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T07:00:50.774Z
+    completed_at: 2026-07-15T07:00:50.774Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Forced uncached run: 2796/2796 suites passed; 10,631 tests passed and 3
+      repository-skipped; exit 0."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T07:00:53.756Z
+    completed_at: 2026-07-15T07:00:53.756Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 50/50 suites and 215/215 focused lifecycle/store/engine/bootstrap tests passed; exit 0.
+    name: focused lifecycle tests
+    required: false
+    runner: npm test -- --fresh focused lifecycle files
+    created_at: 2026-07-15T07:00:56.684Z
+    completed_at: 2026-07-15T07:00:56.684Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok exited 0 with 6 repository baseline warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T07:00:59.660Z
+    completed_at: 2026-07-15T07:00:59.660Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok exited 0 with repository baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T07:01:02.862Z
+    completed_at: 2026-07-15T07:01:02.862Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok exited 0 with repository baseline warnings;
+      all 16 task-owned AC annotations were located and semantically inspected.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T07:01:07.235Z
+    completed_at: 2026-07-15T07:01:07.235Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base-to-head diff check passed; exit 0.
+    name: diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-15T07:01:10.354Z
+    completed_at: 2026-07-15T07:01:10.354Z
 events:
   - _ulid: 01KXJ85ATCFP4PJE4KJ0H6G298
     actor: Jacob Chapel
@@ -220,6 +323,76 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-15T06:59:58.982Z
+  - _ulid: 01KXJ97SD8J222AW454JY8A7AS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T07:00:42.024Z
+  - _ulid: 01KXJ97WC6QD3DC0PRS0P3R54E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T07:00:45.062Z
+  - _ulid: 01KXJ97Z822DNWZ0BFHE7WC95H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-15T07:00:48.002Z
+  - _ulid: 01KXJ9825Y1ZG4KGHK9WQJ7E4B
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T07:00:51.006Z
+  - _ulid: 01KXJ9852QARGCFWC79AMY07GB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T07:00:53.976Z
+  - _ulid: 01KXJ987YE6WBQT6XPH84Y5V4G
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-15T07:00:56.910Z
+  - _ulid: 01KXJ98AVQNS3J3MJBJCQAYPWJ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T07:00:59.895Z
+  - _ulid: 01KXJ98E0N1JW02CFRAHHTF2DH
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T07:01:03.125Z
+  - _ulid: 01KXJ98J8CW8401B1DR18R238K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T07:01:07.468Z
+  - _ulid: 01KXJ98NAYM9VFDK6JVCXWXJJS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-15T07:01:10.622Z
 examined_commit: b0a8a2e844526cf3cdf5ba9d85c596f1d6ac9b5f
 external_links: []
 lifecycle_state: closed
@@ -282,5 +455,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T06:59:58.982Z
 created_at: 2026-07-15T06:41:52.972Z
-updated_at: 2026-07-15T06:59:58.982Z
+updated_at: 2026-07-15T07:01:10.354Z
 notes: []
