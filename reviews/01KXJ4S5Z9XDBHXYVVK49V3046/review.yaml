@@ -338,6 +338,34 @@ events:
       status: pass
       name: diff check
     timestamp: 2026-07-15T06:01:47.695Z
+  - _ulid: 01KXJ5WRXEHX8C9CACPC1SQR6R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJ5WRNCGS76JTYHQQ07CB60
+    timestamp: 2026-07-15T06:02:15.342Z
+  - _ulid: 01KXJ5WW29VSE38VZJH91XSECM
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJ5WVTVEE4ADSYEG2SXY2Q2
+    timestamp: 2026-07-15T06:02:18.569Z
+  - _ulid: 01KXJ5WZ856KYZETKEMKE8MY9M
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJ5WYZR43JCD4PM2ZG2HH77
+    timestamp: 2026-07-15T06:02:21.829Z
+  - _ulid: 01KXJ5X2F6THCM08V41R32RSGV
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXJ5X26J3KDW2TRMA008E71D
+    timestamp: 2026-07-15T06:02:25.126Z
 examined_commit: 083c00449470af0010a00d01db548583b51e03d9
 external_links: []
 lifecycle_state: closed
@@ -437,6 +465,95 @@ threads:
           guidance surfaces were not touched, so neutrality checks were not applicable."
         created_at: 2026-07-15T06:01:03.522Z
     kind: nit
+  - _ulid: 01KXJ5WRNCGS76JTYHQQ07CB60
+    anchor:
+      type: code
+      commit: 083c00449470af0010a00d01db548583b51e03d9
+      line_end: 159
+      line_start: 144
+      path: tests/dispatch-global-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJ5WRNC4ZRBEXTHB20R3AG5
+        author: Jacob Chapel
+        body: "MUST-FIX — The lifecycle harness disables both reconciliation and coalescing and replaces
+          `_spawnInvocation` with a recorder, while the suite exercises only bootstrap and one
+          prune/dequeue barrier. The task explicitly requires the global transition matrix at the
+          enqueue, coalesced-expiry, dequeue/retry, reconcile, post-invocation, and
+          degraded-recovery barriers, including stopped/idle separately from stopped cleanup; there
+          are also no behavioral cases for paused→start or stopped/idle→pause|resume invalid
+          transitions. Impact: regressions in those task-owned ingress paths and matrix cells can
+          pass this green suite. Evidence: `reconcileIntervalMs: 0` and `coalesceWindowMs: 0` here,
+          plus a repository search found no other lifecycle-authority tests for those
+          barriers/matrix cells. Add deterministic behavioral barrier/matrix coverage required by
+          the task handoff."
+        created_at: 2026-07-15T06:02:15.084Z
+    kind: blocker
+  - _ulid: 01KXJ5WVTVEE4ADSYEG2SXY2Q2
+    anchor:
+      type: code
+      commit: 083c00449470af0010a00d01db548583b51e03d9
+      line_end: 400
+      line_start: 369
+      path: tests/dispatch-global-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJ5WVTVKTEYKSKKSE79TRZ2
+        author: Jacob Chapel
+        body: "MUST-FIX — This is the only test annotated for
+          `ac-stopped-reconstruction-uses-current-state`, but it never changes authoritative
+          task/rule state or makes the stopped in-memory queue stale/lost. The same pending task
+          exists before and after start, and its task cleanup keeps it held, so the assertions would
+          still pass if start reused the stale bootstrap queue and never reconstructed current
+          candidates. Impact: the stopped current-state reconstruction AC can regress undetected.
+          Evidence: AC annotation search finds only this case, and lines 374–400 perform no
+          task/rule mutation between stopped bootstrap and start. Add a behavioral stopped case that
+          changes current authoritative eligibility/rules or explicitly loses stale in-memory
+          scheduling data and proves only the current canonical candidate is started."
+        created_at: 2026-07-15T06:02:18.331Z
+    kind: blocker
+  - _ulid: 01KXJ5WYZR43JCD4PM2ZG2HH77
+    anchor:
+      type: code
+      commit: 083c00449470af0010a00d01db548583b51e03d9
+      line_end: 395
+      line_start: 383
+      path: tests/dispatch-global-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJ5WYZR74BDAMYYZNTH4JP2
+        author: Jacob Chapel
+        body: "MUST-FIX — The test annotated for `ac-controls-do-not-change-degraded-targets` snapshots an
+          empty degraded-target collection; no degraded target is created before the lifecycle
+          transition. Equality of empty-before and empty-after cannot detect code that clears or
+          mutates existing degraded state, so the test does not satisfy the AC Given condition.
+          Impact: lifecycle controls could erase real degraded-target evidence without a failing
+          test. Evidence: `beforeDegraded` is read directly from a fresh harness and no
+          `_enterDegradedState` or equivalent setup occurs anywhere in this suite. Seed a non-empty
+          degraded target with stable reason/timestamp, apply the lifecycle action, and deep-compare
+          it afterward."
+        created_at: 2026-07-15T06:02:21.560Z
+    kind: blocker
+  - _ulid: 01KXJ5X26J3KDW2TRMA008E71D
+    entries:
+      - _ulid: 01KXJ5X26JJMXHAK12ERPB0QNT
+        author: Jacob Chapel
+        body: "Review evidence log (informational; no worker action requested). Files read:
+          src/agent-runtime/bootstrap.ts, dispatch-control-store.ts, dispatch.ts,
+          schema/store/scheduler surrounding context; all changed tests and the new
+          dispatch-global-lifecycle test; task/spec/plan and prior review. Commands run: full
+          base-to-head and fix-cycle diffs, task/item/plan/review lookups, AC annotation searches,
+          focused source/context reads, git diff --check, focused oxlint, format, repo lint,
+          typecheck, uncached full npm test, and all three kspec validation modes. Claims verified:
+          both prior race fixes, committed stopped authority winning over stale pause, pause winning
+          across the active drain barrier, no-write idempotent mutation, and the worker full-suite
+          claim (current count 10,621 passed). Categories searched: correctness/concurrency,
+          lifecycle matrix and edge cases, error/transition handling, security/input sanitization,
+          test quality/AC proof, and scheduler/store integration. Findings: three test-coverage
+          blockers above; no additional production-code finding after a second pass. Shared/package
+          guidance surfaces were not touched, so neutrality checks were not applicable."
+        created_at: 2026-07-15T06:02:24.850Z
+    kind: nit
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -446,5 +563,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T06:01:06.959Z
 created_at: 2026-07-15T05:42:49.065Z
-updated_at: 2026-07-15T06:01:47.440Z
+updated_at: 2026-07-15T06:02:24.850Z
 notes: []
