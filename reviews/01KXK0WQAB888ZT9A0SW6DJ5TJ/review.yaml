@@ -1,0 +1,26 @@
+_ulid: 01KXK0WQAB888ZT9A0SW6DJ5TJ
+slugs: []
+title: Review verify committed publication and admission boundaries
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXK0WQA7CHGDM5ZKF5MFRSX3
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-15T13:54:05.255Z
+examined_commit: 7a9cd4210598526f56874770c264c7edf86b49ee
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PWH4C8T1X1BWHN9FWWDR"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-15T13:54:05.259Z
+updated_at: null
+notes: []
