@@ -36,7 +36,7 @@ export interface DispatchControlStoreOptions {
 
 export type DispatchControlMutation = (
   current: DispatchControl,
-) => DispatchControl | Promise<DispatchControl>;
+) => DispatchControl | null | Promise<DispatchControl | null>;
 
 /** Minimal committed-authority contract consumed by the dispatch engine. */
 export interface DispatchLifecycleAuthorityStore {
@@ -199,7 +199,16 @@ export class DispatchControlStore {
                 "Committed dispatch control revision diverges from the verified publication",
               );
             }
-            const proposed = DispatchControlSchema.parse(await mutation(current));
+            const mutationResult = await mutation(current);
+            if (mutationResult === null) {
+              this.publish(current, ctx.pre_head);
+              return {
+                validatedSnapshot: current,
+                revision: current.revision,
+                commit_oid: ctx.pre_head,
+              };
+            }
+            const proposed = DispatchControlSchema.parse(mutationResult);
             if (proposed.revision <= current.revision) {
               throw new Error("Dispatch control revision must increase monotonically");
             }

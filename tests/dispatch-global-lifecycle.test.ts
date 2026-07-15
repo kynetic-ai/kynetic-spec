@@ -28,10 +28,12 @@ const liveHarnesses: Array<Awaited<ReturnType<typeof createGlobalLifecycleHarnes
 
 class MemoryControlStore implements DispatchLifecycleAuthorityStore {
   private publication: DispatchControlPublication;
+  private committedSnapshot: DispatchControl;
   private listener: ((publication: DispatchControlPublication) => void) | undefined;
   writes = 0;
 
   constructor(snapshot: DispatchControl) {
+    this.committedSnapshot = snapshot;
     this.publication = { snapshot, token: { revision: snapshot.revision, commit_oid: "memory" } };
   }
 
@@ -56,8 +58,19 @@ class MemoryControlStore implements DispatchLifecycleAuthorityStore {
   }
 
   async mutate(_operation: string, mutation: DispatchControlMutation) {
-    const snapshot = await mutation(structuredClone(this.publication.snapshot));
+    let snapshot: DispatchControl | null;
+    try {
+      snapshot = await mutation(structuredClone(this.committedSnapshot));
+    } catch (error) {
+      this.publish(this.committedSnapshot);
+      throw error;
+    }
+    if (snapshot === null) {
+      this.publish(this.committedSnapshot);
+      return this.publication;
+    }
     this.writes++;
+    this.committedSnapshot = snapshot;
     this.publication = {
       snapshot,
       token: { revision: snapshot.revision, commit_oid: `memory-${snapshot.revision}` },
@@ -67,11 +80,16 @@ class MemoryControlStore implements DispatchLifecycleAuthorityStore {
   }
 
   publish(snapshot: DispatchControl) {
+    this.committedSnapshot = snapshot;
     this.publication = {
       snapshot,
       token: { revision: snapshot.revision, commit_oid: `external-${snapshot.revision}` },
     };
     this.listener?.(this.publication);
+  }
+
+  commitWithoutPublishing(snapshot: DispatchControl) {
+    this.committedSnapshot = snapshot;
   }
 }
 
@@ -234,6 +252,47 @@ describe("global dispatch lifecycle authority", () => {
       source: "cli",
     });
     await harness.engine.stop();
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-global-paused-work-does-not-start
+  it("does not dequeue a candidate after pause commits across an active drain barrier", async () => {
+    const harness = await createGlobalLifecycleHarness("running");
+    const barrier = holdIngress();
+    const internal = harness.engine as unknown as {
+      _pruneIneligibleQueueEntries: (...args: unknown[]) => Promise<void>;
+    };
+    const prune = internal._pruneIneligibleQueueEntries.bind(harness.engine);
+    vi.spyOn(internal, "_pruneIneligibleQueueEntries").mockImplementationOnce(async (...args) => {
+      await barrier.wait();
+      await prune(...args);
+    });
+
+    const starting = harness.engine.start();
+    await vi.waitFor(() => expect(internal._pruneIneligibleQueueEntries).toHaveBeenCalledOnce());
+    harness.store.publish(control("paused", 2));
+    barrier.release();
+    await starting;
+
+    expect(harness.engine.getLifecycleStatus()).toMatchObject({
+      globalAuthority: "paused",
+      heldCount: 1,
+    });
+    expect(recordCandidateStart(harness)).toEqual([]);
+    await harness.engine.stop();
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-global-pause-authority
+  it("evaluates pause against newer committed authority instead of stale publication", async () => {
+    const harness = await createGlobalLifecycleHarness("running");
+    harness.store.commitWithoutPublishing(control("stopped", 2));
+
+    await expect(harness.engine.applyGlobalLifecycleAction("pause")).rejects.toBeInstanceOf(
+      DispatchLifecycleTransitionError,
+    );
+
+    expect(harness.store.writes).toBe(0);
+    expect(harness.store.getPublication().snapshot.global.authority).toBe("stopped");
+    expect(harness.engine.getLifecycleStatus().globalAuthority).toBe("stopped");
   });
 
   // AC: @dispatch-lifecycle-control-authority ac-resume-reconciles-held-work

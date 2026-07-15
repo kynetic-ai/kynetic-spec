@@ -1467,45 +1467,56 @@ export class DispatchEngine {
       if (!this.lifecycleStore) {
         throw new Error("Global lifecycle controls require a shadow dispatch-control store");
       }
-      const current = this.lifecyclePublication.snapshot;
-      const globalCleanup = projectDispatchCleanupState(current, { scope: "global" });
-      if (globalCleanup.entries.length > 0) {
-        throw new DispatchLifecycleTransitionError(
-          `Cannot ${action} global dispatch while global cleanup is ${globalCleanup.status}`,
-        );
-      }
-
-      const authority = current.global.authority;
-      const next = this._resolveGlobalTransition(authority, action);
-      if (next === authority) {
-        return { outcome: "noop", authority };
-      }
-
+      const publishedAuthority = this.lifecyclePublication.snapshot.global.authority;
+      let result: GlobalLifecycleActionResult | undefined;
       this.localLifecycleMutation = true;
       try {
         const timestamp = new Date().toISOString();
         const reason = this._sanitizeLifecycleText(context.reason ?? "operator request", 240);
         const actor = this._sanitizeLifecycleText(context.actor ?? "dispatch-engine", 120);
-        await this.lifecycleStore.mutate(`dispatch-global-${action}`, (snapshot) => ({
-          ...snapshot,
-          revision: snapshot.revision + 1,
-          global: {
-            authority: next,
-            reason,
-            actor,
-            source: context.source ?? "api",
-            controlled_at: timestamp,
-            updated_at: timestamp,
-          },
-        }));
+        await this.lifecycleStore.mutate(`dispatch-global-${action}`, (snapshot) => {
+          const globalCleanup = projectDispatchCleanupState(snapshot, { scope: "global" });
+          if (globalCleanup.entries.length > 0) {
+            throw new DispatchLifecycleTransitionError(
+              `Cannot ${action} global dispatch while global cleanup is ${globalCleanup.status}`,
+            );
+          }
+
+          const authority = snapshot.global.authority;
+          const next = this._resolveGlobalTransition(authority, action);
+          if (next === authority) {
+            result = { outcome: "noop", authority };
+            return null;
+          }
+
+          result = { outcome: "applied", authority: next };
+          return {
+            ...snapshot,
+            revision: snapshot.revision + 1,
+            global: {
+              authority: next,
+              reason,
+              actor,
+              source: context.source ?? "api",
+              controlled_at: timestamp,
+              updated_at: timestamp,
+            },
+          };
+        });
       } finally {
         this.localLifecycleMutation = false;
       }
 
-      if (next === "running") {
+      if (!result) {
+        throw new Error("Dispatch lifecycle mutation completed without a transition result");
+      }
+      if (
+        result.authority === "running" &&
+        (result.outcome === "applied" || publishedAuthority !== "running")
+      ) {
         await this._reconstructCurrentCandidates();
       }
-      return { outcome: "applied", authority: next };
+      return result;
     });
   }
 
@@ -2569,12 +2580,13 @@ export class DispatchEngine {
     }
 
     await this._pruneIneligibleQueueEntries(agents, currentTasks, currentTaskStates);
+    if (!this.running || !this._globalSchedulingPermitted()) return;
 
     const taskLookup = new Map((currentTasks ?? []).map((task) => [task._ulid, task]));
     const deferredEntries = new Map<string, QueueEntry[]>();
     const targetCache = new Map<string, string>();
 
-    while (this.running) {
+    while (this.running && this._globalSchedulingPermitted()) {
       const candidate = this._selectNextCandidate(agents);
       if (!candidate) {
         break;
@@ -2595,6 +2607,12 @@ export class DispatchEngine {
         taskLookup,
         targetCache,
       );
+      if (!this.running || !this._globalSchedulingPermitted()) {
+        const deferredQueue = deferredEntries.get(candidate.agent.id) ?? [];
+        deferredQueue.push(entry);
+        deferredEntries.set(candidate.agent.id, deferredQueue);
+        break;
+      }
       if (this._degradedTargets.has(targetBranch)) {
         console.log(
           `[dispatch] Deferring ${entry.change.taskRef} because integration target "${targetBranch}" is degraded.`,

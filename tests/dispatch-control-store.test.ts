@@ -434,6 +434,19 @@ describe("DispatchControlStore committed publication", () => {
     expect(harness.store.getPublication()).toEqual(publication);
   });
 
+  it("returns the committed publication without writing when a mutation resolves to no change", async () => {
+    const harness = await createDispatchControlStoreHarness(control(4, "running"));
+    cleanupDirs.push(harness.projectDir);
+    const before = harness.store.getPublication();
+    const beforeHead = git(harness.specDir, "rev-parse", "HEAD");
+
+    const publication = await harness.store.mutate("running-noop", () => null);
+
+    expect(publication).toEqual(before);
+    expect(git(harness.specDir, "rev-parse", "HEAD")).toBe(beforeHead);
+    expect(git(harness.specDir, "status", "--porcelain")).toBe("");
+  });
+
   // AC: @dispatch-lifecycle-control-authority ac-invalid-control-is-not-visible
   it("retains the verified publication and degrades on malformed committed data", async () => {
     const harness = await createDispatchControlStoreHarness();
