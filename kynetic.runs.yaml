@@ -77825,7 +77825,7 @@ runs:
     started_at: 2026-07-14T21:55:40.700Z
     completed_at: 2026-07-14T21:59:02.104Z
   - _ulid: 01KXHQ507YTCYTV85S0HHF97VE
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -77860,7 +77860,11 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-07-15T01:47:03.759Z
-        completed_at: 2026-07-15T01:47:03.759Z
+        completed_at: 2026-07-15T01:47:20.692Z
+        notes: "Captured success observation @01KXHQ9T. No duplicate friction items created:
+          reference-validation blockage remains covered by @01KXHNHD and workflow show/run inference
+          by @01KKBD52 plus existing records."
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T01:44:36.350Z
+    completed_at: 2026-07-15T01:47:20.692Z
