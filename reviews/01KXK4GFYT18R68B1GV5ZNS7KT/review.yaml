@@ -162,9 +162,25 @@ events:
       kind: nit
       thread_ulid: 01KXK5F8Y3J0SC498CRJKYZAC3
     timestamp: 2026-07-15T15:14:07.705Z
+  - _ulid: 01KXK5G0S9MNWQ686W4YZ240BK
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-15T15:14:31.850Z
+  - _ulid: 01KXK5G0SAVHJH635N0KEZTT4W
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-15T15:14:31.850Z
 examined_commit: 676182f47b0680e3e8a60d8ab068fafe4fc0a4a1
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -238,7 +254,14 @@ threads:
           neutrality/render checks are not applicable."
         created_at: 2026-07-15T15:14:07.427Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-15T15:14:31.849Z
 created_at: 2026-07-15T14:57:18.810Z
-updated_at: 2026-07-15T15:14:07.427Z
+updated_at: 2026-07-15T15:14:31.850Z
 notes: []

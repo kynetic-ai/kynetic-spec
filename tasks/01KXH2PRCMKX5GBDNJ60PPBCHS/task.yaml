@@ -167,7 +167,7 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: needs_work
 blocked_by: []
 depends_on:
   - "@task-final-pre-spawn-control-gate"
@@ -187,7 +187,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-engine-stop-recovery/01kxh2pr
-session_id: 01KXK0QVP8VH78M34M6JMH7D2A
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -293,6 +293,16 @@ history:
         previous: "@01KXJZ6MPPENNCEWXR74P50F2S"
     command: review-link
     timestamp: 2026-07-15T14:57:22.685Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: needs_work
+        previous: pending_review
+      session_id:
+        new: null
+        previous: 01KXK0QVP8VH78M34M6JMH7D2A
+    command: review-verdict-needs-work
+    timestamp: 2026-07-15T15:14:34.683Z
 created_at: 2026-07-14T19:47:18.036Z
 started_at: 2026-07-15T13:52:34.073Z
 submitted_at: 2026-07-15T14:38:11.780Z
