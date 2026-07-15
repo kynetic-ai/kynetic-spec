@@ -29701,7 +29701,7 @@ reviews:
     title: Review verified stop recovery
     disposition: pending
     author: Jacob Chapel
-    check_count: 4
+    check_count: 5
     examined_commit: 676182f47b0680e3e8a60d8ab068fafe4fc0a4a1
     lifecycle_state: open
     related_refs: []
@@ -29714,7 +29714,7 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-15T14:57:18.810Z
-    updated_at: 2026-07-15T15:12:04.838Z
+    updated_at: 2026-07-15T15:12:10.729Z
   - _ulid: 01KXK5A69866AVMAND546P45F1
     slugs: []
     title: "Review: stabilize daemon command API overlap timing test"
