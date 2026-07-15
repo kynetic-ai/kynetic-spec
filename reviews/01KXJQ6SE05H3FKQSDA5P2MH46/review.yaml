@@ -210,6 +210,12 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-15T11:22:31.733Z
+  - _ulid: 01KXJTFQX5GFCB5ST5RBHVEDQH
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJR70G3KX08ERX42ACSCFVX
+    timestamp: 2026-07-15T12:02:08.422Z
 examined_commit: 3d1318853ad804fec1fc61d256c036851b77c0a2
 external_links: []
 lifecycle_state: closed
@@ -240,6 +246,12 @@ threads:
           even though control committed before actual creation. Keep one decision, but make the
           common adjacent pre-artifact hook the point that wins the lifecycle ordering."
         created_at: 2026-07-15T11:22:25.155Z
+      - _ulid: 01KXJTFQNHS8BNRSYT3GVZGAE8
+        author: Jacob Chapel
+        body: "Fixed in b11cce869a: removed the eager dispatch-side beforeCreate call. The sole memoized
+          lifecycleMutex decision now runs only from runInvocation's adjacent pre-artifact hook
+          after runner loading, executable preflight, and prompt construction."
+        created_at: 2026-07-15T12:02:08.177Z
     kind: blocker
   - _ulid: 01KXJR73J9ASXFXF92V1GF14GK
     anchor:
@@ -271,5 +283,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T11:22:31.733Z
 created_at: 2026-07-15T11:04:49.344Z
-updated_at: 2026-07-15T11:22:31.733Z
+updated_at: 2026-07-15T12:02:08.177Z
 notes: []
