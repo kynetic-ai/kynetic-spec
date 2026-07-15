@@ -4735,4 +4735,21 @@ describe("ProjectEntityCache", () => {
       }
     });
   });
+
+  describe("dispatch control committed publication", () => {
+    it("invalidates dispatch-control and agent-status views together", () => {
+      const cache = new ProjectEntityCache(projectA);
+      expect(cache.getDispatchControlPublicationVersions()).toEqual({
+        dispatchControl: 0,
+        agentStatus: 0,
+      });
+
+      cache.invalidateDispatchControlPublication();
+
+      expect(cache.getDispatchControlPublicationVersions()).toEqual({
+        dispatchControl: 1,
+        agentStatus: 1,
+      });
+    });
+  });
 });
