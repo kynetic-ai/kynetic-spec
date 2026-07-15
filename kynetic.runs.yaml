@@ -77957,9 +77957,23 @@ runs:
     completed_at: 2026-07-15T04:04:32.035Z
   - _ulid: 01KXJ0A2KQ2RDSF4RXTB6PMEMZ
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T04:24:39.799Z
+        completed_at: 2026-07-15T04:25:18.175Z
+        notes: "Worked well: the per-cycle kspec review record kept the prior blocker and fix history
+          explicit; reading the diff before task notes exposed the equal-revision risk
+          independently; behavioral temp-Git tests made publication/rollback races directly
+          verifiable; the detached merge helper safely advanced the plan branch without mutating the
+          review snapshot; batching nine review checks produced one atomic audit update; a fresh
+          full-suite run independently confirmed the worker claim."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T04:25:18.175Z
+        completed_at: 2026-07-15T04:25:18.175Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T04:24:39.799Z
