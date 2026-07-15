@@ -77957,7 +77957,7 @@ runs:
     completed_at: 2026-07-15T04:04:32.035Z
   - _ulid: 01KXJ0A2KQ2RDSF4RXTB6PMEMZ
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77973,7 +77973,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T04:25:18.175Z
-        completed_at: 2026-07-15T04:25:18.175Z
+        completed_at: 2026-07-15T04:25:41.115Z
+        notes: "Friction: (1) review history lookup appears task-reference-form sensitive: after cycle 2
+          used the canonical ULID subject, kspec review for-task returned only that cycle and
+          omitted cycle 1 created against the task slug, weakening the promised per-cycle history
+          view; (2) the reflection guidance says kspec workflow show without a run ref, but the CLI
+          requires one, causing an avoidable failed lookup; (3) npm test -- --fresh emitted
+          per-suite progress despite project guidance describing condensed success output, creating
+          a long, noisy reviewer wait loop. Also observed but not yet considered capture-worthy:
+          batch required:false did not express --no-required, so two intended optional checks became
+          required."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T04:25:41.115Z
+        completed_at: 2026-07-15T04:25:41.115Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T04:24:39.799Z
