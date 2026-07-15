@@ -176,6 +176,13 @@ events:
       status: pass
       name: diff hygiene
     timestamp: 2026-07-15T19:23:33.356Z
+  - _ulid: 01KXKKRR5SA4NQ7GQ78HCJY3N5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKKRQXR9QGV1E2F7ZSZ5HCN
+    timestamp: 2026-07-15T19:23:58.009Z
 examined_commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
 external_links: []
 lifecycle_state: open
@@ -185,8 +192,29 @@ subject:
   content_hash: ""
   ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXKKRQXR9QGV1E2F7ZSZ5HCN
+    anchor:
+      type: code
+      commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
+      line_end: 1888
+      line_start: 1886
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXKKRQXRPSWZMVBG88J7R363
+        author: Jacob Chapel
+        body: "MUST-FIX: retained ownership is discarded as soon as the session status becomes non-active,
+          even when dispatch_ownership.exited_at is absent. runInvocation closes the session before
+          its finally block reaps the process group and persists exited_at, so a real completion
+          window exists where the group remains live. A behavioral probe closed the session while
+          leaving verified process evidence live; global stop returned applied, emitted no signal,
+          and reported idle cleanup. This violates ac-live-group-prevents-cleanup-completion and the
+          no-false-success stop contract. The submitted late-child regression writes exited_at
+          before closing and therefore does not model runtime ordering."
+        created_at: 2026-07-15T19:23:57.752Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-15T19:01:23.457Z
-updated_at: 2026-07-15T19:23:33.103Z
+updated_at: 2026-07-15T19:23:57.752Z
 notes: []
