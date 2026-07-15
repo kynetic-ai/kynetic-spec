@@ -78960,7 +78960,7 @@ runs:
     completed_at: 2026-07-15T13:50:09.013Z
   - _ulid: 01KXK24TDFPAZB446VVFAQM9M7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78975,7 +78975,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T14:16:59.310Z
-        completed_at: 2026-07-15T14:16:59.310Z
+        completed_at: 2026-07-15T14:17:15.992Z
+        notes: "Friction candidates: (1) the mandatory fresh full suite took 2,642.5 seconds after the
+          67-test focused gate, making review feedback very slow even though all tests passed; (2)
+          reflection guidance says  without a run ref, while the installed CLI requires one; (3)
+          bulk review-check recording produced no immediate confirmation, and retrying individual
+          writes created duplicate passing check rows. The accidental duplicate draft review was
+          archived and treated as a one-off operator mistake, not systemic friction."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T14:17:15.992Z
+        completed_at: 2026-07-15T14:17:15.992Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T14:15:59.151Z
