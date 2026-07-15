@@ -10,3 +10,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T14:48:42.690Z
+  - _ulid: 01KXK4XN8JP6G8PPDCWTCKE32W
+    content: "Implemented deterministic overlap coverage in tests/daemon-command-api.test.ts. The new
+      gated action helper blocks both cache-backed reads until the test observes two entered
+      handlers, proving overlap without comparing wall-clock duration; cleanup always releases and
+      awaits requests. Verification: focused file passed 5 consecutive fresh runs (46 tests each);
+      full fresh suite passed 10,581 tests with 3 skipped; format, repo/focused lint, typecheck,
+      refs, alignment, and completeness gates passed (existing warning baselines only)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T15:04:30.226Z
