@@ -23787,6 +23787,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-15T01:47:13.843Z
+  - _ulid: 01KXHXXDD6T7M9MVJ5KZBJD1PV
+    type: success
+    content: During review of @task-dispatch-control-persistence, an isolated temporary-repository
+      behavioral probe exercised the equal-revision/divergent-control-content boundary and
+      reproduced stale-authority overwrite even though all 10,606 tests passed. Executable
+      adversarial probes are an effective review technique for persistence and concurrency
+      invariants that ordinary happy-path suites may miss.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-15T03:42:47.718Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
