@@ -78764,7 +78764,7 @@ runs:
     completed_at: 2026-07-15T11:29:52.562Z
   - _ulid: 01KXJTHMKQRMS0SD84WE84KQH9
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78778,7 +78778,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T12:04:59.267Z
-        completed_at: 2026-07-15T12:04:59.267Z
+        completed_at: 2026-07-15T12:05:03.707Z
+        notes: "Friction: runInvocation test doubles are distributed across many dispatch suites and do not
+          share a helper that preserves invocation lifecycle hooks. Moving admission to its correct
+          boundary therefore caused seven failures across five suites, each requiring a local mock
+          repair. The first fresh full suite took about 40 minutes before presenting the
+          consolidated failures."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T12:05:03.707Z
+        completed_at: 2026-07-15T12:05:03.707Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T12:03:10.583Z
