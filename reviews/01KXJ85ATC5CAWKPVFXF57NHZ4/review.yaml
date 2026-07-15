@@ -393,6 +393,29 @@ events:
       status: pass
       name: diff check
     timestamp: 2026-07-15T07:01:10.622Z
+  - _ulid: 01KXJ99H4WRFB5YR8T3J6XDS48
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJ99GAG9QDQBSTV6ZJ9GB4Y
+    timestamp: 2026-07-15T07:01:39.100Z
+  - _ulid: 01KXJ99NT7N137K47PSJE8QQH7
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXJ99N9VBD9EGKBBRSD5W0C8
+    timestamp: 2026-07-15T07:01:43.880Z
+  - _ulid: 01KXJ99SWYFH00T6TGTH69ZY1N
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-15T07:01:48.062Z
 examined_commit: b0a8a2e844526cf3cdf5ba9d85c596f1d6ac9b5f
 external_links: []
 lifecycle_state: closed
@@ -446,6 +469,49 @@ threads:
           were not applicable."
         created_at: 2026-07-15T06:59:55.713Z
     kind: nit
+  - _ulid: 01KXJ99GAG9QDQBSTV6ZJ9GB4Y
+    anchor:
+      type: code
+      commit: b0a8a2e844526cf3cdf5ba9d85c596f1d6ac9b5f
+      line_end: 4159
+      line_start: 4155
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXJ99GAGJXRW26T25W0M4YMH
+        author: Jacob Chapel
+        body: "MUST-FIX — External paused/stopped-to-running publication reconstruction is launched with a
+          void expression and no rejection handler. If _reconstructCurrentCandidates() fails while
+          loading current tasks/meta or draining, the rejection escapes the synchronous store
+          listener and terminates Node as an unhandled rejection. Evidence: an exact tsx
+          reproduction constructed the engine with a lifecycle store, published paused then running,
+          forced _reconstructCurrentCandidates() to reject, and the process exited 1 with the stack
+          at dispatch.ts:4157 and Mutex.runExclusive. Impact: a valid externally committed
+          resume/start can crash the dispatch daemon instead of containing and reporting a
+          reconstruction failure. Track/handle this promise with deterministic error reporting and
+          add a behavioral regression that forces reconstruction failure on an external running
+          publication."
+        created_at: 2026-07-15T07:01:38.256Z
+    kind: blocker
+  - _ulid: 01KXJ99N9VBD9EGKBBRSD5W0C8
+    entries:
+      - _ulid: 01KXJ99N9W91DXWHP9R3F25EF5
+        author: Jacob Chapel
+        body: "Review evidence log (informational; no separate worker action). Files read: every changed
+          production/test file; surrounding scheduler, queue, invocation, store, bootstrap, schema,
+          task/spec/plan, and both prior reviews. Commands run: complete base-to-head and fix-cycle
+          diffs, task/item/plan/review lookups, AC annotation searches, focused source/context
+          reads, focused 215-test run, uncached full npm test, format, repo/focused lint, typecheck,
+          diff check, three kspec validation modes, and an exact external-publication rejection
+          reproduction. Claims verified: all three cycle-2 blocker fixes; committed authority
+          bootstrap; stale/current reconstruction; complete named ingress and transition coverage;
+          worker full-suite count. Categories searched: correctness/concurrency, lifecycle matrix
+          and edge cases, error handling, security/sanitization, test quality/AC proof, and
+          scheduler/store integration. Finding: one production error-path blocker above.
+          Shared/package guidance surfaces were not touched, so shared-guidance neutrality checks
+          were not applicable."
+        created_at: 2026-07-15T07:01:43.356Z
+    kind: nit
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -454,6 +520,13 @@ verdicts:
     reviewer: pr-reviewer
     role: reviewer
     created_at: 2026-07-15T06:59:58.982Z
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-15T07:01:48.062Z
 created_at: 2026-07-15T06:41:52.972Z
-updated_at: 2026-07-15T07:01:10.354Z
+updated_at: 2026-07-15T07:01:48.062Z
 notes: []
