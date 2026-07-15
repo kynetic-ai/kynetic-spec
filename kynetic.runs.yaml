@@ -77870,9 +77870,22 @@ runs:
     completed_at: 2026-07-15T01:47:20.692Z
   - _ulid: 01KXHXQA57X22HXVDZFAQ5NSB0
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T03:39:27.783Z
+        completed_at: 2026-07-15T03:42:19.579Z
+        notes: "Baseline completed: listed observations, inbox items, and tasks. Targeted searches found
+          reflection-review gating already tracked by @01KREQEJ and @01KSEEJCD; test-suite
+          performance is covered by @test-suite-perf-reliability; the current same-revision
+          dispatch-control defect is already durably tracked by review @01KXHWPKPDN1W1E8C3EZJ9BJXH
+          and task @task-dispatch-control-persistence."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T03:42:19.579Z
+        completed_at: 2026-07-15T03:42:19.579Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T03:39:27.783Z
