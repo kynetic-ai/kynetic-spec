@@ -5294,3 +5294,18 @@ inbox:
       - reflection
     added_by: Jacob Chapel
     created_at: 2026-07-15T11:28:55.116Z
+  - _ulid: 01KXKVX6289ENHFBKY8R20EASF
+    text: "Extend concurrent mutation regression coverage to session metadata writers.
+      @task-concurrent-mutation-regression-suite currently covers task, plan, inbox, and spec-item
+      APIs, but session.yaml also has whole-file read-modify-write paths: updateSessionStatus,
+      requestEndLoop, closeSession with stats, applyAutoAbandonMetadata, and dispatch ownership
+      publication. Add deterministic behavioral overlaps proving these mutations preserve each
+      other's fields and cannot erase durable exited_at/ownership evidence; reuse the shared
+      per-session mutation boundary added in @task-engine-stop-recovery and avoid wall-clock-only
+      assertions."
+    tags:
+      - reflection
+      - testing
+      - concurrency
+    added_by: Jacob Chapel
+    created_at: 2026-07-15T21:46:11.913Z
