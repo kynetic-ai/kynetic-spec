@@ -11,8 +11,8 @@ checks:
     name: format
     required: true
     runner: npm run format:check
-    created_at: 2026-07-15T06:01:05.307Z
-    completed_at: 2026-07-15T06:01:05.307Z
+    created_at: 2026-07-15T06:00:22.215Z
+    completed_at: 2026-07-15T06:00:22.215Z
   - status: pass
     applies_to_version:
       type: entity_version
@@ -22,8 +22,80 @@ checks:
     name: lint
     required: true
     runner: npm run lint -- --quiet
-    created_at: 2026-07-15T06:01:08.466Z
-    completed_at: 2026-07-15T06:01:08.466Z
+    created_at: 2026-07-15T06:00:25.608Z
+    completed_at: 2026-07-15T06:00:25.608Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings and 0 errors across all 7 changed TypeScript/test files.
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed TypeScript/test files>
+    created_at: 2026-07-15T06:00:28.815Z
+    completed_at: 2026-07-15T06:00:28.815Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and tsc --noEmit passed; exit 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T06:00:32.102Z
+    completed_at: 2026-07-15T06:00:32.102Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Forced uncached run: 2796/2796 suites passed; 10,621 tests passed and 3
+      repository-skipped; exit 0."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T06:00:35.315Z
+    completed_at: 2026-07-15T06:00:35.315Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; reference validation passed with 6 repository baseline warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-15T06:00:38.477Z
+    completed_at: 2026-07-15T06:00:38.477Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; alignment validation passed with repository baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-15T06:00:41.667Z
+    completed_at: 2026-07-15T06:00:41.667Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with repository baseline warnings. All 16 task-owned AC tokens exist, but semantic
+      inspection found the blocker coverage defects recorded on this review.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-15T06:00:44.882Z
+    completed_at: 2026-07-15T06:00:44.882Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base-to-head diff check passed; exit 0.
+    name: diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-15T06:00:48.275Z
+    completed_at: 2026-07-15T06:00:48.275Z
 events:
   - _ulid: 01KXJ4S5Z9QGADRN2VF3CATXGE
     actor: Jacob Chapel
@@ -38,31 +110,220 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T05:43:04.761Z
-  - _ulid: 01KXJ5TMS00NRW7FWQ8PH39Q8S
+  - _ulid: 01KXJ5SAQCJE3XEJC1QAMZDC0J
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: format
-    timestamp: 2026-07-15T06:01:05.568Z
-  - _ulid: 01KXJ5TQVF5RNDE0DD9YP01SY9
+    timestamp: 2026-07-15T06:00:22.508Z
+  - _ulid: 01KXJ5SDZM6PYJYDRY2TYEN4NC
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: lint
-    timestamp: 2026-07-15T06:01:08.719Z
+    timestamp: 2026-07-15T06:00:25.844Z
+  - _ulid: 01KXJ5SH4NNA4WGPNVHX5AXDAT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-15T06:00:29.077Z
+  - _ulid: 01KXJ5SMB6J01X7KFJR2VQT1HA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T06:00:32.358Z
+  - _ulid: 01KXJ5SQF97PKMPA3NWKWKG2KB
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T06:00:35.561Z
+  - _ulid: 01KXJ5STJDWHX0QSVJ425621NZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T06:00:38.733Z
+  - _ulid: 01KXJ5SXPQX4SBE8XNK5MGERCY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T06:00:41.944Z
+  - _ulid: 01KXJ5T0TPJAW6YZFAHG44N1Q9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T06:00:45.142Z
+  - _ulid: 01KXJ5T461PED2416BMEFWZ5MS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-15T06:00:48.577Z
+  - _ulid: 01KXJ5T896XHT4AT7WC2YMW8GS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJ5T7VZ8JJBYSTYT3YTPG57
+    timestamp: 2026-07-15T06:00:52.774Z
+  - _ulid: 01KXJ5TCCZ05K9AWQ4DSEESPQG
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJ5TC3X14VNXSEVPB62JBQZ
+    timestamp: 2026-07-15T06:00:56.991Z
+  - _ulid: 01KXJ5TFXZ379H0R2EZFCDWZW9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJ5TFPFA7SP7JHJMW60ESJ2
+    timestamp: 2026-07-15T06:01:00.607Z
+  - _ulid: 01KXJ5TK11KB1KE709TY7B4FQN
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXJ5TJS2636D3BC8AQ85BEJE
+    timestamp: 2026-07-15T06:01:03.777Z
+  - _ulid: 01KXJ5TP4FNV24S987T0BNRVY5
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-15T06:01:06.959Z
+  - _ulid: 01KXJ5TP4FHCCTJ948CYXKF867
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-15T06:01:06.959Z
 examined_commit: 083c00449470af0010a00d01db548583b51e03d9
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXH2PNTWN26FWG82XJ1FYT5P"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXJ5T7VZ8JJBYSTYT3YTPG57
+    anchor:
+      type: code
+      commit: 083c00449470af0010a00d01db548583b51e03d9
+      line_end: 159
+      line_start: 144
+      path: tests/dispatch-global-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJ5T7VZHJF8QCFYE0HTHV0S
+        author: Jacob Chapel
+        body: "MUST-FIX — The lifecycle harness disables both reconciliation and coalescing and replaces
+          `_spawnInvocation` with a recorder, while the suite exercises only bootstrap and one
+          prune/dequeue barrier. The task explicitly requires the global transition matrix at the
+          enqueue, coalesced-expiry, dequeue/retry, reconcile, post-invocation, and
+          degraded-recovery barriers, including stopped/idle separately from stopped cleanup; there
+          are also no behavioral cases for paused→start or stopped/idle→pause|resume invalid
+          transitions. Impact: regressions in those task-owned ingress paths and matrix cells can
+          pass this green suite. Evidence: `reconcileIntervalMs: 0` and `coalesceWindowMs: 0` here,
+          plus a repository search found no other lifecycle-authority tests for those
+          barriers/matrix cells. Add deterministic behavioral barrier/matrix coverage required by
+          the task handoff."
+        created_at: 2026-07-15T06:00:52.351Z
+    kind: blocker
+  - _ulid: 01KXJ5TC3X14VNXSEVPB62JBQZ
+    anchor:
+      type: code
+      commit: 083c00449470af0010a00d01db548583b51e03d9
+      line_end: 400
+      line_start: 369
+      path: tests/dispatch-global-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJ5TC3XMXFM29FBNS84B39D
+        author: Jacob Chapel
+        body: "MUST-FIX — This is the only test annotated for
+          `ac-stopped-reconstruction-uses-current-state`, but it never changes authoritative
+          task/rule state or makes the stopped in-memory queue stale/lost. The same pending task
+          exists before and after start, and its task cleanup keeps it held, so the assertions would
+          still pass if start reused the stale bootstrap queue and never reconstructed current
+          candidates. Impact: the stopped current-state reconstruction AC can regress undetected.
+          Evidence: AC annotation search finds only this case, and lines 374–400 perform no
+          task/rule mutation between stopped bootstrap and start. Add a behavioral stopped case that
+          changes current authoritative eligibility/rules (or explicitly loses stale in-memory
+          scheduling data) and proves only the current canonical candidate is started."
+        created_at: 2026-07-15T06:00:56.701Z
+    kind: blocker
+  - _ulid: 01KXJ5TFPFA7SP7JHJMW60ESJ2
+    anchor:
+      type: code
+      commit: 083c00449470af0010a00d01db548583b51e03d9
+      line_end: 395
+      line_start: 383
+      path: tests/dispatch-global-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJ5TFPFJ17TF8WFFPKJ4TR3
+        author: Jacob Chapel
+        body: "MUST-FIX — The test annotated for `ac-controls-do-not-change-degraded-targets` snapshots an
+          empty degraded-target collection; no degraded target is created before the lifecycle
+          transition. Equality of empty-before and empty-after cannot detect code that clears or
+          mutates existing degraded state, so the test does not satisfy the AC Given condition.
+          Impact: lifecycle controls could erase real degraded-target evidence without a failing
+          test. Evidence: `beforeDegraded` is read directly from a fresh harness and no
+          `_enterDegradedState` or equivalent setup occurs anywhere in this suite. Seed a non-empty
+          degraded target with stable reason/timestamp, apply the lifecycle action, and deep-compare
+          it afterward."
+        created_at: 2026-07-15T06:01:00.367Z
+    kind: blocker
+  - _ulid: 01KXJ5TJS2636D3BC8AQ85BEJE
+    entries:
+      - _ulid: 01KXJ5TJS2NQNCPCFFR67JBJ2C
+        author: Jacob Chapel
+        body: "Review evidence log (informational; no worker action requested). Files read:
+          src/agent-runtime/bootstrap.ts, dispatch-control-store.ts, dispatch.ts,
+          schema/store/scheduler surrounding context; all four changed existing tests and the new
+          dispatch-global-lifecycle test; task/spec/plan and prior review. Commands run: full
+          base-to-head and fix-cycle diffs, task/item/plan/review lookups, AC annotation searches,
+          focused source/context reads, git diff --check, focused oxlint, format, repo lint,
+          typecheck, uncached full npm test, and all three kspec validation modes. Claims verified:
+          both prior race fixes, committed stopped authority winning over stale pause, pause winning
+          across the active drain barrier, no-write idempotent mutation, and the worker full-suite
+          claim (current count 10,621 passed). Categories searched: correctness/concurrency,
+          lifecycle matrix and edge cases, error/transition handling, security/input sanitization,
+          test quality/AC proof, and scheduler/store integration. Findings: three test-coverage
+          blockers above; no additional production-code finding after a second pass. Shared/package
+          guidance surfaces were not touched, so neutrality checks were not applicable."
+        created_at: 2026-07-15T06:01:03.522Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-15T06:01:06.959Z
 created_at: 2026-07-15T05:42:49.065Z
-updated_at: 2026-07-15T06:01:08.466Z
+updated_at: 2026-07-15T06:01:06.959Z
 notes: []
