@@ -97,6 +97,99 @@ checks:
     runner: git diff --check
     created_at: 2026-07-15T08:46:43.994Z
     completed_at: 2026-07-15T08:46:43.994Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1045 checked files matched formatting.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T08:47:38.715Z
+    completed_at: 2026-07-15T08:47:38.715Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo lint reported 0 errors; focused oxlint on all 3 changed files reported 0 warnings and
+      0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T08:47:42.070Z
+    completed_at: 2026-07-15T08:47:42.070Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and TypeScript no-emit check passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T08:47:45.437Z
+    completed_at: 2026-07-15T08:47:45.437Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh suite: 10,642 passed, 3 skipped, 1 failed. New lifecycle test failed at line 219
+      because concurrent pause returned noop for the first call. Focused 40/40 and three isolated
+      fresh reruns passed, confirming intermittent ordering dependence."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T08:47:48.782Z
+    completed_at: 2026-07-15T08:47:48.782Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed with the existing warning baseline.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T08:47:51.982Z
+    completed_at: 2026-07-15T08:47:51.982Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with the existing warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T08:47:55.101Z
+    completed_at: 2026-07-15T08:47:55.101Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed; all nine task-owned AC annotations resolve.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T08:47:58.030Z
+    completed_at: 2026-07-15T08:47:58.030Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "All 3 changed files: 0 warnings, 0 errors."
+    name: focused-lint
+    required: false
+    runner: npx oxlint
+    created_at: 2026-07-15T08:48:01.060Z
+    completed_at: 2026-07-15T08:48:01.060Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in base-to-head diff.
+    name: git diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-15T08:48:04.152Z
+    completed_at: 2026-07-15T08:48:04.152Z
 events:
   - _ulid: 01KXJE84Z3P56FTX9S87K03RHX
     actor: Jacob Chapel
@@ -225,6 +318,69 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-15T08:47:03.993Z
+  - _ulid: 01KXJFBKZ56STWHJCDV8A969QY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T08:47:38.982Z
+  - _ulid: 01KXJFBQ7R9H27V32TQPR220AD
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T08:47:42.328Z
+  - _ulid: 01KXJFBTH5VF1JXDV3CZ2QMRS3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T08:47:45.701Z
+  - _ulid: 01KXJFBXT6QWS5FX2D8RK7JFX3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: full test suite
+    timestamp: 2026-07-15T08:47:49.062Z
+  - _ulid: 01KXJFC0WYZ9QE99266C7QST7T
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T08:47:52.223Z
+  - _ulid: 01KXJFC3YM3Q3NRRAPCPR1BY37
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T08:47:55.348Z
+  - _ulid: 01KXJFC6SFMY4J4N4Y42CP8SB6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T08:47:58.256Z
+  - _ulid: 01KXJFC9RP4JAFC6ZH08S50C8F
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-15T08:48:01.302Z
+  - _ulid: 01KXJFCCSKMQ9S790TGS59M2ZZ
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: git diff check
+    timestamp: 2026-07-15T08:48:04.403Z
 examined_commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
 external_links: []
 lifecycle_state: closed
@@ -339,5 +495,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T08:47:03.993Z
 created_at: 2026-07-15T08:28:16.739Z
-updated_at: 2026-07-15T08:47:03.993Z
+updated_at: 2026-07-15T08:48:04.152Z
 notes: []
