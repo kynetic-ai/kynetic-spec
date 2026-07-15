@@ -263,3 +263,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T20:25:50.791Z
+  - _ulid: 01KXKQK7SHM8QW49YQ7397EZD4
+    content: "Fix cycle 7 approach: add behavioral regressions before production changes for all four
+      blockers. Commit stopped authority and a durable failed cleanup even when late ownership
+      refresh/target collection fails; map unreadable process-group evidence during post-signal exit
+      observation to cleanup_identity_unverifiable; make publication-admission cleanup fixtures
+      schema-valid and validate their in-memory commits; and directly cover leader-absent/empty-PGID
+      owned recovery through durable exited_at, session closure, and idle removal. Re-read all
+      stop/recovery ACs, preserve global/task A-B isolation, and run focused plus full project gates
+      before resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T20:30:51.697Z
