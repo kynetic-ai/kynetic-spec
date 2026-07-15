@@ -79302,7 +79302,7 @@ runs:
     completed_at: 2026-07-15T16:54:29.670Z
   - _ulid: 01KXKCS9HRFE3AYQARTSXSETP3
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79315,7 +79315,18 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T17:22:46.224Z
-        completed_at: 2026-07-15T17:22:46.224Z
+        completed_at: 2026-07-15T17:23:16.594Z
+        notes: "High-confidence success: adversarial executable probes against real process lifecycle
+          behavior exposed two stop-recovery defects even though the fresh 10,694-test suite passed;
+          this is repeatable review practice for process ownership/termination code. High-confidence
+          friction: the mandatory full observations/inbox/tasks inventory emitted hundreds of
+          thousands of tokens and was truncated, so it cannot itself provide a dependable duplicate
+          baseline at this project size. AC-annotation semantic checking was also effective, but it
+          is already required by the review skill and is not a new systemic observation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T17:23:16.594Z
+        completed_at: 2026-07-15T17:23:16.594Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T17:21:55.768Z
