@@ -177,6 +177,41 @@ events:
       status: pass
       name: diff hygiene
     timestamp: 2026-07-15T20:24:18.024Z
+  - _ulid: 01KXKQ8XN8MQYT1HZRXXZK9KRB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKQ8XD89SS08MWP2RN97ZZ6
+    timestamp: 2026-07-15T20:25:13.640Z
+  - _ulid: 01KXKQ90X6MHPGEDMK1XDQ160F
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKQ90N97E0VDK7BKEDN1DZC
+    timestamp: 2026-07-15T20:25:16.966Z
+  - _ulid: 01KXKQ9422W4ADY10FSWH5FSJ5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKQ93T52SWX4T4YFYWESQC2
+    timestamp: 2026-07-15T20:25:20.194Z
+  - _ulid: 01KXKQ98151HGBPN5XE7FRR59Z
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKQ97S9131PDWAM0PECY4MM
+    timestamp: 2026-07-15T20:25:24.261Z
+  - _ulid: 01KXKQ9B5NA5TF6PVPD3DJBN5N
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXKQ9AY1AQG5292XDEPA5RXC
+    timestamp: 2026-07-15T20:25:27.478Z
 examined_commit: e01006b3649db63d24a187d39e6ba73be8476358
 external_links: []
 lifecycle_state: open
@@ -186,8 +221,114 @@ subject:
   content_hash: ""
   ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXKQ8XD89SS08MWP2RN97ZZ6
+    anchor:
+      type: code
+      commit: e01006b3649db63d24a187d39e6ba73be8476358
+      line_end: 2012
+      line_start: 2008
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXKQ8XD8008HS976EW5RXVGX
+        author: Jacob Chapel
+        body: 'MUST-FIX: stop target collection performs fallible durable ownership refresh before
+          committing stopped authority. I added a temporary behavioral probe with a verified late
+          group member and made the session directory unwritable so the refresh could not persist.
+          applyGlobalLifecycleAction("stop") rejected, emitted no signal, but global authority
+          remained running. The task requires commit-first stop and stopped authority after cleanup
+          failure; once the mutex releases, this result permits new work after an operator stop
+          failed. The task-scoped path has the same ordering at line 2061. Commit the matching scope
+          stopped and materialize/report failed pending cleanup even when target-proof collection or
+          refresh persistence fails.'
+        created_at: 2026-07-15T20:25:13.384Z
+    kind: blocker
+  - _ulid: 01KXKQ90N97E0VDK7BKEDN1DZC
+    anchor:
+      type: code
+      commit: e01006b3649db63d24a187d39e6ba73be8476358
+      line_end: 2309
+      line_start: 2305
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXKQ90N9EXTSHD7YHV9YWSTN
+        author: Jacob Chapel
+        body: "MUST-FIX: failures while observing process-group exit after SIGTERM are not mapped to the
+          required closed identity error. A temporary behavioral probe injected EACCES from
+          waitForProcessGroupExit after initial ownership verification; the stop correctly remained
+          stopped/failed, but rejected and persisted error_code=internal_error instead of
+          cleanup_identity_unverifiable. The task explicitly maps unreadable /proc evidence to
+          cleanup_identity_unverifiable, and callers rely on closed failure classes. Catch
+          evidence-read failures from the wait phase and map them without reporting cleanup
+          success."
+        created_at: 2026-07-15T20:25:16.713Z
+    kind: blocker
+  - _ulid: 01KXKQ93T52SWX4T4YFYWESQC2
+    anchor:
+      type: code
+      commit: e01006b3649db63d24a187d39e6ba73be8476358
+      line_end: 475
+      line_start: 470
+      path: tests/dispatch-lifecycle-publication-admission.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXKQ93T5ZBNWGTAGCMRJ44BG
+        author: Jacob Chapel
+        body: "MUST-FIX: the new publication-admission fixtures construct cleanup entries without the
+          required targets array (also at lines 538-549). DispatchControlSchema rejects this exact
+          shape with `pending_cleanup.global.targets: Required`, but AdmissionControlStore.commit
+          bypasses schema validation. During engine.start, `_recoverPendingCleanups` then throws on
+          `targets.length`; start swallows that recovery error, so the annotated test stays green
+          while exercising an impossible persisted state and aborted recovery. Replace these with
+          schema-valid cleanup records (and preferably validate memory-store commits) so the
+          reconstruction assertions prove behavior against the production contract."
+        created_at: 2026-07-15T20:25:19.941Z
+    kind: blocker
+  - _ulid: 01KXKQ97S9131PDWAM0PECY4MM
+    anchor:
+      type: code
+      commit: e01006b3649db63d24a187d39e6ba73be8476358
+      line_end: 2282
+      line_start: 2279
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXKQ97S9342PM56BXDSBE6EX
+        author: Jacob Chapel
+        body: "MUST-FIX: the explicitly required leaderless-empty-group recovery branch has no behavioral
+          coverage. The two leaderless tests keep a live member and assert failure; the other
+          no-signal recovery test pre-populates exited_at and returns before this `members.length
+          === 0` path. The task's behavioral-test contract specifically requires recorded leader
+          absent + recorded PGID empty to progress pending cleanup to idle/removal. Add a durable
+          owned-phase fixture that removes the leader, leaves the group empty without exited_at, and
+          verifies no signal, durable exit/phase progression, session closure, and final idle
+          removal."
+        created_at: 2026-07-15T20:25:24.009Z
+    kind: blocker
+  - _ulid: 01KXKQ9AY1AQG5292XDEPA5RXC
+    entries:
+      - _ulid: 01KXKQ9AY18J54DDS4MFERBS83
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: all 20 changed files in c5e0b9a6...e01006b3, full
+          dispatch/invocation/session/schema changes, every added/modified test, interacting
+          lifecycle/store/spawner context, task/spec text, and cycle-6 threads. Commands run: git
+          status/log/diff/diff-check; kspec task/item/review lookups; AC annotation search; format,
+          repo/focused lint, typecheck, refs/alignment/completeness validation; focused fresh
+          suites; independent full npm test; schema rejection probe; two temporary behavioral
+          fault-injection probes (removed afterward). Claims verified: all four cycle-6 fixes exist
+          and their regressions pass; full suite passed 2805 suites/10711 tests with 3 skipped;
+          prior completion-window, reassignment, corrupt-metadata archive, and task-key isolation
+          claims were independently checked. Categories searched: correctness, stop ordering,
+          process identity/error mapping, restart and completion races, task/global isolation,
+          idempotency, security of signalling, test quality/AC coverage, and integration. Findings:
+          four blocker threads recorded. Shared/package guidance surfaces touched: none, so
+          shared-guidance-neutrality and render checks are not applicable. Detached worktree is
+          clean."
+        created_at: 2026-07-15T20:25:27.233Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-15T20:01:28.703Z
-updated_at: 2026-07-15T20:24:17.768Z
+updated_at: 2026-07-15T20:25:27.233Z
 notes: []
