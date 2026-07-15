@@ -126,12 +126,8 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: blocked
-blocked_by:
-  - Required kspec reference validation is globally red on seven unrelated duplicate-slug
-    ambiguities for @observations and @spec-plan-import. Implementation commit 1716ac35c1 and all
-    code, focused, full-suite, type, format, lint, alignment, completeness, and diff gates pass.
-    Observation @01KXHNHD records the external validation blocker.
+status: pending_review
+blocked_by: []
 depends_on:
   - "@task-patch-dispatch-engine-coalescing-specs"
 context: []
@@ -141,7 +137,15 @@ tags:
   - persistence
   - schema
 vcs_refs: []
-session_id: 01KXH8J0ZZCEH417G5W11RTZ9K
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-07-15T03:16:42.908Z
+  commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+  remote: origin
+  remote_url: git@github.com:lepahc/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: null
 history:
   - author: Jacob Chapel
     changes:
@@ -180,8 +184,49 @@ history:
         previous: null
     command: task-block
     timestamp: 2026-07-15T01:43:44.102Z
-prior_status: in_progress
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: blocked
+      blocked_by:
+        new: []
+        previous:
+          - Required kspec reference validation is globally red on seven unrelated duplicate-slug
+            ambiguities for @observations and @spec-plan-import. Implementation commit 1716ac35c1
+            and all code, focused, full-suite, type, format, lint, alignment, completeness, and diff
+            gates pass. Observation @01KXHNHD records the external validation blocker.
+      session_id:
+        new: null
+        previous: 01KXH8J0ZZCEH417G5W11RTZ9K
+      prior_status:
+        new: null
+        previous: in_progress
+    command: task-unblock
+    timestamp: 2026-07-15T03:16:40.797Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dev
+          captured_at: 2026-07-15T03:16:42.908Z
+          commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dev
+        previous: null
+      submitted_at:
+        new: 2026-07-15T03:16:42.914Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-07-15T03:16:42.914Z
+prior_status: null
 created_at: 2026-07-14T19:47:14.724Z
 started_at: 2026-07-14T21:30:41.927Z
+submitted_at: 2026-07-15T03:16:42.914Z
 todos: []
 automation: eligible
