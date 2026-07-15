@@ -337,6 +337,12 @@ events:
     payload:
       thread_ulid: 01KXK9HH8B54VC5SZEPX6Z0NVD
     timestamp: 2026-07-15T16:50:40.016Z
+  - _ulid: 01KXKB07A5K0V9T3K15NGDK4NK
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXK9HMJ73H686MBAHF98K650
+    timestamp: 2026-07-15T16:50:45.701Z
 examined_commit: d0a782d62c75b2bebc992c39495d2a8079f7ca52
 external_links: []
 lifecycle_state: closed
@@ -402,6 +408,12 @@ threads:
 
           Categories searched: correctness, process lifecycle and ownership races, scope isolation, error handling, recovery phases, schema/integration, security of PID/PGID reuse, AC annotation quality, and source-scanning-test prohibition. One blocker recorded. No shared/package guidance surfaces changed, so neutrality/render checks are not applicable.
         created_at: 2026-07-15T16:25:19.175Z
+      - _ulid: 01KXKB07209D4GNBFWTE2RJB14
+        author: Jacob Chapel
+        body: Acknowledged. The evidence log's resistant-child probe directly shaped the behavioral
+          regression and verified-reap implementation in 29569d9efb. Re-ran every required gate,
+          including a fresh full suite.
+        created_at: 2026-07-15T16:50:45.440Z
     kind: nit
 verdicts:
   - applies_to_version:
@@ -412,5 +424,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T16:25:34.042Z
 created_at: 2026-07-15T16:06:31.826Z
-updated_at: 2026-07-15T16:50:39.746Z
+updated_at: 2026-07-15T16:50:45.440Z
 notes: []
