@@ -96,6 +96,78 @@ checks:
     runner: git diff --check
     created_at: 2026-07-15T06:00:48.275Z
     completed_at: 2026-07-15T06:00:48.275Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 0 warnings and 0 errors across all 7 changed TypeScript/test files.
+    name: focused-lint
+    required: false
+    runner: npx oxlint <changed TypeScript/test files>
+    created_at: 2026-07-15T06:01:28.360Z
+    completed_at: 2026-07-15T06:01:28.360Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and tsc --noEmit passed; exit 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T06:01:31.657Z
+    completed_at: 2026-07-15T06:01:31.657Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Forced uncached run: 2796/2796 suites passed; 10,621 tests passed and 3
+      repository-skipped; exit 0."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T06:01:34.907Z
+    completed_at: 2026-07-15T06:01:34.907Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; reference validation passed with 6 repository baseline warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-15T06:01:38.163Z
+    completed_at: 2026-07-15T06:01:38.163Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; alignment validation passed with repository baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-15T06:01:41.351Z
+    completed_at: 2026-07-15T06:01:41.351Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0 with repository baseline warnings. All 16 task-owned AC tokens exist, but semantic
+      inspection found the blocker coverage defects recorded on this review.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-15T06:01:44.345Z
+    completed_at: 2026-07-15T06:01:44.345Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base-to-head diff check passed; exit 0.
+    name: diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-15T06:01:47.440Z
+    completed_at: 2026-07-15T06:01:47.440Z
 events:
   - _ulid: 01KXJ4S5Z9QGADRN2VF3CATXGE
     actor: Jacob Chapel
@@ -217,6 +289,55 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-15T06:01:06.959Z
+  - _ulid: 01KXJ5VB9WGQ2EGACPF773HEYN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-15T06:01:28.636Z
+  - _ulid: 01KXJ5VEGX56CVDC6GNKQ3XMWF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T06:01:31.933Z
+  - _ulid: 01KXJ5VHNWVANX6W4NJK99H276
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T06:01:35.164Z
+  - _ulid: 01KXJ5VMV1D06WHT6X6KHG4CC9
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T06:01:38.401Z
+  - _ulid: 01KXJ5VQYG4F8NWWNB8PKWJ3GF
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T06:01:41.584Z
+  - _ulid: 01KXJ5VTWB9NGY8MNZ3HEDZ2Z5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T06:01:44.587Z
+  - _ulid: 01KXJ5VXXFSWAD2Z3VHMZMBAP2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-15T06:01:47.695Z
 examined_commit: 083c00449470af0010a00d01db548583b51e03d9
 external_links: []
 lifecycle_state: closed
@@ -325,5 +446,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T06:01:06.959Z
 created_at: 2026-07-15T05:42:49.065Z
-updated_at: 2026-07-15T06:01:06.959Z
+updated_at: 2026-07-15T06:01:47.440Z
 notes: []
