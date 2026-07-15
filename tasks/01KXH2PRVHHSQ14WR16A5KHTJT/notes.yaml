@@ -1,1 +1,21 @@
-notes: []
+notes:
+  - _ulid: 01KXKY8Y64TWGJY7H9PPNJK1HX
+    content: "Approach: extend the centralized DispatchArtifactProtectionState to classify canonical
+      task identities from four independent evidence sources: active invocations,
+      final-gate/in-flight ownership, paused-held control, and stopped pending-cleanup control. Load
+      trusted committed lifecycle control alongside the workspace registry and pass one immutable
+      protection snapshot through reap, reviewer/worktree removal, local/remote branch deletion,
+      root pruning, abandoned/closing classification, and terminal reconciliation. Lifecycle mode
+      will only add preservation; it will never independently make an artifact cleanup-eligible.
+      Edge cases: alias-to-canonical matching, task controls without registry records, global/task
+      cleanup scope separation, stale/closed registry records with live control evidence,
+      corrupt/unavailable control state blocking blind deletion, and unrelated terminal/integrated
+      artifacts remaining cleanup-eligible. Test plan: first add a protected-state ×
+      destructive-surface behavioral matrix in
+      tests/dispatch-controlled-evidence-protection.test.ts, then extend existing
+      cleanup/completion/terminal suites for actual physical preservation and positive unrelated
+      cleanup; retain trait error-guidance N/A annotations because this is an internal runtime
+      policy rather than a CLI surface."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T22:27:34.212Z
