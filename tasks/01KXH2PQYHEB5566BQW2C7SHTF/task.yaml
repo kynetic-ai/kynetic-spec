@@ -97,7 +97,7 @@ tags:
   - race
   - engine
 vcs_refs: []
-review_ref: "@01KXJQ6SE05H3FKQSDA5P2MH46"
+review_ref: "@01KXJTYDF5RWED52F3R54GT233"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-final-pre-spawn-control-gate/01kxh2pq
@@ -205,6 +205,13 @@ history:
         previous: 2026-07-15T10:59:25.103Z
     command: task-submit
     timestamp: 2026-07-15T12:02:31.622Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXJTYDF5RWED52F3R54GT233"
+        previous: "@01KXJQ6SE05H3FKQSDA5P2MH46"
+    command: review-link
+    timestamp: 2026-07-15T12:10:11.704Z
 created_at: 2026-07-14T19:47:17.585Z
 started_at: 2026-07-15T11:32:26.735Z
 submitted_at: 2026-07-15T12:02:31.621Z
