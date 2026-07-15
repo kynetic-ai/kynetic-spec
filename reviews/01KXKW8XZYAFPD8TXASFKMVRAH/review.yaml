@@ -174,6 +174,17 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-07-15T22:15:19.265Z
     completed_at: 2026-07-15T22:15:19.265Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed for e7e4836e68da905569f4b05a03e782b669dd5413 through
+      646926325f598435023660377979f207b6a95856; detached snapshot remained clean.
+    name: diff hygiene
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-15T22:15:25.552Z
+    completed_at: 2026-07-15T22:15:25.552Z
 events:
   - _ulid: 01KXKW8XZXGGQHRQMR6139KX9C
     actor: Jacob Chapel
@@ -307,6 +318,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-15T22:15:19.662Z
+  - _ulid: 01KXKXJPVNG7DDR6ZDJ8FVKDWM
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-07-15T22:15:25.813Z
 examined_commit: 646926325f598435023660377979f207b6a95856
 external_links: []
 lifecycle_state: open
@@ -343,5 +361,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-15T21:52:36.862Z
-updated_at: 2026-07-15T22:15:19.265Z
+updated_at: 2026-07-15T22:15:25.552Z
 notes: []
