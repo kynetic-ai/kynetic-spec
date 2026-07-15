@@ -29643,7 +29643,7 @@ reviews:
     title: Review verified stop recovery for global and task scopes
     disposition: pending
     author: Jacob Chapel
-    check_count: 0
+    check_count: 1
     examined_commit: 3a9909c4870a49f5f3ac174716edfca067852055
     lifecycle_state: open
     related_refs: []
@@ -29656,4 +29656,4 @@ reviews:
     unresolved_blocker_count: 0
     verdict_count: 0
     created_at: 2026-07-15T13:24:33.110Z
-    updated_at: 2026-07-15T13:24:47.062Z
+    updated_at: 2026-07-15T13:43:53.255Z

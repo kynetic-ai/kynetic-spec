@@ -2,7 +2,17 @@ _ulid: 01KXJZ6MPPENNCEWXR74P50F2S
 slugs: []
 title: Review verified stop recovery for global and task scopes
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: 1047 files checked."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T13:43:53.255Z
+    completed_at: 2026-07-15T13:43:53.255Z
 events:
   - _ulid: 01KXJZ6MP81VH8XP0PBHA1ZPGN
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T13:24:47.330Z
+  - _ulid: 01KXK0A1X2WYYBE31CGQDNYM6W
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T13:43:53.506Z
 examined_commit: 3a9909c4870a49f5f3ac174716edfca067852055
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T13:24:33.110Z
-updated_at: 2026-07-15T13:24:47.062Z
+updated_at: 2026-07-15T13:43:53.255Z
 notes: []
