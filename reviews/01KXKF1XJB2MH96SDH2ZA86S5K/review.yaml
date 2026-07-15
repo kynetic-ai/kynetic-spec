@@ -214,6 +214,12 @@ events:
     payload:
       thread_ulid: 01KXKG4A9AYNJV077EV5FHNAT7
     timestamp: 2026-07-15T18:52:21.465Z
+  - _ulid: 01KXKHZ1Q44EV4ZTT312CQ5N4F
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKG4GQ0Y1ZDE95GH3W2Z1C1
+    timestamp: 2026-07-15T18:52:27.236Z
 examined_commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
 external_links: []
 lifecycle_state: closed
@@ -310,6 +316,13 @@ threads:
           the handle immediately after spawn, make initialization cancellable by stop, and
           verified-reap initialization failures; add rejecting and hanging initialization tests."
         created_at: 2026-07-15T18:20:29.280Z
+      - _ulid: 01KXKHZ1EY74TRPHTV8GQ8CE4V
+        author: Jacob Chapel
+        body: "Fixed in 0898f3a8e0: spawnAndInitialize exposes the child through onSpawn before ACP
+          initialization, initialization races the invocation abort signal, and runInvocation
+          persists/publishes ownership at that boundary. Rejecting and hanging initialization paths
+          both verified-reap SIGTERM-resistant children and record exited_at."
+        created_at: 2026-07-15T18:52:26.974Z
     kind: blocker
   - _ulid: 01KXKG4PXC7274PNRZ6HV1WJQA
     anchor:
@@ -363,5 +376,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T18:21:27.777Z
 created_at: 2026-07-15T18:01:35.563Z
-updated_at: 2026-07-15T18:52:21.200Z
+updated_at: 2026-07-15T18:52:26.974Z
 notes: []
