@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KXJCQWMWKNSME8QG4SNV0Q7A
+    content: "Approach: extend the existing committed lifecycle store/mutex with task pause/resume
+      transitions, using task-identity's resolver to canonicalize a submitted slug/ref before any
+      snapshot lookup or write. Reuse the existing global and per-task scheduling gates at
+      enqueue/coalesced drain/dequeue/retry/bootstrap/reconcile/post-invocation, and trigger
+      current-state evaluation on task release without clearing unrelated queues. Edge cases:
+      aliases resolving to one ULID, A/B isolation, global paused/stopped or global cleanup during
+      task resume, paused/stopped/absent task records, matching pending/failed cleanup,
+      concurrent/repeated calls, and active session/invocation preservation. Test plan: create the
+      specified task lifecycle harness with behavioral coverage for all nine assigned ACs, plus
+      focused identity tests for strict canonical control resolution."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T08:01:55.356Z
