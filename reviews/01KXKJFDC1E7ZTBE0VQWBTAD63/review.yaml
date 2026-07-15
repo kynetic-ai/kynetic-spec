@@ -88,6 +88,17 @@ checks:
     runner: npm test -- focused changed suites --fresh
     created_at: 2026-07-15T19:23:27.280Z
     completed_at: 2026-07-15T19:23:27.280Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: git diff --check against c5e0b9a6b4afdd17021bf37f2732d620152f40de passed; detached review
+      worktree remained clean.
+    name: diff hygiene
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-15T19:23:33.103Z
+    completed_at: 2026-07-15T19:23:33.103Z
 events:
   - _ulid: 01KXKJFDC02SCPR5HWW0AY27VY
     actor: Jacob Chapel
@@ -158,6 +169,13 @@ events:
       status: pass
       name: focused stop recovery tests
     timestamp: 2026-07-15T19:23:27.540Z
+  - _ulid: 01KXKKR03CR0DS30VZJTY8WAJ6
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-07-15T19:23:33.356Z
 examined_commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
 external_links: []
 lifecycle_state: open
@@ -170,5 +188,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T19:01:23.457Z
-updated_at: 2026-07-15T19:23:27.280Z
+updated_at: 2026-07-15T19:23:33.103Z
 notes: []
