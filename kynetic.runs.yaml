@@ -79565,7 +79565,7 @@ runs:
     completed_at: 2026-07-15T19:57:01.867Z
   - _ulid: 01KXKRP9T5S1Q47PPRBPRAVKM5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79577,7 +79577,13 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T20:51:47.960Z
-        completed_at: 2026-07-15T20:51:47.960Z
+        completed_at: 2026-07-15T20:51:52.103Z
+        notes: "High-confidence signals: behavioral fault injection and schema validation exposed real
+          recovery defects; full-suite duration and reflection dump size were friction candidates."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T20:51:52.103Z
+        completed_at: 2026-07-15T20:51:52.103Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T20:50:00.645Z
