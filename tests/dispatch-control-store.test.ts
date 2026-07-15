@@ -383,6 +383,57 @@ describe("DispatchControlStore committed publication", () => {
     expect(harness.store.getPublication()).toEqual(before);
   });
 
+  // AC: @dispatch-lifecycle-control-authority ac-stale-control-is-not-visible
+  it("rejects a mutation based on a divergent commit at the published revision", async () => {
+    const harness = await createDispatchControlStoreHarness(control(4, "running"));
+    cleanupDirs.push(harness.projectDir);
+    const before = harness.store.getPublication();
+    await fs.writeFile(
+      path.join(harness.specDir, "dispatch-control.yaml"),
+      serializeDispatchControl(control(4, "paused")),
+      "utf-8",
+    );
+    git(harness.specDir, "add", "dispatch-control.yaml");
+    git(harness.specDir, "commit", "-m", "divergent equal-revision control");
+
+    await harness.store.reloadCommitted(before.token.commit_oid);
+    expect(harness.store.getPublication()).toEqual(before);
+
+    await expect(
+      harness.store.mutate("reject-divergent-revision", (current) => ({
+        ...current,
+        revision: current.revision + 1,
+      })),
+    ).rejects.toThrow("diverges from the verified publication");
+
+    expect(harness.store.getPublication()).toEqual(before);
+    expect(git(harness.specDir, "status", "--porcelain")).toBe("");
+  });
+
+  it("allows an unchanged published snapshot at a later unrelated shadow commit", async () => {
+    const harness = await createDispatchControlStoreHarness(control(4, "running"));
+    cleanupDirs.push(harness.projectDir);
+    const before = harness.store.getPublication();
+    await fs.writeFile(path.join(harness.specDir, "unrelated.yaml"), "value: changed\n", "utf-8");
+    git(harness.specDir, "add", "unrelated.yaml");
+    git(harness.specDir, "commit", "-m", "unrelated shadow update");
+
+    await harness.store.reloadCommitted(before.token.commit_oid);
+    expect(harness.store.getPublication()).toEqual(before);
+
+    const publication = await harness.store.mutate("pause-after-unrelated-commit", (current) => ({
+      ...current,
+      revision: current.revision + 1,
+      global: { authority: "paused" },
+    }));
+
+    expect(publication.snapshot).toMatchObject({
+      revision: 5,
+      global: { authority: "paused" },
+    });
+    expect(harness.store.getPublication()).toEqual(publication);
+  });
+
   // AC: @dispatch-lifecycle-control-authority ac-invalid-control-is-not-visible
   it("retains the verified publication and degrades on malformed committed data", async () => {
     const harness = await createDispatchControlStoreHarness();

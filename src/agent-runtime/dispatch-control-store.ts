@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import * as path from "node:path";
-import { promisify } from "node:util";
+import { isDeepStrictEqual, promisify } from "node:util";
 import {
   createMissingDispatchControl,
   DispatchControlSchema,
@@ -176,6 +176,16 @@ export class DispatchControlStore {
             const current = ctx.pre_snapshot;
             if (this.publication && current.revision < this.publication.token.revision) {
               throw new Error("Committed dispatch control revision is stale");
+            }
+            if (
+              this.publicationVerified &&
+              this.publication &&
+              current.revision === this.publication.token.revision &&
+              !isDeepStrictEqual(current, this.publication.snapshot)
+            ) {
+              throw new Error(
+                "Committed dispatch control revision diverges from the verified publication",
+              );
             }
             const proposed = DispatchControlSchema.parse(await mutation(current));
             if (proposed.revision <= current.revision) {
