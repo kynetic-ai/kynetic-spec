@@ -1150,6 +1150,8 @@ export class DispatchEngine {
   private invocationAbortControllersById = new Map<string, AbortController>();
   /** Per-invocation tracking records for status display */
   private activeInvocationDetails: Map<string, ActiveInvocationRecord> = new Map();
+  /** Published durable ownership retained until invocation completion for stop collection. */
+  private activeInvocationOwnership = new Map<string, DispatchOwnership>();
   private ownershipReservations = new Map<
     string,
     {
@@ -1644,6 +1646,7 @@ export class DispatchEngine {
     this.invocationAbortControllers.clear();
     this.invocationAbortControllersById.clear();
     this.activeInvocationDetails.clear();
+    this.activeInvocationOwnership.clear();
   }
 
   /**
@@ -1844,19 +1847,32 @@ export class DispatchEngine {
     }
     const sessionsDir = path.join(this.projectDir, ".kspec-sessions");
     const sessions = await listSessions(sessionsDir);
-    const targets: DispatchCleanupTarget[] = [];
+    const targets = new Map<string, DispatchCleanupTarget>();
+    for (const ownership of this.activeInvocationOwnership.values()) {
+      if (selector.scope === "task" && ownership.task_id !== selector.taskId) continue;
+      targets.set(ownership.session_id, {
+        ...ownership,
+        session_metadata_path: path.posix.join(
+          ".kspec-sessions",
+          ownership.session_id,
+          "session.yaml",
+        ),
+      });
+    }
     for (const sessionId of sessions) {
       const metadata = await getSession(sessionsDir, sessionId);
       let ownership = metadata?.dispatch_ownership;
       if (!ownership || ownership.exited_at || metadata?.status !== "active") continue;
       if (selector.scope === "task" && ownership.task_id !== selector.taskId) continue;
       ownership = await this._refreshLiveGroupMemberProof(sessionsDir, ownership);
-      targets.push({
+      targets.set(sessionId, {
         ...ownership,
         session_metadata_path: path.posix.join(".kspec-sessions", sessionId, "session.yaml"),
       });
     }
-    return targets.toSorted((left, right) => left.session_id.localeCompare(right.session_id));
+    return [...targets.values()].toSorted((left, right) =>
+      left.session_id.localeCompare(right.session_id),
+    );
   }
 
   private async _refreshLiveGroupMemberProof(
@@ -2136,7 +2152,14 @@ export class DispatchEngine {
         "Dispatch cleanup session metadata path does not match its session ownership",
       );
     }
-    const persisted = (await getSession(sessionsDir, target.session_id))?.dispatch_ownership;
+    const metadata = await getSession(sessionsDir, target.session_id);
+    if (!metadata) {
+      throw new DispatchCleanupError(
+        "cleanup_identity_unverifiable",
+        "Dispatch session ownership metadata could not be read",
+      );
+    }
+    const persisted = metadata.dispatch_ownership;
     const { session_metadata_path: _path, ...expected } = target;
     const { exited_at: persistedExit, ...persistedIdentity } = persisted ?? {};
     const { exited_at: expectedExit, ...expectedIdentity } = expected;
@@ -4093,7 +4116,7 @@ export class DispatchEngine {
         },
       };
 
-      let creationAdmitted = false;
+      let ownershipPublished = false;
       let createHandoffPromise: Promise<InvocationCreateHandoff> | undefined;
       const beforeCreate = () => {
         createHandoffPromise ??= this._admitInvocationCreation({
@@ -4109,15 +4132,14 @@ export class DispatchEngine {
             ownerInstanceId: this.dispatchInstanceId,
           },
           emitStartedEvent,
-        }).then((handoff) => {
-          creationAdmitted = true;
-          return handoff;
         });
         return createHandoffPromise;
       };
       options.beforeCreate = beforeCreate;
-      options.onOwnershipPersisted = (ownership) =>
+      options.onOwnershipPersisted = (ownership) => {
         this._publishPersistedInvocationOwnership(ownership);
+        ownershipPublished = true;
+      };
       options.onOwnershipFailed = (handoff) => this._failInvocationOwnership(handoff.invocationId);
 
       let resolveInvocationStarted!: () => void;
@@ -4259,10 +4281,11 @@ export class DispatchEngine {
 
           // Clean up active tracking before queue drain runs so completed
           // invocations do not linger in the active fleet snapshot.
-          if (creationAdmitted) {
+          if (ownershipPublished) {
             const currentActive = this.activeCount.get(agentId) ?? 1;
             this.activeCount.set(agentId, Math.max(0, currentActive - 1));
             this.activeInvocationDetails.delete(invocationId);
+            this.activeInvocationOwnership.delete(invocationId);
           }
 
           if (entry.change.toStatus === "pending_review") {
@@ -4955,6 +4978,7 @@ export class DispatchEngine {
     if (!reservation) throw new Error("Invocation ownership handoff is no longer admitted");
     this.activeCount.set(reservation.agentId, (this.activeCount.get(reservation.agentId) ?? 0) + 1);
     this.activeInvocationDetails.set(ownership.invocation_id, reservation.trackingRecord);
+    this.activeInvocationOwnership.set(ownership.invocation_id, ownership);
     this.recentTaskAffinityRef = reservation.taskId;
     try {
       reservation.emitStartedEvent();
@@ -4964,6 +4988,7 @@ export class DispatchEngine {
       const currentActive = this.activeCount.get(reservation.agentId) ?? 1;
       this.activeCount.set(reservation.agentId, Math.max(0, currentActive - 1));
       this.activeInvocationDetails.delete(ownership.invocation_id);
+      this.activeInvocationOwnership.delete(ownership.invocation_id);
       reservation.resolve(null);
       this.ownershipReservations.delete(ownership.invocation_id);
       throw error;

@@ -5,6 +5,7 @@ import * as YAML from "yaml";
 import {
   DispatchEngine,
   type DispatchLifecycleAuthorityStore,
+  type DispatchStopRecoveryRuntime,
 } from "../src/agent-runtime/dispatch.js";
 import type {
   DispatchControl,
@@ -88,13 +89,20 @@ export function beforeCreateBarrier() {
 }
 
 export function artifactRecorder() {
-  return { processes: 0, sessions: 0, handoffs: [] as invocationModule.InvocationCreateHandoff[] };
+  return {
+    processes: 0,
+    sessions: 0,
+    signals: [] as number[],
+    handoffs: [] as invocationModule.InvocationCreateHandoff[],
+  };
 }
 
 type SpawnGateHarness = Awaited<ReturnType<typeof createSpawnGateHarness>>;
 const harnesses: SpawnGateHarness[] = [];
 
-export async function createSpawnGateHarness(options: { realInvocation?: boolean } = {}) {
+export async function createSpawnGateHarness(
+  options: { realInvocation?: boolean; secondTask?: boolean; maxConcurrent?: number } = {},
+) {
   const projectDir = await createTempDir("dispatch-spawn-gate-");
   initGitRepo(projectDir);
   const taskId = testUlid("TASK", 1);
@@ -117,7 +125,7 @@ export async function createSpawnGateHarness(options: { realInvocation?: boolean
           conventions: [],
           skills: [],
           auto_approve: false,
-          concurrency: { max_concurrent: 1 },
+          concurrency: { max_concurrent: options.maxConcurrent ?? 1 },
           budget: { max_retries: 0 },
           dispatch: [{ on: "task.ready" }],
         },
@@ -138,6 +146,22 @@ export async function createSpawnGateHarness(options: { realInvocation?: boolean
     notes: [],
     created_at: new Date().toISOString(),
   });
+  if (options.secondTask) {
+    seedSplitTask(projectDir, {
+      _ulid: testUlid("TASK", 2),
+      type: "task",
+      title: "Second spawn gate task",
+      slugs: ["task-second-spawn-gate"],
+      status: "pending",
+      priority: 1,
+      automation: "eligible",
+      depends_on: [],
+      blocked_by: [],
+      tags: [],
+      notes: [],
+      created_at: new Date().toISOString(),
+    });
+  }
 
   const initial = {
     ...createMissingDispatchControl(),
@@ -145,6 +169,16 @@ export async function createSpawnGateHarness(options: { realInvocation?: boolean
     global: { authority: "running" as const },
   };
   const store = new MemoryControlStore(initial);
+  const artifacts = artifactRecorder();
+  const stopRecoveryRuntime: DispatchStopRecoveryRuntime = {
+    readProcess: async () => null,
+    listProcessGroup: async () => [],
+    signalProcessGroup: async (pgid) => {
+      artifacts.signals.push(pgid);
+    },
+    waitForProcessGroupExit: async () => true,
+    closeSession: async () => undefined,
+  };
   const engine = new DispatchEngine({
     projectDir,
     specDir: projectDir,
@@ -152,6 +186,7 @@ export async function createSpawnGateHarness(options: { realInvocation?: boolean
     reconcileIntervalMs: 0,
     coalesceWindowMs: 0,
     lifecycleStore: store,
+    stopRecoveryRuntime,
   });
   const metadata = {
     workspaceId: "spawn-gate-workspace",
@@ -202,7 +237,6 @@ export async function createSpawnGateHarness(options: { realInvocation?: boolean
 
   const beforeCreate = beforeCreateBarrier();
   const completion = beforeCreateBarrier();
-  const artifacts = artifactRecorder();
   const internal = engine as unknown as {
     _admitInvocationCreation: (input: unknown) => Promise<invocationModule.InvocationCreateHandoff>;
   };
@@ -450,4 +484,91 @@ describe("final ordered dispatch create gate", () => {
       cleanupState: { status: "idle" },
     });
   });
+
+  // AC: @dispatch-lifecycle-control-authority ac-status-reports-active-count
+  it("preserves another active invocation count when a second ownership publication fails", async () => {
+    const originalRunInvocation = invocationModule.runInvocation;
+    const harness = await createSpawnGateHarness({
+      realInvocation: true,
+      secondTask: true,
+      maxConcurrent: 2,
+    });
+    let invocationNumber = 0;
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (invocationOptions) => {
+      invocationNumber++;
+      if (invocationNumber > 1) return originalRunInvocation(invocationOptions);
+      const handoff = await invocationOptions.beforeCreate?.();
+      if (!handoff) throw new Error("first invocation omitted ownership handoff");
+      await invocationOptions.onOwnershipPersisted?.({
+        invocation_id: handoff.invocationId,
+        session_id: handoff.sessionId,
+        task_id: handoff.taskId,
+        agent_id: handoff.agentId,
+        adapter: handoff.adapter,
+        owner_instance_id: handoff.ownerInstanceId,
+        pid: process.pid,
+        pgid: process.pid,
+        process_start_ticks: "1",
+        process_identity_platform: "linux_proc_stat_v1",
+        captured_at: new Date().toISOString(),
+        group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+      });
+      await harness.completion.wait();
+      return { session: {} as never, outcome: "success", durationMs: 1, turnCount: 1 };
+    });
+    const originalAppendEvent = storeModule.appendEvent;
+    let dispatchedEvents = 0;
+    vi.spyOn(storeModule, "appendEvent").mockImplementation(async (dir, input) => {
+      if (input.type === "agent.dispatched" && ++dispatchedEvents === 2) {
+        throw new Error("injected second dispatched-event failure");
+      }
+      return originalAppendEvent(dir, input);
+    });
+
+    await harness.engine.start();
+    harness.beforeCreate.release();
+    await vi.waitFor(() => expect(dispatchedEvents).toBe(2));
+    await vi.waitFor(() => expect(harness.engine.getLifecycleStatus().activeCount).toBe(1));
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-pending-cleanup
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-no-success
+  it.each([
+    ["global", "missing"],
+    ["global", "corrupt"],
+    ["task", "missing"],
+    ["task", "corrupt"],
+  ] as const)(
+    "fails %s stop without signalling when active ownership metadata is %s",
+    async (scope, metadataState) => {
+      const harness = await createSpawnGateHarness();
+      await harness.engine.start();
+      await harness.beforeCreate.entered;
+      harness.beforeCreate.release();
+      await vi.waitFor(() => expect(harness.engine.getStatus().activeInvocations).toBe(1));
+      if (metadataState === "corrupt") {
+        const sessionId = harness.engine.getStatus().invocations[0]!.sessionId;
+        const sessionDir = path.join(harness.projectDir, ".kspec-sessions", sessionId);
+        await fs.mkdir(sessionDir, { recursive: true });
+        await fs.writeFile(path.join(sessionDir, "session.yaml"), "not: [valid");
+      }
+
+      const stop =
+        scope === "global"
+          ? harness.engine.applyGlobalLifecycleAction("stop")
+          : harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskId });
+      await expect(stop).rejects.toMatchObject({ code: "cleanup_identity_unverifiable" });
+      expect(harness.artifacts.signals).toEqual([]);
+      expect(harness.observedAbort).toBe(false);
+      if (scope === "global") {
+        expect(harness.engine.getLifecycleStatus().globalAuthority).toBe("stopped");
+      } else {
+        expect(harness.store.getPublication().snapshot.tasks[harness.taskId]?.mode).toBe("stopped");
+      }
+      expect(harness.engine.getLifecycleStatus().cleanupState).toMatchObject({
+        status: "failed",
+        entries: [{ status: "failed", error_code: "cleanup_identity_unverifiable" }],
+      });
+    },
+  );
 });
