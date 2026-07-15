@@ -12,6 +12,10 @@ import type {
   DispatchWorkspaceRole,
 } from "./workspace.js";
 import { normalizeDispatchBootstrapState, persistDispatchWorkspaceMetadata } from "./workspace.js";
+import type {
+  DispatchControlPublication,
+  DispatchLifecycleAuthorityStore,
+} from "./dispatch-control-store.js";
 
 export interface DispatchBootstrapStep {
   source: "dispatch" | "agent";
@@ -47,6 +51,18 @@ export class DispatchBootstrapError extends Error {
     this.name = "DispatchBootstrapError";
     this.suggestion = suggestion;
   }
+}
+
+/**
+ * Load committed lifecycle authority before any dispatch bootstrap scheduling.
+ * Keeping this boundary in bootstrap.ts makes the ordering contract explicit:
+ * callers cannot evaluate tasks until the durable authority and cleanup state
+ * have been read (or the store has entered its fail-closed degraded state).
+ */
+export async function loadDispatchBootstrapAuthority(
+  store: DispatchLifecycleAuthorityStore,
+): Promise<DispatchControlPublication> {
+  return store.loadCommitted();
 }
 
 /**
