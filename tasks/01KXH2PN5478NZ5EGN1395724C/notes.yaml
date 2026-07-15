@@ -14,3 +14,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-14T21:32:02.514Z
+  - _ulid: 01KXHNFVNVYZJ6T2FCY8DDYVHE
+    content: Implemented strict durable schema/parser, shadow-lock-first commit verification,
+      committed-only store publication, watcher HEAD capture/coalescing, and post-publication cache
+      invalidation. Hardened failure recovery so false/throw/verification rollback restores pre_head
+      and reloads any newer valid pre-transaction snapshot; corrupt initial state remains
+      degraded/stopped until a valid committed repair. Behavioral barriers now cover dirty external
+      bytes, watcher-before-commit/abort/rollback, commit-before-watcher, duplicate events,
+      stale/malformed commits, false commit, verification mismatch, monotonic revisions, and
+      force-reclaim rollback.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T01:15:34.971Z
