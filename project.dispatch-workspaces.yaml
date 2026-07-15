@@ -7659,18 +7659,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/stabilize-daemon-command-api-overlap-timing-test/01kxk05h
-    canonical_branch_head: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
+    canonical_branch_head: 5f77a5ccc7b8d2f2ea48581d08f06797c0ea56c3
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-15T14:46:10.069Z
+      updated_at: 2026-07-15T15:04:50.302Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-15T14:46:46.163Z
+      updated_at: 2026-07-15T15:04:50.302Z
     integration:
       status: pending
       detail: null
@@ -7678,7 +7678,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0fceed5aa3a2bc93c9bd0ab504df4f48b84494d9
-      updated_at: 2026-07-15T14:46:10.069Z
+      updated_at: 2026-07-15T15:04:50.302Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_id: 01KXK05HK3EEZ79AGT0FHZ868M
@@ -7687,9 +7687,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-15T14:46:46.163Z
-      last_reconciled_at: 2026-07-15T14:46:46.163Z
+      last_reconciled_at: 2026-07-15T15:04:50.302Z
       created_at: 2026-07-15T14:46:10.069Z
-      updated_at: 2026-07-15T14:46:46.163Z
+      updated_at: 2026-07-15T15:04:50.302Z
     workspace_id: dispatch-workspace-01KXK05HK3EEZ79AGT0FHZ868M
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
