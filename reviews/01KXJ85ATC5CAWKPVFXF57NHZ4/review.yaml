@@ -440,6 +440,30 @@ events:
     payload:
       thread_ulid: 01KXJ99N9VBD9EGKBBRSD5W0C8
     timestamp: 2026-07-15T07:03:06.507Z
+  - _ulid: 01KXJAVQWM0F5AC6XSBAY57B4V
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ9695ATWJBVCNHNZEP2VNA
+    timestamp: 2026-07-15T07:29:04.404Z
+  - _ulid: 01KXJAVV5EQV8CC27QMW8QWDY2
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ9695ATWJBVCNHNZEP2VNA
+    timestamp: 2026-07-15T07:29:07.758Z
+  - _ulid: 01KXJAVYB0RXR54WKWC0BMT366
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ96C610Q9JKG3AK5HV5X3K
+    timestamp: 2026-07-15T07:29:11.008Z
+  - _ulid: 01KXJAW17KBCYAK40DYC3F8JSF
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ96C610Q9JKG3AK5HV5X3K
+    timestamp: 2026-07-15T07:29:13.972Z
 examined_commit: b0a8a2e844526cf3cdf5ba9d85c596f1d6ac9b5f
 external_links: []
 lifecycle_state: closed
@@ -473,7 +497,16 @@ threads:
           add a behavioral regression that forces reconstruction failure on an external running
           publication."
         created_at: 2026-07-15T06:59:52.618Z
+      - _ulid: 01KXJAVQMNMGESD0AM258P1DTN
+        author: Jacob Chapel
+        body: "Fixed in commit 5f9dd78187: external lifecycle reconstruction is now owned in a tracked
+          promise set, rejects through a stable dispatch error report, and is awaited during
+          shutdown. Added a behavioral paused-to-running external publication regression that forces
+          reconstruction failure and verifies containment/reporting."
+        created_at: 2026-07-15T07:29:04.149Z
     kind: blocker
+    resolved_at: 2026-07-15T07:29:07.522Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJ96C610Q9JKG3AK5HV5X3K
     entries:
       - _ulid: 01KXJ96C61D3Q2N7V0MAN69H9C
@@ -492,7 +525,13 @@ threads:
           Shared/package guidance surfaces were not touched, so shared-guidance neutrality checks
           were not applicable."
         created_at: 2026-07-15T06:59:55.713Z
+      - _ulid: 01KXJAVY310DN2GRF7EK7DJCS7
+        author: Jacob Chapel
+        body: Acknowledged the cycle-3 evidence log; no separate code action was requested.
+        created_at: 2026-07-15T07:29:10.753Z
     kind: nit
+    resolved_at: 2026-07-15T07:29:13.740Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJ99GAG9QDQBSTV6ZJ9GB4Y
     anchor:
       type: code
@@ -566,5 +605,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T07:01:48.062Z
 created_at: 2026-07-15T06:41:52.972Z
-updated_at: 2026-07-15T07:03:06.160Z
+updated_at: 2026-07-15T07:29:13.740Z
 notes: []

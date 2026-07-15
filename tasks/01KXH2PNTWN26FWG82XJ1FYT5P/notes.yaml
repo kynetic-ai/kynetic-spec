@@ -103,3 +103,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T07:12:54.539Z
+  - _ulid: 01KXJAW2ARE7V9MVQ36GWW31G3
+    content: "Fix cycle 3: addressed the canonical reconstruction rejection blocker in commit
+      5f9dd78187. External paused/stopped-to-running publication work is tracked, failures are
+      contained and deterministically reported, and shutdown awaits it. Added a behavioral failure
+      regression and re-verified all 16 task-owned AC annotations. Focused tests: 190/190. Uncached
+      full suite: 2,796/2,796 suites, 10,632 passed, 3 expected skips. Format, repo/focused lint,
+      typecheck, diff check, refs, alignment, and completeness all exit 0."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T07:29:15.096Z
