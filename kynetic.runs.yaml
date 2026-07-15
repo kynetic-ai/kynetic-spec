@@ -78875,7 +78875,7 @@ runs:
     started_at: 2026-07-15T12:26:56.990Z
     completed_at: 2026-07-15T12:30:18.198Z
   - _ulid: 01KXJYQMDWN626CSCSBH34JQD8
-    status: active
+    status: completed
     current_step: 3
     initiated_by: Jacob Chapel
     step_results:
@@ -78912,7 +78912,12 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-07-15T13:19:48.390Z
-        completed_at: 2026-07-15T13:19:48.390Z
+        completed_at: 2026-07-15T13:20:16.156Z
+        notes: "Captured one unique high-confidence success observation @01KXJYY9: inject
+          process-identity/group/signal/session-close evidence behind a narrow recovery runtime and
+          test it with immutable ownership fixtures. Created no tasks or inbox items. Skipped the
+          three friction candidates because existing records already cover them."
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T13:16:21.308Z
+    completed_at: 2026-07-15T13:20:16.156Z
