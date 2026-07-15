@@ -180,6 +180,17 @@ checks:
     runner: kspec validate --completeness --warnings-ok
     created_at: 2026-07-15T14:12:43.050Z
     completed_at: 2026-07-15T14:12:43.050Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 10 suites and 67 tests passed across publication/admission, control store, global
+      lifecycle, and spawn-control race tests.
+    name: focused dispatch suites
+    required: true
+    runner: npm test -- --fresh changed dispatch suites
+    created_at: 2026-07-15T14:12:48.749Z
+    completed_at: 2026-07-15T14:12:48.749Z
 events:
   - _ulid: 01KXK0X7FC15P6FZTBVDW8NP5M
     actor: Jacob Chapel
@@ -306,6 +317,13 @@ events:
       status: pass
       name: kspec validate completeness
     timestamp: 2026-07-15T14:12:43.310Z
+  - _ulid: 01KXK1Z0QK6113DF5873S21H8X
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused dispatch suites
+    timestamp: 2026-07-15T14:12:49.011Z
 examined_commit: 7a9cd4210598526f56874770c264c7edf86b49ee
 external_links: []
 lifecycle_state: open
@@ -318,5 +336,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T13:54:21.807Z
-updated_at: 2026-07-15T14:12:43.050Z
+updated_at: 2026-07-15T14:12:48.749Z
 notes: []
