@@ -205,6 +205,50 @@ async function withDelayedCommandAction<T>(
   }
 }
 
+interface CommandActionGate {
+  enteredCount: () => number;
+  release: () => void;
+}
+
+async function withGatedCommandAction<T>(
+  commandPath: string,
+  fn: (gate: CommandActionGate) => Promise<T>,
+): Promise<T> {
+  const releaseGate = deferred();
+  let enteredCount = 0;
+
+  prepareProgram = (program) => {
+    const command = findCommand(program, commandPath.split(" "));
+    const originalHandler = (
+      command as Command & {
+        _actionHandler?: (...args: unknown[]) => unknown;
+      }
+    )._actionHandler;
+
+    if (!originalHandler) {
+      throw new Error(`Command has no action handler: ${commandPath}`);
+    }
+
+    (
+      command as Command & { _actionHandler: (...args: unknown[]) => Promise<unknown> }
+    )._actionHandler = async (...args: unknown[]) => {
+      enteredCount += 1;
+      await releaseGate.promise;
+      return originalHandler(...args);
+    };
+  };
+
+  try {
+    return await fn({
+      enteredCount: () => enteredCount,
+      release: () => releaseGate.resolve(),
+    });
+  } finally {
+    releaseGate.resolve();
+    prepareProgram = undefined;
+  }
+}
+
 async function withInjectedCommand<T>(
   configure: (program: Command) => void | Promise<void>,
   fn: () => Promise<T>,
@@ -1023,9 +1067,9 @@ describe("Daemon Command API", () => {
 
   // AC: @daemon-concurrent-reads ac-concurrent-cache-reads
   it("allows cache-backed allowlisted read commands to overlap", async () => {
-    await withDelayedCommandAction("tasks list", 80, async () => {
-      const elapsed = await measureConcurrentRequests([
-        () =>
+    await withGatedCommandAction("tasks list", async (gate) => {
+      const responseBodies = Promise.all(
+        [
           makeRequest("/api/command", {
             method: "POST",
             body: JSON.stringify({
@@ -1033,7 +1077,6 @@ describe("Daemon Command API", () => {
               args: { json: true },
             }),
           }),
-        () =>
           makeRequest("/api/command", {
             method: "POST",
             body: JSON.stringify({
@@ -1041,9 +1084,19 @@ describe("Daemon Command API", () => {
               args: { json: true },
             }),
           }),
-      ]);
+        ].map(async (response) => (await response).json()),
+      );
 
-      expect(elapsed).toBeLessThan(150);
+      try {
+        await waitFor(() => gate.enteredCount() === 2);
+        expect(gate.enteredCount()).toBe(2);
+      } finally {
+        gate.release();
+        await responseBodies;
+      }
+
+      const bodies = await responseBodies;
+      expect(bodies.map((body) => body.exitCode)).toEqual([0, 0]);
     });
   });
 
