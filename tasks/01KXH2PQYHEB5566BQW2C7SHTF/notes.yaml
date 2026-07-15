@@ -1,1 +1,13 @@
-notes: []
+notes:
+  - _ulid: 01KXJN1HDQV2XYWVF6PKGVB0YT
+    content: "Approach: add a beforeCreate invocation boundary hook and serialize the dispatch authority
+      check with lifecycle mutations. The gate checks only global authority/global cleanup and the
+      matching canonical task control/cleanup; unrelated task cleanup is ignored. A gate winner
+      installs the exact active handoff before artifacts; pause losers are re-held once and
+      stopped/cleanup losers are discarded without retry. Edge cases: global vs task pause/stop,
+      unrelated cleanup, spawn-first pause natural completion, and spawn-first stop handoff without
+      cancellation. Test plan: six deterministic barrier traces in a new behavioral engine harness
+      plus artifact-protection coverage for the active handoff."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T10:27:00.151Z
