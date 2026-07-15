@@ -1,0 +1,26 @@
+_ulid: 01KXKBMV2JMB58X8RVQMFSN6AB
+slugs: []
+title: Review verified stop recovery (cycle 4)
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXKBMV2GXXYKZ7MN0MPKQ67X
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-15T17:02:01.296Z
+examined_commit: 29569d9efb5bc4674f7a7e830f6aa7f1c36fe716
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-15T17:02:01.298Z
+updated_at: null
+notes: []
