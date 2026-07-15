@@ -2,7 +2,17 @@ _ulid: 01KXKJFDC1E7ZTBE0VQWBTAD63
 slugs: []
 title: Review verified stop recovery (cycle 6)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed: Prettier checked 1048 files with no formatting differences."
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T19:22:46.267Z
+    completed_at: 2026-07-15T19:22:46.267Z
 events:
   - _ulid: 01KXKJFDC02SCPR5HWW0AY27VY
     actor: Jacob Chapel
@@ -17,6 +27,13 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T19:01:35.786Z
+  - _ulid: 01KXKKPJBY20N92K98H96JGT37
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T19:22:46.526Z
 examined_commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
 external_links: []
 lifecycle_state: open
@@ -29,5 +46,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T19:01:23.457Z
-updated_at: 2026-07-15T19:01:35.508Z
+updated_at: 2026-07-15T19:22:46.267Z
 notes: []
