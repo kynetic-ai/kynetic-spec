@@ -17,3 +17,16 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T12:30:23.780Z
+  - _ulid: 01KXJX75RNGSYPFD2RM88VYX1R
+    content: Implemented the stop/recovery phase machine and durable ownership boundary. Ownership is
+      written null before spawn, upgraded atomically with Linux PID/PGID/start-tick/member proof,
+      and only then published active; failed proof persistence directly reaps. Stop waits admitted
+      handoffs, commits stopped plus immutable targets, drops only the stopped queue scope, verifies
+      the persisted tuple and process group before signalling, aborts the matching live invocation,
+      closes matching registry/durable sessions, and advances owned -> signals_sent ->
+      sessions_closed -> removal. Startup, daemon shutdown, and retry share the driver. Added A/B,
+      mismatch, PID reuse, unsupported/unproved/leaderless group, timeout, closure failure, phase
+      crash, idempotency, and spawn-winner behavioral coverage.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T12:49:53.429Z
