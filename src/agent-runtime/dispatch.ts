@@ -32,11 +32,21 @@ import {
   findDispatchWorkspaceByCanonicalTask,
 } from "./workspace-identity.js";
 import { findPlanByRef } from "../parser/plans.js";
-import { DEFAULT_IDLE_GRACE_MS, DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
+import {
+  DEFAULT_IDLE_GRACE_MS,
+  DEFAULT_KSPEC_CLI_PATH,
+  InvocationCreateDeniedError,
+  runInvocation,
+} from "./invocation.js";
 import { SessionRegistry } from "./session-registry.js";
 import type { SessionIdleContext } from "./invocation.js";
 import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.js";
-import type { InvocationOptions, InvocationResult } from "./invocation.js";
+import type {
+  InvocationCreateDenial,
+  InvocationCreateHandoff,
+  InvocationOptions,
+  InvocationResult,
+} from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
 import { EventBus, type EventBusOptions } from "./event-bus.js";
@@ -2062,6 +2072,22 @@ export class DispatchEngine {
     return taskId.length > 0 ? taskId : null;
   }
 
+  private _inFlightOnlyCountForAgent(agentId: string): number {
+    const activeTaskIds = new Set(
+      Array.from(this.activeInvocationDetails.values())
+        .filter((record) => record.agentId === agentId && record.taskId !== undefined)
+        .map((record) => record.taskId),
+    );
+    let count = 0;
+    for (const key of this.inFlightTaskKeys) {
+      const separator = key.indexOf(":");
+      if (separator < 0 || key.slice(0, separator) !== agentId) continue;
+      const taskId = key.slice(separator + 1);
+      if (taskId && !activeTaskIds.has(taskId)) count++;
+    }
+    return count;
+  }
+
   /**
    * Canonical task ULIDs currently protected from workspace artifact cleanup.
    * Includes both registered active invocations (activeInvocationDetails) and
@@ -2605,7 +2631,11 @@ export class DispatchEngine {
     for (const agent of agents) {
       const maxConcurrent = agent.concurrency?.max_concurrent ?? 1;
       const active = this.activeCount.get(agent.id) ?? 0;
-      if (active >= maxConcurrent) continue;
+      // A dequeued candidate reserves its agent slot before the final create
+      // gate. Once admitted, activeCount replaces that reservation; do not
+      // double-count the protected in-flight key through completion.
+      const inFlightOnly = this._inFlightOnlyCountForAgent(agent.id);
+      if (active + inFlightOnly >= maxConcurrent) continue;
 
       const queue = this.queues.get(agent.id) ?? [];
       for (let index = 0; index < queue.length; index++) {
@@ -3288,8 +3318,6 @@ export class DispatchEngine {
         return false;
       }
 
-      // Increment active count
-      this.activeCount.set(agentId, (this.activeCount.get(agentId) ?? 0) + 1);
       // The resolver falls back to an ad-hoc npx adapter when the legacy
       // `agent.adapter` field is not a registered id. Dispatch is stricter
       // than one-shot `kspec agent run`: it requires a registered adapter so
@@ -3300,8 +3328,6 @@ export class DispatchEngine {
         console.error(
           `[dispatch] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Skipping invocation.`,
         );
-        const currentActive = this.activeCount.get(agentId) ?? 1;
-        this.activeCount.set(agentId, Math.max(0, currentActive - 1));
         if (this.kspecCliPath) {
           await this._addTaskNote(
             entry.change.taskRef,
@@ -3333,10 +3359,6 @@ export class DispatchEngine {
         resolvedAdapter: adapterId,
         runner: runnerId ?? undefined,
       };
-      this.activeInvocationDetails.set(invocationId, trackingRecord);
-      // Affinity is a canonical-task signal so aliases of the same task share it.
-      // AC: @dispatch-canonical-task-identity ac-scheduler-alias-dedupe
-      this.recentTaskAffinityRef = entry.change.taskId;
 
       let startedEventEmitted = false;
       const emitStartedEvent = (): void => {
@@ -3470,6 +3492,29 @@ export class DispatchEngine {
         },
       };
 
+      let creationAdmitted = false;
+      let createHandoffPromise: Promise<InvocationCreateHandoff> | undefined;
+      const beforeCreate = () => {
+        createHandoffPromise ??= this._admitInvocationCreation({
+          taskId: entry.change.taskId,
+          agentId,
+          trackingRecord,
+          handoff: {
+            invocationId,
+            sessionId: preSessionId,
+            taskId: entry.change.taskId ?? null,
+            agentId,
+            adapter: adapterId,
+          },
+          emitStartedEvent,
+        }).then((handoff) => {
+          creationAdmitted = true;
+          return handoff;
+        });
+        return createHandoffPromise;
+      };
+      options.beforeCreate = beforeCreate;
+
       let resolveInvocationStarted!: () => void;
       const invocationStarted = new Promise<void>((resolve) => {
         resolveInvocationStarted = resolve;
@@ -3513,8 +3558,12 @@ export class DispatchEngine {
           // AC: @agent-dispatch-engine ac-9 - Retry on transient errors
           try {
             markInvocationStarted();
-            emitStartedEvent();
             await markActivePromise;
+            // Start the one-shot ordered gate here so mocked invocation
+            // implementations observe the same active handoff. runInvocation
+            // awaits the memoized result again at its adjacent pre-artifact
+            // boundary; no second authority decision occurs.
+            await beforeCreate();
             invocationResult = await runInvocation(options);
             // Reset retry count on success
             entry.retryCount = 0;
@@ -3535,46 +3584,54 @@ export class DispatchEngine {
             };
           } catch (err) {
             markInvocationStarted();
-            const retryLimit = agent.budget?.max_retries ?? 3;
-            if (entry.retryCount < retryLimit) {
-              entry.retryCount++;
-              const backoffMs = Math.min(1000 * Math.pow(2, entry.retryCount - 1), 30_000);
-              entry.nextRetryAt = Date.now() + backoffMs;
-              console.warn(
-                `[dispatch] Invocation for agent "${agentId}" failed (attempt ${entry.retryCount}/${retryLimit}), retrying in ${backoffMs}ms`,
-                err,
-              );
-              // Re-enqueue for retry while preserving status precedence ordering.
-              const queue = this.queues.get(agentId) ?? [];
-              this._insertQueueEntry(queue, entry);
-              this.queues.set(agentId, queue);
-              // AC: @agent-dispatch-engine ac-9, ac-27 - Schedule wake-up to drain retry
-              // All drains go through _serializedDrain() to prevent concurrent races.
-              setTimeout(() => {
-                if (this.running && this._globalSchedulingPermitted()) {
-                  this._serializedDrain().catch(() => {
-                    /* best effort */
-                  });
-                }
-              }, backoffMs);
+            if (err instanceof InvocationCreateDeniedError) {
+              if (err.disposition === "held") {
+                const queue = this.queues.get(agentId) ?? [];
+                if (!queue.includes(entry)) this._insertQueueEntry(queue, entry);
+                this.queues.set(agentId, queue);
+              }
             } else {
-              console.error(
-                `[dispatch] Agent "${agentId}" exceeded retry limit. Dropping invocation.`,
-                err,
-              );
-              terminalEvent = {
-                type: "failed",
-                session_id: preSessionId,
-                agent_id: agentId,
-                task_id: entry.change.taskId,
-                task_ref: entry.change.taskRef,
-                task_title: entry.change.task?.title ?? null,
-                status: "failed",
-                timestamp: Date.now(),
-                // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
-                resolved_adapter: adapterId,
-                ...(runnerId ? { runner: runnerId } : {}),
-              };
+              const retryLimit = agent.budget?.max_retries ?? 3;
+              if (entry.retryCount < retryLimit) {
+                entry.retryCount++;
+                const backoffMs = Math.min(1000 * Math.pow(2, entry.retryCount - 1), 30_000);
+                entry.nextRetryAt = Date.now() + backoffMs;
+                console.warn(
+                  `[dispatch] Invocation for agent "${agentId}" failed (attempt ${entry.retryCount}/${retryLimit}), retrying in ${backoffMs}ms`,
+                  err,
+                );
+                // Re-enqueue for retry while preserving status precedence ordering.
+                const queue = this.queues.get(agentId) ?? [];
+                this._insertQueueEntry(queue, entry);
+                this.queues.set(agentId, queue);
+                // AC: @agent-dispatch-engine ac-9, ac-27 - Schedule wake-up to drain retry
+                // All drains go through _serializedDrain() to prevent concurrent races.
+                setTimeout(() => {
+                  if (this.running && this._globalSchedulingPermitted()) {
+                    this._serializedDrain().catch(() => {
+                      /* best effort */
+                    });
+                  }
+                }, backoffMs);
+              } else {
+                console.error(
+                  `[dispatch] Agent "${agentId}" exceeded retry limit. Dropping invocation.`,
+                  err,
+                );
+                terminalEvent = {
+                  type: "failed",
+                  session_id: preSessionId,
+                  agent_id: agentId,
+                  task_id: entry.change.taskId,
+                  task_ref: entry.change.taskRef,
+                  task_title: entry.change.task?.title ?? null,
+                  status: "failed",
+                  timestamp: Date.now(),
+                  // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+                  resolved_adapter: adapterId,
+                  ...(runnerId ? { runner: runnerId } : {}),
+                };
+              }
             }
           }
 
@@ -3602,9 +3659,11 @@ export class DispatchEngine {
 
           // Clean up active tracking before queue drain runs so completed
           // invocations do not linger in the active fleet snapshot.
-          const currentActive = this.activeCount.get(agentId) ?? 1;
-          this.activeCount.set(agentId, Math.max(0, currentActive - 1));
-          this.activeInvocationDetails.delete(invocationId);
+          if (creationAdmitted) {
+            const currentActive = this.activeCount.get(agentId) ?? 1;
+            this.activeCount.set(agentId, Math.max(0, currentActive - 1));
+            this.activeInvocationDetails.delete(invocationId);
+          }
 
           if (entry.change.toStatus === "pending_review") {
             try {
@@ -4240,6 +4299,57 @@ export class DispatchEngine {
         .length === 0 &&
       this.lifecycleStore?.getDegradedReason() == null
     );
+  }
+
+  /**
+   * Final ordered lifecycle decision immediately before invocation artifacts.
+   * The lifecycle mutex also serializes canonical control mutations, so either
+   * committed control denies creation or this complete active handoff becomes
+   * visible before a later control can win. This boundary never cancels work.
+   */
+  private async _admitInvocationCreation(input: {
+    taskId: string;
+    agentId: string;
+    trackingRecord: ActiveInvocationRecord;
+    handoff: InvocationCreateHandoff;
+    emitStartedEvent: () => void;
+  }): Promise<InvocationCreateHandoff> {
+    return this.lifecycleMutex.runExclusive(async () => {
+      const snapshot = this.lifecyclePublication.snapshot;
+      const globalCleanup = projectDispatchCleanupState(snapshot, { scope: "global" });
+      const taskControl = snapshot.tasks[input.taskId];
+      const taskCleanup = projectDispatchCleanupState(snapshot, {
+        scope: "task",
+        task_id: input.taskId,
+      });
+
+      let denial: InvocationCreateDenial | null = null;
+      if (snapshot.global.authority === "stopped" || globalCleanup.entries.length > 0) {
+        denial = "discarded";
+      } else if (snapshot.global.authority === "paused") {
+        denial = "held";
+      } else if (taskControl?.mode === "stopped" || taskCleanup.entries.length > 0) {
+        denial = "discarded";
+      } else if (taskControl?.mode === "paused") {
+        denial = "held";
+      }
+      if (denial) throw new InvocationCreateDeniedError(denial);
+
+      this.activeCount.set(input.agentId, (this.activeCount.get(input.agentId) ?? 0) + 1);
+      this.activeInvocationDetails.set(input.handoff.invocationId, input.trackingRecord);
+      // Affinity is a canonical-task signal so aliases of the same task share it.
+      // AC: @dispatch-canonical-task-identity ac-scheduler-alias-dedupe
+      this.recentTaskAffinityRef = input.taskId;
+      try {
+        input.emitStartedEvent();
+      } catch (error) {
+        const currentActive = this.activeCount.get(input.agentId) ?? 1;
+        this.activeCount.set(input.agentId, Math.max(0, currentActive - 1));
+        this.activeInvocationDetails.delete(input.handoff.invocationId);
+        throw error;
+      }
+      return input.handoff;
+    });
   }
 
   private _taskSchedulingPermitted(taskId: string): boolean {

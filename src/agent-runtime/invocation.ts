@@ -338,6 +338,33 @@ export interface InvocationOptions {
    * AC: @multi-turn-session-lifecycle ac-7
    */
   idleTimeoutMs?: number;
+  /**
+   * Final ordered dispatch admission boundary. Dispatch supplies this hook so
+   * committed lifecycle authority is checked after all preflight work but
+   * immediately before the first persisted session or adapter process artifact.
+   * A successful hook returns the active ownership handoff installed by the
+   * caller; a denied hook throws before either artifact exists.
+   */
+  beforeCreate?: () => Promise<InvocationCreateHandoff>;
+}
+
+/** Identity handed from final dispatch admission to active ownership. */
+export interface InvocationCreateHandoff {
+  invocationId: string;
+  sessionId: string;
+  taskId: string | null;
+  agentId: string;
+  adapter: string;
+}
+
+export type InvocationCreateDenial = "held" | "discarded";
+
+/** Non-retryable final-boundary denial owned by dispatch lifecycle authority. */
+export class InvocationCreateDeniedError extends Error {
+  constructor(readonly disposition: InvocationCreateDenial) {
+    super(`Invocation creation ${disposition} by committed lifecycle authority`);
+    this.name = "InvocationCreateDeniedError";
+  }
 }
 
 /**
@@ -809,6 +836,11 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       promptQueue.close();
     },
   };
+
+  // This is the common, final pre-artifact boundary. Keep it adjacent to
+  // createSession: everything above is pure/preflight work, while everything
+  // below may create durable session state or an adapter process.
+  await options.beforeCreate?.();
 
   // ─── Create session ───────────────────────────────────────────────────────
   // AC: @agent-invocation-lifecycle ac-1

@@ -124,6 +124,34 @@ function makeRecord(overrides: RecordOverrides = {}): DispatchWorkspaceRecord {
 describe("buildDispatchArtifactProtectionState", () => {
   // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
   // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
+  it("keeps a spawn-winner active handoff protected after pre-create admission", () => {
+    const handoff = {
+      invocationId: "01KRF37Y941E2T8D1ATFV63JB1",
+      sessionId: "01KRF37Y941E2T8D1ATFV63JB2",
+      taskId: "01KRF37Y941E2T8D1ATFV63JB0",
+      agentId: "worker",
+      adapter: "mock-acp",
+    };
+    const slug = "task-spawn-winner";
+    const shortId = "01krf37y";
+    const state = buildDispatchArtifactProtectionState({
+      worktreeRoot: WORKTREE_ROOT,
+      activeOrInFlightTaskRefs: [`@${handoff.taskId}`],
+      registry: { status: "loaded", records: [] },
+    });
+
+    expect(state.evaluateTaskRef(`@${handoff.taskId}`).preserve).toBe(true);
+    expect(state.evaluateDispatchBranch(`dispatch/task/${slug}/${shortId}`).preserve).toBe(true);
+    expect(
+      state.evaluateWorkspacePath(path.join(WORKTREE_ROOT, `${slug}-${shortId}`)).preserve,
+    ).toBe(true);
+    expect(
+      state.evaluateWorkspacePath(path.join(WORKTREE_ROOT, `${slug}-${shortId}-review`)).preserve,
+    ).toBe(true);
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-active-inflight-provisioning-artifact-preserved
+  // AC: @dispatch-workspace-cleanup-policy ac-protection-applies-to-every-destructive-surface
   it("preserves dispatcher artifacts for active task refs even when no registry record exists", () => {
     // Queue-to-spawn window: an invocation has been dequeued and the canonical
     // branch reserved, but the registry record has not yet been written. The
