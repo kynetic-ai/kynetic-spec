@@ -79663,7 +79663,7 @@ runs:
     completed_at: 2026-07-15T21:20:43.409Z
   - _ulid: 01KXKVQR66GH39BGG6MJJ8YHVH
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79687,7 +79687,18 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-07-15T21:45:52.318Z
-        completed_at: 2026-07-15T21:45:52.318Z
+        completed_at: 2026-07-15T21:46:02.732Z
+        notes: "Decision: skip full-suite runtime friction because inbox @01KRZ4B354B8V09P72KDMPGRXB and
+          @01KSZFP3RVE8BJXK0JE5BRRJJW already track it. Skip regression-disable/restore and
+          review-race success because observations @01KQYXP3VNGX8JE2993K359WX5,
+          @01KNBQGKSBKE90M3G7D7QJXENK, and @01KNBQH336DKF8BXR7XFHM1FFK cover it. Skip
+          timing-sensitive test guidance because @01KN7VSDRZMAAV9SX34P080TXB covers it. Capture one
+          scoped gap: @task-concurrent-mutation-regression-suite excludes session metadata writers,
+          and no session concurrent-mutation or lost-update tracking exists."
+      - status: completed
+        step_index: 3
+        started_at: 2026-07-15T21:46:02.732Z
+        completed_at: 2026-07-15T21:46:02.732Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T21:43:13.862Z
