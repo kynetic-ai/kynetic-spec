@@ -78226,7 +78226,7 @@ runs:
     completed_at: 2026-07-15T06:09:33.344Z
   - _ulid: 01KXJ7Q9DR9K2DQP7T0WJZJ7NF
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78239,7 +78239,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T06:35:05.464Z
-        completed_at: 2026-07-15T06:35:05.464Z
+        completed_at: 2026-07-15T06:36:18.441Z
+        notes: "High-confidence candidates: (1) friction — delayed/retried atomic review recording produced
+          duplicate blocker threads, verdicts, and checks in one review cycle, requiring explicit
+          administrative duplicate replies/resolution; (2) success — pairing deterministic
+          holdIngress barriers with real invocation execution for retry/post-invocation paths
+          produced behavioral proof at the exact asynchronous boundary without changing production
+          code. Excluded: the 2,687.8s full-suite long tail is already tracked by
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run with matching prior
+          evidence."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T06:36:18.441Z
+        completed_at: 2026-07-15T06:36:18.441Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T06:34:12.793Z
