@@ -79095,9 +79095,25 @@ runs:
     completed_at: 2026-07-15T15:08:35.444Z
   - _ulid: 01KXK6CNBAFVFS01ETXYDTPTEX
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T15:30:10.410Z
+        completed_at: 2026-07-15T15:30:47.434Z
+        notes: "What worked well: (1) Replacing an elapsed-time threshold with a release gate made
+          concurrency behavior directly observable: the first handler could not finish, so observing
+          the second enter proved overlap. (2) Diff-first review plus reading the command-dispatch
+          implementation independently verified the worker claim before task-note anchoring. (3)
+          Five fresh focused runs followed by the full fresh suite gave proportional flake-specific
+          and regression evidence. (4) Atomic batch recording kept eight review checks and the
+          evidence log coherent. (5) The detached-reviewer merge helper integrated to dev without
+          checking out or mutating the review snapshot."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T15:30:47.434Z
+        completed_at: 2026-07-15T15:30:47.434Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T15:30:10.410Z
