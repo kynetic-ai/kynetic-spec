@@ -287,8 +287,23 @@ async function createPublicationAdmissionHarness(
   vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
     if (gateSpawn) await spawn.arrive();
     const handoff = await options.beforeCreate?.();
+    if (!handoff) throw new Error("publication admission fixture omitted ownership handoff");
+    await options.onOwnershipPersisted?.({
+      invocation_id: handoff.invocationId,
+      session_id: handoff.sessionId,
+      task_id: handoff.taskId,
+      agent_id: handoff.agentId,
+      adapter: handoff.adapter,
+      owner_instance_id: handoff.ownerInstanceId,
+      pid: process.pid,
+      pgid: process.pid,
+      process_start_ticks: "1",
+      process_identity_platform: "linux_proc_stat_v1",
+      captured_at: new Date().toISOString(),
+      group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+    });
     artifacts.count++;
-    artifacts.starts.push({ taskId: handoff?.taskId ?? null, agentId: handoff?.agentId ?? "" });
+    artifacts.starts.push({ taskId: handoff.taskId, agentId: handoff.agentId });
     await completion.arrive();
     return { session: {} as never, outcome: "success", durationMs: 1, turnCount: 1 };
   });
@@ -323,6 +338,11 @@ afterEach(async () => {
     harnesses.splice(0).map(async (harness) => {
       harness.spawn.release();
       harness.completion.release();
+      await vi.waitFor(() => {
+        if (harness.engine.getLifecycleStatus().activeCount !== 0) {
+          throw new Error("fixture invocation is still active");
+        }
+      });
       await harness.engine.stop().catch(() => undefined);
       await cleanupTempDir(harness.rootDir);
     }),
