@@ -78923,7 +78923,7 @@ runs:
     completed_at: 2026-07-15T13:20:16.156Z
   - _ulid: 01KXK0G8B71DXCH6QF8SMVBHHC
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78942,10 +78942,16 @@ runs:
           Long full-suite progress uncertainty duplicates friction @01KNPJXXG. The omitted
           split-backend registration was a one-off harness setup mistake, not a systemic pattern. No
           unique high-confidence candidate passed the capture gate.
-      - status: completed
+      - status: skipped
         step_index: 2
         started_at: 2026-07-15T13:49:47.200Z
-        completed_at: 2026-07-15T13:49:47.200Z
+        completed_at: 2026-07-15T13:49:51.494Z
+        notes: "No captures: every systemic high-confidence insight was already tracked; remaining issues
+          were incidental. Skipping avoids duplicate observation noise."
+      - status: completed
+        step_index: 3
+        started_at: 2026-07-15T13:49:51.494Z
+        completed_at: 2026-07-15T13:49:51.494Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T13:47:16.711Z
