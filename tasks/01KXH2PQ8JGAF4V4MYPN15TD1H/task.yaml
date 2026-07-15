@@ -118,7 +118,7 @@ tags:
   - engine
   - tasks
 vcs_refs: []
-review_ref: "@01KXJH3J8GX4K1N1EDXHEX2BWG"
+review_ref: "@01KXJKSD10TM0323DP88343S9G"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-engine-task-pause-resume/01kxh2pq
@@ -283,6 +283,13 @@ history:
         previous: 2026-07-15T09:12:33.481Z
     command: task-submit
     timestamp: 2026-07-15T09:57:41.760Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXJKSD10TM0323DP88343S9G"
+        previous: "@01KXJH3J8GX4K1N1EDXHEX2BWG"
+    command: review-link
+    timestamp: 2026-07-15T10:05:07.359Z
 created_at: 2026-07-14T19:47:16.882Z
 started_at: 2026-07-15T09:42:46.067Z
 submitted_at: 2026-07-15T09:57:41.760Z
