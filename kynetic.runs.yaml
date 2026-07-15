@@ -78524,7 +78524,7 @@ runs:
     completed_at: 2026-07-15T09:15:13.446Z
   - _ulid: 01KXJJ6E0A5FVKRH0WNN8VPYA1
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78539,7 +78539,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T09:38:29.583Z
-        completed_at: 2026-07-15T09:38:29.583Z
+        completed_at: 2026-07-15T09:38:33.788Z
+        notes: "Systemic friction candidates: reflection guidance's meaningful-work gate omits review-only
+          sessions even when they create reviews and transition task state; the reflection skill
+          examples say workflow show without the required run-ref; the Codex review skill hardcodes
+          gpt-5.3-codex, which this ChatGPT-backed CLI account rejects; the required fresh full
+          suite is costly/noisy for a three-file review despite useful focused coverage. Treat these
+          as candidates only until search confirms existing tracking."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T09:38:33.788Z
+        completed_at: 2026-07-15T09:38:33.788Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T09:37:14.762Z
