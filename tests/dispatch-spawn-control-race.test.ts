@@ -324,6 +324,7 @@ describe("final ordered dispatch create gate", () => {
       } else {
         await harness.engine.applyTaskLifecycleAction("pause", { taskId: harness.taskId });
       }
+      expect(harness.artifacts).toMatchObject({ processes: 0, sessions: 0, handoffs: [] });
       harness.beforeCreate.release();
 
       await harness.admissionSettled;
@@ -344,6 +345,7 @@ describe("final ordered dispatch create gate", () => {
       await harness.beforeCreate.entered;
 
       harness.store.commit(stopSnapshot(harness, scope));
+      expect(harness.artifacts).toMatchObject({ processes: 0, sessions: 0, handoffs: [] });
       harness.beforeCreate.release();
 
       await harness.admissionSettled;

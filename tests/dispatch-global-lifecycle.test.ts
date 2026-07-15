@@ -677,6 +677,7 @@ describe("global dispatch lifecycle authority", () => {
     await harness.engine.applyGlobalLifecycleAction("start");
 
     expect(recordCandidateStart(harness)).toEqual([currentTaskId]);
+    expect(harness.store.writes).toBe(1);
     expect(harness.engine.getLifecycleStatus().heldTaskIds).toEqual([]);
   });
 
