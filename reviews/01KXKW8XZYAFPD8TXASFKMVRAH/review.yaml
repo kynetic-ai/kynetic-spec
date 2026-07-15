@@ -163,6 +163,17 @@ checks:
     runner: kspec validate --alignment --warnings-ok
     created_at: 2026-07-15T22:15:12.069Z
     completed_at: 2026-07-15T22:15:12.069Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 329 documented baseline warnings. Target spec has no inherited traits; all 25
+      task-owned stop/recovery ACs have behavioral test annotations.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-15T22:15:19.265Z
+    completed_at: 2026-07-15T22:15:19.265Z
 events:
   - _ulid: 01KXKW8XZXGGQHRQMR6139KX9C
     actor: Jacob Chapel
@@ -289,6 +300,13 @@ events:
       status: pass
       name: kspec validate alignment
     timestamp: 2026-07-15T22:15:12.340Z
+  - _ulid: 01KXKXJGVE581VRZ7TW4NFYHDY
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T22:15:19.662Z
 examined_commit: 646926325f598435023660377979f207b6a95856
 external_links: []
 lifecycle_state: open
@@ -325,5 +343,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-15T21:52:36.862Z
-updated_at: 2026-07-15T22:15:12.069Z
+updated_at: 2026-07-15T22:15:19.265Z
 notes: []
