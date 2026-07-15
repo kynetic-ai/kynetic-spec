@@ -1,0 +1,26 @@
+_ulid: 01KXHWPKPDN1W1E8C3EZJ9BJXH
+slugs: []
+title: Review task-dispatch-control-persistence
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXHWPKP6PYC5P2W8T05GZ2QV
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-15T03:21:36.198Z
+examined_commit: 1716ac35c1764b2963e326c76fb18097ac07d030
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@task-dispatch-control-persistence"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-15T03:21:36.205Z
+updated_at: null
+notes: []
