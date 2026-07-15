@@ -177,6 +177,13 @@ events:
       kind: blocker
       thread_ulid: 01KXK0CS5GV6TT1WAQRR1Q03NS
     timestamp: 2026-07-15T13:45:23.117Z
+  - _ulid: 01KXK0CYW7JP5FS9J9947SM9CX
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXK0CYMN9Z5FX9VQYTD6G2CX
+    timestamp: 2026-07-15T13:45:28.711Z
 examined_commit: 3a9909c4870a49f5f3ac174716edfca067852055
 external_links: []
 lifecycle_state: open
@@ -229,7 +236,28 @@ threads:
           failure.
         created_at: 2026-07-15T13:45:22.864Z
     kind: blocker
+  - _ulid: 01KXK0CYMN9Z5FX9VQYTD6G2CX
+    anchor:
+      type: code
+      commit: 3a9909c4870a49f5f3ac174716edfca067852055
+      line_end: 2049
+      line_start: 2044
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXK0CYMNPQNZ4JGHMJEH0YPA
+        author: pr-reviewer
+        body: MUST-FIX — Recovery requires deep equality with the immutable cleanup target even though the
+          live invocation mutates that same durable tuple by adding exited_at in its finally block.
+          If the process exits after owned is committed but before signals_sent is committed
+          (including a daemon crash or timeout race), retry/startup sees the legitimate exited_at
+          addition as cleanup_ownership_mismatch and can never advance the durable cleanup. The
+          phase-crash tests keep session ownership unchanged and miss this real transition. Make the
+          allowed exit observation recoverable without weakening identity checks and cover an
+          owned-phase crash after the invocation records exited_at.
+        created_at: 2026-07-15T13:45:28.469Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-15T13:24:33.110Z
-updated_at: 2026-07-15T13:45:22.864Z
+updated_at: 2026-07-15T13:45:28.469Z
 notes: []
