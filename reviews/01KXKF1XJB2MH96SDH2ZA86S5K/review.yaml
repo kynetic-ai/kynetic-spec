@@ -226,6 +226,12 @@ events:
     payload:
       thread_ulid: 01KXKG4GQ0Y1ZDE95GH3W2Z1C1
     timestamp: 2026-07-15T18:52:32.841Z
+  - _ulid: 01KXKHZD5EMHZJJRP59YCSBHBR
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKG4PXC7274PNRZ6HV1WJQA
+    timestamp: 2026-07-15T18:52:38.958Z
 examined_commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
 external_links: []
 lifecycle_state: closed
@@ -353,6 +359,13 @@ threads:
           propagate other evidence failures and add a behavioral runtime test for rejected member
           reads.
         created_at: 2026-07-15T18:20:35.628Z
+      - _ulid: 01KXKHZCWS297W5NKJ6EXNAAGH
+        author: Jacob Chapel
+        body: "Fixed in 0898f3a8e0: process-group enumeration no longer converts arbitrary member-read
+          failures to absence. Only ENOENT/ESRCH disappearance races return null; EACCES, EIO, and
+          parse errors propagate to cleanup_identity_unverifiable. Added a behavioral
+          rejected-member-read regression proving no signal and failed cleanup."
+        created_at: 2026-07-15T18:52:38.681Z
     kind: blocker
   - _ulid: 01KXKG5HJ5EEXJVWT78BFV1QXB
     entries:
@@ -384,5 +397,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T18:21:27.777Z
 created_at: 2026-07-15T18:01:35.563Z
-updated_at: 2026-07-15T18:52:32.581Z
+updated_at: 2026-07-15T18:52:38.681Z
 notes: []
