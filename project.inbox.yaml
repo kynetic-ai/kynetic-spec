@@ -5262,3 +5262,12 @@ inbox:
       - reflection
     added_by: Jacob Chapel
     created_at: 2026-07-14T21:58:53.589Z
+  - _ulid: 01KXJKHVTNZHY72RH1N6XQM1A0
+    text: "Fix the kspec-reflect skill's workflow command examples: kspec workflow show requires
+      <run-ref>, and workflow next should consistently show [run-ref] usage. The current no-argument
+      examples fail during reflection with 'missing required argument run-ref'. Update the package
+      skill source and rendered outputs, with command-example coverage if available."
+    tags:
+      - reflection
+    added_by: Jacob Chapel
+    created_at: 2026-07-15T10:00:57.941Z
