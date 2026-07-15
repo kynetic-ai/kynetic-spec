@@ -188,9 +188,25 @@ events:
       kind: blocker
       thread_ulid: 01KXHXKZH4NK971659FX6AQDMS
     timestamp: 2026-07-15T03:37:38.849Z
+  - _ulid: 01KXHXMJT6JEFRQFQMWSQZF47C
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-15T03:37:58.342Z
+  - _ulid: 01KXHXMJT6687MG25H29BJK0D8
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-15T03:37:58.342Z
 examined_commit: 1716ac35c1764b2963e326c76fb18097ac07d030
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -221,7 +237,14 @@ threads:
           behavioral regression test covering both cases."
         created_at: 2026-07-15T03:37:38.596Z
     kind: blocker
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-15T03:37:58.342Z
 created_at: 2026-07-15T03:21:36.205Z
-updated_at: 2026-07-15T03:37:38.596Z
+updated_at: 2026-07-15T03:37:58.342Z
 notes: []
