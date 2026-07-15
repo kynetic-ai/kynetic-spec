@@ -32,6 +32,9 @@
  *     secret value into the failure path.
  * - MOCK_ACP_FAIL_VAR: Env var name whose value substitutes for "{VAR}" in
  *     MOCK_ACP_FAIL_TEMPLATE.
+ * - MOCK_ACP_RESIST_TERMINATION: If true, ignore SIGTERM and keep the process
+ *     alive after stdin closes so process-reap escalation can be tested.
+ * - MOCK_ACP_PID_FILE: Write this mock process's PID to the given file.
  */
 
 import * as fs from "node:fs";
@@ -74,6 +77,18 @@ const suppressUpdates = process.env.MOCK_ACP_SUPPRESS_UPDATES === "true";
 const sendNonMeaningfulOnly = process.env.MOCK_ACP_SEND_NON_MEANINGFUL_ONLY === "true";
 // Send a specific sessionUpdate type before responding
 const customUpdateType = process.env.MOCK_ACP_CUSTOM_UPDATE_TYPE;
+const resistTermination = process.env.MOCK_ACP_RESIST_TERMINATION === "true";
+const pidFile = process.env.MOCK_ACP_PID_FILE;
+
+if (pidFile) {
+  fs.writeFileSync(pidFile, String(process.pid));
+}
+
+if (resistTermination) {
+  process.on("SIGTERM", () => {
+    // Intentionally resist graceful termination. SIGKILL remains uncatchable.
+  });
+}
 
 // ─── JSON-RPC Helpers ────────────────────────────────────────────────────────
 
@@ -429,5 +444,9 @@ rl.on("line", (line) => {
 });
 
 rl.on("close", () => {
+  if (resistTermination) {
+    setInterval(() => {}, 1_000);
+    return;
+  }
   process.exit(0);
 });

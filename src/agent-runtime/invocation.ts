@@ -81,6 +81,8 @@ export const DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS = 120;
  */
 export const DEFAULT_MAX_PROMPT_QUEUE_DEPTH = 64;
 
+const OWNERSHIP_FAILURE_TERMINATION_GRACE_MS = 1_000;
+
 interface LinuxProcEvidence {
   pid: number;
   pgid: number;
@@ -699,6 +701,66 @@ function disposeAgent(agent: SpawnedAgent | null): null {
   return null;
 }
 
+function spawnedAgentExited(agent: SpawnedAgent): boolean {
+  return agent.process.exitCode !== null || agent.process.signalCode !== null;
+}
+
+async function waitForSpawnedAgentExit(agent: SpawnedAgent, timeoutMs?: number): Promise<boolean> {
+  if (spawnedAgentExited(agent)) return true;
+
+  return new Promise<boolean>((resolve) => {
+    let settled = false;
+    let timer: NodeJS.Timeout | undefined;
+
+    const finish = (exited: boolean): void => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      agent.process.off("exit", onExit);
+      resolve(exited);
+    };
+    const onExit = (): void => finish(true);
+
+    agent.process.once("exit", onExit);
+    if (spawnedAgentExited(agent)) {
+      finish(true);
+      return;
+    }
+    if (timeoutMs !== undefined) {
+      timer = setTimeout(() => finish(false), timeoutMs);
+    }
+  });
+}
+
+/**
+ * Reap a child whose durable ownership could not be published.
+ *
+ * Ownership admission must remain reserved until process exit is observed:
+ * once durable publication fails there may be no recoverable PID proof for a
+ * later stop. Give the process a bounded graceful window, escalate the entire
+ * spawned process group to SIGKILL, and then wait for the unambiguous exit
+ * event before the caller releases that reservation or records exited_at.
+ */
+async function reapUnpublishedAgent(agent: SpawnedAgent | null): Promise<null> {
+  if (!agent) return null;
+
+  try {
+    agent.kill("SIGTERM");
+  } catch {
+    // Exit observation below is authoritative; a failed graceful signal still
+    // proceeds to bounded forceful escalation.
+  }
+  if (await waitForSpawnedAgentExit(agent, OWNERSHIP_FAILURE_TERMINATION_GRACE_MS)) return null;
+
+  try {
+    agent.kill("SIGKILL");
+  } catch {
+    // If the process raced to exit, the state/event checks below will observe it.
+  }
+  await waitForSpawnedAgentExit(agent);
+  return null;
+}
+
 // ─── Core Invocation ──────────────────────────────────────────────────────────
 
 /**
@@ -1082,7 +1144,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         await onOwnershipPersisted?.(ownership);
         ownershipPublished = true;
       } catch (error) {
-        state.agent = disposeAgent(state.agent);
+        state.agent = await reapUnpublishedAgent(state.agent);
         throw error;
       }
     }

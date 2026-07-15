@@ -19,7 +19,7 @@
  *     ac-skill-formatting-uses-resolved-adapter
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, onTestFinished, vi } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as YAML from "yaml";
@@ -280,6 +280,65 @@ describe("runInvocation: agent.dispatched event payload", { timeout: 120_000 }, 
     expect(spawn).not.toHaveBeenCalled();
     append.mockRestore();
     spawn.mockRestore();
+  });
+
+  it("reaps a spawned process before releasing failed ownership publication", async () => {
+    const pidFile = path.join(testDir, "resistant-acp.pid");
+    registerMockAdapter({
+      MOCK_ACP_RESIST_TERMINATION: "true",
+      MOCK_ACP_PID_FILE: pidFile,
+    });
+    const agent = makeTestAgent({ adapter: "mock-acp" });
+    const sessionId = testUlid("SESS", 10);
+    const handoff = {
+      invocationId: testUlid("INVK", 10),
+      sessionId,
+      taskId: null,
+      agentId: agent.id,
+      adapter: "mock-acp",
+      ownerInstanceId: testUlid("OWNR", 10),
+    };
+    let childPid: number | undefined;
+    let aliveWhenOwnershipReleased: boolean | undefined;
+
+    onTestFinished(() => {
+      if (childPid === undefined) return;
+      try {
+        process.kill(-childPid, "SIGKILL");
+      } catch {
+        // Expected after the invocation has reaped the process group.
+      }
+    });
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir,
+      sessionId,
+      cwd: process.cwd(),
+      prompt: "Fail ownership publication after spawn",
+      trigger: "task.ready",
+      runnerRegistry: { runners: {} },
+      beforeCreate: async () => handoff,
+      onOwnershipPersisted: async (ownership) => {
+        childPid = ownership.pid ?? undefined;
+        throw new Error("injected ownership publication failure");
+      },
+      onOwnershipFailed: () => {
+        if (childPid === undefined) throw new Error("missing spawned process identity");
+        try {
+          process.kill(childPid, 0);
+          aliveWhenOwnershipReleased = true;
+        } catch {
+          aliveWhenOwnershipReleased = false;
+        }
+      },
+    });
+
+    expect(result.outcome).toBe("failed");
+    expect(Number(await fs.readFile(pidFile, "utf8"))).toBe(childPid);
+    expect(aliveWhenOwnershipReleased).toBe(false);
+    expect(() => process.kill(childPid!, 0)).toThrow();
   });
 });
 
