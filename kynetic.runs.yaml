@@ -79095,7 +79095,7 @@ runs:
     completed_at: 2026-07-15T15:08:35.444Z
   - _ulid: 01KXK6CNBAFVFS01ETXYDTPTEX
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79128,7 +79128,22 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-07-15T15:31:10.225Z
-        completed_at: 2026-07-15T15:31:10.225Z
+        completed_at: 2026-07-15T15:34:06.868Z
+        notes: "Coverage results: evidence-log friction is already tracked by unresolved observation
+          @01KR2JD1 (plus related observations); no duplicate. Full-suite performance/reliability is
+          covered by in-progress requirement @test-suite-perf-reliability; no duplicate. Batch
+          optional-check loss is already tracked exactly by inbox item and unresolved observation
+          @01KQ1272; no duplicate. Automation-eligible tasks without spec_ref are covered by
+          needs_work task @task-triage-automation-eligible-missing-spec-ref and prior baseline
+          triage; no duplicate. Reviewer entrypoint mismatch is not tracked: live @pr-reviewer uses
+          core skills review/review-gates/merge, defaults now use /kspec:review, but project
+          kspec.config.yaml still sets pr_review to {skill:pr-review}, yielding an unavailable
+          -review instruction. Searches for legacy pr-review/config/entrypoint matches found no
+          task, spec, inbox, or observation covering this project-local stale token."
+      - status: completed
+        step_index: 3
+        started_at: 2026-07-15T15:34:06.868Z
+        completed_at: 2026-07-15T15:34:06.868Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T15:30:10.410Z
