@@ -167,7 +167,7 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-final-pre-spawn-control-gate"
@@ -178,6 +178,7 @@ tags:
   - recovery
   - cancellation
 vcs_refs: []
+session_id: 01KXJVXVXZJJZ77Z362T1X90JK
 history:
   - author: Jacob Chapel
     changes:
@@ -186,6 +187,20 @@ history:
         previous: null
     command: task-set
     timestamp: 2026-07-14T20:12:00.600Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: pending
+      session_id:
+        new: 01KXJVXVXZJJZ77Z362T1X90JK
+        previous: null
+      started_at:
+        new: 2026-07-15T12:28:31.529Z
+        previous: null
+    command: task-start
+    timestamp: 2026-07-15T12:28:31.529Z
 created_at: 2026-07-14T19:47:18.036Z
+started_at: 2026-07-15T12:28:31.529Z
 todos: []
 automation: eligible
