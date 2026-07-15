@@ -12,8 +12,11 @@ description: "The fresh full suite intermittently failed tests/daemon-command-ap
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to dev at 87ba5a40db4a. Replaced the flaky wall-clock overlap threshold with
+  deterministic gated synchronization; five fresh focused runs and the full 10,581-test suite
+  passed, along with format, lint, typecheck, and kspec validations.
 depends_on: []
 context: []
 priority: 3
@@ -72,8 +75,24 @@ history:
         previous: null
     command: review-link
     timestamp: 2026-07-15T15:11:25.006Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to dev at 87ba5a40db4a. Replaced the flaky wall-clock overlap threshold with
+          deterministic gated synchronization; five fresh focused runs and the full 10,581-test
+          suite passed, along with format, lint, typecheck, and kspec validations.
+        previous: null
+      completed_at:
+        new: 2026-07-15T15:28:45.721Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-15T15:28:45.730Z
 created_at: 2026-07-15T13:41:25.731Z
 started_at: 2026-07-15T14:47:43.864Z
 submitted_at: 2026-07-15T15:05:02.684Z
+completed_at: 2026-07-15T15:28:45.721Z
 todos: []
 automation: eligible
