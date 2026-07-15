@@ -15,3 +15,18 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T04:28:24.982Z
+  - _ulid: 01KXJ1ZSSE5WTHK22R49X1GYPT
+    content: "Implemented global lifecycle authority and coalesced reconstruction. Matrix evidence:
+      stopped/paused/running bootstrap loads committed authority before scheduling; pause preserves
+      one active invocation/session and projects draining; paused resume discards stale held state
+      and starts only the current canonical task; concurrent/repeated resume yields one applied
+      transition and one canonical start; stopped start ignores unrelated task cleanup for the
+      global transition but keeps the matching task held; pending/failed global cleanup rejects
+      start/pause/resume with zero writes and zero starts. Authority gates cover bootstrap,
+      event/coalesced/retry drains, reconciliation, post-invocation, and degraded recovery through
+      the serialized drain boundary. Verification: focused 177/177, full suite 10,618 passed and 3
+      repository-skipped; format, repo/focused lint, typecheck, diff check, refs, alignment, and
+      completeness all exit 0."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T04:54:00.239Z
