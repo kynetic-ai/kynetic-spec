@@ -78764,9 +78764,21 @@ runs:
     completed_at: 2026-07-15T11:29:52.562Z
   - _ulid: 01KXJTHMKQRMS0SD84WE84KQH9
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-15T12:03:10.583Z
+        completed_at: 2026-07-15T12:04:59.267Z
+        notes: "Worked well: the review's line-anchored findings isolated the ordering defect and
+          test-validity gap. Replacing scheduler-level counters with a deterministic barrier through
+          the real runInvocation boundary made the AC proof sensitive to removal or relocation of
+          the hook. Focused regression runs caught contract fallout before the final full suite."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-15T12:04:59.267Z
+        completed_at: 2026-07-15T12:04:59.267Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T12:03:10.583Z
