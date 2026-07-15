@@ -295,6 +295,20 @@ events:
       status: pass
       name: diff hygiene
     timestamp: 2026-07-15T16:24:19.279Z
+  - _ulid: 01KXK9HHH08GMXDVTMES331K1T
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXK9HH8B54VC5SZEPX6Z0NVD
+    timestamp: 2026-07-15T16:25:16.064Z
+  - _ulid: 01KXK9HMTF99B94THG0C9R76KW
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXK9HMJ73H686MBAHF98K650
+    timestamp: 2026-07-15T16:25:19.439Z
 examined_commit: d0a782d62c75b2bebc992c39495d2a8079f7ca52
 external_links: []
 lifecycle_state: open
@@ -304,8 +318,53 @@ subject:
   content_hash: ""
   ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXK9HH8B54VC5SZEPX6Z0NVD
+    anchor:
+      type: code
+      commit: d0a782d62c75b2bebc992c39495d2a8079f7ca52
+      line_end: 1086
+      line_start: 1084
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KXK9HH8BPNW6KZKNRX3HAAMB
+        author: Jacob Chapel
+        body: "MUST-FIX — Post-spawn ownership-publication failure does not reap the child before releasing
+          ownership. Lines 1084-1086 call synchronous disposeAgent(), whose only action is a
+          best-effort SIGTERM; src/agents/spawner.ts:242-265 signals the group and destroys streams
+          but never waits for exit or escalates. Control then reaches lines 1437-1448, closes the
+          reservation, and invokes onOwnershipFailed. If updateSessionDispatchOwnership fails, no
+          PID proof remains durable; if onOwnershipPersisted throws, durableOwnership is set and
+          finally stamps exited_at even though exit was never observed. A SIGTERM-resistant adapter
+          can therefore remain alive with no recoverable ownership. I reproduced the signal behavior
+          with a detached child that ignored SIGTERM: it was still alive after 250 ms and required
+          SIGKILL. This violates the task's explicit “post-spawn durability failure → direct reap/no
+          active handoff” case. Implement an awaited, verified reap with bounded escalation before
+          releasing ownership or recording exit, and add the required behavioral fault-injection
+          regression that fails post-spawn durability publication and asserts actual process exit
+          plus no active handoff. The current tests/agent-invocation.test.ts:245-280 case fails
+          agent.dispatched before spawn and explicitly proves spawn never occurred, so it does not
+          cover this path."
+        created_at: 2026-07-15T16:25:15.787Z
+    kind: blocker
+  - _ulid: 01KXK9HMJ73H686MBAHF98K650
+    entries:
+      - _ulid: 01KXK9HMJ7YJAC4NN6SKZH21KB
+        author: Jacob Chapel
+        body: |-
+          Review evidence log
+
+          Files read: all 18 submitted files — src/agent-runtime/{dispatch.ts,invocation.ts,session-registry.ts}; src/schema/dispatch-control.ts; src/sessions/{store.ts,types.ts}; tests/{active-session-registry,agent-dispatch-engine,agent-invocation,agent-runner-e2e,dispatch-canonical-task-identity-integration,dispatch-control-store,dispatch-degraded-state,dispatch-global-lifecycle,dispatch-lifecycle-publication-admission,dispatch-spawn-control-race,dispatch-stop-recovery,dispatch-task-lifecycle}.test.ts — plus interacting src/agents/spawner.ts, task/spec/plan context, and both prior review cycles.
+
+          Commands run: git diff/log/status/diff --check; kspec task/item/review lookups; rg AC/source-scan/call-site searches; npm run format:check; npm run lint -- --quiet; focused npx oxlint on every changed TS/test file; npm run typecheck; npm test -- --fresh; kspec validate --refs/--alignment/--completeness --warnings-ok; an isolated detached-process SIGTERM probe with forced SIGKILL cleanup.
+
+          Claims verified: fresh full suite passed 2,805 suites / 10,693 tests with 3 skipped; prior-cycle active-count ownership-handoff and missing/corrupt-metadata fixes are present and their focused suites pass; stopped-authority admission is behaviorally exercised; worker claim that post-spawn durability failure “directly reaps” is disproved by the synchronous SIGTERM-only path and executable probe.
+
+          Categories searched: correctness, process lifecycle and ownership races, scope isolation, error handling, recovery phases, schema/integration, security of PID/PGID reuse, AC annotation quality, and source-scanning-test prohibition. One blocker recorded. No shared/package guidance surfaces changed, so neutrality/render checks are not applicable.
+        created_at: 2026-07-15T16:25:19.175Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-15T16:06:31.826Z
-updated_at: 2026-07-15T16:24:19.004Z
+updated_at: 2026-07-15T16:25:19.175Z
 notes: []
