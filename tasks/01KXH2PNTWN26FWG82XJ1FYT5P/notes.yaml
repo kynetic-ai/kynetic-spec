@@ -63,3 +63,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T06:01:09.304Z
+  - _ulid: 01KXJ6F5M9HPB9E064M9S81DQS
+    content: "Fix cycle 2 approach: extend the behavioral lifecycle harness instead of changing
+      production behavior. Add deterministic coverage for every required scheduling ingress and
+      missing global transition matrix cell, a stopped reconstruction case that mutates
+      authoritative task/rule state and proves only the current canonical candidate starts, and a
+      preservation case seeded with a non-empty degraded target. Reuse existing engine private-test
+      access patterns and barriers; keep reconciliation/coalescing enabled only in the focused cases
+      that exercise them. Re-verify all 16 task-owned AC annotations, focused tests, full suite,
+      format/lint/typecheck, diff check, and all kspec validation gates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T06:12:18.185Z
