@@ -79095,7 +79095,7 @@ runs:
     completed_at: 2026-07-15T15:08:35.444Z
   - _ulid: 01KXK6CNBAFVFS01ETXYDTPTEX
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79143,7 +79143,21 @@ runs:
       - status: completed
         step_index: 3
         started_at: 2026-07-15T15:34:06.868Z
-        completed_at: 2026-07-15T15:34:06.868Z
+        completed_at: 2026-07-15T15:34:34.293Z
+        notes: "Proposed improvement (small, clear scope): update the project-local kspec.config.yaml
+          agent.skills.pr_review entry from the stale {skill:pr-review} token to the installed core
+          review entrypoint ({skill:kspec-review}, or remove the override to use the current
+          default). Add/adjust a configuration/dispatch regression proving the configured reviewer
+          entrypoint resolves to an available skill for the codex reviewer. This prevents future
+          reviewer prompts from instructing agents to invoke an unavailable -review flow and aligns
+          the project override with @pr-reviewer plus the implemented role-entry fail-fast contract.
+          Existing spec @dispatch-role-workflow-entry-contract covers the behavior; no new spec is
+          needed. If approved, capture as a small task rather than inbox because the file and
+          expected change are known."
+      - status: completed
+        step_index: 4
+        started_at: 2026-07-15T15:34:34.293Z
+        completed_at: 2026-07-15T15:34:34.293Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T15:30:10.410Z
