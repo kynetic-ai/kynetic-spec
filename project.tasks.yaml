@@ -34043,7 +34043,7 @@
   slugs: []
   title: Stabilize daemon command API overlap timing test
   type: bug
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   priority: 3
@@ -34054,4 +34054,5 @@
   todos_count: 0
   created_at: 2026-07-15T13:41:25.731Z
   started_at: 2026-07-15T14:47:43.864Z
+  submitted_at: 2026-07-15T15:05:02.684Z
   automation: eligible

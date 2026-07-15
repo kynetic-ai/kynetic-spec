@@ -12,7 +12,7 @@ description: "The fresh full suite intermittently failed tests/daemon-command-ap
 spec_ref: null
 meta_ref: null
 plan_ref: null
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on: []
 context: []
@@ -21,6 +21,14 @@ tags:
   - testing
   - flaky
 vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/stabilize-daemon-command-api-overlap-timing-test/01kxk05h
+  captured_at: 2026-07-15T15:05:02.679Z
+  commit: 5f77a5ccc7b8d2f2ea48581d08f06797c0ea56c3
+  remote: null
+  remote_url: null
+  upstream_ref: dev
 session_id: 01KXK3X1CAKM6TGGAQD3BNJM0F
 history:
   - author: Jacob Chapel
@@ -36,7 +44,28 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-07-15T14:47:43.876Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/stabilize-daemon-command-api-overlap-timing-test/01kxk05h
+          captured_at: 2026-07-15T15:05:02.679Z
+          commit: 5f77a5ccc7b8d2f2ea48581d08f06797c0ea56c3
+          remote: null
+          remote_url: null
+          upstream_ref: dev
+        previous: null
+      submitted_at:
+        new: 2026-07-15T15:05:02.684Z
+        previous: null
+    command: task-submit
+    timestamp: 2026-07-15T15:05:02.685Z
 created_at: 2026-07-15T13:41:25.731Z
 started_at: 2026-07-15T14:47:43.864Z
+submitted_at: 2026-07-15T15:05:02.684Z
 todos: []
 automation: eligible
