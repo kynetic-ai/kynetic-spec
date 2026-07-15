@@ -23823,6 +23823,27 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-15T05:39:30.142Z
+  - _ulid: 01KXJ7W7BR3PGNWZDH2RTK3CMQ
+    type: friction
+    content: Delayed or retried atomic review recording can duplicate the same check, blocker-thread,
+      and verdict set within one review cycle. The duplicate records then require administrative
+      replies and resolutions so workers can distinguish canonical findings from retry artifacts.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-15T06:36:54.521Z
+  - _ulid: 01KXJ7W7PWP4VSSJP99YA3ZKA9
+    type: success
+    content: Concurrency fix-cycle coverage was strongest when a lightweight candidate-start recorder
+      covered the lifecycle matrix while real invocation execution covered retry and post-invocation
+      ingress. Deterministic holdIngress barriers at each async boundary made authority races
+      reproducible without production test hooks.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-15T06:36:54.876Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
