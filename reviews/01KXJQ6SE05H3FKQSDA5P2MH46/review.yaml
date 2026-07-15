@@ -2,7 +2,107 @@ _ulid: 01KXJQ6SE05H3FKQSDA5P2MH46
 slugs: []
 title: Review final ordered lifecycle gate before creation
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1046 matched files formatted; exit 0.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T11:21:58.439Z
+    completed_at: 2026-07-15T11:21:58.439Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide lint: 0 errors (existing 702-warning baseline). Focused oxlint on all four
+      changed files: 0 warnings, 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T11:22:01.393Z
+    completed_at: 2026-07-15T11:22:01.393Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and tsc --noEmit completed with exit 0.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T11:22:04.412Z
+    completed_at: 2026-07-15T11:22:04.412Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Fresh uncached run: 2800/2800 suites passed; 10655 passed, 3 skipped; exit 0."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T11:22:07.538Z
+    completed_at: 2026-07-15T11:22:07.538Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --refs --warnings-ok passed; 6 existing deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T11:22:10.370Z
+    completed_at: 2026-07-15T11:22:10.370Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --alignment --warnings-ok passed with repository baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T11:22:13.282Z
+    completed_at: 2026-07-15T11:22:13.282Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: kspec validate --completeness --warnings-ok passed with repository baseline warnings; all
+      three task-owned AC annotations are present.
+    name: kspec validate completeness
+    required: true
+    runner: kspec
+    created_at: 2026-07-15T11:22:16.165Z
+    completed_at: 2026-07-15T11:22:16.165Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base-to-head diff check passed.
+    name: diff hygiene
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-15T11:22:19.059Z
+    completed_at: 2026-07-15T11:22:19.059Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/invocation.ts,
+      tests/dispatch-artifact-protection.test.ts, tests/dispatch-spawn-control-race.test.ts, plus
+      surrounding scheduler/lifecycle/invocation code and plan/spec/task context. Commands run: full
+      base-to-head diff, git log/show/status, AC annotation search, task/spec/plan/review lookups,
+      format, repo/focused lint, typecheck, fresh full tests, refs/alignment/completeness
+      validation, diff-check. Claim verified: worker's 10655-pass claim reproduced with a fresh run.
+      Categories searched: correctness, ordering/races, edge cases, error handling, test quality,
+      concurrency/capacity, cleanup scoping, integration. Shared/package guidance surfaces touched:
+      none; neutrality checklist not applicable."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-07-15T11:22:22.051Z
+    completed_at: 2026-07-15T11:22:22.051Z
 events:
   - _ulid: 01KXJQ6SE0N2TTBQQDE4PH8FQJ
     actor: Jacob Chapel
@@ -17,17 +117,159 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T11:05:32.297Z
+  - _ulid: 01KXJR66NNQ9NMPMH70EQYH84P
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T11:21:58.710Z
+  - _ulid: 01KXJR69G9PY3YZGY7VBG3MP1K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T11:22:01.609Z
+  - _ulid: 01KXJR6CFJT6WABKAS1HSYNWSN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T11:22:04.658Z
+  - _ulid: 01KXJR6FG6HM526AP1Y28T7AGG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T11:22:07.750Z
+  - _ulid: 01KXJR6J98XNBHZ08TASVM7XV1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T11:22:10.600Z
+  - _ulid: 01KXJR6N3X1SKGM2QHMGMJFT7M
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T11:22:13.502Z
+  - _ulid: 01KXJR6QYFS4J9JPN8CBN37G29
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T11:22:16.399Z
+  - _ulid: 01KXJR6TSD36R75S2BQXZ0QBQS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff hygiene
+    timestamp: 2026-07-15T11:22:19.309Z
+  - _ulid: 01KXJR6XPQXN2E6WRKG3F7B1V8
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-15T11:22:22.295Z
+  - _ulid: 01KXJR70QTBWSRJB648G67B8XX
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJR70G3KX08ERX42ACSCFVX
+    timestamp: 2026-07-15T11:22:25.402Z
+  - _ulid: 01KXJR73SXYYX21CCA4PZ3P6Z9
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXJR73J9ASXFXF92V1GF14GK
+    timestamp: 2026-07-15T11:22:28.541Z
+  - _ulid: 01KXJR76XNE21XPZK25MKXFA0R
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-15T11:22:31.733Z
+  - _ulid: 01KXJR76XN17AHGYYZGN3CM52Y
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-15T11:22:31.733Z
 examined_commit: 3d1318853ad804fec1fc61d256c036851b77c0a2
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXH2PQYHEB5566BQW2C7SHTF"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXJR70G3KX08ERX42ACSCFVX
+    anchor:
+      type: code
+      commit: 3d1318853ad804fec1fc61d256c036851b77c0a2
+      line_end: 3567
+      line_start: 3562
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXJR70G3ZDHQD7J9HFGCGERH
+        author: Jacob Chapel
+        body: "MUST-FIX: The ordered authority decision is executed here before runInvocation starts, not at
+          the final artifact boundary. The real runInvocation path still awaits runner-registry
+          loading, executable preflight, and skill-prompt construction before reaching
+          invocation.ts:843/createSession. Because beforeCreate memoizes createHandoffPromise, its
+          adjacent call cannot re-check authority. A pause or stop committed during that interval is
+          therefore treated as losing to spawn and session/process artifacts can still be created
+          even though control committed before actual creation. Keep one decision, but make the
+          common adjacent pre-artifact hook the point that wins the lifecycle ordering."
+        created_at: 2026-07-15T11:22:25.155Z
+    kind: blocker
+  - _ulid: 01KXJR73J9ASXFXF92V1GF14GK
+    anchor:
+      type: code
+      commit: 3d1318853ad804fec1fc61d256c036851b77c0a2
+      line_end: 224
+      line_start: 214
+      path: tests/dispatch-spawn-control-race.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXJR73J9AA8JTBJRSJTTWJ1X
+        author: Jacob Chapel
+        body: "MUST-FIX: These AC tests mock runInvocation—the component that owns createSession and adapter
+          spawning—and replace both artifacts with counters incremented immediately after
+          beforeCreate. They never execute the real common artifact path and would still pass if the
+          supposedly final hook at invocation.ts:843 were removed, because dispatch invokes the
+          memoized hook early. This does not prove ac-final-gate-prevents-session-creation or
+          ac-final-gate-prevents-process-creation. Replace or supplement it with behavioral coverage
+          through the real runInvocation boundary, asserting no persisted session and no adapter
+          spawn when control wins."
+        created_at: 2026-07-15T11:22:28.297Z
+    kind: blocker
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-15T11:22:31.733Z
 created_at: 2026-07-15T11:04:49.344Z
-updated_at: 2026-07-15T11:05:32.051Z
+updated_at: 2026-07-15T11:22:31.733Z
 notes: []
