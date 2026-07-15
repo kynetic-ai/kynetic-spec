@@ -223,6 +223,12 @@ events:
     payload:
       thread_ulid: 01KXJJ353ZRCFY84KRCH4XXBDV
     timestamp: 2026-07-15T09:57:13.678Z
+  - _ulid: 01KXJKB62H3FC69H8STSZBX3TA
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJJ353ZRCFY84KRCH4XXBDV
+    timestamp: 2026-07-15T09:57:19.057Z
 examined_commit: a3e2d4f32e56b2735e3d65a0131676a15c35642e
 external_links: []
 lifecycle_state: closed
@@ -320,6 +326,8 @@ threads:
           23e100fa34 and the full required gate set was rerun.
         created_at: 2026-07-15T09:57:13.382Z
     kind: nit
+    resolved_at: 2026-07-15T09:57:18.809Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -329,5 +337,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T09:35:41.347Z
 created_at: 2026-07-15T09:18:12.240Z
-updated_at: 2026-07-15T09:57:13.382Z
+updated_at: 2026-07-15T09:57:18.809Z
 notes: []
