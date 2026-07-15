@@ -153,6 +153,13 @@ events:
       kind: blocker
       thread_ulid: 01KXKG4A9AYNJV077EV5FHNAT7
     timestamp: 2026-07-15T18:20:23.010Z
+  - _ulid: 01KXKG4H07P2C53H9SHB5JPA7Y
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKG4GQ0Y1ZDE95GH3W2Z1C1
+    timestamp: 2026-07-15T18:20:29.575Z
 examined_commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
 external_links: []
 lifecycle_state: open
@@ -209,7 +216,30 @@ threads:
           sequential tests with a real activeInvocationOwnership entry."
         created_at: 2026-07-15T18:20:22.698Z
     kind: blocker
+  - _ulid: 01KXKG4GQ0Y1ZDE95GH3W2Z1C1
+    anchor:
+      type: code
+      commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
+      line_end: 1133
+      line_start: 1115
+      path: src/agent-runtime/invocation.ts
+      side: head
+    entries:
+      - _ulid: 01KXKG4GQ0B0DNXP8YQ4WJXYFX
+        author: Jacob Chapel
+        body: "MUST-FIX — the spawned process handle is unavailable when ACP initialization rejects or
+          hangs. This assignment completes only after spawnAndInitialize returns; on initialize
+          failure that helper issues best-effort SIGTERM and throws without awaiting leader/group
+          exit, leaving state.agent null so invocation cleanup cannot perform verified reaping or
+          publish recoverable ownership. Reproduction: an ACP adapter returned an initialize error
+          and ignored SIGTERM; runInvocation rejected while the captured child PID remained alive. A
+          hung initialize also leaves stop waiting indefinitely on the ownership reservation. This
+          violates the post-spawn durability-failure and spawn-win stop guarantees. Retain/register
+          the handle immediately after spawn, make initialization cancellable by stop, and
+          verified-reap initialization failures; add rejecting and hanging initialization tests."
+        created_at: 2026-07-15T18:20:29.280Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-15T18:01:35.563Z
-updated_at: 2026-07-15T18:20:22.698Z
+updated_at: 2026-07-15T18:20:29.280Z
 notes: []
