@@ -158,3 +158,22 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T17:29:27.523Z
+  - _ulid: 01KXKEG17F94T3XDB7MTWNDPA9
+    content: "Fix cycle 4 complete in eabcdee53e; all five review threads replied to and resolved.
+      Normal dispatch-owned completion now holds durable ownership until actual process exit, using
+      bounded SIGTERM then process-group SIGKILL before exited_at. Stop collection uses retained
+      active identity as admission proof and the newest durable tuple only when immutable
+      invocation/session/task/agent/adapter/owner/PID/PGID/birth/platform/capture identity matches;
+      group_members and observed exited_at may advance. Phase behavior remains owned -> verified
+      group exit -> signals_sent -> durable session close -> sessions_closed -> removal. Linux proof
+      remains leader PID/start-ticks/PGID plus immutable member PID/start-ticks; reassignment or
+      unverified live members stay unsignalled/failed. Added resistant normal-completion, retained
+      late-child completion-window, explicit global/task startup phase, and separate global/task
+      idempotency regressions; A/B scope preservation is unchanged. Verification: format passed;
+      repo lint 0 errors; focused lint 0 warnings/errors; typecheck passed; focused engine/recovery
+      suites passed 212 tests and lifecycle compatibility slice passed 132 tests; fresh full npm
+      test passed 2,805 suites / 10,700 tests with 3 skipped; refs/alignment/completeness
+      validations passed at existing warning baselines; diff hygiene passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T17:51:49.487Z
