@@ -6302,7 +6302,7 @@ workspaces:
         head: b11cce869aef9cf53d25ef33b9ba0706b12aba71
         last_seen_at: 2026-07-15T12:07:50.746Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-final-pre-spawn-control-gate-01kxh2pq
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: c5e0b9a6b4afdd17021bf37f2732d620152f40de
     bootstrap:
       status: succeeded
@@ -6787,7 +6787,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-15T16:01:21.038Z
+      updated_at: 2026-07-15T16:02:29.385Z
     integration:
       status: pending
       detail: null
@@ -6803,10 +6803,10 @@ workspaces:
     task_slug: task-engine-stop-recovery
     timestamps:
       closed_at: null
-      last_active_at: 2026-07-15T15:19:56.310Z
-      last_reconciled_at: 2026-07-15T16:01:21.038Z
+      last_active_at: 2026-07-15T16:02:29.385Z
+      last_reconciled_at: 2026-07-15T16:02:29.385Z
       created_at: 2026-07-15T12:26:52.580Z
-      updated_at: 2026-07-15T16:01:48.795Z
+      updated_at: 2026-07-15T16:02:29.385Z
     workspace_id: dispatch-workspace-01KXH2PRCMKX5GBDNJ60PPBCHS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
