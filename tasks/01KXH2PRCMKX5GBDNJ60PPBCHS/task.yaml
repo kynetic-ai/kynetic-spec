@@ -178,7 +178,7 @@ tags:
   - recovery
   - cancellation
 vcs_refs: []
-review_ref: "@01KXKNXE3Z5FA0H48M9W4SMZ01"
+review_ref: "@01KXKS5TCTVNQMRHB9K9YSNAZR"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-engine-stop-recovery/01kxh2pr
@@ -628,6 +628,13 @@ history:
         previous: 2026-07-15T19:53:31.318Z
     command: task-submit
     timestamp: 2026-07-15T20:49:14.863Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXKS5TCTVNQMRHB9K9YSNAZR"
+        previous: "@01KXKNXE3Z5FA0H48M9W4SMZ01"
+    command: review-link
+    timestamp: 2026-07-15T20:58:31.585Z
 created_at: 2026-07-14T19:47:18.036Z
 started_at: 2026-07-15T20:30:18.516Z
 submitted_at: 2026-07-15T20:49:14.863Z
