@@ -79251,7 +79251,7 @@ runs:
     completed_at: 2026-07-15T16:28:47.432Z
   - _ulid: 01KXKB2E3FA98JJCH70ZB1878Q
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79269,7 +79269,21 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T16:53:34.120Z
-        completed_at: 2026-07-15T16:53:34.120Z
+        completed_at: 2026-07-15T16:53:53.647Z
+        notes: "High-confidence success: executable adversarial probes at the exact public/production
+          boundary turn safety claims into observable evidence; already tracked by
+          @01KXHXXDD6T7M9MVJ5KZBJD1PV, @01KVX17N93MP96SB1FNR1GVS5T, and @01KXJYY9R77F1FQ72Z894RTSTG,
+          so no duplicate. High-confidence friction: observed-exit process termination semantics are
+          not shared across production agent lifecycle paths; the completed
+          @task-implement-bounded-process-stop-primitives intentionally covered test-side daemon
+          helpers only, while production invocation dispose drifted to SIGTERM-only. Searches for
+          termination, SIGKILL, child process, process stop, and reap process found no open item
+          covering a production agent-process primitive. Full-suite latency is already tracked by
+          multiple observations, so no duplicate."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T16:53:53.647Z
+        completed_at: 2026-07-15T16:53:53.647Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T16:51:58.191Z
