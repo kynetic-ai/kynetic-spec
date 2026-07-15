@@ -114,7 +114,12 @@ import {
 import type { AgentDispatchRule, AgentDispatchFilter } from "../schema/meta.js";
 import { matchesAutomationFilter } from "../schema/task.js";
 import type { DispatchOwnership, SessionTrigger } from "../sessions/types.js";
-import { closeSession as closeStoredSession, getSession, listSessions } from "../sessions/store.js";
+import {
+  closeSession as closeStoredSession,
+  getSession,
+  listSessions,
+  mutateSessionDispatchOwnership,
+} from "../sessions/store.js";
 import { getEntityCache } from "../daemon/entity-cache.js";
 
 // ─── Simple Mutex ─────────────────────────────────────────────────────────────
@@ -940,6 +945,28 @@ function createDefaultStopRecoveryRuntime(): DispatchStopRecoveryRuntime {
   };
 }
 
+function hasUsableShadowControlSurface(specDir: string): boolean {
+  const gitFile = path.join(specDir, ".git");
+  if (!fsSync.existsSync(gitFile) || !fsSync.lstatSync(gitFile).isFile()) return false;
+  try {
+    const match = fsSync
+      .readFileSync(gitFile, "utf8")
+      .trim()
+      .match(/^gitdir:\s*(.+)$/);
+    if (!match?.[1]) return false;
+    const gitDir = path.resolve(specDir, match[1]);
+    // A real linked worktree has both HEAD and commondir. Parser fixtures may
+    // intentionally provide only enough shape for context detection; they are
+    // not a durable mutation surface and must not receive lifecycle writes.
+    return (
+      fsSync.existsSync(path.join(gitDir, "HEAD")) &&
+      fsSync.existsSync(path.join(gitDir, "commondir"))
+    );
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Invocation lifecycle event payload.
  * AC: @daemon-agent-dispatch ac-3, ac-4
@@ -1225,12 +1252,11 @@ export class DispatchEngine {
       dedupWindowMs: this.dedupWindowMs,
       ...options.eventBusOptions,
     });
-    const specGitPath = path.join(this.specDir, ".git");
-    const hasShadowControlSurface =
-      fsSync.existsSync(specGitPath) && fsSync.lstatSync(specGitPath).isFile();
     this.lifecycleStore =
       options.lifecycleStore ??
-      (hasShadowControlSurface ? getOrCreateDispatchControlStore(this.projectDir) : null);
+      (hasUsableShadowControlSurface(this.specDir)
+        ? getOrCreateDispatchControlStore(this.projectDir)
+        : null);
     const legacy = createMissingDispatchControl();
     legacy.global.authority = "running";
     this.lifecyclePublication = {
@@ -1541,12 +1567,17 @@ export class DispatchEngine {
    * AC: @agent-dispatch-engine ac-11
    */
   async stop(): Promise<void> {
+    let hardStopError: unknown;
     if (this.lifecycleStore && this.lifecycleStarted) {
-      await this.applyGlobalLifecycleAction("stop", {
-        reason: "daemon shutdown",
-        actor: "dispatch-engine",
-        source: "daemon_shutdown",
-      }).catch(() => undefined);
+      try {
+        await this.applyGlobalLifecycleAction("stop", {
+          reason: "daemon shutdown",
+          actor: "dispatch-engine",
+          source: "daemon_shutdown",
+        });
+      } catch (error) {
+        hardStopError = error;
+      }
     }
     this.lifecycleStarted = false;
     this.running = false;
@@ -1583,6 +1614,10 @@ export class DispatchEngine {
     this.queues.clear();
     for (const reservation of this.ownershipReservations.values()) reservation.resolve(null);
     this.ownershipReservations.clear();
+
+    // Do not fall through to generic controller/session disposal when the
+    // verified hard stop failed. That path has no durable ownership proof.
+    if (hardStopError) throw hardStopError;
 
     // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations.
     // Abort controllers BEFORE closing sessions so that invocations waiting
@@ -1812,15 +1847,75 @@ export class DispatchEngine {
     const targets: DispatchCleanupTarget[] = [];
     for (const sessionId of sessions) {
       const metadata = await getSession(sessionsDir, sessionId);
-      const ownership = metadata?.dispatch_ownership;
+      let ownership = metadata?.dispatch_ownership;
       if (!ownership || ownership.exited_at || metadata?.status !== "active") continue;
       if (selector.scope === "task" && ownership.task_id !== selector.taskId) continue;
+      ownership = await this._refreshLiveGroupMemberProof(sessionsDir, ownership);
       targets.push({
         ...ownership,
         session_metadata_path: path.posix.join(".kspec-sessions", sessionId, "session.yaml"),
       });
     }
     return targets.toSorted((left, right) => left.session_id.localeCompare(right.session_id));
+  }
+
+  private async _refreshLiveGroupMemberProof(
+    sessionsDir: string,
+    ownership: DispatchOwnership,
+  ): Promise<DispatchOwnership> {
+    if (
+      ownership.process_identity_platform !== "linux_proc_stat_v1" ||
+      ownership.pid === null ||
+      ownership.pgid === null ||
+      ownership.process_start_ticks === null
+    ) {
+      return ownership;
+    }
+    let leader: DispatchProcessEvidence | null;
+    let members: DispatchProcessEvidence[];
+    try {
+      leader = await this.stopRecoveryRuntime.readProcess(ownership.pid);
+      members = await this.stopRecoveryRuntime.listProcessGroup(ownership.pgid);
+    } catch {
+      return ownership;
+    }
+    if (
+      !leader ||
+      leader.pgid !== ownership.pgid ||
+      leader.processStartTicks !== ownership.process_start_ticks
+    ) {
+      return ownership;
+    }
+    const known = new Map(ownership.group_members.map((member) => [member.pid, member]));
+    for (const member of members) {
+      if (!known.has(member.pid)) {
+        known.set(member.pid, {
+          pid: member.pid,
+          process_start_ticks: member.processStartTicks,
+        });
+      }
+    }
+    if (known.size === ownership.group_members.length) return ownership;
+    const refreshed = await mutateSessionDispatchOwnership(
+      sessionsDir,
+      ownership.session_id,
+      (current) => {
+        if (!current || current.exited_at) return null;
+        const {
+          group_members: _currentMembers,
+          exited_at: _currentExit,
+          ...currentIdentity
+        } = current;
+        const { group_members: _ownedMembers, exited_at: _ownedExit, ...ownedIdentity } = ownership;
+        if (!isDeepStrictEqual(currentIdentity, ownedIdentity)) return null;
+        const currentKnown = new Map(current.group_members.map((member) => [member.pid, member]));
+        for (const member of known.values()) {
+          if (!currentKnown.has(member.pid)) currentKnown.set(member.pid, member);
+        }
+        return { ...current, group_members: [...currentKnown.values()] };
+      },
+    );
+    return refreshed?.dispatch_ownership ?? ownership;
   }
 
   private _lifecycleMetadata(context: GlobalLifecycleActionContext) {
@@ -2043,13 +2138,21 @@ export class DispatchEngine {
     }
     const persisted = (await getSession(sessionsDir, target.session_id))?.dispatch_ownership;
     const { session_metadata_path: _path, ...expected } = target;
-    if (!persisted || !isDeepStrictEqual(persisted, expected)) {
+    const { exited_at: persistedExit, ...persistedIdentity } = persisted ?? {};
+    const { exited_at: expectedExit, ...expectedIdentity } = expected;
+    const exitObservationMatches =
+      persistedExit === expectedExit || (expectedExit === undefined && persistedExit !== undefined);
+    if (
+      !persisted ||
+      !exitObservationMatches ||
+      !isDeepStrictEqual(persistedIdentity, expectedIdentity)
+    ) {
       throw new DispatchCleanupError(
         "cleanup_ownership_mismatch",
         "Durable dispatch session ownership no longer matches cleanup",
       );
     }
-    if (target.exited_at) {
+    if (persisted.exited_at) {
       this.invocationAbortControllersById.get(target.invocation_id)?.abort();
       return;
     }

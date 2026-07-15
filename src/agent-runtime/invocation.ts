@@ -48,6 +48,7 @@ import {
   injectEnvForAdapter,
   getSession,
   listSessions,
+  mutateSessionDispatchOwnership,
   removeEnvForAdapter,
   updateSessionDispatchOwnership,
 } from "../sessions/store.js";
@@ -943,6 +944,48 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   const createHandoff = await options.beforeCreate?.();
   let ownershipPublished = false;
   let durableOwnership: DispatchOwnership | null = null;
+  const refreshDurableGroupMembers = async (): Promise<void> => {
+    const owned = durableOwnership;
+    if (
+      !owned ||
+      owned.exited_at ||
+      owned.process_identity_platform !== "linux_proc_stat_v1" ||
+      owned.pid === null ||
+      owned.pgid === null ||
+      owned.process_start_ticks === null
+    ) {
+      return;
+    }
+    const leader = await readLinuxProcEvidence(owned.pid);
+    if (leader.pgid !== owned.pgid || leader.processStartTicks !== owned.process_start_ticks)
+      return;
+    const members = await listLinuxProcessGroup(owned.pgid);
+    const updated = await mutateSessionDispatchOwnership(sessionsDir, sessionId, (current) => {
+      if (
+        !current ||
+        current.exited_at ||
+        current.invocation_id !== owned.invocation_id ||
+        current.owner_instance_id !== owned.owner_instance_id ||
+        current.pid !== owned.pid ||
+        current.pgid !== owned.pgid ||
+        current.process_start_ticks !== owned.process_start_ticks
+      ) {
+        return null;
+      }
+      const known = new Map(current.group_members.map((member) => [member.pid, member]));
+      for (const member of members) {
+        if (!known.has(member.pid)) {
+          known.set(member.pid, {
+            pid: member.pid,
+            process_start_ticks: member.processStartTicks,
+          });
+        }
+      }
+      if (known.size === current.group_members.length) return null;
+      return { ...current, group_members: [...known.values()] };
+    });
+    if (updated?.dispatch_ownership) durableOwnership = updated.dispatch_ownership;
+  };
 
   // ─── Create session ───────────────────────────────────────────────────────
   // AC: @agent-invocation-lifecycle ac-1
@@ -984,22 +1027,22 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     throw error;
   }
 
-  // ─── Log agent.dispatched event ───────────────────────────────────────────
-  // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
-  await appendSessionEvent({
-    type: "agent.dispatched",
-    data: {
-      task_id: canonicalTaskId,
-      task_ref: displayTaskRef,
-      agent_id: agent.id,
-      adapter: adapterId,
-      trigger,
-      // runner is present only when a named runner resolved the invocation.
-      ...(contract.runnerId ? { runner: contract.runnerId } : {}),
-    },
-  });
-
   try {
+    // ─── Log agent.dispatched event ───────────────────────────────────────────
+    // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
+    await appendSessionEvent({
+      type: "agent.dispatched",
+      data: {
+        task_id: canonicalTaskId,
+        task_ref: displayTaskRef,
+        agent_id: agent.id,
+        adapter: adapterId,
+        trigger,
+        // runner is present only when a named runner resolved the invocation.
+        ...(contract.runnerId ? { runner: contract.runnerId } : {}),
+      },
+    });
+
     // ─── Inject KSPEC_SESSION_ID ──────────────────────────────────────────
     // AC: @agent-invocation-lifecycle ac-2
     const injectionResult = await injectEnvForAdapter(adapterId, sessionId);
@@ -1050,6 +1093,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       cwd: contract.cwd,
       mcpServers: [],
     });
+    await refreshDurableGroupMembers().catch(() => undefined);
 
     // ─── Log agent.started event ──────────────────────────────────────────
     await appendSessionEvent({
@@ -1207,6 +1251,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
         }
 
         turnCount++;
+        await refreshDurableGroupMembers().catch(() => undefined);
         lastStopReason = promptResult.stopReason;
         const turnDurationMs = Date.now() - turnStartTime;
 
@@ -1389,7 +1434,18 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       turnCount,
     };
   } catch (err) {
-    if (createHandoff && !ownershipPublished) onOwnershipFailed?.(createHandoff);
+    if (createHandoff && !ownershipPublished) {
+      // Close the null-identity reservation before releasing its admission.
+      // A concurrent hard stop that was awaiting the reservation must never
+      // mistake this never-published session for a signalable process owner.
+      await closeSession(
+        sessionsDir,
+        sessionId,
+        "failed",
+        "Invocation failed before process ownership publication",
+      ).catch(() => null);
+      onOwnershipFailed?.(createHandoff);
+    }
     const durationMs = Date.now() - startTime;
 
     // AC: @multi-turn-session-lifecycle ac-15, ac-16
@@ -1672,10 +1728,11 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     state.agent = disposeAgent(state.agent);
 
     if (durableOwnership) {
-      await updateSessionDispatchOwnership(sessionsDir, sessionId, {
-        ...durableOwnership,
+      const ownershipAtExit = durableOwnership;
+      await mutateSessionDispatchOwnership(sessionsDir, sessionId, (current) => ({
+        ...(current ?? ownershipAtExit),
         exited_at: new Date().toISOString(),
-      }).catch(() => null);
+      })).catch(() => null);
     }
 
     // Restore env injection

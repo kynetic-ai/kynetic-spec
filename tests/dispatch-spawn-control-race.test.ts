@@ -15,6 +15,7 @@ import { createMissingDispatchControl } from "../src/schema/dispatch-control.js"
 import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import * as spawnerModule from "../src/agents/spawner.js";
+import * as storeModule from "../src/sessions/store.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
 import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
 import {
@@ -420,5 +421,33 @@ describe("final ordered dispatch create gate", () => {
 
     harness.completion.release();
     await vi.waitFor(() => expect(harness.completedNaturally).toBe(true));
+  });
+
+  it("releases the admitted stop reservation when dispatched-event persistence fails", async () => {
+    const harness = await createSpawnGateHarness({ realInvocation: true });
+    const originalAppendEvent = storeModule.appendEvent;
+    let failedDispatched = false;
+    vi.spyOn(storeModule, "appendEvent").mockImplementation(async (dir, input) => {
+      if (input.type === "agent.dispatched" && !failedDispatched) {
+        failedDispatched = true;
+        throw new Error("injected dispatched-event failure");
+      }
+      return originalAppendEvent(dir, input);
+    });
+    await harness.engine.start();
+    await harness.beforeCreate.entered;
+    harness.beforeCreate.release();
+    await harness.admissionSettled;
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).resolves.toMatchObject({
+      authority: "stopped",
+    });
+
+    expect(failedDispatched).toBe(true);
+    expect(harness.artifacts.processes).toBe(0);
+    expect(harness.engine.getLifecycleStatus()).toMatchObject({
+      globalAuthority: "stopped",
+      cleanupState: { status: "idle" },
+    });
   });
 });

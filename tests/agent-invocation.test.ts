@@ -19,13 +19,15 @@
  *     ac-skill-formatting-uses-resolved-adapter
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import * as YAML from "yaml";
 // fs is used only for fs.access in the "no session directory" check.
 
 import { runInvocation, RunnerResolutionError } from "../src/agent-runtime/invocation.js";
+import * as spawnerModule from "../src/agents/spawner.js";
+import * as storeModule from "../src/sessions/store.js";
 import { getAdapter, registerAdapter } from "../src/agents/adapters.js";
 import type { AgentAdapter } from "../src/agents/adapters.js";
 import { mergeRunnerConfigs } from "../src/agents/runner-config.js";
@@ -238,6 +240,46 @@ describe("runInvocation: agent.dispatched event payload", { timeout: 120_000 }, 
     expect(dispatched).toBeDefined();
     expect(dispatched!.data.runner).toBeUndefined();
     expect(dispatched!.data.adapter).toBe("mock-acp");
+  });
+
+  it("releases admitted ownership when the dispatched event cannot be persisted", async () => {
+    const agent = makeTestAgent({ adapter: "mock-acp" });
+    const sessionId = testUlid("SESS", 9);
+    const handoff = {
+      invocationId: testUlid("INVK", 9),
+      sessionId,
+      taskId: null,
+      agentId: agent.id,
+      adapter: "mock-acp",
+      ownerInstanceId: testUlid("OWNR", 9),
+    };
+    const ownershipFailed = vi.fn<(value: typeof handoff) => void>();
+    const originalAppendEvent = storeModule.appendEvent;
+    const append = vi.spyOn(storeModule, "appendEvent").mockImplementation(async (dir, input) => {
+      if (input.type === "agent.dispatched") throw new Error("injected append failure");
+      return originalAppendEvent(dir, input);
+    });
+    const spawn = vi.spyOn(spawnerModule, "spawnAndInitialize");
+
+    const result = await runInvocation({
+      agent,
+      specDir: testDir,
+      sessionsDir,
+      sessionId,
+      cwd: process.cwd(),
+      prompt: "Fault before spawn",
+      trigger: "task.ready",
+      runnerRegistry: { runners: {} },
+      beforeCreate: async () => handoff,
+      onOwnershipFailed: ownershipFailed,
+    });
+
+    expect(result.outcome).toBe("failed");
+    expect(ownershipFailed).toHaveBeenCalledOnce();
+    expect(ownershipFailed).toHaveBeenCalledWith(handoff);
+    expect(spawn).not.toHaveBeenCalled();
+    append.mockRestore();
+    spawn.mockRestore();
   });
 });
 

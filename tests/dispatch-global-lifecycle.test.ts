@@ -267,6 +267,7 @@ describe("global dispatch lifecycle authority", () => {
 
   // AC: @dispatch-lifecycle-control-authority ac-controls-survive-restart
   // AC: @dispatch-lifecycle-control-authority ac-global-paused-work-does-not-start
+  // AC: @dispatch-lifecycle-control-authority ac-stop-forbids-new-starts
   it.each(["stopped", "paused", "running"] as const)(
     "loads %s authority before bootstrap scheduling",
     async (authority) => {

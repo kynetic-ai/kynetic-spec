@@ -213,20 +213,46 @@ export async function updateSessionDispatchOwnership(
   sessionId: string,
   ownership: DispatchOwnership,
 ): Promise<SessionMetadata | null> {
-  const metadata = await getSession(sessionsDir, sessionId);
-  if (!metadata) return null;
-  const updated = SessionMetadataSchema.parse({ ...metadata, dispatch_ownership: ownership });
+  return mutateSessionDispatchOwnership(sessionsDir, sessionId, () => ownership);
+}
+
+const dispatchOwnershipMutationTails = new Map<string, Promise<void>>();
+
+/** Serialize a durable dispatch-ownership read-modify-write for one session. */
+export async function mutateSessionDispatchOwnership(
+  sessionsDir: string,
+  sessionId: string,
+  mutation: (current: DispatchOwnership | undefined) => DispatchOwnership | null,
+): Promise<SessionMetadata | null> {
   const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
-  const content = YAML.stringify(updated, {
-    indent: 2,
-    lineWidth: 100,
-    sortMapEntries: false,
-  });
-  const temporaryPath = `${metadataPath}.ownership-${process.pid}-${randomUUID()}.tmp`;
-  await fsPromises.writeFile(temporaryPath, content, "utf-8");
-  await fsPromises.rename(temporaryPath, metadataPath);
-  await commitAtLifecycleBoundary(sessionsDir, `session: ownership (${sessionId})`);
-  return updated;
+  const previous = dispatchOwnershipMutationTails.get(metadataPath) ?? Promise.resolve();
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => (release = resolve));
+  const currentTail = previous.then(() => gate);
+  dispatchOwnershipMutationTails.set(metadataPath, currentTail);
+  await previous;
+  try {
+    const metadata = await getSession(sessionsDir, sessionId);
+    if (!metadata) return null;
+    const ownership = mutation(metadata.dispatch_ownership);
+    if (!ownership) return metadata;
+    const updated = SessionMetadataSchema.parse({ ...metadata, dispatch_ownership: ownership });
+    const content = YAML.stringify(updated, {
+      indent: 2,
+      lineWidth: 100,
+      sortMapEntries: false,
+    });
+    const temporaryPath = `${metadataPath}.ownership-${process.pid}-${randomUUID()}.tmp`;
+    await fsPromises.writeFile(temporaryPath, content, "utf-8");
+    await fsPromises.rename(temporaryPath, metadataPath);
+    await commitAtLifecycleBoundary(sessionsDir, `session: ownership (${sessionId})`);
+    return updated;
+  } finally {
+    release();
+    if (dispatchOwnershipMutationTails.get(metadataPath) === currentTail) {
+      dispatchOwnershipMutationTails.delete(metadataPath);
+    }
+  }
 }
 
 /**

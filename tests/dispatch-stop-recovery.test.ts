@@ -225,7 +225,6 @@ afterEach(async () => {
 });
 
 describe("verified dispatch hard-stop recovery", () => {
-  // AC: @dispatch-lifecycle-control-authority ac-stop-forbids-new-starts
   // AC: @dispatch-lifecycle-control-authority ac-stop-cancels-active-work
   // AC: @dispatch-lifecycle-control-authority ac-stop-closes-active-sessions
   it("commits global stopped authority before verified cancellation and durable closure", async () => {
@@ -403,6 +402,78 @@ describe("verified dispatch hard-stop recovery", () => {
       outcome: "noop",
     });
     expect(harness.signals).toHaveLength(signalCount);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-recovery-requires-session-ownership
+  it("recovers owned cleanup after the live invocation records its exit", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    const current = harness.store.getPublication().snapshot;
+    await harness.store.mutate("seed-owned-exit-race", () => ({
+      ...current,
+      revision: current.revision + 1,
+      global: { authority: "stopped" },
+      pending_cleanup: {
+        global: {
+          cleanup_id: testUlid("CLNP", 4),
+          status: "pending",
+          phase: "owned",
+          targets: [
+            {
+              ...target,
+              session_metadata_path: `.kspec-sessions/${target.session_id}/session.yaml`,
+            },
+          ],
+        },
+      },
+    }));
+    await updateSessionDispatchOwnership(
+      path.join(harness.projectDir, ".kspec-sessions"),
+      target.session_id,
+      { ...target, exited_at: new Date().toISOString() },
+    );
+
+    await harness.engine.start();
+
+    expect(harness.signals).toEqual([]);
+    expect(harness.sessions.closed).toEqual([target.session_id]);
+    expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-stop-cancels-active-work
+  it("binds a late child proof before freezing and signalling stop cleanup", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    const childPid = target.pid! + 100;
+    harness.proc.evidence.set(childPid, {
+      pid: childPid,
+      pgid: target.pgid!,
+      processStartTicks: "123456",
+    });
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).resolves.toMatchObject({
+      authority: "stopped",
+    });
+
+    expect(harness.signals).toEqual([target.pgid]);
+    expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-no-success
+  it("propagates verified hard-stop failure from graceful engine shutdown", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    harness.setGroupExits(false);
+    await harness.engine.start();
+
+    await expect(harness.engine.stop()).rejects.toMatchObject({ code: "cancellation_timeout" });
+
+    expect(harness.signals).toEqual([target.pgid]);
+    expect(harness.sessions.closed).toEqual([]);
+    expect(harness.engine.getLifecycleStatus()).toMatchObject({
+      globalAuthority: "stopped",
+      cleanupState: { status: "failed" },
+    });
   });
 
   // AC: @dispatch-lifecycle-control-authority ac-interrupted-stop-recovers-on-startup
