@@ -21,6 +21,7 @@
  */
 
 import * as path from "node:path";
+import * as fsPromises from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
@@ -48,8 +49,14 @@ import {
   getSession,
   listSessions,
   removeEnvForAdapter,
+  updateSessionDispatchOwnership,
 } from "../sessions/store.js";
-import type { SessionEventInput, SessionMetadata, SessionTrigger } from "../sessions/types.js";
+import type {
+  DispatchOwnership,
+  SessionEventInput,
+  SessionMetadata,
+  SessionTrigger,
+} from "../sessions/types.js";
 import type { SessionHandle, SessionRegistry, SessionState } from "./session-registry.js";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -72,6 +79,92 @@ export const DEFAULT_INITIAL_RESPONSE_TIMEOUT_SECONDS = 120;
  * AC: @multi-turn-session-lifecycle ac-17
  */
 export const DEFAULT_MAX_PROMPT_QUEUE_DEPTH = 64;
+
+interface LinuxProcEvidence {
+  pid: number;
+  pgid: number;
+  processStartTicks: string;
+}
+
+function parseLinuxProcStat(pid: number, content: string): LinuxProcEvidence {
+  const close = content.lastIndexOf(")");
+  if (close < 0) throw new Error(`Invalid /proc/${pid}/stat process identity`);
+  const fields = content
+    .slice(close + 2)
+    .trim()
+    .split(/\s+/);
+  const pgid = Number(fields[2]);
+  const processStartTicks = fields[19];
+  if (
+    !Number.isInteger(pgid) ||
+    pgid <= 0 ||
+    !processStartTicks ||
+    !/^\d+$/.test(processStartTicks)
+  ) {
+    throw new Error(`Invalid /proc/${pid}/stat process identity`);
+  }
+  return { pid, pgid, processStartTicks };
+}
+
+async function readLinuxProcEvidence(pid: number): Promise<LinuxProcEvidence> {
+  return parseLinuxProcStat(pid, await fsPromises.readFile(`/proc/${pid}/stat`, "utf8"));
+}
+
+async function listLinuxProcessGroup(pgid: number): Promise<LinuxProcEvidence[]> {
+  const entries = await fsPromises.readdir("/proc", { withFileTypes: true });
+  const evidence = await Promise.all(
+    entries
+      .filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name))
+      .map((entry) => readLinuxProcEvidence(Number(entry.name)).catch(() => null)),
+  );
+  return evidence.filter((entry): entry is LinuxProcEvidence => entry?.pgid === pgid);
+}
+
+async function captureSpawnOwnership(
+  handoff: InvocationCreateHandoff,
+  processHandle: SpawnedAgent["process"],
+): Promise<DispatchOwnership> {
+  const pid = processHandle.pid;
+  if (!pid) throw new Error("Spawned adapter did not expose a process id");
+  if (process.platform !== "linux") {
+    return {
+      invocation_id: handoff.invocationId,
+      session_id: handoff.sessionId,
+      task_id: handoff.taskId,
+      agent_id: handoff.agentId,
+      adapter: handoff.adapter,
+      owner_instance_id: handoff.ownerInstanceId,
+      pid,
+      pgid: pid,
+      process_start_ticks: null,
+      process_identity_platform: "unverifiable",
+      captured_at: new Date().toISOString(),
+      group_members: [],
+    };
+  }
+  const leader = await readLinuxProcEvidence(pid);
+  const members = await listLinuxProcessGroup(leader.pgid);
+  if (!members.some((member) => member.pid === pid)) {
+    throw new Error("Spawned adapter leader disappeared before ownership was persisted");
+  }
+  return {
+    invocation_id: handoff.invocationId,
+    session_id: handoff.sessionId,
+    task_id: handoff.taskId,
+    agent_id: handoff.agentId,
+    adapter: handoff.adapter,
+    owner_instance_id: handoff.ownerInstanceId,
+    pid,
+    pgid: leader.pgid,
+    process_start_ticks: leader.processStartTicks,
+    process_identity_platform: "linux_proc_stat_v1",
+    captured_at: new Date().toISOString(),
+    group_members: members.map((member) => ({
+      pid: member.pid,
+      process_start_ticks: member.processStartTicks,
+    })),
+  };
+}
 
 /**
  * Default idle grace period in milliseconds.
@@ -346,6 +439,10 @@ export interface InvocationOptions {
    * caller; a denied hook throws before either artifact exists.
    */
   beforeCreate?: () => Promise<InvocationCreateHandoff>;
+  /** Publish active ownership only after the process proof is durable. */
+  onOwnershipPersisted?: (ownership: DispatchOwnership) => void | Promise<void>;
+  /** Resolve an admitted handoff that failed before durable ownership publication. */
+  onOwnershipFailed?: (handoff: InvocationCreateHandoff) => void;
 }
 
 /** Identity handed from final dispatch admission to active ownership. */
@@ -355,6 +452,7 @@ export interface InvocationCreateHandoff {
   taskId: string | null;
   agentId: string;
   adapter: string;
+  ownerInstanceId: string;
 }
 
 export type InvocationCreateDenial = "held" | "discarded";
@@ -640,6 +738,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     idleGracePeriodMs = 0,
     sessionMode = "auto_close",
     idleTimeoutMs,
+    onOwnershipPersisted,
+    onOwnershipFailed,
   } = options;
 
   // Canonical task identity for persisted session metadata and session event
@@ -840,23 +940,49 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
   // This is the common, final pre-artifact boundary. Keep it adjacent to
   // createSession: everything above is pure/preflight work, while everything
   // below may create durable session state or an adapter process.
-  await options.beforeCreate?.();
+  const createHandoff = await options.beforeCreate?.();
+  let ownershipPublished = false;
+  let durableOwnership: DispatchOwnership | null = null;
 
   // ─── Create session ───────────────────────────────────────────────────────
   // AC: @agent-invocation-lifecycle ac-1
   // AC: @runner-resolution-and-preflight ac-session-metadata-records-runner
-  const session = await createSession(sessionsDir, {
-    id: sessionId,
-    agent_type: adapterId,
-    agent_id: agent.id,
-    trigger,
-    // Canonical task identity is the persisted task_id; the display ref is kept
-    // separate. AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
-    task_id: canonicalTaskId,
-    task_ref: displayTaskRef,
-    // Conditionally include runner so legacy invocations omit the field.
-    ...(contract.runnerId ? { runner: contract.runnerId } : {}),
-  });
+  let session: SessionMetadata;
+  try {
+    session = await createSession(sessionsDir, {
+      id: sessionId,
+      agent_type: adapterId,
+      agent_id: agent.id,
+      trigger,
+      // Canonical task identity is the persisted task_id; the display ref is kept
+      // separate. AC: @dispatch-canonical-task-identity ac-session-and-event-payloads-separate-id-from-display-ref
+      task_id: canonicalTaskId,
+      task_ref: displayTaskRef,
+      // Conditionally include runner so legacy invocations omit the field.
+      ...(contract.runnerId ? { runner: contract.runnerId } : {}),
+      ...(createHandoff
+        ? {
+            dispatch_ownership: {
+              invocation_id: createHandoff.invocationId,
+              session_id: createHandoff.sessionId,
+              task_id: createHandoff.taskId,
+              agent_id: createHandoff.agentId,
+              adapter: createHandoff.adapter,
+              owner_instance_id: createHandoff.ownerInstanceId,
+              pid: null,
+              pgid: null,
+              process_start_ticks: null,
+              process_identity_platform: "unverifiable" as const,
+              captured_at: new Date().toISOString(),
+              group_members: [],
+            },
+          }
+        : {}),
+    });
+  } catch (error) {
+    if (createHandoff) onOwnershipFailed?.(createHandoff);
+    throw error;
+  }
 
   // ─── Log agent.dispatched event ───────────────────────────────────────────
   // AC: @runner-resolution-and-preflight ac-dispatched-event-records-runner
@@ -904,6 +1030,20 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       },
     });
 
+    if (createHandoff) {
+      try {
+        const ownership = await captureSpawnOwnership(createHandoff, state.agent.process);
+        const persisted = await updateSessionDispatchOwnership(sessionsDir, sessionId, ownership);
+        if (!persisted) throw new Error("Spawned session ownership could not be persisted");
+        durableOwnership = ownership;
+        await onOwnershipPersisted?.(ownership);
+        ownershipPublished = true;
+      } catch (error) {
+        state.agent = disposeAgent(state.agent);
+        throw error;
+      }
+    }
+
     // ─── Create ACP session ───────────────────────────────────────────────
     // AC: @runner-process-invocation-inputs ac-runner-cwd-is-invocation-only
     state.acpSessionId = await state.agent.client.newSession({
@@ -928,7 +1068,10 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     // guaranteed to run for cleanup.
     // AC: @active-session-registry ac-1, ac-2
     if (sessionRegistry) {
-      sessionRegistry.register(sessionId, sessionHandle);
+      sessionRegistry.register(sessionId, sessionHandle, {
+        taskId: canonicalTaskId ?? null,
+        invocationId: createHandoff?.invocationId ?? null,
+      });
     }
 
     // ─── Stall watchdog state ──────────────────────────────────────────────
@@ -1246,6 +1389,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       turnCount,
     };
   } catch (err) {
+    if (createHandoff && !ownershipPublished) onOwnershipFailed?.(createHandoff);
     const durationMs = Date.now() - startTime;
 
     // AC: @multi-turn-session-lifecycle ac-15, ac-16
@@ -1526,6 +1670,13 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
 
     // Terminate agent process
     state.agent = disposeAgent(state.agent);
+
+    if (durableOwnership) {
+      await updateSessionDispatchOwnership(sessionsDir, sessionId, {
+        ...durableOwnership,
+        exited_at: new Date().toISOString(),
+      }).catch(() => null);
+    }
 
     // Restore env injection
     await removeEnvForAdapter(adapterId, state.previousEnvValue);

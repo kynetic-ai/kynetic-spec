@@ -230,6 +230,20 @@ export async function createSpawnGateHarness(options: { realInvocation?: boolean
     vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (invocationOptions) => {
       const handoff = await invocationOptions.beforeCreate?.();
       if (!handoff) throw new Error("dispatch invocation omitted the final create gate");
+      await invocationOptions.onOwnershipPersisted?.({
+        invocation_id: handoff.invocationId,
+        session_id: handoff.sessionId,
+        task_id: handoff.taskId,
+        agent_id: handoff.agentId,
+        adapter: handoff.adapter,
+        owner_instance_id: handoff.ownerInstanceId,
+        pid: process.pid,
+        pgid: process.pid,
+        process_start_ticks: "1",
+        process_identity_platform: "linux_proc_stat_v1",
+        captured_at: new Date().toISOString(),
+        group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+      });
       artifacts.handoffs.push(handoff);
       artifacts.sessions++;
       artifacts.processes++;
@@ -369,6 +383,7 @@ describe("final ordered dispatch create gate", () => {
           cleanup_id: testUlid("CLNP", 2),
           status: "pending",
           phase: "owned",
+          targets: [],
         },
       },
     });

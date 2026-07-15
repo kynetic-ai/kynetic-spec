@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { UlidSchema } from "./common.js";
+import { DispatchOwnershipSchema } from "../sessions/types.js";
 
 const CanonicalUlidSchema = UlidSchema.refine((value) => value === value.toUpperCase(), {
   message: "Canonical ULIDs must use uppercase Crockford base32",
@@ -62,6 +63,11 @@ export const DispatchPendingCleanupSchema = z
     status: z.enum(["pending", "failed"]),
     phase: DispatchCleanupPhaseSchema,
     error_code: DispatchCleanupErrorCodeSchema.optional(),
+    targets: z.array(
+      DispatchOwnershipSchema.extend({
+        session_metadata_path: z.string().min(1),
+      }).strict(),
+    ),
   })
   .strict()
   .superRefine((entry, ctx) => {

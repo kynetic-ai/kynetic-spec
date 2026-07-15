@@ -690,7 +690,12 @@ describe("global dispatch lifecycle authority", () => {
     harness.store.publish({
       ...control("stopped", 2),
       pending_cleanup: {
-        [harness.taskId]: { cleanup_id: taskCleanupId, status: "pending", phase: "owned" },
+        [harness.taskId]: {
+          cleanup_id: taskCleanupId,
+          status: "pending",
+          phase: "owned",
+          targets: [],
+        },
       },
     });
     await harness.engine.start();
@@ -730,6 +735,7 @@ describe("global dispatch lifecycle authority", () => {
             cleanup_id: testUlid("CLN", 3),
             status,
             phase: "owned",
+            targets: [],
             ...(status === "failed" ? { error_code: "cancellation_failed" as const } : {}),
           },
         },

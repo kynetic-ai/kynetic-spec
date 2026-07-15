@@ -12,8 +12,9 @@
 
 import * as path from "node:path";
 import * as fsSync from "node:fs";
+import * as fsPromises from "node:fs/promises";
 import { execFile } from "node:child_process";
-import { promisify } from "node:util";
+import { isDeepStrictEqual, promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
 import { ulid } from "ulid";
@@ -101,6 +102,7 @@ import {
 } from "./dispatch-control-store.js";
 import {
   createMissingDispatchControl,
+  type DispatchCleanupErrorCode,
   type DispatchCleanupState,
   type DispatchControl,
 } from "../schema/dispatch-control.js";
@@ -111,7 +113,8 @@ import {
 } from "./task-identity.js";
 import type { AgentDispatchRule, AgentDispatchFilter } from "../schema/meta.js";
 import { matchesAutomationFilter } from "../schema/task.js";
-import type { SessionTrigger } from "../sessions/types.js";
+import type { DispatchOwnership, SessionTrigger } from "../sessions/types.js";
+import { closeSession as closeStoredSession, getSession, listSessions } from "../sessions/store.js";
 import { getEntityCache } from "../daemon/entity-cache.js";
 
 // ─── Simple Mutex ─────────────────────────────────────────────────────────────
@@ -839,6 +842,104 @@ export interface SyncStateEvent {
   recoveredAfterMs?: number;
 }
 
+export interface DispatchProcessEvidence {
+  pid: number;
+  pgid: number;
+  processStartTicks: string;
+}
+
+export interface DispatchStopRecoveryRuntime {
+  readProcess(pid: number): Promise<DispatchProcessEvidence | null>;
+  listProcessGroup(pgid: number): Promise<DispatchProcessEvidence[]>;
+  signalProcessGroup(pgid: number, signal: NodeJS.Signals): Promise<void>;
+  waitForProcessGroupExit(pgid: number, timeoutMs: number): Promise<boolean>;
+  closeSession(sessionsDir: string, sessionId: string): Promise<void>;
+}
+
+type DispatchCleanupTarget = DispatchOwnership & { session_metadata_path: string };
+
+export class DispatchCleanupError extends Error {
+  constructor(
+    readonly code: DispatchCleanupErrorCode,
+    message: string,
+  ) {
+    super(message);
+    this.name = "DispatchCleanupError";
+  }
+}
+
+function parseLinuxProcessEvidence(pid: number, content: string): DispatchProcessEvidence {
+  const close = content.lastIndexOf(")");
+  if (close < 0) throw new Error(`Invalid /proc/${pid}/stat`);
+  const fields = content
+    .slice(close + 2)
+    .trim()
+    .split(/\s+/);
+  const pgid = Number(fields[2]);
+  const processStartTicks = fields[19];
+  if (
+    !Number.isInteger(pgid) ||
+    pgid <= 0 ||
+    !processStartTicks ||
+    !/^\d+$/.test(processStartTicks)
+  ) {
+    throw new Error(`Invalid /proc/${pid}/stat`);
+  }
+  return { pid, pgid, processStartTicks };
+}
+
+async function readLinuxProcessEvidence(pid: number): Promise<DispatchProcessEvidence | null> {
+  try {
+    return parseLinuxProcessEvidence(pid, await fsPromises.readFile(`/proc/${pid}/stat`, "utf8"));
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw error;
+  }
+}
+
+async function listLinuxProcessGroup(pgid: number): Promise<DispatchProcessEvidence[]> {
+  const entries = await fsPromises.readdir("/proc", { withFileTypes: true });
+  const evidence = await Promise.all(
+    entries
+      .filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name))
+      .map((entry) => readLinuxProcessEvidence(Number(entry.name)).catch(() => null)),
+  );
+  return evidence.filter((entry): entry is DispatchProcessEvidence => entry?.pgid === pgid);
+}
+
+function createDefaultStopRecoveryRuntime(): DispatchStopRecoveryRuntime {
+  return {
+    readProcess: async (pid) => {
+      if (process.platform !== "linux") throw new Error("Process identity is not verifiable");
+      return readLinuxProcessEvidence(pid);
+    },
+    listProcessGroup: async (pgid) => {
+      if (process.platform !== "linux") throw new Error("Process groups are not verifiable");
+      return listLinuxProcessGroup(pgid);
+    },
+    signalProcessGroup: async (pgid, signal) => {
+      process.kill(-pgid, signal);
+    },
+    waitForProcessGroupExit: async (pgid, timeoutMs) => {
+      const deadline = Date.now() + timeoutMs;
+      while (Date.now() <= deadline) {
+        if ((await listLinuxProcessGroup(pgid)).length === 0) return true;
+        await new Promise((resolve) => setTimeout(resolve, 25));
+      }
+      return false;
+    },
+    closeSession: async (sessionsDir, sessionId) => {
+      const closed = await closeStoredSession(
+        sessionsDir,
+        sessionId,
+        "failed",
+        "Invocation cancelled by dispatch hard stop",
+      );
+      if (!closed) throw new Error(`Dispatch session ${sessionId} is missing`);
+    },
+  };
+}
+
 /**
  * Invocation lifecycle event payload.
  * AC: @daemon-agent-dispatch ac-3, ac-4
@@ -922,10 +1023,12 @@ export interface DispatchEngineOptions {
   eventBusOptions?: EventBusOptions;
   /** Committed lifecycle authority store. Primarily injectable for deterministic tests. */
   lifecycleStore?: DispatchLifecycleAuthorityStore;
+  /** Low-level process/session operations used by verified hard-stop recovery. */
+  stopRecoveryRuntime?: DispatchStopRecoveryRuntime;
 }
 
-export type GlobalLifecycleAction = "start" | "pause" | "resume";
-export type TaskLifecycleAction = "pause" | "resume";
+export type GlobalLifecycleAction = "start" | "pause" | "resume" | "stop";
+export type TaskLifecycleAction = "pause" | "resume" | "stop";
 
 export interface GlobalLifecycleActionResult {
   outcome: "applied" | "noop";
@@ -1017,8 +1120,20 @@ export class DispatchEngine {
   private runningInvocations: Set<Promise<void>> = new Set();
   /** AbortControllers for active invocations (for graceful cancel on stop) */
   private invocationAbortControllers: Set<AbortController> = new Set();
+  private invocationAbortControllersById = new Map<string, AbortController>();
   /** Per-invocation tracking records for status display */
   private activeInvocationDetails: Map<string, ActiveInvocationRecord> = new Map();
+  private ownershipReservations = new Map<
+    string,
+    {
+      taskId: string;
+      promise: Promise<DispatchOwnership | null>;
+      resolve: (ownership: DispatchOwnership | null) => void;
+      agentId: string;
+      trackingRecord: ActiveInvocationRecord;
+      emitStartedEvent: () => void;
+    }
+  >();
   /** Task refs currently between queue removal and active tracking registration */
   private inFlightTaskKeys = new Set<string>();
   /** Monotonic enqueue sequence for deterministic queue ordering */
@@ -1059,6 +1174,8 @@ export class DispatchEngine {
   private lifecycleMutex = new Mutex();
   private localLifecycleMutation = false;
   private lifecycleStarted = false;
+  private readonly dispatchInstanceId = ulid();
+  private readonly stopRecoveryRuntime: DispatchStopRecoveryRuntime;
 
   // ─── Target Branch Sync State ───────────────────────────────────────────────
   // AC: @dispatch-remote-branch-sync ac-pull-target-on-start through ac-no-remote
@@ -1102,6 +1219,7 @@ export class DispatchEngine {
     this.onInvocationEvent = options.onInvocationEvent;
     this.onSessionEvent = options.onSessionEvent;
     this.onSyncStateEvent = options.onSyncStateEvent;
+    this.stopRecoveryRuntime = options.stopRecoveryRuntime ?? createDefaultStopRecoveryRuntime();
     // AC: @dispatch-event-envelope ac-1 through ac-6
     this._eventBus = new EventBus({
       dedupWindowMs: this.dedupWindowMs,
@@ -1154,6 +1272,9 @@ export class DispatchEngine {
   async start(): Promise<void> {
     if (this.lifecycleStore) {
       this.lifecyclePublication = await loadDispatchBootstrapAuthority(this.lifecycleStore);
+      await this.lifecycleMutex.runExclusive(async () => {
+        await this._recoverPendingCleanups({ scope: "all" }).catch(() => undefined);
+      });
     }
     this.running = true;
     this.lifecycleStarted = true;
@@ -1420,6 +1541,13 @@ export class DispatchEngine {
    * AC: @agent-dispatch-engine ac-11
    */
   async stop(): Promise<void> {
+    if (this.lifecycleStore && this.lifecycleStarted) {
+      await this.applyGlobalLifecycleAction("stop", {
+        reason: "daemon shutdown",
+        actor: "dispatch-engine",
+        source: "daemon_shutdown",
+      }).catch(() => undefined);
+    }
     this.lifecycleStarted = false;
     this.running = false;
 
@@ -1453,6 +1581,8 @@ export class DispatchEngine {
     // after our snapshot, eliminating the need for a while loop (which
     // risks hanging indefinitely if an invocation never resolves).
     this.queues.clear();
+    for (const reservation of this.ownershipReservations.values()) reservation.resolve(null);
+    this.ownershipReservations.clear();
 
     // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations.
     // Abort controllers BEFORE closing sessions so that invocations waiting
@@ -1477,6 +1607,7 @@ export class DispatchEngine {
     this.activeCount.clear();
     this.recentEvents.clear();
     this.invocationAbortControllers.clear();
+    this.invocationAbortControllersById.clear();
     this.activeInvocationDetails.clear();
   }
 
@@ -1497,6 +1628,9 @@ export class DispatchEngine {
     action: GlobalLifecycleAction,
     context: GlobalLifecycleActionContext = {},
   ): Promise<GlobalLifecycleActionResult> {
+    if (action === "stop") {
+      return this.lifecycleMutex.runExclusive(() => this._applyGlobalStop(context));
+    }
     return this.lifecycleMutex.runExclusive(async () => {
       if (!this.lifecycleStore) {
         throw new Error("Global lifecycle controls require a shadow dispatch-control store");
@@ -1564,6 +1698,9 @@ export class DispatchEngine {
       taskRef: context.taskRef,
       source: `dispatch/task-${action}`,
     });
+    if (action === "stop") {
+      return this.lifecycleMutex.runExclusive(() => this._applyTaskStop(identity, context));
+    }
     return this.lifecycleMutex.runExclusive(async () => {
       if (!this.lifecycleStore) {
         throw new Error("Task lifecycle controls require a shadow dispatch-control store");
@@ -1658,6 +1795,367 @@ export class DispatchEngine {
         await this._reconstructReleasedTaskCandidates();
       }
       return result;
+    });
+  }
+
+  private async _collectStopTargets(
+    selector: { scope: "global" } | { scope: "task"; taskId: string },
+  ): Promise<DispatchCleanupTarget[]> {
+    const reservations = [...this.ownershipReservations.values()].filter(
+      (reservation) => selector.scope === "global" || reservation.taskId === selector.taskId,
+    );
+    if (reservations.length > 0) {
+      await Promise.all(reservations.map((reservation) => reservation.promise));
+    }
+    const sessionsDir = path.join(this.projectDir, ".kspec-sessions");
+    const sessions = await listSessions(sessionsDir);
+    const targets: DispatchCleanupTarget[] = [];
+    for (const sessionId of sessions) {
+      const metadata = await getSession(sessionsDir, sessionId);
+      const ownership = metadata?.dispatch_ownership;
+      if (!ownership || ownership.exited_at || metadata?.status !== "active") continue;
+      if (selector.scope === "task" && ownership.task_id !== selector.taskId) continue;
+      targets.push({
+        ...ownership,
+        session_metadata_path: path.posix.join(".kspec-sessions", sessionId, "session.yaml"),
+      });
+    }
+    return targets.toSorted((left, right) => left.session_id.localeCompare(right.session_id));
+  }
+
+  private _lifecycleMetadata(context: GlobalLifecycleActionContext) {
+    const timestamp = new Date().toISOString();
+    return {
+      reason: this._sanitizeLifecycleText(context.reason ?? "operator request", 240),
+      actor: this._sanitizeLifecycleText(context.actor ?? "dispatch-engine", 120),
+      source: context.source ?? ("api" as const),
+      controlled_at: timestamp,
+      updated_at: timestamp,
+    };
+  }
+
+  private async _applyGlobalStop(
+    context: GlobalLifecycleActionContext,
+  ): Promise<GlobalLifecycleActionResult> {
+    if (!this.lifecycleStore) {
+      throw new Error("Global lifecycle controls require a shadow dispatch-control store");
+    }
+    const targets = await this._collectStopTargets({ scope: "global" });
+    let outcome: "applied" | "noop" = "noop";
+    this.localLifecycleMutation = true;
+    try {
+      await this.lifecycleStore.mutate("dispatch-global-stop", (snapshot) => {
+        const existing = snapshot.pending_cleanup.global;
+        const needsCleanupRetry = existing?.status === "failed";
+        const authorityChanged = snapshot.global.authority !== "stopped";
+        const createCleanup = !existing && targets.length > 0;
+        if (!authorityChanged && !createCleanup && !needsCleanupRetry) return null;
+        outcome = authorityChanged || createCleanup ? "applied" : "noop";
+        return {
+          ...snapshot,
+          revision: snapshot.revision + 1,
+          global: { authority: "stopped", ...this._lifecycleMetadata(context) },
+          pending_cleanup: {
+            ...snapshot.pending_cleanup,
+            ...(existing
+              ? {
+                  global: {
+                    ...existing,
+                    status: "pending" as const,
+                    error_code: undefined,
+                  },
+                }
+              : createCleanup
+                ? {
+                    global: {
+                      cleanup_id: ulid(),
+                      status: "pending" as const,
+                      phase: "owned" as const,
+                      targets,
+                    },
+                  }
+                : {}),
+          },
+        };
+      });
+    } finally {
+      this.localLifecycleMutation = false;
+    }
+    this._discardStoppedQueue({ scope: "global" });
+    await this._recoverPendingCleanups({ scope: "global" });
+    return { outcome, authority: "stopped" };
+  }
+
+  private async _applyTaskStop(
+    identity: { taskId: string; displayRef: string },
+    context: TaskLifecycleActionContext,
+  ): Promise<TaskLifecycleActionResult> {
+    if (!this.lifecycleStore) {
+      throw new Error("Task lifecycle controls require a shadow dispatch-control store");
+    }
+    const targets = await this._collectStopTargets({ scope: "task", taskId: identity.taskId });
+    let outcome: "applied" | "noop" = "noop";
+    this.localLifecycleMutation = true;
+    try {
+      await this.lifecycleStore.mutate(`dispatch-task-stop-${identity.taskId}`, (snapshot) => {
+        const current = snapshot.tasks[identity.taskId];
+        const existing = snapshot.pending_cleanup[identity.taskId];
+        const needsCleanupRetry = existing?.status === "failed";
+        const authorityChanged = current?.mode !== "stopped";
+        const createCleanup = !existing && targets.length > 0;
+        if (!authorityChanged && !createCleanup && !needsCleanupRetry) return null;
+        outcome = authorityChanged || createCleanup ? "applied" : "noop";
+        return {
+          ...snapshot,
+          revision: snapshot.revision + 1,
+          tasks: {
+            ...snapshot.tasks,
+            [identity.taskId]: {
+              mode: "stopped" as const,
+              ...this._lifecycleMetadata(context),
+            },
+          },
+          pending_cleanup: {
+            ...snapshot.pending_cleanup,
+            ...(existing
+              ? {
+                  [identity.taskId]: {
+                    ...existing,
+                    status: "pending" as const,
+                    error_code: undefined,
+                  },
+                }
+              : createCleanup
+                ? {
+                    [identity.taskId]: {
+                      cleanup_id: ulid(),
+                      status: "pending" as const,
+                      phase: "owned" as const,
+                      targets,
+                    },
+                  }
+                : {}),
+          },
+        };
+      });
+    } finally {
+      this.localLifecycleMutation = false;
+    }
+    this._discardStoppedQueue({ scope: "task", taskId: identity.taskId });
+    await this._recoverPendingCleanups({ scope: "task", taskId: identity.taskId });
+    return {
+      outcome,
+      taskId: identity.taskId,
+      taskRef: identity.displayRef,
+      mode: "stopped",
+    };
+  }
+
+  private async _recoverPendingCleanups(
+    selector: { scope: "all" } | { scope: "global" } | { scope: "task"; taskId: string },
+  ): Promise<void> {
+    if (!this.lifecycleStore) return;
+    const keys = Object.keys(this.lifecyclePublication.snapshot.pending_cleanup).filter((key) => {
+      if (this.lifecyclePublication.snapshot.pending_cleanup[key]?.targets.length === 0)
+        return false;
+      if (selector.scope === "all") return true;
+      if (selector.scope === "global") return key === "global";
+      return key === selector.taskId;
+    });
+    let firstError: DispatchCleanupError | null = null;
+    for (const key of keys) {
+      try {
+        await this._recoverPendingCleanup(key);
+      } catch (error) {
+        const cleanupError =
+          error instanceof DispatchCleanupError
+            ? error
+            : new DispatchCleanupError("internal_error", "Dispatch cleanup failed internally");
+        await this._markCleanupFailed(key, cleanupError.code);
+        firstError ??= cleanupError;
+      }
+    }
+    if (firstError) throw firstError;
+  }
+
+  private _discardStoppedQueue(
+    selector: { scope: "global" } | { scope: "task"; taskId: string },
+  ): void {
+    if (selector.scope === "global") {
+      this.queues.clear();
+      return;
+    }
+    for (const [agentId, queue] of this.queues) {
+      const retained = queue.filter((entry) => entry.change.taskId !== selector.taskId);
+      if (retained.length === 0) this.queues.delete(agentId);
+      else this.queues.set(agentId, retained);
+    }
+  }
+
+  private async _recoverPendingCleanup(key: string): Promise<void> {
+    const current = this.lifecyclePublication.snapshot.pending_cleanup[key];
+    if (!current || !this.lifecycleStore) return;
+    if (current.phase === "owned") {
+      for (const target of current.targets) await this._cancelVerifiedTarget(target);
+      await this._advanceCleanupPhase(key, "signals_sent");
+    }
+    const afterSignals = this.lifecyclePublication.snapshot.pending_cleanup[key];
+    if (afterSignals?.phase === "signals_sent") {
+      const sessionsDir = path.join(this.projectDir, ".kspec-sessions");
+      try {
+        for (const target of afterSignals.targets) {
+          this._sessionRegistry.closeMatching(
+            (registration) => registration.invocationId === target.invocation_id,
+            "dispatch hard stop",
+          );
+          await this.stopRecoveryRuntime.closeSession(sessionsDir, target.session_id);
+        }
+      } catch {
+        throw new DispatchCleanupError(
+          "session_closure_failed",
+          "Dispatch-owned session closure failed",
+        );
+      }
+      await this._advanceCleanupPhase(key, "sessions_closed");
+    }
+    if (this.lifecyclePublication.snapshot.pending_cleanup[key]?.phase === "sessions_closed") {
+      await this.lifecycleStore.mutate(`dispatch-cleanup-complete-${key}`, (snapshot) => {
+        if (!snapshot.pending_cleanup[key]) return null;
+        const pending_cleanup = { ...snapshot.pending_cleanup };
+        delete pending_cleanup[key];
+        return { ...snapshot, revision: snapshot.revision + 1, pending_cleanup };
+      });
+    }
+  }
+
+  private async _cancelVerifiedTarget(target: DispatchCleanupTarget): Promise<void> {
+    const sessionsDir = path.join(this.projectDir, ".kspec-sessions");
+    const expectedMetadataPath = path.posix.join(
+      ".kspec-sessions",
+      target.session_id,
+      "session.yaml",
+    );
+    if (target.session_metadata_path !== expectedMetadataPath) {
+      throw new DispatchCleanupError(
+        "cleanup_ownership_mismatch",
+        "Dispatch cleanup session metadata path does not match its session ownership",
+      );
+    }
+    const persisted = (await getSession(sessionsDir, target.session_id))?.dispatch_ownership;
+    const { session_metadata_path: _path, ...expected } = target;
+    if (!persisted || !isDeepStrictEqual(persisted, expected)) {
+      throw new DispatchCleanupError(
+        "cleanup_ownership_mismatch",
+        "Durable dispatch session ownership no longer matches cleanup",
+      );
+    }
+    if (target.exited_at) {
+      this.invocationAbortControllersById.get(target.invocation_id)?.abort();
+      return;
+    }
+    if (
+      target.process_identity_platform !== "linux_proc_stat_v1" ||
+      target.pid === null ||
+      target.pgid === null ||
+      target.process_start_ticks === null
+    ) {
+      throw new DispatchCleanupError(
+        "cleanup_identity_unverifiable",
+        "Dispatch process identity is not verifiable",
+      );
+    }
+
+    let leader: DispatchProcessEvidence | null;
+    let members: DispatchProcessEvidence[];
+    try {
+      leader = await this.stopRecoveryRuntime.readProcess(target.pid);
+      members = await this.stopRecoveryRuntime.listProcessGroup(target.pgid);
+    } catch {
+      throw new DispatchCleanupError(
+        "cleanup_identity_unverifiable",
+        "Dispatch process identity could not be read",
+      );
+    }
+    if (leader) {
+      if (leader.processStartTicks !== target.process_start_ticks) {
+        throw new DispatchCleanupError(
+          "cleanup_process_birth_mismatch",
+          "Dispatch process birth identity no longer matches cleanup",
+        );
+      }
+      if (leader.pgid !== target.pgid) {
+        throw new DispatchCleanupError(
+          "cleanup_ownership_mismatch",
+          "Dispatch process group no longer matches cleanup",
+        );
+      }
+    }
+    if (members.length === 0) {
+      this.invocationAbortControllersById.get(target.invocation_id)?.abort();
+      return;
+    }
+    const proofs = new Map(target.group_members.map((member) => [member.pid, member]));
+    const unproved = members.some(
+      (member) => proofs.get(member.pid)?.process_start_ticks !== member.processStartTicks,
+    );
+    if (unproved) {
+      throw new DispatchCleanupError(
+        "cleanup_group_unverifiable",
+        "A live dispatch process-group member lacks durable ownership proof",
+      );
+    }
+    if (!leader) {
+      throw new DispatchCleanupError(
+        "cleanup_leader_missing_group_alive",
+        "The dispatch leader exited while its verified process group remains alive",
+      );
+    }
+    try {
+      await this.stopRecoveryRuntime.signalProcessGroup(target.pgid, "SIGTERM");
+    } catch {
+      throw new DispatchCleanupError("cancellation_failed", "Dispatch process cancellation failed");
+    }
+    if (!(await this.stopRecoveryRuntime.waitForProcessGroupExit(target.pgid, 5_000))) {
+      throw new DispatchCleanupError(
+        "cancellation_timeout",
+        "Dispatch process group did not exit before the cleanup timeout",
+      );
+    }
+    this.invocationAbortControllersById.get(target.invocation_id)?.abort();
+  }
+
+  private async _advanceCleanupPhase(
+    key: string,
+    phase: "signals_sent" | "sessions_closed",
+  ): Promise<void> {
+    if (!this.lifecycleStore) return;
+    await this.lifecycleStore.mutate(`dispatch-cleanup-${phase}-${key}`, (snapshot) => {
+      const current = snapshot.pending_cleanup[key];
+      if (!current || current.phase === phase) return null;
+      return {
+        ...snapshot,
+        revision: snapshot.revision + 1,
+        pending_cleanup: {
+          ...snapshot.pending_cleanup,
+          [key]: { ...current, status: "pending", error_code: undefined, phase },
+        },
+      };
+    });
+  }
+
+  private async _markCleanupFailed(key: string, code: DispatchCleanupErrorCode): Promise<void> {
+    if (!this.lifecycleStore) return;
+    await this.lifecycleStore.mutate(`dispatch-cleanup-failed-${key}`, (snapshot) => {
+      const current = snapshot.pending_cleanup[key];
+      if (!current) return null;
+      return {
+        ...snapshot,
+        revision: snapshot.revision + 1,
+        pending_cleanup: {
+          ...snapshot.pending_cleanup,
+          [key]: { ...current, status: "failed", error_code: code },
+        },
+      };
     });
   }
 
@@ -3341,11 +3839,11 @@ export class DispatchEngine {
       // the invocation options).
       void adapter;
 
+      const invocationId = ulid();
       // AC: @agent-dispatch-engine ac-11 - Create abort controller for graceful cancellation
       const abortController = new AbortController();
       this.invocationAbortControllers.add(abortController);
-
-      const invocationId = ulid();
+      this.invocationAbortControllersById.set(invocationId, abortController);
       const trackingRecord: ActiveInvocationRecord = {
         invocationId,
         sessionId: preSessionId,
@@ -3505,6 +4003,7 @@ export class DispatchEngine {
             taskId: entry.change.taskId ?? null,
             agentId,
             adapter: adapterId,
+            ownerInstanceId: this.dispatchInstanceId,
           },
           emitStartedEvent,
         }).then((handoff) => {
@@ -3514,6 +4013,9 @@ export class DispatchEngine {
         return createHandoffPromise;
       };
       options.beforeCreate = beforeCreate;
+      options.onOwnershipPersisted = (ownership) =>
+        this._publishPersistedInvocationOwnership(ownership);
+      options.onOwnershipFailed = (handoff) => this._failInvocationOwnership(handoff.invocationId);
 
       let resolveInvocationStarted!: () => void;
       const invocationStarted = new Promise<void>((resolve) => {
@@ -3780,6 +4282,7 @@ export class DispatchEngine {
           }
           this.runningInvocations.delete(invocationPromise);
           this.invocationAbortControllers.delete(abortController);
+          this.invocationAbortControllersById.delete(invocationId);
         });
 
       invocationRegistered = true;
@@ -4330,21 +4833,45 @@ export class DispatchEngine {
       }
       if (denial) throw new InvocationCreateDeniedError(denial);
 
-      this.activeCount.set(input.agentId, (this.activeCount.get(input.agentId) ?? 0) + 1);
-      this.activeInvocationDetails.set(input.handoff.invocationId, input.trackingRecord);
-      // Affinity is a canonical-task signal so aliases of the same task share it.
-      // AC: @dispatch-canonical-task-identity ac-scheduler-alias-dedupe
-      this.recentTaskAffinityRef = input.taskId;
-      try {
-        input.emitStartedEvent();
-      } catch (error) {
-        const currentActive = this.activeCount.get(input.agentId) ?? 1;
-        this.activeCount.set(input.agentId, Math.max(0, currentActive - 1));
-        this.activeInvocationDetails.delete(input.handoff.invocationId);
-        throw error;
-      }
+      let resolve!: (ownership: DispatchOwnership | null) => void;
+      const promise = new Promise<DispatchOwnership | null>((settle) => (resolve = settle));
+      this.ownershipReservations.set(input.handoff.invocationId, {
+        taskId: input.taskId,
+        promise,
+        resolve,
+        agentId: input.agentId,
+        trackingRecord: input.trackingRecord,
+        emitStartedEvent: input.emitStartedEvent,
+      });
       return input.handoff;
     });
+  }
+
+  private _publishPersistedInvocationOwnership(ownership: DispatchOwnership): void {
+    const reservation = this.ownershipReservations.get(ownership.invocation_id);
+    if (!reservation) throw new Error("Invocation ownership handoff is no longer admitted");
+    this.activeCount.set(reservation.agentId, (this.activeCount.get(reservation.agentId) ?? 0) + 1);
+    this.activeInvocationDetails.set(ownership.invocation_id, reservation.trackingRecord);
+    this.recentTaskAffinityRef = reservation.taskId;
+    try {
+      reservation.emitStartedEvent();
+      reservation.resolve(ownership);
+      this.ownershipReservations.delete(ownership.invocation_id);
+    } catch (error) {
+      const currentActive = this.activeCount.get(reservation.agentId) ?? 1;
+      this.activeCount.set(reservation.agentId, Math.max(0, currentActive - 1));
+      this.activeInvocationDetails.delete(ownership.invocation_id);
+      reservation.resolve(null);
+      this.ownershipReservations.delete(ownership.invocation_id);
+      throw error;
+    }
+  }
+
+  private _failInvocationOwnership(invocationId: string): void {
+    const reservation = this.ownershipReservations.get(invocationId);
+    if (!reservation) return;
+    reservation.resolve(null);
+    this.ownershipReservations.delete(invocationId);
   }
 
   private _taskSchedulingPermitted(taskId: string): boolean {
@@ -4354,7 +4881,7 @@ export class DispatchEngine {
 
   private _resolveGlobalTransition(
     authority: DispatchControl["global"]["authority"],
-    action: GlobalLifecycleAction,
+    action: Exclude<GlobalLifecycleAction, "stop">,
   ): DispatchControl["global"]["authority"] {
     if (authority === "stopped") {
       if (action === "start") return "running";

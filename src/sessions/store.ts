@@ -25,6 +25,7 @@ import {
   type SessionMetadata,
   type SessionMetadataInput,
   SessionMetadataSchema,
+  type DispatchOwnership,
   type SessionStatus,
   type TaskBudget,
   TaskBudgetSchema,
@@ -185,6 +186,7 @@ export async function createSession(
     trigger: input.trigger,
     // AC: @runner-resolution-and-preflight ac-session-metadata-records-runner
     runner: input.runner,
+    dispatch_ownership: input.dispatch_ownership,
     status: input.status ?? "active",
     started_at: input.started_at ?? new Date().toISOString(),
     ended_at: undefined,
@@ -203,6 +205,28 @@ export async function createSession(
   await commitAtLifecycleBoundary(sessionsDir, `session: create (${input.id})`);
 
   return validated;
+}
+
+/** Atomically replace the durable dispatch ownership envelope for a session. */
+export async function updateSessionDispatchOwnership(
+  sessionsDir: string,
+  sessionId: string,
+  ownership: DispatchOwnership,
+): Promise<SessionMetadata | null> {
+  const metadata = await getSession(sessionsDir, sessionId);
+  if (!metadata) return null;
+  const updated = SessionMetadataSchema.parse({ ...metadata, dispatch_ownership: ownership });
+  const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
+  const content = YAML.stringify(updated, {
+    indent: 2,
+    lineWidth: 100,
+    sortMapEntries: false,
+  });
+  const temporaryPath = `${metadataPath}.ownership-${process.pid}-${randomUUID()}.tmp`;
+  await fsPromises.writeFile(temporaryPath, content, "utf-8");
+  await fsPromises.rename(temporaryPath, metadataPath);
+  await commitAtLifecycleBoundary(sessionsDir, `session: ownership (${sessionId})`);
+  return updated;
 }
 
 /**

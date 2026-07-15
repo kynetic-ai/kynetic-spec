@@ -47,6 +47,27 @@ import { registerAdapter } from "../src/agents/adapters.js";
 
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 
+async function admitMockInvocation(options: invocationModule.InvocationOptions) {
+  const handoff = await options.beforeCreate?.();
+  if (handoff) {
+    await options.onOwnershipPersisted?.({
+      invocation_id: handoff.invocationId,
+      session_id: handoff.sessionId,
+      task_id: handoff.taskId,
+      agent_id: handoff.agentId,
+      adapter: handoff.adapter,
+      owner_instance_id: handoff.ownerInstanceId,
+      pid: process.pid,
+      pgid: process.pid,
+      process_start_ticks: "1",
+      process_identity_platform: "linux_proc_stat_v1",
+      captured_at: new Date().toISOString(),
+      group_members: [{ pid: process.pid, process_start_ticks: "1" }],
+    });
+  }
+  return handoff;
+}
+
 /**
  * Build a lightweight mock workspace metadata object for tests that need to
  * mock provisionDispatchWorkspace/ensureWorkspaceBootstrap without caring
@@ -2506,7 +2527,7 @@ describe("Dispatch runner resolution preflight", () => {
       const runSpy = vi
         .spyOn(invocationModule, "runInvocation")
         .mockImplementation(async (options) => {
-          await options.beforeCreate?.();
+          await admitMockInvocation(options);
           await runInvocationGate;
           return { session: {} as any, outcome: "success", durationMs: 1 };
         });
@@ -3207,7 +3228,7 @@ describe("Active fleet cleanup on invocation completion", () => {
     let invocationCount = 0;
 
     vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (options) => {
-      await options.beforeCreate?.();
+      await admitMockInvocation(options);
       invocationCount++;
       if (invocationCount === 2) {
         // During the second invocation (spawned by drain), check if the first
@@ -3325,12 +3346,12 @@ describe("Active fleet cleanup on invocation completion", () => {
     const runSpy = vi
       .spyOn(invocationModule, "runInvocation")
       .mockImplementationOnce(async (options) => {
-        await options.beforeCreate?.();
+        await admitMockInvocation(options);
         await quietInvocationGate;
         return { session: {} as never, outcome: "success", durationMs: 1 };
       })
       .mockImplementationOnce(async (options) => {
-        await options.beforeCreate?.();
+        await admitMockInvocation(options);
         throw new Error("early failure");
       });
 

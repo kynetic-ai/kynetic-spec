@@ -1,0 +1,510 @@
+import { afterEach, describe, expect, it } from "vitest";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import * as YAML from "yaml";
+import {
+  DispatchCleanupError,
+  DispatchEngine,
+  type DispatchLifecycleAuthorityStore,
+  type DispatchStopRecoveryRuntime,
+} from "../src/agent-runtime/dispatch.js";
+import type {
+  DispatchControl,
+  DispatchControlMutation,
+  DispatchControlPublication,
+} from "../src/agent-runtime/dispatch-control-store.js";
+import { createMissingDispatchControl } from "../src/schema/dispatch-control.js";
+import {
+  closeSession,
+  createSession,
+  getSession,
+  updateSessionDispatchOwnership,
+} from "../src/sessions/store.js";
+import type { DispatchOwnership } from "../src/sessions/types.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  seedSplitTask,
+  testUlid,
+} from "./helpers/cli.js";
+
+ensureSplitBackendRegistered();
+
+class MemoryControlStore implements DispatchLifecycleAuthorityStore {
+  private publication: DispatchControlPublication;
+  private listener?: (publication: DispatchControlPublication) => void;
+  writes = 0;
+
+  constructor(snapshot: DispatchControl) {
+    this.publication = { snapshot, token: { revision: snapshot.revision, commit_oid: "memory" } };
+  }
+
+  setPublicationListener(
+    _key: string,
+    listener: (publication: DispatchControlPublication) => void,
+  ): void {
+    this.listener = listener;
+  }
+
+  async loadCommitted(): Promise<DispatchControlPublication> {
+    this.listener?.(this.publication);
+    return this.publication;
+  }
+
+  getPublication(): DispatchControlPublication {
+    return this.publication;
+  }
+
+  getDegradedReason(): string | null {
+    return null;
+  }
+
+  async mutate(
+    _operation: string,
+    mutation: DispatchControlMutation,
+  ): Promise<DispatchControlPublication> {
+    const next = await mutation(structuredClone(this.publication.snapshot));
+    if (next) {
+      this.writes++;
+      this.publication = {
+        snapshot: next,
+        token: { revision: next.revision, commit_oid: `memory-${next.revision}` },
+      };
+      this.listener?.(this.publication);
+    }
+    return this.publication;
+  }
+}
+
+export function recoveryBarrier() {
+  let release!: () => void;
+  let enter!: () => void;
+  const entered = new Promise<void>((resolve) => (enter = resolve));
+  const blocked = new Promise<void>((resolve) => (release = resolve));
+  return { entered, release, wait: async () => (enter(), blocked) };
+}
+
+export function procEvidenceFixture() {
+  const evidence = new Map<number, { pid: number; pgid: number; processStartTicks: string }>();
+  return {
+    evidence,
+    readProcess: async (pid: number) => evidence.get(pid) ?? null,
+    listProcessGroup: async (pgid: number) =>
+      [...evidence.values()].filter((entry) => entry.pgid === pgid),
+  };
+}
+
+export function sessionCloseRecorder() {
+  const closed: string[] = [];
+  return {
+    closed,
+    close: async (_sessionsDir: string, sessionId: string) => {
+      closed.push(sessionId);
+      await closeSession(_sessionsDir, sessionId, "failed", "hard stop test");
+    },
+  };
+}
+
+const harnesses: Array<Awaited<ReturnType<typeof createStopRecoveryHarness>>> = [];
+
+export async function createStopRecoveryHarness() {
+  const projectDir = await createTempDir("dispatch-stop-recovery-");
+  initGitRepo(projectDir);
+  const taskA = testUlid("TASK", 1);
+  const taskB = testUlid("TASK", 2);
+  await fs.writeFile(
+    path.join(projectDir, "kynetic.yaml"),
+    YAML.stringify({ kynetic: "1.1", title: "Stop recovery", task_storage: { format: "split" } }),
+  );
+  for (const [id, slug] of [
+    [taskA, "task-alpha"],
+    [taskB, "task-beta"],
+  ] as const) {
+    seedSplitTask(projectDir, {
+      _ulid: id,
+      type: "task",
+      title: slug,
+      slugs: [slug],
+      status: "completed",
+      priority: 1,
+      automation: "eligible",
+      depends_on: [],
+      blocked_by: [],
+      tags: [],
+      notes: [],
+      created_at: new Date().toISOString(),
+    });
+  }
+  const initial = createMissingDispatchControl();
+  initial.revision = 1;
+  initial.global = { authority: "running" };
+  const store = new MemoryControlStore(initial);
+  const proc = procEvidenceFixture();
+  const sessions = sessionCloseRecorder();
+  const signals: number[] = [];
+  let groupExits = true;
+  const runtime: DispatchStopRecoveryRuntime = {
+    ...proc,
+    signalProcessGroup: async (pgid) => {
+      signals.push(pgid);
+    },
+    waitForProcessGroupExit: async () => groupExits,
+    closeSession: sessions.close,
+  };
+  const engine = new DispatchEngine({
+    projectDir,
+    specDir: projectDir,
+    lifecycleStore: store,
+    reconcileIntervalMs: 0,
+    stopRecoveryRuntime: runtime,
+  });
+  const seedOwnership = async (
+    sequence: number,
+    taskId: string | null,
+    overrides: Partial<DispatchOwnership> = {},
+  ) => {
+    const sessionId = testUlid("SESS", sequence);
+    const pid = 40_000 + sequence;
+    const ownership: DispatchOwnership = {
+      invocation_id: testUlid("INVK", sequence),
+      session_id: sessionId,
+      task_id: taskId,
+      agent_id: "worker",
+      adapter: "mock-acp",
+      owner_instance_id: testUlid("OWNR", 1),
+      pid,
+      pgid: pid,
+      process_start_ticks: String(90_000 + sequence),
+      process_identity_platform: "linux_proc_stat_v1",
+      captured_at: new Date().toISOString(),
+      group_members: [{ pid, process_start_ticks: String(90_000 + sequence) }],
+      ...overrides,
+    };
+    proc.evidence.set(pid, {
+      pid,
+      pgid: ownership.pgid!,
+      processStartTicks: ownership.process_start_ticks!,
+    });
+    await createSession(path.join(projectDir, ".kspec-sessions"), {
+      id: sessionId,
+      task_id: taskId ?? undefined,
+      agent_type: "mock-acp",
+      status: "active",
+      dispatch_ownership: ownership,
+    });
+    return ownership;
+  };
+  const harness = {
+    projectDir,
+    taskA,
+    taskB,
+    store,
+    engine,
+    proc,
+    sessions,
+    signals,
+    runtime,
+    seedOwnership,
+    setGroupExits(value: boolean) {
+      groupExits = value;
+    },
+  };
+  harnesses.push(harness);
+  return harness;
+}
+
+afterEach(async () => {
+  await Promise.all(
+    harnesses.splice(0).map(async ({ engine, projectDir }) => {
+      await engine.stop().catch(() => undefined);
+      await cleanupTempDir(projectDir);
+    }),
+  );
+});
+
+describe("verified dispatch hard-stop recovery", () => {
+  // AC: @dispatch-lifecycle-control-authority ac-stop-forbids-new-starts
+  // AC: @dispatch-lifecycle-control-authority ac-stop-cancels-active-work
+  // AC: @dispatch-lifecycle-control-authority ac-stop-closes-active-sessions
+  it("commits global stopped authority before verified cancellation and durable closure", async () => {
+    const harness = await createStopRecoveryHarness();
+    const a = await harness.seedOwnership(1, harness.taskA);
+    const b = await harness.seedOwnership(2, harness.taskB);
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).resolves.toMatchObject({
+      outcome: "applied",
+      authority: "stopped",
+    });
+    expect(harness.signals).toEqual([a.pgid, b.pgid]);
+    expect(harness.sessions.closed).toEqual([a.session_id, b.session_id]);
+    expect(harness.engine.getLifecycleStatus()).toMatchObject({
+      globalAuthority: "stopped",
+      cleanupState: { status: "idle", entries: [] },
+    });
+    expect(harness.engine.getLifecycleStatus().globalAuthority).toBe("stopped");
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-cancels-matching-work
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-preserves-unrelated-invocations
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-closes-matching-session
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-preserves-unrelated-sessions
+  it("stops task A without changing task B invocation, session, control, or cleanup", async () => {
+    const harness = await createStopRecoveryHarness();
+    const a = await harness.seedOwnership(1, harness.taskA);
+    const b = await harness.seedOwnership(2, harness.taskB);
+
+    await harness.engine.applyTaskLifecycleAction("stop", { taskRef: "@task-alpha" });
+    expect(harness.signals).toEqual([a.pgid]);
+    expect(harness.sessions.closed).toEqual([a.session_id]);
+    expect(harness.proc.evidence.has(b.pid!)).toBe(true);
+    expect(
+      await getSession(path.join(harness.projectDir, ".kspec-sessions"), b.session_id),
+    ).toMatchObject({
+      status: "active",
+    });
+    expect(harness.store.getPublication().snapshot.tasks).toHaveProperty(harness.taskA);
+    expect(harness.store.getPublication().snapshot.tasks).not.toHaveProperty(harness.taskB);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-recovery-requires-session-ownership
+  // AC: @dispatch-lifecycle-control-authority ac-recovery-requires-process-birth
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-failure-retains-stopped-authority
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-failure-reports-pending-cleanup
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-failure-reports-no-success
+  // AC: @dispatch-lifecycle-control-authority ac-task-interrupted-stop-recovers-on-retry
+  it("rejects mismatched birth evidence without signalling and retries the same stopped cleanup", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    harness.proc.evidence.set(target.pid!, {
+      pid: target.pid!,
+      pgid: target.pgid!,
+      processStartTicks: "999999",
+    });
+
+    await expect(
+      harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA }),
+    ).rejects.toMatchObject<Partial<DispatchCleanupError>>({
+      code: "cleanup_process_birth_mismatch",
+    });
+    expect(harness.signals).toEqual([]);
+    expect(harness.store.getPublication().snapshot.tasks[harness.taskA]?.mode).toBe("stopped");
+    expect(harness.engine.getLifecycleStatus().cleanupState).toMatchObject({
+      status: "failed",
+      entries: [{ status: "failed", error_code: "cleanup_process_birth_mismatch" }],
+    });
+
+    harness.proc.evidence.set(target.pid!, {
+      pid: target.pid!,
+      pgid: target.pgid!,
+      processStartTicks: target.process_start_ticks!,
+    });
+    await expect(
+      harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA }),
+    ).resolves.toMatchObject({ outcome: "noop", mode: "stopped" });
+    expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-missing-leader-live-group-remains-pending
+  // AC: @dispatch-lifecycle-control-authority ac-unverified-live-group-is-not-signalled
+  // AC: @dispatch-lifecycle-control-authority ac-live-group-prevents-cleanup-completion
+  it("keeps a live leaderless group failed and never signals an unproved member", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    harness.proc.evidence.delete(target.pid!);
+    harness.proc.evidence.set(target.pid! + 1, {
+      pid: target.pid! + 1,
+      pgid: target.pgid!,
+      processStartTicks: "12345",
+    });
+
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).rejects.toMatchObject({
+      code: "cleanup_group_unverifiable",
+    });
+    expect(harness.signals).toEqual([]);
+    expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("failed");
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-recovery-requires-session-ownership
+  it("re-reads the durable session tuple before retry and rejects a changed owner", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    harness.setGroupExits(false);
+    await expect(
+      harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA }),
+    ).rejects.toMatchObject({ code: "cancellation_timeout" });
+    const signalCount = harness.signals.length;
+    await updateSessionDispatchOwnership(
+      path.join(harness.projectDir, ".kspec-sessions"),
+      target.session_id,
+      { ...target, owner_instance_id: testUlid("OWNR", 2) },
+    );
+
+    await expect(
+      harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA }),
+    ).rejects.toMatchObject({ code: "cleanup_ownership_mismatch" });
+    expect(harness.signals).toHaveLength(signalCount);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-unverified-live-group-is-not-signalled
+  it("rejects unsupported process identity without signalling", async () => {
+    const harness = await createStopRecoveryHarness();
+    await harness.seedOwnership(1, harness.taskA, {
+      process_identity_platform: "unverifiable",
+      process_start_ticks: null,
+      group_members: [],
+    });
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).rejects.toMatchObject({
+      code: "cleanup_identity_unverifiable",
+    });
+    expect(harness.signals).toEqual([]);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-missing-leader-live-group-remains-pending
+  // AC: @dispatch-lifecycle-control-authority ac-live-group-prevents-cleanup-completion
+  it("distinguishes a proved live leaderless group and leaves cleanup unfinished", async () => {
+    const harness = await createStopRecoveryHarness();
+    const childPid = 50_001;
+    const target = await harness.seedOwnership(1, harness.taskA, {
+      group_members: [
+        { pid: 40_001, process_start_ticks: "90001" },
+        { pid: childPid, process_start_ticks: "777" },
+      ],
+    });
+    harness.proc.evidence.delete(target.pid!);
+    harness.proc.evidence.set(childPid, {
+      pid: childPid,
+      pgid: target.pgid!,
+      processStartTicks: "777",
+    });
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).rejects.toMatchObject({
+      code: "cleanup_leader_missing_group_alive",
+    });
+    expect(harness.signals).toEqual([]);
+    expect(harness.engine.getLifecycleStatus().cleanupState.entries).toHaveLength(1);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-no-success
+  it("retains signals_sent after session closure fails and resumes without re-signalling", async () => {
+    const harness = await createStopRecoveryHarness();
+    await harness.seedOwnership(1, harness.taskA);
+    const close = harness.runtime.closeSession;
+    harness.runtime.closeSession = async () => {
+      throw new Error("fixture close failure");
+    };
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).rejects.toMatchObject({
+      code: "session_closure_failed",
+    });
+    expect(harness.engine.getLifecycleStatus().cleanupState.entries[0]?.phase).toBe("signals_sent");
+    const signalCount = harness.signals.length;
+    harness.runtime.closeSession = close;
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).resolves.toMatchObject({
+      outcome: "noop",
+    });
+    expect(harness.signals).toHaveLength(signalCount);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-interrupted-stop-recovers-on-startup
+  // AC: @dispatch-lifecycle-control-authority ac-task-interrupted-stop-recovers-on-startup
+  it.each(["owned", "signals_sent", "sessions_closed"] as const)(
+    "resumes a %s crash checkpoint on startup without reopening authority",
+    async (phase) => {
+      const harness = await createStopRecoveryHarness();
+      const target = await harness.seedOwnership(1, harness.taskA);
+      const current = harness.store.getPublication().snapshot;
+      const timestamp = new Date().toISOString();
+      await harness.store.mutate("seed-crash", () => ({
+        ...current,
+        revision: current.revision + 1,
+        global: { authority: "stopped" },
+        tasks: {
+          [harness.taskA]: {
+            mode: "stopped",
+            reason: "crash",
+            actor: "test",
+            source: "api",
+            controlled_at: timestamp,
+            updated_at: timestamp,
+          },
+        },
+        pending_cleanup: {
+          [harness.taskA]: {
+            cleanup_id: testUlid("CLNP", 1),
+            status: "pending",
+            phase,
+            targets: [
+              {
+                ...target,
+                session_metadata_path: `.kspec-sessions/${target.session_id}/session.yaml`,
+              },
+            ],
+          },
+        },
+      }));
+
+      await harness.engine.start();
+      expect(harness.store.getPublication().snapshot.global.authority).toBe("stopped");
+      expect(harness.store.getPublication().snapshot.tasks[harness.taskA]?.mode).toBe("stopped");
+      expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
+      expect(harness.signals.length).toBe(phase === "owned" ? 1 : 0);
+      expect(harness.sessions.closed.length).toBe(phase === "sessions_closed" ? 0 : 1);
+    },
+  );
+
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-retains-stopped-authority
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-pending-cleanup
+  // AC: @dispatch-lifecycle-control-authority ac-stop-failure-reports-no-success
+  // AC: @dispatch-lifecycle-control-authority ac-interrupted-stop-recovers-on-retry
+  it("maps a live-group timeout to failure and later global retry completes", async () => {
+    const harness = await createStopRecoveryHarness();
+    await harness.seedOwnership(1, harness.taskA);
+    harness.setGroupExits(false);
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).rejects.toMatchObject({
+      code: "cancellation_timeout",
+    });
+    expect(harness.engine.getLifecycleStatus()).toMatchObject({
+      globalAuthority: "stopped",
+      cleanupState: { status: "failed" },
+    });
+    harness.setGroupExits(true);
+    await expect(harness.engine.applyGlobalLifecycleAction("stop")).resolves.toMatchObject({
+      outcome: "noop",
+    });
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-global-stop-is-idempotent
+  // AC: @dispatch-lifecycle-control-authority ac-task-stop-is-idempotent
+  it("coalesces repeated global and task stop into one cleanup identity per scope", async () => {
+    const harness = await createStopRecoveryHarness();
+    await harness.seedOwnership(1, harness.taskA);
+    const barrier = recoveryBarrier();
+    harness.runtime.waitForProcessGroupExit = async () => {
+      await barrier.wait();
+      return true;
+    };
+    const first = harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA });
+    await barrier.entered;
+    const cleanupId = harness.engine.getLifecycleStatus().cleanupState.entries[0]?.cleanup_id;
+    const second = harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA });
+    expect(harness.engine.getLifecycleStatus().cleanupState.entries).toHaveLength(1);
+    expect(harness.engine.getLifecycleStatus().cleanupState.entries[0]?.cleanup_id).toBe(cleanupId);
+    barrier.release();
+    await expect(first).resolves.toMatchObject({ outcome: "applied" });
+    await expect(second).resolves.toMatchObject({ outcome: "noop" });
+    expect(harness.signals).toHaveLength(1);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-spawn-win-stop-cancels-invocation
+  it("cancels a spawn winner once its durable ownership handoff is active", async () => {
+    const harness = await createStopRecoveryHarness();
+    const winner = await harness.seedOwnership(1, harness.taskA);
+    expect(
+      await getSession(path.join(harness.projectDir, ".kspec-sessions"), winner.session_id),
+    ).toMatchObject({ status: "active", dispatch_ownership: winner });
+
+    await harness.engine.applyTaskLifecycleAction("stop", { taskId: harness.taskA });
+    expect(harness.signals).toEqual([winner.pgid]);
+    expect(harness.sessions.closed).toEqual([winner.session_id]);
+  });
+});

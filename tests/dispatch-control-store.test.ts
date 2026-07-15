@@ -124,7 +124,7 @@ describe("dispatch control parsing", () => {
 
   it("rejects duplicate cleanup identities even when YAML keys differ only by case", () => {
     const id = testUlid("CLN", 1);
-    const raw = `version: 1\nrevision: 1\nglobal: { authority: stopped }\ntasks: {}\npending_cleanup:\n  global: { cleanup_id: ${id}, status: pending, phase: owned }\n  ${testUlid("TSK", 1)}: { cleanup_id: ${id}, status: pending, phase: owned }\n`;
+    const raw = `version: 1\nrevision: 1\nglobal: { authority: stopped }\ntasks: {}\npending_cleanup:\n  global: { cleanup_id: ${id}, status: pending, phase: owned, targets: [] }\n  ${testUlid("TSK", 1)}: { cleanup_id: ${id}, status: pending, phase: owned, targets: [] }\n`;
     expect(() => parseDispatchControl(raw)).toThrow();
   });
 });
@@ -140,11 +140,13 @@ describe("dispatch cleanup projection", () => {
           status: "failed",
           phase: "signals_sent",
           error_code: "cancellation_failed",
+          targets: [],
         },
         [taskId]: {
           cleanup_id: testUlid("CLN", 3),
           status: "pending",
           phase: "owned",
+          targets: [],
         },
       },
     };
