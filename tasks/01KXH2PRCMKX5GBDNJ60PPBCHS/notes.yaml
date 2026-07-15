@@ -226,3 +226,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T19:24:58.413Z
+  - _ulid: 01KXKM6Y4DRZN3TM10896X281C
+    content: "Fix cycle 6 approach: add behavioral regressions for all four blockers before production
+      changes. Model the real completion window where session status closes before exited_at and
+      require stop to retain/live-clean that ownership; race group-member refresh against durable
+      task reassignment and reject adoption/signalling; cover restart/orphan corrupt session
+      metadata as failed unsignalled cleanup; and add Zod cross-field validation plus recovery
+      coverage requiring every task-scoped target task_id to match the cleanup key. Re-read all
+      stop/recovery ACs and run focused plus full project gates before resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T19:31:42.861Z
