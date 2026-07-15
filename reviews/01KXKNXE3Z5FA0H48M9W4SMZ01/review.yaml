@@ -240,6 +240,12 @@ events:
     payload:
       thread_ulid: 01KXKQ8XD89SS08MWP2RN97ZZ6
     timestamp: 2026-07-15T20:47:51.607Z
+  - _ulid: 01KXKRJHEASAHDE3XZC50CFPE1
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKQ90N97E0VDK7BKEDN1DZC
+    timestamp: 2026-07-15T20:47:57.386Z
 examined_commit: e01006b3649db63d24a187d39e6ba73be8476358
 external_links: []
 lifecycle_state: closed
@@ -302,6 +308,12 @@ threads:
           evidence-read failures from the wait phase and map them without reporting cleanup
           success."
         created_at: 2026-07-15T20:25:16.713Z
+      - _ulid: 01KXKRJH60YJ5VWXVNJQGGYWMS
+        author: Jacob Chapel
+        body: "Fixed in 601531c687: waitForProcessGroupExit evidence-read failures are now mapped to
+          cleanup_identity_unverifiable, retain stopped/failed cleanup, and never report success.
+          Added an EACCES behavioral regression."
+        created_at: 2026-07-15T20:47:57.120Z
     kind: blocker
   - _ulid: 01KXKQ93T52SWX4T4YFYWESQC2
     anchor:
@@ -375,5 +387,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T20:25:48.677Z
 created_at: 2026-07-15T20:01:28.703Z
-updated_at: 2026-07-15T20:47:51.347Z
+updated_at: 2026-07-15T20:47:57.120Z
 notes: []
