@@ -1,0 +1,26 @@
+_ulid: 01KXJE84Z3B4Q1P82YTY91F18A
+slugs: []
+title: Review canonical task pause and resume
+author: Jacob Chapel
+checks: []
+events:
+  - _ulid: 01KXJE84Z3P56FTX9S87K03RHX
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      to: draft
+    timestamp: 2026-07-15T08:28:16.739Z
+examined_commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
+external_links: []
+lifecycle_state: draft
+related_refs: []
+subject:
+  type: task
+  content_hash: ""
+  ref: "@01KXH2PQ8JGAF4V4MYPN15TD1H"
+  shadow_commit: ""
+threads: []
+verdicts: []
+created_at: 2026-07-15T08:28:16.739Z
+updated_at: null
+notes: []

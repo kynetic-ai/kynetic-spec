@@ -29543,3 +29543,21 @@ reviews:
     verdict_count: 1
     created_at: 2026-07-15T07:37:00.867Z
     updated_at: 2026-07-15T07:56:10.573Z
+  - _ulid: 01KXJE84Z3B4Q1P82YTY91F18A
+    slugs: []
+    title: Review canonical task pause and resume
+    disposition: pending
+    author: Jacob Chapel
+    check_count: 0
+    examined_commit: 3e6af27320ee523bb85af7ff332fc4bc96916a5e
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KXH2PQ8JGAF4V4MYPN15TD1H"
+      shadow_commit: ""
+    thread_count: 0
+    unresolved_blocker_count: 0
+    verdict_count: 0
+    created_at: 2026-07-15T08:28:16.739Z
