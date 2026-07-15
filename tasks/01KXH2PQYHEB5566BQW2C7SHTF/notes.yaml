@@ -32,3 +32,13 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T11:22:33.822Z
+  - _ulid: 01KXJRT4XVDJ0RF9A8TQJN2MXD
+    content: "Fix cycle 1 approach: remove the dispatch-side eager beforeCreate call so the sole
+      lifecycleMutex decision occurs only at runInvocation's adjacent pre-artifact hook. Replace
+      mocked-runInvocation denial coverage with behavioral execution of the real common invocation
+      path, using persisted session state and adapter spawn observation to prove both artifacts
+      remain absent. Preserve deterministic global/task pause/stop barriers, unrelated cleanup
+      scoping, and spawn-first pause/stop handoff traces."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T11:32:52.283Z
