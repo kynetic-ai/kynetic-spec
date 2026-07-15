@@ -10,9 +10,16 @@ events:
     payload:
       to: draft
     timestamp: 2026-07-15T11:04:49.344Z
+  - _ulid: 01KXJQ83C97TMJ22RA4K49HW71
+    actor: Jacob Chapel
+    event_type: lifecycle_change
+    payload:
+      from: draft
+      to: open
+    timestamp: 2026-07-15T11:05:32.297Z
 examined_commit: 3d1318853ad804fec1fc61d256c036851b77c0a2
 external_links: []
-lifecycle_state: draft
+lifecycle_state: open
 related_refs: []
 subject:
   type: task
@@ -22,5 +29,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T11:04:49.344Z
-updated_at: null
+updated_at: 2026-07-15T11:05:32.051Z
 notes: []
