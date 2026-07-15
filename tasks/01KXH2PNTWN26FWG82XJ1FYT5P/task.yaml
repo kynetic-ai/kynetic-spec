@@ -133,7 +133,7 @@ tags:
   - engine
   - lifecycle
 vcs_refs: []
-review_ref: "@01KXJ2H9JNVYAKGRZ973FDGCD3"
+review_ref: "@01KXJ4S5Z9XDBHXYVVK49V3046"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-engine-global-lifecycle/01kxh2pn
@@ -241,6 +241,13 @@ history:
         previous: 2026-07-15T04:54:09.732Z
     command: task-submit
     timestamp: 2026-07-15T05:36:02.276Z
+  - author: Jacob Chapel
+    changes:
+      review_ref:
+        new: "@01KXJ4S5Z9XDBHXYVVK49V3046"
+        previous: "@01KXJ2H9JNVYAKGRZ973FDGCD3"
+    command: review-link
+    timestamp: 2026-07-15T05:42:52.705Z
 created_at: 2026-07-14T19:47:15.420Z
 started_at: 2026-07-15T05:29:13.941Z
 submitted_at: 2026-07-15T05:36:02.276Z
