@@ -1,1 +1,17 @@
-notes: []
+notes:
+  - _ulid: 01KXJZ7TXHY0DF7GA5KRBF4Y3R
+    content: "Approach: add one deterministic behavioral suite that composes the real
+      DispatchControlStore with a public DispatchEngine harness, using named writer-settled,
+      admission, and spawn barriers plus publication/artifact recorders. Reuse existing temp-repo,
+      split-task, canonical ULID, workspace, bootstrap, and invocation test patterns; keep
+      persistence/global/task/final-gate ownership unchanged. Edge cases: watcher-before-commit
+      versus abort/rollback; paused/stopped bootstrap with mixed cleanup scopes; stale task/rule
+      replacement before resume; global cleanup independently blocking starts; concurrent/repeated
+      resume dedupe; global/task pause and stop winning immediately before creation; per-entry
+      pending/failed error invariants. Test plan: six trigger -> barrier -> mutation -> observation
+      -> outcome traces covering publication, restart admission/reconstruction, resume dedupe, and
+      pre-spawn denial, with AC annotations for the task's selected spec criteria; focused existing
+      suites remain regression evidence."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T13:25:12.241Z
