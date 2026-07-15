@@ -167,7 +167,7 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-final-pre-spawn-control-gate"
@@ -182,8 +182,8 @@ review_ref: "@01KXKS5TCTVNQMRHB9K9YSNAZR"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-engine-stop-recovery/01kxh2pr
-  captured_at: 2026-07-15T20:49:14.848Z
-  commit: 601531c6873db117f3bd91aa48d0c0961e1c71d4
+  captured_at: 2026-07-15T21:42:34.167Z
+  commit: 646926325f598435023660377979f207b6a95856
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-engine-stop-recovery/01kxh2pr
@@ -658,8 +658,35 @@ history:
         previous: 2026-07-15T20:30:18.516Z
     command: task-start
     timestamp: 2026-07-15T21:23:43.127Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-engine-stop-recovery/01kxh2pr
+          captured_at: 2026-07-15T21:42:34.167Z
+          commit: 646926325f598435023660377979f207b6a95856
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-engine-stop-recovery/01kxh2pr
+        previous:
+          review_url: null
+          branch: dispatch/task/task-engine-stop-recovery/01kxh2pr
+          captured_at: 2026-07-15T20:49:14.848Z
+          commit: 601531c6873db117f3bd91aa48d0c0961e1c71d4
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-engine-stop-recovery/01kxh2pr
+      submitted_at:
+        new: 2026-07-15T21:42:34.188Z
+        previous: 2026-07-15T20:49:14.863Z
+    command: task-submit
+    timestamp: 2026-07-15T21:42:34.188Z
 created_at: 2026-07-14T19:47:18.036Z
 started_at: 2026-07-15T21:23:43.126Z
-submitted_at: 2026-07-15T20:49:14.863Z
+submitted_at: 2026-07-15T21:42:34.188Z
 todos: []
 automation: eligible

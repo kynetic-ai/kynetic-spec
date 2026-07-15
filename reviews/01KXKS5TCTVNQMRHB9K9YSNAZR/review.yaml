@@ -188,6 +188,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-15T21:16:17.682Z
+  - _ulid: 01KXKVP5EY54E8MEC11YQ4K8SF
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKT66TE9DHAMY46R4DJZGXR
+    timestamp: 2026-07-15T21:42:21.918Z
+  - _ulid: 01KXKVP8TSCE1515DGVJ8AXGDS
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKT66TE9DHAMY46R4DJZGXR
+    timestamp: 2026-07-15T21:42:25.369Z
+  - _ulid: 01KXKVPC3612MH5062A7HVNPD5
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKT6A911XHWKXF2Z6W2SFYQ
+    timestamp: 2026-07-15T21:42:28.710Z
+  - _ulid: 01KXKVPF8D11BFMSRX62D0MMV2
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKT6A911XHWKXF2Z6W2SFYQ
+    timestamp: 2026-07-15T21:42:31.949Z
 examined_commit: 601531c6873db117f3bd91aa48d0c0961e1c71d4
 external_links: []
 lifecycle_state: closed
@@ -221,7 +245,17 @@ threads:
           merge the latest ownership before every metadata write, and add a behavioral concurrency
           regression test."
         created_at: 2026-07-15T21:16:10.447Z
+      - _ulid: 01KXKVP54XJDK5WB3CWWRWPH4P
+        author: Jacob Chapel
+        body: "Fixed in 646926325f: every session metadata read-modify-write now shares one per-session
+          serialization tail with ownership publication, including status, end-loop, close/stat
+          persistence, and stale abandonment. Added a behavioral close-versus-exited_at concurrency
+          regression that failed on 601531c687 and now preserves both completed status and the exact
+          exit proof."
+        created_at: 2026-07-15T21:42:21.596Z
     kind: blocker
+    resolved_at: 2026-07-15T21:42:25.091Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXKT6A911XHWKXF2Z6W2SFYQ
     entries:
       - _ulid: 01KXKT6A91JQ9C7CGJM90ME1D0
@@ -240,7 +274,14 @@ threads:
           so the neutrality checklist and artifact regeneration checks do not apply. One blocker was
           found after completing the broader search."
         created_at: 2026-07-15T21:16:13.985Z
+      - _ulid: 01KXKVPBV8MW4AKA7W01V5M3HC
+        author: Jacob Chapel
+        body: Acknowledged. Cycle 8 reverified the focused recovery/session surface and the full project
+          gates after the concurrency fix.
+        created_at: 2026-07-15T21:42:28.456Z
     kind: nit
+    resolved_at: 2026-07-15T21:42:31.692Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -250,5 +291,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T21:16:17.682Z
 created_at: 2026-07-15T20:58:29.146Z
-updated_at: 2026-07-15T21:16:17.682Z
+updated_at: 2026-07-15T21:42:31.692Z
 notes: []
