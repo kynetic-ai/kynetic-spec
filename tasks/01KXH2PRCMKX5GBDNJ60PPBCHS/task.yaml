@@ -167,8 +167,12 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at
+  958c482d258844ba156717bd1878a5e821263488. Implemented verified global/task stop recovery with
+  durable ownership proofs, crash-safe cleanup phases, process-group verification, scoped session
+  closure, startup/retry recovery, and behavioral coverage.
 depends_on:
   - "@task-final-pre-spawn-control-gate"
 context: []
@@ -692,8 +696,25 @@ history:
         previous: "@01KXKS5TCTVNQMRHB9K9YSNAZR"
     command: review-link
     timestamp: 2026-07-15T21:52:39.429Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at
+          958c482d258844ba156717bd1878a5e821263488. Implemented verified global/task stop recovery
+          with durable ownership proofs, crash-safe cleanup phases, process-group verification,
+          scoped session closure, startup/retry recovery, and behavioral coverage.
+        previous: null
+      completed_at:
+        new: 2026-07-15T22:16:45.996Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-15T22:16:46.014Z
 created_at: 2026-07-14T19:47:18.036Z
 started_at: 2026-07-15T21:23:43.126Z
 submitted_at: 2026-07-15T21:42:34.188Z
+completed_at: 2026-07-15T22:16:45.996Z
 todos: []
 automation: eligible
