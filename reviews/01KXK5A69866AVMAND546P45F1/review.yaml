@@ -2,7 +2,89 @@ _ulid: 01KXK5A69866AVMAND546P45F1
 slugs: []
 title: "Review: stabilize daemon command API overlap timing test"
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1,038 matched files formatted.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-15T15:27:05.658Z
+    completed_at: 2026-07-15T15:27:05.658Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo-wide: 0 errors; focused oxlint on tests/daemon-command-api.test.ts: 0 errors and 6
+      pre-existing warnings outside changed lines."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-15T15:27:09.004Z
+    completed_at: 2026-07-15T15:27:09.004Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared build and TypeScript noEmit check passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-15T15:27:12.334Z
+    completed_at: 2026-07-15T15:27:12.334Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Five independent fresh runs passed 46/46 tests each (5.1-5.5s).
+    name: focused daemon command API stress
+    required: true
+    runner: npm test -- --fresh tests/daemon-command-api.test.ts
+    created_at: 2026-07-15T15:27:15.511Z
+    completed_at: 2026-07-15T15:27:15.511Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: 2,789 suites passed; 10,581 tests passed; 3 skipped; 0 failed. Duration 2,617.4s.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-15T15:27:18.676Z
+    completed_at: 2026-07-15T15:27:18.676Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema and references passed; existing warning baseline allowed.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-15T15:27:22.864Z
+    completed_at: 2026-07-15T15:27:22.864Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Schema, references, and alignment validation passed with existing warning baseline.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-15T15:27:26.046Z
+    completed_at: 2026-07-15T15:27:26.046Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Completeness validation passed with existing project warning baseline; relevant
+      @daemon-concurrent-reads AC annotations are present and behaviorally valid.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-15T15:27:29.224Z
+    completed_at: 2026-07-15T15:27:29.224Z
 events:
   - _ulid: 01KXK5A697Q4NY4SW6MR6YZ9RM
     actor: Jacob Chapel
@@ -17,6 +99,69 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-15T15:11:39.541Z
+  - _ulid: 01KXK6715VE4BMMBEG740AX6WA
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-15T15:27:05.915Z
+  - _ulid: 01KXK674E9FBY4CRZ67APARRCY
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-15T15:27:09.257Z
+  - _ulid: 01KXK677NVA90374KTQCDSTQR4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-15T15:27:12.571Z
+  - _ulid: 01KXK67ASF3XQCEAJFK02SGK4Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused daemon command API stress
+    timestamp: 2026-07-15T15:27:15.759Z
+  - _ulid: 01KXK67DWDKKRRF6BGQ6T1EKC7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T15:27:18.925Z
+  - _ulid: 01KXK67HZ6GS6Y4P5WCFH3GP6K
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T15:27:23.110Z
+  - _ulid: 01KXK67N2DFAZCFYNVRQQTW33N
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-15T15:27:26.285Z
+  - _ulid: 01KXK67R6ENPMG3P22V53FSH00
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-15T15:27:29.487Z
+  - _ulid: 01KXK67VKMDJ6NSSP2BM7NTMGB
+    actor: pr-reviewer
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXK67VBK61EXRDTS6RQX37CR
+    timestamp: 2026-07-15T15:27:32.980Z
 examined_commit: 5f77a5ccc7b8d2f2ea48581d08f06797c0ea56c3
 external_links: []
 lifecycle_state: open
@@ -26,8 +171,24 @@ subject:
   content_hash: ""
   ref: "@01KXK05HK3EEZ79AGT0FHZ868M"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXK67VBK61EXRDTS6RQX37CR
+    entries:
+      - _ulid: 01KXK67VBK7PZMS8JV1286BXF5
+        author: pr-reviewer
+        body: "Review evidence log (informational, no finding). Files read:
+          tests/daemon-command-api.test.ts; packages/daemon/src/routes/command.ts; base-version test
+          diff. Commands run: git diff/status/log/diff-check; kspec task/item/review lookups;
+          focused oxlint; five fresh focused tests; format, lint, typecheck;
+          refs/alignment/completeness validation; full fresh npm test. Claim verified: deterministic
+          gate proves two cache-backed actions enter before either can complete; five focused runs
+          and the full suite passed. Categories searched: correctness, concurrency edge cases,
+          cleanup/error paths, security/input exposure, test integrity, AC alignment, and
+          integration; no findings. Shared/package guidance surfaces touched: none, so
+          shared-guidance neutrality checks are not applicable."
+        created_at: 2026-07-15T15:27:32.723Z
+    kind: nit
 verdicts: []
 created_at: 2026-07-15T15:11:20.872Z
-updated_at: 2026-07-15T15:11:39.280Z
+updated_at: 2026-07-15T15:27:32.723Z
 notes: []
