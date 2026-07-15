@@ -78822,7 +78822,7 @@ runs:
     completed_at: 2026-07-15T12:05:50.541Z
   - _ulid: 01KXJVX5JYNPNFMDBWJWY0SYRH
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78836,7 +78836,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T12:29:33.404Z
-        completed_at: 2026-07-15T12:29:33.404Z
+        completed_at: 2026-07-15T12:29:42.464Z
+        notes: "Friction: the fresh full test suite took 2517.5 seconds and required repeated output
+          polling; the role entry named an unavailable -review skill, requiring manual mapping to
+          kspec-review; the reflect guidance shows bare workflow show although the CLI requires a
+          run ref; dispatch tests maintain many scattered runInvocation mocks that can drift from
+          the invocation contract."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T12:29:42.464Z
+        completed_at: 2026-07-15T12:29:42.464Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T12:26:56.990Z
