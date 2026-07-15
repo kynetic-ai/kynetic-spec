@@ -11,6 +11,7 @@
  */
 
 import * as path from "node:path";
+import * as fsSync from "node:fs";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
@@ -77,7 +78,22 @@ import {
   purgeDispatchWorkspaceRecord,
   validateDispatchWorkspaceForInvocation,
 } from "./workspace.js";
-import { ensureWorkspaceBootstrap, DispatchBootstrapError } from "./bootstrap.js";
+import {
+  ensureWorkspaceBootstrap,
+  DispatchBootstrapError,
+  loadDispatchBootstrapAuthority,
+} from "./bootstrap.js";
+import {
+  getOrCreateDispatchControlStore,
+  projectDispatchCleanupState,
+  type DispatchControlPublication,
+  type DispatchLifecycleAuthorityStore,
+} from "./dispatch-control-store.js";
+import {
+  createMissingDispatchControl,
+  type DispatchCleanupState,
+  type DispatchControl,
+} from "../schema/dispatch-control.js";
 import { normalizeTaskIdentity, buildTaskRefResolver } from "./task-identity.js";
 import type { AgentDispatchRule, AgentDispatchFilter } from "../schema/meta.js";
 import { matchesAutomationFilter } from "../schema/task.js";
@@ -890,7 +906,33 @@ export interface DispatchEngineOptions {
    * AC: @dispatch-event-envelope ac-5, ac-6
    */
   eventBusOptions?: EventBusOptions;
+  /** Committed lifecycle authority store. Primarily injectable for deterministic tests. */
+  lifecycleStore?: DispatchLifecycleAuthorityStore;
 }
+
+export type GlobalLifecycleAction = "start" | "pause" | "resume";
+
+export interface GlobalLifecycleActionResult {
+  outcome: "applied" | "noop";
+  authority: "stopped" | "running" | "paused";
+}
+
+export interface GlobalLifecycleActionContext {
+  reason?: string;
+  actor?: string;
+  source?: "cli" | "api" | "ui" | "daemon_startup" | "daemon_shutdown" | "recovery";
+}
+
+export class DispatchLifecycleTransitionError extends Error {
+  readonly code = "invalid_transition";
+
+  constructor(message: string) {
+    super(message);
+    this.name = "DispatchLifecycleTransitionError";
+  }
+}
+
+export type { DispatchLifecycleAuthorityStore } from "./dispatch-control-store.js";
 
 // ─── DispatchEngine ───────────────────────────────────────────────────────────
 
@@ -982,6 +1024,12 @@ export class DispatchEngine {
   private _configuredBaseBranch: string | null = null;
   /** Shared source of truth for active integration targets across push and pull paths. */
   private _activeTargets = new Set<string>();
+  /** Durable scheduling authority, distinct from whether the engine process is alive. */
+  private lifecycleStore: DispatchLifecycleAuthorityStore | null;
+  private lifecyclePublication: DispatchControlPublication;
+  private lifecycleMutex = new Mutex();
+  private localLifecycleMutation = false;
+  private lifecycleStarted = false;
 
   // ─── Target Branch Sync State ───────────────────────────────────────────────
   // AC: @dispatch-remote-branch-sync ac-pull-target-on-start through ac-no-remote
@@ -1030,6 +1078,21 @@ export class DispatchEngine {
       dedupWindowMs: this.dedupWindowMs,
       ...options.eventBusOptions,
     });
+    const specGitPath = path.join(this.specDir, ".git");
+    const hasShadowControlSurface =
+      fsSync.existsSync(specGitPath) && fsSync.lstatSync(specGitPath).isFile();
+    this.lifecycleStore =
+      options.lifecycleStore ??
+      (hasShadowControlSurface ? getOrCreateDispatchControlStore(this.projectDir) : null);
+    const legacy = createMissingDispatchControl();
+    legacy.global.authority = "running";
+    this.lifecyclePublication = {
+      snapshot: legacy,
+      token: { revision: 0, commit_oid: "legacy-traditional-layout" },
+    };
+    this.lifecycleStore?.setPublicationListener(`dispatch-engine:${ulid()}`, (publication) =>
+      this._acceptLifecyclePublication(publication),
+    );
   }
 
   // ─── Public API ─────────────────────────────────────────────────────────────
@@ -1060,7 +1123,11 @@ export class DispatchEngine {
    * AC: @agent-dispatch-engine ac-8
    */
   async start(): Promise<void> {
+    if (this.lifecycleStore) {
+      this.lifecyclePublication = await loadDispatchBootstrapAuthority(this.lifecycleStore);
+    }
     this.running = true;
+    this.lifecycleStarted = true;
 
     // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — resolve sync config and sync before bootstrap
     await this._initTargetSync();
@@ -1324,6 +1391,7 @@ export class DispatchEngine {
    * AC: @agent-dispatch-engine ac-11
    */
   async stop(): Promise<void> {
+    this.lifecycleStarted = false;
     this.running = false;
 
     // AC: @per-task-dispatch-drain-coalescing ac-5 - Cancel all pending coalescing timers
@@ -1388,6 +1456,85 @@ export class DispatchEngine {
 
   getCwd(): string {
     return this.cwd;
+  }
+
+  /** Apply the global start/pause/resume transition matrix against committed authority. */
+  async applyGlobalLifecycleAction(
+    action: GlobalLifecycleAction,
+    context: GlobalLifecycleActionContext = {},
+  ): Promise<GlobalLifecycleActionResult> {
+    return this.lifecycleMutex.runExclusive(async () => {
+      if (!this.lifecycleStore) {
+        throw new Error("Global lifecycle controls require a shadow dispatch-control store");
+      }
+      const current = this.lifecyclePublication.snapshot;
+      const globalCleanup = projectDispatchCleanupState(current, { scope: "global" });
+      if (globalCleanup.entries.length > 0) {
+        throw new DispatchLifecycleTransitionError(
+          `Cannot ${action} global dispatch while global cleanup is ${globalCleanup.status}`,
+        );
+      }
+
+      const authority = current.global.authority;
+      const next = this._resolveGlobalTransition(authority, action);
+      if (next === authority) {
+        return { outcome: "noop", authority };
+      }
+
+      this.localLifecycleMutation = true;
+      try {
+        const timestamp = new Date().toISOString();
+        const reason = this._sanitizeLifecycleText(context.reason ?? "operator request", 240);
+        const actor = this._sanitizeLifecycleText(context.actor ?? "dispatch-engine", 120);
+        await this.lifecycleStore.mutate(`dispatch-global-${action}`, (snapshot) => ({
+          ...snapshot,
+          revision: snapshot.revision + 1,
+          global: {
+            authority: next,
+            reason,
+            actor,
+            source: context.source ?? "api",
+            controlled_at: timestamp,
+            updated_at: timestamp,
+          },
+        }));
+      } finally {
+        this.localLifecycleMutation = false;
+      }
+
+      if (next === "running") {
+        await this._reconstructCurrentCandidates();
+      }
+      return { outcome: "applied", authority: next };
+    });
+  }
+
+  getLifecycleStatus(): {
+    globalAuthority: "stopped" | "running" | "paused";
+    projection: "running" | "paused" | "draining" | "stopped";
+    activeCount: number;
+    queueDepth: number;
+    heldCount: number;
+    heldTaskIds: string[];
+    cleanupState: DispatchCleanupState;
+  } {
+    const authority = this.lifecyclePublication.snapshot.global.authority;
+    const base = this.getStatus();
+    const heldTaskIds = Array.from(this.queues.values())
+      .flatMap((queue) => queue.map((entry) => entry.change.taskId))
+      .filter((taskId) => authority !== "running" || !this._taskSchedulingPermitted(taskId))
+      .filter((taskId, index, all) => all.indexOf(taskId) === index)
+      .toSorted();
+    return {
+      globalAuthority: authority,
+      projection:
+        authority === "paused" ? (base.activeInvocations > 0 ? "draining" : "paused") : authority,
+      activeCount: base.activeInvocations,
+      queueDepth: base.queuedInvocations,
+      heldCount: heldTaskIds.length,
+      heldTaskIds,
+      cleanupState: projectDispatchCleanupState(this.lifecyclePublication.snapshot),
+    };
   }
 
   /**
@@ -1486,6 +1633,7 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-pull-target-periodic, ac-pull-target-periodic-deferred
    */
   private async _reconcile(): Promise<void> {
+    if (!this._globalSchedulingPermitted()) return;
     // AC: @dispatch-remote-branch-sync ac-pull-target-periodic — sync target when stale
     // AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred — skip if reviewer active
     if (this._remoteSyncEnabled) {
@@ -2380,6 +2528,7 @@ export class DispatchEngine {
    * AC: @per-task-dispatch-drain-coalescing ac-8
    */
   private async _serializedDrain(): Promise<void> {
+    if (!this._globalSchedulingPermitted()) return;
     if (this.drainInProgress) {
       this.drainPending = true;
       return;
@@ -2406,7 +2555,7 @@ export class DispatchEngine {
    */
   private async _drainQueues(agents: LoadedAgent[]): Promise<void> {
     // Prevent new invocation starts during/after shutdown.
-    if (!this.running) return;
+    if (!this.running || !this._globalSchedulingPermitted()) return;
 
     // AC: @agent-dispatch-engine ac-17 - Load current tasks once for staleness + readiness checks
     let currentTasks: LoadedTask[] | undefined;
@@ -2433,6 +2582,13 @@ export class DispatchEngine {
 
       const [entry] = candidate.queue.splice(candidate.queueIndex, 1);
       this.queues.set(candidate.agent.id, candidate.queue);
+
+      if (!this._taskSchedulingPermitted(entry.change.taskId)) {
+        const deferredQueue = deferredEntries.get(candidate.agent.id) ?? [];
+        deferredQueue.push(entry);
+        deferredEntries.set(candidate.agent.id, deferredQueue);
+        continue;
+      }
 
       const targetBranch = await this._resolveQueueEntryTargetBranch(
         entry,
@@ -3246,7 +3402,7 @@ export class DispatchEngine {
               // AC: @agent-dispatch-engine ac-9, ac-27 - Schedule wake-up to drain retry
               // All drains go through _serializedDrain() to prevent concurrent races.
               setTimeout(() => {
-                if (this.running) {
+                if (this.running && this._globalSchedulingPermitted()) {
                   this._serializedDrain().catch(() => {
                     /* best effort */
                   });
@@ -3386,7 +3542,7 @@ export class DispatchEngine {
           }
         })
         .then(async () => {
-          if (!this.running) return;
+          if (!this.running || !this._globalSchedulingPermitted()) return;
 
           // Release the in-flight marker before re-evaluating tasks from disk so
           // follow-up reviewer/fix-cycle work for the same task can be requeued
@@ -3922,9 +4078,75 @@ export class DispatchEngine {
 
     // AC: @dispatch-remote-branch-sync ac-degraded-auto-recover
     // AC: @dispatch-remote-branch-sync ac-degraded-recovery-requeues
+    if (!this._globalSchedulingPermitted()) return;
     this._serializedDrain().catch((err) => {
       console.error("[dispatch] Post-recovery drain error:", err);
     });
+  }
+
+  private _globalSchedulingPermitted(): boolean {
+    return (
+      this.lifecyclePublication.snapshot.global.authority === "running" &&
+      projectDispatchCleanupState(this.lifecyclePublication.snapshot, { scope: "global" }).entries
+        .length === 0 &&
+      this.lifecycleStore?.getDegradedReason() == null
+    );
+  }
+
+  private _taskSchedulingPermitted(taskId: string): boolean {
+    const snapshot = this.lifecyclePublication.snapshot;
+    return snapshot.tasks[taskId] === undefined && snapshot.pending_cleanup[taskId] === undefined;
+  }
+
+  private _resolveGlobalTransition(
+    authority: DispatchControl["global"]["authority"],
+    action: GlobalLifecycleAction,
+  ): DispatchControl["global"]["authority"] {
+    if (authority === "stopped") {
+      if (action === "start") return "running";
+      throw new DispatchLifecycleTransitionError(`Cannot ${action} global dispatch while stopped`);
+    }
+    if (authority === "paused") {
+      if (action === "pause") return "paused";
+      if (action === "resume") return "running";
+      throw new DispatchLifecycleTransitionError("Cannot start global dispatch while paused");
+    }
+    if (action === "pause") return "paused";
+    return "running";
+  }
+
+  private _sanitizeLifecycleText(value: string, maxCodePoints: number): string {
+    return Array.from(
+      Array.from(value, (character) => {
+        const codePoint = character.codePointAt(0) ?? 0;
+        return codePoint <= 0x1f || codePoint === 0x7f ? " " : character;
+      })
+        .join("")
+        .replace(/\s+/g, " ")
+        .trim(),
+    )
+      .slice(0, maxCodePoints)
+      .join("");
+  }
+
+  private _acceptLifecyclePublication(publication: DispatchControlPublication): void {
+    const previous = this.lifecyclePublication.snapshot.global.authority;
+    this.lifecyclePublication = publication;
+    if (!this.lifecycleStarted || this.localLifecycleMutation) return;
+    const next = publication.snapshot.global.authority;
+    void this.lifecycleMutex.runExclusive(async () => {
+      if (next === "running" && previous !== "running" && this._globalSchedulingPermitted()) {
+        await this._reconstructCurrentCandidates();
+      }
+    });
+  }
+
+  private async _reconstructCurrentCandidates(): Promise<void> {
+    for (const timer of this.coalesceTimers.values()) clearTimeout(timer);
+    this.coalesceTimers.clear();
+    this.queues.clear();
+    await this._evaluateAllTasks({ skipIfActive: true });
+    await this._serializedDrain();
   }
 
   private _getDegradedSnapshot(): DegradedSnapshot {

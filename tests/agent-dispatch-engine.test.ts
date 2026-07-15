@@ -1454,6 +1454,9 @@ describe("AC-8: Bootstrap evaluates existing tasks on start", () => {
 
     // Bootstrap should have evaluated the pending task
     expect(enqueueCount).toBeGreaterThanOrEqual(1);
+    // Traditional-layout fixtures retain their historical running default;
+    // real shadow projects load the committed lifecycle authority first.
+    expect(engine.getLifecycleStatus().globalAuthority).toBe("running");
 
     await engine.stop();
   });

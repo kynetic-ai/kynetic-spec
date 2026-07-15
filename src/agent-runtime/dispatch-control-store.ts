@@ -38,6 +38,18 @@ export type DispatchControlMutation = (
   current: DispatchControl,
 ) => DispatchControl | Promise<DispatchControl>;
 
+/** Minimal committed-authority contract consumed by the dispatch engine. */
+export interface DispatchLifecycleAuthorityStore {
+  setPublicationListener(
+    key: string,
+    listener: (publication: DispatchControlPublication) => void,
+  ): void;
+  loadCommitted(): Promise<DispatchControlPublication>;
+  getPublication(): DispatchControlPublication;
+  getDegradedReason(): string | null;
+  mutate(operation: string, mutation: DispatchControlMutation): Promise<DispatchControlPublication>;
+}
+
 export type DispatchCleanupSelector =
   | { scope: "all" }
   | { scope: "global" }
