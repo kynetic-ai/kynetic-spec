@@ -416,6 +416,30 @@ events:
         content_hash: ""
       decision: request_changes
     timestamp: 2026-07-15T07:01:48.062Z
+  - _ulid: 01KXJ9BX5PG9MKEVTR2C10SFGC
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ99GAG9QDQBSTV6ZJ9GB4Y
+    timestamp: 2026-07-15T07:02:56.950Z
+  - _ulid: 01KXJ9C077P9CB6BBA05FT6257
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ99GAG9QDQBSTV6ZJ9GB4Y
+    timestamp: 2026-07-15T07:03:00.071Z
+  - _ulid: 01KXJ9C3AS2XV4HA8KQ5W64NH0
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ99N9VBD9EGKBBRSD5W0C8
+    timestamp: 2026-07-15T07:03:03.257Z
+  - _ulid: 01KXJ9C6GBQ0Z4B32AV09Z6ZKV
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ99N9VBD9EGKBBRSD5W0C8
+    timestamp: 2026-07-15T07:03:06.507Z
 examined_commit: b0a8a2e844526cf3cdf5ba9d85c596f1d6ac9b5f
 external_links: []
 lifecycle_state: closed
@@ -492,7 +516,14 @@ threads:
           add a behavioral regression that forces reconstruction failure on an external running
           publication."
         created_at: 2026-07-15T07:01:38.256Z
+      - _ulid: 01KXJ9BWXTVPP6W1HS8X5PGTBR
+        author: Jacob Chapel
+        body: "Administrative duplicate created while the first atomic batch was still completing. Canonical
+          blocker thread: 01KXJ9695ATWJBVCNHNZEP2VNA. No additional worker action."
+        created_at: 2026-07-15T07:02:56.697Z
     kind: blocker
+    resolved_at: 2026-07-15T07:02:59.816Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJ99N9VBD9EGKBBRSD5W0C8
     entries:
       - _ulid: 01KXJ99N9W91DXWHP9R3F25EF5
@@ -511,7 +542,14 @@ threads:
           Shared/package guidance surfaces were not touched, so shared-guidance neutrality checks
           were not applicable."
         created_at: 2026-07-15T07:01:43.356Z
+      - _ulid: 01KXJ9C33BPNK6NWQ83BYKMAMS
+        author: Jacob Chapel
+        body: "Administrative duplicate created while the first atomic batch was still completing. Canonical
+          evidence-log thread: 01KXJ96C610Q9JKG3AK5HV5X3K."
+        created_at: 2026-07-15T07:03:03.019Z
     kind: nit
+    resolved_at: 2026-07-15T07:03:06.160Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -528,5 +566,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T07:01:48.062Z
 created_at: 2026-07-15T06:41:52.972Z
-updated_at: 2026-07-15T07:01:48.062Z
+updated_at: 2026-07-15T07:03:06.160Z
 notes: []
