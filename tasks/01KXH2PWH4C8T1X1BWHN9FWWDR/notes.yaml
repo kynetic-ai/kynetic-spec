@@ -15,3 +15,22 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T13:25:12.241Z
+  - _ulid: 01KXK0F6V5H6HXD1NHXPNGZMJQ
+    content: "Implemented six deterministic trigger -> barrier -> mutation -> observation -> outcome
+      traces in commit 7a9cd42105: (1) watcher -> writerSettledBarrier -> external commit ->
+      publicationRecorder: prior token only before commit, exactly one newer revision/token after
+      settle; (2) watcher -> dirty abort and transaction rollback independently -> recorder: prior
+      committed authority/token retained and clean worktree; (3) restart -> admissionBarrier ->
+      persisted paused/stopped/running load -> bootstrap: blocked scopes start zero and running
+      starts after load; stopped plus task cleanup starts global reconciliation once while matching
+      task stays held; (4) paused task/rule replacement -> resume: only current task/current agent
+      starts; mixed global failed plus unrelated task pending cleanup preserves per-entry error
+      invariants and task metadata resume starts zero; (5) two concurrent resume calls -> admission:
+      applied/noop and one active canonical task; (6) global/task pause or stop -> spawnBarrier ->
+      committed control -> release: zero session/process artifacts. Recovery/evidence behavior
+      remains in the dependent task. Verification: focused 67/67 passed; full fresh npm test passed
+      2802 suites, 10668 tests, 3 skipped; format, repo/focused lint, typecheck, diff check, and
+      refs/alignment/completeness validation passed under warnings policy."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T13:46:42.405Z
