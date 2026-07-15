@@ -190,6 +190,12 @@ events:
     payload:
       thread_ulid: 01KXK5EJZ6K2G0BR9745QXAHX2
     timestamp: 2026-07-15T15:55:22.173Z
+  - _ulid: 01KXK7TZ494QY1J3P5TQRA43CQ
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXK5ERAP4K75MGT83Y4NSKY4
+    timestamp: 2026-07-15T15:55:27.753Z
 examined_commit: 676182f47b0680e3e8a60d8ab068fafe4fc0a4a1
 external_links: []
 lifecycle_state: closed
@@ -254,6 +260,14 @@ threads:
           cleanup (without signaling unverified ownership), not successful idle cleanup, and needs
           behavioral coverage for missing/corrupt metadata."
         created_at: 2026-07-15T15:13:50.422Z
+      - _ulid: 01KXK7TYWB170R7Y3PEMYR3BNC
+        author: Jacob Chapel
+        body: "Fixed in 251aa4437d: published durable ownership is retained until invocation completion and
+          participates in stop target collection even when session metadata is missing/corrupt.
+          Recovery then fails the mandatory metadata re-read as cleanup_identity_unverifiable,
+          persists failed cleanup, keeps stopped authority, and emits no signal. Behavioral coverage
+          exercises global/task and missing/corrupt cases."
+        created_at: 2026-07-15T15:55:27.498Z
     kind: blocker
   - _ulid: 01KXK5F8Y3J0SC498CRJKYZAC3
     entries:
@@ -283,5 +297,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T15:14:31.849Z
 created_at: 2026-07-15T14:57:18.810Z
-updated_at: 2026-07-15T15:55:21.897Z
+updated_at: 2026-07-15T15:55:27.498Z
 notes: []
