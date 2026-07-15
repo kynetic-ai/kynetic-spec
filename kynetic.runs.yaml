@@ -78625,7 +78625,7 @@ runs:
     completed_at: 2026-07-15T10:01:10.139Z
   - _ulid: 01KXJMV3C98DZHEEXTEKJEFXEM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78641,7 +78641,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T10:24:30.340Z
-        completed_at: 2026-07-15T10:24:30.340Z
+        completed_at: 2026-07-15T10:24:34.857Z
+        notes: "Friction: the dispatch prompt required a $pr-review entrypoint that was not
+          installed/listed, requiring manual mapping to kspec-review. The fresh full suite took
+          2,534 seconds and streamed thousands of PASS lines, forcing repeated polling despite the
+          documented condensed-output behavior. The reflect skill documents bare 'kspec workflow
+          show', but the CLI rejected it because run-ref is required."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T10:24:34.857Z
+        completed_at: 2026-07-15T10:24:34.857Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T10:23:29.161Z
