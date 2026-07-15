@@ -79523,7 +79523,7 @@ runs:
     completed_at: 2026-07-15T19:28:44.753Z
   - _ulid: 01KXKNFNGB0BN0TTYJ2RK1VFXM
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79537,7 +79537,16 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T19:56:27.050Z
-        completed_at: 2026-07-15T19:56:27.050Z
+        completed_at: 2026-07-15T19:56:38.801Z
+        notes: "High-confidence candidates: (1) kspec-reflect examples say workflow show can omit a run ref,
+          but the command requires one; (2) human kspec review get truncates thread bodies,
+          requiring --json during fix cycles; (3) fresh full-suite verification is very long and can
+          appear hung between slow serial suites. Success: reviewer-claim-to-behavioral-regression
+          mapping produced precise, non-source-scanning fixes."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T19:56:38.801Z
+        completed_at: 2026-07-15T19:56:38.801Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T19:53:57.516Z
