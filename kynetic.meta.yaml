@@ -23802,6 +23802,15 @@ observations:
     resolved_at: 2026-07-15T03:43:39.840Z
     resolved_by: Jacob Chapel
     created_at: 2026-07-15T03:42:47.718Z
+  - _ulid: 01KXJ2801XC54BK3KBCRC4770C
+    type: success
+    content: Centralizing fail-closed dispatch authority at the serialized scheduling boundary covers
+      every queue-ingress path consistently, while separately serializing current-state
+      reconstruction prevents stale or duplicate work during lifecycle transitions.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-07-15T04:58:28.797Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
