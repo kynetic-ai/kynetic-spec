@@ -78065,7 +78065,7 @@ runs:
     completed_at: 2026-07-15T04:58:45.388Z
   - _ulid: 01KXJ3MJJ2PZ4ZTESWAQAXGCB5
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78081,7 +78081,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T05:23:42.339Z
-        completed_at: 2026-07-15T05:23:42.339Z
+        completed_at: 2026-07-15T05:24:03.832Z
+        notes: "Friction: (1) the task handoff required exact
+          bootstrap/enqueue/coalesced-expiry/dequeue-retry/reconcile/post-invocation barriers, but
+          the submitted suite covered only static bootstrap and resume reconstruction; the reviewer
+          had to build ad hoc executable probes to test the omitted await-point races (task-specific
+          and now captured by blockers). (2) review-gates requires a durable evidence log, but
+          review records expose checks and threads with no first-class review note/summary command,
+          so the informational log had to be created as a nit thread and immediately resolved. (3)
+          the fresh full suite took a long polling loop, and reflection guidance still shows bare
+          workflow show even though the CLI requires a run ref; both appear likely already tracked."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T05:24:03.832Z
+        completed_at: 2026-07-15T05:24:03.832Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T05:22:49.538Z
