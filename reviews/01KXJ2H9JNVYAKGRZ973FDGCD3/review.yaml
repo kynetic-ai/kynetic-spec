@@ -215,6 +215,30 @@ events:
     payload:
       thread_ulid: 01KXJ3HB1VKDCK2BKC145GZGR0
     timestamp: 2026-07-15T05:22:04.241Z
+  - _ulid: 01KXJ4BXZFS3E0GA5E4W4ZYA32
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ3H4MQD8YHQ7G44ZE33NH4
+    timestamp: 2026-07-15T05:35:34.895Z
+  - _ulid: 01KXJ4C2A4Y6NY40MV5VMRY4R0
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ3H4MQD8YHQ7G44ZE33NH4
+    timestamp: 2026-07-15T05:35:39.332Z
+  - _ulid: 01KXJ4C6EXFHSWH4MBT0FRZGMX
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXJ3H7W4QF2394CN44H23VSB
+    timestamp: 2026-07-15T05:35:43.582Z
+  - _ulid: 01KXJ4CADDA8J0A0YD071FHQ11
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXJ3H7W4QF2394CN44H23VSB
+    timestamp: 2026-07-15T05:35:47.629Z
 examined_commit: d5d15f65da86478548640f87d028f1b869a2db6b
 external_links: []
 lifecycle_state: closed
@@ -248,7 +272,16 @@ threads:
           pre-spawn ownership) and a behavioral barrier test that fails on any recorded candidate
           start.'
         created_at: 2026-07-15T05:20:56.983Z
+      - _ulid: 01KXJ4BXN5P091V82FB6P960DH
+        author: Jacob Chapel
+        body: "Fixed in 083c004494: serialized drains now recheck committed global scheduling authority
+          after queue pruning, in the loop condition, and again after asynchronous target
+          resolution. A candidate removed before pause is reinserted as held. Added a deterministic
+          pruning barrier test that commits pause before release and proves zero candidate starts."
+        created_at: 2026-07-15T05:35:34.564Z
     kind: blocker
+    resolved_at: 2026-07-15T05:35:38.996Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJ3H7W4QF2394CN44H23VSB
     anchor:
       type: code
@@ -272,7 +305,18 @@ threads:
           `snapshot` (and return the transaction-derived outcome), with a deterministic
           stale-publication/concurrent-commit test.'
         created_at: 2026-07-15T05:21:00.292Z
+      - _ulid: 01KXJ4C64EV8ZFZ1YH4XN5VSEG
+        author: Jacob Chapel
+        body: "Fixed in 083c004494: cleanup gating and the transition matrix are now evaluated inside
+          DispatchControlStore.mutate against the transaction committed snapshot. No-op outcomes use
+          an explicit no-write mutation result, and the engine returns the transaction-derived
+          outcome. Added a deterministic unpublished newer stopped commit test proving stale pause
+          returns invalid_transition with zero writes, plus store coverage proving no-op mutation
+          leaves HEAD and worktree unchanged."
+        created_at: 2026-07-15T05:35:43.246Z
     kind: blocker
+    resolved_at: 2026-07-15T05:35:47.309Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXJ3HB1VKDCK2BKC145GZGR0
     entries:
       - _ulid: 01KXJ3HB1VRZNKNCND290JBKRE
@@ -304,5 +348,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T05:21:20.341Z
 created_at: 2026-07-15T05:03:33.461Z
-updated_at: 2026-07-15T05:22:03.965Z
+updated_at: 2026-07-15T05:35:47.309Z
 notes: []

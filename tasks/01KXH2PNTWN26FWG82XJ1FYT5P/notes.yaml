@@ -46,3 +46,15 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T05:30:30.421Z
+  - _ulid: 01KXJ4CBTRY75PQKRNH1MN083P
+    content: "Fix cycle 1: addressed both review blockers in commit 083c004494. Drain admission now
+      rechecks global authority after every async barrier and preserves a dequeued candidate as held
+      if pause wins. Lifecycle cleanup/transition decisions now derive from the committed
+      transaction snapshot, with no-write transaction outcomes for idempotent actions, so stale
+      publication cannot overwrite newer stopped authority. Added deterministic behavioral races and
+      store no-write coverage. Re-verified all 16 task-owned AC annotations; focused
+      lifecycle/store/engine/bootstrap tests, uncached full suite, format, repo/focused lint,
+      typecheck, diff check, refs, alignment, and completeness all exit 0."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T05:35:49.080Z
