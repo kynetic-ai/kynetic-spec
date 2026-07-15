@@ -122,7 +122,7 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
+status: pending_review
 blocked_by: []
 depends_on:
   - "@task-dispatch-control-persistence"
@@ -137,8 +137,8 @@ review_ref: "@01KXJ85ATC5CAWKPVFXF57NHZ4"
 submission_linkage:
   review_url: null
   branch: dispatch/task/task-engine-global-lifecycle/01kxh2pn
-  captured_at: 2026-07-15T06:33:31.705Z
-  commit: b0a8a2e844526cf3cdf5ba9d85c596f1d6ac9b5f
+  captured_at: 2026-07-15T07:29:27.712Z
+  commit: 5f9dd7818714a64c8a9a3521cdd7c75451781fb9
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-engine-global-lifecycle/01kxh2pn
@@ -328,8 +328,35 @@ history:
         previous: 2026-07-15T06:12:04.938Z
     command: task-start
     timestamp: 2026-07-15T07:12:09.821Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: pending_review
+        previous: in_progress
+      submission_linkage:
+        new:
+          review_url: null
+          branch: dispatch/task/task-engine-global-lifecycle/01kxh2pn
+          captured_at: 2026-07-15T07:29:27.712Z
+          commit: 5f9dd7818714a64c8a9a3521cdd7c75451781fb9
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-engine-global-lifecycle/01kxh2pn
+        previous:
+          review_url: null
+          branch: dispatch/task/task-engine-global-lifecycle/01kxh2pn
+          captured_at: 2026-07-15T06:33:31.705Z
+          commit: b0a8a2e844526cf3cdf5ba9d85c596f1d6ac9b5f
+          remote: origin
+          remote_url: git@github.com:lepahc/kynetic-spec.git
+          upstream_ref: refs/heads/dispatch/task/task-engine-global-lifecycle/01kxh2pn
+      submitted_at:
+        new: 2026-07-15T07:29:27.722Z
+        previous: 2026-07-15T06:33:31.714Z
+    command: task-submit
+    timestamp: 2026-07-15T07:29:27.722Z
 created_at: 2026-07-14T19:47:15.420Z
 started_at: 2026-07-15T07:12:09.820Z
-submitted_at: 2026-07-15T06:33:31.714Z
+submitted_at: 2026-07-15T07:29:27.722Z
 todos: []
 automation: eligible
