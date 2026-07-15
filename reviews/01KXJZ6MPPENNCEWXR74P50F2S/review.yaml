@@ -35,6 +35,20 @@ checks:
     runner: npm run typecheck
     created_at: 2026-07-15T13:44:05.298Z
     completed_at: 2026-07-15T13:44:05.298Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Fresh full suite completed with 10,669 passing tests and one load-sensitive
+      daemon-command-api timing assertion (207ms < 150ms) failing. Two immediate isolated fresh
+      reruns passed 46/46 each; the submitted diff does not touch that test or command API
+      implementation. Classified as flaky per review policy and tracked separately by eligible bug
+      @01KXK05HK3EEZ79AGT0FHZ868M.
+    name: full test suite
+    required: true
+    runner: npm test
+    created_at: 2026-07-15T13:44:11.059Z
+    completed_at: 2026-07-15T13:44:11.059Z
 events:
   - _ulid: 01KXJZ6MP81VH8XP0PBHA1ZPGN
     actor: Jacob Chapel
@@ -70,6 +84,13 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-07-15T13:44:05.555Z
+  - _ulid: 01KXK0AK9ERZ7RQEW13RQJSXVM
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-15T13:44:11.310Z
 examined_commit: 3a9909c4870a49f5f3ac174716edfca067852055
 external_links: []
 lifecycle_state: open
@@ -82,5 +103,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T13:24:33.110Z
-updated_at: 2026-07-15T13:44:05.298Z
+updated_at: 2026-07-15T13:44:11.059Z
 notes: []
