@@ -149,6 +149,16 @@ checks:
     runner: npm test -- --fresh
     created_at: 2026-07-15T14:12:25.751Z
     completed_at: 2026-07-15T14:12:25.751Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Validation passed: schema and references OK; 6 accepted baseline deprecation warnings."
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-15T14:12:31.576Z
+    completed_at: 2026-07-15T14:12:31.576Z
 events:
   - _ulid: 01KXK0X7FC15P6FZTBVDW8NP5M
     actor: Jacob Chapel
@@ -254,6 +264,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-07-15T14:12:26.018Z
+  - _ulid: 01KXK1YFYXEG04PNTH976V0J66
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-15T14:12:31.837Z
 examined_commit: 7a9cd4210598526f56874770c264c7edf86b49ee
 external_links: []
 lifecycle_state: open
@@ -266,5 +283,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-15T13:54:21.807Z
-updated_at: 2026-07-15T14:12:25.751Z
+updated_at: 2026-07-15T14:12:31.576Z
 notes: []
