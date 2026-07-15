@@ -185,6 +185,17 @@ checks:
     runner: git diff --check
     created_at: 2026-07-15T22:15:25.552Z
     completed_at: 2026-07-15T22:15:25.552Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Passed fresh: 59 suites and 227 tests across stop recovery, spawn race, registry,
+      invocation, and dispatch engine."
+    name: focused stop recovery
+    required: false
+    runner: npm test -- --fresh focused files
+    created_at: 2026-07-15T22:15:31.066Z
+    completed_at: 2026-07-15T22:15:31.066Z
 events:
   - _ulid: 01KXKW8XZXGGQHRQMR6139KX9C
     actor: Jacob Chapel
@@ -325,6 +336,13 @@ events:
       status: pass
       name: diff hygiene
     timestamp: 2026-07-15T22:15:25.813Z
+  - _ulid: 01KXKXJW9YRAZYAX85M64G1YX1
+    actor: pr-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused stop recovery
+    timestamp: 2026-07-15T22:15:31.390Z
 examined_commit: 646926325f598435023660377979f207b6a95856
 external_links: []
 lifecycle_state: open
@@ -361,5 +379,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-15T21:52:36.862Z
-updated_at: 2026-07-15T22:15:25.552Z
+updated_at: 2026-07-15T22:15:31.066Z
 notes: []
