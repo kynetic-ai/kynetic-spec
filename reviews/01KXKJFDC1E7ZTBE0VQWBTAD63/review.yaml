@@ -227,6 +227,66 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-15T19:24:56.210Z
+  - _ulid: 01KXKNDDABFKQSBBXPYRV774C9
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKKRQXR9QGV1E2F7ZSZ5HCN
+    timestamp: 2026-07-15T19:52:43.595Z
+  - _ulid: 01KXKNDGF210RZFT1B80S6EH7Q
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKKRQXR9QGV1E2F7ZSZ5HCN
+    timestamp: 2026-07-15T19:52:46.818Z
+  - _ulid: 01KXKNDKMXP7TNC4G8WV704V9D
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKKRXND7RKRD4PMQ2EZZRAT
+    timestamp: 2026-07-15T19:52:50.078Z
+  - _ulid: 01KXKNDPTNK4SE31XSVHEHXP7B
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKKRXND7RKRD4PMQ2EZZRAT
+    timestamp: 2026-07-15T19:52:53.333Z
+  - _ulid: 01KXKNDT0T2WN7RE46P9FACAQV
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKKS3CYMAMGEVVGAB3X4X61
+    timestamp: 2026-07-15T19:52:56.602Z
+  - _ulid: 01KXKNDX16DTK7K1WT5SRVZ7J3
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKKS3CYMAMGEVVGAB3X4X61
+    timestamp: 2026-07-15T19:52:59.686Z
+  - _ulid: 01KXKNE03257TE437H9Y565AVR
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKKS95AM60CXDAS9SHD2K24
+    timestamp: 2026-07-15T19:53:02.818Z
+  - _ulid: 01KXKNE335WV98GMSW8PSVKP9C
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKKS95AM60CXDAS9SHD2K24
+    timestamp: 2026-07-15T19:53:05.893Z
+  - _ulid: 01KXKNE65PCKM7X69YNW4NDTHB
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXKKSRCCEK61N7CBSYRZGYFF
+    timestamp: 2026-07-15T19:53:09.046Z
+  - _ulid: 01KXKNE970REKECCBBFV0ZNJSM
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKKSRCCEK61N7CBSYRZGYFF
+    timestamp: 2026-07-15T19:53:12.160Z
 examined_commit: 0898f3a8e00072d22546a1d4ca92b000a0baa8fa
 external_links: []
 lifecycle_state: closed
@@ -257,7 +317,17 @@ threads:
           no-false-success stop contract. The submitted late-child regression writes exited_at
           before closing and therefore does not model runtime ordering."
         created_at: 2026-07-15T19:23:57.752Z
+      - _ulid: 01KXKNDD28M4TPZKF9MSB8HKC4
+        author: Jacob Chapel
+        body: "Fixed in e01006b364: stop collection now retains any verified ownership lacking exited_at
+          even after session status closes, and verified cleanup persists exited_at before durable
+          session closure. Added a behavioral completion-window regression that closes the session
+          first while the group remains live and proves the group is signalled and cleanup cannot
+          false-succeed."
+        created_at: 2026-07-15T19:52:43.336Z
     kind: blocker
+    resolved_at: 2026-07-15T19:52:46.566Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXKKRXND7RKRD4PMQ2EZZRAT
     anchor:
       type: code
@@ -277,7 +347,16 @@ threads:
           returned applied and signaled task B's PGID. This violates task isolation and immutable
           cleanup-target requirements."
         created_at: 2026-07-15T19:24:03.629Z
+      - _ulid: 01KXKNDKCT20Q6RE2W1HHV661X
+        author: Jacob Chapel
+        body: "Fixed in e01006b364: refresh results are revalidated against the original immutable identity
+          before adoption. A concurrent task-A to task-B reassignment now leaves the frozen A target
+          intact, so canonical re-read fails cleanup_ownership_mismatch with no signal. Added a
+          behavioral race regression proving task B remains live and unsignalled."
+        created_at: 2026-07-15T19:52:49.818Z
     kind: blocker
+    resolved_at: 2026-07-15T19:52:53.068Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXKKS3CYMAMGEVVGAB3X4X61
     anchor:
       type: code
@@ -297,7 +376,18 @@ threads:
           this restart/orphan path. The stop contract forbids reporting success when live ownership
           cannot be verified and terminated."
         created_at: 2026-07-15T19:24:09.502Z
+      - _ulid: 01KXKNDSRYY2PDGQTXD30H0Q4N
+        author: Jacob Chapel
+        body: "Fixed in e01006b364: session storage now durably maintains a last-valid dispatch-ownership
+          archive alongside canonical metadata. Restart collection can materialize a truthful target
+          when session.yaml is unreadable, while cancellation still requires canonical session
+          metadata re-verification and therefore reports cleanup_identity_unverifiable with stopped
+          authority, failed cleanup, no signal, and no success. Added a syntactically corrupt
+          restart regression."
+        created_at: 2026-07-15T19:52:56.350Z
     kind: blocker
+    resolved_at: 2026-07-15T19:52:59.442Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXKKS95AM60CXDAS9SHD2K24
     anchor:
       type: code
@@ -316,7 +406,16 @@ threads:
           make startup or retry for task A signal task B, violating the task-scope isolation ACs.
           Add cross-field validation and behavioral recovery coverage."
         created_at: 2026-07-15T19:24:15.402Z
+      - _ulid: 01KXKNDZV6ETE0V2XHM7C2NQ86
+        author: Jacob Chapel
+        body: "Fixed in e01006b364: PendingCleanupRecordSchema now rejects every task-scoped target whose
+          task_id differs from its canonical cleanup key. Recovery also defensively rejects such a
+          target before signalling if an invalid in-memory store bypasses parsing. Added parser and
+          startup-recovery behavioral regressions."
+        created_at: 2026-07-15T19:53:02.566Z
     kind: blocker
+    resolved_at: 2026-07-15T19:53:05.651Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXKKSRCCEK61N7CBSYRZGYFF
     entries:
       - _ulid: 01KXKKSRCC34M4K418ZSS4V88G
@@ -336,7 +435,16 @@ threads:
           neutrality/render checks are not applicable. Worktree remained clean; temporary diagnostic
           tests were removed."
         created_at: 2026-07-15T19:24:30.988Z
+      - _ulid: 01KXKNE5Y0G1ZVN0N6TJ1PDY9C
+        author: Jacob Chapel
+        body: "Cycle-6 evidence: focused recovery/engine/schema suites passed 58 suites and 235 tests;
+          changed-file lint 0 warnings/errors; format, repo lint (0 errors), typecheck,
+          refs/alignment/completeness validations, diff hygiene, and fresh full npm test all passed.
+          Full suite: 2,805 suites, 10,711 passed, 3 skipped."
+        created_at: 2026-07-15T19:53:08.800Z
     kind: nit
+    resolved_at: 2026-07-15T19:53:11.919Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -346,5 +454,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T19:24:56.200Z
 created_at: 2026-07-15T19:01:23.457Z
-updated_at: 2026-07-15T19:24:56.210Z
+updated_at: 2026-07-15T19:53:11.919Z
 notes: []
