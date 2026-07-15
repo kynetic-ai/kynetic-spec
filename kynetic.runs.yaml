@@ -78625,7 +78625,7 @@ runs:
     completed_at: 2026-07-15T10:01:10.139Z
   - _ulid: 01KXJMV3C98DZHEEXTEKJEFXEM
     status: active
-    current_step: 2
+    current_step: 3
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -78650,7 +78650,20 @@ runs:
       - status: completed
         step_index: 2
         started_at: 2026-07-15T10:24:34.857Z
-        completed_at: 2026-07-15T10:24:34.857Z
+        completed_at: 2026-07-15T10:27:57.163Z
+        notes: "Coverage search completed across specs, tasks, inbox, and pending observations. Full-suite
+          reviewer cost/noise is already tracked by friction observation @01KVXG7Z. workflow
+          show/run-ref mismatch is already tracked by inbox @01KXJKHV and friction observations
+          @01KN0DG5Q and @01KSEQ88. Reviewer entrypoint drift is partially covered by implemented
+          @pr-review-skill, implemented @dispatch-role-workflow-entry-contract, and pending
+          @task-update-skills-to-reference-agent-runtime-instead-of-ralph, but no item found for the
+          exact live mismatch: dispatch rendered $pr-review while kspec skill status reports
+          pr-review not-rendered for Codex/Claude and the current pr-reviewer agent attaches
+          review."
+      - status: completed
+        step_index: 3
+        started_at: 2026-07-15T10:27:57.163Z
+        completed_at: 2026-07-15T10:27:57.163Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T10:23:29.161Z
