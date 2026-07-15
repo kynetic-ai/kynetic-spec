@@ -23872,6 +23872,19 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-15T12:05:44.369Z
+  - _ulid: 01KXJYY9R77F1FQ72Z894RTSTG
+    type: success
+    content: For safety-critical process recovery, inject a narrow runtime for process-identity reads,
+      group enumeration/signalling, exit verification, and durable session closure, then drive it
+      with immutable ownership fixtures. This makes refusal paths such as PID reuse, unreadable
+      evidence, unproved or leaderless live groups, timeouts, closure failures, and phase-crash
+      resumption behaviorally testable without signalling real processes, while keeping the
+      production Linux /proc implementation behind the same contract.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-15T13:19:59.751Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
