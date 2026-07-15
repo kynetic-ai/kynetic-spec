@@ -160,6 +160,13 @@ events:
       kind: blocker
       thread_ulid: 01KXKG4GQ0Y1ZDE95GH3W2Z1C1
     timestamp: 2026-07-15T18:20:29.575Z
+  - _ulid: 01KXKG4Q60V2XSKA15D02F23VP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXKG4PXC7274PNRZ6HV1WJQA
+    timestamp: 2026-07-15T18:20:35.904Z
 examined_commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
 external_links: []
 lifecycle_state: open
@@ -239,7 +246,29 @@ threads:
           verified-reap initialization failures; add rejecting and hanging initialization tests."
         created_at: 2026-07-15T18:20:29.280Z
     kind: blocker
+  - _ulid: 01KXKG4PXC7274PNRZ6HV1WJQA
+    anchor:
+      type: code
+      commit: eabcdee53e8b85a12365f154ecb903e3670f95b9
+      line_end: 912
+      line_start: 905
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXKG4PXCQX37J026CYJC621G
+        author: Jacob Chapel
+        body: MUST-FIX — process-group enumeration converts every per-PID /proc stat failure into an absent
+          process. The catch at line 910 suppresses EACCES, EIO, and parse failures as well as
+          disappearance; verification can therefore accept the incomplete member set, signal a group
+          containing an unverified member, and waitForProcessGroupExit can report empty while that
+          member is live. This contradicts the required cleanup_identity_unverifiable outcome for
+          unreadable evidence and the prohibition on signaling unverified members. Only tolerate the
+          ENOENT disappearance race already represented by readLinuxProcessEvidence returning null;
+          propagate other evidence failures and add a behavioral runtime test for rejected member
+          reads.
+        created_at: 2026-07-15T18:20:35.628Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-15T18:01:35.563Z
-updated_at: 2026-07-15T18:20:29.280Z
+updated_at: 2026-07-15T18:20:35.628Z
 notes: []
