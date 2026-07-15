@@ -13,3 +13,17 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T08:01:55.356Z
+  - _ulid: 01KXJDS5SPAVJS3Z9XK2149TXR
+    content: "Implemented canonical task pause/resume on the committed lifecycle store. Task refs are
+      strictly resolved to ULIDs before lookup/write; matching task transitions are serialized and
+      scoped cleanup is enforced; resume reconstructs current candidates only through the
+      independent global/global-cleanup gate; external committed task releases also reconcile.
+      Behavioral coverage proves A/B isolation, event/coalesced/reconcile/retry-style/post-drain
+      admission, active invocation/session preservation, global paused/stopped/cleanup gating,
+      stopped cleanup transitions, invalid aliases/transitions, and concurrent idempotency.
+      Verification: focused lifecycle/identity suites 40/40 passed; focused oxlint 0
+      warnings/errors; full npm test 10,643 passed and 3 skipped; format, repo lint (0 errors),
+      typecheck, refs, alignment, completeness, and git diff checks passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T08:20:06.071Z
