@@ -79600,7 +79600,7 @@ runs:
     completed_at: 2026-07-15T20:52:03.506Z
   - _ulid: 01KXKT8P85CWBGMVCNJC3P5J6Z
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -79614,7 +79614,19 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T21:18:03.652Z
-        completed_at: 2026-07-15T21:18:03.652Z
+        completed_at: 2026-07-15T21:18:25.357Z
+        notes: "Friction: (1) the reflection skill documents 'kspec workflow show' with no argument, but the
+          CLI requires a run-ref even with exactly one active workflow; this caused a failed lookup
+          immediately after start. (2) task/review detail output includes long histories/events,
+          making focused status verification prone to truncation and requiring extra filtering. (3)
+          the mandatory fresh full suite was very long; although progress remained visible and all
+          changed suites passed early, final aggregate evidence required extended polling. The
+          actual stale-write defect is already tracked in the review blocker and is not a separate
+          reflection item."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T21:18:25.357Z
+        completed_at: 2026-07-15T21:18:25.357Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-07-15T21:17:31.781Z
