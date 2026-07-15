@@ -309,9 +309,25 @@ events:
       kind: nit
       thread_ulid: 01KXK9HMJ73H686MBAHF98K650
     timestamp: 2026-07-15T16:25:19.439Z
+  - _ulid: 01KXK9J32TEARCRDZJSERVTM9H
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-15T16:25:34.042Z
+  - _ulid: 01KXK9J32TYN49RG3D4DBZZJ8C
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-15T16:25:34.042Z
 examined_commit: d0a782d62c75b2bebc992c39495d2a8079f7ca52
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
@@ -364,7 +380,14 @@ threads:
           Categories searched: correctness, process lifecycle and ownership races, scope isolation, error handling, recovery phases, schema/integration, security of PID/PGID reuse, AC annotation quality, and source-scanning-test prohibition. One blocker recorded. No shared/package guidance surfaces changed, so neutrality/render checks are not applicable.
         created_at: 2026-07-15T16:25:19.175Z
     kind: nit
-verdicts: []
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-15T16:25:34.042Z
 created_at: 2026-07-15T16:06:31.826Z
-updated_at: 2026-07-15T16:25:19.175Z
+updated_at: 2026-07-15T16:25:34.042Z
 notes: []
