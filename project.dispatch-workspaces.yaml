@@ -6302,7 +6302,7 @@ workspaces:
         head: b11cce869aef9cf53d25ef33b9ba0706b12aba71
         last_seen_at: 2026-07-15T12:07:50.746Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-final-pre-spawn-control-gate-01kxh2pq
-  - active_role: worker
+  - active_role: null
     base_branch_point: c5e0b9a6b4afdd17021bf37f2732d620152f40de
     bootstrap:
       status: succeeded
@@ -6782,12 +6782,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-07-15T21:44:44.855Z
+      updated_at: 2026-07-15T21:46:57.499Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-07-15T21:44:44.855Z
+      updated_at: 2026-07-15T21:46:57.499Z
     integration:
       status: pending
       detail: null
@@ -6795,8 +6795,8 @@ workspaces:
       publication_mode: manual_merge
       target_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
       target_commit: c5e0b9a6b4afdd17021bf37f2732d620152f40de
-      updated_at: 2026-07-15T21:44:44.855Z
-    lifecycle_state: active
+      updated_at: 2026-07-15T21:46:57.499Z
+    lifecycle_state: ready
     resolved_base_branch: plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx
     task_id: 01KXH2PRCMKX5GBDNJ60PPBCHS
     task_ref: "@01KXH2PRCMKX5GBDNJ60PPBCHS"
@@ -6804,9 +6804,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-07-15T21:22:08.908Z
-      last_reconciled_at: 2026-07-15T21:44:44.855Z
+      last_reconciled_at: 2026-07-15T21:46:57.499Z
       created_at: 2026-07-15T12:26:52.580Z
-      updated_at: 2026-07-15T21:44:44.855Z
+      updated_at: 2026-07-15T21:46:57.499Z
     workspace_id: dispatch-workspace-01KXH2PRCMKX5GBDNJ60PPBCHS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
