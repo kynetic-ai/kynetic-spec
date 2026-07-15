@@ -77914,7 +77914,7 @@ runs:
     completed_at: 2026-07-15T03:42:54.573Z
   - _ulid: 01KXHZ24JW691HAMVYKZ003NW0
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -77928,7 +77928,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-15T04:03:39.904Z
-        completed_at: 2026-07-15T04:03:39.904Z
+        completed_at: 2026-07-15T04:04:13.506Z
+        notes: "High-confidence candidates: (1) reviewer-provided reproducer plus test-first paired
+          regression made the fix precise; (2) the full npm test run remained lengthy and required
+          extended polling before final summary. The atomic batch for reply/resolve/note/submit was
+          useful but observed only once, so it is below the loop-mode capture threshold. The
+          equal-revision behavior itself is task-specific and already documented on the
+          task/review."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-15T04:04:13.506Z
+        completed_at: 2026-07-15T04:04:13.506Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-15T04:02:51.100Z
