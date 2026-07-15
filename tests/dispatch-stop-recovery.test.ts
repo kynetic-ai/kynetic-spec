@@ -598,6 +598,35 @@ describe("verified dispatch hard-stop recovery", () => {
     expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
   });
 
+  it("preserves verified exit ownership when durable session closure overlaps publication", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    const sessionsDir = path.join(harness.projectDir, ".kspec-sessions");
+    await fs.writeFile(
+      path.join(sessionsDir, target.session_id, "events.jsonl"),
+      `${JSON.stringify({ data: { rawInput: { command: "task complete" } } })}\n`.repeat(300_000),
+    );
+
+    const closing = closeSession(
+      sessionsDir,
+      target.session_id,
+      "completed",
+      "fixture concurrent completion",
+    );
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    const exitedAt = new Date().toISOString();
+    await updateSessionDispatchOwnership(sessionsDir, target.session_id, {
+      ...target,
+      exited_at: exitedAt,
+    });
+    await closing;
+
+    await expect(getSession(sessionsDir, target.session_id)).resolves.toMatchObject({
+      status: "completed",
+      dispatch_ownership: { exited_at: exitedAt },
+    });
+  });
+
   // AC: @dispatch-lifecycle-control-authority ac-live-group-prevents-cleanup-completion
   it("retains live ownership after session closure until process exit is recorded", async () => {
     const harness = await createStopRecoveryHarness();
