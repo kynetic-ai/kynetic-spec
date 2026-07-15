@@ -269,6 +269,12 @@ events:
     payload:
       thread_ulid: 01KXKCPAG9ZVKDRHZEG43XBNE0
     timestamp: 2026-07-15T17:51:18.449Z
+  - _ulid: 01KXKEF6GHPWS97MDWEQWKW2N1
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXKCPDTSB43NNX4N3R4WZW3H
+    timestamp: 2026-07-15T17:51:22.130Z
 examined_commit: 29569d9efb5bc4674f7a7e830f6aa7f1c36fe716
 external_links: []
 lifecycle_state: closed
@@ -452,6 +458,8 @@ threads:
           hygiene, and all three kspec validations pass at documented warning baselines.
         created_at: 2026-07-15T17:51:14.435Z
     kind: nit
+    resolved_at: 2026-07-15T17:51:21.850Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -461,5 +469,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-15T17:20:25.481Z
 created_at: 2026-07-15T17:02:01.298Z
-updated_at: 2026-07-15T17:51:18.148Z
+updated_at: 2026-07-15T17:51:21.850Z
 notes: []
