@@ -26,3 +26,80 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-15T01:15:34.971Z
+  - _ulid: 01KXHQ3CA0VQD70RYTMZ14FKTZ
+    content: >-
+      Reviewer handoff for commit 1716ac35c1.
+
+
+      Commit and rollback table:
+
+      - Successful write: shadow lock, parser file lock, atomic replace, one commitIfShadow call,
+      committed-object byte/schema verification, then publication of revision plus commit_oid.
+
+      - Commit false or transaction throw: reset and clean to pre_head; publish only the verified
+      pre-transaction object before releasing the shadow lock.
+
+      - Verification mismatch: reset to pre_head, retain or restore its verified publication, and
+      mark control_store_degraded.
+
+      - Force-reclaimed lock: rollbackDirtyShadowWorktree removes inherited staged, modified, and
+      untracked state before inputs are read.
+
+
+      Schema rejection table:
+
+      - Missing file: safe stopped revision 0 with no controls.
+
+      - Exact version 1: accepted.
+
+      - Unknown version or fields, malformed YAML/schema, duplicate YAML/cleanup IDs, and
+      noncanonical task or cleanup keys: rejected.
+
+      - Pending cleanup forbids error_code; failed cleanup requires a closed mapped error_code;
+      aggregate projection derives idle, pending, or failed while preserving per-entry status.
+
+
+      Lock-order table:
+
+      - Dispatch shadow mutation lock is always acquired first.
+
+      - Parser atomic replacement acquires its per-file lock only inside that shadow transaction.
+
+      - No dispatch admission, bootstrap scheduling, engine wait, process wait, or session wait is
+      called by this implementation.
+
+
+      Watcher barrier table:
+
+      - Dirty watcher event: no publication.
+
+      - Watcher before external commit: exactly one newer token after writer settlement.
+
+      - Watcher before abort or rollback: prior token retained.
+
+      - Commit before watcher and duplicate self event: one committed publication.
+
+      - Stale or malformed committed revision: prior newer verified token retained.
+
+      - Entity cache dispatch-control and agent-status invalidation occurs only from the publication
+      listener.
+
+
+      Verification:
+
+      - Focused 192 tests pass.
+
+      - Full suite: 2794 suites, 10606 passed, 3 skipped.
+
+      - format, repo lint, focused lint errors, typecheck, alignment, completeness, and diff checks
+      pass.
+
+      - Reference validation is externally blocked by seven pre-existing duplicate-slug ambiguities
+      for @observations and @spec-plan-import; observation @01KXHNHD records the systemic issue.
+
+
+      Intentionally excluded: restart scheduling, canonical applied command identity, final-gate
+      denial, invocation cancellation, and session cleanup.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-15T01:43:43.169Z

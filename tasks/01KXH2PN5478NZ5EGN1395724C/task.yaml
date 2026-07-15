@@ -126,8 +126,12 @@ description: >
 spec_ref: "@dispatch-lifecycle-control-authority"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: in_progress
-blocked_by: []
+status: blocked
+blocked_by:
+  - Required kspec reference validation is globally red on seven unrelated duplicate-slug
+    ambiguities for @observations and @spec-plan-import. Implementation commit 1716ac35c1 and all
+    code, focused, full-suite, type, format, lint, alignment, completeness, and diff gates pass.
+    Observation @01KXHNHD records the external validation blocker.
 depends_on:
   - "@task-patch-dispatch-engine-coalescing-specs"
 context: []
@@ -159,6 +163,24 @@ history:
         previous: null
     command: task-start
     timestamp: 2026-07-14T21:30:41.927Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: blocked
+        previous: in_progress
+      blocked_by:
+        new:
+          - Required kspec reference validation is globally red on seven unrelated duplicate-slug
+            ambiguities for @observations and @spec-plan-import. Implementation commit 1716ac35c1
+            and all code, focused, full-suite, type, format, lint, alignment, completeness, and diff
+            gates pass. Observation @01KXHNHD records the external validation blocker.
+        previous: []
+      prior_status:
+        new: in_progress
+        previous: null
+    command: task-block
+    timestamp: 2026-07-15T01:43:44.102Z
+prior_status: in_progress
 created_at: 2026-07-14T19:47:14.724Z
 started_at: 2026-07-14T21:30:41.927Z
 todos: []
