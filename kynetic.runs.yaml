@@ -81233,7 +81233,7 @@ runs:
     completed_at: 2026-07-16T13:57:01.238Z
   - _ulid: 01KXNKFRHPFJFYS1MV4NVN2Y32
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -81246,7 +81246,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T13:58:42.269Z
-        completed_at: 2026-07-16T13:58:42.269Z
+        completed_at: 2026-07-16T13:58:59.147Z
+        notes: "High-confidence friction: follow-up defects created from unmerged plan-branch reviews can
+          lose plan_ref and target dev; confirmed by blocked tasks
+          @stabilize-agent-invocation-process-identity and @01KXNJTVMJHY7FWVZ3SFVDGACM. Existing
+          observation @01KXMJKD already covers it. Success: branch-containment and merge-base checks
+          detect this safely before edits, but this session alone does not justify an additional
+          success observation."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T13:58:59.147Z
+        completed_at: 2026-07-16T13:58:59.147Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T13:57:32.342Z
