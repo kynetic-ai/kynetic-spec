@@ -80,3 +80,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T03:32:50.376Z
+  - _ulid: 01KXMGTY14STQMVVQMEXWDK2XQ
+    content: "Fix cycle 2 approach: add public DispatchEngine regressions before production edits. Prove
+      a throwing agents-topic callback leaves a committed applied result successful with exactly one
+      retained event, then prove daemon startup recovery emits exactly one failed event only after
+      durable failed cleanup state is committed. Reuse the existing event recorder, cleanup store,
+      and startup recovery harness; keep publication best-effort outside durable outcome
+      classification and map recovery failure from the committed cleanup result. Re-verify all
+      lifecycle audit ACs and the closed 17-code matrix."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T03:51:58.244Z
