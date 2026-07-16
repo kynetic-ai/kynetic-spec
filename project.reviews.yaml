@@ -30119,7 +30119,7 @@ reviews:
     title: Review safe lifecycle CLI commands
     disposition: changes_requested
     author: Jacob Chapel
-    check_count: 11
+    check_count: 18
     examined_commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
     lifecycle_state: open
     related_refs: []
@@ -30132,4 +30132,4 @@ reviews:
     unresolved_blocker_count: 3
     verdict_count: 0
     created_at: 2026-07-16T11:41:11.315Z
-    updated_at: 2026-07-16T12:02:36.220Z
+    updated_at: 2026-07-16T12:03:23.546Z

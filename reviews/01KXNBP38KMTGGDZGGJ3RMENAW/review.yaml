@@ -120,6 +120,81 @@ checks:
     runner: npm run typecheck
     created_at: 2026-07-16T12:02:36.220Z
     completed_at: 2026-07-16T12:02:36.220Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0, 0 errors. Focused lint found 31 warnings only in unchanged portions of
+      tests/cli-agent-commands.test.ts.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T12:03:03.563Z
+    completed_at: 2026-07-16T12:03:03.563Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Exit 0; no warnings in changed lines.
+    name: focused-lint
+    required: true
+    runner: npx oxlint changed TypeScript files
+    created_at: 2026-07-16T12:03:07.103Z
+    completed_at: 2026-07-16T12:03:07.103Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "10860 passed, 3 skipped. One known flaky agent-invocation test failed; two immediate
+      isolated fresh reruns passed 14/14. Reviewed branch changes neither affected file. Existing
+      task: @stabilize-agent-invocation-process-identity."
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T12:03:10.406Z
+    completed_at: 2026-07-16T12:03:10.406Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 6 repository-baseline warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T12:03:13.879Z
+    completed_at: 2026-07-16T12:03:13.879Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 55 repository-baseline warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T12:03:17.238Z
+    completed_at: 2026-07-16T12:03:17.238Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Targeted output reports @cli-agent-commands ac-pause-reports-authority and
+      ac-resume-reports-authority uncovered. Warnings-ok masks the process exit only; missing own-AC
+      annotations block review.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T12:03:20.306Z
+    completed_at: 2026-07-16T12:03:20.306Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors.
+    name: diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T12:03:23.546Z
+    completed_at: 2026-07-16T12:03:23.546Z
 events:
   - _ulid: 01KXNBP38JXQ0H0P916D19W8YE
     actor: Jacob Chapel
@@ -239,6 +314,55 @@ events:
       status: pass
       name: typecheck
     timestamp: 2026-07-16T12:02:36.476Z
+  - _ulid: 01KXNCY50DFDR49APQQEM9KHHC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T12:03:03.821Z
+  - _ulid: 01KXNCY8EY89G31T9BA6R8ZCTN
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused-lint
+    timestamp: 2026-07-16T12:03:07.358Z
+  - _ulid: 01KXNCYBNVRQRDK2325272V473
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T12:03:10.651Z
+  - _ulid: 01KXNCYF2JFTSSVDADQPVGPK19
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T12:03:14.130Z
+  - _ulid: 01KXNCYJBDA8M0JVFDPWFMW0XS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T12:03:17.485Z
+  - _ulid: 01KXNCYNB5W8GXBFY22THQ5D73
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: kspec validate completeness
+    timestamp: 2026-07-16T12:03:20.549Z
+  - _ulid: 01KXNCYRJ3MDQRNPNSE5MDV13H
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T12:03:23.844Z
 examined_commit: ef7ffa06f604363415e906b2db0ccfbc3abb4afb
 external_links: []
 lifecycle_state: open
@@ -330,5 +454,5 @@ threads:
     kind: nit
 verdicts: []
 created_at: 2026-07-16T11:41:11.315Z
-updated_at: 2026-07-16T12:02:36.220Z
+updated_at: 2026-07-16T12:03:23.546Z
 notes: []
