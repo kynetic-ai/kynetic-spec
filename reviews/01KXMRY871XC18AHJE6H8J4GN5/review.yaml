@@ -2,7 +2,123 @@ _ulid: 01KXMRY871XC18AHJE6H8J4GN5
 slugs: []
 title: Review canonical dispatch lifecycle API (cycle 2)
 author: Jacob Chapel
-checks: []
+checks:
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: All 1052 matched files use the correct format.
+    name: format
+    required: true
+    runner: npm run format:check
+    created_at: 2026-07-16T06:27:10.043Z
+    completed_at: 2026-07-16T06:27:10.043Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Repo-wide lint completed with 0 errors and 702 baseline warnings. Focused oxlint on all
+      five changed TypeScript/test files completed with 0 warnings and 0 errors.
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T06:27:13.397Z
+    completed_at: 2026-07-16T06:27:13.397Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T06:27:16.579Z
+    completed_at: 2026-07-16T06:27:16.579Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every suite reported PASS through the final tests/agent-dispatch-engine.test.ts 147/147
+      result. The runner then reproduced the pre-existing post-green teardown hang tracked by
+      @task-investigate-npm-test-teardown-hang-after-green-suite-run and was terminated after a
+      quiet interval; no test failure was reported.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T06:27:19.777Z
+    completed_at: 2026-07-16T06:27:19.777Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with 6 repository baseline deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T06:27:23.079Z
+    completed_at: 2026-07-16T06:27:23.079Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline orphan/status warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T06:27:26.338Z
+    completed_at: 2026-07-16T06:27:26.338Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline coverage warnings; task-owned annotations were
+      audited manually.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T06:27:29.525Z
+    completed_at: 2026-07-16T06:27:29.525Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "daemon-agent-dispatch-lifecycle, daemon-api/agent-dispatch, and
+      daemon-agent-dispatch-routes completed: 14 suites and 59 tests passed."
+    name: focused lifecycle tests
+    required: true
+    runner: npm test -- --fresh focused files
+    created_at: 2026-07-16T06:27:32.529Z
+    completed_at: 2026-07-16T06:27:32.529Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base 89a72367 through head 224ff0ef contains no whitespace errors.
+    name: diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T06:27:35.852Z
+    completed_at: 2026-07-16T06:27:35.852Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: every changed file plus dispatch-control-store, dispatch-shadow-transaction,
+      task-identity, dispatch engine lifecycle/status code, daemon middleware/server error handling,
+      and prior review threads. Commands run: base/head diff and context reads; task/spec/trait
+      lookups; format, repo/focused lint, typecheck, three validations, diff check, focused tests,
+      full fresh suite, pure transition probe, and real corrupt-store route probe. Claims verified:
+      prior invalid-transition preflight and legacy retry fixes now work in focused tests; matching
+      task cleanup still permits pause/resume; corrupt committed control is mislabeled unavailable
+      by canonical control and both status routes. Categories searched: correctness, matching-scope
+      edge cases, persistence/error mapping, raw-error exposure, schema/test quality, legacy
+      compatibility, integration, and security/path exposure. Shared/package guidance surfaces
+      touched: none; neutrality checklist not applicable."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-07-16T06:27:38.890Z
+    completed_at: 2026-07-16T06:27:38.890Z
 events:
   - _ulid: 01KXMRY86JZG0SFRX0BWZ92S1W
     actor: Jacob Chapel
@@ -17,6 +133,97 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T06:14:01.148Z
+  - _ulid: 01KXMSQ3TQC81YMHT6VSJ5AY3Y
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: format
+    timestamp: 2026-07-16T06:27:10.295Z
+  - _ulid: 01KXMSQ7380P7EJ2Q64BVPM6YW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T06:27:13.640Z
+  - _ulid: 01KXMSQA70PEEE195DA505QN9Q
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T06:27:16.832Z
+  - _ulid: 01KXMSQDAHCNPV9PZQZGYFM2GX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-07-16T06:27:20.017Z
+  - _ulid: 01KXMSQGHQ8YWS8QN8TSK0RPH0
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T06:27:23.319Z
+  - _ulid: 01KXMSQKS34Q8ZMT47994HVRS2
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T06:27:26.627Z
+  - _ulid: 01KXMSQPV4HAQ4B1EESZ79ZAD1
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T06:27:29.764Z
+  - _ulid: 01KXMSQSSHFQMDK5ZQZBF78JHT
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T06:27:32.785Z
+  - _ulid: 01KXMSQX0G82Z9A9VCJ289JG99
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T06:27:36.080Z
+  - _ulid: 01KXMSQZZTGC0F0Q34SE2MM80E
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-16T06:27:39.130Z
+  - _ulid: 01KXMSR32RDEN0RY6NBC9JHXW5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMSR2V0CJB6HB1JT87JPS9H
+    timestamp: 2026-07-16T06:27:42.296Z
+  - _ulid: 01KXMSR6B3MAYVCYVQW09EN7NB
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMSR62R55W3J0QJZ71QFPDF
+    timestamp: 2026-07-16T06:27:45.635Z
+  - _ulid: 01KXMSR9S8DVPYDDN2E9YBV099
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMSR9GR34BM9521SAAE60P5
+    timestamp: 2026-07-16T06:27:49.161Z
 examined_commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
 external_links: []
 lifecycle_state: open
@@ -26,8 +233,72 @@ subject:
   content_hash: ""
   ref: "@01KXH2PSQY6GK4S66S4TB6JVV3"
   shadow_commit: ""
-threads: []
+threads:
+  - _ulid: 01KXMSR2V0CJB6HB1JT87JPS9H
+    anchor:
+      type: code
+      commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
+      line_end: 1150
+      line_start: 1145
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMSR2V0DV63ZH0C07PRMSYV
+        author: Jacob Chapel
+        body: "MUST-FIX: Matching task cleanup does not gate both non-stop task actions. The contract
+          requires task pause and resume to return 409 invalid_transition whenever cleanup for that
+          canonical task is pending or failed, independent of the current task-control row. This
+          guard only rejects resume when the current mode is stopped and never rejects pause solely
+          for cleanup. A direct probe with a schema-valid paused task plus matching pending cleanup
+          printed pause:ALLOWED and resume:ALLOWED; resume can therefore delete the paused control
+          while cleanup is still outstanding. Reject either action whenever the matching cleanup
+          projection is non-idle, preserve unrelated-scope behavior, and add behavioral route cases
+          for paused or absent control rows with matching cleanup."
+        created_at: 2026-07-16T06:27:42.048Z
+    kind: blocker
+  - _ulid: 01KXMSR62R55W3J0QJZ71QFPDF
+    anchor:
+      type: code
+      commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
+      line_end: 304
+      line_start: 300
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMSR62RV88D8AWKQER03J9K
+        author: Jacob Chapel
+        body: "MUST-FIX: Canonical mutation errors misclassify a corrupt committed control store as
+          control_store_unavailable. DispatchControlStore records the real parser diagnostic with
+          capitalized text such as Invalid dispatch-control.yaml, but this classifier performs
+          case-sensitive lowercase substring checks. In a real shadow fixture committed with
+          version: 99, POST /api/agent/dispatch/control returned HTTP 503 with code
+          control_store_unavailable instead of the frozen control_store_corrupt code. Classify
+          corruption robustly from the degraded state or a typed failure and add a corrupt-store
+          control regression test."
+        created_at: 2026-07-16T06:27:45.368Z
+    kind: blocker
+  - _ulid: 01KXMSR9GR34BM9521SAAE60P5
+    anchor:
+      type: code
+      commit: 224ff0ef123337050be9107fab0dafa7d90ecfcf
+      line_end: 1513
+      line_start: 1504
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMSR9GRN0Z8SHQWBNG71BP0
+        author: Jacob Chapel
+        body: "MUST-FIX: The public status adapter hard-codes every degraded lifecycle store to
+          control_store_unavailable, so the required corrupt-store status is unreachable; the
+          internal status adapter has the same hard-coded mapping at line 1263. A real committed
+          version: 99 fixture produced HTTP 503 control_store_unavailable from both GET
+          /api/agent/status and GET /api/agent/dispatch/status. The frozen contract distinguishes
+          unavailable from corrupt and requires control_store_corrupt for malformed committed data.
+          Use the same reliable classification on both status surfaces and add deep-equal
+          corrupt/unavailable cases."
+        created_at: 2026-07-16T06:27:48.888Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T06:13:35.585Z
-updated_at: 2026-07-16T06:14:00.907Z
+updated_at: 2026-07-16T06:27:48.888Z
 notes: []
