@@ -80672,7 +80672,7 @@ runs:
     completed_at: 2026-07-16T08:48:08.311Z
   - _ulid: 01KXN4CXQEF85T33FMAYPRNJJ2
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -80685,7 +80685,20 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-07-16T09:35:05.622Z
-        completed_at: 2026-07-16T09:35:05.622Z
+        completed_at: 2026-07-16T09:36:36.794Z
+        notes: "High-confidence candidates: (1) deterministic held-start barriers against a real shadow
+          worktree expose lifecycle publication races; (2) long fresh npm test runs can finish every
+          visible suite but leave the wrapper alive; (3) async singleton startup must be
+          single-flight and unpublished until all companions are ready. Coverage checks: candidate 1
+          matches success observation @01KXHQ9T and completed verification task
+          @task-verify-engine-publication-admission; candidate 2 matches
+          @task-investigate-npm-test-teardown-hang-after-green-suite-run and observation @01KVS5B5;
+          candidate 3 is fully captured by the current task notes/commit
+          @task-daemon-dispatch-lifecycle-api. No unique high-confidence candidate remains."
+      - status: completed
+        step_index: 2
+        started_at: 2026-07-16T09:36:36.794Z
+        completed_at: 2026-07-16T09:36:36.794Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T09:33:50.702Z
