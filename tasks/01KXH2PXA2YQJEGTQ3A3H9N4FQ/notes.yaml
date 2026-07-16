@@ -1,1 +1,15 @@
-notes: []
+notes:
+  - _ulid: 01KXMEFBZFPQ8GEMPJ4BYHT3N9
+    content: "Approach: add a test-only black-box lifecycle harness over public
+      DispatchEngine/store/session and artifact-protection entry points; use deterministic recovery
+      barriers and deletion recorders. Cases: durable spawn-winner task stop, restart from
+      owned/signals_sent/sessions_closed checkpoints with explicit pending entry shape, task A stop
+      isolation from active task B, and all controlled-evidence classes across destructive
+      evaluators while unrelated terminal cleanup remains eligible. Existing stop/evidence suites
+      will be adjusted only for fixture naming and direct lifecycle AC annotations. No production
+      helper or behavior changes. Verification: focused three-file suite, full npm test,
+      format/lint/typecheck, changed-file oxlint, git diff check, and kspec
+      refs/alignment/completeness."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T03:10:42.159Z
