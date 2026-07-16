@@ -411,6 +411,27 @@ events:
       status: pass
       name: review evidence log
     timestamp: 2026-07-16T07:21:06.550Z
+  - _ulid: 01KXMWTJC01D4XJBJDGQJW6NB2
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMWTJ416GMS621WRY0GT04Z
+    timestamp: 2026-07-16T07:21:29.216Z
+  - _ulid: 01KXMWTNCB33AWS1KD69GC2XE5
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMWTN51W1FRPSCN14DN9984
+    timestamp: 2026-07-16T07:21:32.299Z
+  - _ulid: 01KXMWTRDJEGTADZJTK3YEGWNA
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMWTR5M1FWYNA3DBKAZ4XAH
+    timestamp: 2026-07-16T07:21:35.410Z
 examined_commit: 30da557ff43c38e74c3933c432824b58ce3d4827
 external_links: []
 lifecycle_state: open
@@ -486,7 +507,72 @@ threads:
           untested."
         created_at: 2026-07-16T07:20:03.865Z
     kind: blocker
+  - _ulid: 01KXMWTJ416GMS621WRY0GT04Z
+    anchor:
+      type: code
+      commit: 30da557ff43c38e74c3933c432824b58ce3d4827
+      line_end: 869
+      line_start: 864
+      path: packages/daemon/src/routes/agent-dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMWTJ418Z98WKN6BF50Z201
+        author: Jacob Chapel
+        body: "MUST-FIX: Task-scoped control validates task_id syntax but not task existence. This preflight
+          delegates to requireCanonicalTaskIdentity, whose full-ID path accepts any Crockford ULID
+          even when the loaded task index has no match. A real-shadow route probe using absent
+          task_id 01KG0RR6CA45ZT43W2T6HJMVB9 returned HTTP 200 outcome=applied and persisted
+          task_controls with task_ref/title null instead of the required 404 task_not_found. This
+          permits durable authority records for nonexistent tasks and leaves the closed not-found
+          behavior unproved. Require an existing loaded task at this mutation boundary, preserve
+          ref/id mismatch handling, and add exact behavioral task_not_found/ambiguous cases that
+          prove no mutation and no raw alias exposure."
+        created_at: 2026-07-16T07:21:28.961Z
+    kind: blocker
+  - _ulid: 01KXMWTN51W1FRPSCN14DN9984
+    anchor:
+      type: code
+      commit: 30da557ff43c38e74c3933c432824b58ce3d4827
+      line_end: 248
+      line_start: 190
+      path: tests/daemon-agent-dispatch-lifecycle.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXMWTN52CBTA3TNDZGXH2ZFD
+        author: Jacob Chapel
+        body: "MUST-FIX: The lifecycle status ACs are annotated on Zod schema parse/rejection tests, not on
+          behavior that requests status. These cases pass even if GET /api/agent/status omits or
+          misreports authority/projection, queued/held counts, or held task
+          identity/scope/mode/reason. The only new route success case starts with empty runtime
+          state and accepts any Number/Array, so it does not prove the AC preconditions or exact
+          values. Keep the schema tests, but add behavioral route fixtures with real
+          active/queued/held state and exact lifecycle rows, and attach these AC annotations to
+          tests that exercise the endpoint."
+        created_at: 2026-07-16T07:21:32.066Z
+    kind: blocker
+  - _ulid: 01KXMWTR5M1FWYNA3DBKAZ4XAH
+    anchor:
+      type: code
+      commit: 30da557ff43c38e74c3933c432824b58ce3d4827
+      line_end: 17
+      line_start: 14
+      path: tests/daemon-api/agent-dispatch.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXMWTR5MRVSS7Q04VFF457P5
+        author: Jacob Chapel
+        body: "MUST-FIX: The inherited @trait-api-endpoint N/A annotations are no longer valid for this
+          spec. The new canonical endpoint accepts task_ref/task_id, so ac-2 applies; it persists
+          dispatch-control.yaml through the shadow transaction, so ac-5 applies; and every processed
+          response is still subject to ac-6, while this route sets no X-Request-Id (the repository
+          search finds that header only on the command route). Replace the stale exemptions with
+          behavioral coverage for structured 404/no mutation, semantic shadow commit, and
+          X-Request-Id on success/failure, implementing any missing behavior. N/A may only be used
+          when an inherited criterion genuinely does not apply, not because it is infrastructure or
+          untested."
+        created_at: 2026-07-16T07:21:35.157Z
+    kind: blocker
 verdicts: []
 created_at: 2026-07-16T07:05:26.538Z
-updated_at: 2026-07-16T07:21:06.300Z
+updated_at: 2026-07-16T07:21:35.157Z
 notes: []
