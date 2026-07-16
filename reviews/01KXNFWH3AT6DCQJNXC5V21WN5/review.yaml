@@ -415,6 +415,30 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T13:17:15.229Z
+  - _ulid: 01KXNJWKSYNZ90WQXNHDR0A9CT
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNH1MC9AZN9N2NN1P9DB67G
+    timestamp: 2026-07-16T13:47:04.894Z
+  - _ulid: 01KXNJWQ05VDF9XVJARM26QHEZ
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNH1MC9AZN9N2NN1P9DB67G
+    timestamp: 2026-07-16T13:47:08.165Z
+  - _ulid: 01KXNJWTHS18C898M95SREWT54
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXNH1QNRTAQCCMAJ4GMAAB8C
+    timestamp: 2026-07-16T13:47:11.801Z
+  - _ulid: 01KXNJWXTBR4W9J0DJ83H19PE6
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXNH1QNRTAQCCMAJ4GMAAB8C
+    timestamp: 2026-07-16T13:47:15.147Z
 examined_commit: 83d11f75b9f53d2d822669cb37f56f77b9f4b017
 external_links: []
 lifecycle_state: closed
@@ -447,7 +471,17 @@ threads:
           such a response to the closed internal_error envelope without rendering the injected
           values."
         created_at: 2026-07-16T13:14:52.170Z
+      - _ulid: 01KXNJWKHW04572QWR87JDSE7G
+        author: Jacob Chapel
+        body: "Fixed in 07ee7b51a6: replaced passthrough and unknown invocation/queue schemas with strict
+          explicit schemas for every preserved internal status field. Added real subprocess/HTTP CLI
+          regressions for both status commands covering unknown top-level cwd and nested
+          invocation/queue error fields; each now exits 3 with the fixed internal_error envelope and
+          renders none of the injected values."
+        created_at: 2026-07-16T13:47:04.636Z
     kind: blocker
+    resolved_at: 2026-07-16T13:47:07.903Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNH1QNRTAQCCMAJ4GMAAB8C
     entries:
       - _ulid: 01KXNH1QNRN55CXFTJQX1GEXH4
@@ -465,7 +499,16 @@ threads:
           successful status fields leak through passthrough validation. Shared/package guidance
           surfaces touched: none; neutrality review not applicable."
         created_at: 2026-07-16T13:14:55.544Z
+      - _ulid: 01KXNJWT9YAGD5NZRZE80BRE4G
+        author: Jacob Chapel
+        body: Acknowledged and re-verified the recorded evidence categories after the fix. Fresh full suite
+          passed 2,824 suites with 10,878 passed and 3 skipped; format, lint, focused lint,
+          typecheck, focused lifecycle tests, all three kspec validations, and diff check also
+          passed.
+        created_at: 2026-07-16T13:47:11.550Z
     kind: nit
+    resolved_at: 2026-07-16T13:47:14.898Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXNH2ZFV5WR53CFDK2GZ7CG6
     anchor:
       type: code
@@ -520,5 +563,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T13:17:15.228Z
 created_at: 2026-07-16T12:54:36.394Z
-updated_at: 2026-07-16T13:17:15.229Z
+updated_at: 2026-07-16T13:47:14.898Z
 notes: []
