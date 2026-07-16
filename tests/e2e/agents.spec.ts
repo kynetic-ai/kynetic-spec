@@ -590,6 +590,92 @@ test.describe("Agent and Dispatch View", () => {
         .click();
       await expect(taskStop).toBeFocused();
     });
+
+    // AC: @ui-agent-dispatch ac-lifecycle-live-update
+    test("announces a successful task resume after its row is removed", async ({
+      page,
+      daemon: _daemon,
+    }) => {
+      let status = lifecycleStatusFixture({
+        dispatch_enabled: true,
+        global_authority: "running",
+        projection: "running",
+        held_count: 1,
+        held_tasks: [
+          {
+            task_id: lifecycleTaskId,
+            task_ref: "@task-ui-dispatch-lifecycle-controls",
+            title: "Migrate every lifecycle UI consumer and control",
+            scope: "task",
+            mode: "paused",
+            reason: "operator request",
+            actor: "ui",
+            source: "ui",
+            controlled_at: lifecycleTimestamp,
+            updated_at: lifecycleTimestamp,
+          },
+        ],
+        task_controls: [
+          {
+            task_id: lifecycleTaskId,
+            task_ref: "@task-ui-dispatch-lifecycle-controls",
+            title: "Migrate every lifecycle UI consumer and control",
+            mode: "paused",
+            reason: "operator request",
+            actor: "ui",
+            source: "ui",
+            controlled_at: lifecycleTimestamp,
+            updated_at: lifecycleTimestamp,
+            cleanup_state: { status: "idle", entries: [] },
+          },
+        ],
+      });
+      await page.route("**/api/agent/status", async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(status),
+        });
+      });
+      await page.route("**/api/agent/dispatch/control", async (route) => {
+        expect(route.request().postDataJSON()).toMatchObject({
+          scope: "task",
+          action: "resume",
+          task_ref: "@task-ui-dispatch-lifecycle-controls",
+        });
+        status = lifecycleStatusFixture({
+          dispatch_enabled: true,
+          global_authority: "running",
+          projection: "running",
+        });
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            ok: true,
+            data: {
+              ...lifecycleMutationData(status),
+              outcome: "applied",
+              task_id: lifecycleTaskId,
+              task_ref: "@task-ui-dispatch-lifecycle-controls",
+            },
+            error: null,
+          }),
+        });
+      });
+
+      await page.goto("/agents");
+      await expect(page.getByTestId("agents-loading")).toHaveCount(0);
+      await page.getByRole("button", { name: "Resume task", exact: true }).click();
+
+      await expect(page.getByTestId(`held-task-${lifecycleTaskId}`)).toHaveCount(0);
+      const liveStatus = page.getByTestId("task-lifecycle-live-status");
+      await expect(liveStatus).toHaveAttribute("aria-live", "polite");
+      await expect(liveStatus).toHaveAttribute("aria-atomic", "true");
+      await expect(liveStatus).toContainText(
+        "Task lifecycle changed: Migrate every lifecycle UI consumer and control",
+      );
+    });
   });
 
   test.describe("Loading and Error States", () => {

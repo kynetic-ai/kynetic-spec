@@ -83,6 +83,7 @@
 
 	// Screen reader announcement for live invocation updates
 	let invocationAnnouncement = $state('');
+	let taskLifecycleAnnouncement = $state('');
 
 	// Track completed invocations per agent (incremented by WebSocket events)
 	let completedCounts = $state<Record<string, number>>({});
@@ -142,11 +143,19 @@
 	async function handleTaskAction(action: TaskLifecycleAction, task: AgentDispatchStatus['heldTasks'][number] | AgentDispatchStatus['taskControls'][number]) {
 		if (isStaticMode()) return;
 		error = '';
-		await dispatchMutation.mutateAsync({
-			scope: 'task',
-			action,
-			taskRef: task.taskRef ?? `@${task.taskId}`
-		});
+		taskLifecycleAnnouncement = '';
+		const taskLabel = task.title ?? task.taskId;
+		try {
+			await dispatchMutation.mutateAsync({
+				scope: 'task',
+				action,
+				taskRef: task.taskRef ?? `@${task.taskId}`
+			});
+			taskLifecycleAnnouncement = `Task lifecycle changed: ${taskLabel}`;
+		} catch (mutationError) {
+			taskLifecycleAnnouncement = `Task lifecycle unchanged: ${taskLabel}`;
+			throw mutationError;
+		}
 	}
 
 	// --- WebSocket handlers ---
@@ -305,6 +314,9 @@
 		<!-- Screen reader live announcement for invocation changes -->
 		<div class="sr-only" aria-live="assertive" aria-atomic="true" data-testid="invocation-live-region">
 			{invocationAnnouncement}
+		</div>
+		<div class="sr-only" aria-live="polite" aria-atomic="true" data-testid="task-lifecycle-live-status">
+			{taskLifecycleAnnouncement}
 		</div>
 
 		<Separator />

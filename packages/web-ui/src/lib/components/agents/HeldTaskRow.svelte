@@ -24,7 +24,6 @@
 	let confirmationOpen = $state(false);
 	let invokingControl = $state<HTMLButtonElement | null>(null);
 	let rowElement = $state<HTMLDivElement | null>(null);
-	let liveStatus = $state('');
 	let actions = $derived(getTaskLifecycleActions(status, task.taskId));
 	let isHeld = $derived('scope' in task);
 
@@ -41,18 +40,20 @@
 	async function restoreLifecycleFocus(preferInvoking = false) {
 		await tick();
 		requestAnimationFrame(() => {
-			const replacement = rowElement?.isConnected
-				? rowElement.querySelector<HTMLButtonElement>('button[data-lifecycle-control]:not([disabled])')
-				: null;
-			const fallback = document.querySelector<HTMLButtonElement>(
-				'[data-testid="dispatch-status"] button[data-lifecycle-control]:not([disabled])'
-			);
-			const connectedInvoker = invokingControl?.isConnected ? invokingControl : null;
-			(preferInvoking
-				? connectedInvoker ?? replacement ?? fallback
-				: replacement ?? connectedInvoker ?? fallback
-			)?.focus();
-			invokingControl = null;
+			requestAnimationFrame(() => {
+				const replacement = rowElement?.isConnected
+					? rowElement.querySelector<HTMLButtonElement>('button[data-lifecycle-control]:not([disabled])')
+					: null;
+				const fallback = document.querySelector<HTMLButtonElement>(
+					'[data-testid="dispatch-status"] button[data-lifecycle-control]:not([disabled])'
+				);
+				const connectedInvoker = invokingControl?.isConnected ? invokingControl : null;
+				(preferInvoking
+					? connectedInvoker ?? replacement ?? fallback
+					: replacement ?? connectedInvoker ?? fallback
+				)?.focus();
+				invokingControl = null;
+			});
 		});
 	}
 
@@ -66,11 +67,6 @@
 		try {
 			await onAction(action, task);
 			succeeded = true;
-			await tick();
-			liveStatus = `Task lifecycle changed: ${task.title ?? task.taskId}`;
-		} catch {
-			await tick();
-			liveStatus = `Task lifecycle unchanged: ${task.title ?? task.taskId}`;
 		} finally {
 			confirmationOpen = false;
 			await restoreLifecycleFocus(!succeeded);
@@ -108,8 +104,6 @@
 		{/each}
 	</div>
 </div>
-
-<div class="sr-only" aria-live="polite" aria-atomic="true">{liveStatus}</div>
 
 <Dialog.Root bind:open={confirmationOpen}>
 	<Dialog.Content aria-label={HARD_STOP_CONFIRMATION.title}>

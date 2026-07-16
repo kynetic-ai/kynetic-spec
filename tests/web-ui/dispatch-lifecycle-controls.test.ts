@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { testUlids } from "../helpers/cli.ts";
 
 const modeState = vi.hoisted(() => ({ staticMode: false }));
+const projectState = vi.hoisted(() => ({ invalidSelectionClears: 0 }));
 const modeMock = vi.hoisted(() => () => ({
   isStaticMode: () => modeState.staticMode,
   assertWritable: (operation: string) => {
@@ -11,8 +12,12 @@ const modeMock = vi.hoisted(() => () => ({
 }));
 const projectMock = vi.hoisted(() => () => ({
   getSelectedProjectPath: () => null,
-  clearInvalidSelection: () => {},
-  isInvalidProjectError: () => false,
+  clearInvalidSelection: () => {
+    projectState.invalidSelectionClears += 1;
+  },
+  isInvalidProjectError: (response: Response, message?: string) =>
+    (response.status === 400 || response.status === 404) &&
+    Boolean(message?.includes("Invalid kspec project")),
 }));
 const constantsMock = vi.hoisted(() => () => ({
   DAEMON_API_BASE: "http://localhost:3456",
@@ -179,6 +184,7 @@ export function recordControlRequest(responseBody = lifecycleStatusFixture()) {
 
 beforeEach(() => {
   modeState.staticMode = false;
+  projectState.invalidSelectionClears = 0;
 });
 
 afterEach(() => {
@@ -533,6 +539,29 @@ describe("matching-scope lifecycle controls", () => {
 });
 
 describe("lifecycle API behavior", () => {
+  it.each([
+    ["status", () => fetchAgentStatus()],
+    [
+      "control",
+      () => controlDispatchLifecycle({ scope: "global" as const, action: "pause" as const }),
+    ],
+  ])("clears an invalid project selection before parsing a %s error", async (_label, invoke) => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          ({
+            ok: false,
+            status: 400,
+            json: async () => ({ error: "Invalid kspec project /deleted/project" }),
+          }) as Response,
+      ),
+    );
+
+    await expect(invoke()).rejects.toThrow("Invalid kspec project");
+    expect(projectState.invalidSelectionClears).toBe(1);
+  });
+
   it("sends canonical global and task requests and converts canonical task response identity", async () => {
     const requests = recordControlRequest();
     await controlDispatchLifecycle({ scope: "global", action: "pause" });

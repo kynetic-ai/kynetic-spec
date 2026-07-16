@@ -1322,6 +1322,8 @@ export async function fetchAgentStatus(): Promise<AgentDispatchStatus> {
   });
   const body: unknown = await response.json();
   if (!response.ok) {
+    const invalidProjectMessage = recoverInvalidProject(response, body);
+    if (invalidProjectMessage) throw new Error(invalidProjectMessage);
     throwLifecycleError(body);
   }
   return parseAgentDispatchStatusWire(body);
@@ -1442,6 +1444,20 @@ export function formatDispatchLifecycleError(error: unknown): string {
     : "Dispatch lifecycle operation failed. Retry after checking daemon health.";
 }
 
+function recoverInvalidProject(response: Response, body: unknown): string | undefined {
+  if (typeof body !== "object" || body === null || Array.isArray(body)) return undefined;
+  const record = body as Record<string, unknown>;
+  const message =
+    typeof record.message === "string"
+      ? record.message
+      : typeof record.error === "string"
+        ? record.error
+        : undefined;
+  if (!isInvalidProjectError(response, message)) return undefined;
+  clearInvalidSelection();
+  return message;
+}
+
 function throwLifecycleError(body: unknown): never {
   const envelope = wireRecord(body, "lifecycle error");
   rejectUnknownKeys(envelope, ["ok", "data", "error"], "lifecycle error envelope");
@@ -1502,6 +1518,8 @@ export async function controlDispatchLifecycle(
   });
   const body: unknown = await response.json();
   if (!response.ok) {
+    const invalidProjectMessage = recoverInvalidProject(response, body);
+    if (invalidProjectMessage) throw new Error(invalidProjectMessage);
     throwLifecycleError(body);
   }
   const envelope = wireRecord(body, "lifecycle response");
