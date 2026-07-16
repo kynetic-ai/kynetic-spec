@@ -78,7 +78,6 @@ describe("Agent dispatch routes", () => {
         },
       }),
     );
-
     expect(response.status).toBe(200);
     expect(getDispatchEngine(rootDir)?.getCwd()).toBe(worktreeDir);
 
@@ -136,7 +135,7 @@ describe("Agent dispatch routes", () => {
     expect(second.status).toBe(409);
     expect(await second.json()).toMatchObject({
       started: false,
-      error: expect.stringContaining(worktreeDir),
+      error: "Dispatch is already running for another project",
     });
 
     const engine = getDispatchEngine(rootDir);
@@ -175,7 +174,7 @@ describe("Agent dispatch routes", () => {
     expect(response.status).toBe(400);
     expect(await response.json()).toMatchObject({
       started: false,
-      error: "Dispatch cwd must belong to the same git project",
+      error: "Invalid dispatch working directory",
     });
   });
 
