@@ -46,6 +46,17 @@ checks:
     runner: npm test -- --fresh
     created_at: 2026-07-16T14:51:32.109Z
     completed_at: 2026-07-16T14:51:32.109Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "PASS: dispatch-lifecycle-controls, websocket invalidation, and fleet-buffer focused run
+      passed 19 suites / 98 tests."
+    name: focused lifecycle tests
+    required: true
+    runner: npm test
+    created_at: 2026-07-16T14:51:40.529Z
+    completed_at: 2026-07-16T14:51:40.529Z
 events:
   - _ulid: 01KXNNBZH9EH8XB3452DF7J13S
     actor: Jacob Chapel
@@ -88,6 +99,13 @@ events:
       status: pass
       name: full test suite
     timestamp: 2026-07-16T14:51:32.811Z
+  - _ulid: 01KXNPJWYCMWDM6QJQSTN3CGCS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T14:51:40.876Z
 examined_commit: 4094f8d891fa081dad353ba75d1ba270ae5ce541
 external_links: []
 lifecycle_state: open
@@ -100,5 +118,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T14:30:25.585Z
-updated_at: 2026-07-16T14:51:32.109Z
+updated_at: 2026-07-16T14:51:40.529Z
 notes: []
