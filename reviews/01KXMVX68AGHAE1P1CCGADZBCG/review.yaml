@@ -142,6 +142,100 @@ checks:
     runner: npm run lint -- --quiet
     created_at: 2026-07-16T07:20:17.590Z
     completed_at: 2026-07-16T07:20:17.590Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit completed successfully.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T07:20:43.880Z
+    completed_at: 2026-07-16T07:20:43.880Z
+  - status: skipped
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Every suite reported PASS, including lifecycle 42/42, dispatch-engine 147/147, and meta
+      195 passed/1 skipped. The wrapper then reproduced the pre-existing post-green teardown hang
+      tracked by @task-investigate-npm-test-teardown-hang-after-green-suite-run and was terminated
+      after two quiet intervals; no test failure was reported.
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T07:20:47.079Z
+    completed_at: 2026-07-16T07:20:47.079Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with 6 repository baseline deprecation warnings.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T07:20:50.294Z
+    completed_at: 2026-07-16T07:20:50.294Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Validation passed with repository baseline orphan/status warnings.
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T07:20:53.491Z
+    completed_at: 2026-07-16T07:20:53.491Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Mechanical validation passed with repository baseline coverage warnings; task-owned and
+      inherited annotations were audited manually.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T07:20:56.672Z
+    completed_at: 2026-07-16T07:20:56.672Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "daemon lifecycle, daemon agent API, and dispatch routes completed: 14 suites and 67 tests
+      passed."
+    name: focused lifecycle tests
+    required: true
+    runner: npm test -- --fresh focused files
+    created_at: 2026-07-16T07:20:59.942Z
+    completed_at: 2026-07-16T07:20:59.942Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Base 89a72367 through head 30da557f contains no whitespace errors.
+    name: diff check
+    required: true
+    runner: git diff --check
+    created_at: 2026-07-16T07:21:03.175Z
+    completed_at: 2026-07-16T07:21:03.175Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all six changed files; task identity, control schema/store/transaction,
+      engine lifecycle/status, daemon middleware/server, task/spec/traits, and both prior review
+      cycles. Commands run: diffs; context lookups; format, repo/focused lint, typecheck, three
+      validations, diff check, focused tests, full fresh suite, pure identity probe, and real-shadow
+      route probe. Claims verified: prior cleanup and degraded-classification fixes pass; an absent
+      canonical-looking task_id returned HTTP 200 and persisted a phantom control; status AC
+      annotations only parse schemas; inherited API-trait N/A claims conflict with the new endpoint.
+      Categories: correctness, identity/cleanup edges, persistence/error mapping, path exposure,
+      security/headers, test quality, legacy compatibility, integration. Shared/package guidance
+      surfaces touched: none; neutrality not applicable."
+    name: review evidence log
+    required: true
+    runner: manual review
+    created_at: 2026-07-16T07:21:06.300Z
+    completed_at: 2026-07-16T07:21:06.300Z
 events:
   - _ulid: 01KXMVX67XCH67ZJXWVYGW89SX
     actor: Jacob Chapel
@@ -261,6 +355,62 @@ events:
       status: pass
       name: lint
     timestamp: 2026-07-16T07:20:17.866Z
+  - _ulid: 01KXMWS6BWTAW4ZN8YQZPV3FYS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T07:20:44.156Z
+  - _ulid: 01KXMWS9EKY5FRAGB7VASR64DS
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: skipped
+      name: full test suite
+    timestamp: 2026-07-16T07:20:47.316Z
+  - _ulid: 01KXMWSCM0PX60345TREMTFX17
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T07:20:50.561Z
+  - _ulid: 01KXMWSFQGAXE3M7QHCSMEPVJ4
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T07:20:53.744Z
+  - _ulid: 01KXMWSJTQBGGCC41EZHVDTP6Z
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T07:20:56.919Z
+  - _ulid: 01KXMWSP0VS5R7AQRYP69PD8QW
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: focused lifecycle tests
+    timestamp: 2026-07-16T07:21:00.187Z
+  - _ulid: 01KXMWSS69JZBDCATB5VC5F1VG
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T07:21:03.433Z
+  - _ulid: 01KXMWSW7P24HA00XMMGFYCY8C
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-16T07:21:06.550Z
 examined_commit: 30da557ff43c38e74c3933c432824b58ce3d4827
 external_links: []
 lifecycle_state: open
@@ -338,5 +488,5 @@ threads:
     kind: blocker
 verdicts: []
 created_at: 2026-07-16T07:05:26.538Z
-updated_at: 2026-07-16T07:20:17.590Z
+updated_at: 2026-07-16T07:21:06.300Z
 notes: []
