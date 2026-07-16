@@ -260,6 +260,23 @@ checks:
     runner: git diff --check
     created_at: 2026-07-16T10:53:45.912Z
     completed_at: 2026-07-16T10:53:45.912Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Files read: all 8 changed files plus surrounding dispatch engine, task identity, control
+      store, shadow transaction, parser, prior review, task and specs. Commands: full diffs,
+      item/trait/review lookups, annotation searches, format/lint/focused lint/typecheck, three
+      validations, focused 79-test run, fresh full run, direct meta 195-pass completion, diff check.
+      Claims verified: cycle-6 cold-start persistence race is serialized through rollback and
+      reproduced behaviorally. Categories searched: correctness, edge cases, error handling,
+      security/path leakage, test quality, compatibility, concurrency, integration. Findings: none.
+      Shared guidance surfaces touched: none; neutrality checklist not applicable."
+    name: review evidence log
+    required: false
+    runner: manual review
+    created_at: 2026-07-16T10:53:51.477Z
+    completed_at: 2026-07-16T10:53:51.477Z
 events:
   - _ulid: 01KXN80T8W5B91KWP2BR13A6RX
     actor: Jacob Chapel
@@ -435,6 +452,13 @@ events:
       status: pass
       name: diff whitespace
     timestamp: 2026-07-16T10:53:46.169Z
+  - _ulid: 01KXN8ZE82Y2RD8BETABE5KGBW
+    actor: codex-reviewer
+    event_type: check_added
+    payload:
+      status: pass
+      name: review evidence log
+    timestamp: 2026-07-16T10:53:51.746Z
 examined_commit: 6f9462a6c73e15e96c1f013e5a2067034d02e397
 external_links: []
 lifecycle_state: open
@@ -447,5 +471,5 @@ subject:
 threads: []
 verdicts: []
 created_at: 2026-07-16T10:37:08.259Z
-updated_at: 2026-07-16T10:53:45.912Z
+updated_at: 2026-07-16T10:53:51.477Z
 notes: []
