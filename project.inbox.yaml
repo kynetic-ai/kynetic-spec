@@ -5327,3 +5327,13 @@ inbox:
       - ux
     added_by: Jacob Chapel
     created_at: 2026-07-16T15:20:31.938Z
+  - _ulid: 01KXNSNJ11W7XQ965XQQ0VVS14
+    text: "Batch command execution should honor direct-command option defaults. A direct 'kspec review
+      comment' defaults --kind to nit, but the same command inside 'kspec batch' passes kind as
+      undefined and fails atomically with 'Invalid thread kind: undefined'. Apply option defaults
+      consistently in batch execution (or coalesce in the review handler) and add a
+      direct-versus-batch parity regression test."
+    tags:
+      - reflection
+    added_by: Jacob Chapel
+    created_at: 2026-07-16T15:45:33.729Z
