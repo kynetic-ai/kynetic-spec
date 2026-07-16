@@ -24066,6 +24066,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-16T04:22:49.404Z
+  - _ulid: 01KXMVJDX48H2FQQX4HJ3B4SQ6
+    type: success
+    content: Real committed shadow-state fixtures paired with exact wire-response assertions exposed
+      lifecycle store classification and preflight defects end to end that mocked or structural
+      tests would miss; reuse this pattern for daemon APIs backed by committed authority.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-16T06:59:33.924Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
