@@ -19,6 +19,7 @@ import {
 } from "../dist/daemon/routes/agent-dispatch.js";
 import { projectContextMiddleware } from "../dist/daemon/middleware/project-context.js";
 import {
+  DispatchEngine,
   DispatchCleanupError,
   DispatchLifecycleTransitionError,
 } from "../dist/agent-runtime/dispatch.js";
@@ -1051,6 +1052,68 @@ describe("canonical dispatch lifecycle routes", () => {
 });
 
 describe("legacy lifecycle compatibility adapters", () => {
+  // AC: @daemon-agent-dispatch ac-control-failure-no-success
+  it("shares cold startup failure across concurrent canonical controls", async () => {
+    const fixture = await createLifecycleRouteFixture();
+    const store = getOrCreateDispatchControlStore(fixture.projectDir);
+    const originalLoadCommitted = store.loadCommitted.bind(store);
+    let loadCount = 0;
+    let secondPreflight!: () => void;
+    const secondPreflightReached = new Promise<void>((resolve) => {
+      secondPreflight = resolve;
+    });
+    vi.spyOn(store, "loadCommitted").mockImplementation(async () => {
+      const publication = await originalLoadCommitted();
+      loadCount += 1;
+      if (loadCount === 2) secondPreflight();
+      return publication;
+    });
+
+    let startEntered!: () => void;
+    let rejectStart!: (reason: unknown) => void;
+    const startupEntered = new Promise<void>((resolve) => {
+      startEntered = resolve;
+    });
+    const startupGate = new Promise<void>((_resolve, reject) => {
+      rejectStart = reject;
+    });
+    vi.spyOn(DispatchEngine.prototype, "start").mockImplementationOnce(async () => {
+      startEntered();
+      await startupGate;
+    });
+
+    const firstRequest = requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    await startupEntered;
+    const secondRequest = requestLifecycleRoute(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    await secondPreflightReached;
+    rejectStart(new Error("injected startup failure"));
+
+    const responses = await Promise.all([firstRequest, secondRequest]);
+    for (const response of responses) {
+      expect(response.status).toBe(500);
+      expect(await response.json()).toEqual({
+        ok: false,
+        data: expect.objectContaining({
+          global_authority: "stopped",
+          projection: "stopped",
+        }),
+        error: {
+          code: "internal_error",
+          message: "Dispatch lifecycle operation failed",
+          suggestion: "Retry after checking daemon health.",
+        },
+      });
+    }
+    expect(getDispatchEngine(fixture.projectDir)).toBeUndefined();
+    expect((await originalLoadCommitted()).snapshot.global.authority).toBe("stopped");
+  });
+
   // AC: @daemon-agent-dispatch ac-control-failure-no-success
   it.each([
     ["canonical control", "/api/agent/dispatch/control", { scope: "global", action: "start" }],

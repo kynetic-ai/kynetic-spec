@@ -83,6 +83,9 @@ const VALID_TASK_STATUSES = new Set(TaskStatusSchema.options);
 
 // Singleton dispatch engine per project path
 const engines: Map<string, DispatchEngine> = new Map();
+// In-flight startup is shared per project and is not published through engines
+// until every runtime companion is ready.
+const engineInitializations: Map<string, Promise<DispatchEngine>> = new Map();
 // Singleton schedule engine per project path (started alongside dispatch)
 const scheduleEngines: Map<string, ScheduleEngine> = new Map();
 // Singleton hook executor per project path (started alongside dispatch)
@@ -832,17 +835,31 @@ async function ensureDispatchEngine(
 ): Promise<{ engine: DispatchEngine; created: boolean }> {
   const existing = engines.get(projectDir);
   if (existing) return { engine: existing, created: false };
+  const existingInitialization = engineInitializations.get(projectDir);
+  if (existingInitialization) {
+    return { engine: await existingInitialization, created: false };
+  }
   const engine = createEngine(projectDir, requestedCwd, pubsub);
-  engines.set(projectDir, engine);
+  const initialization = (async () => {
+    try {
+      await engine.start();
+      await startScheduleEngine(projectDir, engine, pubsub);
+      await startHookExecutor(projectDir, engine, pubsub);
+      await startJoinAccumulator(projectDir, engine, pubsub);
+      engines.set(projectDir, engine);
+      return engine;
+    } catch (error) {
+      await rollbackColdDispatchEngine(projectDir, engine).catch(() => undefined);
+      throw error;
+    }
+  })();
+  engineInitializations.set(projectDir, initialization);
   try {
-    await engine.start();
-    await startScheduleEngine(projectDir, engine, pubsub);
-    await startHookExecutor(projectDir, engine, pubsub);
-    await startJoinAccumulator(projectDir, engine, pubsub);
-    return { engine, created: true };
-  } catch (error) {
-    engines.delete(projectDir);
-    throw error;
+    return { engine: await initialization, created: true };
+  } finally {
+    if (engineInitializations.get(projectDir) === initialization) {
+      engineInitializations.delete(projectDir);
+    }
   }
 }
 
@@ -1034,6 +1051,16 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
             const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
             engine = ensured.engine;
             createdEngine = ensured.created;
+            if (engine.getCwd() !== requestedCwd) {
+              const current = await serializeLifecycleStatus(projectDir, engine);
+              const copy = CONTROL_ERROR_COPY.invalid_transition;
+              set.status = 409;
+              return {
+                ok: false,
+                data: current,
+                error: { code: "invalid_transition" as const, ...copy },
+              };
+            }
             const result =
               body.scope === "global"
                 ? await engine.applyGlobalLifecycleAction(body.action, {
@@ -1141,6 +1168,13 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
               const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
               engine = ensured.engine;
               createdEngine = ensured.created;
+              if (engine.getCwd() !== requestedCwd) {
+                set.status = 409;
+                return {
+                  dispatch_enabled: true,
+                  error: "Dispatch is already running for another project",
+                };
+              }
               if (hasRealShadowWorktree(projectDir)) {
                 const result = await engine.applyGlobalLifecycleAction("start", {
                   actor: "api",
@@ -1244,6 +1278,14 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           const ensured = await ensureDispatchEngine(projectDir, requestedCwd, pubsub);
           engine = ensured.engine;
           createdEngine = ensured.created;
+          if (engine.getCwd() !== requestedCwd) {
+            set.status = 409;
+            return {
+              started: false,
+              error: "Dispatch is already running for another project",
+              status: await serializeInternalStatus(projectDir, engine),
+            };
+          }
           if (hasRealShadowWorktree(projectDir)) {
             const result = await engine.applyGlobalLifecycleAction("start", {
               actor: "api",
@@ -1648,6 +1690,10 @@ export function getSessionRegistry(projectDir: string): SessionRegistry | undefi
  * AC: @agent-dispatch-engine ac-11 - daemon shutdown stops active engines
  */
 export async function stopAllEngines(): Promise<void> {
+  // A daemon shutdown racing cold startup must not let that startup publish an
+  // engine after the teardown pass has already collected its runtime maps.
+  await Promise.allSettled(engineInitializations.values());
+
   // Stop hook executors and join accumulators first (synchronous)
   for (const [, hookExecutor] of hookExecutors) {
     hookExecutor.stop();
