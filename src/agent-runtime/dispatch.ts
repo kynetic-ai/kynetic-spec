@@ -111,6 +111,7 @@ import {
   buildTaskRefResolver,
   requireCanonicalTaskIdentity,
   TaskIdentityResolutionError,
+  type CanonicalTaskIdentity,
 } from "./task-identity.js";
 import { DispatchShadowTransactionError } from "./dispatch-shadow-transaction.js";
 import {
@@ -1907,8 +1908,14 @@ export class DispatchEngine {
     action: TaskLifecycleAction,
     context: TaskLifecycleActionContext,
   ): Promise<TaskLifecycleActionResult> {
+    let identity: CanonicalTaskIdentity | null = null;
     try {
-      const result = await this._applyTaskLifecycleAction(action, context);
+      identity = await requireCanonicalTaskIdentity(this.projectDir, {
+        taskId: context.taskId,
+        taskRef: context.taskRef,
+        source: `dispatch/task-${action}`,
+      });
+      const result = await this._applyTaskLifecycleAction(action, context, identity);
       this._emitDispatchControlOutcome({
         scope: "task",
         action,
@@ -1919,7 +1926,7 @@ export class DispatchEngine {
       });
       return result;
     } catch (error) {
-      const taskId = this._canonicalTaskIdForFailedEvent(context.taskId);
+      const taskId = identity?.taskId ?? this._canonicalTaskIdForFailedEvent(context.taskId);
       if (taskId) {
         this._emitDispatchControlOutcome({
           scope: "task",
@@ -1930,6 +1937,17 @@ export class DispatchEngine {
           taskRef: context.taskRef,
           error,
         });
+      } else {
+        // Before canonicalization succeeds there is no valid task-scoped event
+        // identity. Preserve the failure audit without copying the unresolved
+        // alias by using the identity-neutral payload variant.
+        this._emitDispatchControlOutcome({
+          scope: "global",
+          action,
+          outcome: "failed",
+          context,
+          error,
+        });
       }
       throw error;
     }
@@ -1938,12 +1956,8 @@ export class DispatchEngine {
   private async _applyTaskLifecycleAction(
     action: TaskLifecycleAction,
     context: TaskLifecycleActionContext,
+    identity: CanonicalTaskIdentity,
   ): Promise<TaskLifecycleActionResult> {
-    const identity = await requireCanonicalTaskIdentity(this.projectDir, {
-      taskId: context.taskId,
-      taskRef: context.taskRef,
-      source: `dispatch/task-${action}`,
-    });
     if (action === "stop") {
       return this.lifecycleMutex.runExclusive(() => this._applyTaskStop(identity, context));
     }

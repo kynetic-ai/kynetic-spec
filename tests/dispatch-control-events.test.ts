@@ -1,38 +1,180 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import * as YAML from "yaml";
 import {
+  DispatchCleanupError,
+  DispatchEngine,
   DISPATCH_CONTROL_FAILURE_CODE_BY_PREDICATE,
   dispatchControlErrorCodeForPredicate,
   emitDispatchControlOutcome,
+  type DispatchControlLifecycleEvent,
   type DispatchControlOutcomeInput,
+  type DispatchLifecycleAuthorityStore,
 } from "../src/agent-runtime/dispatch.js";
+import { DispatchShadowTransactionError } from "../src/agent-runtime/dispatch-shadow-transaction.js";
+import type {
+  DispatchControl,
+  DispatchControlMutation,
+  DispatchControlPublication,
+} from "../src/agent-runtime/dispatch-control-store.js";
 import type { EventEnvelope } from "../src/agent-runtime/event-bus.js";
 import { EventBus } from "../src/agent-runtime/event-bus.js";
+import { createMissingDispatchControl } from "../src/schema/dispatch-control.js";
+import { ensureSplitBackendRegistered } from "../src/parser/split-backend.js";
 import {
   DispatchControlEventPayloadSchema,
   DispatchControlErrorCodeSchema,
   validateEventPayload,
 } from "../src/schema/event-payloads.js";
-import { testUlid } from "./helpers/cli.js";
+import {
+  cleanupTempDir,
+  createTempDir,
+  initGitRepo,
+  seedSplitTask,
+  testUlid,
+} from "./helpers/cli.js";
 
 const TASK_ID = testUlid();
+const SECOND_TASK_ID = testUlid("TASK", 2);
+const tempDirs: string[] = [];
+
+ensureSplitBackendRegistered();
+
+afterEach(async () => {
+  await Promise.all(tempDirs.splice(0).map((dir) => cleanupTempDir(dir)));
+});
+
+function control(authority: "stopped" | "running" | "paused" = "running"): DispatchControl {
+  return { ...createMissingDispatchControl(), revision: 1, global: { authority } };
+}
+
+class EngineControlStore implements DispatchLifecycleAuthorityStore {
+  private publication: DispatchControlPublication;
+  private listener: ((publication: DispatchControlPublication) => void) | undefined;
+  private failure: unknown;
+  private commitBarrier: Promise<void> | null = null;
+  private releaseBarrier: (() => void) | null = null;
+
+  constructor(snapshot: DispatchControl) {
+    this.publication = {
+      snapshot,
+      token: { revision: snapshot.revision, commit_oid: `memory-${snapshot.revision}` },
+    };
+  }
+
+  setPublicationListener(
+    _key: string,
+    listener: (publication: DispatchControlPublication) => void,
+  ): void {
+    this.listener = listener;
+  }
+
+  async loadCommitted(): Promise<DispatchControlPublication> {
+    this.listener?.(this.publication);
+    return this.publication;
+  }
+
+  getPublication(): DispatchControlPublication {
+    return this.publication;
+  }
+
+  getDegradedReason(): string | null {
+    return null;
+  }
+
+  failNextMutation(error: unknown): void {
+    this.failure = error;
+  }
+
+  holdNextCommit(): () => void {
+    this.commitBarrier = new Promise<void>((resolve) => {
+      this.releaseBarrier = resolve;
+    });
+    return () => this.releaseBarrier?.();
+  }
+
+  async mutate(
+    _operation: string,
+    mutation: DispatchControlMutation,
+  ): Promise<DispatchControlPublication> {
+    if (this.failure !== undefined) {
+      const failure = this.failure;
+      this.failure = undefined;
+      throw failure;
+    }
+    const next = await mutation(structuredClone(this.publication.snapshot));
+    if (this.commitBarrier) {
+      await this.commitBarrier;
+      this.commitBarrier = null;
+      this.releaseBarrier = null;
+    }
+    if (next !== null) {
+      this.publication = {
+        snapshot: next,
+        token: { revision: next.revision, commit_oid: `memory-${next.revision}` },
+      };
+    }
+    this.listener?.(this.publication);
+    return this.publication;
+  }
+}
+
+async function createEngineFixture(
+  options: {
+    authority?: "stopped" | "running" | "paused";
+    snapshot?: DispatchControl;
+    duplicateTaskSlug?: boolean;
+  } = {},
+): Promise<{
+  engine: DispatchEngine;
+  store: EngineControlStore;
+  callbackEvents: DispatchControlLifecycleEvent[];
+  busEvents: EventEnvelope[];
+}> {
+  const projectDir = await createTempDir("dispatch-control-events-");
+  tempDirs.push(projectDir);
+  initGitRepo(projectDir);
+  await fs.writeFile(
+    path.join(projectDir, "kynetic.yaml"),
+    YAML.stringify({ kynetic: "1.1", title: "Control events", task_storage: { format: "split" } }),
+  );
+  const writeTask = (taskId: string, slug: string) =>
+    seedSplitTask(projectDir, {
+      _ulid: taskId,
+      type: "task",
+      title: slug,
+      slugs: [slug],
+      status: "pending",
+      priority: 1,
+      automation: "eligible",
+      depends_on: [],
+      blocked_by: [],
+      tags: [],
+      notes: [],
+      created_at: new Date().toISOString(),
+    });
+  writeTask(TASK_ID, "task-alpha");
+  writeTask(SECOND_TASK_ID, options.duplicateTaskSlug ? "task-alpha" : "task-beta");
+
+  const store = new EngineControlStore(options.snapshot ?? control(options.authority));
+  const callbackEvents: DispatchControlLifecycleEvent[] = [];
+  const engine = new DispatchEngine({
+    projectDir,
+    specDir: projectDir,
+    reconcileIntervalMs: 0,
+    coalesceWindowMs: 0,
+    lifecycleStore: store,
+    onDispatchControlEvent: (event) => callbackEvents.push(event),
+  });
+  const busEvents = captureDispatchControlEvents(engine.eventBus);
+  return { engine, store, callbackEvents, busEvents };
+}
 
 function captureDispatchControlEvents(bus: EventBus): EventEnvelope[] {
   const captured: EventEnvelope[] = [];
   bus.subscribe("dispatch_control.*", (event) => captured.push(event));
   return captured;
-}
-
-async function emitOutcomeFixture(
-  input: DispatchControlOutcomeInput,
-): Promise<{ captured: EventEnvelope[]; releaseCommit: () => void }> {
-  const bus = new EventBus();
-  const captured = captureDispatchControlEvents(bus);
-  let releaseCommit!: () => void;
-  const commitBarrier = new Promise<void>((resolve) => {
-    releaseCommit = resolve;
-  });
-  void commitBarrier.then(() => emitDispatchControlOutcome(bus, input));
-  return { captured, releaseCommit };
 }
 
 const baseGlobalInput = {
@@ -45,25 +187,234 @@ const baseGlobalInput = {
   timestamp: "2026-07-15T12:00:00.000Z",
 };
 
+describe("DispatchEngine lifecycle audit boundary", () => {
+  // AC: @dispatch-lifecycle-control-authority ac-applied-control-is-auditable
+  it("emits one applied event only after the lifecycle store commits", async () => {
+    const fixture = await createEngineFixture({ authority: "running" });
+    const releaseCommit = fixture.store.holdNextCommit();
+
+    const pending = fixture.engine.applyGlobalLifecycleAction("pause", {
+      reason: "operator request",
+      actor: "operator",
+      source: "api",
+    });
+    await new Promise((resolve) => setImmediate(resolve));
+
+    expect(fixture.callbackEvents).toEqual([]);
+    expect(fixture.busEvents).toEqual([]);
+
+    releaseCommit();
+    await expect(pending).resolves.toEqual({ outcome: "applied", authority: "paused" });
+    expect(fixture.callbackEvents).toHaveLength(1);
+    expect(fixture.callbackEvents[0]).toMatchObject({
+      type: "dispatch_control.pause_applied",
+      data: { scope: "global", action: "pause", outcome: "applied", authority: "paused" },
+    });
+    expect(fixture.busEvents).toHaveLength(1);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-noop-control-is-auditable
+  it("emits one noop event only after committed state is observed", async () => {
+    const fixture = await createEngineFixture({ authority: "paused" });
+    const releaseCommit = fixture.store.holdNextCommit();
+
+    const pending = fixture.engine.applyGlobalLifecycleAction("pause", { source: "api" });
+    await new Promise((resolve) => setImmediate(resolve));
+
+    expect(fixture.callbackEvents).toEqual([]);
+    expect(fixture.busEvents).toEqual([]);
+
+    releaseCommit();
+    await expect(pending).resolves.toEqual({ outcome: "noop", authority: "paused" });
+    expect(fixture.callbackEvents).toHaveLength(1);
+    expect(fixture.callbackEvents[0]).toMatchObject({
+      type: "dispatch_control.noop",
+      data: { scope: "global", action: "pause", outcome: "noop", authority: "paused" },
+    });
+    expect(fixture.busEvents).toHaveLength(1);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-failed-control-is-auditable
+  it("emits task failures for resolved aliases and identity-neutral failures before canonicalization", async () => {
+    const timestamp = new Date().toISOString();
+    const stoppedTaskSnapshot: DispatchControl = {
+      ...control("running"),
+      revision: 2,
+      tasks: {
+        [TASK_ID]: {
+          mode: "stopped",
+          reason: "stop A",
+          actor: "operator",
+          source: "api",
+          controlled_at: timestamp,
+          updated_at: timestamp,
+        },
+      },
+    };
+    const fixture = await createEngineFixture({ snapshot: stoppedTaskSnapshot });
+
+    await expect(
+      fixture.engine.applyTaskLifecycleAction("pause", { taskRef: "@task-alpha" }),
+    ).rejects.toMatchObject({ name: "DispatchLifecycleTransitionError" });
+    await expect(
+      fixture.engine.applyTaskLifecycleAction("pause", { taskRef: "@missing-task" }),
+    ).rejects.toMatchObject({ code: "unresolved-task-ref" });
+
+    expect(fixture.callbackEvents).toHaveLength(2);
+    expect(fixture.callbackEvents[0]).toMatchObject({
+      type: "dispatch_control.failed",
+      data: {
+        scope: "task",
+        task_id: TASK_ID,
+        task_ref: "@task-alpha",
+        error_code: "invalid_transition",
+      },
+    });
+    expect(fixture.callbackEvents[1]).toMatchObject({
+      type: "dispatch_control.failed",
+      data: { scope: "global", action: "pause", error_code: "task_not_found" },
+    });
+    expect(fixture.callbackEvents[1]?.data).not.toHaveProperty("task_id");
+    expect(fixture.callbackEvents[1]?.data).not.toHaveProperty("task_ref");
+    expect(fixture.busEvents).toHaveLength(2);
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-failed-control-is-auditable
+  // AC: @dispatch-lifecycle-control-authority ac-failure-events-use-closed-error-codes
+  it("maps every engine failure class to one closed failed event", async () => {
+    const actualIdentityCases = [
+      {
+        code: "validation_failed",
+        fixture: () => createEngineFixture(),
+        invoke: (engine: DispatchEngine) => engine.applyTaskLifecycleAction("pause", {}),
+      },
+      {
+        code: "task_not_found",
+        fixture: () => createEngineFixture(),
+        invoke: (engine: DispatchEngine) =>
+          engine.applyTaskLifecycleAction("pause", { taskRef: "@missing-task" }),
+      },
+      {
+        code: "task_identity_ambiguous",
+        fixture: () => createEngineFixture({ duplicateTaskSlug: true }),
+        invoke: (engine: DispatchEngine) =>
+          engine.applyTaskLifecycleAction("pause", { taskRef: "@task-alpha" }),
+      },
+      {
+        code: "task_identity_mismatch",
+        fixture: () => createEngineFixture(),
+        invoke: (engine: DispatchEngine) =>
+          engine.applyTaskLifecycleAction("pause", {
+            taskId: TASK_ID,
+            taskRef: "@task-beta",
+          }),
+      },
+    ] as const;
+
+    for (const identityCase of actualIdentityCases) {
+      const fixture = await identityCase.fixture();
+      await expect(identityCase.invoke(fixture.engine)).rejects.toBeDefined();
+      expect(fixture.callbackEvents).toHaveLength(1);
+      expect(fixture.callbackEvents[0]).toMatchObject({
+        type: "dispatch_control.failed",
+        data: { outcome: "failed", error_code: identityCase.code },
+      });
+      expect(fixture.busEvents).toHaveLength(1);
+    }
+
+    const timestamp = new Date().toISOString();
+    const matrixSnapshot: DispatchControl = {
+      ...control("running"),
+      revision: 2,
+      tasks: {
+        [TASK_ID]: {
+          mode: "stopped",
+          reason: "stop A",
+          actor: "operator",
+          source: "api",
+          controlled_at: timestamp,
+          updated_at: timestamp,
+        },
+      },
+    };
+    const matrixFixture = await createEngineFixture({ snapshot: matrixSnapshot });
+    await expect(
+      matrixFixture.engine.applyTaskLifecycleAction("pause", { taskRef: "@task-alpha" }),
+    ).rejects.toBeDefined();
+    expect(matrixFixture.callbackEvents).toHaveLength(1);
+    expect(matrixFixture.callbackEvents[0]?.data.error_code).toBe("invalid_transition");
+
+    const injectedFailures: ReadonlyArray<readonly [unknown, string]> = [
+      [new Error("Timed out waiting for file lock"), "control_store_unavailable"],
+      [new Error("Invalid dispatch-control.yaml committed object"), "control_store_corrupt"],
+      [
+        new DispatchShadowTransactionError("control_commit_failed", "commit returned false"),
+        "control_commit_failed",
+      ],
+      [new DispatchCleanupError("cancellation_timeout", "timed out"), "cancellation_timeout"],
+      [new DispatchCleanupError("cancellation_failed", "signal failed"), "cancellation_failed"],
+      [
+        new DispatchCleanupError("session_closure_failed", "session close failed"),
+        "session_closure_failed",
+      ],
+      [
+        new DispatchCleanupError("cleanup_ownership_mismatch", "ownership mismatch"),
+        "cleanup_ownership_mismatch",
+      ],
+      [
+        new DispatchCleanupError("cleanup_process_birth_mismatch", "birth mismatch"),
+        "cleanup_process_birth_mismatch",
+      ],
+      [
+        new DispatchCleanupError(
+          "cleanup_leader_missing_group_alive",
+          "leader missing with live group",
+        ),
+        "cleanup_leader_missing_group_alive",
+      ],
+      [
+        new DispatchCleanupError("cleanup_identity_unverifiable", "identity unverifiable"),
+        "cleanup_identity_unverifiable",
+      ],
+      [
+        new DispatchCleanupError("cleanup_group_unverifiable", "group unverifiable"),
+        "cleanup_group_unverifiable",
+      ],
+      [new Error("unexpected lifecycle fault"), "internal_error"],
+    ];
+
+    for (const [failure, expectedCode] of injectedFailures) {
+      const fixture = await createEngineFixture({ authority: "running" });
+      fixture.store.failNextMutation(failure);
+      await expect(fixture.engine.applyGlobalLifecycleAction("pause")).rejects.toBe(failure);
+      expect(fixture.callbackEvents).toHaveLength(1);
+      expect(fixture.callbackEvents[0]).toMatchObject({
+        type: "dispatch_control.failed",
+        data: { scope: "global", outcome: "failed", error_code: expectedCode },
+      });
+      expect(fixture.busEvents).toHaveLength(1);
+    }
+  });
+});
+
 // AC: @dispatch-event-taxonomy ac-dispatch-control-domain
 // AC: @dispatch-event-payload ac-dispatch-control-common-fields
 // AC: @dispatch-event-payload ac-dispatch-control-global-identity-absence
 describe("dispatch control outcome identifiers", () => {
   it.each(["start", "pause", "resume", "stop"] as const)(
-    "emits dispatch_control.%s_applied after the commit barrier",
+    "formats an applied %s outcome with its matching identifier",
     async (action) => {
-      const fixture = await emitOutcomeFixture({
+      const bus = new EventBus();
+      const captured = captureDispatchControlEvents(bus);
+      emitDispatchControlOutcome(bus, {
         ...baseGlobalInput,
         action,
         outcome: "applied",
       });
-
-      expect(fixture.captured).toHaveLength(0);
-      fixture.releaseCommit();
       await new Promise((resolve) => setImmediate(resolve));
 
-      expect(fixture.captured).toHaveLength(1);
-      expect(fixture.captured[0]).toMatchObject({
+      expect(captured).toHaveLength(1);
+      expect(captured[0]).toMatchObject({
         event_type: `dispatch_control.${action}_applied`,
         source_type: "api",
         source_id: "dispatch-control:global",
@@ -79,9 +430,9 @@ describe("dispatch control outcome identifiers", () => {
           timestamp: "2026-07-15T12:00:00.000Z",
         },
       });
-      expect(fixture.captured[0]?.payload).not.toHaveProperty("task_id");
-      expect(fixture.captured[0]?.payload).not.toHaveProperty("task_ref");
-      expect(fixture.captured[0]?.payload).not.toHaveProperty("error_code");
+      expect(captured[0]?.payload).not.toHaveProperty("task_id");
+      expect(captured[0]?.payload).not.toHaveProperty("task_ref");
+      expect(captured[0]?.payload).not.toHaveProperty("error_code");
     },
   );
 
