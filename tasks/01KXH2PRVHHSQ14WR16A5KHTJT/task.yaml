@@ -88,8 +88,12 @@ description: >
 spec_ref: "@dispatch-workspace-cleanup-policy"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: pending_review
+status: completed
 blocked_by: []
+closed_reason: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at
+  0e014e61d8f3. Controlled active, final-gate, paused-held, and stopped-pending-cleanup evidence is
+  preserved across registry, reap, reviewer, worktree, path, and branch cleanup surfaces; historical
+  aliases and global held startup identities are covered by behavioral regressions.
 depends_on:
   - "@task-patch-dispatch-workspace-cleanup-spec"
   - "@task-engine-stop-recovery"
@@ -215,8 +219,26 @@ history:
         previous: "@01KXM7H0H54D862MKHG9VQCBFG"
     command: review-link
     timestamp: 2026-07-16T02:26:34.527Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: completed
+        previous: pending_review
+      closed_reason:
+        new: Merged to plan/plan-dispatch-lifecycle-pause-resume-and-stop-controls/01kxc2vx at 0e014e61d8f3.
+          Controlled active, final-gate, paused-held, and stopped-pending-cleanup evidence is
+          preserved across registry, reap, reviewer, worktree, path, and branch cleanup surfaces;
+          historical aliases and global held startup identities are covered by behavioral
+          regressions.
+        previous: null
+      completed_at:
+        new: 2026-07-16T02:47:22.697Z
+        previous: null
+    command: task-complete
+    timestamp: 2026-07-16T02:47:22.708Z
 created_at: 2026-07-14T19:47:18.513Z
 started_at: 2026-07-16T01:46:38.148Z
 submitted_at: 2026-07-16T02:16:26.170Z
+completed_at: 2026-07-16T02:47:22.697Z
 todos: []
 automation: eligible
