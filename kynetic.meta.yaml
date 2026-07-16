@@ -24195,8 +24195,11 @@ observations:
       or automation readiness should verify that each named surface owner is an explicit dependency
       of end-to-end verification tasks."
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of @01KXNQQY, which already tracks missing behavior-owner dependencies for
+      cross-surface verification.
+    resolved: true
+    resolved_at: 2026-07-16T16:14:30.092Z
+    resolved_by: Jacob Chapel
     created_at: 2026-07-16T16:10:11.529Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
