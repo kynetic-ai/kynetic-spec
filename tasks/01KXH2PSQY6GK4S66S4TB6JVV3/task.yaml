@@ -76,7 +76,7 @@ description: |
 spec_ref: "@daemon-agent-dispatch"
 plan_ref: "@plan-dispatch-lifecycle-pause-resume-and-stop-controls"
 origin: derived
-status: needs_work
+status: in_progress
 blocked_by: []
 depends_on:
   - "@task-patch-dispatch-api-specs"
@@ -98,7 +98,7 @@ submission_linkage:
   remote: origin
   remote_url: git@github.com:lepahc/kynetic-spec.git
   upstream_ref: refs/heads/dispatch/task/task-daemon-dispatch-lifecycle-api/01kxh2ps
-session_id: null
+session_id: 01KXN69N2CR94S05GW91EMDKXM
 history:
   - author: Jacob Chapel
     changes:
@@ -442,8 +442,21 @@ history:
         previous: 01KXN3E8XPXDCZXABPV7AT9WP4
     command: review-verdict-needs-work
     timestamp: 2026-07-16T10:01:25.561Z
+  - author: Jacob Chapel
+    changes:
+      status:
+        new: in_progress
+        previous: needs_work
+      session_id:
+        new: 01KXN69N2CR94S05GW91EMDKXM
+        previous: null
+      started_at:
+        new: 2026-07-16T10:08:12.115Z
+        previous: 2026-07-16T09:19:02.691Z
+    command: task-start
+    timestamp: 2026-07-16T10:08:12.116Z
 created_at: 2026-07-14T19:47:19.422Z
-started_at: 2026-07-16T09:19:02.691Z
+started_at: 2026-07-16T10:08:12.115Z
 submitted_at: 2026-07-16T09:33:01.064Z
 todos: []
 automation: eligible
