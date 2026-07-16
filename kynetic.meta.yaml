@@ -24144,8 +24144,12 @@ observations:
       plan_ref=null and targeted dev. Branch ancestry or plan linkage should be validated before
       declaring such follow-up tasks dispatch-ready.
     author: Jacob Chapel
-    resolution: null
-    resolved: false
+    resolution: Duplicate of @01KXMJKDSW3F670TPX4JBE0JTP, which already tracks defect follow-ups losing
+      unmerged plan-branch linkage. This session provides a second confirming occurrence on
+      @01KXNJTVMJHY7FWVZ3SFVDGACM.
+    resolved: true
+    resolved_at: 2026-07-16T13:58:38.556Z
+    resolved_by: Jacob Chapel
     created_at: 2026-07-16T13:56:47.432Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
