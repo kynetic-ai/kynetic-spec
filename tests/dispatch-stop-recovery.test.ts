@@ -5,6 +5,7 @@ import * as YAML from "yaml";
 import {
   DispatchCleanupError,
   DispatchEngine,
+  type DispatchControlLifecycleEvent,
   type DispatchLifecycleAuthorityStore,
   type DispatchStopRecoveryRuntime,
 } from "../src/agent-runtime/dispatch.js";
@@ -151,6 +152,8 @@ export async function createStopRecoveryHarness() {
   const proc = procEvidenceFixture();
   const sessions = sessionCloseRecorder();
   const signals: number[] = [];
+  const callbackEvents: DispatchControlLifecycleEvent[] = [];
+  const cleanupStatusAtCallback: Array<"pending" | "failed" | undefined> = [];
   let groupExits = true;
   const runtime: DispatchStopRecoveryRuntime = {
     ...proc,
@@ -166,6 +169,10 @@ export async function createStopRecoveryHarness() {
     lifecycleStore: store,
     reconcileIntervalMs: 0,
     stopRecoveryRuntime: runtime,
+    onDispatchControlEvent: (event) => {
+      callbackEvents.push(event);
+      cleanupStatusAtCallback.push(store.getPublication().snapshot.pending_cleanup.global?.status);
+    },
   });
   const seedOwnership = async (
     sequence: number,
@@ -212,6 +219,8 @@ export async function createStopRecoveryHarness() {
     proc,
     sessions,
     signals,
+    callbackEvents,
+    cleanupStatusAtCallback,
     runtime,
     seedOwnership,
     retainActiveOwnership(ownership: DispatchOwnership) {
@@ -552,6 +561,57 @@ describe("verified dispatch hard-stop recovery", () => {
     expect(harness.signals).toEqual([]);
     expect(harness.sessions.closed).toEqual([target.session_id]);
     expect(harness.engine.getLifecycleStatus().cleanupState.status).toBe("idle");
+  });
+
+  // AC: @dispatch-lifecycle-control-authority ac-failed-control-is-auditable
+  // AC: @dispatch-lifecycle-control-authority ac-failure-events-use-closed-error-codes
+  it("audits startup recovery failure once after failed cleanup is committed", async () => {
+    const harness = await createStopRecoveryHarness();
+    const target = await harness.seedOwnership(1, harness.taskA);
+    const current = harness.store.getPublication().snapshot;
+    await harness.store.mutate("seed-startup-recovery", () => ({
+      ...current,
+      revision: current.revision + 1,
+      global: { authority: "stopped" },
+      pending_cleanup: {
+        global: {
+          cleanup_id: testUlid("CLNP", 5),
+          status: "pending",
+          phase: "signals_sent",
+          targets: [
+            {
+              ...target,
+              session_metadata_path: `.kspec-sessions/${target.session_id}/session.yaml`,
+            },
+          ],
+        },
+      },
+    }));
+    harness.runtime.closeSession = async () => {
+      throw new Error("injected startup session close failure");
+    };
+
+    await harness.engine.start();
+
+    expect(harness.engine.getLifecycleStatus()).toMatchObject({
+      globalAuthority: "stopped",
+      cleanupState: {
+        status: "failed",
+        entries: [{ error_code: "session_closure_failed" }],
+      },
+    });
+    expect(harness.callbackEvents).toHaveLength(1);
+    expect(harness.callbackEvents[0]).toMatchObject({
+      type: "dispatch_control.failed",
+      data: {
+        scope: "global",
+        action: "stop",
+        outcome: "failed",
+        source: "daemon_startup",
+        error_code: "session_closure_failed",
+      },
+    });
+    expect(harness.cleanupStatusAtCallback).toEqual(["failed"]);
   });
 
   // AC: @dispatch-lifecycle-control-authority ac-stop-cancels-active-work

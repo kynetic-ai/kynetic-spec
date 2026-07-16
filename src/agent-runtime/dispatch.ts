@@ -50,7 +50,7 @@ import type {
 } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
-import { EventBus, type EventBusOptions } from "./event-bus.js";
+import { EventBus, type EmitResult, type EventBusOptions } from "./event-bus.js";
 import { interpolateTemplate, rewriteSkillReferencesForAdapter } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
 import {
@@ -110,7 +110,15 @@ import {
   normalizeTaskIdentity,
   buildTaskRefResolver,
   requireCanonicalTaskIdentity,
+  TaskIdentityResolutionError,
+  type CanonicalTaskIdentity,
 } from "./task-identity.js";
+import { DispatchShadowTransactionError } from "./dispatch-shadow-transaction.js";
+import {
+  DispatchControlEventPayloadSchema,
+  type DispatchControlEventPayload,
+  type DispatchControlErrorCode,
+} from "../schema/event-payloads.js";
 import type { AgentDispatchRule, AgentDispatchFilter } from "../schema/meta.js";
 import { matchesAutomationFilter } from "../schema/task.js";
 import type { DispatchOwnership, SessionTrigger } from "../sessions/types.js";
@@ -1045,6 +1053,8 @@ export interface DispatchEngineOptions {
    * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
    */
   onSyncStateEvent?: (event: SyncStateEvent) => void;
+  /** Sanitized durable lifecycle outcome for agents-topic publication. */
+  onDispatchControlEvent?: (event: DispatchControlLifecycleEvent) => void;
   /**
    * Configuration for the event bus (chain depth, ring buffer, dedup).
    * AC: @dispatch-event-envelope ac-5, ac-6
@@ -1091,6 +1101,134 @@ export class DispatchLifecycleTransitionError extends Error {
   }
 }
 
+export const DISPATCH_CONTROL_FAILURE_CODE_BY_PREDICATE = {
+  request_validation: "validation_failed",
+  missing_task: "task_not_found",
+  multiple_resolved_tasks: "task_identity_ambiguous",
+  submitted_identity_disagreement: "task_identity_mismatch",
+  matrix_rejection: "invalid_transition",
+  control_store_io_or_timeout: "control_store_unavailable",
+  malformed_committed_control: "control_store_corrupt",
+  commit_or_verification_failure: "control_commit_failed",
+  bounded_cancellation_wait: "cancellation_timeout",
+  verified_signal_failure: "cancellation_failed",
+  durable_session_close_failure: "session_closure_failed",
+  cleanup_ownership_tuple_mismatch: "cleanup_ownership_mismatch",
+  cleanup_process_birth_mismatch: "cleanup_process_birth_mismatch",
+  cleanup_leader_missing_group_alive: "cleanup_leader_missing_group_alive",
+  cleanup_identity_unverifiable: "cleanup_identity_unverifiable",
+  cleanup_group_unverifiable: "cleanup_group_unverifiable",
+  uncategorized_fault: "internal_error",
+} as const satisfies Record<string, DispatchControlErrorCode>;
+
+export type DispatchControlFailurePredicate =
+  keyof typeof DISPATCH_CONTROL_FAILURE_CODE_BY_PREDICATE;
+
+export function dispatchControlErrorCodeForPredicate(
+  predicate: DispatchControlFailurePredicate,
+): DispatchControlErrorCode {
+  return DISPATCH_CONTROL_FAILURE_CODE_BY_PREDICATE[predicate];
+}
+
+type DispatchControlOutcomeBase = {
+  action: GlobalLifecycleAction;
+  authority: "stopped" | "running" | "paused";
+  projection: "stopped" | "running" | "paused" | "draining";
+  reason?: string;
+  actor?: string;
+  source: "cli" | "api" | "ui" | "daemon_startup" | "daemon_shutdown" | "recovery";
+  timestamp?: string;
+} & (
+  | { scope: "global"; taskId?: never; taskRef?: never }
+  | { scope: "task"; taskId: string; taskRef?: string | null }
+);
+
+export type DispatchControlOutcomeInput = DispatchControlOutcomeBase &
+  (
+    | { outcome: "applied" | "noop"; failurePredicate?: never }
+    | { outcome: "failed"; failurePredicate: DispatchControlFailurePredicate }
+  );
+
+export interface DispatchControlLifecycleEvent {
+  type:
+    | "dispatch_control.start_applied"
+    | "dispatch_control.pause_applied"
+    | "dispatch_control.resume_applied"
+    | "dispatch_control.stop_applied"
+    | "dispatch_control.noop"
+    | "dispatch_control.failed";
+  data: DispatchControlEventPayload;
+}
+
+function sanitizeDispatchControlText(
+  value: string | null | undefined,
+  maxCodePoints: number,
+  fallback = "",
+): string {
+  const normalized = (value ?? fallback)
+    .replace(/\p{Cc}/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return Array.from(normalized).slice(0, maxCodePoints).join("");
+}
+
+export function emitDispatchControlOutcome(
+  eventBus: EventBus,
+  input: DispatchControlOutcomeInput,
+  onEvent?: (event: DispatchControlLifecycleEvent) => void,
+): EmitResult {
+  const eventType: DispatchControlLifecycleEvent["type"] =
+    input.outcome === "failed"
+      ? "dispatch_control.failed"
+      : input.outcome === "noop"
+        ? "dispatch_control.noop"
+        : `dispatch_control.${input.action}_applied`;
+  const payload = DispatchControlEventPayloadSchema.parse({
+    scope: input.scope,
+    action: input.action,
+    authority: input.authority,
+    projection: input.projection,
+    outcome: input.outcome,
+    reason: sanitizeDispatchControlText(input.reason, 240, "operator request"),
+    actor: sanitizeDispatchControlText(input.actor, 120, "dispatch-engine"),
+    source: input.source,
+    timestamp: input.timestamp ?? new Date().toISOString(),
+    ...(input.scope === "task"
+      ? {
+          task_id: input.taskId,
+          ...(input.taskRef == null
+            ? {}
+            : { task_ref: sanitizeDispatchControlText(input.taskRef, 200) }),
+        }
+      : {}),
+    ...(input.outcome === "failed"
+      ? { error_code: dispatchControlErrorCodeForPredicate(input.failurePredicate) }
+      : {}),
+  });
+  const emitted = eventBus.emit({
+    event_type: eventType,
+    source_type:
+      input.source === "daemon_startup" ||
+      input.source === "daemon_shutdown" ||
+      input.source === "recovery"
+        ? "manual"
+        : "api",
+    source_id:
+      input.scope === "task" ? `dispatch-control:${input.taskId}` : "dispatch-control:global",
+    payload,
+  });
+  if (emitted.accepted && onEvent) {
+    try {
+      onEvent({ type: eventType, data: payload });
+    } catch {
+      // The event bus is the durable outcome boundary. Best-effort delivery to
+      // live agents-topic consumers must not reclassify an already settled
+      // lifecycle action or cause a second failed audit event.
+    }
+  }
+  return emitted;
+}
+
 export type { DispatchLifecycleAuthorityStore } from "./dispatch-control-store.js";
 
 // ─── DispatchEngine ───────────────────────────────────────────────────────────
@@ -1130,6 +1268,7 @@ export class DispatchEngine {
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onSessionEvent?: (event: SessionEventData) => void;
   private onSyncStateEvent?: (event: SyncStateEvent) => void;
+  private onDispatchControlEvent?: (event: DispatchControlLifecycleEvent) => void;
   /** Per-session text accumulator for newline-boundary streaming. */
   private accumulator = new SessionEventAccumulator();
 
@@ -1250,6 +1389,7 @@ export class DispatchEngine {
     this.onInvocationEvent = options.onInvocationEvent;
     this.onSessionEvent = options.onSessionEvent;
     this.onSyncStateEvent = options.onSyncStateEvent;
+    this.onDispatchControlEvent = options.onDispatchControlEvent;
     this.stopRecoveryRuntime = options.stopRecoveryRuntime ?? createDefaultStopRecoveryRuntime();
     // AC: @dispatch-event-envelope ac-1 through ac-6
     this._eventBus = new EventBus({
@@ -1303,7 +1443,10 @@ export class DispatchEngine {
     if (this.lifecycleStore) {
       this.lifecyclePublication = await loadDispatchBootstrapAuthority(this.lifecycleStore);
       await this.lifecycleMutex.runExclusive(async () => {
-        await this._recoverPendingCleanups({ scope: "all" }).catch(() => undefined);
+        await this._recoverPendingCleanups(
+          { scope: "all" },
+          { auditSource: "daemon_startup" },
+        ).catch(() => undefined);
       });
     }
     this.running = true;
@@ -1686,6 +1829,31 @@ export class DispatchEngine {
     action: GlobalLifecycleAction,
     context: GlobalLifecycleActionContext = {},
   ): Promise<GlobalLifecycleActionResult> {
+    try {
+      const result = await this._applyGlobalLifecycleAction(action, context);
+      this._emitDispatchControlOutcome({
+        scope: "global",
+        action,
+        outcome: result.outcome,
+        context,
+      });
+      return result;
+    } catch (error) {
+      this._emitDispatchControlOutcome({
+        scope: "global",
+        action,
+        outcome: "failed",
+        context,
+        error,
+      });
+      throw error;
+    }
+  }
+
+  private async _applyGlobalLifecycleAction(
+    action: GlobalLifecycleAction,
+    context: GlobalLifecycleActionContext,
+  ): Promise<GlobalLifecycleActionResult> {
     if (action === "stop") {
       return this.lifecycleMutex.runExclusive(() => this._applyGlobalStop(context));
     }
@@ -1751,11 +1919,56 @@ export class DispatchEngine {
     action: TaskLifecycleAction,
     context: TaskLifecycleActionContext,
   ): Promise<TaskLifecycleActionResult> {
-    const identity = await requireCanonicalTaskIdentity(this.projectDir, {
-      taskId: context.taskId,
-      taskRef: context.taskRef,
-      source: `dispatch/task-${action}`,
-    });
+    let identity: CanonicalTaskIdentity | null = null;
+    try {
+      identity = await requireCanonicalTaskIdentity(this.projectDir, {
+        taskId: context.taskId,
+        taskRef: context.taskRef,
+        source: `dispatch/task-${action}`,
+      });
+      const result = await this._applyTaskLifecycleAction(action, context, identity);
+      this._emitDispatchControlOutcome({
+        scope: "task",
+        action,
+        outcome: result.outcome,
+        context,
+        taskId: result.taskId,
+        taskRef: result.taskRef,
+      });
+      return result;
+    } catch (error) {
+      const taskId = identity?.taskId ?? this._canonicalTaskIdForFailedEvent(context.taskId);
+      if (taskId) {
+        this._emitDispatchControlOutcome({
+          scope: "task",
+          action,
+          outcome: "failed",
+          context,
+          taskId,
+          taskRef: context.taskRef,
+          error,
+        });
+      } else {
+        // Before canonicalization succeeds there is no valid task-scoped event
+        // identity. Preserve the failure audit without copying the unresolved
+        // alias by using the identity-neutral payload variant.
+        this._emitDispatchControlOutcome({
+          scope: "global",
+          action,
+          outcome: "failed",
+          context,
+          error,
+        });
+      }
+      throw error;
+    }
+  }
+
+  private async _applyTaskLifecycleAction(
+    action: TaskLifecycleAction,
+    context: TaskLifecycleActionContext,
+    identity: CanonicalTaskIdentity,
+  ): Promise<TaskLifecycleActionResult> {
     if (action === "stop") {
       return this.lifecycleMutex.runExclusive(() => this._applyTaskStop(identity, context));
     }
@@ -2148,6 +2361,7 @@ export class DispatchEngine {
 
   private async _recoverPendingCleanups(
     selector: { scope: "all" } | { scope: "global" } | { scope: "task"; taskId: string },
+    options: { auditSource?: "daemon_startup" | "recovery" } = {},
   ): Promise<void> {
     if (!this.lifecycleStore) return;
     const keys = Object.keys(this.lifecyclePublication.snapshot.pending_cleanup).filter((key) => {
@@ -2167,6 +2381,22 @@ export class DispatchEngine {
             ? error
             : new DispatchCleanupError("internal_error", "Dispatch cleanup failed internally");
         await this._markCleanupFailed(key, cleanupError.code);
+        if (options.auditSource) {
+          const context = { source: options.auditSource };
+          this._emitDispatchControlOutcome(
+            key === "global"
+              ? { scope: "global", action: "stop", outcome: "failed", context, error: cleanupError }
+              : {
+                  scope: "task",
+                  action: "stop",
+                  outcome: "failed",
+                  context,
+                  taskId: key,
+                  taskRef: null,
+                  error: cleanupError,
+                },
+          );
+        }
         firstError ??= cleanupError;
       }
     }
@@ -5171,6 +5401,130 @@ export class DispatchEngine {
     )
       .slice(0, maxCodePoints)
       .join("");
+  }
+
+  private _canonicalTaskIdForFailedEvent(taskId: string | undefined): string | null {
+    const normalized = taskId?.trim().replace(/^@/, "").toUpperCase();
+    return normalized && /^[0-9A-HJKMNP-TV-Z]{26}$/.test(normalized) ? normalized : null;
+  }
+
+  private _dispatchControlFailurePredicate(error: unknown): DispatchControlFailurePredicate {
+    if (error instanceof DispatchLifecycleTransitionError) return "matrix_rejection";
+    if (error instanceof TaskIdentityResolutionError) {
+      switch (error.code) {
+        case "missing-task-identity":
+          return "request_validation";
+        case "unresolved-task-ref":
+          return "missing_task";
+        case "ambiguous-task-ref":
+        case "duplicate-task-slug":
+          return "multiple_resolved_tasks";
+        case "task-id-ref-mismatch":
+          return "submitted_identity_disagreement";
+        case "task-identity-unavailable":
+          return "control_store_io_or_timeout";
+      }
+    }
+    if (error instanceof DispatchShadowTransactionError) {
+      return "commit_or_verification_failure";
+    }
+    if (error instanceof DispatchCleanupError) {
+      switch (error.code) {
+        case "cancellation_timeout":
+          return "bounded_cancellation_wait";
+        case "cancellation_failed":
+          return "verified_signal_failure";
+        case "session_closure_failed":
+          return "durable_session_close_failure";
+        case "cleanup_ownership_mismatch":
+          return "cleanup_ownership_tuple_mismatch";
+        case "cleanup_process_birth_mismatch":
+          return "cleanup_process_birth_mismatch";
+        case "cleanup_leader_missing_group_alive":
+          return "cleanup_leader_missing_group_alive";
+        case "cleanup_identity_unverifiable":
+          return "cleanup_identity_unverifiable";
+        case "cleanup_group_unverifiable":
+          return "cleanup_group_unverifiable";
+        case "internal_error":
+          return "uncategorized_fault";
+      }
+    }
+    const message = error instanceof Error ? error.message : String(error);
+    if (error instanceof Error && error.name === "ZodError") return "request_validation";
+    if (/Invalid dispatch-control\.yaml|malformed committed control/i.test(message)) {
+      return "malformed_committed_control";
+    }
+    if (
+      /Timed out waiting for file lock|control store|shadow worktree|\bE(?:ACCES|IO|NOENT|PERM)\b/i.test(
+        message,
+      )
+    ) {
+      return "control_store_io_or_timeout";
+    }
+    return "uncategorized_fault";
+  }
+
+  private _emitDispatchControlOutcome(
+    input:
+      | {
+          scope: "global";
+          action: GlobalLifecycleAction;
+          outcome: "applied" | "noop";
+          context: GlobalLifecycleActionContext;
+        }
+      | {
+          scope: "global";
+          action: GlobalLifecycleAction;
+          outcome: "failed";
+          context: GlobalLifecycleActionContext;
+          error: unknown;
+        }
+      | {
+          scope: "task";
+          action: TaskLifecycleAction;
+          outcome: "applied" | "noop";
+          context: TaskLifecycleActionContext;
+          taskId: string;
+          taskRef: string | null;
+        }
+      | {
+          scope: "task";
+          action: TaskLifecycleAction;
+          outcome: "failed";
+          context: TaskLifecycleActionContext;
+          taskId: string;
+          taskRef?: string | null;
+          error: unknown;
+        },
+  ): void {
+    const lifecycle = this.getLifecycleStatus();
+    const shared = {
+      action: input.action,
+      authority: lifecycle.globalAuthority,
+      projection: lifecycle.projection,
+      reason: input.context.reason,
+      actor: input.context.actor,
+      source: input.context.source ?? ("api" as const),
+      ...(input.outcome === "failed"
+        ? {
+            outcome: "failed" as const,
+            failurePredicate: this._dispatchControlFailurePredicate(input.error),
+          }
+        : { outcome: input.outcome }),
+    };
+    emitDispatchControlOutcome(
+      this._eventBus,
+      input.scope === "global"
+        ? { ...shared, scope: "global" }
+        : {
+            ...shared,
+            scope: "task",
+            taskId: input.taskId,
+            taskRef: input.taskRef,
+          },
+      this.onDispatchControlEvent,
+    );
   }
 
   private _acceptLifecyclePublication(publication: DispatchControlPublication): void {

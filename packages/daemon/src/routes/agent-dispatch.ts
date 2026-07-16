@@ -27,6 +27,7 @@ import type {
   TaskStatus,
   InvocationEvent,
   SyncStateEvent,
+  DispatchControlLifecycleEvent,
 } from "../../agent-runtime/dispatch.js";
 import { ScheduleEngine } from "../../agent-runtime/schedule-engine.js";
 import { HookExecutor } from "../../agent-runtime/hook-executor.js";
@@ -122,6 +123,11 @@ function createEngine(projectDir: string, cwd?: string, pubsub?: PubSubManager):
     onSyncStateEvent: pubsub
       ? (event: SyncStateEvent) => {
           pubsub.broadcast("agents", event.type, event, projectDir);
+        }
+      : undefined,
+    onDispatchControlEvent: pubsub
+      ? (event: DispatchControlLifecycleEvent) => {
+          pubsub.broadcast("agents", event.type, event.data, projectDir);
         }
       : undefined,
   });
