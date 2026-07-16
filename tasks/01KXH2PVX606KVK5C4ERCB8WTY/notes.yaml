@@ -38,3 +38,14 @@ notes:
     supersedes: null
     author: Jacob Chapel
     created_at: 2026-07-16T12:49:58.897Z
+  - _ulid: 01KXNFW6ZHFAF18CY4Z4T6572E
+    content: "Fix cycle 1 approach: replace constant-only AC annotations with real browser behavior for
+      confirmation text/cancel, accessible controls, successful focus restoration, and live updates;
+      validate complete strict public lifecycle status/mutation envelopes before camelCase
+      projection; keep the running zero-active section rendered; migrate the existing agents
+      Playwright suite to stable lifecycle IDs and sanitized errors. Re-verify all 16
+      @ui-agent-dispatch ACs, both global and held-task focus paths, unknown root fields, focused
+      unit/E2E regressions, then every project quality gate."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-07-16T12:54:26.033Z
