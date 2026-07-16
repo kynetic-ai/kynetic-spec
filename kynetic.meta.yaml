@@ -24076,6 +24076,18 @@ observations:
     resolved: false
     workflow_ref: "@session-reflect-loop"
     created_at: 2026-07-16T06:59:33.924Z
+  - _ulid: 01KXN1RXPVXX8142EZYQZWXCYC
+    type: success
+    content: A real-shadow route fixture with an actual failing Git pre-commit hook exposed a
+      runtime/durable-state divergence that mocked lifecycle failures missed, then provided
+      end-to-end proof that canonical and compatibility routes remove cold engines after commit
+      failure. Reuse real persistence-boundary failure injection for APIs that coordinate durable
+      shadow mutations with in-memory runtime state.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@session-reflect-loop"
+    created_at: 2026-07-16T08:47:58.172Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
