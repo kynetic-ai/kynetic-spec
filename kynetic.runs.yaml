@@ -80158,9 +80158,21 @@ runs:
     completed_at: 2026-07-16T03:37:42.084Z
   - _ulid: 01KXMGFN1T5RHG72XN7EVK9P9J
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-07-16T03:45:48.602Z
+        completed_at: 2026-07-16T03:47:51.079Z
+        notes: "Baseline completed across observations, inbox, and tasks. Relevant existing coverage:
+          success observation @01KXJTPA for deterministic barriers; task
+          @stabilize-agent-invocation-process-identity and friction observation @01KXMGDN for the
+          transient process-observation/full-suite contention failure."
+      - status: completed
+        step_index: 1
+        started_at: 2026-07-16T03:47:51.079Z
+        completed_at: 2026-07-16T03:47:51.079Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-07-16T03:45:48.602Z
