@@ -51,6 +51,7 @@ blocked_by: []
 depends_on:
   - "@task-cli-dispatch-lifecycle-controls"
   - "@task-verify-engine-restart-races"
+  - "@task-ui-dispatch-lifecycle-controls"
 context: []
 priority: 3
 tags:
@@ -140,6 +141,18 @@ history:
         previous: 2026-07-16T14:28:44.149Z
     command: task-start
     timestamp: 2026-07-16T15:51:16.281Z
+  - author: Jacob Chapel
+    changes:
+      depends_on:
+        new:
+          - "@task-cli-dispatch-lifecycle-controls"
+          - "@task-verify-engine-restart-races"
+          - "@task-ui-dispatch-lifecycle-controls"
+        previous:
+          - "@task-cli-dispatch-lifecycle-controls"
+          - "@task-verify-engine-restart-races"
+    command: task-set
+    timestamp: 2026-07-16T16:08:34.718Z
 created_at: 2026-07-14T19:47:23.592Z
 started_at: 2026-07-16T15:51:16.280Z
 submitted_at: 2026-07-16T15:09:10.179Z

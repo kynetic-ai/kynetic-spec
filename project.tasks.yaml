@@ -34031,6 +34031,7 @@
   depends_on:
     - "@task-cli-dispatch-lifecycle-controls"
     - "@task-verify-engine-restart-races"
+    - "@task-ui-dispatch-lifecycle-controls"
   priority: 3
   tags:
     - dispatch
