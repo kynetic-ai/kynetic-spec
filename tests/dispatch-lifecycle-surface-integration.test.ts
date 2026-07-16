@@ -1,11 +1,15 @@
-import { chmodSync, cpSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, rmSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { describe, expect, it, onTestFinished, vi } from "vitest";
 import WsClient from "ws";
 import YAML from "yaml";
 
-import { DispatchLifecycleStatusSchema } from "../packages/shared/src/api.js";
+import {
+  DispatchControlErrorCodeSchema,
+  DispatchLifecycleStatusSchema,
+  type DispatchLifecycleControlErrorCode,
+} from "../packages/shared/src/api.js";
 import { boundedDaemonFetch } from "./helpers/daemon-fetch.js";
 import {
   createTestDaemonProject,
@@ -146,17 +150,17 @@ async function captureSurfaceEvents(fixture: SurfaceDaemonFixture): Promise<{
 
 function injectLifecycleFailure(
   fixture: SurfaceDaemonFixture,
-  code: "control_commit_failed" | "pending" | "cancellation_failed",
+  code: DispatchLifecycleControlErrorCode | "pending" | "failed_cleanup",
   options: { revision?: number; taskStatus?: "pending" | "failed" } = {},
 ): void {
-  if (code !== "control_commit_failed") {
+  if (code === "pending" || code === "failed_cleanup") {
     const taskStatus = options.taskStatus;
     const pendingCleanup: Record<string, unknown> = {
       global: {
         cleanup_id: GLOBAL_CLEANUP_ID,
         status: code === "pending" ? "pending" : "failed",
         phase: code === "pending" ? "owned" : "signals_sent",
-        ...(code === "pending" ? {} : { error_code: code }),
+        ...(code === "pending" ? {} : { error_code: "cancellation_failed" }),
         targets: [],
       },
     };
@@ -196,15 +200,7 @@ function injectLifecycleFailure(
     });
     return;
   }
-  const hookPath = execFileSync("git", ["rev-parse", "--git-path", "hooks/pre-commit"], {
-    cwd: fixture.project.kspecDir,
-    encoding: "utf8",
-  }).trim();
-  writeFileSync(
-    hookPath,
-    `#!/bin/sh\nrm -f -- "${hookPath}"\nprintf '%s\\n' '${code}' >&2\nexit 1\n`,
-  );
-  chmodSync(hookPath, 0o755);
+  writeFileSync(join(fixture.project.kspecDir, ".test-lifecycle-failure"), `${code}\n`);
 }
 
 describe("dispatch lifecycle API/CLI surface projection", { timeout: 90_000 }, () => {
@@ -383,6 +379,24 @@ describe("dispatch lifecycle API/CLI surface projection", { timeout: 90_000 }, (
     const publicStatus = await requestSurface(fixture, "/api/agent/status");
     expect(publicStatus.status, "public lifecycle status HTTP status").toBe(200);
     const publicBody = await publicStatus.json();
+    expect(Object.keys(publicBody).toSorted(), "exact public status field set").toEqual(
+      [
+        "active_count",
+        "active_invocations",
+        "agent_definitions",
+        "cleanup_state",
+        "degraded",
+        "degraded_targets",
+        "dispatch_enabled",
+        "global_authority",
+        "held_count",
+        "held_tasks",
+        "projection",
+        "queue_depth",
+        "queued_invocations",
+        "task_controls",
+      ].toSorted(),
+    );
     const publicLifecycle = {
       global_authority: publicBody.global_authority,
       projection: publicBody.projection,
@@ -407,9 +421,18 @@ describe("dispatch lifecycle API/CLI surface projection", { timeout: 90_000 }, (
         task_controls: [],
       }),
     );
-    expect(publicBody, "public boundary forbids internal lifecycle casing").not.toHaveProperty(
+    for (const forbidden of [
       "globalAuthority",
-    );
+      "cleanupState",
+      "activeCount",
+      "queueDepth",
+      "heldCount",
+      "heldTasks",
+      "taskControls",
+      "degradedTargets",
+    ]) {
+      expect(publicBody, `public boundary forbids ${forbidden}`).not.toHaveProperty(forbidden);
+    }
 
     const internalStatus = await requestSurface(fixture, "/api/agent/dispatch/status");
     expect(internalStatus.status, "internal lifecycle status HTTP status").toBe(200);
@@ -503,6 +526,129 @@ describe("dispatch lifecycle API/CLI surface projection", { timeout: 90_000 }, (
     }
   });
 
+  // AC: @daemon-agent-dispatch ac-control-error-current-status
+  // AC: @daemon-agent-dispatch ac-control-failure-no-success
+  // AC: @daemon-agent-dispatch ac-cleanup-failure-no-success
+  it("compares every closed failure across HTTP, CLI, and sanitized events", async () => {
+    const fixture = await createSurfaceDaemonFixture();
+    const capture = await captureSurfaceEvents(fixture);
+    onTestFinished(capture.close);
+    const started = await requestSurface(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    expect(started.status, "failure matrix fixture starts running").toBe(200);
+
+    const expectedStatuses: Record<DispatchLifecycleControlErrorCode, number> = {
+      validation_failed: 400,
+      task_not_found: 404,
+      task_identity_ambiguous: 409,
+      task_identity_mismatch: 409,
+      invalid_transition: 409,
+      control_store_unavailable: 503,
+      control_store_corrupt: 503,
+      control_commit_failed: 503,
+      cancellation_timeout: 500,
+      cancellation_failed: 500,
+      session_closure_failed: 500,
+      cleanup_ownership_mismatch: 409,
+      cleanup_process_birth_mismatch: 409,
+      cleanup_leader_missing_group_alive: 409,
+      cleanup_identity_unverifiable: 503,
+      cleanup_group_unverifiable: 503,
+      internal_error: 500,
+    };
+    const observed: Array<{
+      code: DispatchLifecycleControlErrorCode;
+      apiStatus: number;
+      cliExit: number;
+      apiEvent: string;
+      cliEvent: string;
+    }> = [];
+
+    for (const code of DispatchControlErrorCodeSchema.options) {
+      const beforeApi = capture.events.length;
+      injectLifecycleFailure(fixture, code);
+      const api = await requestSurface(fixture, "/api/agent/dispatch/control", {
+        scope: "global",
+        action: "pause",
+      });
+      const apiBody = await api.json();
+      expect(api.status, `${code} API status`).toBe(expectedStatuses[code]);
+      expect(apiBody, `${code} API closed failure with current status`).toEqual({
+        ok: false,
+        data: expect.objectContaining({
+          global_authority: "running",
+          cleanup_state: { status: "idle", entries: [] },
+        }),
+        error: {
+          code,
+          message: expect.any(String),
+          suggestion: expect.any(String),
+        },
+      });
+      await vi.waitFor(() => {
+        expect(capture.events.length, `${code} API event count`).toBe(beforeApi + 1);
+      });
+      const apiEvent = capture.events.at(-1)!;
+
+      const beforeCli = capture.events.length;
+      injectLifecycleFailure(fixture, code);
+      const cli = runSurfaceCli(fixture, "agent dispatch pause --json", true);
+      expect(cli.exitCode, `${code} CLI exit`).toBe(code === "validation_failed" ? 1 : 3);
+      const cliBody = JSON.parse(cli.stderr);
+      expect(cliBody, `${code} CLI closed copy`).toEqual({
+        ok: false,
+        data: null,
+        error: {
+          code,
+          message: expect.any(String),
+          suggestion: expect.any(String),
+        },
+      });
+      await vi.waitFor(() => {
+        expect(capture.events.length, `${code} CLI event count`).toBe(beforeCli + 1);
+      });
+      const cliEvent = capture.events.at(-1)!;
+
+      for (const [surface, event] of [
+        ["API", apiEvent],
+        ["CLI", cliEvent],
+      ] as const) {
+        expect(event.event, `${code} ${surface} failed identifier`).toBe("dispatch_control.failed");
+        expect(event.data, `${code} ${surface} event parity`).toMatchObject({
+          scope: "global",
+          action: "pause",
+          outcome: "failed",
+          error_code: code,
+        });
+        expect(event.data, `${code} ${surface} event hides raw error`).not.toHaveProperty(
+          "rawError",
+        );
+        expect(
+          JSON.stringify(event.data),
+          `${code} ${surface} event hides fixture path`,
+        ).not.toContain(fixture.project.tempDir);
+      }
+      expect(JSON.stringify(apiBody), `${code} API hides fixture path`).not.toContain(
+        fixture.project.tempDir,
+      );
+      expect(`${cli.stdout}\n${cli.stderr}`, `${code} CLI hides fixture path`).not.toContain(
+        fixture.project.tempDir,
+      );
+      observed.push({
+        code,
+        apiStatus: api.status,
+        cliExit: cli.exitCode,
+        apiEvent: apiEvent.event,
+        cliEvent: cliEvent.event,
+      });
+    }
+
+    expect(observed, "all 17 response/exit/event rows").toHaveLength(17);
+    expect(new Set(observed.map((row) => row.code)), "all failure codes unique").toHaveLength(17);
+  });
+
   // AC: @daemon-agent-dispatch ac-public-status-lifecycle-additions
   // AC: @daemon-agent-dispatch ac-control-error-current-status
   it("projects pending, failed, and mixed cleanup rows and gates only matching scope", async () => {
@@ -535,7 +681,7 @@ describe("dispatch lifecycle API/CLI surface projection", { timeout: 90_000 }, (
       { timeout: 10_000 },
     );
 
-    injectLifecycleFailure(fixture, "cancellation_failed", {
+    injectLifecycleFailure(fixture, "failed_cleanup", {
       revision: 2,
       taskStatus: "failed",
     });
@@ -619,7 +765,7 @@ describe("dispatch lifecycle API/CLI surface projection", { timeout: 90_000 }, (
       ],
     });
 
-    injectLifecycleFailure(fixture, "cancellation_failed", {
+    injectLifecycleFailure(fixture, "failed_cleanup", {
       revision: 3,
       taskStatus: "pending",
     });
@@ -660,12 +806,69 @@ describe("dispatch lifecycle API/CLI surface projection", { timeout: 90_000 }, (
       "invalid_transition",
     );
 
-    const unrelatedTaskId = "01KG0RR7CC9N4YGP991WD7XS8S";
     writeFileSync(
       join(fixture.project.kspecDir, "dispatch-control.yaml"),
       YAML.stringify({
         version: 1,
         revision: 4,
+        global: { authority: "stopped" },
+        tasks: {
+          [fixture.taskId]: {
+            mode: "stopped",
+            reason: "surface cleanup",
+            actor: "api",
+            source: "api",
+            controlled_at: NOW,
+            updated_at: NOW,
+          },
+        },
+        pending_cleanup: {
+          global: {
+            cleanup_id: GLOBAL_CLEANUP_ID,
+            status: "failed",
+            phase: "signals_sent",
+            error_code: "cancellation_failed",
+            targets: [],
+          },
+        },
+      }),
+    );
+    execFileSync("git", ["add", "dispatch-control.yaml"], { cwd: fixture.project.kspecDir });
+    execFileSync("git", ["commit", "-m", "retain only global cleanup"], {
+      cwd: fixture.project.kspecDir,
+    });
+    await vi.waitFor(
+      async () => {
+        const response = await requestSurface(fixture, "/api/agent/status");
+        const body = await response.json();
+        expect(body.cleanup_state.entries, "global-only cleanup publication").toEqual([
+          expect.objectContaining({ scope: "global", error_code: "cancellation_failed" }),
+        ]);
+      },
+      { timeout: 10_000 },
+    );
+    const taskRetry = await requestSurface(fixture, "/api/agent/dispatch/control", {
+      scope: "task",
+      action: "resume",
+      task_ref: fixture.taskRef,
+    });
+    expect(taskRetry.status, "cleared matching cleanup permits task metadata retry").toBe(200);
+    expect((await taskRetry.json()).data.outcome, "task retry outcome").toBe("applied");
+    const globalBlocked = await requestSurface(fixture, "/api/agent/dispatch/control", {
+      scope: "global",
+      action: "start",
+    });
+    expect(globalBlocked.status, "global cleanup still prevents work start").toBe(409);
+    expect((await globalBlocked.json()).error.code, "global cleanup start rejection").toBe(
+      "invalid_transition",
+    );
+
+    const unrelatedTaskId = "01KG0RR7CC9N4YGP991WD7XS8S";
+    writeFileSync(
+      join(fixture.project.kspecDir, "dispatch-control.yaml"),
+      YAML.stringify({
+        version: 1,
+        revision: 6,
         global: { authority: "stopped" },
         tasks: {
           [unrelatedTaskId]: {
@@ -698,20 +901,23 @@ describe("dispatch lifecycle API/CLI surface projection", { timeout: 90_000 }, (
       },
       { timeout: 10_000 },
     );
-    const globalStart = await requestSurface(fixture, "/api/agent/dispatch/control", {
-      scope: "global",
+    const legacyStart = await requestSurface(fixture, "/api/agent/dispatch/start", {});
+    expect(legacyStart.status, "unrelated task cleanup permits legacy global start").toBe(200);
+    expect((await legacyStart.json()).started, "legacy start alias applies").toBe(true);
+    const legacyStop = await requestSurface(fixture, "/api/agent/dispatch/stop", {});
+    expect(legacyStop.status, "unrelated task cleanup permits legacy global stop").toBe(200);
+    expect((await legacyStop.json()).stopped, "legacy stop alias applies").toBe(true);
+    const globalStart = await requestSurface(fixture, "/api/agent/dispatch", {
       action: "start",
     });
-    expect(globalStart.status, "unrelated task cleanup permits global start").toBe(200);
+    expect(globalStart.status, "unrelated task cleanup permits action alias start").toBe(200);
+    expect(await globalStart.json(), "action alias response uses its legacy contract").toEqual({
+      dispatch_enabled: true,
+    });
+    const afterAliases = await requestSurface(fixture, "/api/agent/status");
     expect(
-      (await globalStart.json()).data,
-      "unrelated cleanup remains observable after start",
-    ).toEqual(
-      expect.objectContaining({
-        global_authority: "running",
-        cleanup_state: expect.objectContaining({ status: "pending" }),
-        outcome: "applied",
-      }),
-    );
+      (await afterAliases.json()).cleanup_state.entries,
+      "global aliases leave unrelated task cleanup observable",
+    ).toEqual([expect.objectContaining({ scope: "task", task_id: unrelatedTaskId })]);
   });
 });
