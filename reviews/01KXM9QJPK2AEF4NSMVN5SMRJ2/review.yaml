@@ -11,8 +11,93 @@ checks:
     name: format
     required: true
     runner: npm run format:check
-    created_at: 2026-07-16T02:09:12.502Z
-    completed_at: 2026-07-16T02:09:12.502Z
+    created_at: 2026-07-16T02:08:29.646Z
+    completed_at: 2026-07-16T02:08:29.646Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "Repo lint: 0 errors; 702 baseline warnings. Focused oxlint on all 10 changed
+      TypeScript/test files: 0 warnings and 0 errors."
+    name: lint
+    required: true
+    runner: npm run lint -- --quiet
+    created_at: 2026-07-16T02:08:32.856Z
+    completed_at: 2026-07-16T02:08:32.856Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Shared package build and tsc --noEmit passed.
+    name: typecheck
+    required: true
+    runner: npm run typecheck
+    created_at: 2026-07-16T02:08:37.133Z
+    completed_at: 2026-07-16T02:08:37.133Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: "2810 suites passed; 10748 tests passed; 3 skipped. Full log:
+      /tmp/kspec-test-cache/01KXM9MH84KCNR9RBNQ11J7A93/bfc708b738e40257.log"
+    name: full test suite
+    required: true
+    runner: npm test -- --fresh
+    created_at: 2026-07-16T02:08:40.340Z
+    completed_at: 2026-07-16T02:08:40.340Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with 6 pre-existing/deprecated-reference warnings allowed.
+    name: kspec validate refs
+    required: true
+    runner: kspec validate --refs --warnings-ok
+    created_at: 2026-07-16T02:08:44.454Z
+    completed_at: 2026-07-16T02:08:44.454Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with repository baseline warnings allowed (45 orphaned specs, 10 status mismatches).
+    name: kspec validate alignment
+    required: true
+    runner: kspec validate --alignment --warnings-ok
+    created_at: 2026-07-16T02:08:50.231Z
+    completed_at: 2026-07-16T02:08:50.231Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Passed with repository baseline warnings allowed. Manual task-Covers audit found the four
+      lifecycle event AC annotations absent; recorded separately as a blocker.
+    name: kspec validate completeness
+    required: true
+    runner: kspec validate --completeness --warnings-ok
+    created_at: 2026-07-16T02:08:54.222Z
+    completed_at: 2026-07-16T02:08:54.222Z
+  - status: pass
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: No whitespace errors in base-to-head diff.
+    name: diff check
+    required: false
+    runner: git diff --check
+    created_at: 2026-07-16T02:08:57.995Z
+    completed_at: 2026-07-16T02:08:57.995Z
+  - status: fail
+    applies_to_version:
+      type: entity_version
+      content_hash: ""
+    evidence: Instrumented the existing invalid-transition/not-found lifecycle test with
+      onDispatchControlEvent. Both ref-only failures completed with errors but callback events
+      remained []; expected 2. Diagnostic failed 1/16 and the worktree was restored clean.
+    name: "behavioral diagnostic: ref-only failure events"
+    required: false
+    runner: npm test -- tests/dispatch-task-lifecycle.test.ts (temporary diagnostic assertion, reverted)
+    created_at: 2026-07-16T02:09:01.393Z
+    completed_at: 2026-07-16T02:09:01.393Z
 events:
   - _ulid: 01KXM9QJPKG7GGSFKQ9ACJEDBF
     actor: Jacob Chapel
@@ -27,24 +112,240 @@ events:
       from: draft
       to: open
     timestamp: 2026-07-16T01:48:03.834Z
-  - _ulid: 01KXMAYS1XTA9K1Z447DWEM5YT
+  - _ulid: 01KXMAXF6AXZSJ5T0PSGZF3VJD
     actor: Jacob Chapel
     event_type: check_added
     payload:
       status: pass
       name: format
-    timestamp: 2026-07-16T02:09:12.766Z
+    timestamp: 2026-07-16T02:08:29.899Z
+  - _ulid: 01KXMAXJB4JWM532WE9J6GR8Y3
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: lint
+    timestamp: 2026-07-16T02:08:33.124Z
+  - _ulid: 01KXMAXPG5R4FF1YD0SQ5AYJGX
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: typecheck
+    timestamp: 2026-07-16T02:08:37.381Z
+  - _ulid: 01KXMAXSN2PSMN01Q8T2JTBA3W
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: full test suite
+    timestamp: 2026-07-16T02:08:40.611Z
+  - _ulid: 01KXMAXXXNDF07RMZ8KW89KK90
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate refs
+    timestamp: 2026-07-16T02:08:44.981Z
+  - _ulid: 01KXMAY3DES4DE6410YR55ZJR7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate alignment
+    timestamp: 2026-07-16T02:08:50.606Z
+  - _ulid: 01KXMAY7774SNP0K66304VR2G7
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: kspec validate completeness
+    timestamp: 2026-07-16T02:08:54.503Z
+  - _ulid: 01KXMAYAYV7KCKXMTKGWS5KHDC
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: pass
+      name: diff check
+    timestamp: 2026-07-16T02:08:58.331Z
+  - _ulid: 01KXMAYE6GXEV00VCHRH8VRVG5
+    actor: Jacob Chapel
+    event_type: check_added
+    payload:
+      status: fail
+      name: "behavioral diagnostic: ref-only failure events"
+    timestamp: 2026-07-16T02:09:01.648Z
+  - _ulid: 01KXMAYH991EVH0PMBVXD45E2R
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMAYH1DYHQ0RC1028APKYS5
+    timestamp: 2026-07-16T02:09:04.809Z
+  - _ulid: 01KXMAYMDG1A7H1T37RED4PXBC
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMAYM4Y8RPM9VH715M1RNYE
+    timestamp: 2026-07-16T02:09:08.016Z
+  - _ulid: 01KXMAYQZQ1FJ26X779DS6M0DJ
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMAYQM6CS85M5FMZVTR2WPT
+    timestamp: 2026-07-16T02:09:11.671Z
+  - _ulid: 01KXMAYWKAM2JHYJ2ZG0K4V2TS
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: blocker
+      thread_ulid: 01KXMAYW8KQM1Q8RGM65RAXZSV
+    timestamp: 2026-07-16T02:09:16.394Z
+  - _ulid: 01KXMAZ0QGZN5HAQBVYFMJYJCP
+    actor: Jacob Chapel
+    event_type: thread_created
+    payload:
+      kind: nit
+      thread_ulid: 01KXMAZ0A05JE1QZHQC14QCSTX
+    timestamp: 2026-07-16T02:09:20.624Z
+  - _ulid: 01KXMAZ45B57YM20H4ZD1RRK03
+    actor: pr-reviewer
+    event_type: verdict_submitted
+    payload:
+      applies_to_version:
+        type: entity_version
+        content_hash: ""
+      decision: request_changes
+    timestamp: 2026-07-16T02:09:24.139Z
+  - _ulid: 01KXMAZ45BWF1VACZSYHN7KXEC
+    actor: pr-reviewer
+    event_type: lifecycle_change
+    payload:
+      from: open
+      to: closed
+    timestamp: 2026-07-16T02:09:24.139Z
 examined_commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
 external_links: []
-lifecycle_state: open
+lifecycle_state: closed
 related_refs: []
 subject:
   type: task
   content_hash: ""
   ref: "@01KXH2PS9K1Z5BKY2ZHR30WJ8Y"
   shadow_commit: ""
-threads: []
-verdicts: []
+threads:
+  - _ulid: 01KXMAYH1DYHQ0RC1028APKYS5
+    anchor:
+      type: code
+      commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
+      line_end: 1915
+      line_start: 1904
+      path: src/agent-runtime/dispatch.ts
+      side: head
+    entries:
+      - _ulid: 01KXMAYH1DCN8BT4A8S4X2R3CY
+        author: Jacob Chapel
+        body: "MUST-FIX — Ref-only task failures are unaudited. This catch reconstructs event identity only
+          from context.taskId and silently skips emission when the request used taskRef. Task
+          controls explicitly accept refs, so a resolved ref that reaches an invalid matrix
+          transition and an unresolved ref both return an error without dispatch_control.failed,
+          violating ac-failed-control-is-auditable and the closed-code contract. Reproduction: I
+          instrumented the existing test case that pauses stopped @task-alpha and then
+          @missing-task; onDispatchControlEvent received 0 events (expected invalid_transition and
+          task_not_found). Ensure every task failure emits exactly once; for pre-canonicalization
+          failures, reconcile the required canonical task_id contract rather than dropping the audit
+          outcome."
+        created_at: 2026-07-16T02:09:04.557Z
+    kind: blocker
+  - _ulid: 01KXMAYM4Y8RPM9VH715M1RNYE
+    anchor:
+      type: code
+      commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
+      line_end: 35
+      line_start: 25
+      path: tests/dispatch-control-events.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXMAYM4YSQHEAEA3H7BZ79YQ
+        author: Jacob Chapel
+        body: MUST-FIX — The alleged commit barrier is a local Promise that directly invokes
+          emitDispatchControlOutcome after release; it never drives DispatchEngine, a lifecycleStore
+          mutation, or committed publication. Therefore the test cannot detect an engine emission
+          before commit, during retry observation, or after the wrong durable state. Replace/add a
+          behavioral engine/store test whose barrier surrounds the actual commit and whose event
+          capture is attached to the engine EventBus/callback, proving zero before commit and
+          exactly one afterward for applied and noop paths.
+        created_at: 2026-07-16T02:09:07.742Z
+    kind: blocker
+  - _ulid: 01KXMAYQM6CS85M5FMZVTR2WPT
+    anchor:
+      type: code
+      commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
+      line_end: 175
+      line_start: 148
+      path: tests/dispatch-control-events.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXMAYQM7JKSM7N2FSGRCXS6B
+        author: Jacob Chapel
+        body: MUST-FIX — The 17 failure cases supply a preselected failurePredicate directly to the emitter.
+          They never provoke TaskIdentityResolutionError, DispatchLifecycleTransitionError,
+          store/transaction errors, or DispatchCleanupError through
+          applyGlobalLifecycleAction/applyTaskLifecycleAction, so _dispatchControlFailurePredicate
+          and the real emission sites are untested. This suite remained green while the real
+          ref-only lifecycle harness emitted zero events. Drive each failure class through the
+          engine boundary and assert the emitted identifier/code/count; a table test may remain as
+          supplemental mapper coverage.
+        created_at: 2026-07-16T02:09:11.303Z
+    kind: blocker
+  - _ulid: 01KXMAYW8KQM1Q8RGM65RAXZSV
+    anchor:
+      type: code
+      commit: 40aed15a47ba2163b9d3ff74e5cadfee02d83c5c
+      line_end: 50
+      line_start: 48
+      path: tests/dispatch-control-events.test.ts
+      side: head
+    entries:
+      - _ulid: 01KXMAYW8K69KTCHQNE94DEYSK
+        author: Jacob Chapel
+        body: MUST-FIX — The task explicitly Covers @dispatch-lifecycle-control-authority
+          ac-applied-control-is-auditable, ac-noop-control-is-auditable,
+          ac-failed-control-is-auditable, and ac-failure-events-use-closed-error-codes, but no test
+          in the repository has an AC annotation for any of those four refs (verified by rg). The
+          new annotations cover only taxonomy/payload ACs. Add correctly annotated behavioral tests
+          that actually prove each lifecycle audit AC; do not merely attach the annotations to the
+          current direct-emitter fixtures.
+        created_at: 2026-07-16T02:09:16.051Z
+    kind: blocker
+  - _ulid: 01KXMAZ0A05JE1QZHQC14QCSTX
+    entries:
+      - _ulid: 01KXMAZ0A0ZF6S2SVZFNB38RRC
+        author: Jacob Chapel
+        body: "Review evidence log — Files read: all 10 changed files; surrounding event bus, lifecycle
+          store/transaction, task identity, global/task lifecycle and stop recovery tests, daemon
+          pubsub, WebSocket invalidation, automation event-log subscription, task/spec/plan context.
+          Commands run: base-to-head diff and history; task/plan/spec/review lookups; AC annotation
+          search; format, repo lint, focused lint, typecheck, fresh full test suite,
+          refs/alignment/completeness validation, diff check; targeted instrumented lifecycle
+          diagnostic (reverted clean). Claims verified: worker's full-suite/quality claim
+          independently passed; worker's existing UI invalidation claim is supported by agents-topic
+          invalidation and automation-page subscription. Categories searched: correctness, durable
+          ordering, identity edge cases, error mapping/handling, sanitization/security exposure,
+          test quality, schema/registry parity, daemon/WebSocket/UI integration. Shared-guidance
+          neutrality: not applicable; no package guidance surfaces changed."
+        created_at: 2026-07-16T02:09:20.192Z
+    kind: nit
+verdicts:
+  - applies_to_version:
+      type: entity_version
+      content_hash: ""
+    decision: request_changes
+    reviewer: pr-reviewer
+    role: reviewer
+    created_at: 2026-07-16T02:09:24.139Z
 created_at: 2026-07-16T01:47:48.307Z
-updated_at: 2026-07-16T02:09:12.502Z
+updated_at: 2026-07-16T02:09:24.139Z
 notes: []
