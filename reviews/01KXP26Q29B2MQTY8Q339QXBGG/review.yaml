@@ -244,6 +244,42 @@ events:
       from: open
       to: closed
     timestamp: 2026-07-16T18:35:16.439Z
+  - _ulid: 01KXP582V9DJBHNVWPG782TEXS
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXP3AZT0NYB62N47AC3Q8WQ1
+    timestamp: 2026-07-16T19:07:55.113Z
+  - _ulid: 01KXP587C55Z8CP1FMQQK4YG6Y
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXP3AZT0NYB62N47AC3Q8WQ1
+    timestamp: 2026-07-16T19:07:59.749Z
+  - _ulid: 01KXP58C6MCJ8XFZME4G6DNHM6
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXP3B610FDNFGR1BZ890XHN5
+    timestamp: 2026-07-16T19:08:04.692Z
+  - _ulid: 01KXP58JE78WNP34QEE1DPA99A
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXP3B610FDNFGR1BZ890XHN5
+    timestamp: 2026-07-16T19:08:11.079Z
+  - _ulid: 01KXP58R3S1DSJ7QT9VN48JW8R
+    actor: Jacob Chapel
+    event_type: thread_replied
+    payload:
+      thread_ulid: 01KXP3BBW9EKWJBMTREREY6C0V
+    timestamp: 2026-07-16T19:08:16.889Z
+  - _ulid: 01KXP58XVSZ37G9D5APPY8M6HH
+    actor: Jacob Chapel
+    event_type: thread_resolved
+    payload:
+      thread_ulid: 01KXP3BBW9EKWJBMTREREY6C0V
+    timestamp: 2026-07-16T19:08:22.777Z
 examined_commit: 6c7f7d0fb155d07094f1ec8d6140b20a8e463065
 external_links: []
 lifecycle_state: closed
@@ -273,7 +309,15 @@ threads:
           the inaccurate annotation or add a behavioral invalid-body assertion that proves the trait
           AC. False AC attribution obscures which behavior is actually covered."
         created_at: 2026-07-16T18:34:33.153Z
+      - _ulid: 01KXP582GXMSC2RQDQ9W1N70W6
+        author: Jacob Chapel
+        body: "Fixed in 8364599a91: the annotated real-daemon test now submits the schema-invalid action
+          restart and asserts HTTP 400 with the exact validation_error/details field-message shape,
+          so @trait-api-endpoint ac-3 is behaviorally proven."
+        created_at: 2026-07-16T19:07:54.778Z
     kind: blocker
+    resolved_at: 2026-07-16T19:07:59.358Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXP3B610FDNFGR1BZ890XHN5
     anchor:
       type: code
@@ -292,7 +336,15 @@ threads:
           or assert the required current-status fields on the failing control response. As written,
           the test would still pass if this AC regressed on this branch.
         created_at: 2026-07-16T18:34:39.521Z
+      - _ulid: 01KXP58BVT4H6M38EA00XACCRA
+        author: Jacob Chapel
+        body: "Fixed in 8364599a91: the matching-cleanup rejection now asserts the complete structured
+          failure, including current global authority/projection, failed aggregate cleanup rows, and
+          the matching task control nested pending cleanup state."
+        created_at: 2026-07-16T19:08:04.346Z
     kind: blocker
+    resolved_at: 2026-07-16T19:08:10.665Z
+    resolved_by: Jacob Chapel
   - _ulid: 01KXP3BBW9EKWJBMTREREY6C0V
     entries:
       - _ulid: 01KXP3BBW9Q9SVGGH6FPH37Z2T
@@ -314,7 +366,14 @@ threads:
           integration. Shared/package guidance surfaces touched: none, so neutrality directions and
           generated-artifact checks were not applicable."
         created_at: 2026-07-16T18:34:45.513Z
+      - _ulid: 01KXP58QQBYBDG6N7AZECHXKKG
+        author: Jacob Chapel
+        body: Acknowledged and re-verified the recorded evidence categories during this cycle; no additional
+          code finding was attached to this evidence-log thread.
+        created_at: 2026-07-16T19:08:16.491Z
     kind: nit
+    resolved_at: 2026-07-16T19:08:22.354Z
+    resolved_by: Jacob Chapel
 verdicts:
   - applies_to_version:
       type: entity_version
@@ -324,5 +383,5 @@ verdicts:
     role: reviewer
     created_at: 2026-07-16T18:35:16.430Z
 created_at: 2026-07-16T18:14:44.553Z
-updated_at: 2026-07-16T18:35:16.439Z
+updated_at: 2026-07-16T19:08:22.354Z
 notes: []
