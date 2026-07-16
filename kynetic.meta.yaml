@@ -24098,6 +24098,31 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-07-16T11:37:48.569Z
+  - _ulid: 01KXNDDB52657Q6BKF3ZSXQESG
+    type: friction
+    content: During review evidence recording, an atomic kspec batch finished successfully, but the
+      immediate kspec review get returned zero checks and threads; rerunning the writes later
+      revealed both copies. This delayed read-after-write visibility can make autonomous reviewers
+      create duplicate checks and comments, then manually resolve duplicate threads. Review
+      mutations need a reliable commit receipt plus an immediately coherent read path or idempotency
+      keys.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    created_at: 2026-07-16T12:11:21.635Z
+  - _ulid: 01KXNDDBFD3END1EB3VP0XN94E
+    type: success
+    content: For safety-critical CLI reviews, trace failure handling across local setup helpers,
+      command-action catches, generic output formatters, and daemon response schemas rather than
+      checking only HTTP parse paths. This session found initContext outside the closed lifecycle
+      mapping; strict daemon-response tests could not catch it. Pair local-exception injection with
+      exact human and JSON no-secret assertions.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
+    created_at: 2026-07-16T12:11:21.965Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
